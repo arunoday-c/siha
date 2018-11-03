@@ -632,34 +632,6 @@ textarea {
     .algaeh-datePicker button svg {
       height: 16px; }
 
-.autoselect-Div {
-  position: relative; }
-  .autoselect-Div .loadingSelect {
-    display: none;
-    width: 100%;
-    position: absolute;
-    background: rgba(0, 0, 0, 0.2);
-    height: 100%;
-    border-radius: 5px; }
-    .autoselect-Div .loadingSelect i.fa-sync {
-      color: #7f8284;
-      position: absolute;
-      top: 8px;
-      left: 45%;
-      cursor: pointer;
-      font-size: 13px; }
-  .autoselect-Div i.fa-times-circle {
-    display: none;
-    color: #7f8284;
-    position: absolute;
-    top: 8px;
-    right: 20px;
-    cursor: pointer;
-    font-size: 13px; }
-
-.autoselect-Div:hover i.fa-times-circle {
-  display: block; }
-
 .mandatory input[type="text"],
 .mandatory input[type="number"],
 .mandatory input[type="tel"],
@@ -798,19 +770,6 @@ th {
   */ }
   .algaeh_Arabic_Version .table-responsive {
     direction: rtl; }
-  .algaeh_Arabic_Version .autoselect-Div {
-    position: relative; }
-    .algaeh_Arabic_Version .autoselect-Div i {
-      display: none;
-      color: #7f8284;
-      position: absolute;
-      top: 8px;
-      right: auto;
-      left: 20px;
-      cursor: pointer;
-      font-size: 13px; }
-  .algaeh_Arabic_Version .autoselect-Div:hover i {
-    display: block; }
   .algaeh_Arabic_Version .tab-container ul.nav {
     direction: rtl;
     padding-right: 5px; }
