@@ -84,8 +84,9 @@ class ItemStorage extends Component {
           </div>
 
           <div className="row form-details">
-            <div className="col">
+            <div className="col" data-validate="itemStrgDiv">
               <AlgaehDataGrid
+                datavalidate="data-validate='itemStrgDiv'"
                 id="item_category"
                 columns={[
                   {
@@ -101,6 +102,10 @@ class ItemStorage extends Component {
                             name: "storage_description",
                             events: {
                               onChange: onchangegridcol.bind(this, this, row)
+                            },
+                            others: {
+                              errormessage: "Description - cannot be blank",
+                              required: true
                             }
                           }}
                         />
@@ -126,7 +131,22 @@ class ItemStorage extends Component {
                         </span>
                       );
                     },
-                    disabled: true
+                    editorTemplate: row => {
+                      let display =
+                        this.props.userdrtails === undefined
+                          ? []
+                          : this.props.userdrtails.filter(
+                              f => f.algaeh_d_app_user_id === row.created_by
+                            );
+
+                      return (
+                        <span>
+                          {display !== null && display.length !== 0
+                            ? display[0].user_displayname
+                            : ""}
+                        </span>
+                      );
+                    }
                   },
                   {
                     fieldName: "created_date",
@@ -136,7 +156,9 @@ class ItemStorage extends Component {
                     displayTemplate: row => {
                       return <span>{this.dateFormater(row.created_date)}</span>;
                     },
-                    disabled: true
+                    editorTemplate: row => {
+                      return <span>{this.dateFormater(row.created_date)}</span>;
+                    }
                   },
                   {
                     fieldName: "storage_status",
@@ -157,7 +179,11 @@ class ItemStorage extends Component {
                               valueField: "value",
                               data: GlobalVariables.FORMAT_STATUS
                             },
-                            onChange: onchangegridcol.bind(this, this, row)
+                            onChange: onchangegridcol.bind(this, this, row),
+                            others: {
+                              errormessage: "Status - cannot be blank",
+                              required: true
+                            }
                           }}
                         />
                       );
@@ -176,7 +202,6 @@ class ItemStorage extends Component {
                 events={{
                   onDelete: deleteItemStorage.bind(this, this),
                   onEdit: row => {},
-
                   onDone: updateItemStorage.bind(this, this)
                 }}
               />

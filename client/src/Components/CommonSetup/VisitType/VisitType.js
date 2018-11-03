@@ -257,7 +257,8 @@ class VisitType extends Component {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
     row[name] = value;
-    this.resetState();
+    row.update();
+    //this.resetState();
   }
 
   render() {
