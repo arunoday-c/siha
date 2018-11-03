@@ -37,7 +37,8 @@ class Appointment extends Component {
       checkInId: null,
       sub_department_id: null,
       date_of_birth: null,
-      activeDateHeader: moment()._d
+      activeDateHeader: moment()._d,
+      outerStyles: {}
     };
   }
 
@@ -1108,6 +1109,21 @@ class Appointment extends Component {
     }
     return <React.Fragment>{tds}</React.Fragment>;
   }
+  getSnapshotBeforeUpdate() {
+    debugger;
+    const doctorCntr = document.getElementsByClassName("tg");
+    if (doctorCntr !== undefined && doctorCntr.length > 0) {
+      const _completeWidth = doctorCntr[0].width * doctorCntr.length;
+      return { width: _completeWidth };
+      // this.setState({ outerStyles: { width: _completeWidth } }, () => {
+      //   debugger;
+      // });
+    }
+    return null;
+  }
+  componentDidUpdate(props, prevState, snapshot) {
+    debugger;
+  }
 
   render() {
     return (
@@ -1811,7 +1827,10 @@ class Appointment extends Component {
 
               <div className="portlet-body" style={{ maxHeight: "53vh" }}>
                 <div className="appointment-outer-cntr">
-                  <div className="appointment-inner-cntr">
+                  <div
+                    className="appointment-inner-cntr"
+                    // style={{ width: { rgdfjg } }}
+                  >
                     {/* Table Start */}
                     {this.state.appointmentSchedule.length !== 0 ? (
                       this.state.appointmentSchedule.map((data, index) => (
@@ -1820,8 +1839,13 @@ class Appointment extends Component {
                             <tr>
                               {/* <th className="tg-c3ow">Time</th> */}
                               <th className="tg-amwm" colSpan="2">
-                                {data.first_name + " " + data.last_name}
-                                {/* Dr. Norman John */}
+                                <h6>
+                                  {data.first_name + " " + data.last_name}
+                                </h6>
+                                <p>
+                                  <span>Room No</span>
+                                  <span>Clinic Name</span>
+                                </p>
                               </th>
                             </tr>
                             <tr>

@@ -246,6 +246,9 @@ class AutoComplete extends PureComponent {
             autoComplete="off"
             {..._required}
           />
+          <span className="clearall">
+            <i className="fas  fa-times" />
+          </span>
           <span className="showall" onClick={this.onClickArrowIcon.bind(this)}>
             <i className={"fas " + this.state.arrowIcon} />
           </span>
