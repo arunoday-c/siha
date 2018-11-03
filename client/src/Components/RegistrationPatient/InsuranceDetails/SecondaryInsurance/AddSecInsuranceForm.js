@@ -120,36 +120,6 @@ class AddSecInsuranceForm extends Component {
                             <span>No</span>
                           </label>
                         </div>
-                        {/* <div className="row moveRadioButtons">
-                          {INSURANCE_DECISION.map((data, idx) => {
-                            return (
-                              <div
-                                className="col-lg-6"
-                                key={"index_value" + idx}
-                              >
-                                <input
-                                  type="radio"
-                                  name="INSURANCE_DECISION"
-                                  className="htpl-phase1-radio-btn"
-                                  value={data.value}
-                                  onChange={this.selectedValueInsurance.bind(
-                                    this,
-                                    data.value,
-                                    context
-                                  )}
-                                  defaultChecked={
-                                    data.value === this.state.sec_insured
-                                      ? true
-                                      : false
-                                  }
-                                />
-                                <label className="radio-design">
-                                  {data.label}
-                                </label>
-                              </div>
-                            );
-                          })}
-                        </div> */}
                       </div>
                       <div className="col-lg-1" style={{ paddingRight: 0 }}>
                         <Tooltip id="tooltip-icon" title="Add New">
