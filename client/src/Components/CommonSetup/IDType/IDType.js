@@ -1,12 +1,10 @@
 import React, { Component } from "react";
 import "./id_type.css";
-
 import moment from "moment";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-//import DeleteDialog from "../../../utils/DeleteDialog";
 import swal from "sweetalert2";
 import {
   AlagehFormGroup,
@@ -28,7 +26,6 @@ class IDType extends Component {
       identity_document_code: "",
       identity_document_name: "",
       arabic_identity_document_name: "",
-
       currentRowID: ""
     };
 
@@ -282,8 +279,9 @@ class IDType extends Component {
           </form>
 
           <div className="row form-details">
-            <div className="col">
+            <div className="col" data-validate="idDiv">
               <AlgaehDataGrid
+                datavalidate="data-validate='idDiv'"
                 id="identity_grd"
                 columns={[
                   {
@@ -304,6 +302,10 @@ class IDType extends Component {
                             name: "identity_document_name",
                             events: {
                               onChange: this.onchangegridcol.bind(this, row)
+                            },
+                            others: {
+                              errormessage: "Name - cannot be blank",
+                              required: true
                             }
                           }}
                         />
@@ -325,6 +327,10 @@ class IDType extends Component {
                             name: "arabic_identity_document_name",
                             events: {
                               onChange: this.onchangegridcol.bind(this, row)
+                            },
+                            others: {
+                              errormessage: "Arabic Name - cannot be blank",
+                              required: true
                             }
                           }}
                         />
@@ -398,7 +404,11 @@ class IDType extends Component {
                               valueField: "value",
                               data: GlobalVariables.FORMAT_STATUS
                             },
-                            onChange: this.onchangegridcol.bind(this, row)
+                            onChange: this.onchangegridcol.bind(this, row),
+                            others: {
+                              errormessage: "Status - cannot be blank",
+                              required: true
+                            }
                           }}
                         />
                       );

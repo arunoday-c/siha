@@ -256,8 +256,9 @@ class PatientType extends Component {
           </form>
 
           <div className="row form-details">
-            <div className="col">
+            <div className="col" data-validate="patTypeDiv">
               <AlgaehDataGrid
+                datavalidate="data-validate='patTypeDiv'"
                 id="patient_type_grd"
                 columns={[
                   {
@@ -278,6 +279,10 @@ class PatientType extends Component {
                             name: "patitent_type_desc",
                             events: {
                               onChange: this.onchangegridcol.bind(this, row)
+                            },
+                            others: {
+                              errormessage: "Description - cannot be blank",
+                              required: true
                             }
                           }}
                         />
@@ -299,6 +304,10 @@ class PatientType extends Component {
                             name: "arabic_patitent_type_desc",
                             events: {
                               onChange: this.onchangegridcol.bind(this, row)
+                            },
+                            others: {
+                              errormessage: "Arabic Name - cannot be blank",
+                              required: true
                             }
                           }}
                         />
@@ -370,7 +379,11 @@ class PatientType extends Component {
                               valueField: "value",
                               data: GlobalVariables.FORMAT_STATUS
                             },
-                            onChange: this.onchangegridcol.bind(this, row)
+                            onChange: this.onchangegridcol.bind(this, row),
+                            others: {
+                              errormessage: "Status - cannot be blank",
+                              required: true
+                            }
                           }}
                         />
                       );

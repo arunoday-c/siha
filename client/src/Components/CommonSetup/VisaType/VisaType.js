@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-
-import LinearProgress from "@material-ui/core/LinearProgress";
 import "./visatype.css";
 
 import moment from "moment";
@@ -235,7 +233,6 @@ class VisaType extends Component {
   render() {
     return (
       <div className="visa_type">
-        <LinearProgress id="myProg" style={{ display: "none" }} />
         <div className="container-fluid">
           <form>
             <div className="row">
@@ -316,8 +313,9 @@ class VisaType extends Component {
           </form>
 
           <div className="row form-details">
-            <div className="col">
+            <div className="col" data-validate="visaDiv">
               <AlgaehDataGrid
+                datavalidate="data-validate='visaDiv'"
                 id="visa_grd"
                 columns={[
                   {
@@ -338,6 +336,10 @@ class VisaType extends Component {
                             name: "visa_type",
                             events: {
                               onChange: this.onchangegridcol.bind(this, row)
+                            },
+                            others: {
+                              errormessage: "Description - cannot be blank",
+                              required: true
                             }
                           }}
                         />
@@ -359,6 +361,10 @@ class VisaType extends Component {
                             name: "arabic_visa_type",
                             events: {
                               onChange: this.onchangegridcol.bind(this, row)
+                            },
+                            others: {
+                              errormessage: "Arabic Name - cannot be blank",
+                              required: true
                             }
                           }}
                         />
@@ -434,7 +440,11 @@ class VisaType extends Component {
                               valueField: "value",
                               data: GlobalVariables.FORMAT_STATUS
                             },
-                            onChange: this.onchangegridcol.bind(this, row)
+                            onChange: this.onchangegridcol.bind(this, row),
+                            others: {
+                              errormessage: "Status - cannot be blank",
+                              required: true
+                            }
                           }}
                         />
                       );

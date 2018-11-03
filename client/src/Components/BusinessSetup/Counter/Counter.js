@@ -95,8 +95,7 @@ class Counter extends Component {
       confirmButtonText: "Yes!",
       confirmButtonColor: "#",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No",
-      dangerMode: true
+      cancelButtonText: "No"
     }).then(willDelete => {
       if (willDelete.value) {
         algaehApiCall({
@@ -154,7 +153,6 @@ class Counter extends Component {
             title: "Record updated successfully . .",
             type: "success"
           });
-
           this.getCounters();
         }
       },
@@ -241,8 +239,9 @@ class Counter extends Component {
               </div>
             </div>
           </form>
-          <div className="form-details">
+          <div className="form-details" data-validate="counterDiv">
             <AlgaehDataGrid
+              datavalidate="data-validate='counterDiv'"
               id="appt-status-grid"
               columns={[
                 {
@@ -265,6 +264,10 @@ class Counter extends Component {
                           value: row.counter_description,
                           events: {
                             onChange: this.changeGridEditors.bind(this, row)
+                          },
+                          others: {
+                            errormessage: "Description - cannot be blank",
+                            required: true
                           }
                         }}
                       />
@@ -284,6 +287,10 @@ class Counter extends Component {
                           value: row.arabic_name,
                           events: {
                             onChange: this.changeGridEditors.bind(this, row)
+                          },
+                          others: {
+                            errormessage: "Arabic Name - cannot be blank",
+                            required: true
                           }
                         }}
                       />
@@ -314,6 +321,10 @@ class Counter extends Component {
                             textField: "name",
                             valueField: "value",
                             data: GlobalVariables.FORMAT_STATUS
+                          },
+                          others: {
+                            errormessage: "Status - cannot be blank",
+                            required: true
                           },
                           onChange: this.changeGridEditors.bind(this, row)
                         }}

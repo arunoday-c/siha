@@ -30,8 +30,7 @@ class AppointmentRooms extends Component {
       confirmButtonText: "Yes!",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No",
-      dangerMode: true
+      cancelButtonText: "No"
     }).then(willDelete => {
       if (willDelete.value) {
         algaehApiCall({
@@ -41,13 +40,18 @@ class AppointmentRooms extends Component {
           },
           method: "DELETE",
           onSuccess: response => {
-            if (response.data.success) {
+            if (response.data.records.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
                 type: "success"
               });
 
               this.getAppointmentRooms();
+            } else if (!response.data.records.success) {
+              swalMessage({
+                title: response.data.records.message,
+                type: "error"
+              });
             }
           },
           onFailure: error => {
@@ -265,6 +269,10 @@ class AppointmentRooms extends Component {
                           textField: "name",
                           valueField: "value",
                           data: GlobalVariables.FORMAT_ACT_INACT
+                        },
+                        others: {
+                          errormessage: "Status - cannot be blank",
+                          required: true
                         },
                         onChange: this.changeGridEditors.bind(this, row)
                       }}

@@ -94,8 +94,7 @@ class Shift extends Component {
       confirmButtonText: "Yes!",
       confirmButtonColor: "#",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No",
-      dangerMode: true
+      cancelButtonText: "No"
     }).then(willDelete => {
       if (willDelete.value) {
         algaehApiCall({
@@ -245,9 +244,10 @@ class Shift extends Component {
               </div>
             </div>
           </form>
-          <div className="form-details">
+          <div className="form-details" data-validate="shiftDiv">
             <AlgaehDataGrid
               id="shift-grid"
+              datavalidate="data-validate='shiftDiv'"
               columns={[
                 {
                   fieldName: "shift_code",
@@ -284,6 +284,10 @@ class Shift extends Component {
                           value: row.shift_description,
                           events: {
                             onChange: this.changeGridEditors.bind(this, row)
+                          },
+                          others: {
+                            errormessage: "Description - cannot be blank",
+                            required: true
                           }
                         }}
                       />
@@ -303,6 +307,10 @@ class Shift extends Component {
                           value: row.arabic_name,
                           events: {
                             onChange: this.changeGridEditors.bind(this, row)
+                          },
+                          others: {
+                            errormessage: "Arabic Name - cannot be blank",
+                            required: true
                           }
                         }}
                       />
@@ -331,6 +339,10 @@ class Shift extends Component {
                             textField: "name",
                             valueField: "value",
                             data: GlobalVariables.FORMAT_STATUS
+                          },
+                          others: {
+                            errormessage: "Status - cannot be blank",
+                            required: true
                           },
                           onChange: this.changeGridEditors.bind(this, row)
                         }}
