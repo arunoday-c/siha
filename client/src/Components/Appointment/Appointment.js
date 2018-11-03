@@ -555,8 +555,8 @@ class Appointment extends Component {
                 >
                   {row.day}
                   <span
-                    date={row.currentdate}
-                    onClick={this.onSelectedDateHandler.bind(this)}
+                  //  date={row.currentdate}
+                    //onClick={this.onSelectedDateHandler.bind(this)}
                   >
                     {row.dayName}
                   </span>

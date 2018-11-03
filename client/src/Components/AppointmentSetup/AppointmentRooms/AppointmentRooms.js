@@ -98,15 +98,12 @@ class AppointmentRooms extends Component {
   componentDidMount() {
     this.getAppointmentRooms();
   }
-  refreshState() {
-    this.setState({ ...this.state });
-  }
 
   changeGridEditors(row, e) {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
     row[name] = value;
-    this.refreshState();
+    row.update();
   }
 
   resetState() {
@@ -204,8 +201,13 @@ class AppointmentRooms extends Component {
             </div>
           </div>
         </div>
-        <div className="col-lg-12" style={{ marginTop: 10 }}>
+        <div
+          className="col-lg-12"
+          style={{ marginTop: 10 }}
+          data-validate="apptRoomsDiv"
+        >
           <AlgaehDataGrid
+            datavalidate="data-validate='apptRoomsDiv'"
             id="appt-room-grid"
             columns={[
               {
@@ -221,6 +223,10 @@ class AppointmentRooms extends Component {
                         name: "description",
                         events: {
                           onChange: this.changeGridEditors.bind(this, row)
+                        },
+                        others: {
+                          errormessage: "Description - cannot be blank",
+                          required: true
                         }
                       }}
                     />
@@ -235,7 +241,11 @@ class AppointmentRooms extends Component {
                     <span>{moment(row.created_date).format("DD-MM-YYYY")}</span>
                   );
                 },
-                disabled: true
+                editorTemplate: row => {
+                  return (
+                    <span>{moment(row.created_date).format("DD-MM-YYYY")}</span>
+                  );
+                }
               },
               {
                 fieldName: "room_active",

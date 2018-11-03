@@ -25,15 +25,11 @@ class AppointmentClinics extends Component {
     };
   }
 
-  refreshState() {
-    this.setState({ ...this.state });
-  }
-
   changeGridEditors(row, e) {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
     row[name] = value;
-    this.refreshState();
+    row.update();
   }
 
   changeTexts(e) {

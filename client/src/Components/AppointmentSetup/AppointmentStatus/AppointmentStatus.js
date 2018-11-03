@@ -27,15 +27,11 @@ class AppointmentStatus extends Component {
     this.baseState = this.state;
   }
 
-  refreshState() {
-    this.setState({ ...this.state });
-  }
-
   changeGridEditors(row, e) {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
     row[name] = value;
-    this.refreshState();
+    row.update();
   }
 
   resetState() {
@@ -482,7 +478,7 @@ class AppointmentStatus extends Component {
                               onChange: this.changeGridEditors.bind(this, row)
                             },
                             others: {
-                              errormessage: "Cannot be blank",
+                              errormessage: "Description - cannot be blank",
                               required: true
                             }
                           }}

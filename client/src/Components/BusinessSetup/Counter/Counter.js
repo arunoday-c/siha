@@ -171,15 +171,11 @@ class Counter extends Component {
     this.setState({ [e.target.name]: e.target.value });
   }
 
-  refreshState() {
-    this.setState({ ...this.state });
-  }
-
   changeGridEditors(row, e) {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
     row[name] = value;
-    this.refreshState();
+    row.update();
   }
 
   render() {
