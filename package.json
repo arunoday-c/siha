@@ -13,6 +13,7 @@
     "npminstall": "npm install && npm install --prefix client",
     "prod_build": "npm run build --prefix client && npm run build",
     "lint": "eslint src && eslint test",
+    "pm2": "concurrently  cross-env NODE_ENV=development  pm2 start --watch --max-memory-restart 850M \"babel-node src/internal_server.js --presets es2015,stage-0\"  \"npm run client\"",
     "test": "export NODE_ENV=test npm run build && mocha --require babel-core/register --timeout=10000000"
   },
   "eslintConfig": {
