@@ -73,57 +73,57 @@ class AppointmentStatus extends Component {
   }
 
   authorizeApptStatus() {
-    swal({
-      title:
-        "This is a one time setup, are you sure you want to authorize the Status for Appointment set?",
-      type: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes!",
-      confirmButtonColor: "#44b8bd",
-      cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
-      if (willDelete.value) {
-        this.hasDuplicates(this.state.steps_list)
-          ? swalMessage({
-              title: "There are repeated values, please re-check the status",
-              type: "warning",
-              timer: 5000
-            })
-          : algaehApiCall({
-              uri: "/appointment/appointmentStatusAuthorized",
-              method: "PUT",
-              onSuccess: response => {
-                if (response.data.success) {
-                  this.setState({
-                    isEditable: false
-                  });
-                  swalMessage({
-                    title: "Status Authorized successfully . .",
-                    type: "success"
-                  });
-                  this.getAppointmentStatus();
-                }
-              },
-              onFailure: error => {
-                swalMessage({
-                  title: error.message,
-                  type: "error"
+    this.state.appointmentStatus.length > 0
+      ? swal({
+          title:
+            "This is a one time setup, are you sure you want to authorize the Status for Appointment set?",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Yes!",
+          confirmButtonColor: "#44b8bd",
+          cancelButtonColor: "#d33",
+          cancelButtonText: "No"
+        }).then(willDelete => {
+          if (willDelete.value) {
+            this.hasDuplicates(this.state.steps_list)
+              ? swalMessage({
+                  title:
+                    "There are repeated values, please re-check the status",
+                  type: "warning",
+                  timer: 5000
+                })
+              : algaehApiCall({
+                  uri: "/appointment/appointmentStatusAuthorized",
+                  method: "PUT",
+                  onSuccess: response => {
+                    if (response.data.success) {
+                      this.setState({
+                        isEditable: false
+                      });
+                      swalMessage({
+                        title: "Status Authorized successfully . .",
+                        type: "success"
+                      });
+                      this.getAppointmentStatus();
+                    }
+                  },
+                  onFailure: error => {
+                    swalMessage({
+                      title: error.message,
+                      type: "error"
+                    });
+                  }
                 });
-              }
+          } else {
+            swalMessage({
+              title: "Not authorized",
+              type: "error"
             });
-
-        // swalMessage({
-        //   title: "Authorized Successful",
-        //   type: "success"
-        // });
-      } else {
-        swalMessage({
-          title: "Not authorized",
-          type: "error"
+          }
+        })
+      : swalMessage({
+          title: "Please add the status first and then authorize"
         });
-      }
-    });
   }
 
   deleteAppointmentStatus(data) {
@@ -174,14 +174,6 @@ class AppointmentStatus extends Component {
   }
 
   updateAppointmentStatus(data) {
-    debugger;
-    // this.state.steps_list.includes(parseInt(data.steps))
-    //   ? swalMessage({
-    //       title: "Order already exists please select a unique order number?",
-    //       type: "warning"
-    //     })
-    //   :
-
     algaehApiCall({
       uri: "/appointment/updateAppointmentStatus",
       data: {
@@ -243,7 +235,6 @@ class AppointmentStatus extends Component {
                 authCount > 0 &&
                 authCount === this.state.appointmentStatus.length
               ) {
-                debugger;
                 this.setState(
                   {
                     isEditable: false,
@@ -271,16 +262,10 @@ class AppointmentStatus extends Component {
 
   addAppointmentStatus(e) {
     e.preventDefault();
-    //Enumerable.from(this.state.steps_list).where(w => )
 
     AlgaehValidation({
-      //querySelector: "", //"data-validate='InsuranceProvider'", //if require section level
-      alertTypeIcon: "warning", // error icon
-      onCatch: value => {
-        //alert(value);
-      },
+      alertTypeIcon: "warning",
       onSuccess: () => {
-        debugger;
         this.state.steps_list.includes(parseInt(this.state.steps))
           ? swalMessage({
               title:
@@ -570,14 +555,7 @@ class AppointmentStatus extends Component {
                 isEditable={this.state.isEditable}
                 paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
-                  onEdit: () => {
-                    // this.state.disableAdd !== null
-                    //   ? swalMessage({
-                    //       title: "Already Authorized Cannot Edit/Delete",
-                    //       type: "error"
-                    //     })
-                    //   : null;
-                  },
+                  onEdit: () => {},
                   onDelete:
                     this.state.disableAdd === null
                       ? this.deleteAppointmentStatus.bind(this)
