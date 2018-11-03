@@ -21,8 +21,7 @@ import {
   AlgaehLabel,
   AlagehFormGroup,
   AlagehAutoComplete,
-  AlgaehDateHandler,
-  Tooltip
+  AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
 
 import {
@@ -30,7 +29,6 @@ import {
   FORMAT_TEST_STATUS
 } from "../../../utils/GlobalVariables.json";
 
-import IconButton from "@material-ui/core/IconButton";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../Options.json";
@@ -353,6 +351,24 @@ class AccessionAcknowledgement extends Component {
                         label: (
                           <AlgaehLabel label={{ fieldName: "patient_name" }} />
                         ),
+                        disabled: true,
+                        others: {
+                          resizable: false,
+                          style: { textAlign: "left" }
+                        }
+                      },
+                      {
+                        fieldName: "test_type",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "proiorty" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.test_type === "S" ? "Stat" : "Rotinue"}
+                            </span>
+                          );
+                        },
                         disabled: true,
                         others: {
                           resizable: false,

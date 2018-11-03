@@ -10,9 +10,14 @@ const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
-  $this.setState({
-    [name]: value
-  });
+  $this.setState(
+    {
+      [name]: value
+    },
+    () => {
+      getSampleCollectionDetails($this);
+    }
+  );
 };
 
 const PatientSearch = ($this, e) => {
@@ -87,6 +92,13 @@ const getSampleCollectionDetails = $this => {
 
   if ($this.state.patient_id !== null) {
     inputobj.patient_id = $this.state.patient_id;
+  }
+
+  if ($this.state.status !== null) {
+    inputobj.status = $this.state.status;
+  }
+  if ($this.state.proiorty !== null) {
+    inputobj.test_type = $this.state.proiorty;
   }
 
   $this.props.getSampleCollection({

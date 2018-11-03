@@ -97,8 +97,8 @@
     }
   ],
   "FORMAT_PRIORITY": [
-    { "name": "Stat", "value": "2" },
-    { "name": "Routine", "value": "3" }
+    { "name": "Stat", "value": "S" },
+    { "name": "Routine", "value": "R" }
   ],
   "FORMAT_TEST_STATUS": [
     { "name": "Ordered", "value": "O" },
