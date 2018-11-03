@@ -87,6 +87,7 @@ class PersistentDrawer extends React.Component {
     super(props);
     this.state = {
       sideopen: false,
+      class: "",
       anchor: "left",
       toggleSubMenu: false,
       menuSelected: "",
@@ -176,13 +177,15 @@ class PersistentDrawer extends React.Component {
 
   handleDrawerOpen = () => {
     this.setState({
+      class: "slideInLeft",
       sideopen: true
     });
   };
 
   handleDrawerClose = () => {
     this.setState({
-      sideopen: false
+      class: "slideOutLeft"
+      //sideopen: false
     });
   };
 
@@ -386,7 +389,10 @@ class PersistentDrawer extends React.Component {
             </AppBar>
             {/* Side Bar Functionality */}
             {this.state.sideopen === true ? (
-              <div anchor={anchor} className="leftNavCntr">
+              <div
+                anchor={anchor}
+                className={"animated faster leftNavCntr " + this.state.class}
+              >
                 <div className="hptl-phase1-sideMenuBar">
                   <div className="menuBar-title">
                     <div className="appLogoOnly" />
