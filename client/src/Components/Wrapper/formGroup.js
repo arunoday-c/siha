@@ -111,7 +111,7 @@ export default class FormGroup extends PureComponent {
             type="number"
             step=".0"
             name={this.props.textBox.name}
-            value={this.props.textBox.value}
+            value={_value}
             onChange={
               this.props.textBox.events !== undefined
                 ? this.props.textBox.events.onChange

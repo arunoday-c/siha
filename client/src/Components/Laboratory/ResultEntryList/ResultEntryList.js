@@ -221,7 +221,7 @@ class ResultEntryList extends Component {
               <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
                 {/* <div className="portlet-title"><div className="caption"><h3 className="caption-subject"></h3></div></div>
                 */}
-                <div className="portlet-body">
+                <div className="portlet-body" id="resultListEntryCntr">
                   <AlgaehDataGrid
                     id="samplecollection_grid"
                     columns={[

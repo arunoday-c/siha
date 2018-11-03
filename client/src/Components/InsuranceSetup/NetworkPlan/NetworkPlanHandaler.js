@@ -9,25 +9,53 @@ const texthandle = ($this, ctrl, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
-  $this.setState({
-    [name]: value
-  });
+  if (name === "insurance_sub_id") {
+    $this.setState({
+      [name]: value,
+      maxDate_end_date: e.selected.effective_end_date,
+      effective_start_date: e.selected.effective_start_date,
+      effective_end_date: e.selected.effective_end_date
+    });
+  } else {
+    $this.setState({
+      [name]: value
+    });
+  }
 };
 
 const numberhandle = ($this, ctrl, e) => {
+  debugger;
   e = e || ctrl;
 
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
-  if (value >= 0) {
-    $this.setState({
-      [name]: value
-    });
-  } else {
+  if (value < 0 || value > 100) {
     swalMessage({
       title: "Invalid Input. Cannot be less than zero.",
       type: "warning"
+    });
+  } else {
+    $this.setState({
+      [name]: value
+    });
+  }
+};
+
+const prenumberhandle = ($this, ctrl, e) => {
+  e = e || ctrl;
+
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  if (value < 0) {
+    swalMessage({
+      title: "Invalid Input. Cannot be less than zero.",
+      type: "warning"
+    });
+  } else {
+    $this.setState({
+      [name]: value
     });
   }
 };
@@ -239,5 +267,6 @@ export {
   datehandle,
   addNewNetwork,
   UpdateNetworkPlan,
-  numberhandle
+  numberhandle,
+  prenumberhandle
 };

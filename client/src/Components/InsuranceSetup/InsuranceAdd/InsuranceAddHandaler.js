@@ -51,7 +51,7 @@ const handleNext = ($this, setp, e) => {
       // }
     } else if ($this.state.screenName === "NetworkPlan") {
       //Save Network and Plan
-
+      debugger;
       if (setp === "Close") {
         $this.onClose(e);
       } else if (setp === "Next") {
@@ -129,10 +129,8 @@ const handleBack = ($this, e) => {
       } else if ($this.state.activeStep === 1) {
         $this.setState({ screenName: "SubInsurance" });
       } else if ($this.state.activeStep === 2) {
-        $this.setState({ screenName: "NetworkPlanList" });
-      } else if ($this.state.activeStep === 3) {
         $this.setState({ screenName: "NetworkPlan" });
-      } else if ($this.state.activeStep === 4) {
+      } else if ($this.state.activeStep === 3) {
         $this.setState({ screenName: "Services" });
       }
     }

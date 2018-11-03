@@ -3,7 +3,7 @@ import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import Enumerable from "linq";
 
 const DeptselectedHandeler = ($this, context, e) => {
-  let dept = Enumerable.from($this.state.departments)
+  let dept = Enumerable.from($this.props.deptanddoctors.departmets)
     .where(w => w.sub_department_id === e.value)
     .firstOrDefault();
 
@@ -44,8 +44,6 @@ const selectedHandeler = ($this, context, e) => {
       },
       afterSuccess: data => {
         $this.setState({
-          departments: data.departmets,
-          doctors: data.doctors,
           [e.name]: e.value,
           visittypeselect: false
         });
@@ -150,7 +148,8 @@ const doctorselectedHandeler = ($this, context, e) => {
             incharge_or_provider: e.value,
             provider_id: e.value,
             doctor_name: doctor_name,
-            saveEnable: false
+            saveEnable: false,
+            billdetail: false
           },
           () => {
             generateBillDetails($this, context);
@@ -163,7 +162,8 @@ const doctorselectedHandeler = ($this, context, e) => {
             incharge_or_provider: e.value,
             provider_id: e.value,
             doctor_name: doctor_name,
-            saveEnable: false
+            saveEnable: false,
+            billdetail: false
           });
         }
       } else {

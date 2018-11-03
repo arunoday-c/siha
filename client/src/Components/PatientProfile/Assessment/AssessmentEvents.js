@@ -26,9 +26,11 @@ const texthandle = ($this, ctrl, e) => {
 };
 
 const insertFinalICDS = ($this, row) => {
-  let finalICDS = [];
+  const finalICDS = Enumerable.from($this.props.patient_diagnosis)
+    .where(w => w.final_daignosis === "Y")
+    .toArray();
   let diagnosis_type = "";
-  if ($this.state.finalICDS.length > 0) {
+  if (finalICDS.length > 0) {
     diagnosis_type = "S";
   } else {
     diagnosis_type = "P";
@@ -67,33 +69,42 @@ const IcdsSearch = ($this, diagType) => {
 };
 
 const insertInitialICDS = ($this, row) => {
-  const _initalId = Enumerable.from($this.state.InitialICDS)
-    .where(w => w.daignosis_id === $this.state.daignosis_id)
-    .firstOrDefault();
-  if (_initalId !== undefined) {
-    swalMessage({
-      title: "Invalid Input. Selected diagnosis already exists.",
-      type: "warning"
+  debugger;
+  if (
+    $this.props.patient_diagnosis !== undefined ||
+    $this.props.patient_diagnosis.length !== 0
+  ) {
+    const _initalId = Enumerable.from($this.props.patient_diagnosis)
+      .where(w => w.daignosis_id === row.hims_d_icd_id)
+      .firstOrDefault();
+    if (_initalId !== undefined) {
+      swalMessage({
+        title: "Invalid Input. Selected diagnosis already exists.",
+        type: "warning"
+      });
+      return;
+    }
+
+    let insertInitialDiad = [];
+    insertInitialDiad.push({
+      radioselect: 0,
+      patient_id: Window.global["current_patient"],
+      episode_id: Window.global["episode_id"],
+      visit_id: Window.global["visit_id"],
+      daignosis_id: row.hims_d_icd_id,
+      diagnosis_type: $this.props.patient_diagnosis.length > 0 ? "S" : "P",
+      final_daignosis: "N"
     });
-    return;
+
+    saveDiagnosis($this, insertInitialDiad);
   }
-
-  let insertInitialDiad = [];
-  insertInitialDiad.push({
-    radioselect: 0,
-    patient_id: Window.global["current_patient"],
-    episode_id: Window.global["episode_id"],
-    visit_id: Window.global["visit_id"],
-    daignosis_id: row.hims_d_icd_id,
-    diagnosis_type: $this.state.InitialICDS.length > 0 ? "S" : "P",
-    final_daignosis: "N"
-  });
-
-  saveDiagnosis($this, insertInitialDiad);
 };
 
 const addFinalIcd = ($this, row) => {
-  let finalICDS = $this.state.finalICDS;
+  debugger;
+  const finalICDS = Enumerable.from($this.props.patient_diagnosis)
+    .where(w => w.final_daignosis === "Y")
+    .toArray();
 
   if (finalICDS.length > 0) {
     row.diagnosis_type = "S";
@@ -140,33 +151,40 @@ const onchangegridcol = ($this, row, from, e) => {
   } else {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
-    row[name] = value;
-    let intIcd = $this.state.InitialICDS;
-    let finIcd = $this.state.finalICDS;
+
+    let intIcd = $this.props.patient_diagnosis;
+
+    let finIcd = Enumerable.from($this.props.patient_diagnosis)
+      .where(w => w.final_daignosis === "Y")
+      .toArray();
     if (from === "Intial") {
-      for (let i = 0; i < intIcd.length; i++) {
-        if (
-          intIcd[i].hims_f_patient_diagnosis_id ===
-          row.hims_f_patient_diagnosis_id
-        ) {
-          intIcd[i] = row;
-          $this.setState({
-            InitialICDS: intIcd
-          });
-        }
-      }
+      // for (let i = 0; i < intIcd.length; i++) {
+      //   if (
+      //     intIcd[i].hims_f_patient_diagnosis_id ===
+      //     row.hims_f_patient_diagnosis_id
+      //   ) {
+      //     intIcd[i] = row;
+      //     $this.setState({
+      //       InitialICDS: intIcd
+      //     });
+      //   }
+      // }
+      row[name] = value;
+      row.update();
     } else if (from === "Final") {
-      for (let i = 0; i < finIcd.length; i++) {
-        if (
-          finIcd[i].hims_f_patient_diagnosis_id ===
-          row.hims_f_patient_diagnosis_id
-        ) {
-          finIcd[i] = row;
-          $this.setState({
-            finalICDS: finIcd
-          });
-        }
-      }
+      // for (let i = 0; i < finIcd.length; i++) {
+      //   if (
+      //     finIcd[i].hims_f_patient_diagnosis_id ===
+      //     row.hims_f_patient_diagnosis_id
+      //   ) {
+      //     finIcd[i] = row;
+      //     $this.setState({
+      //       finalICDS: finIcd
+      //     });
+      //   }
+      // }
+      row[name] = value;
+      row.update();
     }
   }
 };
@@ -208,6 +226,7 @@ const showconfirmDialog = ($this, row) => {
 };
 
 const getPatientDiagnosis = $this => {
+  debugger;
   $this.props.getPatientDiagnosis({
     uri: "/doctorsWorkBench/getPatientDiagnosis",
     cancelRequestId: "getPatientDiagnosis",
@@ -218,16 +237,16 @@ const getPatientDiagnosis = $this => {
     method: "GET",
     redux: {
       type: "PATIENT_DIAGNOSIS_DATA",
-      mappingName: "patientdiagnosis"
+      mappingName: "patient_diagnosis"
     },
     afterSuccess: data => {
-      let finalICDS = Enumerable.from(data)
-        .where(w => w.final_daignosis === "Y")
-        .toArray();
+      // let finalICDS = Enumerable.from(data)
+      //   .where(w => w.final_daignosis === "Y")
+      //   .toArray();
 
       $this.setState({
-        InitialICDS: data,
-        finalICDS: finalICDS,
+        // InitialICDS: data,
+        // finalICDS: finalICDS,
         showInitialDiagnosisLoader: false,
         showFinalDiagnosisLoader: false
       });
@@ -236,6 +255,7 @@ const getPatientDiagnosis = $this => {
 };
 
 const deleteDiagnosis = ($this, row, from) => {
+  debugger;
   if (row.final_daignosis === "Y") {
     swalMessage({
       title:

@@ -82,6 +82,7 @@ const addNewSubinsurance = $this => {
     insurance_sub_code: null,
     insurance_sub_name: null,
     transaction_number: null,
+    arabic_sub_name: null,
     card_format: null
   });
 };
@@ -100,8 +101,7 @@ const showconfirmDialog = ($this, id) => {
     confirmButtonText: "Yes!",
     confirmButtonColor: "#44b8bd",
     cancelButtonColor: "#d33",
-    cancelButtonText: "No",
-    dangerMode: true
+    cancelButtonText: "No"
   }).then(willDelete => {
     if (willDelete.value) {
       let data = {
@@ -146,7 +146,7 @@ const getSubInsuranceDetails = $this => {
   $this.props.getSubInsuranceDetails({
     uri: "/insurance/getSubInsurance",
     method: "GET",
-    printInput: true,
+    // printInput: true,
     data: {
       insurance_provider_id: $this.state.insurance_provider_id
     },
@@ -184,33 +184,11 @@ const updateSubInsurance = ($this, data) => {
   });
 };
 
-const resetState = $this => {
-  $this.setState($this.baseState);
-};
-
 const onchangegridcol = ($this, row, e) => {
-  let sub_insurance = $this.state.sub_insurance;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   row[name] = value;
-  // resetState($this);
-
-  for (let i = 0; i < sub_insurance.length; i++) {
-    debugger;
-    if (
-      sub_insurance[i].hims_d_insurance_sub_id === row.hims_d_insurance_sub_id
-    ) {
-      sub_insurance[i] = row;
-    }
-  }
-  $this.setState(
-    {
-      sub_insurance: sub_insurance
-    },
-    () => {
-      debugger;
-    }
-  );
+  row.update();
 };
 
 export {

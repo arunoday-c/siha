@@ -32,9 +32,7 @@ class AddConsultationForm extends Component {
     super(props);
 
     this.state = {
-      value: "",
-      departments: [],
-      doctors: []
+      value: ""
     };
   }
 
@@ -66,12 +64,12 @@ class AddConsultationForm extends Component {
       redux: {
         type: "DOCTOR_GET_DATA",
         mappingName: "frontproviders"
-      },
-      afterSuccess: data => {
-        this.setState({
-          doctors: data
-        });
       }
+      // afterSuccess: data => {
+      //   this.setState({
+      //     doctors: data
+      //   });
+      // }
     });
 
     if (
@@ -98,12 +96,6 @@ class AddConsultationForm extends Component {
         redux: {
           type: "DEPT_DOCTOR_GET_DATA",
           mappingName: "deptanddoctors"
-        },
-        afterSuccess: data => {
-          this.setState({
-            departments: data.departmets,
-            doctors: data.doctors
-          });
         }
       });
     }
@@ -121,7 +113,17 @@ class AddConsultationForm extends Component {
 
   render() {
     const vstDeatils =
-      this.state.visitDetails == null ? [{}] : this.state.visitDetails;
+      this.state.visitDetails === null ? [{}] : this.state.visitDetails;
+    debugger;
+    const departments =
+      this.props.deptanddoctors === undefined
+        ? []
+        : this.props.deptanddoctors.departmets;
+
+    const doctors =
+      this.props.deptanddoctors === undefined
+        ? []
+        : this.props.deptanddoctors.doctors;
     return (
       <MyContext.Consumer>
         {context => (
@@ -174,7 +176,7 @@ class AddConsultationForm extends Component {
                           data:
                             this.props.fromAppoinment === true
                               ? this.props.deptanddoctors.departmets
-                              : this.state.departments
+                              : departments
                         },
                         others: {
                           disabled: this.state.visittypeselect
@@ -200,7 +202,7 @@ class AddConsultationForm extends Component {
                               ? "full_name"
                               : "arabic_name",
                           valueField: "employee_id",
-                          data: this.state.doctors
+                          data: doctors
                         },
                         others: {
                           disabled: this.state.visittypeselect

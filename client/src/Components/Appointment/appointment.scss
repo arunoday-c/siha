@@ -160,6 +160,7 @@
         padding: 20px 0 5px 0;
         height: auto;
         width: 120px;
+        vertical-align: top;
       }
       td[colspan]:not([colspan="1"]) {
         width: 240px;
@@ -174,6 +175,7 @@
         width: 90%;
         border-radius: 5px;
         padding: 5px;
+        margin-bottom: 2px;
 
         .statusClr {
           width: 5px;

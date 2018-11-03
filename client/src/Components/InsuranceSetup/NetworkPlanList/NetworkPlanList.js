@@ -31,21 +31,7 @@ class NetworkPlanList extends PureComponent {
     };
   }
 
-  componentWillMount() {
-    debugger;
-    // let InputOutput = this.props.network_plan;
-    // this.setState({ ...this.state, ...InputOutput });
-  }
-
-  // shouldComponentUpdate(nextProps) {
-  //   debugger;
-  //   if (nextProps.networkandplans !== this.state.network_plan) {
-  //     return true;
-  //   }
-  // }
-
   componentDidMount() {
-    debugger;
     if (this.props.insurance_provider_id !== null) {
       if (
         this.props.subinsuranceprovider === undefined ||
@@ -82,7 +68,6 @@ class NetworkPlanList extends PureComponent {
   }
 
   componentWillReceiveProps(newProps) {
-    debugger;
     if (newProps.insurance_provider_id !== undefined) {
       this.setState({
         network_plan: newProps.networkandplans,
@@ -92,13 +77,12 @@ class NetworkPlanList extends PureComponent {
   }
 
   dateFormater(value) {
-    return String(moment(value).format(Options.dateFormatYear));
+    return String(moment(value).format(Options.dateFormat));
   }
 
   render() {
-    debugger;
     return (
-      <div>
+      <div id="networkPlanListCntr">
         <AlgaehDataGrid
           id="pla_list_grid"
           columns={[
@@ -106,7 +90,6 @@ class NetworkPlanList extends PureComponent {
               fieldName: "insurance_sub_id",
               label: <AlgaehLabel label={{ fieldName: "insurance_sub_id" }} />,
               displayTemplate: row => {
-                debugger;
                 let display =
                   this.props.subinsuranceprovider === undefined
                     ? []
@@ -124,14 +107,30 @@ class NetworkPlanList extends PureComponent {
                   </span>
                 );
               },
-              disabled: true
+              editorTemplate: row => {
+                let display =
+                  this.props.subinsuranceprovider === undefined
+                    ? []
+                    : this.props.subinsuranceprovider.filter(
+                        f => f.hims_d_insurance_sub_id === row.insurance_sub_id
+                      );
+
+                return (
+                  <span>
+                    {display !== null && display.length !== 0
+                      ? this.state.selectedLang === "en"
+                        ? display[0].insurance_sub_name
+                        : display[0].arabic_sub_name
+                      : ""}
+                  </span>
+                );
+              }
             },
 
             {
               fieldName: "hospital_id",
               label: <AlgaehLabel label={{ fieldName: "hospital_id" }} />,
               displayTemplate: row => {
-                debugger;
                 let display =
                   this.props.hospitaldetails === undefined
                     ? []
@@ -150,7 +149,6 @@ class NetworkPlanList extends PureComponent {
                 );
               },
               editorTemplate: row => {
-                debugger;
                 let display =
                   this.props.hospitaldetails === undefined
                     ? []
@@ -167,8 +165,7 @@ class NetworkPlanList extends PureComponent {
                       : ""}
                   </span>
                 );
-              },
-              disabled: true
+              }
             },
             {
               fieldName: "network_type",
@@ -177,11 +174,41 @@ class NetworkPlanList extends PureComponent {
             },
             {
               fieldName: "policy_number",
-              label: <AlgaehLabel label={{ fieldName: "policy_number" }} />
+              label: <AlgaehLabel label={{ fieldName: "policy_number" }} />,
+              editorTemplate: row => {
+                return (
+                  <AlagehFormGroup
+                    div={{}}
+                    textBox={{
+                      value: row.policy_number,
+                      className: "txt-fld",
+                      name: "policy_number",
+                      events: {
+                        onChange: onchangegridcol.bind(this, this, row)
+                      }
+                    }}
+                  />
+                );
+              }
             },
             {
               fieldName: "employer",
-              label: <AlgaehLabel label={{ fieldName: "employer" }} />
+              label: <AlgaehLabel label={{ fieldName: "employer" }} />,
+              editorTemplate: row => {
+                return (
+                  <AlagehFormGroup
+                    div={{}}
+                    textBox={{
+                      value: row.employer,
+                      className: "txt-fld",
+                      name: "employer",
+                      events: {
+                        onChange: onchangegridcol.bind(this, this, row)
+                      }
+                    }}
+                  />
+                );
+              }
             },
             {
               fieldName: "effective_start_date",
@@ -193,7 +220,11 @@ class NetworkPlanList extends PureComponent {
                   <span>{this.dateFormater(row.effective_start_date)}</span>
                 );
               },
-              disabled: true
+              editorTemplate: row => {
+                return (
+                  <span>{this.dateFormater(row.effective_start_date)}</span>
+                );
+              }
             },
             {
               fieldName: "effective_end_date",
@@ -203,7 +234,9 @@ class NetworkPlanList extends PureComponent {
               displayTemplate: row => {
                 return <span>{this.dateFormater(row.effective_end_date)}</span>;
               },
-              disabled: true
+              editorTemplate: row => {
+                return <span>{this.dateFormater(row.effective_end_date)}</span>;
+              }
             },
             {
               fieldName: "preapp_limit",
@@ -230,13 +263,13 @@ class NetworkPlanList extends PureComponent {
               label: <AlgaehLabel label={{ fieldName: "price_from" }} />,
               displayTemplate: row => {
                 return row.price_from === "S"
-                  ? "Company Service Price"
-                  : "Policy Service Price ";
+                  ? "Company Level Service Price"
+                  : "Policy Level Service Price ";
               },
               editorTemplate: row => {
                 return row.price_from === "S"
-                  ? "Company Service Price"
-                  : "Policy Service Price ";
+                  ? "Company Level Service Price"
+                  : "Policy Level Service Price ";
               }
             },
             ///Changes

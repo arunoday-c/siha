@@ -41,8 +41,6 @@ const serviceHandeler = ($this, e) => {
 
 //Process and gets selectd service data with all calculation
 const ProcessService = ($this, e) => {
-  debugger;
-
   if ($this.state.s_service_type !== null && $this.state.s_service !== null) {
     let preserviceInput = $this.state.preserviceInput || [];
     let serviceInput = [
@@ -90,8 +88,7 @@ const ProcessService = ($this, e) => {
             title:
               "With this service Approval Limit exceed. Do you want to proceed, If proceeds all the selected services will be pro aproved and will be as cash.",
             type: "warning",
-            buttons: true,
-            dangerMode: true
+            buttons: true
           }).then(willProceed => {
             if (willProceed) {
               let approval_amt = data.billdetails[0].approval_amt;
@@ -132,7 +129,7 @@ const ProcessService = ($this, e) => {
                     data.billdetails[i].requested_quantity =
                       data.billdetails[i].quantity;
                   }
-                  debugger;
+
                   $this.setState({
                     orderservicesdata: data.billdetails,
                     approval_amt: approval_amt,
@@ -357,7 +354,6 @@ const deleteServices = ($this, row, rowId) => {
 };
 //Save Order
 const SaveOrdersServices = ($this, e) => {
-  debugger;
   let inputObj = {
     visit_id: $this.state.visit_id,
     patient_id: $this.state.patient_id,
@@ -375,16 +371,17 @@ const SaveOrdersServices = ($this, e) => {
           title: "Ordered Successfully...",
           type: "success"
         });
-        $this.setState({
-          saved: true,
-          orderservicesdata: [],
-          patient_payable: null,
-          company_payble: null,
-          sec_company_paybale: null,
-          sub_total_amount: null,
-          discount_amount: null,
-          net_total: null
-        });
+        $this.props.onClose && $this.props.onClose(e);
+        // $this.setState({
+        //   saved: true,
+        //   orderservicesdata: [],
+        //   patient_payable: null,
+        //   company_payble: null,
+        //   sec_company_paybale: null,
+        //   sub_total_amount: null,
+        //   discount_amount: null,
+        //   net_total: null
+        // });
       }
     },
     onFailure: error => {}

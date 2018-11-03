@@ -29,6 +29,7 @@ class DataGrid extends PureComponent {
     };
 
     this.tmp = new Set();
+    this.updateStateVariables = this.updateStateVariables.bind(this);
   }
   onTextHandleEditChange(e) {
     const data = [...this.state.data];
@@ -56,7 +57,13 @@ class DataGrid extends PureComponent {
     data[_rowIndex][_colIndex] = _value;
     this.setState({ data });
   }
-
+  updateStateVariables() {
+    const _state =
+      this.state.dummyUpdate === undefined ? false : !this.state.dummyUpdate;
+    this.setState({
+      dummyUpdate: _state
+    });
+  }
   renderEditable = (templates, cellInfo) => {
     const editable = this.state.editableRows[cellInfo.index];
     const rowDetail = this.state.data[cellInfo.index];
@@ -78,6 +85,9 @@ class DataGrid extends PureComponent {
         // return <span>{rowDetail[cellInfo.column.id]}</span>;
       } else {
         if (templates.editorTemp !== undefined) {
+          rowDetail["update"] = () => {
+            this.updateStateVariables();
+          };
           return templates.editorTemp(rowDetail);
         } else {
           const _value = rowDetail[cellInfo.column.id];
@@ -125,6 +135,7 @@ class DataGrid extends PureComponent {
     }
   };
   toggleRowEditable = index => {
+    debugger;
     let existsing = sessionStorage.getItem(this.props.id);
     existsing = existsing !== null ? JSON.parse(existsing)["collection"] : [];
     const prevStateIndexData = this.state.data[index];
@@ -290,6 +301,7 @@ class DataGrid extends PureComponent {
     // context.font = font;
     return context.measureText(text).width + 24;
   }
+
   componentDidMount() {
     if (this.state.columns.length == 0) {
       if (this.props.columns !== undefined && this.props.columns.length !== 0) {

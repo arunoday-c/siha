@@ -20,7 +20,8 @@ import {
   saveNetworkPlan,
   datehandle,
   addNewNetwork,
-  numberhandle
+  numberhandle,
+  prenumberhandle
 } from "./NetworkPlanHandaler";
 
 import { FORMAT_PRICE_FROM } from "../../../utils/GlobalVariables.json";
@@ -37,6 +38,7 @@ class NetworkPlan extends PureComponent {
 
       effective_start_date: null,
       effective_end_date: null,
+      maxDate_end_date: null,
 
       hims_d_insurance_network_office_id: null,
       network_id: null,
@@ -74,17 +76,10 @@ class NetworkPlan extends PureComponent {
   }
 
   componentWillMount() {
-    debugger;
     let InputOutput = this.props.InsuranceSetup;
     this.setState({ ...this.state, ...InputOutput });
   }
 
-  // shouldComponentUpdate(nextProps) {
-  //   debugger;
-  //   if (nextProps.networkandplans !== this.state.network_plan) {
-  //     return true;
-  //   }
-  // }
   componentDidMount() {
     if (this.state.insurance_provider_id !== null) {
       this.props.getSubInsuranceDetails({
@@ -111,12 +106,6 @@ class NetworkPlan extends PureComponent {
           type: "NETWORK_PLAN_GET_DATA",
           mappingName: "networkandplans"
         }
-        // afterSuccess: data => {
-        //   debugger;
-        //   this.setState({
-        //     network_plan: data
-        //   });
-        // }
       });
     }
   }
@@ -149,7 +138,22 @@ class NetworkPlan extends PureComponent {
                         : "Insurar Name"}
                     </h6>
                   </div>
-
+                </div>
+                <div className="row">
+                  <div className="col-lg-12">
+                    <NetworkPlanList
+                      insurance_provider_id={this.state.insurance_provider_id}
+                      // network_plan={this.state.network_plan}
+                      selectedLang={this.state.selectedLang}
+                    />
+                  </div>
+                </div>
+                <br />
+                <h6>
+                  Add NewNetwork/Plan
+                  <hr />
+                </h6>
+                <div className="row">
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
                     label={{
@@ -255,6 +259,7 @@ class NetworkPlan extends PureComponent {
                       name: "effective_end_date"
                     }}
                     minDate={new Date()}
+                    maxDate={this.state.maxDate_end_date}
                     events={{
                       onChange: datehandle.bind(this, this)
                     }}
@@ -276,7 +281,7 @@ class NetworkPlan extends PureComponent {
                       name: "preapp_limit",
 
                       events: {
-                        onChange: numberhandle.bind(this, this)
+                        onChange: prenumberhandle.bind(this, this)
                       },
                       others: {
                         "data-netdata": true
@@ -740,15 +745,6 @@ class NetworkPlan extends PureComponent {
                     >
                       Clear
                     </button>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-lg-12">
-                    <NetworkPlanList
-                      insurance_provider_id={this.state.insurance_provider_id}
-                      // network_plan={this.state.network_plan}
-                      selectedLang={this.state.selectedLang}
-                    />
                   </div>
                 </div>
               </div>

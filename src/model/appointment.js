@@ -3,6 +3,7 @@ import extend from "extend";
 import {
  
   whereCondition,
+  deleteRecord,
 
   releaseDBConnection,
   jsonArrayToObject
@@ -24,10 +25,7 @@ let addAppointmentStatus = (req, res, next) => {
     db.getConnection((error, connection) => {
       if (error) {
         next(error);
-      }
-
-
-      connection.beginTransaction(error => {
+      }     connection.beginTransaction(error => {
         if (error) {
           connection.rollback(() => {
             releaseDBConnection(db, connection);
@@ -35,19 +33,20 @@ let addAppointmentStatus = (req, res, next) => {
           });
         }
       connection.query(
-        "INSERT INTO `hims_d_appointment_status` (color_code, description, default_status, created_date, created_by, updated_date, updated_by)\
-          VALUE(?,?,?,?,?,?,?)",
+        "INSERT INTO `hims_d_appointment_status` (color_code, description, default_status,steps, created_date, created_by, updated_date, updated_by)\
+          VALUE(?,?,?,?,?,?,?,?)",
         [
           input.color_code,
           input.description,
           input.default_status,
+          input.steps,
 
           new Date(),
           input.created_by,
           new Date(),
           input.updated_by
         ],
-        (error, result) => {
+        (error,result) => {
          
           if (error) {
             connection.rollback(() => {
@@ -56,14 +55,12 @@ let addAppointmentStatus = (req, res, next) => {
             });
           }
 
-
+          //update hims_d_appointment_status  set steps=1 where hims_d_appointment_status_id=? and record_status='A';
           if (input.default_status == "Y") {
             connection.query(
-              "UPDATE `hims_d_appointment_status` SET  default_status='N'\
-          WHERE  hims_d_appointment_status_id <> ?;\
-            update hims_d_appointment_status  set steps=null where hims_d_appointment_status_id <> ?;\
-          update hims_d_appointment_status  set steps=1 where hims_d_appointment_status_id=? and record_status='A'; ",
-              [result.insertId,result.insertId,result.insertId],
+              "UPDATE `hims_d_appointment_status` SET  default_status='N'   WHERE default_status='Y' and record_status='A' and  hims_d_appointment_status_id <> ?;\
+                ",
+              [result.insertId,result.insertId],
               (error, defStatusRsult) => {
                 if (error) {
                   connection.rollback(() => {
@@ -85,7 +82,36 @@ let addAppointmentStatus = (req, res, next) => {
                 });
               }
             );
-          } else {
+          }         
+          
+          else if(input.default_status == "C"){
+            connection.query(
+              "update hims_d_appointment_status set default_status='N' where default_status='C' and record_status='A' and hims_d_appointment_status_id <>? ",
+              [result.insertId],
+              (error, crtRsult) => {
+                if (error) {
+                  connection.rollback(() => {
+                    releaseDBConnection(db, connection);
+                    next(error);
+                  });
+                }
+
+                connection.commit(error => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+
+                  req.records = crtRsult;
+                  next();
+                });
+              }
+            );
+
+            
+          }else {
             connection.commit(error => {
               if (error) {
                 connection.rollback(() => {
@@ -194,22 +220,15 @@ let addAppointmentClinic = (req, res, next) => {
 
 //created by irfan: to get Appointment Status
 let getAppointmentStatus = (req, res, next) => {
-  let selectWhere = {
-    hims_d_appointment_status_id: "ALL"
-  };
+ 
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
-    let db = req.db;
-
-    let where = whereCondition(extend(selectWhere, req.query));
-
+    let db = req.db; 
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_d_appointment_status_id, color_code, description, default_status,steps,authorized FROM hims_d_appointment_status where record_status='A' AND" +
-          where.condition,
-        where.values,
+        "select hims_d_appointment_status_id, color_code, description, default_status,steps,authorized FROM hims_d_appointment_status where record_status='A'  order by steps ",
         (error, result) => {
           releaseDBConnection(db, connection);
           if (error) {
@@ -312,12 +331,13 @@ let updateAppointmentStatus = (req, res, next) => {
           });
         }
         connection.query(
-          "UPDATE `hims_d_appointment_status` SET color_code=?, description=?, default_status=?,\
+          "UPDATE `hims_d_appointment_status` SET color_code=?, description=?, default_status=?,steps=?,\
            updated_date=?, updated_by=? ,`record_status`=? WHERE  `record_status`='A' and `hims_d_appointment_status_id`=?;",
           [
             input.color_code,
             input.description,
             input.default_status,
+            input.steps,
             new Date(),
             input.updated_by,
             input.record_status,
@@ -331,10 +351,11 @@ let updateAppointmentStatus = (req, res, next) => {
               });
             }
 
-            if (input.default_status == "Y") {
+            if (input.default_status == "Y"&& input.record_status=="A") {
               connection.query(
-                "UPDATE `hims_d_appointment_status` SET  default_status='N',steps=null\
-            WHERE  record_status='A' and default_status='N' and  hims_d_appointment_status_id <> ?; \
+                "UPDATE `hims_d_appointment_status` SET  default_status='N'\
+            WHERE  record_status='A' and default_status!='C' and  hims_d_appointment_status_id <> ?; \
+            update hims_d_appointment_status  set steps=null where hims_d_appointment_status_id>0;\
             update hims_d_appointment_status  set steps=1 where hims_d_appointment_status_id=? and record_status='A';",
                 [input.hims_d_appointment_status_id,input.hims_d_appointment_status_id,],
                 (error, defStatusRsult) => {
@@ -358,7 +379,60 @@ let updateAppointmentStatus = (req, res, next) => {
                   });
                 }
               );
-            } else {
+            }
+            else if(input.default_status == "C"&& input.record_status=="A"){
+              connection.query(
+                "update hims_d_appointment_status set default_status='N' where default_status='C' and record_status='A' and hims_d_appointment_status_id <>? ",
+                [input.hims_d_appointment_status_id],
+                (error, crtRsult) => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+  
+                  connection.commit(error => {
+                    if (error) {
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      });
+                    }
+  
+                    req.records = crtRsult;
+                    next();
+                  });
+                }
+              );
+            }
+            else if(input.record_status=="I"){
+              connection.query(
+                "update hims_d_appointment_status  set steps=null where hims_d_appointment_status_id=?;\ ",
+                [input.hims_d_appointment_status_id,],
+                (error, deleteRsult) => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+
+                  connection.commit(error => {
+                    if (error) {
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      });
+                    }
+
+                    req.records = deleteRsult;
+                    next();
+                  });
+                }
+              );
+            }
+            else {
               connection.commit(error => {
                 if (error) {
                   connection.rollback(() => {
@@ -425,15 +499,15 @@ let updateAppointmentRoom = (req, res, next) => {
       if (error) {
         next(error);
       }
+
       connection.query(
         "UPDATE `hims_d_appointment_room` SET  description=?,room_active=?,\
-           updated_date=?, updated_by=? ,`record_status`=? WHERE  `record_status`='A' and `hims_d_appointment_room_id`=?;",
+           updated_date=?, updated_by=?  WHERE  `record_status`='A' and `hims_d_appointment_room_id`=?;",
         [
           input.description,
           input.room_active,
           new Date(),
-          input.updated_by,
-          input.record_status,
+          input.updated_by,      
           input.hims_d_appointment_room_id
         ],
         (error, result) => {
@@ -450,6 +524,41 @@ let updateAppointmentRoom = (req, res, next) => {
     next(e);
   }
 };
+
+
+
+//created by irfan: to delete Appointment Room
+let deleteAppointmentRoom = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+
+    debugLog("delete rom")
+    deleteRecord(
+      {
+        db: req.db,
+        tableName: "hims_d_appointment_room",
+        id: req.body.hims_d_appointment_room_id,
+        query:
+          "UPDATE hims_d_appointment_room SET  record_status='I' WHERE hims_d_appointment_room_id=?",
+        values: [req.body.hims_d_appointment_room_id]
+      },
+      result => {
+        req.records = result;
+        next();
+      },
+      error => {
+        next(error);
+      },
+      true
+    );
+  } catch (e) {
+    next(e);
+  }
+};
+
+
 
 //created by irfan: to  update Appointment Clinic
 let updateAppointmentClinic = (req, res, next) => {
@@ -1217,14 +1326,28 @@ let getDoctorScheduleDateWise = (req, res, next) => {
 
     let where = whereCondition(extend(selectWhere, req.query));
 
+
+
+    // select hims_d_appointment_schedule_header_id, sub_dept_id, SH.schedule_status as schedule_status, schedule_description, month, year,\
+    // from_date,to_date,from_work_hr, to_work_hr, work_break1, from_break_hr1, to_break_hr1, work_break2, from_break_hr2,\
+    // to_break_hr2, monday, tuesday, wednesday, thursday, friday, saturday, sunday,\
+    //  hims_d_appointment_schedule_detail_id, provider_id,E.first_name,E.last_name,clinic_id, ASD.schedule_status as todays_schedule_status, slot,schedule_date, modified \
+    //  from hims_d_appointment_schedule_header SH, hims_d_appointment_schedule_detail ASD,hims_d_employee E  where SH.record_status='A' and E.record_status='A'\
+    //  and ASD.record_status='A' and ASD.provider_id=E.hims_d_employee_id and  SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id
+
     db.getConnection((error, connection) => {
       connection.query(
         "select hims_d_appointment_schedule_header_id, sub_dept_id, SH.schedule_status as schedule_status, schedule_description, month, year,\
         from_date,to_date,from_work_hr, to_work_hr, work_break1, from_break_hr1, to_break_hr1, work_break2, from_break_hr2,\
         to_break_hr2, monday, tuesday, wednesday, thursday, friday, saturday, sunday,\
-         hims_d_appointment_schedule_detail_id, provider_id,E.first_name,E.last_name,clinic_id, ASD.schedule_status as todays_schedule_status, slot,schedule_date, modified \
-         from hims_d_appointment_schedule_header SH, hims_d_appointment_schedule_detail ASD,hims_d_employee E  where SH.record_status='A' and E.record_status='A'\
-         and ASD.record_status='A' and ASD.provider_id=E.hims_d_employee_id and  SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id and " +
+         hims_d_appointment_schedule_detail_id, ASD.provider_id,E.first_name,E.last_name,clinic_id,C.description as clinic_name,R.description as  room_name,\
+         ASD.schedule_status as todays_schedule_status, slot,schedule_date, modified \
+         from hims_d_appointment_schedule_header SH, hims_d_appointment_schedule_detail ASD,hims_d_employee E ,\
+         hims_d_appointment_clinic C,hims_d_appointment_room R where \
+         SH.record_status='A' and E.record_status='A' and C.record_status='A'\
+         and ASD.record_status='A' and R.record_status='A' and ASD.provider_id=E.hims_d_employee_id and \
+         SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id \
+         and ASD.clinic_id=C.hims_d_appointment_clinic_id and C.room_id=R.hims_d_appointment_room_id and " +
           selectDoctor +
           "" +
           where.condition,
@@ -1243,19 +1366,32 @@ let getDoctorScheduleDateWise = (req, res, next) => {
             try{
 
               for(let j = 0; j < result.length; j++){
-                 if(result[j]["modified"]=="M") {                   
+                 if(result[j]["modified"]=="M") {      
+                   
+                  
+
+              //     select hims_d_appointment_schedule_modify_id, appointment_schedule_detail_id, ASM.to_date as schedule_date, ASM.slot, ASM.from_work_hr,\
+              //   ASM.to_work_hr, ASM.work_break1, ASM.from_break_hr1,ASM.to_break_hr1, ASM.work_break2, ASM.from_break_hr2, ASM.to_break_hr2  \
+              //   hims_d_appointment_schedule_header_id, sub_dept_id, SH.schedule_status, schedule_description, month, year,  \
+              //  monday, tuesday, wednesday, thursday, friday, saturday, sunday, provider_id,E.first_name,E.last_name,clinic_id,\
+              //   ASD.schedule_status as todays_schedule_status, modified  \
+              //  from hims_d_appointment_schedule_header SH,hims_d_appointment_schedule_modify ASM , hims_d_appointment_schedule_detail ASD,hims_d_employee E\
+              //    where SH.record_status='A' and E.record_status='A'\
+              //  and ASD.record_status='A' and ASD.provider_id=E.hims_d_employee_id and  SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id  \
+              //  and ASM.appointment_schedule_detail_id=ASD.hims_d_appointment_schedule_detail_id and ASM.record_status='A'\
+              //   and appointment_schedule_detail_id=?
 
               connection.query(
-                " select hims_d_appointment_schedule_modify_id, appointment_schedule_detail_id, ASM.to_date as schedule_date, ASM.slot, ASM.from_work_hr,\
+                "select hims_d_appointment_schedule_modify_id, appointment_schedule_detail_id, ASM.to_date as schedule_date, ASM.slot, ASM.from_work_hr,\
                 ASM.to_work_hr, ASM.work_break1, ASM.from_break_hr1,ASM.to_break_hr1, ASM.work_break2, ASM.from_break_hr2, ASM.to_break_hr2  \
                 hims_d_appointment_schedule_header_id, sub_dept_id, SH.schedule_status, schedule_description, month, year,  \
-               monday, tuesday, wednesday, thursday, friday, saturday, sunday, provider_id,E.first_name,E.last_name,clinic_id,\
-                ASD.schedule_status as todays_schedule_status, modified  \
-               from hims_d_appointment_schedule_header SH,hims_d_appointment_schedule_modify ASM , hims_d_appointment_schedule_detail ASD,hims_d_employee E\
-                 where SH.record_status='A' and E.record_status='A'\
-               and ASD.record_status='A' and ASD.provider_id=E.hims_d_employee_id and  SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id  \
+               monday, tuesday, wednesday, thursday, friday, saturday, sunday, ASD.provider_id,E.first_name,E.last_name,clinic_id,C.description as clinic_name,R.description as  room_name,\
+                ASD.schedule_status as todays_schedule_status, modified\
+               from hims_d_appointment_schedule_header SH,hims_d_appointment_schedule_modify ASM , hims_d_appointment_schedule_detail ASD,hims_d_employee E, hims_d_appointment_clinic C,hims_d_appointment_room R\
+                 where SH.record_status='A' and E.record_status='A' \
+               and ASD.record_status='A' and C.record_status='A' and R.record_status='A'and ASD.provider_id=E.hims_d_employee_id and  SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id  \
                and ASM.appointment_schedule_detail_id=ASD.hims_d_appointment_schedule_detail_id and ASM.record_status='A'\
-                and appointment_schedule_detail_id=?",
+               and ASD.clinic_id=C.hims_d_appointment_clinic_id and C.room_id=R.hims_d_appointment_room_id and appointment_schedule_detail_id=?",
                 [result[j]["hims_d_appointment_schedule_detail_id"]],
                 (error, modifyResult) => {
                   if (error) {
@@ -2310,7 +2446,7 @@ let updatePatientAppointment = (req, res, next) => {
         "UPDATE `hims_f_patient_appointment` SET patient_id=?,provider_id=?,sub_department_id=?,number_of_slot=?,appointment_date=?,appointment_from_time=?,appointment_to_time=?,\
         appointment_status_id=?,patient_name=?,arabic_name=?,date_of_birth=?,age=?,contact_number=?,email=?,\
         send_to_provider=?,gender=?,confirmed=?,confirmed_by=?,comfirmed_date=?,cancelled=?,cancelled_by=?,\
-        cancelled_date=?,cancel_reason=?,appointment_remarks=?,is_stand_by=?,\
+        cancelled_date=?,cancel_reason=?,appointment_remarks=?,visit_created=?,is_stand_by=?,\
            updated_date=?, updated_by=? ,`record_status`=? WHERE  `record_status`='A' and `hims_f_patient_appointment_id`=?;",
         [
           input.patient_id,
@@ -2337,6 +2473,7 @@ let updatePatientAppointment = (req, res, next) => {
           input.cancelled_date,
           input.cancel_reason,
           input.appointment_remarks,
+          input.visit_created,
           input.is_stand_by,
           new Date(),
           input.updated_by,
@@ -2463,5 +2600,6 @@ module.exports = {
   getPatientAppointment,
   updatePatientAppointment,
   getEmployeeServiceID,
-  appointmentStatusAuthorized
+  appointmentStatusAuthorized,
+  deleteAppointmentRoom
 };

@@ -3,9 +3,6 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import Edit from "@material-ui/icons/Edit";
-import IconButton from "@material-ui/core/IconButton";
-
 // import Enumerable from "linq";
 import "./ItemSetup.css";
 import "../../styles/site.css";
@@ -15,7 +12,6 @@ import ItemMaster from "./ItemMaster/ItemMaster";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { getItems, EditItemMaster } from "./ItemSetupEvent";
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb";
-import AppBar from "@material-ui/core/AppBar";
 
 class ItemSetup extends Component {
   constructor(props) {

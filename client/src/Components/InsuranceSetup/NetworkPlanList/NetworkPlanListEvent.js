@@ -9,8 +9,7 @@ const showconfirmDialog = ($this, row) => {
     confirmButtonText: "Yes!",
     confirmButtonColor: "#44b8bd",
     cancelButtonColor: "#d33",
-    cancelButtonText: "No",
-    dangerMode: true
+    cancelButtonText: "No"
   }).then(willDelete => {
     if (willDelete.value) {
       let data = {
@@ -20,12 +19,28 @@ const showconfirmDialog = ($this, row) => {
         //updated_by: getCookie("UserID")
       };
       algaehApiCall({
-        uri: "/insurance/deleteSubInsurance",
+        uri: "/insurance/deleteNetworkAndNetworkOfficRecords",
         data: data,
-        method: "DELETE",
+        method: "PUT",
         onSuccess: response => {
           if (response.data.success) {
-            // getSubInsuranceDetails($this);
+            $this.props.getNetworkPlans({
+              uri: "/insurance/getNetworkAndNetworkOfficRecords",
+              method: "GET",
+              printInput: true,
+              data: {
+                insuranceProviderId: $this.state.insurance_provider_id
+              },
+              redux: {
+                type: "NETWORK_PLAN_GET_DATA",
+                mappingName: "networkandplans"
+              },
+              afterSuccess: data => {
+                $this.setState({
+                  network_plan: data
+                });
+              }
+            });
             swalMessage({
               type: "success",
               title: "Record deleted successfully . ."
@@ -33,6 +48,7 @@ const showconfirmDialog = ($this, row) => {
           }
         },
         onFailure: error => {
+          debugger;
           swalMessage({
             title: error.response.data.message,
             type: "error"
@@ -117,58 +133,19 @@ const UpdateNetworkPlan = ($this, row) => {
 };
 
 const onchangegridcol = ($this, row, e) => {
-  let networkandplans = $this.state.networkandplans;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   row[name] = value;
-  // resetState($this);
-  debugger;
-
-  for (let i = 0; i < networkandplans.length; i++) {
-    debugger;
-    if (
-      networkandplans[i].hims_d_insurance_network_office_id ===
-      row.hims_d_insurance_network_office_id
-    ) {
-      networkandplans[i] = row;
-    }
-  }
-  $this.setState(
-    {
-      networkandplans: networkandplans
-    },
-    () => {
-      debugger;
-    }
-  );
+  row.update();
 };
 
 const onchangegridnumber = ($this, row, e) => {
-  let networkandplans = $this.state.network_plan;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
+
   if (value >= 0) {
     row[name] = value;
-    // resetState($this);
-    debugger;
-
-    for (let i = 0; i < networkandplans.length; i++) {
-      debugger;
-      if (
-        networkandplans[i].hims_d_insurance_network_office_id ===
-        row.hims_d_insurance_network_office_id
-      ) {
-        networkandplans[i] = row;
-      }
-    }
-    $this.setState(
-      {
-        network_plan: networkandplans
-      },
-      () => {
-        debugger;
-      }
-    );
+    row.update();
   } else {
     swalMessage({
       title: "Invalid Input. Cannot be less than zero.",
