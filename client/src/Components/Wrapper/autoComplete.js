@@ -248,9 +248,13 @@ class AutoComplete extends PureComponent {
           />
           {!isDisable ? (
             <React.Fragment>
-              <span className="clearall" onClick={this.clearInput.bind(this)}>
-                <i className="fas  fa-times-circle" />
-              </span>
+              {this.state.displayText !== undefined &&
+              this.state.displayText !== "" ? (
+                <span className="clearall" onClick={this.clearInput.bind(this)}>
+                  <i className="fas  fa-times-circle" />
+                </span>
+              ) : null}
+
               <span
                 className="showall"
                 onClick={this.onClickArrowIcon.bind(this)}
