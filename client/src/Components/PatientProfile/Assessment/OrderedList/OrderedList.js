@@ -243,6 +243,7 @@ class OrderedList extends PureComponent {
           onClose={this.CloseModel.bind(this)}
           itemPop={this.state.itemPop}
           addNew={this.state.addNew}
+          vat_applicable={this.props.vat_applicable}
         />
       </div>
     );

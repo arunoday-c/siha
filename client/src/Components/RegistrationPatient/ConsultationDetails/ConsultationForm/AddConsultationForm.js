@@ -120,10 +120,6 @@ class AddConsultationForm extends Component {
         ? []
         : this.props.deptanddoctors.departmets;
 
-    const doctors =
-      this.props.deptanddoctors === undefined
-        ? []
-        : this.props.deptanddoctors.doctors;
     return (
       <MyContext.Consumer>
         {context => (
@@ -202,7 +198,7 @@ class AddConsultationForm extends Component {
                               ? "full_name"
                               : "arabic_name",
                           valueField: "employee_id",
-                          data: doctors
+                          data: this.state.doctors
                         },
                         others: {
                           disabled: this.state.visittypeselect

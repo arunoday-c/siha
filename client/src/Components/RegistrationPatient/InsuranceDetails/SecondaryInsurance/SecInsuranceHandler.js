@@ -141,7 +141,15 @@ const radioChange = ($this, context, e) => {
       sec_insuranceYes: !$this.state.sec_insuranceYes,
       saveEnable: saveEnable,
       radioSecNo: radioSecNo,
-      radioSecYes: radioSecYes
+      radioSecYes: radioSecYes,
+      secondary_insurance_provider_id: null,
+      secondary_sub_id: null,
+      secondary_network_id: null,
+      secondary_policy_num: null,
+      secondary_network_office_id: null,
+      secondary_card_number: null,
+      secondary_effective_start_date: null,
+      secondary_effective_end_date: null
     });
 
     if (context != null) {
@@ -151,7 +159,15 @@ const radioChange = ($this, context, e) => {
         saveEnable: saveEnable,
         ProcessInsure: ProcessInsure,
         radioSecNo: radioSecNo,
-        radioSecYes: radioSecYes
+        radioSecYes: radioSecYes,
+        secondary_insurance_provider_id: null,
+        secondary_sub_id: null,
+        secondary_network_id: null,
+        secondary_policy_num: null,
+        secondary_network_office_id: null,
+        secondary_card_number: null,
+        secondary_effective_start_date: null,
+        secondary_effective_end_date: null
       });
     }
   } else {
