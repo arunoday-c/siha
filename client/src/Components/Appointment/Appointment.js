@@ -1796,7 +1796,7 @@ class Appointment extends Component {
               </div>
               {/* Portlet Top Bar End */}
 
-              <div className="portlet-body" style={{ maxHeight: "53vh" }}>
+              <div className="portlet-body" style={{ maxHeight: "55vh" }}>
                 <div className="appointment-outer-cntr">
                   <div
                     className="appointment-inner-cntr"
