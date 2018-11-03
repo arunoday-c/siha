@@ -1332,17 +1332,17 @@ let getDoctorScheduleDateWise = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_d_appointment_schedule_header_id, sub_dept_id, SH.schedule_status as schedule_status, schedule_description, month, year,\
+        "select hims_d_appointment_schedule_header_id, sub_dept_id,SD.sub_department_name, SH.schedule_status as schedule_status, schedule_description, month, year,\
         from_date,to_date,from_work_hr, to_work_hr, work_break1, from_break_hr1, to_break_hr1, work_break2, from_break_hr2,\
         to_break_hr2, monday, tuesday, wednesday, thursday, friday, saturday, sunday,\
          hims_d_appointment_schedule_detail_id, ASD.provider_id,E.full_name as doctor_name,clinic_id,C.description as clinic_name,R.description as  room_name,\
          ASD.schedule_status as todays_schedule_status, slot,schedule_date, modified \
          from hims_d_appointment_schedule_header SH, hims_d_appointment_schedule_detail ASD,hims_d_employee E ,\
-         hims_d_appointment_clinic C,hims_d_appointment_room R where \
-         SH.record_status='A' and E.record_status='A' and C.record_status='A'\
+         hims_d_appointment_clinic C,hims_d_appointment_room R,hims_d_sub_department SD where \
+         SH.record_status='A' and E.record_status='A' and C.record_status='A' and  SD.record_status='A'\
          and ASD.record_status='A' and R.record_status='A' and ASD.provider_id=E.hims_d_employee_id and \
          SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id \
-         and ASD.clinic_id=C.hims_d_appointment_clinic_id and C.room_id=R.hims_d_appointment_room_id and " +
+         and ASD.clinic_id=C.hims_d_appointment_clinic_id and C.room_id=R.hims_d_appointment_room_id and C.sub_department_id=SD.hims_d_sub_department_id and " +
           selectDoctor +
           "" +
           where.condition,
@@ -1370,14 +1370,14 @@ let getDoctorScheduleDateWise = (req, res, next) => {
               connection.query(
                 "select hims_d_appointment_schedule_modify_id, appointment_schedule_detail_id, ASM.to_date as schedule_date, ASM.slot, ASM.from_work_hr,\
                 ASM.to_work_hr, ASM.work_break1, ASM.from_break_hr1,ASM.to_break_hr1, ASM.work_break2, ASM.from_break_hr2, ASM.to_break_hr2  \
-                hims_d_appointment_schedule_header_id, sub_dept_id, SH.schedule_status, schedule_description, month, year,  \
+                hims_d_appointment_schedule_header_id, sub_dept_id,SD.sub_department_name, SH.schedule_status, schedule_description, month, year,  \
                monday, tuesday, wednesday, thursday, friday, saturday, sunday, ASD.provider_id,E.full_name as doctor_name,clinic_id,C.description as clinic_name,R.description as  room_name,\
                 ASD.schedule_status as todays_schedule_status, modified\
-               from hims_d_appointment_schedule_header SH,hims_d_appointment_schedule_modify ASM , hims_d_appointment_schedule_detail ASD,hims_d_employee E, hims_d_appointment_clinic C,hims_d_appointment_room R\
-                 where SH.record_status='A' and E.record_status='A' \
-               and ASD.record_status='A' and C.record_status='A' and R.record_status='A'and ASD.provider_id=E.hims_d_employee_id and  SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id  \
+               from hims_d_appointment_schedule_header SH,hims_d_appointment_schedule_modify ASM , hims_d_appointment_schedule_detail ASD,hims_d_employee E, hims_d_appointment_clinic C,hims_d_appointment_room R,\
+               hims_d_sub_department SD  where SH.record_status='A' and E.record_status='A' \
+               and ASD.record_status='A' and C.record_status='A' and SD.record_status='A' and R.record_status='A'and ASD.provider_id=E.hims_d_employee_id and  SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id  \
                and ASM.appointment_schedule_detail_id=ASD.hims_d_appointment_schedule_detail_id and ASM.record_status='A'\
-               and ASD.clinic_id=C.hims_d_appointment_clinic_id and C.room_id=R.hims_d_appointment_room_id and appointment_schedule_detail_id=?",
+               and ASD.clinic_id=C.hims_d_appointment_clinic_id and C.room_id=R.hims_d_appointment_room_id and C.sub_department_id=SD.hims_d_sub_department_id and appointment_schedule_detail_id=?",
                 [result[j]["hims_d_appointment_schedule_detail_id"]],
                 (error, modifyResult) => {
                   if (error) {
@@ -2549,7 +2549,7 @@ let updatePatientAppointment = (req, res, next) => {
         "UPDATE `hims_f_patient_appointment` SET patient_id=?,provider_id=?,sub_department_id=?,number_of_slot=?,appointment_date=?,appointment_from_time=?,appointment_to_time=?,\
         appointment_status_id=?,patient_name=?,arabic_name=?,date_of_birth=?,age=?,contact_number=?,email=?,\
         send_to_provider=?,gender=?,confirmed=?,confirmed_by=?,comfirmed_date=?,cancelled=?,cancelled_by=?,\
-        cancelled_date=?,cancel_reason=?,appointment_remarks=?,visit_created=?,is_stand_by=?,\
+        cancelled_date=?,cancel_reason=?,appointment_remarks=?,is_stand_by=?,\
            updated_date=?, updated_by=? ,`record_status`=? WHERE  `record_status`='A' and `hims_f_patient_appointment_id`=?;",
         [
           input.patient_id,
@@ -2575,8 +2575,7 @@ let updatePatientAppointment = (req, res, next) => {
           input.cancelled_by,
           input.cancelled_date,
           input.cancel_reason,
-          input.appointment_remarks,
-          input.visit_created,
+          input.appointment_remarks,         
           input.is_stand_by,
           new Date(),
           input.updated_by,
@@ -2597,6 +2596,11 @@ let updatePatientAppointment = (req, res, next) => {
     next(e);
   }
 };
+
+
+
+
+
 
 //created by irfan: to get Patient Appointment
 let getPatientAppointment = (req, res, next) => {
