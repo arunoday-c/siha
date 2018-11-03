@@ -311,7 +311,7 @@ class PhySchSetup extends Component {
     } else {
       row.modified = "L";
     }
-    this.refreshState();
+    row.update();
   }
 
   openModifierPopup(e) {
