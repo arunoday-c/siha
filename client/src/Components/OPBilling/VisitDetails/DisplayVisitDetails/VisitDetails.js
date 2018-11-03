@@ -125,6 +125,7 @@ class DisplayVisitDetails extends Component {
             mappingName: "orderlist"
           },
           afterSuccess: data => {
+            debugger;
             if (data.length !== 0) {
               let pre_approval_Required = Enumerable.from(data)
                 .where(w => w.pre_approval === "Y" && w.apprv_status === "NR")
@@ -141,7 +142,7 @@ class DisplayVisitDetails extends Component {
                   icon: "warning"
                 });
               } else {
-                if (context != null) {
+                if (context !== null) {
                   context.updateState({
                     billdetails: data,
                     applydiscount: applydiscount,
@@ -159,13 +160,52 @@ class DisplayVisitDetails extends Component {
                   }
                 });
               }
+            } else {
+              debugger;
+              if (context !== null) {
+                context.updateState({
+                  billdetails: data,
+                  applydiscount: applydiscount,
+                  saveEnable: true,
+
+                  advance_adjust: null,
+                  card_amount: null,
+                  cash_amount: null,
+                  cheque_amount: null,
+                  company_payble: null,
+                  company_res: null,
+                  company_tax: null,
+                  copay_amount: null,
+                  deductable_amount: null,
+                  discount_amount: null,
+                  gross_total: null,
+                  net_amount: null,
+                  net_total: null,
+                  patient_payable: null,
+                  patient_payable_h: null,
+                  patient_res: null,
+                  patient_tax: null,
+                  receiveable_amount: null,
+                  sec_company_paybale: null,
+                  sec_company_res: null,
+                  sec_company_tax: null,
+                  sec_copay_amount: null,
+                  sec_deductable_amount: null,
+                  sheet_discount_amount: null,
+                  sheet_discount_percentage: null,
+                  sub_total_amount: null,
+                  total_amount: null,
+                  total_tax: null,
+                  unbalanced_amount: null
+                });
+              }
             }
           }
         });
       }
     );
 
-    if (context != null) {
+    if (context !== null) {
       context.updateState({
         incharge_or_provider: row.doctor_id,
         visit_id: row.hims_f_patient_visit_id,
@@ -355,7 +395,8 @@ function mapDispatchToProps(dispatch) {
       getDepartmentsandDoctors: AlgaehActions,
       getPatientInsurance: AlgaehActions,
       billingCalculations: AlgaehActions,
-      getOrderList: AlgaehActions
+      getOrderList: AlgaehActions,
+      initialbillingCalculations: AlgaehActions
     },
     dispatch
   );
