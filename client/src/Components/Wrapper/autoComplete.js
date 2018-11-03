@@ -248,7 +248,7 @@ class AutoComplete extends PureComponent {
           />
           {!isDisable ? (
             <React.Fragment>
-              <span className="clearall">
+              <span className="clearall" onClick={this.clearInput.bind(this)}>
                 <i className="fas  fa-times-circle" />
               </span>
               <span
