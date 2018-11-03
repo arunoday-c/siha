@@ -85,10 +85,11 @@ class TestCategory extends Component {
             </div>
           </div>
 
-          <div className="row form-details">
+          <div className="row form-details" data-validate="testCatDiv">
             <div className="col">
               <AlgaehDataGrid
-                id="visa_grd"
+                datavalidate="data-validate='testCatDiv'"
+                id="test-cat-grid"
                 columns={[
                   {
                     fieldName: "category_name",
@@ -105,6 +106,10 @@ class TestCategory extends Component {
                             name: "category_name",
                             events: {
                               onChange: onchangegridcol.bind(this, this, row)
+                            },
+                            others: {
+                              errormessage: "Category Name - cannot be blank",
+                              required: true
                             }
                           }}
                         />
@@ -131,7 +136,23 @@ class TestCategory extends Component {
                         </span>
                       );
                     },
-                    disabled: true
+                    editorTemplate: row => {
+                      let display =
+                        this.props.userdrtails === undefined
+                          ? []
+                          : this.props.userdrtails.filter(
+                              f => f.algaeh_d_app_user_id === row.created_by
+                            );
+
+                      return (
+                        <span>
+                          {display !== null && display.length !== 0
+                            ? display[0].user_displayname
+                            : ""}
+                        </span>
+                      );
+                    }
+                    //disabled: true
                   },
                   {
                     fieldName: "created_date",
@@ -141,7 +162,10 @@ class TestCategory extends Component {
                     displayTemplate: row => {
                       return <span>{this.dateFormater(row.created_date)}</span>;
                     },
-                    disabled: true
+                    editorTemplate: row => {
+                      return <span>{this.dateFormater(row.created_date)}</span>;
+                    }
+                    //disabled: true
                   },
                   {
                     fieldName: "category_status",
@@ -164,7 +188,11 @@ class TestCategory extends Component {
                               valueField: "value",
                               data: GlobalVariables.FORMAT_STATUS
                             },
-                            onChange: onchangegridcol.bind(this, this, row)
+                            onChange: onchangegridcol.bind(this, this, row),
+                            others: {
+                              errormessage: "Status - cannot be blank",
+                              required: true
+                            }
                           }}
                         />
                       );

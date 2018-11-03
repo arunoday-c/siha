@@ -106,9 +106,10 @@ class LabSpecimen extends Component {
             </div>
           </div>
 
-          <div className="row form-details">
+          <div className="row form-details" data-validate="labSpecimenDiv">
             <div className="col">
               <AlgaehDataGrid
+                datavalidate="data-validate='labSpecimenDiv'"
                 id="visa_grd"
                 columns={[
                   {
@@ -124,6 +125,10 @@ class LabSpecimen extends Component {
                             name: "description",
                             events: {
                               onChange: onchangegridcol.bind(this, this, row)
+                            },
+                            others: {
+                              errormessage: "Description - cannot be blank",
+                              required: true
                             }
                           }}
                         />
@@ -145,7 +150,6 @@ class LabSpecimen extends Component {
                     editorTemplate: row => {
                       return (
                         <AlagehAutoComplete
-                          div={{}}
                           selector={{
                             name: "storage_type",
                             className: "select-fld",
@@ -155,7 +159,11 @@ class LabSpecimen extends Component {
                               valueField: "value",
                               data: GlobalVariables.FORMAT_STORAGE_TYPE
                             },
-                            onChange: onchangegridcol.bind(this, this, row)
+                            onChange: onchangegridcol.bind(this, this, row),
+                            others: {
+                              errormessage: "Storage Type - cannot be blank",
+                              required: true
+                            }
                           }}
                         />
                       );
@@ -180,7 +188,22 @@ class LabSpecimen extends Component {
                         </span>
                       );
                     },
-                    disabled: true
+                    editorTemplate: row => {
+                      let display =
+                        this.props.userdrtails === undefined
+                          ? []
+                          : this.props.userdrtails.filter(
+                              f => f.algaeh_d_app_user_id === row.created_by
+                            );
+
+                      return (
+                        <span>
+                          {display !== null && display.length !== 0
+                            ? display[0].user_displayname
+                            : ""}
+                        </span>
+                      );
+                    }
                   },
                   {
                     fieldName: "created_date",
@@ -190,7 +213,10 @@ class LabSpecimen extends Component {
                     displayTemplate: row => {
                       return <span>{this.dateFormater(row.created_date)}</span>;
                     },
-                    disabled: true
+                    editorTemplate: row => {
+                      return <span>{this.dateFormater(row.created_date)}</span>;
+                    }
+                    //disabled: true
                   },
                   {
                     fieldName: "specimen_status",
@@ -213,7 +239,11 @@ class LabSpecimen extends Component {
                               valueField: "value",
                               data: GlobalVariables.FORMAT_STATUS
                             },
-                            onChange: onchangegridcol.bind(this, this, row)
+                            onChange: onchangegridcol.bind(this, this, row),
+                            others: {
+                              errormessage: "Specimen Status - cannot be blank",
+                              required: true
+                            }
                           }}
                         />
                       );

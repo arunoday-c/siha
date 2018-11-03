@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import "./Analyte.css";
-
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -139,10 +138,11 @@ class LabAnalyte extends Component {
             </div>
           </form>
 
-          <div className="row form-details">
+          <div className="row form-details" data-validate="analyteDiv">
             <div className="col">
               <AlgaehDataGrid
-                id="visa_grd"
+                datavalidate="data-validate='analyteDiv'"
+                id="analyte-grid"
                 columns={[
                   {
                     fieldName: "description",
@@ -150,13 +150,16 @@ class LabAnalyte extends Component {
                     editorTemplate: row => {
                       return (
                         <AlagehFormGroup
-                          div={{}}
                           textBox={{
                             value: row.description,
                             className: "txt-fld",
                             name: "description",
                             events: {
                               onChange: onchangegridcol.bind(this, this, row)
+                            },
+                            others: {
+                              errormessage: "Description - cannot be blank",
+                              required: true
                             }
                           }}
                         />
@@ -188,7 +191,11 @@ class LabAnalyte extends Component {
                               valueField: "value",
                               data: GlobalVariables.FORMAT_ANALYTE_TYPE
                             },
-                            onChange: onchangegridcol.bind(this, this, row)
+                            onChange: onchangegridcol.bind(this, this, row),
+                            others: {
+                              errormessage: "Analyte Type - cannot be blank",
+                              required: true
+                            }
                           }}
                         />
                       );
@@ -207,6 +214,10 @@ class LabAnalyte extends Component {
                             name: "result_unit",
                             events: {
                               onChange: onchangegridcol.bind(this, this, row)
+                            },
+                            others: {
+                              errormessage: "Result Unit - cannot be blank",
+                              required: true
                             }
                           }}
                         />
@@ -232,7 +243,24 @@ class LabAnalyte extends Component {
                         </span>
                       );
                     },
-                    disabled: true
+
+                    editorTemplate: row => {
+                      let display =
+                        this.props.userdrtails === undefined
+                          ? []
+                          : this.props.userdrtails.filter(
+                              f => f.algaeh_d_app_user_id === row.created_by
+                            );
+
+                      return (
+                        <span>
+                          {display !== null && display.length !== 0
+                            ? display[0].user_displayname
+                            : ""}
+                        </span>
+                      );
+                    }
+                    // disabled: true
                   },
                   {
                     fieldName: "created_date",
@@ -242,7 +270,9 @@ class LabAnalyte extends Component {
                     displayTemplate: row => {
                       return <span>{this.dateFormater(row.created_date)}</span>;
                     },
-                    disabled: true
+                    editorTemplate: row => {
+                      return <span>{this.dateFormater(row.created_date)}</span>;
+                    }
                   },
                   {
                     fieldName: "analyte_status",
@@ -263,7 +293,11 @@ class LabAnalyte extends Component {
                               valueField: "value",
                               data: GlobalVariables.FORMAT_STATUS
                             },
-                            onChange: onchangegridcol.bind(this, this, row)
+                            onChange: onchangegridcol.bind(this, this, row),
+                            others: {
+                              errormessage: "Status - cannot be blank",
+                              required: true
+                            }
                           }}
                         />
                       );

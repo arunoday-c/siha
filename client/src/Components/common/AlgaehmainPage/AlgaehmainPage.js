@@ -391,7 +391,7 @@ class PersistentDrawer extends React.Component {
             {this.state.sideopen === true ? (
               <div
                 anchor={anchor}
-                className={"animated faster leftNavCntr " + this.state.class}
+                className={"animated leftNavCntr " + this.state.class}
               >
                 <div className="hptl-phase1-sideMenuBar">
                   <div className="menuBar-title">

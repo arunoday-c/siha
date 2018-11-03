@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import "./LabSection.css";
-
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -91,8 +90,9 @@ class LabSection extends Component {
           </form>
 
           <div className="row form-details">
-            <div className="col">
+            <div className="col" data-validate="labSecDiv">
               <AlgaehDataGrid
+                datavalidate="data-validate='labSecDiv'"
                 id="visa_grd"
                 columns={[
                   {
@@ -108,6 +108,10 @@ class LabSection extends Component {
                             name: "description",
                             events: {
                               onChange: onchangegridcol.bind(this, this, row)
+                            },
+                            others: {
+                              errormessage: "Description - cannot be blank",
+                              required: true
                             }
                           }}
                         />
@@ -134,7 +138,22 @@ class LabSection extends Component {
                         </span>
                       );
                     },
-                    disabled: true
+                    editorTemplate: row => {
+                      let display =
+                        this.props.userdrtails === undefined
+                          ? []
+                          : this.props.userdrtails.filter(
+                              f => f.algaeh_d_app_user_id === row.created_by
+                            );
+
+                      return (
+                        <span>
+                          {display !== null && display.length !== 0
+                            ? display[0].user_displayname
+                            : ""}
+                        </span>
+                      );
+                    }
                   },
                   {
                     fieldName: "created_date",
@@ -144,7 +163,9 @@ class LabSection extends Component {
                     displayTemplate: row => {
                       return <span>{this.dateFormater(row.created_date)}</span>;
                     },
-                    disabled: true
+                    editorTemplate: row => {
+                      return <span>{this.dateFormater(row.created_date)}</span>;
+                    }
                   },
                   {
                     fieldName: "section_status",
@@ -155,7 +176,6 @@ class LabSection extends Component {
                     editorTemplate: row => {
                       return (
                         <AlagehAutoComplete
-                          div={{}}
                           selector={{
                             name: "section_status",
                             className: "select-fld",
@@ -165,9 +185,11 @@ class LabSection extends Component {
                               valueField: "value",
                               data: GlobalVariables.FORMAT_STATUS
                             },
-                            onChange: onchangegridcol
-                              .bind(this, this, row)
-                              .bind(this, row)
+                            others: {
+                              errormessage: "Status - cannot be blank",
+                              required: true
+                            },
+                            onChange: onchangegridcol.bind(this, this, row)
                           }}
                         />
                       );

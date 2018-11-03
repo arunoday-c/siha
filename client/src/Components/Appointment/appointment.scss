@@ -121,17 +121,28 @@
     thead {
       tr {
         text-align: center;
-
-        th {
-          font-family: Arial, sans-serif;
-          font-size: 0.9rem;
+        .tg-amwm {
           overflow: hidden;
-          padding: 3px 0;
-          font-weight: bold;
-          word-break: normal;
+          padding: 0;
           border: 1px solid #b3823b;
           color: #ffffff;
           background: #dcac66;
+          h6 {
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin: 0;
+            border-bottom: 1px solid #c39554;
+            padding: 2px 0;
+          }
+          p {
+            margin: 0;
+            font-size: 0.7rem;
+            background: #d2a25e;
+            border-top: 1px solid #e4b26b;
+            span {
+              display: block;
+            }
+          }
         }
         .tbl-subHdg {
           text-transform: uppercase;
@@ -145,12 +156,12 @@
       }
     }
     tbody {
-      height: 45vh;
+      height: 44vh;
       overflow: auto;
       display: grid;
       td.tg-baqh {
         width: 120px;
-        font-family: Arial, sans-serif;
+
         font-size: 0.8rem;
         overflow: hidden;
         word-break: normal;

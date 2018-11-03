@@ -246,6 +246,7 @@ class AutoComplete extends PureComponent {
             autoComplete="off"
             {..._required}
           />
+<<<<<<< HEAD
           {!isDisable ? (
             <React.Fragment>
               <span
@@ -274,6 +275,25 @@ class AutoComplete extends PureComponent {
           ) : (
             <React.Fragment />
           )}
+=======
+          <span className="clearall">
+            <i className="fas  fa-times" />
+          </span>
+          <span className="showall" onClick={this.onClickArrowIcon.bind(this)}>
+            <i className={"fas " + this.state.arrowIcon} />
+          </span>
+          <ol className={"myUL " + this.state.listState}>
+            {this.state._sortData.map((item, index) => (
+              <li onClick={this.onListSelected.bind(this, item)} key={index}>
+                <span value={item[this.props.selector.dataSource.valueField]}>
+                  {this.props.selector.displayTemplate !== undefined
+                    ? this.renderTemplate.bind(this, item, index)
+                    : item[this.props.selector.dataSource.textField]}
+                </span>
+              </li>
+            ))}
+          </ol>
+>>>>>>> c64e349e312c898b6ddb77e52a3147e49b17f420
         </div>
       </div>
     );

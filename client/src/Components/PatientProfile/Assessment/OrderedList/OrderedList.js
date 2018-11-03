@@ -87,22 +87,17 @@ class OrderedList extends PureComponent {
       });
     }
 
-    if (
-      this.props.orderedList === undefined ||
-      this.props.orderedList.length === 0
-    ) {
-      this.props.getOrderList({
-        uri: "/orderAndPreApproval/selectOrderServices",
-        method: "GET",
-        data: {
-          visit_id: Window.global["visit_id"]
-        },
-        redux: {
-          type: "ORDER_SERVICES_GET_DATA",
-          mappingName: "orderedList"
-        }
-      });
-    }
+    this.props.getOrderList({
+      uri: "/orderAndPreApproval/selectOrderServices",
+      method: "GET",
+      data: {
+        visit_id: Window.global["visit_id"]
+      },
+      redux: {
+        type: "ORDER_SERVICES_GET_DATA",
+        mappingName: "orderedList"
+      }
+    });
   }
 
   dateFormater(value) {
@@ -241,8 +236,6 @@ class OrderedList extends PureComponent {
         <OrderingServices
           open={this.state.isOpen}
           onClose={this.CloseModel.bind(this)}
-          itemPop={this.state.itemPop}
-          addNew={this.state.addNew}
           vat_applicable={this.props.vat_applicable}
         />
       </div>
