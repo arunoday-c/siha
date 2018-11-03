@@ -30,8 +30,7 @@ class AppointmentRooms extends Component {
       confirmButtonText: "Yes!",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No",
-      dangerMode: true
+      cancelButtonText: "No"
     }).then(willDelete => {
       if (willDelete.value) {
         algaehApiCall({
@@ -41,13 +40,18 @@ class AppointmentRooms extends Component {
           },
           method: "DELETE",
           onSuccess: response => {
-            if (response.data.success) {
+            if (response.data.records.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
                 type: "success"
               });
 
               this.getAppointmentRooms();
+            } else if (!response.data.records.success) {
+              swalMessage({
+                title: response.data.records.message,
+                type: "error"
+              });
             }
           },
           onFailure: error => {
@@ -98,15 +102,12 @@ class AppointmentRooms extends Component {
   componentDidMount() {
     this.getAppointmentRooms();
   }
-  refreshState() {
-    this.setState({ ...this.state });
-  }
 
   changeGridEditors(row, e) {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
     row[name] = value;
-    this.refreshState();
+    row.update();
   }
 
   resetState() {
@@ -204,8 +205,13 @@ class AppointmentRooms extends Component {
             </div>
           </div>
         </div>
-        <div className="col-lg-12" style={{ marginTop: 10 }}>
+        <div
+          className="col-lg-12"
+          style={{ marginTop: 10 }}
+          data-validate="apptRoomsDiv"
+        >
           <AlgaehDataGrid
+            datavalidate="data-validate='apptRoomsDiv'"
             id="appt-room-grid"
             columns={[
               {
@@ -221,6 +227,10 @@ class AppointmentRooms extends Component {
                         name: "description",
                         events: {
                           onChange: this.changeGridEditors.bind(this, row)
+                        },
+                        others: {
+                          errormessage: "Description - cannot be blank",
+                          required: true
                         }
                       }}
                     />
@@ -235,7 +245,11 @@ class AppointmentRooms extends Component {
                     <span>{moment(row.created_date).format("DD-MM-YYYY")}</span>
                   );
                 },
-                disabled: true
+                editorTemplate: row => {
+                  return (
+                    <span>{moment(row.created_date).format("DD-MM-YYYY")}</span>
+                  );
+                }
               },
               {
                 fieldName: "room_active",
@@ -255,6 +269,10 @@ class AppointmentRooms extends Component {
                           textField: "name",
                           valueField: "value",
                           data: GlobalVariables.FORMAT_ACT_INACT
+                        },
+                        others: {
+                          errormessage: "Status - cannot be blank",
+                          required: true
                         },
                         onChange: this.changeGridEditors.bind(this, row)
                       }}

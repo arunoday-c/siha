@@ -84,7 +84,7 @@ class PhySchSetup extends Component {
       sunday: false,
       slot: "",
       year: moment().year(),
-      month: moment(new Date()).format("M"),
+      // month: moment(new Date()).format("M"),
       schedule_status: "Y",
       from_work_hr: "",
       to_work_hr: "",
@@ -297,16 +297,12 @@ class PhySchSetup extends Component {
     }
   }
 
-  refreshState() {
-    this.setState({ ...this.state });
-  }
-
   changeGridEditors(row, e) {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
     row[name] = value;
     row["modified"] = "M";
-    this.refreshState();
+    row.update();
   }
   changeCheckBox(row, e) {
     if (row.modified !== undefined) {
@@ -383,10 +379,12 @@ class PhySchSetup extends Component {
     swal({
       title: "Are you sure you want to delete this Doctor?",
       type: "warning",
-      buttons: true,
-      dangerMode: true
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
     }).then(willDelete => {
-      if (willDelete) {
+      if (willDelete.value) {
         algaehApiCall({
           uri: "/appointment/deleteDoctorFromSchedule",
           method: "PUT",

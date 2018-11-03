@@ -106,13 +106,13 @@ class OrderingServices extends Component {
         }
       });
     }
-
+    debugger;
     this.props.getPatientInsurance({
       uri: "/insurance/getPatientInsurance",
       method: "GET",
       data: {
         patient_id: this.state.patient_id,
-        patient_visit_id: this.state.patient_visit_id
+        patient_visit_id: this.state.visit_id
       },
       redux: {
         type: "EXIT_INSURANCE_GET_DATA",

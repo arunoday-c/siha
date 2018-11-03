@@ -352,9 +352,10 @@ class VisitType extends Component {
               </div>
             </form>
 
-            <div className="row form-details">
+            <div className="row form-details" data-validate="visitDiv">
               <div className="col">
                 <AlgaehDataGrid
+                  datavalidate="data-validate='visitDiv'"
                   id="visit_grd"
                   columns={[
                     {
@@ -375,6 +376,10 @@ class VisitType extends Component {
                               name: "visit_type_desc",
                               events: {
                                 onChange: this.onchangegridcol.bind(this, row)
+                              },
+                              others: {
+                                errormessage: "Description - cannot be blank",
+                                required: true
                               }
                             }}
                           />
@@ -398,6 +403,10 @@ class VisitType extends Component {
                               name: "arabic_visit_type_desc",
                               events: {
                                 onChange: this.onchangegridcol.bind(this, row)
+                              },
+                              others: {
+                                errormessage: "Arabic Name - cannot be blank",
+                                required: true
                               }
                             }}
                           />
@@ -476,6 +485,10 @@ class VisitType extends Component {
                                 textField: "name",
                                 valueField: "value",
                                 data: GlobalVariables.FORMAT_STATUS
+                              },
+                              others: {
+                                errormessage: "Status - cannot be blank",
+                                required: true
                               },
                               onChange: this.onchangegridcol.bind(this, row)
                             }}

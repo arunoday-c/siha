@@ -25,15 +25,11 @@ class AppointmentClinics extends Component {
     };
   }
 
-  refreshState() {
-    this.setState({ ...this.state });
-  }
-
   changeGridEditors(row, e) {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
     row[name] = value;
-    this.refreshState();
+    row.update();
   }
 
   changeTexts(e) {
@@ -364,9 +360,14 @@ class AppointmentClinics extends Component {
           </div>
         </div>
 
-        <div className="col-lg-12" style={{ marginTop: 0 }}>
+        <div
+          className="col-lg-12"
+          style={{ marginTop: 0 }}
+          data-validate="apptClinicsDiv"
+        >
           <AlgaehDataGrid
             id="appt-status-grid"
+            datavalidate="data-validate='apptClinicsDiv'"
             columns={[
               {
                 fieldName: "description",
@@ -381,6 +382,10 @@ class AppointmentClinics extends Component {
                         value: row.description,
                         events: {
                           onChange: this.changeGridEditors.bind(this, row)
+                        },
+                        others: {
+                          errormessage: "Description - cannot be blank",
+                          required: true
                         }
                       }}
                     />
@@ -405,6 +410,10 @@ class AppointmentClinics extends Component {
                           textField: "sub_department_name",
                           valueField: "sub_department_id",
                           data: this.state.departments
+                        },
+                        others: {
+                          errormessage: "Department - cannot be blank",
+                          required: true
                         },
                         onChange: this.changeGridEditors.bind(this, row)
                       }}
@@ -431,6 +440,10 @@ class AppointmentClinics extends Component {
                           valueField: "employee_id",
                           data: this.state.doctors
                         },
+                        others: {
+                          errormessage: "Doctor - cannot be blank",
+                          required: true
+                        },
                         onChange: this.changeGridEditors.bind(this, row)
                       }}
                     />
@@ -455,6 +468,10 @@ class AppointmentClinics extends Component {
                           textField: "description",
                           valueField: "hims_d_appointment_room_id",
                           data: this.state.appointmentRooms
+                        },
+                        others: {
+                          errormessage: "Room - cannot be blank",
+                          required: true
                         },
                         onChange: this.changeGridEditors.bind(this, row)
                       }}

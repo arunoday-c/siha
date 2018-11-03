@@ -104,9 +104,13 @@ class Examination extends Component {
       title: "Are you sure you want to delete this EXamination?",
       type: "warning",
       buttons: true,
-      dangerMode: true
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
     }).then(willDelete => {
-      if (willDelete) {
+      if (willDelete.value) {
         algaehApiCall({
           uri: "/doctorsWorkBench/updatePatientPhysicalExam",
           method: "PUT",
