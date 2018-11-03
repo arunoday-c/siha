@@ -120,36 +120,6 @@ class AddSecInsuranceForm extends Component {
                             <span>No</span>
                           </label>
                         </div>
-                        {/* <div className="row moveRadioButtons">
-                          {INSURANCE_DECISION.map((data, idx) => {
-                            return (
-                              <div
-                                className="col-lg-6"
-                                key={"index_value" + idx}
-                              >
-                                <input
-                                  type="radio"
-                                  name="INSURANCE_DECISION"
-                                  className="htpl-phase1-radio-btn"
-                                  value={data.value}
-                                  onChange={this.selectedValueInsurance.bind(
-                                    this,
-                                    data.value,
-                                    context
-                                  )}
-                                  defaultChecked={
-                                    data.value === this.state.sec_insured
-                                      ? true
-                                      : false
-                                  }
-                                />
-                                <label className="radio-design">
-                                  {data.label}
-                                </label>
-                              </div>
-                            );
-                          })}
-                        </div> */}
                       </div>
                       <div className="col-lg-1" style={{ paddingRight: 0 }}>
                         <Tooltip id="tooltip-icon" title="Add New">
@@ -171,7 +141,9 @@ class AddSecInsuranceForm extends Component {
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
-                          fieldName: "insurance_id"
+                          fieldName: "insurance_id",
+                          isImp:
+                            this.state.sec_insuranceYes === true ? false : true
                         }}
                         selector={{
                           name: "secondary_insurance_provider_id",
@@ -195,7 +167,9 @@ class AddSecInsuranceForm extends Component {
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
-                          fieldName: "sub_insurance_id"
+                          fieldName: "sub_insurance_id",
+                          isImp:
+                            this.state.sec_insuranceYes === true ? false : true
                         }}
                         selector={{
                           name: "secondary_sub_id",
@@ -219,7 +193,9 @@ class AddSecInsuranceForm extends Component {
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
-                          fieldName: "plan_id"
+                          fieldName: "plan_id",
+                          isImp:
+                            this.state.sec_insuranceYes === true ? false : true
                         }}
                         selector={{
                           name: "secondary_network_id",
@@ -245,7 +221,9 @@ class AddSecInsuranceForm extends Component {
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
-                          fieldName: "policy_id"
+                          fieldName: "policy_id",
+                          isImp:
+                            this.state.sec_insuranceYes === true ? false : true
                         }}
                         selector={{
                           name: "secondary_policy_num",
@@ -270,7 +248,9 @@ class AddSecInsuranceForm extends Component {
                       <AlagehFormGroup
                         div={{ className: "col-lg-3" }}
                         label={{
-                          fieldName: "card_number"
+                          fieldName: "card_number",
+                          isImp:
+                            this.state.sec_insuranceYes === true ? false : true
                         }}
                         textBox={{
                           className: "txt-fld",
@@ -285,7 +265,9 @@ class AddSecInsuranceForm extends Component {
                       <AlgaehDateHandler
                         div={{ className: "col-lg-3" }}
                         label={{
-                          fieldName: "effective_start_date"
+                          fieldName: "effective_start_date",
+                          isImp:
+                            this.state.sec_insuranceYes === true ? false : true
                         }}
                         textBox={{
                           className: "txt-fld",
@@ -301,7 +283,11 @@ class AddSecInsuranceForm extends Component {
 
                       <AlgaehDateHandler
                         div={{ className: "col-lg-3" }}
-                        label={{ fieldName: "expiry_date" }}
+                        label={{
+                          fieldName: "expiry_date",
+                          isImp:
+                            this.state.sec_insuranceYes === true ? false : true
+                        }}
                         textBox={{
                           className: "txt-fld",
                           name: "secondary_effective_end_date"

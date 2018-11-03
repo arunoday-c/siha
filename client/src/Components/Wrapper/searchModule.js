@@ -238,7 +238,7 @@ class SearchModule extends Component {
           </span>
         </div>
 
-        <div className="row spotlightContainer">
+        <div className="row spotlightContainer ">
           <input
             id="spotlightInput"
             type="text"
