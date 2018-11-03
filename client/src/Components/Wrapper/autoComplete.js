@@ -30,7 +30,10 @@ class AutoComplete extends PureComponent {
 
   onClickArrowIcon() {
     let data = {};
-    if (this.state._sortData.length === 0) {
+    if (
+      this.state._sortData !== this.props.selector.dataSource.data ||
+      this.state._sortData.length === 0
+    ) {
       data = {
         _sortData: this.dataSorting("")
       };
@@ -52,11 +55,15 @@ class AutoComplete extends PureComponent {
 
   onFocusTextbox(e) {
     let data = {};
-    if (this.state._sortData.length === 0) {
+    if (
+      this.state._sortData !== this.props.selector.dataSource.data ||
+      this.state._sortData.length === 0
+    ) {
       data = {
         _sortData: this.dataSorting("")
       };
     }
+
     this.setState({
       listState: "d-block",
       arrowIcon: "fa-angle-up",

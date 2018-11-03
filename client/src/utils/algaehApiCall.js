@@ -365,8 +365,11 @@ export function getCookie(cname) {
   return "";
 }
 export function valueReviver(key, value) {
+  if (typeof value === "string") {
+    value = String(value).trim();
+  }
   if (typeof value === "string" && dateFormat.test(value)) {
-    return moment(value).format("YYYY-MM-DD HH:MM:SS.S");
+    return moment(value).format("YYYY-MM-DD HH:MM");
   }
 
   return value;

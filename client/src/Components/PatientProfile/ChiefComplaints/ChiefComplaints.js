@@ -541,6 +541,16 @@ class ChiefComplaints extends Component {
       patientComp.splice(index, 1);
       index = index - 1;
       newPatientDtl[name] = value;
+      newPatientDtl["chronic"] =
+        this.state.chronic === undefined ? "N" : this.state.chronic;
+      newPatientDtl["complaint_inactive"] =
+        this.state.complaint_inactive === undefined
+          ? "N"
+          : this.state.complaint_inactive;
+      newPatientDtl["complaint_inactive_date"] =
+        this.state.complaint_inactive_date === null
+          ? new Date()
+          : this.state.complaint_inactive_date;
       newPatientDtl["recordState"] = "update";
       patientComp.splice(index, 0, newPatientDtl);
       this.setState({
@@ -1093,6 +1103,7 @@ class ChiefComplaints extends Component {
                                     interval: interval
                                   },
                                   () => {
+                                    debugger;
                                     this.settingUpdateChiefComplaints({
                                       currentTarget: {
                                         name: "onset_date",
@@ -1454,6 +1465,7 @@ class ChiefComplaints extends Component {
                     fieldName: "onset_date",
                     label: <AlgaehLabel label={{ fieldName: "onset_date" }} />,
                     displayTemplate: data => {
+                      console.log("Onset Date", data.onset_date);
                       return new Date(data.onset_date).toLocaleDateString();
                     }
                   },
