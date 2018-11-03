@@ -1306,8 +1306,8 @@ let getDoctorsScheduledList = (req, res, next) => {
 let getDoctorScheduleDateWise = (req, res, next) => {
   let selectWhere = {
     sub_dept_id: "ALL",
-    schedule_date: "ALL",
-    provider_id: "ALL"
+    schedule_date: "ALL"
+ 
   };
   try {
     if (req.db == null) {
@@ -1315,14 +1315,14 @@ let getDoctorScheduleDateWise = (req, res, next) => {
     }
     let db = req.db;
     let selectDoctor = "";
-    let provider_id = "";
+   // let provider_id = "";
     if (req.query.provider_id != "null" && req.query.provider_id != null) {
-      selectDoctor = `provider_id=${req.query.provider_id} and `;
-      provider_id = req.query.provider_id;
+      selectDoctor = `ASD.provider_id=${req.query.provider_id} and `;
+      //provider_id = req.query.provider_id;
     }
     delete req.query.provider_id;
 
-    debugLog("getDoctorScheduleDateWise");
+   
 
     let where = whereCondition(extend(selectWhere, req.query));
 
