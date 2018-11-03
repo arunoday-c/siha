@@ -19,7 +19,6 @@ import swal from "sweetalert2";
 
 class Appointment extends Component {
   constructor(props) {
-    debugger;
     super(props);
     let dateToday = moment().format("YYYY") + moment().format("MM") + "01";
     this.state = {
@@ -116,7 +115,8 @@ class Appointment extends Component {
           date_of_birth: row.date_of_birth,
           gender: row.gender,
           contact_number: row.contact_number,
-          email: row.email
+          email: row.email,
+          arabic_name: row.arabic_name
         });
       }
     });
@@ -488,47 +488,6 @@ class Appointment extends Component {
     return generatedLi;
   }
 
-  // generateHorizontalDateBlocks() {
-  //   return (
-  //     <div className="calendar">
-  //       <div className="col-12">
-  //         <div className="row">
-  //           {this.liGenerate().map((row, index) => {
-  //             return (
-  //               <div
-  //                 key={index}
-  //                 date={row.currentdate}
-  //                 className={
-  //                   moment(row.currentdate).format("YYYYMMDD") ===
-  //                   moment(this.state.activeDateHeader).format("YYYYMMDD")
-  //                     ? moment(row.currentdate).format("YYYYMMDD") ===
-  //                       moment().format("YYYYMMDD")
-  //                       ? "col activeDate CurrentDate"
-  //                       : "col activeDate"
-  //                     : moment(row.currentdate).format("YYYYMMDD") ===
-  //                       moment().format("YYYYMMDD")
-  //                       ? "col CurrentDate"
-  //                       : "col"
-  //                 }
-  //                 onClick={this.onSelectedDateHandler.bind(this)}
-  //               >
-  //                 {row.day}
-  //                 <span
-  //                   date={row.currentdate}
-  //                   onClick={this.onSelectedDateHandler.bind(this)}
-  //                 >
-  //                   {" "}
-  //                   {row.dayName}
-  //                 </span>
-  //               </div>
-  //             );
-  //           })}
-  //         </div>
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
   generateHorizontalDateBlocks() {
     const act_date = new Date(this.state.activeDateHeader);
     return (
@@ -556,8 +515,8 @@ class Appointment extends Component {
                 >
                   {row.day}
                   <span
-                  //  date={row.currentdate}
-                    //onClick={this.onSelectedDateHandler.bind(this)}
+                    date={row.currentdate}
+                    onClick={this.onSelectedDateHandler.bind(this)}
                   >
                     {row.dayName}
                   </span>
@@ -571,10 +530,13 @@ class Appointment extends Component {
   }
 
   openEditModal(patient, e) {
+    debugger;
     if (
-      moment(patient.appointment_from_time, "HH:mm:ss").format("HHmm") <
+      (moment(patient.appointment_from_time, "HH:mm:ss").format("HHmm") <
         moment(new Date()).format("HHmm") ||
-      moment(patient.appointment_date).format("YYYYMMDD") <
+        moment(patient.appointment_date).format("YYYYMMDD") <
+          moment(new Date()).format("YYYYMMDD")) &&
+      moment(this.state.activeDateHeader).format("YYYYMMDD") <=
         moment(new Date()).format("YYYYMMDD")
     ) {
       swalMessage({
@@ -617,7 +579,6 @@ class Appointment extends Component {
   }
 
   updatePatientAppointment() {
-    debugger;
     let edit_details = {
       hims_f_patient_appointment_id: this.state.edit_appointment_id,
       record_status: "A",
@@ -667,7 +628,8 @@ class Appointment extends Component {
               "appt-pat-gender": this.state.edit_gender,
               "appt-pat-ph-no": this.state.edit_contact_number,
               "appt-pat-email": this.state.edit_email,
-              "appt-department-id": this.state.department_id
+              "appt-department-id": this.state.department_id,
+              "appt-id": this.state.edit_appointment_id
             });
 
             document.getElementById("fd-router").click();
@@ -744,7 +706,6 @@ class Appointment extends Component {
   }
 
   allowDrop(ev) {
-    debugger;
     ev.preventDefault();
     ev.currentTarget.children[1];
   }
@@ -755,15 +716,18 @@ class Appointment extends Component {
     let appt_date = pat.appointment_date;
     let appt_time = pat.appointment_from_time;
     if (
-      moment(appt_time, "HH:mm:ss").format("HHmm") <
+      (moment(appt_time, "HH:mm:ss").format("HHmm") <
         moment(new Date()).format("HHmm") ||
-      moment(appt_date).format("YYYYMMDD") <
+        moment(appt_date).format("YYYYMMDD") <
+          moment(new Date()).format("YYYYMMDD")) &&
+      moment(this.state.activeDateHeader).format("YYYYMMDD") <=
         moment(new Date()).format("YYYYMMDD")
     ) {
       swalMessage({
         title: "Cannot re-schedule past appointments",
         type: "error"
       });
+      ev.preventDefault();
     } else {
       this.setState({ patToEdit: pat }, () => {
         let pat_edit = this.state.patToEdit;
@@ -794,13 +758,16 @@ class Appointment extends Component {
   }
 
   drop(ev) {
-    debugger;
     ev.preventDefault();
     let new_from_time = ev.currentTarget.children[1].getAttribute("appt-time");
 
     if (
-      moment(new_from_time, "HH:mm a").format("HHmm") <
-      moment(new Date()).format("HHmm")
+      (moment(new_from_time, "HH:mm a").format("HHmm") <
+        moment(new Date()).format("HHmm") ||
+        moment(this.state.activeDateHeader).format("YYYYMMDD") <
+          moment(new Date()).format("YYYYMMDD")) &&
+      moment(this.state.activeDateHeader).format("YYYYMMDD") <=
+        moment(new Date()).format("YYYYMMDD")
     ) {
       swalMessage({
         title: "Cannot create schedule for past time",
@@ -1436,7 +1403,11 @@ class Appointment extends Component {
 
             {/* Add Pop up start */}
             <Modal open={this.state.showApt}>
-              <div className="algaeh-modal" style={{ width: "55vw" }}>
+              <div
+                className="algaeh-modal"
+                style={{ width: "55vw" }}
+                data-validate="addApptModal"
+              >
                 <div className="popupHeader">
                   <h4>Book an Appointment</h4>
                 </div>
@@ -1825,7 +1796,7 @@ class Appointment extends Component {
               </div>
               {/* Portlet Top Bar End */}
 
-              <div className="portlet-body" style={{ maxHeight: "53vh" }}>
+              <div className="portlet-body" style={{ maxHeight: "55vh" }}>
                 <div className="appointment-outer-cntr">
                   <div
                     className="appointment-inner-cntr"
@@ -1839,12 +1810,11 @@ class Appointment extends Component {
                             <tr>
                               {/* <th className="tg-c3ow">Time</th> */}
                               <th className="tg-amwm" colSpan="2">
-                                <h6>
-                                  {data.first_name + " " + data.last_name}
-                                </h6>
+                                <h6>{data.doctor_name}</h6>
                                 <p>
-                                  <span>Room No</span>
-                                  <span>Clinic Name</span>
+                                  <span>{data.sub_department_name}</span>
+                                  <span>{data.clinic_name}</span>
+                                  <span>Room No: {data.room_name}</span>
                                 </p>
                               </th>
                             </tr>
@@ -1854,7 +1824,19 @@ class Appointment extends Component {
                               <th className="tbl-subHdg">STANDBY</th>
                             </tr>
                           </thead>
-                          <tbody>{this.generateTimeslots(data)}</tbody>
+                          {data.modified === "L" ? (
+                            <tbody>
+                              <tr>
+                                <td>
+                                  <span className="doctorLeaveCntr">
+                                    Doctor On Leave
+                                  </span>
+                                </td>
+                              </tr>
+                            </tbody>
+                          ) : (
+                            <tbody>{this.generateTimeslots(data)}</tbody>
+                          )}
                         </table>
                       ))
                     ) : (

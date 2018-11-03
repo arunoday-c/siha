@@ -246,23 +246,34 @@ class AutoComplete extends PureComponent {
             autoComplete="off"
             {..._required}
           />
-          <span className="clearall">
-            <i className="fas  fa-times" />
-          </span>
-          <span className="showall" onClick={this.onClickArrowIcon.bind(this)}>
-            <i className={"fas " + this.state.arrowIcon} />
-          </span>
-          <ol className={"myUL " + this.state.listState}>
-            {this.state._sortData.map((item, index) => (
-              <li onClick={this.onListSelected.bind(this, item)} key={index}>
-                <span value={item[this.props.selector.dataSource.valueField]}>
-                  {this.props.selector.displayTemplate !== undefined
-                    ? this.renderTemplate.bind(this, item, index)
-                    : item[this.props.selector.dataSource.textField]}
-                </span>
-              </li>
-            ))}
-          </ol>
+          {!isDisable ? (
+            <React.Fragment>
+              <span
+                className="showall"
+                onClick={this.onClickArrowIcon.bind(this)}
+              >
+                <i className={"fas " + this.state.arrowIcon} />
+              </span>
+              <ol className={"myUL " + this.state.listState}>
+                {this.state._sortData.map((item, index) => (
+                  <li
+                    onClick={this.onListSelected.bind(this, item)}
+                    key={index}
+                  >
+                    <span
+                      value={item[this.props.selector.dataSource.valueField]}
+                    >
+                      {this.props.selector.displayTemplate !== undefined
+                        ? this.renderTemplate.bind(this, item, index)
+                        : item[this.props.selector.dataSource.textField]}
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            </React.Fragment>
+          ) : (
+            <React.Fragment />
+          )}
         </div>
       </div>
     );
