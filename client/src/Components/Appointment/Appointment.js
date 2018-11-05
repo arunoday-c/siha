@@ -59,6 +59,45 @@ class Appointment extends Component {
     // );
   }
 
+  cancelAppt(row) {
+    swal({
+      title: "Cancel Appointment for " + row.patient_name + "?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        let data = {
+          cancel_reason: "I cancelled to test",
+          hims_f_patient_appointment_id: row.hims_f_patient_appointment_id
+        };
+        algaehApiCall({
+          uri: "/appointment/cancelPatientAppointment",
+          data: data,
+          method: "PUT",
+          onSuccess: response => {
+            if (response.data.success) {
+              swalMessage({
+                title: "Record cancelled successfully . .",
+                type: "success"
+              });
+            }
+            this.getAppointmentSchedule();
+          },
+          onFailure: error => {}
+        });
+      } else {
+        swalMessage({
+          title: "Not cancelled",
+          type: "error"
+        });
+      }
+    });
+  }
+
   componentDidCatch(error, info) {
     // Display fallback UI
     this.setState({ hasError: true });
@@ -149,7 +188,7 @@ class Appointment extends Component {
               email: pat_obj.email
             });
 
-            console.log("Pat Code:", response.data.records);
+            //console.log("Pat Code:", response.data.records);
           }
         },
         onFailure: error => {
@@ -203,7 +242,6 @@ class Appointment extends Component {
   }
 
   addPatientAppointment(e) {
-    debugger;
     e.preventDefault();
     let from_time = this.state.apptFromTime;
     let duration_minutes = this.state.apptSlot * this.state.no_of_slots;
@@ -239,7 +277,7 @@ class Appointment extends Component {
       number_of_slot: this.state.no_of_slots,
       confirmed: "N",
       cancelled: "N",
-      is_stand_by: "N"
+      is_stand_by: this.state.is_stand_by
     };
 
     algaehApiCall({
@@ -289,7 +327,6 @@ class Appointment extends Component {
       uri: "/department/selectDoctorsAndClinic",
       method: "GET",
       onSuccess: response => {
-        debugger;
         if (response.data.success) {
           this.setState({
             departments: response.data.records.departmets
@@ -346,7 +383,6 @@ class Appointment extends Component {
   }
 
   getAppointmentSchedule(e) {
-    debugger;
     if (e !== undefined) e.preventDefault();
     if (e !== undefined && this.state.sub_department_id === null) {
       swalMessage({
@@ -394,7 +430,6 @@ class Appointment extends Component {
                       ? this.state.appointmentSchedule[0].slot
                       : null
                 });
-                console.log("Slot:", this.state.slot);
               }
             );
           } else {
@@ -435,7 +470,6 @@ class Appointment extends Component {
   }
 
   deptDropDownHandler(value) {
-    debugger;
     this.setState({ [value.name]: value.value }, () => {
       let dept = Enumerable.from(this.state.departments)
         .where(w => w.sub_dept_id === this.state.sub_department_id)
@@ -532,7 +566,6 @@ class Appointment extends Component {
   }
 
   openEditModal(patient, e) {
-    debugger;
     if (
       (moment(patient.appointment_from_time, "HH:mm:ss").format("HHmm") <
         moment(new Date()).format("HHmm") ||
@@ -556,6 +589,13 @@ class Appointment extends Component {
     } else {
       this.setState({ patToEdit: patient, openPatEdit: true }, () => {
         let pat_edit = this.state.patToEdit;
+        let new_to_time = moment(
+          pat_edit.appointment_from_time,
+          "HH:mm:ss"
+        ).add(pat_edit.number_of_slot * this.state.slot, "minutes");
+        //debugger;
+        // console.log("ssssss1:", pat_edit.number_of_slot * this.state.slot);
+        //console.log("ssssss:", moment(new_to_time).format("HH:mm:ss"));
         this.setState({
           edit_appointment_status_id: pat_edit.appointment_status_id,
           edit_appt_date: pat_edit.appointment_date,
@@ -572,12 +612,13 @@ class Appointment extends Component {
           edit_provider_id: pat_edit.provider_id,
           edit_patient_id: pat_edit.patient_id,
           edit_from_time: pat_edit.appointment_from_time,
-          edit_to_time: pat_edit.appointment_to_time,
+          edit_to_time: moment(new_to_time).format("HH:mm:ss"),
           edit_arabic_name: pat_edit.arabic_name,
           edit_sub_dep_id: pat_edit.sub_department_id,
           edit_appointment_date: pat_edit.appointment_date,
           patient_code: pat_edit.patient_code,
-          edit_no_of_slots: pat_edit.number_of_slot
+          edit_no_of_slots: pat_edit.number_of_slot,
+          edit_is_stand_by: pat_edit.is_stand_by
         });
       });
     }
@@ -610,7 +651,7 @@ class Appointment extends Component {
       cancelled_date: null,
       cancel_reason: null,
       appointment_remarks: this.state.edit_appointment_remarks,
-      is_stand_by: "N",
+      is_stand_by: this.state.edit_is_stand_by,
       number_of_slot: this.state.edit_no_of_slots
     };
 
@@ -687,6 +728,7 @@ class Appointment extends Component {
       const sch_header_id = e.currentTarget.getAttribute("sch_header_id");
       const sch_detail_id = e.currentTarget.getAttribute("sch_detail_id");
       const sub_dept_id = e.currentTarget.getAttribute("sub_dept_id");
+      const is_stand_by = e.currentTarget.getAttribute("isstandby");
       const sub_dep_name = this.getDeptName(sub_dept_id);
       const doc_name = this.getDoctorName(provider_id);
 
@@ -705,7 +747,8 @@ class Appointment extends Component {
         apptSchDtId: sch_detail_id,
         apptSubDept: sub_dept_id,
         apptSubDeptName: sub_dep_name,
-        apptProviderName: doc_name
+        apptProviderName: doc_name,
+        is_stand_by: is_stand_by
       });
     }
   }
@@ -823,10 +866,10 @@ class Appointment extends Component {
                 email: this.state.edit_email,
                 send_to_provider: null,
                 gender: this.state.edit_gender,
-                confirmed: null,
+                confirmed: "Y",
                 confirmed_by: null,
                 comfirmed_date: null,
-                cancelled: null,
+                cancelled: "N",
                 cancelled_by: null,
                 cancelled_date: null,
                 cancel_reason: null,
@@ -890,25 +933,134 @@ class Appointment extends Component {
             moment(data.time, "hh:mm a") &&
             moment(w.appointment_to_time, "hh:mm:ss") >= newEndTime)
       )
-      .firstOrDefault();
+      .toArray();
     if (patient !== undefined) {
+      debugger;
       return patient;
     } else {
       return null;
     }
   }
+  plotStandByIcon(patient, data) {
+    const _isstandby =
+      patient === null || patient === undefined
+        ? "N"
+        : patient.is_stand_by === "Y"
+          ? "N"
+          : null;
+    if (_isstandby !== null) {
+      return (
+        <i
+          appt-time={data.time}
+          to_work_hr={data.to_work_hr}
+          from_break_hr1={data.from_break_hr1}
+          to_break_hr1={data.to_break_hr1}
+          from_break_hr2={data.from_break_hr2}
+          to_break_hr2={data.to_work_hr}
+          slot={data.slot}
+          clinic_id={data.clinic_id}
+          provider_id={data.provider_id}
+          sch_header_id={data.sch_header_id}
+          sch_detail_id={data.sch_detail_id}
+          sub_dept_id={data.sub_dept_id}
+          isstandby={_isstandby}
+          onClick={this.showModal.bind(this)}
+          className="fas fa-plus"
+        />
+      );
+    } else {
+      return null;
+    }
+  }
+
+  loadSubStandBy(patients) {
+    debugger;
+    if (patients !== undefined && patients !== null && patients.length > 0) {
+      const _otherPatients = patients.slice(1);
+      if (_otherPatients !== undefined && _otherPatients.length > 0) {
+        return (
+          <span className="patientStdbyCount">
+            {_otherPatients.length} more..
+            <ul>
+              {_otherPatients.map((item, index) => {
+                return (
+                  <li key={index}>
+                    {item.patient_name} <b>x</b>
+                  </li>
+                );
+              })}
+            </ul>
+          </span>
+        );
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+  renderStandByMultiple(standByPatients) {
+    if (standByPatients !== null && standByPatients !== undefined) {
+      const _firstPatient = standByPatients[0];
+      if (_firstPatient !== undefined) {
+        return (
+          <React.Fragment>
+            <div
+              appt-pat={JSON.stringify(_firstPatient)}
+              className="dynPatient"
+              style={{ background: "#f2f2f2" }}
+              //draggable={true}
+              //onDragStart={this.drag.bind(this)}
+              onClick={this.openEditModal.bind(this, _firstPatient)}
+            >
+              {_firstPatient.patient_name}
+              <br />
+              {_firstPatient.contact_number}
+              <i
+                className="fas fa-times"
+                onClick={this.openEditModal.bind(this, _firstPatient)}
+              />
+            </div>
+            {this.loadSubStandBy(standByPatients)}
+          </React.Fragment>
+        );
+      } else {
+        return null;
+      }
+    }
+  }
 
   generateChilderns(data) {
-    debugger;
     const colspan = data.mark_as_break
       ? { colSpan: 2, style: { width: "240px" } }
       : {};
-
-    const patient = this.plotPatients({
+    debugger;
+    const _patientList = this.plotPatients({
       time: data.time,
       slot: data.slot,
       patients: data.patients
     });
+    const patient =
+      _patientList !== null
+        ? Enumerable.from(_patientList)
+            .where(w => w.is_stand_by === "N")
+            .firstOrDefault()
+        : undefined;
+
+    const _standByPatients =
+      _patientList !== null
+        ? Enumerable.from(_patientList)
+            .where(w => w.is_stand_by === "Y")
+            .toArray()
+        : undefined;
+    // const _standByPatients =
+    // _patientList !== null
+    //   ? Enumerable.from(_patientList)
+    //       .where(w => w.is_stand_by === "Y")
+    //       .toArray()
+    //   : undefined;
+
+    debugger;
 
     let brk_bg_color = data.mark_as_break
       ? "#f2f2f2"
@@ -922,7 +1074,7 @@ class Appointment extends Component {
         : "#ffffff";
 
     let bg_color =
-      patient !== null
+      patient !== null && patient !== undefined
         ? this.getColorCode(patient.appointment_status_id)
         : data.mark_as_break
           ? "#f2f2f2"
@@ -944,43 +1096,36 @@ class Appointment extends Component {
           onDrop={this.drop.bind(this)}
           onDragOver={this.allowDrop.bind(this)}
         >
-          {data.mark_as_break == false ? (
+          {data.mark_as_break === false ? (
             <span className="dynSlot">{data.time}</span>
           ) : null}
 
           {data.mark_as_break === false ? (
             <React.Fragment>
-              {patient === null ? (
-                <i
-                  appt-time={data.time}
-                  to_work_hr={data.to_work_hr}
-                  from_break_hr1={data.from_break_hr1}
-                  to_break_hr1={data.to_break_hr1}
-                  from_break_hr2={data.from_break_hr2}
-                  to_break_hr2={data.to_work_hr}
-                  slot={data.slot}
-                  clinic_id={data.clinic_id}
-                  provider_id={data.provider_id}
-                  sch_header_id={data.sch_header_id}
-                  sch_detail_id={data.sch_detail_id}
-                  sub_dept_id={data.sub_dept_id}
-                  onClick={this.showModal.bind(this)}
-                  className="fas fa-plus"
-                />
-              ) : null}
+              {this.plotStandByIcon(patient, data)}
 
-              {patient !== null ? (
+              {patient !== null &&
+              patient !== undefined &&
+              patient.is_stand_by === "N" &&
+              patient.cancelled === "N" ? (
                 <div
                   appt-pat={JSON.stringify(patient)}
                   className="dynPatient"
                   style={{ background: bg_color }}
                   draggable={true}
                   onDragStart={this.drag.bind(this)}
-                  onClick={this.openEditModal.bind(this, patient)}
                 >
-                  {patient.patient_name}
-                  <br />
-                  {patient.contact_number}
+                  <span onClick={this.openEditModal.bind(this, patient)}>
+                    {patient.patient_name}
+                    <br />
+                    {patient.contact_number}
+                  </span>
+
+                  <i
+                    className="fas fa-times"
+                    // onClick={this.openEditModal.bind(this, _standByPatients)}
+                    onClick={this.cancelAppt.bind(this, patient)}
+                  />
                 </div>
               ) : null}
             </React.Fragment>
@@ -994,11 +1139,32 @@ class Appointment extends Component {
         {data.mark_as_break === false ? (
           <td className="tg-baqh">
             <span className="dynSlot">{data.time}</span>
-            {patient === null ? (
+
+            {/* {patient === null ? (
               <i onClick={this.showModal.bind(this)} className="fas fa-plus" />
             ) : (
               <i onClick={this.showModal.bind(this)} className="fas fa-edit" />
-            )}
+            )} */}
+
+            <i
+              appt-time={data.time}
+              to_work_hr={data.to_work_hr}
+              from_break_hr1={data.from_break_hr1}
+              to_break_hr1={data.to_break_hr1}
+              from_break_hr2={data.from_break_hr2}
+              to_break_hr2={data.to_work_hr}
+              slot={data.slot}
+              clinic_id={data.clinic_id}
+              provider_id={data.provider_id}
+              sch_header_id={data.sch_header_id}
+              sch_detail_id={data.sch_detail_id}
+              sub_dept_id={data.sub_dept_id}
+              isstandby="Y"
+              onClick={this.showModal.bind(this)}
+              className="fas fa-plus"
+              className="fas fa-plus"
+            />
+            {this.renderStandByMultiple(_standByPatients)}
           </td>
         ) : null}
       </tr>
@@ -1006,7 +1172,6 @@ class Appointment extends Component {
   }
 
   generateTimeslots(data) {
-    debugger;
     const clinic_id = data.clinic_id;
     const provider_id = data.provider_id;
     const sch_header_id = data.hims_d_appointment_schedule_header_id;
@@ -1083,7 +1248,6 @@ class Appointment extends Component {
     return <React.Fragment>{tds}</React.Fragment>;
   }
   getSnapshotBeforeUpdate() {
-    debugger;
     const doctorCntr = document.getElementsByClassName("tg");
     if (doctorCntr !== undefined && doctorCntr.length > 0) {
       const _completeWidth = doctorCntr[0].width * doctorCntr.length;
@@ -1094,9 +1258,7 @@ class Appointment extends Component {
     }
     return null;
   }
-  componentDidUpdate(props, prevState, snapshot) {
-    debugger;
-  }
+  componentDidUpdate(props, prevState, snapshot) {}
 
   render() {
     return (
@@ -1605,7 +1767,9 @@ class Appointment extends Component {
                           />
 
                           <AlagehAutoComplete
-                            div={{ className: "col-lg-3 mandatory" }}
+                            div={{
+                              className: "col-lg-3 margin-top-15 mandatory"
+                            }}
                             label={{
                               forceLabel: "Select Status",
                               isImp: true
