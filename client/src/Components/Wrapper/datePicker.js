@@ -1,10 +1,12 @@
 import React, { PureComponent } from "react";
 import Label from "../Wrapper/label";
-//import DayPickerInput from "react-date-picker";
 import "../Wrapper/wrapper.css";
 import { getCookie } from "../../utils/algaehApiCall.js";
 import moment from "moment";
 import config from "../../utils/config.json";
+import momentHijri from "moment-hijri";
+import HijriDatePicker from "hijri-date-picker";
+import "../../../node_modules/hijri-date-picker/build/css/index.css";
 export default class DateHandler extends PureComponent {
   generateLabel = () => {
     if (this.props.label != null) {
@@ -30,13 +32,23 @@ export default class DateHandler extends PureComponent {
   }
 
   onDayChange = e => {
-    this.props.events !== undefined &&
-    typeof this.props.events.onChange === "function"
-      ? this.props.events.onChange(
-          moment(e.target.value, config.formators.date)._d,
-          e.target.name
-        )
-      : null;
+    if (this.props.singleOutput === undefined) {
+      this.props.events !== undefined &&
+      typeof this.props.events.onChange === "function"
+        ? this.props.events.onChange(
+            moment(e.target.value, config.formators.date)._d,
+            e.target.name
+          )
+        : null;
+    } else {
+      this.props.events !== undefined &&
+      typeof this.props.events.onChange === "function"
+        ? this.props.events.onChange({
+            value: moment(e.target.value, config.formators.date)._d,
+            name: e.target.name
+          })
+        : null;
+    }
   };
 
   renderDatePicker = () => {
@@ -64,27 +76,40 @@ export default class DateHandler extends PureComponent {
           ? { required: this.props.label.isImp }
           : {}
         : {};
+    const _isHijri = this.props.textBox.hijri !== undefined ? true : false;
     return (
       <div className="algaeh-datePicker">
-        <input
-          type="date"
-          value={value}
-          {...name}
-          {...maxDate}
-          {...minDate}
-          disabled={this.props.disabled}
-          onChange={this.onDayChange.bind(this)}
-          {...this.props.textBox.others}
-          {..._required}
-        />
-        {/* <DayPickerInput
-          value={this.state.value}
-          onChange={this.onDayChange.bind(this)}
-          disabled={this.props.disabled}
-          maxDate={this.props.maxDate}
-          minDate={this.props.minDate}
-          {...this.props.textBox.others}
-        /> */}
+        {!_isHijri ? (
+          <input
+            type="date"
+            value={value}
+            {...name}
+            {...maxDate}
+            {...minDate}
+            disabled={this.props.disabled}
+            onChange={this.onDayChange.bind(this)}
+            {...this.props.textBox.others}
+            {..._required}
+          />
+        ) : (
+          <HijriDatePicker
+            inputName="hijri_date"
+            className="form-control"
+            selectedDate="1439/08/02"
+            onChange={chg => {
+              debugger;
+            }}
+            onDayChange={da => {
+              debugger;
+            }}
+          />
+          // <HijriDatePicker
+          //   inputName={this.props.textBox.name}
+          //   // defaultValue={new Date()}
+          //   selected={momentHijri(new Date()).format("YYYY-MM-DD")}
+          //   onChange={this.onDayChange.bind(this)}
+          // />
+        )}
       </div>
     );
   };
