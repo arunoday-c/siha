@@ -197,11 +197,7 @@ class AddBillingForm extends Component {
                             },
                             others: {
                               placeholder: "0.00",
-                              onBlur: advanceAdjustCal.bind(
-                                this,
-                                this,
-                                context
-                              ),
+                              onBlur: advanceAdjustCal.bind(this, this),
                               onFocus: e => {
                                 e.target.oldvalue = e.target.value;
                               }
