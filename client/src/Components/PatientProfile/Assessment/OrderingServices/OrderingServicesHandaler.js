@@ -407,6 +407,7 @@ const SaveOrdersServices = ($this, e) => {
 };
 
 const calculateAmount = ($this, row, ctrl, e) => {
+  debugger;
   e = e || ctrl;
 
   let orderservicesdata = $this.state.orderservicesdata;
@@ -482,6 +483,14 @@ const updateBillDetail = ($this, e) => {
   });
 };
 
+const onchangegridcol = ($this, row, e) => {
+  debugger;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  row[name] = value;
+  row.update();
+};
+
 export {
   serviceTypeHandeler,
   serviceHandeler,
@@ -491,5 +500,6 @@ export {
   deleteServices,
   SaveOrdersServices,
   calculateAmount,
-  updateBillDetail
+  updateBillDetail,
+  onchangegridcol
 };

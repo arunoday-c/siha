@@ -21,7 +21,8 @@ import {
   deleteServices,
   SaveOrdersServices,
   calculateAmount,
-  updateBillDetail
+  updateBillDetail,
+  onchangegridcol
 } from "./OrderingServicesHandaler";
 import "./OrderingServices.css";
 import "../../../../styles/site.css";
@@ -426,7 +427,14 @@ class OrderingServices extends Component {
                                   className: "txt-fld",
                                   name: "quantity",
                                   events: {
-                                    onChange: calculateAmount.bind(
+                                    onChange: onchangegridcol.bind(
+                                      this,
+                                      this,
+                                      row
+                                    )
+                                  },
+                                  others: {
+                                    onBlur: calculateAmount.bind(
                                       this,
                                       this,
                                       row
@@ -464,7 +472,14 @@ class OrderingServices extends Component {
                                   className: "txt-fld",
                                   name: "discount_percentage",
                                   events: {
-                                    onChange: calculateAmount.bind(
+                                    onChange: onchangegridcol.bind(
+                                      this,
+                                      this,
+                                      row
+                                    )
+                                  },
+                                  others: {
+                                    onBlur: calculateAmount.bind(
                                       this,
                                       this,
                                       row
@@ -492,7 +507,14 @@ class OrderingServices extends Component {
                                   className: "txt-fld",
                                   name: "discount_amout",
                                   events: {
-                                    onChange: calculateAmount.bind(
+                                    onChange: onchangegridcol.bind(
+                                      this,
+                                      this,
+                                      row
+                                    )
+                                  },
+                                  others: {
+                                    onBlur: calculateAmount.bind(
                                       this,
                                       this,
                                       row
