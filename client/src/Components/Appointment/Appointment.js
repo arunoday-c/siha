@@ -203,7 +203,6 @@ class Appointment extends Component {
   }
 
   addPatientAppointment(e) {
-    debugger;
     e.preventDefault();
     let from_time = this.state.apptFromTime;
     let duration_minutes = this.state.apptSlot * this.state.no_of_slots;
@@ -289,7 +288,6 @@ class Appointment extends Component {
       uri: "/department/selectDoctorsAndClinic",
       method: "GET",
       onSuccess: response => {
-        debugger;
         if (response.data.success) {
           this.setState({
             departments: response.data.records.departmets
@@ -346,7 +344,6 @@ class Appointment extends Component {
   }
 
   getAppointmentSchedule(e) {
-    debugger;
     if (e !== undefined) e.preventDefault();
     if (e !== undefined && this.state.sub_department_id === null) {
       swalMessage({
@@ -435,7 +432,6 @@ class Appointment extends Component {
   }
 
   deptDropDownHandler(value) {
-    debugger;
     this.setState({ [value.name]: value.value }, () => {
       let dept = Enumerable.from(this.state.departments)
         .where(w => w.sub_dept_id === this.state.sub_department_id)
@@ -532,7 +528,6 @@ class Appointment extends Component {
   }
 
   openEditModal(patient, e) {
-    debugger;
     if (
       (moment(patient.appointment_from_time, "HH:mm:ss").format("HHmm") <
         moment(new Date()).format("HHmm") ||
@@ -556,6 +551,13 @@ class Appointment extends Component {
     } else {
       this.setState({ patToEdit: patient, openPatEdit: true }, () => {
         let pat_edit = this.state.patToEdit;
+        let new_to_time = moment(
+          pat_edit.appointment_from_time,
+          "HH:mm:ss"
+        ).add(pat_edit.number_of_slot * this.state.slot, "minutes");
+        debugger;
+        console.log("ssssss1:", pat_edit.number_of_slot * this.state.slot);
+        console.log("ssssss:", moment(new_to_time).format("HH:mm:ss"));
         this.setState({
           edit_appointment_status_id: pat_edit.appointment_status_id,
           edit_appt_date: pat_edit.appointment_date,
@@ -572,7 +574,7 @@ class Appointment extends Component {
           edit_provider_id: pat_edit.provider_id,
           edit_patient_id: pat_edit.patient_id,
           edit_from_time: pat_edit.appointment_from_time,
-          edit_to_time: pat_edit.appointment_to_time,
+          edit_to_time: moment(new_to_time).format("HH:mm:ss"),
           edit_arabic_name: pat_edit.arabic_name,
           edit_sub_dep_id: pat_edit.sub_department_id,
           edit_appointment_date: pat_edit.appointment_date,
@@ -899,7 +901,6 @@ class Appointment extends Component {
   }
 
   generateChilderns(data) {
-    debugger;
     const colspan = data.mark_as_break
       ? { colSpan: 2, style: { width: "240px" } }
       : {};
@@ -1006,7 +1007,7 @@ class Appointment extends Component {
   }
 
   generateTimeslots(data) {
-    debugger;
+
     const clinic_id = data.clinic_id;
     const provider_id = data.provider_id;
     const sch_header_id = data.hims_d_appointment_schedule_header_id;
@@ -1083,7 +1084,6 @@ class Appointment extends Component {
     return <React.Fragment>{tds}</React.Fragment>;
   }
   getSnapshotBeforeUpdate() {
-    debugger;
     const doctorCntr = document.getElementsByClassName("tg");
     if (doctorCntr !== undefined && doctorCntr.length > 0) {
       const _completeWidth = doctorCntr[0].width * doctorCntr.length;
@@ -1095,7 +1095,6 @@ class Appointment extends Component {
     return null;
   }
   componentDidUpdate(props, prevState, snapshot) {
-    debugger;
   }
 
   render() {
