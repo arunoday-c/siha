@@ -826,7 +826,8 @@ function mapStateToProps(state) {
     patients: state.patients,
     visatypes: state.visatypes,
     patienttype: state.patienttype,
-    hospitaldetails: state.hospitaldetails
+    hospitaldetails: state.hospitaldetails,
+    genbill: state.genbill
   };
 }
 
@@ -842,7 +843,9 @@ function mapDispatchToProps(dispatch) {
       getStates: AlgaehActions,
       getVisatypes: AlgaehActions,
       getPatientType: AlgaehActions,
-      getHospitalDetails: AlgaehActions
+      getHospitalDetails: AlgaehActions,
+      generateBill: AlgaehActions,
+      billingCalculations: AlgaehActions
     },
     dispatch
   );
