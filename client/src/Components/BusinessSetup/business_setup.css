@@ -1,13 +1,11 @@
 .business_setup .business-section {
   background: #fff;
   border: 1px solid #d3d3d3;
-  margin: 10px;
-  margin-top: 0px;
   border-bottom-left-radius: 5px;
   background: #ffff;
   border-bottom-right-radius: 5px;
-  border-top-right-radius: 5px; }
-
-.business_setup .toggle-section {
-  margin: 10px;
-  margin-bottom: 0px; }
+  border-top-right-radius: 5px;
+  padding-top: 10px; }
+  .business_setup .business-section #departGrid_Cntr .ReactTable {
+    max-width: 98vw !important;
+    max-height: 53vh !important; }

@@ -131,7 +131,7 @@
       margin: 0 10px;
       list-style: none;
       display: inline-block; }
-      .patientProfile .patientTopNav .patient-quick-info li p {
+      .patientProfile .patientTopNav .patient-quick-info li section {
         width: 300px;
         height: auto;
         position: absolute;
@@ -143,19 +143,19 @@
         border-radius: 5px;
         color: #fff;
         display: none; }
-        .patientProfile .patientTopNav .patient-quick-info li p b.top-nav-sec-hdg {
+        .patientProfile .patientTopNav .patient-quick-info li section b.top-nav-sec-hdg {
           text-align: center;
           border-bottom: 1px solid #337e74;
           margin-left: -10px;
           margin-right: -10px;
           padding-bottom: 11px; }
-        .patientProfile .patientTopNav .patient-quick-info li p b {
+        .patientProfile .patientTopNav .patient-quick-info li section b {
           display: block;
           border-bottom: 1px solid #3f9c90;
           margin-bottom: 10px;
           padding-bottom: 5px;
           font-size: 0.8rem; }
-        .patientProfile .patientTopNav .patient-quick-info li p .listofA-D-D {
+        .patientProfile .patientTopNav .patient-quick-info li section .listofA-D-D {
           display: inline-block;
           margin-right: 8px;
           border: 1px solid #317970;
@@ -167,7 +167,7 @@
           border-radius: 20px;
           background: #3f9c91;
           font-size: 0.7rem; }
-        .patientProfile .patientTopNav .patient-quick-info li p section {
+        .patientProfile .patientTopNav .patient-quick-info li section p {
           background: rgba(0, 0, 0, 0.05);
           border-top: 1px solid #65dace;
           margin: -10px;
@@ -176,7 +176,7 @@
       background: #53bcb1;
       color: #fff;
       padding: 4px 10px; }
-      .patientProfile .patientTopNav .patient-quick-info li:hover p {
+      .patientProfile .patientTopNav .patient-quick-info li:hover section {
         display: block; }
 
 .patientProfile .patientContentArea {

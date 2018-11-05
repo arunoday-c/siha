@@ -17,7 +17,8 @@
     background: #8c8c8c !important;
     color: #fff !important; }
   .ReactTable .rt-td {
-    overflow: inherit !important; }
+    overflow: inherit !important;
+    white-space: normal !important; }
   .ReactTable i.fa-pen,
   .ReactTable i.fa-trash-alt,
   .ReactTable i.fa-save,
