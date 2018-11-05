@@ -201,32 +201,33 @@ class PatientMRD extends Component {
                 <li>
                   <i className="fas fa-allergies" />
                   <p>
-                    <b>Allergies:</b>
-
-                    {this.state.patientAllergies.map((data, index) => (
-                      <React.Fragment key={index}>
-                        <b>{data.allergy_type_desc}</b>
-                        {data.allergyList.map((allergy, aIndex) => (
-                          <span
-                            key={aIndex}
-                            className={
-                              "listofA-D-D " +
-                              (allergy.allergy_inactive === "Y" ? "red" : "")
-                            }
-                            title={
-                              "Onset Date : " +
-                              allergy.onset_date +
-                              "\n Comment : " +
-                              allergy.comment +
-                              "\n Severity : " +
-                              allergy.severity
-                            }
-                          >
-                            {allergy.allergy_name}
-                          </span>
-                        ))}
-                      </React.Fragment>
-                    ))}
+                    <b className="top-nav-sec-hdg">Allergies:</b>
+                    <section>
+                      {this.state.patientAllergies.map((data, index) => (
+                        <React.Fragment key={index}>
+                          <b>{data.allergy_type_desc}</b>
+                          {data.allergyList.map((allergy, aIndex) => (
+                            <span
+                              key={aIndex}
+                              className={
+                                "listofA-D-D " +
+                                (allergy.allergy_inactive === "Y" ? "red" : "")
+                              }
+                              title={
+                                "Onset Date : " +
+                                allergy.onset_date +
+                                "\n Comment : " +
+                                allergy.comment +
+                                "\n Severity : " +
+                                allergy.severity
+                              }
+                            >
+                              {allergy.allergy_name}
+                            </span>
+                          ))}
+                        </React.Fragment>
+                      ))}
+                    </section>
                   </p>
                 </li>
               </ul>

@@ -1714,6 +1714,9 @@ class Appointment extends Component {
                       onChange={this.monthChangeHandler.bind(this)}
                       value={moment(this.state.selectedHDate).format("YYYY-MM")}
                     />
+                    <button className="btn btn-default btn-sm  todayBtn">
+                      Today
+                    </button>
                   </div>
                 </div>
                 {this.generateHorizontalDateBlocks()}
