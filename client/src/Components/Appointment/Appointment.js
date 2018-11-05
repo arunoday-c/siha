@@ -7,7 +7,7 @@ import {
   AlgaehLabel,
   AlgaehDateHandler
 } from "../Wrapper/algaehWrapper";
-import { setGlobal } from "../../utils/GlobalFunctions";
+import { setGlobal, AlgaehValidation } from "../../utils/GlobalFunctions";
 import Modal from "@material-ui/core/Modal";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 import Enumerable from "linq";
@@ -243,80 +243,88 @@ class Appointment extends Component {
 
   addPatientAppointment(e) {
     e.preventDefault();
-    let from_time = this.state.apptFromTime;
-    let duration_minutes = this.state.apptSlot * this.state.no_of_slots;
-    let to_time = moment(from_time, "hh:mm a")
-      .add(duration_minutes, "minutes")
-      .format("HH:mm:ss");
 
-    let appt_date =
-      this.state.activeDateHeader !== undefined
-        ? this.state.activeDateHeader
-        : new Date();
+    AlgaehValidation({
+      querySelector: "data-validate='addApptDiv'",
+      alertTypeIcon: "warning",
+      onSuccess: () => {
+        let from_time = this.state.apptFromTime;
+        let duration_minutes = this.state.apptSlot * this.state.no_of_slots;
+        let to_time = moment(from_time, "hh:mm a")
+          .add(duration_minutes, "minutes")
+          .format("HH:mm:ss");
 
-    const send_data = {
-      patient_id: this.state.patient_id,
-      patient_code: this.state.patient_code,
-      provider_id: this.state.apptProvider,
-      sub_department_id: this.state.apptSubDept,
-      appointment_date: moment(appt_date).format("YYYY-MM-DD"),
-      appointment_from_time: moment(this.state.apptFromTime, "hh:mm a").format(
-        "HH:mm:ss"
-      ),
-      appointment_to_time: to_time,
-      appointment_status_id: this.state.appointment_status_id,
-      patient_name: this.state.patient_name,
-      arabic_name: this.state.arabic_name,
-      date_of_birth: this.state.date_of_birth,
-      age: this.state.age,
-      contact_number: this.state.contact_number,
-      email: this.state.email,
-      send_to_provider: "N",
-      gender: this.state.gender,
-      appointment_remarks: this.state.appointment_remarks,
-      number_of_slot: this.state.no_of_slots,
-      confirmed: "N",
-      cancelled: "N",
-      is_stand_by: this.state.is_stand_by
-    };
+        let appt_date =
+          this.state.activeDateHeader !== undefined
+            ? this.state.activeDateHeader
+            : new Date();
 
-    algaehApiCall({
-      uri: "/appointment/addPatientAppointment",
-      method: "POST",
-      data: send_data,
-      onSuccess: response => {
-        if (response.data.success) {
-          if (send_data.appointment_status_id === this.state.checkInId) {
-            setGlobal({
-              "FD-STD": "RegistrationPatient",
-              "appt-pat-code": this.state.patient_code,
-              "appt-provider-id": this.state.apptProvider,
-              "appt-dept-id": this.state.apptSubDept,
-              "appt-pat-name": this.state.patient_name,
-              "appt-pat-arabic-name": this.state.arabic_name,
-              "appt-pat-dob": this.state.date_of_birth,
-              "appt-pat-age": this.state.age,
-              "appt-pat-gender": this.state.gender,
-              "appt-pat-ph-no": this.state.contact_number,
-              "appt-pat-email": this.state.email,
-              "appt-department-id": this.state.department_id
-            });
-            document.getElementById("fd-router").click();
-          } else {
-            this.clearSaveState();
+        const send_data = {
+          patient_id: this.state.patient_id,
+          patient_code: this.state.patient_code,
+          provider_id: this.state.apptProvider,
+          sub_department_id: this.state.apptSubDept,
+          appointment_date: moment(appt_date).format("YYYY-MM-DD"),
+          appointment_from_time: moment(
+            this.state.apptFromTime,
+            "hh:mm a"
+          ).format("HH:mm:ss"),
+          appointment_to_time: to_time,
+          appointment_status_id: this.state.appointment_status_id,
+          patient_name: this.state.patient_name,
+          arabic_name: this.state.arabic_name,
+          date_of_birth: this.state.date_of_birth,
+          age: this.state.age,
+          contact_number: this.state.contact_number,
+          email: this.state.email,
+          send_to_provider: "N",
+          gender: this.state.gender,
+          appointment_remarks: this.state.appointment_remarks,
+          number_of_slot: this.state.no_of_slots,
+          confirmed: "N",
+          cancelled: "N",
+          is_stand_by: this.state.is_stand_by
+        };
+
+        algaehApiCall({
+          uri: "/appointment/addPatientAppointment",
+          method: "POST",
+          data: send_data,
+          onSuccess: response => {
+            if (response.data.success) {
+              if (send_data.appointment_status_id === this.state.checkInId) {
+                setGlobal({
+                  "FD-STD": "RegistrationPatient",
+                  "appt-pat-code": this.state.patient_code,
+                  "appt-provider-id": this.state.apptProvider,
+                  "appt-dept-id": this.state.apptSubDept,
+                  "appt-pat-name": this.state.patient_name,
+                  "appt-pat-arabic-name": this.state.arabic_name,
+                  "appt-pat-dob": this.state.date_of_birth,
+                  "appt-pat-age": this.state.age,
+                  "appt-pat-gender": this.state.gender,
+                  "appt-pat-ph-no": this.state.contact_number,
+                  "appt-pat-email": this.state.email,
+                  "appt-department-id": this.state.department_id
+                });
+                document.getElementById("fd-router").click();
+              } else {
+                this.clearSaveState();
+                swalMessage({
+                  title: "Appointment Created Successfully",
+                  type: "success"
+                });
+                this.setState({ showApt: false });
+                this.getAppointmentSchedule();
+              }
+            }
+          },
+          onFailure: error => {
             swalMessage({
-              title: "Appointment Created Successfully",
-              type: "success"
+              title: error.message,
+              type: "error"
             });
-            this.setState({ showApt: false });
-            this.getAppointmentSchedule();
           }
-        }
-      },
-      onFailure: error => {
-        swalMessage({
-          title: error.message,
-          type: "error"
         });
       }
     });
@@ -566,6 +574,9 @@ class Appointment extends Component {
   }
 
   openEditModal(patient, e) {
+e.preventDefault();
+
+
     if (
       (moment(patient.appointment_from_time, "HH:mm:ss").format("HHmm") <
         moment(new Date()).format("HHmm") ||
@@ -622,9 +633,22 @@ class Appointment extends Component {
         });
       });
     }
+
+ 
+
+
+
+   
   }
 
   updatePatientAppointment() {
+
+
+    AlgaehValidation({
+      querySelector: "data-validate='editApptDiv'",
+      alertTypeIcon: "warning",
+      onSuccess: () => {
+
     let edit_details = {
       hims_f_patient_appointment_id: this.state.edit_appointment_id,
       record_status: "A",
@@ -697,6 +721,9 @@ class Appointment extends Component {
         });
       }
     });
+
+  }
+})
   }
 
   showModal(e) {
@@ -1270,7 +1297,11 @@ class Appointment extends Component {
           <div id="appointment-module">
             {/* Edit Pop up Start */}
             <Modal open={this.state.openPatEdit}>
-              <div className="algaeh-modal" style={{ width: "55vw" }}>
+              <div
+                className="algaeh-modal"
+                style={{ width: "55vw" }}
+                data-validate="editApptDiv"
+              >
                 <div className="popupHeader">
                   <h4>Edit Appointment</h4>
                 </div>
@@ -1575,7 +1606,7 @@ class Appointment extends Component {
               <div
                 className="algaeh-modal"
                 style={{ width: "55vw" }}
-                data-validate="addApptModal"
+                data-validate="addApptDiv"
               >
                 <div className="popupHeader">
                   <h4>Book an Appointment</h4>
