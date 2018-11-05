@@ -1,11 +1,10 @@
 "use strict";
 import extend from "extend";
 import {
-  selectStatement,
-  paging,
+  
   whereCondition,
-  releaseDBConnection,
-  jsonArrayToObject
+  releaseDBConnection,deleteRecord
+  
 } from "../../utils";
 import httpStatus from "../../utils/httpStatus";
 //import { LINQ } from "node-linq";
@@ -71,7 +70,7 @@ let getVitalMasterHeader = (req, res, next) => {
   
       db.getConnection((error, connection) => {
         connection.query(
-          "select hims_d_vitals_header_id, vitals_name FROM hims_d_vitals_header where record_status='A' AND" +
+          "select hims_d_vitals_header_id,uom, vitals_name FROM hims_d_vitals_header where record_status='A' AND" +
             where.condition+" order by hims_d_vitals_header_id desc",
           where.values,
           (error, result) => {
@@ -88,6 +87,38 @@ let getVitalMasterHeader = (req, res, next) => {
       next(e);
     }
   };
+
+//created by irfan: to deleteVitalMasterHeader
+let deleteVitalMasterHeader = (req, res, next) => {
+    try {
+      if (req.db == null) {
+        next(httpStatus.dataBaseNotInitilizedError());
+      }
+  
+  
+      deleteRecord(
+        {
+          db: req.db,
+          tableName: "hims_d_vitals_header",
+          id: req.body.hims_d_vitals_header_id,
+          query:
+            "UPDATE hims_d_vitals_header SET  record_status='I' WHERE hims_d_vitals_header_id=?",
+          values: [req.body.hims_d_vitals_header_id]
+        },
+        result => {
+          req.records = result;
+          next();
+        },
+        error => {
+          next(error);
+        },
+        true
+      );
+    } catch (e) {
+      next(e);
+    }
+  };
+  
 
 //created by irfan: to add vital detail
 let addVitalMasterDetail = (req, res, next) => {
@@ -168,9 +199,45 @@ let getVitalMasterDetail = (req, res, next) => {
 };
 
 
+
+//created by irfan: to deleteVitalMasterDetail
+let deleteVitalMasterDetail = (req, res, next) => {
+    try {
+      if (req.db == null) {
+        next(httpStatus.dataBaseNotInitilizedError());
+      }
+  
+  
+      deleteRecord(
+        {
+          db: req.db,
+          tableName: "hims_d_vitals_details",
+          id: req.body.hims_d_vitals_details_id,
+          query:
+            "UPDATE hims_d_vitals_details SET  record_status='I' WHERE hims_d_vitals_details_id=?",
+          values: [req.body.hims_d_vitals_details_id]
+        },
+        result => {
+          req.records = result;
+          next();
+        },
+        error => {
+          next(error);
+        },
+        true
+      );
+    } catch (e) {
+      next(e);
+    }
+  };
+  
+
+
 module.exports = {
     addVitalMasterHeader,
     addVitalMasterDetail,
     getVitalMasterHeader,
-    getVitalMasterDetail
+    getVitalMasterDetail,
+    deleteVitalMasterHeader,
+    deleteVitalMasterDetail
 }

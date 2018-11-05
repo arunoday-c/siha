@@ -5,7 +5,9 @@ import {
   addVitalMasterHeader,
     addVitalMasterDetail,
     getVitalMasterHeader,
-    getVitalMasterDetail}from "../model/workBenchSetup";
+    getVitalMasterDetail, 
+    deleteVitalMasterHeader,
+    deleteVitalMasterDetail}from "../model/workBenchSetup";
   export default ({ config, db }) => {
     let api = Router();
   
@@ -56,6 +58,36 @@ import {
     api.get(
       "/getVitalMasterDetail",
       getVitalMasterDetail,
+      (req, res, next) => {
+        let result = req.records;
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+        next();
+      },
+      releaseConnection
+    );
+
+
+    
+    api.delete(
+      "/deleteVitalMasterHeader",
+      deleteVitalMasterHeader,
+      (req, res, next) => {
+        let result = req.records;
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+        next();
+      },
+      releaseConnection
+    );
+
+    api.delete(
+      "/deleteVitalMasterDetail",
+      deleteVitalMasterDetail,
       (req, res, next) => {
         let result = req.records;
         res.status(httpStatus.ok).json({
