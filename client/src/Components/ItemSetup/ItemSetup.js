@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-// import Enumerable from "linq";
+import Enumerable from "linq";
 import "./ItemSetup.css";
 import "../../styles/site.css";
 import { AlgaehLabel, AlgaehDataGrid } from "../Wrapper/algaehWrapper";
@@ -19,8 +19,7 @@ class ItemSetup extends Component {
     this.state = {
       isOpen: false,
       itemPop: {},
-      addNew: true,
-      ItemList: []
+      addNew: true
     };
   }
 
@@ -79,19 +78,14 @@ class ItemSetup extends Component {
       }
     });
 
-    if (
-      this.props.itemservices === undefined ||
-      this.props.itemservices.length === 0
-    ) {
-      this.props.getServices({
-        uri: "/serviceType/getService",
-        method: "GET",
-        redux: {
-          type: "SERVICES_GET_DATA",
-          mappingName: "itemservices"
-        }
-      });
-    }
+    this.props.getServices({
+      uri: "/serviceType/getService",
+      method: "GET",
+      redux: {
+        type: "SERVICES_GET_DATA",
+        mappingName: "itemservices"
+      }
+    });
 
     getItems(this, this);
   }
@@ -104,7 +98,43 @@ class ItemSetup extends Component {
     });
   }
 
+  CloseModel(e) {
+    this.setState(
+      {
+        ...this.state,
+        isOpen: !this.state.isOpen,
+        itemPop: {}
+      },
+      () => {
+        getItems(this, this);
+      }
+    );
+  }
+
   render() {
+    let ItemList = Enumerable.from(this.props.itemlist)
+      .groupBy("$.hims_d_item_master_id", null, (k, g) => {
+        let firstRecordSet = Enumerable.from(g).firstOrDefault();
+        return {
+          hims_d_item_master_id: firstRecordSet.hims_d_item_master_id,
+          item_description: firstRecordSet.item_description,
+          generic_id: firstRecordSet.generic_id,
+          category_id: firstRecordSet.category_id,
+          group_id: firstRecordSet.group_id,
+          form_id: firstRecordSet.form_id,
+          storage_id: firstRecordSet.storage_id,
+          item_uom_id: firstRecordSet.item_uom_id,
+          purchase_uom_id: firstRecordSet.purchase_uom_id,
+          sales_uom_id: firstRecordSet.sales_uom_id,
+          stocking_uom_id: firstRecordSet.stocking_uom_id,
+          item_status: firstRecordSet.item_status,
+          radioActive: firstRecordSet.item_status === "A" ? true : false,
+          radioInactive: firstRecordSet.item_status === "I" ? true : false,
+          service_id: firstRecordSet.service_id,
+          detail_item_uom: g.getSource()
+        };
+      })
+      .toArray();
     return (
       <div className="hims_item_setup">
         <BreadCrumb
@@ -159,7 +189,7 @@ class ItemSetup extends Component {
                     />
                   }
                   open={this.state.isOpen}
-                  onClose={this.ShowModel.bind(this)}
+                  onClose={this.CloseModel.bind(this)}
                   itemPop={this.state.itemPop}
                   addNew={this.state.addNew}
                 />
@@ -350,26 +380,6 @@ class ItemSetup extends Component {
                           );
                         }
                       },
-                      // {
-                      //   fieldName: "item_uom_id",
-                      //   label: <AlgaehLabel label={{ fieldName: "item_uom_id" }} />,
-                      //   displayTemplate: row => {
-                      //     let display =
-                      //       this.props.itemuom === undefined
-                      //         ? []
-                      //         : this.props.itemuom.filter(
-                      //             f => f.hims_d_pharmacy_uom_id === row.item_uom_id
-                      //           );
-
-                      //     return (
-                      //       <span>
-                      //         {display !== undefined && display.length !== 0
-                      //           ? display[0].uom_description
-                      //           : ""}
-                      //       </span>
-                      //     );
-                      //   }
-                      // },
 
                       {
                         fieldName: "item_status",
@@ -385,7 +395,7 @@ class ItemSetup extends Component {
                     ]}
                     keyId="hims_d_item_master_id"
                     dataSource={{
-                      data: this.state.ItemList
+                      data: ItemList
                     }}
                     filter={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
@@ -394,29 +404,6 @@ class ItemSetup extends Component {
               </div>
             </div>
           </div>
-
-          {/* Footer Start */}
-
-          {/* <div className="hptl-phase1-footer">
-            <AppBar position="static" className="main">
-              <div className="row">
-                <div className="col-lg-12">
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={this.ShowModel.bind(this)}
-                  >
-                    
-                    Add New
-                  </button>
-
-                </div>
-              </div>
-            </AppBar>
-          </div> 
-*/}
-
-          {/* Footer End */}
         </div>
       </div>
     );

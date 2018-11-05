@@ -766,6 +766,7 @@ let billingCalculations = (req, res, next) => {
       sendingObject.patient_payable = new LINQ(inputParam).Sum(
         d => d.patient_payable
       );
+
       sendingObject.company_payble = new LINQ(inputParam).Sum(
         d => d.company_payble
       );
@@ -854,6 +855,19 @@ let billingCalculations = (req, res, next) => {
         sendingObject.receiveable_amount - sendingObject.total_amount;
     }
 
+    sendingObject.patient_payable = math.round(
+      sendingObject.patient_payable,
+      2
+    );
+
+    sendingObject.total_tax = math.round(sendingObject.total_tax, 2);
+    sendingObject.patient_tax = math.round(sendingObject.patient_tax, 2);
+    sendingObject.company_tax = math.round(sendingObject.company_tax, 2);
+    sendingObject.sec_company_tax = math.round(
+      sendingObject.sec_company_tax,
+      2
+    );
+    // debugLog("patient_payable", sendingObject.patient_payable);
     req.records = sendingObject;
     next();
   } catch (e) {
@@ -1343,7 +1357,8 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                     total_tax = patient_tax;
                   }
 
-                  patient_payable = net_amout + patient_tax;
+                  // patient_payable = net_amout + patient_tax;
+                  patient_payable = math.round(net_amout + patient_tax, 2);
                 }
               })
 
@@ -1463,7 +1478,8 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                   }
                   total_tax = patient_tax + company_tax + sec_company_res;
 
-                  patient_payable = patient_resp + patient_tax;
+                  // patient_payable = patient_resp + patient_tax;
+                  patient_payable = math.round(patient_resp + patient_tax, 2);
                   sec_company_paybale =
                     sec_unit_cost - patient_resp + sec_company_tax;
                 }
@@ -2324,7 +2340,6 @@ let addEpisodeEncounterData = (req, res, next) => {
       input.updated_by
     ],
     (error, results) => {
-    
       if (error) {
         debugLog("error", error);
         if (req.options == null) {
@@ -2334,9 +2349,11 @@ let addEpisodeEncounterData = (req, res, next) => {
           });
         }
       }
-      db.query("update hims_f_patient_appointment set visit_created='Y',updated_date=?, \
-       updated_by=? where record_status='A' and hims_f_patient_appointment_id=?",[new Date(), 
-        input.updated_by,input.hims_f_patient_appointment_id],(error,patAppointment)=>{
+      db.query(
+        "update hims_f_patient_appointment set visit_created='Y',updated_date=?, \
+       updated_by=? where record_status='A' and hims_f_patient_appointment_id=?",
+        [new Date(), input.updated_by, input.hims_f_patient_appointment_id],
+        (error, patAppointment) => {
           if (error) {
             debugLog("error", error);
             if (req.options == null) {
@@ -2352,9 +2369,8 @@ let addEpisodeEncounterData = (req, res, next) => {
             debugLog("Success");
             req.options.onSuccess(results);
           }
-        })
-
-
+        }
+      );
     }
   );
 

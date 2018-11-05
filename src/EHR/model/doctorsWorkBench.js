@@ -1141,7 +1141,7 @@ let getPatientChiefComplaints = (req, res, next) => {
       connection.query(
         "select hh.hims_d_hpi_header_id,hh.hpi_description as chief_complaint_name,PE.hims_f_patient_encounter_id,PE.patient_id,\
         max(PE.updated_date) as Encounter_Date , ecc.hims_f_episode_chief_complaint_id,ecc.episode_id,ecc.chief_complaint_id,\
-        ecc.onset_date,ecc.`interval`,ecc.duration,ecc.severity,ecc.score,ecc.pain,ecc.`comment`\
+        ecc.onset_date,ecc.`interval`,ecc.duration,ecc.severity,ecc.score,ecc.pain,ecc.`comment`,ecc.`chronic`,ecc.`complaint_inactive`,ecc.`complaint_inactive_date`\
         from ( (hims_f_episode_chief_complaint ecc inner join hims_d_hpi_header hh on hh.hims_d_hpi_header_id=ecc.chief_complaint_id )    inner join hims_f_patient_encounter PE on PE.episode_id=ecc.episode_id)\
         where ecc.record_status='A'and ecc.episode_id=? group by chief_complaint_id ",
         [inputData.episode_id],
@@ -1327,6 +1327,10 @@ let updatePatientChiefComplaints = (req, res, next) => {
         let qry = "";
 
         for (let i = 0; i < req.body.chief_complaints.length; i++) {
+          const _complaint_inactive_date =
+            inputParam[i].complaint_inactive_date != null
+              ? "'" + inputParam[i].complaint_inactive_date + "'"
+              : null;
           qry +=
             "UPDATE `hims_f_episode_chief_complaint` SET  episode_id='" +
             inputParam[i].episode_id +
@@ -1348,9 +1352,10 @@ let updatePatientChiefComplaints = (req, res, next) => {
             inputParam[i].chronic +
             "', complaint_inactive='" +
             inputParam[i].complaint_inactive +
-            "', complaint_inactive_date='" +
-            inputParam[i].complaint_inactive_date +
-            "', comment='" +
+            "', complaint_inactive_date=" +
+            _complaint_inactive_date +
+            "\
+            , comment='" +
             inputParam[i].comment +
             "', updated_date='" +
             new Date().toLocaleString() +

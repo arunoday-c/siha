@@ -21,6 +21,7 @@ import {
 } from "./PatientProfileHandlers";
 import AlgaehReport from "../Wrapper/printReports";
 import Enumerable from "linq";
+import Summary from "./Summary/Summary";
 
 class PatientProfile extends Component {
   constructor(props) {
@@ -340,21 +341,12 @@ class PatientProfile extends Component {
                 Summary
               </span>
             </li>
-            <li className="nav-item">
-              <span
-                onClick={this.changeTabs}
-                algaehsoap="ucaf-report"
-                className="nav-link"
-              >
-                UCAF
-              </span>
-            </li>
             <ul className="float-right patient-quick-info">
               <li>
                 <i className="fas fa-allergies" />
-                <p>
+                <section>
                   <b className="top-nav-sec-hdg">Allergies:</b>
-                  <section>
+                  <p>
                     {_patient_allergies.map((data, index) => (
                       <React.Fragment key={index}>
                         <b>{data.allergy_type_desc}</b>
@@ -379,14 +371,14 @@ class PatientProfile extends Component {
                         ))}
                       </React.Fragment>
                     ))}
-                  </section>
-                </p>
+                  </p>
+                </section>
               </li>
               <li>
                 <i className="fas fa-diagnoses" />
-                <p>
+                <section>
                   <b className="top-nav-sec-hdg">Diagnosis:</b>
-                  <section>
+                  <p>
                     {_diagnosis.map((item, index) => (
                       <React.Fragment key={index}>
                         <span>{item.icd_code}</span>
@@ -401,21 +393,21 @@ class PatientProfile extends Component {
                         <span>{item.final_daignosis}</span>
                       </React.Fragment>
                     ))}
-                  </section>
-                </p>
+                  </p>
+                </section>
               </li>
               <li>
                 <i className="fas fa-utensils" />
-                <p>
+                <section>
                   <b className="top-nav-sec-hdg">Diet:</b>
-                  <section>
+                  <p>
                     {_diet.map((data, index) => (
                       <span key={index} className="listofA-D-D">
                         {data.icd_description}
                       </span>
                     ))}
-                  </section>
-                </p>
+                  </p>
+                </section>
               </li>
             </ul>
           </ul>
@@ -433,6 +425,8 @@ class PatientProfile extends Component {
             />
           ) : this.state.pageDisplay === "plan" ? (
             <Plan />
+          ) : this.state.pageDisplay === "summary" ? (
+            <Summary />
           ) : null}
         </div>
       </div>

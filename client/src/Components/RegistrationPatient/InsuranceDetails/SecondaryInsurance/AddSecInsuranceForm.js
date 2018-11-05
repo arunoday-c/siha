@@ -25,7 +25,8 @@ import {
   texthandle,
   datehandle,
   InsuranceDetails,
-  radioChange
+  radioChange,
+  enddatehandle
 } from "./SecInsuranceHandler";
 
 class AddSecInsuranceForm extends Component {
@@ -294,7 +295,7 @@ class AddSecInsuranceForm extends Component {
                         }}
                         minDate={new Date()}
                         events={{
-                          onChange: datehandle.bind(this, this, context)
+                          onChange: enddatehandle.bind(this, this, context)
                         }}
                         value={this.state.secondary_effective_end_date}
                         disabled={this.state.sec_insuranceYes}

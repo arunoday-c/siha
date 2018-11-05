@@ -20,9 +20,7 @@ const texthandle = ($this, context, ctrl, e) => {
   }, 1000);
 };
 
-const calculateRecipt = ($this, context) => {
-  var intervalId;
-
+const calculateRecipt = $this => {
   let serviceInput = {
     isReceipt: true,
     intCalculateall: false,
@@ -33,19 +31,15 @@ const calculateRecipt = ($this, context) => {
     receiveable_amount: parseFloat($this.state.receiveable_amount)
   };
 
-  clearInterval(intervalId);
-  intervalId = setInterval(() => {
-    $this.props.billingCalculations({
-      uri: "/billing/billingCalculations",
-      method: "POST",
-      data: serviceInput,
-      redux: {
-        type: "BILL_HEADER_GEN_GET_DATA",
-        mappingName: "genbill"
-      }
-    });
-    clearInterval(intervalId);
-  }, 1000);
+  $this.props.billingCalculations({
+    uri: "/billing/billingCalculations",
+    method: "POST",
+    data: serviceInput,
+    redux: {
+      type: "BILL_HEADER_GEN_GET_DATA",
+      mappingName: "genbill"
+    }
+  });
 };
 
 const cashtexthandle = ($this, context, ctrl, e) => {
@@ -73,14 +67,9 @@ const cashtexthandle = ($this, context, ctrl, e) => {
       }
     );
   } else {
-    $this.setState(
-      {
-        [e.target.name]: e.target.value
-      },
-      () => {
-        calculateRecipt($this, context);
-      }
-    );
+    $this.setState({
+      [e.target.name]: e.target.value
+    });
 
     if (context != null) {
       context.updateState({ [e.target.name]: e.target.value });
@@ -111,14 +100,9 @@ const cardtexthandle = ($this, context, ctrl, e) => {
       }
     );
   } else {
-    $this.setState(
-      {
-        [e.target.name]: e.target.value
-      },
-      () => {
-        calculateRecipt($this, context);
-      }
-    );
+    $this.setState({
+      [e.target.name]: e.target.value
+    });
 
     if (context != null) {
       context.updateState({ [e.target.name]: e.target.value });
@@ -150,14 +134,9 @@ const chequetexthandle = ($this, context, ctrl, e) => {
       }
     );
   } else {
-    $this.setState(
-      {
-        [e.target.name]: e.target.value
-      },
-      () => {
-        calculateRecipt($this, context);
-      }
-    );
+    $this.setState({
+      [e.target.name]: e.target.value
+    });
 
     if (context != null) {
       context.updateState({ [e.target.name]: e.target.value });
@@ -176,14 +155,9 @@ const adjustadvance = ($this, context, ctrl, e) => {
       icon: "warning"
     });
   } else {
-    $this.setState(
-      {
-        [e.target.name]: e.target.value
-      },
-      () => {
-        billheaderCalculation($this, context);
-      }
-    );
+    $this.setState({
+      [e.target.name]: e.target.value
+    });
 
     if (context != null) {
       context.updateState({
@@ -213,10 +187,6 @@ const discounthandle = ($this, context, ctrl, e) => {
       icon: "warning"
     });
   } else {
-    billheaderCalculation($this, {
-      sheet_discount_percentage,
-      sheet_discount_amount
-    });
     $this.setState({
       sheet_discount_percentage: sheet_discount_percentage,
       sheet_discount_amount: sheet_discount_amount
@@ -231,40 +201,28 @@ const discounthandle = ($this, context, ctrl, e) => {
   }
 };
 
-const billheaderCalculation = ($this, options) => {
-  if (options === undefined) {
-    options = {
-      sheet_discount_percentage: $this.state.sheet_discount_percentage,
-      sheet_discount_amount: $this.state.sheet_discount_amount
-    };
-  }
-  debugger;
-  var intervalId;
-
+const billheaderCalculation = $this => {
   let serviceInput = {
     isReceipt: false,
     intCalculateall: false,
-    sheet_discount_percentage: parseFloat(options.sheet_discount_percentage),
-    sheet_discount_amount: parseFloat(options.sheet_discount_amount),
+    sheet_discount_percentage: parseFloat(
+      $this.state.sheet_discount_percentage
+    ),
+    sheet_discount_amount: parseFloat($this.state.sheet_discount_amount),
     advance_adjust: parseFloat($this.state.advance_adjust),
     gross_total: parseFloat($this.state.gross_total),
     credit_amount: parseFloat($this.state.credit_amount)
   };
 
-  clearInterval(intervalId);
-
-  intervalId = setInterval(() => {
-    $this.props.billingCalculations({
-      uri: "/billing/billingCalculations",
-      method: "POST",
-      data: serviceInput,
-      redux: {
-        type: "BILL_HEADER_GEN_GET_DATA",
-        mappingName: "genbill"
-      }
-    });
-    clearInterval(intervalId);
-  }, 1000);
+  $this.props.billingCalculations({
+    uri: "/billing/billingCalculations",
+    method: "POST",
+    data: serviceInput,
+    redux: {
+      type: "BILL_HEADER_GEN_GET_DATA",
+      mappingName: "genbill"
+    }
+  });
 };
 
 const datehandle = ($this, context, ctrl, e) => {
@@ -350,6 +308,7 @@ const ProcessInsurance = ($this, context, ctrl, e) => {
 };
 
 const checkcashhandaler = ($this, context, e) => {
+  debugger;
   let Cashchecked = e.target.checked;
   $this.setState(
     {
@@ -361,16 +320,12 @@ const checkcashhandaler = ($this, context, e) => {
     }
   );
 
-  clearInterval(texthandlerInterval);
-  texthandlerInterval = setInterval(() => {
-    if (context !== undefined) {
-      context.updateState({
-        cash_amount: 0,
-        Cashchecked: Cashchecked
-      });
-    }
-    clearInterval(texthandlerInterval);
-  }, 1000);
+  if (context !== undefined) {
+    context.updateState({
+      cash_amount: 0,
+      Cashchecked: Cashchecked
+    });
+  }
 };
 
 const checkcardhandaler = ($this, context, e) => {
@@ -386,19 +341,14 @@ const checkcardhandaler = ($this, context, e) => {
       calculateRecipt($this, context);
     }
   );
-
-  clearInterval(texthandlerInterval);
-  texthandlerInterval = setInterval(() => {
-    if (context !== undefined) {
-      context.updateState({
-        card_amount: 0,
-        card_check_number: null,
-        expiry_date: null,
-        Cardchecked: Cardchecked
-      });
-    }
-    clearInterval(texthandlerInterval);
-  }, 1000);
+  if (context !== undefined) {
+    context.updateState({
+      card_amount: 0,
+      card_check_number: null,
+      expiry_date: null,
+      Cardchecked: Cardchecked
+    });
+  }
 };
 
 const checkcheckhandaler = ($this, context, e) => {
@@ -414,19 +364,14 @@ const checkcheckhandaler = ($this, context, e) => {
       calculateRecipt($this, context);
     }
   );
-
-  clearInterval(texthandlerInterval);
-  texthandlerInterval = setInterval(() => {
-    if (context !== undefined) {
-      context.updateState({
-        cheque_amount: 0,
-        cheque_number: null,
-        cheque_date: null,
-        Checkchecked: Checkchecked
-      });
-    }
-    clearInterval(texthandlerInterval);
-  }, 1000);
+  if (context !== undefined) {
+    context.updateState({
+      cheque_amount: 0,
+      cheque_number: null,
+      cheque_date: null,
+      Checkchecked: Checkchecked
+    });
+  }
 };
 
 const credittexthandle = ($this, context, ctrl, e) => {
@@ -439,20 +384,51 @@ const credittexthandle = ($this, context, ctrl, e) => {
       icon: "warning"
     });
   } else {
-    $this.setState(
-      {
-        [e.target.name]: e.target.value
-      },
-      () => {
-        billheaderCalculation($this, context);
-      }
-    );
+    $this.setState({
+      [e.target.name]: e.target.value
+    });
 
     if (context != null) {
       context.updateState({
         [e.target.name]: e.target.value
       });
     }
+  }
+};
+
+const advanceAdjustCal = ($this, e) => {
+  if (e.target.value !== e.target.oldvalue) {
+    billheaderCalculation($this);
+  }
+};
+
+const discountCal = ($this, e) => {
+  if (e.target.value !== e.target.oldvalue) {
+    billheaderCalculation($this);
+  }
+};
+
+const credittextCal = ($this, e) => {
+  if (e.target.value !== e.target.oldvalue) {
+    billheaderCalculation($this);
+  }
+};
+
+const cashtexthCal = ($this, e) => {
+  if (e.target.value !== e.target.oldvalue) {
+    calculateRecipt($this);
+  }
+};
+
+const cardtexthCal = ($this, e) => {
+  if (e.target.value !== e.target.oldvalue) {
+    calculateRecipt($this);
+  }
+};
+
+const chequetexthCal = ($this, e) => {
+  if (e.target.value !== e.target.oldvalue) {
+    calculateRecipt($this);
   }
 };
 
@@ -468,5 +444,11 @@ export {
   checkcashhandaler,
   checkcardhandaler,
   checkcheckhandaler,
-  credittexthandle
+  credittexthandle,
+  advanceAdjustCal,
+  discountCal,
+  credittextCal,
+  cashtexthCal,
+  cardtexthCal,
+  chequetexthCal
 };

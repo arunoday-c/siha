@@ -36,7 +36,7 @@ class HospitalServiceSetup extends Component {
       sub_department_id: null,
       hospital_id: null,
       service_type_id: null,
-      dummy: true,
+
       service_name: null,
       ServiceNames: []
     };
@@ -198,6 +198,7 @@ class HospitalServiceSetup extends Component {
   clearData(e) {
     this.setState(
       {
+        service_name: null,
         sub_department_id: null,
         hospital_id: null,
         service_type_id: null

@@ -229,7 +229,7 @@ let getPatientType = (req, res, next) => {
       connection.query(
         "SELECT * FROM `hims_d_patient_type`  \
        WHERE record_status='A' AND " +
-          where.condition,
+          where.condition+" order by hims_d_patient_type_id desc",
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);

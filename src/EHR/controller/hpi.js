@@ -2,7 +2,7 @@ import { Router } from "express";
 import { releaseConnection } from "../../utils";
 import httpStatus from "../../utils/httpStatus";
 import { addIcd ,getHpiElements,
-  addHpiElement,addPatientHpi} from "../model/hpi";
+  addHpiElement,addPatientHpi,getPatientHpi} from "../model/hpi";
 
 export default ({ config, db }) => {
   let api = Router();
@@ -57,6 +57,21 @@ export default ({ config, db }) => {
   api.post(
     "/addPatientHpi",
     addPatientHpi,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+  
+  // created by irfan : to getPatientHpi
+  api.get(
+    "/getPatientHpi",
+    getPatientHpi,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

@@ -11,7 +11,8 @@ import {
   chequetexthandle,
   checkcashhandaler,
   checkcardhandaler,
-  checkcheckhandaler
+  checkcheckhandaler,
+  calculateRecipt
 } from "./AddReciptFormHandaler";
 import {
   AlgaehDateHandler,
@@ -193,7 +194,11 @@ class AddReciptForm extends Component {
                           this.state.Billexists === true
                             ? true
                             : !this.state.Cashchecked,
-                        placeholder: "0.00"
+                        placeholder: "0.00",
+                        onBlur: calculateRecipt.bind(this, this),
+                        onFocus: e => {
+                          e.target.oldvalue = e.target.value;
+                        }
                       }
                     }}
                   />
@@ -234,7 +239,11 @@ class AddReciptForm extends Component {
                       },
                       others: {
                         disabled: !this.state.Cardchecked,
-                        placeholder: "0.00"
+                        placeholder: "0.00",
+                        onBlur: calculateRecipt.bind(this, this),
+                        onFocus: e => {
+                          e.target.oldvalue = e.target.value;
+                        }
                       }
                     }}
                   />
@@ -310,7 +319,11 @@ class AddReciptForm extends Component {
                       others: {
                         "data-receipt": "true",
                         disabled: !this.state.Checkchecked,
-                        placeholder: "0.00"
+                        placeholder: "0.00",
+                        onBlur: calculateRecipt.bind(this, this),
+                        onFocus: e => {
+                          e.target.oldvalue = e.target.value;
+                        }
                       }
                     }}
                   />

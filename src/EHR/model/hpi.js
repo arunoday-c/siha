@@ -351,6 +351,41 @@ let addPatientHpi = (req, res, next) => {
 };
 
 
+// created by : irfan to getPatientHpi hpi elements
+let getPatientHpi = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let inputData = extend({}, req.query);
 
-module.exports = { addIcd, getHpiElements,
-  addHpiElement,addPatientHpi };
+    db.getConnection((error, connection) => {
+      connection.query(
+        " select EH.hpi_header_id,hpi_description as chief_complaint, hpi_detail_id, HD.element_description, episode_id\
+        from hims_f_episode_hpi EH,hims_d_hpi_details HD,hims_d_hpi_header HH\
+        where EH.record_status='A' and   HH.record_status='A'  and  HD.record_status='A'  and\
+        EH.hpi_detail_id=HD.hims_d_hpi_details_id and \
+        EH.hpi_header_id=HH.hims_d_hpi_header_id and EH.episode_id=?;",
+        [inputData.episode_id],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+
+module.exports = { addIcd,
+   getHpiElements,
+  addHpiElement,
+  addPatientHpi,
+  getPatientHpi };

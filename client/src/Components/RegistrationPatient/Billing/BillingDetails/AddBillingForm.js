@@ -21,7 +21,13 @@ import {
   checkcashhandaler,
   checkcardhandaler,
   checkcheckhandaler,
-  credittexthandle
+  credittexthandle,
+  advanceAdjustCal,
+  discountCal,
+  credittextCal,
+  cashtexthCal,
+  cardtexthCal,
+  chequetexthCal
 } from "./AddBillingDetails";
 import MyContext from "../../../../utils/MyContext.js";
 import { withRouter } from "react-router-dom";
@@ -190,7 +196,11 @@ class AddBillingForm extends Component {
                               onChange: adjustadvance.bind(this, this, context)
                             },
                             others: {
-                              placeholder: "0.00"
+                              placeholder: "0.00",
+                              onBlur: advanceAdjustCal.bind(this, this),
+                              onFocus: e => {
+                                e.target.oldvalue = e.target.value;
+                              }
                             }
                           }}
                         />
@@ -208,7 +218,11 @@ class AddBillingForm extends Component {
                               onChange: discounthandle.bind(this, this, context)
                             },
                             others: {
-                              placeholder: "0.00"
+                              placeholder: "0.00",
+                              onBlur: discountCal.bind(this, this),
+                              onFocus: e => {
+                                e.target.oldvalue = e.target.value;
+                              }
                             }
                           }}
                         />
@@ -231,7 +245,11 @@ class AddBillingForm extends Component {
                               onChange: discounthandle.bind(this, this, context)
                             },
                             others: {
-                              placeholder: "0.00"
+                              placeholder: "0.00",
+                              onBlur: discountCal.bind(this, this),
+                              onFocus: e => {
+                                e.target.oldvalue = e.target.value;
+                              }
                             }
                           }}
                         />
@@ -278,7 +296,11 @@ class AddBillingForm extends Component {
                               )
                             },
                             others: {
-                              placeholder: "0.00"
+                              placeholder: "0.00",
+                              onBlur: credittextCal.bind(this, this),
+                              onFocus: e => {
+                                e.target.oldvalue = e.target.value;
+                              }
                             }
                           }}
                         />
@@ -424,7 +446,11 @@ class AddBillingForm extends Component {
                             },
                             others: {
                               disabled: !this.state.Cashchecked,
-                              placeholder: "0.00"
+                              placeholder: "0.00",
+                              onBlur: cashtexthCal.bind(this, this),
+                              onFocus: e => {
+                                e.target.oldvalue = e.target.value;
+                              }
                             }
                           }}
                         />
@@ -473,7 +499,11 @@ class AddBillingForm extends Component {
                             },
                             others: {
                               disabled: !this.state.Cardchecked,
-                              placeholder: "0.00"
+                              placeholder: "0.00",
+                              onBlur: cardtexthCal.bind(this, this),
+                              onFocus: e => {
+                                e.target.oldvalue = e.target.value;
+                              }
                             }
                           }}
                         />
@@ -560,7 +590,11 @@ class AddBillingForm extends Component {
                             },
                             others: {
                               disabled: !this.state.Checkchecked,
-                              placeholder: "0.00"
+                              placeholder: "0.00",
+                              onBlur: chequetexthCal.bind(this, this),
+                              onFocus: e => {
+                                e.target.oldvalue = e.target.value;
+                              }
                             }
                           }}
                         />
