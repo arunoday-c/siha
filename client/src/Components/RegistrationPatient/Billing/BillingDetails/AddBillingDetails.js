@@ -417,35 +417,30 @@ const advanceAdjustCal = ($this, e) => {
 };
 
 const discountCal = ($this, e) => {
-  debugger;
   if (e.target.value !== e.target.oldvalue) {
     billheaderCalculation($this);
   }
 };
 
 const credittextCal = ($this, e) => {
-  debugger;
   if (e.target.value !== e.target.oldvalue) {
     billheaderCalculation($this);
   }
 };
 
 const cashtexthCal = ($this, e) => {
-  debugger;
   if (e.target.value !== e.target.oldvalue) {
     calculateRecipt($this);
   }
 };
 
 const cardtexthCal = ($this, e) => {
-  debugger;
   if (e.target.value !== e.target.oldvalue) {
     calculateRecipt($this);
   }
 };
 
 const chequetexthCal = ($this, e) => {
-  debugger;
   if (e.target.value !== e.target.oldvalue) {
     calculateRecipt($this);
   }

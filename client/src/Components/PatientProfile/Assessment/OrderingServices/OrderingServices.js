@@ -438,7 +438,10 @@ class OrderingServices extends Component {
                                       this,
                                       this,
                                       row
-                                    )
+                                    ),
+                                    onFocus: e => {
+                                      e.target.oldvalue = e.target.value;
+                                    }
                                   }
                                 }}
                               />
@@ -483,7 +486,10 @@ class OrderingServices extends Component {
                                       this,
                                       this,
                                       row
-                                    )
+                                    ),
+                                    onFocus: e => {
+                                      e.target.oldvalue = e.target.value;
+                                    }
                                   }
                                 }}
                               />
@@ -518,7 +524,10 @@ class OrderingServices extends Component {
                                       this,
                                       this,
                                       row
-                                    )
+                                    ),
+                                    onFocus: e => {
+                                      e.target.oldvalue = e.target.value;
+                                    }
                                   }
                                 }}
                               />
