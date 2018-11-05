@@ -59,6 +59,45 @@ class Appointment extends Component {
     // );
   }
 
+  cancelAppt(row) {
+    swal({
+      title: "Cancel Appointment for " + row.patient_name + "?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        let data = {
+          cancel_reason: "I cancelled to test",
+          hims_f_patient_appointment_id: row.hims_f_patient_appointment_id
+        };
+        algaehApiCall({
+          uri: "/appointment/cancelPatientAppointment",
+          data: data,
+          method: "PUT",
+          onSuccess: response => {
+            if (response.data.success) {
+              swalMessage({
+                title: "Record cancelled successfully . .",
+                type: "success"
+              });
+            }
+            this.getAppointmentSchedule();
+          },
+          onFailure: error => {}
+        });
+      } else {
+        swalMessage({
+          title: "Not cancelled",
+          type: "error"
+        });
+      }
+    });
+  }
+
   componentDidCatch(error, info) {
     // Display fallback UI
     this.setState({ hasError: true });
@@ -578,7 +617,8 @@ class Appointment extends Component {
           edit_sub_dep_id: pat_edit.sub_department_id,
           edit_appointment_date: pat_edit.appointment_date,
           patient_code: pat_edit.patient_code,
-          edit_no_of_slots: pat_edit.number_of_slot
+          edit_no_of_slots: pat_edit.number_of_slot,
+          edit_is_stand_by: pat_edit.is_stand_by
         });
       });
     }
@@ -611,7 +651,7 @@ class Appointment extends Component {
       cancelled_date: null,
       cancel_reason: null,
       appointment_remarks: this.state.edit_appointment_remarks,
-      is_stand_by: "N",
+      is_stand_by: this.state.edit_is_stand_by,
       number_of_slot: this.state.edit_no_of_slots
     };
 
@@ -874,7 +914,6 @@ class Appointment extends Component {
   }
 
   plotPatients(data) {
-    debugger;
     const newEndTime = new moment(data.time, "hh:mm a").add(
       data.slot,
       "minutes"
@@ -897,26 +936,129 @@ class Appointment extends Component {
       .toArray();
     if (patient !== undefined) {
       debugger;
-      for (let i = 0; i < patient.length; i++) {
-        console.log("Patient:", patient[i]);
-        return patient[i];
-      }
+      return patient;
+    } else {
+      return null;
+    }
+  }
+  plotStandByIcon(patient, data) {
+    const _isstandby =
+      patient === null || patient === undefined
+        ? "N"
+        : patient.is_stand_by === "Y"
+          ? "N"
+          : null;
+    if (_isstandby !== null) {
+      return (
+        <i
+          appt-time={data.time}
+          to_work_hr={data.to_work_hr}
+          from_break_hr1={data.from_break_hr1}
+          to_break_hr1={data.to_break_hr1}
+          from_break_hr2={data.from_break_hr2}
+          to_break_hr2={data.to_work_hr}
+          slot={data.slot}
+          clinic_id={data.clinic_id}
+          provider_id={data.provider_id}
+          sch_header_id={data.sch_header_id}
+          sch_detail_id={data.sch_detail_id}
+          sub_dept_id={data.sub_dept_id}
+          isstandby={_isstandby}
+          onClick={this.showModal.bind(this)}
+          className="fas fa-plus"
+        />
+      );
     } else {
       return null;
     }
   }
 
+  loadSubStandBy(patients) {
+    debugger;
+    if (patients !== undefined && patients !== null && patients.length > 0) {
+      const _otherPatients = patients.slice(1);
+      if (_otherPatients !== undefined && _otherPatients.length > 0) {
+        return (
+          <span className="patientStdbyCount">
+            {_otherPatients.length} more..
+            <ul>
+              {_otherPatients.map((item, index) => {
+                return (
+                  <li key={index}>
+                    {item.patient_name} <b>x</b>
+                  </li>
+                );
+              })}
+            </ul>
+          </span>
+        );
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+  renderStandByMultiple(standByPatients) {
+    if (standByPatients !== null && standByPatients !== undefined) {
+      const _firstPatient = standByPatients[0];
+      if (_firstPatient !== undefined) {
+        return (
+          <React.Fragment>
+            <div
+              appt-pat={JSON.stringify(_firstPatient)}
+              className="dynPatient"
+              style={{ background: "#f2f2f2" }}
+              //draggable={true}
+              //onDragStart={this.drag.bind(this)}
+              onClick={this.openEditModal.bind(this, _firstPatient)}
+            >
+              {_firstPatient.patient_name}
+              <br />
+              {_firstPatient.contact_number}
+              <i
+                className="fas fa-times"
+                onClick={this.openEditModal.bind(this, _firstPatient)}
+              />
+            </div>
+            {this.loadSubStandBy(standByPatients)}
+          </React.Fragment>
+        );
+      } else {
+        return null;
+      }
+    }
+  }
+
   generateChilderns(data) {
-    //console.log("genChildren:", data);
     const colspan = data.mark_as_break
       ? { colSpan: 2, style: { width: "240px" } }
       : {};
-
-    const patient = this.plotPatients({
+    debugger;
+    const _patientList = this.plotPatients({
       time: data.time,
       slot: data.slot,
       patients: data.patients
     });
+    const patient =
+      _patientList !== null
+        ? Enumerable.from(_patientList)
+            .where(w => w.is_stand_by === "N")
+            .firstOrDefault()
+        : undefined;
+
+    const _standByPatients =
+      _patientList !== null
+        ? Enumerable.from(_patientList)
+            .where(w => w.is_stand_by === "Y")
+            .toArray()
+        : undefined;
+    // const _standByPatients =
+    // _patientList !== null
+    //   ? Enumerable.from(_patientList)
+    //       .where(w => w.is_stand_by === "Y")
+    //       .toArray()
+    //   : undefined;
 
     debugger;
 
@@ -954,64 +1096,36 @@ class Appointment extends Component {
           onDrop={this.drop.bind(this)}
           onDragOver={this.allowDrop.bind(this)}
         >
-          {data.mark_as_break == false ? (
+          {data.mark_as_break === false ? (
             <span className="dynSlot">{data.time}</span>
           ) : null}
 
           {data.mark_as_break === false ? (
             <React.Fragment>
-              {patient === null || patient === undefined ? (
-                <i
-                  appt-time={data.time}
-                  to_work_hr={data.to_work_hr}
-                  from_break_hr1={data.from_break_hr1}
-                  to_break_hr1={data.to_break_hr1}
-                  from_break_hr2={data.from_break_hr2}
-                  to_break_hr2={data.to_work_hr}
-                  slot={data.slot}
-                  clinic_id={data.clinic_id}
-                  provider_id={data.provider_id}
-                  sch_header_id={data.sch_header_id}
-                  sch_detail_id={data.sch_detail_id}
-                  sub_dept_id={data.sub_dept_id}
-                  isstandby="N"
-                  onClick={this.showModal.bind(this)}
-                  className="fas fa-plus"
-                />
-              ) : patient.is_stand_by === "Y" ? (
-                <i
-                  appt-time={data.time}
-                  to_work_hr={data.to_work_hr}
-                  from_break_hr1={data.from_break_hr1}
-                  to_break_hr1={data.to_break_hr1}
-                  from_break_hr2={data.from_break_hr2}
-                  to_break_hr2={data.to_work_hr}
-                  slot={data.slot}
-                  clinic_id={data.clinic_id}
-                  provider_id={data.provider_id}
-                  sch_header_id={data.sch_header_id}
-                  sch_detail_id={data.sch_detail_id}
-                  sub_dept_id={data.sub_dept_id}
-                  isstandby="N"
-                  onClick={this.showModal.bind(this)}
-                  className="fas fa-plus"
-                />
-              ) : null}
+              {this.plotStandByIcon(patient, data)}
 
               {patient !== null &&
               patient !== undefined &&
-              patient.is_stand_by === "N" ? (
+              patient.is_stand_by === "N" &&
+              patient.cancelled === "N" ? (
                 <div
                   appt-pat={JSON.stringify(patient)}
                   className="dynPatient"
                   style={{ background: bg_color }}
                   draggable={true}
                   onDragStart={this.drag.bind(this)}
-                  onClick={this.openEditModal.bind(this, patient)}
                 >
-                  {patient.patient_name}
-                  <br />
-                  {patient.contact_number}
+                  <span onClick={this.openEditModal.bind(this, patient)}>
+                    {patient.patient_name}
+                    <br />
+                    {patient.contact_number}
+                  </span>
+
+                  <i
+                    className="fas fa-times"
+                    // onClick={this.openEditModal.bind(this, _standByPatients)}
+                    onClick={this.cancelAppt.bind(this, patient)}
+                  />
                 </div>
               ) : null}
             </React.Fragment>
@@ -1049,26 +1163,8 @@ class Appointment extends Component {
               onClick={this.showModal.bind(this)}
               className="fas fa-plus"
               className="fas fa-plus"
-              //onClick={this.showModal.bind(this)}
             />
-
-            {patient !== null &&
-            patient !== undefined &&
-            patient.is_stand_by === "Y" ? (
-              <div
-                appt-pat={JSON.stringify(patient)}
-                className="dynPatient"
-                //background={bg_color}
-                style={{ background: bg_color }}
-                //draggable={true}
-                //onDragStart={this.drag.bind(this)}
-                //onClick={this.openEditModal.bind(this, patient)}
-              >
-                {patient.patient_name}
-                <br />
-                {patient.contact_number}
-              </div>
-            ) : null}
+            {this.renderStandByMultiple(_standByPatients)}
           </td>
         ) : null}
       </tr>
