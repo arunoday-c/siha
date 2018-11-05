@@ -67,6 +67,8 @@ class DataGrid extends PureComponent {
   renderEditable = (templates, cellInfo) => {
     const editable = this.state.editableRows[cellInfo.index];
     const rowDetail = this.state.data[cellInfo.index];
+    const _fullNonEditor =
+      this.props.isEditable !== undefined ? this.props.isEditable : false;
     const _disabled =
       cellInfo.column.disabled !== undefined ? cellInfo.column.disabled : false;
     if (editable === undefined || editable === false) {
@@ -78,7 +80,7 @@ class DataGrid extends PureComponent {
         return <span>{_value}</span>; // style={{ width: _width }}
       }
     } else {
-      if (_disabled) {
+      if (_disabled || !_fullNonEditor) {
         const _value = rowDetail[cellInfo.column.id];
         //const _width = this.getTextWidth(_value);
         return <span>{_value}</span>; //style={{ width: _width }}
@@ -135,7 +137,6 @@ class DataGrid extends PureComponent {
     }
   };
   toggleRowEditable = index => {
-    debugger;
     let existsing = sessionStorage.getItem(this.props.id);
     existsing = existsing !== null ? JSON.parse(existsing)["collection"] : [];
     const prevStateIndexData = this.state.data[index];

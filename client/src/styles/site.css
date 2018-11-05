@@ -1051,3 +1051,6 @@ th {
 [data-tooltip]:hover:after {
   visibility: visible;
   opacity: 1; }
+
+.hijri-calender {
+  z-index: 9; }
