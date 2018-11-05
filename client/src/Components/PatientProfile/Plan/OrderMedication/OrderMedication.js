@@ -25,7 +25,9 @@ import {
   deleteItems,
   datehandle,
   SaveMedication,
-  dateFormater
+  dateFormater,
+  numberhandle,
+  calcuateDispense
 } from "./OrderMedicationEvents";
 import "./OrderMedication.css";
 import "../../../../styles/site.css";
@@ -55,10 +57,10 @@ class OrderMedication extends Component {
 
       item_id: null,
       generic_id: null,
-      dosage: null,
+      dosage: 1,
       frequency: null,
-      no_of_days: null,
-      dispense: null,
+      no_of_days: 0,
+      dispense: 0,
 
       frequency_type: null,
       frequency_time: null,
@@ -181,11 +183,18 @@ class OrderMedication extends Component {
                 forceLabel: "Dosage"
               }}
               textBox={{
+                decimal: { allowNegative: false },
                 className: "txt-fld",
                 name: "dosage",
                 value: this.state.dosage,
                 events: {
-                  onChange: texthandle.bind(this, this)
+                  onChange: numberhandle.bind(this, this)
+                },
+                others: {
+                  onBlur: calcuateDispense.bind(this, this),
+                  onFocus: e => {
+                    e.target.oldvalue = e.target.value;
+                  }
                 }
               }}
             />
@@ -196,11 +205,18 @@ class OrderMedication extends Component {
                 forceLabel: "Duration (Days)"
               }}
               textBox={{
+                decimal: { allowNegative: false },
                 className: "txt-fld",
                 name: "no_of_days",
                 value: this.state.no_of_days,
                 events: {
-                  onChange: texthandle.bind(this, this)
+                  onChange: numberhandle.bind(this, this)
+                },
+                others: {
+                  onBlur: calcuateDispense.bind(this, this),
+                  onFocus: e => {
+                    e.target.oldvalue = e.target.value;
+                  }
                 }
               }}
             />
@@ -211,11 +227,12 @@ class OrderMedication extends Component {
                 forceLabel: "Total Qty."
               }}
               textBox={{
+                decimal: { allowNegative: false },
                 className: "txt-fld",
                 name: "dispense",
                 value: this.state.dispense,
                 events: {
-                  onChange: texthandle.bind(this, this)
+                  onChange: numberhandle.bind(this, this)
                 }
               }}
             />

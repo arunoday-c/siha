@@ -14,7 +14,7 @@ const texthandle = ($this, e) => {
 
 const getHospotalServices = $this => {
   let inputObj = {};
-
+  debugger;
   if ($this.state.service_name !== null) {
     inputObj = { hims_d_services_id: $this.state.service_name };
   }
@@ -36,11 +36,6 @@ const getHospotalServices = $this => {
     redux: {
       type: "SERVICES_GET_DATA",
       mappingName: "hospitalservices"
-    },
-    afterSuccess: data => {
-      $this.setState({
-        dummy: !$this.state.dummy
-      });
     }
   });
 };
