@@ -11,6 +11,8 @@
     text-transform: uppercase !important;
     background: #8c8c8c !important;
     color: #fff !important; }
+    .ReactTable .rt-th label {
+      font-weight: 600; }
   .ReactTable .-filters .rt-th {
     white-space: unset !important;
     text-transform: uppercase !important;

@@ -113,6 +113,12 @@
         "label": "Physician Schedule Setup",
         "arlabel": "إعداد جدول الطبيب",
         "path": "/PhysicianScheduleSetup"
+      },
+      {
+        "name": "StaffCashCollection",
+        "label": "Staff Cash Collection",
+        "arlabel": "مجموعة الموظفين النقدية",
+        "path": "/StaffCashCollection"
       }
     ]
   },

@@ -12,6 +12,9 @@
     text-transform: uppercase !important;
     background: #8c8c8c !important;
     color: #fff !important;
+    label {
+      font-weight: 600;
+    }
   }
   .-filters {
     .rt-th {
@@ -21,6 +24,7 @@
       color: #fff !important;
     }
   }
+
   .rt-td {
     overflow: inherit !important;
     white-space: normal !important;
