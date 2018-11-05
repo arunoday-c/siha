@@ -56,11 +56,15 @@ const onvalidate = $this => {
   }
   if (success === true) {
     swal({
-      title: "Are you sure want to Validate",
+      title: "Are you sure want to Validate?",
       type: "warning",
-      buttons: true
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
     }).then(willProceed => {
-      if (willProceed) {
+      if (willProceed.value) {
         test_analytes.push({ run_type: $this.state.run_type });
         UpdateLabOrder($this, test_analytes, "V");
       }
@@ -220,11 +224,15 @@ const onconfirm = $this => {
   }
   if (success === true) {
     swal({
-      title: "Are you sure want to Confirm",
+      title: "Are you sure want to Confirm?",
       type: "warning",
-      buttons: true
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
     }).then(willProceed => {
-      if (willProceed) {
+      if (willProceed.value) {
         test_analytes.push({ run_type: $this.state.run_type });
         UpdateLabOrder($this, test_analytes, "CF");
       }
@@ -257,11 +265,15 @@ const onReRun = $this => {
 
   if (success === true) {
     swal({
-      title: "Are you sure want to Re-Run",
+      title: "Are you sure want to Re-Run?",
       type: "warning",
-      buttons: true
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
     }).then(willProceed => {
-      if (willProceed) {
+      if (willProceed.value) {
         UpdateLabOrder($this, test_analytes, "N");
       }
     });
@@ -301,11 +313,15 @@ const onchangegridresult = ($this, row, e) => {
 
 const onchangegridamended = ($this, row, e) => {
   swal({
-    title: "Are you sure you want to Ammend?",
+    title: "Are you sure want to Ammend?",
     type: "warning",
-    buttons: true
+    showCancelButton: true,
+    confirmButtonText: "Yes!",
+    confirmButtonColor: "#44b8bd",
+    cancelButtonColor: "#d33",
+    cancelButtonText: "No"
   }).then(willProceed => {
-    if (willProceed) {
+    if (willProceed.value) {
       let name = e.name || e.target.name;
       let value = e.value || e.target.value;
       let test_analytes = $this.state.test_analytes;
