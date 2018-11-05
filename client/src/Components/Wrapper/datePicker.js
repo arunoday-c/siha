@@ -4,9 +4,8 @@ import "../Wrapper/wrapper.css";
 import { getCookie } from "../../utils/algaehApiCall.js";
 import moment from "moment";
 import config from "../../utils/config.json";
-import momentHijri from "moment-hijri";
-import HijriDatePicker from "hijri-date-picker";
-import "../../../node_modules/hijri-date-picker/build/css/index.css";
+
+// import "../../../node_modules/hijri-date-picker/build/css/index.css";
 export default class DateHandler extends PureComponent {
   generateLabel = () => {
     if (this.props.label != null) {
@@ -91,25 +90,7 @@ export default class DateHandler extends PureComponent {
             {...this.props.textBox.others}
             {..._required}
           />
-        ) : (
-          <HijriDatePicker
-            inputName="hijri_date"
-            className="form-control"
-            selectedDate="1439/08/02"
-            onChange={chg => {
-              debugger;
-            }}
-            onDayChange={da => {
-              debugger;
-            }}
-          />
-          // <HijriDatePicker
-          //   inputName={this.props.textBox.name}
-          //   // defaultValue={new Date()}
-          //   selected={momentHijri(new Date()).format("YYYY-MM-DD")}
-          //   onChange={this.onDayChange.bind(this)}
-          // />
-        )}
+        ) : null}
       </div>
     );
   };
