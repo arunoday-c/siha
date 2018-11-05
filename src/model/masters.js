@@ -272,7 +272,7 @@ let visaMaster = (req, res, next) => {
         "SELECT `hims_d_visa_type_id`, `visa_type_code`, `visa_type`, `arabic_visa_type`, \
          `created_by`, `created_date`, `updated_by`, `updated_date`, `visa_status` FROM \
          `hims_d_visa_type` WHERE `record_status`='A' AND " +
-          where.condition,
+          where.condition+" order by hims_d_visa_type_id desc",
         where.values,
         (error, result) => {
           connection.release();
