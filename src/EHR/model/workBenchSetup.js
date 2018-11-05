@@ -119,6 +119,43 @@ let deleteVitalMasterHeader = (req, res, next) => {
     }
   };
   
+//created by irfan: to updateVitalMasterHeader
+let updateVitalMasterHeader = (req, res, next) => {
+    try {
+      if (req.db == null) {
+        next(httpStatus.dataBaseNotInitilizedError());
+      }
+      let db = req.db;
+      let input = extend({}, req.body);
+      db.getConnection((error, connection) => {
+        if (error) {
+          next(error);
+        }
+  
+        connection.query(
+          "UPDATE `hims_d_vitals_header` SET vitals_name=?,uom=?,\
+             updated_date=?, updated_by=?  WHERE  `record_status`='A' and `hims_d_vitals_header_id`=?;",
+          [
+            input.vitals_name,
+            input.uom, 
+            new Date(),
+            input.updated_by,      
+            input.hims_d_vitals_header_id
+          ],
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+            req.records = result;
+            next();
+          }
+        );
+      });
+    } catch (e) {
+      next(e);
+    }
+  };
 
 //created by irfan: to add vital detail
 let addVitalMasterDetail = (req, res, next) => {
@@ -198,8 +235,6 @@ let getVitalMasterDetail = (req, res, next) => {
   }
 };
 
-
-
 //created by irfan: to deleteVitalMasterDetail
 let deleteVitalMasterDetail = (req, res, next) => {
     try {
@@ -231,6 +266,48 @@ let deleteVitalMasterDetail = (req, res, next) => {
     }
   };
   
+//created by irfan: to updateVitalMasterDetail
+let updateVitalMasterDetail = (req, res, next) => {
+    try {
+      if (req.db == null) {
+        next(httpStatus.dataBaseNotInitilizedError());
+      }
+      let db = req.db;
+      let input = extend({}, req.body);
+      db.getConnection((error, connection) => {
+        if (error) {
+          next(error);
+        }
+  
+        connection.query(
+          "UPDATE `hims_d_vitals_details` SET  vitals_header_id=?, gender=?, min_age=?, max_age=?, min_value=?, max_value=?,\
+             updated_date=?, updated_by=?  WHERE  `record_status`='A' and `hims_d_vitals_details_id`=?;",
+          [
+            input.vitals_header_id,
+            input.gender,
+            input.min_age,
+            input.max_age,
+            input.min_value,
+            input.max_value,
+            new Date(),
+            input.updated_by,      
+            input.hims_d_vitals_details_id
+          ],
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+            req.records = result;
+            next();
+          }
+        );
+      });
+    } catch (e) {
+      next(e);
+    }
+  };
+
 
 
 module.exports = {
@@ -239,5 +316,7 @@ module.exports = {
     getVitalMasterHeader,
     getVitalMasterDetail,
     deleteVitalMasterHeader,
-    deleteVitalMasterDetail
+    deleteVitalMasterDetail,
+    updateVitalMasterHeader,
+    updateVitalMasterDetail
 }
