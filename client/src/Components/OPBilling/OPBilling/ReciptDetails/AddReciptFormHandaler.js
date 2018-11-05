@@ -23,21 +23,19 @@ const texthandle = ($this, context, ctrl, e) => {
   }
 };
 
-const calculateRecipt = ($this, context) => {
-  var intervalId;
+const calculateRecipt = ($this, e) => {
+  debugger;
+  if (e.target === null || e.target.value !== e.target.oldvalue) {
+    let serviceInput = {
+      isReceipt: true,
+      intCalculateall: false,
 
-  let serviceInput = {
-    isReceipt: true,
-    intCalculateall: false,
+      cash_amount: parseFloat($this.state.cash_amount),
+      card_amount: parseFloat($this.state.card_amount),
+      cheque_amount: parseFloat($this.state.cheque_amount),
+      receiveable_amount: parseFloat($this.state.receiveable_amount)
+    };
 
-    cash_amount: parseFloat($this.state.cash_amount),
-    card_amount: parseFloat($this.state.card_amount),
-    cheque_amount: parseFloat($this.state.cheque_amount),
-    receiveable_amount: parseFloat($this.state.receiveable_amount)
-  };
-
-  clearInterval(intervalId);
-  intervalId = setInterval(() => {
     $this.props.billingCalculations({
       uri: "/billing/billingCalculations",
       method: "POST",
@@ -47,8 +45,7 @@ const calculateRecipt = ($this, context) => {
         mappingName: "genbill"
       }
     });
-    clearInterval(intervalId);
-  }, 1000);
+  }
 };
 
 const cashtexthandle = ($this, context, ctrl, e) => {
@@ -76,14 +73,9 @@ const cashtexthandle = ($this, context, ctrl, e) => {
         }
       );
     } else {
-      $this.setState(
-        {
-          [e.target.name]: e.target.value
-        },
-        () => {
-          calculateRecipt($this, context);
-        }
-      );
+      $this.setState({
+        [e.target.name]: e.target.value
+      });
 
       if (context != null) {
         context.updateState({ [e.target.name]: e.target.value });
@@ -116,14 +108,9 @@ const cardtexthandle = ($this, context, ctrl, e) => {
         }
       );
     } else {
-      $this.setState(
-        {
-          [e.target.name]: e.target.value
-        },
-        () => {
-          calculateRecipt($this, context);
-        }
-      );
+      $this.setState({
+        [e.target.name]: e.target.value
+      });
 
       if (context != null) {
         context.updateState({ [e.target.name]: e.target.value });
@@ -157,14 +144,9 @@ const chequetexthandle = ($this, context, ctrl, e) => {
         }
       );
     } else {
-      $this.setState(
-        {
-          [e.target.name]: e.target.value
-        },
-        () => {
-          calculateRecipt($this, context);
-        }
-      );
+      $this.setState({
+        [e.target.name]: e.target.value
+      });
 
       if (context != null) {
         context.updateState({ [e.target.name]: e.target.value });
@@ -191,20 +173,16 @@ const checkcashhandaler = ($this, context, e) => {
       cash_amount: 0
     },
     () => {
-      calculateRecipt($this, context);
+      calculateRecipt($this, e);
     }
   );
 
-  clearInterval(texthandlerInterval);
-  texthandlerInterval = setInterval(() => {
-    if (context !== undefined) {
-      context.updateState({
-        cash_amount: 0,
-        Cashchecked: Cashchecked
-      });
-    }
-    clearInterval(texthandlerInterval);
-  }, 1000);
+  if (context !== undefined) {
+    context.updateState({
+      cash_amount: 0,
+      Cashchecked: Cashchecked
+    });
+  }
 };
 
 const checkcardhandaler = ($this, context, e) => {
@@ -217,22 +195,18 @@ const checkcardhandaler = ($this, context, e) => {
       expiry_date: null
     },
     () => {
-      calculateRecipt($this, context);
+      calculateRecipt($this, e);
     }
   );
-
-  clearInterval(texthandlerInterval);
-  texthandlerInterval = setInterval(() => {
-    if (context !== undefined) {
-      context.updateState({
-        card_amount: 0,
-        card_check_number: null,
-        expiry_date: null,
-        Cardchecked: Cardchecked
-      });
-    }
-    clearInterval(texthandlerInterval);
-  }, 1000);
+  debugger;
+  if (context !== undefined) {
+    context.updateState({
+      card_amount: 0,
+      card_check_number: null,
+      expiry_date: null,
+      Cardchecked: Cardchecked
+    });
+  }
 };
 
 const checkcheckhandaler = ($this, context, e) => {
@@ -245,22 +219,18 @@ const checkcheckhandaler = ($this, context, e) => {
       cheque_date: null
     },
     () => {
-      calculateRecipt($this, context);
+      calculateRecipt($this, e);
     }
   );
 
-  clearInterval(texthandlerInterval);
-  texthandlerInterval = setInterval(() => {
-    if (context !== undefined) {
-      context.updateState({
-        cheque_amount: 0,
-        cheque_number: null,
-        cheque_date: null,
-        Checkchecked: Checkchecked
-      });
-    }
-    clearInterval(texthandlerInterval);
-  }, 1000);
+  if (context !== undefined) {
+    context.updateState({
+      cheque_amount: 0,
+      cheque_number: null,
+      cheque_date: null,
+      Checkchecked: Checkchecked
+    });
+  }
 };
 
 export {
@@ -271,5 +241,6 @@ export {
   chequetexthandle,
   checkcashhandaler,
   checkcardhandaler,
-  checkcheckhandaler
+  checkcheckhandaler,
+  calculateRecipt
 };

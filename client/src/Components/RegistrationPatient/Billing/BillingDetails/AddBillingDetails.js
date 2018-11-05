@@ -320,16 +320,12 @@ const checkcashhandaler = ($this, context, e) => {
     }
   );
 
-  clearInterval(texthandlerInterval);
-  texthandlerInterval = setInterval(() => {
-    if (context !== undefined) {
-      context.updateState({
-        cash_amount: 0,
-        Cashchecked: Cashchecked
-      });
-    }
-    clearInterval(texthandlerInterval);
-  }, 1000);
+  if (context !== undefined) {
+    context.updateState({
+      cash_amount: 0,
+      Cashchecked: Cashchecked
+    });
+  }
 };
 
 const checkcardhandaler = ($this, context, e) => {
@@ -345,19 +341,14 @@ const checkcardhandaler = ($this, context, e) => {
       calculateRecipt($this, context);
     }
   );
-
-  clearInterval(texthandlerInterval);
-  texthandlerInterval = setInterval(() => {
-    if (context !== undefined) {
-      context.updateState({
-        card_amount: 0,
-        card_check_number: null,
-        expiry_date: null,
-        Cardchecked: Cardchecked
-      });
-    }
-    clearInterval(texthandlerInterval);
-  }, 1000);
+  if (context !== undefined) {
+    context.updateState({
+      card_amount: 0,
+      card_check_number: null,
+      expiry_date: null,
+      Cardchecked: Cardchecked
+    });
+  }
 };
 
 const checkcheckhandaler = ($this, context, e) => {
@@ -373,19 +364,14 @@ const checkcheckhandaler = ($this, context, e) => {
       calculateRecipt($this, context);
     }
   );
-
-  clearInterval(texthandlerInterval);
-  texthandlerInterval = setInterval(() => {
-    if (context !== undefined) {
-      context.updateState({
-        cheque_amount: 0,
-        cheque_number: null,
-        cheque_date: null,
-        Checkchecked: Checkchecked
-      });
-    }
-    clearInterval(texthandlerInterval);
-  }, 1000);
+  if (context !== undefined) {
+    context.updateState({
+      cheque_amount: 0,
+      cheque_number: null,
+      cheque_date: null,
+      Checkchecked: Checkchecked
+    });
+  }
 };
 
 const credittexthandle = ($this, context, ctrl, e) => {
