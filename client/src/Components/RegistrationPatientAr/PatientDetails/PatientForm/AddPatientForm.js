@@ -252,7 +252,7 @@ class AddPatientForm extends PureComponent {
                       className="row secondary-box-container"
                       style={{ paddingTop: "5px" }}
                     >
-                      <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                      <div className="col-lg-4">
                         <div className="image-drop-area">
                           <Dropzone
                             className="dropzone"
@@ -269,7 +269,7 @@ class AddPatientForm extends PureComponent {
                             <img
                               //className="preview-image"
                               alt={""}
-                              style={{height:"76px"}}
+                              style={{ height: "76px" }}
                               src={this.state.filePrimaryPreview}
                             />
                             <div className="attach-design text-center">
@@ -284,7 +284,7 @@ class AddPatientForm extends PureComponent {
                         </div>
                         <div />
                       </div>
-                      <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                      <div className="col-lg-6">
                         <div className="image-drop-area">
                           <Dropzone
                             onDrop={onDrop.bind(
@@ -302,7 +302,7 @@ class AddPatientForm extends PureComponent {
                             <img
                               // className="preview-image"
                               alt={""}
-                              style={{height:"76px"}}
+                              style={{ height: "76px" }}
                               src={
                                 this.state.filePreview === undefined
                                   ? require("../../../../assets/images/nobody_m.original.jpg")

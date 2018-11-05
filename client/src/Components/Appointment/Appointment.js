@@ -241,7 +241,6 @@ class Appointment extends Component {
       cancelled: "N",
       is_stand_by: "N"
     };
-    //console.log("Send Obj:", send_data);
 
     algaehApiCall({
       uri: "/appointment/addPatientAppointment",
@@ -546,9 +545,12 @@ class Appointment extends Component {
         title: "Can't edit past appointments",
         type: "error"
       });
-    } else if (patient.appointment_status_id === this.state.checkInId) {
+    } else if (
+      patient.appointment_status_id === this.state.checkInId &&
+      patient.visit_created === "Y"
+    ) {
       swalMessage({
-        title: "Patient already checked in, cannot edit the appointment",
+        title: "Visit already created, cannot edit the appointment",
         type: "warning"
       });
     } else {
@@ -897,6 +899,7 @@ class Appointment extends Component {
   }
 
   generateChilderns(data) {
+    debugger;
     const colspan = data.mark_as_break
       ? { colSpan: 2, style: { width: "240px" } }
       : {};
@@ -1711,6 +1714,9 @@ class Appointment extends Component {
                       onChange={this.monthChangeHandler.bind(this)}
                       value={moment(this.state.selectedHDate).format("YYYY-MM")}
                     />
+                    <button className="btn btn-default btn-sm  todayBtn">
+                      Today
+                    </button>
                   </div>
                 </div>
                 {this.generateHorizontalDateBlocks()}

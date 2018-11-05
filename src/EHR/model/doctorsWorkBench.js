@@ -1064,88 +1064,11 @@ let addNewChiefComplaint = (req, res, next) => {
   }
 };
 
-// created by : irfan to get chief complaint elements (hpi details)
-let getChiefComplaintsElements = (req, res, next) => {
-  try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    let inputData = extend({}, req.query);
-
-    db.getConnection((error, connection) => {
-      connection.query(
-        "select hims_d_hpi_details_id,hpi_header_id,element_description,element_type,created_date \
-        from hims_d_hpi_details  where hpi_header_id=? and record_status='A';",
-        [inputData.hpi_header_id],
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          req.records = result;
-          next();
-        }
-      );
-    });
-  } catch (e) {
-    next(e);
-  }
-};
-
-// created by : irfan to ADD chief complaint elements(hpi details)
-let addChiefComplaintsElement = (req, res, next) => {
-  debugFunction("addChiefComplaintsElement");
-  try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    let input = extend({}, req.body);
-    db.getConnection((error, connection) => {
-      if (error) {
-        releaseDBConnection(db, connection);
-        next(error);
-      }
-
-      connection.query(
-        "insert into hims_d_hpi_details(hpi_header_id,element_description,element_type,created_by,updated_by) \
-        values(?,?,?,?,?)",
-        [
-          input.hpi_header_id,
-          input.element_description,
-          input.element_type,
-          input.created_by,
-          input.updated_by
-        ],
-        (error, results) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          debugLog("Results are recorded...");
-          req.records = results;
-          next();
-        }
-      );
-    });
-  } catch (e) {
-    next(e);
-  }
-};
 
 // created by : irfan to ADD  patient-chief complaint
 let addPatientChiefComplaints = (req, res, next) => {
   debugFunction("addPatientChiefComplaints");
-  // let chiefComplaintModel = {
-  //   episode: null,
-  //   chief_complaint_id: null,
-  //   onset_date: null,
-  //   severity: null,
-  //   score: null,
-  //   pain: null,
-  //   comment: null
-  // };
+ 
 
   try {
     if (req.db == null) {
@@ -1158,41 +1081,13 @@ let addPatientChiefComplaints = (req, res, next) => {
         releaseDBConnection(db, connection);
         next(error);
       }
-      //       connection.query(
-      //         "insert into hims_f_episode_chief_complaint (episode_id,chief_complaint_id,onset_date,`interval`,duration,\
-      // severity,score,pain,comment,created_by,updated_by,created_date,updated_date) \
-      // values(?,?,?,?,?,?,?,?,?,?,?,?,?)",
-      //         [
-      //           input.episode_id,
-      //           input.chief_complaint_id,
-      //           input.onset_date,
-      //           input.interval,
-      //           input.duration,
-      //           input.severity,
-      //           input.score,
-      //           input.pain,
-      //           input.comment,
-      //           input.created_by,
-      //           input.updated_by,
-      //           new Date(),
-      //           new Date()
-      //         ],
-      //         (error, results) => {
-      //           if (error) {
-      //             releaseDBConnection(db, connection);
-      //             next(error);
-      //           }
-
-      //           req.records = results;
-      //           next();
-      //         }
-      //       );
-
-      //--------------------------------
+    
 
       const insurtColumns = [
         "episode_id",
+        "patient_id",
         "chief_complaint_id",
+        "icd_code_id",
         "onset_date",
         "duration",
         "interval",
@@ -1226,59 +1121,7 @@ let addPatientChiefComplaints = (req, res, next) => {
         }
       );
 
-      //--------------------------------
-
-      //     connection.query(
-      //       "SELECT hims_f_episode_chief_complaint_id, chief_complaint_id FROM hims_f_episode_chief_complaint \
-      //       where " +
-      //         input.chief_complaint_id +
-      //         " in (SELECT chief_complaint_id FROM hims_f_episode_chief_complaint\
-      //       WHERE episode_id =? and record_status='A')  and episode_id=? and record_status='A' ;",
-      //       [input.episode_id, input.episode_id],
-      //       (error, result) => {
-      //         if (error) {
-      //           releaseDBConnection(db, connection);
-      //           next(error);
-      //         }
-
-      //         debugLog("my_result", result[0]);
-
-      //         if (result[0] == null) {
-      //           connection.query(
-      //             "insert into hims_f_episode_chief_complaint (episode_id,chief_complaint_id,onset_date,`interval`,duration,\
-      //   severity,score,pain,comment,created_by,updated_by,created_date,updated_date) \
-      // values(?,?,?,?,?,?,?,?,?,?,?,?,?)",
-      //             [
-      //               input.episode_id,
-      //               input.chief_complaint_id,
-      //               input.onset_date,
-      //               input.interval,
-      //               input.duration,
-      //               input.severity,
-      //               input.score,
-      //               input.pain,
-      //               input.comment,
-      //               input.created_by,
-      //               input.updated_by,
-      //               new Date(),
-      //               new Date()
-      //             ],
-      //             (error, results) => {
-      //               if (error) {
-      //                 releaseDBConnection(db, connection);
-      //                 next(error);
-      //               }
-      //               debugLog("Results are recorded...");
-      //               req.records = results;
-      //               next();
-      //             }
-      //           );
-      //         } else {
-      //           req.records = { chief_complaint_id_exist: true };
-      //           next();
-      //         }
-      //       }
-      //     );
+      
     });
   } catch (e) {
     next(e);
@@ -1298,7 +1141,7 @@ let getPatientChiefComplaints = (req, res, next) => {
       connection.query(
         "select hh.hims_d_hpi_header_id,hh.hpi_description as chief_complaint_name,PE.hims_f_patient_encounter_id,PE.patient_id,\
         max(PE.updated_date) as Encounter_Date , ecc.hims_f_episode_chief_complaint_id,ecc.episode_id,ecc.chief_complaint_id,\
-        ecc.onset_date,ecc.`interval`,ecc.duration,ecc.severity,ecc.score,ecc.pain,ecc.`comment`\
+        ecc.onset_date,ecc.`interval`,ecc.duration,ecc.severity,ecc.score,ecc.pain,ecc.`comment`,ecc.`chronic`,ecc.`complaint_inactive`,ecc.`complaint_inactive_date`\
         from ( (hims_f_episode_chief_complaint ecc inner join hims_d_hpi_header hh on hh.hims_d_hpi_header_id=ecc.chief_complaint_id )    inner join hims_f_patient_encounter PE on PE.episode_id=ecc.episode_id)\
         where ecc.record_status='A'and ecc.episode_id=? group by chief_complaint_id ",
         [inputData.episode_id],
@@ -1484,6 +1327,10 @@ let updatePatientChiefComplaints = (req, res, next) => {
         let qry = "";
 
         for (let i = 0; i < req.body.chief_complaints.length; i++) {
+          const _complaint_inactive_date =
+            inputParam[i].complaint_inactive_date != null
+              ? "'" + inputParam[i].complaint_inactive_date + "'"
+              : null;
           qry +=
             "UPDATE `hims_f_episode_chief_complaint` SET  episode_id='" +
             inputParam[i].episode_id +
@@ -1505,9 +1352,10 @@ let updatePatientChiefComplaints = (req, res, next) => {
             inputParam[i].chronic +
             "', complaint_inactive='" +
             inputParam[i].complaint_inactive +
-            "', complaint_inactive_date='" +
-            inputParam[i].complaint_inactive_date +
-            "', comment='" +
+            "', complaint_inactive_date=" +
+            _complaint_inactive_date +
+            "\
+            , comment='" +
             inputParam[i].comment +
             "', updated_date='" +
             new Date().toLocaleString() +
@@ -2467,8 +2315,7 @@ module.exports = {
   updatdePatEncntrStatus,
   getPatientProfile,
   getChiefComplaints,
-  getChiefComplaintsElements,
-  addChiefComplaintsElement,
+ 
   addPatientChiefComplaints,
   addNewChiefComplaint,
   getPatientChiefComplaints,

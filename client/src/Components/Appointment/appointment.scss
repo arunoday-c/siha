@@ -59,6 +59,17 @@
           height: 16px;
         }
       }
+      .todayBtn {
+        margin-left: 10px;
+        padding: 3px 10px;
+        border: 1px solid white;
+        background: none;
+        color: #fff;
+      }
+      .todayBtn:hover {
+        background: #fff;
+        color: #34b8bc;
+      }
     }
 
     .arrow-box {
