@@ -149,7 +149,7 @@ class Appointment extends Component {
               email: pat_obj.email
             });
 
-            console.log("Pat Code:", response.data.records);
+            //console.log("Pat Code:", response.data.records);
           }
         },
         onFailure: error => {
@@ -238,7 +238,7 @@ class Appointment extends Component {
       number_of_slot: this.state.no_of_slots,
       confirmed: "N",
       cancelled: "N",
-      is_stand_by: "N"
+      is_stand_by: this.state.is_stand_by
     };
 
     algaehApiCall({
@@ -391,7 +391,6 @@ class Appointment extends Component {
                       ? this.state.appointmentSchedule[0].slot
                       : null
                 });
-                console.log("Slot:", this.state.slot);
               }
             );
           } else {
@@ -555,9 +554,9 @@ class Appointment extends Component {
           pat_edit.appointment_from_time,
           "HH:mm:ss"
         ).add(pat_edit.number_of_slot * this.state.slot, "minutes");
-        debugger;
-        console.log("ssssss1:", pat_edit.number_of_slot * this.state.slot);
-        console.log("ssssss:", moment(new_to_time).format("HH:mm:ss"));
+        //debugger;
+        // console.log("ssssss1:", pat_edit.number_of_slot * this.state.slot);
+        //console.log("ssssss:", moment(new_to_time).format("HH:mm:ss"));
         this.setState({
           edit_appointment_status_id: pat_edit.appointment_status_id,
           edit_appt_date: pat_edit.appointment_date,
@@ -689,6 +688,7 @@ class Appointment extends Component {
       const sch_header_id = e.currentTarget.getAttribute("sch_header_id");
       const sch_detail_id = e.currentTarget.getAttribute("sch_detail_id");
       const sub_dept_id = e.currentTarget.getAttribute("sub_dept_id");
+      const is_stand_by = e.currentTarget.getAttribute("isstandby");
       const sub_dep_name = this.getDeptName(sub_dept_id);
       const doc_name = this.getDoctorName(provider_id);
 
@@ -707,7 +707,8 @@ class Appointment extends Component {
         apptSchDtId: sch_detail_id,
         apptSubDept: sub_dept_id,
         apptSubDeptName: sub_dep_name,
-        apptProviderName: doc_name
+        apptProviderName: doc_name,
+        is_stand_by: is_stand_by
       });
     }
   }
@@ -825,10 +826,10 @@ class Appointment extends Component {
                 email: this.state.edit_email,
                 send_to_provider: null,
                 gender: this.state.edit_gender,
-                confirmed: null,
+                confirmed: "Y",
                 confirmed_by: null,
                 comfirmed_date: null,
-                cancelled: null,
+                cancelled: "N",
                 cancelled_by: null,
                 cancelled_date: null,
                 cancel_reason: null,
@@ -873,6 +874,7 @@ class Appointment extends Component {
   }
 
   plotPatients(data) {
+    debugger;
     const newEndTime = new moment(data.time, "hh:mm a").add(
       data.slot,
       "minutes"
@@ -892,15 +894,20 @@ class Appointment extends Component {
             moment(data.time, "hh:mm a") &&
             moment(w.appointment_to_time, "hh:mm:ss") >= newEndTime)
       )
-      .firstOrDefault();
+      .toArray();
     if (patient !== undefined) {
-      return patient;
+      debugger;
+      for (let i = 0; i < patient.length; i++) {
+        console.log("Patient:", patient[i]);
+        return patient[i];
+      }
     } else {
       return null;
     }
   }
 
   generateChilderns(data) {
+    //console.log("genChildren:", data);
     const colspan = data.mark_as_break
       ? { colSpan: 2, style: { width: "240px" } }
       : {};
@@ -910,6 +917,8 @@ class Appointment extends Component {
       slot: data.slot,
       patients: data.patients
     });
+
+    debugger;
 
     let brk_bg_color = data.mark_as_break
       ? "#f2f2f2"
@@ -923,7 +932,7 @@ class Appointment extends Component {
         : "#ffffff";
 
     let bg_color =
-      patient !== null
+      patient !== null && patient !== undefined
         ? this.getColorCode(patient.appointment_status_id)
         : data.mark_as_break
           ? "#f2f2f2"
@@ -951,7 +960,7 @@ class Appointment extends Component {
 
           {data.mark_as_break === false ? (
             <React.Fragment>
-              {patient === null ? (
+              {patient === null || patient === undefined ? (
                 <i
                   appt-time={data.time}
                   to_work_hr={data.to_work_hr}
@@ -965,12 +974,33 @@ class Appointment extends Component {
                   sch_header_id={data.sch_header_id}
                   sch_detail_id={data.sch_detail_id}
                   sub_dept_id={data.sub_dept_id}
+                  isstandby="N"
+                  onClick={this.showModal.bind(this)}
+                  className="fas fa-plus"
+                />
+              ) : patient.is_stand_by === "Y" ? (
+                <i
+                  appt-time={data.time}
+                  to_work_hr={data.to_work_hr}
+                  from_break_hr1={data.from_break_hr1}
+                  to_break_hr1={data.to_break_hr1}
+                  from_break_hr2={data.from_break_hr2}
+                  to_break_hr2={data.to_work_hr}
+                  slot={data.slot}
+                  clinic_id={data.clinic_id}
+                  provider_id={data.provider_id}
+                  sch_header_id={data.sch_header_id}
+                  sch_detail_id={data.sch_detail_id}
+                  sub_dept_id={data.sub_dept_id}
+                  isstandby="N"
                   onClick={this.showModal.bind(this)}
                   className="fas fa-plus"
                 />
               ) : null}
 
-              {patient !== null ? (
+              {patient !== null &&
+              patient !== undefined &&
+              patient.is_stand_by === "N" ? (
                 <div
                   appt-pat={JSON.stringify(patient)}
                   className="dynPatient"
@@ -995,11 +1025,50 @@ class Appointment extends Component {
         {data.mark_as_break === false ? (
           <td className="tg-baqh">
             <span className="dynSlot">{data.time}</span>
-            {patient === null ? (
+
+            {/* {patient === null ? (
               <i onClick={this.showModal.bind(this)} className="fas fa-plus" />
             ) : (
               <i onClick={this.showModal.bind(this)} className="fas fa-edit" />
-            )}
+            )} */}
+
+            <i
+              appt-time={data.time}
+              to_work_hr={data.to_work_hr}
+              from_break_hr1={data.from_break_hr1}
+              to_break_hr1={data.to_break_hr1}
+              from_break_hr2={data.from_break_hr2}
+              to_break_hr2={data.to_work_hr}
+              slot={data.slot}
+              clinic_id={data.clinic_id}
+              provider_id={data.provider_id}
+              sch_header_id={data.sch_header_id}
+              sch_detail_id={data.sch_detail_id}
+              sub_dept_id={data.sub_dept_id}
+              isstandby="Y"
+              onClick={this.showModal.bind(this)}
+              className="fas fa-plus"
+              className="fas fa-plus"
+              //onClick={this.showModal.bind(this)}
+            />
+
+            {patient !== null &&
+            patient !== undefined &&
+            patient.is_stand_by === "Y" ? (
+              <div
+                appt-pat={JSON.stringify(patient)}
+                className="dynPatient"
+                //background={bg_color}
+                style={{ background: bg_color }}
+                //draggable={true}
+                //onDragStart={this.drag.bind(this)}
+                //onClick={this.openEditModal.bind(this, patient)}
+              >
+                {patient.patient_name}
+                <br />
+                {patient.contact_number}
+              </div>
+            ) : null}
           </td>
         ) : null}
       </tr>
@@ -1007,7 +1076,6 @@ class Appointment extends Component {
   }
 
   generateTimeslots(data) {
-
     const clinic_id = data.clinic_id;
     const provider_id = data.provider_id;
     const sch_header_id = data.hims_d_appointment_schedule_header_id;
@@ -1094,8 +1162,7 @@ class Appointment extends Component {
     }
     return null;
   }
-  componentDidUpdate(props, prevState, snapshot) {
-  }
+  componentDidUpdate(props, prevState, snapshot) {}
 
   render() {
     return (
@@ -1604,7 +1671,9 @@ class Appointment extends Component {
                           />
 
                           <AlagehAutoComplete
-                            div={{ className: "col-lg-3 mandatory" }}
+                            div={{
+                              className: "col-lg-3 margin-top-15 mandatory"
+                            }}
                             label={{
                               forceLabel: "Select Status",
                               isImp: true
