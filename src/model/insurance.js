@@ -336,7 +336,7 @@ let getListOfInsuranceProvider = (req, res, next) => {
 
       connection.query(
         "select * from hims_d_insurance_provider where record_status='A' AND" +
-          where.condition,
+          where.condition+" order by hims_d_insurance_provider_id desc",
         where.values,
 
         (error, result) => {

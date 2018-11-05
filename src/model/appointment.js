@@ -260,7 +260,7 @@ let getAppointmentRoom = (req, res, next) => {
     db.getConnection((error, connection) => {
       connection.query(
         "select * FROM hims_d_appointment_room where record_status='A' AND" +
-          where.condition,
+          where.condition+" order by hims_d_appointment_room_id desc",
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -293,7 +293,7 @@ let getAppointmentClinic = (req, res, next) => {
     db.getConnection((error, connection) => {
       connection.query(
         "select hims_d_appointment_clinic_id,description, sub_department_id, provider_id, room_id FROM hims_d_appointment_clinic where record_status='A' AND" +
-          where.condition,
+          where.condition+" order by hims_d_appointment_clinic_id desc",
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -2684,6 +2684,50 @@ let getEmployeeServiceID = (req, res, next) => {
   }
 };
 
+
+
+
+
+//created by irfan: to cancel patient appointment
+let cancelPatientAppointment = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "update hims_f_patient_appointment set cancelled='Y',cancelled_by=?,cancelled_date=?,cancel_reason=?,\
+        updated_by=?,updated_date=? where record_status='A' and hims_f_patient_appointment_id=?;",
+        [
+          input.updated_by,
+          new Date(),
+          input.cancel_reason,
+          input.updated_by, 
+          new Date(),               
+          input.hims_f_patient_appointment_id
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+
 module.exports = {
   addAppointmentStatus,
   addAppointmentRoom,
@@ -2708,5 +2752,6 @@ module.exports = {
   updatePatientAppointment,
   getEmployeeServiceID,
   appointmentStatusAuthorized,
-  deleteAppointmentRoom
+  deleteAppointmentRoom,
+  cancelPatientAppointment
 };
