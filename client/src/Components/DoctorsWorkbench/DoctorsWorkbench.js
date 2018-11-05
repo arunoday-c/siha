@@ -245,6 +245,9 @@ class DoctorsWorkbench extends Component {
                   value={moment(this.state.selectedHDate).format("YYYY-MM")}
                   max={moment(new Date()).format("YYYY-MM")}
                 />
+                <button className="btn btn-default btn-sm  todayBtn">
+                  Today
+                </button>
               </div>
             </div>
             {this.generateHorizontalDateBlocks()}
