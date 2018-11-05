@@ -941,13 +941,15 @@ class Appointment extends Component {
       return null;
     }
   }
-  plotStandByIcon(patient, data) {
+  plotAddIcon(patient, data) {
     const _isstandby =
       patient === null || patient === undefined
         ? "N"
         : patient.is_stand_by === "Y"
           ? "N"
-          : null;
+          : patient.cancelled === "Y"
+            ? "N"
+            : null;
     if (_isstandby !== null) {
       return (
         <i
@@ -985,7 +987,14 @@ class Appointment extends Component {
               {_otherPatients.map((item, index) => {
                 return (
                   <li key={index}>
-                    {item.patient_name} <b>x</b>
+                    {item.patient_name}{" "}
+                    <b
+                      onClick={() => {
+                        alert("Remove Stand By");
+                      }}
+                    >
+                      x
+                    </b>
                   </li>
                 );
               })}
@@ -1043,7 +1052,7 @@ class Appointment extends Component {
     const patient =
       _patientList !== null
         ? Enumerable.from(_patientList)
-            .where(w => w.is_stand_by === "N")
+            .where(w => w.is_stand_by === "N" && w.cancelled === "N")
             .firstOrDefault()
         : undefined;
 
@@ -1053,14 +1062,6 @@ class Appointment extends Component {
             .where(w => w.is_stand_by === "Y")
             .toArray()
         : undefined;
-    // const _standByPatients =
-    // _patientList !== null
-    //   ? Enumerable.from(_patientList)
-    //       .where(w => w.is_stand_by === "Y")
-    //       .toArray()
-    //   : undefined;
-
-    debugger;
 
     let brk_bg_color = data.mark_as_break
       ? "#f2f2f2"
@@ -1102,7 +1103,7 @@ class Appointment extends Component {
 
           {data.mark_as_break === false ? (
             <React.Fragment>
-              {this.plotStandByIcon(patient, data)}
+              {this.plotAddIcon(patient, data)}
 
               {patient !== null &&
               patient !== undefined &&
