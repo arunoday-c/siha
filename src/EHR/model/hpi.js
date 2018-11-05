@@ -230,4 +230,127 @@ let addPlanAndPolicy = (req, res, next) => {
   }
 };
 
-module.exports = { addIcd };
+
+
+
+// created by : irfan to get chief complaint elements (hpi details)
+let getHpiElements = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let inputData = extend({}, req.query);
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_d_hpi_details_id,hpi_header_id,element_description,element_type,created_date \
+        from hims_d_hpi_details  where hpi_header_id=? and record_status='A';",
+        [inputData.hpi_header_id],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+// created by : irfan to ADD chief complaint elements(hpi details)
+let addHpiElement = (req, res, next) => {
+  debugFunction("addHpiElement");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        releaseDBConnection(db, connection);
+        next(error);
+      }
+
+      connection.query(
+        "insert into hims_d_hpi_details(hpi_header_id,element_description,element_type,created_date,created_by,update_date,updated_by) \
+        values(?,?,?,?,?,?,?)",
+        [
+          input.hpi_header_id,
+          input.element_description,
+          input.element_type,
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
+        ],
+        (error, results) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          debugLog("Results are recorded...");
+          req.records = results;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+
+// created by : irfan to addPatientHpi
+let addPatientHpi = (req, res, next) => {
+  debugFunction("addPatientHpi");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        releaseDBConnection(db, connection);
+        next(error);
+      }
+
+      connection.query(
+        "insert into hims_f_episode_hpi(episode_id, hpi_header_id, hpi_detail_id,created_date,created_by,updated_date,updated_by) \
+        values(?,?,?,?,?,?,?)",
+        [
+          input.episode_id,
+          input.hpi_header_id,
+          input.hpi_detail_id,
+
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
+        ],
+        (error, results) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          debugLog("Results are recorded...");
+          req.records = results;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+
+
+module.exports = { addIcd, getHpiElements,
+  addHpiElement,addPatientHpi };
