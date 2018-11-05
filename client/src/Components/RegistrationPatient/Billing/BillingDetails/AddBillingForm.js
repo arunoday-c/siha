@@ -106,6 +106,10 @@ class AddBillingForm extends Component {
                             type="button"
                             onClick={ProcessInsurance.bind(this, this, context)}
                             disabled={this.state.ProcessInsure}
+                            // name="processInsurance"
+                            // ref={processInsurance =>
+                            //   (this.processInsurance = processInsurance)
+                            // }
                           >
                             Process Insurance
                           </button>

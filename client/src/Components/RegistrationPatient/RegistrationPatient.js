@@ -273,6 +273,7 @@ class RegistrationPatient extends PureComponent {
   };
 
   componentWillReceiveProps(nextProps) {
+    debugger;
     if (
       nextProps.genbill !== undefined &&
       nextProps.genbill.length !== 0 &&
