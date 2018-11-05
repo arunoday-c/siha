@@ -633,12 +633,7 @@ e.preventDefault();
         });
       });
     }
-
  
-
-
-
-   
   }
 
   updatePatientAppointment() {
