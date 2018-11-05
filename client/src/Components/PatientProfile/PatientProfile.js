@@ -331,65 +331,90 @@ class PatientProfile extends Component {
                 Plan
               </span>
             </li>
+            <li className="nav-item">
+              <span
+                onClick={this.changeTabs}
+                algaehsoap="summary"
+                className="nav-link"
+              >
+                Summary
+              </span>
+            </li>
+            <li className="nav-item">
+              <span
+                onClick={this.changeTabs}
+                algaehsoap="ucaf-report"
+                className="nav-link"
+              >
+                UCAF
+              </span>
+            </li>
             <ul className="float-right patient-quick-info">
               <li>
                 <i className="fas fa-allergies" />
                 <p>
-                  <b>Allergies:</b>
-
-                  {_patient_allergies.map((data, index) => (
-                    <React.Fragment key={index}>
-                      <b>{data.allergy_type_desc}</b>
-                      {data.allergyList.map((allergy, aIndex) => (
-                        <span
-                          key={aIndex}
-                          className={
-                            "listofA-D-D " +
-                            (allergy.allergy_inactive === "Y" ? "red" : "")
-                          }
-                          title={
-                            "Onset Date : " +
-                            allergy.onset_date +
-                            "\n Comment : " +
-                            allergy.comment +
-                            "\n Severity : " +
-                            allergy.severity
-                          }
-                        >
-                          {allergy.allergy_name}
-                        </span>
-                      ))}
-                    </React.Fragment>
-                  ))}
+                  <b className="top-nav-sec-hdg">Allergies:</b>
+                  <section>
+                    {_patient_allergies.map((data, index) => (
+                      <React.Fragment key={index}>
+                        <b>{data.allergy_type_desc}</b>
+                        {data.allergyList.map((allergy, aIndex) => (
+                          <span
+                            key={aIndex}
+                            className={
+                              "listofA-D-D " +
+                              (allergy.allergy_inactive === "Y" ? "red" : "")
+                            }
+                            title={
+                              "Onset Date : " +
+                              allergy.onset_date +
+                              "\n Comment : " +
+                              allergy.comment +
+                              "\n Severity : " +
+                              allergy.severity
+                            }
+                          >
+                            {allergy.allergy_name}
+                          </span>
+                        ))}
+                      </React.Fragment>
+                    ))}
+                  </section>
                 </p>
               </li>
               <li>
                 <i className="fas fa-diagnoses" />
                 <p>
-                  <b>Diagnosis:</b>
-                  {_diagnosis.map((item, index) => (
-                    <React.Fragment key={index}>
-                      <span>{item.icd_code}</span>
-                      <span key={index} className="listofA-D-D">
-                        {item.icd_description}
-                      </span>
-                      <span>
-                        {item.diagnosis_type === "S" ? "Secondary" : "Primary"}
-                      </span>
-                      <span>{item.final_daignosis}</span>
-                    </React.Fragment>
-                  ))}
+                  <b className="top-nav-sec-hdg">Diagnosis:</b>
+                  <section>
+                    {_diagnosis.map((item, index) => (
+                      <React.Fragment key={index}>
+                        <span>{item.icd_code}</span>
+                        <span key={index} className="listofA-D-D">
+                          {item.icd_description}
+                        </span>
+                        <span>
+                          {item.diagnosis_type === "S"
+                            ? "Secondary"
+                            : "Primary"}
+                        </span>
+                        <span>{item.final_daignosis}</span>
+                      </React.Fragment>
+                    ))}
+                  </section>
                 </p>
               </li>
               <li>
                 <i className="fas fa-utensils" />
                 <p>
-                  <b>Diet:</b>
-                  {_diet.map((data, index) => (
-                    <span key={index} className="listofA-D-D">
-                      {data.icd_description}
-                    </span>
-                  ))}
+                  <b className="top-nav-sec-hdg">Diet:</b>
+                  <section>
+                    {_diet.map((data, index) => (
+                      <span key={index} className="listofA-D-D">
+                        {data.icd_description}
+                      </span>
+                    ))}
+                  </section>
                 </p>
               </li>
             </ul>

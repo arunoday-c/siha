@@ -4,9 +4,13 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import extend from "extend";
 
 //Text Handaler Change
-const texthandle = ($this, e) => {
+const texthandle = ($this, ctrl, e) => {
+  e = e || ctrl;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
   $this.setState({
-    [e.target.name]: e.target.value
+    [name]: value
   });
 };
 
@@ -129,6 +133,7 @@ const ProcessService = ($this, e) => {
 
                     data.billdetails[i].requested_quantity =
                       data.billdetails[i].quantity;
+                    data.billdetails[i].test_type = $this.state.test_type;
                   }
 
                   $this.setState({
@@ -138,7 +143,8 @@ const ProcessService = ($this, e) => {
                     approval_limit_yesno: approval_limit_yesno,
                     saved: false,
                     s_service_type: null,
-                    s_service: null
+                    s_service: null,
+                    test_type: "R"
                   });
 
                   $this.props.billingCalculations({
@@ -192,6 +198,7 @@ const ProcessService = ($this, e) => {
           data.billdetails[0].requested_quantity = data.billdetails[0].quantity;
           data.billdetails[0].doctor_id = Window.global["provider_id"];
           data.billdetails[0].sec_company = $this.state.sec_insured;
+          data.billdetails[0].test_type = $this.state.test_type;
           //If pre-approval required for selected service
 
           if (
@@ -219,7 +226,8 @@ const ProcessService = ($this, e) => {
             preapp_limit_amount: preapp_limit_amount,
             saved: false,
             s_service_type: null,
-            s_service: null
+            s_service: null,
+            test_type: "R"
           });
 
           $this.props.billingCalculations({
@@ -305,6 +313,15 @@ const deleteServices = ($this, row, rowId) => {
 
   if (orderservicesdata.length === 0) {
     saved = true;
+
+    $this.setState({
+      patient_payable: null,
+      company_payble: null,
+      sec_company_paybale: null,
+      sub_total_amount: null,
+      discount_amount: null,
+      net_total: null
+    });
   }
 
   let app_amt = $this.state.approval_amt - row["company_payble"];

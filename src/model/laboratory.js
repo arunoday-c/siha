@@ -100,7 +100,8 @@ let insertLadOrderedServices = (req, res, next) => {
     "provider_id",
     "service_id",
     "billed",
-    "ordered_date"
+    "ordered_date",
+    "test_type"
   ];
   // "ordered_date"
   debugLog("req: ", req.records);
@@ -130,7 +131,8 @@ let insertLadOrderedServices = (req, res, next) => {
         visit_id: req.body.visit_id,
         service_id: s.services_id,
         billed: req.body.billed,
-        ordered_date: s.created_date
+        ordered_date: s.created_date,
+        test_type: s.test_type
       };
     })
     .ToArray();

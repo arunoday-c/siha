@@ -98,11 +98,12 @@ const getSampleCollectionDetails = $this => {
 
   if ($this.state.patient_id !== null) {
     inputobj.patient_id = $this.state.patient_id;
-    // inputobj.visit_id = $this.state.visit_id;
   }
   if ($this.state.status !== null) {
     inputobj.status = $this.state.status;
-    // inputobj.visit_id = $this.state.visit_id;
+  }
+  if ($this.state.proiorty !== null) {
+    inputobj.test_type = $this.state.proiorty;
   }
 
   $this.props.getSampleCollection({
@@ -128,7 +129,8 @@ const getSampleCollectionDetails = $this => {
             billed: firstRecordSet.billed,
             visit_code: firstRecordSet.visit_code,
             doctor_name: firstRecordSet.doctor_name,
-            status: firstRecordSet.status
+            status: firstRecordSet.status,
+            test_type: firstRecordSet.test_type
           };
         })
         .toArray();

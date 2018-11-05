@@ -336,6 +336,24 @@ class SampleCollection extends Component {
                         }
                       },
                       {
+                        fieldName: "test_type",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "proiorty" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.test_type === "S" ? "Stat" : "Rotinue"}
+                            </span>
+                          );
+                        },
+                        disabled: true,
+                        others: {
+                          resizable: false,
+                          style: { textAlign: "left" }
+                        }
+                      },
+                      {
                         fieldName: "ordered_date",
                         label: (
                           <AlgaehLabel label={{ fieldName: "ordered_date" }} />

@@ -167,6 +167,7 @@ let insertOrderedServices = (req, res, next) => {
     "doctor_id",
     "service_type_id",
     "services_id",
+    "test_type",
     "insurance_yesno",
     "insurance_provider_id",
     "insurance_sub_id",
@@ -220,6 +221,7 @@ let insertOrderedServices = (req, res, next) => {
       }
 
       debugLog("bodyy:", req.body.billdetails);
+      debugLog("insurtColumns: ", insurtColumns);
       connection.query(
         "INSERT INTO hims_f_ordered_services(" +
           insurtColumns.join(",") +
@@ -266,7 +268,7 @@ let insertOrderedServices = (req, res, next) => {
             debugLog(" servicesForPreAproval", servicesForPreAproval);
 
             connection.query(
-              "SELECT hims_f_ordered_services_id,services_id,created_date, service_type_id from hims_f_ordered_services\
+              "SELECT hims_f_ordered_services_id,services_id,created_date, service_type_id, test_type from hims_f_ordered_services\
                  where `patient_id`=? and `doctor_id`=? and `visit_id`=? and `services_id` in (?)",
               servicesForPreAproval,
               (error, ResultOfFetchOrderIds) => {

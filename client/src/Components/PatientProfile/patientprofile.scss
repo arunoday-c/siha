@@ -175,6 +175,13 @@
           border-radius: 5px;
           color: #fff;
           display: none;
+          b.top-nav-sec-hdg {
+            text-align: center;
+            border-bottom: 1px solid #337e74;
+            margin-left: -10px;
+            margin-right: -10px;
+            padding-bottom: 11px;
+          }
           b {
             display: block;
             border-bottom: 1px solid #3f9c90;
@@ -195,6 +202,12 @@
             background: #3f9c91;
             font-size: 0.7rem;
           }
+          section {
+            background: rgba(0, 0, 0, 0.05);
+            border-top: 1px solid #65dace;
+            margin: -10px;
+            padding: 10px;
+          }
         }
       }
       li:hover {
@@ -214,7 +227,7 @@
   }
 }
 
-.moreActionUl{
+.moreActionUl {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -223,23 +236,26 @@
   right: 11px;
   border-radius: 5px 0px 5px 5px;
   background: #fff;
-  display:none;min-width:100px ;
+  display: none;
+  min-width: 100px;
   overflow: hidden;
-  li{
-    margin: 0; 
+  li {
+    margin: 0;
     padding: 0;
     list-style: none;
-    span{     
-    padding: 7px 10px;
-    text-align: left;
-    font-size: 0.8rem;
-    display: block;
-    cursor: pointer;
-      
-    }span:hover{
+    span {
+      padding: 7px 10px;
+      text-align: left;
+      font-size: 0.8rem;
+      display: block;
+      cursor: pointer;
+    }
+    span:hover {
       color: #fff;
       background: #34b8bc;
     }
   }
 }
-.moreAction:hover .moreActionUl{display: block}
+.moreAction:hover .moreActionUl {
+  display: block;
+}

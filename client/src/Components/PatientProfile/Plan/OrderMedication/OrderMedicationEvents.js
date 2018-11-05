@@ -66,19 +66,27 @@ const genericnamehandle = ($this, ctrl, e) => {
 
 const itemhandle = ($this, ctrl, e) => {
   e = e || ctrl;
-
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-
-  $this.setState({
-    [name]: value,
-    generic_id: e.selected.generic_id,
-    service_id: e.selected.service_id,
-    uom_id: e.selected.sales_uom_id,
-    item_category_id: e.selected.category_id,
-    item_group_id: e.selected.group_id,
-    addItemEnable: false
-  });
+  if (e.selected.service_id === null) {
+    swalMessage({
+      title: "Invalid Input. Service not setup to the selected Item.",
+      type: "error"
+    });
+    $this.setState({
+      [name]: null
+    });
+  } else {
+    $this.setState({
+      [name]: value,
+      generic_id: e.selected.generic_id,
+      service_id: e.selected.service_id,
+      uom_id: e.selected.sales_uom_id,
+      item_category_id: e.selected.category_id,
+      item_group_id: e.selected.group_id,
+      addItemEnable: false
+    });
+  }
 };
 
 const AddItems = $this => {

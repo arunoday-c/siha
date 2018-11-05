@@ -479,7 +479,7 @@ class PersonalDetails extends PureComponent {
                       className="row secondary-box-container"
                       style={{ paddingTop: "5px" }}
                     >
-                      <div className="col-lg-6">
+                      <div className="col-lg-4">
                         <div className="image-drop-area">
                           <Dropzone
                             onDrop={onDrop.bind(

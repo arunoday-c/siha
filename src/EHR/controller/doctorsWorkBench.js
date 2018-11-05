@@ -22,8 +22,7 @@ import {
   updatdePatEncntrStatus,
   getPatientProfile,
   getChiefComplaints,
-  getChiefComplaintsElements,
-  addChiefComplaintsElement,
+  
   addPatientChiefComplaints,
   getPatientChiefComplaints,
   addNewChiefComplaint,
@@ -371,35 +370,7 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-  // created by irfan : to  getChiefComplaintsElements
-  api.get(
-    "/getChiefComplaintsElements",
-    getChiefComplaintsElements,
-    (req, res, next) => {
-      let result = req.records;
-      res.status(httpStatus.ok).json({
-        success: true,
-        records: result
-      });
-      next();
-    },
-    releaseConnection
-  );
-
-  // created by irfan : to add addChiefComplaintsElement
-  api.post(
-    "/addChiefComplaintsElement",
-    addChiefComplaintsElement,
-    (req, res, next) => {
-      let result = req.records;
-      res.status(httpStatus.ok).json({
-        success: true,
-        records: result
-      });
-      next();
-    },
-    releaseConnection
-  );
+  
 
   // created by irfan : to add addPatientChiefComplaints
   api.post(

@@ -15,6 +15,7 @@ import {
 
 import {
   serviceTypeHandeler,
+  texthandle,
   serviceHandeler,
   ProcessService,
   deleteServices,
@@ -26,6 +27,7 @@ import "./OrderingServices.css";
 import "../../../../styles/site.css";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { getCookie } from "../../../../utils/algaehApiCall";
+import GlobalVariables from "../../../../utils/GlobalVariables.json";
 
 class OrderingServices extends Component {
   constructor(props) {
@@ -57,7 +59,16 @@ class OrderingServices extends Component {
       sec_insured: "N",
       secondary_insurance_provider_id: null,
       secondary_network_id: null,
-      secondary_network_office_id: null
+      secondary_network_office_id: null,
+      test_type: "R",
+      addNew: true,
+
+      patient_payable: null,
+      company_payble: null,
+      sec_company_paybale: null,
+      sub_total_amount: null,
+      discount_amount: null,
+      net_total: null
     };
   }
 
@@ -144,13 +155,60 @@ class OrderingServices extends Component {
       let output = nextProps.existinginsurance[0];
       this.setState({ ...output });
     }
+
+    debugger;
+    if (this.props.addNew === true && this.state.addNew === true) {
+      this.setState({
+        s_service_type: null,
+        s_service: null,
+        selectedLang: "en",
+
+        patient_id: Window.global["current_patient"],
+        visit_id: Window.global["visit_id"],
+        doctor_id: null,
+        vat_applicable: this.props.vat_applicable,
+
+        orderservicesdata: [],
+        approval_amt: 0,
+        preapp_limit_amount: 0,
+        preserviceInput: [],
+        dummy_company_payble: 0,
+        approval_limit_yesno: "N",
+        insurance_service_name: null,
+        saved: true,
+
+        insured: "N",
+        primary_insurance_provider_id: null,
+        primary_network_office_id: null,
+        primary_network_id: null,
+        sec_insured: "N",
+        secondary_insurance_provider_id: null,
+        secondary_network_id: null,
+        secondary_network_office_id: null,
+        test_type: "R",
+        addNew: false,
+        patient_payable: null,
+        company_payble: null,
+        sec_company_paybale: null,
+        sub_total_amount: null,
+        discount_amount: null,
+        net_total: null
+      });
+    }
   }
   playclick() {
     debugger;
   }
 
   onClose = e => {
-    this.props.onClose && this.props.onClose(e);
+    this.setState(
+      {
+        addNew: true
+      },
+      () => {
+        this.props.onClose && this.props.onClose(e);
+      }
+    );
   };
   render() {
     return (
@@ -218,6 +276,24 @@ class OrderingServices extends Component {
                         data: this.props.services
                       },
                       onChange: serviceHandeler.bind(this, this)
+                    }}
+                  />
+
+                  <AlagehAutoComplete
+                    div={{ className: "col-lg-3" }}
+                    label={{
+                      forceLabel: "Test Type"
+                    }}
+                    selector={{
+                      name: "test_type",
+                      className: "select-fld",
+                      value: this.state.test_type,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: GlobalVariables.FORMAT_PRIORITY
+                      },
+                      onChange: texthandle.bind(this, this)
                     }}
                   />
 

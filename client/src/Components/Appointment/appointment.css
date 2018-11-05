@@ -47,6 +47,15 @@
       padding: 3px 6px !important; }
       .appointment .my-calendar .myDay_date button svg {
         height: 16px; }
+    .appointment .my-calendar .myDay_date .todayBtn {
+      margin-left: 10px;
+      padding: 3px 10px;
+      border: 1px solid white;
+      background: none;
+      color: #fff; }
+    .appointment .my-calendar .myDay_date .todayBtn:hover {
+      background: #fff;
+      color: #34b8bc; }
   .appointment .my-calendar .arrow-box {
     width: 60px;
     cursor: pointer; }

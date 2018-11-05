@@ -29,6 +29,7 @@
 
   "visit_code": "Visit Code",
   "select_service": "Select Service",
+  "test_type": "Test Type",
 
   "service_type_id": "Service Type",
   "services_id": "Service",

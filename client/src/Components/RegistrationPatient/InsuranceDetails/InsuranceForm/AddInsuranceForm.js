@@ -273,7 +273,7 @@ class AddInsuranceForm extends Component {
 
                   <div className="col-lg-4 secondary-details">
                     <div className="row secondary-box-container">
-                      <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                      <div className="col-lg-6">
                         <div className="image-drop-area">
                           <Dropzone
                             onDrop={this.onDrop.bind(this, "frontSide")}
@@ -301,7 +301,7 @@ class AddInsuranceForm extends Component {
                         </div>
                       </div>
 
-                      <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                      <div className="col-lg-6">
                         <div className="image-drop-area">
                           <Dropzone
                             onDrop={this.onDrop.bind(this, "backSide")}
