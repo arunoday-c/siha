@@ -2,6 +2,7 @@ import moment from "moment";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import Insurance from "../../../../Search/Insurance.json";
 import { swalMessage } from "../../../../utils/algaehApiCall.js";
+import swal from "sweetalert2";
 
 let texthandlerInterval = null;
 const texthandle = ($this, context, e) => {
@@ -68,6 +69,51 @@ const datehandle = ($this, context, ctrl, e) => {
   }, 1000);
 };
 
+const enddatehandle = ($this, context, ctrl, e) => {
+  debugger;
+  if (
+    Date.parse(moment(ctrl)._d) >
+    Date.parse($this.state.insurance_effective_end_date)
+  ) {
+    swal({
+      title:
+        "Selected Date is more than insurance Expiry date Do you want to continue?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willProceed => {
+      if (willProceed.value) {
+        $this.setState({
+          [e]: moment(ctrl)._d
+        });
+
+        clearInterval(texthandlerInterval);
+        texthandlerInterval = setInterval(() => {
+          if (context !== undefined) {
+            context.updateState({ [e]: moment(ctrl)._d });
+          }
+          clearInterval(texthandlerInterval);
+        }, 1000);
+      }
+    });
+  } else {
+    $this.setState({
+      [e]: moment(ctrl)._d
+    });
+
+    clearInterval(texthandlerInterval);
+    texthandlerInterval = setInterval(() => {
+      if (context !== undefined) {
+        context.updateState({ [e]: moment(ctrl)._d });
+      }
+      clearInterval(texthandlerInterval);
+    }, 1000);
+  }
+};
+
 const InsuranceDetails = ($this, context, e) => {
   AlgaehSearch({
     searchGrid: {
@@ -79,6 +125,7 @@ const InsuranceDetails = ($this, context, e) => {
       callBack(text);
     },
     onRowSelect: row => {
+      debugger;
       if (
         $this.state.secondary_network_id === row.hims_d_insurance_network_id
       ) {
@@ -88,51 +135,123 @@ const InsuranceDetails = ($this, context, e) => {
           type: "warning"
         });
       } else {
-        let obj = {
-          insurance_provider_id: row.hims_d_insurance_provider_id,
-          insurance_provider_name: row.insurance_provider_name,
+        if (
+          Date.parse(row.net_effective_end_date) >
+          Date.parse(row.effective_end_date)
+        ) {
+          swal({
+            title:
+              "Policy Date is more than insurance Expiry date Do you want to continue?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes!",
+            confirmButtonColor: "#44b8bd",
+            cancelButtonColor: "#d33",
+            cancelButtonText: "No"
+          }).then(willProceed => {
+            if (willProceed.value) {
+              let obj = {
+                insurance_provider_id: row.hims_d_insurance_provider_id,
+                insurance_provider_name: row.insurance_provider_name,
 
-          sub_insurance_provider_id: row.hims_d_insurance_sub_id,
-          sub_insurance_provider_name: row.insurance_sub_name,
+                sub_insurance_provider_id: row.hims_d_insurance_sub_id,
+                sub_insurance_provider_name: row.insurance_sub_name,
 
-          network_id: row.hims_d_insurance_network_id,
-          network_type: row.network_type,
+                network_id: row.hims_d_insurance_network_id,
+                network_type: row.network_type,
 
-          policy_number: row.policy_number
-        };
+                policy_number: row.policy_number
+              };
 
-        $this.props.setSelectedInsurance({
-          redux: {
-            type: "PRIMARY_INSURANCE_DATA",
-            mappingName: "primaryinsurance",
-            data: [obj]
-          },
-          afterSuccess: data => {
-            $this.setState({
-              primary_insurance_provider_id: row.hims_d_insurance_provider_id,
-              primary_sub_id: row.hims_d_insurance_sub_id,
-              primary_network_id: row.hims_d_insurance_network_id,
-              primary_policy_num: row.policy_number,
-              primary_network_office_id: row.hims_d_insurance_network_office_id
-              // primary_effective_start_date: e.selected.effective_start_date,
-              // primary_effective_end_date: e.selected.effective_end_date
-            });
+              $this.props.setSelectedInsurance({
+                redux: {
+                  type: "PRIMARY_INSURANCE_DATA",
+                  mappingName: "primaryinsurance",
+                  data: [obj]
+                },
+                afterSuccess: data => {
+                  $this.setState({
+                    primary_insurance_provider_id:
+                      row.hims_d_insurance_provider_id,
+                    primary_sub_id: row.hims_d_insurance_sub_id,
+                    primary_network_id: row.hims_d_insurance_network_id,
+                    primary_policy_num: row.policy_number,
+                    primary_network_office_id:
+                      row.hims_d_insurance_network_office_id,
+                    primary_effective_start_date: row.net_effective_start_date,
+                    primary_effective_end_date: row.net_effective_end_date,
+                    insurance_effective_end_date: row.effective_end_date
+                  });
 
-            if (context != null) {
-              context.updateState({
+                  if (context != null) {
+                    context.updateState({
+                      primary_insurance_provider_id:
+                        row.hims_d_insurance_provider_id,
+                      primary_sub_id: row.hims_d_insurance_sub_id,
+                      primary_network_id: row.hims_d_insurance_network_id,
+                      primary_policy_num: row.policy_number,
+                      primary_network_office_id:
+                        row.hims_d_insurance_network_office_id,
+                      primary_effective_start_date:
+                        row.net_effective_start_date,
+                      primary_effective_end_date: row.net_effective_end_date,
+                      insurance_effective_end_date: row.effective_end_date
+                    });
+                  }
+                }
+              });
+            }
+          });
+        } else {
+          let obj = {
+            insurance_provider_id: row.hims_d_insurance_provider_id,
+            insurance_provider_name: row.insurance_provider_name,
+
+            sub_insurance_provider_id: row.hims_d_insurance_sub_id,
+            sub_insurance_provider_name: row.insurance_sub_name,
+
+            network_id: row.hims_d_insurance_network_id,
+            network_type: row.network_type,
+
+            policy_number: row.policy_number
+          };
+
+          $this.props.setSelectedInsurance({
+            redux: {
+              type: "PRIMARY_INSURANCE_DATA",
+              mappingName: "primaryinsurance",
+              data: [obj]
+            },
+            afterSuccess: data => {
+              $this.setState({
                 primary_insurance_provider_id: row.hims_d_insurance_provider_id,
                 primary_sub_id: row.hims_d_insurance_sub_id,
                 primary_network_id: row.hims_d_insurance_network_id,
                 primary_policy_num: row.policy_number,
                 primary_network_office_id:
-                  row.hims_d_insurance_network_office_id
-
-                // primary_effective_start_date: e.selected.effective_start_date,
-                // primary_effective_end_date: e.selected.effective_end_date
+                  row.hims_d_insurance_network_office_id,
+                primary_effective_start_date: row.net_effective_start_date,
+                primary_effective_end_date: row.net_effective_end_date,
+                insurance_effective_end_date: row.effective_end_date
               });
+
+              if (context != null) {
+                context.updateState({
+                  primary_insurance_provider_id:
+                    row.hims_d_insurance_provider_id,
+                  primary_sub_id: row.hims_d_insurance_sub_id,
+                  primary_network_id: row.hims_d_insurance_network_id,
+                  primary_policy_num: row.policy_number,
+                  primary_network_office_id:
+                    row.hims_d_insurance_network_office_id,
+                  primary_effective_start_date: row.net_effective_start_date,
+                  primary_effective_end_date: row.net_effective_end_date,
+                  insurance_effective_end_date: row.effective_end_date
+                });
+              }
             }
-          }
-        });
+          });
+        }
       }
     }
   });
@@ -207,5 +326,6 @@ export {
   texthandle,
   datehandle,
   InsuranceDetails,
-  radioChange
+  radioChange,
+  enddatehandle
 };

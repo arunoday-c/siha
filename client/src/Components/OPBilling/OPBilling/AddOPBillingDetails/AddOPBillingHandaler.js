@@ -72,14 +72,9 @@ const adjustadvance = ($this, context, ctrl, e) => {
         icon: "warning"
       });
     } else {
-      $this.setState(
-        {
-          [e.target.name]: e.target.value
-        },
-        () => {
-          billheaderCalculation($this, context);
-        }
-      );
+      $this.setState({
+        [e.target.name]: e.target.value
+      });
 
       if (context != null) {
         context.updateState({
@@ -110,15 +105,10 @@ const discounthandle = ($this, context, ctrl, e) => {
       icon: "warning"
     });
   } else {
-    $this.setState(
-      {
-        sheet_discount_percentage: sheet_discount_percentage,
-        sheet_discount_amount: sheet_discount_amount
-      },
-      () => {
-        billheaderCalculation($this, context);
-      }
-    );
+    $this.setState({
+      sheet_discount_percentage: sheet_discount_percentage,
+      sheet_discount_amount: sheet_discount_amount
+    });
 
     if (context != null) {
       context.updateState({
@@ -129,22 +119,21 @@ const discounthandle = ($this, context, ctrl, e) => {
   }
 };
 
-const billheaderCalculation = ($this, context) => {
-  var intervalId;
-  let serviceInput = {
-    isReceipt: false,
-    intCalculateall: false,
-    sheet_discount_percentage: parseFloat(
-      $this.state.sheet_discount_percentage
-    ),
-    sheet_discount_amount: parseFloat($this.state.sheet_discount_amount),
-    advance_adjust: parseFloat($this.state.advance_adjust),
-    gross_total: parseFloat($this.state.gross_total)
-  };
+const billheaderCalculation = ($this, e) => {
+  debugger;
+  if (e.target.value !== e.target.oldvalue) {
+    let serviceInput = {
+      isReceipt: false,
+      intCalculateall: false,
+      sheet_discount_percentage: parseFloat(
+        $this.state.sheet_discount_percentage
+      ),
+      sheet_discount_amount: parseFloat($this.state.sheet_discount_amount),
+      advance_adjust: parseFloat($this.state.advance_adjust),
+      gross_total: parseFloat($this.state.gross_total),
+      credit_amount: parseFloat($this.state.credit_amount)
+    };
 
-  clearInterval(intervalId);
-
-  intervalId = setInterval(() => {
     $this.props.billingCalculations({
       uri: "/billing/billingCalculations",
       method: "POST",
@@ -154,8 +143,14 @@ const billheaderCalculation = ($this, context) => {
         mappingName: "genbill"
       }
     });
-    clearInterval(intervalId);
-  }, 1000);
+  }
+};
+
+const onchangegridcol = ($this, row, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  row[name] = value;
+  row.update();
 };
 
 export {
@@ -163,5 +158,7 @@ export {
   serviceHandeler,
   texthandle,
   discounthandle,
-  adjustadvance
+  adjustadvance,
+  billheaderCalculation,
+  onchangegridcol
 };

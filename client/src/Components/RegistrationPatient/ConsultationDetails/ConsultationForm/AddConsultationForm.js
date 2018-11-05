@@ -114,7 +114,7 @@ class AddConsultationForm extends Component {
   render() {
     const vstDeatils =
       this.state.visitDetails === null ? [{}] : this.state.visitDetails;
-    debugger;
+
     const departments =
       this.props.deptanddoctors === undefined
         ? []

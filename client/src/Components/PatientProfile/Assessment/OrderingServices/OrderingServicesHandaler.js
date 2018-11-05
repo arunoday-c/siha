@@ -408,53 +408,56 @@ const SaveOrdersServices = ($this, e) => {
 
 const calculateAmount = ($this, row, ctrl, e) => {
   e = e || ctrl;
+  debugger;
+  if (e.target.value !== e.target.oldvalue) {
+    let orderservicesdata = $this.state.orderservicesdata;
 
-  let orderservicesdata = $this.state.orderservicesdata;
+    row[e.target.name] = parseFloat(e.target.value);
+    let inputParam = [
+      {
+        hims_d_services_id: row.services_id,
+        quantity: row.quantity,
+        discount_amout:
+          e.target.name === "discount_percentage" ? 0 : row.discount_amout,
+        discount_percentage:
+          e.target.name === "discount_amout" ? 0 : row.discount_percentage,
 
-  row[e.target.name] = parseFloat(e.target.value);
-  let inputParam = [
-    {
-      hims_d_services_id: row.services_id,
-      quantity: row.quantity,
-      discount_amout:
-        e.target.name === "discount_percentage" ? 0 : row.discount_amout,
-      discount_percentage:
-        e.target.name === "discount_amout" ? 0 : row.discount_percentage,
-
-      insured: $this.state.insured === null ? "N" : $this.state.insured,
-      vat_applicable: $this.state.vat_applicable,
-      primary_insurance_provider_id: $this.state.insurance_provider_id,
-      primary_network_office_id: $this.state.hims_d_insurance_network_office_id,
-      primary_network_id: $this.state.network_id,
-      sec_insured: $this.state.sec_insured,
-      secondary_insurance_provider_id:
-        $this.state.secondary_insurance_provider_id,
-      secondary_network_id: $this.state.secondary_network_id,
-      secondary_network_office_id: $this.state.secondary_network_office_id,
-      approval_amt: $this.state.approval_amt,
-      approval_limit_yesno: $this.state.approval_limit_yesno,
-      preapp_limit_amount: $this.state.preapp_limit_amount
-    }
-  ];
-
-  $this.props.billingCalculations({
-    uri: "/billing/getBillDetails",
-    method: "POST",
-    data: inputParam,
-    redux: {
-      type: "BILL_GEN_GET_DATA",
-      mappingName: "xxx"
-    },
-    afterSuccess: data => {
-      extend(row, data.billdetails[0]);
-      for (let i = 0; i < orderservicesdata.length; i++) {
-        if (orderservicesdata[i].service_type_id === row.service_type_id) {
-          orderservicesdata[i] = row;
-        }
+        insured: $this.state.insured === null ? "N" : $this.state.insured,
+        vat_applicable: $this.state.vat_applicable,
+        primary_insurance_provider_id: $this.state.insurance_provider_id,
+        primary_network_office_id:
+          $this.state.hims_d_insurance_network_office_id,
+        primary_network_id: $this.state.network_id,
+        sec_insured: $this.state.sec_insured,
+        secondary_insurance_provider_id:
+          $this.state.secondary_insurance_provider_id,
+        secondary_network_id: $this.state.secondary_network_id,
+        secondary_network_office_id: $this.state.secondary_network_office_id,
+        approval_amt: $this.state.approval_amt,
+        approval_limit_yesno: $this.state.approval_limit_yesno,
+        preapp_limit_amount: $this.state.preapp_limit_amount
       }
-      $this.setState({ orderservicesdata: orderservicesdata });
-    }
-  });
+    ];
+
+    $this.props.billingCalculations({
+      uri: "/billing/getBillDetails",
+      method: "POST",
+      data: inputParam,
+      redux: {
+        type: "BILL_GEN_GET_DATA",
+        mappingName: "xxx"
+      },
+      afterSuccess: data => {
+        extend(row, data.billdetails[0]);
+        for (let i = 0; i < orderservicesdata.length; i++) {
+          if (orderservicesdata[i].service_type_id === row.service_type_id) {
+            orderservicesdata[i] = row;
+          }
+        }
+        $this.setState({ orderservicesdata: orderservicesdata });
+      }
+    });
+  }
 };
 
 const updateBillDetail = ($this, e) => {
@@ -482,6 +485,13 @@ const updateBillDetail = ($this, e) => {
   });
 };
 
+const onchangegridcol = ($this, row, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  row[name] = value;
+  row.update();
+};
+
 export {
   serviceTypeHandeler,
   serviceHandeler,
@@ -491,5 +501,6 @@ export {
   deleteServices,
   SaveOrdersServices,
   calculateAmount,
-  updateBillDetail
+  updateBillDetail,
+  onchangegridcol
 };

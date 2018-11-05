@@ -106,7 +106,7 @@ let getCounterMaster = (req, res, next) => {
       db.getConnection((error, connection) => {
         connection.query(
           "select hims_d_counter_id,counter_code,counter_description,arabic_name,counter_status from \
-          hims_d_counter where record_status='A';",
+          hims_d_counter where record_status='A' order by hims_d_counter_id desc;",
          
           (error, result) => {
             releaseDBConnection(db, connection);
@@ -136,7 +136,7 @@ let getShiftMaster = (req, res, next) => {
       db.getConnection((error, connection) => {
         connection.query(
           "select hims_d_shift_id, shift_code, shift_description, arabic_name, shift_status from \
-          hims_d_shift where record_status='A';",
+          hims_d_shift where record_status='A' order by hims_d_shift_id desc;",
          
           (error, result) => {
             releaseDBConnection(db, connection);

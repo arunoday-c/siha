@@ -22,7 +22,7 @@ let selectStatement = (req, res, next) => {
         "SELECT `hims_d_visit_type_id`, `visit_type_code`, `visit_type_desc`,`visit_status`,`arabic_visit_type_desc`\
        , `consultation`, `created_by`, `created_date`, `updated_by`, `updated_date` FROM `hims_d_visit_type`  \
        WHERE record_status='A' AND " +
-          where.condition,
+          where.condition+" order by hims_d_visit_type_id desc",
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
