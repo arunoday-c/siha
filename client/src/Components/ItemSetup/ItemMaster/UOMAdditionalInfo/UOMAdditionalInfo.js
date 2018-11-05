@@ -75,24 +75,6 @@ class UOMAdditionalInfo extends Component {
                       }}
                     />
 
-                    <AlagehFormGroup
-                      div={{ className: "col-4" }}
-                      label={{
-                        fieldName: "conversion_factor"
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "conversion_factor",
-                        value: this.state.conversion_factor,
-                        events: {
-                          onChange: texthandle.bind(this, this)
-                        },
-                        others: {
-                          disabled: this.state.convertEnable
-                        }
-                      }}
-                    />
-
                     <AlagehAutoComplete
                       div={{ className: "col-3" }}
                       label={{
@@ -108,6 +90,24 @@ class UOMAdditionalInfo extends Component {
                           data: GlobalVariables.FORMAT_YESNO
                         },
                         onChange: stockingtexthandle.bind(this, this)
+                      }}
+                    />
+
+                    <AlagehFormGroup
+                      div={{ className: "col-4" }}
+                      label={{
+                        fieldName: "conversion_factor"
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "conversion_factor",
+                        value: this.state.conversion_factor,
+                        events: {
+                          onChange: texthandle.bind(this, this)
+                        },
+                        others: {
+                          disabled: this.state.convertEnable
+                        }
                       }}
                     />
 

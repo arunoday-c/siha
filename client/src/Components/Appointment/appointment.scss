@@ -174,7 +174,6 @@
         width: 120px;
 
         font-size: 0.8rem;
-        overflow: hidden;
         word-break: normal;
         border: 1px solid lightgrey;
         text-align: center;
@@ -198,6 +197,7 @@
         border-radius: 5px;
         padding: 5px;
         margin-bottom: 2px;
+        position: relative;
 
         .statusClr {
           width: 5px;
@@ -209,6 +209,66 @@
         }
       }
 
+      .patientStdbyCount {
+        display: block;
+        text-align: center;
+        background: #fefdf4;
+        border-radius: 10px;
+        margin: 3px auto 0;
+        width: 85%;
+        font-size: 0.7rem;
+        border: 1px solid #e3e0c9;
+        ul {
+          visibility: hidden;
+          border: 1px solid #e2dfcb;
+          position: absolute;
+          z-index: 9;
+          background: #fefcf4;
+          text-align: left;
+          left: -1px;
+          top: auto;
+          width: 85%;
+          margin: auto 10px;
+          border-radius: 0 0 10px 10px;
+          padding: 0;
+          box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
+          li {
+            margin: 0;
+            padding: 5px;
+            list-style: none;
+            border-bottom: 1px solid #e2dfcb;
+            b {
+              padding: 0px 4px;
+              border: 1px solid #e1decc;
+              display: block;
+              float: right;
+              margin-top: 0;
+              border-radius: 100%;
+              width: 16px;
+              height: 16px;
+              line-height: 11px;
+              color: #e8514a;
+              background: #fefcf4;
+            }
+            b:hover {
+              color: #fff;
+              background: #e8514a;
+            }
+          }
+          li:hover {
+            background: #e2dfcb;
+          }
+          li:last-child {
+            border: none;
+          }
+        }
+      }
+      .patientStdbyCount:hover {
+        border-radius: 10px 10px 0 0;
+        ul {
+          visibility: visible;
+        }
+      }
       .dynSlot {
         position: absolute;
         top: 2px;
@@ -216,7 +276,7 @@
         font-size: 0.7rem;
         color: #7d7d7d;
       }
-      i {
+      i.fa-plus {
         visibility: hidden;
         position: absolute;
         top: -1px;
@@ -231,11 +291,25 @@
         color: blue !important;
       }
       i.fa-times {
+        visibility: hidden;
+        color: black !important;
+      }
+      .dynPatient:hover i.fa-times {
+        visibility: visible;
+        position: absolute;
+        top: 0px !important;
+        right: 0px;
+        border-left: 1px solid rgba(0, 0, 0, 0.1);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        padding: 5px 5px 3px 3px;
+      }
+
+      i.fa-times:hover {
         color: red !important;
-        top: 18px !important;
+        background: rgba(255, 255, 255, 0.7) !important;
       }
       td.tg-baqh:hover {
-        i {
+        i.fa-plus {
           visibility: visible;
         }
       }
