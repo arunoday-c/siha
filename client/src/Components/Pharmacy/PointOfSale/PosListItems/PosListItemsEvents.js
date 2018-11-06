@@ -44,29 +44,33 @@ const UomchangeTexts = ($this, context, ctrl, e) => {
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  let unit_cost = 0;
-  if (e.selected.conversion_factor === 1) {
-    unit_cost = $this.state.Real_unit_cost;
-  } else {
-    unit_cost = e.selected.conversion_factor * $this.state.unit_cost;
-  }
-  $this.setState({
-    [name]: value,
-    conversion_factor: e.selected.conversion_factor,
-    unit_cost: unit_cost
-  });
-
-  clearInterval(texthandlerInterval);
-  texthandlerInterval = setInterval(() => {
-    if (context !== undefined) {
-      context.updateState({
-        [name]: value,
-        conversion_factor: e.selected.conversion_factor,
-        unit_cost: unit_cost
-      });
+  if ($this.state.uom_id !== value) {
+    let unit_cost = 0;
+    if (e.selected.conversion_factor === 1) {
+      unit_cost = $this.state.Real_unit_cost;
+    } else {
+      unit_cost = e.selected.conversion_factor * $this.state.Real_unit_cost;
     }
+    $this.setState({
+      [name]: value,
+      conversion_factor: e.selected.conversion_factor,
+      // quantity: e.selected.conversion_factor,
+      unit_cost: unit_cost
+    });
+
     clearInterval(texthandlerInterval);
-  }, 1000);
+    texthandlerInterval = setInterval(() => {
+      if (context !== undefined) {
+        context.updateState({
+          [name]: value,
+          conversion_factor: e.selected.conversion_factor,
+          // quantity: e.selected.conversion_factor,
+          unit_cost: unit_cost
+        });
+      }
+      clearInterval(texthandlerInterval);
+    }, 1000);
+  }
 };
 
 const numberchangeTexts = ($this, context, e) => {

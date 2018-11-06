@@ -7,7 +7,7 @@ import {
 } from "../../utils";
 import extend from "extend";
 import httpStatus from "../../utils/httpStatus";
-import {  debugFunction, debugLog } from "../../utils/logging";
+import { debugFunction, debugLog } from "../../utils/logging";
 import moment from "moment";
 import { getBillDetailsFunctionality } from "../../model/billing";
 import { updateIntoItemLocation } from "./commonFunction";
@@ -204,7 +204,10 @@ let addPosEntry = (req, res, next) => {
                         });
                       }
                       releaseDBConnection(db, connection);
-                      req.records = { pos_number: documentCode };
+                      req.records = {
+                        pos_number: documentCode,
+                        hims_f_pharmacy_pos_header_id: headerResult.insertId
+                      };
                       next();
                     });
                   }

@@ -605,6 +605,13 @@ class OrderingServices extends Component {
                           }
                         },
                         {
+                          fieldName: "total_tax",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "total_tax" }} />
+                          ),
+                          disabled: true
+                        },
+                        {
                           fieldName: "patient_payable",
                           label: (
                             <AlgaehLabel

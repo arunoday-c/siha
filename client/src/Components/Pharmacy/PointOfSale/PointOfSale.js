@@ -317,7 +317,8 @@ class PointOfSale extends Component {
                       data: GlobalVariables.MODE_OF_PAY
                     },
                     others: {
-                      disabled: this.state.case_type === "O" ? false : true
+                      // disabled: this.state.case_type === "O" ? false : true
+                      disabled: true
                     },
                     onChange: changeTexts.bind(this, this)
                   }}
