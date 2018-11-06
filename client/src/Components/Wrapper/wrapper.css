@@ -1,65 +1,81 @@
-.selected-grid-row.-odd .rt-td,
-.selected-grid-row.-even .rt-td {
-  background-color: #d9fdff !important; }
+.ReactTable .rt-thead .rt-th {
+  font-size: 0.8rem !important;
+  color: #fff !important;
+  background: #8c8c8c !important; }
+  .ReactTable .rt-thead .rt-th .style_Label {
+    font-weight: bold !important;
+    white-space: pre-line !important;
+    padding: 3px 0 !important; }
 
-.ReactTable {
-  max-width: 95vw !important;
-  font-size: 0.8rem;
-  background: #ffff !important; }
-  .ReactTable .rt-th {
-    white-space: unset !important;
-    text-transform: uppercase !important;
-    background: #8c8c8c !important;
-    color: #fff !important; }
-    .ReactTable .rt-th label {
-      font-weight: 600; }
-  .ReactTable .-filters .rt-th {
-    white-space: unset !important;
-    text-transform: uppercase !important;
-    background: #8c8c8c !important;
-    color: #fff !important; }
-  .ReactTable .rt-td {
-    overflow: inherit !important;
-    white-space: normal !important; }
-  .ReactTable i.fa-pen,
-  .ReactTable i.fa-trash-alt,
-  .ReactTable i.fa-save,
-  .ReactTable i.fa-times,
-  .ReactTable .fa-barcode,
-  .ReactTable .fa-check,
-  .ReactTable .fa-flask,
-  .ReactTable .fa-file-signature,
-  .ReactTable .fa-walking,
-  .ReactTable .fa-file-export,
-  .ReactTable .fa-sync-alt,
-  .ReactTable .fa-file-prescription,
-  .ReactTable .fa-arrow-right,
-  .ReactTable .fa-plus {
-    cursor: pointer;
-    border: 1px solid #44b8bd;
-    height: 28px;
-    border-radius: 100%;
-    font-size: 0.9rem;
-    width: 28px;
-    display: inline-block;
-    text-align: center;
-    line-height: 25px;
-    background: #fff;
-    margin: 0 5px;
-    color: #313538; }
-  .ReactTable i.fa-pen:hover,
-  .ReactTable i.fa-trash-alt:hover,
-  .ReactTable i.fa-save:hover,
-  .ReactTable i.fa-times:hover,
-  .ReactTable .fa-barcode:hover,
-  .ReactTable .fa-check:hover,
-  .ReactTable .fa-flask:hover,
-  .ReactTable .fa-file-signature:hover,
-  .ReactTable .fa-walking:hover,
-  .ReactTable .fa-file-export:hover,
-  .ReactTable .fa-sync-alt:hover,
-  .ReactTable .fa-file-prescription:hover,
-  .ReactTable .fa-arrow-right:hover,
-  .ReactTable .fa-plus:hover {
-    background: #44b8bd;
-    color: #fff; }
+.ReactTable .-filters .rt-th {
+  background: #ccc !important; }
+
+.ReactTable .rt-thead.-filters input,
+.ReactTable .rt-thead.-filters select {
+  padding: 0 2px !important;
+  border: 1px solid #8c8c8c !important; }
+
+.ReactTable .rt-tbody .rt-td {
+  font-size: 0.8rem !important; }
+
+.ReactTable .-btn {
+  background: #34b8bc !important;
+  color: #fff !important; }
+
+.ReactTable .-btn:disabled {
+  background: rgba(0, 0, 0, 0.1) !important; }
+
+.ReactTable .-pagination {
+  font-size: 0.8rem !important; }
+
+.ReactTable .-pagination input,
+.ReactTable .-pagination select {
+  border: 1px solid #8c8c8c !important;
+  width: 7vh !important; }
+
+.ReactTable .-pagination input {
+  padding: 2px !important; }
+
+.ReactTable i.fa-pen,
+.ReactTable i.fa-trash-alt,
+.ReactTable i.fa-save,
+.ReactTable i.fa-times,
+.ReactTable .fa-barcode,
+.ReactTable .fa-check,
+.ReactTable .fa-flask,
+.ReactTable .fa-file-signature,
+.ReactTable .fa-walking,
+.ReactTable .fa-file-export,
+.ReactTable .fa-sync-alt,
+.ReactTable .fa-file-prescription,
+.ReactTable .fa-arrow-right,
+.ReactTable .fa-plus {
+  cursor: pointer;
+  border: 1px solid #44b8bd;
+  height: 28px;
+  border-radius: 100%;
+  font-size: 0.9rem;
+  width: 28px;
+  display: inline-block;
+  text-align: center;
+  line-height: 25px;
+  background: #fff;
+  margin: 0 5px;
+  color: #313538; }
+
+.ReactTable i.fa-pen:hover,
+.ReactTable i.fa-trash-alt:hover,
+.ReactTable i.fa-save:hover,
+.ReactTable i.fa-times:hover,
+.ReactTable .fa-barcode:hover,
+.ReactTable .fa-check:hover,
+.ReactTable .fa-flask:hover,
+.ReactTable .fa-file-signature:hover,
+.ReactTable .fa-walking:hover,
+.ReactTable .fa-file-export:hover,
+.ReactTable .fa-sync-alt:hover,
+.ReactTable .fa-file-prescription:hover,
+.ReactTable .fa-arrow-right:hover,
+.ReactTable .fa-plus:hover {
+  background: #44b8bd;
+  color: #fff; }
