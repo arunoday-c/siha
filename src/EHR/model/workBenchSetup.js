@@ -3,7 +3,9 @@ import extend from "extend";
 import {
   
   whereCondition,
-  releaseDBConnection,deleteRecord
+  releaseDBConnection,
+  deleteRecord,
+  jsonArrayToObject
   
 } from "../../utils";
 import httpStatus from "../../utils/httpStatus";
@@ -327,26 +329,36 @@ let addDepartmentVitalMap = (req, res, next) => {
         next(error);
       }
 
+
+      const insurtColumns = ["department_id", "created_by", "updated_by"];
+
+
       connection.query(
-        "INSERT INTO `hims_m_department_vital_mapping` (department_id,vital_header_id,created_date, created_by, updated_date, updated_by)\
-          VALUE(?,?,?,?,?,?)",
+        "INSERT INTO hims_m_department_vital_mapping(" +
+          insurtColumns.join(",") +
+          ",`vital_header_id`,created_date,updated_date) VALUES ?",
         [
-          input.department_id,
-          input.vital_header_id,        
-          new Date(),
-          input.created_by,
-          new Date(),
-          input.updated_by
+          jsonArrayToObject({
+            sampleInputObject: insurtColumns,
+            arrayObj: req.body.departments,
+            newFieldToInsert: [input.vital_header_id, new Date(), new Date()],
+            req: req
+          })
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
           if (error) {
             next(error);
           }
+
+          debugLog("Results are recorded...");
           req.records = result;
           next();
         }
       );
+
+
+    
     });
   } catch (e) {
     next(e);
