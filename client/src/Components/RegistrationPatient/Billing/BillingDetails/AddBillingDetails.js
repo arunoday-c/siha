@@ -416,6 +416,7 @@ const credittextCal = ($this, e) => {
 };
 
 const cashtexthCal = ($this, e) => {
+  debugger;
   if (e.target.value !== e.target.oldvalue) {
     calculateRecipt($this);
   }

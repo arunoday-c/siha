@@ -792,6 +792,18 @@ let billingCalculations = (req, res, next) => {
       sendingObject.unbalanced_amount = 0;
       sendingObject.card_amount = 0;
       sendingObject.cheque_amount = 0;
+
+      sendingObject.patient_payable = math.round(
+        sendingObject.patient_payable,
+        2
+      );
+      sendingObject.total_tax = math.round(sendingObject.total_tax, 2);
+      sendingObject.patient_tax = math.round(sendingObject.patient_tax, 2);
+      sendingObject.company_tax = math.round(sendingObject.company_tax, 2);
+      sendingObject.sec_company_tax = math.round(
+        sendingObject.sec_company_tax,
+        2
+      );
     } else {
       //Reciept
 
@@ -855,18 +867,6 @@ let billingCalculations = (req, res, next) => {
         sendingObject.receiveable_amount - sendingObject.total_amount;
     }
 
-    sendingObject.patient_payable = math.round(
-      sendingObject.patient_payable,
-      2
-    );
-
-    sendingObject.total_tax = math.round(sendingObject.total_tax, 2);
-    sendingObject.patient_tax = math.round(sendingObject.patient_tax, 2);
-    sendingObject.company_tax = math.round(sendingObject.company_tax, 2);
-    sendingObject.sec_company_tax = math.round(
-      sendingObject.sec_company_tax,
-      2
-    );
     // debugLog("patient_payable", sendingObject.patient_payable);
     req.records = sendingObject;
     next();
