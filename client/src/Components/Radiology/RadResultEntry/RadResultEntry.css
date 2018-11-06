@@ -93,5 +93,7 @@
 .form-row-gap {
   padding-top: 5px; }
 
-.editor .quill .ql-container {
-  min-height: 60vh; }
+.editor {
+  padding-top: 10px; }
+  .editor .quill .ql-editor p {
+    min-height: 30vh !important; }
