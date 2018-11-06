@@ -1,4 +1,5 @@
 .ReactTable {
+  max-width: 95vw !important;
   .rt-thead {
     .rt-th {
       font-size: 0.8rem !important;
@@ -24,6 +25,7 @@
   .rt-tbody {
     .rt-td {
       font-size: 0.8rem !important;
+      overflow: inherit !important;
     }
   }
   .-btn {

@@ -22,4 +22,9 @@
   td {
     border-right: 1px solid #e6e6e6;
   }
+  #hospitalservices_grid_cntr {
+    .ReactTable {
+      max-height: 56vh !important;
+    }
+  }
 }

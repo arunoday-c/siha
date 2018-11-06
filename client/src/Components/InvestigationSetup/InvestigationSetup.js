@@ -262,6 +262,16 @@ class InvestigationSetup extends Component {
                   onChange: texthandle.bind(this, this)
                 }}
               />
+              <div className="col">
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  onClick={this.clearData.bind(this)}
+                  style={{ marginTop: 21 }}
+                >
+                  Clear
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -270,7 +280,28 @@ class InvestigationSetup extends Component {
             <div className="caption">
               <h3 className="caption-subject">Investigation Lists</h3>
             </div>
-            <div className="actions" />
+            <div className="actions">
+              <a
+                href="javascript:;"
+                class="btn btn-primary btn-circle active"
+                onClick={this.ShowModel.bind(this)}
+              >
+                <i class="fas fa-plus" />
+              </a>
+              <NewInvestigation
+                HeaderCaption={
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "investigation_setup",
+                      align: "ltr"
+                    }}
+                  />
+                }
+                open={this.state.isOpen}
+                onClose={this.ShowModel.bind(this)}
+                InvestigationPop={this.state.InvestigationPop}
+              />
+            </div>
           </div>
           <div className="portlet-body">
             <div className="row">
@@ -407,51 +438,6 @@ class InvestigationSetup extends Component {
             </div>
           </div>
         </div>
-        {/* Footer Start */}
-
-        <div className="hptl-phase1-footer">
-          <AppBar position="static" className="main">
-            <div className="row">
-              <div className="col-lg-12">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={this.ShowModel.bind(this)}
-                >
-                  {/* <AlgaehLabel
-                    label={{ fieldName: "btn_save", returnText: true }}
-                  /> */}
-                  Add New
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  onClick={this.clearData.bind(this)}
-                >
-                  {/* <AlgaehLabel
-                    label={{ fieldName: "btn_save", returnText: true }}
-                  /> */}
-                  Clear
-                </button>
-
-                <NewInvestigation
-                  HeaderCaption={
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "investigation_setup",
-                        align: "ltr"
-                      }}
-                    />
-                  }
-                  open={this.state.isOpen}
-                  onClose={this.ShowModel.bind(this)}
-                  InvestigationPop={this.state.InvestigationPop}
-                />
-              </div>
-            </div>
-          </AppBar>
-        </div>
-        {/* Footer End */}
       </div>
     );
   }

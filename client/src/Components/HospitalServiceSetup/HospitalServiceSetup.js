@@ -240,8 +240,11 @@ class HospitalServiceSetup extends Component {
           ]}
         />
 
-        <div className="row">
-          <div className="col-lg-12" style={{ marginTop: "75px" }}>
+        <div
+          className="row inner-top-search"
+          style={{ marginTop: 57, paddingBottom: 10 }}
+        >
+          <div className="col-lg-12">
             <div className="row">
               <AlagehAutoComplete
                 div={{ className: "col" }}
@@ -323,10 +326,50 @@ class HospitalServiceSetup extends Component {
                   onChange: texthandle.bind(this, this)
                 }}
               />
+              <div className="col">
+                <button
+                  className="btn btn-default"
+                  onClick={this.clearData.bind(this)}
+                  style={{ marginTop: 21 }}
+                >
+                  Clear
+                </button>
+              </div>
             </div>
-            <hr />
+          </div>
+        </div>
+
+        <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+          <div className="portlet-title">
+            <div className="caption">
+              <h3 className="caption-subject">Hospital Services List</h3>
+            </div>
+            <div className="actions">
+              <a
+                href="javascript:;"
+                className="btn btn-primary btn-circle active"
+                onClick={this.ShowModel.bind(this)}
+              >
+                <i className="fas fa-plus" />
+              </a>{" "}
+              <HospitalServices
+                HeaderCaption={
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "hospital_services",
+                      align: "ltr"
+                    }}
+                  />
+                }
+                open={this.state.isOpen}
+                onClose={this.CloseModel.bind(this)}
+                servicePop={this.state.servicePop}
+              />
+            </div>
+          </div>
+          <div className="portlet-body">
             <div className="row">
-              <div className="col-lg-12">
+              <div className="col-lg-12" id="hospitalservices_grid_cntr">
                 <AlgaehDataGrid
                   id="hospitalservices_grid"
                   columns={[
@@ -336,27 +379,20 @@ class HospitalServiceSetup extends Component {
                       displayTemplate: row => {
                         return (
                           <span>
-                            <IconButton
-                              color="primary"
-                              title="Add Template"
-                              style={{ maxHeight: "4vh" }}
-                            >
-                              <Edit
-                                onClick={this.EditItemMaster.bind(this, row)}
-                              />
-                            </IconButton>
+                            <i
+                              className="fas fa-pen"
+                              onClick={this.EditItemMaster.bind(this, row)}
+                            />
                           </span>
                         );
                       }
                     },
-
                     {
                       fieldName: "service_code",
                       label: (
                         <AlgaehLabel label={{ fieldName: "service_code" }} />
                       )
                     },
-
                     {
                       fieldName: "cpt_code",
                       label: <AlgaehLabel label={{ fieldName: "cpt_code" }} />
@@ -374,7 +410,6 @@ class HospitalServiceSetup extends Component {
                           label={{ fieldName: "sub_department_id" }}
                         />
                       ),
-
                       displayTemplate: row => {
                         let display =
                           this.props.subdepartments === undefined
@@ -401,7 +436,6 @@ class HospitalServiceSetup extends Component {
                       label: (
                         <AlgaehLabel label={{ fieldName: "hospital_id" }} />
                       ),
-
                       displayTemplate: row => {
                         let display =
                           this.props.hospitaldetails === undefined
@@ -409,7 +443,6 @@ class HospitalServiceSetup extends Component {
                             : this.props.hospitaldetails.filter(
                                 f => f.hims_d_hospital_id === row.hospital_id
                               );
-
                         return (
                           <span>
                             {display !== null && display.length !== 0
@@ -447,14 +480,12 @@ class HospitalServiceSetup extends Component {
                         );
                       }
                     },
-
                     {
                       fieldName: "standard_fee",
                       label: (
                         <AlgaehLabel label={{ fieldName: "standard_fee" }} />
                       )
                     },
-
                     {
                       fieldName: "vat_applicable",
                       label: (
@@ -485,57 +516,6 @@ class HospitalServiceSetup extends Component {
             </div>
           </div>
         </div>
-        {/* Footer Start */}
-
-        {/* {display !== null && display.length !== 0
-                              ? this.state.selectedLang === "en"
-                                ? display[0].service_type
-                                : display[0].arabic_service_type
-                              : // display[0].service_type
-                                ""} */}
-
-        <div className="hptl-phase1-footer">
-          <AppBar position="static" className="main">
-            <div className="row">
-              <div className="col-lg-12">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={this.ShowModel.bind(this)}
-                >
-                  {/* <AlgaehLabel
-                    label={{ fieldName: "btn_addnew", returnText: true }}
-                  /> */}
-                  Add New
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  onClick={this.clearData.bind(this)}
-                >
-                  {/* <AlgaehLabel
-                    label={{ fieldName: "btn_save", returnText: true }}
-                  /> */}
-                  Clear
-                </button>
-                <HospitalServices
-                  HeaderCaption={
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "hospital_services",
-                        align: "ltr"
-                      }}
-                    />
-                  }
-                  open={this.state.isOpen}
-                  onClose={this.CloseModel.bind(this)}
-                  servicePop={this.state.servicePop}
-                />
-              </div>
-            </div>
-          </AppBar>
-        </div>
-        {/* Footer End */}
       </div>
     );
   }

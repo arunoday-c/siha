@@ -127,201 +127,207 @@ class InsuranceSetup extends Component {
             }
           ]}
         />
-        <div className="row" style={{ marginTop: 90 }}>
-          {/* <div className="tab-container toggle-section">
+        {/* <div className="tab-container toggle-section">
               <ul className="nav">
                 <li className={"nav-item tab-button active"}>
                   <label class="style_Label ">Insurance Provider List</label>
                 </li>
               </ul>
             </div> */}
-
-          <div className="col-lg-12" id="insuranceGridCntr">
-            <AlgaehDataGrid
-              id="insurance_grid"
-              columns={[
-                {
-                  fieldName: "edit_option",
-                  label: <AlgaehLabel label={{ fieldName: "edit_option" }} />,
-                  disabled: false,
-                  displayTemplate: row => {
-                    return (
-                      <AlagehAutoComplete
-                        div={{}}
-                        selector={{
-                          name: "edit_option",
-                          className: "select-fld",
-                          value: row.edit_option,
-                          dataSource: {
-                            textField: "name",
-                            valueField: "value",
-                            data: GlobalVariables.FORMAT_INSURANCE_EDIT_OPTION
-                          },
-                          onChange: this.setUpdateComponent.bind(this, row)
-                        }}
-                      />
-                    );
-                  },
-                  others: {
-                    filterable: false
-                  }
-                },
-                {
-                  fieldName: "insurance_type",
-                  label: (
-                    <AlgaehLabel label={{ fieldName: "insurance_type" }} />
-                  ),
-                  disabled: true,
-                  displayTemplate: row => {
-                    return row.insurance_type === "I"
-                      ? "Insurance Company"
-                      : "Inactive";
-                  }
-                },
-                {
-                  fieldName: "currency",
-                  label: <AlgaehLabel label={{ fieldName: "currency" }} />,
-                  disabled: true
-                },
-                {
-                  fieldName: "insurance_provider_name",
-                  label: (
-                    <AlgaehLabel
-                      label={{ fieldName: "insurance_provider_name" }}
-                    />
-                  ),
-                  disabled: true,
-                  id: "insuranceProviderName"
-                },
-                {
-                  fieldName: "insurance_provider_code",
-                  label: (
-                    <AlgaehLabel
-                      label={{ fieldName: "insurance_provider_code" }}
-                    />
-                  ),
-                  disabled: true,
-                  accessor: "providerID"
-                },
-                {
-                  fieldName: "payment_type",
-                  label: <AlgaehLabel label={{ fieldName: "payment_type" }} />,
-
-                  displayTemplate: row => {
-                    let display = GlobalVariables.FORMAT_PAYMENT_TYPE.filter(
-                      f => f.value === row.payment_type
-                    );
-
-                    return (
-                      <span>
-                        {display !== null && display.length !== 0
-                          ? this.state.selectedLang === "en"
-                            ? display[0].name
-                            : display[0].arabic_name
-                          : ""}
-                      </span>
-                    );
-                  },
-
-                  disabled: true
-                },
-                {
-                  fieldName: "credit_period",
-                  label: <AlgaehLabel label={{ fieldName: "credit_period" }} />,
-                  disabled: true
-                },
-                {
-                  fieldName: "effective_start_date",
-                  label: (
-                    <AlgaehLabel
-                      label={{ fieldName: "effective_start_date" }}
-                    />
-                  ),
-                  displayTemplate: row => {
-                    return (
-                      <span>
-                        {this.changeDateFormat(row.effective_start_date)}
-                      </span>
-                    );
-                  },
-                  disabled: true
-                },
-                {
-                  fieldName: "effective_end_date",
-                  label: (
-                    <AlgaehLabel label={{ fieldName: "effective_end_date" }} />
-                  ),
-                  displayTemplate: row => {
-                    return (
-                      <span>
-                        {this.changeDateFormat(row.effective_end_date)}
-                      </span>
-                    );
-                  },
-                  disabled: true
+        <div
+          className="portlet portlet-bordered box-shadow-normal margin-bottom-15"
+          style={{ marginTop: 90 }}
+        >
+          <div className="portlet-title">
+            <div className="caption">
+              <h3 className="caption-subject">Insurance Provider List</h3>
+            </div>
+            <div className="actions">
+              <a
+                href="javascript:;"
+                class="btn btn-primary btn-circle active"
+                onClick={this.ShowModel.bind(this)}
+              >
+                <i class="fas fa-plus" />
+              </a>{" "}
+              <InsuranceAdd
+                HeaderCaption={
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "add_insurance",
+                      align: "ltr"
+                    }}
+                  />
                 }
-              ]}
-              keyId="identity_document_code"
-              dataSource={{
-                data:
-                  this.props.insProviders === undefined
-                    ? []
-                    : this.props.insProviders
-              }}
-              filter={true}
-              // isEditable={true}
-              paging={{ page: 0, rowsPerPage: 10 }}
-              others={{
-                defaultSorted: [
-                  {
-                    id: "insuranceProviderName",
-                    desc: false
-                  }
-                ]
-              }}
-            />
+                open={this.state.isOpen}
+                onClose={this.CloseModel.bind(this)}
+                opencomponent={this.state.opencomponent}
+                addfunctionality={this.state.addfunctionality}
+                buttonenable={this.state.buttonenable}
+                insurance_provider_id={this.state.insurance_provider_id}
+                insurance_provider_name={this.state.insurance_provider_name}
+              />
+            </div>
           </div>
-        </div>
-        {/* Footer Start */}
-
-        <div className="hptl-phase1-footer">
-          <AppBar position="static" className="main">
+          <div className="portlet-body">
             <div className="row">
-              <div className="col-lg-12">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={this.ShowModel.bind(this)}
-                >
-                  {/* <AlgaehLabel
-                    label={{ fieldName: "btn_save", returnText: true }}
-                  /> */}
-                  Add New Insurance
-                </button>
+              <div className="col-lg-12" id="insuranceGridCntr">
+                <AlgaehDataGrid
+                  id="insurance_grid"
+                  columns={[
+                    {
+                      fieldName: "edit_option",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "edit_option" }} />
+                      ),
+                      disabled: false,
+                      displayTemplate: row => {
+                        return (
+                          <AlagehAutoComplete
+                            div={{}}
+                            selector={{
+                              name: "edit_option",
+                              className: "select-fld",
+                              value: row.edit_option,
+                              dataSource: {
+                                textField: "name",
+                                valueField: "value",
+                                data:
+                                  GlobalVariables.FORMAT_INSURANCE_EDIT_OPTION
+                              },
+                              onChange: this.setUpdateComponent.bind(this, row)
+                            }}
+                          />
+                        );
+                      },
+                      others: {
+                        filterable: false
+                      }
+                    },
+                    {
+                      fieldName: "insurance_type",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "insurance_type" }} />
+                      ),
+                      disabled: true,
+                      displayTemplate: row => {
+                        return row.insurance_type === "I"
+                          ? "Insurance Company"
+                          : "Inactive";
+                      }
+                    },
+                    {
+                      fieldName: "currency",
+                      label: <AlgaehLabel label={{ fieldName: "currency" }} />,
+                      disabled: true
+                    },
+                    {
+                      fieldName: "insurance_provider_name",
+                      label: (
+                        <AlgaehLabel
+                          label={{ fieldName: "insurance_provider_name" }}
+                        />
+                      ),
+                      disabled: true,
+                      id: "insuranceProviderName"
+                    },
+                    {
+                      fieldName: "insurance_provider_code",
+                      label: (
+                        <AlgaehLabel
+                          label={{ fieldName: "insurance_provider_code" }}
+                        />
+                      ),
+                      disabled: true,
+                      accessor: "providerID"
+                    },
+                    {
+                      fieldName: "payment_type",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "payment_type" }} />
+                      ),
 
-                <InsuranceAdd
-                  HeaderCaption={
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "add_insurance",
-                        align: "ltr"
-                      }}
-                    />
-                  }
-                  open={this.state.isOpen}
-                  onClose={this.CloseModel.bind(this)}
-                  opencomponent={this.state.opencomponent}
-                  addfunctionality={this.state.addfunctionality}
-                  buttonenable={this.state.buttonenable}
-                  insurance_provider_id={this.state.insurance_provider_id}
-                  insurance_provider_name={this.state.insurance_provider_name}
+                      displayTemplate: row => {
+                        let display = GlobalVariables.FORMAT_PAYMENT_TYPE.filter(
+                          f => f.value === row.payment_type
+                        );
+
+                        return (
+                          <span>
+                            {display !== null && display.length !== 0
+                              ? this.state.selectedLang === "en"
+                                ? display[0].name
+                                : display[0].arabic_name
+                              : ""}
+                          </span>
+                        );
+                      },
+
+                      disabled: true
+                    },
+                    {
+                      fieldName: "credit_period",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "credit_period" }} />
+                      ),
+                      disabled: true
+                    },
+                    {
+                      fieldName: "effective_start_date",
+                      label: (
+                        <AlgaehLabel
+                          label={{ fieldName: "effective_start_date" }}
+                        />
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {this.changeDateFormat(row.effective_start_date)}
+                          </span>
+                        );
+                      },
+                      disabled: true
+                    },
+                    {
+                      fieldName: "effective_end_date",
+                      label: (
+                        <AlgaehLabel
+                          label={{ fieldName: "effective_end_date" }}
+                        />
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {this.changeDateFormat(row.effective_end_date)}
+                          </span>
+                        );
+                      },
+                      disabled: true
+                    }
+                  ]}
+                  keyId="identity_document_code"
+                  dataSource={{
+                    data:
+                      this.props.insProviders === undefined
+                        ? []
+                        : this.props.insProviders
+                  }}
+                  filter={true}
+                  // isEditable={true}
+                  paging={{ page: 0, rowsPerPage: 10 }}
+                  others={{
+                    defaultSorted: [
+                      {
+                        id: "insuranceProviderName",
+                        desc: false
+                      }
+                    ]
+                  }}
                 />
               </div>
             </div>
-          </AppBar>
+          </div>
         </div>
-
-        {/* Footer End */}
       </div>
     );
   }
