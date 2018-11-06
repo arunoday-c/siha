@@ -9,7 +9,9 @@ import {
     deleteVitalMasterHeader,
     deleteVitalMasterDetail,
     updateVitalMasterHeader,
-    updateVitalMasterDetail}from "../model/workBenchSetup";
+    updateVitalMasterDetail,
+    addDepartmentVitalMap,
+    getDepartmentVitalMap}from "../model/workBenchSetup";
   export default ({ config, db }) => {
     let api = Router();
   
@@ -120,6 +122,36 @@ import {
     api.put(
       "/updateVitalMasterDetail",
       updateVitalMasterDetail,
+      (req, res, next) => {
+        let result = req.records;
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+        next();
+      },
+      releaseConnection
+    );
+
+
+    api.post(
+      "/addDepartmentVitalMap",
+      addDepartmentVitalMap,
+      (req, res, next) => {
+        let result = req.records;
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+        next();
+      },
+      releaseConnection
+    );
+
+
+    api.get(
+      "/getDepartmentVitalMap",
+      getDepartmentVitalMap,
       (req, res, next) => {
         let result = req.records;
         res.status(httpStatus.ok).json({

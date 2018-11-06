@@ -311,6 +311,82 @@ let updateVitalMasterDetail = (req, res, next) => {
 
 
 
+
+
+//created by irfan: to add 
+let addDepartmentVitalMap = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT INTO `hims_m_department_vital_mapping` (department_id,vital_header_id,created_date, created_by, updated_date, updated_by)\
+          VALUE(?,?,?,?,?,?)",
+        [
+          input.department_id,
+          input.vital_header_id,        
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+
+ //created by irfan: to 
+ let getDepartmentVitalMap = (req, res, next) => {
+  let selectWhere = {
+    hims_m_department_vital_mapping_id: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let where = whereCondition(extend(selectWhere, req.query));
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_m_department_vital_mapping_id,department_id,vital_header_id FROM hims_m_department_vital_mapping where record_status='A' AND" +
+          where.condition+" order by hims_m_department_vital_mapping_id desc",
+        where.values,
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
     addVitalMasterHeader,
     addVitalMasterDetail,
@@ -319,5 +395,7 @@ module.exports = {
     deleteVitalMasterHeader,
     deleteVitalMasterDetail,
     updateVitalMasterHeader,
-    updateVitalMasterDetail
+    updateVitalMasterDetail,
+    addDepartmentVitalMap,
+    getDepartmentVitalMap
 }
