@@ -29,11 +29,12 @@ let addVitalMasterHeader = (req, res, next) => {
         }
   
         connection.query(
-          "INSERT INTO `hims_d_vitals_header` (vitals_name, uom,created_date, created_by, updated_date, updated_by)\
-            VALUE(?,?,?,?,?,?)",
+          "INSERT INTO `hims_d_vitals_header` (vitals_name, uom,general,created_date, created_by, updated_date, updated_by)\
+            VALUE(?,?,?,?,?,?,?)",
           [
             input.vitals_name,
             input.uom,
+            input.general,
             new Date(),
             input.created_by,
             new Date(),
@@ -70,7 +71,7 @@ let getVitalMasterHeader = (req, res, next) => {
   
       db.getConnection((error, connection) => {
         connection.query(
-          "select hims_d_vitals_header_id,uom, vitals_name FROM hims_d_vitals_header where record_status='A' AND" +
+          "select hims_d_vitals_header_id,uom, vitals_name,general FROM hims_d_vitals_header where record_status='A' AND" +
             where.condition+" order by hims_d_vitals_header_id desc",
           where.values,
           (error, result) => {
