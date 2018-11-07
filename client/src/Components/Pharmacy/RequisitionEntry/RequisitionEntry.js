@@ -51,15 +51,32 @@ class RequisitionEntry extends Component {
       });
     }
     if (
-      this.props.poslocations === undefined ||
-      this.props.poslocations.length === 0
+      this.props.reqlocations === undefined ||
+      this.props.reqlocations.length === 0
     ) {
       this.props.getLocation({
         uri: "/pharmacy/getPharmacyLocation",
         method: "GET",
         redux: {
           type: "LOCATIOS_GET_DATA",
-          mappingName: "locations"
+          mappingName: "reqlocations"
+        }
+      });
+    }
+
+    if (
+      this.props.userwiselocations === undefined ||
+      this.props.userwiselocations.length === 0
+    ) {
+      this.props.getUserLocationPermission({
+        uri: "/pharmacyGlobal/getUserLocationPermission",
+        method: "GET",
+        redux: {
+          type: "LOCATIOS_GET_DATA",
+          mappingName: "userwiselocations"
+        },
+        afterSuccess: data => {
+          debugger;
         }
       });
     }
@@ -158,7 +175,7 @@ class RequisitionEntry extends Component {
                     dataSource: {
                       textField: "location_description",
                       valueField: "hims_d_pharmacy_location_id",
-                      data: this.props.locations
+                      data: this.props.userwiselocations
                     },
                     others: {
                       disabled: this.state.addedItem
@@ -218,10 +235,13 @@ class RequisitionEntry extends Component {
                     dataSource: {
                       textField: "location_description",
                       valueField: "hims_d_pharmacy_location_id",
-                      data: this.props.locations
+                      data: this.props.reqlocations
                     },
                     others: {
-                      disabled: this.state.addedItem
+                      disabled:
+                        this.state.requistion_type === "PR"
+                          ? true
+                          : this.state.addedItem
                     },
                     onChange: LocationchangeTexts.bind(this, this, "To")
                   }}
@@ -383,8 +403,9 @@ class RequisitionEntry extends Component {
 function mapStateToProps(state) {
   return {
     itemlist: state.itemlist,
-    locations: state.locations,
-    requisitionentry: state.requisitionentry
+    reqlocations: state.reqlocations,
+    requisitionentry: state.requisitionentry,
+    userwiselocations: state.userwiselocations
   };
 }
 
@@ -393,7 +414,8 @@ function mapDispatchToProps(dispatch) {
     {
       getItems: AlgaehActions,
       getLocation: AlgaehActions,
-      getRequisitionEntry: AlgaehActions
+      getRequisitionEntry: AlgaehActions,
+      getUserLocationPermission: AlgaehActions
     },
     dispatch
   );

@@ -40,32 +40,46 @@ class ResultEntry extends Component {
   }
 
   componentDidMount() {
-    this.props.getUserDetails({
-      uri: "/algaehappuser/selectAppUsers",
-      method: "GET",
-      redux: {
-        type: "LAB_EMP_GET_DATA",
-        mappingName: "labiologyusers"
-      }
-    });
+    if (
+      this.props.labiologyusers === undefined ||
+      this.props.labiologyusers.length === 0
+    ) {
+      this.props.getUserDetails({
+        uri: "/algaehappuser/selectAppUsers",
+        method: "GET",
+        redux: {
+          type: "LAB_EMP_GET_DATA",
+          mappingName: "labiologyusers"
+        }
+      });
+    }
+    if (
+      this.props.providers === undefined ||
+      this.props.providers.length === 0
+    ) {
+      this.props.getProviderDetails({
+        uri: "/employee/get",
+        method: "GET",
+        redux: {
+          type: "DOCTOR_GET_DATA",
+          mappingName: "providers"
+        }
+      });
+    }
 
-    this.props.getProviderDetails({
-      uri: "/employee/get",
-      method: "GET",
-      redux: {
-        type: "DOCTOR_GET_DATA",
-        mappingName: "providers"
-      }
-    });
-
-    this.props.getLabAnalytes({
-      uri: "/labmasters/selectAnalytes",
-      method: "GET",
-      redux: {
-        type: "ANALYTES_GET_DATA",
-        mappingName: "labanalytes"
-      }
-    });
+    if (
+      this.props.labanalytes === undefined ||
+      this.props.labanalytes.length === 0
+    ) {
+      this.props.getLabAnalytes({
+        uri: "/labmasters/selectAnalytes",
+        method: "GET",
+        redux: {
+          type: "ANALYTES_GET_DATA",
+          mappingName: "labanalytes"
+        }
+      });
+    }
   }
   componentWillReceiveProps(newProps) {
     if (
@@ -88,6 +102,12 @@ class ResultEntry extends Component {
     }
   }
   render() {
+    let display =
+      this.props.providers === undefined
+        ? []
+        : this.props.providers.filter(
+            f => f.hims_d_employee_id === this.state.provider_id
+          );
     return (
       <div>
         <Modal open={this.props.open}>
@@ -119,7 +139,11 @@ class ResultEntry extends Component {
                     <div className="patientDemographic">
                       <span>
                         Ref by:
-                        <b>{this.state.provider_id}</b>
+                        <b>
+                          {display !== null && display.length !== 0
+                            ? display[0].full_name
+                            : ""}
+                        </b>
                       </span>
                       <span>
                         Ordered Date:
