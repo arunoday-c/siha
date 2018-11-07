@@ -19,8 +19,17 @@ import path from "path";
 import fs from "fs";
 import { getCacheData, setCacheData } from "../utils/caching";
 import { saveImageInTemp, showFile } from "../utils/images";
+import { getFormula } from "../model/algaeh_formulas";
 export default () => {
   let api = Router();
+
+  api.get("/algaehFormula", getFormula, (req, res, next) => {
+    const _recordds = req.records;
+    res.status(httpStatus.ok).json({
+      success: true,
+      records: _recordds.length > 0 ? _recordds[0] : {}
+    });
+  });
 
   api.post("/imageSave", saveImageInTemp);
   api.get("/getFile", showFile);

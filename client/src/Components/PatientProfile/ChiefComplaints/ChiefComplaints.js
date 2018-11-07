@@ -693,25 +693,44 @@ class ChiefComplaints extends Component {
     });
   }
   onChiefComplaintRowDelete(row) {
-    let data = {
-      hims_f_episode_chief_complaint_id: row.hims_f_episode_chief_complaint_id
-    };
-    algaehApiCall({
-      uri: "/doctorsWorkBench/deletePatientChiefComplaints",
-      data: data,
-      method: "DELETE",
-      onSuccess: response => {
-        if (response.data.success) {
-          swalMessage({
-            title: "Record deleted successfully . .",
-            type: "success"
-          });
-          //  this.getPatientChiefComplaintsDetails();
-          getAllChiefComplaints(this);
-          getPatientChiefComplaints(this);
-        }
-      },
-      onFailure: error => {}
+    swal({
+      title: "Delete Complaint " + row.chief_complaint_name + "?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        let data = {
+          hims_f_episode_chief_complaint_id:
+            row.hims_f_episode_chief_complaint_id
+        };
+
+        algaehApiCall({
+          uri: "/doctorsWorkBench/deletePatientChiefComplaints",
+          data: data,
+          method: "DELETE",
+          onSuccess: response => {
+            if (response.data.success) {
+              swalMessage({
+                title: "Record deleted successfully . .",
+                type: "success"
+              });
+              //  this.getPatientChiefComplaintsDetails();
+              getAllChiefComplaints(this);
+              getPatientChiefComplaints(this);
+            }
+          },
+          onFailure: error => {}
+        });
+      } else {
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "error"
+        });
+      }
     });
   }
   render() {

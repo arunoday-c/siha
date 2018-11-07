@@ -7,8 +7,6 @@ import "./EmployeeMaster.css";
 
 import CommissionSetup from "./CommissionSetup/CommissionSetup";
 import PersonalDetails from "./PersonalDetails/PersonalDetails";
-// import DeptUserDetails from "./DeptUserDetails/DeptUserDetails";
-
 import { AlgaehLabel, Modal } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import MyContext from "../../../../utils/MyContext";

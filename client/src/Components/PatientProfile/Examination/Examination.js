@@ -30,13 +30,19 @@ class Examination extends Component {
       hims_d_physical_examination_details_id: "",
       hims_d_physical_examination_subdetails_id: "",
       examination_comment: "",
-      depaertmentBasedSpecility: [],
       patientPhysicalExamination: [],
       specilityDetail: [],
       specilitySubDetail: [],
-      examination_type: "G"
+      examination_type: "S"
     };
     this.handleClose = this.handleClose.bind(this);
+    if (
+      this.props.all_patient_examinations === undefined ||
+      this.props.all_patient_examinations.length === 0
+    ) {
+      getPatientPhysicalExamination(this);
+      getAllDepartmentBased({ that: this });
+    }
   }
 
   handleClose() {
@@ -64,28 +70,12 @@ class Examination extends Component {
 
           getPatientPhysicalExamination(this);
         }
-      },
-      onFailure: error => {}
+      }
     });
   }
   componentWillUnmount() {
     cancelRequest("getAllDepartmentBased");
     cancelRequest("getPatientPhysicalExamination");
-  }
-
-  componentDidMount() {
-    // getPhysicalExaminations(this);
-    if (
-      this.props.all_patient_examinations === undefined ||
-      this.props.all_patient_examinations.length === 0
-    ) {
-      getPatientPhysicalExamination(this);
-      getAllDepartmentBased(this);
-    } else {
-      this.setState({
-        patientPhysicalExamination: this.props.all_patient_examinations
-      });
-    }
   }
 
   refreshState() {
@@ -186,14 +176,16 @@ class Examination extends Component {
       this.props.allexaminations === undefined ||
       this.props.allexaminations.length === 0
     )
-      getAllDepartmentBased(this, detl => {
-        this.setState({
-          openExamnModal: true
-        });
+      getAllDepartmentBased({
+        that: this,
+        afterSucces: () => {
+          this.setState({
+            openExamnModal: true
+          });
+        }
       });
     else {
       this.setState({
-        depaertmentBasedSpecility: this.props.allexaminations,
         openExamnModal: true
       });
     }
@@ -220,8 +212,13 @@ class Examination extends Component {
   }
 
   changeGeneralOrSpecific(e) {
+    const _examination_type = e.target.checked ? "G" : "S";
+    getAllDepartmentBased({
+      that: this,
+      inputData: { allDept: _examination_type }
+    });
     this.setState({
-      examination_type: e.target.checked ? "S" : "G"
+      examination_type: _examination_type
     });
   }
   onChangePhysicalExamination(selected) {
@@ -275,10 +272,10 @@ class Examination extends Component {
   }
   render() {
     const _specility =
-      this.state.depaertmentBasedSpecility !== undefined &&
-      this.state.depaertmentBasedSpecility.length !== 0
-        ? Enumerable.from(this.state.depaertmentBasedSpecility)
-            .where(w => w.examination_type === this.state.examination_type)
+      this.props.allexaminations !== undefined &&
+      this.props.allexaminations.length !== 0
+        ? Enumerable.from(this.props.allexaminations)
+            //    .where(w => w.examination_type === this.state.examination_type)
             .groupBy(
               "$.hims_d_physical_examination_header_id",
               null,
@@ -324,8 +321,8 @@ class Examination extends Component {
                       />
                       <span
                         className="switch-label"
-                        data-off="General"
-                        data-on="Specific"
+                        data-off="Specific"
+                        data-on="General"
                       />
                       <span className="switch-handle" />
                     </label>

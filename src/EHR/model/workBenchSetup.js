@@ -365,7 +365,6 @@ let addDepartmentVitalMap = (req, res, next) => {
   }
 };
 
-
  //created by irfan: to 
  let getDepartmentVitalMap = (req, res, next) => {
   let selectWhere = {
@@ -399,6 +398,9 @@ let addDepartmentVitalMap = (req, res, next) => {
   }
 };
 
+
+
+
 module.exports = {
     addVitalMasterHeader,
     addVitalMasterDetail,
@@ -410,4 +412,5 @@ module.exports = {
     updateVitalMasterDetail,
     addDepartmentVitalMap,
     getDepartmentVitalMap
+    
 }

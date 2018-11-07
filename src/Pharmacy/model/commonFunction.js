@@ -43,14 +43,15 @@ let updateIntoItemLocation = (req, res, next) => {
           expirydt: s.expiry_date,
           barcode: s.barcode,
           qtyhand: s.quantity,
-          qtypo: s.qtypo,
+          qtypo: s.qtypo || 0,
           cost_uom: s.uom_id,
           avgcost: s.unit_cost,
-          last_purchase_cost: s.last_purchase_cost,
-          grn_id: s.grn_id,
+          last_purchase_cost: s.last_purchase_cost || 0,
+          grn_id: s.grn_id || 0,
           grnno: s.grn_number,
-          sale_price: s.sale_price,
+          sale_price: s.sale_price || 0,
           sales_uom: s.sales_uom,
+          mrp_price: s.mrp_price || 0,
           transaction_type: req.body.transaction_type,
           transaction_id: req.body.transaction_id,
           transaction_date: req.body.transaction_date,
@@ -70,9 +71,9 @@ let updateIntoItemLocation = (req, res, next) => {
           transaction_uom: s.uom_id,
           transaction_cost: s.unit_cost,
           transaction_total: s.extended_cost,
-          discount_percentage: s.discount_percentage,
-          discount_amount: s.discount_amount,
-          net_total: s.net_extended_cost,
+          discount_percentage: s.discount_percentage || 0,
+          discount_amount: s.discount_amount || 0,
+          net_total: s.net_total,
           landing_cost: s.landing_cost || 0,
           average_cost: s.unit_cost,
           created_by: req.userIdentity.algaeh_d_app_user_id,
@@ -96,7 +97,10 @@ let updateIntoItemLocation = (req, res, next) => {
           debugLog("Array: ", Array.isArray(result));
 
           if (Array.isArray(result)) {
-            if (Array.isArray(result[0][0])) {
+            debugLog("Error: ", result[0][0].Error);
+            // if (result[0][0].Error != null) {
+            if (result[0][0].Error != null) {
+              debugLog("Error: ", result[0][0].Error);
               const error = new Error();
               error.message = result[0][0].Error;
               req.options.onFailure(error);

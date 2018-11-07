@@ -25,6 +25,7 @@ import {
   UomchangeTexts,
   dateFormater,
   ShowItemBatch,
+  CloseItemBatch,
   onchangegridcol,
   PosheaderCalculation
 } from "./PosListItemsEvents";
@@ -251,17 +252,17 @@ class PosListItems extends Component {
                         >
                           Add Item
                         </button>
-                        {/* <button
+                        <button
                           className="btn btn-default"
                           onClick={ShowItemBatch.bind(this, this)}
                           disabled={this.state.addItemButton}
                         >
                           Select Batch
-                        </button> */}
+                        </button>
 
                         <ItemBatchs
                           show={this.state.selectBatch}
-                          onClose={ShowItemBatch.bind(this, this)}
+                          onClose={CloseItemBatch.bind(this, this)}
                           selectedLang={this.state.selectedLang}
                           inputsparameters={{
                             item_id: this.state.item_id,
@@ -1025,8 +1026,8 @@ function mapStateToProps(state) {
     itemcategory: state.itemcategory,
     itemuom: state.itemuom,
     posheader: state.posheader,
-    itemgroup: state.itemgroup
-    // itemBatch: state.itemBatch
+    itemgroup: state.itemgroup,
+    itemBatch: state.itemBatch
   };
 }
 
@@ -1042,8 +1043,8 @@ function mapDispatchToProps(dispatch) {
       getServicesCost: AlgaehActions,
       getInsuranceServicesCost: AlgaehActions,
       generateBill: AlgaehActions,
-      getItemGroup: AlgaehActions
-      // getItemLocationStock: AlgaehActions
+      getItemGroup: AlgaehActions,
+      getItemLocationStock: AlgaehActions
     },
     dispatch
   );

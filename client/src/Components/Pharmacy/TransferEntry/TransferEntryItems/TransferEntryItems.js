@@ -278,27 +278,24 @@ class TransferEntryItems extends Component {
                                 );
                               },
                               editorTemplate: row => {
+                                let display =
+                                  this.props.itemlist === undefined
+                                    ? []
+                                    : this.props.itemlist.filter(
+                                        f =>
+                                          f.hims_d_item_master_id ===
+                                          row.item_id
+                                      );
+
                                 return (
-                                  <AlagehAutoComplete
-                                    div={{}}
-                                    selector={{
-                                      name: "item_id",
-                                      className: "select-fld",
-                                      value: row.item_id,
-                                      dataSource: {
-                                        textField: "item_description",
-                                        valueField: "hims_d_item_master_id",
-                                        data: this.props.itemlist
-                                      },
-                                      onChange: null,
-                                      others: {
-                                        disabled: true
-                                      }
-                                    }}
-                                  />
+                                  <span>
+                                    {display !== undefined &&
+                                    display.length !== 0
+                                      ? display[0].item_description
+                                      : ""}
+                                  </span>
                                 );
-                              },
-                              disabled: true
+                              }
                             },
 
                             {
@@ -327,27 +324,23 @@ class TransferEntryItems extends Component {
                                 );
                               },
                               editorTemplate: row => {
+                                let display =
+                                  this.props.itemcategory === undefined
+                                    ? []
+                                    : this.props.itemcategory.filter(
+                                        f =>
+                                          f.hims_d_item_category_id ===
+                                          row.item_category_id
+                                      );
+
                                 return (
-                                  <AlagehAutoComplete
-                                    div={{}}
-                                    selector={{
-                                      name: "item_category_id",
-                                      className: "select-fld",
-                                      value: row.item_category_id,
-                                      dataSource: {
-                                        textField: "category_desc",
-                                        valueField: "hims_d_item_category_id",
-                                        data: this.props.itemcategory
-                                      },
-                                      onChange: null,
-                                      others: {
-                                        disabled: true
-                                      }
-                                    }}
-                                  />
+                                  <span>
+                                    {display !== null && display.length !== 0
+                                      ? display[0].category_desc
+                                      : ""}
+                                  </span>
                                 );
-                              },
-                              disabled: true
+                              }
                             },
 
                             {
@@ -376,27 +369,23 @@ class TransferEntryItems extends Component {
                                 );
                               },
                               editorTemplate: row => {
+                                let display =
+                                  this.props.itemgroup === undefined
+                                    ? []
+                                    : this.props.itemgroup.filter(
+                                        f =>
+                                          f.hims_d_item_group_id ===
+                                          row.item_group_id
+                                      );
+
                                 return (
-                                  <AlagehAutoComplete
-                                    div={{}}
-                                    selector={{
-                                      name: "item_group_id",
-                                      className: "select-fld",
-                                      value: row.item_group_id,
-                                      dataSource: {
-                                        textField: "group_description",
-                                        valueField: "hims_d_item_group_id",
-                                        data: this.props.itemgroup
-                                      },
-                                      onChange: null,
-                                      others: {
-                                        disabled: true
-                                      }
-                                    }}
-                                  />
+                                  <span>
+                                    {display !== null && display.length !== 0
+                                      ? display[0].group_description
+                                      : ""}
+                                  </span>
                                 );
-                              },
-                              disabled: true
+                              }
                             },
                             {
                               fieldName: "expiry_date",
@@ -412,7 +401,13 @@ class TransferEntryItems extends Component {
                                   </span>
                                 );
                               },
-                              disabled: true
+                              editorTemplate: row => {
+                                return (
+                                  <span>
+                                    {dateFormater(this, row.expiry_date)}
+                                  </span>
+                                );
+                              }
                             },
                             {
                               fieldName: "batchno",
@@ -447,28 +442,23 @@ class TransferEntryItems extends Component {
                                 );
                               },
                               editorTemplate: row => {
-                                return (
-                                  <AlagehAutoComplete
-                                    div={{}}
-                                    selector={{
-                                      name: "item_uom",
-                                      className: "select-fld",
-                                      value: row.item_uom,
+                                let display =
+                                  this.props.itemuom === undefined
+                                    ? []
+                                    : this.props.itemuom.filter(
+                                        f =>
+                                          f.hims_d_pharmacy_uom_id ===
+                                          row.uom_requested_id
+                                      );
 
-                                      dataSource: {
-                                        textField: "uom_description",
-                                        valueField: "hims_d_pharmacy_uom_id",
-                                        data: this.state.itemuom
-                                      },
-                                      onChange: null,
-                                      others: {
-                                        disabled: true
-                                      }
-                                    }}
-                                  />
+                                return (
+                                  <span>
+                                    {display !== null && display.length !== 0
+                                      ? display[0].uom_description
+                                      : ""}
+                                  </span>
                                 );
-                              },
-                              disabled: true
+                              }
                             },
 
                             {
@@ -478,22 +468,23 @@ class TransferEntryItems extends Component {
                                   label={{ forceLabel: "Quantity Requested" }}
                                 />
                               ),
-                              editorTemplate: row => {
-                                return (
-                                  <AlagehFormGroup
-                                    div={{}}
-                                    textBox={{
-                                      value: row.quantity_required,
-                                      className: "txt-fld",
-                                      name: "quantity_required",
-                                      events: { onChange: null },
-                                      others: {
-                                        disabled: true
-                                      }
-                                    }}
-                                  />
-                                );
-                              }
+                              disabled: true
+                              // editorTemplate: row => {
+                              //   return (
+                              //     <AlagehFormGroup
+                              //       div={{}}
+                              //       textBox={{
+                              //         value: row.quantity_required,
+                              //         className: "txt-fld",
+                              //         name: "quantity_required",
+                              //         events: { onChange: null },
+                              //         others: {
+                              //           disabled: true
+                              //         }
+                              //       }}
+                              //     />
+                              //   );
+                              // }
                             },
                             {
                               fieldName: "quantity_authorized",
@@ -504,29 +495,30 @@ class TransferEntryItems extends Component {
                                   }}
                                 />
                               ),
-                              editorTemplate: row => {
-                                return (
-                                  <AlagehFormGroup
-                                    div={{}}
-                                    textBox={{
-                                      value: row.quantity_authorized,
-                                      className: "txt-fld",
-                                      name: "quantity_authorized",
-                                      events: {
-                                        onChange: onchangegridcol.bind(
-                                          this,
-                                          this,
-                                          context,
-                                          row
-                                        )
-                                      },
-                                      others: {
-                                        disabled: this.state.authorizeEnable
-                                      }
-                                    }}
-                                  />
-                                );
-                              }
+                              disabled: true
+                              // editorTemplate: row => {
+                              //   return (
+                              //     <AlagehFormGroup
+                              //       div={{}}
+                              //       textBox={{
+                              //         value: row.quantity_authorized,
+                              //         className: "txt-fld",
+                              //         name: "quantity_authorized",
+                              //         events: {
+                              //           onChange: onchangegridcol.bind(
+                              //             this,
+                              //             this,
+                              //             context,
+                              //             row
+                              //           )
+                              //         },
+                              //         others: {
+                              //           disabled: this.state.authorizeEnable
+                              //         }
+                              //       }}
+                              //     />
+                              //   );
+                              // }
                             },
                             {
                               fieldName: "quantity_transferred",
@@ -552,10 +544,10 @@ class TransferEntryItems extends Component {
                                           context,
                                           row
                                         )
-                                      },
-                                      others: {
-                                        disabled: this.state.authorizeEnable
                                       }
+                                      // others: {
+                                      //   disabled: this.state.authorizeEnable
+                                      // }
                                     }}
                                   />
                                 );

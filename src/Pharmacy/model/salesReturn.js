@@ -7,11 +7,11 @@ import {
 } from "../../utils";
 import extend from "extend";
 import httpStatus from "../../utils/httpStatus";
-import {  debugLog } from "../../utils/logging";
+import { debugLog } from "../../utils/logging";
 import moment from "moment";
 //import { getBillDetailsFunctionality } from "../../model/billing";
 import { updateIntoItemLocation } from "./commonFunction";
- import Promise from "bluebird";
+import Promise from "bluebird";
 // import { connect } from "pm2";
 // import { LINQ } from "node-linq";
 
@@ -206,7 +206,13 @@ let addsalesReturn = (req, res, next) => {
                         });
                       }
                       releaseDBConnection(db, connection);
-                      req.records = { sales_return_number: documentCode };
+                      req.records = {
+                        sales_return_number: documentCode,
+                        hims_f_pharmcy_sales_return_header_id:
+                          headerResult.insertId,
+                        year: year,
+                        period: period
+                      };
                       next();
                     });
                   }

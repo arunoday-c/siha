@@ -506,7 +506,7 @@ class Encounters extends Component {
                             (data, index) =>
                               data.diagnosis_type === "P"
                                 ? "Primary: " + data.daignosis_description
-                                : "----------"
+                                : "Primary : ----------"
                           )}
 
                           {/* Primary: History of Convlusion with fever (Febrile

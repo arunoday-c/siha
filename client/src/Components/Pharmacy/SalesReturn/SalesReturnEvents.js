@@ -70,6 +70,11 @@ const SaveSalesReturn = $this => {
       if (response.data.success === true) {
         $this.setState({
           sales_return_number: response.data.records.sales_return_number,
+          year: response.data.records.year,
+          period: response.data.records.period,
+          hims_f_pharmcy_sales_return_header_id:
+            response.data.records.hims_f_pharmcy_sales_return_header_id,
+
           saveEnable: true,
           postEnable: false
         });

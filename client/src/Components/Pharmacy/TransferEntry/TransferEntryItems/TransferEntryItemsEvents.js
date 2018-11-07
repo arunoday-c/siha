@@ -302,7 +302,7 @@ const onchangegridcol = ($this, context, row, e) => {
   }
 };
 
-const dateFormater = ({ $this, value }) => {
+const dateFormater = ($this, value) => {
   if (value !== null) {
     return moment(value).format(Options.dateFormat);
   }
