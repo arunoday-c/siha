@@ -24,7 +24,8 @@ class VitalsMaster extends Component {
       vitalsDetail: [],
       nonGeneralVitals: [],
       depts: [],
-      general: true
+      general: true,
+      display: true
     };
     dps = [];
     this.getVitalMasterHeader();
@@ -41,18 +42,28 @@ class VitalsMaster extends Component {
   }
 
   changeChecks(e) {
-    this.setState({
-      [e.target.name]: !this.state.general
-    });
+    if (e.target.name === "general") {
+      this.setState({
+        [e.target.name]: !this.state.general
+      });
+      return;
+    }
 
-    if (e.target.name === "mapped_dept") {
+    if (e.target.name === "display") {
+      this.setState({
+        [e.target.name]: !this.state.display
+      });
+      return;
+    }
+
+    if (e.target.name === "mapped_vital") {
       if (dps.includes(e.target.value)) {
         dps.pop(e.target.value);
       } else {
         dps.push(e.target.value);
       }
-
       console.log("Mapped Department:", dps);
+      return;
     }
   }
 
@@ -106,19 +117,59 @@ class VitalsMaster extends Component {
     //   "departments":[{"department_id":38},{"department_id":41}]
     //   }
 
-    let departments = [];
-    let send_data = {
-      vital_header_id: this.state.map_vitals_header_id
-    };
+    // {
+    //   "department_id":1,
+    //   "vitals":[{"vital_header_id":38},{"vital_header_id":41}]
+    //   }
 
-    send_data.departments = departments;
+    AlgaehValidation({
+      querySelector: "data-validate='deptLit_Vitals'",
+      alertTypeIcon: "warning",
+      onSuccess: () => {
+        let vitals = [];
+        let send_data = {
+          department_id: this.state.hims_d_sub_department_id
+        };
 
-    console.log("send_Data_for_mapping:", send_data);
+        for (var i = 0; i < dps.length; i++) {
+          let myObj = { vital_header_id: dps[i] };
+          vitals.push(myObj);
+        }
+
+        send_data.vitals = vitals;
+        console.log("send_Data_for_mapping:", send_data);
+
+        if (dps.length === 0) {
+          swalMessage({
+            title: "Please Select atleast one vital to add",
+            type: "warning"
+          });
+        } else {
+          algaehApiCall({
+            uri: "/workBenchSetup/addDepartmentVitalMap",
+            method: "POST",
+            data: send_data,
+            onSuccess: response => {
+              if (response.data.success) {
+                swalMessage({
+                  title: "Vitals Mapped Successfully",
+                  type: "success"
+                });
+              }
+            },
+            onFailure: error => {
+              swalMessage({
+                title: error.message,
+                type: "error"
+              });
+            }
+          });
+        }
+      }
+    });
   }
 
   getDepartmentVitalMap() {
-    debugger;
-
     algaehApiCall({
       uri: "/workBenchSetup/getDepartmentVitalMap",
       method: "GET",
@@ -242,6 +293,8 @@ class VitalsMaster extends Component {
       data: {
         vitals_name: data.vitals_name,
         uom: data.uom,
+        general: data.general,
+        display: data.display,
         hims_d_vitals_header_id: data.hims_d_vitals_header_id
       },
       onSuccess: response => {
@@ -351,7 +404,8 @@ class VitalsMaster extends Component {
           data: {
             vitals_name: this.state.vitals_name,
             uom: this.state.uom,
-            general: this.state.general === true ? "Y" : "N"
+            general: this.state.general === true ? "Y" : "N",
+            display: this.state.display === true ? "Y" : "N"
           },
           onSuccess: response => {
             if (response.data.success) {
@@ -415,10 +469,9 @@ class VitalsMaster extends Component {
   render() {
     return (
       <div className="vitals_master">
-        <div className="row divInner">
-          {/* Vitals Header Start*/}
-          <div className="col-lg-4 divInnerLeft" data-validate="addVitalHdrDiv">
-            <div className="col-lg-12">
+        <div className="col-lg-12">
+          <div className="row">
+            <div className="col-lg-8">
               <div className="row">
                 <AlagehFormGroup
                   div={{ className: "col" }}
@@ -467,6 +520,17 @@ class VitalsMaster extends Component {
                   />
                   <label>General</label>
                 </div>
+                <div className="col" style={{ marginTop: 21 }}>
+                  <input
+                    name="display"
+                    checked={this.state.display}
+                    type="checkbox"
+                    style={{ marginRight: "5px" }}
+                    onChange={this.changeChecks.bind(this)}
+                  />
+                  <label>Display</label>
+                </div>
+
                 <div className="col">
                   <button
                     style={{ marginTop: 21 }}
@@ -487,7 +551,7 @@ class VitalsMaster extends Component {
                 >
                   <AlgaehDataGrid
                     datavalidate="data-validate='vitalsMasterDiv'"
-                    id="appt-room-grid"
+                    id="vital-hdr-grid"
                     columns={[
                       {
                         fieldName: "vitals_name",
@@ -554,7 +618,7 @@ class VitalsMaster extends Component {
                         editorTemplate: row => {
                           return (
                             <AlagehAutoComplete
-                              div={{ className: "" }}
+                              div={{ className: "col" }}
                               selector={{
                                 name: "general",
                                 className: "select-fld",
@@ -567,7 +631,37 @@ class VitalsMaster extends Component {
                                 others: {
                                   required: true
                                 },
-                                onChange: this.changeGridEditors.bind(this)
+                                onChange: this.changeGridEditors.bind(this, row)
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "display",
+                        label: <AlgaehLabel label={{ fieldName: "display" }} />,
+                        displayTemplate: row => {
+                          return (
+                            <span>{row.display === "Y" ? "Yes" : "No"}</span>
+                          );
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{ className: "col" }}
+                              selector={{
+                                name: "display",
+                                className: "select-fld",
+                                value: row.display,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: GlobalVariables.FORMAT_YESNO
+                                },
+                                others: {
+                                  required: true
+                                },
+                                onChange: this.changeGridEditors.bind(this, row)
                               }}
                             />
                           );
@@ -586,74 +680,68 @@ class VitalsMaster extends Component {
                       onDone: this.updateVitalsHeader.bind(this)
                     }}
                   />
-                  <hr />
                 </div>
-                <div className="col-lg-12">
-                  <div className="row">
-                    <div className="col">
-                      <h6 style={{ marginTop: 27 }}>Department List</h6>
-                    </div>
-                    <AlagehAutoComplete
-                      div={{ className: "col" }}
-                      label={{
-                        fieldName: "vitals_name",
-                        isImp: true
-                      }}
-                      selector={{
-                        name: "map_vitals_header_id",
-                        className: "select-fld",
-                        value: this.state.map_vitals_header_id,
-                        dataSource: {
-                          textField: "vitals_name",
-                          valueField: "hims_d_vitals_header_id",
-                          data: this.state.nonGeneralVitals
-                        },
-                        onChange: this.dropDownHandler.bind(this)
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <ul id="deptLit_Vitals">
-                      {this.state.depts.map((row, index) => (
-                        <li key={index}>
-                          <span>
-                            <input
-                              id={row.hims_d_sub_department_id}
-                              name="mapped_dept"
-                              //checked={this.state.mapped_dept}
-                              value={row.hims_d_sub_department_id}
-                              type="checkbox"
-                              onChange={this.changeChecks.bind(this)}
-                            />
-                          </span>
-                          <span htmlFor={row.hims_d_sub_department_id}>
-                            {row.sub_department_name}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                    <div>
-                      <button
-                        className="btn btn-primary"
-                        onClick={this.mapDeptandVital.bind(this)}
-                      >
-                        Save
-                      </button>
-                    </div>
-                  </div>
+              </div>
+            </div>
+
+            <div className="col-lg-4">
+              <div className="row" data-validate="deptLit_Vitals">
+                <div className="col">
+                  <h6 style={{ marginTop: 27 }}>Vitals List</h6>
+                </div>
+                <AlagehAutoComplete
+                  div={{ className: "col" }}
+                  label={{
+                    fieldName: "select_department",
+                    isImp: true
+                  }}
+                  selector={{
+                    name: "hims_d_sub_department_id",
+                    className: "select-fld",
+                    value: this.state.hims_d_sub_department_id,
+                    dataSource: {
+                      textField: "sub_department_name",
+                      valueField: "hims_d_sub_department_id",
+                      data: this.state.depts
+                    },
+                    onChange: this.dropDownHandler.bind(this)
+                  }}
+                />
+              </div>
+              <div>
+                <ul id="deptLit_Vitals">
+                  {this.state.nonGeneralVitals.map((row, index) => (
+                    <li key={index}>
+                      <span>
+                        <input
+                          id={row.hims_d_vitals_header_id}
+                          name="mapped_vital"
+                          value={row.hims_d_vitals_header_id}
+                          type="checkbox"
+                          onChange={this.changeChecks.bind(this)}
+                        />
+                      </span>
+                      <span htmlFor={row.hims_d_sub_department_id}>
+                        {row.vitals_name}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+                <div style={{ margin: "5px" }}>
+                  <button
+                    className="btn btn-primary"
+                    onClick={this.mapDeptandVital.bind(this)}
+                  >
+                    Save
+                  </button>
                 </div>
               </div>
             </div>
           </div>
-          {/* Vitals Header End */}
-
-          {/* Vitals Detail Start */}
-          <div
-            className="col-lg-8 divInnerRight"
-            data-validate="addVitalDtlDiv"
-          >
+          <hr />
+          <div className="row">
             <div className="col-lg-12">
-              <div className="row">
+              <div className="row" data-validate="addVitalDtlDiv">
                 <AlagehAutoComplete
                   div={{ className: "col-lg-2" }}
                   label={{
@@ -780,7 +868,7 @@ class VitalsMaster extends Component {
                   }}
                 />
 
-                <div className="col-lg-2">
+                <div className="col-lg-1">
                   <button
                     style={{ marginTop: 21 }}
                     onClick={this.addVitalMasterDetail.bind(this)}
@@ -867,7 +955,7 @@ class VitalsMaster extends Component {
                                 valueField: "value",
                                 data: GlobalVariables.FORMAT_GENDER
                               },
-                              onChange: this.changeGridEditors.bind(this)
+                              onChange: this.changeGridEditors.bind(this, row)
                             }}
                           />
                         );
@@ -905,7 +993,6 @@ class VitalsMaster extends Component {
               </div>
             </div>
           </div>
-          {/* Vitals Detail End */}
         </div>
       </div>
     );

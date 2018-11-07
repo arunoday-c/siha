@@ -8,5 +8,10 @@
   "formators": {
     "date": "YYYY-MM-DD",
     "time": "HH:MM"
+  },
+  "algaeh_d_formulas": {
+    "BMI": {
+      "algaeh_d_formulas_id": 1
+    }
   }
 }
