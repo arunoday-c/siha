@@ -319,7 +319,7 @@ class AppointmentStatus extends Component {
                 others: {
                   type: "color",
                   required: true,
-                  checkvalidation: "#ffffff",
+                  checkvalidation: "$value === #ffffff",
                   errormessage: "Please Select a color"
                 }
               }}

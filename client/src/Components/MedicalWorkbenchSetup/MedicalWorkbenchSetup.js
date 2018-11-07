@@ -5,12 +5,13 @@ import BreadCrumb from "../common/BreadCrumb/BreadCrumb";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import PhysicalExamination from "./PhysicalExamination/PhysicalExamination";
 import ReviewofSystems from "./ReviewofSystems/ReviewofSystems";
+import VitalsMaster from "./VitalsMaster/VitalsMaster";
 
 class MedicalWorkbenchSetup extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { pageDisplay: "PhysicalExaminationMaster", sidBarOpen: true };
+    this.state = { pageDisplay: "VitalsMaster", sidBarOpen: true };
   }
 
   openTab(e) {
@@ -52,9 +53,23 @@ class MedicalWorkbenchSetup extends Component {
         <div className="tab-container toggle-section spacing-push">
           <ul className="nav">
             <li
+              style={{ marginRight: 2 }}
+              algaehtabs={"VitalsMaster"}
+              className={"nav-item tab-button active"}
+              onClick={this.openTab.bind(this)}
+            >
+              {
+                <AlgaehLabel
+                  label={{
+                    fieldName: "vitals_master"
+                  }}
+                />
+              }
+            </li>
+            <li
               algaehtabs={"PhysicalExaminationMaster"}
               style={{ marginRight: 2 }}
-              className={"nav-item tab-button active"}
+              className={"nav-item tab-button"}
               onClick={this.openTab.bind(this)}
             >
               {
@@ -81,13 +96,13 @@ class MedicalWorkbenchSetup extends Component {
             </li>
           </ul>
         </div>
-        <div className="common-section">
-          {/*  {<this.state.pageDisplay />} */}
-
+        <div className="wb-setup-section">
           {this.state.pageDisplay === "PhysicalExaminationMaster" ? (
             <PhysicalExamination />
           ) : this.state.pageDisplay === "ReviewofSystems" ? (
             <ReviewofSystems />
+          ) : this.state.pageDisplay === "VitalsMaster" ? (
+            <VitalsMaster />
           ) : null}
         </div>
       </div>

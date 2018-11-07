@@ -574,8 +574,7 @@ class Appointment extends Component {
   }
 
   openEditModal(patient, e) {
-e.preventDefault();
-
+    e.preventDefault();
 
     if (
       (moment(patient.appointment_from_time, "HH:mm:ss").format("HHmm") <
@@ -633,92 +632,87 @@ e.preventDefault();
         });
       });
     }
- 
   }
 
   updatePatientAppointment() {
-
-
     AlgaehValidation({
       querySelector: "data-validate='editApptDiv'",
       alertTypeIcon: "warning",
       onSuccess: () => {
+        let edit_details = {
+          hims_f_patient_appointment_id: this.state.edit_appointment_id,
+          record_status: "A",
+          appointment_status_id: this.state.edit_appointment_status_id,
+          patient_id: this.state.edit_patient_id,
+          provider_id: this.state.edit_provider_id,
+          sub_department_id: this.state.edit_sub_dep_id,
+          appointment_date: this.state.edit_appointment_date,
+          appointment_from_time: this.state.edit_from_time,
+          appointment_to_time: this.state.edit_to_time,
+          patient_name: this.state.edit_patient_name,
+          arabic_name: this.state.edit_arabic_name,
+          date_of_birth: this.state.edit_date_of_birth,
+          age: this.state.edit_age,
+          contact_number: this.state.edit_contact_number,
+          email: this.state.edit_email,
+          send_to_provider: null,
+          gender: this.state.edit_gender,
+          confirmed: "N",
+          confirmed_by: null,
+          comfirmed_date: null,
+          cancelled: "N",
+          cancelled_by: null,
+          cancelled_date: null,
+          cancel_reason: null,
+          appointment_remarks: this.state.edit_appointment_remarks,
+          is_stand_by: this.state.edit_is_stand_by,
+          number_of_slot: this.state.edit_no_of_slots
+        };
 
-    let edit_details = {
-      hims_f_patient_appointment_id: this.state.edit_appointment_id,
-      record_status: "A",
-      appointment_status_id: this.state.edit_appointment_status_id,
-      patient_id: this.state.edit_patient_id,
-      provider_id: this.state.edit_provider_id,
-      sub_department_id: this.state.edit_sub_dep_id,
-      appointment_date: this.state.edit_appointment_date,
-      appointment_from_time: this.state.edit_from_time,
-      appointment_to_time: this.state.edit_to_time,
-      patient_name: this.state.edit_patient_name,
-      arabic_name: this.state.edit_arabic_name,
-      date_of_birth: this.state.edit_date_of_birth,
-      age: this.state.edit_age,
-      contact_number: this.state.edit_contact_number,
-      email: this.state.edit_email,
-      send_to_provider: null,
-      gender: this.state.edit_gender,
-      confirmed: "N",
-      confirmed_by: null,
-      comfirmed_date: null,
-      cancelled: "N",
-      cancelled_by: null,
-      cancelled_date: null,
-      cancel_reason: null,
-      appointment_remarks: this.state.edit_appointment_remarks,
-      is_stand_by: this.state.edit_is_stand_by,
-      number_of_slot: this.state.edit_no_of_slots
-    };
+        algaehApiCall({
+          uri: "/appointment/updatePatientAppointment",
+          method: "PUT",
+          data: edit_details,
+          onSuccess: response => {
+            if (response.data.success) {
+              if (edit_details.appointment_status_id === this.state.checkInId) {
+                setGlobal({
+                  "FD-STD": "RegistrationPatient",
+                  "appt-pat-code": this.state.patient_code,
+                  "appt-provider-id": this.state.edit_provider_id,
+                  "appt-dept-id": this.state.edit_sub_dep_id,
+                  "appt-pat-name": this.state.edit_patient_name,
+                  "appt-pat-arabic-name": this.state.edit_arabic_name,
+                  "appt-pat-dob": this.state.edit_date_of_birth,
+                  "appt-pat-age": this.state.edit_age,
+                  "appt-pat-gender": this.state.edit_gender,
+                  "appt-pat-ph-no": this.state.edit_contact_number,
+                  "appt-pat-email": this.state.edit_email,
+                  "appt-department-id": this.state.department_id,
+                  "appt-id": this.state.edit_appointment_id
+                });
 
-    algaehApiCall({
-      uri: "/appointment/updatePatientAppointment",
-      method: "PUT",
-      data: edit_details,
-      onSuccess: response => {
-        if (response.data.success) {
-          if (edit_details.appointment_status_id === this.state.checkInId) {
-            setGlobal({
-              "FD-STD": "RegistrationPatient",
-              "appt-pat-code": this.state.patient_code,
-              "appt-provider-id": this.state.edit_provider_id,
-              "appt-dept-id": this.state.edit_sub_dep_id,
-              "appt-pat-name": this.state.edit_patient_name,
-              "appt-pat-arabic-name": this.state.edit_arabic_name,
-              "appt-pat-dob": this.state.edit_date_of_birth,
-              "appt-pat-age": this.state.edit_age,
-              "appt-pat-gender": this.state.edit_gender,
-              "appt-pat-ph-no": this.state.edit_contact_number,
-              "appt-pat-email": this.state.edit_email,
-              "appt-department-id": this.state.department_id,
-              "appt-id": this.state.edit_appointment_id
-            });
-
-            document.getElementById("fd-router").click();
-          } else {
-            this.clearSaveState();
+                document.getElementById("fd-router").click();
+              } else {
+                this.clearSaveState();
+                swalMessage({
+                  title: "Appointment Updated Successfully",
+                  type: "success"
+                });
+                this.setState({ openPatEdit: false });
+                this.getAppointmentSchedule();
+              }
+            }
+          },
+          onFailure: error => {
             swalMessage({
-              title: "Appointment Updated Successfully",
-              type: "success"
+              title: error.message,
+              type: "error"
             });
-            this.setState({ openPatEdit: false });
-            this.getAppointmentSchedule();
           }
-        }
-      },
-      onFailure: error => {
-        swalMessage({
-          title: error.message,
-          type: "error"
         });
       }
     });
-
-  }
-})
   }
 
   showModal(e) {
@@ -1841,7 +1835,7 @@ e.preventDefault();
                             }}
                             label={{
                               forceLabel: "Email Address",
-                              isImp: true
+                              isImp: false
                             }}
                             textBox={{
                               className: "txt-fld",

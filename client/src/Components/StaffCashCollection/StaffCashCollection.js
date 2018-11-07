@@ -2,8 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-
-import Enumerable from "linq";
+import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 import "./StaffCashCollection.css";
 import "../../styles/site.css";
 import {
@@ -14,24 +13,44 @@ import {
   AlgaehDateHandler
 } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
-
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb";
 
 class InvestigationSetup extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isOpen: false,
-      Investigations: [],
-      InvestigationName: [],
-      test_id: null,
-      investigation_type: null,
-      category_id: null,
-      lab_section_id: null,
-      specimen_id: null,
-      hims_d_investigation_test_id: null,
-      InvestigationPop: {}
+      shifts: []
     };
+    this.getShifts();
+  }
+
+  dropDownHandler(value) {
+    this.setState({ [value.name]: value.value });
+  }
+
+  getShifts() {
+    algaehApiCall({
+      uri: "/shiftAndCounter/getShiftMaster",
+      cancelRequestId: "getShiftMaster",
+      method: "GET",
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({
+            shifts: response.data.records
+          });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  dropDownHandle(value) {
+    this.setState({ [value.name]: value.value });
   }
 
   render() {
@@ -77,15 +96,15 @@ class InvestigationSetup extends Component {
                   forceLabel: "Shift Type"
                 }}
                 selector={{
-                  name: "shift_type",
+                  name: "hims_d_shift_id",
                   className: "select-fld",
-                  value: "",
+                  value: this.state.hims_d_shift_id,
                   dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: ""
+                    textField: "shift_description",
+                    valueField: "hims_d_shift_id",
+                    data: this.state.shifts
                   },
-                  onChange: null
+                  onChange: this.dropDownHandle.bind(this)
                 }}
               />
               <AlgaehDateHandler
@@ -153,9 +172,9 @@ class InvestigationSetup extends Component {
                       }
                     },
                     {
-                      fieldName: "Expected",
+                      fieldName: "expected_cash",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Total Expected" }} />
+                        <AlgaehLabel label={{ forceLabel: "Expected Cash" }} />
                       ),
                       others: {
                         resizable: false,
@@ -163,10 +182,58 @@ class InvestigationSetup extends Component {
                       }
                     },
                     {
-                      fieldName: "Collected",
+                      fieldName: "actual_cash",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Actual Cash" }} />
+                      ),
+                      others: {
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+                    {
+                      fieldName: "difference_cash",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Cash Diffrence" }} />
+                      ),
+                      others: {
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+                    {
+                      fieldName: "cash_status",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Cash Status" }} />
+                      ),
+                      others: {
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+                    {
+                      fieldName: "expected_credit",
                       label: (
                         <AlgaehLabel
-                          label={{ forceLabel: "Total Collected" }}
+                          label={{ forceLabel: "Expected Credit" }}
+                        />
+                      )
+                    },
+                    {
+                      fieldName: "actual_credit",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Actual Credit" }} />
+                      ),
+                      others: {
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+                    {
+                      fieldName: "difference_credit",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Credit Diffrence" }}
                         />
                       ),
                       others: {
@@ -175,27 +242,56 @@ class InvestigationSetup extends Component {
                       }
                     },
                     {
-                      fieldName: "Difference",
-                      label: (
-                        <AlgaehLabel
-                          label={{ forceLabel: "Total Diffrence" }}
-                        />
-                      ),
-                      others: {
-                        resizable: false,
-                        style: { textAlign: "center" }
-                      }
-                    },
-                    {
-                      fieldName: "Status",
+                      fieldName: "credit_status",
                       label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
+                      others: {
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+
+                    {
+                      fieldName: "expected_cheque",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Expected Cheque" }}
+                        />
+                      )
+                    },
+                    {
+                      fieldName: "actual_cheque",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Actual Cheque" }} />
+                      ),
+                      others: {
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+                    {
+                      fieldName: "difference_cheque",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Cheque Diffrence" }}
+                        />
+                      ),
+                      others: {
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+                    {
+                      fieldName: "cheque_status",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Cheque Status" }} />
+                      ),
                       others: {
                         resizable: false,
                         style: { textAlign: "center" }
                       }
                     }
                   ]}
-                  keyId=""
+                  keyId="hims_f_cash_handover_detail_id"
                   dataSource={{}}
                   // isEditable={true}
                   filter={true}
