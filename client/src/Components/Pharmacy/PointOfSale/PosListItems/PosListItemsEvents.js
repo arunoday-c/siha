@@ -168,7 +168,7 @@ const itemchangeText = ($this, context, e) => {
           // });
         } else {
           swalMessage({
-            title: "Invalid Input. No Stock Avaiable for selected Item.",
+            title: "No stock available for selected Item.",
             type: "warning"
           });
         }
