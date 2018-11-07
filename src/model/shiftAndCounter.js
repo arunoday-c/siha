@@ -352,6 +352,77 @@ let addCashierToShift = (req, res, next) => {
       }
     };
 
+    //created by irfan: to 
+let updateCashiersAndShiftMAP  = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "UPDATE `hims_m_cashier_shift` SET  shift_id=?,\
+           updated_date=?, updated_by=?  WHERE  `record_status`='A' and `hims_m_cashier_shift_id`=?;",
+        [
+          input.shift_id,          
+          new Date(),
+          input.updated_by,      
+          input.hims_m_cashier_shift_id
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+
+
+
+
+//created by irfan: to 
+let deleteCashiersAndShiftMAP = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+
+
+    deleteRecord(
+      {
+        db: req.db,
+        tableName: "hims_m_cashier_shift",
+        id: req.body.hims_m_cashier_shift_id,
+        query:
+          "UPDATE hims_m_cashier_shift SET  record_status='I' WHERE hims_m_cashier_shift_id=?",
+        values: [req.body.hims_m_cashier_shift_id]
+      },
+      result => {
+        req.records = result;
+        next();
+      },
+      error => {
+        next(error);
+      },
+      true
+    );
+  } catch (e) {
+    next(e);
+  }
+};
 
 module.exports = {
     addShiftMaster,
@@ -362,5 +433,7 @@ module.exports = {
     updateCounterMaster,
     getCashiers,
     addCashierToShift,
-    getCashiersAndShiftMAP
+    getCashiersAndShiftMAP,
+    updateCashiersAndShiftMAP,
+    deleteCashiersAndShiftMAP
   };

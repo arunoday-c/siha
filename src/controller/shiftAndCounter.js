@@ -11,7 +11,9 @@ import {
     updateCounterMaster,
     getCashiers,
     addCashierToShift,
-    getCashiersAndShiftMAP
+    getCashiersAndShiftMAP,
+    updateCashiersAndShiftMAP,
+    deleteCashiersAndShiftMAP
 } from "../model/shiftAndCounter";
 
 export default ({ config, db }) => {
@@ -150,6 +152,35 @@ export default ({ config, db }) => {
   api.get(
     "/getCashiersAndShiftMAP",
     getCashiersAndShiftMAP,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+  // created by irfan :to 
+  api.put(
+    "/updateCashiersAndShiftMAP",
+    updateCashiersAndShiftMAP,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  
+  api.delete(
+    "/deleteCashiersAndShiftMAP",
+    deleteCashiersAndShiftMAP,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
