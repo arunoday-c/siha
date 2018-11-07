@@ -64,7 +64,8 @@ class DeptMaster extends Component {
   }
 
   addSubDept(data) {
-    debugger;
+    this.setState({ showSubDeptModal: true });
+    //alert("Hi");
   }
 
   getSubDeptGrid(id) {
@@ -167,14 +168,184 @@ class DeptMaster extends Component {
     return (
       <div className="dept">
         <Modal open={this.state.showSubDeptModal}>
-          <div className="algaeh-modal" style={{ width: "55vw" }}>
+          <div className="algaeh-modal">
             <div className="popupHeader">
-              <h4>Add Sub Department</h4>
+              <div className="row">
+                <div className="col-lg-8">
+                  <h4>Add Sub Department</h4>
+                </div>
+                <div className="col-lg-4">
+                  <button
+                    type="button"
+                    className=""
+                    onClick={() => {
+                      this.setState({ showSubDeptModal: false });
+                    }}
+                  >
+                    <i className="fas fa-times-circle" />
+                  </button>
+                </div>
+              </div>
             </div>
 
             <div className="popupInner">
               <div className="col-lg-12">
-                <div className="row">HELLO SUB MODAL</div>
+                <div className="row">
+                  <AlagehFormGroup
+                    div={{ className: "col-lg-3" }}
+                    label={{
+                      fieldName: "department_code",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "department_code",
+                      value: this.state.department_code,
+                      events: {
+                        onChange: this.textHandle.bind(this)
+                      },
+                      error: this.state.department_code_error,
+                      helperText: this.state.department_code_error_text
+                    }}
+                  />
+
+                  <AlagehFormGroup
+                    div={{ className: "col-lg-3" }}
+                    label={{
+                      fieldName: "department_name",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "department_name",
+                      value: this.state.department_name,
+                      events: {
+                        onChange: this.textHandle.bind(this)
+                      },
+                      error: this.state.department_name_error,
+                      helperText: this.state.department_name_error_text
+                    }}
+                  />
+
+                  <AlagehFormGroup
+                    div={{ className: "col-lg-3" }}
+                    label={{
+                      fieldName: "department_name_arabic",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "department_name_arabic",
+                      value: this.state.department_name_arabic,
+                      events: {
+                        onChange: this.textHandle.bind(this)
+                      },
+                      error: this.state.department_name_arabic_error,
+                      helperText: this.state.department_name_arabic_error_text
+                    }}
+                  />
+                </div>
+
+                <div
+                  className="row"
+                  style={{
+                    marginTop: 5
+                  }}
+                >
+                  <AlgaehDateHandler
+                    div={{ className: "col-lg-3" }}
+                    label={{ fieldName: "effective_start_date", isImp: true }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "effective_start_date",
+                      error: this.state.effective_start_date_error,
+                      helperText: this.state.effective_start_date_error_text
+                    }}
+                    maxDate={new Date()}
+                    events={{
+                      onChange: date => {
+                        this.setState({ effective_start_date: date });
+                      }
+                    }}
+                    value={this.state.effective_start_date}
+                  />
+
+                  <AlagehAutoComplete
+                    div={{ className: "col-lg-3" }}
+                    label={{
+                      fieldName: "department_type"
+                    }}
+                    selector={{
+                      name: "department_type",
+                      className: "select-fld",
+                      value: this.state.department_type,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: GlobalVariables.DEPT_TYPE
+                      },
+                      onChange: this.dropDownHandle.bind(this)
+                    }}
+                  />
+
+                  <div className="col-lg-3 align-middle">
+                    <br />
+
+                    <button
+                      className="btn btn-primary"
+                      onClick={this.addDepartment.bind(this)}
+                    >
+                      ADD TO LIST
+                    </button>
+                  </div>
+                </div>
+
+                <div
+                  className="col-lg-12"
+                  id="departGrid_Cntr"
+                  style={{ marginTop: 10, marginBottom: 10 }}
+                >
+                  <AlgaehDataGrid
+                    id="sub_dep_grid"
+                    columns={[
+                      {
+                        fieldName: "sub_department_code",
+                        label: "Sub Department Code"
+                      },
+                      {
+                        fieldName: "sub_department_name",
+                        label: "Sub Department Name"
+                      },
+                      {
+                        fieldName: "arabic_sub_department_name",
+                        label: "Sub Department Arabic Name"
+                      },
+                      {
+                        fieldName: "effective_start_date",
+                        label: "Effective Start Date"
+                      },
+                      {
+                        fieldName: "effective_end_date",
+                        label: "Effective End Date"
+                      },
+                      {
+                        fieldName: "sub_department_status",
+                        label: "Status"
+                      }
+                    ]}
+                    keyId="hims_d_sub_department_id"
+                    dataSource={{
+                      data: this.props.subdepartments
+                    }}
+                    isEditable={true}
+                    paging={{ page: 0, rowsPerPage: 10 }}
+                    events={{
+                      onDelete: row => {},
+                      onEdit: row => {},
+                      onDone: row => {}
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -301,16 +472,22 @@ class DeptMaster extends Component {
             id="dept_grid"
             columns={[
               {
-                fieldName: "department_code",
+                fieldName: "add_dep",
                 label: "Sub Dept.",
                 displayTemplate: row => {
                   return (
-                    <i className="fas fa-plus" onClick={this.addSubDept(row)} />
+                    <i
+                      className="fas fa-plus"
+                      onClick={this.addSubDept.bind(this)}
+                    />
                   );
                 },
                 editorTemplate: row => {
                   return (
-                    <i className="fas fa-plus" onClick={this.addSubDept(row)} />
+                    <i
+                      className="fas fa-plus"
+                      onClick={this.addSubDept.bind(this)}
+                    />
                   );
                 },
                 others: {
@@ -356,17 +533,18 @@ class DeptMaster extends Component {
                     </span>
                   );
                 },
-                disabled: true
+                editorTemplate: row => {
+                  return (
+                    <span>
+                      {row.department_status === "A" ? "Active" : "Inactive"}
+                    </span>
+                  );
+                }
               }
             ]}
             keyId="department_code"
             dataSource={{
               data: this.props.departments
-            }}
-            expanded={{
-              detailTemplate: row => {
-                return this.getSubDeptGrid(row.hims_d_department_id);
-              }
             }}
             isEditable={true}
             paging={{ page: 0, rowsPerPage: 10 }}
