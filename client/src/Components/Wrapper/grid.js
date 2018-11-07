@@ -352,7 +352,7 @@ class DataGrid extends PureComponent {
         ) {
           if (_allowEditButton || _allowDeleteButton) {
             _columns.splice(0, 0, {
-              Header: "Actions",
+              Header: <label className="style_Label ">ACTIONS</label>,
               headerClassName: "sticky",
               fixed: "left",
               width: 100,
