@@ -12,6 +12,7 @@ import ItemUOM from "./ItemUOM/ItemUOM";
 import Location from "./Location/Location";
 import ItemForm from "./ItemForm/ItemForm";
 import ItemStorage from "./ItemStorage/ItemStorage";
+import LocationPermission from "./LocationPermission/LocationPermission";
 
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
@@ -188,6 +189,21 @@ class PharmacySetup extends Component {
                 />
               }
             </li>
+
+            <li
+              style={{ marginRight: 2 }}
+              className={"nav-item tab-button "}
+              algaehtabs={"LocationPermission"}
+              onClick={this.openTab.bind(this)}
+            >
+              {
+                <AlgaehLabel
+                  label={{
+                    fieldName: "location_permission"
+                  }}
+                />
+              }
+            </li>
           </ul>
         </div>
 
@@ -208,6 +224,8 @@ class PharmacySetup extends Component {
             <ItemForm />
           ) : this.state.pageDisplay === "Storage" ? (
             <ItemStorage />
+          ) : this.state.pageDisplay === "LocationPermission" ? (
+            <LocationPermission />
           ) : null}
         </div>
       </div>

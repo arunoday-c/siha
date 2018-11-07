@@ -314,7 +314,7 @@ class ItemListsReturn extends Component {
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "discount_percentage"
+                                      forceLabel: "discount %"
                                     }}
                                   />
                                 ),
@@ -324,7 +324,7 @@ class ItemListsReturn extends Component {
                                 fieldName: "discount_amout",
                                 label: (
                                   <AlgaehLabel
-                                    label={{ forceLabel: "discount_amout" }}
+                                    label={{ forceLabel: "discount Amount" }}
                                   />
                                 ),
                                 disabled: true

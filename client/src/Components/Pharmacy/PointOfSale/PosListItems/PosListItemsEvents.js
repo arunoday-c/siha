@@ -327,6 +327,8 @@ const AddItems = ($this, context) => {
             data.billdetails[0].operation = "-";
             data.billdetails[0].grn_no = data.billdetails[0].grnno;
             data.billdetails[0].service_id = data.billdetails[0].services_id;
+            data.billdetails[0].discount_amount =
+              data.billdetails[0].discount_amout;
             // data.billdetails[0].patient_resp = data.billdetails[0].services_id;
             existingservices.splice(0, 0, data.billdetails[0]);
           }
@@ -478,10 +480,10 @@ const calculateAmount = ($this, row, ctrl, e) => {
         unit_cost: row.unit_cost,
         pharmacy_item: "Y",
         quantity: row.quantity,
-        discount_amout:
-          e.target.name === "discount_percentage" ? 0 : row.discount_amout,
+        discount_amount:
+          e.target.name === "discount_percentage" ? 0 : row.discount_amount,
         discount_percentage:
-          e.target.name === "discount_amout" ? 0 : row.discount_percentage,
+          e.target.name === "discount_amount" ? 0 : row.discount_percentage,
 
         insured: $this.state.insured,
         primary_insurance_provider_id: $this.state.insurance_provider_id,
