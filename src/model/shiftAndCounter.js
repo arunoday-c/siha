@@ -2,8 +2,7 @@
 import extend from "extend";
 import {
   
- 
-  releaseDBConnection
+  releaseDBConnection,whereCondition
 } from "../utils";
 
 import httpStatus from "../utils/httpStatus";
