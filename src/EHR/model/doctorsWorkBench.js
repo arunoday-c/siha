@@ -1064,11 +1064,9 @@ let addNewChiefComplaint = (req, res, next) => {
   }
 };
 
-
 // created by : irfan to ADD  patient-chief complaint
 let addPatientChiefComplaints = (req, res, next) => {
   debugFunction("addPatientChiefComplaints");
- 
 
   try {
     if (req.db == null) {
@@ -1081,7 +1079,6 @@ let addPatientChiefComplaints = (req, res, next) => {
         releaseDBConnection(db, connection);
         next(error);
       }
-    
 
       const insurtColumns = [
         "episode_id",
@@ -1120,8 +1117,6 @@ let addPatientChiefComplaints = (req, res, next) => {
           next();
         }
       );
-
-      
     });
   } catch (e) {
     next(e);
@@ -1968,7 +1963,7 @@ let getAllPhysicalExamination = (req, res, next) => {
       if (error) {
         next(error);
       }
-
+      const _all = req.query.allDept == "G" ? "" : " and sub_department_id=?";
       let queryBuilder =
         "SELECT hims_d_physical_examination_header_id,\
       examination_type,h.description,assesment_type,\
@@ -1979,7 +1974,8 @@ let getAllPhysicalExamination = (req, res, next) => {
       on h.hims_d_physical_examination_header_id = d.physical_examination_header_id left outer join \
       hims_d_physical_examination_subdetails sd  on sd.physical_examination_details_id=d.hims_d_physical_examination_details_id \
        where \
-      h.record_status='A' and sub_department_id=?";
+      h.record_status='A' " +
+        _all;
       connection.query(
         queryBuilder,
         [req.userIdentity.sub_department_id],
@@ -2315,7 +2311,7 @@ module.exports = {
   updatdePatEncntrStatus,
   getPatientProfile,
   getChiefComplaints,
- 
+
   addPatientChiefComplaints,
   addNewChiefComplaint,
   getPatientChiefComplaints,
