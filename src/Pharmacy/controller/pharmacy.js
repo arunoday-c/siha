@@ -11,6 +11,7 @@ import {
   addPharmacyLocation,
   addItemForm,
   addItemStorage,
+  addLocationPermission,
   getItemMaster,
   getItemCategory,
   getItemGeneric,
@@ -18,6 +19,7 @@ import {
   getPharmacyLocation,
   getItemStorage,
   getItemForm,
+  getLocationPermission,
   updateItemCategory,
   updateItemGroup,
   updateItemGeneric,
@@ -26,7 +28,8 @@ import {
   updateItemForm,
   updateItemStorage,
   getItemMasterAndItemUom,
-  updateItemMasterAndUom
+  updateItemMasterAndUom,
+  updateLocationPermission
 } from "../model/pharmacy";
 
 export default ({ config, db }) => {
@@ -124,6 +127,21 @@ export default ({ config, db }) => {
   api.post(
     "/addItemStorage",
     addItemStorage,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by Nowshad :to  add Location Permission
+  api.post(
+    "/addLocationPermission",
+    addLocationPermission,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
@@ -284,6 +302,21 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
+  // created by Nowshad :to get Location Permission
+  api.get(
+    "/getLocationPermission",
+    getLocationPermission,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
   // created by irfan :update Item Category
   api.put(
     "/updateItemCategory",
@@ -393,6 +426,21 @@ export default ({ config, db }) => {
   api.put(
     "/updateItemMasterAndUom",
     updateItemMasterAndUom,
+    (req, res, next) => {
+      let results = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: results
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :update Location Permission
+  api.put(
+    "/updateLocationPermission",
+    updateLocationPermission,
     (req, res, next) => {
       let results = req.records;
       res.status(httpStatus.ok).json({

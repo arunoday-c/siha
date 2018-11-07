@@ -507,7 +507,7 @@ class PosListItems extends Component {
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "discount_percentage"
+                                      forceLabel: "discount %"
                                     }}
                                   />
                                 ),
@@ -546,7 +546,7 @@ class PosListItems extends Component {
                                 fieldName: "discount_amout",
                                 label: (
                                   <AlgaehLabel
-                                    label={{ forceLabel: "discount_amout" }}
+                                    label={{ forceLabel: "discount Amount" }}
                                   />
                                 ),
                                 editorTemplate: row => {
@@ -555,9 +555,9 @@ class PosListItems extends Component {
                                       div={{}}
                                       textBox={{
                                         decimal: { allowNegative: false },
-                                        value: row.discount_amout,
+                                        value: row.discount_amount,
                                         className: "txt-fld",
-                                        name: "discount_amout",
+                                        name: "discount_amount",
                                         events: {
                                           onChange: onchangegridcol.bind(
                                             this,

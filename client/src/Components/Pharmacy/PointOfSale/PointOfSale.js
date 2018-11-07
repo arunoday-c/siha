@@ -32,6 +32,7 @@ import MyContext from "../../../utils/MyContext";
 import POSIOputs from "../../../Models/POS";
 import DisplayInsuranceDetails from "./DisplayInsuranceDetails/DisplayInsuranceDetails";
 import Options from "../../../Options.json";
+import Enumerable from "linq";
 
 class PointOfSale extends Component {
   constructor(props) {
@@ -124,6 +125,10 @@ class PointOfSale extends Component {
   }
 
   render() {
+    debugger;
+    const _posLocation = Enumerable.from(this.props.poslocations)
+      .where(w => w.allow_pos === "Y")
+      .toArray();
     return (
       <React.Fragment>
         <div>
@@ -206,7 +211,7 @@ class PointOfSale extends Component {
                     dataSource: {
                       textField: "location_description",
                       valueField: "hims_d_pharmacy_location_id",
-                      data: this.props.poslocations
+                      data: _posLocation
                     },
                     onChange: LocationchangeTexts.bind(this, this)
                   }}

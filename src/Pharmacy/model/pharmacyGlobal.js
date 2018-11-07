@@ -1,12 +1,9 @@
 "use strict";
 import extend from "extend";
-import {
-  whereCondition,
-  releaseDBConnection
-} from "../../utils";
+import { whereCondition, releaseDBConnection } from "../../utils";
 
 import httpStatus from "../../utils/httpStatus";
-import {  debugLog } from "../../utils/logging";
+import { debugLog } from "../../utils/logging";
 
 //created by irfan: to get Uom Location Stock
 let getUomLocationStock = (req, res, next) => {
@@ -175,9 +172,42 @@ let getItemLocationStock = (req, res, next) => {
   }
 };
 
+//created by Nowshad: to get User Wise Location Permission
+let getUserLocationPermission = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    // let input = extend({}, req.query);
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "SELECT from_location, from hims_m_location_permission where record_status='A' \
+        and allow='N' and user_id=?",
+        [req.userIdentity.algaeh_d_app_user_id],
+        (error, result) => {
+          debugLog("uomResult", result);
+          releaseDBConnection(db, connection);
+
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getUomLocationStock,
   getVisitPrescriptionDetails,
   getItemMoment,
-  getItemLocationStock
+  getItemLocationStock,
+  getUserLocationPermission
 };
