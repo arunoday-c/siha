@@ -138,7 +138,7 @@ let getShiftMaster = (req, res, next) => {
       db.getConnection((error, connection) => {
         connection.query(
           "select hims_d_shift_id, shift_code, shift_description, arabic_name, shift_status from \
-          hims_d_shift where record_status='A' "+          
+          hims_d_shift where record_status='A' and "+          
           where.condition+" order by hims_d_shift_id desc",
         where.values,
           (error, result) => {
