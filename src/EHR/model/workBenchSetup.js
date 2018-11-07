@@ -365,7 +365,6 @@ let addDepartmentVitalMap = (req, res, next) => {
   }
 };
 
-
  //created by irfan: to 
  let getDepartmentVitalMap = (req, res, next) => {
   let selectWhere = {
