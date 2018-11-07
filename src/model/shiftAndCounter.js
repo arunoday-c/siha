@@ -126,18 +126,22 @@ let getCounterMaster = (req, res, next) => {
 
   //created by irfan: to getShiftMaster
 let getShiftMaster = (req, res, next) => {
+  let selectWhere = {
+    hims_d_shift_id: "ALL"
+  };
     try {
       if (req.db == null) {
         next(httpStatus.dataBaseNotInitilizedError());
       }
       let db = req.db;
   
-      
+      let where = whereCondition(extend(selectWhere, req.query));
       db.getConnection((error, connection) => {
         connection.query(
           "select hims_d_shift_id, shift_code, shift_description, arabic_name, shift_status from \
-          hims_d_shift where record_status='A' order by hims_d_shift_id desc;",
-         
+          hims_d_shift where record_status='A' "+          
+          where.condition+" order by hims_d_shift_id desc",
+        where.values,
           (error, result) => {
             releaseDBConnection(db, connection);
             if (error) {
@@ -316,6 +320,40 @@ let addCashierToShift = (req, res, next) => {
 };
 
 
+    //created by irfan: to 
+    let getCashiersAndShiftMAP = (req, res, next) => {
+      try {
+        if (req.db == null) {
+          next(httpStatus.dataBaseNotInitilizedError());
+        }
+        let db = req.db;
+    
+        
+        db.getConnection((error, connection) => {
+          connection.query(
+            "select hims_m_cashier_shift_id, cashier_id, shift_id,shift_description, year, month,\
+            hims_d_employee_department_id,EDM.employee_id,E.full_name as cashier_name\
+            from hims_m_cashier_shift CS,hims_d_shift S,hims_d_employee E ,hims_m_employee_department_mappings EDM\
+              where CS.record_status='A' and S.record_status='A' and CS.shift_id=S.hims_d_shift_id \
+              and CS.cashier_id=EDM.user_id  and EDM.employee_id=E.hims_d_employee_id\
+              order by hims_m_cashier_shift_id desc;",
+           
+            (error, result) => {
+              releaseDBConnection(db, connection);
+              if (error) {
+                next(error);
+              }
+              req.records = result;
+              next();
+            }
+          );
+        });
+      } catch (e) {
+        next(e);
+      }
+    };
+
+
 module.exports = {
     addShiftMaster,
     addCounterMaster,
@@ -324,5 +362,6 @@ module.exports = {
     updateShiftMaster,
     updateCounterMaster,
     getCashiers,
-    addCashierToShift
+    addCashierToShift,
+    getCashiersAndShiftMAP
   };
