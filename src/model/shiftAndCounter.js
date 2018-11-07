@@ -239,11 +239,90 @@ let updateCounterMaster = (req, res, next) => {
   };
 
 
+    //created by irfan: to 
+let getCashiers = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_d_employee_id, employee_code,full_name as cashier_name, is_cashier ,user_id as cashier_id\
+        from hims_d_employee E ,hims_m_employee_department_mappings EDM where E.record_status='A' and \
+        EDM.record_status='A' and   is_cashier='Y'\
+        and E.hims_d_employee_id=EDM.employee_id order by hims_d_employee_id desc;",
+       
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+
+//created by irfan: to 
+let addCashierToShift = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+     
+
+      connection.query(
+        "INSERT INTO `hims_m_cashier_shift` (cashier_id, shift_id, year,month,  created_date, created_by, updated_date, updated_by)\
+          VALUE(?,?,?,?,?,?,?,?)",
+        [
+          input.cashier_id,
+          input.shift_id,
+          input.year,   
+          input.month,        
+           new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {           
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+
 module.exports = {
     addShiftMaster,
     addCounterMaster,
     getCounterMaster,
     getShiftMaster,
     updateShiftMaster,
-    updateCounterMaster
+    updateCounterMaster,
+    getCashiers,
+    addCashierToShift
   };
