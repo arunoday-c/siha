@@ -137,11 +137,13 @@ let updateVitalMasterHeader = (req, res, next) => {
         }
   
         connection.query(
-          "UPDATE `hims_d_vitals_header` SET vitals_name=?,uom=?,\
+          "UPDATE `hims_d_vitals_header` SET vitals_name=?,uom=?,general=?,display=?,\
              updated_date=?, updated_by=?  WHERE  `record_status`='A' and `hims_d_vitals_header_id`=?;",
           [
             input.vitals_name,
             input.uom, 
+            input.general, 
+            input.display, 
             new Date(),
             input.updated_by,      
             input.hims_d_vitals_header_id
@@ -311,9 +313,6 @@ let updateVitalMasterDetail = (req, res, next) => {
       next(e);
     }
   };
-
-
-
 
 
 //created by irfan: to add 
