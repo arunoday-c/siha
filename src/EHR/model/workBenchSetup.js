@@ -330,18 +330,18 @@ let addDepartmentVitalMap = (req, res, next) => {
       }
 
 
-      const insurtColumns = ["department_id", "created_by", "updated_by"];
+      const insurtColumns = ["vital_header_id", "created_by", "updated_by"];
 
-
+      
       connection.query(
         "INSERT INTO hims_m_department_vital_mapping(" +
           insurtColumns.join(",") +
-          ",`vital_header_id`,created_date,updated_date) VALUES ?",
+          ",`department_id`,created_date,updated_date) VALUES ?",
         [
           jsonArrayToObject({
             sampleInputObject: insurtColumns,
-            arrayObj: req.body.departments,
-            newFieldToInsert: [input.vital_header_id, new Date(), new Date()],
+            arrayObj: req.body.vitals,
+            newFieldToInsert: [input.department_id, new Date(), new Date()],
             req: req
           })
         ],
