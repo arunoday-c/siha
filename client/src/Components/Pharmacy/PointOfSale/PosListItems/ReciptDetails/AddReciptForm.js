@@ -79,7 +79,7 @@ class AddReciptForm extends Component {
                     </h6>
                   </div>
                 </div>
-                <hr />
+                <hr style={{ margin: 0 }} />
 
                 {/* Payment Type */}
                 {/* Cash */}
@@ -273,6 +273,7 @@ class AddReciptForm extends Component {
                     value={this.state.cheque_date}
                   />
                 </div>
+                <hr style={{ margin: 0 }} />
                 <div className="row secondary-box-container">
                   <div className="col-lg-2" />
                   <div className="col-lg-5">
@@ -289,7 +290,6 @@ class AddReciptForm extends Component {
                   </div>
                 </div>
               </div>
-              <br />
             </div>
           )}
         </MyContext.Consumer>

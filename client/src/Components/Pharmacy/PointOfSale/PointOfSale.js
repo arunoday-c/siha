@@ -361,7 +361,10 @@ class PointOfSale extends Component {
                     disabled={this.state.saveEnable}
                   >
                     <AlgaehLabel
-                      label={{ forceLabel: "Save", returnText: true }}
+                      label={{
+                        forceLabel: "Collect & Print",
+                        returnText: true
+                      }}
                     />
                   </button>
 

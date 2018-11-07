@@ -288,7 +288,48 @@ class RequisitionEntry extends Component {
                       />
                     </button>
 
-                    {this.state.authorize1 === "N" ? (
+                    {this.props.requisition_auth === true ? (
+                      this.state.authorize1 === "N" ? (
+                        <button
+                          type="button"
+                          className="btn btn-other"
+                          onClick={AuthorizeRequisitionEntry.bind(
+                            this,
+                            this,
+                            "authorize1"
+                          )}
+                          disabled={this.state.authorizeEnable}
+                        >
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Authorize1",
+                              returnText: true
+                            }}
+                          />
+                        </button>
+                      ) : // this.state.authorize1 === "Y" ? (
+                      this.state.authorie2 === "N" ? (
+                        <button
+                          type="button"
+                          className="btn btn-other"
+                          onClick={AuthorizeRequisitionEntry.bind(
+                            this,
+                            this,
+                            "authorize2"
+                          )}
+                          disabled={this.state.authorizeEnable}
+                        >
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Authorize2",
+                              returnText: true
+                            }}
+                          />
+                        </button>
+                      ) : null
+                    ) : // ) : null
+                    null}
+                    {/* {this.state.authorize1 === "N" ? (
                       <button
                         type="button"
                         className="btn btn-other"
@@ -327,7 +368,7 @@ class RequisitionEntry extends Component {
                           />
                         </button>
                       ) : null
-                    ) : null}
+                    ) : null} */}
                   </div>
                 </div>
               </AppBar>

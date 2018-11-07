@@ -206,8 +206,13 @@ const SaveInitialStock = $this => {
     data: $this.state,
     onSuccess: response => {
       if (response.data.success === true) {
+        debugger;
         $this.setState({
           document_number: response.data.records.document_number,
+          hims_f_pharmacy_stock_header_id:
+            response.data.records.hims_f_pharmacy_stock_header_id,
+          year: response.data.records.year,
+          period: response.data.records.period,
           saveEnable: true,
           postEnable: false
         });
@@ -256,11 +261,18 @@ const ClearData = $this => {
 };
 
 const PostInitialStock = $this => {
+  debugger;
   $this.state.posted = "Y";
   $this.state.transaction_type = "INT";
   $this.state.transaction_id = $this.state.hims_f_pharmacy_stock_header_id;
   $this.state.transaction_date = $this.state.docdate;
 
+  for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
+    $this.state.pharmacy_stock_detail[i].net_total =
+      $this.state.pharmacy_stock_detail[i].extended_cost;
+
+    // $this.state.pharmacy_stock_detail[i].operation = "+";
+  }
   algaehApiCall({
     uri: "/initialstock/updatePharmacyInitialStock",
     data: $this.state,

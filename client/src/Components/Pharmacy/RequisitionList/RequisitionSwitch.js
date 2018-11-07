@@ -38,6 +38,7 @@ class RequisitionSwitch extends Component {
       RequisitionEntry: (
         <RequisitionEntry
           material_requisition_number={this.state.material_requisition_number}
+          requisition_auth={true}
         />
       )
     };
