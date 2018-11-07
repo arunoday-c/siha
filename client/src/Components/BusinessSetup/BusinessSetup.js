@@ -97,72 +97,14 @@ class BusinessSetup extends Component {
               className={"nav-item tab-button"}
               onClick={this.openTab.bind(this)}
             >
-              User Shift Mapping
-            </li>
-
-            {/* <li
-              algaehtabs={"Holiday"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button"}
-              onClick={this.openTab.bind(this)}
-            >
               {
                 <AlgaehLabel
                   label={{
-                    fieldName: "holidays_list"
+                    fieldName: "users_shift"
                   }}
                 />
               }
             </li>
-            <li
-              algaehtabs={"Transaction"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button"}
-              onClick={this.openTab.bind(this)}
-            >
-              TRANSACTION
-            </li>
-            <li
-              algaehtabs={"Numbering"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button "}
-              onClick={this.openTab.bind(this)}
-            >
-              NUMBERING
-            </li>
-            <li
-              algaehtabs={"LabelSetup"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button "}
-              onClick={this.openTab.bind(this)}
-            >
-              LABEL SETUP
-            </li>
-            <li
-              algaehtabs={"EpiodeCreation"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button "}
-              onClick={this.openTab.bind(this)}
-            >
-              EPISODE CREATION
-            </li>
-            <li
-              algaehtabs={"Option"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button "}
-              onClick={this.openTab.bind(this)}
-            >
-              OPTION
-            </li>
-
-            <li
-              algaehtabs={"QueueOption"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button "}
-              onClick={this.openTab.bind(this)}
-            >
-              QUEUE OPTION
-            </li> */}
           </ul>
         </div>
 
