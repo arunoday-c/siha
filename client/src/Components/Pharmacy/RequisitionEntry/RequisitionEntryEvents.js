@@ -142,7 +142,9 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
       $this.setState({
         [name]: value,
         [type]: e.selected.location_type,
-        requistion_type: requistion_type
+        requistion_type: requistion_type,
+        to_location_id: null,
+        to_location_type: null
       });
     }
   } else if (location === "To") {
