@@ -2,5 +2,14 @@
   "physical_examination": "Physical Examination",
   "review_of_systems": "Review of Systems",
   "name": "Name",
-  "code": "Code"
+  "code": "Code",
+  "vitals_master": "Vitals Master",
+  "vitals_name": "Vital Name",
+  "uom": "UOM",
+  "gender": "Gender",
+  "min_age": "Min Age",
+  "max_age": "Max Age",
+  "min_value": "Min Value",
+  "max_value": "Max Value",
+  "general": "General"
 }

@@ -31,12 +31,13 @@ let addVitalMasterHeader = (req, res, next) => {
         }
   
         connection.query(
-          "INSERT INTO `hims_d_vitals_header` (vitals_name, uom,general,created_date, created_by, updated_date, updated_by)\
-            VALUE(?,?,?,?,?,?,?)",
+          "INSERT INTO `hims_d_vitals_header` (vitals_name, uom,general,display,created_date, created_by, updated_date, updated_by)\
+            VALUE(?,?,?,?,?,?,?,?)",
           [
             input.vitals_name,
             input.uom,
             input.general,
+            input.display,
             new Date(),
             input.created_by,
             new Date(),
@@ -73,7 +74,7 @@ let getVitalMasterHeader = (req, res, next) => {
   
       db.getConnection((error, connection) => {
         connection.query(
-          "select hims_d_vitals_header_id,uom, vitals_name,general FROM hims_d_vitals_header where record_status='A' AND" +
+          "select hims_d_vitals_header_id,uom, vitals_name,general,display FROM hims_d_vitals_header where record_status='A' AND" +
             where.condition+" order by hims_d_vitals_header_id desc",
           where.values,
           (error, result) => {
@@ -136,11 +137,13 @@ let updateVitalMasterHeader = (req, res, next) => {
         }
   
         connection.query(
-          "UPDATE `hims_d_vitals_header` SET vitals_name=?,uom=?,\
+          "UPDATE `hims_d_vitals_header` SET vitals_name=?,uom=?,general=?,display=?,\
              updated_date=?, updated_by=?  WHERE  `record_status`='A' and `hims_d_vitals_header_id`=?;",
           [
             input.vitals_name,
             input.uom, 
+            input.general, 
+            input.display, 
             new Date(),
             input.updated_by,      
             input.hims_d_vitals_header_id
@@ -312,9 +315,6 @@ let updateVitalMasterDetail = (req, res, next) => {
   };
 
 
-
-
-
 //created by irfan: to add 
 let addDepartmentVitalMap = (req, res, next) => {
   try {
@@ -330,18 +330,18 @@ let addDepartmentVitalMap = (req, res, next) => {
       }
 
 
-      const insurtColumns = ["department_id", "created_by", "updated_by"];
+      const insurtColumns = ["vital_header_id", "created_by", "updated_by"];
 
-
+      
       connection.query(
         "INSERT INTO hims_m_department_vital_mapping(" +
           insurtColumns.join(",") +
-          ",`vital_header_id`,created_date,updated_date) VALUES ?",
+          ",`department_id`,created_date,updated_date) VALUES ?",
         [
           jsonArrayToObject({
             sampleInputObject: insurtColumns,
-            arrayObj: req.body.departments,
-            newFieldToInsert: [input.vital_header_id, new Date(), new Date()],
+            arrayObj: req.body.vitals,
+            newFieldToInsert: [input.department_id, new Date(), new Date()],
             req: req
           })
         ],
