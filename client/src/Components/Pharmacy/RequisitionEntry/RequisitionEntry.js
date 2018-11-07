@@ -195,7 +195,10 @@ class RequisitionEntry extends Component {
                       data: GlobalVariables.FORMAT_POS_REQUISITION_TYPE
                     },
                     others: {
-                      disabled: this.state.addedItem
+                      disabled: true
+                      // this.state.from_location_type === "SS"
+                      //   ? true
+                      //   : this.state.addedItem
                     },
 
                     onChange: changeTexts.bind(this, this)

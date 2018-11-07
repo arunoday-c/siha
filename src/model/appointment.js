@@ -2628,7 +2628,7 @@ let getPatientAppointment = (req, res, next) => {
             appointment_from_time,appointment_to_time,appointment_status_id,patient_name,arabic_name,date_of_birth,age,\
         contact_number,email,send_to_provider,gender,confirmed,visit_created,\
         confirmed_by,comfirmed_date,cancelled,cancelled_by,cancelled_date,appointment_remarks,cancel_reason,is_stand_by\
-        from hims_f_patient_appointment where record_status='A' and cancelled='N' and " +
+        from hims_f_patient_appointment where record_status='A'  and " +
           selectDoctor +
           "" +
           where.condition,
@@ -2683,10 +2683,6 @@ let getEmployeeServiceID = (req, res, next) => {
     next(e);
   }
 };
-
-
-
-
 
 //created by irfan: to cancel patient appointment
 let cancelPatientAppointment = (req, res, next) => {

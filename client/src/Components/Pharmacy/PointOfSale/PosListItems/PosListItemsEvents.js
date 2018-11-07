@@ -1,4 +1,4 @@
-import { successfulMessage } from "../../../../utils/GlobalFunctions";
+import { swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import Enumerable from "linq";
 import extend from "extend";
@@ -20,21 +20,15 @@ const discounthandle = ($this, context, ctrl, e) => {
     sheet_discount_percentage = 0;
   }
   if (sheet_discount_percentage > 100) {
-    successfulMessage({
-      message: "Invalid Input. Discount % cannot be greater than 100.",
-      title: "Warning",
-      icon: "warning"
+    swalMessage({
+      title: "Invalid Input. Discount % cannot be greater than 100.",
+      type: "warning"
     });
   } else {
-    $this.setState(
-      {
-        sheet_discount_percentage: sheet_discount_percentage,
-        sheet_discount_amount: sheet_discount_amount
-      },
-      () => {
-        PosheaderCalculation($this, context);
-      }
-    );
+    $this.setState({
+      sheet_discount_percentage: sheet_discount_percentage,
+      sheet_discount_amount: sheet_discount_amount
+    });
 
     if (context != null) {
       context.updateState({
@@ -45,17 +39,38 @@ const discounthandle = ($this, context, ctrl, e) => {
   }
 };
 
-const UomchangeTexts = ($this, ctrl, e) => {
+const UomchangeTexts = ($this, context, ctrl, e) => {
   debugger;
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  let unit_cost = e.selected.conversion_factor * $this.state.unit_cost;
-  $this.setState({
-    [name]: value,
-    conversion_factor: e.selected.conversion_factor,
-    unit_cost: unit_cost
-  });
+  if ($this.state.uom_id !== value) {
+    let unit_cost = 0;
+    if (e.selected.conversion_factor === 1) {
+      unit_cost = $this.state.Real_unit_cost;
+    } else {
+      unit_cost = e.selected.conversion_factor * $this.state.Real_unit_cost;
+    }
+    $this.setState({
+      [name]: value,
+      conversion_factor: e.selected.conversion_factor,
+      // quantity: e.selected.conversion_factor,
+      unit_cost: unit_cost
+    });
+
+    clearInterval(texthandlerInterval);
+    texthandlerInterval = setInterval(() => {
+      if (context !== undefined) {
+        context.updateState({
+          [name]: value,
+          conversion_factor: e.selected.conversion_factor,
+          // quantity: e.selected.conversion_factor,
+          unit_cost: unit_cost
+        });
+      }
+      clearInterval(texthandlerInterval);
+    }, 1000);
+  }
 };
 
 const numberchangeTexts = ($this, context, e) => {
@@ -63,17 +78,25 @@ const numberchangeTexts = ($this, context, e) => {
 
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  $this.setState({ [name]: value });
 
-  clearInterval(texthandlerInterval);
-  texthandlerInterval = setInterval(() => {
-    if (context !== undefined) {
-      context.updateState({
-        [name]: value
-      });
-    }
+  if (value < 0) {
+    swalMessage({
+      title: "Invalid Input. Quantity cannot be less than Zero",
+      type: "warning"
+    });
+  } else {
+    $this.setState({ [name]: value });
+
     clearInterval(texthandlerInterval);
-  }, 1000);
+    texthandlerInterval = setInterval(() => {
+      if (context !== undefined) {
+        context.updateState({
+          [name]: value
+        });
+      }
+      clearInterval(texthandlerInterval);
+    }, 1000);
+  }
 };
 
 const itemchangeText = ($this, context, e) => {
@@ -144,10 +167,9 @@ const itemchangeText = ($this, context, e) => {
           //   }
           // });
         } else {
-          successfulMessage({
-            message: "Invalid Input. No Stock Avaiable for selected Item.",
-            title: "Warning",
-            icon: "warning"
+          swalMessage({
+            title: "Invalid Input. No Stock Avaiable for selected Item.",
+            type: "warning"
           });
         }
       }
@@ -158,10 +180,9 @@ const itemchangeText = ($this, context, e) => {
         [name]: null
       },
       () => {
-        successfulMessage({
-          message: "Invalid Input. Please select Location.",
-          title: "Warning",
-          icon: "warning"
+        swalMessage({
+          title: "Invalid Input. Please select Location.",
+          type: "warning"
         });
       }
     );
@@ -186,19 +207,20 @@ const getUnitCost = ($this, context, serviceid) => {
           .firstOrDefault();
         if (servdata !== undefined || servdata !== null) {
           $this.setState({
-            unit_cost: servdata.standard_fee
+            unit_cost: servdata.standard_fee,
+            Real_unit_cost: servdata.standard_fee
           });
 
           if (context !== undefined) {
             context.updateState({
-              unit_cost: servdata.standard_fee
+              unit_cost: servdata.standard_fee,
+              Real_unit_cost: servdata.standard_fee
             });
           }
         } else {
-          successfulMessage({
-            message: "Invalid Input. No Service for the selected item.",
-            title: "Warning",
-            icon: "warning"
+          swalMessage({
+            title: "Invalid Input. No Service for the selected item.",
+            type: "warning"
           });
         }
       }
@@ -220,13 +242,20 @@ const getUnitCost = ($this, context, serviceid) => {
 
         if (data !== undefined || data !== null) {
           $this.setState({
-            unit_cost: data[0].gross_amt
+            unit_cost: data[0].gross_amt,
+            Real_unit_cost: data[0].gross_amt
           });
+
+          if (context !== undefined) {
+            context.updateState({
+              unit_cost: data[0].gross_amt,
+              Real_unit_cost: data[0].gross_amt
+            });
+          }
         } else {
-          successfulMessage({
-            message: "Invalid Input. No Service for the selected item.",
-            title: "Warning",
-            icon: "warning"
+          swalMessage({
+            title: "Invalid Input. No Service for the selected item.",
+            type: "warning"
           });
         }
       }
@@ -235,10 +264,9 @@ const getUnitCost = ($this, context, serviceid) => {
 };
 const AddItems = ($this, context) => {
   if ($this.state.item_id === null) {
-    successfulMessage({
-      message: "Invalid Input. Select Item.",
-      title: "Warning",
-      icon: "warning"
+    swalMessage({
+      title: "Invalid Input. Please Select Item.",
+      type: "warning"
     });
   } else {
     debugger;
@@ -277,15 +305,14 @@ const AddItems = ($this, context) => {
       afterSuccess: data => {
         debugger;
         if (data.billdetails[0].pre_approval === "Y") {
-          successfulMessage({
-            message:
+          swalMessage({
+            title:
               "Invalid Input. Selected Service is Pre-Approval required, you don't have rights to bill.",
-            title: "Warning",
-            icon: "warning"
+            type: "warning"
           });
         } else {
           let existingservices = $this.state.pharmacy_stock_detail;
-
+          debugger;
           if (data.billdetails.length !== 0) {
             data.billdetails[0].extended_cost =
               data.billdetails[0].gross_amount;
@@ -300,7 +327,9 @@ const AddItems = ($this, context) => {
             data.billdetails[0].operation = "-";
             data.billdetails[0].grn_no = data.billdetails[0].grnno;
             data.billdetails[0].service_id = data.billdetails[0].services_id;
-            data.billdetails[0].patient_resp = data.billdetails[0].services_id;
+            data.billdetails[0].discount_amount =
+              data.billdetails[0].discount_amout;
+            // data.billdetails[0].patient_resp = data.billdetails[0].services_id;
             existingservices.splice(0, 0, data.billdetails[0]);
           }
 
@@ -317,7 +346,8 @@ const AddItems = ($this, context) => {
               service_id: null,
               conversion_factor: 1,
               grn_no: null,
-              item_group_id: null
+              item_group_id: null,
+              item_category: null
             });
           }
 
@@ -436,85 +466,83 @@ const updatePosDetail = ($this, e) => {
 };
 
 //Calculate Row Detail
-const calculateAmount = ($this, row, context, ctrl, e) => {
+const calculateAmount = ($this, row, ctrl, e) => {
   debugger;
   e = e || ctrl;
+  if (e.target.value !== e.target.oldvalue) {
+    let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+    debugger;
+    row[e.target.name] = parseFloat(e.target.value);
+    let inputParam = [
+      {
+        hims_d_services_id: row.service_id,
+        vat_applicable: "Y",
+        unit_cost: row.unit_cost,
+        pharmacy_item: "Y",
+        quantity: row.quantity,
+        discount_amount:
+          e.target.name === "discount_percentage" ? 0 : row.discount_amount,
+        discount_percentage:
+          e.target.name === "discount_amount" ? 0 : row.discount_percentage,
 
-  let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
-  debugger;
-  row[e.target.name] = parseFloat(e.target.value);
-  let inputParam = [
-    {
-      hims_d_services_id: row.service_id,
-      vat_applicable: "Y",
-      unit_cost: row.unit_cost,
-      pharmacy_item: "Y",
-      quantity: row.quantity,
-      discount_amout:
-        e.target.name === "discount_percentage" ? 0 : row.discount_amout,
-      discount_percentage:
-        e.target.name === "discount_amout" ? 0 : row.discount_percentage,
-
-      insured: $this.state.insured,
-      primary_insurance_provider_id: $this.state.insurance_provider_id,
-      primary_network_office_id: $this.state.hims_d_insurance_network_office_id,
-      primary_network_id: $this.state.network_id,
-      sec_insured: $this.state.sec_insured,
-      secondary_insurance_provider_id:
-        $this.state.secondary_insurance_provider_id,
-      secondary_network_id: $this.state.secondary_network_id,
-      secondary_network_office_id: $this.state.secondary_network_office_id
-    }
-  ];
-
-  $this.props.generateBill({
-    uri: "/billing/getBillDetails",
-    method: "POST",
-    data: inputParam,
-    redux: {
-      type: "BILL_GEN_GET_DATA",
-      mappingName: "xxx"
-    },
-    afterSuccess: data => {
-      debugger;
-      data.billdetails[0].extended_cost = data.billdetails[0].gross_amount;
-      data.billdetails[0].net_extended_cost = data.billdetails[0].net_amout;
-
-      data.billdetails[0].item_id = row.item_id;
-      data.billdetails[0].item_category = row.item_category;
-      data.billdetails[0].expiry_date = row.expiry_date;
-      data.billdetails[0].batchno = row.batchno;
-      data.billdetails[0].uom_id = row.uom_id;
-      extend(row, data.billdetails[0]);
-      for (let i = 0; i < pharmacy_stock_detail.length; i++) {
-        if (pharmacy_stock_detail[i].service_type_id === row.service_type_id) {
-          pharmacy_stock_detail[i] = row;
-        }
+        insured: $this.state.insured,
+        primary_insurance_provider_id: $this.state.insurance_provider_id,
+        primary_network_office_id:
+          $this.state.hims_d_insurance_network_office_id,
+        primary_network_id: $this.state.network_id,
+        sec_insured: $this.state.sec_insured,
+        secondary_insurance_provider_id:
+          $this.state.secondary_insurance_provider_id,
+        secondary_network_id: $this.state.secondary_network_id,
+        secondary_network_office_id: $this.state.secondary_network_office_id
       }
-      $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
-    }
-  });
+    ];
+
+    $this.props.generateBill({
+      uri: "/billing/getBillDetails",
+      method: "POST",
+      data: inputParam,
+      redux: {
+        type: "BILL_GEN_GET_DATA",
+        mappingName: "xxx"
+      },
+      afterSuccess: data => {
+        debugger;
+        data.billdetails[0].extended_cost = data.billdetails[0].gross_amount;
+        data.billdetails[0].net_extended_cost = data.billdetails[0].net_amout;
+
+        data.billdetails[0].item_id = row.item_id;
+        data.billdetails[0].item_category = row.item_category;
+        data.billdetails[0].expiry_date = row.expiry_date;
+        data.billdetails[0].batchno = row.batchno;
+        data.billdetails[0].uom_id = row.uom_id;
+        extend(row, data.billdetails[0]);
+        for (let i = 0; i < pharmacy_stock_detail.length; i++) {
+          if (
+            pharmacy_stock_detail[i].service_type_id === row.service_type_id
+          ) {
+            pharmacy_stock_detail[i] = row;
+          }
+        }
+        $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
+      }
+    });
+  }
 };
 
 const adjustadvance = ($this, context, ctrl, e) => {
   e = e || ctrl;
 
   if (e.target.value > $this.state.advance_amount) {
-    successfulMessage({
-      message:
+    swalMessage({
+      title:
         "Invalid Input. Adjusted amount cannot be greater than Advance amount",
-      title: "Warning",
-      icon: "warning"
+      type: "warning"
     });
   } else {
-    $this.setState(
-      {
-        [e.target.name]: e.target.value
-      },
-      () => {
-        PosheaderCalculation($this, context);
-      }
-    );
+    $this.setState({
+      [e.target.name]: e.target.value
+    });
 
     if (context != null) {
       context.updateState({
@@ -524,23 +552,20 @@ const adjustadvance = ($this, context, ctrl, e) => {
   }
 };
 
-const PosheaderCalculation = ($this, context) => {
+const PosheaderCalculation = ($this, e) => {
   debugger;
-  var intervalId;
-  let ItemInput = {
-    isReceipt: false,
-    intCalculateall: false,
-    sheet_discount_percentage: parseFloat(
-      $this.state.sheet_discount_percentage
-    ),
-    sheet_discount_amount: parseFloat($this.state.sheet_discount_amount),
-    advance_adjust: parseFloat($this.state.advance_adjust),
-    gross_total: parseFloat($this.state.gross_total)
-  };
+  if (e.target.value !== e.target.oldvalue) {
+    let ItemInput = {
+      isReceipt: false,
+      intCalculateall: false,
+      sheet_discount_percentage: parseFloat(
+        $this.state.sheet_discount_percentage
+      ),
+      sheet_discount_amount: parseFloat($this.state.sheet_discount_amount),
+      advance_adjust: parseFloat($this.state.advance_adjust),
+      gross_total: parseFloat($this.state.gross_total)
+    };
 
-  clearInterval(intervalId);
-
-  intervalId = setInterval(() => {
     $this.props.PosHeaderCalculations({
       uri: "/billing/billingCalculations",
       method: "POST",
@@ -550,11 +575,10 @@ const PosheaderCalculation = ($this, context) => {
         mappingName: "posheader"
       }
     });
-    clearInterval(intervalId);
-  }, 1000);
+  }
 };
 
-const dateFormater = ({ $this, value }) => {
+const dateFormater = ($this, value) => {
   if (value !== null) {
     return moment(value).format(Options.dateFormat);
   }
@@ -562,23 +586,18 @@ const dateFormater = ({ $this, value }) => {
 
 const ShowItemBatch = ($this, e) => {
   let rowSelected = {};
-  // let saveupdate = false,
-  //   btnupdate = true;
-  // if (
-  //   e.hims_d_insurance_network_id !== undefined &&
-  //   e.hims_d_insurance_network_id !== null
-  // ) {
-  //   rowSelected = e;
-  //   saveupdate = true;
-  //   btnupdate = false;
-  //   // addNewNetwork(this, this);
-  // }
+
   $this.setState({
     ...$this.state,
     selectBatch: !$this.state.selectBatch
-
-    // ...rowSelected
   });
+};
+
+const onchangegridcol = ($this, row, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  row[name] = value;
+  row.update();
 };
 
 export {
@@ -593,5 +612,7 @@ export {
   calculateAmount,
   adjustadvance,
   dateFormater,
-  ShowItemBatch
+  ShowItemBatch,
+  onchangegridcol,
+  PosheaderCalculation
 };

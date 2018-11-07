@@ -64,6 +64,13 @@ let algaehSearchConfig = searchName => {
         orderBy: "hims_f_pharmacy_pos_header_id desc"
       },
       {
+        searchName: "POSNOReturn",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS * from hims_f_pharmacy_pos_header\
+          where record_status ='A' and posted='Y'",
+        orderBy: "hims_f_pharmacy_pos_header_id desc"
+      },
+      {
         searchName: "REQEntry",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS * from hims_f_pharamcy_material_header",

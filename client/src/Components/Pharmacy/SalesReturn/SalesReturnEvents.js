@@ -140,7 +140,7 @@ const POSSearch = ($this, e) => {
     searchGrid: {
       columns: spotlightSearch.pointofsaleEntry.POSEntry
     },
-    searchName: "POSEntry",
+    searchName: "POSNOReturn",
     uri: "/gloabelSearch/get",
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);

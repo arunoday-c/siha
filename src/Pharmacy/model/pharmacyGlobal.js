@@ -1,12 +1,9 @@
 "use strict";
 import extend from "extend";
-import {
-  whereCondition,
-  releaseDBConnection
-} from "../../utils";
+import { whereCondition, releaseDBConnection } from "../../utils";
 
 import httpStatus from "../../utils/httpStatus";
-import {  debugLog } from "../../utils/logging";
+import { debugLog } from "../../utils/logging";
 
 //created by irfan: to get Uom Location Stock
 let getUomLocationStock = (req, res, next) => {
@@ -175,9 +172,60 @@ let getItemLocationStock = (req, res, next) => {
   }
 };
 
+//created by Nowshad: to get User Wise Location Permission
+let getUserLocationPermission = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    // let input = extend({}, req.query);
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "SELECT hims_m_location_permission_id,user_id, location_id,L.location_description from \
+        hims_m_location_permission LP,hims_d_pharmacy_location L where LP.record_status='A' and\
+         L.record_status='A' and LP.location_id=L.hims_d_pharmacy_location_id  and allow='Y' and user_id=?",
+        [req.userIdentity.algaeh_d_app_user_id],
+        (error, result) => {
+                  
+          if (error) {
+            next(error);
+            releaseDBConnection(db, connection);
+          }
+        
+        if(result.length<1){
+          connection.query(
+            "select  hims_d_pharmacy_location_id, location_description, location_status, location_type,\
+            allow_pos from hims_d_pharmacy_location where record_status='A'",  
+            (error, resultLoctaion) => {     
+              releaseDBConnection(db, connection);         
+              if (error) {
+                next(error);
+                }
+              //ppppppppp
+              req.records = resultLoctaion;
+              next();
+            });
+
+        }else{
+          releaseDBConnection(db, connection);
+                  req.records = result;
+                  next();
+        }
+     }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getUomLocationStock,
   getVisitPrescriptionDetails,
   getItemMoment,
-  getItemLocationStock
+  getItemLocationStock,
+  getUserLocationPermission
 };

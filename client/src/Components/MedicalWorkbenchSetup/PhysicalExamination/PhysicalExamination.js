@@ -55,7 +55,7 @@ class PhysicalExamination extends Component {
               marginRight: "auto"
             }}
           >
-            <AlgaehOptions
+            {/* <AlgaehOptions
               div={{ className: "col" }}
               optionsType="radio"
               group={{
@@ -67,7 +67,7 @@ class PhysicalExamination extends Component {
                 ]
                 //events: { onChange: this.changeStatus.bind(this) }
               }}
-            />
+            /> */}
           </div>
 
           {/* Header Grid Start */}

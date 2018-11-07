@@ -230,7 +230,6 @@ class Counter extends Component {
 
               <div className="col-lg-3 margin-top-15">
                 <button
-                  type="submit"
                   onClick={this.addCounter.bind(this)}
                   className="btn btn-primary"
                 >

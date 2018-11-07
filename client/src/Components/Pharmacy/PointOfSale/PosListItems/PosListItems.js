@@ -24,7 +24,9 @@ import {
   adjustadvance,
   UomchangeTexts,
   dateFormater,
-  ShowItemBatch
+  ShowItemBatch,
+  onchangegridcol,
+  PosheaderCalculation
 } from "./PosListItemsEvents";
 import ReciptForm from "./ReciptDetails/AddReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -164,7 +166,7 @@ class PosListItems extends Component {
                               data: this.state.ItemUOM
                             },
 
-                            onChange: UomchangeTexts.bind(this, this)
+                            onChange: UomchangeTexts.bind(this, this, context)
                           }}
                         />
                         <AlagehFormGroup
@@ -304,27 +306,24 @@ class PosListItems extends Component {
                                   );
                                 },
                                 editorTemplate: row => {
+                                  let display =
+                                    this.props.positemlist === undefined
+                                      ? []
+                                      : this.props.positemlist.filter(
+                                          f =>
+                                            f.hims_d_item_master_id ===
+                                            row.item_id
+                                        );
+
                                   return (
-                                    <AlagehAutoComplete
-                                      div={{}}
-                                      selector={{
-                                        name: "item_id",
-                                        className: "select-fld",
-                                        value: row.item_id,
-                                        dataSource: {
-                                          textField: "item_description",
-                                          valueField: "hims_d_item_master_id",
-                                          data: this.props.positemlist
-                                        },
-                                        onChange: null,
-                                        others: {
-                                          disabled: true
-                                        }
-                                      }}
-                                    />
+                                    <span>
+                                      {display !== undefined &&
+                                      display.length !== 0
+                                        ? display[0].item_description
+                                        : ""}
+                                    </span>
                                   );
-                                },
-                                disabled: true
+                                }
                               },
 
                               {
@@ -353,27 +352,23 @@ class PosListItems extends Component {
                                   );
                                 },
                                 editorTemplate: row => {
+                                  let display =
+                                    this.props.itemcategory === undefined
+                                      ? []
+                                      : this.props.itemcategory.filter(
+                                          f =>
+                                            f.hims_d_item_category_id ===
+                                            row.item_category
+                                        );
+
                                   return (
-                                    <AlagehAutoComplete
-                                      div={{}}
-                                      selector={{
-                                        name: "item_category",
-                                        className: "select-fld",
-                                        value: row.item_category,
-                                        dataSource: {
-                                          textField: "category_desc",
-                                          valueField: "hims_d_item_category_id",
-                                          data: this.props.itemcategory
-                                        },
-                                        onChange: null,
-                                        others: {
-                                          disabled: true
-                                        }
-                                      }}
-                                    />
+                                    <span>
+                                      {display !== null && display.length !== 0
+                                        ? display[0].category_desc
+                                        : ""}
+                                    </span>
                                   );
-                                },
-                                disabled: true
+                                }
                               },
 
                               {
@@ -384,6 +379,14 @@ class PosListItems extends Component {
                                   />
                                 ),
                                 displayTemplate: row => {
+                                  debugger;
+                                  return (
+                                    <span>
+                                      {dateFormater(this, row.expiry_date)}
+                                    </span>
+                                  );
+                                },
+                                editorTemplate: row => {
                                   return (
                                     <span>
                                       {dateFormater(this, row.expiry_date)}
@@ -425,32 +428,23 @@ class PosListItems extends Component {
                                   );
                                 },
                                 editorTemplate: row => {
+                                  let display =
+                                    this.props.itemuom === undefined
+                                      ? []
+                                      : this.props.itemuom.filter(
+                                          f =>
+                                            f.hims_d_pharmacy_uom_id ===
+                                            row.uom_id
+                                        );
+
                                   return (
-                                    <AlagehAutoComplete
-                                      div={{}}
-                                      selector={{
-                                        name: "item_category",
-                                        className: "select-fld",
-                                        value: row.item_category,
-                                        // dataSource: {
-                                        //   textField: "uom_description",
-                                        //   valueField: "uom_id",
-                                        //   data: this.state.ItemUOM
-                                        // },
-                                        dataSource: {
-                                          textField: "uom_description",
-                                          valueField: "hims_d_pharmacy_uom_id",
-                                          data: this.state.itemuom
-                                        },
-                                        onChange: null,
-                                        others: {
-                                          disabled: true
-                                        }
-                                      }}
-                                    />
+                                    <span>
+                                      {display !== null && display.length !== 0
+                                        ? display[0].uom_description
+                                        : ""}
+                                    </span>
                                   );
-                                },
-                                disabled: true
+                                }
                               },
                               {
                                 fieldName: "unit_cost",
@@ -477,12 +471,21 @@ class PosListItems extends Component {
                                         className: "txt-fld",
                                         name: "quantity",
                                         events: {
-                                          onChange: calculateAmount.bind(
+                                          onChange: onchangegridcol.bind(
                                             this,
                                             this,
-                                            row,
-                                            context
+                                            row
                                           )
+                                        },
+                                        others: {
+                                          onBlur: calculateAmount.bind(
+                                            this,
+                                            this,
+                                            row
+                                          ),
+                                          onFocus: e => {
+                                            e.target.oldvalue = e.target.value;
+                                          }
                                         }
                                       }}
                                     />
@@ -504,7 +507,7 @@ class PosListItems extends Component {
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "discount_percentage"
+                                      forceLabel: "discount %"
                                     }}
                                   />
                                 ),
@@ -518,12 +521,21 @@ class PosListItems extends Component {
                                         className: "txt-fld",
                                         name: "discount_percentage",
                                         events: {
-                                          onChange: calculateAmount.bind(
+                                          onChange: onchangegridcol.bind(
                                             this,
                                             this,
-                                            row,
-                                            context
+                                            row
                                           )
+                                        },
+                                        others: {
+                                          onBlur: calculateAmount.bind(
+                                            this,
+                                            this,
+                                            row
+                                          ),
+                                          onFocus: e => {
+                                            e.target.oldvalue = e.target.value;
+                                          }
                                         }
                                       }}
                                     />
@@ -534,7 +546,7 @@ class PosListItems extends Component {
                                 fieldName: "discount_amout",
                                 label: (
                                   <AlgaehLabel
-                                    label={{ forceLabel: "discount_amout" }}
+                                    label={{ forceLabel: "discount Amount" }}
                                   />
                                 ),
                                 editorTemplate: row => {
@@ -543,16 +555,25 @@ class PosListItems extends Component {
                                       div={{}}
                                       textBox={{
                                         decimal: { allowNegative: false },
-                                        value: row.discount_amout,
+                                        value: row.discount_amount,
                                         className: "txt-fld",
-                                        name: "discount_amout",
+                                        name: "discount_amount",
                                         events: {
-                                          onChange: calculateAmount.bind(
+                                          onChange: onchangegridcol.bind(
                                             this,
                                             this,
-                                            row,
-                                            context
+                                            row
                                           )
+                                        },
+                                        others: {
+                                          onBlur: calculateAmount.bind(
+                                            this,
+                                            this,
+                                            row
+                                          ),
+                                          onFocus: e => {
+                                            e.target.oldvalue = e.target.value;
+                                          }
                                         }
                                       }}
                                     />
@@ -855,6 +876,14 @@ class PosListItems extends Component {
 
                             events: {
                               onChange: adjustadvance.bind(this, this, context)
+                            },
+                            others: {
+                              disabled: !this.state.Cashchecked,
+                              placeholder: "0.00",
+                              onBlur: PosheaderCalculation.bind(this, this),
+                              onFocus: e => {
+                                e.target.oldvalue = e.target.value;
+                              }
                             }
                           }}
                         />
@@ -872,6 +901,14 @@ class PosListItems extends Component {
 
                             events: {
                               onChange: discounthandle.bind(this, this, context)
+                            },
+                            others: {
+                              disabled: !this.state.Cashchecked,
+                              placeholder: "0.00",
+                              onBlur: PosheaderCalculation.bind(this, this),
+                              onFocus: e => {
+                                e.target.oldvalue = e.target.value;
+                              }
                             }
                           }}
                         />
@@ -889,6 +926,14 @@ class PosListItems extends Component {
 
                             events: {
                               onChange: discounthandle.bind(this, this, context)
+                            },
+                            others: {
+                              disabled: !this.state.Cashchecked,
+                              placeholder: "0.00",
+                              onBlur: PosheaderCalculation.bind(this, this),
+                              onFocus: e => {
+                                e.target.oldvalue = e.target.value;
+                              }
                             }
                           }}
                         />

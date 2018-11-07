@@ -141,8 +141,13 @@ const SavePosEnrty = $this => {
     onSuccess: response => {
       debugger;
       if (response.data.success === true) {
+        debugger;
         $this.setState({
           pos_number: response.data.records.pos_number,
+          hims_f_pharmacy_pos_header_id:
+            response.data.records.hims_f_pharmacy_pos_header_id,
+          year: response.data.records.year,
+          period: response.data.records.period,
           saveEnable: true,
           postEnable: false
         });

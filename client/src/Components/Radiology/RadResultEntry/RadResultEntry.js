@@ -108,7 +108,7 @@ class RadResultEntry extends Component {
                 </div>
                 <div className="patientDemographic">
                   <span>
-                    DOB:
+                    DOB:{" "}
                     <b>
                       {moment(this.state.date_of_birth).format(
                         Options.dateFormat
@@ -124,7 +124,7 @@ class RadResultEntry extends Component {
                     Ref by: <b>{this.state.ordered_by}</b>
                   </span>
                   <span>
-                    Scheduled Date:
+                    Scheduled Date:{" "}
                     <b>
                       {moment(this.state.scheduled_date_time).format(
                         Options.dateFormat
@@ -350,34 +350,31 @@ class RadResultEntry extends Component {
                       />
                     </div>
 
-                    <div className="row form-row-gap">
-                      <div className="form-row-gap">
-                        <div className="col-lg-12 editor">
-                          <RichTextEditor
-                            value={this.state.template_html}
-                            onChange={rtehandle.bind(this, this)}
-                            modules={{
-                              toolbar: [
-                                [{ header: [1, 2, false] }],
-                                [
-                                  "bold",
-                                  "italic",
-                                  "underline",
-                                  "strike",
-                                  "blockquote",
-                                  { list: "ordered" },
-                                  { list: "bullet" },
-                                  { indent: "-1" },
-                                  { indent: "+1" },
-                                  "image",
-                                  { color: [] },
-                                  { background: [] }
-                                ]
+                    <div className="row">
+                      <div className="col-lg-12 editor">
+                        <RichTextEditor
+                          value={this.state.template_html}
+                          onChange={rtehandle.bind(this, this)}
+                          modules={{
+                            toolbar: [
+                              [{ header: [1, 2, false] }],
+                              [
+                                "bold",
+                                "italic",
+                                "underline",
+                                "strike",
+                                "blockquote",
+                                { list: "ordered" },
+                                { list: "bullet" },
+                                { indent: "-1" },
+                                { indent: "+1" },
+                                "image",
+                                { color: [] },
+                                { background: [] }
                               ]
-                            }}
-                            style={{ minHeight: "90vh" }}
-                          />
-                        </div>
+                            ]
+                          }}
+                        />
                       </div>
                     </div>
                   </div>
@@ -385,23 +382,29 @@ class RadResultEntry extends Component {
               </div>
             </div>
             <div className="popupFooter">
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={onvalidate.bind(this, this)}
-                disabled={this.state.status === "RA" ? true : false}
-              >
-                Validate
-              </button>
-              <button
-                type="button"
-                className="btn btn-default"
-                onClick={e => {
-                  this.onClose(e);
-                }}
-              >
-                Cancel
-              </button>
+              <div className="col-lg-12">
+                <div className="row">
+                  <div className="col-lg-12">
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={onvalidate.bind(this, this)}
+                      disabled={this.state.status === "RA" ? true : false}
+                    >
+                      Validate
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-default"
+                      onClick={e => {
+                        this.onClose(e);
+                      }}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </Modal>

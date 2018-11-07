@@ -7,13 +7,14 @@ import {
 } from "../../utils";
 import extend from "extend";
 import httpStatus from "../../utils/httpStatus";
-import {  debugFunction, debugLog } from "../../utils/logging";
+import { debugFunction, debugLog } from "../../utils/logging";
 import moment from "moment";
 import { getBillDetailsFunctionality } from "../../model/billing";
 import { updateIntoItemLocation } from "./commonFunction";
 import Promise from "bluebird";
 
 import { LINQ } from "node-linq";
+import { exception } from "winston";
 
 //created by Nowshad: to Insert POS Entry
 let addPosEntry = (req, res, next) => {
@@ -158,7 +159,7 @@ let addPosEntry = (req, res, next) => {
                   "tax_inclusive",
                   "unit_cost",
                   "extended_cost",
-                  "discount_percent",
+                  "discount_percentage",
                   "discount_amount",
                   "net_extended_cost",
                   "copay_percent",
@@ -204,7 +205,12 @@ let addPosEntry = (req, res, next) => {
                         });
                       }
                       releaseDBConnection(db, connection);
-                      req.records = { pos_number: documentCode };
+                      req.records = {
+                        pos_number: documentCode,
+                        hims_f_pharmacy_pos_header_id: headerResult.insertId,
+                        year: year,
+                        period: period
+                      };
                       next();
                     });
                   }
@@ -352,17 +358,25 @@ let updatePosEntry = (req, res, next) => {
               req.options = {
                 db: connection,
                 onFailure: error => {
+                  debugLog("error: ", error);
                   reject(error);
                 },
                 onSuccess: result => {
+                  debugLog("Success: ", result);
                   resolve(result);
                 }
               };
-
+              // const error = new Error();
+              // error.message = "Test";
+              // reject(error);
               updateIntoItemLocation(req, res, next);
             })
 
               .then(records => {
+                debugLog("records: ", records);
+                if (records == null) {
+                  throw new exception();
+                }
                 connection.commit(error => {
                   if (error) {
                     releaseDBConnection(db, connection);
@@ -374,6 +388,7 @@ let updatePosEntry = (req, res, next) => {
                 });
               })
               .catch(error => {
+                debugLog("caught1: ", error);
                 connection.rollback(() => {
                   releaseDBConnection(db, connection);
                   next(error);
@@ -381,6 +396,7 @@ let updatePosEntry = (req, res, next) => {
               });
           })
           .catch(error => {
+            debugLog("caught2: ", error);
             connection.rollback(() => {
               releaseDBConnection(db, connection);
               next(error);

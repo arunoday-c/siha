@@ -105,7 +105,10 @@ class HospitalServices extends PureComponent {
               </div>
 
               <div className="popupInner">
-                <div className="col-12 popRightDiv">
+                <div
+                  className="col-12 popRightDiv"
+                  style={{ minHeight: "60vh" }}
+                >
                   <div className="row">
                     <AlagehFormGroup
                       div={{ className: "col-lg-3" }}
@@ -124,7 +127,7 @@ class HospitalServices extends PureComponent {
                     />
 
                     <AlagehFormGroup
-                      div={{ className: "col-lg-3" }}
+                      div={{ className: "col" }}
                       label={{
                         fieldName: "service_name",
                         isImp: true
@@ -140,7 +143,7 @@ class HospitalServices extends PureComponent {
                     />
 
                     <AlagehFormGroup
-                      div={{ className: "col-lg-3" }}
+                      div={{ className: "col" }}
                       label={{
                         fieldName: "cpt_code",
                         isImp: true
@@ -179,16 +182,18 @@ class HospitalServices extends PureComponent {
                       }}
                     /> */}
 
-                    <div className="actions">
-                      <a
-                        href="javascript:;"
-                        className="btn btn-primary btn-circle active"
+                    <div className="col">
+                      <i
+                        className="fas fa-search"
                         onClick={CptCodesSearch.bind(this, this)}
-                      >
-                        <i className="fas fa-plus" />
-                      </a>
+                        style={{ marginTop: 25, fontSize: "1.4rem" }}
+                      />
                     </div>
-
+                  </div>
+                  <div
+                    className="row"
+                    style={{ marginTop: 10, marginBottom: 10 }}
+                  >
                     <AlagehAutoComplete
                       div={{ className: "col-lg-3" }}
                       label={{
@@ -213,7 +218,7 @@ class HospitalServices extends PureComponent {
                   </div>
                   <div className="row">
                     <AlagehAutoComplete
-                      div={{ className: "col-lg-3" }}
+                      div={{ className: "col" }}
                       label={{
                         fieldName: "hospital_id",
                         isImp: true
@@ -235,7 +240,7 @@ class HospitalServices extends PureComponent {
                     />
 
                     <AlagehAutoComplete
-                      div={{ className: "col-lg-3" }}
+                      div={{ className: "col" }}
                       label={{
                         fieldName: "service_type_id",
                         isImp: true
@@ -256,7 +261,7 @@ class HospitalServices extends PureComponent {
                       }}
                     />
                     <AlagehFormGroup
-                      div={{ className: "col-lg-3" }}
+                      div={{ className: "col" }}
                       label={{
                         fieldName: "standard_fee",
                         isImp: true
@@ -272,7 +277,7 @@ class HospitalServices extends PureComponent {
                       }}
                     />
 
-                    <div className="col-lg-3">
+                    <div className="col">
                       <div className="row">
                         <div
                           className="col-lg-5 customCheckbox"

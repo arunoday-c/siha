@@ -83,7 +83,7 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  height: 66vh;
+  height: 65.5vh;
   overflow: auto; }
   .doctor_workbench .opPatientList .opList .noPatientDiv {
     margin-top: 15%;
@@ -152,7 +152,7 @@
     cursor: pointer; }
 
 .doctor_workbench #encounter_table .ReactTable {
-  max-height: 66vh !important; }
+  max-height: 65.5vh !important; }
 
 .doctor_workbench .bottom-layout {
   padding: 5px; }
