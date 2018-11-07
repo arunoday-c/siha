@@ -7,7 +7,7 @@ import {
 } from "../../utils";
 import extend from "extend";
 import httpStatus from "../../utils/httpStatus";
-import {  debugLog } from "../../utils/logging";
+import { debugLog } from "../../utils/logging";
 import moment from "moment";
 import { LINQ } from "node-linq";
 
@@ -144,7 +144,12 @@ let addPharmacyInitialStock = (req, res, next) => {
                         });
                       }
                       releaseDBConnection(db, connection);
-                      req.records = { document_number: documentCode };
+                      req.records = {
+                        document_number: documentCode,
+                        hims_f_pharmacy_stock_header_id: headerResult.insertId,
+                        year: year,
+                        period: period
+                      };
                       next();
                     });
                   }

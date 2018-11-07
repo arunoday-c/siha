@@ -49,7 +49,7 @@ class InitialStock extends Component {
       expiry_date: null,
       quantity: 0,
       unit_cost: 0,
-      initial_stock_date: new Date(),
+      docdate: new Date(),
       SnackbarOpen: false,
       MandatoryMsg: "",
       uom_id: null,
@@ -171,10 +171,8 @@ class InitialStock extends Component {
                     }}
                   />
                   <h6>
-                    {this.state.initial_stock_date
-                      ? moment(this.state.initial_stock_date).format(
-                          Options.dateFormat
-                        )
+                    {this.state.docdate
+                      ? moment(this.state.docdate).format(Options.dateFormat)
                       : Options.dateFormat}
                   </h6>
                 </div>

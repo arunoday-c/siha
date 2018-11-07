@@ -96,7 +96,7 @@ class RequisitionList extends Component {
 
                 <AlagehAutoComplete
                   div={{ className: "col-lg-4" }}
-                  label={{ forceLabel: "Location" }}
+                  label={{ forceLabel: "Requested Location" }}
                   selector={{
                     name: "to_location_id",
                     className: "select-fld",

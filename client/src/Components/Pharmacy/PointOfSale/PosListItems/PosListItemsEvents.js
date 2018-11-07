@@ -154,18 +154,21 @@ const itemchangeText = ($this, context, e) => {
             });
           }
 
-          // $this.props.getItemLocationStock({
-          //   uri: "/pharmacyGlobal/getItemLocationStock",
-          //   method: "GET",
-          //   data: {
-          //     location_id: $this.state.location_id,
-          //     item_id: value
-          //   },
-          //   redux: {
-          //     type: "ITEMS_BATCH_GET_DATA",
-          //     mappingName: "itemBatch"
-          //   }
-          // });
+          $this.props.getItemLocationStock({
+            uri: "/pharmacyGlobal/getItemLocationStock",
+            method: "GET",
+            data: {
+              location_id: $this.state.location_id,
+              item_id: value
+            },
+            redux: {
+              type: "ITEMS_BATCH_GET_DATA",
+              mappingName: "itemBatch"
+            },
+            afterSuccess: data => {
+              debugger;
+            }
+          });
         } else {
           swalMessage({
             title: "Invalid Input. No Stock Avaiable for selected Item.",
@@ -585,11 +588,23 @@ const dateFormater = ($this, value) => {
 };
 
 const ShowItemBatch = ($this, e) => {
-  let rowSelected = {};
-
   $this.setState({
     ...$this.state,
     selectBatch: !$this.state.selectBatch
+  });
+};
+
+const CloseItemBatch = ($this, e) => {
+  debugger;
+
+  $this.setState({
+    ...$this.state,
+    selectBatch: !$this.state.selectBatch,
+    batchno: e.selected === true ? e.batchno : $this.state.batchno,
+    expiry_date:
+      e.selected === true ? moment(e.expirydt)._d : $this.state.expiry_date,
+
+    grn_no: e.selected === true ? e.grnno : $this.state.grn_no
   });
 };
 
@@ -613,6 +628,7 @@ export {
   adjustadvance,
   dateFormater,
   ShowItemBatch,
+  CloseItemBatch,
   onchangegridcol,
   PosheaderCalculation
 };
