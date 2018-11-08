@@ -4,7 +4,14 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import "./Dental.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
-
+import {
+  AlgaehDataGrid,
+  AlgaehDateHandler,
+  AlagehAutoComplete,
+  AlagehFormGroup,
+  AlgaehLabel,
+  Button
+} from "../../Wrapper/algaehWrapper";
 class Dental extends Component {
   constructor(props) {
     super(props);
@@ -26,6 +33,53 @@ class Dental extends Component {
     debugger;
     return (
       <div id="dentalTreatment">
+        <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+          {/* <div className="portlet-title">
+            <div className="caption">
+              <h3 className="caption-subject">Dental Chart</h3>
+            </div>
+            <div className="actions"> </div>
+          </div> */}
+          <div className="portlet-body">
+            <div className="row">
+              <AlagehFormGroup
+                div={{ className: "col-lg-4" }}
+                label={{
+                  forceLabel: "Treatment Plan",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "",
+                  value: "",
+                  events: {
+                    onChange: null
+                  },
+                  others: {
+                    placeholder: "Enter Treatment Name"
+                  }
+                }}
+              />
+
+              <AlagehAutoComplete
+                div={{ className: "col-lg-3" }}
+                label={{
+                  forceLabel: "Select a Procedure",
+                  isImp: true
+                }}
+                selector={{
+                  name: "dentalProcedure",
+                  className: "select-fld",
+                  value: "",
+                  dataSource: {},
+                  onChange: null,
+                  others: {}
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
         <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
           <div className="portlet-title">
             <div className="caption">
@@ -664,6 +718,23 @@ class Dental extends Component {
               </div>
             </div>
           </div>
+        </div>
+        <div className="row">
+          <div className="col-lg-12 margin-bottom-15">
+            <button className="btn btn-primary" style={{ float: "right" }}>
+              Add to List
+            </button>
+          </div>
+        </div>
+
+        <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+          <div className="portlet-title">
+            <div className="caption">
+              <h3 className="caption-subject">Procedure List</h3>
+            </div>
+            <div className="actions"> </div>
+          </div>
+          <div className="portlet-body">GRID COMES HERE</div>
         </div>
       </div>
     );
