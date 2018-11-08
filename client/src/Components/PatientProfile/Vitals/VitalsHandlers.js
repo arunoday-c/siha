@@ -18,6 +18,8 @@ const getVitalHistory = $this => {
 };
 
 const getFormula = options => {
+  if (options === undefined) return;
+
   if (Window.global["BMI"] === undefined) {
     const _input = config.algaeh_d_formulas.BMI;
     algaehApiCall({
