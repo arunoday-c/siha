@@ -83,6 +83,7 @@ class ResultEntry extends Component {
       newProps.selectedPatient !== undefined &&
       newProps.selectedPatient.open === true
     ) {
+      debugger;
       newProps.selectedPatient.open = false;
       this.setState({ ...this.state, ...newProps.selectedPatient }, () => {
         getAnalytes(this, this);
@@ -110,8 +111,24 @@ class ResultEntry extends Component {
         <Modal open={this.props.open}>
           <div className="algaeh-modal">
             <div className="popupHeader">
-              <h4>Result Entry</h4>
+              <div className="row">
+                <div className="col-lg-8">
+                  <h4>Result Entry</h4>
+                </div>
+                <div className="col-lg-4">
+                  <button
+                    type="button"
+                    className=""
+                    onClick={e => {
+                      this.onClose(e);
+                    }}
+                  >
+                    <i className="fas fa-times-circle" />
+                  </button>
+                </div>
+              </div>
             </div>
+
             <div className="popupInner">
               <div className="col-lg-12">
                 <div className="row">
@@ -177,13 +194,13 @@ class ResultEntry extends Component {
                           forceLabel: "Entered By"
                         }}
                         selector={{
-                          name: "technician_id",
+                          name: "entered_by",
                           className: "select-fld",
-                          value: this.state.technician_id,
+                          value: this.state.entered_by,
                           dataSource: {
                             textField: "user_displayname",
                             valueField: "algaeh_d_app_user_id",
-                            data: this.props.radiologyusers
+                            data: this.props.labiologyusers
                           },
                           onChange: null,
                           others: {
@@ -197,13 +214,13 @@ class ResultEntry extends Component {
                           forceLabel: "Confirmed By"
                         }}
                         selector={{
-                          name: "technician_id",
+                          name: "confirmed_by",
                           className: "select-fld",
-                          value: this.state.technician_id,
+                          value: this.state.confirmed_by,
                           dataSource: {
                             textField: "user_displayname",
                             valueField: "algaeh_d_app_user_id",
-                            data: this.props.radiologyusers
+                            data: this.props.labiologyusers
                           },
                           onChange: null,
                           others: {
@@ -217,13 +234,13 @@ class ResultEntry extends Component {
                           forceLabel: "Validtaed By"
                         }}
                         selector={{
-                          name: "technician_id",
+                          name: "validated_by",
                           className: "select-fld",
-                          value: this.state.technician_id,
+                          value: this.state.validated_by,
                           dataSource: {
                             textField: "user_displayname",
                             valueField: "algaeh_d_app_user_id",
-                            data: this.props.radiologyusers
+                            data: this.props.labiologyusers
                           },
                           onChange: null,
                           others: {
@@ -249,10 +266,10 @@ class ResultEntry extends Component {
                             return row.status === "E"
                               ? "Entered"
                               : row.status === "C"
-                              ? "Confirmed"
-                              : row.status === "V"
-                              ? "Validated"
-                              : "Not Entered";
+                                ? "Confirmed"
+                                : row.status === "V"
+                                  ? "Validated"
+                                  : "Not Entered";
                           }
                         },
                         {
@@ -290,8 +307,8 @@ class ResultEntry extends Component {
                             return row.analyte_type === "QU"
                               ? "Quality"
                               : row.analyte_type === "QN"
-                              ? "Quantity"
-                              : "Text";
+                                ? "Quantity"
+                                : "Text";
                           }
                         },
                         {
@@ -319,6 +336,9 @@ class ResultEntry extends Component {
                                           this,
                                           row
                                         )
+                                      },
+                                      others: {
+                                        placeholder: "Enter Result"
                                       }
                                     }}
                                   />
@@ -470,14 +490,14 @@ class ResultEntry extends Component {
                             return row.critical_type === "N"
                               ? "None"
                               : row.critical_type === "CL"
-                              ? "Critical Low"
-                              : row.critical_type === "CH"
-                              ? "Critical High"
-                              : row.critical_type === "L"
-                              ? "Low"
-                              : row.critical_type === "H"
-                              ? "High"
-                              : null;
+                                ? "Critical Low"
+                                : row.critical_type === "CH"
+                                  ? "Critical High"
+                                  : row.critical_type === "L"
+                                    ? "Low"
+                                    : row.critical_type === "H"
+                                      ? "High"
+                                      : null;
                           }
                         },
                         //TODO
@@ -580,7 +600,7 @@ class ResultEntry extends Component {
                   type="button"
                   className="btn btn-primary"
                   onClick={onReRun.bind(this, this)}
-                  disabled={this.state.status === "V" ? false : true}
+                  disabled={this.state.entered_by !== null ? false : true}
                 >
                   Re-Run
                 </button>
@@ -601,8 +621,8 @@ class ResultEntry extends Component {
                     this.state.status === "C"
                       ? true
                       : this.state.status === "V"
-                      ? true
-                      : false
+                        ? true
+                        : false
                   }
                 >
                   Confirm All

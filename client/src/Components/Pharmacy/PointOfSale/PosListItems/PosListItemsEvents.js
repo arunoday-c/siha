@@ -275,10 +275,10 @@ const AddItems = ($this, context) => {
     debugger;
     let ItemInput = [
       {
-        item_id: $this.state.item_id,
-        item_category: $this.state.item_category_id,
-        item_group_id: $this.state.item_group_id,
-        pharmacy_location_id: $this.state.location_id,
+        // item_id: $this.state.item_id,
+        // item_category: $this.state.item_category_id,
+        // item_group_id: $this.state.item_group_id,
+        // pharmacy_location_id: $this.state.location_id,
 
         insured: $this.state.insured,
         conversion_factor: $this.state.conversion_factor,
@@ -298,7 +298,7 @@ const AddItems = ($this, context) => {
     ];
 
     $this.props.getPrescriptionPOS({
-      uri: "/posEntry/getPrescriptionPOS",
+      uri: "/billing/getBillDetails",
       method: "POST",
       data: ItemInput,
       redux: {
@@ -324,15 +324,16 @@ const AddItems = ($this, context) => {
 
             data.billdetails[0].item_id = $this.state.item_id;
             data.billdetails[0].item_category = $this.state.item_category;
+            data.billdetails[0].item_group_id = $this.state.item_group_id;
             data.billdetails[0].expiry_date = $this.state.expiry_date;
             data.billdetails[0].batchno = $this.state.batchno;
             data.billdetails[0].uom_id = $this.state.uom_id;
             data.billdetails[0].operation = "-";
-            data.billdetails[0].grn_no = data.billdetails[0].grnno;
+            data.billdetails[0].grn_no = $this.state.grn_no;
             data.billdetails[0].service_id = data.billdetails[0].services_id;
             data.billdetails[0].discount_amount =
               data.billdetails[0].discount_amout;
-            // data.billdetails[0].patient_resp = data.billdetails[0].services_id;
+
             existingservices.splice(0, 0, data.billdetails[0]);
           }
 
@@ -615,6 +616,13 @@ const onchangegridcol = ($this, row, e) => {
   row.update();
 };
 
+const ViewInsurance = ($this, e) => {
+  $this.setState({
+    ...$this.state,
+    viewInsurance: !$this.state.viewInsurance
+  });
+};
+
 export {
   discounthandle,
   UomchangeTexts,
@@ -630,5 +638,6 @@ export {
   ShowItemBatch,
   CloseItemBatch,
   onchangegridcol,
-  PosheaderCalculation
+  PosheaderCalculation,
+  ViewInsurance
 };

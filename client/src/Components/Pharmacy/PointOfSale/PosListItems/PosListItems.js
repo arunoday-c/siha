@@ -27,18 +27,21 @@ import {
   ShowItemBatch,
   CloseItemBatch,
   onchangegridcol,
-  PosheaderCalculation
+  PosheaderCalculation,
+  ViewInsurance
 } from "./PosListItemsEvents";
 import ReciptForm from "./ReciptDetails/AddReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import Paper from "@material-ui/core/Paper";
 import ItemBatchs from "../ItemBatchs/ItemBatchs";
+import DisplayInsuranceDetails from "../DisplayInsuranceDetails/DisplayInsuranceDetails";
 class PosListItems extends Component {
   constructor(props) {
     super(props);
     this.state = {
       selectBatch: false,
-      selectBatchButton: true
+      selectBatchButton: true,
+      viewInsurance: false
     };
   }
 
@@ -260,6 +263,18 @@ class PosListItems extends Component {
                           Select Batch
                         </button>
 
+                        <div>
+                          {this.state.case_type === "O" ? null : (
+                            <button
+                              className="btn btn-default"
+                              onClick={ViewInsurance.bind(this, this)}
+                              // disabled={this.state.mode_of_pay === 2 ? false? true}
+                            >
+                              View Insurance
+                            </button>
+                          )}
+                        </div>
+
                         <ItemBatchs
                           show={this.state.selectBatch}
                           onClose={CloseItemBatch.bind(this, this)}
@@ -268,6 +283,12 @@ class PosListItems extends Component {
                             item_id: this.state.item_id,
                             location_id: this.state.location_id
                           }}
+                        />
+
+                        <DisplayInsuranceDetails
+                          show={this.state.viewInsurance}
+                          POSIOputs={this.state}
+                          onClose={ViewInsurance.bind(this, this)}
                         />
                       </div>
                     </div>

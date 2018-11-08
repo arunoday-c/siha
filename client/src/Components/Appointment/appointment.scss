@@ -183,6 +183,13 @@
         width: 120px;
         vertical-align: top;
       }
+      td.highlight-Drop {
+        background: radial-gradient(
+          ellipse at center,
+          rgba(0, 183, 234, 0.1) 0%,
+          rgba(0, 158, 195, 0.5) 100%
+        ); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+      }
       td[colspan]:not([colspan="1"]) {
         width: 240px;
         height: 10px;
@@ -198,7 +205,6 @@
         padding: 5px;
         margin-bottom: 2px;
         position: relative;
-
         .statusClr {
           width: 5px;
           position: absolute;
@@ -208,7 +214,9 @@
           top: 0;
         }
       }
-
+      .dynPatient:hover span {
+        text-decoration: underline;
+      }
       .patientStdbyCount {
         display: block;
         text-align: center;

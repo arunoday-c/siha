@@ -1,5 +1,4 @@
 .hptl-phase1-item-moment-enquiry-form {
-  background: #ffff;
   border-radius: 5px;
   margin-top: 12vh;
   min-height: 80vh;
@@ -20,5 +19,10 @@
   .go-button {
     cursor: pointer;
     margin-top: 2.5vh;
+  }
+}
+#initialStock_Cntr {
+  .ReactTable {
+    max-height: 50vh !important;
   }
 }

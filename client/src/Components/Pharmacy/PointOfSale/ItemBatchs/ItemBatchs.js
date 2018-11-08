@@ -2,7 +2,7 @@ import React, { PureComponent } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { successfulMessage } from "../../../../utils/GlobalFunctions";
+
 import "./ItemBatchs.css";
 import "./../../../../styles/site.css";
 import {

@@ -11,11 +11,13 @@ const texthandle = ($this, e) => {
 };
 
 const UpdateLabOrder = ($this, value, status) => {
+  debugger;
   algaehApiCall({
     uri: "/laboratory/updateLabResultEntry",
     data: value,
     method: "PUT",
     onSuccess: response => {
+      debugger;
       if (response.data.success === true) {
         swalMessage({
           type: "success",
@@ -27,7 +29,17 @@ const UpdateLabOrder = ($this, value, status) => {
             value.splice(k, 1);
           }
         }
-        $this.setState({ test_analytes: value, status: status });
+
+        $this.setState({
+          test_analytes: value,
+          status: status,
+          entered_by:
+            response.data.records.entered_by || $this.state.entered_by,
+          confirmed_by:
+            response.data.records.confirmed_by || $this.state.confirmed_by,
+          validated_by:
+            response.data.records.validated_by || $this.state.validated_by
+        });
       }
     },
     onFailure: error => {
@@ -164,6 +176,7 @@ const onchangegridcol = ($this, row, e) => {
 };
 
 const resultEntryUpdate = $this => {
+  debugger;
   let test_analytes = $this.state.test_analytes;
   let enterResult = true;
   let enterRemarks = true;
@@ -241,6 +254,7 @@ const onconfirm = $this => {
 };
 
 const onReRun = $this => {
+  debugger;
   let test_analytes = $this.state.test_analytes;
   let success = true;
   let runtype = [];
@@ -250,13 +264,13 @@ const onReRun = $this => {
       runtype = { run_type: "1" };
     } else if ($this.state.run_type === "1") {
       test_analytes[k].run2 = test_analytes[k].result;
-      runtype = { run_type: "1" };
+      runtype = { run_type: "2" };
     } else if ($this.state.run_type === "2") {
       test_analytes[k].run3 = test_analytes[k].result;
-      runtype = { run_type: "1" };
+      runtype = { run_type: "3" };
     }
 
-    test_analytes[k].result = null;
+    test_analytes[k].result = "";
     test_analytes[k].confirm = "N";
     test_analytes[k].validate = "N";
     test_analytes[k].status = "N";

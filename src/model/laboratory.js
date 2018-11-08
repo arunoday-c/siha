@@ -64,7 +64,7 @@ let getLabOrderedServices = (req, res, next) => {
         next(error);
       }
       db.query(
-        "select hims_f_lab_order_id,LO.patient_id, visit_id,V.visit_code, provider_id, E.full_name as doctor_name, billed, service_id,S.service_code,S.service_name,LO.status,\
+        "select hims_f_lab_order_id,LO.patient_id, entered_by, confirmed_by, validated_by,visit_id,V.visit_code, provider_id, E.full_name as doctor_name, billed, service_id,S.service_code,S.service_name,LO.status,\
         cancelled, provider_id, ordered_date, test_type, lab_id_number, run_type, P.patient_code,P.full_name,P.date_of_birth, P.gender,\
         LS.sample_id,LS.collected,LS.collected_by, LS.collected_date,LS.hims_d_lab_sample_id,LS.status as sample_status\
         from hims_f_lab_order LO inner join hims_d_services S on LO.service_id=S.hims_d_services_id and S.record_status='A'\
@@ -662,16 +662,21 @@ let updateLabResultEntry = (req, res, next) => {
           .ToArray();
 
         let ref = null;
+        let entered_by = "";
+        let confirmed_by = "";
+        let validated_by = "";
 
         switch (inputParam.length - 1) {
           case status_C:
             //Do functionality for C here
             ref = "CF";
+            confirmed_by = req.userIdentity.algaeh_d_app_user_id;
             break;
 
           case status_V:
             //Do functionality for V here
             ref = "V";
+            validated_by = req.userIdentity.algaeh_d_app_user_id;
             break;
 
           case status_N:
@@ -681,12 +686,16 @@ let updateLabResultEntry = (req, res, next) => {
 
           case status_E:
             ref = "CL";
+            entered_by = req.userIdentity.algaeh_d_app_user_id;
             break;
           default:
             ref = null;
         }
 
-        debugLog("ref:", ref);
+        debugLog("ref: ", ref);
+        debugLog("entered_by: ", entered_by);
+        debugLog("confirmed_by: ", confirmed_by);
+        debugLog("validated_by: ", validated_by);
 
         let qry = "";
 
@@ -748,11 +757,23 @@ let updateLabResultEntry = (req, res, next) => {
               next(error);
             });
           }
-          // ,run_type="' + runtype + '"
+
           if (results != null && ref != null) {
             connection.query(
               "update hims_f_lab_order set `status`='" +
                 ref +
+                "',entered_date= '" +
+                new Date().toLocaleString() +
+                "',entered_by= '" +
+                user_id.updated_by +
+                "',confirmed_date= '" +
+                new Date().toLocaleString() +
+                "',confirmed_by= '" +
+                user_id.updated_by +
+                "',validated_date= '" +
+                new Date().toLocaleString() +
+                "',validated_by= '" +
+                user_id.updated_by +
                 "',updated_date= '" +
                 new Date().toLocaleString() +
                 "',run_type='" +
@@ -777,7 +798,12 @@ let updateLabResultEntry = (req, res, next) => {
                     });
                   }
                   releaseDBConnection(db, connection);
-                  req.records = result;
+                  req.records = {
+                    results,
+                    entered_by: entered_by,
+                    confirmed_by: confirmed_by,
+                    validated_by: validated_by
+                  };
                   next();
                 });
               }
@@ -791,7 +817,12 @@ let updateLabResultEntry = (req, res, next) => {
                 });
               }
               releaseDBConnection(db, connection);
-              req.records = results;
+              req.records = {
+                results,
+                entered_by: entered_by,
+                confirmed_by: confirmed_by,
+                validated_by: validated_by
+              };
               next();
             });
           }

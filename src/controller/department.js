@@ -108,7 +108,7 @@ export default ({ config, db }) => {
   );
 
   //created by:irfan 
-  api.put(
+  api.delete(
     "/deleteSubDepartment",
     deleteSubDepartment,
     (req, res, next) => {

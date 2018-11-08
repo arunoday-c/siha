@@ -291,14 +291,15 @@ let getAuthrequisitionList = (req, res, next) => {
 
     let strQuery =
       "SELECT * from  hims_f_pharamcy_material_header\
-    where (authorize1='N' or authorie2='N') ";
+    where (authorize1='N' or authorie2='N')";
 
     if (inputParam.from_location_id !== null) {
       strQuery =
-        strQuery + "and from_location_id = " + inputParam.from_location_id;
+        strQuery + " and from_location_id = " + inputParam.from_location_id;
     }
     if (inputParam.to_location_id !== null) {
-      strQuery = strQuery + "and to_location_id = " + inputParam.to_location_id;
+      strQuery =
+        strQuery + " and to_location_id = " + inputParam.to_location_id;
     }
 
     debugLog("strQuery", strQuery);
