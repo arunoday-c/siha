@@ -398,6 +398,9 @@ let addDepartmentVitalMap = (req, res, next) => {
   }
 };
 
+
+
+
 module.exports = {
     addVitalMasterHeader,
     addVitalMasterDetail,
@@ -409,4 +412,5 @@ module.exports = {
     updateVitalMasterDetail,
     addDepartmentVitalMap,
     getDepartmentVitalMap
+    
 }

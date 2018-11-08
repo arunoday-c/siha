@@ -1,0 +1,168 @@
+#dentalTreatment {
+  padding-top: 20px;
+  /*============== molar ==============*/
+  /*============== premolar ==============*/
+  /*============== canine ==============*/
+  /*============== incisors-up ==============*/
+  /*============== Down ==============*/
+  /*============== Molar ==============*/
+  /*============== premolar ==============*/
+  /*============== canine ==============*/
+  /*============== incisors ==============*/ }
+  #dentalTreatment .top-teeth-sec {
+    border-bottom: 2px dotted #ccc;
+    margin-right: 0;
+    margin-left: 0; }
+  #dentalTreatment .bottom-teeth-sec {
+    margin-right: 0;
+    margin-left: 0; }
+  #dentalTreatment .teeth-sec h6 {
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    margin: 0;
+    padding: 0;
+    text-align: center; }
+  #dentalTreatment .teeth-sec:first-child {
+    border-right: 1px dashed #aaa; }
+  #dentalTreatment .tooth-sec {
+    font-size: 12px;
+    text-align: center;
+    position: relative;
+    border: 1px dotted #ccc;
+    margin: 10px 0;
+    background: no-repeat center 3px #fff;
+    background-size: 50%;
+    padding: 0;
+    color: #3d3d3d; }
+  #dentalTreatment .tooth-sec > span {
+    display: inline-block;
+    margin-top: 85%;
+    border-top: 1px dotted #ccc;
+    width: 100%; }
+  #dentalTreatment .surface-Marking {
+    height: 50px;
+    width: 50px;
+    margin: 3px auto 3px;
+    background: -webkit-radial-gradient(center, ellipse cover, #e2e2e2 0%, #dbdbdb 50%, #fefefe 100%);
+    /* Chrome10-25,Safari5.1-6 */
+    border-radius: 100%;
+    position: relative;
+    overflow: hidden;
+    transform: rotate(45deg);
+    box-shadow: 0 0 1px #000; }
+  #dentalTreatment .surface-Marking div {
+    width: 25px;
+    height: 25px;
+    float: left;
+    border-right: 1px solid rgba(0, 0, 0, 0.2);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    position: relative; }
+  #dentalTreatment .surface-Marking div:hover {
+    background: #ffe79b; }
+  #dentalTreatment .surface-Marking div span {
+    position: absolute;
+    bottom: 3px;
+    left: 10px;
+    margin: 0;
+    padding: 0;
+    font-size: 10px;
+    transform: rotate(-45deg);
+    color: #aaa; }
+  #dentalTreatment .middle-surface {
+    position: absolute !important;
+    background: -webkit-radial-gradient(center, ellipse cover, #e2e2e2 0%, #dbdbdb 50%, #fefefe 100%);
+    /* Chrome10-25,Safari5.1-6 */
+    top: 25%;
+    left: 25%;
+    border-radius: 100%; }
+  #dentalTreatment .middle-surface span {
+    bottom: 4px !important;
+    left: 8px !important; }
+  #dentalTreatment .molar-up-1 {
+    background-image: url(../../../assets/images/molar-up.png); }
+  #dentalTreatment .molar-up-2 {
+    background-image: url(../../../assets/images/molar-up.png); }
+  #dentalTreatment .molar-up-3 {
+    background-image: url(../../../assets/images/molar-up.png); }
+  #dentalTreatment .molar-up-14 {
+    background-image: url(../../../assets/images/molar-up.png); }
+  #dentalTreatment .molar-up-15 {
+    background-image: url(../../../assets/images/molar-up.png); }
+  #dentalTreatment .molar-up-16 {
+    background-image: url(../../../assets/images/molar-up.png); }
+  #dentalTreatment .premolar-up-4 {
+    background-image: url(../../../assets/images/premolar-up.png); }
+  #dentalTreatment .premolar-up-5 {
+    background-image: url(../../../assets/images/premolar-up.png); }
+  #dentalTreatment .premolar-up-12 {
+    background-image: url(../../../assets/images/premolar-up.png); }
+  #dentalTreatment .premolar-up-13 {
+    background-image: url(../../../assets/images/premolar-up.png); }
+  #dentalTreatment .canine-up-6 {
+    background-image: url(../../../assets/images/canine-up.png); }
+  #dentalTreatment .canine-up-11 {
+    background-image: url(../../../assets/images/canine-up.png); }
+  #dentalTreatment .incisors-up-up-7 {
+    background-image: url(../../../assets/images/incisors-up.png); }
+  #dentalTreatment .incisors-up-up-8 {
+    background-image: url(../../../assets/images/incisors-up.png); }
+  #dentalTreatment .incisors-up-up-9 {
+    background-image: url(../../../assets/images/incisors-up.png); }
+  #dentalTreatment .incisors-up-up-10 {
+    background-image: url(../../../assets/images/incisors-up.png); }
+  #dentalTreatment .molar-down-1 {
+    background-image: url(../../../assets/images/molar-down.png); }
+  #dentalTreatment .molar-down-2 {
+    background-image: url(../../../assets/images/molar-down.png); }
+  #dentalTreatment .molar-down-3 {
+    background-image: url(../../../assets/images/molar-down.png); }
+  #dentalTreatment .molar-down-14 {
+    background-image: url(../../../assets/images/molar-down.png); }
+  #dentalTreatment .molar-down-15 {
+    background-image: url(../../../assets/images/molar-down.png); }
+  #dentalTreatment .molar-down-16 {
+    background-image: url(../../../assets/images/molar-down.png); }
+  #dentalTreatment .premolar-down-4 {
+    background-image: url(../../../assets/images/premolar-down.png); }
+  #dentalTreatment .premolar-down-5 {
+    background-image: url(../../../assets/images/premolar-down.png); }
+  #dentalTreatment .premolar-down-12 {
+    background-image: url(../../../assets/images/premolar-down.png); }
+  #dentalTreatment .premolar-down-13 {
+    background-image: url(../../../assets/images/premolar-down.png); }
+  #dentalTreatment .canine-down-6 {
+    background-image: url(../../../assets/images/canine-down.png); }
+  #dentalTreatment .canine-down-11 {
+    background-image: url(../../../assets/images/canine-down.png); }
+  #dentalTreatment .incisors-down-7 {
+    background-image: url(../../../assets/images/incisors-down.png); }
+  #dentalTreatment .incisors-down-8 {
+    background-image: url(../../../assets/images/incisors-down.png); }
+  #dentalTreatment .incisors-down-9 {
+    background-image: url(../../../assets/images/incisors-down.png); }
+  #dentalTreatment .incisors-down-10 {
+    background-image: url(../../../assets/images/incisors-up.png); }
+  #dentalTreatment div.tooltip {
+    padding: 0px 5px;
+    background: #ffbb99;
+    cursor: pointer; }
+  #dentalTreatment .tooltip-info {
+    position: absolute;
+    top: 99px;
+    left: 99px; }
+  #dentalTreatment div.tooltip::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: 1.5em;
+    font-size: 0.9em;
+    padding: 1px 5px;
+    display: none;
+    color: white;
+    background: rgba(0, 0, 0, 0.75);
+    border-radius: 4px;
+    transition: opacity 0.1s ease-out;
+    z-index: 999;
+    text-align: left; }
+  #dentalTreatment div:hover::before {
+    display: inline-block; }

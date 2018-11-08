@@ -316,7 +316,10 @@ class SalesReturn extends Component {
                       disabled={this.state.saveEnable}
                     >
                       <AlgaehLabel
-                        label={{ forceLabel: "Save", returnText: true }}
+                        label={{
+                          forceLabel: "Return & Print",
+                          returnText: true
+                        }}
                       />
                     </button>
 

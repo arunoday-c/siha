@@ -1,7 +1,8 @@
 .hptl-phase1-pos-recipt-form {
   background: #e9feff;
   border: 1px solid #44b8bd;
-  border-radius: 5px; }
+  border-radius: 5px;
+  padding: 10px 0; }
   .hptl-phase1-pos-recipt-form label {
     font-weight: 400;
     font-size: 11px; }

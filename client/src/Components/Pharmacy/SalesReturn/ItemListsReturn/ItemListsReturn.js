@@ -65,7 +65,7 @@ class ItemListsReturn extends Component {
     this.setState(nextProps.SALESRETURNIOputs);
   }
 
-  dateFormater({ value }) {
+  dateFormater(value) {
     if (value !== null) {
       return moment(value).format(Options.dateFormat);
     }
@@ -113,27 +113,24 @@ class ItemListsReturn extends Component {
                                   );
                                 },
                                 editorTemplate: row => {
+                                  let display =
+                                    this.props.salesitemlist === undefined
+                                      ? []
+                                      : this.props.salesitemlist.filter(
+                                          f =>
+                                            f.hims_d_item_master_id ===
+                                            row.item_id
+                                        );
+
                                   return (
-                                    <AlagehAutoComplete
-                                      div={{}}
-                                      selector={{
-                                        name: "item_id",
-                                        className: "select-fld",
-                                        value: row.item_id,
-                                        dataSource: {
-                                          textField: "item_description",
-                                          valueField: "hims_d_item_master_id",
-                                          data: this.props.salesitemlist
-                                        },
-                                        onChange: null
-                                        // others: {
-                                        //   disabled: true
-                                        // }
-                                      }}
-                                    />
+                                    <span>
+                                      {display !== undefined &&
+                                      display.length !== 0
+                                        ? display[0].item_description
+                                        : ""}
+                                    </span>
                                   );
-                                },
-                                disabled: true
+                                }
                               },
 
                               {
@@ -162,27 +159,23 @@ class ItemListsReturn extends Component {
                                   );
                                 },
                                 editorTemplate: row => {
+                                  let display =
+                                    this.props.itemcategory === undefined
+                                      ? []
+                                      : this.props.itemcategory.filter(
+                                          f =>
+                                            f.hims_d_item_category_id ===
+                                            row.item_category
+                                        );
+
                                   return (
-                                    <AlagehAutoComplete
-                                      div={{}}
-                                      selector={{
-                                        name: "item_category",
-                                        className: "select-fld",
-                                        value: row.item_category,
-                                        dataSource: {
-                                          textField: "category_desc",
-                                          valueField: "hims_d_item_category_id",
-                                          data: this.props.itemcategory
-                                        },
-                                        onChange: null,
-                                        others: {
-                                          disabled: true
-                                        }
-                                      }}
-                                    />
+                                    <span>
+                                      {display !== null && display.length !== 0
+                                        ? display[0].category_desc
+                                        : ""}
+                                    </span>
                                   );
-                                },
-                                disabled: true
+                                }
                               },
 
                               {
@@ -192,14 +185,20 @@ class ItemListsReturn extends Component {
                                     label={{ forceLabel: "Expiry Date" }}
                                   />
                                 ),
-                                // displayTemplate: row => {
-                                //   return (
-                                //     <span>
-                                //       {this.dateFormater(row.expiry_date)}
-                                //     </span>
-                                //   );
-                                // },
-                                disabled: true
+                                displayTemplate: row => {
+                                  return (
+                                    <span>
+                                      {this.dateFormater(row.expiry_date)}
+                                    </span>
+                                  );
+                                },
+                                editorTemplate: row => {
+                                  return (
+                                    <span>
+                                      {this.dateFormater(row.expiry_date)}
+                                    </span>
+                                  );
+                                }
                               },
                               {
                                 fieldName: "batchno",
@@ -234,24 +233,23 @@ class ItemListsReturn extends Component {
                                   );
                                 },
                                 editorTemplate: row => {
+                                  let display =
+                                    this.props.itemuom === undefined
+                                      ? []
+                                      : this.props.itemuom.filter(
+                                          f =>
+                                            f.hims_d_pharmacy_uom_id ===
+                                            row.uom_id
+                                        );
+
                                   return (
-                                    <AlagehAutoComplete
-                                      div={{}}
-                                      selector={{
-                                        name: "item_category",
-                                        className: "select-fld",
-                                        value: row.item_category,
-                                        dataSource: {
-                                          textField: "uom_description",
-                                          valueField: "uom_id",
-                                          data: this.state.ItemUOM
-                                        },
-                                        onChange: null
-                                      }}
-                                    />
+                                    <span>
+                                      {display !== null && display.length !== 0
+                                        ? display[0].uom_description
+                                        : ""}
+                                    </span>
                                   );
-                                },
-                                disabled: true
+                                }
                               },
                               {
                                 fieldName: "unit_cost",

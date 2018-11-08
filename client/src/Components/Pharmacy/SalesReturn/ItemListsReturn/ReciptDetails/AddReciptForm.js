@@ -57,7 +57,7 @@ class AddReciptForm extends Component {
                   <div className="col-lg-3">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Receipt Number"
+                        forceLabel: "Payment Number"
                       }}
                     />
                     <h6>
@@ -69,7 +69,7 @@ class AddReciptForm extends Component {
                   <div className="col-lg-3">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Receipt Date"
+                        forceLabel: "Payment Date"
                       }}
                     />
                     <h6>
@@ -79,7 +79,7 @@ class AddReciptForm extends Component {
                     </h6>
                   </div>
                 </div>
-                <hr />
+                <hr style={{ margin: 0 }} />
 
                 {/* Payment Type */}
                 {/* Cash */}
@@ -100,7 +100,7 @@ class AddReciptForm extends Component {
                     </label>
                   </div>
                   <AlagehFormGroup
-                    div={{ className: "col-lg-2" }}
+                    div={{ className: "col-lg-3" }}
                     label={{
                       forceLabel: "Amount",
                       isImp: true
@@ -121,9 +121,21 @@ class AddReciptForm extends Component {
                       }
                     }}
                   />
+                  {/* <div className="col-lg-5">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Unbalanced Amount"
+                      }}
+                    />
+                    <h6>
+                      {this.state.unbalanced_amount
+                        ? "₹" + this.state.unbalanced_amount
+                        : "₹0.00"}
+                    </h6>
+                  </div> */}
                 </div>
                 {/* Card */}
-                <div className="row secondary-box-container">
+                <div className="row secondary-box-container d-none">
                   <div
                     className="customCheckbox col-lg-2"
                     style={{ border: "none", marginTop: "28px" }}
@@ -138,7 +150,6 @@ class AddReciptForm extends Component {
                       <span style={{ fontSize: "0.8rem" }}>Pay by Card</span>
                     </label>
                   </div>
-
                   <AlagehFormGroup
                     div={{ className: "col-lg-2" }}
                     label={{
@@ -198,7 +209,7 @@ class AddReciptForm extends Component {
                   />
                 </div>
                 {/* Check */}
-                <div className="row secondary-box-container">
+                <div className="row secondary-box-container d-none">
                   <div
                     className="customCheckbox col-lg-2"
                     style={{ border: "none", marginTop: "28px" }}
@@ -272,21 +283,6 @@ class AddReciptForm extends Component {
                     }}
                     value={this.state.cheque_date}
                   />
-                </div>
-                <div className="row secondary-box-container">
-                  <div className="col-lg-2" />
-                  <div className="col-lg-5">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Unbalanced Amount"
-                      }}
-                    />
-                    <h6>
-                      {this.state.unbalanced_amount
-                        ? "₹" + this.state.unbalanced_amount
-                        : "₹0.00"}
-                    </h6>
-                  </div>
                 </div>
               </div>
               <br />

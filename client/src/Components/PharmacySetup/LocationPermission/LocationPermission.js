@@ -100,9 +100,9 @@ class LocationPermission extends Component {
                 isImp: true
               }}
               selector={{
-                name: "from_location",
+                name: "location_id",
                 className: "select-fld",
-                value: this.state.from_location,
+                value: this.state.location_id,
                 dataSource: {
                   textField: "location_description",
                   valueField: "hims_d_pharmacy_location_id",
@@ -123,7 +123,7 @@ class LocationPermission extends Component {
                   checked={this.state.allowLocation}
                   onChange={allowHandle.bind(this, this)}
                 />
-                <span style={{ fontSize: "0.8rem" }}>Allow POS</span>
+                <span style={{ fontSize: "0.8rem" }}>Allow</span>
               </label>
             </div>
             {/* <AlagehAutoComplete
@@ -168,7 +168,7 @@ class LocationPermission extends Component {
                         this.props.userdrtails === undefined
                           ? []
                           : this.props.userdrtails.filter(
-                              f => f.algaeh_d_app_user_id === row.created_by
+                              f => f.algaeh_d_app_user_id === row.user_id
                             );
 
                       return (
@@ -202,7 +202,7 @@ class LocationPermission extends Component {
                     }
                   },
                   {
-                    fieldName: "from_location",
+                    fieldName: "location_id",
                     label: (
                       <AlgaehLabel label={{ fieldName: "from_location" }} />
                     ),
@@ -213,7 +213,7 @@ class LocationPermission extends Component {
                           : this.props.locationpermi.filter(
                               f =>
                                 f.hims_d_pharmacy_location_id ===
-                                row.from_location
+                                row.location_id
                             );
 
                       return (
@@ -228,9 +228,9 @@ class LocationPermission extends Component {
                       return (
                         <AlagehAutoComplete
                           selector={{
-                            name: "from_location",
+                            name: "location_id",
                             className: "select-fld",
-                            value: row.from_location,
+                            value: row.location_id,
                             dataSource: {
                               textField: "location_description",
                               valueField: "hims_d_pharmacy_location_id",
@@ -238,7 +238,7 @@ class LocationPermission extends Component {
                             },
                             onChange: onchangegridcol.bind(this, this, row),
                             others: {
-                              errormessage: "User - cannot be blank",
+                              errormessage: "Location - cannot be blank",
                               required: true
                             }
                           }}
@@ -246,49 +246,36 @@ class LocationPermission extends Component {
                       );
                     }
                   },
-                  // {
-                  //   fieldName: "to_location",
-                  //   label: <AlgaehLabel label={{ fieldName: "to_location" }} />,
-                  //   displayTemplate: row => {
-                  //     let display =
-                  //       this.props.locationpermi === undefined
-                  //         ? []
-                  //         : this.props.locationpermi.filter(
-                  //             f =>
-                  //               f.hims_d_pharmacy_location_id ===
-                  //               row.to_location
-                  //           );
+                  {
+                    fieldName: "allow",
+                    label: <AlgaehLabel label={{ forceLabel: "allow" }} />,
+                    displayTemplate: row => {
+                      return row.allow === "N" ? "No" : "Yes";
+                    },
+                    editorTemplate: row => {
+                      return (
+                        <AlagehAutoComplete
+                          div={{}}
+                          selector={{
+                            name: "allow",
+                            className: "select-fld",
+                            value: row.allow,
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: GlobalVariables.FORMAT_YESNO
+                            },
+                            onChange: onchangegridcol.bind(this, this, row),
+                            others: {
+                              errormessage: "Allow - cannot be blank",
+                              required: true
+                            }
+                          }}
+                        />
+                      );
+                    }
+                  },
 
-                  //     return (
-                  //       <span>
-                  //         {display !== null && display.length !== 0
-                  //           ? display[0].location_description
-                  //           : ""}
-                  //       </span>
-                  //     );
-                  //   },
-                  //   editorTemplate: row => {
-                  //     return (
-                  //       <AlagehAutoComplete
-                  //         selector={{
-                  //           name: "to_location",
-                  //           className: "select-fld",
-                  //           value: row.to_location,
-                  //           dataSource: {
-                  //             textField: "location_description",
-                  //             valueField: "hims_d_pharmacy_location_id",
-                  //             data: this.props.locationpermi
-                  //           },
-                  //           onChange: onchangegridcol.bind(this, this, row),
-                  //           others: {
-                  //             errormessage: "User - cannot be blank",
-                  //             required: true
-                  //           }
-                  //         }}
-                  //       />
-                  //     );
-                  //   }
-                  // },
                   {
                     fieldName: "created_by",
                     label: <AlgaehLabel label={{ fieldName: "created_by" }} />,
@@ -337,37 +324,6 @@ class LocationPermission extends Component {
                       return <span>{this.dateFormater(row.created_date)}</span>;
                     }
                     //disabled: true
-                  },
-                  {
-                    fieldName: "specimen_status",
-                    label: <AlgaehLabel label={{ fieldName: "inv_status" }} />,
-                    displayTemplate: row => {
-                      return row.specimen_status === "A"
-                        ? "Active"
-                        : "Inactive";
-                    },
-                    editorTemplate: row => {
-                      return (
-                        <AlagehAutoComplete
-                          div={{}}
-                          selector={{
-                            name: "specimen_status",
-                            className: "select-fld",
-                            value: row.specimen_status,
-                            dataSource: {
-                              textField: "name",
-                              valueField: "value",
-                              data: GlobalVariables.FORMAT_STATUS
-                            },
-                            onChange: onchangegridcol.bind(this, this, row),
-                            others: {
-                              errormessage: "Specimen Status - cannot be blank",
-                              required: true
-                            }
-                          }}
-                        />
-                      );
-                    }
                   }
                 ]}
                 keyId="hims_d_location_permission_id"

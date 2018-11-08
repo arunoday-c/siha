@@ -120,6 +120,8 @@ let addtransferEntry = (req, res, next) => {
                   "uom_recieved_id",
                   "quantity_outstanding",
                   "grnno",
+                  "unit_cost",
+                  "sales_uom",
                   "material_requisition_header_id",
                   "material_requisition_detail_id"
                 ];
@@ -153,7 +155,11 @@ let addtransferEntry = (req, res, next) => {
                       }
                       releaseDBConnection(db, connection);
                       req.records = {
-                        transfer_number: documentCode
+                        transfer_number: documentCode,
+                        hims_f_pharmacy_transfer_header_id:
+                          headerResult.insertId,
+                        year: year,
+                        period: period
                       };
                       next();
                     });

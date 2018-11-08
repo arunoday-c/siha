@@ -1166,12 +1166,11 @@ let addLocationPermission = (req, res, next) => {
       }
 
       connection.query(
-        "INSERT INTO `hims_m_location_permission` (`user_id`, `from_location`, `to_location`, `allow`,`created_date`,`created_by`)\
-        VALUE(?,?,?,?,?,?)",
+        "INSERT INTO `hims_m_location_permission` (`user_id`, `location_id`, `allow`,`created_date`,`created_by`)\
+        VALUE(?,?,?,?,?)",
         [
           input.user_id,
-          input.from_location,
-          input.to_location,
+          input.location_id,
           input.allow,
           new Date(),
           input.created_by
@@ -1237,15 +1236,14 @@ let updateLocationPermission = (req, res, next) => {
       if (error) {
         next(error);
       }
-      `user_id`, `from_location`, `to_location`, `allow`;
+
       connection.query(
-        "UPDATE `hims_m_location_permission` SET `user_id`=?, `from_location`=?, `to_location` = ?\
+        "UPDATE `hims_m_location_permission` SET `user_id`=?, `location_id`=?,\
         `allow`=?, `updated_date`=?, `updated_by`=?, `record_status`=?\
         WHERE `hims_m_location_permission_id`=? and `record_status`='A';",
         [
           input.user_id,
-          input.from_location,
-          input.to_location,
+          input.location_id,
           input.allow,
           new Date(),
           input.updated_by,

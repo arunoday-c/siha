@@ -40,5 +40,6 @@
   "shift_status": "Shift Status",
   "counter_code": "Counter Code",
   "counter_description": "Counter Description",
-  "counter_status": "Counter Status"
+  "counter_status": "Counter Status",
+  "users_shift": "User's Shift"
 }

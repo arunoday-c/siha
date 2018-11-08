@@ -79,7 +79,7 @@ class PointOfSale extends Component {
       this.props.poslocations.length === 0
     ) {
       this.props.getLocation({
-        uri: "/pharmacy/getPharmacyLocation",
+        uri: "/pharmacyGlobal/getUserLocationPermission",
         method: "GET",
         redux: {
           type: "LOCATIOS_GET_DATA",
@@ -361,7 +361,10 @@ class PointOfSale extends Component {
                     disabled={this.state.saveEnable}
                   >
                     <AlgaehLabel
-                      label={{ forceLabel: "Save", returnText: true }}
+                      label={{
+                        forceLabel: "Collect & Print",
+                        returnText: true
+                      }}
                     />
                   </button>
 

@@ -8,16 +8,16 @@ import {
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import moment from "moment";
-import { reporters } from "mocha";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
+import swal from "sweetalert2";
 
 class UserShiftMapping extends Component {
   constructor(props) {
     super(props);
     this.state = {
       shifts: [],
-      year: moment().year(),
-      month: moment().format("M")
+      year: moment(new Date()).format("YYYY"),
+      month: moment(new Date()).format("M")
     };
     this.getShifts();
     this.getCashiers();
@@ -28,14 +28,29 @@ class UserShiftMapping extends Component {
     this.setState({ [value.name]: value.value });
   }
 
+  resetSaveState() {
+    this.setState({
+      hims_d_shift_id: "",
+      cashier_id: ""
+    });
+  }
+
   changeTexts(e) {
     this.setState({ [e.target.name]: e.target.value });
+  }
+
+  changeGridEditors(row, e) {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    row[name] = value;
+    row.update();
   }
 
   getShifts() {
     algaehApiCall({
       uri: "/shiftAndCounter/getShiftMaster",
       method: "GET",
+      data: { shift_status: "A" },
       onSuccess: response => {
         if (response.data.success) {
           this.setState({
@@ -54,15 +69,14 @@ class UserShiftMapping extends Component {
 
   getCashiers() {
     algaehApiCall({
-      uri: "/employee/get",
+      uri: "/shiftAndCounter/getCashiers",
       method: "GET",
-      data: { is_cashier: "Y" },
       onSuccess: response => {
         if (response.data.success) {
           this.setState({
             cashiers: response.data.records
           });
-          console.log("Cashiers:", response.data.records);
+          //console.log("Cashiers:", response.data.records);
         }
       },
       onFailure: error => {
@@ -75,25 +89,24 @@ class UserShiftMapping extends Component {
   }
 
   getMappedUsers() {
-    // algaehApiCall({
-    //   uri: "/employee/get",
-    //   method: "GET",
-    //   data: { is_cashier: "Y" },
-    //   onSuccess: response => {
-    //     if (response.data.success) {
-    //       this.setState({
-    //         cashiers: response.data.records
-    //       });
-    //       console.log("Cashiers:", response.data.records);
-    //     }
-    //   },
-    //   onFailure: error => {
-    //     swalMessage({
-    //       title: error.message,
-    //       type: "error"
-    //     });
-    //   }
-    // });
+    algaehApiCall({
+      uri: "/shiftAndCounter/getCashiersAndShiftMAP",
+      method: "GET",
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({
+            cashiers_list: response.data.records
+          });
+          //console.log("Cashiers:", response.data.records);
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   mapUserShift() {
@@ -101,10 +114,104 @@ class UserShiftMapping extends Component {
       alertTypeIcon: "warning",
       onSuccess: () => {
         algaehApiCall({
-          uri: "/shiftAndCounter/addShiftUserMapping",
+          uri: "/shiftAndCounter/addCashierToShift",
           method: "POST",
-          onSuccess: response => {},
-          onFailure: error => {}
+          data: {
+            cashier_id: this.state.cashier_id,
+            shift_id: this.state.hims_d_shift_id,
+            year: this.state.year,
+            month: this.state.month
+          },
+          onSuccess: response => {
+            if (response.data.records) {
+              swalMessage({
+                title: "Record added successfully",
+                type: "success"
+              });
+              this.resetSaveState();
+              this.getMappedUsers();
+            }
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
+        });
+      }
+    });
+  }
+
+  updateCashiersAndShiftMAP(data) {
+    algaehApiCall({
+      uri: "/shiftAndCounter/updateCashiersAndShiftMAP",
+      method: "PUT",
+      data: {
+        hims_m_cashier_shift_id: data.hims_m_cashier_shift_id,
+        shift_id: data.shift_id
+      },
+      onSuccess: response => {
+        if (response.data.records) {
+          swalMessage({
+            title: "Record updated successfully",
+            type: "success"
+          });
+          this.getMappedUsers();
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  deleteCashiersAndShiftMAP(data) {
+    swal({
+      title: "Are you sure you want to delete this Shift?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        algaehApiCall({
+          uri: "/shiftAndCounter/deleteCashiersAndShiftMAP",
+          data: {
+            hims_m_cashier_shift_id: data.hims_m_cashier_shift_id
+          },
+          method: "DELETE",
+          onSuccess: response => {
+            if (response.data.records.success) {
+              swalMessage({
+                title: "Record deleted successfully . .",
+                type: "success"
+              });
+
+              this.getMappedUsers();
+            } else if (!response.data.records.success) {
+              swalMessage({
+                title: response.data.records.message,
+                type: "error"
+              });
+            }
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
+        });
+      } else {
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "error"
         });
       }
     });
@@ -118,7 +225,8 @@ class UserShiftMapping extends Component {
             <AlagehAutoComplete
               div={{ className: "col-lg-2" }}
               label={{
-                forceLabel: "Shift Type"
+                forceLabel: "Shift Type",
+                isImp: true
               }}
               selector={{
                 name: "hims_d_shift_id",
@@ -135,15 +243,16 @@ class UserShiftMapping extends Component {
             <AlagehAutoComplete
               div={{ className: "col-lg-2" }}
               label={{
-                forceLabel: "Select Cashier"
+                forceLabel: "Select Cashier",
+                isImp: true
               }}
               selector={{
-                name: "hims_d_employee_id",
+                name: "cashier_id",
                 className: "select-fld",
-                value: this.state.hims_d_employee_id,
+                value: this.state.cashier_id,
                 dataSource: {
-                  textField: "full_name",
-                  valueField: "hims_d_employee_id",
+                  textField: "cashier_name",
+                  valueField: "cashier_id",
                   data: this.state.cashiers
                 },
                 onChange: this.dropDownHandle.bind(this)
@@ -202,21 +311,105 @@ class UserShiftMapping extends Component {
               datavalidate="data-validate='usmDiv'"
               id="usm-grid"
               columns={[
-                { fieldName: "shift_type", label: "Shift Type" },
-                { fieldName: "cashier", label: "Cashier" },
-                { fieldName: "month", label: "Month" },
-                { fieldName: "year", label: "Year" }
+                {
+                  fieldName: "shift_description",
+                  label: "Shift Type",
+                  editorTemplate: row => {
+                    return (
+                      <AlagehAutoComplete
+                        div={{ className: "col" }}
+                        selector={{
+                          name: "shift_id",
+                          className: "select-fld",
+                          value: row.shift_id,
+                          dataSource: {
+                            textField: "shift_description",
+                            valueField: "hims_d_shift_id",
+                            data: this.state.shifts
+                          },
+                          others: {
+                            errormessage: "Shift - cannot be blank",
+                            required: true
+                          },
+                          onChange: this.changeGridEditors.bind(this, row)
+                        }}
+                      />
+                    );
+                  }
+                },
+                {
+                  fieldName: "cashier_name",
+                  label: "Cashier",
+                  editorTemplate: row => {
+                    return <span>{row.cashier_name}</span>;
+                  }
+                },
+                {
+                  fieldName: "month",
+                  label: "Month",
+                  displayTemplate: row => {
+                    return (
+                      <AlagehAutoComplete
+                        div={{ className: "col" }}
+                        selector={{
+                          name: "month",
+                          className: "select-fld",
+                          value: row.month,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: GlobalVariables.MONTHS
+                          },
+                          others: {
+                            disabled: true
+                          },
+                          onChange: this.changeGridEditors.bind(this, row)
+                        }}
+                      />
+                    );
+                  },
+                  editorTemplate: row => {
+                    return (
+                      <AlagehAutoComplete
+                        div={{ className: "col" }}
+                        selector={{
+                          name: "month",
+                          className: "select-fld",
+                          value: row.month,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: GlobalVariables.MONTHS
+                          },
+                          others: {
+                            errormessage: "Month - cannot be blank",
+                            required: true,
+                            disabled: true
+                          },
+                          onChange: this.changeGridEditors.bind(this, row)
+                        }}
+                      />
+                    );
+                  }
+                },
+                {
+                  fieldName: "year",
+                  label: "Year",
+                  editorTemplate: row => {
+                    return <span>{row.year}</span>;
+                  }
+                }
               ]}
-              keyId="hims_d_counter_id"
+              keyId="hims_m_cashier_shift_id"
               dataSource={{
-                data: this.state.counters
+                data: this.state.cashiers_list
               }}
               isEditable={true}
               paging={{ page: 0, rowsPerPage: 10 }}
               events={{
                 onEdit: () => {},
-                onDelete: () => {},
-                onDone: () => {}
+                onDelete: this.deleteCashiersAndShiftMAP.bind(this),
+                onDone: this.updateCashiersAndShiftMAP.bind(this)
               }}
             />
           </div>

@@ -163,6 +163,7 @@ const SavePosEnrty = $this => {
 
 const PostPosEntry = $this => {
   debugger;
+
   $this.state.posted = "Y";
   $this.state.transaction_type = "POS";
   $this.state.transaction_id = $this.state.hims_f_pharmacy_pos_header_id;
@@ -179,6 +180,8 @@ const PostPosEntry = $this => {
       $this.state.pharmacy_stock_detail[i].grn_no;
     $this.state.pharmacy_stock_detail[i].item_category_id =
       $this.state.pharmacy_stock_detail[i].item_category;
+    $this.state.pharmacy_stock_detail[i].net_total =
+      $this.state.pharmacy_stock_detail[i].net_extended_cost;
   }
   debugger;
   algaehApiCall({
@@ -196,6 +199,12 @@ const PostPosEntry = $this => {
           title: "Posted successfully . ."
         });
       }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
 };

@@ -241,27 +241,24 @@ class RequisitionItems extends Component {
                                   );
                                 },
                                 editorTemplate: row => {
+                                  let display =
+                                    this.props.itemlist === undefined
+                                      ? []
+                                      : this.props.itemlist.filter(
+                                          f =>
+                                            f.hims_d_item_master_id ===
+                                            row.item_id
+                                        );
+
                                   return (
-                                    <AlagehAutoComplete
-                                      div={{}}
-                                      selector={{
-                                        name: "item_id",
-                                        className: "select-fld",
-                                        value: row.item_id,
-                                        dataSource: {
-                                          textField: "item_description",
-                                          valueField: "hims_d_item_master_id",
-                                          data: this.props.itemlist
-                                        },
-                                        onChange: null,
-                                        others: {
-                                          disabled: true
-                                        }
-                                      }}
-                                    />
+                                    <span>
+                                      {display !== undefined &&
+                                      display.length !== 0
+                                        ? display[0].item_description
+                                        : ""}
+                                    </span>
                                   );
-                                },
-                                disabled: true
+                                }
                               },
 
                               {
@@ -290,27 +287,23 @@ class RequisitionItems extends Component {
                                   );
                                 },
                                 editorTemplate: row => {
+                                  let display =
+                                    this.props.itemcategory === undefined
+                                      ? []
+                                      : this.props.itemcategory.filter(
+                                          f =>
+                                            f.hims_d_item_category_id ===
+                                            row.item_category_id
+                                        );
+
                                   return (
-                                    <AlagehAutoComplete
-                                      div={{}}
-                                      selector={{
-                                        name: "item_category_id",
-                                        className: "select-fld",
-                                        value: row.item_category_id,
-                                        dataSource: {
-                                          textField: "category_desc",
-                                          valueField: "hims_d_item_category_id",
-                                          data: this.props.itemcategory
-                                        },
-                                        onChange: null,
-                                        others: {
-                                          disabled: true
-                                        }
-                                      }}
-                                    />
+                                    <span>
+                                      {display !== null && display.length !== 0
+                                        ? display[0].category_desc
+                                        : ""}
+                                    </span>
                                   );
-                                },
-                                disabled: true
+                                }
                               },
 
                               {
@@ -339,27 +332,23 @@ class RequisitionItems extends Component {
                                   );
                                 },
                                 editorTemplate: row => {
+                                  let display =
+                                    this.props.itemgroup === undefined
+                                      ? []
+                                      : this.props.itemgroup.filter(
+                                          f =>
+                                            f.hims_d_item_group_id ===
+                                            row.item_group_id
+                                        );
+
                                   return (
-                                    <AlagehAutoComplete
-                                      div={{}}
-                                      selector={{
-                                        name: "item_group_id",
-                                        className: "select-fld",
-                                        value: row.item_group_id,
-                                        dataSource: {
-                                          textField: "group_description",
-                                          valueField: "hims_d_item_group_id",
-                                          data: this.props.itemgroup
-                                        },
-                                        onChange: null,
-                                        others: {
-                                          disabled: true
-                                        }
-                                      }}
-                                    />
+                                    <span>
+                                      {display !== null && display.length !== 0
+                                        ? display[0].group_description
+                                        : ""}
+                                    </span>
                                   );
-                                },
-                                disabled: true
+                                }
                               },
 
                               {
@@ -386,28 +375,23 @@ class RequisitionItems extends Component {
                                   );
                                 },
                                 editorTemplate: row => {
-                                  return (
-                                    <AlagehAutoComplete
-                                      div={{}}
-                                      selector={{
-                                        name: "item_uom",
-                                        className: "select-fld",
-                                        value: row.item_uom,
+                                  let display =
+                                    this.props.itemuom === undefined
+                                      ? []
+                                      : this.props.itemuom.filter(
+                                          f =>
+                                            f.hims_d_pharmacy_uom_id ===
+                                            row.item_uom
+                                        );
 
-                                        dataSource: {
-                                          textField: "uom_description",
-                                          valueField: "uom_id",
-                                          data: this.state.ItemUOM
-                                        },
-                                        onChange: null,
-                                        others: {
-                                          disabled: true
-                                        }
-                                      }}
-                                    />
+                                  return (
+                                    <span>
+                                      {display !== null && display.length !== 0
+                                        ? display[0].uom_description
+                                        : ""}
+                                    </span>
                                   );
-                                },
-                                disabled: true
+                                }
                               },
 
                               {
