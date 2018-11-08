@@ -54,16 +54,7 @@ class ChiefComplaints extends Component {
     };
 
     this.handleClose = this.handleClose.bind(this);
-    this.setPainScale = this.setPainScale.bind(this);
-  }
 
-  componentWillUnmount() {
-    this.mounted = false;
-    cancelRequest("getChiefComplaints");
-    cancelRequest("getPatientChiefComplaints");
-  }
-  componentDidMount() {
-    this.mounted = true;
     if (
       this.props.patient_chief_complaints === undefined ||
       this.props.patient_chief_complaints.length === 0
@@ -80,6 +71,17 @@ class ChiefComplaints extends Component {
         }
       }
     }
+    if (
+      this.props.allchiefcomplaints === undefined ||
+      this.props.allchiefcomplaints.length === 0
+    ) {
+      getAllChiefComplaints(this);
+    }
+  }
+
+  componentWillUnmount() {
+    cancelRequest("getChiefComplaints");
+    cancelRequest("getPatientChiefComplaints");
   }
 
   texthandle(e) {
@@ -200,52 +202,6 @@ class ChiefComplaints extends Component {
     this.showconfirmDialog(data.hims_f_episode_chief_complaint_id);
   }
 
-  handleChange = pain => {
-    var element = document.querySelectorAll("li[paintab]");
-    for (var i = 0; i < element.length; i++) {
-      element[i].classList.remove("active");
-    }
-    const liPainTab = document.querySelector("li[paintab='" + pain + "']");
-    liPainTab.classList.add("active");
-    this.setState(
-      {
-        score: pain,
-        pain: liPainTab.getAttribute("pain-type")
-      },
-      () => {
-        this.settingUpdateChiefComplaints({
-          currentTarget: {
-            name: "score",
-            value: pain
-          }
-        });
-      }
-    );
-  };
-
-  setPainScale(pain_number, e) {
-    var element = document.querySelectorAll("[paintab]");
-    for (var i = 0; i < element.length; i++) {
-      element[i].classList.remove("active");
-    }
-    e.currentTarget.classList.add("active");
-    const pain = e.currentTarget.getAttribute("pain-type");
-    this.setState({ score: pain_number, pain: pain }, () => {
-      this.settingUpdateChiefComplaints({
-        currentTarget: {
-          name: "score",
-          value: pain_number
-        }
-      });
-      this.settingUpdateChiefComplaints({
-        currentTarget: {
-          name: "pain",
-          value: pain
-        }
-      });
-    });
-  }
-
   dropDownHandle(data) {
     const updateScroe =
       data.selected.score !== undefined ? { score: data.selected.score } : {};
@@ -258,61 +214,6 @@ class ChiefComplaints extends Component {
         }
       });
     });
-  }
-
-  openChiefComplainModal(data) {
-    if (
-      this.props.allchiefcomplaints === undefined ||
-      this.props.allchiefcomplaints.length === 0
-    ) {
-      getAllChiefComplaints(this, master => {
-        this.setState({
-          openComplain: true,
-
-          hims_f_episode_chief_complaint_id: data.chief_complaint_id,
-          masterChiefComplaints: this.masterChiefComplaintsSortList(
-            this.state.patientChiefComplains,
-            master
-          ),
-          onset_date: data.onset_date,
-          chief_complaint_name: data.chief_complaint_name,
-          duration: data.duration,
-          interval: data.interval,
-          severity: data.severity,
-          score: data.score,
-          pain: data.pain,
-          comment: data.comment,
-          chronic: "N",
-          complaint_inactive: "N",
-          complaint_inactive_date: null
-        });
-      });
-    } else {
-      this.setState({
-        openComplain: true,
-
-        hims_f_episode_chief_complaint_id: data.chief_complaint_id,
-        masterChiefComplaints: this.masterChiefComplaintsSortList(
-          this.state.patientChiefComplains,
-          this.props.allchiefcomplaints
-        ),
-        onset_date: data.onset_date,
-        chief_complaint_name: data.chief_complaint_name,
-        duration: data.duration,
-        interval: data.interval,
-        severity: data.severity,
-        score: data.score,
-        pain: data.pain,
-        comment: data.comment,
-        chronic: "N",
-        complaint_inactive: "N",
-        complaint_inactive_date: null
-      });
-    }
-  }
-
-  deleteChiefComplainFromList(e) {
-    this.showconfirmDialog(e.currentTarget.getAttribute("data-cpln-id"));
   }
 
   handleClose() {
@@ -408,13 +309,33 @@ class ChiefComplaints extends Component {
       comment: data.comment
     });
   }
-  openHPIAddModal(data) {
-    this.setState({
-      openHpiModal: true,
-      hims_f_episode_chief_complaint_id: data.hims_f_episode_chief_complaint_id
+  openHPIAddModal(data, e) {
+    this.loadHPIDetails({
+      inputParamter: {
+        hpi_header_id: data.hims_f_episode_chief_complaint_id
+      },
+      onSuccess: response => {
+        debugger;
+        this.setState({
+          openHpiModal: true,
+          hims_f_episode_chief_complaint_id:
+            data.hims_f_episode_chief_complaint_id
+        });
+      }
     });
   }
-
+  loadHPIDetails(options) {
+    algaehApiCall({
+      uri: "/hpi/getHpiElements",
+      method: "GET",
+      data: options.inputParamter,
+      onSuccess: response => {
+        if (response.data.success) {
+          options.onSuccess(response);
+        }
+      }
+    });
+  }
   masterChiefComplaintsSortList(patChiefComplain, allmastercomplaints) {
     allmastercomplaints = allmastercomplaints || null;
 
@@ -487,43 +408,52 @@ class ChiefComplaints extends Component {
     );
   }
   addChiefComplainToPatient(list) {
-    let patChiefComp = this.state.patientChiefComplains;
+    debugger;
 
-    this.setState(
-      { chief_complaint_id: list.selected.hims_d_hpi_header_id },
-      () => {
-        patChiefComp.push({
-          chief_complaint_id: list.selected.hims_d_hpi_header_id,
-          chief_complaint_name: list.selected.hpi_description,
-          Encounter_Date: new Date(),
-          comment: "",
-          duration: 0,
-          episode_id: Window.global["episode_id"],
-          interval: "D",
-          onset_date: new Date(),
-          pain: "NH",
-          score: 0,
-          severity: "MI",
-          patient_id: Window.global["current_patient"],
-          recordState: "insert",
-          chronic: "N",
-          complaint_inactive: "N",
-          complaint_inactive_date: null
-        });
-        swalMessage({
-          title: "Added chief complaint",
-          type: "success"
-        });
-        this.setState({
-          patientChiefComplains: patChiefComp.sort((a, b) => {
-            return a.chief_complaint_id - b.chief_complaint_id;
-          }),
-          masterChiefComplaints: this.masterChiefComplaintsSortList(
-            patChiefComp
-          )
-        });
+    const $this = this;
+    let patChiefComp = [];
+    patChiefComp.push({
+      chief_complaint_id: list.selected.hims_d_hpi_header_id,
+      chief_complaint_name: list.selected.hpi_description,
+      hpi_description: list.selected.hpi_description,
+      Encounter_Date: new Date(),
+      comment: "",
+      duration: 0,
+      episode_id: Window.global["episode_id"],
+      interval: "D",
+      onset_date: new Date(),
+      pain: "NH",
+      score: 0,
+      severity: "MI",
+      patient_id: Window.global["current_patient"],
+      recordState: "insert",
+      chronic: "N",
+      complaint_inactive: "N",
+      complaint_inactive_date: null
+    });
+    algaehApiCall({
+      uri: "/doctorsWorkBench/addPatientChiefComplaints",
+      data: patChiefComp,
+      onSuccess: response => {
+        if (response.data.success) {
+          getPatientChiefComplaints($this);
+          swalMessage({
+            title: "Added chief complaint",
+            type: "success"
+          });
+        }
       }
-    );
+    });
+    // swalMessage({
+    //   title: "Added chief complaint",
+    //   type: "success"
+    // });
+    // this.setState({
+    //   patientChiefComplains: patChiefComp.sort((a, b) => {
+    //     return a.chief_complaint_id - b.chief_complaint_id;
+    //   }),
+    //   masterChiefComplaints: this.masterChiefComplaintsSortList(patChiefComp)
+    // });
   }
 
   settingUpdateChiefComplaints(e) {
@@ -601,11 +531,145 @@ class ChiefComplaints extends Component {
       }
     );
   }
+
+  dateDurationAndInterval(selectedDate) {
+    let duration = 0;
+    let interval = "D";
+    if (moment().diff(selectedDate, "days") < 31) {
+      duration = moment().diff(selectedDate, "days");
+      interval = "D";
+    } else if (moment().diff(selectedDate, "months") < 12) {
+      duration = moment().diff(selectedDate, "months");
+      interval = "M";
+    } else if (moment().diff(selectedDate, "years")) {
+      duration = moment().diff(selectedDate, "years");
+      interval = "Y";
+    }
+    return { duration, interval };
+  }
+  durationToDateAndInterval(duration, interval) {
+    const _interval = Enumerable.from(GlobalVariables.PAIN_DURATION)
+      .where(w => w.value === interval)
+      .firstOrDefault().name;
+    const _date = moment().add(-duration, _interval.toLowerCase());
+    return { interval, onset_date: _date._d };
+  }
+
+  gridLevelUpdate(row, e) {
+    debugger;
+    e = e.name === undefined ? e.currentTarget : e;
+    row[e.name] = e.value;
+    if (e.name === "onset_date") {
+      const _durat_interval = this.dateDurationAndInterval(e.value);
+      row["duration"] = _durat_interval.duration;
+      row["interval"] = _durat_interval.interval;
+    } else if (e.name === "duration") {
+      const _duration_Date_Interval = this.durationToDateAndInterval(
+        e.value,
+        row["interval"]
+      );
+      row["onset_date"] = _duration_Date_Interval.onset_date;
+      row["interval"] = _duration_Date_Interval.interval;
+    } else if (e.name === "interval") {
+      const _dur_date_inter = this.durationToDateAndInterval(
+        row["duration"],
+        e.value
+      );
+      row["onset_date"] = _dur_date_inter.onset_date;
+    } else if (e.name === "chronic") {
+      row[e.name] = e.checked ? "Y" : "N";
+    } else if (e.name === "complaint_inactive") {
+      row[e.name] = e.checked ? "Y" : "N";
+      if (e.checked) row["complaint_inactive_date"] = moment()._d;
+      else row["complaint_inactive_date"] = null;
+    }
+
+    row.update();
+  }
+  onChiefComplaintRowDone(row) {
+    const _row = row;
+
+    algaehApiCall({
+      uri: "/doctorsWorkBench/updatePatientChiefComplaints",
+      method: "PUT",
+      data: { chief_complaints: [_row] },
+      onSuccess: response => {
+        if (response.data.success) {
+          swalMessage({
+            title:
+              "Complaint '" +
+              _row.chief_complaint_name +
+              "' updated successfuly",
+            type: "success"
+          });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
+  onChiefComplaintRowDelete(row) {
+    swal({
+      title: "Delete Complaint " + row.chief_complaint_name + "?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        let data = {
+          hims_f_episode_chief_complaint_id:
+            row.hims_f_episode_chief_complaint_id
+        };
+
+        algaehApiCall({
+          uri: "/doctorsWorkBench/deletePatientChiefComplaints",
+          data: data,
+          method: "DELETE",
+          onSuccess: response => {
+            if (response.data.success) {
+              swalMessage({
+                title: "Record deleted successfully . .",
+                type: "success"
+              });
+              //  this.getPatientChiefComplaintsDetails();
+              getAllChiefComplaints(this);
+              getPatientChiefComplaints(this);
+            }
+          },
+          onFailure: error => {}
+        });
+      } else {
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "error"
+        });
+      }
+    });
+  }
   render() {
     const patChiefComplain =
-      this.state.patientChiefComplains !== undefined
-        ? this.state.patientChiefComplains
+      this.props.patient_chief_complaints !== undefined
+        ? this.props.patient_chief_complaints.sort((a, b) => {
+            return (
+              b.hims_f_episode_chief_complaint_id -
+              a.hims_f_episode_chief_complaint_id
+            );
+          })
         : [];
+    const _allUnselectedChiefComp =
+      this.props.allchiefcomplaints === undefined
+        ? []
+        : this.masterChiefComplaintsSortList(
+            patChiefComplain,
+            this.props.allchiefcomplaints
+          );
 
     return (
       <React.Fragment>
@@ -615,9 +679,7 @@ class ChiefComplaints extends Component {
             <div className="popupHeader">
               <div className="row">
                 <div className="col-lg-8">
-                  <h4>
-                    <h4>Add / Edit History of Patient Illness</h4>
-                  </h4>
+                  <h4>Add / Edit History of Patient Illness</h4>
                 </div>
                 <div className="col-lg-4">
                   <button type="button" className="" onClick={this.handleClose}>
@@ -634,7 +696,7 @@ class ChiefComplaints extends Component {
                     <AlagehAutoComplete
                       div={{ className: "col-lg-12" }}
                       label={{
-                        forceLabel: "Add Chief Complaint"
+                        forceLabel: "Chief Complaint"
                       }}
                       selector={{
                         name: "hims_f_episode_chief_complaint_id",
@@ -923,453 +985,26 @@ class ChiefComplaints extends Component {
         </Modal>
         {/* HPI MOdal End */}
 
-        {/* Chief Complain Modal Start */}
-        <Modal
-          style={{
-            margin: "auto"
-          }}
-          open={this.state.openComplain}
-        >
-          <div className="algaeh-modal">
-            <div className="popupHeader">
-              <div className="row">
-                <div className="col-lg-8">
-                  <h4>Add/ Edit Chief Complaints</h4>
-                </div>
-                <div className="col-lg-4">
-                  <button type="button" className="" onClick={this.handleClose}>
-                    <i className="fas fa-times-circle" />
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div className="popupInner">
-              <div className="col-lg-12">
-                <div className="row">
-                  <div className="col-lg-4 popLeftDiv">
-                    <div className="row">
-                      <AlagehAutoComplete
-                        div={{ className: "col-lg-9" }}
-                        label={{
-                          forceLabel: "Add Chief Complaint"
-                        }}
-                        selector={{
-                          name: "chief_complaint_id",
-                          className: "select-fld",
-                          value: this.state.chief_complaint_id,
-                          dataSource: {
-                            textField: "hpi_description",
-                            valueField: "hims_d_hpi_header_id",
-                            data: this.state.masterChiefComplaints
-                          },
-                          onChange: this.addChiefComplainToPatient.bind(this)
-                        }}
-                      />
-                      <div className="col actions">
-                        <a
-                          href="javascript:;"
-                          className="btn btn-primary btn-circle active"
-                          style={{ margin: "24px 0 0" }}
-                          onClick={this.addNewChiefComplaint.bind(this)}
-                        >
-                          <i className="fas fa-plus" />
-                        </a>
-                      </div>
-
-                      <div className="col-lg-12">
-                        <h6 style={{ fontSize: " 0.9rem", marginTop: 15 }}>
-                          Doctor Chief Complaints
-                        </h6>
-                        <div className="bordered-layout">
-                          <ul>
-                            {/* patientChiefComplains */}
-
-                            {patChiefComplain.map((data, index) => (
-                              <li
-                                key={index}
-                                className={
-                                  data.chief_complaint_id ===
-                                  this.state.hims_f_episode_chief_complaint_id
-                                    ? "selectedChiefComp"
-                                    : ""
-                                }
-                                onClick={this.fillComplainDetails.bind(
-                                  this,
-                                  data
-                                )}
-                              >
-                                <i className="fa fa-check-circle" />
-
-                                <span
-                                  data-cpln-id={
-                                    data.hims_f_episode_chief_complaint_id
-                                  }
-                                  style={{
-                                    width: "80%"
-                                  }}
-                                >
-                                  {data.chief_complaint_name}
-                                </span>
-                                <i
-                                  data-cpln-id={
-                                    data.hims_f_episode_chief_complaint_id
-                                  }
-                                  className="fas fa-trash fa-1x float-right"
-                                  style={{
-                                    cursor: "pointer"
-                                  }}
-                                  onClick={this.deleteChiefComplainFromList.bind(
-                                    this
-                                  )}
-                                />
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-                      <div className="col-lg-12">
-                        <h6 style={{ fontSize: " 0.9rem", marginTop: 15 }}>
-                          Nurse Chief Complaints
-                        </h6>
-                        <div className="bordered-layout">
-                          <ul>
-                            <li>
-                              <span />
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="col-lg-8 popRightDiv">
-                    <h6> Chief Complaint: {this.state.chief_complaint_name}</h6>
-                    <hr />
-                    <div className="row">
-                      <div className="col-lg-6">
-                        <div className="row">
-                          <AlgaehDateHandler
-                            div={{ className: "col-lg-12" }}
-                            label={{ fieldName: "onset_date", isImp: true }}
-                            textBox={{
-                              className: "txt-fld",
-                              name: "onset_date"
-                            }}
-                            disabled={false}
-                            maxDate={new Date()}
-                            events={{
-                              onChange: selectedDate => {
-                                if (
-                                  Date.parse(new Date()) <
-                                  Date.parse(selectedDate)
-                                ) {
-                                  swalMessage({
-                                    title:
-                                      "Invalid Input. Cannot be grater than Today's Date.",
-                                    type: "warning"
-                                  });
-                                  return;
-                                }
-                                let duration = 0;
-                                let interval = "D";
-                                if (moment().diff(selectedDate, "days") < 31) {
-                                  duration = moment().diff(
-                                    selectedDate,
-                                    "days"
-                                  );
-                                  interval = "D";
-                                } else if (
-                                  moment().diff(selectedDate, "months") < 12
-                                ) {
-                                  duration = moment().diff(
-                                    selectedDate,
-                                    "months"
-                                  );
-                                  interval = "M";
-                                } else if (
-                                  moment().diff(selectedDate, "years")
-                                ) {
-                                  duration = moment().diff(
-                                    selectedDate,
-                                    "years"
-                                  );
-                                  interval = "Y";
-                                }
-
-                                this.setState(
-                                  {
-                                    onset_date: selectedDate,
-                                    duration: duration,
-                                    interval: interval
-                                  },
-                                  () => {
-                                    debugger;
-                                    this.settingUpdateChiefComplaints({
-                                      currentTarget: {
-                                        name: "onset_date",
-                                        value: selectedDate
-                                      }
-                                    });
-                                  }
-                                );
-                              }
-                            }}
-                            value={this.state.onset_date}
-                          />
-
-                          <div className="col-lg-12 durationCntr">
-                            <label
-                              className="style_Label"
-                              style={{ width: "100%", marginBottom: "4px" }}
-                            >
-                              Duration
-                              <span className="imp">&nbsp;*</span>
-                            </label>
-                            <AlagehFormGroup
-                              div={{ className: "divDur" }}
-                              textBox={{
-                                className: "txt-fld",
-                                name: "duration",
-                                number: true,
-                                value: this.state.duration,
-                                events: {
-                                  onChange: this.calculateDurationDate.bind(
-                                    this
-                                  )
-                                }
-                              }}
-                            />
-
-                            <AlagehAutoComplete
-                              div={{ className: "divDay" }}
-                              selector={{
-                                name: "interval",
-                                className: "select-fld",
-                                value: this.state.interval,
-                                dataSource: {
-                                  textField: "name",
-                                  valueField: "value",
-                                  data: GlobalVariables.PAIN_DURATION
-                                },
-                                onChange: this.dropDownHandle.bind(this)
-                              }}
-                            />
-                          </div>
-
-                          <AlagehAutoComplete
-                            div={{ className: "col-lg-12" }}
-                            label={{
-                              fieldName: "pain_severity"
-                            }}
-                            selector={{
-                              name: "severity",
-                              className: "select-fld",
-                              value: this.state.severity,
-                              dataSource: {
-                                textField: "name",
-                                valueField: "value",
-                                data: GlobalVariables.PAIN_SEVERITY
-                              },
-
-                              onChange: this.dropDownHandle.bind(this)
-                            }}
-                          />
-                        </div>
-                      </div>
-                      <div
-                        className="col-lg-6"
-                        style={{ padding: "0 15px 0 0" }}
-                      >
-                        <div className="row pain_slider">
-                          <div className="col-lg-12">
-                            <Slider
-                              step={2}
-                              min={0}
-                              max={10}
-                              value={this.state.score}
-                              // onChangeStart={this.handleChangeStart}
-                              onChange={this.handleChange}
-                              //  onChangeComplete={this.handleChangeComplete}
-                            />
-
-                            <ul className="pain-scale-ul">
-                              <li
-                                className="pain-1"
-                                paintab="0"
-                                pain-type="NH"
-                                onClick={this.setPainScale.bind(this, 0)}
-                              />
-                              <li
-                                className="pain-2"
-                                paintab="2"
-                                pain-type="HLB"
-                                onClick={this.setPainScale.bind(this, 2)}
-                              />
-                              <li
-                                className="pain-3"
-                                paintab="4"
-                                pain-type="HLM"
-                                onClick={this.setPainScale.bind(this, 4)}
-                              />
-                              <li
-                                className="pain-4"
-                                paintab="6"
-                                pain-type="HEM"
-                                onClick={this.setPainScale.bind(this, 6)}
-                              />
-                              <li
-                                className="pain-5"
-                                paintab="8"
-                                pain-type="HWL"
-                                onClick={this.setPainScale.bind(this, 8)}
-                              />
-                              <li
-                                className="pain-6"
-                                paintab="10"
-                                pain-type="HW"
-                                onClick={this.setPainScale.bind(this, 10)}
-                              />
-                            </ul>
-                          </div>
-                          <div className="col-lg-12">
-                            <div className="row">
-                              <AlagehFormGroup
-                                div={{ className: "col-lg-5" }}
-                                label={{
-                                  forceLabel: "Score",
-                                  isImp: false
-                                }}
-                                textBox={{
-                                  className: "txt-fld",
-                                  name: "score",
-                                  number: true,
-                                  others: {
-                                    disabled: true
-                                  },
-                                  value: this.state.score,
-                                  events: {}
-                                }}
-                              />
-                              <AlagehAutoComplete
-                                div={{ className: "col-lg-7" }}
-                                label={{
-                                  forceLabel: "Pain",
-                                  isImp: true
-                                }}
-                                selector={{
-                                  name: "pain",
-                                  className: "select-fld",
-                                  value: this.state.pain,
-                                  dataSource: {
-                                    textField: "name",
-                                    valueField: "value",
-                                    data: GlobalVariables.PAIN_SCALE
-                                  },
-                                  onChange: this.dropDownHandle.bind(this)
-                                }}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <hr />
-                    <div className="row">
-                      <div className="col">
-                        <input
-                          type="checkbox"
-                          id="chronic"
-                          checked={this.state.chronic === "Y" ? true : false}
-                          onChange={this.chronicCheckBoxHandler.bind(this)}
-                        />
-                        <label htmlFor="chronic">&nbsp;Chronic</label>
-                      </div>
-                      <div className="col">
-                        <input
-                          type="checkbox"
-                          id="complaint_inactive"
-                          checked={
-                            this.state.complaint_inactive === "Y" ? true : false
-                          }
-                          onChange={this.inactiveCheckBoxHandler.bind(this)}
-                        />
-                        <label htmlFor="complaint_inactive">
-                          &nbsp;Inactive
-                        </label>
-                      </div>
-
-                      <AlgaehDateHandler
-                        div={{ className: "col" }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "inactive_date"
-                        }}
-                        maxDate={new Date()}
-                        disabled={true}
-                        events={{
-                          onChange: () => {}
-                        }}
-                        value={this.state.complaint_inactive_date}
-                      />
-
-                      <AlagehFormGroup
-                        div={{ className: "col-lg-12" }}
-                        label={{
-                          fieldName: "comments",
-                          isImp: false
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "comment",
-                          others: {
-                            multiline: true,
-                            rows: "4"
-                          },
-                          value: this.state.comment,
-                          events: {
-                            onChange: this.texthandle.bind(this)
-                          }
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="popupFooter">
-              <div className="col">
-                <div className="row">
-                  <div className="col-lg-12">
-                    <button
-                      type="button"
-                      className="btn btn-default"
-                      onClick={this.handleClose}
-                    >
-                      Close
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </Modal>
-        {/* Chief Complain Modal End */}
-
         {/* BEGIN Portlet PORTLET */}
         <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
           <div className="portlet-title">
             <div className="caption">
               <h3 className="caption-subject">Chief Complaint</h3>
             </div>
-            <div className="actions">
-              <a
-                href="javascript:;"
-                className="btn btn-primary btn-circle active"
-                onClick={this.openChiefComplainModal.bind(this)}
-              >
-                <i className="fas fa-plus" />
-              </a>
+            <div>
+              <AlagehAutoComplete
+                selector={{
+                  name: "chief_complaint_id",
+                  className: "select-fld",
+                  value: this.state.chief_complaint_id,
+                  dataSource: {
+                    textField: "hpi_description",
+                    valueField: "hims_d_hpi_header_id",
+                    data: _allUnselectedChiefComp
+                  },
+                  onChange: this.addChiefComplainToPatient.bind(this)
+                }}
+              />
             </div>
           </div>
           <div className="portlet-body">
@@ -1378,36 +1013,20 @@ class ChiefComplaints extends Component {
                 id="complaint-grid"
                 columns={[
                   {
-                    fieldName: "actions",
-                    label: <AlgaehLabel label={{ fieldName: "actions" }} />,
-                    displayTemplate: data => {
+                    fieldName: "hpi_view",
+                    label: "HPI",
+                    displayTemplate: row => {
                       return (
-                        <span>
-                          <i
-                            className="fas fa-pen"
-                            onClick={this.openChiefComplainModal.bind(
-                              this,
-                              data
-                            )}
-                          />
-
-                          <i
-                            className="fas fa-file-prescription"
-                            onClick={this.openHPIAddModal.bind(this, data)}
-                          />
-
-                          <i
-                            className="fas fa-trash-alt"
-                            onClick={this.deleteChiefComplaintFromGrid.bind(
-                              this,
-                              data
-                            )}
-                          />
-                        </span>
+                        <i
+                          className="fas fa-file-prescription"
+                          onClick={this.openHPIAddModal.bind(this, row)}
+                        />
                       );
                     },
+                    disabled: true,
                     others: {
-                      fixed: "left"
+                      fixed: "left",
+                      resizable: false
                     }
                   },
                   {
@@ -1415,10 +1034,10 @@ class ChiefComplaints extends Component {
                     label: (
                       <AlgaehLabel label={{ fieldName: "complaint_name" }} />
                     ),
+                    disabled: true,
                     others: {
-                      maxWidth: 200,
-                      resizable: false,
-                      style: { textAlign: "center" }
+                      style: { textAlign: "center" },
+                      fixed: "left"
                     }
                   },
                   {
@@ -1442,22 +1061,51 @@ class ChiefComplaints extends Component {
                           )}
                         </span>
                       );
+                    },
+                    editorTemplate: row => {
+                      return (
+                        <AlagehAutoComplete
+                          selector={{
+                            name: "pain",
+                            className: "select-fld",
+                            value: row.pain,
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: GlobalVariables.PAIN_SCALE
+                            },
+                            onChange: this.gridLevelUpdate.bind(this, row)
+                          }}
+                        />
+                      );
                     }
                   },
                   {
                     fieldName: "severity",
                     label: <AlgaehLabel label={{ fieldName: "severity" }} />,
                     displayTemplate: data => {
+                      const _serv = Enumerable.from(
+                        GlobalVariables.PAIN_SEVERITY
+                      )
+                        .where(w => w.value === data.severity)
+                        .firstOrDefault().name;
+                      return <span>{_serv}</span>;
+                    },
+                    editorTemplate: row => {
                       return (
-                        <span>
-                          {data.severity === "MI" ? (
-                            <span> Mild</span>
-                          ) : data.severity === "MO" ? (
-                            <span> Moderate</span>
-                          ) : (
-                            <span> Severe</span>
-                          )}
-                        </span>
+                        <AlagehAutoComplete
+                          selector={{
+                            name: "severity",
+                            className: "select-fld",
+                            value: row.severity,
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: GlobalVariables.PAIN_SEVERITY
+                            },
+                            onChange: this.gridLevelUpdate.bind(this, row)
+                          }}
+                        />
                       );
                     }
                   },
@@ -1465,29 +1113,161 @@ class ChiefComplaints extends Component {
                     fieldName: "onset_date",
                     label: <AlgaehLabel label={{ fieldName: "onset_date" }} />,
                     displayTemplate: data => {
-                      console.log("Onset Date", data.onset_date);
                       return new Date(data.onset_date).toLocaleDateString();
+                    },
+                    editorTemplate: row => {
+                      return (
+                        <AlgaehDateHandler
+                          textBox={{
+                            className: "txt-fld",
+                            name: "onset_date"
+                          }}
+                          maxDate={new Date()}
+                          events={{
+                            onChange: this.gridLevelUpdate.bind(this, row)
+                          }}
+                          singleOutput={true}
+                          value={row.onset_date}
+                        />
+                      );
                     }
                   },
                   {
                     fieldName: "duration",
-                    label: <AlgaehLabel label={{ fieldName: "duration" }} />
+                    label: <AlgaehLabel label={{ fieldName: "duration" }} />,
+                    editorTemplate: row => {
+                      return (
+                        <AlagehFormGroup
+                          textBox={{
+                            className: "txt-fld",
+                            name: "duration",
+                            number: true,
+                            value: row.duration,
+                            events: {
+                              onChange: this.gridLevelUpdate.bind(this, row)
+                            },
+                            others: {
+                              min: 0
+                            }
+                          }}
+                        />
+                      );
+                    }
                   },
                   {
                     fieldName: "interval",
                     label: <AlgaehLabel label={{ fieldName: "interval" }} />,
                     displayTemplate: data => {
-                      return data.interval === "H"
-                        ? "Hour(s)"
-                        : data.interval === "D"
-                          ? "Day(s)"
-                          : data.interval === "W"
-                            ? "Week(s)"
-                            : data.interval === "M"
-                              ? "Month(s)"
-                              : data.interval === "Y"
-                                ? "Year(s)"
-                                : "";
+                      return Enumerable.from(GlobalVariables.PAIN_DURATION)
+                        .where(w => w.value === data.interval)
+                        .firstOrDefault().name;
+                    },
+
+                    editorTemplate: row => {
+                      return (
+                        <AlagehAutoComplete
+                          selector={{
+                            name: "interval",
+                            className: "select-fld",
+                            value: row.interval,
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: GlobalVariables.PAIN_DURATION
+                            },
+                            onChange: this.gridLevelUpdate.bind(this, row)
+                          }}
+                        />
+                      );
+                    }
+                  },
+                  {
+                    fieldName: "chronic",
+                    label: (
+                      <AlgaehLabel
+                        label={{ fieldName: "chronic", forceLabel: "Chronic" }}
+                      />
+                    ),
+                    displayTemplate: row => {
+                      const _chronic = row.chronic === "N" ? "No" : "Yes";
+                      return <span>{_chronic}</span>;
+                    },
+                    editorTemplate: row => {
+                      const _chronic = row.chronic === "N" ? false : true;
+                      return (
+                        <input
+                          type="checkbox"
+                          name="chronic"
+                          checked={_chronic}
+                          onChange={this.gridLevelUpdate.bind(this, row)}
+                        />
+                      );
+                    }
+                  },
+                  {
+                    fieldName: "complaint_inactive_date",
+                    label: (
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "complaint_inactive_date",
+                          forceLabel: "Inactive"
+                        }}
+                      />
+                    ),
+                    displayTemplate: row => {
+                      const _inactive =
+                        row.complaint_inactive === "N" ? "No" : "Yes";
+                      return <span>{_inactive}</span>;
+                    },
+                    editorTemplate: row => {
+                      const _inactive =
+                        row.complaint_inactive === "N" ? false : true;
+                      return (
+                        <input
+                          type="checkbox"
+                          name="complaint_inactive"
+                          checked={_inactive}
+                          onChange={this.gridLevelUpdate.bind(this, row)}
+                        />
+                      );
+                    }
+                  },
+                  {
+                    fieldName: "complaint_inactive_date",
+                    label: "Inactive Date",
+                    displayTemplate: row => {
+                      const _inactive_date =
+                        row.complaint_inactive_date !== null
+                          ? new Date(
+                              String(row.complaint_inactive_date)
+                            ).toLocaleDateString()
+                          : "";
+                      return <span>{_inactive_date}</span>;
+                    },
+                    disabled: true
+                  },
+                  {
+                    fieldName: "comment",
+                    label: "Comments",
+                    displayTemplate: row => {
+                      return <span>{row.comment}</span>;
+                    },
+                    editorTemplate: row => {
+                      return (
+                        <AlagehFormGroup
+                          textBox={{
+                            name: "comment",
+                            others: {
+                              multiline: true,
+                              rows: "4"
+                            },
+                            value: row.comment,
+                            events: {
+                              onChange: this.gridLevelUpdate.bind(this, row)
+                            }
+                          }}
+                        />
+                      );
                     }
                   }
                 ]}
@@ -1496,12 +1276,12 @@ class ChiefComplaints extends Component {
                 dataSource={{
                   data: this.props.patient_chief_complaints
                 }}
-                isEditable={false}
+                isEditable={true}
                 paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
-                  onDelete: row => {},
-                  onEdit: row => {},
-                  onDone: row => {}
+                  onEdit: () => {},
+                  onDelete: this.onChiefComplaintRowDelete.bind(this),
+                  onDone: this.onChiefComplaintRowDone.bind(this)
                 }}
               />
             </div>

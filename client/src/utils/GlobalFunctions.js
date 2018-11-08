@@ -213,11 +213,21 @@ export function AlgaehValidation(options) {
   const _Validateerror = _rootValidationElement.querySelectorAll("[required]");
   for (let i = 0; i < _Validateerror.length; i++) {
     let _checkVal = _Validateerror[i].getAttribute("checkvalidation");
-    _checkVal = _checkVal === null ? "" : _checkVal;
-    if (
-      _Validateerror[i].value === null ||
-      _Validateerror[i].value === _checkVal
-    ) {
+    if (_checkVal !== null) {
+      const _val =
+        _Validateerror[i].value === "" ? "''" : _Validateerror[i].value;
+      _checkVal = _checkVal.replace(/\$value/g, _val);
+    }
+    debugger;
+    let _evalConditions = null;
+    if (_checkVal === null) {
+      if (_Validateerror[i].value === "") _evalConditions = true;
+      else _evalConditions = false;
+    } else {
+      _evalConditions = _checkVal;
+    }
+
+    if (eval(_evalConditions)) {
       let _title = _Validateerror[i].getAttribute("errormessage");
 
       const _langua = getCookie("Language");

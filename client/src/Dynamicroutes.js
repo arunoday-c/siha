@@ -56,6 +56,7 @@ import Reports from "./Components/Reports/Reports";
 
 import WorkListGeneration from "./Components/InsuranceClaims/WorkListGeneration/WorkListGeneration";
 import RCMDesktop from "./Components/InsuranceClaims/RCMDesktop/RCMDesktop";
+import StaffCashCollection from "./Components/StaffCashCollection/StaffCashCollection";
 
 // function height() {
 //   let height =
@@ -119,7 +120,8 @@ const componts = (selectedLang, breadStyle) => {
     RequisitionList: <RequisitionSwitch SelectLanguage={selectedLang} />,
     ReportsList: <Reports SelectLanguage={selectedLang} />,
     WorkListGeneration: <WorkListGeneration SelectLanguage={selectedLang} />,
-    RCMDesktop: <RCMDesktop SelectLanguage={selectedLang} />
+    RCMDesktop: <RCMDesktop SelectLanguage={selectedLang} />,
+    StaffCashCollection: <StaffCashCollection SelectLanguage={selectedLang} />
   };
 };
 

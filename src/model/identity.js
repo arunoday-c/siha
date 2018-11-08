@@ -155,7 +155,7 @@ let selectIdentity = (req, res, next) => {
         query:
           "SELECT `hims_d_identity_document_id`, `identity_document_code`, `identity_document_name`, `arabic_identity_document_name`, `identity_status`\
           ,`created_by`, `created_date`, `updated_by`, `updated_date`,`identity_status` FROM `hims_d_identity_document` WHERE record_status ='A' AND " +
-          condition.condition,
+          condition.condition+" order by hims_d_identity_document_id desc",
         values: condition.values
       },
       result => {

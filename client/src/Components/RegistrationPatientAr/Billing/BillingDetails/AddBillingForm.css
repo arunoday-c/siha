@@ -2,21 +2,24 @@
   background: #fff;
   border-radius: 5px; }
 
-.hptl-phase1-add-billing-form .primary-details {
-  padding: 10px; }
-  .hptl-phase1-add-billing-form .primary-details .primary-box-container {
-    padding-top: 6px;
-    padding-left: 10px; }
-  .hptl-phase1-add-billing-form .primary-details .last-box-container {
-    padding: 5px; }
-  .hptl-phase1-add-billing-form .primary-details .last-box-label {
-    padding: 15px;
-    font-weight: 600;
-    font-size: 15px; }
+.hptl-phase1-add-billing-form .primary-details .primary-box-container {
+  padding-top: 0;
+  padding-left: 0; }
+
+.hptl-phase1-add-billing-form .primary-details .last-box-container {
+  padding: 5px; }
+
+.hptl-phase1-add-billing-form .primary-details .last-box-label {
+  padding: 15px;
+  font-weight: 600;
+  font-size: 15px; }
 
 .hptl-phase1-add-billing-form .Paper {
   border: 1px solid #5f5f5f;
-  min-height: 43vh; }
+  min-height: 43vh;
+  border: 1px solid #acaaaa;
+  padding: 0.8rem;
+  border-radius: 10px; }
 
 .hptl-phase1-add-billing-form .Paper-secondary {
   border: 1px solid #5f5f5f; }
@@ -55,10 +58,8 @@
   border-radius: 5px;
   border: 1px solid #d3d3d3; }
 
-.hptl-phase1-add-billing-form .secondary-details {
-  padding: 10px; }
-  .hptl-phase1-add-billing-form .secondary-details .secondary-box-container {
-    padding: 8px; }
+.hptl-phase1-add-billing-form .secondary-details .secondary-box-container {
+  padding: 0.2rem 0; }
 
 .totalAmt {
   background: #44b8bd;

@@ -1,3 +1,6 @@
+import { swalMessage } from "../../../../utils/algaehApiCall";
+import Enumerable from "linq";
+
 const texthandle = ($this, ctrl, e) => {
   e = e || ctrl;
   let name = e.name || e.target.name;
@@ -44,40 +47,52 @@ const stockingtexthandle = ($this, ctrl, e) => {
 };
 
 const AddUom = ($this, context) => {
+  debugger;
   let isError = false;
-  let StockingExit = false;
+
   let stocking_uom_id = null;
   if ($this.state.uom_id === null) {
     isError = true;
-    $this.setState({
-      open: true,
-      MandatoryMsg: "Invalid Input. Select UOM."
+
+    swalMessage({
+      type: "warning",
+      title: "Invalid Input. Select UOM."
     });
+
     return isError;
   } else if ($this.state.conversion_factor === 0) {
     isError = true;
-    $this.setState({
-      open: true,
-      MandatoryMsg: "Invalid Input. Define Conversion Factor."
+
+    swalMessage({
+      type: "warning",
+      title: "Invalid Input. Define Conversion Factor."
     });
     return isError;
   } else if ($this.state.stocking_uom === null) {
     isError = true;
-    $this.setState({
-      open: true,
-      MandatoryMsg: "Invalid Input. Select Stocking Uom."
+
+    swalMessage({
+      type: "warning",
+      title: "Invalid Input. Select Stocking Uom."
     });
+
     return isError;
   } else {
     let detail_item_uom = $this.state.detail_item_uom;
     let insertItemUomMap = $this.state.insertItemUomMap;
 
-    for (let x = 0; x < detail_item_uom.length; x++) {
-      if (detail_item_uom[x].stocking_uom === $this.state.stocking_uom) {
-        StockingExit = true;
-      }
-    }
-    if (StockingExit === false) {
+    let StockingExit = Enumerable.from(
+      detail_item_uom.length !== 0 ? detail_item_uom : null
+    )
+      .where(w => w.stocking_uom === "Y")
+      .toArray();
+
+    // for (let x = 0; x < detail_item_uom.length; x++) {
+    //   if (detail_item_uom[x].stocking_uom === $this.state.stocking_uom) {
+    //     StockingExit = true;
+    //   }
+    // }
+    if (StockingExit.length !== 0 && $this.state.stocking_uom === "N") {
       if ($this.state.stocking_uom === "Y") {
         stocking_uom_id = $this.state.uom_id;
       } else {
@@ -124,10 +139,11 @@ const AddUom = ($this, context) => {
       }
     } else {
       isError = true;
-      $this.setState({
-        open: true,
-        MandatoryMsg: "Invalid Input. Only one should be stocking UOM"
+      swalMessage({
+        type: "warning",
+        title: "Invalid Input. Only one should be stocking UOM"
       });
+
       return isError;
     }
   }

@@ -676,7 +676,7 @@ class AddPatientForm extends PureComponent {
                       className="row secondary-box-container"
                       style={{ paddingTop: "5px" }}
                     >
-                      <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                      <div className="col-lg-5">
                         <div className="image-drop-area">
                           <Dropzone
                             onDrop={onDrop.bind(
@@ -710,7 +710,7 @@ class AddPatientForm extends PureComponent {
                         
                         </div> */}
                       </div>
-                      <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                      <div className="col-lg-7">
                         <div className="image-drop-area">
                           <Dropzone
                             className="dropzone"
@@ -826,7 +826,8 @@ function mapStateToProps(state) {
     patients: state.patients,
     visatypes: state.visatypes,
     patienttype: state.patienttype,
-    hospitaldetails: state.hospitaldetails
+    hospitaldetails: state.hospitaldetails,
+    genbill: state.genbill
   };
 }
 
@@ -842,7 +843,9 @@ function mapDispatchToProps(dispatch) {
       getStates: AlgaehActions,
       getVisatypes: AlgaehActions,
       getPatientType: AlgaehActions,
-      getHospitalDetails: AlgaehActions
+      getHospitalDetails: AlgaehActions,
+      generateBill: AlgaehActions,
+      billingCalculations: AlgaehActions
     },
     dispatch
   );

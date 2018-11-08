@@ -29,7 +29,9 @@ export default ({ config, db }) => {
       let connection = req.connection;
       connection.commit(error => {
         debugLog("error", error);
+        debugLog("commit error", error);
         if (error) {
+          debugLog("roll error", error);
           connection.rollback(() => {
             next(error);
           });

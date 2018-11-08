@@ -193,17 +193,17 @@ class SampleCollectionPatient extends PureComponent {
                                       ) : (
                                         <i
                                           className="fas fa-barcode"
-                                          onClick={CollectSample.bind(
-                                            this,
-                                            this,
-                                            context,
-                                            row
-                                          )}
-                                          // onClick={printBarcode.bind(
+                                          // onClick={CollectSample.bind(
                                           //   this,
                                           //   this,
+                                          //   context,
                                           //   row
                                           // )}
+                                          onClick={printBarcode.bind(
+                                            this,
+                                            this,
+                                            row
+                                          )}
                                         />
                                       )}
                                     </span>

@@ -176,10 +176,23 @@ export function algaehApiCall(options) {
             });
           } else {
             if (typeof settings.onFailure === "function") {
-              if (err.response !== undefined) {
-                err.response.data.message = clearSqlMessage(
-                  err.response.data.message
-                );
+              if (
+                err.response !== undefined &&
+                err.response.data !== undefined
+              ) {
+                if (err.response.data.message !== undefined) {
+                  err.response.data.message = clearSqlMessage(
+                    err.response.data.message
+                  );
+                } else {
+                  err = {
+                    response: {
+                      data: {
+                        message: err.response.statusText
+                      }
+                    }
+                  };
+                }
               }
 
               settings.onFailure(err);

@@ -40,6 +40,15 @@
       padding: 3px 6px !important; }
       .doctor_workbench .my-calendar .myDay_date button svg {
         height: 16px; }
+    .doctor_workbench .my-calendar .myDay_date .todayBtn {
+      margin-left: 10px;
+      padding: 3px 10px;
+      border: 1px solid white;
+      background: none;
+      color: #fff; }
+    .doctor_workbench .my-calendar .myDay_date .todayBtn:hover {
+      background: #fff;
+      color: #34b8bc; }
   .doctor_workbench .my-calendar .arrow-box {
     width: 60px;
     cursor: pointer; }
@@ -74,7 +83,7 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  height: 66vh;
+  height: 65.5vh;
   overflow: auto; }
   .doctor_workbench .opPatientList .opList .noPatientDiv {
     margin-top: 15%;
@@ -143,7 +152,7 @@
     cursor: pointer; }
 
 .doctor_workbench #encounter_table .ReactTable {
-  max-height: 66vh !important; }
+  max-height: 65.5vh !important; }
 
 .doctor_workbench .bottom-layout {
   padding: 5px; }

@@ -8,7 +8,6 @@ import extend from "extend";
 import httpStatus from "../../utils/httpStatus";
 import { debugFunction, debugLog } from "../../utils/logging";
 
-
 //created by irfan: to add in itemMaster
 let addItemMaster = (req, res, next) => {
   try {
@@ -1151,6 +1150,121 @@ let addItemStorage = (req, res, next) => {
   }
 };
 
+//Location Permission
+//created by Nowshad: to add Location Permission
+let addLocationPermission = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT INTO `hims_m_location_permission` (`user_id`, `location_id`, `allow`,`created_date`,`created_by`)\
+        VALUE(?,?,?,?,?)",
+        [
+          input.user_id,
+          input.location_id,
+          input.allow,
+          new Date(),
+          input.created_by
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by Nowshad: to get Location Permission
+let getLocationPermission = (req, res, next) => {
+  let selectWhere = {
+    hims_m_location_permission_id: "ALL"
+  };
+
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let where = whereCondition(extend(selectWhere, req.query));
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select * FROM hims_m_location_permission where record_status='A' AND" +
+          where.condition,
+        where.values,
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by Nowshad: to update Location Permission
+let updateLocationPermission = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "UPDATE `hims_m_location_permission` SET `user_id`=?, `location_id`=?,\
+        `allow`=?, `updated_date`=?, `updated_by`=?, `record_status`=?\
+        WHERE `hims_m_location_permission_id`=? and `record_status`='A';",
+        [
+          input.user_id,
+          input.location_id,
+          input.allow,
+          new Date(),
+          input.updated_by,
+          input.record_status,
+          input.hims_m_location_permission_id
+        ],
+        (error, result) => {
+          connection.release();
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addItemMaster,
   addItemCategory,
@@ -1160,6 +1274,7 @@ module.exports = {
   addPharmacyLocation,
   addItemForm,
   addItemStorage,
+  addLocationPermission,
 
   getItemMaster,
   getItemCategory,
@@ -1169,6 +1284,7 @@ module.exports = {
   getPharmacyLocation,
   getItemStorage,
   getItemForm,
+  getLocationPermission,
 
   updateItemCategory,
   updateItemGroup,
@@ -1178,5 +1294,6 @@ module.exports = {
   updateItemForm,
   updateItemStorage,
   getItemMasterAndItemUom,
-  updateItemMasterAndUom
+  updateItemMasterAndUom,
+  updateLocationPermission
 };

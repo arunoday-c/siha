@@ -20,7 +20,7 @@ class Reports extends Component {
   //   if (this.state.module.length === 0) {
   //     swalMessage({
   //       title: "Please Select a Category",
-  //       type: "warning"
+  //       type: "warning "
   //     });
   //   } else {
   //   }

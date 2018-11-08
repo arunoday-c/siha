@@ -5,7 +5,6 @@ import { bindActionCreators } from "redux";
 import Modal from "@material-ui/core/Modal";
 import RichTextEditor from "react-quill";
 import "react-quill/dist/quill.snow.css";
-
 import "./RadResultEntry.css";
 import "./../../../styles/site.css";
 import {
@@ -13,7 +12,6 @@ import {
   AlgaehDateHandler,
   AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
-
 import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../Options.json";
@@ -44,14 +42,32 @@ class RadResultEntry extends Component {
   }
 
   componentDidMount() {
-    this.props.getUserDetails({
-      uri: "/algaehappuser/selectAppUsers",
-      method: "GET",
-      redux: {
-        type: "RAD_EMP_GET_DATA",
-        mappingName: "radiologyusers"
-      }
-    });
+    if (
+      this.props.radiologyusers === undefined ||
+      this.props.radiologyusers.length === 0
+    ) {
+      this.props.getUserDetails({
+        uri: "/algaehappuser/selectAppUsers",
+        method: "GET",
+        redux: {
+          type: "RAD_EMP_GET_DATA",
+          mappingName: "radiologyusers"
+        }
+      });
+    }
+    if (
+      this.props.providers === undefined ||
+      this.props.providers.length === 0
+    ) {
+      this.props.getProviderDetails({
+        uri: "/employee/get",
+        method: "GET",
+        redux: {
+          type: "DOCTOR_GET_DATA",
+          mappingName: "providers"
+        }
+      });
+    }
   }
   componentWillReceiveProps(newProps) {
     debugger;
@@ -78,6 +94,12 @@ class RadResultEntry extends Component {
     }
   }
   render() {
+    let display =
+      this.props.providers === undefined
+        ? []
+        : this.props.providers.filter(
+            f => f.hims_d_employee_id === this.state.ordered_by
+          );
     return (
       <div>
         <Modal className="model-set" open={this.props.open}>
@@ -121,10 +143,15 @@ class RadResultEntry extends Component {
                 </div>
                 <div className="patientDemographic">
                   <span>
-                    Ref by: <b>{this.state.ordered_by}</b>
+                    Ref by:{" "}
+                    <b>
+                      {display !== null && display.length !== 0
+                        ? display[0].full_name
+                        : ""}
+                    </b>
                   </span>
                   <span>
-                    Scheduled Date:
+                    Scheduled Date:{" "}
                     <b>
                       {moment(this.state.scheduled_date_time).format(
                         Options.dateFormat
@@ -350,34 +377,31 @@ class RadResultEntry extends Component {
                       />
                     </div>
 
-                    <div className="row form-row-gap">
-                      <div className="form-row-gap">
-                        <div className="col-lg-12 editor">
-                          <RichTextEditor
-                            value={this.state.template_html}
-                            onChange={rtehandle.bind(this, this)}
-                            modules={{
-                              toolbar: [
-                                [{ header: [1, 2, false] }],
-                                [
-                                  "bold",
-                                  "italic",
-                                  "underline",
-                                  "strike",
-                                  "blockquote",
-                                  { list: "ordered" },
-                                  { list: "bullet" },
-                                  { indent: "-1" },
-                                  { indent: "+1" },
-                                  "image",
-                                  { color: [] },
-                                  { background: [] }
-                                ]
+                    <div className="row">
+                      <div className="col-lg-12 editor">
+                        <RichTextEditor
+                          value={this.state.template_html}
+                          onChange={rtehandle.bind(this, this)}
+                          modules={{
+                            toolbar: [
+                              [{ header: [1, 2, false] }],
+                              [
+                                "bold",
+                                "italic",
+                                "underline",
+                                "strike",
+                                "blockquote",
+                                { list: "ordered" },
+                                { list: "bullet" },
+                                { indent: "-1" },
+                                { indent: "+1" },
+                                "image",
+                                { color: [] },
+                                { background: [] }
                               ]
-                            }}
-                            style={{ minHeight: "90vh" }}
-                          />
-                        </div>
+                            ]
+                          }}
+                        />
                       </div>
                     </div>
                   </div>
@@ -385,23 +409,29 @@ class RadResultEntry extends Component {
               </div>
             </div>
             <div className="popupFooter">
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={onvalidate.bind(this, this)}
-                disabled={this.state.status === "RA" ? true : false}
-              >
-                Validate
-              </button>
-              <button
-                type="button"
-                className="btn btn-default"
-                onClick={e => {
-                  this.onClose(e);
-                }}
-              >
-                Cancel
-              </button>
+              <div className="col-lg-12">
+                <div className="row">
+                  <div className="col-lg-12">
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={onvalidate.bind(this, this)}
+                      disabled={this.state.status === "RA" ? true : false}
+                    >
+                      Validate
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-default"
+                      onClick={e => {
+                        this.onClose(e);
+                      }}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </Modal>
@@ -413,7 +443,8 @@ class RadResultEntry extends Component {
 function mapStateToProps(state) {
   return {
     radschlist: state.radschlist,
-    radiologyusers: state.radiologyusers
+    radiologyusers: state.radiologyusers,
+    providers: state.providers
   };
 }
 
@@ -421,7 +452,8 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getRadiologyTestList: AlgaehActions,
-      getUserDetails: AlgaehActions
+      getUserDetails: AlgaehActions,
+      getProviderDetails: AlgaehActions
     },
     dispatch
   );

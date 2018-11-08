@@ -112,7 +112,9 @@ class RegistrationPatient extends PureComponent {
           clearEnable: true,
           consultation: "Y",
           appointment_patient: "Y",
-          billdetail: false
+          billdetail: false,
+          hims_f_patient_appointment_id: this.state
+            .hims_f_patient_appointment_id
         },
         () => {
           if (this.props.fromAppoinment === true) {
@@ -271,6 +273,7 @@ class RegistrationPatient extends PureComponent {
   };
 
   componentWillReceiveProps(nextProps) {
+    debugger;
     if (
       nextProps.genbill !== undefined &&
       nextProps.genbill.length !== 0 &&
@@ -293,6 +296,8 @@ class RegistrationPatient extends PureComponent {
         : this.props.fromAppoinment;
 
     let department_id = this.props.department_id || null;
+    let hims_f_patient_appointment_id =
+      this.props.hims_f_patient_appointment_id || null;
     AlgaehLoader({ show: true });
     this.props.getPatientDetails({
       uri: "/frontDesk/get",
@@ -325,6 +330,7 @@ class RegistrationPatient extends PureComponent {
             data.patientRegistration.billdetail = false;
             data.patientRegistration.consultation = "Y";
             data.patientRegistration.appointment_patient = "Y";
+            data.patientRegistration.hims_f_patient_appointment_id = hims_f_patient_appointment_id;
           }
           //Appoinment End
           data.patientRegistration.filePreview =
@@ -365,6 +371,7 @@ class RegistrationPatient extends PureComponent {
               data.patientRegistration.billdetail = false;
               data.patientRegistration.consultation = "Y";
               data.patientRegistration.appointment_patient = "Y";
+              data.patientRegistration.hims_f_patient_appointment_id = hims_f_patient_appointment_id;
             }
             //Appoinment End
             data.patientRegistration.filePreview =

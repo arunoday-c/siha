@@ -30,9 +30,11 @@ let algaehSearchConfig = searchName => {
       {
         searchName: "insurance",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS Ins.hims_d_insurance_provider_id,Ins.insurance_provider_name,sIns.hims_d_insurance_sub_id, \
-          sIns.insurance_sub_name,net.hims_d_insurance_network_id,  net.network_type, netoff.hims_d_insurance_network_office_id, \
-          netoff.policy_number from (((hims_d_insurance_network_office netoff INNER JOIN  hims_d_insurance_network net \
+          "select SQL_CALC_FOUND_ROWS Ins.hims_d_insurance_provider_id,Ins.insurance_provider_name, Ins.effective_end_date,\
+          sIns.hims_d_insurance_sub_id, sIns.insurance_sub_name,\
+          net.hims_d_insurance_network_id,  net.network_type, net.effective_start_date as net_effective_start_date, net.effective_end_date as net_effective_end_date, \
+          netoff.hims_d_insurance_network_office_id, netoff.policy_number from \
+          (((hims_d_insurance_network_office netoff INNER JOIN  hims_d_insurance_network net \
           ON netoff.network_id=net.hims_d_insurance_network_id)INNER JOIN hims_d_insurance_sub sIns ON \
           net.insurance_sub_id=sIns.hims_d_insurance_sub_id)INNER JOIN hims_d_insurance_provider Ins ON \
           sIns.insurance_provider_id=Ins.hims_d_insurance_provider_id) where netoff.record_status='A' ",
@@ -59,6 +61,13 @@ let algaehSearchConfig = searchName => {
         searchQuery:
           "select SQL_CALC_FOUND_ROWS * from hims_f_pharmacy_pos_header\
           where record_status ='A'",
+        orderBy: "hims_f_pharmacy_pos_header_id desc"
+      },
+      {
+        searchName: "POSNOReturn",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS * from hims_f_pharmacy_pos_header\
+          where record_status ='A' and posted='Y'",
         orderBy: "hims_f_pharmacy_pos_header_id desc"
       },
       {

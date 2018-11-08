@@ -25,12 +25,6 @@ const getPatientChiefComplaints = $this => {
     redux: {
       type: "PATIENT_CHIEF_COMPLAINTS",
       mappingName: "patient_chief_complaints"
-    },
-    afterSuccess: data => {
-      debugger;
-      $this.setState({
-        patientChiefComplains: data
-      });
     }
   });
 };

@@ -21,6 +21,8 @@ import {
 } from "./PatientProfileHandlers";
 import AlgaehReport from "../Wrapper/printReports";
 import Enumerable from "linq";
+import Summary from "./Summary/Summary";
+import Dental from "./Dental/Dental";
 
 class PatientProfile extends Component {
   constructor(props) {
@@ -135,24 +137,29 @@ class PatientProfile extends Component {
           </div>
           <div className="patientName">
             <h6>
-              {this.props.patient_profile !== undefined
+              {this.props.patient_profile !== undefined &&
+              this.props.patient_profile.length > 0
                 ? this.props.patient_profile[0].full_name
                 : ""}
             </h6>
             <p>
-              {this.props.patient_profile !== undefined
+              {this.props.patient_profile !== undefined &&
+              this.props.patient_profile.length > 0
                 ? this.props.patient_profile[0].gender
                 : ""}
               ,{" "}
-              {this.props.patient_profile !== undefined
+              {this.props.patient_profile !== undefined &&
+              this.props.patient_profile.length > 0
                 ? this.props.patient_profile[0].age_in_years
                 : 0}
               Y{" "}
-              {this.props.patient_profile !== undefined
+              {this.props.patient_profile !== undefined &&
+              this.props.patient_profile.length > 0
                 ? this.props.patient_profile[0].age_in_months
                 : 0}
               M{" "}
-              {this.props.patient_profile !== undefined
+              {this.props.patient_profile !== undefined &&
+              this.props.patient_profile.length > 0
                 ? this.props.patient_profile[0].age_in_days
                 : 0}
               D
@@ -163,7 +170,8 @@ class PatientProfile extends Component {
               DOB:
               <b>
                 {moment(
-                  this.props.patient_profile !== undefined
+                  this.props.patient_profile !== undefined &&
+                  this.props.patient_profile.length > 0
                     ? this.props.patient_profile[0].date_of_birth
                     : ""
                 ).format("DD-MM-YYYY")}
@@ -172,7 +180,8 @@ class PatientProfile extends Component {
             <span>
               Mobile:{" "}
               <b>
-                {this.props.patient_profile !== undefined
+                {this.props.patient_profile !== undefined &&
+                this.props.patient_profile.length > 0
                   ? this.props.patient_profile[0].contact_number
                   : ""}
               </b>
@@ -180,7 +189,8 @@ class PatientProfile extends Component {
             <span>
               Nationality:{" "}
               <b>
-                {this.props.patient_profile !== undefined
+                {this.props.patient_profile !== undefined &&
+                this.props.patient_profile.length > 0
                   ? this.props.patient_profile[0].nationality
                   : ""}
               </b>
@@ -190,7 +200,8 @@ class PatientProfile extends Component {
             <span>
               MRN:{" "}
               <b>
-                {this.props.patient_profile !== undefined
+                {this.props.patient_profile !== undefined &&
+                this.props.patient_profile.length > 0
                   ? this.props.patient_profile[0].patient_code
                   : ""}
               </b>
@@ -199,7 +210,8 @@ class PatientProfile extends Component {
               Encounter:{" "}
               <b>
                 {moment(
-                  this.props.patient_profile !== undefined
+                  this.props.patient_profile !== undefined &&
+                  this.props.patient_profile.length > 0
                     ? this.props.patient_profile[0].Encounter_Date
                     : ""
                 ).format("DD-MM-YYYY HH:MM:SS A")}
@@ -208,7 +220,8 @@ class PatientProfile extends Component {
             <span>
               Payment:{" "}
               <b>
-                {this.props.patient_profile !== undefined
+                {this.props.patient_profile !== undefined &&
+                this.props.patient_profile.length > 0
                   ? this.props.patient_profile[0].payment_type === "I"
                     ? "Insurance"
                     : "Self"
@@ -331,66 +344,91 @@ class PatientProfile extends Component {
                 Plan
               </span>
             </li>
+            <li className="nav-item">
+              <span
+                onClick={this.changeTabs}
+                algaehsoap="summary"
+                className="nav-link"
+              >
+                Summary
+              </span>
+            </li>
+            <li className="nav-item">
+              <span
+                onClick={this.changeTabs}
+                algaehsoap="dental"
+                className="nav-link"
+              >
+                Dental
+              </span>
+            </li>
             <ul className="float-right patient-quick-info">
               <li>
                 <i className="fas fa-allergies" />
-                <p>
-                  <b>Allergies:</b>
-
-                  {_patient_allergies.map((data, index) => (
-                    <React.Fragment key={index}>
-                      <b>{data.allergy_type_desc}</b>
-                      {data.allergyList.map((allergy, aIndex) => (
-                        <span
-                          key={aIndex}
-                          className={
-                            "listofA-D-D " +
-                            (allergy.allergy_inactive === "Y" ? "red" : "")
-                          }
-                          title={
-                            "Onset Date : " +
-                            allergy.onset_date +
-                            "\n Comment : " +
-                            allergy.comment +
-                            "\n Severity : " +
-                            allergy.severity
-                          }
-                        >
-                          {allergy.allergy_name}
-                        </span>
-                      ))}
-                    </React.Fragment>
-                  ))}
-                </p>
+                <section>
+                  <b className="top-nav-sec-hdg">Allergies:</b>
+                  <p>
+                    {_patient_allergies.map((data, index) => (
+                      <React.Fragment key={index}>
+                        <b>{data.allergy_type_desc}</b>
+                        {data.allergyList.map((allergy, aIndex) => (
+                          <span
+                            key={aIndex}
+                            className={
+                              "listofA-D-D " +
+                              (allergy.allergy_inactive === "Y" ? "red" : "")
+                            }
+                            title={
+                              "Onset Date : " +
+                              allergy.onset_date +
+                              "\n Comment : " +
+                              allergy.comment +
+                              "\n Severity : " +
+                              allergy.severity
+                            }
+                          >
+                            {allergy.allergy_name}
+                          </span>
+                        ))}
+                      </React.Fragment>
+                    ))}
+                  </p>
+                </section>
               </li>
               <li>
                 <i className="fas fa-diagnoses" />
-                <p>
-                  <b>Diagnosis:</b>
-                  {_diagnosis.map((item, index) => (
-                    <React.Fragment key={index}>
-                      <span>{item.icd_code}</span>
-                      <span key={index} className="listofA-D-D">
-                        {item.icd_description}
-                      </span>
-                      <span>
-                        {item.diagnosis_type === "S" ? "Secondary" : "Primary"}
-                      </span>
-                      <span>{item.final_daignosis}</span>
-                    </React.Fragment>
-                  ))}
-                </p>
+                <section>
+                  <b className="top-nav-sec-hdg">Diagnosis:</b>
+                  <p>
+                    {_diagnosis.map((item, index) => (
+                      <React.Fragment key={index}>
+                        <span>{item.icd_code}</span>
+                        <span key={index} className="listofA-D-D">
+                          {item.icd_description}
+                        </span>
+                        <span>
+                          {item.diagnosis_type === "S"
+                            ? "Secondary"
+                            : "Primary"}
+                        </span>
+                        <span>{item.final_daignosis}</span>
+                      </React.Fragment>
+                    ))}
+                  </p>
+                </section>
               </li>
               <li>
                 <i className="fas fa-utensils" />
-                <p>
-                  <b>Diet:</b>
-                  {_diet.map((data, index) => (
-                    <span key={index} className="listofA-D-D">
-                      {data.icd_description}
-                    </span>
-                  ))}
-                </p>
+                <section>
+                  <b className="top-nav-sec-hdg">Diet:</b>
+                  <p>
+                    {_diet.map((data, index) => (
+                      <span key={index} className="listofA-D-D">
+                        {data.icd_description}
+                      </span>
+                    ))}
+                  </p>
+                </section>
               </li>
             </ul>
           </ul>
@@ -408,6 +446,10 @@ class PatientProfile extends Component {
             />
           ) : this.state.pageDisplay === "plan" ? (
             <Plan />
+          ) : this.state.pageDisplay === "summary" ? (
+            <Summary />
+          ) : this.state.pageDisplay === "dental" ? (
+            <Dental />
           ) : null}
         </div>
       </div>

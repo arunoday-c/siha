@@ -47,6 +47,15 @@
       padding: 3px 6px !important; }
       .appointment .my-calendar .myDay_date button svg {
         height: 16px; }
+    .appointment .my-calendar .myDay_date .todayBtn {
+      margin-left: 10px;
+      padding: 3px 10px;
+      border: 1px solid white;
+      background: none;
+      color: #fff; }
+    .appointment .my-calendar .myDay_date .todayBtn:hover {
+      background: #fff;
+      color: #34b8bc; }
   .appointment .my-calendar .arrow-box {
     width: 60px;
     cursor: pointer; }
@@ -111,13 +120,12 @@
       padding: 0;
       width: 120px; }
   .appointment .tg tbody {
-    height: 43vh;
+    height: 44vh;
     overflow: auto;
     display: grid; }
     .appointment .tg tbody td.tg-baqh {
       width: 120px;
       font-size: 0.8rem;
-      overflow: hidden;
       word-break: normal;
       border: 1px solid lightgrey;
       text-align: center;
@@ -126,6 +134,9 @@
       height: auto;
       width: 120px;
       vertical-align: top; }
+    .appointment .tg tbody td.highlight-Drop {
+      background: radial-gradient(ellipse at center, rgba(0, 183, 234, 0.1) 0%, rgba(0, 158, 195, 0.5) 100%);
+      /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */ }
     .appointment .tg tbody td[colspan]:not([colspan="1"]) {
       width: 240px;
       height: 10px;
@@ -137,7 +148,8 @@
       width: 90%;
       border-radius: 5px;
       padding: 5px;
-      margin-bottom: 2px; }
+      margin-bottom: 2px;
+      position: relative; }
       .appointment .tg tbody .dynPatient .statusClr {
         width: 5px;
         position: absolute;
@@ -145,13 +157,66 @@
         display: inline-block;
         left: 0;
         top: 0; }
+    .appointment .tg tbody .dynPatient:hover span {
+      text-decoration: underline; }
+    .appointment .tg tbody .patientStdbyCount {
+      display: block;
+      text-align: center;
+      background: #fefdf4;
+      border-radius: 10px;
+      margin: 3px auto 0;
+      width: 85%;
+      font-size: 0.7rem;
+      border: 1px solid #e3e0c9; }
+      .appointment .tg tbody .patientStdbyCount ul {
+        visibility: hidden;
+        border: 1px solid #e2dfcb;
+        position: absolute;
+        z-index: 9;
+        background: #fefcf4;
+        text-align: left;
+        left: -1px;
+        top: auto;
+        width: 85%;
+        margin: auto 10px;
+        border-radius: 0 0 10px 10px;
+        padding: 0;
+        box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2); }
+        .appointment .tg tbody .patientStdbyCount ul li {
+          margin: 0;
+          padding: 5px;
+          list-style: none;
+          border-bottom: 1px solid #e2dfcb; }
+          .appointment .tg tbody .patientStdbyCount ul li b {
+            padding: 0px 4px;
+            border: 1px solid #e1decc;
+            display: block;
+            float: right;
+            margin-top: 0;
+            border-radius: 100%;
+            width: 16px;
+            height: 16px;
+            line-height: 11px;
+            color: #e8514a;
+            background: #fefcf4; }
+          .appointment .tg tbody .patientStdbyCount ul li b:hover {
+            color: #fff;
+            background: #e8514a; }
+        .appointment .tg tbody .patientStdbyCount ul li:hover {
+          background: #e2dfcb; }
+        .appointment .tg tbody .patientStdbyCount ul li:last-child {
+          border: none; }
+    .appointment .tg tbody .patientStdbyCount:hover {
+      border-radius: 10px 10px 0 0; }
+      .appointment .tg tbody .patientStdbyCount:hover ul {
+        visibility: visible; }
     .appointment .tg tbody .dynSlot {
       position: absolute;
       top: 2px;
       left: 8px;
       font-size: 0.7rem;
       color: #7d7d7d; }
-    .appointment .tg tbody i {
+    .appointment .tg tbody i.fa-plus {
       visibility: hidden;
       position: absolute;
       top: -1px;
@@ -164,9 +229,20 @@
     .appointment .tg tbody i.fa-pen {
       color: blue !important; }
     .appointment .tg tbody i.fa-times {
+      visibility: hidden;
+      color: black !important; }
+    .appointment .tg tbody .dynPatient:hover i.fa-times {
+      visibility: visible;
+      position: absolute;
+      top: 0px !important;
+      right: 0px;
+      border-left: 1px solid rgba(0, 0, 0, 0.1);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      padding: 5px 5px 3px 3px; }
+    .appointment .tg tbody i.fa-times:hover {
       color: red !important;
-      top: 18px !important; }
-    .appointment .tg tbody td.tg-baqh:hover i {
+      background: rgba(255, 255, 255, 0.7) !important; }
+    .appointment .tg tbody td.tg-baqh:hover i.fa-plus {
       visibility: visible; }
     .appointment .tg tbody td.tg-baqh:nth-child(odd) {
       border-right: 1px dashed lightgrey !important; }
@@ -182,17 +258,13 @@
       font-weight: bold;
       text-align: center;
       vertical-align: top; }
-
-.appointment ul.ul-legend li {
-  float: left;
-  margin-right: 10px;
-  list-style: none;
-  margin-top: 5px;
-  font-size: 0.7rem; }
-  .appointment ul.ul-legend li span {
-    border: 1px solid #ccc;
-    float: left;
-    width: 12px;
-    height: 12px;
-    margin: 2px;
-    margin-right: 5px; }
+    .appointment .tg tbody .doctorLeaveCntr {
+      height: 42vh;
+      padding-top: 17vh;
+      border: 1px solid #e3e0c9;
+      text-align: center;
+      font-size: 1.5rem;
+      display: block;
+      width: 239px;
+      color: #ddd;
+      text-align: center; }

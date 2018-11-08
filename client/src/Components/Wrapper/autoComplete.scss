@@ -18,12 +18,32 @@
   margin: 2px;
   height: 24px;
 }
-.clearall {
+
+.loadingSelect {
   display: none;
   position: absolute;
   top: 0;
   padding: 2px 6px;
-  right: 22px;
+  right: 32px;
+  font-size: 0.7rem;
+  line-height: 21px;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 1) 48%
+  );
+  color: #929292;
+  cursor: pointer;
+  margin: 2px;
+  height: 24px;
+}
+
+.clearall {
+  display: none;
+  position: absolute;
+  top: -1px;
+  padding: 2px 3px;
+  right: 20px;
   font-size: 0.7rem;
   line-height: 21px;
   background: linear-gradient(
@@ -61,7 +81,7 @@
   top: 100%;
   bottom: auto;
   left: 0;
-  max-height: 50vh;
+  max-height: 30vh;
   overflow: auto;
   border-top: 1px solid #ddd;
   border-bottom: 1px solid #ddd;

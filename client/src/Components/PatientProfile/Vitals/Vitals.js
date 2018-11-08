@@ -7,7 +7,7 @@ import {
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import Modal from "@material-ui/core/Modal";
-import { getVitalHistory } from "./VitalsHandlers";
+import { getVitalHistory, getFormula } from "./VitalsHandlers";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -78,17 +78,17 @@ class Vitals extends Component {
     super(props);
     this.state = {
       openVitalModal: false,
-      weight: ""
+      weight: "0",
+      height: "0"
     };
     this.handleClose = this.handleClose.bind(this);
-  }
-
-  componentDidMount() {
     if (
       this.props.patient_vitals === undefined ||
       this.props.patient_vitals.length === 0
     )
       getVitalHistory(this);
+
+    getFormula();
   }
 
   calculatebmi() {

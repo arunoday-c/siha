@@ -141,8 +141,13 @@ const SavePosEnrty = $this => {
     onSuccess: response => {
       debugger;
       if (response.data.success === true) {
+        debugger;
         $this.setState({
           pos_number: response.data.records.pos_number,
+          hims_f_pharmacy_pos_header_id:
+            response.data.records.hims_f_pharmacy_pos_header_id,
+          year: response.data.records.year,
+          period: response.data.records.period,
           saveEnable: true,
           postEnable: false
         });
@@ -158,6 +163,7 @@ const SavePosEnrty = $this => {
 
 const PostPosEntry = $this => {
   debugger;
+
   $this.state.posted = "Y";
   $this.state.transaction_type = "POS";
   $this.state.transaction_id = $this.state.hims_f_pharmacy_pos_header_id;
@@ -174,6 +180,8 @@ const PostPosEntry = $this => {
       $this.state.pharmacy_stock_detail[i].grn_no;
     $this.state.pharmacy_stock_detail[i].item_category_id =
       $this.state.pharmacy_stock_detail[i].item_category;
+    $this.state.pharmacy_stock_detail[i].net_total =
+      $this.state.pharmacy_stock_detail[i].net_extended_cost;
   }
   debugger;
   algaehApiCall({
@@ -191,6 +199,12 @@ const PostPosEntry = $this => {
           title: "Posted successfully . ."
         });
       }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
 };
@@ -270,6 +284,7 @@ const getMedicationList = $this => {
 };
 
 const AddItems = ($this, ItemInput) => {
+  debugger;
   if (ItemInput.length > 0) {
     let inputObj = {};
     let inputArray = [];
@@ -283,6 +298,7 @@ const AddItems = ($this, ItemInput) => {
         insured: $this.state.insured,
         vat_applicable: "Y",
         hims_d_services_id: ItemInput[i].service_id,
+        quantity: ItemInput[i].dispense,
         primary_insurance_provider_id: $this.state.insurance_provider_id,
         primary_network_office_id:
           $this.state.hims_d_insurance_network_office_id,

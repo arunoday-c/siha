@@ -67,6 +67,8 @@ class DataGrid extends PureComponent {
   renderEditable = (templates, cellInfo) => {
     const editable = this.state.editableRows[cellInfo.index];
     const rowDetail = this.state.data[cellInfo.index];
+    const _fullNonEditor =
+      this.props.isEditable !== undefined ? this.props.isEditable : false;
     const _disabled =
       cellInfo.column.disabled !== undefined ? cellInfo.column.disabled : false;
     if (editable === undefined || editable === false) {
@@ -78,7 +80,7 @@ class DataGrid extends PureComponent {
         return <span>{_value}</span>; // style={{ width: _width }}
       }
     } else {
-      if (_disabled) {
+      if (_disabled || !_fullNonEditor) {
         const _value = rowDetail[cellInfo.column.id];
         //const _width = this.getTextWidth(_value);
         return <span>{_value}</span>; //style={{ width: _width }}
@@ -135,7 +137,6 @@ class DataGrid extends PureComponent {
     }
   };
   toggleRowEditable = index => {
-    debugger;
     let existsing = sessionStorage.getItem(this.props.id);
     existsing = existsing !== null ? JSON.parse(existsing)["collection"] : [];
     const prevStateIndexData = this.state.data[index];
@@ -210,6 +211,20 @@ class DataGrid extends PureComponent {
     }
   };
   toggleRowSave = index => {
+   
+    const existsing = JSON.parse(sessionStorage.getItem(this.props.id))[
+      "collection"
+    ];
+    const row = this.state.data[index];
+    if (JSON.stringify(existsing[index]) === JSON.stringify(row)) {
+      this.setState({
+        editableRows: {
+          ...this.state.editableRows,
+          [index]: !this.state.editableRows[index]
+        }
+      });
+      return;
+    }
     let isError = false;
     if (this.props.datavalidate !== undefined) {
       AlgaehValidation({
@@ -231,7 +246,6 @@ class DataGrid extends PureComponent {
             }
           },
           () => {
-            const row = this.state.data[index];
             this.props.events.onDone(row);
           }
         );
@@ -351,7 +365,7 @@ class DataGrid extends PureComponent {
         ) {
           if (_allowEditButton || _allowDeleteButton) {
             _columns.splice(0, 0, {
-              Header: "Actions",
+              Header: <label className="style_Label ">ACTIONS</label>,
               headerClassName: "sticky",
               fixed: "left",
               width: 100,
@@ -677,12 +691,12 @@ class DataGrid extends PureComponent {
       const _isRowSelected = this.isRowSelected(rowInfo.index);
       const _selectedColor =
         _isRowSelected !== false ? "selected-grid-row " : "";
-      const _rowSel =
-        this.props.rowClassName !== undefined
-          ? this.props.rowClassName(rowInfo.original)
-          : "";
+      // const _rowSel =
+      //   this.props.rowClassName !== undefined
+      //     ? this.props.rowClassName(rowInfo.original)
+      //     : "";
       return {
-        className: _selectedColor + " " + _rowSel
+        className: _selectedColor
       };
     } else {
       return {
@@ -699,6 +713,8 @@ class DataGrid extends PureComponent {
           if (handleOriginal) handleOriginal();
         }
       };
+      const _rowSel =
+        this.props.rowClassName !== undefined ? this.props.rowClassName : "";
       if (
         column.assignTdClass !== undefined &&
         typeof column.assignTdClass === "function"
@@ -706,6 +722,10 @@ class DataGrid extends PureComponent {
         return {
           className: column.assignTdClass(rowInfo.original),
           ..._clickEvent
+        };
+      } else if (_rowSel != "") {
+        return {
+          className: _rowSel(rowInfo.original)
         };
       } else {
         return {

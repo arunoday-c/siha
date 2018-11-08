@@ -25,7 +25,7 @@ import {
   getPatientAppointment,
   updatePatientAppointment,
   getEmployeeServiceID,
-  appointmentStatusAuthorized,deleteAppointmentRoom
+  appointmentStatusAuthorized,deleteAppointmentRoom,cancelPatientAppointment
 } from "../model/appointment";
 
 export default ({ config, db }) => {
@@ -369,7 +369,7 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-  // created by irfan :to get Patient Appointment
+  // created by irfan :to
   api.get(
     "/getEmployeeServiceID",
     getEmployeeServiceID,
@@ -385,10 +385,26 @@ export default ({ config, db }) => {
   );
 
 
-  // created by irfan :to get Patient Appointment
+  // created by irfan :to 
   api.put(
     "/appointmentStatusAuthorized",
     appointmentStatusAuthorized,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+
+  // created by irfan :to cancelPatientAppointment
+  api.put(
+    "/cancelPatientAppointment",
+    cancelPatientAppointment,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

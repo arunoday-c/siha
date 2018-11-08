@@ -2,10 +2,6 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-
-import Edit from "@material-ui/icons/Edit";
-import IconButton from "@material-ui/core/IconButton";
-
 import "./employee_master_index.css";
 import "../../../styles/site.css";
 import { AlgaehLabel, AlgaehDataGrid } from "../../Wrapper/algaehWrapper";

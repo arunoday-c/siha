@@ -69,9 +69,34 @@ class TransferEntry extends Component {
         }
       });
     }
+
+    if (
+      this.props.userwiselocations === undefined ||
+      this.props.userwiselocations.length === 0
+    ) {
+      this.props.getUserLocationPermission({
+        uri: "/pharmacyGlobal/getUserLocationPermission",
+        method: "GET",
+        redux: {
+          type: "LOCATIOS_GET_DATA",
+          mappingName: "userwiselocations"
+        },
+        afterSuccess: data => {
+          debugger;
+        }
+      });
+    }
   }
 
   render() {
+    debugger;
+    let display =
+      this.props.locations === undefined
+        ? []
+        : this.props.locations.filter(
+            f => f.hims_d_pharmacy_location_id === this.state.to_location_id
+          );
+
     return (
       <React.Fragment>
         <div>
@@ -174,7 +199,7 @@ class TransferEntry extends Component {
                     dataSource: {
                       textField: "location_description",
                       valueField: "hims_d_pharmacy_location_id",
-                      data: this.props.locations
+                      data: this.props.userwiselocations
                     },
                     onChange: LocationchangeTexts.bind(this, this, "From")
                   }}
@@ -213,9 +238,10 @@ class TransferEntry extends Component {
                   }}
                 />
 
-                <div className="col-lg-2 form-group print_actions">
+                <div className="col-lg-2  print_actions">
                   <span
-                    className="fas fa-search fa-2x"
+                    className="fas fa-search"
+                    style={{ marginTop: 26, fontSize: 20 }}
                     onClick={RequisitionSearch.bind(this, this)}
                   />
                 </div>
@@ -224,7 +250,22 @@ class TransferEntry extends Component {
 
             <div className="col-lg-4">
               <div className="row">
-                <AlagehAutoComplete
+                <div className="col-lg-6">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "To Location"
+                    }}
+                  />
+
+                  <h6>
+                    {this.state.to_location_id
+                      ? display !== null && display.length !== 0
+                        ? display[0].location_description
+                        : ""
+                      : "To Location "}
+                  </h6>
+                </div>
+                {/* <AlagehAutoComplete
                   div={{ className: "col-lg-6" }}
                   label={{ forceLabel: "To Location" }}
                   selector={{
@@ -238,7 +279,7 @@ class TransferEntry extends Component {
                     },
                     onChange: LocationchangeTexts.bind(this, this, "To")
                   }}
-                />
+                /> */}
 
                 <div className="col-lg-6">
                   <AlgaehLabel
@@ -328,7 +369,8 @@ function mapStateToProps(state) {
   return {
     itemlist: state.itemlist,
     locations: state.locations,
-    requisitionentry: state.requisitionentry
+    requisitionentry: state.requisitionentry,
+    userwiselocations: state.userwiselocations
   };
 }
 
@@ -338,7 +380,8 @@ function mapDispatchToProps(dispatch) {
       getItems: AlgaehActions,
       getLocation: AlgaehActions,
       getRequisitionEntry: AlgaehActions,
-      getTransferEntry: AlgaehActions
+      getTransferEntry: AlgaehActions,
+      getUserLocationPermission: AlgaehActions
     },
     dispatch
   );

@@ -119,9 +119,12 @@
   padding-top: 5px;
 }
 .editor {
+  padding-top: 10px;
   .quill {
-    .ql-container {
-      min-height: 60vh;
+    .ql-editor {
+      p {
+        min-height: 30vh !important;
+      }
     }
   }
 }

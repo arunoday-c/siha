@@ -4,9 +4,13 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import extend from "extend";
 
 //Text Handaler Change
-const texthandle = ($this, e) => {
+const texthandle = ($this, ctrl, e) => {
+  e = e || ctrl;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
   $this.setState({
-    [e.target.name]: e.target.value
+    [name]: value
   });
 };
 
@@ -129,6 +133,7 @@ const ProcessService = ($this, e) => {
 
                     data.billdetails[i].requested_quantity =
                       data.billdetails[i].quantity;
+                    data.billdetails[i].test_type = $this.state.test_type;
                   }
 
                   $this.setState({
@@ -138,7 +143,8 @@ const ProcessService = ($this, e) => {
                     approval_limit_yesno: approval_limit_yesno,
                     saved: false,
                     s_service_type: null,
-                    s_service: null
+                    s_service: null,
+                    test_type: "R"
                   });
 
                   $this.props.billingCalculations({
@@ -192,6 +198,7 @@ const ProcessService = ($this, e) => {
           data.billdetails[0].requested_quantity = data.billdetails[0].quantity;
           data.billdetails[0].doctor_id = Window.global["provider_id"];
           data.billdetails[0].sec_company = $this.state.sec_insured;
+          data.billdetails[0].test_type = $this.state.test_type;
           //If pre-approval required for selected service
 
           if (
@@ -219,7 +226,8 @@ const ProcessService = ($this, e) => {
             preapp_limit_amount: preapp_limit_amount,
             saved: false,
             s_service_type: null,
-            s_service: null
+            s_service: null,
+            test_type: "R"
           });
 
           $this.props.billingCalculations({
@@ -305,6 +313,15 @@ const deleteServices = ($this, row, rowId) => {
 
   if (orderservicesdata.length === 0) {
     saved = true;
+
+    $this.setState({
+      patient_payable: null,
+      company_payble: null,
+      sec_company_paybale: null,
+      sub_total_amount: null,
+      discount_amount: null,
+      net_total: null
+    });
   }
 
   let app_amt = $this.state.approval_amt - row["company_payble"];
@@ -368,76 +385,75 @@ const SaveOrdersServices = ($this, e) => {
     method: "POST",
     onSuccess: response => {
       if (response.data.success) {
+        $this.setState(
+          {
+            addNew: true
+          },
+          () => {
+            $this.props.onClose && $this.props.onClose(e);
+          }
+        );
         swalMessage({
           title: "Ordered Successfully...",
           type: "success"
         });
-        $this.props.onClose && $this.props.onClose(e);
-        // $this.setState({
-        //   saved: true,
-        //   orderservicesdata: [],
-        //   patient_payable: null,
-        //   company_payble: null,
-        //   sec_company_paybale: null,
-        //   sub_total_amount: null,
-        //   discount_amount: null,
-        //   net_total: null
-        // });
       }
-    },
-    onFailure: error => {}
+    }
   });
 };
 
 const calculateAmount = ($this, row, ctrl, e) => {
   e = e || ctrl;
+  debugger;
+  if (e.target.value !== e.target.oldvalue) {
+    let orderservicesdata = $this.state.orderservicesdata;
 
-  let orderservicesdata = $this.state.orderservicesdata;
+    row[e.target.name] = parseFloat(e.target.value);
+    let inputParam = [
+      {
+        hims_d_services_id: row.services_id,
+        quantity: row.quantity,
+        discount_amout:
+          e.target.name === "discount_percentage" ? 0 : row.discount_amout,
+        discount_percentage:
+          e.target.name === "discount_amout" ? 0 : row.discount_percentage,
 
-  row[e.target.name] = parseFloat(e.target.value);
-  let inputParam = [
-    {
-      hims_d_services_id: row.services_id,
-      quantity: row.quantity,
-      discount_amout:
-        e.target.name === "discount_percentage" ? 0 : row.discount_amout,
-      discount_percentage:
-        e.target.name === "discount_amout" ? 0 : row.discount_percentage,
-
-      insured: $this.state.insured === null ? "N" : $this.state.insured,
-      vat_applicable: $this.state.vat_applicable,
-      primary_insurance_provider_id: $this.state.insurance_provider_id,
-      primary_network_office_id: $this.state.hims_d_insurance_network_office_id,
-      primary_network_id: $this.state.network_id,
-      sec_insured: $this.state.sec_insured,
-      secondary_insurance_provider_id:
-        $this.state.secondary_insurance_provider_id,
-      secondary_network_id: $this.state.secondary_network_id,
-      secondary_network_office_id: $this.state.secondary_network_office_id,
-      approval_amt: $this.state.approval_amt,
-      approval_limit_yesno: $this.state.approval_limit_yesno,
-      preapp_limit_amount: $this.state.preapp_limit_amount
-    }
-  ];
-
-  $this.props.billingCalculations({
-    uri: "/billing/getBillDetails",
-    method: "POST",
-    data: inputParam,
-    redux: {
-      type: "BILL_GEN_GET_DATA",
-      mappingName: "xxx"
-    },
-    afterSuccess: data => {
-      extend(row, data.billdetails[0]);
-      for (let i = 0; i < orderservicesdata.length; i++) {
-        if (orderservicesdata[i].service_type_id === row.service_type_id) {
-          orderservicesdata[i] = row;
-        }
+        insured: $this.state.insured === null ? "N" : $this.state.insured,
+        vat_applicable: $this.state.vat_applicable,
+        primary_insurance_provider_id: $this.state.insurance_provider_id,
+        primary_network_office_id:
+          $this.state.hims_d_insurance_network_office_id,
+        primary_network_id: $this.state.network_id,
+        sec_insured: $this.state.sec_insured,
+        secondary_insurance_provider_id:
+          $this.state.secondary_insurance_provider_id,
+        secondary_network_id: $this.state.secondary_network_id,
+        secondary_network_office_id: $this.state.secondary_network_office_id,
+        approval_amt: $this.state.approval_amt,
+        approval_limit_yesno: $this.state.approval_limit_yesno,
+        preapp_limit_amount: $this.state.preapp_limit_amount
       }
-      $this.setState({ orderservicesdata: orderservicesdata });
-    }
-  });
+    ];
+
+    $this.props.billingCalculations({
+      uri: "/billing/getBillDetails",
+      method: "POST",
+      data: inputParam,
+      redux: {
+        type: "BILL_GEN_GET_DATA",
+        mappingName: "xxx"
+      },
+      afterSuccess: data => {
+        extend(row, data.billdetails[0]);
+        for (let i = 0; i < orderservicesdata.length; i++) {
+          if (orderservicesdata[i].service_type_id === row.service_type_id) {
+            orderservicesdata[i] = row;
+          }
+        }
+        $this.setState({ orderservicesdata: orderservicesdata });
+      }
+    });
+  }
 };
 
 const updateBillDetail = ($this, e) => {
@@ -465,6 +481,13 @@ const updateBillDetail = ($this, e) => {
   });
 };
 
+const onchangegridcol = ($this, row, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  row[name] = value;
+  row.update();
+};
+
 export {
   serviceTypeHandeler,
   serviceHandeler,
@@ -474,5 +497,6 @@ export {
   deleteServices,
   SaveOrdersServices,
   calculateAmount,
-  updateBillDetail
+  updateBillDetail,
+  onchangegridcol
 };

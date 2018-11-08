@@ -70,6 +70,11 @@ const SaveSalesReturn = $this => {
       if (response.data.success === true) {
         $this.setState({
           sales_return_number: response.data.records.sales_return_number,
+          year: response.data.records.year,
+          period: response.data.records.period,
+          hims_f_pharmcy_sales_return_header_id:
+            response.data.records.hims_f_pharmcy_sales_return_header_id,
+
           saveEnable: true,
           postEnable: false
         });
@@ -88,17 +93,23 @@ const PostSalesReturn = $this => {
   $this.state.transaction_type = "SRT";
   $this.state.transaction_id =
     $this.state.hims_f_pharmcy_sales_return_header_id;
-  $this.state.transaction_date = $this.state.pos_date;
+  $this.state.transaction_date = $this.state.sales_return_date;
   for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
     $this.state.pharmacy_stock_detail[i].location_id = $this.state.location_id;
     $this.state.pharmacy_stock_detail[i].location_type =
       $this.state.location_type;
-    $this.state.pharmacy_stock_detail[i].operation = "-";
+
     $this.state.pharmacy_stock_detail[i].sales_uom =
       $this.state.pharmacy_stock_detail[i].uom_id;
     $this.state.pharmacy_stock_detail[i].item_code_id = $this.state.item_id;
     $this.state.pharmacy_stock_detail[i].grn_number =
       $this.state.pharmacy_stock_detail[i].grn_no;
+
+    $this.state.pharmacy_stock_detail[i].item_category_id =
+      $this.state.pharmacy_stock_detail[i].item_category;
+
+    $this.state.pharmacy_stock_detail[i].net_total =
+      $this.state.pharmacy_stock_detail[i].net_extended_cost;
 
     $this.state.pharmacy_stock_detail[i].return_extended_cost =
       $this.state.pharmacy_stock_detail[i].extended_cost || 0;
@@ -140,7 +151,7 @@ const POSSearch = ($this, e) => {
     searchGrid: {
       columns: spotlightSearch.pointofsaleEntry.POSEntry
     },
-    searchName: "POSEntry",
+    searchName: "POSNOReturn",
     uri: "/gloabelSearch/get",
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);

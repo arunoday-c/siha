@@ -120,6 +120,8 @@ let addtransferEntry = (req, res, next) => {
                   "uom_recieved_id",
                   "quantity_outstanding",
                   "grnno",
+                  "unit_cost",
+                  "sales_uom",
                   "material_requisition_header_id",
                   "material_requisition_detail_id"
                 ];
@@ -153,7 +155,11 @@ let addtransferEntry = (req, res, next) => {
                       }
                       releaseDBConnection(db, connection);
                       req.records = {
-                        transfer_number: documentCode
+                        transfer_number: documentCode,
+                        hims_f_pharmacy_transfer_header_id:
+                          headerResult.insertId,
+                        year: year,
+                        period: period
                       };
                       next();
                     });
@@ -284,102 +290,109 @@ let updatetransferEntry = (req, res, next) => {
           );
         })
           .then(output => {
-            // return new Promise((resolve, reject) => {
-            //   debugLog("output", output);
-            //   req.options = {
-            //     db: connection,
-            //     onFailure: error => {
-            //       reject(error);
-            //     },
-            //     onSuccess: result => {
-            //       resolve(result);
-            //     }
-            //   };
-            //   //Update From Location
-            //   updateIntoItemLocation(req, res, next);
-            // });
-            req.options = {
-              db: connection,
-              onFailure: error => {
-                return Promise.reject(error);
-              }
-            };
-            //Update From Location
-            debugLog("From", "Data");
-            updateIntoItemLocation(req, res, next);
+            return new Promise((resolve, reject) => {
+              debugLog("output", output);
+              req.options = {
+                db: connection,
+                onFailure: error => {
+                  reject(error);
+                },
+                onSuccess: result => {
+                  resolve(result);
+                }
+              };
+              //Update From Location
+              debugLog("From", "Data");
+              updateIntoItemLocation(req, res, next);
+            });
+            // req.options = {
+            //   db: connection,
+            //   onFailure: error => {
+            //     return Promise.reject(error);
+            //   }
+            // };
+            // //Update From Location
+            // debugLog("From", "Data");
+            // updateIntoItemLocation(req, res, next);
           })
           .then(output => {
-            // return new Promise((resolve, reject) => {
-            //   debugLog("output", output);
-            //   req.options = {
-            //     db: connection,
-            //     onFailure: error => {
-            //       reject(error);
-            //     },
-            //     onSuccess: result => {
-            //       resolve(result);
-            //     }
-            //   };
-            //   //Update To location
-            //   for (let i = 0; i < req.body.pharmacy_stock_detail.length; i++) {
-            //     req.body.pharmacy_stock_detail[i].location_id =
-            //       req.body.pharmacy_stock_detail[i].to_location_id;
-            //     req.body.pharmacy_stock_detail[i].location_type =
-            //       req.body.pharmacy_stock_detail[i].to_location_type;
-            //   }
+            return new Promise((resolve, reject) => {
+              debugLog("output", output);
+              req.options = {
+                db: connection,
+                onFailure: error => {
+                  reject(error);
+                },
+                onSuccess: result => {
+                  resolve(result);
+                }
+              };
+              //Update To location
+              for (let i = 0; i < req.body.pharmacy_stock_detail.length; i++) {
+                req.body.pharmacy_stock_detail[i].location_id =
+                  req.body.to_location_id;
+                req.body.pharmacy_stock_detail[i].location_type =
+                  req.body.to_location_type;
 
-            //   updateIntoItemLocation(req, res, next);
-            // })
+                req.body.pharmacy_stock_detail[i].sales_uom =
+                  req.body.pharmacy_stock_detail[i].uom_transferred_id;
 
-            //   .then(records => {
-            //     connection.commit(error => {
-            //       if (error) {
-            //         releaseDBConnection(db, connection);
-            //         next(error);
-            //       }
-            //       req.records = records;
-            //       releaseDBConnection(db, connection);
-            //       next();
-            //     });
-            //   })
-            //   .catch(error => {
-            //     connection.rollback(() => {
-            //       releaseDBConnection(db, connection);
-            //       next(error);
-            //     });
-            //   });
+                delete req.body.pharmacy_stock_detail[i].operation;
+              }
 
-            req.options = {
-              db: connection,
-              onFailure: error => {
-                return Promise.reject(error);
-              },
-              onSuccess: result => {
+              debugLog("To ", "Data");
+              updateIntoItemLocation(req, res, next);
+            })
+
+              .then(records => {
                 connection.commit(error => {
                   if (error) {
                     releaseDBConnection(db, connection);
                     next(error);
                   }
-                  req.records = result;
+                  req.records = records;
                   releaseDBConnection(db, connection);
                   next();
                 });
-              }
-            };
-            //Update To location
-            for (let i = 0; i < req.body.pharmacy_stock_detail.length; i++) {
-              req.body.pharmacy_stock_detail[i].location_id =
-                req.body.to_location_id;
-              req.body.pharmacy_stock_detail[i].location_type =
-                req.body.to_location_type;
+              })
+              .catch(error => {
+                connection.rollback(() => {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                });
+              });
 
-              req.body.pharmacy_stock_detail[i].uom_id =
-                req.body.pharmacy_stock_detail[i].uom_transferred_id;
-              req.body.pharmacy_stock_detail[i].sales_uom =
-                req.body.pharmacy_stock_detail[i].uom_transferred_id;
-            }
-            debugLog("To ", "Data");
-            updateIntoItemLocation(req, res, next);
+            // req.options = {
+            //   db: connection,
+            //   onFailure: error => {
+            //     return Promise.reject(error);
+            //   },
+            //   onSuccess: result => {
+            //     connection.commit(error => {
+            //       if (error) {
+            //         releaseDBConnection(db, connection);
+            //         next(error);
+            //       }
+            //       req.records = result;
+            //       releaseDBConnection(db, connection);
+            //       next();
+            //     });
+            //   }
+            // };
+            // //Update To location
+            // for (let i = 0; i < req.body.pharmacy_stock_detail.length; i++) {
+            //   req.body.pharmacy_stock_detail[i].location_id =
+            //     req.body.to_location_id;
+            //   req.body.pharmacy_stock_detail[i].location_type =
+            //     req.body.to_location_type;
+
+            //   req.body.pharmacy_stock_detail[i].uom_id =
+            //     req.body.pharmacy_stock_detail[i].uom_transferred_id;
+            //   req.body.pharmacy_stock_detail[i].sales_uom =
+            //     req.body.pharmacy_stock_detail[i].uom_transferred_id;
+            // }
+            // debugLog("To ", "Data");
+            // updateIntoItemLocation(req, res, next);
           })
           .catch(error => {
             connection.rollback(() => {
@@ -436,7 +449,7 @@ let getrequisitionEntryTransfer = (req, res, next) => {
             connection.query(
               "select * from hims_f_pharmacy_material_detail p left outer join hims_m_item_location l \
                 on l.item_id =p.item_id where pharmacy_header_id=? and l.record_status='A'and l.pharmacy_location_id=? \
-                and l.expirydt > now()  order by l.expirydt asc limit 0,1",
+                and l.expirydt > now() and l.qtyhand>0  order by l.expirydt asc limit 0,1",
               [
                 headerResult[0].hims_f_pharamcy_material_header_id,
                 headerResult[0].to_location_id

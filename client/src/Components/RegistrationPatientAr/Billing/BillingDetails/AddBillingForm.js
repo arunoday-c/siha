@@ -75,7 +75,7 @@ class AddBillingForm extends Component {
             >
               <div className="container-fluid">
                 <div className="row">
-                  <div className="col-lg-4 primary-details">
+                  <div className="col primary-details">
                     {/* <div className="container-fluid"> */}
                     <Paper className="Paper">
                       <div className="row primary-box-container">
@@ -115,9 +115,9 @@ class AddBillingForm extends Component {
                           />
                         </div>
                       </div>
-                      <hr />
+                      <hr style={{ margin: "0.3rem 0rem" }} />
                       <div className="row primary-box-container">
-                        <div className="col-lg-4">
+                        <div className="col">
                           <AlgaehLabel
                             label={{
                               fieldName: "gross_total"
@@ -130,7 +130,7 @@ class AddBillingForm extends Component {
                           </h6>
                         </div>
 
-                        <div className="col-lg-4">
+                        <div className="col">
                           <AlgaehLabel
                             label={{
                               fieldName: "patient_payable"
@@ -143,7 +143,7 @@ class AddBillingForm extends Component {
                           </h6>
                         </div>
 
-                        <div className="col-lg-4">
+                        <div className="col">
                           <AlgaehLabel
                             label={{
                               fieldName: "advance"
@@ -156,7 +156,7 @@ class AddBillingForm extends Component {
                           </h6>
                         </div>
                       </div>
-                      <hr style={{ margin: "0.6rem 0rem" }} />
+                      <hr style={{ margin: "0.3rem 0rem" }} />
                       <div className="row primary-box-container">
                         <AlagehFormGroup
                           div={{ className: "col-3" }}
@@ -218,7 +218,7 @@ class AddBillingForm extends Component {
                           }}
                         />
                       </div>
-                      <hr />
+                      <hr style={{ margin: "0.3rem 0rem" }} />
                       <div className="row last-box-container">
                         {/* <div className="col-lg-3 last-box-label">
                           <AlgaehLabel
@@ -228,7 +228,7 @@ class AddBillingForm extends Component {
                           />
                         </div> */}
 
-                        <div className="col-lg-4">
+                        <div className="col">
                           <AlgaehLabel
                             label={{
                               fieldName: "net_amount"
@@ -242,7 +242,7 @@ class AddBillingForm extends Component {
                         </div>
 
                         <AlagehFormGroup
-                          div={{ className: "col-lg-4" }}
+                          div={{ className: "col" }}
                           label={{
                             fieldName: "credit_amount"
                           }}
@@ -264,7 +264,7 @@ class AddBillingForm extends Component {
                             }
                           }}
                         />
-                        <div className="col-lg-4">
+                        <div className="col">
                           <AlgaehLabel
                             label={{
                               fieldName: "receiveable_amount"
@@ -277,7 +277,7 @@ class AddBillingForm extends Component {
                           </h6>
                         </div>
                       </div>
-                      <hr />
+                      <hr style={{ margin: "0.3rem 0rem" }} />
                       <div className="row primary-box-container">
                         <div className="col-lg-6">
                           <AlgaehLabel
@@ -358,7 +358,7 @@ class AddBillingForm extends Component {
                           }}
                         />
                       </div>
-                      <hr style={{ margin: "0rem" }} />
+                      <hr style={{ margin: "0.3rem 0rem" }} />
 
                       {/* Payment Type */}
                       {/* Cash */}
@@ -583,7 +583,7 @@ class AddBillingForm extends Component {
                           value={this.state.cheque_date}
                         />
                       </div>
-                      <hr style={{ margin: "0rem" }} />
+                      <hr style={{ margin: "0.3rem 0rem" }} />
                       <div className="row secondary-box-container">
                         {/* <div className="col-lg-3">
                           <AlgaehLabel

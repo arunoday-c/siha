@@ -76,7 +76,8 @@ let insertRadOrderedServices = (req, res, next) => {
     "service_id",
     "billed",
     "ordered_date",
-    "ordered_by"
+    "ordered_by",
+    "test_type"
   ];
   debugLog("ResultOfFetchOrderIds: ", req.records.ResultOfFetchOrderIds);
 
@@ -96,7 +97,8 @@ let insertRadOrderedServices = (req, res, next) => {
         service_id: s.services_id,
         billed: req.body.billed,
         ordered_date: s.created_date,
-        ordered_by: req.userIdentity.algaeh_d_app_user_id
+        ordered_by: req.userIdentity.algaeh_d_app_user_id,
+        test_type: s.test_type
       };
     })
     .ToArray();

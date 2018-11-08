@@ -3,9 +3,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import Modal from "@material-ui/core/Modal";
 import { bindActionCreators } from "redux";
-
 import "react-quill/dist/quill.snow.css";
-
 import "./ResultEntry.css";
 import "./../../../styles/site.css";
 import {
@@ -14,7 +12,6 @@ import {
   AlgaehDataGrid,
   AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
-
 import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../Options.json";
@@ -40,38 +37,53 @@ class ResultEntry extends Component {
   }
 
   componentDidMount() {
-    this.props.getUserDetails({
-      uri: "/algaehappuser/selectAppUsers",
-      method: "GET",
-      redux: {
-        type: "LAB_EMP_GET_DATA",
-        mappingName: "labiologyusers"
-      }
-    });
+    if (
+      this.props.labiologyusers === undefined ||
+      this.props.labiologyusers.length === 0
+    ) {
+      this.props.getUserDetails({
+        uri: "/algaehappuser/selectAppUsers",
+        method: "GET",
+        redux: {
+          type: "LAB_EMP_GET_DATA",
+          mappingName: "labiologyusers"
+        }
+      });
+    }
+    if (
+      this.props.providers === undefined ||
+      this.props.providers.length === 0
+    ) {
+      this.props.getProviderDetails({
+        uri: "/employee/get",
+        method: "GET",
+        redux: {
+          type: "DOCTOR_GET_DATA",
+          mappingName: "providers"
+        }
+      });
+    }
 
-    this.props.getProviderDetails({
-      uri: "/employee/get",
-      method: "GET",
-      redux: {
-        type: "DOCTOR_GET_DATA",
-        mappingName: "providers"
-      }
-    });
-
-    this.props.getLabAnalytes({
-      uri: "/labmasters/selectAnalytes",
-      method: "GET",
-      redux: {
-        type: "ANALYTES_GET_DATA",
-        mappingName: "labanalytes"
-      }
-    });
+    if (
+      this.props.labanalytes === undefined ||
+      this.props.labanalytes.length === 0
+    ) {
+      this.props.getLabAnalytes({
+        uri: "/labmasters/selectAnalytes",
+        method: "GET",
+        redux: {
+          type: "ANALYTES_GET_DATA",
+          mappingName: "labanalytes"
+        }
+      });
+    }
   }
   componentWillReceiveProps(newProps) {
     if (
       newProps.selectedPatient !== undefined &&
       newProps.selectedPatient.open === true
     ) {
+      debugger;
       newProps.selectedPatient.open = false;
       this.setState({ ...this.state, ...newProps.selectedPatient }, () => {
         getAnalytes(this, this);
@@ -88,13 +100,35 @@ class ResultEntry extends Component {
     }
   }
   render() {
+    let display =
+      this.props.providers === undefined
+        ? []
+        : this.props.providers.filter(
+            f => f.hims_d_employee_id === this.state.provider_id
+          );
     return (
       <div>
         <Modal open={this.props.open}>
           <div className="algaeh-modal">
             <div className="popupHeader">
-              <h4>Result Entry</h4>
+              <div className="row">
+                <div className="col-lg-8">
+                  <h4>Result Entry</h4>
+                </div>
+                <div className="col-lg-4">
+                  <button
+                    type="button"
+                    className=""
+                    onClick={e => {
+                      this.onClose(e);
+                    }}
+                  >
+                    <i className="fas fa-times-circle" />
+                  </button>
+                </div>
+              </div>
             </div>
+
             <div className="popupInner">
               <div className="col-lg-12">
                 <div className="row">
@@ -119,7 +153,11 @@ class ResultEntry extends Component {
                     <div className="patientDemographic">
                       <span>
                         Ref by:
-                        <b>{this.state.provider_id}</b>
+                        <b>
+                          {display !== null && display.length !== 0
+                            ? display[0].full_name
+                            : ""}
+                        </b>
                       </span>
                       <span>
                         Ordered Date:
@@ -156,13 +194,13 @@ class ResultEntry extends Component {
                           forceLabel: "Entered By"
                         }}
                         selector={{
-                          name: "technician_id",
+                          name: "entered_by",
                           className: "select-fld",
-                          value: this.state.technician_id,
+                          value: this.state.entered_by,
                           dataSource: {
                             textField: "user_displayname",
                             valueField: "algaeh_d_app_user_id",
-                            data: this.props.radiologyusers
+                            data: this.props.labiologyusers
                           },
                           onChange: null,
                           others: {
@@ -176,13 +214,13 @@ class ResultEntry extends Component {
                           forceLabel: "Confirmed By"
                         }}
                         selector={{
-                          name: "technician_id",
+                          name: "confirmed_by",
                           className: "select-fld",
-                          value: this.state.technician_id,
+                          value: this.state.confirmed_by,
                           dataSource: {
                             textField: "user_displayname",
                             valueField: "algaeh_d_app_user_id",
-                            data: this.props.radiologyusers
+                            data: this.props.labiologyusers
                           },
                           onChange: null,
                           others: {
@@ -196,13 +234,13 @@ class ResultEntry extends Component {
                           forceLabel: "Validtaed By"
                         }}
                         selector={{
-                          name: "technician_id",
+                          name: "validated_by",
                           className: "select-fld",
-                          value: this.state.technician_id,
+                          value: this.state.validated_by,
                           dataSource: {
                             textField: "user_displayname",
                             valueField: "algaeh_d_app_user_id",
-                            data: this.props.radiologyusers
+                            data: this.props.labiologyusers
                           },
                           onChange: null,
                           others: {
@@ -298,6 +336,9 @@ class ResultEntry extends Component {
                                           this,
                                           row
                                         )
+                                      },
+                                      others: {
+                                        placeholder: "Enter Result"
                                       }
                                     }}
                                   />
@@ -559,7 +600,7 @@ class ResultEntry extends Component {
                   type="button"
                   className="btn btn-primary"
                   onClick={onReRun.bind(this, this)}
-                  disabled={this.state.status === "V" ? false : true}
+                  disabled={this.state.entered_by !== null ? false : true}
                 >
                   Re-Run
                 </button>

@@ -8,9 +8,31 @@ const texthandle = ($this, ctrl, e) => {
   e = e || ctrl;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  $this.setState({
-    [name]: value
-  });
+  $this.setState(
+    {
+      [name]: value
+    },
+    () => {
+      calcuateDispense($this, e);
+    }
+  );
+};
+
+const numberhandle = ($this, ctrl, e) => {
+  e = e || ctrl;
+
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  if (value < 0) {
+    swalMessage({
+      title: "Invalid Input. Cannot be lessthan Zero.",
+      type: "warning"
+    });
+  } else {
+    $this.setState({
+      [name]: value
+    });
+  }
 };
 
 //Save Order
@@ -66,19 +88,27 @@ const genericnamehandle = ($this, ctrl, e) => {
 
 const itemhandle = ($this, ctrl, e) => {
   e = e || ctrl;
-
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-
-  $this.setState({
-    [name]: value,
-    generic_id: e.selected.generic_id,
-    service_id: e.selected.service_id,
-    uom_id: e.selected.sales_uom_id,
-    item_category_id: e.selected.category_id,
-    item_group_id: e.selected.group_id,
-    addItemEnable: false
-  });
+  if (e.selected.service_id === null) {
+    swalMessage({
+      title: "Invalid Input. Service not setup to the selected Item.",
+      type: "error"
+    });
+    $this.setState({
+      [name]: null
+    });
+  } else {
+    $this.setState({
+      [name]: value,
+      generic_id: e.selected.generic_id,
+      service_id: e.selected.service_id,
+      uom_id: e.selected.sales_uom_id,
+      item_category_id: e.selected.category_id,
+      item_group_id: e.selected.group_id,
+      addItemEnable: false
+    });
+  }
 };
 
 const AddItems = $this => {
@@ -154,37 +184,69 @@ const dateFormater = value => {
 
 const deleteItems = $this => {};
 
-const calcuateQuantity = $this => {
-  let frequency = 0;
-  let frequency_type = 0;
-  if (
-    $this.state.frequency === "0" ||
-    $this.state.frequency === "4" ||
-    $this.state.frequency === "5"
-  ) {
-    frequency = 2;
-  } else if ($this.state.frequency === "0") {
-    frequency = 1;
-  } else if (
-    $this.state.frequency === "1" ||
-    $this.state.frequency === "2" ||
-    $this.state.frequency === "3"
-  ) {
-    frequency = 1;
-  } else if ($this.state.frequency === "6") {
-    frequency = 3;
-  }
+const calcuateDispense = ($this, e) => {
+  debugger;
+  if (e.target == null || e.target.value !== e.target.oldvalue) {
+    let frequency = 0;
+    let frequency_type = 0;
+    let dispense = 0;
+    if ($this.state.no_of_days !== 0) {
+      //Frequency
+      if (
+        $this.state.frequency === "0" ||
+        $this.state.frequency === "4" ||
+        $this.state.frequency === "5"
+      ) {
+        frequency = 2;
+      } else if (
+        $this.state.frequency === "1" ||
+        $this.state.frequency === "2" ||
+        $this.state.frequency === "3"
+      ) {
+        frequency = 1;
+      } else if ($this.state.frequency === "6") {
+        frequency = 3;
+      }
 
-  if ($this.state.frequency_type === "PD") {
-    frequency_type = 2;
-  } else if ($this.state.frequency_type === "PH") {
-    frequency_type = 1;
-  } else if ($this.state.frequency_type === "PW") {
-    frequency_type = 1;
-  } else if ($this.state.frequency_type === "PM") {
-    frequency_type = 3;
-  } else if ($this.state.frequency_type === "AD") {
-    frequency_type = 3;
+      //Frequency Type
+      if ($this.state.frequency_type === "PD" && frequency === 2) {
+        frequency_type = 2;
+      } else if ($this.state.frequency_type === "PD" && frequency === 1) {
+        frequency_type = 1;
+      } else if ($this.state.frequency_type === "PD" && frequency === 3) {
+        frequency_type = 3;
+      } else if ($this.state.frequency_type === "PH" && frequency === 2) {
+        frequency_type = 2 * 24;
+      } else if ($this.state.frequency_type === "PH" && frequency === 1) {
+        frequency_type = 1 * 24;
+      } else if ($this.state.frequency_type === "PH" && frequency === 3) {
+        frequency_type = 3 * 24;
+      } else if ($this.state.frequency_type === "PW" && frequency === 2) {
+        frequency_type = 2;
+      } else if ($this.state.frequency_type === "PW" && frequency === 1) {
+        frequency_type = 1;
+      } else if ($this.state.frequency_type === "PW" && frequency === 3) {
+        frequency_type = 3;
+      } else if ($this.state.frequency_type === "PM" && frequency === 2) {
+        frequency_type = 2;
+      } else if ($this.state.frequency_type === "PM" && frequency === 1) {
+        frequency_type = 1;
+      } else if ($this.state.frequency_type === "PM" && frequency === 3) {
+        frequency_type = 3;
+      } else if ($this.state.frequency_type === "AD" && frequency === 2) {
+        frequency_type = 2;
+      } else if ($this.state.frequency_type === "AD" && frequency === 1) {
+        frequency_type = 1;
+      } else if ($this.state.frequency_type === "AD" && frequency === 3) {
+        frequency_type = 3;
+      }
+
+      dispense = $this.state.no_of_days * $this.state.dosage * frequency_type;
+
+      $this.setState({
+        dispense: dispense
+      });
+    }
   }
 };
 export {
@@ -195,5 +257,7 @@ export {
   AddItems,
   datehandle,
   deleteItems,
-  dateFormater
+  dateFormater,
+  numberhandle,
+  calcuateDispense
 };

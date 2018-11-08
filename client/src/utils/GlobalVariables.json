@@ -97,15 +97,15 @@
     }
   ],
   "FORMAT_PRIORITY": [
-    { "name": "Stat", "value": "2" },
-    { "name": "Routine", "value": "3" }
+    { "name": "Stat", "value": "S" },
+    { "name": "Routine", "value": "R" }
   ],
   "FORMAT_TEST_STATUS": [
-    { "name": "Ordered", "value": "O" },
-    { "name": "Collected", "value": "CL" },
-    { "name": "Cancelled", "value": "CN" },
-    { "name": "Confirmed", "value": "CF" },
-    { "name": "Validated", "value": "V" }
+    { "name": "Ordered", "value": "O", "color": "#f2f2f2" },
+    { "name": "Collected", "value": "CL", "color": "#00ffff" },
+    { "name": "Cancelled", "value": "CN", "color": "#ff4000" },
+    { "name": "Confirmed", "value": "CF", "color": "#ff99ff" },
+    { "name": "Validated", "value": "V", "color": "#4CAF50" }
   ],
   "FORMAT_INSURANCE_EDIT_OPTION": [
     {
@@ -241,12 +241,12 @@
     { "name": "Packs", "value": "PS" }
   ],
   "FORMAT_RAD_STATUS": [
-    { "name": "Ordered", "value": "O" },
-    { "name": "Scheduled", "value": "S" },
-    { "name": "Under Process", "value": "UP" },
-    { "name": "Cancelled", "value": "CN" },
-    { "name": "Result  Confirmed ", "value": "RC" },
-    { "name": "Result Avaiable", "value": "RA" }
+    { "name": "Ordered", "value": "O", "color": "#f2f2f2" },
+    { "name": "Scheduled", "value": "S", "color": "#fca6c1" },
+    { "name": "Under Process", "value": "UP", "color": "#cea6fc" },
+    { "name": "Cancelled", "value": "CN", "color": "#ff4000" },
+    { "name": "Result  Confirmed ", "value": "RC", "color": "#ff99ff" },
+    { "name": "Result Avaiable", "value": "RA", "color": "#00ffff" }
   ],
   "ALLERGY_TYPES": [
     {

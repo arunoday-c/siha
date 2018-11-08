@@ -57,6 +57,10 @@ const SaveTransferEntry = $this => {
       if (response.data.success === true) {
         $this.setState({
           transfer_number: response.data.records.transfer_number,
+          hims_f_pharmacy_transfer_header_id:
+            response.data.records.hims_f_pharmacy_transfer_header_id,
+          year: response.data.records.year,
+          period: response.data.records.period,
           saveEnable: true,
           postEnable: false
         });
@@ -74,7 +78,7 @@ const PostTransferEntry = $this => {
   $this.state.completed = "Y";
   $this.state.transaction_type = "ST";
   $this.state.transaction_id = $this.state.hims_f_pharmacy_transfer_header_id;
-  $this.state.transaction_date = $this.state.pos_date;
+  $this.state.transaction_date = $this.state.transfer_date;
   for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
     $this.state.pharmacy_stock_detail[i].location_id =
       $this.state.from_location_id;
@@ -85,14 +89,19 @@ const PostTransferEntry = $this => {
     $this.state.pharmacy_stock_detail[i].uom_id =
       $this.state.pharmacy_stock_detail[i].uom_transferred_id;
 
-    $this.state.pharmacy_stock_detail[i].sales_uom =
-      $this.state.pharmacy_stock_detail[i].uom_transferred_id;
-
     $this.state.pharmacy_stock_detail[i].quantity =
       $this.state.pharmacy_stock_detail[i].quantity_transferred;
 
     $this.state.pharmacy_stock_detail[i].grn_number =
       $this.state.pharmacy_stock_detail[i].grnno;
+
+    $this.state.pharmacy_stock_detail[i].net_total =
+      $this.state.pharmacy_stock_detail[i].unit_cost *
+      $this.state.pharmacy_stock_detail[i].quantity_transferred;
+
+    $this.state.pharmacy_stock_detail[i].extended_cost =
+      $this.state.pharmacy_stock_detail[i].unit_cost *
+      $this.state.pharmacy_stock_detail[i].quantity_transferred;
   }
   debugger;
   algaehApiCall({
@@ -110,6 +119,13 @@ const PostTransferEntry = $this => {
           type: "success"
         });
       }
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
 };
@@ -142,6 +158,8 @@ const RequisitionSearch = ($this, e) => {
           afterSuccess: data => {
             debugger;
             AlgaehLoader({ show: true });
+            let from_location_id = data.from_location_id;
+            let from_location_type = data.from_location_type;
             data.saveEnable = false;
 
             if (data.completed === "Y") {
@@ -150,7 +168,10 @@ const RequisitionSearch = ($this, e) => {
               data.postEnable = false;
             }
 
-            // data.postEnable = true;
+            data.from_location_id = data.to_location_id;
+            data.to_location_id = from_location_id;
+            data.from_location_type = data.to_location_type;
+            data.to_location_type = from_location_type;
 
             data.dataExitst = true;
 
@@ -179,6 +200,9 @@ const RequisitionSearch = ($this, e) => {
                 data.pharmacy_stock_detail[i].item_uom;
               data.pharmacy_stock_detail[i].uom_transferred_id =
                 data.pharmacy_stock_detail[i].item_uom;
+
+              data.pharmacy_stock_detail[i].unit_cost =
+                data.pharmacy_stock_detail[i].avgcost;
             }
             $this.setState(data);
             AlgaehLoader({ show: false });

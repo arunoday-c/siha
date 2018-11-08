@@ -7,6 +7,7 @@ import Numbering from "./Numbering/Numbering";
 import Transaction from "./Transaction/Transaction";
 import Counter from "./Counter/Counter.js";
 import Shift from "./Shift/Shift.js";
+import UserShiftMapping from "./UserShiftMapping/UserShiftMapping";
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 
@@ -90,9 +91,8 @@ class BusinessSetup extends Component {
                 />
               }
             </li>
-
-            {/* <li
-              algaehtabs={"Holiday"}
+            <li
+              algaehtabs={"UserShiftMapping"}
               style={{ marginRight: 2 }}
               className={"nav-item tab-button"}
               onClick={this.openTab.bind(this)}
@@ -100,60 +100,11 @@ class BusinessSetup extends Component {
               {
                 <AlgaehLabel
                   label={{
-                    fieldName: "holidays_list"
+                    fieldName: "users_shift"
                   }}
                 />
               }
             </li>
-            <li
-              algaehtabs={"Transaction"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button"}
-              onClick={this.openTab.bind(this)}
-            >
-              TRANSACTION
-            </li>
-            <li
-              algaehtabs={"Numbering"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button "}
-              onClick={this.openTab.bind(this)}
-            >
-              NUMBERING
-            </li>
-            <li
-              algaehtabs={"LabelSetup"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button "}
-              onClick={this.openTab.bind(this)}
-            >
-              LABEL SETUP
-            </li>
-            <li
-              algaehtabs={"EpiodeCreation"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button "}
-              onClick={this.openTab.bind(this)}
-            >
-              EPISODE CREATION
-            </li>
-            <li
-              algaehtabs={"Option"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button "}
-              onClick={this.openTab.bind(this)}
-            >
-              OPTION
-            </li>
-
-            <li
-              algaehtabs={"QueueOption"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button "}
-              onClick={this.openTab.bind(this)}
-            >
-              QUEUE OPTION
-            </li> */}
           </ul>
         </div>
 
@@ -170,6 +121,8 @@ class BusinessSetup extends Component {
             <Transaction />
           ) : this.state.pageDisplay === "Numbering" ? (
             <Numbering />
+          ) : this.state.pageDisplay === "UserShiftMapping" ? (
+            <UserShiftMapping />
           ) : null}
         </div>
       </div>

@@ -52,6 +52,17 @@
           height: 16px;
         }
       }
+      .todayBtn {
+        margin-left: 10px;
+        padding: 3px 10px;
+        border: 1px solid white;
+        background: none;
+        color: #fff;
+      }
+      .todayBtn:hover {
+        background: #fff;
+        color: #34b8bc;
+      }
     }
 
     .arrow-box {
@@ -111,7 +122,7 @@
       margin: 0;
       padding: 0;
       list-style: none;
-      height: 66vh;
+      height: 65.5vh;
       overflow: auto;
       .noPatientDiv {
         margin-top: 15%;
@@ -201,7 +212,7 @@
   }
   #encounter_table {
     .ReactTable {
-      max-height: 66vh !important;
+      max-height: 65.5vh !important;
     }
   }
   .bottom-layout {

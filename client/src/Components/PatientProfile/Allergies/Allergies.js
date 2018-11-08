@@ -679,7 +679,7 @@ class Allergies extends Component {
                 <thead className="table-primary">
                   <tr>
                     <th> {tables.allergy_type_desc} </th>
-                    <th>Onset Date</th>
+                    <th>Onset</th>
                     <th>Comment</th>
                     <th>Inactive</th>
                   </tr>
@@ -688,7 +688,13 @@ class Allergies extends Component {
                   {tables.allergyList.map((rows, rIndex) => (
                     <tr key={rIndex}>
                       <td> {rows.allergy_name} </td>
-                      <td>{rows.onset_date}</td>
+                      <td>
+                        {
+                          Enumerable.from(GlobalVariables.ALLERGY_ONSET)
+                            .where(w => w.value === rows.onset)
+                            .firstOrDefault().name
+                        }
+                      </td>
                       <td>{rows.comment}</td>
                       <td>{rows.allergy_inactive === "Y" ? "Yes" : "No"}</td>
                     </tr>

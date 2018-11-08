@@ -723,9 +723,10 @@ textarea {
   padding: 8px 6px 7px !important;
   border: 1px solid #d3d3d3 !important;
   border-radius: 4px !important;
-  width: 100%;
+  width: 100% !important;
   resize: none;
   min-height: 85px;
+  background: #fff !important;
 }
 // Report Styles Start
 
@@ -785,40 +786,6 @@ textarea {
     svg {
       height: 16px;
     }
-  }
-}
-.autoselect-Div {
-  position: relative;
-  .loadingSelect {
-    display: none;
-    width: 100%;
-    position: absolute;
-    background: rgba(0, 0, 0, 0.2);
-    height: 100%;
-    border-radius: 5px;
-    i.fa-sync {
-      color: #7f8284;
-      position: absolute;
-      top: 8px;
-      left: 45%;
-      cursor: pointer;
-      font-size: 13px;
-    }
-  }
-
-  i.fa-times-circle {
-    display: none;
-    color: #7f8284;
-    position: absolute;
-    top: 8px;
-    right: 20px;
-    cursor: pointer;
-    font-size: 13px;
-  }
-}
-.autoselect-Div:hover {
-  i.fa-times-circle {
-    display: block;
   }
 }
 //mandatort fields styles
@@ -1001,24 +968,6 @@ th {
 .algaeh_Arabic_Version {
   .table-responsive {
     direction: rtl;
-  }
-  .autoselect-Div {
-    position: relative;
-    i {
-      display: none;
-      color: #7f8284;
-      position: absolute;
-      top: 8px;
-      right: auto;
-      left: 20px;
-      cursor: pointer;
-      font-size: 13px;
-    }
-  }
-  .autoselect-Div:hover {
-    i {
-      display: block;
-    }
   }
 
   .tab-container {
@@ -1422,4 +1371,7 @@ th {
 [data-tooltip]:hover:after {
   visibility: visible;
   opacity: 1;
+}
+.hijri-calender {
+  z-index: 9;
 }

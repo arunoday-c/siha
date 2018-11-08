@@ -17,7 +17,9 @@ import {
   serviceTypeHandeler,
   serviceHandeler,
   discounthandle,
-  adjustadvance
+  adjustadvance,
+  billheaderCalculation,
+  onchangegridcol
 } from "./AddOPBillingHandaler";
 import ReciptForm from "../ReciptDetails/ReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -172,54 +174,59 @@ class AddOPBillingForm extends Component {
     }
   }
   //Calculate Row Detail
-  calculateAmount(row, context, ctrl, e) {
+  calculateAmount(row, ctrl, e) {
     debugger;
+
     e = e || ctrl;
-    let $this = this;
-    let billdetails = this.state.billdetails;
+    if (e.target.value !== e.target.oldvalue) {
+      let $this = this;
+      let billdetails = this.state.billdetails;
 
-    row[e.target.name] = parseFloat(e.target.value === "" ? 0 : e.target.value);
-    let inputParam = [
-      {
-        hims_d_services_id: row.services_id,
-        vat_applicable: this.state.vat_applicable,
-        quantity: row.quantity,
-        discount_amout:
-          e.target.name === "discount_percentage" ? 0 : row.discount_amout,
-        discount_percentage:
-          e.target.name === "discount_amout" ? 0 : row.discount_percentage,
+      row[e.target.name] = parseFloat(
+        e.target.value === "" ? 0 : e.target.value
+      );
+      let inputParam = [
+        {
+          hims_d_services_id: row.services_id,
+          vat_applicable: this.state.vat_applicable,
+          quantity: row.quantity,
+          discount_amout:
+            e.target.name === "discount_percentage" ? 0 : row.discount_amout,
+          discount_percentage:
+            e.target.name === "discount_amout" ? 0 : row.discount_percentage,
 
-        insured: this.state.insured,
-        primary_insurance_provider_id: this.state.insurance_provider_id,
-        primary_network_office_id: this.state
-          .hims_d_insurance_network_office_id,
-        primary_network_id: this.state.network_id,
-        sec_insured: this.state.sec_insured,
-        secondary_insurance_provider_id: this.state
-          .secondary_insurance_provider_id,
-        secondary_network_id: this.state.secondary_network_id,
-        secondary_network_office_id: this.state.secondary_network_office_id
-      }
-    ];
-
-    this.props.billingCalculations({
-      uri: "/billing/getBillDetails",
-      method: "POST",
-      data: inputParam,
-      redux: {
-        type: "BILL_GEN_GET_DATA",
-        mappingName: "xxx"
-      },
-      afterSuccess: data => {
-        extend(row, data.billdetails[0]);
-        for (let i = 0; i < billdetails.length; i++) {
-          if (billdetails[i].service_type_id === row.service_type_id) {
-            billdetails[i] = row;
-          }
+          insured: this.state.insured,
+          primary_insurance_provider_id: this.state.insurance_provider_id,
+          primary_network_office_id: this.state
+            .hims_d_insurance_network_office_id,
+          primary_network_id: this.state.network_id,
+          sec_insured: this.state.sec_insured,
+          secondary_insurance_provider_id: this.state
+            .secondary_insurance_provider_id,
+          secondary_network_id: this.state.secondary_network_id,
+          secondary_network_office_id: this.state.secondary_network_office_id
         }
-        $this.setState({ billdetails: billdetails });
-      }
-    });
+      ];
+
+      this.props.billingCalculations({
+        uri: "/billing/getBillDetails",
+        method: "POST",
+        data: inputParam,
+        redux: {
+          type: "BILL_GEN_GET_DATA",
+          mappingName: "xxx"
+        },
+        afterSuccess: data => {
+          extend(row, data.billdetails[0]);
+          for (let i = 0; i < billdetails.length; i++) {
+            if (billdetails[i].service_type_id === row.service_type_id) {
+              billdetails[i] = row;
+            }
+          }
+          $this.setState({ billdetails: billdetails });
+        }
+      });
+    }
   }
 
   updateBillDetail(e) {
@@ -425,27 +432,25 @@ class AddOPBillingForm extends Component {
                             );
                           },
                           editorTemplate: row => {
+                            let display =
+                              this.props.servicetype === undefined
+                                ? []
+                                : this.props.servicetype.filter(
+                                    f =>
+                                      f.hims_d_service_type_id ===
+                                      row.service_type_id
+                                  );
+
                             return (
-                              <AlagehAutoComplete
-                                div={{}}
-                                selector={{
-                                  name: "service_type_id",
-                                  className: "select-fld",
-                                  value: row.service_type_id,
-                                  dataSource: {
-                                    textField: "service_type",
-                                    valueField: "hims_d_service_type_id",
-                                    data: this.props.servicetype
-                                  },
-                                  others: {
-                                    disabled: true
-                                  },
-                                  onChange: null
-                                }}
-                              />
+                              <span>
+                                {display !== undefined && display.length !== 0
+                                  ? this.state.selectedLang === "en"
+                                    ? display[0].service_type
+                                    : display[0].arabic_service_type
+                                  : ""}
+                              </span>
                             );
-                          },
-                          disabled: true
+                          }
                         },
 
                         {
@@ -473,27 +478,24 @@ class AddOPBillingForm extends Component {
                             );
                           },
                           editorTemplate: row => {
+                            let display =
+                              this.props.serviceslist === undefined
+                                ? []
+                                : this.props.serviceslist.filter(
+                                    f =>
+                                      f.hims_d_services_id === row.services_id
+                                  );
+
                             return (
-                              <AlagehAutoComplete
-                                div={{}}
-                                selector={{
-                                  name: "services_id",
-                                  className: "select-fld",
-                                  value: row.services_id,
-                                  dataSource: {
-                                    textField: "service_name",
-                                    valueField: "hims_d_services_id",
-                                    data: opbilservices
-                                  },
-                                  others: {
-                                    disabled: true
-                                  },
-                                  onChange: null
-                                }}
-                              />
+                              <span>
+                                {display !== null && display.length !== 0
+                                  ? this.state.selectedLang === "en"
+                                    ? display[0].service_name
+                                    : display[0].arabic_service_name
+                                  : ""}
+                              </span>
                             );
-                          },
-                          disabled: true
+                          }
                         },
                         {
                           fieldName: "unit_cost",
@@ -516,11 +518,21 @@ class AddOPBillingForm extends Component {
                                   className: "txt-fld",
                                   name: "quantity",
                                   events: {
-                                    onChange: this.calculateAmount.bind(
+                                    onChange: onchangegridcol.bind(
                                       this,
-                                      row,
-                                      context
+                                      this,
+                                      row
                                     )
+                                  },
+                                  others: {
+                                    placeholder: "0.00",
+                                    onBlur: this.calculateAmount.bind(
+                                      this,
+                                      row
+                                    ),
+                                    onFocus: e => {
+                                      e.target.oldvalue = e.target.value;
+                                    }
                                   }
                                 }}
                               />
@@ -554,11 +566,21 @@ class AddOPBillingForm extends Component {
                                   className: "txt-fld",
                                   name: "discount_percentage",
                                   events: {
-                                    onChange: this.calculateAmount.bind(
+                                    onChange: onchangegridcol.bind(
                                       this,
-                                      row,
-                                      context
+                                      this,
+                                      row
                                     )
+                                  },
+                                  others: {
+                                    placeholder: "0.00",
+                                    onBlur: this.calculateAmount.bind(
+                                      this,
+                                      row
+                                    ),
+                                    onFocus: e => {
+                                      e.target.oldvalue = e.target.value;
+                                    }
                                   }
                                 }}
                               />
@@ -582,11 +604,21 @@ class AddOPBillingForm extends Component {
                                   className: "txt-fld",
                                   name: "discount_amout",
                                   events: {
-                                    onChange: this.calculateAmount.bind(
+                                    onChange: onchangegridcol.bind(
                                       this,
-                                      row,
-                                      context
+                                      this,
+                                      row
                                     )
+                                  },
+                                  others: {
+                                    placeholder: "0.00",
+                                    onBlur: this.calculateAmount.bind(
+                                      this,
+                                      row
+                                    ),
+                                    onFocus: e => {
+                                      e.target.oldvalue = e.target.value;
+                                    }
                                   }
                                 }}
                               />
@@ -891,11 +923,20 @@ class AddOPBillingForm extends Component {
                             value: this.state.advance_adjust,
                             className: "txt-fld",
                             name: "advance_adjust",
-                            others: {
-                              disabled: this.state.Billexists
-                            },
+
                             events: {
                               onChange: adjustadvance.bind(this, this, context)
+                            },
+                            others: {
+                              placeholder: "0.00",
+                              onBlur: billheaderCalculation.bind(this, this),
+                              onFocus: e => {
+                                e.target.oldvalue = e.target.value;
+                              },
+                              disabled:
+                                this.state.advance_amount === 0
+                                  ? true
+                                  : this.state.Billexists
                             }
                           }}
                         />
@@ -917,6 +958,13 @@ class AddOPBillingForm extends Component {
                             },
                             events: {
                               onChange: discounthandle.bind(this, this, context)
+                            },
+                            others: {
+                              placeholder: "0.00",
+                              onBlur: billheaderCalculation.bind(this, this),
+                              onFocus: e => {
+                                e.target.oldvalue = e.target.value;
+                              }
                             }
                           }}
                         />
@@ -939,6 +987,13 @@ class AddOPBillingForm extends Component {
                             },
                             events: {
                               onChange: discounthandle.bind(this, this, context)
+                            },
+                            others: {
+                              placeholder: "0.00",
+                              onBlur: billheaderCalculation.bind(this, this),
+                              onFocus: e => {
+                                e.target.oldvalue = e.target.value;
+                              }
                             }
                           }}
                         />

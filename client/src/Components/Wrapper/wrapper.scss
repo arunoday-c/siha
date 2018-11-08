@@ -1,30 +1,51 @@
-.selected-grid-row.-odd .rt-td,
-.selected-grid-row.-even .rt-td {
-  background-color: #d9fdff !important;
-}
-
 .ReactTable {
-  max-width: 95vw !important;
-  font-size: 0.8rem;
-  background: #ffff !important;
-  .rt-th {
-    white-space: unset !important;
-    text-transform: uppercase !important;
-    background: #8c8c8c !important;
-    color: #fff !important;
+  .rt-thead {
+    .rt-th {
+      font-size: 0.8rem !important;
+      color: #fff !important;
+      background: #8c8c8c !important;
+      .style_Label {
+        font-weight: bold !important;
+        white-space: pre-line !important;
+        padding: 3px 0 !important;
+      }
+    }
   }
   .-filters {
     .rt-th {
-      white-space: unset !important;
-      text-transform: uppercase !important;
-      background: #8c8c8c !important;
-      color: #fff !important;
+      background: #ccc !important;
     }
   }
-  .rt-td {
-    overflow: inherit !important;
+  .rt-thead.-filters input,
+  .rt-thead.-filters select {
+    padding: 0 2px !important;
+    border: 1px solid #8c8c8c !important;
   }
-
+  .rt-tbody {
+    text-align: center;
+    .rt-td {
+      font-size: 0.8rem !important;
+      overflow: inherit !important;
+    }
+  }
+  .-btn {
+    background: #34b8bc !important;
+    color: #fff !important;
+  }
+  .-btn:disabled {
+    background: rgba(0, 0, 0, 0.1) !important;
+  }
+  .-pagination {
+    font-size: 0.8rem !important;
+  }
+  .-pagination input,
+  .-pagination select {
+    border: 1px solid #8c8c8c !important;
+    width: 7vh !important;
+  }
+  .-pagination input {
+    padding: 2px !important;
+  }
   i.fa-pen,
   i.fa-trash-alt,
   i.fa-save,
@@ -37,6 +58,7 @@
   .fa-file-export,
   .fa-sync-alt,
   .fa-file-prescription,
+  .fa-prescription,
   .fa-arrow-right,
   .fa-plus {
     cursor: pointer;
@@ -65,9 +87,16 @@
   .fa-file-export:hover,
   .fa-sync-alt:hover,
   .fa-file-prescription:hover,
+  .fa-prescription:hover,
   .fa-arrow-right:hover,
   .fa-plus:hover {
     background: #44b8bd;
     color: #fff;
+  }
+}
+
+@media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
+  .ReactTable {
+    max-width: 93.1vw !important;
   }
 }

@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import Collections from "@material-ui/icons/Collections";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 
 import "./SampleCollection.css";
@@ -329,6 +328,24 @@ class SampleCollection extends Component {
                         label: (
                           <AlgaehLabel label={{ fieldName: "patient_name" }} />
                         ),
+                        disabled: true,
+                        others: {
+                          resizable: false,
+                          style: { textAlign: "left" }
+                        }
+                      },
+                      {
+                        fieldName: "test_type",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "proiorty" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.test_type === "S" ? "Stat" : "Rotinue"}
+                            </span>
+                          );
+                        },
                         disabled: true,
                         others: {
                           resizable: false,

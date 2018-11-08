@@ -281,7 +281,9 @@ class SalesReturn extends Component {
                   />
                   <h6>
                     {this.state.mode_of_pay
-                      ? this.state.mode_of_pay
+                      ? this.state.mode_of_pay === "1"
+                        ? "Self"
+                        : "Insurance"
                       : "Mode of Payment"}
                   </h6>
                 </div>
@@ -314,7 +316,10 @@ class SalesReturn extends Component {
                       disabled={this.state.saveEnable}
                     >
                       <AlgaehLabel
-                        label={{ forceLabel: "Save", returnText: true }}
+                        label={{
+                          forceLabel: "Return & Print",
+                          returnText: true
+                        }}
                       />
                     </button>
 

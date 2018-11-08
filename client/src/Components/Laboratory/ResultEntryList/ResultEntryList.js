@@ -219,8 +219,28 @@ class ResultEntryList extends Component {
           <div className="row">
             <div className="col-lg-12">
               <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
-                {/* <div className="portlet-title"><div className="caption"><h3 className="caption-subject"></h3></div></div>
-                */}
+                <div className="portlet-title">
+                  <div className="caption">
+                    <h3 className="caption-subject">Result Entry List</h3>
+                  </div>
+
+                  <div className="actions">
+                    {/* <span> Status: </span> */}
+                    <ul className="ul-legend">
+                      {FORMAT_TEST_STATUS.map((data, index) => (
+                        <li key={index}>
+                          <span
+                            style={{
+                              backgroundColor: data.color
+                            }}
+                          />
+                          {data.name}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
                 <div className="portlet-body" id="resultListEntryCntr">
                   <AlgaehDataGrid
                     id="samplecollection_grid"
@@ -237,8 +257,8 @@ class ResultEntryList extends Component {
                                     row.status === "O"
                                       ? ""
                                       : row.sample_status === "N"
-                                        ? "none"
-                                        : ""
+                                      ? "none"
+                                      : ""
                                 }}
                                 className="fas fa-file-signature"
                                 aria-hidden="true"
@@ -269,6 +289,24 @@ class ResultEntryList extends Component {
                         label: (
                           <AlgaehLabel label={{ fieldName: "patient_name" }} />
                         ),
+                        disabled: true,
+                        others: {
+                          resizable: false,
+                          style: { textAlign: "left" }
+                        }
+                      },
+                      {
+                        fieldName: "test_type",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "proiorty" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.test_type === "S" ? "Stat" : "Rotinue"}
+                            </span>
+                          );
+                        },
                         disabled: true,
                         others: {
                           resizable: false,
@@ -311,15 +349,15 @@ class ResultEntryList extends Component {
                         fieldName: "status",
                         label: <AlgaehLabel label={{ fieldName: "status" }} />,
                         displayTemplate: row => {
-                          return row.status == "O"
+                          return row.status === "O"
                             ? "Ordered"
-                            : row.status == "CL"
-                              ? "Collected"
-                              : row.status == "CN"
-                                ? "Cancelled"
-                                : row.status == "CF"
-                                  ? "Confirmed"
-                                  : "Validated";
+                            : row.status === "CL"
+                            ? "Collected"
+                            : row.status === "CN"
+                            ? "Cancelled"
+                            : row.status === "CF"
+                            ? "Confirmed"
+                            : "Validated";
                         },
                         disabled: true,
                         others: {
@@ -351,10 +389,10 @@ class ResultEntryList extends Component {
                           return row.sample_status == "N"
                             ? "Not Done"
                             : row.sample_status == "A"
-                              ? "Accepted"
-                              : row.sample_status == "R"
-                                ? "Rejected"
-                                : null;
+                            ? "Accepted"
+                            : row.sample_status == "R"
+                            ? "Rejected"
+                            : null;
                         },
                         disabled: true,
                         others: {
@@ -363,6 +401,17 @@ class ResultEntryList extends Component {
                         }
                       }
                     ]}
+                    rowClassName={row => {
+                      return row.status === "CF"
+                        ? "confirmedClass"
+                        : row.status === "CL"
+                        ? "collectedClass"
+                        : row.status === "CN"
+                        ? "cancelledClass"
+                        : row.status === "V"
+                        ? "validateClass"
+                        : null;
+                    }}
                     keyId="patient_code"
                     dataSource={{
                       data: this.state.sample_collection

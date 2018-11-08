@@ -15,11 +15,10 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
-
+import swal from "sweetalert2";
+import moment from "moment";
 //TODO
-// Request for Sub Department Calling Doesn't stop
-//Issue to be checked
-
+//Update Department and Subdepartment
 class DeptMaster extends Component {
   constructor(props) {
     super(props);
@@ -31,6 +30,7 @@ class DeptMaster extends Component {
       effective_start_date: new Date(),
       showSubDeptModal: false
     };
+    this.getAllDepartments();
   }
 
   dropDownHandle(value) {
@@ -41,118 +41,206 @@ class DeptMaster extends Component {
     this.setState({ [e.target.name]: e.target.value });
   }
 
-  getAllDepartments() {
-    this.props.getAllDepartments({
-      uri: "/department/get",
-      method: "GET",
-      redux: {
-        type: "DEPARTMENTS_GET_DATA",
-        mappingName: "departments"
+  resetSaveState() {
+    this.setState({
+      department_code: "",
+      department_name: "",
+      department_name_arabic: "",
+      department_type: "NON-CLINICAL",
+      effective_start_date: new Date(),
+      sub_department_code: "",
+      sub_department_name: "",
+      arabic_sub_department_name: ""
+    });
+  }
+
+  deleteDepartment(data) {
+    swal({
+      title: "Delete Department " + data.department_name + "?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        algaehApiCall({
+          uri: "/department/deleteDepartment",
+          data: {
+            hims_d_department_id: data.hims_d_department_id
+          },
+          method: "DELETE",
+          onSuccess: response => {
+            debugger;
+            if (response.data.success) {
+              swalMessage({
+                title: "Record deleted successfully . .",
+                type: "success"
+              });
+
+              this.getAllDepartments();
+            } else if (!response.data.success) {
+              swalMessage({
+                title: response.data.message,
+                type: "error"
+              });
+            }
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
+        });
+      } else {
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "error"
+        });
       }
     });
+  }
+  deleteSubDepartment(data) {
+    swal({
+      title: "Delete Department " + data.sub_department_name + "?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        algaehApiCall({
+          uri: "/department/deleteSubDepartment",
+          data: {
+            hims_d_sub_department_id: data.hims_d_sub_department_id
+          },
+          method: "DELETE",
+          onSuccess: response => {
+            if (response.data.success) {
+              swalMessage({
+                title: "Record deleted successfully . .",
+                type: "success"
+              });
 
-    // algaehApiCall({
-    //   uri: "/department/get",
-    //   method: "GET",
-    //   onSuccess: response => {
-    //     this.setState({
-    //       allDepartments: response.data.records
-    //     });
-    //   },
-    //   onFailure: error => {}
-    // });
+              this.getAllSubDepartments(this.state.hims_d_department_id);
+            } else if (!response.data.success) {
+              swalMessage({
+                title: response.data.message,
+                type: "error"
+              });
+            }
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
+        });
+      } else {
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "error"
+        });
+      }
+    });
+  }
+
+  getAllDepartments() {
+    algaehApiCall({
+      uri: "/department/get",
+      method: "GET",
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({ allDepartments: response.data.records });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   getAllSubDepartments(id) {
-    this.props.getAllDepartments({
-      uri: "/department/get/subdepartment?department_id=" + id,
+    algaehApiCall({
+      uri: "/department/get/subdepartment",
+      data: { department_id: id },
       method: "GET",
-      redux: {
-        type: "SUB_DEPARTMENTS_GET_DATA",
-        mappingName: "subdepartments"
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({ subDepartments: response.data.records });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
       }
     });
-
-    // algaehApiCall({
-    //   uri: "/department/get/subdepartment",
-    //   method: "GET",
-    //   data: {
-    //     department_id: id
-    //   },
-    //   onSuccess: response => {
-    //     this.setState({
-    //       subDepartments: response.data.records
-    //     });
-    //   },
-    //   onFailure: error => {}
-    // });
   }
 
-  addSubDept(data) {
+  changeGridEditors(row, e) {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    row[name] = value;
+    row.update();
+  }
+
+  addSubDept(data, e) {
+    this.getAllSubDepartments(data.hims_d_department_id);
+    this.setState({
+      showSubDeptModal: true,
+      depNametoAdd: data.department_name,
+      hims_d_department_id: data.hims_d_department_id
+    });
+  }
+
+  addSubDepartment(e) {
     debugger;
+    e.preventDefault();
+    AlgaehValidation({
+      querySelector: "data-validate='subdepDiv'",
+      alertTypeIcon: "warning",
+      onSuccess: () => {
+        let sen_data = {
+          department_id: this.state.hims_d_department_id,
+          sub_department_code: this.state.sub_department_code,
+          sub_department_name: this.state.sub_department_name,
+          arabic_sub_department_name: this.state.arabic_sub_department_name,
+          effective_start_date: this.state.effective_start_date
+        };
 
-    // this.setState({
-    //   showSubDeptModal: true
-    // });
-  }
-
-  getSubDeptGrid(id) {
-    this.props.getAllDepartments({
-      uri: "/department/get/subdepartment?department_id=" + id,
-      method: "GET",
-      redux: {
-        type: "SUB_DEPARTMENTS_GET_DATA",
-        mappingName: "subdepartments"
+        algaehApiCall({
+          uri: "/department/add/subdepartment",
+          method: "POST",
+          data: sen_data,
+          onSuccess: response => {
+            if (response.data.success) {
+              swalMessage({
+                title: "Added Successfully",
+                type: "success"
+              });
+              this.resetSaveState();
+              this.getAllSubDepartments(this.state.hims_d_department_id);
+            }
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
+        });
       }
     });
-
-    return (
-      <React.Fragment>
-        <div style={{ padding: "20px" }}>
-          <span>SUB DEPARTMENTS</span>
-          <AlgaehDataGrid
-            id="sub_dep_grid"
-            columns={[
-              {
-                fieldName: "sub_department_code",
-                label: "Sub Department Code"
-              },
-              {
-                fieldName: "sub_department_name",
-                label: "Sub Department Name"
-              },
-              {
-                fieldName: "arabic_sub_department_name",
-                label: "Sub Department Arabic Name"
-              },
-              {
-                fieldName: "effective_start_date",
-                label: "Effective Start Date"
-              },
-              {
-                fieldName: "effective_end_date",
-                label: "Effective End Date"
-              },
-              {
-                fieldName: "sub_department_status",
-                label: "Status"
-              }
-            ]}
-            keyId="hims_d_sub_department_id"
-            dataSource={{
-              data: this.props.subdepartments
-            }}
-            isEditable={true}
-            paging={{ page: 0, rowsPerPage: 10 }}
-            events={{
-              onDelete: row => {},
-              onEdit: row => {},
-              onDone: row => {}
-            }}
-          />
-        </div>
-      </React.Fragment>
-    );
   }
 
   addDepartment(e) {
@@ -180,30 +268,229 @@ class DeptMaster extends Component {
                 title: "Added Successfully",
                 type: "success"
               });
+              this.resetSaveState();
+              this.getAllDepartments();
             }
           },
-          onFailure: error => {}
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
         });
       }
     });
-  }
-
-  componentDidMount() {
-    this.getAllDepartments();
   }
 
   render() {
     return (
       <div className="dept">
         <Modal open={this.state.showSubDeptModal}>
-          <div className="algaeh-modal" style={{ width: "55vw" }}>
+          <div className="algaeh-modal">
             <div className="popupHeader">
-              <h4>Add Sub Department</h4>
+              <div className="row">
+                <div className="col-lg-8">
+                  <h4>Add Sub Department</h4>
+                </div>
+                <div className="col-lg-4">
+                  <button
+                    type="button"
+                    className=""
+                    onClick={() => {
+                      this.setState({ showSubDeptModal: false });
+                    }}
+                  >
+                    <i className="fas fa-times-circle" />
+                  </button>
+                </div>
+              </div>
             </div>
 
             <div className="popupInner">
               <div className="col-lg-12">
-                <div className="row">HELLO SUB MODAL</div>
+                <div className="row" data-validate="subdepDiv">
+                  <AlagehFormGroup
+                    div={{ className: "col-lg-2" }}
+                    label={{
+                      fieldName: "head_department",
+                      isImp: false
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "department_name",
+                      value: this.state.depNametoAdd,
+                      events: {
+                        onChange: () => {}
+                      },
+                      others: {
+                        disabled: true
+                      }
+                    }}
+                  />
+
+                  <AlagehFormGroup
+                    div={{ className: "col-lg-2" }}
+                    label={{
+                      fieldName: "sub_department_code",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "sub_department_code",
+                      value: this.state.sub_department_code,
+                      events: {
+                        onChange: this.textHandle.bind(this)
+                      }
+                    }}
+                  />
+
+                  <AlagehFormGroup
+                    div={{ className: "col-lg-3" }}
+                    label={{
+                      fieldName: "sub_department_name",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "sub_department_name",
+                      value: this.state.sub_department_name,
+                      events: {
+                        onChange: this.textHandle.bind(this)
+                      }
+                    }}
+                  />
+
+                  <AlagehFormGroup
+                    div={{ className: "col-lg-3" }}
+                    label={{
+                      fieldName: "sub_department_name_arabic",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "arabic_sub_department_name",
+                      value: this.state.arabic_sub_department_name,
+                      events: {
+                        onChange: this.textHandle.bind(this)
+                      }
+                    }}
+                  />
+
+                  <AlgaehDateHandler
+                    div={{ className: "col-lg-3" }}
+                    label={{ fieldName: "effective_start_date", isImp: true }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "effective_start_date",
+                      error: this.state.effective_start_date_error,
+                      helperText: this.state.effective_start_date_error_text
+                    }}
+                    maxDate={new Date()}
+                    events={{
+                      onChange: date => {
+                        this.setState({ effective_start_date: date });
+                      }
+                    }}
+                    value={this.state.effective_start_date}
+                  />
+
+                  <div className="col-lg-1 align-middle">
+                    <br />
+
+                    <button
+                      className="btn btn-primary"
+                      onClick={this.addSubDepartment.bind(this)}
+                    >
+                      ADD TO LIST
+                    </button>
+                  </div>
+                </div>
+
+                <div
+                  className="col-lg-12"
+                  style={{ marginTop: 10, marginBottom: 10 }}
+                  data-validate="subdepdd"
+                >
+                  <AlgaehDataGrid
+                    datavalidate="data-validate='subdepdd'"
+                    id="sub_dep_grid"
+                    columns={[
+                      {
+                        fieldName: "sub_department_code",
+                        label: "Sub Department Code",
+                        disabled: true
+                      },
+                      {
+                        fieldName: "sub_department_name",
+                        label: "Sub Department Name"
+                      },
+                      {
+                        fieldName: "arabic_sub_department_name",
+                        label: "Sub Department Arabic Name"
+                      },
+                      {
+                        fieldName: "effective_start_date",
+                        label: "Effective Start Date",
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {moment(row.effective_start_date).format(
+                                "DD-MM-YYYY"
+                              )}
+                            </span>
+                          );
+                        }
+                      },
+                      // {
+                      //   fieldName: "effective_end_date",
+                      //   label: "Effective End Date"
+                      // },
+                      {
+                        fieldName: "sub_department_status",
+                        label: "Status",
+                        displayTemplate: row => {
+                          return row.sub_department_status === "A"
+                            ? "Active"
+                            : "Inactive";
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{}}
+                              selector={{
+                                name: "sub_department_status",
+                                className: "select-fld",
+                                value: row.sub_department_status,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: GlobalVariables.FORMAT_STATUS
+                                },
+                                others: {
+                                  errormessage: "Status - cannot be blank",
+                                  required: true
+                                },
+                                onChange: this.changeGridEditors.bind(this, row)
+                              }}
+                            />
+                          );
+                        }
+                      }
+                    ]}
+                    keyId="hims_d_sub_department_id"
+                    dataSource={{
+                      data: this.state.subDepartments
+                    }}
+                    isEditable={true}
+                    paging={{ page: 0, rowsPerPage: 10 }}
+                    events={{
+                      onDelete: this.deleteSubDepartment.bind(this),
+                      onEdit: row => {},
+                      onDone: row => {}
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -269,7 +556,7 @@ class DeptMaster extends Component {
           <div
             className="row"
             style={{
-              marginTop: 20
+              marginTop: 5
             }}
           >
             <AlgaehDateHandler
@@ -321,100 +608,105 @@ class DeptMaster extends Component {
           </div>
         </div>
 
-        <div className="row form-details">
-          <div className="col">
-            <AlgaehDataGrid
-              id="dept_grid"
-              columns={[
-                {
-                  fieldName: "department_code",
-                  label: "Sub Dept.",
-                  displayTemplate: row => {
-                    return (
-                      <i
-                        className="fas fa-plus"
-                        onClick={this.addSubDept(row)}
-                      />
-                    );
-                  },
-                  editorTemplate: row => {
-                    return (
-                      <i
-                        className="fas fa-plus"
-                        onClick={this.addSubDept(row)}
-                      />
-                    );
-                  },
-                  others: {
-                    style: {
-                      textAlign: "center"
-                    }
-                  }
-                },
-                {
-                  fieldName: "department_code",
-                  label: (
-                    <AlgaehLabel label={{ fieldName: "department_code" }} />
-                  ),
-                  disabled: true
-                },
-                {
-                  fieldName: "department_name",
-                  label: (
-                    <AlgaehLabel label={{ fieldName: "department_name" }} />
-                  ),
-                  disabled: true
-                },
-                {
-                  fieldName: "arabic_department_name",
-                  label: (
-                    <AlgaehLabel
-                      label={{ fieldName: "department_name_arabic" }}
+        <div
+          className="col-lg-12"
+          id="departGrid_Cntr"
+          style={{ marginTop: 10, marginBottom: 10 }}
+        >
+          <AlgaehDataGrid
+            id="dept_grid"
+            columns={[
+              {
+                fieldName: "add_dep",
+                label: "Sub Dept.",
+                displayTemplate: row => {
+                  return (
+                    <i
+                      className="fas fa-plus"
+                      onClick={this.addSubDept.bind(this, row)}
                     />
-                  )
+                  );
                 },
-                {
-                  fieldName: "department_type",
-                  label: (
-                    <AlgaehLabel label={{ fieldName: "department_type" }} />
-                  ),
-                  disabled: true
+                editorTemplate: row => {
+                  return (
+                    <i
+                      className="fas fa-plus"
+                      onClick={this.addSubDept.bind(this, row)}
+                    />
+                  );
                 },
-                {
-                  fieldName: "effective_start_date",
-                  label: "Effective Start Date"
-                },
-                {
-                  fieldName: "department_status",
-                  label: <AlgaehLabel label={{ fieldName: "status" }} />,
-                  displayTemplate: row => {
-                    return (
-                      <span>
-                        {row.department_status === "A" ? "Active" : "Inactive"}
-                      </span>
-                    );
-                  },
-                  disabled: true
+                others: {
+                  style: {
+                    textAlign: "center"
+                  }
                 }
-              ]}
-              keyId="department_code"
-              dataSource={{
-                data: this.props.departments
-              }}
-              expanded={{
-                detailTemplate: row => {
-                  return this.getSubDeptGrid(row.hims_d_department_id);
+              },
+              {
+                fieldName: "department_code",
+                label: <AlgaehLabel label={{ fieldName: "department_code" }} />,
+                disabled: true
+              },
+              {
+                fieldName: "department_name",
+                label: <AlgaehLabel label={{ fieldName: "department_name" }} />,
+                disabled: true
+              },
+              {
+                fieldName: "arabic_department_name",
+                label: (
+                  <AlgaehLabel
+                    label={{ fieldName: "department_name_arabic" }}
+                  />
+                )
+              },
+              {
+                fieldName: "department_type",
+                label: <AlgaehLabel label={{ fieldName: "department_type" }} />,
+                disabled: true
+              },
+              {
+                fieldName: "effective_start_date",
+                label: "Effective Start Date",
+                displayTemplate: row => {
+                  return (
+                    <span>
+                      {moment(row.effective_start_date).format("DD-MM-YYYY")}
+                    </span>
+                  );
+                },
+                disabled: true
+              },
+              {
+                fieldName: "department_status",
+                label: <AlgaehLabel label={{ fieldName: "status" }} />,
+                displayTemplate: row => {
+                  return (
+                    <span>
+                      {row.department_status === "A" ? "Active" : "Inactive"}
+                    </span>
+                  );
+                },
+                editorTemplate: row => {
+                  return (
+                    <span>
+                      {row.department_status === "A" ? "Active" : "Inactive"}
+                    </span>
+                  );
                 }
-              }}
-              isEditable={true}
-              paging={{ page: 0, rowsPerPage: 10 }}
-              events={{
-                onDelete: row => {},
-                onEdit: row => {},
-                onDone: row => {}
-              }}
-            />
-          </div>
+              }
+            ]}
+            keyId="department_code"
+            dataSource={{
+              data: this.state.allDepartments
+            }}
+            isEditable={true}
+            paging={{ page: 0, rowsPerPage: 10 }}
+            events={{
+              onDelete: this.deleteDepartment.bind(this),
+              onEdit: row => {},
+              onDone: row => {}
+            }}
+          />
         </div>
       </div>
     );

@@ -64,12 +64,12 @@ class AddConsultationForm extends Component {
       redux: {
         type: "DOCTOR_GET_DATA",
         mappingName: "frontproviders"
+      },
+      afterSuccess: data => {
+        this.setState({
+          doctors: data
+        });
       }
-      // afterSuccess: data => {
-      //   this.setState({
-      //     doctors: data
-      //   });
-      // }
     });
 
     if (
@@ -114,7 +114,7 @@ class AddConsultationForm extends Component {
   render() {
     const vstDeatils =
       this.state.visitDetails === null ? [{}] : this.state.visitDetails;
-    debugger;
+
     const departments =
       this.props.deptanddoctors === undefined
         ? []

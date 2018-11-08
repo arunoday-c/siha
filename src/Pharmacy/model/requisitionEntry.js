@@ -7,7 +7,7 @@ import {
 } from "../../utils";
 import extend from "extend";
 import httpStatus from "../../utils/httpStatus";
-import {  debugLog } from "../../utils/logging";
+import { debugLog } from "../../utils/logging";
 import moment from "moment";
 // import { getBillDetailsFunctionality } from "../../model/billing";
 // import { updateIntoItemLocation } from "./commonFunction";
@@ -274,102 +274,6 @@ let updaterequisitionEntry = (req, res, next) => {
     );
   });
 };
-// let updaterequisitionEntry = (req, res, next) => {
-
-//   try {
-//     if (req.db == null) {
-//       next(httpStatus.dataBaseNotInitilizedError());
-//     }
-//     let db = req.db;
-//     db.getConnection((error, connection) => {
-//       if (error) {
-//         next(error);
-//       }
-
-//       connection.beginTransaction(error => {
-//         if (error) {
-//           connection.rollback(() => {
-//             releaseDBConnection(db, connection);
-//             next(error);
-//           });
-//         }
-//         return new Promise((resolve, reject) => {
-//           let inputParam = extend(RequisitionEntry, req.body);
-
-//           debugLog("posted", inputParam.posted);
-//           debugLog("pharmacy_stock_detail", req.body.pharmacy_stock_detail);
-//           connection.query(
-//             "UPDATE `hims_f_pharamcy_material_header` SET `authorize1`=?, `authorize1_date`=?, `authorize1_by`=?, \
-//             `authorie2`=?, `authorize2_date`=?, `authorize2_by`=?, updated_by`=?, `updated_date`=? \
-//             WHERE  and `hims_f_pharamcy_material_header_id`=?",
-//             [
-//               inputParam.authorize1,
-//               new Date(),
-//               req.userIdentity.algaeh_d_app_user_id,
-//               inputParam.authorie2,
-//               new Date(),
-//               req.userIdentity.algaeh_d_app_user_id,
-//               req.userIdentity.algaeh_d_app_user_id,
-//               new Date(),
-//               inputParam.hims_f_pharamcy_material_header_id
-//             ],
-//             (error, result) => {
-//               debugLog("error", error);
-//               releaseDBConnection(db, connection);
-//               if (error) {
-//                 reject(error);
-//               } else {
-//                 resolve(result);
-//               }
-//             }
-//           );
-//         })
-//           .then(output => {
-//             return new Promise((resolve, reject) => {
-//               debugLog("output", output);
-//               req.options = {
-//                 db: connection,
-//                 onFailure: error => {
-//                   reject(error);
-//                 },
-//                 onSuccess: result => {
-//                   resolve(result);
-//                 }
-//               };
-
-//               //   updateIntoItemLocation(req, res, next);
-//             })
-
-//               .then(records => {
-//                 connection.commit(error => {
-//                   if (error) {
-//                     releaseDBConnection(db, connection);
-//                     next(error);
-//                   }
-//                   req.records = records;
-//                   releaseDBConnection(db, connection);
-//                   next();
-//                 });
-//               })
-//               .catch(error => {
-//                 connection.rollback(() => {
-//                   releaseDBConnection(db, connection);
-//                   next(error);
-//                 });
-//               });
-//           })
-//           .catch(error => {
-//             connection.rollback(() => {
-//               releaseDBConnection(db, connection);
-//               next(error);
-//             });
-//           });
-//       });
-//     });
-//   } catch (e) {
-//     next(e);
-//   }
-// };
 
 //created by Nowshad: to get Pharmacy Requisition Entry
 let getAuthrequisitionList = (req, res, next) => {
@@ -387,14 +291,15 @@ let getAuthrequisitionList = (req, res, next) => {
 
     let strQuery =
       "SELECT * from  hims_f_pharamcy_material_header\
-    where (authorize1='N' or authorie2='N') ";
+    where (authorize1='N' or authorie2='N')";
 
     if (inputParam.from_location_id !== null) {
       strQuery =
-        strQuery + "and from_location_id = " + inputParam.from_location_id;
+        strQuery + " and from_location_id = " + inputParam.from_location_id;
     }
     if (inputParam.to_location_id !== null) {
-      strQuery = strQuery + "and to_location_id = " + inputParam.to_location_id;
+      strQuery =
+        strQuery + " and to_location_id = " + inputParam.to_location_id;
     }
 
     debugLog("strQuery", strQuery);

@@ -30,8 +30,9 @@ import GlobalVariables from "../../../utils/GlobalVariables.json";
 import PosListItems from "./PosListItems/PosListItems";
 import MyContext from "../../../utils/MyContext";
 import POSIOputs from "../../../Models/POS";
-import DisplayInsuranceDetails from "./DisplayInsuranceDetails/DisplayInsuranceDetails";
+
 import Options from "../../../Options.json";
+import Enumerable from "linq";
 
 class PointOfSale extends Component {
   constructor(props) {
@@ -78,7 +79,7 @@ class PointOfSale extends Component {
       this.props.poslocations.length === 0
     ) {
       this.props.getLocation({
-        uri: "/pharmacy/getPharmacyLocation",
+        uri: "/pharmacyGlobal/getUserLocationPermission",
         method: "GET",
         redux: {
           type: "LOCATIOS_GET_DATA",
@@ -124,6 +125,10 @@ class PointOfSale extends Component {
   }
 
   render() {
+    debugger;
+    const _posLocation = Enumerable.from(this.props.poslocations)
+      .where(w => w.allow_pos === "Y")
+      .toArray();
     return (
       <React.Fragment>
         <div>
@@ -206,7 +211,7 @@ class PointOfSale extends Component {
                     dataSource: {
                       textField: "location_description",
                       valueField: "hims_d_pharmacy_location_id",
-                      data: this.props.poslocations
+                      data: _posLocation
                     },
                     onChange: LocationchangeTexts.bind(this, this)
                   }}
@@ -317,7 +322,8 @@ class PointOfSale extends Component {
                       data: GlobalVariables.MODE_OF_PAY
                     },
                     others: {
-                      disabled: this.state.case_type === "O" ? false : true
+                      // disabled: this.state.case_type === "O" ? false : true
+                      disabled: true
                     },
                     onChange: changeTexts.bind(this, this)
                   }}
@@ -325,11 +331,11 @@ class PointOfSale extends Component {
               </div>
             </div>
           </div>
-          <div>
+          {/* <div>
             {this.state.case_type === "O" ? null : (
               <DisplayInsuranceDetails POSIOputs={this.state} />
             )}
-          </div>
+          </div> */}
           <div className="hptl-phase1-pos-form">
             <div className="row">
               <MyContext.Provider
@@ -355,7 +361,10 @@ class PointOfSale extends Component {
                     disabled={this.state.saveEnable}
                   >
                     <AlgaehLabel
-                      label={{ forceLabel: "Save", returnText: true }}
+                      label={{
+                        forceLabel: "Collect & Print",
+                        returnText: true
+                      }}
                     />
                   </button>
 

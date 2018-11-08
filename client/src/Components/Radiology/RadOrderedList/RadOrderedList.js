@@ -24,8 +24,10 @@ import {
   AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
 
-import { FORMAT_PRIORITY } from "../../../utils/GlobalVariables.json";
-
+import {
+  FORMAT_PRIORITY,
+  FORMAT_RAD_STATUS
+} from "../../../utils/GlobalVariables.json";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../Options.json";
@@ -212,14 +214,33 @@ class RadOrderedList extends Component {
                   </button>
                 </div>
               </div>
-            </div>{" "}
+            </div>
           </div>
 
           <div className="row">
             <div className="col-lg-12">
               <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
-                {/* <div className="portlet-title"><div className="caption"><h3 className="caption-subject"></h3></div></div>
-                */}
+                <div className="portlet-title">
+                  <div className="caption">
+                    <h3 className="caption-subject">Radiology Ordered List</h3>
+                  </div>
+
+                  <div className="actions">
+                    {/* <span> Status: </span> */}
+                    <ul className="ul-legend">
+                      {FORMAT_RAD_STATUS.map((data, index) => (
+                        <li key={index}>
+                          <span
+                            style={{
+                              backgroundColor: data.color
+                            }}
+                          />
+                          {data.name}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
                 <div className="portlet-body">
                   <AlgaehDataGrid
                     id="Oedered_list_grid"
@@ -237,15 +258,15 @@ class RadOrderedList extends Component {
                                     row.arrived !== "N"
                                       ? "none"
                                       : row.billed === "N"
-                                        ? "none"
-                                        : "",
+                                      ? "none"
+                                      : "",
 
                                   opacity:
                                     row.arrived !== "N"
                                       ? "0.1"
                                       : row.billed === "N"
-                                        ? "0.1"
-                                        : ""
+                                      ? "0.1"
+                                      : ""
                                 }}
                                 className="fas fa-walking"
                                 onClick={UpdateRadOrder.bind(this, this, row)}
@@ -295,6 +316,24 @@ class RadOrderedList extends Component {
                         }
                       },
                       {
+                        fieldName: "test_type",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "proiorty" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.test_type === "S" ? "Stat" : "Rotinue"}
+                            </span>
+                          );
+                        },
+                        disabled: true,
+                        others: {
+                          resizable: false,
+                          style: { textAlign: "left" }
+                        }
+                      },
+                      {
                         fieldName: "ordered_date",
                         label: (
                           <AlgaehLabel label={{ fieldName: "ordered_date" }} />
@@ -322,14 +361,14 @@ class RadOrderedList extends Component {
                           return row.status === "O"
                             ? "Ordered"
                             : row.status === "S"
-                              ? "Scheduled"
-                              : row.status === "UP"
-                                ? "Under Process"
-                                : row.status === "CN"
-                                  ? "Cancelled"
-                                  : row.status === "RC"
-                                    ? "Result Confirmed"
-                                    : "Result Avaiable";
+                            ? "Scheduled"
+                            : row.status === "UP"
+                            ? "Under Process"
+                            : row.status === "CN"
+                            ? "Cancelled"
+                            : row.status === "RC"
+                            ? "Result Confirmed"
+                            : "Result Avaiable";
                         },
                         others: {
                           maxWidth: 200,
@@ -365,6 +404,19 @@ class RadOrderedList extends Component {
                         this.props.radtestlist === undefined
                           ? []
                           : this.props.radtestlist
+                    }}
+                    rowClassName={row => {
+                      return row.status === "S"
+                        ? "scheduledClass"
+                        : row.status === "CN"
+                        ? "cancelledClass"
+                        : row.status === "RC"
+                        ? "confirmedClass"
+                        : row.status === "RA"
+                        ? "availableClass"
+                        : row.status === "UP"
+                        ? "underProcessClass"
+                        : null;
                     }}
                     noDataText="No data available for selected period"
                     paging={{ page: 0, rowsPerPage: 10 }}

@@ -1,4 +1,6 @@
 import moment from "moment";
+import AlgaehLoader from "../../../Wrapper/fullPageLoader";
+
 let texthandlerInterval = null;
 const texthandle = ($this, context, e) => {
   let name = e.name || e.target.name;
@@ -193,10 +195,21 @@ const nationalityhandle = ($this, context, e) => {
       ) {
         vat_applicable = "N";
       }
-      $this.setState({
-        [name]: value,
-        vat_applicable: vat_applicable
-      });
+      $this.setState(
+        {
+          [name]: value,
+          vat_applicable: vat_applicable
+        },
+        () => {
+          if (
+            $this.state.appointment_patient === "Y" ||
+            $this.state.doctor_id !== null
+          ) {
+            // $this.processInsurance.Click();
+            generateBillDetails($this, context);
+          }
+        }
+      );
 
       clearInterval(texthandlerInterval);
       texthandlerInterval = setInterval(() => {
@@ -211,6 +224,54 @@ const nationalityhandle = ($this, context, e) => {
     }
   });
 };
+
+const generateBillDetails = ($this, context) => {
+  let serviceInput = [
+    {
+      insured: $this.state.insured,
+      //TODO change middle ware to promisify function --added by Nowshad
+      vat_applicable: $this.state.vat_applicable,
+      hims_d_services_id: $this.state.hims_d_services_id,
+      primary_insurance_provider_id: $this.state.primary_insurance_provider_id,
+      primary_network_office_id: $this.state.primary_network_office_id,
+      primary_network_id: $this.state.primary_network_id,
+      sec_insured: $this.state.sec_insured,
+      secondary_insurance_provider_id:
+        $this.state.secondary_insurance_provider_id,
+      secondary_network_id: $this.state.secondary_network_id,
+      secondary_network_office_id: $this.state.secondary_network_office_id
+    }
+  ];
+  AlgaehLoader({ show: true });
+  $this.props.generateBill({
+    uri: "/billing/getBillDetails",
+    method: "POST",
+    data: serviceInput,
+    redux: {
+      type: "BILL_GEN_GET_DATA",
+      mappingName: "xxx"
+    },
+    afterSuccess: data => {
+      if (context != null) {
+        context.updateState({ ...data });
+      }
+
+      $this.props.billingCalculations({
+        uri: "/billing/billingCalculations",
+        method: "POST",
+        data: data,
+        redux: {
+          type: "BILL_HEADER_GEN_GET_DATA",
+          mappingName: "genbill"
+        },
+        afterSuccess: data => {
+          AlgaehLoader({ show: false });
+        }
+      });
+    }
+  });
+};
+
 export {
   texthandle,
   titlehandle,
@@ -219,5 +280,6 @@ export {
   numberSet,
   onDrop,
   countryStatehandle,
-  nationalityhandle
+  nationalityhandle,
+  generateBillDetails
 };

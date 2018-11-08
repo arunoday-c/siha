@@ -8,6 +8,7 @@
   "location": "Location",
   "item_form": "Form",
   "item_storage": "Storage",
+  "location_permission": "Location Permission",
 
   "Addbutton": "Add to list",
 
@@ -20,5 +21,9 @@
 
   "category_id": "Category",
   "location_type": "Location Type",
-  "allow_pos": "Allow POS"
+  "allow_pos": "Allow POS",
+
+  "user_id": "User",
+  "from_location": "Location",
+  "to_location": "To Location"
 }
