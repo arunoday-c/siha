@@ -284,6 +284,7 @@ const getMedicationList = $this => {
 };
 
 const AddItems = ($this, ItemInput) => {
+  debugger;
   if (ItemInput.length > 0) {
     let inputObj = {};
     let inputArray = [];
@@ -297,6 +298,7 @@ const AddItems = ($this, ItemInput) => {
         insured: $this.state.insured,
         vat_applicable: "Y",
         hims_d_services_id: ItemInput[i].service_id,
+        quantity: ItemInput[i].dispense,
         primary_insurance_provider_id: $this.state.insurance_provider_id,
         primary_network_office_id:
           $this.state.hims_d_insurance_network_office_id,
