@@ -58,7 +58,12 @@ export default class ReportUI extends Component {
           const _refValue = _rootElements[i].getAttribute("referencevalue");
           if (_refValue !== undefined) {
             _value = _refValue;
-          } else _value = _rootElements[i].value;
+          } else {
+            const _checkBox = _rootElements[i].getAttribute("checkvalue");
+            if (_checkBox !== undefined) {
+              _value = _checkBox;
+            } else _value = _rootElements[i].value;
+          }
       }
       _inputServiceParameter[
         _rootElements[i].getAttribute("report-parameter")
