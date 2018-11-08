@@ -18,3 +18,8 @@
     border-right: 1px solid #e6e6e6;
   }
 }
+#precriptionList_Cntr {
+  .ReactTable {
+    max-height: 60vh !important;
+  }
+}
