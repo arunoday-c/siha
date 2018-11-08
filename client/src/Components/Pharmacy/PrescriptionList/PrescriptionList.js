@@ -84,90 +84,125 @@ class PrescriptionList extends Component {
               }
             ]}
           />
-          <div
-            className="container-fluid"
-            style={{ marginTop: "85px", minHeight: "80vh" }}
-          >
-            <div className="row">
-              <AlgaehDateHandler
-                div={{ className: "col-lg-2" }}
-                label={{ forceLabel: "Select Date" }}
-                textBox={{ className: "txt-fld", name: "prescription_date" }}
-                events={{
-                  onChange: datehandle.bind(this, this)
-                }}
-                value={this.state.prescription_date}
-              />
-              <AlagehFormGroup
-                div={{ className: "col-lg-2" }}
-                label={{
-                  forceLabel: "Patient Code"
-                }}
-                textBox={{
-                  value: this.state.patient_code,
-                  className: "txt-fld",
-                  name: "patient_code",
+          <div style={{ marginTop: 76 }}>
+            <div
+              className="row inner-top-search"
+              style={{ marginTop: 57, paddingBottom: 10 }}
+            >
+              <div className="col-lg-12">
+                <div className="row">
+                  <AlgaehDateHandler
+                    div={{ className: "col" }}
+                    label={{ forceLabel: "Select Date" }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "prescription_date"
+                    }}
+                    events={{
+                      onChange: datehandle.bind(this, this)
+                    }}
+                    value={this.state.prescription_date}
+                  />
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    label={{
+                      forceLabel: "Patient Code"
+                    }}
+                    textBox={{
+                      value: this.state.patient_code,
+                      className: "txt-fld",
+                      name: "patient_code",
 
-                  events: {
-                    onChange: null
-                  },
-                  others: {
-                    disabled: true
-                  }
-                }}
-              />
-              <div className="col-lg-1 form-group">
-                <span
-                  className="fas fa-search fa-2x"
-                  onClick={PatientSearch.bind(this, this)}
-                />
-              </div>
-
-              <div className="col-lg-4"> &nbsp; </div>
-
-              <div className="col-lg-1" style={{ paddingTop: "4vh" }}>
-                <button
-                  className="btn btn-primary btn-sm"
-                  type="button"
-                  onClick={getMedicationList.bind(this, this)}
-                >
-                  Load Data
-                </button>
-              </div>
-
-              <div className="col-lg-1"> &nbsp; </div>
-
-              <div className="col-lg-1">
-                <Tooltip id="tooltip-icon" title="Refresh">
-                  <IconButton className="go-button" color="primary">
-                    <i
-                      className="fas fa-sync-alt"
-                      aria-hidden="true"
-                      onClick={Refresh.bind(this, this)}
+                      events: {
+                        onChange: null
+                      },
+                      others: {
+                        disabled: true
+                      }
+                    }}
+                  />
+                  <div className="col-lg-1">
+                    <span
+                      className="fas fa-search"
+                      style={{
+                        fontSize: 20,
+                        marginTop: 27
+                      }}
+                      onClick={PatientSearch.bind(this, this)}
                     />
-                  </IconButton>
-                </Tooltip>
+                  </div>
+
+                  <div className="col" style={{ paddingTop: 21 }}>
+                    <button
+                      className="btn btn-primary btn-sm"
+                      type="button"
+                      onClick={getMedicationList.bind(this, this)}
+                      style={{ marginRight: 10 }}
+                    >
+                      Load Data
+                    </button>
+                    <button
+                      className="btn btn-default btn-sm"
+                      type="button"
+                      onClick={Refresh.bind(this, this)}
+                    >
+                      Clear
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div className="row form-details">
-              <div className="col-lg-12">
+            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+              {/* <div className="portlet-title">
+            <div className="caption">
+              <h3 className="caption-subject">Investigation Lists</h3>
+            </div>
+            <div className="actions">
+            </div>
+          </div> */}
+              <div className="portlet-body" id="precriptionList_Cntr">
                 <AlgaehDataGrid
                   id="precription_list"
                   columns={[
+                    {
+                      fieldName: "action",
+                      label: <AlgaehLabel label={{ forceLabel: "action" }} />,
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            <i
+                              className="fas fa-prescription"
+                              onClick={ListOfItems.bind(this, this, row)}
+                            />
+                          </span>
+                        );
+                      },
+                      others: {
+                        maxWidth: 70,
+                        style: { textAlign: "center" }
+                      }
+                    },
                     {
                       fieldName: "patient_code",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Patient Code" }} />
                       ),
-                      disabled: false
+                      disabled: false,
+                      others: {
+                        maxWidth: 150,
+                        style: { textAlign: "center" }
+                      }
                     },
                     {
                       fieldName: "full_name",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Patient Name" }} />
                       ),
-                      disabled: true
+                      disabled: true,
+                      others: {
+                        style: { textAlign: "left" }
+                      }
                     },
                     {
                       fieldName: "prescription_date",
@@ -183,7 +218,11 @@ class PrescriptionList extends Component {
                           </span>
                         );
                       },
-                      disabled: true
+                      disabled: true,
+                      others: {
+                        maxWidth: 150,
+                        style: { textAlign: "center" }
+                      }
                     },
                     {
                       fieldName: "number_of_items",
@@ -193,26 +232,10 @@ class PrescriptionList extends Component {
                         />
                       ),
 
-                      disabled: true
-                    },
-
-                    {
-                      fieldName: "action",
-                      label: <AlgaehLabel label={{ forceLabel: "action" }} />,
-                      displayTemplate: row => {
-                        return (
-                          <span>
-                            <IconButton
-                              color="primary"
-                              title="Collection"
-                              style={{ maxHeight: "4vh" }}
-                            >
-                              <Collections
-                                onClick={ListOfItems.bind(this, this, row)}
-                              />
-                            </IconButton>
-                          </span>
-                        );
+                      disabled: true,
+                      others: {
+                        maxWidth: 150,
+                        style: { textAlign: "center" }
                       }
                     }
                   ]}

@@ -22,6 +22,7 @@ import {
 import AlgaehReport from "../Wrapper/printReports";
 import Enumerable from "linq";
 import Summary from "./Summary/Summary";
+import Dental from "./Dental/Dental";
 
 class PatientProfile extends Component {
   constructor(props) {
@@ -341,6 +342,15 @@ class PatientProfile extends Component {
                 Summary
               </span>
             </li>
+            <li className="nav-item">
+              <span
+                onClick={this.changeTabs}
+                algaehsoap="dental"
+                className="nav-link"
+              >
+                Dental
+              </span>
+            </li>
             <ul className="float-right patient-quick-info">
               <li>
                 <i className="fas fa-allergies" />
@@ -427,6 +437,8 @@ class PatientProfile extends Component {
             <Plan />
           ) : this.state.pageDisplay === "summary" ? (
             <Summary />
+          ) : this.state.pageDisplay === "dental" ? (
+            <Dental />
           ) : null}
         </div>
       </div>

@@ -3,8 +3,8 @@ import "./subjective.css";
 import Allergies from "../Allergies/Allergies";
 import ReviewofSystems from "../ReviewofSystems/ReviewofSystems";
 import ChiefComplaints from "../ChiefComplaints/ChiefComplaints.js";
-import PatientHistory from "../PatientHistory/PatientHistory";
 
+import Vitals from "../Vitals/Vitals";
 class Subjective extends Component {
   constructor(props) {
     super(props);
@@ -15,16 +15,16 @@ class Subjective extends Component {
     return (
       <div className="subjective">
         <div className="row margin-top-15">
-            <div className="col-lg-8">
-              <ChiefComplaints />
-              <PatientHistory />
-            </div>
-
-            <div className="col-lg-4">
-              <Allergies />
-              <ReviewofSystems />
-            </div>
+          <div className="col-lg-8">
+            <ChiefComplaints />
+            <Vitals />
           </div>
+
+          <div className="col-lg-4">
+            <Allergies />
+            <ReviewofSystems />
+          </div>
+        </div>
       </div>
     );
   }
