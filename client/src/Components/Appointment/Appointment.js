@@ -1301,7 +1301,7 @@ class Appointment extends Component {
                       <div className="col-lg-12 popRightDiv">
                         <div className="row">
                           <AlagehAutoComplete
-                            div={{ className: "col-lg-3" }}
+                            div={{ className: "col" }}
                             label={{
                               forceLabel: "Select Status",
                               isImp: true
@@ -1319,9 +1319,10 @@ class Appointment extends Component {
                             }}
                           />
                           <AlgaehDateHandler
-                            div={{ className: "col-lg-3" }}
+                            div={{ className: "col" }}
                             label={{
-                              forceLabel: "APPOINTMENT Date"
+                              forceLabel: "Appointment Date",
+                              isImp: true
                             }}
                             textBox={{
                               className: "txt-fld",
@@ -1345,7 +1346,7 @@ class Appointment extends Component {
                             value={this.state.edit_appt_date}
                           />
                           <AlagehFormGroup
-                            div={{ className: "col-lg-3" }}
+                            div={{ className: "col" }}
                             label={{
                               forceLabel: "Appointment Time"
                             }}
@@ -1363,7 +1364,7 @@ class Appointment extends Component {
                             }}
                           />
                           <AlagehAutoComplete
-                            div={{ className: "col-lg-3 mandatory" }}
+                            div={{ className: "col" }}
                             label={{
                               forceLabel: "Select Slots",
                               isImp: true
@@ -1385,7 +1386,7 @@ class Appointment extends Component {
                         <div className="row">
                           <AlagehFormGroup
                             div={{
-                              className: "col-lg-6 mandatory margin-top-15"
+                              className: "col margin-top-15"
                             }}
                             label={{
                               forceLabel: "Patient Name",
@@ -1402,8 +1403,7 @@ class Appointment extends Component {
                           />
                           <AlagehFormGroup
                             div={{
-                              className:
-                                "col-lg-6 margin-top-15 mandatory arabic-txt-fld"
+                              className: "col margin-top-15 arabic-txt-fld"
                             }}
                             label={{
                               forceLabel: "Patient Name Arabic",
@@ -1418,10 +1418,12 @@ class Appointment extends Component {
                               }
                             }}
                           />
+                        </div>
 
+                        <div className="row">
                           <AlgaehDateHandler
                             div={{
-                              className: "col-lg-3 margin-top-15 mandatory"
+                              className: "col margin-top-15"
                             }}
                             label={{
                               forceLabel: "Date of Birth",
@@ -1451,7 +1453,7 @@ class Appointment extends Component {
 
                           <AlagehFormGroup
                             div={{
-                              className: "col-lg-2 margin-top-15 mandatory"
+                              className: "col margin-top-15"
                             }}
                             label={{
                               forceLabel: "Age",
@@ -1472,7 +1474,7 @@ class Appointment extends Component {
 
                           <AlagehAutoComplete
                             div={{
-                              className: "col-lg-3 margin-top-15 mandatory"
+                              className: "col margin-top-15"
                             }}
                             label={{
                               forceLabel: "Gender",
@@ -1490,29 +1492,12 @@ class Appointment extends Component {
                               onChange: this.dropDownHandle.bind(this)
                             }}
                           />
+                        </div>
 
-                          {/* <AlagehAutoComplete
-                div={{ className: "col-lg-3" }}
-                label={{
-                  forceLabel: "Select Status",
-                  isImp: true
-                }}
-                selector={{
-                  name: "appointment_status_id",
-                  className: "select-fld",
-                  value: this.state.appointment_status_id,
-                  dataSource: {
-                    textField: "description",
-                    valueField: "hims_d_appointment_status_id",
-                    data: this.state.appointmentStatus
-                  },
-                  onChange: this.dropDownHandle.bind(this)
-                }}
-              /> */}
-
+                        <div className="row">
                           <AlagehFormGroup
                             div={{
-                              className: "col-lg-6 margin-top-15 mandatory"
+                              className: "col margin-top-15"
                             }}
                             label={{
                               forceLabel: "Mobile No.",
@@ -1533,7 +1518,7 @@ class Appointment extends Component {
 
                           <AlagehFormGroup
                             div={{
-                              className: "col-lg-6 margin-top-15 mandatory"
+                              className: "col margin-top-15"
                             }}
                             label={{
                               forceLabel: "Email Address",
@@ -1548,9 +1533,11 @@ class Appointment extends Component {
                               }
                             }}
                           />
+                        </div>
 
+                        <div className="row">
                           <AlagehFormGroup
-                            div={{ className: "col-lg-12 margin-top-15" }}
+                            div={{ className: "col margin-top-15" }}
                             label={{
                               forceLabel: "Remarks",
                               isImp: false
