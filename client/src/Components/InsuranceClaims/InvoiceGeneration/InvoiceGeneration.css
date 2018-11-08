@@ -1,0 +1,20 @@
+.hptl-phase1-invoice-generation-form {
+  background: #ffff; }
+  .hptl-phase1-invoice-generation-form .form-details {
+    padding: 5px;
+    padding-bottom: 5px; }
+  .hptl-phase1-invoice-generation-form mark {
+    background: none;
+    color: red; }
+  .hptl-phase1-invoice-generation-form .form-group {
+    margin-bottom: 0;
+    margin-top: 4px;
+    padding: 0;
+    padding-top: 20px;
+    cursor: pointer; }
+  .hptl-phase1-invoice-generation-form .go-button {
+    cursor: pointer;
+    margin-bottom: -15px;
+    margin-top: -10px; }
+  .hptl-phase1-invoice-generation-form #doctorOrder .ReactTable {
+    height: 10vh !important; }

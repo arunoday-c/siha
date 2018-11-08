@@ -385,21 +385,18 @@ const SaveOrdersServices = ($this, e) => {
     method: "POST",
     onSuccess: response => {
       if (response.data.success) {
+        $this.setState(
+          {
+            addNew: true
+          },
+          () => {
+            $this.props.onClose && $this.props.onClose(e);
+          }
+        );
         swalMessage({
           title: "Ordered Successfully...",
           type: "success"
         });
-        $this.props.onClose && $this.props.onClose(e);
-        // $this.setState({
-        //   saved: true,
-        //   orderservicesdata: [],
-        //   patient_payable: null,
-        //   company_payble: null,
-        //   sec_company_paybale: null,
-        //   sub_total_amount: null,
-        //   discount_amount: null,
-        //   net_total: null
-        // });
       }
     }
   });

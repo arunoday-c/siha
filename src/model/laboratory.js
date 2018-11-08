@@ -218,12 +218,14 @@ let insertLadOrderedServices = (req, res, next) => {
                   specimentRecords[0].length == 0
                 ) {
                   releaseDBConnection(db, connection);
-                  next(
-                    httpStatus.generateError(
-                      httpStatus.forbidden,
-                      "No specimen avilable"
-                    )
-                  );
+                  connection.rollback(() => {
+                    next(
+                      httpStatus.generateError(
+                        httpStatus.forbidden,
+                        "No specimen avilable"
+                      )
+                    );
+                  });
                 }
 
                 const insertedLabSample = new LINQ(specimentRecords[0])
@@ -269,8 +271,8 @@ let insertLadOrderedServices = (req, res, next) => {
                       "normal_high"
                     ];
                     if (
-                      specimentRecords[2] == null ||
-                      specimentRecords[2].length == 0
+                      specimentRecords[2] != null &&
+                      specimentRecords[2].length != 0
                     ) {
                       const labAnalytes = new LINQ(specimentRecords[2])
                         .Select(s => {
