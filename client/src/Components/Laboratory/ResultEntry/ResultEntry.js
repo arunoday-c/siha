@@ -3,9 +3,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import Modal from "@material-ui/core/Modal";
 import { bindActionCreators } from "redux";
-
 import "react-quill/dist/quill.snow.css";
-
 import "./ResultEntry.css";
 import "./../../../styles/site.css";
 import {
@@ -14,7 +12,6 @@ import {
   AlgaehDataGrid,
   AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
-
 import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../Options.json";
@@ -269,10 +266,10 @@ class ResultEntry extends Component {
                             return row.status === "E"
                               ? "Entered"
                               : row.status === "C"
-                                ? "Confirmed"
-                                : row.status === "V"
-                                  ? "Validated"
-                                  : "Not Entered";
+                              ? "Confirmed"
+                              : row.status === "V"
+                              ? "Validated"
+                              : "Not Entered";
                           }
                         },
                         {
@@ -310,8 +307,8 @@ class ResultEntry extends Component {
                             return row.analyte_type === "QU"
                               ? "Quality"
                               : row.analyte_type === "QN"
-                                ? "Quantity"
-                                : "Text";
+                              ? "Quantity"
+                              : "Text";
                           }
                         },
                         {
@@ -490,14 +487,14 @@ class ResultEntry extends Component {
                             return row.critical_type === "N"
                               ? "None"
                               : row.critical_type === "CL"
-                                ? "Critical Low"
-                                : row.critical_type === "CH"
-                                  ? "Critical High"
-                                  : row.critical_type === "L"
-                                    ? "Low"
-                                    : row.critical_type === "H"
-                                      ? "High"
-                                      : null;
+                              ? "Critical Low"
+                              : row.critical_type === "CH"
+                              ? "Critical High"
+                              : row.critical_type === "L"
+                              ? "Low"
+                              : row.critical_type === "H"
+                              ? "High"
+                              : null;
                           }
                         },
                         //TODO
@@ -621,8 +618,8 @@ class ResultEntry extends Component {
                     this.state.status === "C"
                       ? true
                       : this.state.status === "V"
-                        ? true
-                        : false
+                      ? true
+                      : false
                   }
                 >
                   Confirm All
