@@ -263,17 +263,3 @@
       width: 239px;
       color: #ddd;
       text-align: center; }
-
-.appointment ul.ul-legend li {
-  float: left;
-  margin-right: 10px;
-  list-style: none;
-  margin-top: 5px;
-  font-size: 0.7rem; }
-  .appointment ul.ul-legend li span {
-    border: 1px solid #ccc;
-    float: left;
-    width: 12px;
-    height: 12px;
-    margin: 2px;
-    margin-right: 5px; }

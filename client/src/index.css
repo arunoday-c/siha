@@ -13,6 +13,19 @@
   :global ::-webkit-scrollbar {
     width: 8px;
     height: 8px; }
+  :global ul.ul-legend li {
+    float: left;
+    margin-right: 10px;
+    list-style: none;
+    margin-top: 5px;
+    font-size: 0.7rem; }
+    :global ul.ul-legend li span {
+      border: 1px solid #ccc;
+      float: left;
+      width: 12px;
+      height: 12px;
+      margin: 2px;
+      margin-right: 5px; }
   :global .btn-green {
     background: #8add52;
     color: #fff;
@@ -32,6 +45,26 @@
     display: inline-block; }
   :global .greenCell {
     background-color: #acffc0 !important; }
+  :global .cancelledClass {
+    background-color: #ff4000 !important;
+    color: white;
+    font-weight: bolder; }
+  :global .confirmedClass {
+    background-color: #ff00ff !important;
+    color: white;
+    font-weight: bolder; }
+  :global .orderedClass {
+    background-color: #ffff00 !important;
+    color: white;
+    font-weight: bolder; }
+  :global .collectedClass {
+    background-color: #00ffff !important;
+    color: white;
+    font-weight: bolder; }
+  :global .validateClass {
+    background-color: #4caf50 !important;
+    color: white;
+    font-weight: bolder; }
   :global .cursor-pointer {
     cursor: pointer; }
   :global .pat-code:hover {
