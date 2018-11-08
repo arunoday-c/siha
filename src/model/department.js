@@ -1,8 +1,7 @@
 "use strict";
 import extend from "extend";
 import {
-  selectStatement,
-  paging,
+  
   whereCondition,
   deleteRecord,
   releaseDBConnection
@@ -10,7 +9,7 @@ import {
 import httpStatus from "../utils/httpStatus";
 import { LINQ } from "node-linq";
 // import $ from "jquery";
-import { logger, debugFunction, debugLog } from "../utils/logging";
+import {  debugFunction, debugLog } from "../utils/logging";
 
 
 
@@ -61,20 +60,6 @@ let addDepartment = (req, res, next) => {
 };
 
 let updateDepartment = (req, res, next) => {
-  let department = {
-    hims_d_department_id: null,
-    department_code: null,
-    department_name: null,
-    department_desc: null,
-    department_type: null,
-    hospital_id: null,
-    effective_start_date: null,
-    effective_end_date: null,
-    department_status: null,
-    created_by: req.userIdentity.algaeh_d_app_user_id,
-    updated_by: req.userIdentity.algaeh_d_app_user_id,
-    sub_department: [subDepartment]
-  };
 
   try {
     debugFunction("updateDepartment");
@@ -84,7 +69,7 @@ let updateDepartment = (req, res, next) => {
     let db = req.db;
 
     debugLog("Input Data", req.body);
-    let departmentDetails = extend(department, req.body);
+    let departmentDetails = extend({}, req.body);
     db.getConnection((error, connection) => {
       if (error) {
         next(error);
@@ -100,7 +85,7 @@ let updateDepartment = (req, res, next) => {
           "UPDATE `hims_d_department`\
         SET   `department_name`=?, `department_desc`=?, `department_type`=?\
         ,`hospital_id`=?, `effective_start_date`=?, `effective_end_date`=? \
-        ,`department_status`=?, `updated_date`=?, `updated_by`=?\
+        , `updated_date`=?, `updated_by`=?\
         WHERE record_status='A' AND `hims_d_department_id`=?;";
         let inputs = [
           departmentDetails.department_name,
@@ -108,8 +93,7 @@ let updateDepartment = (req, res, next) => {
           departmentDetails.department_type,
           departmentDetails.hospital_id,
           departmentDetails.effective_start_date,
-          departmentDetails.effective_end_date,
-          departmentDetails.department_status,
+          departmentDetails.effective_end_date,          
           new Date(),
           departmentDetails.updated_by,
           departmentDetails.hims_d_department_id
@@ -129,22 +113,25 @@ let updateDepartment = (req, res, next) => {
                 next(error);
               });
             }
-            connection.query(
-              "SELECT `hims_d_department_id`, `department_code`\
-        , `department_name`, `department_desc`, `department_type`, `hospital_id`\
-        , `effective_start_date`, `effective_end_date`, `department_status`\
-         FROM `hims_d_department` WHERE hims_d_department_id=?;",
-              [departmentDetails.hims_d_department_id],
-              (error, resultSelect) => {
-                releaseDBConnection(db, connection);
+        //     connection.query(
+        //       "SELECT `hims_d_department_id`, `department_code`\
+        // , `department_name`, `department_desc`, `department_type`, `hospital_id`\
+        // , `effective_start_date`, `effective_end_date`, `department_status`\
+        //  FROM `hims_d_department` WHERE hims_d_department_id=?;",
+        //       [departmentDetails.hims_d_department_id],
+        //       (error, resultSelect) => {
+        //         releaseDBConnection(db, connection);
 
-                if (error) {
-                  next(error);
-                }
-                req.records = resultSelect;
-                next();
-              }
-            );
+        //         if (error) {
+        //           next(error);
+        //         }
+        //         req.records = resultSelect;
+        //         next();
+        //       }
+        //     );
+
+        req.records = result;
+          next();
           });
         });
       });
@@ -180,8 +167,6 @@ let deleteDepartment = (req, res, next) => {
     next(e);
   }
 };
-
-
 
 //created by irfan: to get Departments
 let selectDepartment = (req, res, next) => {
@@ -300,23 +285,8 @@ let addSubDepartment = (req, res, next) => {
   }
 };
 
-
-
 let updateSubDepartment = (req, res, next) => {
-  // let subDepartment = {
-  //   hims_d_sub_department_id: null,
-  //   sub_department_code: null,
-  //   sub_department_name: null,
-  //   sub_department_desc: null,
-  //   department_id: null,
-  //   effective_start_date: null,
-  //   effective_end_date: null,
-  //   sub_department_status: null,
-
-  //   created_by: req.userIdentity.algaeh_d_app_user_id,
-
-  //   updated_by: req.userIdentity.algaeh_d_app_user_id
-  // };
+  
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -331,7 +301,7 @@ let updateSubDepartment = (req, res, next) => {
         "UPDATE `hims_d_sub_department`\
    SET `sub_department_name`=?, `sub_department_desc`=?,arabic_sub_department_name=?\
    , `effective_start_date`=?, `effective_end_date`=? \
-   , `sub_department_status`=?,`updated_date`=?, `updated_by`=?\
+   ,`updated_date`=?, `updated_by`=?\
    WHERE `record_status`='A' AND `hims_d_sub_department_id`=? ;",
         [
           subDepartmentDetails.sub_department_name,
@@ -339,7 +309,7 @@ let updateSubDepartment = (req, res, next) => {
           subDepartmentDetails.arabic_sub_department_name,
           subDepartmentDetails.effective_start_date,
           subDepartmentDetails.effective_end_date,
-          subDepartmentDetails.sub_department_status,
+          
           new Date(),
           subDepartmentDetails.updated_by,
           subDepartmentDetails.hims_d_sub_department_id
@@ -546,10 +516,6 @@ let selectDoctorsAndClinic = (req, res, next) => {
   }
 };
 
-
-
-
-
 //created by:irfan to delete sub department
 let deleteSubDepartment = (req, res, next) => {
   try {
@@ -609,6 +575,35 @@ let makeSubDepartmentInActive = (req, res, next) => {
   }
 };
 
+//created by:irfan to makeDepartmentInActive
+let makeDepartmentInActive = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    deleteRecord(
+      {
+        db: req.db,
+        tableName: "hims_d_department",
+        id: req.body.hims_d_department_id,
+        query:
+          "UPDATE hims_d_department SET  department_status='I' WHERE hims_d_department_id=?",
+        values: [req.body.hims_d_department_id]
+      },
+      result => {
+        req.records = result;
+        next();
+      },
+      error => {
+        next(error);
+      },
+      true
+    );
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addDepartment,
   updateDepartment,
@@ -620,5 +615,6 @@ module.exports = {
   selectdoctors,
   selectDoctorsAndClinic,
   deleteSubDepartment,
-  makeSubDepartmentInActive
+  makeSubDepartmentInActive,
+  makeDepartmentInActive
 };
