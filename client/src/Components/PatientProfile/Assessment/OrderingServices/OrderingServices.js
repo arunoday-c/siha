@@ -158,7 +158,7 @@ class OrderingServices extends Component {
     }
 
     debugger;
-    if (this.props.addNew === true && this.state.addNew === true) {
+    if (nextProps.addNew === true && this.state.addNew === true) {
       this.setState({
         s_service_type: null,
         s_service: null,
@@ -761,7 +761,8 @@ function mapStateToProps(state) {
     services: state.services,
     orderservices: state.orderservices,
     existinginsurance: state.existinginsurance,
-    serviceslist: state.serviceslist
+    serviceslist: state.serviceslist,
+    orderedList: state.orderedList
   };
 }
 

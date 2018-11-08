@@ -201,7 +201,10 @@ const nationalityhandle = ($this, context, e) => {
           vat_applicable: vat_applicable
         },
         () => {
-          if ($this.state.appointment_patient === "Y") {
+          if (
+            $this.state.appointment_patient === "Y" ||
+            $this.state.doctor_id !== null
+          ) {
             // $this.processInsurance.Click();
             generateBillDetails($this, context);
           }

@@ -338,14 +338,14 @@ class DataGrid extends PureComponent {
           this.props.actions === undefined
             ? true
             : this.props.actions.allowEdit !== undefined
-              ? this.props.actions.allowEdit
-              : true;
+            ? this.props.actions.allowEdit
+            : true;
         const _allowDeleteButton =
           this.props.actions === undefined
             ? true
             : this.props.actions.allowDelete !== undefined
-              ? this.props.actions.allowDelete
-              : true;
+            ? this.props.actions.allowDelete
+            : true;
         if (
           this.props.isEditable !== undefined &&
           this.props.isEditable === true
@@ -481,14 +481,14 @@ class DataGrid extends PureComponent {
           props.actions === undefined
             ? true
             : props.actions.allowEdit !== undefined
-              ? props.actions.allowEdit
-              : true;
+            ? props.actions.allowEdit
+            : true;
         const _allowDeleteButton =
           props.actions === undefined
             ? true
             : props.actions.allowDelete !== undefined
-              ? props.actions.allowDelete
-              : true;
+            ? props.actions.allowDelete
+            : true;
         if (props.isEditable !== undefined && props.isEditable === true) {
           if (_allowEditButton || _allowDeleteButton) {
             _columns.splice(0, 0, {
@@ -678,12 +678,12 @@ class DataGrid extends PureComponent {
       const _isRowSelected = this.isRowSelected(rowInfo.index);
       const _selectedColor =
         _isRowSelected !== false ? "selected-grid-row " : "";
-      const _rowSel =
-        this.props.rowClassName !== undefined
-          ? this.props.rowClassName(rowInfo.original)
-          : "";
+      // const _rowSel =
+      //   this.props.rowClassName !== undefined
+      //     ? this.props.rowClassName(rowInfo.original)
+      //     : "";
       return {
-        className: _selectedColor + " " + _rowSel
+        className: _selectedColor
       };
     } else {
       return {
@@ -700,6 +700,8 @@ class DataGrid extends PureComponent {
           if (handleOriginal) handleOriginal();
         }
       };
+      const _rowSel =
+        this.props.rowClassName !== undefined ? this.props.rowClassName : "";
       if (
         column.assignTdClass !== undefined &&
         typeof column.assignTdClass === "function"
@@ -707,6 +709,10 @@ class DataGrid extends PureComponent {
         return {
           className: column.assignTdClass(rowInfo.original),
           ..._clickEvent
+        };
+      } else if (_rowSel != "") {
+        return {
+          className: _rowSel(rowInfo.original)
         };
       } else {
         return {

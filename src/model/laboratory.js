@@ -64,7 +64,7 @@ let getLabOrderedServices = (req, res, next) => {
         next(error);
       }
       db.query(
-        "select hims_f_lab_order_id,LO.patient_id, visit_id,V.visit_code, provider_id, E.full_name as doctor_name, billed, service_id,S.service_code,S.service_name,LO.status,\
+        "select hims_f_lab_order_id,LO.patient_id, entered_by, confirmed_by, validated_by,visit_id,V.visit_code, provider_id, E.full_name as doctor_name, billed, service_id,S.service_code,S.service_name,LO.status,\
         cancelled, provider_id, ordered_date, test_type, lab_id_number, run_type, P.patient_code,P.full_name,P.date_of_birth, P.gender,\
         LS.sample_id,LS.collected,LS.collected_by, LS.collected_date,LS.hims_d_lab_sample_id,LS.status as sample_status\
         from hims_f_lab_order LO inner join hims_d_services S on LO.service_id=S.hims_d_services_id and S.record_status='A'\
@@ -118,24 +118,29 @@ let insertLadOrderedServices = (req, res, next) => {
       : req.records.ResultOfFetchOrderIds;
   debugLog("Services: ", Services);
 
-  const labServices = new LINQ(Services)
-    .Where(
-      w =>
-        w.service_type_id == appsettings.hims_d_service_type.service_type_id.Lab
+  const labServices = [
+    ...new Set(
+      new LINQ(Services)
+        .Where(
+          w =>
+            w.service_type_id ==
+            appsettings.hims_d_service_type.service_type_id.Lab
+        )
+        .Select(s => {
+          return {
+            ordered_services_id: s.hims_f_ordered_services_id || null,
+            patient_id: req.body.patient_id,
+            provider_id: req.body.incharge_or_provider,
+            visit_id: req.body.visit_id,
+            service_id: s.services_id,
+            billed: req.body.billed,
+            ordered_date: s.created_date,
+            test_type: s.test_type
+          };
+        })
+        .ToArray()
     )
-    .Select(s => {
-      return {
-        ordered_services_id: s.hims_f_ordered_services_id || null,
-        patient_id: req.body.patient_id,
-        provider_id: req.body.incharge_or_provider,
-        visit_id: req.body.visit_id,
-        service_id: s.services_id,
-        billed: req.body.billed,
-        ordered_date: s.created_date,
-        test_type: s.test_type
-      };
-    })
-    .ToArray();
+  ];
 
   let connection = req.connection;
 
@@ -174,9 +179,11 @@ let insertLadOrderedServices = (req, res, next) => {
             return s.service_id;
           })
           .ToArray();
+        debugLog("Services ME : ", get_services_id);
+        debugLog("Array ME", get_services_id.join(","));
         connection.query(
           "select  hims_d_investigation_test_id from hims_d_investigation_test where record_status='A' and services_id in (?)",
-          [get_services_id.join(",")],
+          [get_services_id],
           (error, rec) => {
             if (error) {
               releaseDBConnection(db, connection);
@@ -190,7 +197,6 @@ let insertLadOrderedServices = (req, res, next) => {
 
             debugLog("test_id", test_id.join(","));
             debugLog("visit_id", req.body.visit_id);
-            debugLog("get_services_id", get_services_id);
 
             connection.query(
               "select services_id,specimen_id FROM  hims_m_lab_specimen,hims_d_investigation_test where \
@@ -201,18 +207,13 @@ let insertLadOrderedServices = (req, res, next) => {
                   from hims_d_investigation_test,hims_m_lab_analyte where \
                  hims_d_investigation_test_id=hims_m_lab_analyte.test_id and hims_m_lab_analyte.record_status='A' \
                  and hims_m_lab_analyte.test_id in  (?);",
-              [
-                test_id.join(","),
-                req.body.visit_id,
-                get_services_id.join(","),
-                test_id.join(",")
-              ],
+              [test_id, req.body.visit_id, get_services_id, test_id],
               (error, specimentRecords) => {
-                debugLog("specimentRecords: ", specimentRecords);
                 if (error) {
                   releaseDBConnection(db, connection);
                   next(error);
                 }
+
                 const insertedLabSample = new LINQ(specimentRecords[0])
                   .Select(s => {
                     return {
@@ -223,7 +224,7 @@ let insertLadOrderedServices = (req, res, next) => {
                     };
                   })
                   .ToArray();
-                debugLog("insertedLabSample", insertedLabSample);
+
                 const sample = ["order_id", "sample_id"];
                 connection.query(
                   "insert into hims_f_lab_sample(" +
@@ -642,16 +643,21 @@ let updateLabResultEntry = (req, res, next) => {
           .ToArray();
 
         let ref = null;
+        let entered_by = "";
+        let confirmed_by = "";
+        let validated_by = "";
 
         switch (inputParam.length - 1) {
           case status_C:
             //Do functionality for C here
             ref = "CF";
+            confirmed_by = req.userIdentity.algaeh_d_app_user_id;
             break;
 
           case status_V:
             //Do functionality for V here
             ref = "V";
+            validated_by = req.userIdentity.algaeh_d_app_user_id;
             break;
 
           case status_N:
@@ -661,12 +667,16 @@ let updateLabResultEntry = (req, res, next) => {
 
           case status_E:
             ref = "CL";
+            entered_by = req.userIdentity.algaeh_d_app_user_id;
             break;
           default:
             ref = null;
         }
 
-        debugLog("ref:", ref);
+        debugLog("ref: ", ref);
+        debugLog("entered_by: ", entered_by);
+        debugLog("confirmed_by: ", confirmed_by);
+        debugLog("validated_by: ", validated_by);
 
         let qry = "";
 
@@ -728,11 +738,23 @@ let updateLabResultEntry = (req, res, next) => {
               next(error);
             });
           }
-          // ,run_type="' + runtype + '"
+
           if (results != null && ref != null) {
             connection.query(
               "update hims_f_lab_order set `status`='" +
                 ref +
+                "',entered_date= '" +
+                new Date().toLocaleString() +
+                "',entered_by= '" +
+                user_id.updated_by +
+                "',confirmed_date= '" +
+                new Date().toLocaleString() +
+                "',confirmed_by= '" +
+                user_id.updated_by +
+                "',validated_date= '" +
+                new Date().toLocaleString() +
+                "',validated_by= '" +
+                user_id.updated_by +
                 "',updated_date= '" +
                 new Date().toLocaleString() +
                 "',run_type='" +
@@ -757,7 +779,12 @@ let updateLabResultEntry = (req, res, next) => {
                     });
                   }
                   releaseDBConnection(db, connection);
-                  req.records = result;
+                  req.records = {
+                    results,
+                    entered_by: entered_by,
+                    confirmed_by: confirmed_by,
+                    validated_by: validated_by
+                  };
                   next();
                 });
               }
@@ -771,7 +798,12 @@ let updateLabResultEntry = (req, res, next) => {
                 });
               }
               releaseDBConnection(db, connection);
-              req.records = results;
+              req.records = {
+                results,
+                entered_by: entered_by,
+                confirmed_by: confirmed_by,
+                validated_by: validated_by
+              };
               next();
             });
           }

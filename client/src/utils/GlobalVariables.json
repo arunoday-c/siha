@@ -101,11 +101,11 @@
     { "name": "Routine", "value": "R" }
   ],
   "FORMAT_TEST_STATUS": [
-    { "name": "Ordered", "value": "O" },
-    { "name": "Collected", "value": "CL" },
-    { "name": "Cancelled", "value": "CN" },
-    { "name": "Confirmed", "value": "CF" },
-    { "name": "Validated", "value": "V" }
+    { "name": "Ordered", "value": "O", "color": "#ffff00" },
+    { "name": "Collected", "value": "CL", "color": "#00ffff" },
+    { "name": "Cancelled", "value": "CN", "color": "#ff4000" },
+    { "name": "Confirmed", "value": "CF", "color": "#ff00ff" },
+    { "name": "Validated", "value": "V", "color": "#4CAF50" }
   ],
   "FORMAT_INSURANCE_EDIT_OPTION": [
     {
