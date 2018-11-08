@@ -254,6 +254,7 @@ const onconfirm = $this => {
 };
 
 const onReRun = $this => {
+  debugger;
   let test_analytes = $this.state.test_analytes;
   let success = true;
   let runtype = [];
@@ -263,13 +264,13 @@ const onReRun = $this => {
       runtype = { run_type: "1" };
     } else if ($this.state.run_type === "1") {
       test_analytes[k].run2 = test_analytes[k].result;
-      runtype = { run_type: "1" };
+      runtype = { run_type: "2" };
     } else if ($this.state.run_type === "2") {
       test_analytes[k].run3 = test_analytes[k].result;
-      runtype = { run_type: "1" };
+      runtype = { run_type: "3" };
     }
 
-    test_analytes[k].result = null;
+    test_analytes[k].result = "";
     test_analytes[k].confirm = "N";
     test_analytes[k].validate = "N";
     test_analytes[k].status = "N";
