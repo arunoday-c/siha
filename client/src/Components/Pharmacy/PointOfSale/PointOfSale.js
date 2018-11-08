@@ -30,7 +30,7 @@ import GlobalVariables from "../../../utils/GlobalVariables.json";
 import PosListItems from "./PosListItems/PosListItems";
 import MyContext from "../../../utils/MyContext";
 import POSIOputs from "../../../Models/POS";
-import DisplayInsuranceDetails from "./DisplayInsuranceDetails/DisplayInsuranceDetails";
+
 import Options from "../../../Options.json";
 import Enumerable from "linq";
 
@@ -331,11 +331,11 @@ class PointOfSale extends Component {
               </div>
             </div>
           </div>
-          <div>
+          {/* <div>
             {this.state.case_type === "O" ? null : (
               <DisplayInsuranceDetails POSIOputs={this.state} />
             )}
-          </div>
+          </div> */}
           <div className="hptl-phase1-pos-form">
             <div className="row">
               <MyContext.Provider

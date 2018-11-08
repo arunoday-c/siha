@@ -616,6 +616,13 @@ const onchangegridcol = ($this, row, e) => {
   row.update();
 };
 
+const ViewInsurance = ($this, e) => {
+  $this.setState({
+    ...$this.state,
+    viewInsurance: !$this.state.viewInsurance
+  });
+};
+
 export {
   discounthandle,
   UomchangeTexts,
@@ -631,5 +638,6 @@ export {
   ShowItemBatch,
   CloseItemBatch,
   onchangegridcol,
-  PosheaderCalculation
+  PosheaderCalculation,
+  ViewInsurance
 };
