@@ -149,23 +149,20 @@
                             <th scope="col">Cost</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td scope="row">10014</td>
-                            <td>Internal Medicine Fee- Consultant -Dr. Waleed Al Baker</td>
-                            <td>Consultation</td>
-                            <td>1</td>
-                            <td>80.00</td>
-                        </tr>
-                        <tr>
-                            <td scope="row">10014</td>
-                            <td>Internal Medicine Fee- Consultant -Dr. Waleed Al Baker</td>
-                            <td>Consultation</td>
-                            <td>1</td>
-                            <td>80.00</td>
-                        </tr>
+                    <tbody data-list="servicesTable">
+
                     </tbody>
                 </table>
+                <script id="servicesTable" type="text/x-algaeh-template">
+                    <tr>
+                        <td scope="row" data-list-parameter="cpt_code">10014</td>
+                        <td data-list-parameter="description">Internal Medicine Fee- Consultant -Dr. Waleed Al Baker</td>
+                        <td data-list-parameter="service_type">Consultation</td>
+                        <td data-list-parameter="cpt_qty">1</td>
+                        <td data-list-parameter="cpt_amt">80.00</td>
+                    </tr>
+                  
+                 </script>
             </td>
         </tr>
         <tr>
