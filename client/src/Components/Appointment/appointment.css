@@ -134,6 +134,9 @@
       height: auto;
       width: 120px;
       vertical-align: top; }
+    .appointment .tg tbody td.highlight-Drop {
+      background: radial-gradient(ellipse at center, rgba(0, 183, 234, 0.1) 0%, rgba(0, 158, 195, 0.5) 100%);
+      /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */ }
     .appointment .tg tbody td[colspan]:not([colspan="1"]) {
       width: 240px;
       height: 10px;
@@ -154,6 +157,8 @@
         display: inline-block;
         left: 0;
         top: 0; }
+    .appointment .tg tbody .dynPatient:hover span {
+      text-decoration: underline; }
     .appointment .tg tbody .patientStdbyCount {
       display: block;
       text-align: center;

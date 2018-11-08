@@ -772,6 +772,7 @@ class Appointment extends Component {
   allowDrop(ev) {
     ev.preventDefault();
     ev.currentTarget.children[1];
+    //ev.currentTarget.parent();
   }
 
   drag(ev) {
@@ -1108,7 +1109,7 @@ class Appointment extends Component {
         key={data.counter}
       >
         <td
-          className="tg-baqh"
+          className="tg-baqh" //highlight-Drop
           {...colspan}
           onDrop={this.drop.bind(this)}
           onDragOver={this.allowDrop.bind(this)}
