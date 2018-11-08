@@ -44,14 +44,32 @@ class RadResultEntry extends Component {
   }
 
   componentDidMount() {
-    this.props.getUserDetails({
-      uri: "/algaehappuser/selectAppUsers",
-      method: "GET",
-      redux: {
-        type: "RAD_EMP_GET_DATA",
-        mappingName: "radiologyusers"
-      }
-    });
+    if (
+      this.props.radiologyusers === undefined ||
+      this.props.radiologyusers.length === 0
+    ) {
+      this.props.getUserDetails({
+        uri: "/algaehappuser/selectAppUsers",
+        method: "GET",
+        redux: {
+          type: "RAD_EMP_GET_DATA",
+          mappingName: "radiologyusers"
+        }
+      });
+    }
+    if (
+      this.props.providers === undefined ||
+      this.props.providers.length === 0
+    ) {
+      this.props.getProviderDetails({
+        uri: "/employee/get",
+        method: "GET",
+        redux: {
+          type: "DOCTOR_GET_DATA",
+          mappingName: "providers"
+        }
+      });
+    }
   }
   componentWillReceiveProps(newProps) {
     debugger;
@@ -78,6 +96,12 @@ class RadResultEntry extends Component {
     }
   }
   render() {
+    let display =
+      this.props.providers === undefined
+        ? []
+        : this.props.providers.filter(
+            f => f.hims_d_employee_id === this.state.ordered_by
+          );
     return (
       <div>
         <Modal className="model-set" open={this.props.open}>
@@ -108,7 +132,7 @@ class RadResultEntry extends Component {
                 </div>
                 <div className="patientDemographic">
                   <span>
-                    DOB:{" "}
+                    DOB:
                     <b>
                       {moment(this.state.date_of_birth).format(
                         Options.dateFormat
@@ -121,7 +145,12 @@ class RadResultEntry extends Component {
                 </div>
                 <div className="patientDemographic">
                   <span>
-                    Ref by: <b>{this.state.ordered_by}</b>
+                    Ref by:{" "}
+                    <b>
+                      {display !== null && display.length !== 0
+                        ? display[0].full_name
+                        : ""}
+                    </b>
                   </span>
                   <span>
                     Scheduled Date:{" "}
@@ -416,7 +445,8 @@ class RadResultEntry extends Component {
 function mapStateToProps(state) {
   return {
     radschlist: state.radschlist,
-    radiologyusers: state.radiologyusers
+    radiologyusers: state.radiologyusers,
+    providers: state.providers
   };
 }
 
@@ -424,7 +454,8 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getRadiologyTestList: AlgaehActions,
-      getUserDetails: AlgaehActions
+      getUserDetails: AlgaehActions,
+      getProviderDetails: AlgaehActions
     },
     dispatch
   );

@@ -2,7 +2,9 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
-const changeTexts = ($this, e) => {
+const changeTexts = ($this, ctrl, e) => {
+  debugger;
+  e = e || ctrl;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   $this.setState({ [name]: value });
@@ -16,6 +18,7 @@ const onchangegridcol = ($this, row, e) => {
 };
 
 const updateLocationPermission = ($this, data) => {
+  debugger;
   algaehApiCall({
     uri: "/pharmacy/updateLocationPermission",
     data: data,
@@ -90,7 +93,7 @@ const deleteLocationPermission = ($this, row) => {
 };
 
 const insertLocationPermission = ($this, e) => {
-  e.preventDefault();
+  debugger;
 
   AlgaehValidation({
     alertTypeIcon: "warning",

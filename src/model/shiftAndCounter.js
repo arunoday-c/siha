@@ -1,8 +1,9 @@
 "use strict";
 import extend from "extend";
 import {
-  
-  releaseDBConnection,whereCondition
+  deleteRecord,
+  releaseDBConnection,
+  whereCondition
 } from "../utils";
 
 import httpStatus from "../utils/httpStatus";
@@ -388,9 +389,6 @@ let updateCashiersAndShiftMAP  = (req, res, next) => {
     next(e);
   }
 };
-
-
-
 
 
 //created by irfan: to 
