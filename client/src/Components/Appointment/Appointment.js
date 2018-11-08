@@ -770,9 +770,9 @@ class Appointment extends Component {
   }
 
   allowDrop(ev) {
+    debugger;
     ev.preventDefault();
     ev.currentTarget.children[1];
-    //ev.currentTarget.parent();
   }
 
   drag(ev) {
@@ -952,7 +952,6 @@ class Appointment extends Component {
       )
       .toArray();
     if (patient !== undefined) {
-      debugger;
       return patient;
     } else {
       return null;
@@ -993,7 +992,6 @@ class Appointment extends Component {
   }
 
   loadSubStandBy(patients) {
-    debugger;
     if (patients !== undefined && patients !== null && patients.length > 0) {
       const _otherPatients = patients.slice(1);
       if (_otherPatients !== undefined && _otherPatients.length > 0) {
@@ -1060,7 +1058,6 @@ class Appointment extends Component {
     const colspan = data.mark_as_break
       ? { colSpan: 2, style: { width: "240px" } }
       : {};
-    debugger;
     const _patientList = this.plotPatients({
       time: data.time,
       slot: data.slot,

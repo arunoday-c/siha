@@ -237,8 +237,27 @@ class RadScheduledList extends Component {
           <div className="row">
             <div className="col-lg-12">
               <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
-                {/* <div className="portlet-title"><div className="caption"><h3 className="caption-subject"></h3></div></div>
-                */}
+                <div className="portlet-title">
+                  <div className="caption">
+                    <h3 className="caption-subject">Radiology Work List</h3>
+                  </div>
+
+                  <div className="actions">
+                    {/* <span> Status: </span> */}
+                    <ul className="ul-legend">
+                      {FORMAT_RAD_STATUS.map((data, index) => (
+                        <li key={index}>
+                          <span
+                            style={{
+                              backgroundColor: data.color
+                            }}
+                          />
+                          {data.name}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
                 <div className="portlet-body">
                   <AlgaehDataGrid
                     id="Scheduled_list_grid"
@@ -263,7 +282,7 @@ class RadScheduledList extends Component {
                           );
                         },
                         className: drow => {
-                          return "greenCell";
+                          return drow.status !== "O" ? "greenCell" : null;
                         },
                         disabled: false,
                         others: {
@@ -329,14 +348,14 @@ class RadScheduledList extends Component {
                           return row.status === "O"
                             ? "Ordered"
                             : row.status === "S"
-                              ? "Scheduled"
-                              : row.status === "UP"
-                                ? "Under Process"
-                                : row.status === "CN"
-                                  ? "Cancelled"
-                                  : row.status === "RC"
-                                    ? "Confirmed"
-                                    : "Validated";
+                            ? "Scheduled"
+                            : row.status === "UP"
+                            ? "Under Process"
+                            : row.status === "CN"
+                            ? "Cancelled"
+                            : row.status === "RC"
+                            ? "Confirmed"
+                            : "Validated";
                         },
                         others: {
                           maxWidth: 200,
@@ -366,6 +385,19 @@ class RadScheduledList extends Component {
                         }
                       }
                     ]}
+                    rowClassName={row => {
+                      return row.status === "S"
+                        ? "scheduledClass"
+                        : row.status === "CN"
+                        ? "cancelledClass"
+                        : row.status === "RC"
+                        ? "confirmedClass"
+                        : row.status === "RA"
+                        ? "availableClass"
+                        : row.status === "UP"
+                        ? "underProcessClass"
+                        : null;
+                    }}
                     keyId="patient_code"
                     dataSource={{
                       data:
