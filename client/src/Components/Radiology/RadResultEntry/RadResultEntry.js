@@ -5,7 +5,6 @@ import { bindActionCreators } from "redux";
 import Modal from "@material-ui/core/Modal";
 import RichTextEditor from "react-quill";
 import "react-quill/dist/quill.snow.css";
-
 import "./RadResultEntry.css";
 import "./../../../styles/site.css";
 import {
@@ -13,7 +12,6 @@ import {
   AlgaehDateHandler,
   AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
-
 import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../Options.json";

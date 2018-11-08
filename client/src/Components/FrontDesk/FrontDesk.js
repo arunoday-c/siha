@@ -39,7 +39,6 @@ class FrontDesk extends Component {
             patient_code: Window.global["appt-pat-code"],
             provider_id: Window.global["appt-provider-id"],
             sub_department_id: Window.global["appt-dept-id"],
-
             hims_f_patient_appointment_id: Window.global["appt-id"],
             patient_name: Window.global["appt-pat-name"],
             arabic_patient_name: Window.global["appt-pat-arabic-name"],

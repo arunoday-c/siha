@@ -50,7 +50,7 @@
     color: white;
     font-weight: bolder; }
   :global .confirmedClass {
-    background-color: #ff00ff !important;
+    background-color: #ff99ff !important;
     color: white;
     font-weight: bolder; }
   :global .orderedClass {
@@ -58,11 +58,23 @@
     color: white;
     font-weight: bolder; }
   :global .collectedClass {
-    background-color: #00ffff !important;
+    background-color: #00e6e6 !important;
     color: white;
     font-weight: bolder; }
   :global .validateClass {
-    background-color: #4caf50 !important;
+    background-color: #66ffc2 !important;
+    color: white;
+    font-weight: bolder; }
+  :global .scheduledClass {
+    background-color: #fca6c1 !important;
+    color: white;
+    font-weight: bolder; }
+  :global .availableClass {
+    background-color: #00ffff !important;
+    color: white;
+    font-weight: bolder; }
+  :global .underProcessClass {
+    background-color: #cea6fc !important;
     color: white;
     font-weight: bolder; }
   :global .cursor-pointer {

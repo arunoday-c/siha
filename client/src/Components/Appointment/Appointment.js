@@ -552,8 +552,8 @@ class Appointment extends Component {
                         ? "col activeDate CurrentDate"
                         : "col activeDate"
                       : _currDate === moment().format("YYYYMMDD")
-                        ? "col CurrentDate"
-                        : "col"
+                      ? "col CurrentDate"
+                      : "col"
                   }
                   onClick={this.onSelectedDateHandler.bind(this)}
                 >
@@ -963,10 +963,10 @@ class Appointment extends Component {
       patient === null || patient === undefined
         ? "N"
         : patient.is_stand_by === "Y"
-          ? "N"
-          : patient.cancelled === "Y"
-            ? "N"
-            : null;
+        ? "N"
+        : patient.cancelled === "Y"
+        ? "N"
+        : null;
     if (_isstandby !== null) {
       return (
         <i
@@ -1088,20 +1088,20 @@ class Appointment extends Component {
             moment(new Date()).format("YYYYMMDD")) ||
         moment(this.state.activeDateHeader).format("YYYYMMDD") <
           moment(new Date()).format("YYYYMMDD")
-        ? "#fbfbfb"
-        : "#ffffff";
+      ? "#fbfbfb"
+      : "#ffffff";
 
     let bg_color =
       patient !== null && patient !== undefined
         ? this.getColorCode(patient.appointment_status_id)
         : data.mark_as_break
-          ? "#f2f2f2"
-          : moment(data.time, "HH:mm a").format("HHm") <
-              moment(new Date()).format("HHm") &&
-            moment(this.state.activeDateHeader).format("YYYYMMDD") <
-              moment(new Date()).format("YYYYMMDD")
-            ? "#fbfbfb"
-            : "#ffffff";
+        ? "#f2f2f2"
+        : moment(data.time, "HH:mm a").format("HHm") <
+            moment(new Date()).format("HHm") &&
+          moment(this.state.activeDateHeader).format("YYYYMMDD") <
+            moment(new Date()).format("YYYYMMDD")
+        ? "#fbfbfb"
+        : "#ffffff";
 
     return (
       <tr
@@ -1522,7 +1522,7 @@ class Appointment extends Component {
                             }}
                             label={{
                               forceLabel: "Email Address",
-                              isImp: true
+                              isImp: false
                             }}
                             textBox={{
                               className: "txt-fld",
