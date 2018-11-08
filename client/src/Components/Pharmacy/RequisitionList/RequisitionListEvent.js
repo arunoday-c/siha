@@ -3,6 +3,7 @@ import moment from "moment";
 import Options from "../../../Options.json";
 
 const LocationchangeTexts = ($this, location, ctrl, e) => {
+  debugger;
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
