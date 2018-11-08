@@ -107,179 +107,174 @@ class StockEnquiry extends Component {
           />
 
           <div className="hptl-phase1-stock-enquiry-form">
-            <div className="col-lg-12">
-              <div className="row">
-                <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
-                  label={{ forceLabel: "Location" }}
-                  selector={{
-                    name: "location_id",
-                    className: "select-fld",
-                    value: this.state.location_id,
-                    dataSource: {
-                      textField: "location_description",
-                      valueField: "hims_d_pharmacy_location_id",
-                      data: this.props.locations
-                    },
-
-                    onChange: changeTexts.bind(this, this)
-                  }}
-                />
-
-                <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
-                  label={{ forceLabel: "Item Name" }}
-                  selector={{
-                    name: "item_id",
-                    className: "select-fld",
-                    value: this.state.item_id,
-                    dataSource: {
-                      textField: "item_description",
-                      valueField: "hims_d_item_master_id",
-                      data: this.props.itemlist
-                    },
-                    onChange: changeTexts.bind(this, this)
-                  }}
-                />
-              </div>
-
-              <div className="row form-group">
-                <div className="col-lg-12">
-                  <AlgaehDataGrid
-                    id="initial_stock"
-                    columns={[
-                      {
-                        fieldName: "pharmacy_location_id",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Location" }} />
-                        ),
-                        displayTemplate: row => {
-                          let display =
-                            this.props.locations === undefined
-                              ? []
-                              : this.props.locations.filter(
-                                  f =>
-                                    f.hims_d_pharmacy_location_id ===
-                                    row.pharmacy_location_id
-                                );
-
-                          return (
-                            <span>
-                              {display !== undefined && display.length !== 0
-                                ? display[0].location_description
-                                : ""}
-                            </span>
-                          );
-                        },
-                        disabled: true
+            <div
+              className="row inner-top-search"
+              style={{ marginTop: 76, paddingBottom: 10 }}
+            >
+              <div className="col-lg-12">
+                <div className="row">
+                  <AlagehAutoComplete
+                    div={{ className: "col-lg-3" }}
+                    label={{ forceLabel: "Location" }}
+                    selector={{
+                      name: "location_id",
+                      className: "select-fld",
+                      value: this.state.location_id,
+                      dataSource: {
+                        textField: "location_description",
+                        valueField: "hims_d_pharmacy_location_id",
+                        data: this.props.locations
                       },
 
-                      {
-                        fieldName: "item_id",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Item Name" }} />
-                        ),
-                        displayTemplate: row => {
-                          let display =
-                            this.props.itemlist === undefined
-                              ? []
-                              : this.props.itemlist.filter(
-                                  f => f.hims_d_item_master_id === row.item_id
-                                );
-
-                          return (
-                            <span>
-                              {display !== undefined && display.length !== 0
-                                ? display[0].item_description
-                                : ""}
-                            </span>
-                          );
-                        },
-                        disabled: true
-                      },
-                      {
-                        fieldName: "sales_uom",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Sales UOM" }} />
-                        ),
-                        displayTemplate: row => {
-                          let display =
-                            this.props.itemuom === undefined
-                              ? []
-                              : this.props.itemuom.filter(
-                                  f =>
-                                    f.hims_d_pharmacy_uom_id === row.sales_uom
-                                );
-
-                          return (
-                            <span>
-                              {display !== null && display.length !== 0
-                                ? display[0].uom_description
-                                : ""}
-                            </span>
-                          );
-                        },
-
-                        disabled: true
-                      },
-                      {
-                        fieldName: "batchno",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Batch No." }} />
-                        )
-                      },
-                      {
-                        fieldName: "expirt_date",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Expiry Date" }} />
-                        ),
-                        displayTemplate: row => {
-                          return <span>{dateFormater(row.expirt_date)}</span>;
-                        }
-                      },
-                      {
-                        fieldName: "qtyhand",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Quantity" }} />
-                        )
-                      },
-                      {
-                        fieldName: "avgcost",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Avrage Cost" }} />
-                        )
-                      }
-                    ]}
-                    keyId="item_id"
-                    dataSource={{
-                      data: this.props.itemBatch
-                    }}
-                    noDataText="No Stock available for selected Item in the selected Location"
-                    // isEditable={true}
-                    paging={{ page: 0, rowsPerPage: 10 }}
-                    events={{
-                      //   onDelete: deleteServices.bind(this, this),
-                      onEdit: row => {}
-                      // onDone: this.updateBillDetail.bind(this)
+                      onChange: changeTexts.bind(this, this)
                     }}
                   />
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-lg-9"> &nbsp; </div>
-                <div className="col-lg-3">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Total Quantity"
+
+                  <AlagehAutoComplete
+                    div={{ className: "col-lg-3" }}
+                    label={{ forceLabel: "Item Name" }}
+                    selector={{
+                      name: "item_id",
+                      className: "select-fld",
+                      value: this.state.item_id,
+                      dataSource: {
+                        textField: "item_description",
+                        valueField: "hims_d_item_master_id",
+                        data: this.props.itemlist
+                      },
+                      onChange: changeTexts.bind(this, this)
                     }}
                   />
-                  <h6>
-                    {this.state.total_quantity
-                      ? "₹" + this.state.total_quantity
-                      : "₹0.00"}
-                  </h6>
+                  <div className="col-lg-3">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Total Quantity"
+                      }}
+                    />
+                    <h6>
+                      {this.state.total_quantity
+                        ? this.state.total_quantity + " nos"
+                        : "0 nos"}
+                    </h6>
+                  </div>
                 </div>
               </div>
+            </div>
+          </div>
+          <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+            {/* <div className="portlet-title">
+            <div className="caption">
+              <h3 className="caption-subject">Investigation Lists</h3>
+            </div>
+            <div className="actions">
+            </div>
+          </div> */}
+            <div className="portlet-body" id="precriptionList_Cntr">
+              <AlgaehDataGrid
+                id="initial_stock"
+                columns={[
+                  {
+                    fieldName: "pharmacy_location_id",
+                    label: <AlgaehLabel label={{ forceLabel: "Location" }} />,
+                    displayTemplate: row => {
+                      let display =
+                        this.props.locations === undefined
+                          ? []
+                          : this.props.locations.filter(
+                              f =>
+                                f.hims_d_pharmacy_location_id ===
+                                row.pharmacy_location_id
+                            );
+
+                      return (
+                        <span>
+                          {display !== undefined && display.length !== 0
+                            ? display[0].location_description
+                            : ""}
+                        </span>
+                      );
+                    },
+                    disabled: true
+                  },
+
+                  {
+                    fieldName: "item_id",
+                    label: <AlgaehLabel label={{ forceLabel: "Item Name" }} />,
+                    displayTemplate: row => {
+                      let display =
+                        this.props.itemlist === undefined
+                          ? []
+                          : this.props.itemlist.filter(
+                              f => f.hims_d_item_master_id === row.item_id
+                            );
+
+                      return (
+                        <span>
+                          {display !== undefined && display.length !== 0
+                            ? display[0].item_description
+                            : ""}
+                        </span>
+                      );
+                    },
+                    disabled: true
+                  },
+                  {
+                    fieldName: "sales_uom",
+                    label: <AlgaehLabel label={{ forceLabel: "Sales UOM" }} />,
+                    displayTemplate: row => {
+                      let display =
+                        this.props.itemuom === undefined
+                          ? []
+                          : this.props.itemuom.filter(
+                              f => f.hims_d_pharmacy_uom_id === row.sales_uom
+                            );
+
+                      return (
+                        <span>
+                          {display !== null && display.length !== 0
+                            ? display[0].uom_description
+                            : ""}
+                        </span>
+                      );
+                    },
+
+                    disabled: true
+                  },
+                  {
+                    fieldName: "batchno",
+                    label: <AlgaehLabel label={{ forceLabel: "Batch No." }} />
+                  },
+                  {
+                    fieldName: "expirt_date",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Expiry Date" }} />
+                    ),
+                    displayTemplate: row => {
+                      return <span>{dateFormater(row.expirt_date)}</span>;
+                    }
+                  },
+                  {
+                    fieldName: "qtyhand",
+                    label: <AlgaehLabel label={{ forceLabel: "Quantity" }} />
+                  },
+                  {
+                    fieldName: "avgcost",
+                    label: <AlgaehLabel label={{ forceLabel: "Avrage Cost" }} />
+                  }
+                ]}
+                keyId="item_id"
+                dataSource={{
+                  data: this.props.itemBatch
+                }}
+                noDataText="No Stock available for selected Item in the selected Location"
+                // isEditable={true}
+                paging={{ page: 0, rowsPerPage: 10 }}
+                events={{
+                  //   onDelete: deleteServices.bind(this, this),
+                  onEdit: row => {}
+                  // onDone: this.updateBillDetail.bind(this)
+                }}
+              />
             </div>
           </div>
         </div>

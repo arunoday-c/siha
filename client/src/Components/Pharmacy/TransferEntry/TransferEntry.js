@@ -238,9 +238,10 @@ class TransferEntry extends Component {
                   }}
                 />
 
-                <div className="col-lg-2 form-group print_actions">
+                <div className="col-lg-2  print_actions">
                   <span
-                    className="fas fa-search fa-2x"
+                    className="fas fa-search"
+                    style={{ marginTop: 26, fontSize: 20 }}
                     onClick={RequisitionSearch.bind(this, this)}
                   />
                 </div>
