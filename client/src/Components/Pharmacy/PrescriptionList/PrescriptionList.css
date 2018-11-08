@@ -12,3 +12,6 @@
 .hptl-phase1-prescription-list-form th,
 .hptl-phase1-prescription-list-form td {
   border-right: 1px solid #e6e6e6; }
+
+#precriptionList_Cntr .ReactTable {
+  max-height: 60vh !important; }

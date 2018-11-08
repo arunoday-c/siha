@@ -49,6 +49,7 @@
 .ReactTable .fa-file-export,
 .ReactTable .fa-sync-alt,
 .ReactTable .fa-file-prescription,
+.ReactTable .fa-prescription,
 .ReactTable .fa-arrow-right,
 .ReactTable .fa-plus {
   cursor: pointer;
@@ -76,6 +77,7 @@
 .ReactTable .fa-file-export:hover,
 .ReactTable .fa-sync-alt:hover,
 .ReactTable .fa-file-prescription:hover,
+.ReactTable .fa-prescription:hover,
 .ReactTable .fa-arrow-right:hover,
 .ReactTable .fa-plus:hover {
   background: #44b8bd;
