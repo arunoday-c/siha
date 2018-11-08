@@ -401,8 +401,7 @@ const SaveOrdersServices = ($this, e) => {
         //   net_total: null
         // });
       }
-    },
-    onFailure: error => {}
+    }
   });
 };
 

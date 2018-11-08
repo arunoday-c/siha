@@ -213,6 +213,18 @@ let insertLadOrderedServices = (req, res, next) => {
                   releaseDBConnection(db, connection);
                   next(error);
                 }
+                if (
+                  specimentRecords[0] == null ||
+                  specimentRecords[0].length == 0
+                ) {
+                  releaseDBConnection(db, connection);
+                  next(
+                    httpStatus.generateError(
+                      httpStatus.forbidden,
+                      "No specimen avilable"
+                    )
+                  );
+                }
 
                 const insertedLabSample = new LINQ(specimentRecords[0])
                   .Select(s => {
@@ -256,52 +268,59 @@ let insertLadOrderedServices = (req, res, next) => {
                       "normal_low",
                       "normal_high"
                     ];
-                    const labAnalytes = new LINQ(specimentRecords[2])
-                      .Select(s => {
-                        return {
-                          analyte_id: s.analyte_id,
-                          order_id: new LINQ(specimentRecords[1])
-                            .Where(w => w.service_id == s.services_id)
-                            .FirstOrDefault().hims_f_lab_order_id,
-                          analyte_type: s.analyte_type,
-                          result_unit: s.result_unit,
-                          critical_low: s.critical_low,
-                          critical_high: s.critical_high,
-                          normal_low: s.normal_low,
-                          normal_high: s.normal_high
-                        };
-                      })
-                      .ToArray();
-
-                    debugLog("labAnalytes: ", labAnalytes);
-                    connection.query(
-                      "insert into hims_f_ord_analytes(" +
-                        analyts.join(",") +
-                        ",created_by,updated_by) VALUES ?",
-                      [
-                        jsonArrayToObject({
-                          sampleInputObject: analyts,
-                          arrayObj: labAnalytes,
-                          req: req,
-                          newFieldToInsert: [
-                            req.userIdentity.algaeh_d_app_user_id,
-                            req.userIdentity.algaeh_d_app_user_id
-                          ]
+                    if (
+                      specimentRecords[2] == null ||
+                      specimentRecords[2].length == 0
+                    ) {
+                      const labAnalytes = new LINQ(specimentRecords[2])
+                        .Select(s => {
+                          return {
+                            analyte_id: s.analyte_id,
+                            order_id: new LINQ(specimentRecords[1])
+                              .Where(w => w.service_id == s.services_id)
+                              .FirstOrDefault().hims_f_lab_order_id,
+                            analyte_type: s.analyte_type,
+                            result_unit: s.result_unit,
+                            critical_low: s.critical_low,
+                            critical_high: s.critical_high,
+                            normal_low: s.normal_low,
+                            normal_high: s.normal_high
+                          };
                         })
-                      ],
-                      (error, recordLabAnaytes) => {
-                        releaseDBConnection(db, connection);
-                        if (error) {
-                          next(error);
+                        .ToArray();
+
+                      debugLog("labAnalytes: ", labAnalytes);
+                      connection.query(
+                        "insert into hims_f_ord_analytes(" +
+                          analyts.join(",") +
+                          ",created_by,updated_by) VALUES ?",
+                        [
+                          jsonArrayToObject({
+                            sampleInputObject: analyts,
+                            arrayObj: labAnalytes,
+                            req: req,
+                            newFieldToInsert: [
+                              req.userIdentity.algaeh_d_app_user_id,
+                              req.userIdentity.algaeh_d_app_user_id
+                            ]
+                          })
+                        ],
+                        (error, recordLabAnaytes) => {
+                          releaseDBConnection(db, connection);
+                          if (error) {
+                            next(error);
+                          }
+                          req.records = {
+                            result,
+                            ResultOfFetchOrderIds:
+                              req.records.ResultOfFetchOrderIds
+                          };
+                          next();
                         }
-                        req.records = {
-                          result,
-                          ResultOfFetchOrderIds:
-                            req.records.ResultOfFetchOrderIds
-                        };
-                        next();
-                      }
-                    );
+                      );
+                    } else {
+                      next();
+                    }
                   }
                 );
               }
