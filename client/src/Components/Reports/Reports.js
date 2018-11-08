@@ -27,14 +27,8 @@ class Reports extends Component {
   // }
 
   dropDownHandler(value) {
-    this.setState({ [value.name]: value.value }, () => {
-      let SelectedItem = Enumerable.from(data)
-        .where(w => w.name === this.state.module)
-        .firstOrDefault();
-
-      this.setState({
-        itemList: SelectedItem !== undefined ? SelectedItem.submenu : []
-      });
+    this.setState({
+      [value.name]: value.value, itemList: value.selected.submenu
     });
   }
 
@@ -76,7 +70,7 @@ class Reports extends Component {
                     placeholder: "Search for reports"
                   },
                   events: {
-                    onChange: () => {}
+                    onChange: () => { }
                   }
                 }}
               />
@@ -95,11 +89,9 @@ class Reports extends Component {
             style={{ height: "75vh", overflow: "auto" }}
           >
             <div className="col-lg-12">
+
               <div className="row">
-                <h6>Appointments</h6>
-              </div>
-              <div className="row">
-                {this.state.itemList.map((data, index) => (
+                {this.state.itemList.map((item, index) => (
                   <div
                     key={index}
                     className="col-lg-2 reportList"
@@ -109,14 +101,14 @@ class Reports extends Component {
                           fileName: "printreceipt"
                         },
                         plotUI: {
-                          paramters: data.reportParamerts
+                          paramters: item.reportParamerts
                         }
                       });
                     }}
                   >
                     <div>
                       <i className="fas fa-file-medical-alt" />
-                      <p>{data.subitem}</p>
+                      <p>{item.subitem}</p>
                     </div>
                   </div>
                 ))}
