@@ -158,6 +158,8 @@ const RequisitionSearch = ($this, e) => {
           afterSuccess: data => {
             debugger;
             AlgaehLoader({ show: true });
+            let from_location_id = data.from_location_id;
+            let from_location_type = data.from_location_type;
             data.saveEnable = false;
 
             if (data.completed === "Y") {
@@ -166,7 +168,10 @@ const RequisitionSearch = ($this, e) => {
               data.postEnable = false;
             }
 
-            // data.postEnable = true;
+            data.from_location_id = data.to_location_id;
+            data.to_location_id = from_location_id;
+            data.from_location_type = data.to_location_type;
+            data.to_location_type = from_location_type;
 
             data.dataExitst = true;
 
