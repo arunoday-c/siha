@@ -278,7 +278,7 @@ let addHpiElement = (req, res, next) => {
       }
 
       connection.query(
-        "insert into hims_d_hpi_details(hpi_header_id,element_description,element_type,created_date,created_by,update_date,updated_by) \
+        "insert into hims_d_hpi_details(hpi_header_id,element_description,element_type,created_date,created_by,updated_date,updated_by) \
         values(?,?,?,?,?,?,?)",
         [
           input.hpi_header_id,

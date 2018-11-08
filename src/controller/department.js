@@ -8,7 +8,9 @@ import {
   updateSubDepartment,
   deleteDepartment,
   selectdoctors,
-  selectDoctorsAndClinic
+  selectDoctorsAndClinic,
+  deleteSubDepartment,
+  makeSubDepartmentInActive
 } from "../model/department";
 import { releaseConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
@@ -87,6 +89,8 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+
+
   api.put(
     "/update/subdepartment",
     updateSubDepartment,
@@ -100,6 +104,41 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+
+  //created by:irfan 
+  api.put(
+    "/deleteSubDepartment",
+    deleteSubDepartment,
+    (req, res, next) => {
+      let results = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: results
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+//created by:irfan
+  api.put(
+    "/makeSubDepartmentInActive",
+    makeSubDepartmentInActive,
+    (req, res, next) => {
+      let results = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: results
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+
+
+
+
   api.delete(
     "/delete",
     deleteDepartment,

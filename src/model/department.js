@@ -218,8 +218,6 @@ let selectDepartment = (req, res, next) => {
   }
 };
 
-
-
 //created by irfan: to get SUB-Departments
 let selectSubDepartment = (req, res, next) => {
   let selectWhere = {
@@ -254,8 +252,6 @@ let selectSubDepartment = (req, res, next) => {
     next(e);
   }
 };
-
-
 
 //created by irfan: to add  SUB_departments
 let addSubDepartment = (req, res, next) => {
@@ -550,6 +546,69 @@ let selectDoctorsAndClinic = (req, res, next) => {
   }
 };
 
+
+
+
+
+//created by:irfan to delete sub department
+let deleteSubDepartment = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    deleteRecord(
+      {
+        db: req.db,
+        tableName: "hims_d_sub_department",
+        id: req.body.hims_d_sub_department_id,
+        query:
+          "UPDATE hims_d_sub_department SET  record_status='I' WHERE hims_d_sub_department_id=?",
+        values: [req.body.hims_d_sub_department_id]
+      },
+      result => {
+        req.records = result;
+        next();
+      },
+      error => {
+        next(error);
+      },
+      true
+    );
+  } catch (e) {
+    next(e);
+  }
+};
+
+
+//created by:irfan to makeSubDepartmentInActive
+let makeSubDepartmentInActive = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    deleteRecord(
+      {
+        db: req.db,
+        tableName: "hims_d_sub_department",
+        id: req.body.hims_d_sub_department_id,
+        query:
+          "UPDATE hims_d_sub_department SET  sub_department_status='I' WHERE hims_d_sub_department_id=?",
+        values: [req.body.hims_d_sub_department_id]
+      },
+      result => {
+        req.records = result;
+        next();
+      },
+      error => {
+        next(error);
+      },
+      true
+    );
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addDepartment,
   updateDepartment,
@@ -559,5 +618,7 @@ module.exports = {
   updateSubDepartment,
   deleteDepartment,
   selectdoctors,
-  selectDoctorsAndClinic
+  selectDoctorsAndClinic,
+  deleteSubDepartment,
+  makeSubDepartmentInActive
 };
