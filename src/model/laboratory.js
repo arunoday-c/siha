@@ -118,24 +118,29 @@ let insertLadOrderedServices = (req, res, next) => {
       : req.records.ResultOfFetchOrderIds;
   debugLog("Services: ", Services);
 
-  const labServices = new LINQ(Services)
-    .Where(
-      w =>
-        w.service_type_id == appsettings.hims_d_service_type.service_type_id.Lab
+  const labServices = [
+    ...new Set(
+      new LINQ(Services)
+        .Where(
+          w =>
+            w.service_type_id ==
+            appsettings.hims_d_service_type.service_type_id.Lab
+        )
+        .Select(s => {
+          return {
+            ordered_services_id: s.hims_f_ordered_services_id || null,
+            patient_id: req.body.patient_id,
+            provider_id: req.body.incharge_or_provider,
+            visit_id: req.body.visit_id,
+            service_id: s.services_id,
+            billed: req.body.billed,
+            ordered_date: s.created_date,
+            test_type: s.test_type
+          };
+        })
+        .ToArray()
     )
-    .Select(s => {
-      return {
-        ordered_services_id: s.hims_f_ordered_services_id || null,
-        patient_id: req.body.patient_id,
-        provider_id: req.body.incharge_or_provider,
-        visit_id: req.body.visit_id,
-        service_id: s.services_id,
-        billed: req.body.billed,
-        ordered_date: s.created_date,
-        test_type: s.test_type
-      };
-    })
-    .ToArray();
+  ];
 
   let connection = req.connection;
 
@@ -174,9 +179,11 @@ let insertLadOrderedServices = (req, res, next) => {
             return s.service_id;
           })
           .ToArray();
+        debugLog("Services ME : ", get_services_id);
+        debugLog("Array ME", get_services_id.join(","));
         connection.query(
           "select  hims_d_investigation_test_id from hims_d_investigation_test where record_status='A' and services_id in (?)",
-          [get_services_id.join(",")],
+          [get_services_id],
           (error, rec) => {
             if (error) {
               releaseDBConnection(db, connection);
@@ -190,7 +197,6 @@ let insertLadOrderedServices = (req, res, next) => {
 
             debugLog("test_id", test_id.join(","));
             debugLog("visit_id", req.body.visit_id);
-            debugLog("get_services_id", get_services_id);
 
             connection.query(
               "select services_id,specimen_id FROM  hims_m_lab_specimen,hims_d_investigation_test where \
@@ -201,18 +207,13 @@ let insertLadOrderedServices = (req, res, next) => {
                   from hims_d_investigation_test,hims_m_lab_analyte where \
                  hims_d_investigation_test_id=hims_m_lab_analyte.test_id and hims_m_lab_analyte.record_status='A' \
                  and hims_m_lab_analyte.test_id in  (?);",
-              [
-                test_id.join(","),
-                req.body.visit_id,
-                get_services_id.join(","),
-                test_id.join(",")
-              ],
+              [test_id, req.body.visit_id, get_services_id, test_id],
               (error, specimentRecords) => {
-                debugLog("specimentRecords: ", specimentRecords);
                 if (error) {
                   releaseDBConnection(db, connection);
                   next(error);
                 }
+
                 const insertedLabSample = new LINQ(specimentRecords[0])
                   .Select(s => {
                     return {
@@ -223,7 +224,7 @@ let insertLadOrderedServices = (req, res, next) => {
                     };
                   })
                   .ToArray();
-                debugLog("insertedLabSample", insertedLabSample);
+
                 const sample = ["order_id", "sample_id"];
                 connection.query(
                   "insert into hims_f_lab_sample(" +
