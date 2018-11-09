@@ -5,51 +5,61 @@ const Validations = $this => {
 
   if ($this.state.item_description === null) {
     isError = true;
-    $this.setState({
-      open: true,
-      MandatoryMsg: "Invalid Input. Test Name Cannot be blank."
+    swalMessage({
+      type: "error",
+      title: "Invalid Input. Test Name Cannot be blank."
     });
     return isError;
   } else if ($this.state.generic_id === null) {
     isError = true;
-    $this.setState({
-      open: true,
-      MandatoryMsg: "Invalid Input. Please Select Generic."
+    swalMessage({
+      type: "error",
+      title: "Invalid Input. Please Select Generic."
     });
     return isError;
   } else if ($this.state.category_id === null) {
     isError = true;
-    $this.setState({
-      open: true,
-      MandatoryMsg: "Invalid Input. Please Select Category."
+    swalMessage({
+      type: "error",
+      title: "Invalid Input. Please Select Category."
     });
     return isError;
   } else if ($this.state.group_id === null) {
     isError = true;
-    $this.setState({
-      open: true,
-      MandatoryMsg: "Invalid Input. Please Select Group."
+    swalMessage({
+      type: "error",
+      title: "Invalid Input. Please Select Group."
     });
     return isError;
   } else if ($this.state.stocking_uom_id === null) {
     isError = true;
-    $this.setState({
-      open: true,
-      MandatoryMsg: "Invalid Input. Please Select Stocking UOM."
+    swalMessage({
+      type: "error",
+      title: "Invalid Input. Please Select Stocking UOM."
     });
     return isError;
   } else if ($this.state.purchase_uom_id === null) {
     isError = true;
-    $this.setState({
-      open: true,
-      MandatoryMsg: "Invalid Input. Select Purchase UOM."
+    swalMessage({
+      type: "error",
+      title: "Invalid Input. Select Purchase UOM."
     });
     return isError;
   } else if ($this.state.sales_uom_id === null) {
     isError = true;
-    $this.setState({
-      open: true,
-      MandatoryMsg: "Invalid Input. Select Sales UOM."
+    swalMessage({
+      type: "error",
+      title: "Invalid Input. Select Sales UOM."
+    });
+    return isError;
+  } else if (
+    $this.state.hims_d_item_master_id === null &&
+    $this.state.standard_fee === 0
+  ) {
+    isError = true;
+    swalMessage({
+      type: "error",
+      title: "Invalid Input. Enter the Price."
     });
     return isError;
   }
@@ -60,6 +70,10 @@ const InsertUpdateItems = $this => {
 
   if (!err) {
     if ($this.state.hims_d_item_master_id === null) {
+      $this.state.service_code = $this.state.item_code;
+      $this.state.service_type_id = "12";
+      $this.state.service_name = $this.state.item_description;
+
       algaehApiCall({
         uri: "/pharmacy/addItemMaster",
         data: $this.state,

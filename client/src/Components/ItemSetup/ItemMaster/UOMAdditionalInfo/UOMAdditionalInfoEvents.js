@@ -92,7 +92,10 @@ const AddUom = ($this, context) => {
     //     StockingExit = true;
     //   }
     // }
-    if (StockingExit.length !== 0 && $this.state.stocking_uom === "N") {
+    if (
+      StockingExit.length === 0 ||
+      (StockingExit.length !== 0 && $this.state.stocking_uom === "N")
+    ) {
       if ($this.state.stocking_uom === "Y") {
         stocking_uom_id = $this.state.uom_id;
       } else {

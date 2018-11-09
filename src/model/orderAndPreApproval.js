@@ -414,7 +414,8 @@ let selectOrderServices = (req, res, next) => {
 
 let getOrderServices = (req, res, next) => {
   let selectWhere = {
-    visit_id: "ALL"
+    visit_id: "ALL",
+    insurance_yesno: "ALL"
   };
 
   try {
