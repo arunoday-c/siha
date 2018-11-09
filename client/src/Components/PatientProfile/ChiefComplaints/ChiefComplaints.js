@@ -39,6 +39,7 @@ class ChiefComplaints extends Component {
       patientChiefComplains: [],
       chief_complaint_name: null,
       chief_complaint_id: null,
+      hims_d_hpi_header_id: null,
       hims_f_episode_chief_complaint_id: null,
       hims_f_patient_encounter_id: null,
       pain: "NH",
@@ -50,7 +51,14 @@ class ChiefComplaints extends Component {
       duration: 0,
       comment: "",
       chiefComplaints_Inactive: false,
-      masterChiefComplaints: []
+      masterChiefComplaints: [],
+      HPI_masters: {},
+      location: [],
+      quality: [],
+      context: [],
+      timing: [],
+      modifying_factor: [],
+      associated_symptoms: []
     };
 
     this.handleClose = this.handleClose.bind(this);
@@ -203,17 +211,7 @@ class ChiefComplaints extends Component {
   }
 
   dropDownHandle(data) {
-    const updateScroe =
-      data.selected.score !== undefined ? { score: data.selected.score } : {};
-
-    this.setState({ [data.name]: data.value, ...updateScroe }, () => {
-      this.settingUpdateChiefComplaints({
-        currentTarget: {
-          name: data.name,
-          value: data.value
-        }
-      });
-    });
+    this.setState({ [data.name]: data.value });
   }
 
   handleClose() {
@@ -312,18 +310,77 @@ class ChiefComplaints extends Component {
   openHPIAddModal(data, e) {
     this.loadHPIDetails({
       inputParamter: {
-        hpi_header_id: data.hims_f_episode_chief_complaint_id
+        hpi_header_id: data.hims_d_hpi_header_id
       },
       onSuccess: response => {
-        debugger;
+        let _ResponseSplit = {};
+        Enumerable.from(response.data.records)
+          .groupBy("$.element_type", null, (k, g) => {
+            switch (k) {
+              case "L":
+                _ResponseSplit["location"] = g.getSource();
+                break;
+              case "Q":
+                _ResponseSplit["quality"] = g.getSource();
+                break;
+              case "C":
+                _ResponseSplit["context"] = g.getSource();
+                break;
+              case "T":
+                _ResponseSplit["timing"] = g.getSource();
+                break;
+              case "M":
+                _ResponseSplit["modifying_factor"] = g.getSource();
+                break;
+              case "A":
+                _ResponseSplit["associated_symptoms"] = g.getSource();
+                break;
+            }
+          })
+          .toArray();
         this.setState({
           openHpiModal: true,
           hims_f_episode_chief_complaint_id:
-            data.hims_f_episode_chief_complaint_id
+            data.hims_f_episode_chief_complaint_id,
+          hims_d_hpi_header_id: data.hims_d_hpi_header_id,
+          HPI_masters: _ResponseSplit,
+          location: [],
+          quality: [],
+          context: [],
+          timing: [],
+          modifying_factor: [],
+          associated_symptoms: []
         });
       }
     });
   }
+
+  addNewLocation(e) {
+    const _elemntType = e.currentTarget.getAttribute("elementtype");
+    const _elemntFetch = e.currentTarget.getAttribute("elementfetch");
+    const _element_description = document.getElementsByName(_elemntFetch)[0]
+      .value;
+    algaehApiCall({
+      uri: "/hpi/addHpiElement",
+      method: "POST",
+      data: {
+        hpi_header_id: this.state.hims_d_hpi_header_id,
+        element_description: _element_description,
+        element_type: _elemntType,
+        patient_id: Window.global.current_patient,
+        episode_id: Window.global.episode_id
+      },
+      onSuccess: response => {
+        if (response.data.success) {
+          swalMessage({
+            title: "'" + _element_description + "', successfully added",
+            type: "success"
+          });
+        }
+      }
+    });
+  }
+
   loadHPIDetails(options) {
     algaehApiCall({
       uri: "/hpi/getHpiElements",
@@ -356,57 +413,6 @@ class ChiefComplaints extends Component {
     return allChiefComp;
   }
 
-  calculateDurationDate(e) {
-    if (parseFloat(e.currentTarget.value) < 0) {
-      swalMessage({
-        title: "Invalid input, Duration cannot be negative.",
-        type: "error"
-      });
-
-      this.setState({
-        duration: 0
-      });
-      return;
-    }
-
-    let intervalRow = Enumerable.from(GlobalVariables.PAIN_DURATION)
-      .where(w => w.value === this.state.interval)
-      .firstOrDefault();
-    let interval =
-      intervalRow === undefined
-        ? "days"
-        : String(intervalRow.name).toLowerCase();
-    let selectedDate = moment().add(
-      -parseFloat(e.currentTarget.value),
-      interval
-    );
-    const ifNointerval = intervalRow === undefined ? { interval: "D" } : {};
-    const name = e.currentTarget.name;
-    const cValue = e.currentTarget.value;
-    this.setState(
-      {
-        onset_date: selectedDate,
-        duration: e.currentTarget.value,
-        ...ifNointerval
-      },
-      () => {
-        this.settingUpdateChiefComplaints({
-          currentTarget: {
-            name: name,
-            value: cValue
-          }
-        });
-        if (ifNointerval.interval !== undefined) {
-          this.settingUpdateChiefComplaints({
-            currentTarget: {
-              name: "interval",
-              value: ifNointerval.interval
-            }
-          });
-        }
-      }
-    );
-  }
   addChiefComplainToPatient(list) {
     debugger;
 
@@ -444,92 +450,6 @@ class ChiefComplaints extends Component {
         }
       }
     });
-    // swalMessage({
-    //   title: "Added chief complaint",
-    //   type: "success"
-    // });
-    // this.setState({
-    //   patientChiefComplains: patChiefComp.sort((a, b) => {
-    //     return a.chief_complaint_id - b.chief_complaint_id;
-    //   }),
-    //   masterChiefComplaints: this.masterChiefComplaintsSortList(patChiefComp)
-    // });
-  }
-
-  settingUpdateChiefComplaints(e) {
-    const name = e.currentTarget.name;
-    const value = e.currentTarget.value;
-    let patientComp = this.state.patientChiefComplains;
-    let newPatientDtl = Enumerable.from(patientComp)
-      .where(
-        w =>
-          w.chief_complaint_id === this.state.hims_f_episode_chief_complaint_id
-      )
-      .firstOrDefault();
-    if (newPatientDtl !== undefined) {
-      let index = patientComp.indexOf(newPatientDtl);
-      patientComp.splice(index, 1);
-      index = index - 1;
-      newPatientDtl[name] = value;
-      newPatientDtl["chronic"] =
-        this.state.chronic === undefined ? "N" : this.state.chronic;
-      newPatientDtl["complaint_inactive"] =
-        this.state.complaint_inactive === undefined
-          ? "N"
-          : this.state.complaint_inactive;
-      newPatientDtl["complaint_inactive_date"] =
-        this.state.complaint_inactive_date === null
-          ? new Date()
-          : this.state.complaint_inactive_date;
-      newPatientDtl["recordState"] = "update";
-      patientComp.splice(index, 0, newPatientDtl);
-      this.setState({
-        patientChiefComplains: patientComp.sort((a, b) => {
-          return a.chief_complaint_id - b.chief_complaint_id;
-        })
-      });
-      swalMessage({ title: "Complaint added successfully", type: "success" });
-    }
-  }
-
-  chronicCheckBoxHandler(e) {
-    const _chronic = e.currentTarget.checked ? "Y" : "N";
-    this.setState(
-      {
-        chronic: _chronic
-      },
-      () => {
-        this.settingUpdateChiefComplaints({
-          currentTarget: {
-            name: "chronic",
-            value: _chronic
-          }
-        });
-      }
-    );
-  }
-  inactiveCheckBoxHandler(e) {
-    const _inactive = e.currentTarget.checked ? "Y" : "N";
-    this.setState(
-      {
-        complaint_inactive_date: new Date(),
-        complaint_inactive: _inactive
-      },
-      () => {
-        this.settingUpdateChiefComplaints({
-          currentTarget: {
-            name: "complaint_inactive_date",
-            value: new Date()
-          }
-        });
-        this.settingUpdateChiefComplaints({
-          currentTarget: {
-            name: "complaint_inactive",
-            value: _inactive
-          }
-        });
-      }
-    );
   }
 
   dateDurationAndInterval(selectedDate) {
@@ -556,7 +476,6 @@ class ChiefComplaints extends Component {
   }
 
   gridLevelUpdate(row, e) {
-    debugger;
     e = e.name === undefined ? e.currentTarget : e;
     row[e.name] = e.value;
     if (e.name === "onset_date") {
@@ -653,6 +572,15 @@ class ChiefComplaints extends Component {
       }
     });
   }
+
+  HPIDropdownHandle(e) {
+    this.setState({
+      [e.name]: Enumerable.from(e.arrayList)
+        .select(s => s.displayValue)
+        .toArray()
+    });
+  }
+
   render() {
     const patChiefComplain =
       this.props.patient_chief_complaints !== undefined
@@ -670,7 +598,7 @@ class ChiefComplaints extends Component {
             patChiefComplain,
             this.props.allchiefcomplaints
           );
-
+    const _HPI = this.state.HPI_masters;
     return (
       <React.Fragment>
         {/* HPI Modal Start */}
@@ -679,7 +607,7 @@ class ChiefComplaints extends Component {
             <div className="popupHeader">
               <div className="row">
                 <div className="col-lg-8">
-                  <h4>Add / Edit History of Patient Illness</h4>
+                  <h4>Add / Edit History of Present Illness</h4>
                 </div>
                 <div className="col-lg-4">
                   <button type="button" className="" onClick={this.handleClose}>
@@ -728,107 +656,161 @@ class ChiefComplaints extends Component {
                         onChange: selectDate => {}
                       }}
                     />
-                    <AlagehFormGroup
-                      div={{ className: "col-lg-6" }}
+                    <AlagehAutoComplete
+                      div={{ className: "col-lg-12" }}
                       label={{
-                        forceLabel: "Location",
-                        isImp: false
+                        forceLabel: "Location"
                       }}
-                      textBox={{
-                        className: "txt-fld",
+                      selector={{
                         name: "location",
-
-                        //value: this.state.pain,
-                        events: {}
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col-lg-6" }}
-                      label={{
-                        forceLabel: "Quality",
-                        isImp: false
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "quality",
-
-                        //value: this.state.pain,
-                        events: {}
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col-lg-6" }}
-                      label={{
-                        forceLabel: "Context",
-                        isImp: false
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "context",
-
-                        //value: this.state.pain,
-                        events: {}
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col-lg-6" }}
-                      label={{
-                        forceLabel: "Timing",
-                        isImp: false
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "timing",
-
-                        //value: this.state.pain,
-                        events: {}
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col-lg-12" }}
-                      label={{
-                        forceLabel: "Modifying Factor",
-                        isImp: false
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "modifying_factor",
-
-                        //value: this.state.pain,
-                        events: {}
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col-lg-12" }}
-                      label={{
-                        forceLabel: "Associated Symptoms",
-                        isImp: false
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "associated_symptoms",
-
-                        //value: this.state.pain,
-                        events: {}
-                      }}
-                    />
-
-                    <AlagehFormGroup
-                      div={{ className: "col-lg-12" }}
-                      label={{
-                        forceLabel: "Remarks",
-                        isImp: false
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "remarks",
-                        others: {
-                          multiline: true,
-                          rows: "4"
+                        className: "select-fld",
+                        value: this.state.location,
+                        multiselect: true,
+                        dataSource: {
+                          textField: "element_description",
+                          valueField: "hims_d_hpi_details_id",
+                          data: _HPI !== undefined ? _HPI.location : []
                         },
-                        //value: this.state.pain,
-                        events: {}
+                        onChange: this.HPIDropdownHandle.bind(this)
                       }}
+                    />
+
+                    <a>
+                      <i
+                        className="fas fa-plus"
+                        elementtype="L"
+                        elementfetch="location"
+                        onClick={this.addNewLocation.bind(this)}
+                      />
+                    </a>
+
+                    <AlagehAutoComplete
+                      div={{ className: "col-lg-12" }}
+                      label={{
+                        forceLabel: "Quality"
+                      }}
+                      selector={{
+                        name: "quality",
+                        className: "select-fld",
+                        value: this.state.quality,
+                        multiselect: true,
+                        dataSource: {
+                          textField: "element_description",
+                          valueField: "hims_d_hpi_details_id",
+                          data: _HPI !== undefined ? _HPI.quality : []
+                        },
+                        onChange: this.HPIDropdownHandle.bind(this)
+                      }}
+                    />
+                    <i
+                      className="fas fa-plus"
+                      elementtype="Q"
+                      elementfetch="quality"
+                      onClick={this.addNewLocation.bind(this)}
+                    />
+
+                    <AlagehAutoComplete
+                      div={{ className: "col-lg-12" }}
+                      label={{
+                        forceLabel: "Context"
+                      }}
+                      selector={{
+                        name: "context",
+                        className: "select-fld",
+                        value: this.state.context,
+                        multiselect: true,
+                        dataSource: {
+                          textField: "element_description",
+                          valueField: "hims_d_hpi_details_id",
+                          data: _HPI !== undefined ? _HPI.context : []
+                        },
+                        onChange: this.HPIDropdownHandle.bind(this)
+                      }}
+                    />
+
+                    <i
+                      className="fas fa-plus"
+                      elementtype="C"
+                      elementfetch="context"
+                      onClick={this.addNewLocation.bind(this)}
+                    />
+
+                    <AlagehAutoComplete
+                      div={{ className: "col-lg-12" }}
+                      label={{
+                        forceLabel: "Timing"
+                      }}
+                      selector={{
+                        name: "timing",
+                        className: "select-fld",
+                        multiselect: true,
+                        value: this.state.timing,
+                        dataSource: {
+                          textField: "element_description",
+                          valueField: "hims_d_hpi_details_id",
+                          data: _HPI !== undefined ? _HPI.timing : []
+                        },
+                        onChange: this.HPIDropdownHandle.bind(this)
+                      }}
+                    />
+
+                    <i
+                      className="fas fa-plus"
+                      elementtype="T"
+                      elementfetch="timing"
+                      onClick={this.addNewLocation.bind(this)}
+                    />
+                    <AlagehAutoComplete
+                      div={{ className: "col-lg-12" }}
+                      label={{
+                        forceLabel: "Modifying Factor"
+                      }}
+                      selector={{
+                        name: "modifying_factor",
+                        className: "select-fld",
+                        multiselect: true,
+                        value: this.state.modifying_factor,
+                        dataSource: {
+                          textField: "element_description",
+                          valueField: "hims_d_hpi_details_id",
+                          data: _HPI !== undefined ? _HPI.modifying_factor : []
+                        },
+                        onChange: this.HPIDropdownHandle.bind(this)
+                      }}
+                    />
+
+                    <i
+                      className="fas fa-plus"
+                      elementtype="M"
+                      elementfetch="modifying_factor"
+                      onClick={this.addNewLocation.bind(this)}
+                    />
+
+                    <AlagehAutoComplete
+                      div={{ className: "col-lg-12" }}
+                      label={{
+                        forceLabel: "Associated Symptoms"
+                      }}
+                      selector={{
+                        name: "associated_symptoms",
+                        className: "select-fld",
+                        value: this.state.associated_symptoms,
+                        multiselect: true,
+                        dataSource: {
+                          textField: "element_description",
+                          valueField: "hims_d_hpi_details_id",
+                          data:
+                            _HPI !== undefined ? _HPI.associated_symptoms : []
+                        },
+                        onChange: this.HPIDropdownHandle.bind(this)
+                      }}
+                    />
+
+                    <i
+                      className="fas fa-plus"
+                      elementtype="A"
+                      elementfetch="associated_symptoms"
+                      onClick={this.addNewLocation.bind(this)}
                     />
                   </div>
                 </div>
