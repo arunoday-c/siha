@@ -4,12 +4,14 @@ import {
   whereCondition,
   deleteRecord,
   releaseDBConnection,
-  jsonArrayToObject
+  jsonArrayToObject,
+  runningNumberGen
 } from "../utils";
-//import moment from "moment";
+import moment from "moment";
 import httpStatus from "../utils/httpStatus";
 import { LINQ } from "node-linq";
 import { debugLog } from "../utils/logging";
+import Promise from "bluebird";
 
 //created by irfan: to getVisitWiseBillDetailS
 let getVisitWiseBillDetailS_BACKUP = (req, res, next) => {
@@ -133,4 +135,154 @@ let getVisitWiseBillDetailS = (req, res, next) => {
   }
 };
 
-module.exports = { getVisitWiseBillDetailS };
+//created by Nowshad: to Insert Invoice Generation
+let addInvoiceGeneration = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    debugLog("inside", "add stock");
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        }
+
+        let requestCounter = 1;
+
+        return new Promise((resolve, reject) => {
+          runningNumberGen({
+            db: connection,
+            counter: requestCounter,
+            module_desc: ["INV_NUM"],
+            onFailure: error => {
+              reject(error);
+            },
+            onSuccess: result => {
+              resolve(result);
+            }
+          });
+        }).then(result => {
+          let documentCode = result[0].completeNumber;
+          debugLog("documentCode:", documentCode);
+          debugLog("input:", input);
+          let today = moment().format("YYYY-MM-DD");
+          debugLog("input:", input);
+          connection.query(
+            "INSERT INTO `hims_f_invoice_header` (invoice_number,invoice_date,patient_id,visit_id,gross_amount,discount_amount,patient_resp,\
+              patient_tax, patient_payable, company_resp, company_tax, company_payable, sec_company_resp, sec_company_tax, sec_company_payable,\
+                created_date,created_by,updated_date,updated_by) \
+            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            [
+              documentCode,
+              new Date(input.invoice_date),
+              input.patient_id,
+              input.visit_id,
+              input.gross_amount,
+              input.discount_amount,
+              input.patient_resp,
+              input.patient_tax,
+              input.patient_payable,
+              input.company_resp,
+              input.company_tax,
+              input.company_payable,
+              input.sec_company_resp,
+              input.sec_company_tax,
+              input.sec_company_payable,
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id
+            ],
+            (error, headerResult) => {
+              debugLog(" Error :", Error);
+              if (error) {
+                connection.rollback(() => {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                });
+              }
+
+              debugLog(" pos header id :", headerResult);
+
+              if (headerResult.insertId != null) {
+                const insurtColumns = [
+                  "bill_header_id",
+                  "bill_detail_id",
+                  "service_id",
+                  "quantity",
+                  "gross_amount",
+                  "discount_amount",
+                  "patient_resp",
+                  "patient_tax",
+                  "patient_payable",
+                  "company_resp",
+                  "company_tax",
+                  "company_payable",
+                  "sec_company_resp",
+                  "sec_company_tax",
+                  "sec_company_payable"
+                ];
+
+                connection.query(
+                  "INSERT INTO hims_f_invoice_details(" +
+                    insurtColumns.join(",") +
+                    ",invoice_header_id) VALUES ?",
+                  [
+                    jsonArrayToObject({
+                      sampleInputObject: insurtColumns,
+                      arrayObj: req.body.Invoice_Detail,
+                      newFieldToInsert: [headerResult.insertId],
+                      req: req
+                    })
+                  ],
+                  (error, detailResult) => {
+                    if (error) {
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      });
+                    }
+
+                    connection.commit(error => {
+                      if (error) {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                      }
+                      releaseDBConnection(db, connection);
+                      req.records = {
+                        invoice_number: documentCode,
+                        hims_f_invoice_header_id: headerResult.insertId
+                      };
+                      next();
+                    });
+                  }
+                );
+              } else {
+                connection.rollback(() => {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                });
+              }
+            }
+          );
+        });
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports = { getVisitWiseBillDetailS, addInvoiceGeneration };

@@ -21,16 +21,14 @@ export default class Attachments extends Component {
   render() {
     return (
       <div>
-      <h6 className="popSubHdg">Attachments Details</h6>
+        <h6 className="popSubHdg">Attachments Details</h6>
 
-               <div className="row">
-<div className="col-lg-12">
+        <div className="row">
+          <div className="col-lg-12">
             <div className="row">
               <div className="col-lg-3">
-              <label>Attach Documents</label>
-                <div
-                  className="ins-attach-area refactor-design algaehUploadFile"
-                >
+                <label>Attach Documents</label>
+                <div className="ins-attach-area refactor-design algaehUploadFile">
                   <Dropzone
                     onDrop={this.onDrop.bind(this)}
                     className="dropzone"
@@ -54,22 +52,19 @@ export default class Attachments extends Component {
                 </div>
               </div>
 
-
               <div className="col-lg-3">
-              <label>Available Insurance</label>
-
+                <label>Available Insurance</label>
 
                 <div className="image-drop-area">
-                  
                   <img
                     src={this.state.frontSide}
                     style={{ width: "100%", height: "101px" }}
                   />
                 </div>
               </div>
-              </div>
-              </div>
-              </div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

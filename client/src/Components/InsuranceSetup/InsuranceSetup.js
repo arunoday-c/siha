@@ -213,7 +213,9 @@ class InsuranceSetup extends Component {
                       displayTemplate: row => {
                         return row.insurance_type === "I"
                           ? "Insurance Company"
-                          : "Inactive";
+                          : row.insurance_type === "T"
+                          ? "TPA"
+                          : "Corporate Client";
                       }
                     },
                     {
