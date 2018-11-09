@@ -438,10 +438,10 @@ class Assessment extends Component {
               ) : this.state.pageDisplay === "RisResults" ? (
                 <RadResults />
               ) : this.state.pageDisplay === "AssesmentsNotes" ? (
-                <div className="row" style={{ paddingBottom: "20px" }}>
+                <div className="row">
                   <div className="container-fluid">
                     <AlagehFormGroup
-                      div={{ className: "col-lg-12" }}
+                      div={{ className: "col-lg-12 form-details" }}
                       label={{
                         forceLabel: "Assesments Notes",
                         isImp: true

@@ -12,7 +12,8 @@ class AutoComplete extends PureComponent {
       disabled: false,
       listState: "d-none",
       arrowIcon: "fa-angle-down",
-      _sortData: []
+      _sortData: [],
+      multiselect: []
     };
     this.handleClickOutside = this.handleClickOutside.bind(this);
   }
@@ -73,36 +74,83 @@ class AutoComplete extends PureComponent {
       ...data
     });
   }
+
+  checkValueExistsInMultiSelect(item) {
+    const _isExists = Enumarable.from(this.state.multiselect)
+      .where(
+        w => w.displayValue === item[this.props.selector.dataSource.valueField]
+      )
+      .firstOrDefault();
+    if (_isExists !== undefined) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   getTextByValue(value, passProps) {
     passProps = passProps || this.props.selector.dataSource.data;
     const _data = passProps === undefined ? [] : passProps;
-    const _dtl = Enumarable.from(_data)
-      .where(
-        w =>
-          String(w[this.props.selector.dataSource.valueField]).trim() ===
-          String(value).trim()
-      )
-      .firstOrDefault();
+    const _enableMultiselect =
+      this.props.selector.multiselect !== undefined
+        ? this.props.selector.multiselect
+        : false;
+    if (!_enableMultiselect) {
+      const _dtl = Enumarable.from(_data)
+        .where(
+          w =>
+            String(w[this.props.selector.dataSource.valueField]).trim() ===
+            String(value).trim()
+        )
+        .firstOrDefault();
 
-    if (_dtl !== undefined) {
-      return _dtl[this.props.selector.dataSource.textField];
+      if (_dtl !== undefined) {
+        return _dtl[this.props.selector.dataSource.textField];
+      } else {
+        return "";
+      }
     } else {
-      return "";
+      let _values = "";
+      const _valSplit = value;
+      for (let i = 0; i < _valSplit.length; i++) {
+        const _dtl = Enumarable.from(_data)
+          .where(
+            w =>
+              String(w[this.props.selector.dataSource.valueField]).trim() ===
+              String(_valSplit[i]).trim()
+          )
+          .firstOrDefault();
+        if (_dtl !== undefined) {
+          _values += String(_dtl[this.props.selector.dataSource.textField]);
+        }
+        if (i !== _valSplit.length - 1) _values += ",";
+      }
+      return _values;
     }
   }
 
   componentDidMount() {
     document.addEventListener("mousedown", this.handleClickOutside, false);
-    //document.addEventListener("mousedown", this.dropDownKeyDown, false);
-    this.setState({
-      displayValue: this.props.selector.value,
-      displayText: this.getTextByValue(this.props.selector.value),
-      _sortData: this.dataSorting("")
-    });
+    const _required =
+      this.props.label !== undefined
+        ? this.props.label.isImp !== undefined
+          ? { required: this.props.label.isImp }
+          : {}
+        : {};
+    if (!_required) {
+      this.setState({
+        displayValue: this.props.selector.value,
+        displayText: this.getTextByValue(this.props.selector.value),
+        _sortData: this.dataSorting("")
+      });
+    } else {
+      this.setState({
+        displayValue: this.props.selector.value
+      });
+    }
   }
   componentWillUnmount() {
     document.removeEventListener("mousedown", this.handleClickOutside, false);
-    //document.removeEventListener("mousedown", this.dropDownKeyDown, false);
   }
   handleClickOutside(event) {
     if (!this.autoComp.contains(event.target)) {
@@ -186,23 +234,66 @@ class AutoComplete extends PureComponent {
   }
 
   onListSelected(item, e) {
+    const _enableMultiselect =
+      this.props.selector.multiselect !== undefined
+        ? this.props.selector.multiselect
+        : false;
+
     const _value = item[this.props.selector.dataSource.valueField];
     const _text = item[this.props.selector.dataSource.textField];
-    this.setState(
-      {
-        listState: "d-none",
-        displayValue: _value,
-        displayText: _text,
-        arrowIcon: "fa-angle-down"
-      },
-      () => {
-        this.props.selector.onChange({
-          selected: item,
-          value: _value,
-          name: this.props.selector.name
+
+    if (!_enableMultiselect) {
+      this.setState(
+        {
+          listState: "d-none",
+          displayValue: _value,
+          displayText: _text,
+          arrowIcon: "fa-angle-down"
+        },
+        () => {
+          this.props.selector.onChange({
+            selected: item,
+            value: _value,
+            name: this.props.selector.name
+          });
+        }
+      );
+    } else {
+      let _multiselect = this.state.multiselect;
+      const row = Enumarable.from(this.state.multiselect)
+        .where(w => w.displayValue === _value)
+        .firstOrDefault();
+      const _index = _multiselect.indexOf(row);
+      if (_index > -1) _multiselect.splice(_index, 1);
+      else {
+        _multiselect.push({
+          displayValue: _value,
+          displayText: _text,
+          selected: item
         });
       }
-    );
+      const _displayText = Enumarable.from(_multiselect)
+        .select(s => s.displayText)
+        .toArray()
+        .join(",");
+      const _displayValue = Enumarable.from(_multiselect)
+        .select(s => s.displayValue)
+        .toArray()
+        .join(",");
+      this.setState(
+        {
+          displayText: _displayText,
+          displayValue: _displayValue,
+          multiselect: _multiselect
+        },
+        () => {
+          this.props.selector.onChange({
+            arrayList: this.state.multiselect,
+            name: this.props.selector.name
+          });
+        }
+      );
+    }
   }
 
   renderAutoComplete = () => {
@@ -212,6 +303,10 @@ class AutoComplete extends PureComponent {
           ? { required: this.props.label.isImp }
           : {}
         : {};
+    const _enableMultiselect =
+      this.props.selector.multiselect !== undefined
+        ? this.props.selector.multiselect
+        : false;
     const isDisable =
       this.props.selector.others !== undefined &&
       this.props.selector.others.disabled !== undefined
@@ -267,13 +362,30 @@ class AutoComplete extends PureComponent {
                     onClick={this.onListSelected.bind(this, item)}
                     key={index}
                   >
-                    <span
-                      value={item[this.props.selector.dataSource.valueField]}
-                    >
-                      {this.props.selector.displayTemplate !== undefined
-                        ? this.renderTemplate.bind(this, item, index)
-                        : item[this.props.selector.dataSource.textField]}
-                    </span>
+                    {!_enableMultiselect ? (
+                      <span
+                        value={item[this.props.selector.dataSource.valueField]}
+                      >
+                        {this.props.selector.displayTemplate !== undefined
+                          ? this.renderTemplate.bind(this, item, index)
+                          : item[this.props.selector.dataSource.textField]}
+                      </span>
+                    ) : (
+                      <span className="customCheckbox">
+                        <label
+                          className="checkbox"
+                          style={{ color: "rgb(33, 37, 41)" }}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={this.checkValueExistsInMultiSelect(item)}
+                          />
+                          <span style={{ fontSize: " 0.8rem" }}>
+                            {item[this.props.selector.dataSource.textField]}
+                          </span>
+                        </label>
+                      </span>
+                    )}
                   </li>
                 ))}
               </ol>
