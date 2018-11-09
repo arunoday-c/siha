@@ -35,9 +35,12 @@ class PatientHistory extends Component {
   render() {
     return (
       <React.Fragment>
-        <div className="col-lg-12">
+        <div
+          className="portlet portlet-bordered box-shadow-normal margin-top-15"
+          style={{ padding: "0 15px" }}
+        >
           <div id="subjectAccordian" className="row">
-            <button className="accordion-btn">Section 1</button>
+            <button className="accordion-btn">Social History</button>
             <div className="panel">
               <AlagehFormGroup
                 div={{ className: "" }}
@@ -51,7 +54,8 @@ class PatientHistory extends Component {
                   value: this.state.social_history,
                   others: {
                     multiline: true,
-                    rows: "6"
+                    rows: "6",
+                    placeholder: "Enter Social History"
                   },
                   events: {
                     onChange: this.textHandle.bind(this)
@@ -60,7 +64,7 @@ class PatientHistory extends Component {
               />
             </div>
 
-            <button className="accordion-btn">Section 2</button>
+            <button className="accordion-btn">Medical History</button>
             <div className="panel">
               <AlagehFormGroup
                 div={{ className: "" }}
@@ -74,7 +78,8 @@ class PatientHistory extends Component {
                   value: this.state.medical_history,
                   others: {
                     multiline: true,
-                    rows: "6"
+                    rows: "6",
+                    placeholder: "Enter Medical History"
                   },
                   events: {
                     onChange: this.textHandle.bind(this)
@@ -83,7 +88,7 @@ class PatientHistory extends Component {
               />
             </div>
 
-            <button className="accordion-btn">Section 3</button>
+            <button className="accordion-btn">Surgical History</button>
             <div className="panel">
               <AlagehFormGroup
                 div={{ className: "" }}
@@ -97,7 +102,8 @@ class PatientHistory extends Component {
                   value: this.state.surgical_history,
                   others: {
                     multiline: true,
-                    rows: "6"
+                    rows: "6",
+                    placeholder: "Enter Surgical History"
                   },
                   events: {
                     onChange: this.textHandle.bind(this)

@@ -16,8 +16,8 @@ class Subjective extends Component {
       <div className="subjective">
         <div className="row margin-top-15">
           <div className="col-lg-8">
-            <ChiefComplaints />
             <Vitals />
+            <ChiefComplaints />
           </div>
 
           <div className="col-lg-4">
