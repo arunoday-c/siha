@@ -11,7 +11,7 @@ import httpStatus from "../utils/httpStatus";
 //import { LINQ } from "node-linq";
 import { debugLog } from "../utils/logging";
 
-//created by irfan: to get
+//created by irfan: to getVisitWiseBillDetailS
 let getVisitWiseBillDetailS = (req, res, next) => {
   try {
     if (req.db == null) {
