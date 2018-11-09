@@ -306,7 +306,10 @@ let addHpiElement = (req, res, next) => {
             });
           }     
 //adding HPI element to [patient]
-if(input.patient_id!=null&&input.patient_id!='null'&&results[0].length>0){
+
+
+if(input.patient_id!=null&&results.insertId!=null){
+
   connection.query(
     "insert into hims_f_episode_hpi(patient_id,episode_id, hpi_header_id, hpi_detail_id,created_date,created_by,updated_date,updated_by) \
     values(?,?,?,?,?,?,?,?)",
@@ -314,7 +317,7 @@ if(input.patient_id!=null&&input.patient_id!='null'&&results[0].length>0){
       input.patient_id,
       input.episode_id,
       input.hpi_header_id,
-      results[0].insertId,
+      results.insertId,
       new Date(),
       input.created_by,
       new Date(),
@@ -342,7 +345,7 @@ if(input.patient_id!=null&&input.patient_id!='null'&&results[0].length>0){
     }
   );
 }else{
-
+  debugFunction("esle");
   connection.commit(error => {
     if (error) {
       connection.rollback(() => {

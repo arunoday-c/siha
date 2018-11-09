@@ -46,6 +46,7 @@ import transferEntry from "../Pharmacy/controller/transferEntry";
 import shiftAndCounter from "../controller/shiftAndCounter";
 import ucaf from "../controller/ucaf";
 import workBenchSetup from "../EHR/controller/workBenchSetup";
+import invoiceGeneration from "../controller/invoiceGeneration";
 
 let router = express();
 
@@ -101,6 +102,7 @@ initializedDb(db => {
   router.use("/shiftAndCounter", shiftAndCounter({ config, db }));
   router.use("/ucaf", ucaf({ config, db }));
   router.use("/workBenchSetup", workBenchSetup({ config, db }));
+  router.use("/invoiceGeneration", invoiceGeneration({ config, db }));
 });
 
 export default router;
