@@ -58,126 +58,117 @@ class PatientDetails extends PureComponent {
         <MyContext.Consumer>
           {context => (
             <div>
+              <h6 className="popSubHdg">Request Details</h6>
 
-<h6 className="popSubHdg">Request Details</h6>
-
-               <div className="row">
-<div className="col-lg-12">
-                    <AlgaehDataGrid
-                      id="pre_approval_services_grd"
-                      columns={[
-                        {
-                          fieldName: "service_code",
-                          label: (
-                            <AlgaehLabel
-                              label={{ fieldName: "service_code" }}
+              <div className="row">
+                <div className="col-lg-12">
+                  <AlgaehDataGrid
+                    id="pre_approval_services_grd"
+                    columns={[
+                      {
+                        fieldName: "service_code",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "service_code" }} />
+                        ),
+                        disabled: true
+                      },
+                      {
+                        fieldName: "insurance_service_name",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "service_name" }} />
+                        ),
+                        disabled: true
+                      },
+                      {
+                        fieldName: "requested_quantity",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "quantity" }} />
+                        ),
+                        disabled: true
+                      },
+                      {
+                        fieldName: "requested_date",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "requesteddt" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {this.changeDateFormat(row.requested_date)}
+                            </span>
+                          );
+                        },
+                        disabled: true
+                      },
+                      {
+                        fieldName: "requested_mode",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "requestedmode" }} />
+                        ),
+                        displayTemplate: row => {
+                          return row.requested_mode === "O"
+                            ? "Online"
+                            : row.requested_mode === "E"
+                            ? "Email"
+                            : row.requested_mode === "T"
+                            ? "Telephone"
+                            : "Fax";
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{}}
+                              selector={{
+                                name: "requested_mode",
+                                className: "select-fld",
+                                value: row.requested_mode,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: GlobalVariables.FORMAT_REQMODE
+                                },
+                                onChange: texthandle.bind(this, this, row)
+                              }}
                             />
-                          ),
-                          disabled: true
-                        },
-                        {
-                          fieldName: "insurance_service_name",
-                          label: (
-                            <AlgaehLabel
-                              label={{ fieldName: "service_name" }}
-                            />
-                          ),
-                          disabled: true
-                        },
-                        {
-                          fieldName: "requested_quantity",
-                          label: (
-                            <AlgaehLabel label={{ fieldName: "quantity" }} />
-                          ),
-                          disabled: true
-                        },
-                        {
-                          fieldName: "requested_date",
-                          label: (
-                            <AlgaehLabel label={{ fieldName: "requesteddt" }} />
-                          ),
-                          displayTemplate: row => {
-                            return (
-                              <span>
-                                {this.changeDateFormat(row.requested_date)}
-                              </span>
-                            );
-                          },
-                          disabled: true
-                        },
-                        {
-                          fieldName: "requested_mode",
-                          label: (
-                            <AlgaehLabel
-                              label={{ fieldName: "requestedmode" }}
-                            />
-                          ),
-                          displayTemplate: row => {
-                            return row.requested_mode === "O"
-                              ? "Online"
-                              : row.requested_mode === "E"
-                                ? "Email"
-                                : row.requested_mode === "T"
-                                  ? "Telephone"
-                                  : "Fax";
-                          },
-                          editorTemplate: row => {
-                            return (
-                              <AlagehAutoComplete
-                                div={{}}
-                                selector={{
-                                  name: "requested_mode",
-                                  className: "select-fld",
-                                  value: row.requested_mode,
-                                  dataSource: {
-                                    textField: "name",
-                                    valueField: "value",
-                                    data: GlobalVariables.FORMAT_REQMODE
-                                  },
-                                  onChange: texthandle.bind(this, this, row)
-                                }}
-                              />
-                            );
-                          }
-                        },
-                        {
-                          fieldName: "refer_no",
-                          label: (
-                            <AlgaehLabel
-                              label={{ fieldName: "refereneceno" }}
-                            />
-                          ),
-                          editorTemplate: row => {
-                            return (
-                              <AlagehFormGroup
-                                div={{}}
-                                textBox={{
-                                  value: row.refer_no,
-                                  className: "txt-fld",
-                                  name: "refer_no",
-                                  events: {
-                                    onChange: texthandle.bind(this, this, row)
-                                  }
-                                }}
-                              />
-                            );
-                          }
+                          );
                         }
-                      ]}
-                      keyId="visit_code"
-                      dataSource={{
-                        data: this.state.services_details
-                      }}
-                      isEditable={true}
-                      paging={{ page: 0, rowsPerPage: 5 }}
-                      events={{
-                        onDelete: deleteServices.bind(this, context),
-                        onEdit: row => {},
-                        onDone: updateServices.bind(this, this, context)
-                      }}
-                    />
-                  </div>
-                  </div>
+                      },
+                      {
+                        fieldName: "refer_no",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "refereneceno" }} />
+                        ),
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{}}
+                              textBox={{
+                                value: row.refer_no,
+                                className: "txt-fld",
+                                name: "refer_no",
+                                events: {
+                                  onChange: texthandle.bind(this, this, row)
+                                }
+                              }}
+                            />
+                          );
+                        }
+                      }
+                    ]}
+                    keyId="visit_code"
+                    dataSource={{
+                      data: this.state.services_details
+                    }}
+                    isEditable={true}
+                    paging={{ page: 0, rowsPerPage: 5 }}
+                    events={{
+                      onDelete: deleteServices.bind(this, context),
+                      onEdit: row => {},
+                      onDone: updateServices.bind(this, this, context)
+                    }}
+                  />
+                </div>
+              </div>
             </div>
           )}
         </MyContext.Consumer>

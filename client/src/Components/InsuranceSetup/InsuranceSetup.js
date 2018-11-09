@@ -130,7 +130,7 @@ class InsuranceSetup extends Component {
         {/* <div className="tab-container toggle-section">
               <ul className="nav">
                 <li className={"nav-item tab-button active"}>
-                  <label class="style_Label ">Insurance Provider List</label>
+                  <label className="style_Label ">Insurance Provider List</label>
                 </li>
               </ul>
             </div> */}
@@ -145,10 +145,10 @@ class InsuranceSetup extends Component {
             <div className="actions">
               <a
                 href="javascript:;"
-                class="btn btn-primary btn-circle active"
+                className="btn btn-primary btn-circle active"
                 onClick={this.ShowModel.bind(this)}
               >
-                <i class="fas fa-plus" />
+                <i className="fas fa-plus" />
               </a>{" "}
               <InsuranceAdd
                 HeaderCaption={
@@ -213,7 +213,9 @@ class InsuranceSetup extends Component {
                       displayTemplate: row => {
                         return row.insurance_type === "I"
                           ? "Insurance Company"
-                          : "Inactive";
+                          : row.insurance_type === "T"
+                          ? "TPA"
+                          : "Corporate Client";
                       }
                     },
                     {

@@ -1,5 +1,4 @@
 import moment from "moment";
-import { getCookie } from "../../../../utils/algaehApiCall.js";
 
 const texthandle = ($this, row, ctrl, e) => {
   e = e || ctrl;
@@ -10,7 +9,8 @@ const texthandle = ($this, row, ctrl, e) => {
   row[name] = value;
 
   if (name === "apprv_status" && value === "AP") {
-    row.approved_amount = row.net_amount;
+    row.approved_amount = row.gross_amt;
+    row.apprv_date = moment(new Date())._d;
   }
   $this.setState({ append: !$this.state.append });
 };
@@ -21,9 +21,11 @@ const datehandle = ($this, row, ctrl, e) => {
 };
 
 const updateServices = ($this, context, row) => {
+  debugger;
   let service_array = [];
-  row.apprv_date = moment(new Date())._d;
- // row.updated_by = getCookie("UserID");
+
+  row.update();
+  // row.updated_by = getCookie("UserID");
 
   service_array.push(row);
   if (context != null) {
@@ -32,7 +34,7 @@ const updateServices = ($this, context, row) => {
     });
   }
 };
-const deleteServices = $this => {
+const deleteServices = ($this, context, row) => {
   debugger;
 };
 

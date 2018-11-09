@@ -81,6 +81,10 @@ let updatePreApproval = (req, res, next) => {
       let qry = "";
 
       for (let i = 0; i < req.body.length; i++) {
+        let _appDate =
+          inputParam[i].apprv_date != null
+            ? "'" + inputParam[i].apprv_date + "'"
+            : null;
         qry +=
           " UPDATE `hims_f_service_approval` SET service_id='" +
           inputParam[i].service_id +
@@ -128,9 +132,9 @@ let updatePreApproval = (req, res, next) => {
           '" +
           inputParam[i].apprv_remarks +
           "',apprv_date=\
-          '" +
-          inputParam[i].apprv_date +
-          "',rejected_reason=\
+           " +
+          _appDate +
+          ",rejected_reason=\
           '" +
           inputParam[i].rejected_reason +
           "',apprv_status=\
@@ -145,6 +149,7 @@ let updatePreApproval = (req, res, next) => {
           "';";
       }
 
+      debugLog("qry: ", qry);
       connection.query(qry, (error, result) => {
         releaseDBConnection(db, connection);
         if (error) {
@@ -415,7 +420,9 @@ let selectOrderServices = (req, res, next) => {
 let getOrderServices = (req, res, next) => {
   let selectWhere = {
     visit_id: "ALL",
-    insurance_yesno: "ALL"
+    insurance_yesno: "ALL",
+    service_type_id: "ALL",
+    services_id: "ALL"
   };
 
   try {

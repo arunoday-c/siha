@@ -316,7 +316,7 @@ class Vitals extends Component {
           </div>
         </Modal>
 
-        <div className="portlet portlet-bordered box-shadow-normal margin-top-15 margin-bottom-15">
+        <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
           <div className="portlet-title">
             <div className="caption">
               <h3 className="caption-subject">Vitals</h3>
@@ -632,7 +632,7 @@ class Vitals extends Component {
                   className="btn btn-primary"
                   style={{ marginleft: 10 }}
                 >
-                  Add new Vitals
+                  Save Vitals
                 </button>
                 <button
                   onClick={this.resetVitals.bind(this)}
