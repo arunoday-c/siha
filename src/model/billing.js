@@ -2482,8 +2482,137 @@ let getBillDetails = (req, res, next) => {
     next(e);
   }
 };
+
 //Created by noor for synchronus
 let newReceiptData = (req, res, next) => {
+  try {
+    debugFunction("newReceiptFUnc");
+
+    let db = req.options == null ? req.db : req.options.db;
+
+    let inputParam = extend(
+      {
+        hims_f_receipt_header_id: null,
+        receipt_number: null,
+        receipt_date: null,
+        billing_header_id: null,
+        total_amount: null,
+        created_by: req.userIdentity.algaeh_d_app_user_id,
+        updated_by: req.userIdentity.algaeh_d_app_user_id,
+        counter_id: null,
+        shift_id: null
+      },
+      req.body
+    );
+
+    if (
+      inputParam.receiptdetails == null ||
+      inputParam.receiptdetails.length == 0
+    ) {
+      const genErr = httpStatus.generateError(
+        httpStatus.badRequest,
+        "Please select atleast one payment mode."
+      );
+      if (req.options == null) {
+        next(genErr);
+      } else {
+        req.options.onFailure(genErr);
+      }
+    }
+    inputParam.receipt_number = req.body.receipt_number;
+    db.query(
+      "INSERT INTO hims_f_receipt_header (receipt_number, receipt_date, billing_header_id, total_amount,\
+       created_by, created_date, updated_by, updated_date,  counter_id, shift_id) VALUES (?,?,?\
+    ,?,?,?,?,?,?,?)",
+      [
+        inputParam.receipt_number,
+        new Date(),
+        inputParam.billing_header_id,
+        inputParam.total_amount,
+        inputParam.created_by,
+        new Date(),
+        inputParam.updated_by,
+        new Date(),
+        inputParam.counter_id,
+        inputParam.shift_id
+      ],
+      (error, headerRcptResult) => {
+        if (error) {
+          if (req.options == null) {
+            db.rollback(() => {
+              releaseDBConnection(req.db, db);
+              next(error);
+            });
+          } else {
+            req.options.onSuccess(headerRcptResult);
+          }
+        }
+
+        if (
+          headerRcptResult.insertId != null &&
+          headerRcptResult.insertId != ""
+        ) {
+          //let detailsInsert = [];
+
+          // bulkInputArrayObject(inputParam.receiptdetails, detailsInsert, {
+          //   hims_f_receipt_header_id: headerRcptResult.insertId
+          // });
+          const receptSample = [
+            "card_check_number",
+            "expiry_date",
+            "pay_type",
+            "amount",
+            "created_by",
+            "updated_by",
+            "card_type"
+          ];
+          //   debugLog("Detail Body: ", detailsInsert);
+
+          db.query(
+            "INSERT  INTO hims_f_receipt_details ( " +
+              receptSample.join(",") +
+              ",hims_f_receipt_header_id) VALUES ? ",
+            [
+              jsonArrayToObject({
+                sampleInputObject: receptSample,
+                arrayObj: inputParam.receiptdetails,
+                req: req,
+                newFieldToInsert: [headerRcptResult.insertId]
+              })
+            ],
+            (error, RcptDetailsRecords) => {
+              if (error) {
+                if (req.options == null) {
+                  db.rollback(() => {
+                    releaseDBConnection(req.db, db);
+                    next(error);
+                  });
+                } else {
+                  req.options.onFailure(error);
+                }
+              }
+              debugLog("Final", req.options);
+              if (req.options == null) {
+                req.records = headerRcptResult;
+              } else {
+                req.options.onSuccess(headerRcptResult);
+                debugLog("Final", headerRcptResult);
+              }
+            }
+          );
+        }
+      }
+    );
+  } catch (e) {
+    next(e);
+  }
+};
+//End synchronus
+
+//-------------------------------------
+
+//Created by noor for synchronus
+let newReceiptDataBAcup = (req, res, next) => {
   try {
     debugFunction("newReceiptFUnc");
 
@@ -2608,7 +2737,79 @@ let newReceiptData = (req, res, next) => {
     next(e);
   }
 };
-//End synchronus
+
+//created by irfan: to hims_f_cash_handover_header
+let addCashHandover = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT INTO `hims_f_cash_handover_header` ( shift_id, daily_handover_date,\
+           created_date, created_by, updated_date, updated_by)\
+          VALUE(?,?,?,?,?,?)",
+        [
+          input.shift_id,
+          input.daily_handover_date,
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
+        ],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+
+          if (result.insertId != null) {
+            connection.query(
+              "INSERT INTO `hims_f_cash_handover_detail` ( cash_handover_header_id, casher_id, shift_status,\
+                 open_date,  expected_cash, expected_card,  expected_cheque, remarks,\
+                  no_of_cheques,created_date, created_by, updated_date, updated_by)\
+                VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              [
+                result.insertId,
+                input.created_by,
+                input.shift_status,
+                input.open_date,
+                input.expected_cash,
+                input.expected_card,
+                input.expected_cheque,
+                input.remarks,
+                input.no_of_cheques,
+                new Date(),
+                input.created_by,
+                new Date(),
+                input.updated_by
+              ],
+              (error, detailResult) => {
+                if (error) {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                }
+
+                req.records = detailResult;
+                next();
+              }
+            );
+          }
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addBill,
   addBillData,
@@ -2619,5 +2820,6 @@ module.exports = {
   addEpisodeEncounter,
   getBillDetailsFunctionality,
   addEpisodeEncounterData,
-  newReceiptData
+  newReceiptData,
+  addCashHandover
 };
