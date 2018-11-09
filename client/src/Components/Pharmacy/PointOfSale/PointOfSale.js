@@ -30,7 +30,6 @@ import GlobalVariables from "../../../utils/GlobalVariables.json";
 import PosListItems from "./PosListItems/PosListItems";
 import MyContext from "../../../utils/MyContext";
 import POSIOputs from "../../../Models/POS";
-
 import Options from "../../../Options.json";
 import Enumerable from "linq";
 

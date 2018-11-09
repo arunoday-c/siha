@@ -15,6 +15,8 @@ let addItemMaster = (req, res, next) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
+    debugLog("Body: ", req.body);
+
     let input = extend({}, req.body);
 
     db.getConnection((error, connection) => {

@@ -32,12 +32,16 @@ import {
   updateLocationPermission
 } from "../model/pharmacy";
 
+// import { addServices } from "../../model/serviceTypes/addServices";
+
+import { addServices } from "../../model/serviceTypes";
 export default ({ config, db }) => {
   let api = Router();
 
   // created by irfan :to add Item Master
   api.post(
     "/addItemMaster",
+    addServices,
     addItemMaster,
     (req, res, next) => {
       let result = req.records;

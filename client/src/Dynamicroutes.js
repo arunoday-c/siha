@@ -57,7 +57,7 @@ import Reports from "./Components/Reports/Reports";
 import WorkListGeneration from "./Components/InsuranceClaims/WorkListGeneration/WorkListGeneration";
 import RCMDesktop from "./Components/InsuranceClaims/RCMDesktop/RCMDesktop";
 import StaffCashCollection from "./Components/StaffCashCollection/StaffCashCollection";
-
+import InvoiceGeneration from "./Components/InsuranceClaims/InvoiceGeneration/InvoiceGeneration";
 // function height() {
 //   let height =
 //     window.innerHeight * (window.innerHeight / document.body.offsetHeight);
@@ -121,7 +121,8 @@ const componts = (selectedLang, breadStyle) => {
     ReportsList: <Reports SelectLanguage={selectedLang} />,
     WorkListGeneration: <WorkListGeneration SelectLanguage={selectedLang} />,
     RCMDesktop: <RCMDesktop SelectLanguage={selectedLang} />,
-    StaffCashCollection: <StaffCashCollection SelectLanguage={selectedLang} />
+    StaffCashCollection: <StaffCashCollection SelectLanguage={selectedLang} />,
+    InvoiceGeneration: <InvoiceGeneration SelectLanguage={selectedLang} />
   };
 };
 
