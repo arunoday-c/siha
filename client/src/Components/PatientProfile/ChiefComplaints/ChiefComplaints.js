@@ -310,12 +310,32 @@ class ChiefComplaints extends Component {
     });
   }
   openHPIAddModal(data, e) {
-    this.setState({
-      openHpiModal: true,
-      hims_f_episode_chief_complaint_id: data.hims_f_episode_chief_complaint_id
+    this.loadHPIDetails({
+      inputParamter: {
+        hpi_header_id: data.hims_f_episode_chief_complaint_id
+      },
+      onSuccess: response => {
+        debugger;
+        this.setState({
+          openHpiModal: true,
+          hims_f_episode_chief_complaint_id:
+            data.hims_f_episode_chief_complaint_id
+        });
+      }
     });
   }
-
+  loadHPIDetails(options) {
+    algaehApiCall({
+      uri: "/hpi/getHpiElements",
+      method: "GET",
+      data: options.inputParamter,
+      onSuccess: response => {
+        if (response.data.success) {
+          options.onSuccess(response);
+        }
+      }
+    });
+  }
   masterChiefComplaintsSortList(patChiefComplain, allmastercomplaints) {
     allmastercomplaints = allmastercomplaints || null;
 
@@ -659,9 +679,7 @@ class ChiefComplaints extends Component {
             <div className="popupHeader">
               <div className="row">
                 <div className="col-lg-8">
-                  <h4>
-                    <h4>Add / Edit History of Patient Illness</h4>
-                  </h4>
+                  <h4>Add / Edit History of Patient Illness</h4>
                 </div>
                 <div className="col-lg-4">
                   <button type="button" className="" onClick={this.handleClose}>
@@ -678,7 +696,7 @@ class ChiefComplaints extends Component {
                     <AlagehAutoComplete
                       div={{ className: "col-lg-12" }}
                       label={{
-                        forceLabel: "Add Chief Complaint"
+                        forceLabel: "Chief Complaint"
                       }}
                       selector={{
                         name: "hims_f_episode_chief_complaint_id",

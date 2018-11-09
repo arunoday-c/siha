@@ -6,7 +6,7 @@ export default [
     submenu: [
       {
         subitem: "Appointment Availability Report",
-        reportParamerts: () => <Appointment />
+        reportParamerts: () => <Appointment ui="avilsbility" />
       },
       { subitem: "Appointment Details Patient Wise" },
       { subitem: "Appointment List" },

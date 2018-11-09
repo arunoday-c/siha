@@ -211,6 +211,20 @@ class DataGrid extends PureComponent {
     }
   };
   toggleRowSave = index => {
+   
+    const existsing = JSON.parse(sessionStorage.getItem(this.props.id))[
+      "collection"
+    ];
+    const row = this.state.data[index];
+    if (JSON.stringify(existsing[index]) === JSON.stringify(row)) {
+      this.setState({
+        editableRows: {
+          ...this.state.editableRows,
+          [index]: !this.state.editableRows[index]
+        }
+      });
+      return;
+    }
     let isError = false;
     if (this.props.datavalidate !== undefined) {
       AlgaehValidation({
@@ -232,7 +246,6 @@ class DataGrid extends PureComponent {
             }
           },
           () => {
-            const row = this.state.data[index];
             this.props.events.onDone(row);
           }
         );
@@ -338,14 +351,14 @@ class DataGrid extends PureComponent {
           this.props.actions === undefined
             ? true
             : this.props.actions.allowEdit !== undefined
-            ? this.props.actions.allowEdit
-            : true;
+              ? this.props.actions.allowEdit
+              : true;
         const _allowDeleteButton =
           this.props.actions === undefined
             ? true
             : this.props.actions.allowDelete !== undefined
-            ? this.props.actions.allowDelete
-            : true;
+              ? this.props.actions.allowDelete
+              : true;
         if (
           this.props.isEditable !== undefined &&
           this.props.isEditable === true
@@ -481,14 +494,14 @@ class DataGrid extends PureComponent {
           props.actions === undefined
             ? true
             : props.actions.allowEdit !== undefined
-            ? props.actions.allowEdit
-            : true;
+              ? props.actions.allowEdit
+              : true;
         const _allowDeleteButton =
           props.actions === undefined
             ? true
             : props.actions.allowDelete !== undefined
-            ? props.actions.allowDelete
-            : true;
+              ? props.actions.allowDelete
+              : true;
         if (props.isEditable !== undefined && props.isEditable === true) {
           if (_allowEditButton || _allowDeleteButton) {
             _columns.splice(0, 0, {

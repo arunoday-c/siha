@@ -137,24 +137,29 @@ class PatientProfile extends Component {
           </div>
           <div className="patientName">
             <h6>
-              {this.props.patient_profile !== undefined
+              {this.props.patient_profile !== undefined &&
+              this.props.patient_profile.length > 0
                 ? this.props.patient_profile[0].full_name
                 : ""}
             </h6>
             <p>
-              {this.props.patient_profile !== undefined
+              {this.props.patient_profile !== undefined &&
+              this.props.patient_profile.length > 0
                 ? this.props.patient_profile[0].gender
                 : ""}
               ,{" "}
-              {this.props.patient_profile !== undefined
+              {this.props.patient_profile !== undefined &&
+              this.props.patient_profile.length > 0
                 ? this.props.patient_profile[0].age_in_years
                 : 0}
               Y{" "}
-              {this.props.patient_profile !== undefined
+              {this.props.patient_profile !== undefined &&
+              this.props.patient_profile.length > 0
                 ? this.props.patient_profile[0].age_in_months
                 : 0}
               M{" "}
-              {this.props.patient_profile !== undefined
+              {this.props.patient_profile !== undefined &&
+              this.props.patient_profile.length > 0
                 ? this.props.patient_profile[0].age_in_days
                 : 0}
               D
@@ -165,7 +170,8 @@ class PatientProfile extends Component {
               DOB:
               <b>
                 {moment(
-                  this.props.patient_profile !== undefined
+                  this.props.patient_profile !== undefined &&
+                  this.props.patient_profile.length > 0
                     ? this.props.patient_profile[0].date_of_birth
                     : ""
                 ).format("DD-MM-YYYY")}
@@ -174,7 +180,8 @@ class PatientProfile extends Component {
             <span>
               Mobile:{" "}
               <b>
-                {this.props.patient_profile !== undefined
+                {this.props.patient_profile !== undefined &&
+                this.props.patient_profile.length > 0
                   ? this.props.patient_profile[0].contact_number
                   : ""}
               </b>
@@ -182,7 +189,8 @@ class PatientProfile extends Component {
             <span>
               Nationality:{" "}
               <b>
-                {this.props.patient_profile !== undefined
+                {this.props.patient_profile !== undefined &&
+                this.props.patient_profile.length > 0
                   ? this.props.patient_profile[0].nationality
                   : ""}
               </b>
@@ -192,7 +200,8 @@ class PatientProfile extends Component {
             <span>
               MRN:{" "}
               <b>
-                {this.props.patient_profile !== undefined
+                {this.props.patient_profile !== undefined &&
+                this.props.patient_profile.length > 0
                   ? this.props.patient_profile[0].patient_code
                   : ""}
               </b>
@@ -201,7 +210,8 @@ class PatientProfile extends Component {
               Encounter:{" "}
               <b>
                 {moment(
-                  this.props.patient_profile !== undefined
+                  this.props.patient_profile !== undefined &&
+                  this.props.patient_profile.length > 0
                     ? this.props.patient_profile[0].Encounter_Date
                     : ""
                 ).format("DD-MM-YYYY HH:MM:SS A")}
@@ -210,7 +220,8 @@ class PatientProfile extends Component {
             <span>
               Payment:{" "}
               <b>
-                {this.props.patient_profile !== undefined
+                {this.props.patient_profile !== undefined &&
+                this.props.patient_profile.length > 0
                   ? this.props.patient_profile[0].payment_type === "I"
                     ? "Insurance"
                     : "Self"
