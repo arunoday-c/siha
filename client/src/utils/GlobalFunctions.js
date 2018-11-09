@@ -1,5 +1,6 @@
 import extend from "extend";
 import { swalMessage, algaehApiCall, getCookie } from "../utils/algaehApiCall";
+
 export function successfulMessage(options) {
   options.icon = options.icon || "error";
 

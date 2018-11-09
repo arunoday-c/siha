@@ -4,7 +4,6 @@ import extend from "extend";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-
 import PatientDetails from "./PatientDisDetails/PatientDetails.js";
 import DisplayVisitDetails from "./VisitDetails/DisplayVisitDetails.js";
 import OPBillingDetails from "./OPBilling/OPBillingDetails";
@@ -55,7 +54,17 @@ class PatientDisplayDetails extends Component {
     this.setState({ ...this.state, ...IOputs });
   }
 
+  //Created by Adnan
+  checkShiftAvailabliity() {
+    //if shift is available assign shift.
+    //if shift is not available create shift.
+  }
+  //Created by Adnan
+
   componentDidMount() {
+    //Created by Adnan
+    this.checkShiftAvailabliity();
+    // Created by Adnan
     let prevLang = getCookie("Language");
     this.setState({
       selectedLang: prevLang

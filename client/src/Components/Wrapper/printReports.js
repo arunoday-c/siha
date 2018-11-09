@@ -52,11 +52,12 @@ export function accessReport(options) {
         }
 
         let canvasList = _html.querySelectorAll("[data-list]");
-
+        debugger;
         for (let l = 0; l < canvasList.length; l++) {
           let listCanvas = canvasList[l];
           let dataList = [];
           eval("dataList=options.data." + listCanvas.getAttribute("data-list"));
+          if (!Array.isArray(dataList)) dataList = [];
           let templateId = listCanvas.getAttribute("list-template");
           let _templateParent = _html.getElementById(templateId);
           const script_temp = _templateParent.cloneNode(true);
@@ -68,10 +69,24 @@ export function accessReport(options) {
               parentTemp.cloneNode(true);
               let Tempchildrens = parentTemp.children;
               if (Tempchildrens !== undefined && Tempchildrens.length > 0) {
+                debugger;
                 for (let ic = 0; ic < Tempchildrens.length; ic++) {
                   let innerTemp = Tempchildrens[ic];
                   let parName = innerTemp.getAttribute("data-list-parameter");
-                  innerTemp.innerHTML = row[parName];
+
+                  if (parName !== null && parName !== undefined) {
+                    innerTemp.innerHTML = row[parName];
+                  } else {
+                    let _innerChilds = innerTemp.children;
+                    for (let _c = 0; _c < _innerChilds.length; _c++) {
+                      let _dtl = _innerChilds[_c].getAttribute(
+                        "data-list-parameter"
+                      );
+                      debugger;
+                      if (_dtl !== null && _dtl !== undefined)
+                        _innerChilds[_c].innerHTML = row[c];
+                    }
+                  }
                 }
               } else {
                 let paramName = parentTemp.getAttribute("data-list-parameter");

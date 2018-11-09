@@ -1,4 +1,6 @@
 import Enumerable from "linq";
+import { displayFileFromServer } from "../../utils/GlobalFunctions";
+
 const getPatientProfile = $this => {
   $this.props.getPatientProfile({
     uri: "/doctorsWorkBench/getPatientProfile",
@@ -11,6 +13,18 @@ const getPatientProfile = $this => {
     redux: {
       type: "PATIENT_PROFILE",
       mappingName: "patient_profile"
+    },
+    afterSuccess: data => {
+      displayFileFromServer({
+        uri: "/masters/getFile",
+        fileType: data[0].patient_code,
+        destinationName: data[0].patient_code,
+        fileName: data[0].patient_code,
+        resize: { width: 100, height: 100 },
+        onFileSuccess: data => {
+          $this.setState({ patImg: data });
+        }
+      });
     }
   });
 };
@@ -53,12 +67,12 @@ const getPatientAllergies = ($this, noFunctionCall) => {
                 k === "F"
                   ? "Food"
                   : k === "A"
-                    ? "Airborne"
-                    : k === "AI"
-                      ? "Animal  &  Insect"
-                      : k === "C"
-                        ? "Chemical & Others"
-                        : "",
+                  ? "Airborne"
+                  : k === "AI"
+                  ? "Animal  &  Insect"
+                  : k === "C"
+                  ? "Chemical & Others"
+                  : "",
               allergyList: g.getSource()
             };
           })

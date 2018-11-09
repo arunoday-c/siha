@@ -1,2 +1,4 @@
-.staffCashCollection #staffCashCollectionGrid_Cntr .ReactTable {
-  max-height: 20vh !important; }
+.staffCashCollection #staffCashCollectionGrid_Cntr {
+  width: 98vw !important; }
+  .staffCashCollection #staffCashCollectionGrid_Cntr .ReactTable {
+    max-height: 30vh !important; }

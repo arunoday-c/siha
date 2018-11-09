@@ -15,6 +15,60 @@ import {
 import { AlgaehActions } from "../../actions/algaehActions";
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb";
 
+let records = [
+  {
+    employee_name: "Zareena",
+    shift_type: "Night",
+    counter: "Counter 1",
+    expected_cash: 5000,
+    actual_cash: 5000,
+    cash_difference: 0,
+    cash_status: "Closed",
+    expected_credit: 5000,
+    actual_credit: 5000,
+    credit_difference: 0,
+    credit_status: "Closed",
+    expected_cheque: 5000,
+    actual_cheque: 5000,
+    cheque_difference: 0,
+    cheque_status: "Closed"
+  },
+  {
+    employee_name: "Khaleel",
+    shift_type: "Night",
+    counter: "Counter 1",
+    expected_cash: 5000,
+    actual_cash: 5000,
+    cash_difference: 0,
+    cash_status: "Closed",
+    expected_credit: 5000,
+    actual_credit: 5000,
+    credit_difference: 0,
+    credit_status: "Closed",
+    expected_cheque: 5000,
+    actual_cheque: 5000,
+    cheque_difference: 0,
+    cheque_status: "Closed"
+  },
+  {
+    employee_name: "Shakeel",
+    shift_type: "Night",
+    counter: "Counter 1",
+    expected_cash: 5000,
+    actual_cash: 5000,
+    cash_difference: 0,
+    cash_status: "Closed",
+    expected_credit: 5000,
+    actual_credit: 5000,
+    credit_difference: 0,
+    credit_status: "Closed",
+    expected_cheque: 5000,
+    actual_cheque: 5000,
+    cheque_difference: 0,
+    cheque_status: "Closed"
+  }
+];
+
 class InvestigationSetup extends Component {
   constructor(props) {
     super(props);
@@ -31,6 +85,7 @@ class InvestigationSetup extends Component {
   getShifts() {
     algaehApiCall({
       uri: "/shiftAndCounter/getShiftMaster",
+      data: { shift_status: "A" },
       cancelRequestId: "getShiftMaster",
       method: "GET",
       onSuccess: response => {
@@ -144,7 +199,7 @@ class InvestigationSetup extends Component {
                   id="staffCashCollection_grid"
                   columns={[
                     {
-                      fieldName: "Employee Name",
+                      fieldName: "employee_name",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Employee Name" }} />
                       ),
@@ -154,7 +209,7 @@ class InvestigationSetup extends Component {
                       }
                     },
                     {
-                      fieldName: "Shift Type",
+                      fieldName: "shift_type",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Shift Type" }} />
                       ),
@@ -164,7 +219,7 @@ class InvestigationSetup extends Component {
                       }
                     },
                     {
-                      fieldName: "Counter",
+                      fieldName: "counter",
                       label: <AlgaehLabel label={{ forceLabel: "Counter" }} />,
                       others: {
                         resizable: false,
@@ -192,7 +247,7 @@ class InvestigationSetup extends Component {
                       }
                     },
                     {
-                      fieldName: "difference_cash",
+                      fieldName: "cash_difference",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Cash Diffrence" }} />
                       ),
@@ -230,7 +285,7 @@ class InvestigationSetup extends Component {
                       }
                     },
                     {
-                      fieldName: "difference_credit",
+                      fieldName: "credit_difference",
                       label: (
                         <AlgaehLabel
                           label={{ forceLabel: "Credit Diffrence" }}
@@ -269,7 +324,7 @@ class InvestigationSetup extends Component {
                       }
                     },
                     {
-                      fieldName: "difference_cheque",
+                      fieldName: "cheque_difference",
                       label: (
                         <AlgaehLabel
                           label={{ forceLabel: "Cheque Diffrence" }}
@@ -292,8 +347,9 @@ class InvestigationSetup extends Component {
                     }
                   ]}
                   keyId="hims_f_cash_handover_detail_id"
-                  dataSource={{}}
-                  // isEditable={true}
+                  dataSource={{
+                    data: records
+                  }}
                   filter={true}
                   paging={{ page: 0, rowsPerPage: 10 }}
                 />
@@ -484,13 +540,7 @@ class InvestigationSetup extends Component {
                       className="btn btn-primary"
                       style={{ marginLeft: 10, float: "right" }}
                     >
-                      Authorize Cash Collection
-                    </button>
-                    <button
-                      className="btn btn-default"
-                      style={{ float: "right" }}
-                    >
-                      Close Shift
+                      Authorize
                     </button>
                   </div>
                 </div>

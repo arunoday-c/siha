@@ -502,6 +502,20 @@ class Appointment extends Component {
   }
 
   texthandle(e) {
+    if (e.target.name === "age") {
+      var age_value = e.target.value;
+      var current_date = new Date();
+      var birth_date = new Date(
+        current_date.getFullYear() - age_value,
+        current_date.getMonth(),
+        current_date.getDate() + 1
+      );
+      this.setState({
+        [e.target.name]: e.target.value,
+        date_of_birth: birth_date
+      });
+    }
+
     this.setState({ [e.target.name]: e.target.value });
   }
 
@@ -639,74 +653,93 @@ class Appointment extends Component {
       querySelector: "data-validate='editApptDiv'",
       alertTypeIcon: "warning",
       onSuccess: () => {
-        let edit_details = {
-          hims_f_patient_appointment_id: this.state.edit_appointment_id,
-          record_status: "A",
-          appointment_status_id: this.state.edit_appointment_status_id,
-          patient_id: this.state.edit_patient_id,
-          provider_id: this.state.edit_provider_id,
-          sub_department_id: this.state.edit_sub_dep_id,
-          appointment_date: this.state.edit_appointment_date,
-          appointment_from_time: this.state.edit_from_time,
-          appointment_to_time: this.state.edit_to_time,
-          patient_name: this.state.edit_patient_name,
-          arabic_name: this.state.edit_arabic_name,
-          date_of_birth: this.state.edit_date_of_birth,
-          age: this.state.edit_age,
-          contact_number: this.state.edit_contact_number,
-          email: this.state.edit_email,
-          send_to_provider: null,
-          gender: this.state.edit_gender,
-          confirmed: "N",
-          confirmed_by: null,
-          comfirmed_date: null,
-          cancelled: "N",
-          cancelled_by: null,
-          cancelled_date: null,
-          cancel_reason: null,
-          appointment_remarks: this.state.edit_appointment_remarks,
-          is_stand_by: this.state.edit_is_stand_by,
-          number_of_slot: this.state.edit_no_of_slots
-        };
+        swal({
+          title: "Are you Sure you want to Update Appointment?",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Yes!",
+          confirmButtonColor: "#44b8bd",
+          cancelButtonColor: "#d33",
+          cancelButtonText: "No"
+        }).then(willUpdate => {
+          if (willUpdate.value) {
+            let edit_details = {
+              hims_f_patient_appointment_id: this.state.edit_appointment_id,
+              record_status: "A",
+              appointment_status_id: this.state.edit_appointment_status_id,
+              patient_id: this.state.edit_patient_id,
+              provider_id: this.state.edit_provider_id,
+              sub_department_id: this.state.edit_sub_dep_id,
+              appointment_date: this.state.edit_appointment_date,
+              appointment_from_time: this.state.edit_from_time,
+              appointment_to_time: this.state.edit_to_time,
+              patient_name: this.state.edit_patient_name,
+              arabic_name: this.state.edit_arabic_name,
+              date_of_birth: this.state.edit_date_of_birth,
+              age: this.state.edit_age,
+              contact_number: this.state.edit_contact_number,
+              email: this.state.edit_email,
+              send_to_provider: null,
+              gender: this.state.edit_gender,
+              confirmed: "N",
+              confirmed_by: null,
+              comfirmed_date: null,
+              cancelled: "N",
+              cancelled_by: null,
+              cancelled_date: null,
+              cancel_reason: null,
+              appointment_remarks: this.state.edit_appointment_remarks,
+              is_stand_by: this.state.edit_is_stand_by,
+              number_of_slot: this.state.edit_no_of_slots
+            };
 
-        algaehApiCall({
-          uri: "/appointment/updatePatientAppointment",
-          method: "PUT",
-          data: edit_details,
-          onSuccess: response => {
-            if (response.data.success) {
-              if (edit_details.appointment_status_id === this.state.checkInId) {
-                setGlobal({
-                  "FD-STD": "RegistrationPatient",
-                  "appt-pat-code": this.state.patient_code,
-                  "appt-provider-id": this.state.edit_provider_id,
-                  "appt-dept-id": this.state.edit_sub_dep_id,
-                  "appt-pat-name": this.state.edit_patient_name,
-                  "appt-pat-arabic-name": this.state.edit_arabic_name,
-                  "appt-pat-dob": this.state.edit_date_of_birth,
-                  "appt-pat-age": this.state.edit_age,
-                  "appt-pat-gender": this.state.edit_gender,
-                  "appt-pat-ph-no": this.state.edit_contact_number,
-                  "appt-pat-email": this.state.edit_email,
-                  "appt-department-id": this.state.department_id,
-                  "appt-id": this.state.edit_appointment_id
-                });
+            algaehApiCall({
+              uri: "/appointment/updatePatientAppointment",
+              method: "PUT",
+              data: edit_details,
+              onSuccess: response => {
+                if (response.data.success) {
+                  if (
+                    edit_details.appointment_status_id === this.state.checkInId
+                  ) {
+                    setGlobal({
+                      "FD-STD": "RegistrationPatient",
+                      "appt-pat-code": this.state.patient_code,
+                      "appt-provider-id": this.state.edit_provider_id,
+                      "appt-dept-id": this.state.edit_sub_dep_id,
+                      "appt-pat-name": this.state.edit_patient_name,
+                      "appt-pat-arabic-name": this.state.edit_arabic_name,
+                      "appt-pat-dob": this.state.edit_date_of_birth,
+                      "appt-pat-age": this.state.edit_age,
+                      "appt-pat-gender": this.state.edit_gender,
+                      "appt-pat-ph-no": this.state.edit_contact_number,
+                      "appt-pat-email": this.state.edit_email,
+                      "appt-department-id": this.state.department_id,
+                      "appt-id": this.state.edit_appointment_id
+                    });
 
-                document.getElementById("fd-router").click();
-              } else {
-                this.clearSaveState();
+                    document.getElementById("fd-router").click();
+                  } else {
+                    this.clearSaveState();
+                    swalMessage({
+                      title: "Appointment Updated Successfully",
+                      type: "success"
+                    });
+                    this.setState({ openPatEdit: false });
+                    this.getAppointmentSchedule();
+                  }
+                }
+              },
+              onFailure: error => {
                 swalMessage({
-                  title: "Appointment Updated Successfully",
-                  type: "success"
+                  title: error.message,
+                  type: "error"
                 });
-                this.setState({ openPatEdit: false });
-                this.getAppointmentSchedule();
               }
-            }
-          },
-          onFailure: error => {
+            });
+          } else {
             swalMessage({
-              title: error.message,
+              title: "Not cancelled",
               type: "error"
             });
           }
@@ -769,10 +802,20 @@ class Appointment extends Component {
     }
   }
 
-  allowDrop(ev) {
-    debugger;
-    ev.preventDefault();
-    ev.currentTarget.children[1];
+  // allowDrop(ev) {
+  //   ev.preventDefault();
+
+  //   ev.currentTarget.classList.contains("highlight-Drop")
+  //     ? ev.currentTarget.classList.remove("highlight-Drop")
+  //     : ev.currentTarget.classList.add("highlight-Drop");
+  // }
+
+  enterDrag(ev) {
+    ev.currentTarget.classList.add("highlight-Drop");
+  }
+
+  leaveDrag(ev) {
+    ev.currentTarget.classList.remove("highlight-Drop");
   }
 
   drag(ev) {
@@ -1109,7 +1152,9 @@ class Appointment extends Component {
           className="tg-baqh" //highlight-Drop
           {...colspan}
           onDrop={this.drop.bind(this)}
-          onDragOver={this.allowDrop.bind(this)}
+          //onDragOver={this.allowDrop.bind(this)}
+          onDragEnter={this.enterDrag.bind(this)}
+          onDragLeave={this.leaveDrag.bind(this)}
         >
           {data.mark_as_break === false ? (
             <span className="dynSlot">{data.time}</span>
@@ -1323,7 +1368,10 @@ class Appointment extends Component {
                             }}
                             textBox={{
                               className: "txt-fld",
-                              name: "edit_appt_date"
+                              name: "edit_appt_date",
+                              others: {
+                                disabled: true
+                              }
                             }}
                             events={{
                               onChange: selectedDate => {
@@ -1375,6 +1423,10 @@ class Appointment extends Component {
                                 valueField: "value",
                                 data: GlobalVariables.NO_OF_SLOTS
                               },
+
+                              others: {
+                                disabled: true
+                              },
                               onChange: this.dropDownHandle.bind(this)
                             }}
                           />
@@ -1395,6 +1447,9 @@ class Appointment extends Component {
                               value: this.state.edit_patient_name,
                               events: {
                                 onChange: this.texthandle.bind(this)
+                              },
+                              others: {
+                                disabled: true
                               }
                             }}
                           />
@@ -1412,6 +1467,9 @@ class Appointment extends Component {
                               value: this.state.edit_arabic_name,
                               events: {
                                 onChange: this.texthandle.bind(this)
+                              },
+                              others: {
+                                disabled: true
                               }
                             }}
                           />
@@ -1428,7 +1486,10 @@ class Appointment extends Component {
                             }}
                             textBox={{
                               className: "txt-fld",
-                              name: "edit_date_of_birth"
+                              name: "edit_date_of_birth",
+                              others: {
+                                disabled: true
+                              }
                             }}
                             events={{
                               onChange: selectedDate => {
@@ -1460,7 +1521,8 @@ class Appointment extends Component {
                               className: "txt-fld",
                               name: "edit_age",
                               others: {
-                                type: "number"
+                                type: "number",
+                                disabled: true
                               },
                               value: this.state.edit_age,
                               events: {
@@ -1486,7 +1548,10 @@ class Appointment extends Component {
                                 valueField: "value",
                                 data: GlobalVariables.FORMAT_GENDER
                               },
-                              onChange: this.dropDownHandle.bind(this)
+                              onChange: this.dropDownHandle.bind(this),
+                              others: {
+                                disabled: true
+                              }
                             }}
                           />
                         </div>
@@ -1509,6 +1574,9 @@ class Appointment extends Component {
                               value: this.state.edit_contact_number,
                               events: {
                                 onChange: this.texthandle.bind(this)
+                              },
+                              others: {
+                                disabled: true
                               }
                             }}
                           />
@@ -1527,6 +1595,9 @@ class Appointment extends Component {
                               value: this.state.edit_email,
                               events: {
                                 onChange: this.texthandle.bind(this)
+                              },
+                              others: {
+                                disabled: true
                               }
                             }}
                           />
@@ -1545,6 +1616,9 @@ class Appointment extends Component {
                               value: this.state.edit_appointment_remarks,
                               events: {
                                 onChange: this.texthandle.bind(this)
+                              },
+                              others: {
+                                disabled: true
                               }
                             }}
                           />
@@ -1884,7 +1958,12 @@ class Appointment extends Component {
                       onChange={this.monthChangeHandler.bind(this)}
                       value={moment(this.state.selectedHDate).format("YYYY-MM")}
                     />
-                    <button className="btn btn-default btn-sm  todayBtn">
+                    <button
+                      onClick={() => {
+                        //Implement Today Functionality here
+                      }}
+                      className="btn btn-default btn-sm  todayBtn"
+                    >
                       Today
                     </button>
                   </div>
