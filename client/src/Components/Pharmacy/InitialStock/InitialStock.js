@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import IconButton from "@material-ui/core/IconButton";
+
 import AppBar from "@material-ui/core/AppBar";
 import Options from "../../../Options.json";
 import {

@@ -94,6 +94,7 @@ class AddReciptForm extends Component {
                         name="Pay by Cash"
                         checked={this.state.Cashchecked}
                         onChange={checkcashhandaler.bind(this, this, context)}
+                        disabled={true}
                       />
 
                       <span style={{ fontSize: "0.8rem" }}>Pay by Cash</span>
@@ -116,7 +117,7 @@ class AddReciptForm extends Component {
                         onChange: cashtexthandle.bind(this, this, context)
                       },
                       others: {
-                        disabled: !this.state.Cashchecked,
+                        disabled: true,
                         placeholder: "0.00"
                       }
                     }}
@@ -242,7 +243,7 @@ class AddReciptForm extends Component {
                       },
                       others: {
                         "data-receipt": "true",
-                        disabled: !this.state.Checkchecked,
+                        disabled: true,
                         placeholder: "0.00"
                       }
                     }}

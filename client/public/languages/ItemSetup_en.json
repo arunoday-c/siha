@@ -9,6 +9,7 @@
   "action": "Action",
 
   "group_id": "Group",
+  "item_code": "Item Code",
   "item_uom_id": "Material Requisition UOM",
   "purchase_uom_id": "Purchase UOM",
   "sales_uom_id": "Sales UOM",
@@ -22,6 +23,11 @@
   "active": "Active",
   "inactive": "Inactive",
   "service_id": "Services",
+
+  "price": "Price of Sales UOM",
+  "cpt_code": "CPT Code",
+  "vat_applicable": "Vat Applicable",
+  "vat_percent": "Vat Percent",
 
   "btnSave": "Save",
   "btnUpdate": "Update"

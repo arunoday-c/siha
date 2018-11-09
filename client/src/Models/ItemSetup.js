@@ -23,7 +23,13 @@ export default {
       updateUomMapResult: [],
       insertItemUomMap: [],
       service_id: null,
-      required_batchno_expiry: "N"
+      required_batchno_expiry: "N",
+      item_code: null,
+      cpt_code: null,
+      cpt_code_data: null,
+      vat_percent: 0,
+      Applicable: false,
+      standard_fee: 0
     };
     return output;
   }

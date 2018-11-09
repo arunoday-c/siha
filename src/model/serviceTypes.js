@@ -1,7 +1,7 @@
 import httpStatus from "../utils/httpStatus";
 import { whereCondition, releaseDBConnection, selectStatement } from "../utils";
 import extend from "extend";
-// import { logger, debugLog, debugFunction } from "../utils/logging";
+import { logger, debugLog, debugFunction } from "../utils/logging";
 // import { validate } from "node-model-validation";
 let inputServiceType = {
   hims_d_service_type_id: null,
@@ -41,7 +41,8 @@ let getServiceType = (req, res, next) => {
       connection.query(
         "SELECT `hims_d_service_type_id`, `service_type_code`, `service_type`, `service_type_desc` \
           ,`arabic_service_type` FROM `hims_d_service_type` WHERE `record_status`='A' AND " +
-          where.condition+" order by hims_d_service_type_id desc",
+          where.condition +
+          " order by hims_d_service_type_id desc",
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -116,7 +117,7 @@ let addServices = (req, res, next) => {
     service_name: null,
     hospital_id: null,
     service_type_id: null,
-
+    sub_department_id: null,
     standard_fee: null,
     discount: 0,
     vat_applicable: null,
@@ -139,16 +140,17 @@ let addServices = (req, res, next) => {
     }
     let inputParam = extend(Services, req.body);
     connection.query(
-      "INSERT INTO `hims_d_services` (`service_code`, `cpt_code`,`service_name`, `hospital_id`,`service_type_id` \
-      ,`standard_fee`, `discount`, `vat_applicable`, `vat_percent`, `effective_start_date`\
+      "INSERT INTO `hims_d_services` (`service_code`, `cpt_code`,`service_name`, `hospital_id`,`service_type_id`, \
+      `sub_department_id`,`standard_fee`, `discount`, `vat_applicable`, `vat_percent`, `effective_start_date`\
       , `created_by` ,`created_date`,`service_status`) \
-   VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+   VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
         inputParam.service_code,
         inputParam.cpt_code,
         inputParam.service_name,
         inputParam.hospital_id,
         inputParam.service_type_id,
+        inputParam.sub_department_id,
         inputParam.standard_fee,
         inputParam.discount,
         inputParam.vat_applicable,
@@ -164,6 +166,8 @@ let addServices = (req, res, next) => {
         if (error) {
           next(error);
         }
+        debugLog("result: ", result);
+        req.body.service_id = result.insertId;
         req.records = result;
         next();
       }
@@ -179,7 +183,7 @@ let updateServices = (req, res, next) => {
     service_name: null,
     hospital_id: null,
     service_type_id: null,
-
+    sub_department_id: null,
     standard_fee: null,
     discount: 0,
     vat_applicable: null,
@@ -203,8 +207,8 @@ let updateServices = (req, res, next) => {
     let inputParam = extend(Services, req.body);
     connection.query(
       "UPDATE `hims_d_services` \
-     SET `service_code`=?,  `cpt_code`=?,`service_name`=?, `hospital_id`=?,  `service_type_id`=?,`standard_fee`=?, \
-     `discount`=?,  `vat_applicable`=?,`vat_percent`=?, `updated_by`=?, `updated_date`=?,\
+     SET `service_code`=?,  `cpt_code`=?,`service_name`=?, `hospital_id`=?,  `service_type_id`=?,`sub_department_id` = ?, \
+     `standard_fee`=?, `discount`=?,  `vat_applicable`=?,`vat_percent`=?, `updated_by`=?, `updated_date`=?,\
      `service_status`=? , `record_status`=?\
      WHERE `hims_d_services_id`=?",
       [
@@ -213,6 +217,7 @@ let updateServices = (req, res, next) => {
         inputParam.service_name,
         inputParam.hospital_id,
         inputParam.service_type_id,
+        inputParam.sub_department_id,
         inputParam.standard_fee,
 
         inputParam.discount,
@@ -230,6 +235,7 @@ let updateServices = (req, res, next) => {
         if (error) {
           next(error);
         }
+
         req.records = result;
         next();
       }

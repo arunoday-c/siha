@@ -1,6 +1,9 @@
+import AlgaehSearch from "../../../Wrapper/globalSearch";
+import spotlightSearch from "../../../../Search/spotlightSearch.json";
 //let texthandlerInterval = null;
 
 const texthandle = ($this, context, ctrl, e) => {
+  debugger;
   e = e || ctrl;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -54,4 +57,61 @@ const BatchExpRequired = ($this, e) => {
   });
 };
 
-export { texthandle, radioChange, BatchExpRequired };
+const CptCodesSearch = ($this, context) => {
+  AlgaehSearch({
+    searchGrid: {
+      columns: spotlightSearch.Services.CptCodes
+    },
+    searchName: "CptCodes",
+    uri: "/gloabelSearch/get",
+    onContainsChange: (text, serchBy, callBack) => {
+      callBack(text);
+    },
+    onRowSelect: row => {
+      $this.setState({
+        cpt_code: row.hims_d_cpt_code_id,
+        cpt_code_data: row.cpt_code
+      });
+      if (context !== undefined) {
+        context.updateState({
+          cpt_code: row.hims_d_cpt_code_id,
+          cpt_code_data: row.cpt_code
+        });
+      }
+    }
+  });
+};
+
+const VatAppilicable = ($this, context, e) => {
+  let Applicable = false;
+  let Value = "N";
+
+  if ($this.state.Applicable === true) {
+    Applicable = false;
+    Value = "N";
+  } else if ($this.state.Applicable === false) {
+    Applicable = true;
+    Value = "Y";
+  }
+  $this.setState({
+    [e.target.name]: Value,
+    Applicable: Applicable,
+    vat_percent: 0
+  });
+
+  if (context !== undefined) {
+    context.updateState({
+      [e.target.name]: Value,
+      Applicable: Applicable,
+      vat_percent: 0
+    });
+  }
+};
+
+export {
+  texthandle,
+  radioChange,
+  BatchExpRequired,
+  CptCodesSearch,
+  VatAppilicable
+};

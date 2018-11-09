@@ -11,7 +11,13 @@ import {
   AlgaehLabel
 } from "../../../Wrapper/algaehWrapper";
 import MyContext from "../../../../utils/MyContext.js";
-import { texthandle, radioChange, BatchExpRequired } from "./ItemDetailsEvents";
+import {
+  texthandle,
+  radioChange,
+  BatchExpRequired,
+  CptCodesSearch,
+  VatAppilicable
+} from "./ItemDetailsEvents";
 
 class ItemDetails extends Component {
   constructor(props) {
@@ -19,6 +25,14 @@ class ItemDetails extends Component {
     this.state = {
       batchexpreq: false
     };
+    this.props.getServices({
+      uri: "/serviceType/getService",
+      method: "GET",
+      redux: {
+        type: "SERVICES_GET_DATA",
+        mappingName: "itemservices"
+      }
+    });
   }
 
   componentWillMount() {
@@ -45,6 +59,22 @@ class ItemDetails extends Component {
               >
                 <div className="row card-deck panel-layout">
                   {/* Patient code */}
+
+                  <AlagehFormGroup
+                    div={{ className: "col-lg-3" }}
+                    label={{
+                      fieldName: "item_code",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "item_code",
+                      value: this.state.item_code,
+                      events: {
+                        onChange: texthandle.bind(this, this, context)
+                      }
+                    }}
+                  />
 
                   <AlagehFormGroup
                     div={{ className: "col-lg-3" }}
@@ -97,6 +127,10 @@ class ItemDetails extends Component {
                       onChange: texthandle.bind(this, this, context)
                     }}
                   />
+                </div>
+
+                <div className="row card-deck panel-layout">
+                  {/* Patient code */}
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
                     label={{
@@ -115,10 +149,6 @@ class ItemDetails extends Component {
                       onChange: texthandle.bind(this, this, context)
                     }}
                   />
-                </div>
-
-                <div className="row card-deck panel-layout">
-                  {/* Patient code */}
 
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
@@ -177,8 +207,11 @@ class ItemDetails extends Component {
                       onChange: texthandle.bind(this, this, context)
                     }}
                   />
+                </div>
+
+                <div className="row card-deck panel-layout">
                   <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col" }}
                     label={{
                       fieldName: "item_uom_id"
                     }}
@@ -194,8 +227,7 @@ class ItemDetails extends Component {
                       onChange: texthandle.bind(this, this, context)
                     }}
                   />
-                </div>
-                <div className="row card-deck panel-layout">
+
                   <AlagehAutoComplete
                     div={{ className: "col" }}
                     label={{
@@ -253,7 +285,7 @@ class ItemDetails extends Component {
                   />
 
                   <div
-                    className="customCheckbox col-3"
+                    className="customCheckbox col"
                     style={{ border: "none", marginTop: "28px" }}
                   >
                     <label className="checkbox" style={{ color: "#212529" }}>
@@ -268,7 +300,7 @@ class ItemDetails extends Component {
                       </span>
                     </label>
                   </div>
-                  <div className="col-3" style={{ marginTop: "23px" }}>
+                  <div className="col" style={{ marginTop: "23px" }}>
                     <div className="customRadio">
                       <label className="radio inline">
                         <input
@@ -303,6 +335,98 @@ class ItemDetails extends Component {
                     </div>
                   </div>
                 </div>
+
+                {this.state.hims_d_item_master_id === null ? (
+                  <div className="row card-deck panel-layout">
+                    <AlagehFormGroup
+                      div={{ className: "col" }}
+                      label={{
+                        fieldName: "price"
+                      }}
+                      textBox={{
+                        decimal: { allowNegative: false },
+                        className: "txt-fld",
+                        name: "standard_fee",
+                        value: this.state.standard_fee,
+                        events: {
+                          onChange: texthandle.bind(this, this, context)
+                        }
+                      }}
+                    />
+
+                    <div className="col">
+                      <div className="row">
+                        <div
+                          className="col-lg-5 customCheckbox"
+                          style={{ paddingTop: "10px" }}
+                        >
+                          <label className="checkbox inline">
+                            <input
+                              type="checkbox"
+                              name="vat_applicable"
+                              value="Y"
+                              checked={this.state.Applicable}
+                              onChange={VatAppilicable.bind(
+                                this,
+                                this,
+                                context
+                              )}
+                            />
+                            <span>
+                              <AlgaehLabel
+                                label={{ fieldName: "vat_applicable" }}
+                              />
+                            </span>
+                          </label>
+                        </div>
+                        <AlagehFormGroup
+                          div={{ className: "col-lg-7" }}
+                          label={{
+                            fieldName: "vat_percent"
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "vat_percent",
+                            value: this.state.vat_percent,
+                            events: {
+                              onChange: texthandle.bind(this, this, context)
+                            },
+                            others: {
+                              disabled:
+                                this.state.Applicable === true ? false : true
+                            }
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <AlagehFormGroup
+                      div={{ className: "col" }}
+                      label={{
+                        fieldName: "cpt_code"
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "cpt_code",
+                        value: this.state.cpt_code_data,
+                        events: {
+                          onChange: null
+                        },
+                        others: {
+                          disabled: true
+                        }
+                      }}
+                    />
+
+                    <div className="col">
+                      <i
+                        className="fas fa-search"
+                        onClick={CptCodesSearch.bind(this, this, context)}
+                        style={{ marginTop: 25, fontSize: "1.4rem" }}
+                      />
+                    </div>
+                  </div>
+                ) : null}
               </div>
             </div>
           )}

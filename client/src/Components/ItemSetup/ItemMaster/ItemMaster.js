@@ -4,7 +4,7 @@ import UOMAdditionalInfo from "./UOMAdditionalInfo/UOMAdditionalInfo";
 
 import "./../../../styles/site.css";
 import "./ItemMaster.css";
-import AHSnackbar from "../../common/Inputs/AHSnackbar";
+
 import { AlgaehLabel, Modal } from "../../Wrapper/algaehWrapper";
 import MyContext from "../../../utils/MyContext.js";
 import ItemSetup from "../../../Models/ItemSetup";
@@ -103,11 +103,6 @@ export default class PatientDetails extends Component {
                     >
                       Cancel
                     </button>
-                    <AHSnackbar
-                      open={this.state.open}
-                      handleClose={this.handleClose}
-                      MandatoryMsg={this.state.MandatoryMsg}
-                    />
                   </div>
                 </div>
               </div>

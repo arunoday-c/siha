@@ -239,7 +239,12 @@
         "arlabel": "قبل الموافقة",
         "path": "/PreApproval"
       },
-
+      {
+        "name": "InvoiceGeneration",
+        "label": "Invoice Generation",
+        "arlabel": "انشاء الفاتورة",
+        "path": "/InvoiceGeneration"
+      },
       {
         "name": "WorkListGeneration",
         "label": "Work List Generation",
