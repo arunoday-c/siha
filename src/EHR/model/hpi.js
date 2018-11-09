@@ -277,6 +277,14 @@ let addHpiElement = (req, res, next) => {
         next(error);
       }
 
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        }
+
       connection.query(
         "insert into hims_d_hpi_details(hpi_header_id,element_description,element_type,created_date,created_by,updated_date,updated_by) \
         values(?,?,?,?,?,?,?)",
@@ -290,17 +298,73 @@ let addHpiElement = (req, res, next) => {
           input.updated_by
         ],
         (error, results) => {
-          releaseDBConnection(db, connection);
+         
           if (error) {
-            next(error);
-          }
-          debugLog("Results are recorded...");
-          req.records = results;
-          next();
-        }
-      );
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(error);
+            });
+          }     
+//adding HPI element to [patient]
+if(input.patient_id!=null&&input.patient_id!='null'&&results[0].length>0){
+  connection.query(
+    "insert into hims_f_episode_hpi(patient_id,episode_id, hpi_header_id, hpi_detail_id,created_date,created_by,updated_date,updated_by) \
+    values(?,?,?,?,?,?,?,?)",
+    [
+      input.patient_id,
+      input.episode_id,
+      input.hpi_header_id,
+      results[0].insertId,
+      new Date(),
+      input.created_by,
+      new Date(),
+      input.updated_by
+    ],
+    (error, resultPatientEP) => {
+      if (error) {
+        connection.rollback(() => {
+          releaseDBConnection(db, connection);
+          next(error);
+        });
+      }
+    
+    connection.commit(error => {
+    if (error) {
+      connection.rollback(() => {
+        releaseDBConnection(db, connection);
+        next(error);
+      });
+    }
+   releaseDBConnection(db, connection);
+    req.records = resultPatientEP;
+    next();
+  });
+    }
+  );
+}else{
+
+  connection.commit(error => {
+    if (error) {
+      connection.rollback(() => {
+        releaseDBConnection(db, connection);
+        next(error);
+      });
+    }
+    releaseDBConnection(db, connection);
+    req.records = results;
+    next();
+  });
+}
+  
+
+
+
+
+
+        }   );
     });
-  } catch (e) {
+  });
+ } catch (e) {
     next(e);
   }
 };
@@ -322,9 +386,10 @@ let addPatientHpi = (req, res, next) => {
       }
 
       connection.query(
-        "insert into hims_f_episode_hpi(episode_id, hpi_header_id, hpi_detail_id,created_date,created_by,updated_date,updated_by) \
-        values(?,?,?,?,?,?,?)",
+        "insert into hims_f_episode_hpi(patient_id,episode_id, hpi_header_id, hpi_detail_id,created_date,created_by,updated_date,updated_by) \
+        values(?,?,?,?,?,?,?,?)",
         [
+          input.patient_id,
           input.episode_id,
           input.hpi_header_id,
           input.hpi_detail_id,
@@ -350,7 +415,6 @@ let addPatientHpi = (req, res, next) => {
   }
 };
 
-
 // created by : irfan to getPatientHpi hpi elements
 let getPatientHpi = (req, res, next) => {
   try {
@@ -362,7 +426,7 @@ let getPatientHpi = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        " select EH.hpi_header_id,hpi_description as chief_complaint, hpi_detail_id, HD.element_description, episode_id\
+        " select EH.patient_id, EH.hpi_header_id,hpi_description as chief_complaint, hpi_detail_id, HD.element_description, episode_id\
         from hims_f_episode_hpi EH,hims_d_hpi_details HD,hims_d_hpi_header HH\
         where EH.record_status='A' and   HH.record_status='A'  and  HD.record_status='A'  and\
         EH.hpi_detail_id=HD.hims_d_hpi_details_id and \
@@ -384,8 +448,10 @@ let getPatientHpi = (req, res, next) => {
 };
 
 
-module.exports = { addIcd,
+module.exports = { 
+  addIcd,
    getHpiElements,
   addHpiElement,
   addPatientHpi,
-  getPatientHpi };
+  getPatientHpi 
+};

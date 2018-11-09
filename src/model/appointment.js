@@ -25,7 +25,8 @@ let addAppointmentStatus = (req, res, next) => {
     db.getConnection((error, connection) => {
       if (error) {
         next(error);
-      }     connection.beginTransaction(error => {
+      }    
+       connection.beginTransaction(error => {
         if (error) {
           connection.rollback(() => {
             releaseDBConnection(db, connection);
@@ -76,7 +77,7 @@ let addAppointmentStatus = (req, res, next) => {
                       next(error);
                     });
                   }
-
+                  releaseDBConnection(db, connection);
                   req.records = result;
                   next();
                 });
@@ -103,7 +104,7 @@ let addAppointmentStatus = (req, res, next) => {
                       next(error);
                     });
                   }
-
+                  releaseDBConnection(db, connection);
                   req.records = crtRsult;
                   next();
                 });
@@ -1361,12 +1362,8 @@ let getDoctorScheduleDateWise = (req, res, next) => {
             try{
 
               for(let j = 0; j < result.length; j++){
-                 if(result[j]["modified"]=="M") {      
-                   
+                 if(result[j]["modified"]=="M") {                       
                   
-
-      
-
               connection.query(
                 "select hims_d_appointment_schedule_modify_id, appointment_schedule_detail_id, ASM.to_date as schedule_date, ASM.slot, ASM.from_work_hr,\
                 ASM.to_work_hr, ASM.work_break1, ASM.from_break_hr1,ASM.to_break_hr1, ASM.work_break2, ASM.from_break_hr2, ASM.to_break_hr2  \
