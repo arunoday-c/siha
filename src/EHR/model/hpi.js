@@ -363,7 +363,7 @@ let addHpiElement = (req, res, next) => {
 };
 
 // created by : irfan to addPatientHpi
-let addPatientHpiACKUP = (req, res, next) => {
+let addPatientHpiBACKUP = (req, res, next) => {
   debugFunction("addPatientHpi");
   try {
     if (req.db == null) {
@@ -470,7 +470,7 @@ let getPatientHpi = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        " select EH.patient_id, EH.hpi_header_id,hpi_description as chief_complaint, hpi_detail_id, HD.element_description, episode_id\
+        "select EH.patient_id, EH.hpi_header_id,hpi_description as chief_complaint, hpi_detail_id, HD.element_description,HD.element_type, episode_id\
         from hims_f_episode_hpi EH,hims_d_hpi_details HD,hims_d_hpi_header HH\
         where EH.record_status='A' and   HH.record_status='A'  and  HD.record_status='A'  and\
         EH.hpi_detail_id=HD.hims_d_hpi_details_id and \

@@ -2615,21 +2615,10 @@ let newReceiptData = (req, res, next) => {
 let newReceiptDataBAcup = (req, res, next) => {
   try {
     debugFunction("newReceiptFUnc");
-
     let db = req.options == null ? req.db : req.options.db;
 
     let inputParam = extend(
       {
-        hims_f_receipt_header_id: null,
-        receipt_number: null,
-        receipt_date: null,
-        billing_header_id: null,
-        total_amount: null,
-        created_by: req.userIdentity.algaeh_d_app_user_id,
-
-        updated_by: req.userIdentity.algaeh_d_app_user_id,
-
-        counter_id: null,
         shift_id: null
       },
       req.body
@@ -2649,24 +2638,12 @@ let newReceiptDataBAcup = (req, res, next) => {
         req.options.onFailure(genErr);
       }
     }
-    inputParam.receipt_number = req.body.receipt_number;
+
     db.query(
-      "INSERT INTO hims_f_receipt_header (receipt_number, receipt_date, billing_header_id, total_amount,\
-       created_by, created_date, updated_by, updated_date,  counter_id, shift_id) VALUES (?,?,?\
-    ,?,?,?,?,?,?,?)",
-      [
-        inputParam.receipt_number,
-        new Date(),
-        inputParam.billing_header_id,
-        inputParam.total_amount,
-        inputParam.created_by,
-        new Date(),
-        inputParam.updated_by,
-        new Date(),
-        inputParam.counter_id,
-        inputParam.shift_id
-      ],
-      (error, headerRcptResult) => {
+      "select hims_f_cash_handover_detail_id, cash_handover_header_id, casher_id, shift_status,open_date\
+      from  hims_f_cash_handover_detail where record_status='A' and casher_id=? and shift_status='O'",
+      [input.created_by],
+      (error, checkShiftStatus) => {
         if (error) {
           if (req.options == null) {
             db.rollback(() => {
@@ -2674,63 +2651,93 @@ let newReceiptDataBAcup = (req, res, next) => {
               next(error);
             });
           } else {
-            req.options.onSuccess(headerRcptResult);
+            req.options.onSuccess(checkShiftStatus);
           }
         }
 
-        if (
-          headerRcptResult.insertId != null &&
-          headerRcptResult.insertId != ""
-        ) {
-          //let detailsInsert = [];
+        let userShiftStatus = new LINQ(checkShiftStatus)
+          .where(w => w.shift_status == "O")
+          .Select(s => {
+            return { shift_status };
+          });
+        debugLog("userShiftStatus", userShiftStatus);
 
-          // bulkInputArrayObject(inputParam.receiptdetails, detailsInsert, {
-          //   hims_f_receipt_header_id: headerRcptResult.insertId
-          // });
-          const receptSample = [
-            "card_check_number",
-            "expiry_date",
-            "pay_type",
-            "amount",
-            "created_by",
-            "updated_by",
-            "card_type"
-          ];
-          //   debugLog("Detail Body: ", detailsInsert);
+        new Promise((resolve, reject) => {
+          try {
+            if (userShiftStatus == "A" || userShiftStatus == "C") {
+              db.query(
+                "INSERT INTO `hims_f_cash_handover_header` ( shift_id, daily_handover_date,\
+               created_date, created_by, updated_date, updated_by)\
+              VALUE(?,?,?,?,?,?)",
+                [
+                  inputParam.shift_id,
+                  new Date(),
+                  new Date(),
+                  inputParam.created_by,
+                  new Date(),
+                  inputParam.updated_by
+                ],
+                (error, headerCashHandover) => {
+                  if (error) {
+                    if (req.options == null) {
+                      db.rollback(() => {
+                        releaseDBConnection(req.db, db);
+                        next(error);
+                      });
+                    } else {
+                      req.options.onSuccess(headerCashHandover);
+                    }
+                  }
 
-          db.query(
-            "INSERT  INTO hims_f_receipt_details ( " +
-              receptSample.join(",") +
-              ",hims_f_receipt_header_id) VALUES ? ",
-            [
-              jsonArrayToObject({
-                sampleInputObject: receptSample,
-                arrayObj: inputParam.receiptdetails,
-                req: req,
-                newFieldToInsert: [headerRcptResult.insertId]
-              })
-            ],
-            (error, RcptDetailsRecords) => {
-              if (error) {
-                if (req.options == null) {
-                  db.rollback(() => {
-                    releaseDBConnection(req.db, db);
-                    next(error);
-                  });
-                } else {
-                  req.options.onFailure(error);
+                  if (
+                    headerCashHandover.insertId != null &&
+                    headerCashHandover.insertId != ""
+                  ) {
+                    connection.query(
+                      "INSERT INTO `hims_f_cash_handover_detail` ( cash_handover_header_id, casher_id,\
+                     open_date=CURDATE(),  expected_cash=0, expected_card=0,  expected_cheque=0, \
+                      no_of_cheques=0,created_date, created_by, updated_date, updated_by)\
+                    VALUE(?,?,?,?,?,?)",
+                      [
+                        headerCashHandover.insertId,
+                        inputParam.created_by,
+                        new Date(),
+                        inputParam.created_by,
+                        new Date(),
+                        inputParam.updated_by
+                      ],
+                      (error, CashHandoverDetails) => {
+                        if (error) {
+                          if (req.options == null) {
+                            db.rollback(() => {
+                              releaseDBConnection(req.db, db);
+                              next(error);
+                            });
+                          } else {
+                            req.options.onFailure(error);
+                          }
+                        }
+                        debugLog("Final", req.options);
+                        if (req.options == null) {
+                          req.records = headerCashHandover;
+                        } else {
+                          req.options.onSuccess(headerCashHandover);
+                          debugLog("Final", headerCashHandover);
+                        }
+                      }
+                    );
+                  }
                 }
-              }
-              debugLog("Final", req.options);
-              if (req.options == null) {
-                req.records = headerRcptResult;
-              } else {
-                req.options.onSuccess(headerRcptResult);
-                debugLog("Final", headerRcptResult);
-              }
+              );
+            } else if (userShiftStatus == "O") {
+              resolve({});
             }
-          );
-        }
+          } catch (e) {
+            reject(e);
+          }
+        }).then(result => {
+          //hjjh
+        });
       }
     );
   } catch (e) {
