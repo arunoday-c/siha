@@ -339,6 +339,7 @@ class ChiefComplaints extends Component {
             }
           })
           .toArray();
+        debugger;
         this.setState({
           openHpiModal: true,
           hims_f_episode_chief_complaint_id:

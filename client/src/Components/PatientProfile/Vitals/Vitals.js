@@ -178,74 +178,32 @@ class Vitals extends Component {
         type: "warning"
       });
     } else {
-      let position = {};
-      switch (this.state.bp_position) {
-        case "sit":
-          position = {
-            systolic: this.state.systolic,
-            diastolic: this.state.diastolic,
-            systolic_stand: null,
-            diastolic_stand: null,
-            systolic_supine: null,
-            diastolic_supine: null
-          };
-          break;
-        case "stand":
-          position = {
-            systolic: null,
-            diastolic: null,
-            systolic_stand: this.state.systolic,
-            diastolic_stand: this.state.diastolic,
-            systolic_supine: null,
-            diastolic_supine: null
-          };
-          break;
-        case "supine":
-          position = {
-            systolic: null,
-            diastolic: null,
-            systolic_stand: null,
-            diastolic_stand: null,
-            systolic_supine: this.state.systolic,
-            diastolic_supine: this.state.diastolic
-          };
-          break;
-      }
-
-      algaehApiCall({
-        uri: "/doctorsWorkBench/addPatientVitals",
-        method: "POST",
-        data: {
+      let bodyArray = [];
+      const _elements = document.querySelectorAll("[vitalid]");
+      for (let i = 0; i < _elements.length; i++) {
+        bodyArray.push({
           patient_id: Window.global["current_patient"],
           visit_id: Window.global["visit_id"],
           visit_date: this.state.recorded_date,
           visit_time: this.state.recorded_time,
           case_type: "OP",
-          height: this.state.height,
-          weight: this.state.weight,
-          bmi: this.state.bmi,
-          oxysat: this.state.oxysat,
-          temperature_from: this.state.temperature_from,
-          temperature_farenhiet: temperatureFarenheat(
-            this.state.temperature_celsisus
-          ),
-          temperature_celsisus: this.state.temperature_celsisus,
-          ...position,
-          glucose_fbs: this.state.glucose_fbs,
-          glucose_rbs: this.state.glucose_rbs,
-          glucose_pbs: this.state.glucose_pbs,
-          head_circumference: null,
-          heart_rate: this.state.heart_rate,
-          respiratory_rate: this.state.respiratory_rate
-        },
+          vital_id: _elements[i].getAttribute("vitalid"),
+          vital_value: _elements[i].value
+        });
+      }
+
+      algaehApiCall({
+        uri: "/doctorsWorkBench/addPatientVitals",
+        method: "POST",
+        data: bodyArray,
         onSuccess: response => {
           if (response.data.success) {
             swalMessage({
               title: "Vitals recorded successfully . .",
               type: "success"
             });
-            getVitalHistory(this);
-            this.resetVitals();
+            //   getVitalHistory(this);
+            // this.resetVitals();
           }
         }
       });
@@ -401,7 +359,7 @@ class Vitals extends Component {
               <h3 className="caption-subject">Vitals</h3>
             </div>
 
-            <div className="actions">
+            <div className="actions d-none">
               <a className="btn btn-primary btn-circle active">
                 <i
                   onClick={this.addVitals.bind(this)}
@@ -424,7 +382,8 @@ class Vitals extends Component {
                   name: "weight",
                   others: {
                     type: "number",
-                    min: 0
+                    min: 0,
+                    vitalid: "1"
                   },
                   value: this.state.weight,
                   events: {
@@ -443,7 +402,8 @@ class Vitals extends Component {
                   name: "height",
                   others: {
                     type: "number",
-                    min: 0
+                    min: 0,
+                    vitalid: "2"
                   },
                   value: this.state.height,
                   events: {
@@ -463,7 +423,8 @@ class Vitals extends Component {
                   name: "bmi",
                   disabled: true,
                   others: {
-                    type: "number"
+                    type: "number",
+                    vitalid: "3"
                   },
                   value: this.state.bmi,
                   events: {
@@ -483,7 +444,8 @@ class Vitals extends Component {
                   name: "oxysat",
                   others: {
                     type: "number",
-                    min: 0
+                    min: 0,
+                    vitalid: "5"
                   },
                   value: this.state.oxysat,
                   events: {
@@ -502,7 +464,8 @@ class Vitals extends Component {
                   name: "heart_rate",
                   others: {
                     type: "number",
-                    min: 0
+                    min: 0,
+                    vitalid: "6"
                   },
                   value: this.state.heart_rate,
                   events: {
@@ -521,7 +484,8 @@ class Vitals extends Component {
                   name: "respiratory_rate",
                   others: {
                     type: "number",
-                    min: 0
+                    min: 0,
+                    vitalid: "7"
                   },
                   value: this.state.respiratory_rate,
                   events: {
@@ -559,7 +523,8 @@ class Vitals extends Component {
                   name: "temperature_celsisus",
                   others: {
                     type: "number",
-                    min: 0
+                    min: 0,
+                    vitalid: "4"
                   },
                   value: this.state.temperature_celsisus,
                   events: {
@@ -596,7 +561,9 @@ class Vitals extends Component {
                   className: "txt-fld",
                   name: "systolic",
                   others: {
-                    type: "number"
+                    type: "number",
+                    min: 0,
+                    vitalid: "8"
                   },
                   value: this.state.systolic,
                   events: {
@@ -614,7 +581,8 @@ class Vitals extends Component {
                   className: "txt-fld",
                   name: "diastolic",
                   others: {
-                    type: "number"
+                    type: "number",
+                    vitalid: "9"
                   },
                   value: this.state.diastolic,
                   events: {
@@ -633,7 +601,8 @@ class Vitals extends Component {
                   className: "txt-fld",
                   name: "glucose_fbs",
                   others: {
-                    type: "number"
+                    type: "number",
+                    vitalid: "10"
                   },
                   value: this.state.glucose_fbs,
                   events: {
@@ -650,7 +619,8 @@ class Vitals extends Component {
                   className: "txt-fld",
                   name: "glucose_rbs",
                   others: {
-                    type: "number"
+                    type: "number",
+                    vitalid: "11"
                   },
                   value: this.state.glucose_rbs,
                   events: {
@@ -667,7 +637,8 @@ class Vitals extends Component {
                   className: "txt-fld",
                   name: "glucose_pbs",
                   others: {
-                    type: "number"
+                    type: "number",
+                    vitalid: "12"
                   },
                   value: this.state.glucose_pbs,
                   events: {
