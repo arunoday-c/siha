@@ -860,7 +860,7 @@ PV.hims_f_patient_visit_id=PE.visit_id where P.hims_d_patient_id=? and PE.episod
 };
 
 //created by irfan: to  get Patient Vitals
-let getPatientVitals = (req, res, next) => {
+let getPatientVitalsOLD = (req, res, next) => {
   let selectWhere = {
     patient_id: "ALL",
     visit_id: "ALL"
@@ -879,6 +879,45 @@ let getPatientVitals = (req, res, next) => {
         "select * from hims_f_patient_vitals where " +
           where.condition +
           " order by visit_date desc, visit_time desc;",
+        where.values,
+
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to  get Patient Vitals
+let getPatientVitals = (req, res, next) => {
+  let selectWhere = {
+    patient_id: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    // let inputData = extend({}, req.query);
+
+    let where = whereCondition(extend(selectWhere, req.query));
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_f_patient_vitals_id, patient_id, visit_id, visit_date, visit_time,\
+    case_type, vital_id,PH.vitals_name,PH.uom, vital_value, vital_value_one, vital_value_two, formula_value from \
+    hims_f_patient_vitals PV,hims_d_vitals_header PH where PV.record_status='A' and \
+    PH.record_status='A' and PV.vital_id=PH.hims_d_vitals_header_id and " +
+          where.condition +
+          " order by visit_date desc, visit_time desc LIMIT 0,5;",
         where.values,
 
         (error, result) => {
@@ -1701,7 +1740,7 @@ let updatePatientROS = (req, res, next) => {
 };
 
 //created by irfan: to add patient vitals
-let addPatientVitals = (req, res, next) => {
+let addPatientVitalsOLD = (req, res, next) => {
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -1748,6 +1787,54 @@ let addPatientVitals = (req, res, next) => {
           inputparam.heart_rate,
           inputparam.respiratory_rate,
 
+          new Date(),
+          inputparam.created_by,
+          new Date(),
+          inputparam.updated_by
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+//created by irfan: to add patient vitals
+let addPatientVitals = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let inputparam = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT INTO `hims_f_patient_vitals` (patient_id, visit_id, visit_date, visit_time, case_type,\
+          vital_id, vital_value, vital_value_one, vital_value_two, formula_value,`created_date`, `created_by`, `updated_date`, `updated_by`)\
+        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        [
+          inputparam.patient_id,
+          inputparam.visit_id,
+          inputparam.visit_date,
+          inputparam.visit_time,
+          inputparam.case_type,
+          inputparam.vital_id,
+          inputparam.vital_value,
+          inputparam.vital_value_one,
+          inputparam.vital_value_two,
+          inputparam.formula_value,
           new Date(),
           inputparam.created_by,
           new Date(),
@@ -2293,6 +2380,34 @@ let updatePatientPhysicalExam = (req, res, next) => {
   }
 };
 
+//created by irfan: to get
+let getVitalsHeaderMaster = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_d_vitals_header_id, vitals_name, uom, general, display \
+        from hims_d_vitals_header  where record_status='A'",
+
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   physicalExaminationHeader,
   physicalExaminationDetails,
@@ -2341,5 +2456,6 @@ module.exports = {
   getPatientAllergies,
   getPatientDiagnosis,
   getPatientDiet,
-  getAllPhysicalExamination
+  getAllPhysicalExamination,
+  getVitalsHeaderMaster
 };

@@ -27,6 +27,7 @@ let requestCounter = 0;
 //created by irfan :to save front desk data inputs
 let addFrontDesk = (req, res, next) => {
   debugFunction("addFrontDesk");
+  debugLog("body", req.body);
 
   requestCounter = requestCounter + 1;
   try {

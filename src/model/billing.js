@@ -2611,10 +2611,10 @@ let newReceiptData = (req, res, next) => {
 
 //-------------------------------------
 
-//Created by noor for synchronus
-let newReceiptDataBAcup = (req, res, next) => {
+//Created by irfan for synchronus
+let cash = (req, res, next) => {
   try {
-    debugFunction("newReceiptFUnc");
+    debugFunction("cash api");
     let db = req.options == null ? req.db : req.options.db;
 
     let inputParam = extend(
@@ -2638,11 +2638,11 @@ let newReceiptDataBAcup = (req, res, next) => {
         req.options.onFailure(genErr);
       }
     }
-
+    let hims_f_cash_handover_detail_id = "";
     db.query(
       "select hims_f_cash_handover_detail_id, cash_handover_header_id, casher_id, shift_status,open_date\
       from  hims_f_cash_handover_detail where record_status='A' and casher_id=? and shift_status='O'",
-      [input.created_by],
+      [inputParam.updated_by],
       (error, checkShiftStatus) => {
         if (error) {
           if (req.options == null) {
@@ -2651,20 +2651,22 @@ let newReceiptDataBAcup = (req, res, next) => {
               next(error);
             });
           } else {
-            req.options.onSuccess(checkShiftStatus);
+            req.options.onFailure(checkShiftStatus);
           }
         }
 
-        let userShiftStatus = new LINQ(checkShiftStatus)
-          .where(w => w.shift_status == "O")
-          .Select(s => {
-            return { shift_status };
-          });
-        debugLog("userShiftStatus", userShiftStatus);
+        debugLog("number of shift open", checkShiftStatus);
+        if (checkShiftStatus.length > 0) {
+          hims_f_cash_handover_detail_id =
+            checkShiftStatus[0].hims_f_cash_handover_detail_id;
+        }
 
         new Promise((resolve, reject) => {
           try {
-            if (userShiftStatus == "A" || userShiftStatus == "C") {
+            if (
+              checkShiftStatus.length == null ||
+              checkShiftStatus.length == ""
+            ) {
               db.query(
                 "INSERT INTO `hims_f_cash_handover_header` ( shift_id, daily_handover_date,\
                created_date, created_by, updated_date, updated_by)\
@@ -2685,22 +2687,30 @@ let newReceiptDataBAcup = (req, res, next) => {
                         next(error);
                       });
                     } else {
-                      req.options.onSuccess(headerCashHandover);
+                      req.options.onFailure(headerCashHandover);
                     }
                   }
+
+                  debugLog("headerCashHandover", headerCashHandover);
 
                   if (
                     headerCashHandover.insertId != null &&
                     headerCashHandover.insertId != ""
                   ) {
-                    connection.query(
+                    db.query(
                       "INSERT INTO `hims_f_cash_handover_detail` ( cash_handover_header_id, casher_id,\
-                     open_date=CURDATE(),  expected_cash=0, expected_card=0,  expected_cheque=0, \
-                      no_of_cheques=0,created_date, created_by, updated_date, updated_by)\
-                    VALUE(?,?,?,?,?,?)",
+                        shift_status,open_date,  expected_cash, expected_card,  expected_cheque, \
+                      no_of_cheques,created_date, created_by, updated_date, updated_by)\
+                    VALUE(?,?,?,?,?,?,?,?,?,?,?,?)",
                       [
                         headerCashHandover.insertId,
                         inputParam.created_by,
+                        "O",
+                        new Date(),
+                        0,
+                        0,
+                        0,
+                        0,
                         new Date(),
                         inputParam.created_by,
                         new Date(),
@@ -2717,19 +2727,21 @@ let newReceiptDataBAcup = (req, res, next) => {
                             req.options.onFailure(error);
                           }
                         }
-                        debugLog("Final", req.options);
-                        if (req.options == null) {
-                          req.records = headerCashHandover;
-                        } else {
-                          req.options.onSuccess(headerCashHandover);
-                          debugLog("Final", headerCashHandover);
+                        if (
+                          CashHandoverDetails.insertId != null &&
+                          CashHandoverDetails.insertId != ""
+                        ) {
+                          hims_f_cash_handover_detail_id =
+                            CashHandoverDetails.insertId;
                         }
+                        debugLog("CashHandoverDetails", CashHandoverDetails);
+                        resolve(CashHandoverDetails);
                       }
                     );
                   }
                 }
               );
-            } else if (userShiftStatus == "O") {
+            } else if (checkShiftStatus.length > 0) {
               resolve({});
             }
           } catch (e) {
@@ -2737,6 +2749,93 @@ let newReceiptDataBAcup = (req, res, next) => {
           }
         }).then(result => {
           //hjjh
+
+          let expected_cash = 0;
+          let expected_card = 0;
+          let expected_cheque = 0;
+          let no_of_cheques = 0;
+
+          expected_cash = new LINQ(inputParam.receiptdetails)
+            .Where(w => w.pay_type == "CA")
+            .Sum(s => s.amount);
+          debugLog("expected_cash:", expected_cash);
+
+          expected_card = new LINQ(inputParam.receiptdetails)
+            .Where(w => w.pay_type == "CD")
+            .Sum(s => s.amount);
+          debugLog("expected_card:", expected_card);
+
+          expected_cheque = new LINQ(inputParam.receiptdetails)
+            .Where(w => w.pay_type == "CH")
+            .Sum(s => s.amount);
+          debugLog("expected_cheque:", expected_cheque);
+
+          no_of_cheques = new LINQ(inputParam.receiptdetails)
+            .Where(w => w.pay_type == "CH")
+            .ToArray().length;
+
+          debugLog("no_of_cheques:", no_of_cheques);
+
+          db.query(
+            "select expected_cash,expected_card, expected_cheque, no_of_cheques from \
+          hims_f_cash_handover_detail where record_status='A' and hims_f_cash_handover_detail_id=10",
+            [hims_f_cash_handover_detail_id],
+            (error, selectCurrentCash) => {
+              if (error) {
+                if (req.options == null) {
+                  db.rollback(() => {
+                    releaseDBConnection(req.db, db);
+                    next(error);
+                  });
+                } else {
+                  req.options.onFailure(selectCurrentCash);
+                }
+              }
+
+              expected_cash += selectCurrentCash[0].expected_cash;
+              expected_card += selectCurrentCash[0].expected_card;
+              expected_cheque += selectCurrentCash[0].expected_cheque;
+              no_of_cheques += selectCurrentCash[0].no_of_cheques;
+
+              db.query(
+                "update hims_f_cash_handover_detail set expected_cash=?,expected_card=?,\
+              expected_cheque=?,no_of_cheques=?,updated_date=?,updated_by=? where record_status='A' \
+              and hims_f_cash_handover_detail_id=?;",
+                [
+                  expected_cash,
+                  expected_card,
+                  expected_cheque,
+                  no_of_cheques,
+                  new Date(),
+                  inputParam.updated_by,
+                  hims_f_cash_handover_detail_id
+                ],
+                (error, updateResult) => {
+                  if (error) {
+                    if (req.options == null) {
+                      db.rollback(() => {
+                        releaseDBConnection(req.db, db);
+                        next(error);
+                      });
+                    } else {
+                      req.options.onFailure(updateResult);
+                    }
+                  }
+                  // req.records = result;
+                  // next();
+
+                  if (req.options == null) {
+                    req.records = updateResult;
+                    next();
+                    debugLog("indi pendent", updateResult);
+                  } else {
+                    req.options.onSuccess(updateResult);
+                    debugLog("updateResult", updateResult);
+                  }
+                }
+              );
+            }
+          );
         });
       }
     );
@@ -2828,5 +2927,6 @@ module.exports = {
   getBillDetailsFunctionality,
   addEpisodeEncounterData,
   newReceiptData,
-  addCashHandover
+  addCashHandover,
+  cash
 };
