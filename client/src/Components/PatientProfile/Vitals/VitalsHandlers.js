@@ -45,13 +45,22 @@ const getFormula = options => {
       }
     });
   } else {
-    BMICalculation(options.WEIGHT, options.HEIGHT, Window.global["BMI"]);
+    if (typeof options.onSuccess === "function")
+      options.onSuccess(
+        BMICalculation(options.WEIGHT, options.HEIGHT, Window.global["BMI"])
+      );
   }
 };
 const BMICalculation = (weight, height, calculation) => {
+  if (height === "") return "";
   let BMI = 0;
+  weight = typeof weight === "string" ? parseFloat(weight) : weight;
+  height = typeof height === "string" ? parseFloat(height) : height;
   eval(calculation);
-  return BMI;
+  return (BMI = typeof BMI === "number" ? BMI.toFixed(3) : BMI);
+};
+const temperatureFarenheat = degrees => {
+  return (degrees * 9) / 5 + 32;
 };
 
-export { getVitalHistory, getFormula };
+export { getVitalHistory, getFormula, temperatureFarenheat };

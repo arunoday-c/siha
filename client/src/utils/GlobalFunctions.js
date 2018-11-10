@@ -154,7 +154,8 @@ export function displayFileFromServer(options) {
           options.onFileSuccess(_data);
         }
       }
-    }
+    },
+    onFailure: () => {}
   });
 }
 
