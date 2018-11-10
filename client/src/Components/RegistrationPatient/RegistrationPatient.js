@@ -533,6 +533,7 @@ class RegistrationPatient extends PureComponent {
             value={{
               state: this.state,
               updateState: obj => {
+                debugger;
                 this.setState({ ...obj });
               }
             }}

@@ -3,7 +3,6 @@ import ReactTable from "react-table";
 import "react-table/react-table.css";
 import Enumerable from "linq";
 import { algaehApiCall } from "../utils/algaehApiCall";
-import { displayFileFromServer } from "../utils/GlobalFunctions";
 import AlgaehReport from "./Wrapper/printReports";
 
 const services = [

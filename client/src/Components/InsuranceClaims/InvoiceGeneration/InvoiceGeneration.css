@@ -18,3 +18,5 @@
     margin-top: -10px; }
   .hptl-phase1-invoice-generation-form #doctorOrder .ReactTable {
     height: 10vh !important; }
+  .hptl-phase1-invoice-generation-form #InvoiceGen {
+    width: 98vw !important; }

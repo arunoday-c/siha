@@ -253,8 +253,12 @@ class PointOfSale extends Component {
                 />
 
                 {this.state.case_type === "OP" ? (
-                  <div className="col-lg-2 form-group print_actions">
+                  <div
+                    className="col-lg-2 print_actions"
+                    style={{ marginTop: "auto" }}
+                  >
                     <span
+                      style={{ cursor: "pointer" }}
                       className="fas fa-search fa-2x"
                       disabled={this.state.case_type === "O" ? false : true}
                       onClick={VisitSearch.bind(this, this)}
@@ -292,19 +296,19 @@ class PointOfSale extends Component {
                   <h6>
                     {this.state.patient_code
                       ? this.state.patient_code
-                      : "Patient Name"}
+                      : "-----------"}
                   </h6>
                 </div>
                 <div className="col-lg-4">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Patient Code"
+                      forceLabel: "Patient Name"
                     }}
                   />
                   <h6>
                     {this.state.full_name
                       ? this.state.full_name
-                      : "Patient Name"}
+                      : "-----------"}
                   </h6>
                 </div>
 

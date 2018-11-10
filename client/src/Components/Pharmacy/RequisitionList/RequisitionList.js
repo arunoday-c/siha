@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-
+import Enumerable from "linq";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import { setGlobal } from "../../../utils/GlobalFunctions";
 import "./RequisitionList.css";
@@ -188,18 +188,62 @@ class RequisitionList extends Component {
                             label={{ forceLabel: "From Location" }}
                           />
                         ),
+                        //created by Adnan
+                        displayTemplate: row => {
+                          let x;
+                          if (
+                            this.props.locations !== undefined &&
+                            this.props.locations.length !== 0
+                          ) {
+                            x = Enumerable.from(this.props.locations)
+                              .where(
+                                w =>
+                                  w.hims_d_pharmacy_location_id ===
+                                  row.from_location_id
+                              )
+                              .firstOrDefault();
+                          }
+                          return (
+                            <span>
+                              {x !== undefined ? x.location_description : ""}
+                            </span>
+                          );
+                        },
                         disabled: true,
                         others: {
                           maxWidth: 200,
                           resizable: false,
                           style: { textAlign: "center" }
                         }
+                        //created by Adnan
                       },
                       {
                         fieldName: "to_location_id",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "To Location" }} />
                         ),
+                        //created by Adnan
+                        displayTemplate: row => {
+                          let x;
+                          if (
+                            this.props.locations !== undefined &&
+                            this.props.locations.length !== 0
+                          ) {
+                            x = Enumerable.from(this.props.locations)
+                              .where(
+                                w =>
+                                  w.hims_d_pharmacy_location_id ===
+                                  row.to_location_id
+                              )
+                              .firstOrDefault();
+                          }
+                          return (
+                            <span>
+                              {x !== undefined ? x.location_description : ""}
+                            </span>
+                          );
+                          //created by Adnan
+                        },
                         others: {
                           maxWidth: 200,
                           resizable: false,

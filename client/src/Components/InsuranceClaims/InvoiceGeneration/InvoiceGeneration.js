@@ -20,6 +20,12 @@ import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { getCookie } from "../../../utils/algaehApiCall";
 import AppBar from "@material-ui/core/AppBar";
+import AlgaehReport from "../../Wrapper/printReports.js";
+
+const services = [
+  { service_name: "Consultation", sl_no: 1 },
+  { service_name: "Procedure", sl_no: 2 }
+];
 
 class InvoiceGeneration extends Component {
   constructor(props) {
@@ -107,6 +113,50 @@ class InvoiceGeneration extends Component {
     }
   }
 
+  //created by Adnan
+  generateInvoice(type) {
+    type === "cash"
+      ? AlgaehReport({
+          report: {
+            fileName: "cashInvoice"
+          },
+          data: {
+            services: services,
+            remarks: 500 + " by Cash",
+            total_amount: 500,
+            payment_type: "cash",
+            patient_code: "PAT-00000asdfadsf",
+            full_name: "Allah Bakash",
+            advance_amount: "PAT-00000asdfadsf",
+            invoice_number: "INV-A-0000989",
+            receipt_number: "PAT-00000asdfadsf",
+            receipt_date: "11-11-2018",
+            doctor_name: "Dr. Norman John",
+            bill_details: "PAT-00000asdfadsf"
+          }
+        })
+      : AlgaehReport({
+          report: {
+            fileName: "creditInvoice"
+          },
+          data: {
+            services: services,
+            remarks: 500 + " by Cash",
+            total_amount: 500,
+            payment_type: "credit",
+            patient_code: "PAT-00000asdfadsf",
+            full_name: "Allah Bakash",
+            advance_amount: "PAT-00000asdfadsf",
+            invoice_number: "INV-A-0000989",
+            receipt_number: "PAT-00000asdfadsf",
+            receipt_date: "11-11-2018",
+            doctor_name: "Dr. Norman John",
+            bill_details: "PAT-00000asdfadsf"
+          }
+        });
+  }
+  //created by Adnan
+
   render() {
     return (
       <div>
@@ -146,7 +196,8 @@ class InvoiceGeneration extends Component {
             value: this.state.invoice_number,
             selectValue: "invoice_number",
             events: {
-              onChange: null //getCtrlCode.bind(this, this)
+              //onChange: null //getCtrlCode.bind(this, this)
+              onChange: () => {}
             },
             jsonFile: {
               fileName: "spotlightSearch",
@@ -197,8 +248,12 @@ class InvoiceGeneration extends Component {
                   }
                 }}
               />
-              <div className="col-lg-2 form-group print_actions">
+              <div
+                className="col-lg-2 print_actions"
+                style={{ marginTop: "auto" }}
+              >
                 <span
+                  style={{ cursor: "pointer" }}
                   className="fas fa-search fa-2x"
                   disabled={this.state.case_type === "O" ? false : true}
                   onClick={VisitSearch.bind(this, this)}
@@ -443,9 +498,7 @@ class InvoiceGeneration extends Component {
                     {
                       fieldName: "sec_comapany_resp",
                       label: (
-                        <AlgaehLabel
-                          label={{ fieldName: "sec_comapany_res" }}
-                        />
+                        <AlgaehLabel label={{ fieldName: "sec_company_res" }} />
                       ),
                       disabled: true
                     },
@@ -485,8 +538,8 @@ class InvoiceGeneration extends Component {
                       }}
                     />
                     <h5>
-                      {this.state.gross_amount
-                        ? "₹" + this.state.gross_amount
+                      {this.state.totalGross
+                        ? "₹" + this.state.totalGross
                         : "₹0.00"}
                     </h5>
                   </div>
@@ -499,8 +552,8 @@ class InvoiceGeneration extends Component {
                       }}
                     />
                     <h5>
-                      {this.state.discount_amount
-                        ? "₹" + this.state.discount_amount
+                      {this.state.totalDiscount
+                        ? "₹" + this.state.totalDiscount
                         : "₹0.00"}
                     </h5>
                   </div>
@@ -660,7 +713,9 @@ class InvoiceGeneration extends Component {
                 <button
                   type="button"
                   className="btn btn-default"
-                  onClick={ClearData.bind(this, this)}
+                  //created by Adnan
+                  onClick={this.generateInvoice.bind(this, "cash")}
+                  //created by Adnan
                   disabled={this.state.generateVoice}
                 >
                   <AlgaehLabel
@@ -671,7 +726,9 @@ class InvoiceGeneration extends Component {
                 <button
                   type="button"
                   className="btn btn-default"
-                  onClick={ClearData.bind(this, this)}
+                  //created by Adnan
+                  onClick={this.generateInvoice.bind(this, "credit")}
+                  //created by Adnan
                   disabled={this.state.generateVoice}
                 >
                   <AlgaehLabel
