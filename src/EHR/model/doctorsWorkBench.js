@@ -1820,32 +1820,71 @@ let addPatientVitals = (req, res, next) => {
         next(error);
       }
 
+      // connection.query(
+      //   "INSERT INTO `hims_f_patient_vitals` (patient_id, visit_id, visit_date, visit_time, case_type,\
+      //     vital_id, vital_value, vital_value_one, vital_value_two, formula_value,`created_date`, `created_by`, `updated_date`, `updated_by`)\
+      //   VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+      //   [
+      //     inputparam.patient_id,
+      //     inputparam.visit_id,
+      //     inputparam.visit_date,
+      //     inputparam.visit_time,
+      //     inputparam.case_type,
+      //     inputparam.vital_id,
+      //     inputparam.vital_value,
+      //     inputparam.vital_value_one,
+      //     inputparam.vital_value_two,
+      //     inputparam.formula_value,
+      //     new Date(),
+      //     inputparam.created_by,
+      //     new Date(),
+      //     inputparam.updated_by
+      //   ],
+      //   (error, result) => {
+      //     releaseDBConnection(db, connection);
+      //     if (error) {
+      //       next(error);
+      //     }
+      //     req.records = result;
+      //     next();
+      //   }
+      // );
+
+      const insurtColumns = [
+        "patient_id",
+        "visit_id",
+        "visit_date",
+        "visit_time",
+        "case_type",
+        "vital_id",
+        "vital_value",
+        "vital_value_one",
+        "vital_value_two",
+        "formula_value",
+        "created_by",
+        "updated_by"
+      ];
+
       connection.query(
-        "INSERT INTO `hims_f_patient_vitals` (patient_id, visit_id, visit_date, visit_time, case_type,\
-          vital_id, vital_value, vital_value_one, vital_value_two, formula_value,`created_date`, `created_by`, `updated_date`, `updated_by`)\
-        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        "INSERT INTO hims_f_patient_vitals(" +
+          insurtColumns.join(",") +
+          ",created_date,updated_date) VALUES ?",
         [
-          inputparam.patient_id,
-          inputparam.visit_id,
-          inputparam.visit_date,
-          inputparam.visit_time,
-          inputparam.case_type,
-          inputparam.vital_id,
-          inputparam.vital_value,
-          inputparam.vital_value_one,
-          inputparam.vital_value_two,
-          inputparam.formula_value,
-          new Date(),
-          inputparam.created_by,
-          new Date(),
-          inputparam.updated_by
+          jsonArrayToObject({
+            sampleInputObject: insurtColumns,
+            arrayObj: req.body,
+            newFieldToInsert: [new Date(), new Date()],
+            req: req
+          })
         ],
-        (error, result) => {
+
+        (error, results) => {
           releaseDBConnection(db, connection);
           if (error) {
             next(error);
           }
-          req.records = result;
+          debugLog("Results are recorded...");
+          req.records = results;
           next();
         }
       );
