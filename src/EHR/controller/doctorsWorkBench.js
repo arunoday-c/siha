@@ -22,7 +22,6 @@ import {
   updatdePatEncntrStatus,
   getPatientProfile,
   getChiefComplaints,
-  
   addPatientChiefComplaints,
   getPatientChiefComplaints,
   addNewChiefComplaint,
@@ -49,7 +48,8 @@ import {
   updatePatientPhysicalExam,
   getPatientAllergies,
   getPatientDiet,
-  getAllPhysicalExamination
+  getAllPhysicalExamination,
+  getVitalsHeaderMaster
 } from "../model/doctorsWorkBench";
 export default ({ config, db }) => {
   let api = Router();
@@ -369,8 +369,6 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
-
-  
 
   // created by irfan : to add addPatientChiefComplaints
   api.post(
@@ -772,6 +770,21 @@ export default ({ config, db }) => {
   api.get(
     "/getPatientDiet",
     getPatientDiet,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  //created by irfan: to  getVitalsHeaderMaster
+  api.get(
+    "/getVitalsHeaderMaster",
+    getVitalsHeaderMaster,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

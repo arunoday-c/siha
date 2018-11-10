@@ -498,3 +498,24 @@ module.exports = {
   addPatientHpi,
   getPatientHpi
 };
+
+// localhost:3002/api/v1/doctorsWorkBench/getPatientVitals?patient_id=48
+
+// localhost:3002/api/v1/doctorsWorkBench/addPatientVitals
+
+// {
+
+//   "patient_id":48,
+//            "visit_id":93,
+//            "visit_date":"20180909",
+//            "visit_time":"12:12:00",
+//            "case_type":"op",
+//            "vital_id":1,
+//            "vital_value":10,
+//            "vital_value_one":null,
+//            "vital_value_two":null,
+//            "formula_value":null
+
+// }
+
+// localhost:3002/api/v1/doctorsWorkBench/getVitalsHeaderMaster
