@@ -272,7 +272,7 @@ let addInvoiceGeneration = (req, res, next) => {
               } else {
                 connection.rollback(() => {
                   releaseDBConnection(db, connection);
-                  next(error);
+                  next();
                 });
               }
             }
