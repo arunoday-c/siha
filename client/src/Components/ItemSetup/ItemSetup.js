@@ -116,6 +116,7 @@ class ItemSetup extends Component {
       .groupBy("$.hims_d_item_master_id", null, (k, g) => {
         let firstRecordSet = Enumerable.from(g).firstOrDefault();
         return {
+          item_code: firstRecordSet.item_code,
           hims_d_item_master_id: firstRecordSet.hims_d_item_master_id,
           item_description: firstRecordSet.item_description,
           generic_id: firstRecordSet.generic_id,
@@ -219,6 +220,11 @@ class ItemSetup extends Component {
                             textAlign: "center"
                           }
                         }
+                      },
+
+                      {
+                        fieldName: "item_code",
+                        label: "Item Code"
                       },
                       {
                         fieldName: "item_description",
