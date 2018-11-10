@@ -55,8 +55,8 @@ const ProcessService = ($this, e) => {
         w.services_id === $this.state.s_service
     )
     .toArray();
-  debugger;
-  if (SelectedService === 0) {
+
+  if (SelectedService.length === 0) {
     if ($this.state.s_service_type !== null && $this.state.s_service !== null) {
       let preserviceInput = $this.state.preserviceInput || [];
       let serviceInput = [

@@ -7,14 +7,19 @@ import {
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import Modal from "@material-ui/core/Modal";
-import { getVitalHistory, getFormula } from "./VitalsHandlers";
+import {
+  getVitalHistory,
+  getFormula,
+  temperatureFarenheat
+} from "./VitalsHandlers";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { Line } from "react-chartjs-2";
-
+import config from "../../../utils/config.json";
+import moment from "moment";
 const LineData = {
   labels: [
     "January",
@@ -78,8 +83,20 @@ class Vitals extends Component {
     super(props);
     this.state = {
       openVitalModal: false,
-      weight: "0",
-      height: "0"
+      weight: "",
+      height: "",
+      heart_rate: "",
+      respiratory_rate: "",
+      glucose_fbs: "",
+      glucose_rbs: "",
+      glucose_pbs: "",
+      temperature_from: "",
+      oxysat: "",
+      temperature_celsisus: "",
+      systolic: "",
+      diastolic: "",
+      recorded_date: new Date(),
+      recorded_time: moment().format(config.formators.time)
     };
     this.handleClose = this.handleClose.bind(this);
     if (
@@ -87,17 +104,6 @@ class Vitals extends Component {
       this.props.patient_vitals.length === 0
     )
       getVitalHistory(this);
-
-    getFormula();
-  }
-
-  calculatebmi() {
-    let w = this.state.weight;
-    let h = this.state.height;
-
-    if (w > 0 && h > 0) {
-      this.setState({ bmi: w / (((h / 100) * h) / 100) });
-    }
   }
 
   handleClose() {
@@ -108,6 +114,29 @@ class Vitals extends Component {
   }
 
   texthandle(e) {
+    if (e.target.name === "weight") {
+      //TODO  now hardCoded options need to pull from Db
+      getFormula({
+        WEIGHTAS: "KG",
+        HEIGHTAS: "CM",
+        WEIGHT: e.target.value,
+        HEIGHT: this.state.height,
+        onSuccess: bmi => {
+          this.setState({ bmi: bmi });
+        }
+      });
+    } else if (e.target.name === "height") {
+      //TODO  now hardCoded options need to pull from Db
+      getFormula({
+        WEIGHTAS: "KG",
+        HEIGHTAS: "CM",
+        WEIGHT: this.state.weight,
+        HEIGHT: e.target.value,
+        onSuccess: bmi => {
+          this.setState({ bmi: bmi });
+        }
+      });
+    }
     this.setState({
       [e.target.name]: e.target.value
     });
@@ -118,18 +147,26 @@ class Vitals extends Component {
   }
 
   resetVitals() {
-    this.setState({
-      recorded_date: "",
-      recorded_time: "",
-      height: "",
-      weight: "",
-      bmi: "",
-      oxysat: "",
-      temperature_from: "",
-      temperature_celsisus: "",
-      systolic: "",
-      diastolic: ""
-    });
+    const _resetElements = document.getElementById("vitals_recording");
+    const _childs = _resetElements.querySelectorAll("[type='number']");
+    for (let i = 0; i < _childs.length; i++) {
+      let _name = _childs[i].name;
+      this.setState({
+        [_name]: ""
+      });
+    }
+    // this.setState({
+    //   recorded_date: "",
+    //   recorded_time: "",
+    //   height: "",
+    //   weight: "",
+    //   bmi: "",
+    //   oxysat: "",
+    //   temperature_from: "",
+    //   temperature_celsisus: "",
+    //   systolic: "",
+    //   diastolic: ""
+    // });
   }
 
   addPatientVitals(e) {
@@ -141,6 +178,40 @@ class Vitals extends Component {
         type: "warning"
       });
     } else {
+      let position = {};
+      switch (this.state.bp_position) {
+        case "sit":
+          position = {
+            systolic: this.state.systolic,
+            diastolic: this.state.diastolic,
+            systolic_stand: null,
+            diastolic_stand: null,
+            systolic_supine: null,
+            diastolic_supine: null
+          };
+          break;
+        case "stand":
+          position = {
+            systolic: null,
+            diastolic: null,
+            systolic_stand: this.state.systolic,
+            diastolic_stand: this.state.diastolic,
+            systolic_supine: null,
+            diastolic_supine: null
+          };
+          break;
+        case "supine":
+          position = {
+            systolic: null,
+            diastolic: null,
+            systolic_stand: null,
+            diastolic_stand: null,
+            systolic_supine: this.state.systolic,
+            diastolic_supine: this.state.diastolic
+          };
+          break;
+      }
+
       algaehApiCall({
         uri: "/doctorsWorkBench/addPatientVitals",
         method: "POST",
@@ -155,9 +226,17 @@ class Vitals extends Component {
           bmi: this.state.bmi,
           oxysat: this.state.oxysat,
           temperature_from: this.state.temperature_from,
+          temperature_farenhiet: temperatureFarenheat(
+            this.state.temperature_celsisus
+          ),
           temperature_celsisus: this.state.temperature_celsisus,
-          systolic: this.state.systolic,
-          diastolic: this.state.diastolic
+          ...position,
+          glucose_fbs: this.state.glucose_fbs,
+          glucose_rbs: this.state.glucose_rbs,
+          glucose_pbs: this.state.glucose_pbs,
+          head_circumference: null,
+          heart_rate: this.state.heart_rate,
+          respiratory_rate: this.state.respiratory_rate
         },
         onSuccess: response => {
           if (response.data.success) {
@@ -332,7 +411,7 @@ class Vitals extends Component {
             </div>
           </div>
 
-          <div className="portlet-body">
+          <div className="portlet-body" id="vitals_recording">
             <div className="row margin-bottom-15">
               <AlagehFormGroup
                 div={{ className: "col-lg-2" }}
@@ -344,7 +423,8 @@ class Vitals extends Component {
                   className: "txt-fld",
                   name: "weight",
                   others: {
-                    type: "number"
+                    type: "number",
+                    min: 0
                   },
                   value: this.state.weight,
                   events: {
@@ -362,7 +442,8 @@ class Vitals extends Component {
                   className: "txt-fld",
                   name: "height",
                   others: {
-                    type: "number"
+                    type: "number",
+                    min: 0
                   },
                   value: this.state.height,
                   events: {
@@ -380,12 +461,13 @@ class Vitals extends Component {
                 textBox={{
                   className: "txt-fld",
                   name: "bmi",
+                  disabled: true,
                   others: {
                     type: "number"
                   },
                   value: this.state.bmi,
                   events: {
-                    onChange: this.texthandle.bind(this)
+                    onChange: () => {}
                   }
                 }}
               />
@@ -400,7 +482,8 @@ class Vitals extends Component {
                   className: "txt-fld",
                   name: "oxysat",
                   others: {
-                    type: "number"
+                    type: "number",
+                    min: 0
                   },
                   value: this.state.oxysat,
                   events: {
@@ -416,11 +499,12 @@ class Vitals extends Component {
                 }}
                 textBox={{
                   className: "txt-fld",
-                  name: "hr",
+                  name: "heart_rate",
                   others: {
-                    type: "number"
+                    type: "number",
+                    min: 0
                   },
-                  value: this.state.department_name,
+                  value: this.state.heart_rate,
                   events: {
                     onChange: this.texthandle.bind(this)
                   }
@@ -434,13 +518,14 @@ class Vitals extends Component {
                 }}
                 textBox={{
                   className: "txt-fld",
-                  name: "rr",
+                  name: "respiratory_rate",
                   others: {
-                    type: "number"
+                    type: "number",
+                    min: 0
                   },
-                  //value: this.state.department_name,
+                  value: this.state.respiratory_rate,
                   events: {
-                    //  onChange: this.changeDeptName.bind(this)
+                    onChange: this.texthandle.bind(this)
                   }
                 }}
               />
@@ -473,7 +558,8 @@ class Vitals extends Component {
                   className: "txt-fld",
                   name: "temperature_celsisus",
                   others: {
-                    type: "number"
+                    type: "number",
+                    min: 0
                   },
                   value: this.state.temperature_celsisus,
                   events: {
@@ -549,7 +635,7 @@ class Vitals extends Component {
                   others: {
                     type: "number"
                   },
-                  value: this.state.diastolic,
+                  value: this.state.glucose_fbs,
                   events: {
                     onChange: this.texthandle.bind(this)
                   }
@@ -566,7 +652,7 @@ class Vitals extends Component {
                   others: {
                     type: "number"
                   },
-                  value: this.state.diastolic,
+                  value: this.state.glucose_rbs,
                   events: {
                     onChange: this.texthandle.bind(this)
                   }
@@ -583,7 +669,7 @@ class Vitals extends Component {
                   others: {
                     type: "number"
                   },
-                  value: this.state.diastolic,
+                  value: this.state.glucose_pbs,
                   events: {
                     onChange: this.texthandle.bind(this)
                   }

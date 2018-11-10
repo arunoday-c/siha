@@ -211,8 +211,12 @@ class SalesReturn extends Component {
                     }
                   }}
                 />
-                <div className="col-lg-2 form-group print_actions">
+                <div
+                  className="col-lg-2 print_actions"
+                  style={{ marginTop: "auto" }}
+                >
                   <span
+                    style={{ cursor: "pointer" }}
                     className="fas fa-search fa-2x"
                     disabled={this.state.case_type === "O" ? false : true}
                     onClick={POSSearch.bind(this, this)}

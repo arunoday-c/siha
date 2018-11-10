@@ -2,17 +2,11 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-
-// import AppBar from "@material-ui/core/AppBar";
-
 import {
-  // AlagehFormGroup,
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehAutoComplete
-  // AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
-
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import { changeTexts, dateFormater } from "./StockEnquiryEvents";
 import "./StockEnquiry.css";
@@ -77,7 +71,7 @@ class StockEnquiry extends Component {
   render() {
     return (
       <React.Fragment>
-        <div>
+        <div className="hptl-phase1-speciman-collection-form">
           <BreadCrumb
             title={
               <AlgaehLabel
@@ -106,61 +100,60 @@ class StockEnquiry extends Component {
             ]}
           />
 
-          <div className="hptl-phase1-stock-enquiry-form">
-            <div
-              className="row inner-top-search"
-              style={{ marginTop: 76, paddingBottom: 10 }}
-            >
-              <div className="col-lg-12">
-                <div className="row">
-                  <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
-                    label={{ forceLabel: "Location" }}
-                    selector={{
-                      name: "location_id",
-                      className: "select-fld",
-                      value: this.state.location_id,
-                      dataSource: {
-                        textField: "location_description",
-                        valueField: "hims_d_pharmacy_location_id",
-                        data: this.props.locations
-                      },
+          <div
+            className="row inner-top-search"
+            style={{ marginTop: "75px", paddingBottom: "10px" }}
+          >
+            <div className="col-lg-12">
+              <div className="row">
+                <AlagehAutoComplete
+                  div={{ className: "col-lg-3" }}
+                  label={{ forceLabel: "Location" }}
+                  selector={{
+                    name: "location_id",
+                    className: "select-fld",
+                    value: this.state.location_id,
+                    dataSource: {
+                      textField: "location_description",
+                      valueField: "hims_d_pharmacy_location_id",
+                      data: this.props.locations
+                    },
 
-                      onChange: changeTexts.bind(this, this)
+                    onChange: changeTexts.bind(this, this)
+                  }}
+                />
+
+                <AlagehAutoComplete
+                  div={{ className: "col-lg-3" }}
+                  label={{ forceLabel: "Item Name" }}
+                  selector={{
+                    name: "item_id",
+                    className: "select-fld",
+                    value: this.state.item_id,
+                    dataSource: {
+                      textField: "item_description",
+                      valueField: "hims_d_item_master_id",
+                      data: this.props.itemlist
+                    },
+                    onChange: changeTexts.bind(this, this)
+                  }}
+                />
+                <div className="col-lg-3">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Total Quantity"
                     }}
                   />
-
-                  <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
-                    label={{ forceLabel: "Item Name" }}
-                    selector={{
-                      name: "item_id",
-                      className: "select-fld",
-                      value: this.state.item_id,
-                      dataSource: {
-                        textField: "item_description",
-                        valueField: "hims_d_item_master_id",
-                        data: this.props.itemlist
-                      },
-                      onChange: changeTexts.bind(this, this)
-                    }}
-                  />
-                  <div className="col-lg-3">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Total Quantity"
-                      }}
-                    />
-                    <h6>
-                      {this.state.total_quantity
-                        ? this.state.total_quantity + " nos"
-                        : "0 nos"}
-                    </h6>
-                  </div>
+                  <h6>
+                    {this.state.total_quantity
+                      ? this.state.total_quantity + " nos"
+                      : "0 nos"}
+                  </h6>
                 </div>
               </div>
             </div>
           </div>
+
           <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
             {/* <div className="portlet-title">
             <div className="caption">

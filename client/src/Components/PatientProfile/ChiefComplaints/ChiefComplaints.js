@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import "./chiefcomplaints.css";
 import "react-rangeslider/lib/index.css";
-import Slider from "react-rangeslider";
 import Modal from "@material-ui/core/Modal";
 import {
   AlgaehDataGrid,
@@ -58,7 +57,8 @@ class ChiefComplaints extends Component {
       context: [],
       timing: [],
       modifying_factor: [],
-      associated_symptoms: []
+      associated_symptoms: [],
+      patientHPIElements: []
     };
 
     this.handleClose = this.handleClose.bind(this);
@@ -312,6 +312,7 @@ class ChiefComplaints extends Component {
       inputParamter: {
         hpi_header_id: data.hims_d_hpi_header_id
       },
+      that: this,
       onSuccess: response => {
         let _ResponseSplit = {};
         Enumerable.from(response.data.records)
@@ -360,6 +361,7 @@ class ChiefComplaints extends Component {
     const _elemntFetch = e.currentTarget.getAttribute("elementfetch");
     const _element_description = document.getElementsByName(_elemntFetch)[0]
       .value;
+    const that = this;
     algaehApiCall({
       uri: "/hpi/addHpiElement",
       method: "POST",
@@ -372,6 +374,14 @@ class ChiefComplaints extends Component {
       },
       onSuccess: response => {
         if (response.data.success) {
+          that.openHPIAddModal(
+            {
+              hims_d_hpi_header_id: that.state.hims_d_hpi_header_id,
+              hims_f_episode_chief_complaint_id:
+                that.state.hims_f_episode_chief_complaint_id
+            },
+            null
+          );
           swalMessage({
             title: "'" + _element_description + "', successfully added",
             type: "success"
@@ -390,6 +400,17 @@ class ChiefComplaints extends Component {
         if (response.data.success) {
           options.onSuccess(response);
         }
+      }
+    });
+    algaehApiCall({
+      uri: "/hpi/getPatientHpi",
+      method: "GET",
+      data: {
+        episode_id: Window.global.episode_id
+      },
+      onSuccess: response => {
+        if (response.data.success)
+          options.that.setState({ patientHPIElements: response.data.records });
       }
     });
   }
@@ -414,8 +435,6 @@ class ChiefComplaints extends Component {
   }
 
   addChiefComplainToPatient(list) {
-    debugger;
-
     const $this = this;
     let patChiefComp = [];
     patChiefComp.push({
@@ -561,8 +580,7 @@ class ChiefComplaints extends Component {
               getAllChiefComplaints(this);
               getPatientChiefComplaints(this);
             }
-          },
-          onFailure: error => {}
+          }
         });
       } else {
         swalMessage({
@@ -581,6 +599,84 @@ class ChiefComplaints extends Component {
     });
   }
 
+  HPIElementsSaveToPatient(e) {
+    debugger;
+    let _hpi_details_ids = [];
+    Enumerable.from(this.state.location)
+      .select(s => {
+        _hpi_details_ids.push({ hpi_detail_id: s });
+      })
+      .toArray();
+    Enumerable.from(this.state.quality)
+      .select(s => {
+        _hpi_details_ids.push({ hpi_detail_id: s });
+      })
+      .toArray();
+    Enumerable.from(this.state.context)
+      .select(s => {
+        _hpi_details_ids.push({ hpi_detail_id: s });
+      })
+      .toArray();
+    Enumerable.from(this.state.timing)
+      .select(s => {
+        _hpi_details_ids.push({ hpi_detail_id: s });
+      })
+      .toArray();
+    Enumerable.from(this.state.modifying_factor)
+      .select(s => {
+        _hpi_details_ids.push({ hpi_detail_id: s });
+      })
+      .toArray();
+    Enumerable.from(this.state.associated_symptoms)
+      .select(s => {
+        _hpi_details_ids.push({ hpi_detail_id: s });
+      })
+      .toArray();
+
+    const that = this;
+    algaehApiCall({
+      uri: "/hpi/addPatientHpi",
+      data: {
+        episode_id: Window.global["episode_id"],
+        patient_id: Window.global["current_patient"],
+        hpi_header_id: this.state.hims_d_hpi_header_id,
+        hpi_detail_ids: _hpi_details_ids
+      },
+      method: "POST",
+      onSuccess: response => {
+        if (response.data.success) {
+          algaehApiCall({
+            uri: "/hpi/getPatientHpi",
+            method: "GET",
+            data: {
+              episode_id: Window.global.episode_id
+            },
+            onSuccess: responsePatient => {
+              if (response.data.success) {
+                that.setState({
+                  patientHPIElements: responsePatient.data.records
+                });
+                swalMessage({
+                  title: "Record save successfully . .",
+                  type: "success"
+                });
+              }
+            }
+          });
+        }
+      }
+    });
+  }
+  CleanHPIElements() {
+    this.setState({
+      location: [],
+      quality: [],
+      context: [],
+      timing: [],
+      modifying_factor: [],
+      associated_symptoms: []
+    });
+  }
   render() {
     const patChiefComplain =
       this.props.patient_chief_complaints !== undefined
@@ -620,7 +716,7 @@ class ChiefComplaints extends Component {
             <div className="col-lg-12 popupInner">
               <div className="row">
                 <div className="col-lg-4 popLeftDiv">
-                  <div className="row">
+                  <div className="row" id="hpiElements_area">
                     <AlagehAutoComplete
                       div={{ className: "col-lg-12" }}
                       label={{
@@ -821,99 +917,48 @@ class ChiefComplaints extends Component {
                         id="hpi-grid"
                         columns={[
                           {
-                            fieldName: "complaint",
+                            fieldName: "chief_complaint",
                             label: (
                               <AlgaehLabel
-                                label={{ forceLabel: "Complaint" }}
+                                label={{ forceLabel: "Chief Complaint" }}
                               />
                             )
                           },
                           {
-                            fieldName: "complaint",
+                            fieldName: "element_description",
                             label: (
                               <AlgaehLabel
-                                label={{ forceLabel: "Duration / Onset" }}
+                                label={{ forceLabel: "HPI Description" }}
                               />
                             )
                           },
                           {
-                            fieldName: "complaint",
+                            fieldName: "element_type",
                             label: (
-                              <AlgaehLabel label={{ forceLabel: "Location" }} />
-                            )
-                          },
-                          {
-                            fieldName: "complaint",
-                            label: (
-                              <AlgaehLabel label={{ forceLabel: "Quality" }} />
-                            )
-                          },
-                          {
-                            fieldName: "complaint",
-                            label: (
-                              <AlgaehLabel label={{ forceLabel: "Context" }} />
-                            )
-                          },
-                          {
-                            fieldName: "complaint",
-                            label: (
-                              <AlgaehLabel label={{ forceLabel: "Timing" }} />
-                            )
-                          },
-                          {
-                            fieldName: "complaint",
-                            label: (
-                              <AlgaehLabel
-                                label={{ forceLabel: "Modifying Factor" }}
-                              />
-                            )
-                          },
-                          {
-                            fieldName: "complaint",
-                            label: (
-                              <AlgaehLabel
-                                label={{ forceLabel: "Associated Systems" }}
-                              />
-                            )
-                          },
-                          {
-                            fieldName: "complaint",
-                            label: (
-                              <AlgaehLabel label={{ forceLabel: "Remarks" }} />
-                            )
-                          },
-                          {
-                            fieldName: "complaint",
-                            label: (
-                              <AlgaehLabel
-                                label={{ forceLabel: "Pain Scale" }}
-                              />
-                            )
-                          },
-                          {
-                            fieldName: "complaint",
-                            label: (
-                              <AlgaehLabel label={{ forceLabel: "Severity" }} />
-                            )
-                          },
-                          {
-                            fieldName: "complaint",
-                            label: (
-                              <AlgaehLabel
-                                label={{ forceLabel: "Entered By" }}
-                              />
-                            )
-                          },
-                          {
-                            fieldName: "complaint",
-                            label: (
-                              <AlgaehLabel label={{ forceLabel: "Action" }} />
+                              <AlgaehLabel label={{ forceLabel: "HIP Type" }} />
+                            ),
+                            displayTemplate: row => (
+                              <span>
+                                {row.element_type === "L"
+                                  ? "Location"
+                                  : row.element_type === "Q"
+                                  ? "Quality"
+                                  : row.element_type === "C"
+                                  ? "Context"
+                                  : row.element_type === "T"
+                                  ? "Timing"
+                                  : row.element_type === "M"
+                                  ? "Modification Factor"
+                                  : row.element_type === "A"
+                                  ? "Associated Symptoms"
+                                  : ""}
+                              </span>
                             )
                           }
                         ]}
                         keyId="hpi"
                         dataSource={{
-                          data: []
+                          data: this.state.patientHPIElements
                         }}
                         isEditable={false}
                         paging={{ page: 0, rowsPerPage: 10 }}
@@ -949,8 +994,18 @@ class ChiefComplaints extends Component {
               <div className="col-lg-12">
                 <div className="row">
                   <div className="col-lg-4">
-                    <button className="btn btn-primary">Add</button>
-                    <button className="btn btn-default">Clear</button>
+                    <button
+                      className="btn btn-primary"
+                      onClick={this.HPIElementsSaveToPatient.bind(this)}
+                    >
+                      Add
+                    </button>
+                    <button
+                      className="btn btn-default"
+                      onClick={this.CleanHPIElements.bind(this)}
+                    >
+                      Clear
+                    </button>
                   </div>
                   <div className="col-lg-8">
                     <button

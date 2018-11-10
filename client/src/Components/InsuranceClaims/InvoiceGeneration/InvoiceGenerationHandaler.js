@@ -64,10 +64,24 @@ const getVisitWiseBillDetailS = $this => {
     },
     afterSuccess: data => {
       if (data.length != 0) {
+        //created by Adnan
+        let gross_total = Enumerable.from(data)
+          .select(w => w.gross_amount)
+          .sum();
+
+        let discout_total = Enumerable.from(data)
+          .select(w => w.discount_amout)
+          .sum();
+        //created by Adnan
+
         $this.setState({
           saveEnable: false,
           clearEnable: false,
-          Invoice_Detail: data
+          Invoice_Detail: data,
+          //created by Adnan
+          totalGross: gross_total,
+          totalDiscount: discout_total
+          //created by Adnan
         });
 
         $this.props.billingCalculations({

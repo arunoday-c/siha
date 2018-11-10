@@ -246,7 +246,7 @@
     { "name": "Under Process", "value": "UP", "color": "#cea6fc" },
     { "name": "Cancelled", "value": "CN", "color": "#ff4000" },
     { "name": "Result  Confirmed ", "value": "RC", "color": "#ff99ff" },
-    { "name": "Result Avaiable", "value": "RA", "color": "#00ffff" }
+    { "name": "Result Avaiable", "value": "RA", "color": "#56ce74" }
   ],
   "ALLERGY_TYPES": [
     {

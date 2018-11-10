@@ -13,12 +13,12 @@ import { setGlobal } from "../../../utils/GlobalFunctions";
 class MRDList extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       date_of_birth: null,
       registration_date: null,
       patientData: []
     };
+
     this.baseState = this.state;
   }
 
@@ -28,8 +28,14 @@ class MRDList extends Component {
 
   getPatientMrdList(e) {
     e.preventDefault();
-
     algaehLoader({ show: true });
+
+    let reg_date = moment(this.state.registration_date).isValid()
+      ? this.state.registration_date
+      : null;
+    let dob = moment(this.state.date_of_birth).isValid()
+      ? this.state.date_of_birth
+      : null;
 
     algaehApiCall({
       uri: "/mrd/getPatientMrdList",
@@ -38,8 +44,8 @@ class MRDList extends Component {
         full_name: this.state.full_name !== "" ? this.state.full_name : null,
         patient_code:
           this.state.patient_code !== "" ? this.state.patient_code : null,
-        registration_date: this.state.registration_date,
-        date_of_birth: this.state.date_of_birth,
+        registration_date: reg_date,
+        date_of_birth: dob,
         contact_number:
           this.state.contact_number !== "" ? this.state.contact_number : null
       },
@@ -129,11 +135,11 @@ class MRDList extends Component {
                   className: "txt-fld",
                   name: "date_of_birth"
                 }}
-                // maxDate={new Date()}
+                maxDate={new Date()}
                 events={{
                   onChange: selectedDate => {
                     this.setState({
-                      date_of_birth: moment(selectedDate).format("YYYY-MM-DD")
+                      date_of_birth: selectedDate
                     });
                   }
                 }}
@@ -147,13 +153,11 @@ class MRDList extends Component {
                   className: "txt-fld",
                   name: "registration_date"
                 }}
-                //maxDate={new Date()}
+                maxDate={new Date()}
                 events={{
                   onChange: selectedDate => {
                     this.setState({
-                      registration_date: moment(selectedDate).format(
-                        "YYYY-MM-DD"
-                      )
+                      registration_date: selectedDate
                     });
                   }
                 }}
