@@ -5,6 +5,9 @@ const getItems = $this => {
     redux: {
       type: "ITEMS_GET_DATA",
       mappingName: "itemlist"
+    },
+    afterSuccess: data => {
+      debugger;
     }
   });
 };

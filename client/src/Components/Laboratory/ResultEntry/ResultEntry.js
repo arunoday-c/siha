@@ -32,7 +32,8 @@ class ResultEntry extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      test_analytes: []
+      test_analytes: [],
+      run_type: "N"
     };
   }
 
@@ -100,6 +101,7 @@ class ResultEntry extends Component {
     }
   }
   render() {
+    debugger;
     let display =
       this.props.providers === undefined
         ? []
@@ -602,7 +604,9 @@ class ResultEntry extends Component {
                   onClick={onReRun.bind(this, this)}
                   disabled={
                     this.state.entered_by !== null
-                      ? (this.state.run_type = 3 ? true : false)
+                      ? this.state.run_type === 3
+                        ? true
+                        : false
                       : true
                   }
                 >

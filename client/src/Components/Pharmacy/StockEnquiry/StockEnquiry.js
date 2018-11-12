@@ -119,7 +119,8 @@ class StockEnquiry extends Component {
                       data: this.props.locations
                     },
 
-                    onChange: changeTexts.bind(this, this)
+                    onChange: changeTexts.bind(this, this),
+                    onClear: changeTexts.bind(this, this)
                   }}
                 />
 
@@ -135,7 +136,8 @@ class StockEnquiry extends Component {
                       valueField: "hims_d_item_master_id",
                       data: this.props.itemlist
                     },
-                    onChange: changeTexts.bind(this, this)
+                    onChange: changeTexts.bind(this, this),
+                    onClear: changeTexts.bind(this, this)
                   }}
                 />
                 <div className="col-lg-3">

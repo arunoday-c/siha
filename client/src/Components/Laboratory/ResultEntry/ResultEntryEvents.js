@@ -246,6 +246,7 @@ const onconfirm = $this => {
       cancelButtonText: "No"
     }).then(willProceed => {
       if (willProceed.value) {
+        debugger;
         test_analytes.push({ run_type: $this.state.run_type });
         UpdateLabOrder($this, test_analytes, "CF");
       }

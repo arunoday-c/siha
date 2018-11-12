@@ -1,8 +1,6 @@
 "use strict";
 import extend from "extend";
 import {
-  whereCondition,
-  deleteRecord,
   releaseDBConnection,
   jsonArrayToObject,
   runningNumberGen
