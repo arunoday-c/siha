@@ -2447,6 +2447,75 @@ let getVitalsHeaderMaster = (req, res, next) => {
   }
 };
 
+//created by irfan: to add patient_historty
+let addPatientHistory = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT INTO `hims_f_patient_history` (history_type,provider_id, patient_id, remarks, created_date, created_by, updated_date, updated_by)\
+          VALUE(?,?,?,?,?,?,?,?)",
+        [
+          input.history_type,
+          input.provider_id,
+          input.patient_id,
+          input.remarks,
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to getPatientHistory
+let getPatientHistory = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_f_patient_history_id,history_type, provider_id, patient_id, remarks from hims_f_patient_history\
+        where record_status='A' and patient_id=?",
+        [req.query.patient_id],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   physicalExaminationHeader,
   physicalExaminationDetails,
@@ -2496,5 +2565,7 @@ module.exports = {
   getPatientDiagnosis,
   getPatientDiet,
   getAllPhysicalExamination,
-  getVitalsHeaderMaster
+  getVitalsHeaderMaster,
+  addPatientHistory,
+  getPatientHistory
 };
