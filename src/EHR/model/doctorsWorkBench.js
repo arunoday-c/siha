@@ -2471,26 +2471,40 @@ let addPatientHistory = (req, res, next) => {
       if (error) {
         next(error);
       }
+      let input = extend({}, req.body);
+
+      const insurtColumns = [
+        "history_type",
+        "remarks",
+        "created_by",
+        "updated_by"
+      ];
 
       connection.query(
-        "INSERT INTO `hims_f_patient_history` (history_type,provider_id, patient_id, remarks, created_date, created_by, updated_date, updated_by)\
-          VALUE(?,?,?,?,?,?,?,?)",
+        "INSERT INTO hims_f_patient_history(" +
+          insurtColumns.join(",") +
+          ",patient_id,provider_id, created_date,updated_date) VALUES ?",
         [
-          input.history_type,
-          input.provider_id,
-          input.patient_id,
-          input.remarks,
-          new Date(),
-          input.created_by,
-          new Date(),
-          input.updated_by
+          jsonArrayToObject({
+            sampleInputObject: insurtColumns,
+            arrayObj: req.body.patient_history,
+            newFieldToInsert: [
+              input.patient_id,
+              input.provider_id,
+              new Date(),
+              new Date()
+            ],
+            req: req
+          })
         ],
-        (error, result) => {
+
+        (error, results) => {
           releaseDBConnection(db, connection);
           if (error) {
             next(error);
           }
-          req.records = result;
+          debugLog("Results are recorded...");
+          req.records = results;
           next();
         }
       );
