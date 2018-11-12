@@ -2428,10 +2428,90 @@ let getVitalsHeaderMaster = (req, res, next) => {
     let db = req.db;
 
     db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
       connection.query(
-        "select hims_d_vitals_header_id, vitals_name, uom, general, display \
-        from hims_d_vitals_header  where record_status='A'",
+        "with vitals (hims_d_vitals_header_id,vitals_name, uom, general,display,mandatory) as \
+        ( \
+        SELECT H.hims_d_vitals_header_id, vitals_name, uom, general,display,mandatory FROM hims_d_vitals_header H \
+         where general='Y' and H.record_status='A' \
+          UNION ALL \
+          select H.hims_d_vitals_header_id, vitals_name, uom, general,display,mandatory from hims_d_vitals_header H,hims_m_department_vital_mapping M \
+         where general='N' and H.record_status='A' and H.hims_d_vitals_header_id =M.vital_header_id and  M.department_id=?  \
+        ) \
+        SELECT hims_d_vitals_header_id,vitals_name, uom, general,display,mandatory from vitals",
+        [req.userIdentity.sub_department_id],
 
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to add patient_historty
+let addPatientHistory = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT INTO `hims_f_patient_history` (history_type,provider_id, patient_id, remarks, created_date, created_by, updated_date, updated_by)\
+          VALUE(?,?,?,?,?,?,?,?)",
+        [
+          input.history_type,
+          input.provider_id,
+          input.patient_id,
+          input.remarks,
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to getPatientHistory
+let getPatientHistory = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_f_patient_history_id,history_type, provider_id, patient_id, remarks from hims_f_patient_history\
+        where record_status='A' and patient_id=?",
+        [req.query.patient_id],
         (error, result) => {
           releaseDBConnection(db, connection);
           if (error) {
@@ -2496,5 +2576,7 @@ module.exports = {
   getPatientDiagnosis,
   getPatientDiet,
   getAllPhysicalExamination,
-  getVitalsHeaderMaster
+  getVitalsHeaderMaster,
+  addPatientHistory,
+  getPatientHistory
 };

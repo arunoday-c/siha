@@ -5,17 +5,6 @@ export default {
   // Server port and request body limit
   port: 3002,
   bodyLimit: "900kb",
-  // Dev db
-  // mysqlDb: {
-  //   connectionLimit: 20,
-  //   host: "him-app-db-server.cue9pqguf30s.ap-south-1.rds.amazonaws.com",
-  //   port: 3306,
-  //   user: "root",
-  //   password: "medteam2013",
-  //   database: "algaeh_hims_db",
-  //   multipleStatements: true,
-  //   acquireTimeout: 20000
-  // },
 
   mysqlDb: {
     connectionLimit: 20,
@@ -67,5 +56,6 @@ export default {
     endpoint: "https://translate.us-east-1.amazonaws.com"
   },
   /* folder path for language changing */
-  languageFolderPath: "/media/syed/Office/ALGAEH/DEV/HIMS/hims-app/logs"
+  languageFolderPath: "/media/syed/Office/ALGAEH/DEV/HIMS/hims-app/logs",
+  fileStorageInDB: false
 };

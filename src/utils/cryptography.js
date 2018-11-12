@@ -9,7 +9,8 @@ let encryption = data => {
       employee_id: data["employee_id"],
       sub_department_id: data["sub_department_id"],
       role_id: data["role_id"],
-      app_group_id: data["app_group_id"]
+      app_group_id: data["app_group_id"],
+      group_type: data["group_type"]
     }
   });
   return new cryptr(keys.SECRETKey).encrypt(stringData);

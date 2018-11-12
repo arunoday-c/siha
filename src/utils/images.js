@@ -7,6 +7,7 @@ import mkdirp from "mkdirp";
 import { LINQ } from "node-linq";
 import sharp from "sharp";
 import mime from "mime/lite";
+import config from "../keys/keys";
 let logDirectory = path.join(__dirname, "../../Documents");
 if (!fs.existsSync(logDirectory)) {
   fs.mkdirSync(logDirectory);
@@ -44,54 +45,61 @@ function readFileToBase64(folderName, imageName) {
   //PAT-A-0000377 convert binary data to base64 encoded string
   return bufferFile;
 }
-const storage = multer.diskStorage({
-  destination: function(req, file, next) {
-    const _ip = req.headers["x-client-ip"];
-    if (_ip != null && _ip != "") {
-      const _fileDetails = JSON.parse(req.headers["x-file-details"]);
-      let _filePath = "../../Documents";
-      if (_fileDetails.saveDirectly) {
-        _filePath +=
-          "/" + _fileDetails.fileType + "/" + _fileDetails.destinationName;
-      } else {
-        _filePath += "/TempStore/" + _ip;
-      }
 
-      const _path = path.join(__dirname, _filePath);
-      // if (!fs.existsSync(_path)) {
-      //   fs.mkdirSync(_path);
-      // }
-      mkdirp(_path, error => {
-        if (error) throw error;
-        else {
-          next(null, _path);
-        }
-      });
-    } else {
-      throw "Unknow client IP not recorded";
-    }
-  },
-  filename: function(req, file, next) {
-    const _fileDetails = JSON.parse(req.headers["x-file-details"]);
-    const _fileExtention = path.extname(file.originalname);
-    let _fileName = _fileDetails.saveDirectly
-      ? _fileDetails.tempFileName + _fileExtention
-      : _fileDetails.pageName +
-        "_" +
-        _fileDetails.tempFileName +
-        _fileExtention;
-
-    next(null, _fileName);
-  }
-});
-let upload = multer({ storage: storage });
-let Fupload = upload.fields([{ name: "file", maxCount: 12 }]);
 const saveImageInTemp = (req, res, next) => {
+  const storage = multer.diskStorage({
+    destination: function(req, file, next) {
+      debugLog("Inside destination");
+      const _ip = req.headers["x-client-ip"];
+      if (_ip != null && _ip != "") {
+        const _fileDetails = JSON.parse(req.headers["x-file-details"]);
+
+        if (!config.fileStorageInDB) {
+          let _filePath = "../../Documents";
+
+          if (_fileDetails.saveDirectly) {
+            _filePath +=
+              "/" + _fileDetails.fileType + "/" + _fileDetails.destinationName;
+          } else {
+            _filePath += "/TempStore/" + _ip;
+          }
+
+          const _path = path.join(__dirname, _filePath);
+          mkdirp(_path, error => {
+            if (error) throw error;
+            else {
+              next(null, _path);
+            }
+          });
+        } else {
+          next(null);
+        }
+      } else {
+        throw "Unknow client IP not recorded";
+      }
+    },
+    filename: function(req, file, next) {
+      debugLog("Inside filename");
+      const _fileDetails = JSON.parse(req.headers["x-file-details"]);
+      const _fileExtention = path.extname(file.originalname);
+      let _fileName = _fileDetails.saveDirectly
+        ? _fileDetails.tempFileName + _fileExtention
+        : _fileDetails.pageName +
+          "_" +
+          _fileDetails.tempFileName +
+          _fileExtention;
+
+      next(null, _fileName);
+    }
+  });
+  let upload = multer({ storage: storage });
+  let Fupload = upload.fields([{ name: "file", maxCount: 12 }]);
   Fupload(req, res, err => {
     if (err) {
       debugLog("An error occurred when uploading", err);
-      next(httpStatus.generateError(500, err));
+      next(httpStatus.generateError(httpStatus.internalServer, err));
     } else {
+      debugLog("Success In Image");
       res.status(httpStatus.ok).json({
         success: true,
         records: "Successfully uploaded image"

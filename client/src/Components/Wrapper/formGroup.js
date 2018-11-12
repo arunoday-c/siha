@@ -29,13 +29,6 @@ export default class FormGroup extends PureComponent {
   };
 
   componentWillMount() {
-    // let textTypeValue =
-    //   this.props.textBox.decimal !== undefined
-    //     ? 0.0
-    //     : this.props.textBox.number !== undefined
-    //       ? 0
-    //       : "";
-
     this.setState({
       value: this.props.textBox.value,
       disabled:
@@ -51,13 +44,6 @@ export default class FormGroup extends PureComponent {
       props.textBox.helperText !== this.state.helperText ||
       props.textBox.disabled !== this.state.disabled
     ) {
-      // let textTypeValue =
-      //   props.textBox.decimal !== undefined
-      //     ? 0.0
-      //     : props.textBox.number !== undefined
-      //       ? 0
-      //       : "";
-
       this.setState({
         value: props.textBox.value,
         error: props.textBox.error,
@@ -105,6 +91,10 @@ export default class FormGroup extends PureComponent {
               onBlur: this.errorInvoid.bind(this)
             }
           : {};
+      const _onChange =
+        this.props.textBox.events !== undefined
+          ? { onChange: this.props.textBox.events.onChange }
+          : {};
       if (this.props.textBox.decimal !== undefined) {
         return (
           <input
@@ -112,11 +102,7 @@ export default class FormGroup extends PureComponent {
             step=".0"
             name={this.props.textBox.name}
             value={_value}
-            onChange={
-              this.props.textBox.events !== undefined
-                ? this.props.textBox.events.onChange
-                : () => {}
-            }
+            {..._onChange}
             {..._disabled}
             {..._required}
             {...this.props.textBox.others}
@@ -130,11 +116,7 @@ export default class FormGroup extends PureComponent {
             step=".0"
             name={this.props.textBox.name}
             value={_value}
-            onChange={
-              this.props.textBox.events !== undefined
-                ? this.props.textBox.events.onChange
-                : () => {}
-            }
+            {..._onChange}
             {..._required}
             {..._disabled}
             {...this.props.textBox.others}
@@ -148,11 +130,7 @@ export default class FormGroup extends PureComponent {
             step=".0"
             name={this.props.textBox.name}
             value={_value}
-            onChange={
-              this.props.textBox.events !== undefined
-                ? this.props.textBox.events.onChange
-                : () => {}
-            }
+            {..._onChange}
             {..._disabled}
             {..._required}
             {...this.props.textBox.others}
@@ -172,7 +150,7 @@ export default class FormGroup extends PureComponent {
               type="text"
               name={this.props.textBox.name}
               value={_value}
-              onChange={this.props.textBox.events.onChange}
+              {..._onChange}
               {..._disabled}
               {..._required}
               {..._invalid}
@@ -189,7 +167,7 @@ export default class FormGroup extends PureComponent {
             <textarea
               name={this.props.textBox.name}
               value={_value}
-              onChange={this.props.textBox.events.onChange}
+              {..._onChange}
               {..._disabled}
               {..._required}
               {..._invalid}

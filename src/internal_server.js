@@ -15,7 +15,6 @@ import httpStatus from "./utils/httpStatus";
 import { logger, requestTracking } from "./utils/logging";
 import jwtDecode from "jwt-decode";
 import { decryption } from "./utils/cryptography";
-
 let app = express();
 const _port = keys.port;
 if (process.env.NODE_ENV == "production") {
@@ -33,7 +32,6 @@ app.use(
     limit: config.bodyLimit
   })
 );
-
 //passport config
 app.use(passport.initialize());
 passport.use(
@@ -126,53 +124,51 @@ process.on("warning", warning => {
 process.on("uncaughtException", error => {
   logger.log("error", error);
 });
+process.on("unhandledRejection", (reason, promise) => {
+  logger.error("Unhandled rejection", { reason: reason, promise: promise });
+});
 //Error Handling MiddleWare
 app.use((error, req, res, next) => {
   error.status = error.status || httpStatus.internalServer;
-  if(req.db !=null){
+  if (req.db != null) {
     let connection = req.connection;
-    if(connection!=null){
+    if (connection != null) {
       if (req.db._freeConnections.indexOf(connection) == -1) {
-        if(typeof  connection.rollback =="function"){
+        if (typeof connection.rollback == "function") {
           connection.rollback(() => {
-            if(typeof connection.release =="function" )
-            connection.release();
+            if (typeof connection.release == "function") connection.release();
             res.status(error.status).json({
               success: false,
-              message: error.sqlMessage != null ? error.sqlMessage : error.message,
+              message:
+                error.sqlMessage != null ? error.sqlMessage : error.message,
               isSql: error.sqlMessage != null ? true : false
             });
           });
-        }else{
-          if(typeof connection.release =="function" )
-          connection.release();
+        } else {
+          if (typeof connection.release == "function") connection.release();
           res.status(error.status).json({
             success: false,
-            message: error.sqlMessage != null ? error.sqlMessage : error.message,
+            message:
+              error.sqlMessage != null ? error.sqlMessage : error.message,
             isSql: error.sqlMessage != null ? true : false
           });
         }
-       
-       
       }
-    
-     
-    }else{
+    } else {
       res.status(error.status).json({
         success: false,
         message: error.sqlMessage != null ? error.sqlMessage : error.message,
         isSql: error.sqlMessage != null ? true : false
       });
     }
-    
-  }else{
+  } else {
     res.status(error.status).json({
       success: false,
       message: error.sqlMessage != null ? error.sqlMessage : error.message,
       isSql: error.sqlMessage != null ? true : false
     });
   }
- 
+
   const _error = {
     source: req.originalUrl,
     requestClient: req.headers["x-client-ip"],

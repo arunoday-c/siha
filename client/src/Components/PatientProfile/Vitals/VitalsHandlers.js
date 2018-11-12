@@ -16,6 +16,17 @@ const getVitalHistory = $this => {
     }
   });
 };
+const getDepartmentVitals = $this => {
+  $this.props.getDepartmentVitals({
+    uri: "/doctorsWorkBench/getVitalsHeaderMaster",
+    method: "GET",
+    cancelRequestId: "getVitalsHeaderMaster",
+    redux: {
+      type: "DEPARTMENT_VITALS",
+      mappingName: "department_vitals"
+    }
+  });
+};
 
 const getFormula = options => {
   if (options === undefined) return;
@@ -59,8 +70,17 @@ const BMICalculation = (weight, height, calculation) => {
   eval(calculation);
   return (BMI = typeof BMI === "number" ? BMI.toFixed(3) : BMI);
 };
-const temperatureFarenheat = degrees => {
-  return (degrees * 9) / 5 + 32;
+const temperatureConvertion = (temprature, tofarenheat = true) => {
+  if (temprature === "") {
+    return "";
+  }
+  if (tofarenheat) return (temprature * 9) / 5 + 32;
+  else return (temprature - 32) * (5 / 9);
 };
 
-export { getVitalHistory, getFormula, temperatureFarenheat };
+export {
+  getVitalHistory,
+  getFormula,
+  temperatureConvertion,
+  getDepartmentVitals
+};

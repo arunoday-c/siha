@@ -126,11 +126,11 @@ class Dental extends Component {
           key={i}
           className={
             "col tooth-sec down-side " +
-            (i <= 30
+            (counter <= 3
               ? "molar-down-"
-              : i <= 28
+              : counter <= 5
               ? "premolar-down-"
-              : i === 27
+              : counter === 6
               ? "canine-down-"
               : "incisors-down-") +
             counter

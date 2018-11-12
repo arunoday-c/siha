@@ -49,7 +49,9 @@ import {
   getPatientAllergies,
   getPatientDiet,
   getAllPhysicalExamination,
-  getVitalsHeaderMaster
+  getVitalsHeaderMaster,
+  addPatientHistory,
+  getPatientHistory
 } from "../model/doctorsWorkBench";
 export default ({ config, db }) => {
   let api = Router();
@@ -795,5 +797,36 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+
+  //created by irfan: to  addPatientHistory
+  api.post(
+    "/addPatientHistory",
+    addPatientHistory,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  //created by irfan: to  getPatientHistory
+  api.get(
+    "/getPatientHistory",
+    getPatientHistory,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
   return api;
 };
