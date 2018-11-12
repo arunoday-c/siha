@@ -169,10 +169,31 @@ const InsuranceDetails = ($this, context, e) => {
                 policy_number: row.policy_number
               };
 
+              let mappingName = "";
+              let insObj = $this.props.existinsurance || [];
+              if (
+                $this.props.existinsurance === undefined ||
+                $this.props.existinsurance.length === 0
+              ) {
+                mappingName = "secondaryinsurance";
+                insObj.push(obj);
+              } else {
+                mappingName = "existinsurance";
+                insObj.push(obj);
+              }
+
               $this.props.setSelectedInsurance({
                 redux: {
                   type: "SECONDARY_INSURANCE_DATA",
-                  mappingName: "secondaryinsurance",
+                  mappingName: mappingName,
+                  data: insObj
+                }
+              });
+
+              $this.props.setSelectedInsurance({
+                redux: {
+                  type: "SECONDARY_INSURANCE_DATA",
+                  mappingName: mappingName,
                   data: [obj]
                 }
               });
@@ -221,11 +242,24 @@ const InsuranceDetails = ($this, context, e) => {
             policy_number: row.policy_number
           };
 
+          let mappingName = "";
+          let insObj = $this.props.existinsurance || [];
+          if (
+            $this.props.existinsurance === undefined ||
+            $this.props.existinsurance.length === 0
+          ) {
+            mappingName = "secondaryinsurance";
+            insObj.push(obj);
+          } else {
+            mappingName = "existinsurance";
+            insObj.push(obj);
+          }
+
           $this.props.setSelectedInsurance({
             redux: {
               type: "SECONDARY_INSURANCE_DATA",
-              mappingName: "secondaryinsurance",
-              data: [obj]
+              mappingName: mappingName,
+              data: insObj
             }
           });
 

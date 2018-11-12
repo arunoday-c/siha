@@ -8,9 +8,7 @@ import "./../../../../styles/site.css";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehFormGroup,
-  AlagehAutoComplete,
-  AlgaehDateHandler
+  AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
 
 import {
@@ -21,7 +19,8 @@ import {
   deleteTransEntryDetail,
   updateTransEntryDetail,
   // UomchangeTexts,
-  dateFormater
+  dateFormater,
+  getItemLocationStock
 } from "./TransferEntryItemsEvents";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 
@@ -88,13 +87,6 @@ class TransferEntryItems extends Component {
             <div className="row">
               <div className="col-lg-12">
                 <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
-                  {/* <div className="portlet-title">
-            <div className="caption">
-              <h3 className="caption-subject">Investigation Lists</h3>
-            </div>
-            <div className="actions">
-            </div>
-          </div> */}
                   <div className="portlet-body" id="REQ_details_Cntr">
                     <AlgaehDataGrid
                       id="REQ_details"
@@ -301,22 +293,6 @@ class TransferEntryItems extends Component {
                             />
                           ),
                           disabled: true
-                          // editorTemplate: row => {
-                          //   return (
-                          //     <AlagehFormGroup
-                          //       div={{}}
-                          //       textBox={{
-                          //         value: row.quantity_required,
-                          //         className: "txt-fld",
-                          //         name: "quantity_required",
-                          //         events: { onChange: null },
-                          //         others: {
-                          //           disabled: true
-                          //         }
-                          //       }}
-                          //     />
-                          //   );
-                          // }
                         },
                         {
                           fieldName: "quantity_authorized",
@@ -328,29 +304,6 @@ class TransferEntryItems extends Component {
                             />
                           ),
                           disabled: true
-                          // editorTemplate: row => {
-                          //   return (
-                          //     <AlagehFormGroup
-                          //       div={{}}
-                          //       textBox={{
-                          //         value: row.quantity_authorized,
-                          //         className: "txt-fld",
-                          //         name: "quantity_authorized",
-                          //         events: {
-                          //           onChange: onchangegridcol.bind(
-                          //             this,
-                          //             this,
-                          //             context,
-                          //             row
-                          //           )
-                          //         },
-                          //         others: {
-                          //           disabled: this.state.authorizeEnable
-                          //         }
-                          //       }}
-                          //     />
-                          //   );
-                          // }
                         },
                         {
                           fieldName: "quantity_transferred",
@@ -377,9 +330,6 @@ class TransferEntryItems extends Component {
                                       row
                                     )
                                   }
-                                  // others: {
-                                  //   disabled: this.state.authorizeEnable
-                                  // }
                                 }}
                               />
                             );
@@ -401,10 +351,35 @@ class TransferEntryItems extends Component {
                         onEdit: row => {},
                         onDone: updateTransEntryDetail.bind(this, this)
                       }}
+                      onRowSelect={row => {
+                        getItemLocationStock(this, row);
+                      }}
                     />
                   </div>
+                  <div className="row">
+                    <div
+                      className="col-lg-2"
+                      style={{
+                        paddingTop: "10px"
+                      }}
+                    >
+                      <div
+                        style={{
+                          border: "1px solid #000",
+                          paddingLeft: "10px"
+                        }}
+                      >
+                        <h5>Quantity in Hand</h5>
+                        <h6>
+                          {this.state.total_quantity
+                            ? this.state.total_quantity + " nos"
+                            : "0 nos"}
+                        </h6>
+                      </div>
+                    </div>
+                    <div className="col-lg-10" />
+                  </div>
                 </div>
-                {/* </div> */}
               </div>
             </div>
           )}
@@ -420,7 +395,8 @@ function mapStateToProps(state) {
     itemdetaillist: state.itemdetaillist,
     itemcategory: state.itemcategory,
     itemuom: state.itemuom,
-    itemgroup: state.itemgroup
+    itemgroup: state.itemgroup,
+    itemBatch: state.itemBatch
   };
 }
 
@@ -431,7 +407,8 @@ function mapDispatchToProps(dispatch) {
       getItemCategory: AlgaehActions,
       getItemGroup: AlgaehActions,
       getItemUOM: AlgaehActions,
-      getTransferData: AlgaehActions
+      getTransferData: AlgaehActions,
+      getItemLocationStock: AlgaehActions
     },
     dispatch
   );

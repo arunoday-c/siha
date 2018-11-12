@@ -109,6 +109,7 @@ const getSampleCollectionDetails = $this => {
       mappingName: "samplecollection"
     },
     afterSuccess: data => {
+      debugger;
       $this.setState({ sample_collection: data });
     }
   });
