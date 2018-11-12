@@ -6,7 +6,9 @@ import { debugLog, debugFunction } from "../utils/logging";
 import {
   addFrontDesk,
   updateFrontDesk,
-  selectFrontDesk
+  selectFrontDesk,
+  getCashHandoverDetails,
+  updateCashHandoverDetails
 } from "../model/frontDesk";
 import httpStatus from "../utils/httpStatus";
 export default ({ config, db }) => {
@@ -69,6 +71,36 @@ export default ({ config, db }) => {
         });
         next();
       }
+    },
+    releaseConnection
+  );
+
+  // created by irfan :to
+  api.get(
+    "/getCashHandoverDetails",
+    getCashHandoverDetails,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :to
+  api.put(
+    "/updateCashHandoverDetails",
+    updateCashHandoverDetails,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
     },
     releaseConnection
   );
