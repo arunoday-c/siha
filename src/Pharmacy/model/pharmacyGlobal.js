@@ -146,6 +146,7 @@ let getItemLocationStock = (req, res, next) => {
     }
     let db = req.db;
 
+    // let Orderby = "order by expirydt";
     // let input = extend({}, req.query);
 
     db.getConnection((error, connection) => {
@@ -222,10 +223,53 @@ let getUserLocationPermission = (req, res, next) => {
   }
 };
 
+//created by Nowshad: to get Items in selected Location
+let getItemandLocationStock = (req, res, next) => {
+  let selectWhere = {
+    item_id: "ALL",
+    pharmacy_location_id: "ALL"
+  };
+
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let where = whereCondition(extend(selectWhere, req.query));
+    let Orderby = " order by expirydt";
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      db.query(
+        "SELECT hims_m_item_location_id, item_id, pharmacy_location_id, item_location_status, batchno, expirydt, barcode, qtyhand, qtypo, cost_uom,\
+        avgcost, last_purchase_cost, item_type, grn_id, grnno, sale_price, mrp_price, sales_uom \
+        from hims_m_item_location where record_status='A' and qtyhand>0 and " +
+          where.condition,
+        where.values,
+
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getUomLocationStock,
   getVisitPrescriptionDetails,
   getItemMoment,
   getItemLocationStock,
-  getUserLocationPermission
+  getUserLocationPermission,
+  getItemandLocationStock
 };

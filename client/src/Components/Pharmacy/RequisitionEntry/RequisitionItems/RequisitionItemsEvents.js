@@ -19,25 +19,20 @@ const UomchangeTexts = ($this, ctrl, e) => {
   });
 };
 
-const numberchangeTexts = ($this, e) => {
+const numberchangeTexts = ($this, context, e) => {
   debugger;
 
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   $this.setState({ [name]: value });
-
-  // clearInterval(texthandlerInterval);
-  // texthandlerInterval = setInterval(() => {
-  //   if (context !== undefined) {
-  //     context.updateState({
-  //       [name]: value
-  //     });
-  //   }
-  //   clearInterval(texthandlerInterval);
-  // }, 1000);
+  if (context !== undefined) {
+    context.updateState({
+      [name]: value
+    });
+  }
 };
 
-const itemchangeText = ($this, e) => {
+const itemchangeText = ($this, context, e) => {
   debugger;
   let name = e.name || e.target.name;
   if ($this.state.to_location_id !== null) {
@@ -55,8 +50,9 @@ const itemchangeText = ($this, e) => {
         mappingName: "itemdetaillist"
       },
       afterSuccess: data => {
-        debugger;
         if (data.locationResult.length > 0) {
+          debugger;
+          getItemLocationStock($this, { item_id: value });
           $this.setState({
             [name]: value,
             item_category_id: e.selected.category_id,
@@ -68,6 +64,20 @@ const itemchangeText = ($this, e) => {
 
             ItemUOM: data.uomResult
           });
+
+          if (context !== undefined) {
+            context.updateState({
+              [name]: value,
+              item_category_id: e.selected.category_id,
+              item_uom: e.selected.sales_uom_id,
+
+              item_group_id: e.selected.group_id,
+              quantity: 1,
+              addItemButton: false,
+
+              ItemUOM: data.uomResult
+            });
+          }
         } else {
           successfulMessage({
             message: "Invalid Input. No Stock Avaiable for selected Item.",
@@ -193,6 +203,34 @@ const onchangegridcol = ($this, context, row, e) => {
   }
 };
 
+const getItemLocationStock = ($this, value) => {
+  debugger;
+  $this.props.getItemLocationStock({
+    uri: "/pharmacyGlobal/getItemLocationStock",
+    method: "GET",
+    data: {
+      location_id: $this.state.to_location_id,
+      item_id: value.item_id
+    },
+    redux: {
+      type: "ITEMS_BATCH_GET_DATA",
+      mappingName: "itemBatch"
+    },
+    afterSuccess: data => {
+      if (data.length !== 0) {
+        let total_quantity = 0;
+        for (let i = 0; i < data.length; i++) {
+          let qtyhand = data[i].qtyhand;
+          total_quantity = total_quantity + qtyhand;
+        }
+        $this.setState({
+          total_quantity: total_quantity
+        });
+      }
+    }
+  });
+};
+
 export {
   UomchangeTexts,
   itemchangeText,
@@ -201,5 +239,6 @@ export {
   datehandle,
   deleteRequisitionDetail,
   updatePosDetail,
-  onchangegridcol
+  onchangegridcol,
+  getItemLocationStock
 };

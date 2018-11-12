@@ -308,6 +308,34 @@ const dateFormater = ($this, value) => {
   }
 };
 
+const getItemLocationStock = ($this, value) => {
+  debugger;
+  $this.props.getItemLocationStock({
+    uri: "/pharmacyGlobal/getItemLocationStock",
+    method: "GET",
+    data: {
+      location_id: $this.state.from_location_id,
+      item_id: value.item_id
+    },
+    redux: {
+      type: "ITEMS_BATCH_GET_DATA",
+      mappingName: "itemBatch"
+    },
+    afterSuccess: data => {
+      if (data.length !== 0) {
+        let total_quantity = 0;
+        for (let i = 0; i < data.length; i++) {
+          let qtyhand = data[i].qtyhand;
+          total_quantity = total_quantity + qtyhand;
+        }
+        $this.setState({
+          total_quantity: total_quantity
+        });
+      }
+    }
+  });
+};
+
 export {
   UomchangeTexts,
   itemchangeText,
@@ -317,5 +345,6 @@ export {
   deleteTransEntryDetail,
   updateTransEntryDetail,
   onchangegridcol,
-  dateFormater
+  dateFormater,
+  getItemLocationStock
 };

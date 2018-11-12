@@ -23,6 +23,7 @@ export default {
       transfer_quantity: 0,
       requested_quantity: 0,
       outstanding_quantity: 0,
+      total_quantity: 0,
 
       cancelled: "N",
       cancelled_by: null,
@@ -31,7 +32,7 @@ export default {
       addedItem: false,
 
       saveEnable: true,
-      authorizeEnable: true,
+      postEnable: true,
 
       addItemButton: true,
       item_id: null,

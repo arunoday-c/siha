@@ -28,7 +28,8 @@ import {
   CloseItemBatch,
   onchangegridcol,
   PosheaderCalculation,
-  ViewInsurance
+  ViewInsurance,
+  getItemLocationStock
 } from "./PosListItemsEvents";
 import ReciptForm from "./ReciptDetails/AddReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -627,6 +628,9 @@ class PosListItems extends Component {
                               onEdit: row => {},
                               onDone: updatePosDetail.bind(this, this)
                             }}
+                            onRowSelect={row => {
+                              getItemLocationStock(this, row);
+                            }}
                           />
                         </div>
                       </div>
@@ -635,7 +639,20 @@ class PosListItems extends Component {
                 </div>
 
                 <div className="row">
-                  <div className="col-lg-7" />
+                  <div className="col-lg-2">
+                    <div
+                      style={{ border: "1px solid #000", paddingLeft: "10px" }}
+                    >
+                      <h5>Quantity in Hand</h5>
+                      <h6>
+                        {this.state.total_quantity
+                          ? this.state.total_quantity + " nos"
+                          : "0 nos"}
+                      </h6>
+                    </div>
+                   
+                  </div>
+                  <div className="col-lg-5" />
                   <div className="col-lg-5" style={{ textAlign: "right" }}>
                     <div className="row">
                       <div className="col-lg-4">

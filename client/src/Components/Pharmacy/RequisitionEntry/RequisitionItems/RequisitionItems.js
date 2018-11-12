@@ -19,7 +19,8 @@ import {
   deleteRequisitionDetail,
   updatePosDetail,
   onchangegridcol,
-  UomchangeTexts
+  UomchangeTexts,
+  getItemLocationStock
 } from "./RequisitionItemsEvents";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 
@@ -104,7 +105,7 @@ class RequisitionItems extends Component {
                           others: {
                             disabled: this.state.ItemDisable
                           },
-                          onChange: itemchangeText.bind(this, this)
+                          onChange: itemchangeText.bind(this, this, context)
                         }}
                       />
                       <AlagehAutoComplete
@@ -178,7 +179,11 @@ class RequisitionItems extends Component {
                           name: "quantity_required",
                           value: this.state.quantity_required,
                           events: {
-                            onChange: numberchangeTexts.bind(this, this)
+                            onChange: numberchangeTexts.bind(
+                              this,
+                              this,
+                              context
+                            )
                           },
                           others: {
                             disabled: this.state.ItemDisable
@@ -466,8 +471,34 @@ class RequisitionItems extends Component {
                             onEdit: row => {},
                             onDone: updatePosDetail.bind(this, this)
                           }}
+                          onRowSelect={row => {
+                            getItemLocationStock(this, row);
+                          }}
                         />
                       </div>
+                    </div>
+                    <div className="row">
+                      <div
+                        className="col-lg-2"
+                        style={{
+                          paddingTop: "10px"
+                        }}
+                      >
+                        <div
+                          style={{
+                            border: "1px solid #000",
+                            paddingLeft: "10px"
+                          }}
+                        >
+                          <h5>Quantity in Hand</h5>
+                          <h6>
+                            {this.state.total_quantity
+                              ? this.state.total_quantity + " nos"
+                              : "0 nos"}
+                          </h6>
+                        </div>
+                      </div>
+                      <div className="col-lg-10" />
                     </div>
                   </div>
                 </div>
@@ -486,7 +517,8 @@ function mapStateToProps(state) {
     itemdetaillist: state.itemdetaillist,
     itemcategory: state.itemcategory,
     itemuom: state.itemuom,
-    itemgroup: state.itemgroup
+    itemgroup: state.itemgroup,
+    itemBatch: state.itemBatch
   };
 }
 
@@ -496,7 +528,8 @@ function mapDispatchToProps(dispatch) {
       getSelectedItemDetais: AlgaehActions,
       getItemCategory: AlgaehActions,
       getItemGroup: AlgaehActions,
-      getItemUOM: AlgaehActions
+      getItemUOM: AlgaehActions,
+      getItemLocationStock: AlgaehActions
     },
     dispatch
   );

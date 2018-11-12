@@ -130,6 +130,7 @@ const ClearData = ($this, e) => {
   IOputs.cheque_date = null;
   IOputs.cheque_amount = 0;
   IOputs.advance = 0;
+  IOputs.total_quantity = 0;
   $this.setState(IOputs);
 };
 
