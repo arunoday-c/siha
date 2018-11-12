@@ -113,42 +113,6 @@ class PatientHistory extends Component {
             </div>
           </div>
         </div>
-
-        {/* <div className="row">
-            <div className="col portlet portlet-bordered box-shadow-normal">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">Medical History</h3>
-                </div>
-              </div>
-
-              <div className="portlet-body" style={{minHeight:"20vh"}}>
-                
-              </div>
-            </div>
-            <div className="col portlet portlet-bordered box-shadow-normal">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">Social History</h3>
-                </div>
-              </div>
-
-              <div className="portlet-body" style={{minHeight:"20vh"}}>
-               
-              </div>
-            </div>
-            <div className="col portlet portlet-bordered box-shadow-normal">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">Surgical History</h3>
-                </div>
-              </div>
-
-              <div className="portlet-body" style={{minHeight:"20vh"}}>
-               
-              </div>
-            </div>
-          </div> */}
       </React.Fragment>
     );
   }
