@@ -911,22 +911,36 @@ let getPatientVitals = (req, res, next) => {
     let where = whereCondition(extend(selectWhere, req.query));
 
     db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
       connection.query(
-        "select hims_f_patient_vitals_id, patient_id, visit_id, visit_date, visit_time,\
-    case_type, vital_id,PH.vitals_name,PH.uom, vital_value, vital_value_one, vital_value_two, formula_value from \
-    hims_f_patient_vitals PV,hims_d_vitals_header PH where PV.record_status='A' and \
-    PH.record_status='A' and PV.vital_id=PH.hims_d_vitals_header_id and " +
-          where.condition +
-          " order by visit_date desc, visit_time desc LIMIT 0,5;",
-        where.values,
-
-        (error, result) => {
-          releaseDBConnection(db, connection);
+        "select count(hims_d_vitals_header_id) cnt from hims_d_vitals_header where record_status='A'",
+        (error, rec) => {
           if (error) {
             next(error);
           }
-          req.records = result;
-          next();
+          const _limit = (rec.length > 0 ? rec[0]["cnt"] : 0) * 5;
+          connection.query(
+            "select hims_f_patient_vitals_id, patient_id, visit_id, visit_date, visit_time,\
+case_type, vital_id,PH.vitals_name,PH.uom, vital_value, vital_value_one, vital_value_two, formula_value from \
+hims_f_patient_vitals PV,hims_d_vitals_header PH where PV.record_status='A' and \
+PH.record_status='A' and PV.vital_id=PH.hims_d_vitals_header_id and " +
+              where.condition +
+              " group by visit_date , vital_id order by visit_date , visit_time desc LIMIT 0," +
+              _limit +
+              ";",
+            where.values,
+
+            (error, result) => {
+              releaseDBConnection(db, connection);
+              if (error) {
+                next(error);
+              }
+              req.records = result;
+              next();
+            }
+          );
         }
       );
     });
@@ -2432,15 +2446,15 @@ let getVitalsHeaderMaster = (req, res, next) => {
         next(error);
       }
       connection.query(
-        "with vitals (hims_d_vitals_header_id,vitals_name, uom, general,display,mandatory) as \
+        "with vitals (hims_d_vitals_header_id,vitals_name, uom, general,display,mandatory,vital_short_name) as \
         ( \
-        SELECT H.hims_d_vitals_header_id, vitals_name, uom, general,display,mandatory FROM hims_d_vitals_header H \
+        SELECT H.hims_d_vitals_header_id, vitals_name, uom, general,display,mandatory,vital_short_name FROM hims_d_vitals_header H \
          where general='Y' and H.record_status='A' \
           UNION ALL \
-          select H.hims_d_vitals_header_id, vitals_name, uom, general,display,mandatory from hims_d_vitals_header H,hims_m_department_vital_mapping M \
+          select H.hims_d_vitals_header_id, vitals_name, uom, general,display,mandatory,vital_short_name from hims_d_vitals_header H,hims_m_department_vital_mapping M \
          where general='N' and H.record_status='A' and H.hims_d_vitals_header_id =M.vital_header_id and  M.department_id=?  \
         ) \
-        SELECT hims_d_vitals_header_id,vitals_name, uom, general,display,mandatory from vitals",
+        SELECT hims_d_vitals_header_id,vitals_name, uom, general,display,mandatory,vital_short_name from vitals",
         [req.userIdentity.sub_department_id],
 
         (error, result) => {

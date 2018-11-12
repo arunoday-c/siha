@@ -211,7 +211,7 @@ export function AlgaehValidation(options) {
     _rootValidationElement = document.querySelector("[id='root']");
   }
   let isError = false;
-  debugger;
+
   const _Validateerror = _rootValidationElement.querySelectorAll("[required]");
   for (let i = 0; i < _Validateerror.length; i++) {
     let _checkVal = _Validateerror[i].getAttribute("checkvalidation");
@@ -220,7 +220,7 @@ export function AlgaehValidation(options) {
         _Validateerror[i].value === "" ? "''" : _Validateerror[i].value;
       _checkVal = _checkVal.replace(/\$value/g, _val);
     }
-    debugger;
+
     let _evalConditions = null;
     if (_checkVal === null) {
       if (_Validateerror[i].value === "") _evalConditions = true;
