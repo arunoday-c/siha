@@ -10,7 +10,8 @@ import Modal from "@material-ui/core/Modal";
 import {
   getVitalHistory,
   getFormula,
-  temperatureFarenheat
+  temperatureConvertion,
+  getDepartmentVitals
 } from "./VitalsHandlers";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
@@ -100,6 +101,11 @@ class Vitals extends Component {
     };
     this.handleClose = this.handleClose.bind(this);
     if (
+      this.props.department_vitals === undefined ||
+      this.props.department_vitals.length === 0
+    )
+      getDepartmentVitals(this);
+    if (
       this.props.patient_vitals === undefined ||
       this.props.patient_vitals.length === 0
     )
@@ -155,18 +161,6 @@ class Vitals extends Component {
         [_name]: ""
       });
     }
-    // this.setState({
-    //   recorded_date: "",
-    //   recorded_time: "",
-    //   height: "",
-    //   weight: "",
-    //   bmi: "",
-    //   oxysat: "",
-    //   temperature_from: "",
-    //   temperature_celsisus: "",
-    //   systolic: "",
-    //   diastolic: ""
-    // });
   }
 
   addPatientVitals(e) {
@@ -181,15 +175,17 @@ class Vitals extends Component {
       let bodyArray = [];
       const _elements = document.querySelectorAll("[vitalid]");
       for (let i = 0; i < _elements.length; i++) {
-        bodyArray.push({
-          patient_id: Window.global["current_patient"],
-          visit_id: Window.global["visit_id"],
-          visit_date: this.state.recorded_date,
-          visit_time: this.state.recorded_time,
-          case_type: "OP",
-          vital_id: _elements[i].getAttribute("vitalid"),
-          vital_value: _elements[i].value
-        });
+        if (_elements[i].value !== "") {
+          bodyArray.push({
+            patient_id: Window.global["current_patient"],
+            visit_id: Window.global["visit_id"],
+            visit_date: this.state.recorded_date,
+            visit_time: this.state.recorded_time,
+            case_type: "OP",
+            vital_id: _elements[i].getAttribute("vitalid"),
+            vital_value: _elements[i].value
+          });
+        }
       }
 
       algaehApiCall({
@@ -211,6 +207,12 @@ class Vitals extends Component {
   }
 
   render() {
+    const _department_viatals =
+      this.props.department_vitals === undefined ||
+      this.props.department_vitals.length === 0
+        ? []
+        : this.props.department_vitals;
+
     return (
       <React.Fragment>
         <Modal open={this.state.openVitalModal}>
@@ -371,26 +373,33 @@ class Vitals extends Component {
 
           <div className="portlet-body" id="vitals_recording">
             <div className="row margin-bottom-15">
-              <AlagehFormGroup
-                div={{ className: "col-lg-2" }}
-                label={{
-                  forceLabel: "Weight(Kg)",
-                  isImp: false
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "weight",
-                  others: {
-                    type: "number",
-                    min: 0,
-                    vitalid: "1"
-                  },
-                  value: this.state.weight,
-                  events: {
-                    onChange: this.texthandle.bind(this)
-                  }
-                }}
-              />
+              {_department_viatals.map((item, index) => {
+                const _className =
+                  item.hims_d_vitals_header_id === 1 ? "col-lg-2" : "col";
+                const _name = String(item.vitals_name).replace(/\" "/g, "_");
+                <AlagehFormGroup
+                  div={{ className: _className, others: { key: index } }}
+                  label={{
+                    forceLabel:
+                      item.vitals_name + "(" + String(item.uom).trim() + ")",
+                    isImp: item.mandatory
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: _name,
+                    others: {
+                      type: "number",
+                      min: 0,
+                      vitalid: item.hims_d_vitals_header_id
+                    },
+                    value: this.state[_name],
+                    events: {
+                      onChange: this.texthandle.bind(this)
+                    }
+                  }}
+                />;
+              })}
+
               <AlagehFormGroup
                 div={{ className: "col-lg-2 vitalTopFld15" }}
                 label={{
@@ -426,10 +435,7 @@ class Vitals extends Component {
                     type: "number",
                     vitalid: "3"
                   },
-                  value: this.state.bmi,
-                  events: {
-                    onChange: () => {}
-                  }
+                  value: this.state.bmi
                 }}
               />
 
@@ -476,7 +482,7 @@ class Vitals extends Component {
               <AlagehFormGroup
                 div={{ className: "col-lg-2 vitalTopFld25" }}
                 label={{
-                  forceLabel: "RR (rpm)",
+                  forceLabel: "RR (cpm)",
                   isImp: false
                 }}
                 textBox={{
@@ -532,11 +538,22 @@ class Vitals extends Component {
                   }
                 }}
               />
+              <AlagehFormGroup
+                div={{ className: "col" }}
+                label={{
+                  forceLabel: "°F"
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  disabled: true,
+                  value: temperatureConvertion(this.state.temperature_celsisus)
+                }}
+              />
 
               <AlagehAutoComplete
                 div={{ className: "col-lg-3" }}
                 label={{
-                  forceLabel: "BP",
+                  forceLabel: "BP(mmHg)",
                   fieldName: "sample"
                 }}
                 selector={{
@@ -595,7 +612,7 @@ class Vitals extends Component {
               <AlagehFormGroup
                 div={{ className: "col" }}
                 label={{
-                  forceLabel: "FBS"
+                  forceLabel: "FBS(mg/dl)"
                 }}
                 textBox={{
                   className: "txt-fld",
@@ -613,7 +630,7 @@ class Vitals extends Component {
               <AlagehFormGroup
                 div={{ className: "col" }}
                 label={{
-                  forceLabel: "RBS"
+                  forceLabel: "RBS(mg/dl)"
                 }}
                 textBox={{
                   className: "txt-fld",
@@ -631,7 +648,7 @@ class Vitals extends Component {
               <AlagehFormGroup
                 div={{ className: "col" }}
                 label={{
-                  forceLabel: "PBS"
+                  forceLabel: "PBS(mg/dl)"
                 }}
                 textBox={{
                   className: "txt-fld",
@@ -709,14 +726,16 @@ class Vitals extends Component {
 
 function mapStateToProps(state) {
   return {
-    patient_vitals: state.patient_vitals
+    patient_vitals: state.patient_vitals,
+    department_vitals: state.department_vitals
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getVitalHistory: AlgaehActions
+      getVitalHistory: AlgaehActions,
+      getDepartmentVitals: AlgaehActions
     },
     dispatch
   );

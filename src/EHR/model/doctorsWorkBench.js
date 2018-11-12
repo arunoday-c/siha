@@ -2428,9 +2428,20 @@ let getVitalsHeaderMaster = (req, res, next) => {
     let db = req.db;
 
     db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
       connection.query(
-        "select hims_d_vitals_header_id, vitals_name, uom, general, display \
-        from hims_d_vitals_header  where record_status='A'",
+        "with vitals (hims_d_vitals_header_id,vitals_name, uom, general,display,mandatory) as \
+        ( \
+        SELECT H.hims_d_vitals_header_id, vitals_name, uom, general,display,mandatory FROM hims_d_vitals_header H \
+         where general='Y' and H.record_status='A' \
+          UNION ALL \
+          select H.hims_d_vitals_header_id, vitals_name, uom, general,display,mandatory from hims_d_vitals_header H,hims_m_department_vital_mapping M \
+         where general='N' and H.record_status='A' and H.hims_d_vitals_header_id =M.vital_header_id and  M.department_id=?  \
+        ) \
+        SELECT hims_d_vitals_header_id,vitals_name, uom, general,display,mandatory from vitals",
+        [req.userIdentity.sub_department_id],
 
         (error, result) => {
           releaseDBConnection(db, connection);
