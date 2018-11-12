@@ -8,9 +8,7 @@ import "./../../../../styles/site.css";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehFormGroup,
-  AlagehAutoComplete,
-  AlgaehDateHandler
+  AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
 
 import {
@@ -295,22 +293,6 @@ class TransferEntryItems extends Component {
                             />
                           ),
                           disabled: true
-                          // editorTemplate: row => {
-                          //   return (
-                          //     <AlagehFormGroup
-                          //       div={{}}
-                          //       textBox={{
-                          //         value: row.quantity_required,
-                          //         className: "txt-fld",
-                          //         name: "quantity_required",
-                          //         events: { onChange: null },
-                          //         others: {
-                          //           disabled: true
-                          //         }
-                          //       }}
-                          //     />
-                          //   );
-                          // }
                         },
                         {
                           fieldName: "quantity_authorized",
@@ -322,29 +304,6 @@ class TransferEntryItems extends Component {
                             />
                           ),
                           disabled: true
-                          // editorTemplate: row => {
-                          //   return (
-                          //     <AlagehFormGroup
-                          //       div={{}}
-                          //       textBox={{
-                          //         value: row.quantity_authorized,
-                          //         className: "txt-fld",
-                          //         name: "quantity_authorized",
-                          //         events: {
-                          //           onChange: onchangegridcol.bind(
-                          //             this,
-                          //             this,
-                          //             context,
-                          //             row
-                          //           )
-                          //         },
-                          //         others: {
-                          //           disabled: this.state.authorizeEnable
-                          //         }
-                          //       }}
-                          //     />
-                          //   );
-                          // }
                         },
                         {
                           fieldName: "quantity_transferred",
@@ -371,9 +330,6 @@ class TransferEntryItems extends Component {
                                       row
                                     )
                                   }
-                                  // others: {
-                                  //   disabled: this.state.authorizeEnable
-                                  // }
                                 }}
                               />
                             );

@@ -1,10 +1,5 @@
-import { successfulMessage } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
-import Enumerable from "linq";
-import extend from "extend";
-import Options from "../../../../Options.json";
-
-let texthandlerInterval = null;
+import { swalMessage } from "../../../../utils/algaehApiCall.js";
 
 const UomchangeTexts = ($this, ctrl, e) => {
   debugger;
@@ -79,10 +74,9 @@ const itemchangeText = ($this, context, e) => {
             });
           }
         } else {
-          successfulMessage({
-            message: "Invalid Input. No Stock Avaiable for selected Item.",
-            title: "Warning",
-            icon: "warning"
+          swalMessage({
+            title: "Invalid Input. No Stock Avaiable for selected Item.",
+            type: "warning"
           });
         }
       }
@@ -93,10 +87,9 @@ const itemchangeText = ($this, context, e) => {
         [name]: null
       },
       () => {
-        successfulMessage({
-          message: "Invalid Input. Please select Location.",
-          title: "Warning",
-          icon: "warning"
+        swalMessage({
+          title: "Invalid Input. Please select Location.",
+          type: "warning"
         });
       }
     );
@@ -105,16 +98,14 @@ const itemchangeText = ($this, context, e) => {
 
 const AddItems = ($this, context) => {
   if ($this.state.item_id === null) {
-    successfulMessage({
-      message: "Invalid Input. Select Item.",
-      title: "Warning",
-      icon: "warning"
+    swalMessage({
+      title: "Invalid Input. Select Item.",
+      type: "warning"
     });
   } else if ($this.state.quantity_required === 0) {
-    successfulMessage({
+    swalMessage({
       message: "Invalid Input. Please enter Quantity Required .",
-      title: "Warning",
-      icon: "warning"
+      type: "warning"
     });
   } else {
     let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
@@ -187,19 +178,27 @@ const onchangegridcol = ($this, context, row, e) => {
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  row[name] = value;
-
-  for (let x = 0; x < pharmacy_stock_detail.length; x++) {
-    if (pharmacy_stock_detail[x].item_id === row.item_id) {
-      pharmacy_stock_detail[x] = row;
-    }
-  }
-  $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
-
-  if (context !== undefined) {
-    context.updateState({
-      pharmacy_stock_detail: pharmacy_stock_detail
+  if (value > row.quantity_required) {
+    swalMessage({
+      title: "Invalid Input. Cannot be greater than Requested Quantity.",
+      type: "warning"
     });
+    row[name] = $this.state.quantity_transferred;
+  } else {
+    row[name] = value;
+
+    for (let x = 0; x < pharmacy_stock_detail.length; x++) {
+      if (pharmacy_stock_detail[x].item_id === row.item_id) {
+        pharmacy_stock_detail[x] = row;
+      }
+    }
+    $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
+
+    if (context !== undefined) {
+      context.updateState({
+        pharmacy_stock_detail: pharmacy_stock_detail
+      });
+    }
   }
 };
 

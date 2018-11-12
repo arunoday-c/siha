@@ -405,22 +405,23 @@ class RequisitionItems extends Component {
                                   label={{ forceLabel: "Quantity Required" }}
                                 />
                               ),
-                              editorTemplate: row => {
-                                return (
-                                  <AlagehFormGroup
-                                    div={{}}
-                                    textBox={{
-                                      value: row.quantity_required,
-                                      className: "txt-fld",
-                                      name: "quantity_required",
-                                      events: { onChange: null },
-                                      others: {
-                                        disabled: true
-                                      }
-                                    }}
-                                  />
-                                );
-                              }
+                              disabled: true
+                              // editorTemplate: row => {
+                              //   return (
+                              //     <AlagehFormGroup
+                              //       div={{}}
+                              //       textBox={{
+                              //         value: row.quantity_required,
+                              //         className: "txt-fld",
+                              //         name: "quantity_required",
+                              //         events: { onChange: null },
+                              //         others: {
+                              //           disabled: true
+                              //         }
+                              //       }}
+                              //     />
+                              //   );
+                              // }
                             },
                             {
                               fieldName: "quantity_authorized",
