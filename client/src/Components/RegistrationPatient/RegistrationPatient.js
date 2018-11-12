@@ -11,7 +11,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import AppBar from "@material-ui/core/AppBar";
-import AHSnackbar from "../common/Inputs/AHSnackbar.js";
+
 import {
   postPatientDetails,
   postVisitDetails
@@ -560,11 +560,6 @@ class RegistrationPatient extends PureComponent {
                       />
                     </button>
 
-                    <AHSnackbar
-                      open={this.state.open}
-                      handleClose={this.handleClose}
-                      MandatoryMsg={this.state.MandatoryMsg}
-                    />
                     <button
                       type="button"
                       className="btn btn-default"
