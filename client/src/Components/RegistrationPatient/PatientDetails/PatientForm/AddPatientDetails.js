@@ -77,18 +77,30 @@ const countryStatehandle = ($this, context, e) => {
 //Todo title and gender related chnage need to do
 const titlehandle = ($this, context, e) => {
   let setGender = null;
-  if (e.value === 1) {
-    setGender = "Male";
-  } else if (e.value === 2) {
-    setGender = "Female";
-  }
-  $this.setState({
-    gender: setGender,
-    [e.name]: e.value
-  });
+  debugger;
+  if (e.value === undefined) {
+    $this.setState({
+      gender: setGender,
+      [e]: null
+    });
 
-  if (context !== undefined) {
-    context.updateState({ gender: setGender, [e.name]: e.value });
+    if (context !== undefined) {
+      context.updateState({ gender: setGender, [e]: null });
+    }
+  } else {
+    if (e.value === 1) {
+      setGender = "Male";
+    } else if (e.value === 2) {
+      setGender = "Female";
+    }
+    $this.setState({
+      gender: setGender,
+      [e.name]: e.value
+    });
+
+    if (context !== undefined) {
+      context.updateState({ gender: setGender, [e.name]: e.value });
+    }
   }
 };
 

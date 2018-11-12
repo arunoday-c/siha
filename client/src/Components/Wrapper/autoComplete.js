@@ -228,7 +228,7 @@ class AutoComplete extends PureComponent {
   clearInput(e) {
     this.setState({ displayText: "", displayValue: "" }, () => {
       if (this.props.selector.onClear !== undefined) {
-        this.props.selector.onClear();
+        this.props.selector.onClear(this.props.selector.name);
       }
     });
   }
