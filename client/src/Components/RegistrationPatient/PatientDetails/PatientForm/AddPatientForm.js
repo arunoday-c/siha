@@ -25,6 +25,7 @@ import {
   AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
 import variableJson from "../../../../utils/GlobalVariables.json";
+
 import Enumerable from "linq";
 
 class AddPatientForm extends PureComponent {
@@ -227,6 +228,7 @@ class AddPatientForm extends PureComponent {
                             data: this.props.titles
                           },
                           onChange: titlehandle.bind(this, this, context),
+                          onClear: titlehandle.bind(this, this, context),
                           others: {
                             disabled: this.state.existingPatient,
                             tabIndex: "1"

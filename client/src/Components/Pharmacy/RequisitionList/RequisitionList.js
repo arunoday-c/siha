@@ -90,7 +90,8 @@ class RequisitionList extends Component {
                       valueField: "hims_d_pharmacy_location_id",
                       data: this.props.locations
                     },
-                    onChange: LocationchangeTexts.bind(this, this, "From")
+                    onChange: LocationchangeTexts.bind(this, this, "From"),
+                    onClear: LocationchangeTexts.bind(this, this, "From")
                   }}
                 />
 
@@ -106,7 +107,8 @@ class RequisitionList extends Component {
                       valueField: "hims_d_pharmacy_location_id",
                       data: this.props.locations
                     },
-                    onChange: LocationchangeTexts.bind(this, this, "To")
+                    onChange: LocationchangeTexts.bind(this, this, "To"),
+                    onClear: LocationchangeTexts.bind(this, this, "From")
                   }}
                 />
               </div>

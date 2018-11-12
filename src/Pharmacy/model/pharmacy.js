@@ -69,7 +69,7 @@ let addItemMaster = (req, res, next) => {
                 "uom_id",
                 "stocking_uom",
                 "conversion_factor",
-                "uom_status",
+
                 "created_by",
                 "updated_by"
               ];
@@ -362,11 +362,12 @@ let getItemMasterAndItemUom = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select  MIU.hims_m_item_uom_id, MIU.item_master_id, MIU.uom_id,PH.uom_description, MIU.stocking_uom, MIU.conversion_factor, MIU.uom_status,\
-        IM.hims_d_item_master_id, IM.item_code, IM.item_description, IM.structure_id, IM.generic_id, IM.category_id,\
-        IM.group_id, IM.form_id, IM.storage_id, IM.item_uom_id, IM.purchase_uom_id, IM.sales_uom_id, IM.stocking_uom_id, IM.item_status, IM.service_id\
-        from  hims_d_item_master IM left join hims_m_item_uom MIU on IM.hims_d_item_master_id=MIU.item_master_id and IM.record_status='A'\
-        left join hims_d_pharmacy_uom PH  on  MIU.uom_id=PH.hims_d_pharmacy_uom_id   and MIU.record_status='A';",
+        "select  MIU.hims_m_item_uom_id, MIU.item_master_id, MIU.uom_id,PH.uom_description, MIU.stocking_uom, \
+        MIU.conversion_factor,IM.hims_d_item_master_id, IM.item_code, IM.item_description, IM.structure_id, \
+        IM.generic_id, IM.category_id,IM.group_id, IM.form_id, IM.storage_id, IM.item_uom_id, IM.purchase_uom_id, \
+        IM.sales_uom_id, IM.stocking_uom_id, IM.item_status, IM.service_id from  hims_d_item_master IM left join \
+        hims_m_item_uom MIU on IM.hims_d_item_master_id=MIU.item_master_id and IM.record_status='A' and MIU.record_status='A' \
+        left join hims_d_pharmacy_uom PH  on  MIU.uom_id=PH.hims_d_pharmacy_uom_id;",
         (error, result) => {
           releaseDBConnection(db, connection);
           if (error) {
@@ -676,11 +677,10 @@ let updatePharmacyUom = (req, res, next) => {
         next(error);
       }
       connection.query(
-        "UPDATE `hims_d_pharmacy_uom` SET `uom_description`=?, `uom_status`=?,\
+        "UPDATE `hims_d_pharmacy_uom` SET `uom_description`=?,\
         `updated_date`=?, `updated_by`=?, `record_status`=? WHERE record_status='A' and`hims_d_pharmacy_uom_id`=?;",
         [
           input.uom_description,
-          input.uom_status,
           new Date(),
           input.updated_by,
           input.record_status,
@@ -807,7 +807,6 @@ let updateItemMasterAndUom = (req, res, next) => {
                     "item_master_id",
                     "stocking_uom",
                     "conversion_factor",
-                    "uom_status",
                     "created_by",
                     "updated_by"
                   ];
@@ -858,14 +857,11 @@ let updateItemMasterAndUom = (req, res, next) => {
                     inputParam[i].stocking_uom +
                     "', conversion_factor='" +
                     inputParam[i].conversion_factor +
-                    "', uom_status='" +
-                    inputParam[i].uom_status +
                     "', record_status='" +
                     inputParam[i].record_status +
                     "', updated_date='" +
                     new Date().toLocaleString() +
-                    "',updated_by=\
-'" +
+                    "',updated_by='" +
                     req.body.updated_by +
                     "' WHERE record_status='A' and hims_m_item_uom_id='" +
                     inputParam[i].hims_m_item_uom_id +

@@ -4,11 +4,15 @@ import Options from "../../../Options.json";
 const changeTexts = ($this, ctrl, e) => {
   debugger;
   e = ctrl || e;
-  let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
-  $this.setState({ [name]: value }, () => {
-    getItemLocationStock($this);
-  });
+  if (e.value === undefined) {
+    $this.setState({ [e]: null });
+  } else {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    $this.setState({ [name]: value }, () => {
+      getItemLocationStock($this);
+    });
+  }
 };
 
 const dateFormater = value => {
