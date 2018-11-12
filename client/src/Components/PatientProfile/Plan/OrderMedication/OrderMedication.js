@@ -64,7 +64,8 @@ class OrderMedication extends Component {
 
       frequency_type: null,
       frequency_time: null,
-      Instructions: null
+      Instructions: null,
+      total_quantity: 0
     };
   }
 
@@ -126,7 +127,8 @@ class OrderMedication extends Component {
                   valueField: "hims_d_item_master_id",
                   data: this.state.itemlist
                 },
-                onChange: itemhandle.bind(this, this)
+                onChange: itemhandle.bind(this, this),
+                onClear: itemhandle.bind(this, this)
               }}
             />
 
@@ -317,18 +319,18 @@ class OrderMedication extends Component {
                       return row.frequency == "0"
                         ? "1-0-1"
                         : row.frequency == "1"
-                          ? "1-0-0"
-                          : row.frequency == "2"
-                            ? "0-0-1"
-                            : row.frequency == "3"
-                              ? "0-1-0"
-                              : row.frequency == "4"
-                                ? "1-1-0"
-                                : row.frequency == "5"
-                                  ? "0-1-1"
-                                  : row.frequency == "6"
-                                    ? "1-1-1"
-                                    : null;
+                        ? "1-0-0"
+                        : row.frequency == "2"
+                        ? "0-0-1"
+                        : row.frequency == "3"
+                        ? "0-1-0"
+                        : row.frequency == "4"
+                        ? "1-1-0"
+                        : row.frequency == "5"
+                        ? "0-1-1"
+                        : row.frequency == "6"
+                        ? "1-1-1"
+                        : null;
                     }
                   },
                   {
@@ -340,14 +342,14 @@ class OrderMedication extends Component {
                       return row.frequency_type == "PD"
                         ? "Per Day"
                         : row.frequency_type == "PH"
-                          ? "Per Hour"
-                          : row.frequency_type == "PW"
-                            ? "Per Week"
-                            : row.frequency_type == "PM"
-                              ? "Per Month"
-                              : row.frequency_type == "AD"
-                                ? "Alternate Day"
-                                : null;
+                        ? "Per Hour"
+                        : row.frequency_type == "PW"
+                        ? "Per Week"
+                        : row.frequency_type == "PM"
+                        ? "Per Month"
+                        : row.frequency_type == "AD"
+                        ? "Alternate Day"
+                        : null;
                     }
                   },
                   {
@@ -359,8 +361,8 @@ class OrderMedication extends Component {
                       return row.frequency_time == "BM"
                         ? "Before Meals"
                         : row.frequency_time == "AM"
-                          ? "After Meals"
-                          : null;
+                        ? "After Meals"
+                        : null;
                     }
                   },
                   {
@@ -400,7 +402,11 @@ class OrderMedication extends Component {
               Instructions: {this.state.followup_comments}
             </div>
 
-            <div className="col-lg-3">
+            <div className="col-lg-9">
+              Pharmacy Stock: {this.state.total_quantity}
+            </div>
+
+            <div className="col-lg-2">
               <button
                 className="btn btn-primary btn-sm"
                 type="button"
@@ -420,7 +426,8 @@ class OrderMedication extends Component {
 function mapStateToProps(state) {
   return {
     itemlist: state.itemlist,
-    genericlist: state.genericlist
+    genericlist: state.genericlist,
+    itemStock: state.itemStock
   };
 }
 
@@ -428,7 +435,8 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getItems: AlgaehActions,
-      getGenerics: AlgaehActions
+      getGenerics: AlgaehActions,
+      getItemStock: AlgaehActions
     },
     dispatch
   );

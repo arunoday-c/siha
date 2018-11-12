@@ -160,24 +160,6 @@ class TransferEntry extends Component {
                   </h6>
                 </div>
               </div>
-              // <AlgaehDateHandler
-              //   div={{ className: "col" }}
-              //   label={{
-              //     forceLabel: (
-              //       <AlgaehLabel label={{ forceLabel: "Transfer Date" }} />
-              //     ),
-              //     className: "internal-label"
-              //   }}
-              //   textBox={{
-              //     className: "txt-fld",
-              //     name: "bread_registration_date"
-              //   }}
-              //   disabled={true}
-              //   events={{
-              //     onChange: null
-              //   }}
-              //   value={this.state.pos_date}
-              // />
             }
             selectedLang={this.state.selectedLang}
           />

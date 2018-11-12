@@ -78,7 +78,23 @@ const ClearData = ($this, e) => {
   IOputs.AGEMM = 0;
   IOputs.AGEDD = 0;
 
-  $this.setState(IOputs);
+  $this.setState(IOputs, () => {
+    $this.props.setSelectedInsurance({
+      redux: {
+        type: "PRIMARY_INSURANCE_DATA",
+        mappingName: "primaryinsurance",
+        data: []
+      }
+    });
+
+    $this.props.setSelectedInsurance({
+      redux: {
+        type: "SECONDARY_INSURANCE_DATA",
+        mappingName: "secondaryinsurance",
+        data: []
+      }
+    });
+  });
 };
 
 const ShowAdvanceScreen = ($this, e) => {

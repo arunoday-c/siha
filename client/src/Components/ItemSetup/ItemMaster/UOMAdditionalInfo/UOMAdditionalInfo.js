@@ -22,7 +22,8 @@ import {
   onchangegridcol,
   uomtexthandle,
   stockingtexthandle,
-  stockonchangegridcol
+  stockonchangegridcol,
+  texthandlecontext
 } from "./UOMAdditionalInfoEvents";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import AHSnackbar from "../../../common/Inputs/AHSnackbar";
@@ -308,7 +309,34 @@ class UOMAdditionalInfo extends Component {
                 </div>
                 <div className="col-lg-4 card box-shadow-normal">
                   <div className="row">
-                    <p>Aditional Information</p>
+                    <div className="container-fluid">
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-12 form-details" }}
+                        label={{
+                          forceLabel: "Aditional Information",
+                          isImp: true
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "assesments_notes",
+                          value: this.state.assesments_notes,
+                          others: {
+                            multiline: true,
+                            rows: "4",
+                            style: {
+                              height: "28vh"
+                            }
+                          },
+                          events: {
+                            onChange: texthandlecontext.bind(
+                              this,
+                              this,
+                              context
+                            )
+                          }
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

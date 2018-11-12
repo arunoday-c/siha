@@ -270,6 +270,8 @@ let updaterequisitionEntry = (req, res, next) => {
         }
         req.records = result;
         next();
+
+        // TODO hims_f_pharamcy_material_detail update
       }
     );
   });

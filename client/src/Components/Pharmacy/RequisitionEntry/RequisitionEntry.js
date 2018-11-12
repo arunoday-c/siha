@@ -318,7 +318,6 @@ class RequisitionEntry extends Component {
                             this,
                             "authorize1"
                           )}
-                          disabled={this.state.authorizeEnable}
                         >
                           <AlgaehLabel
                             label={{
@@ -337,7 +336,6 @@ class RequisitionEntry extends Component {
                             this,
                             "authorize2"
                           )}
-                          disabled={this.state.authorizeEnable}
                         >
                           <AlgaehLabel
                             label={{

@@ -150,6 +150,8 @@ const InsuranceDetails = ($this, context, e) => {
             cancelButtonText: "No"
           }).then(willProceed => {
             if (willProceed.value) {
+              let mappingName = "";
+
               let obj = {
                 insurance_provider_id: row.hims_d_insurance_provider_id,
                 insurance_provider_name: row.insurance_provider_name,
@@ -163,11 +165,23 @@ const InsuranceDetails = ($this, context, e) => {
                 policy_number: row.policy_number
               };
 
+              let insObj = $this.props.existinsurance || [];
+              if (
+                $this.props.existinsurance === undefined ||
+                $this.props.existinsurance.length === 0
+              ) {
+                mappingName = "primaryinsurance";
+                insObj.push(obj);
+              } else {
+                mappingName = "existinsurance";
+                insObj.push(obj);
+              }
+
               $this.props.setSelectedInsurance({
                 redux: {
                   type: "PRIMARY_INSURANCE_DATA",
-                  mappingName: "primaryinsurance",
-                  data: [obj]
+                  mappingName: mappingName,
+                  data: insObj
                 },
                 afterSuccess: data => {
                   $this.setState({
@@ -203,6 +217,8 @@ const InsuranceDetails = ($this, context, e) => {
             }
           });
         } else {
+          debugger;
+          let mappingName = "";
           let obj = {
             insurance_provider_id: row.hims_d_insurance_provider_id,
             insurance_provider_name: row.insurance_provider_name,
@@ -215,12 +231,23 @@ const InsuranceDetails = ($this, context, e) => {
 
             policy_number: row.policy_number
           };
+          let insObj = $this.props.existinsurance || [];
+          if (
+            $this.props.existinsurance === undefined ||
+            $this.props.existinsurance.length === 0
+          ) {
+            mappingName = "primaryinsurance";
+            insObj.push(obj);
+          } else {
+            mappingName = "existinsurance";
+            insObj.push(obj);
+          }
 
           $this.props.setSelectedInsurance({
             redux: {
               type: "PRIMARY_INSURANCE_DATA",
-              mappingName: "primaryinsurance",
-              data: [obj]
+              mappingName: mappingName,
+              data: insObj
             },
             afterSuccess: data => {
               $this.setState({

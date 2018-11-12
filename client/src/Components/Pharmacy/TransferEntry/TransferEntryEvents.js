@@ -131,6 +131,8 @@ const PostTransferEntry = $this => {
 };
 
 const RequisitionSearch = ($this, e) => {
+  debugger;
+  let che = "to_location_id = " + $this.state.from_location_id;
   if ($this.state.from_location_id !== null) {
     AlgaehSearch({
       searchGrid: {
@@ -138,6 +140,7 @@ const RequisitionSearch = ($this, e) => {
       },
       searchName: "REQTransEntry",
       uri: "/gloabelSearch/get",
+      inputs: "to_location_id = " + $this.state.from_location_id,
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
       },
@@ -161,12 +164,6 @@ const RequisitionSearch = ($this, e) => {
             let from_location_id = data.from_location_id;
             let from_location_type = data.from_location_type;
             data.saveEnable = false;
-
-            if (data.completed === "Y") {
-              data.postEnable = true;
-            } else {
-              data.postEnable = false;
-            }
 
             data.from_location_id = data.to_location_id;
             data.to_location_id = from_location_id;
