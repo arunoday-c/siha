@@ -17,7 +17,7 @@ import {
   nationalityhandle
 } from "./AddPatientDetails.js";
 import MyContext from "../../../../utils/MyContext.js";
-import AHSnackbar from "../../../common/Inputs/AHSnackbar.js";
+
 import {
   AlgaehDateHandler,
   AlagehFormGroup,
@@ -803,11 +803,6 @@ class AddPatientForm extends PureComponent {
                   </div>
                 </div>
               </div>
-              <AHSnackbar
-                open={this.state.DOBError}
-                // handleClose={this.handleClose}
-                MandatoryMsg={this.state.DOBErrorMsg}
-              />
             </div>
           )}
         </MyContext.Consumer>

@@ -1,7 +1,6 @@
-import { successfulMessage } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
-import Enumerable from "linq";
-import extend from "extend";
+import { swalMessage } from "../../../../utils/algaehApiCall.js";
+
 import Options from "../../../../Options.json";
 
 let texthandlerInterval = null;
@@ -76,10 +75,9 @@ const itemchangeText = ($this, e) => {
             addItemButton: false
           });
         } else {
-          successfulMessage({
-            message: "Invalid Input. No Stock Avaiable for selected Item.",
-            title: "Warning",
-            icon: "warning"
+          swalMessage({
+            title: "Invalid Input. No Stock Avaiable for selected Item.",
+            type: "warning"
           });
         }
       }
@@ -90,10 +88,9 @@ const itemchangeText = ($this, e) => {
         [name]: null
       },
       () => {
-        successfulMessage({
-          message: "Invalid Input. Please select Location.",
-          title: "Warning",
-          icon: "warning"
+        swalMessage({
+          title: "Invalid Input. Please select Location.",
+          type: "warning"
         });
       }
     );
@@ -102,10 +99,9 @@ const itemchangeText = ($this, e) => {
 
 const AddItems = ($this, context) => {
   if ($this.state.item_id === null) {
-    successfulMessage({
-      message: "Invalid Input. Select Item.",
-      title: "Warning",
-      icon: "warning"
+    swalMessage({
+      title: "Invalid Input. Select Item.",
+      type: "warning"
     });
   } else {
     debugger;
@@ -135,11 +131,10 @@ const AddItems = ($this, context) => {
       afterSuccess: data => {
         debugger;
         if (data.billdetails[0].pre_approval === "Y") {
-          successfulMessage({
-            message:
+          swalMessage({
+            title:
               "Invalid Input. Selected Service is Pre-Approval required, you don't have rights to bill.",
-            title: "Warning",
-            icon: "warning"
+            type: "warning"
           });
         } else {
           let existingservices = $this.state.pharmacy_stock_detail;
@@ -283,22 +278,31 @@ const updateTransEntryDetail = ($this, e) => {
 
 const onchangegridcol = ($this, context, row, e) => {
   debugger;
-  let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  row[name] = value;
-
-  for (let x = 0; x < pharmacy_stock_detail.length; x++) {
-    if (pharmacy_stock_detail[x].item_id === row.item_id) {
-      pharmacy_stock_detail[x] = row;
-    }
-  }
-  $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
-
-  if (context !== undefined) {
-    context.updateState({
-      pharmacy_stock_detail: pharmacy_stock_detail
+  if (value > row.quantity_authorized) {
+    swalMessage({
+      title: "Invalid Input. Cannot be greater than Authorized Quantity.",
+      type: "warning"
     });
+    row[name] = $this.state.quantity_transferred;
+  } else {
+    let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+
+    row[name] = value;
+
+    for (let x = 0; x < pharmacy_stock_detail.length; x++) {
+      if (pharmacy_stock_detail[x].item_id === row.item_id) {
+        pharmacy_stock_detail[x] = row;
+      }
+    }
+    $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
+
+    if (context !== undefined) {
+      context.updateState({
+        pharmacy_stock_detail: pharmacy_stock_detail
+      });
+    }
   }
 };
 
@@ -306,6 +310,34 @@ const dateFormater = ($this, value) => {
   if (value !== null) {
     return moment(value).format(Options.dateFormat);
   }
+};
+
+const getItemLocationStock = ($this, value) => {
+  debugger;
+  $this.props.getItemLocationStock({
+    uri: "/pharmacyGlobal/getItemLocationStock",
+    method: "GET",
+    data: {
+      location_id: $this.state.from_location_id,
+      item_id: value.item_id
+    },
+    redux: {
+      type: "ITEMS_BATCH_GET_DATA",
+      mappingName: "itemBatch"
+    },
+    afterSuccess: data => {
+      if (data.length !== 0) {
+        let total_quantity = 0;
+        for (let i = 0; i < data.length; i++) {
+          let qtyhand = data[i].qtyhand;
+          total_quantity = total_quantity + qtyhand;
+        }
+        $this.setState({
+          total_quantity: total_quantity
+        });
+      }
+    }
+  });
 };
 
 export {
@@ -317,5 +349,6 @@ export {
   deleteTransEntryDetail,
   updateTransEntryDetail,
   onchangegridcol,
-  dateFormater
+  dateFormater,
+  getItemLocationStock
 };

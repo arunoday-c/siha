@@ -88,26 +88,47 @@ const genericnamehandle = ($this, ctrl, e) => {
 
 const itemhandle = ($this, ctrl, e) => {
   e = e || ctrl;
-  let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
-  if (e.selected.service_id === null) {
-    swalMessage({
-      title: "Invalid Input. Service not setup to the selected Item.",
-      type: "error"
-    });
+  if (e.value === undefined) {
     $this.setState({
-      [name]: null
+      [e]: null,
+      generic_id: null,
+      service_id: null,
+      uom_id: null,
+      item_category_id: null,
+      item_group_id: null,
+      addItemEnable: true,
+      total_quantity: 0
     });
   } else {
-    $this.setState({
-      [name]: value,
-      generic_id: e.selected.generic_id,
-      service_id: e.selected.service_id,
-      uom_id: e.selected.sales_uom_id,
-      item_category_id: e.selected.category_id,
-      item_group_id: e.selected.group_id,
-      addItemEnable: false
-    });
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    if (e.selected.service_id === null) {
+      swalMessage({
+        title: "Invalid Input. Service not setup to the selected Item.",
+        type: "error"
+      });
+      $this.setState({
+        [name]: null,
+        total_quantity: 0,
+        generic_id: null
+      });
+    } else {
+      $this.setState(
+        {
+          [name]: value,
+          generic_id: e.selected.generic_id,
+          service_id: e.selected.service_id,
+          uom_id: e.selected.sales_uom_id,
+          item_category_id: e.selected.category_id,
+          item_group_id: e.selected.group_id,
+          addItemEnable: false,
+          total_quantity: 0
+        },
+        () => {
+          getItemStock($this);
+        }
+      );
+    }
   }
 };
 
@@ -249,6 +270,36 @@ const calcuateDispense = ($this, e) => {
     }
   }
 };
+
+const getItemStock = $this => {
+  debugger;
+  $this.props.getItemStock({
+    uri: "/pharmacyGlobal/getItemandLocationStock",
+    method: "GET",
+    data: { item_id: $this.state.item_id },
+    redux: {
+      type: "ITEMS_STOCK_GET_DATA",
+      mappingName: "itemStock"
+    },
+    afterSuccess: data => {
+      let total_quantity = 0;
+      if (data.length !== 0) {
+        for (let i = 0; i < data.length; i++) {
+          let qtyhand = data[i].qtyhand;
+          total_quantity = total_quantity + qtyhand;
+        }
+        $this.setState({
+          total_quantity: total_quantity
+        });
+      } else {
+        $this.setState({
+          total_quantity: total_quantity
+        });
+      }
+    }
+  });
+};
+
 export {
   texthandle,
   SaveMedication,
@@ -259,5 +310,6 @@ export {
   deleteItems,
   dateFormater,
   numberhandle,
-  calcuateDispense
+  calcuateDispense,
+  getItemStock
 };

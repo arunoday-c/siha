@@ -1,10 +1,5 @@
-import { successfulMessage } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
-import Enumerable from "linq";
-import extend from "extend";
-import Options from "../../../../Options.json";
-
-let texthandlerInterval = null;
+import { swalMessage } from "../../../../utils/algaehApiCall.js";
 
 const UomchangeTexts = ($this, ctrl, e) => {
   debugger;
@@ -19,25 +14,20 @@ const UomchangeTexts = ($this, ctrl, e) => {
   });
 };
 
-const numberchangeTexts = ($this, e) => {
+const numberchangeTexts = ($this, context, e) => {
   debugger;
 
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   $this.setState({ [name]: value });
-
-  // clearInterval(texthandlerInterval);
-  // texthandlerInterval = setInterval(() => {
-  //   if (context !== undefined) {
-  //     context.updateState({
-  //       [name]: value
-  //     });
-  //   }
-  //   clearInterval(texthandlerInterval);
-  // }, 1000);
+  if (context !== undefined) {
+    context.updateState({
+      [name]: value
+    });
+  }
 };
 
-const itemchangeText = ($this, e) => {
+const itemchangeText = ($this, context, e) => {
   debugger;
   let name = e.name || e.target.name;
   if ($this.state.to_location_id !== null) {
@@ -55,8 +45,9 @@ const itemchangeText = ($this, e) => {
         mappingName: "itemdetaillist"
       },
       afterSuccess: data => {
-        debugger;
         if (data.locationResult.length > 0) {
+          debugger;
+          getItemLocationStock($this, { item_id: value });
           $this.setState({
             [name]: value,
             item_category_id: e.selected.category_id,
@@ -68,11 +59,24 @@ const itemchangeText = ($this, e) => {
 
             ItemUOM: data.uomResult
           });
+
+          if (context !== undefined) {
+            context.updateState({
+              [name]: value,
+              item_category_id: e.selected.category_id,
+              item_uom: e.selected.sales_uom_id,
+
+              item_group_id: e.selected.group_id,
+              quantity: 1,
+              addItemButton: false,
+
+              ItemUOM: data.uomResult
+            });
+          }
         } else {
-          successfulMessage({
-            message: "Invalid Input. No Stock Avaiable for selected Item.",
-            title: "Warning",
-            icon: "warning"
+          swalMessage({
+            title: "Invalid Input. No Stock Avaiable for selected Item.",
+            type: "warning"
           });
         }
       }
@@ -83,10 +87,9 @@ const itemchangeText = ($this, e) => {
         [name]: null
       },
       () => {
-        successfulMessage({
-          message: "Invalid Input. Please select Location.",
-          title: "Warning",
-          icon: "warning"
+        swalMessage({
+          title: "Invalid Input. Please select Location.",
+          type: "warning"
         });
       }
     );
@@ -95,16 +98,14 @@ const itemchangeText = ($this, e) => {
 
 const AddItems = ($this, context) => {
   if ($this.state.item_id === null) {
-    successfulMessage({
-      message: "Invalid Input. Select Item.",
-      title: "Warning",
-      icon: "warning"
+    swalMessage({
+      title: "Invalid Input. Select Item.",
+      type: "warning"
     });
   } else if ($this.state.quantity_required === 0) {
-    successfulMessage({
+    swalMessage({
       message: "Invalid Input. Please enter Quantity Required .",
-      title: "Warning",
-      icon: "warning"
+      type: "warning"
     });
   } else {
     let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
@@ -177,20 +178,56 @@ const onchangegridcol = ($this, context, row, e) => {
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  row[name] = value;
+  if (value > row.quantity_required) {
+    swalMessage({
+      title: "Invalid Input. Cannot be greater than Requested Quantity.",
+      type: "warning"
+    });
+    row[name] = $this.state.quantity_transferred;
+  } else {
+    row[name] = value;
 
-  for (let x = 0; x < pharmacy_stock_detail.length; x++) {
-    if (pharmacy_stock_detail[x].item_id === row.item_id) {
-      pharmacy_stock_detail[x] = row;
+    for (let x = 0; x < pharmacy_stock_detail.length; x++) {
+      if (pharmacy_stock_detail[x].item_id === row.item_id) {
+        pharmacy_stock_detail[x] = row;
+      }
+    }
+    $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
+
+    if (context !== undefined) {
+      context.updateState({
+        pharmacy_stock_detail: pharmacy_stock_detail
+      });
     }
   }
-  $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
+};
 
-  if (context !== undefined) {
-    context.updateState({
-      pharmacy_stock_detail: pharmacy_stock_detail
-    });
-  }
+const getItemLocationStock = ($this, value) => {
+  debugger;
+  $this.props.getItemLocationStock({
+    uri: "/pharmacyGlobal/getItemLocationStock",
+    method: "GET",
+    data: {
+      location_id: $this.state.to_location_id,
+      item_id: value.item_id
+    },
+    redux: {
+      type: "ITEMS_BATCH_GET_DATA",
+      mappingName: "itemBatch"
+    },
+    afterSuccess: data => {
+      if (data.length !== 0) {
+        let total_quantity = 0;
+        for (let i = 0; i < data.length; i++) {
+          let qtyhand = data[i].qtyhand;
+          total_quantity = total_quantity + qtyhand;
+        }
+        $this.setState({
+          total_quantity: total_quantity
+        });
+      }
+    }
+  });
 };
 
 export {
@@ -201,5 +238,6 @@ export {
   datehandle,
   deleteRequisitionDetail,
   updatePosDetail,
-  onchangegridcol
+  onchangegridcol,
+  getItemLocationStock
 };

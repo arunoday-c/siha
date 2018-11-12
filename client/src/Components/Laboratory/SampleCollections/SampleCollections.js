@@ -70,6 +70,7 @@ class SampleCollectionPatient extends PureComponent {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.selected_patient !== null) {
+      debugger;
       let InputOutput = nextProps.selected_patient;
       this.setState({ ...this.state, ...InputOutput });
     }
@@ -230,6 +231,28 @@ class SampleCollectionPatient extends PureComponent {
                                 others: {
                                   resizable: false,
                                   style: { textAlign: "center" }
+                                }
+                              },
+                              {
+                                fieldName: "test_type",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ fieldName: "proiorty" }}
+                                  />
+                                ),
+                                displayTemplate: row => {
+                                  return (
+                                    <span>
+                                      {row.test_type === "S"
+                                        ? "Stat"
+                                        : "Rotinue"}
+                                    </span>
+                                  );
+                                },
+                                disabled: true,
+                                others: {
+                                  resizable: false,
+                                  style: { textAlign: "left" }
                                 }
                               },
                               {

@@ -305,15 +305,6 @@ let updatetransferEntry = (req, res, next) => {
               debugLog("From", "Data");
               updateIntoItemLocation(req, res, next);
             });
-            // req.options = {
-            //   db: connection,
-            //   onFailure: error => {
-            //     return Promise.reject(error);
-            //   }
-            // };
-            // //Update From Location
-            // debugLog("From", "Data");
-            // updateIntoItemLocation(req, res, next);
           })
           .then(output => {
             return new Promise((resolve, reject) => {
@@ -361,38 +352,6 @@ let updatetransferEntry = (req, res, next) => {
                   next(error);
                 });
               });
-
-            // req.options = {
-            //   db: connection,
-            //   onFailure: error => {
-            //     return Promise.reject(error);
-            //   },
-            //   onSuccess: result => {
-            //     connection.commit(error => {
-            //       if (error) {
-            //         releaseDBConnection(db, connection);
-            //         next(error);
-            //       }
-            //       req.records = result;
-            //       releaseDBConnection(db, connection);
-            //       next();
-            //     });
-            //   }
-            // };
-            // //Update To location
-            // for (let i = 0; i < req.body.pharmacy_stock_detail.length; i++) {
-            //   req.body.pharmacy_stock_detail[i].location_id =
-            //     req.body.to_location_id;
-            //   req.body.pharmacy_stock_detail[i].location_type =
-            //     req.body.to_location_type;
-
-            //   req.body.pharmacy_stock_detail[i].uom_id =
-            //     req.body.pharmacy_stock_detail[i].uom_transferred_id;
-            //   req.body.pharmacy_stock_detail[i].sales_uom =
-            //     req.body.pharmacy_stock_detail[i].uom_transferred_id;
-            // }
-            // debugLog("To ", "Data");
-            // updateIntoItemLocation(req, res, next);
           })
           .catch(error => {
             connection.rollback(() => {
