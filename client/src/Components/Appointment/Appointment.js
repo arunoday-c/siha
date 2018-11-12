@@ -865,8 +865,14 @@ class Appointment extends Component {
     }
   }
 
+  allowDrop(e) {
+    e.preventDefault();
+  }
+
   drop(ev) {
     ev.preventDefault();
+
+    ev.currentTarget.classList.remove("highlight-Drop");
     let new_from_time = ev.currentTarget.children[1].getAttribute("appt-time");
 
     if (
@@ -1152,7 +1158,7 @@ class Appointment extends Component {
           className="tg-baqh" //highlight-Drop
           {...colspan}
           onDrop={this.drop.bind(this)}
-          //onDragOver={this.allowDrop.bind(this)}
+          onDragOver={this.allowDrop.bind(this)}
           onDragEnter={this.enterDrag.bind(this)}
           onDragLeave={this.leaveDrag.bind(this)}
         >
