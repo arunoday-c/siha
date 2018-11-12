@@ -52,7 +52,6 @@ class AddInsuranceForm extends Component {
   }
 
   render() {
-    debugger;
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -98,6 +97,11 @@ class AddInsuranceForm extends Component {
                             className="go-button"
                             color="primary"
                             disabled={this.state.insuranceYes}
+                            // disabled={
+                            //   this.state.saveEnable === true
+                            //     ? true
+                            //     : this.state.insuranceYes
+                            // }
                           >
                             <AddCircle
                               onClick={InsuranceDetails.bind(

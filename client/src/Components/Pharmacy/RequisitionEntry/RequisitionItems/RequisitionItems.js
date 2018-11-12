@@ -470,7 +470,7 @@ class RequisitionItems extends Component {
                               context
                             ),
                             onEdit: row => {},
-                            onDone: updatePosDetail.bind(this, this)
+                            onDone: updatePosDetail.bind(this, this, context)
                           }}
                           onRowSelect={row => {
                             getItemLocationStock(this, row);
