@@ -55,20 +55,25 @@ const getRequisitionList = $this => {
     inpObj.to_location_id = $this.state.to_location_id;
   }
 
+  if ($this.state.authorize1 === "Y") {
+    inpObj.authorize1 = "N";
+  }
+  if ($this.state.authorie2 === "Y") {
+    inpObj.authorize1 = "Y";
+    inpObj.authorie2 = "N";
+  }
+
   // inpObj.authorize1 = "N";
   // inpObj.authorie2 = "N";
   $this.props.getRequisitionList({
     uri: "/requisitionEntry/getAuthrequisitionList",
     method: "GET",
-    printInput: true,
     data: inpObj,
     redux: {
       type: "REQ_LIST_GET_DATA",
       mappingName: "requisitionlist"
     },
     afterSuccess: data => {
-      debugger;
-
       $this.setState({ requisition_list: data });
     }
   });
@@ -80,4 +85,36 @@ const dateFormater = ({ $this, value }) => {
   }
 };
 
-export { LocationchangeTexts, dateFormater };
+const radioChange = ($this, e) => {
+  let value = e.target.value;
+  let radioNo, radioYes;
+  let authorize1 = "N";
+  let authorie2 = "N";
+  if (value === "1") {
+    radioNo = false;
+    radioYes = true;
+    authorize1 = "Y";
+    authorie2 = "N";
+  } else {
+    radioNo = true;
+    radioYes = false;
+    authorize1 = "N";
+    authorie2 = "Y";
+  }
+
+  $this.setState(
+    {
+      radioYes: radioYes,
+      radioNo: radioNo,
+      authorize1: authorize1,
+      authorie2: authorie2
+    },
+    () => {
+      if ($this.state.from_location_id !== null) {
+        getRequisitionList($this);
+      }
+    }
+  );
+};
+
+export { LocationchangeTexts, dateFormater, radioChange };

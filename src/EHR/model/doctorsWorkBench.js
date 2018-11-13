@@ -924,7 +924,7 @@ let getPatientVitals = (req, res, next) => {
           const _limit = (rec.length > 0 ? rec[0]["cnt"] : 0) * 5;
           connection.query(
             "select hims_f_patient_vitals_id, patient_id, visit_id, visit_date, visit_time,\
-case_type, vital_id,PH.vitals_name,PH.uom, vital_value, vital_value_one, vital_value_two, formula_value from \
+case_type, vital_id,PH.vitals_name,vital_short_name,PH.uom, vital_value, vital_value_one, vital_value_two, formula_value from \
 hims_f_patient_vitals PV,hims_d_vitals_header PH where PV.record_status='A' and \
 PH.record_status='A' and PV.vital_id=PH.hims_d_vitals_header_id and " +
               where.condition +

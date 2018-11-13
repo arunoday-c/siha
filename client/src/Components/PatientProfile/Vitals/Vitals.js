@@ -23,63 +23,6 @@ import config from "../../../utils/config.json";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import moment from "moment";
-const LineData = {
-  labels: [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December"
-  ],
-  datasets: [
-    {
-      fill: false,
-      lineTension: 0.1,
-      backgroundColor: "#34b8bc",
-      borderColor: "#DCAC66",
-      borderCapStyle: "butt",
-      borderDash: [],
-      borderDashOffset: 0.0,
-      borderJoinStyle: "miter",
-      pointBorderColor: "#34b8bc",
-      pointBackgroundColor: "#34b8bc",
-      pointBorderWidth: 1,
-      pointHoverRadius: 5,
-      pointRadius: 4,
-      pointHitRadius: 50,
-      data: [6500, 5900, 8000, 8100, 5600, 9000]
-    }
-  ]
-};
-
-const LineData1 = {
-  labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-  datasets: [
-    {
-      fill: false,
-      lineTension: 0.9,
-      backgroundColor: "#00BCB0",
-      borderColor: "#DCAC66",
-      borderDash: [],
-      borderDashOffset: 0.0,
-      borderJoinStyle: "miter",
-      pointBorderColor: "#00BCB0",
-      pointBackgroundColor: "#00BCB0",
-      pointBorderWidth: 1,
-      pointHoverRadius: 5,
-      pointRadius: 4,
-      pointHitRadius: 50,
-      data: [65, 59, 80, 80, 56, 90]
-    }
-  ]
-};
 
 class Vitals extends Component {
   constructor(props) {
@@ -118,7 +61,9 @@ class Vitals extends Component {
     this.setState({ openVitalModal: false });
   }
   addVitals() {
-    this.setState({ openVitalModal: true });
+    getVitalHistory(this, data => {
+      this.setState({ openVitalModal: true });
+    });
   }
 
   texthandle(e) {
@@ -216,11 +161,14 @@ class Vitals extends Component {
       this.props.department_vitals.length === 0
         ? []
         : this.props.department_vitals;
+    let _chartLabels = [];
+    let _yAxes = [];
     let _plotGraph = [];
     const _vitalsGroup =
       this.props.patient_vitals !== undefined
         ? Enumerable.from(this.props.patient_vitals)
             .groupBy("$.visit_date", null, (key, g) => {
+              _chartLabels.push(key);
               return {
                 dateTime: key,
                 list: g.getSource()
@@ -228,6 +176,76 @@ class Vitals extends Component {
             })
             .toArray()
         : [];
+
+    Enumerable.from(
+      this.props.patient_vitals !== undefined ? this.props.patient_vitals : []
+    )
+      .groupBy("$.vital_id", null, (k, gg) => {
+        if (k === 1 || k === 3 || k === 4 || k === 7 || k === 8 || k === 9) {
+          let _gId = Enumerable.from(gg.getSource())
+            .where(w => w.vital_id === k)
+            .firstOrDefault();
+          let _names = String(_gId.vital_short_name).replace(/\" "/g, "_");
+
+          let row = Enumerable.from(_yAxes)
+            .where(w => w.id === _names)
+            .firstOrDefault();
+          const _index = _yAxes.indexOf(row);
+          if (_index > -1) {
+            _yAxes.splice(_index, 1);
+          }
+          _yAxes.push({
+            id: _names
+          });
+
+          let _bground = "";
+          let _borderColor = "";
+          switch (k) {
+            case 1:
+              _bground = config.colors.weight.backgroundColor;
+              _borderColor = config.colors.weight.borderColor;
+              break;
+            case 3:
+              _bground = config.colors.bmi.backgroundColor;
+              _borderColor = config.colors.bmi.borderColor;
+              break;
+            case 4:
+              _bground = config.colors.temperature.backgroundColor;
+              _borderColor = config.colors.temperature.borderColor;
+              break;
+            case 6:
+              _bground = config.colors.heart_rate.backgroundColor;
+              _borderColor = config.colors.heart_rate.borderColor;
+              break;
+            case 7:
+              _bground = config.colors.resp_rate.backgroundColor;
+              _borderColor = config.colors.resp_rate.borderColor;
+              break;
+            case 8:
+              _bground = config.colors.bp.sys.backgroundColor;
+              _borderColor = config.colors.bp.sys.borderColor;
+              break;
+            case 9:
+              _bground = config.colors.bp.dia.backgroundColor;
+              _borderColor = config.colors.bp.dia.borderColor;
+              break;
+          }
+
+          _plotGraph.push({
+            label: _gId.vital_short_name,
+            fill: false,
+            lineTension: 0.9,
+            backgroundColor: _bground,
+            borderColor: _borderColor,
+            yAxisID: _names,
+            data: Enumerable.from(gg.getSource())
+              .where(w => w.vital_id === k)
+              .select(s => s.vital_value)
+              .toArray()
+          });
+        }
+      })
+      .toArray();
     return (
       <React.Fragment>
         <Modal open={this.state.openVitalModal}>
@@ -290,12 +308,15 @@ class Vitals extends Component {
 
                 <div className="col-lg-9 popRightDiv">
                   <Line
-                    height={60}
                     options={{
-                      maintainAspectRatio: true,
-                      legend: false
+                      scales: {
+                        yAxes: _yAxes
+                      }
                     }}
-                    data={LineData}
+                    data={{
+                      datasets: _plotGraph,
+                      labels: _chartLabels
+                    }}
                   />
                 </div>
               </div>

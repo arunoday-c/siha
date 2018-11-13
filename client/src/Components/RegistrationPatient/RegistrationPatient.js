@@ -35,7 +35,8 @@ import {
   generateBillDetails,
   ShowRefundScreen,
   ClearData,
-  ShowAdvanceScreen
+  ShowAdvanceScreen,
+  getHospitalDetails
 } from "./RegistrationPatientEvent";
 const emptyObject = extend(
   PatRegIOputs.inputParam(),
@@ -123,6 +124,8 @@ class RegistrationPatient extends PureComponent {
         }
       );
     }
+
+    getHospitalDetails(this, this);
   }
 
   GenerateReciept(callback) {
@@ -664,7 +667,8 @@ function mapStateToProps(state) {
     existinsurance: state.existinsurance,
     countries: state.countries,
     primaryinsurance: state.primaryinsurance,
-    secondaryinsurance: state.secondaryinsurance
+    secondaryinsurance: state.secondaryinsurance,
+    hospitaldetails: state.hospitaldetails
   };
 }
 
@@ -681,7 +685,8 @@ function mapDispatchToProps(dispatch) {
       initialbillingCalculations: AlgaehActions,
       billingCalculations: AlgaehActions,
       getCountries: AlgaehActions,
-      setSelectedInsurance: AlgaehActions
+      setSelectedInsurance: AlgaehActions,
+      getHospitalDetails: AlgaehActions
     },
     dispatch
   );

@@ -3,7 +3,8 @@ import extend from "extend";
 import {
   releaseDBConnection,
   jsonArrayToObject,
-  runningNumberGen
+  runningNumberGen,
+  whereCondition
 } from "../utils";
 import moment from "moment";
 import httpStatus from "../utils/httpStatus";
@@ -225,6 +226,7 @@ let addInvoiceGeneration = (req, res, next) => {
                 const insurtColumns = [
                   "bill_header_id",
                   "bill_detail_id",
+                  "service_type_id",
                   "service_id",
                   "quantity",
                   "gross_amount",
@@ -292,4 +294,69 @@ let addInvoiceGeneration = (req, res, next) => {
   }
 };
 
-module.exports = { getVisitWiseBillDetailS, addInvoiceGeneration };
+//created by Nowshad: to get Pharmacy Requisition Entry
+let getInvoiceGeneration = (req, res, next) => {
+  let selectWhere = {
+    invoice_number: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let where = whereCondition(extend(selectWhere, req.query));
+
+    debugLog("where", where);
+    db.getConnection((error, connection) => {
+      connection.query(
+        "SELECT * from  hims_f_invoice_header\
+          where " +
+          where.condition,
+        where.values,
+        (error, headerResult) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+
+          debugLog("result: ", headerResult);
+          if (headerResult.length != 0) {
+            debugLog(
+              "hims_f_invoice_header_id: ",
+              headerResult[0].hims_f_invoice_header_id
+            );
+            connection.query(
+              "select * from hims_f_invoice_details where invoice_header_id=?",
+              headerResult[0].hims_f_invoice_header_id,
+              (error, Invoice_Detail) => {
+                if (error) {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                }
+                req.records = {
+                  ...headerResult[0],
+                  ...{ Invoice_Detail }
+                };
+                releaseDBConnection(db, connection);
+                next();
+              }
+            );
+          } else {
+            req.records = headerResult;
+            releaseDBConnection(db, connection);
+            next();
+          }
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports = {
+  getVisitWiseBillDetailS,
+  addInvoiceGeneration,
+  getInvoiceGeneration
+};

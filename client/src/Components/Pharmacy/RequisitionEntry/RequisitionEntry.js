@@ -91,6 +91,7 @@ class RequisitionEntry extends Component {
   }
 
   render() {
+    debugger;
     return (
       <React.Fragment>
         <div>
@@ -326,8 +327,8 @@ class RequisitionEntry extends Component {
                             }}
                           />
                         </button>
-                      ) : // this.state.authorize1 === "Y" ? (
-                      this.state.authorie2 === "N" ? (
+                      ) : this.state.authorize1 === "Y" &&
+                        this.state.authorie2 === "N" ? (
                         <button
                           type="button"
                           className="btn btn-other"
@@ -345,8 +346,7 @@ class RequisitionEntry extends Component {
                           />
                         </button>
                       ) : null
-                    ) : // ) : null
-                    null}
+                    ) : null}
                     {/* {this.state.authorize1 === "N" ? (
                       <button
                         type="button"
