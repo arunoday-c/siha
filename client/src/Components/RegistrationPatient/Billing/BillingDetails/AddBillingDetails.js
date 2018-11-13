@@ -290,6 +290,8 @@ const ProcessInsurance = ($this, context, ctrl, e) => {
         data.saveEnable = false;
         data.hideInsurance = true;
         data.hideSecInsurance = true;
+        data.ProcessInsure = true;
+
         if (context != null) {
           context.updateState({ ...data });
         }

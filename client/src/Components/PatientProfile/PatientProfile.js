@@ -5,7 +5,11 @@ import Subjective from "./Subjective/Subjective";
 import PhysicalExamination from "./PhysicalExamination/PhysicalExamination";
 import Assesment from "./Assessment/Assessment";
 import Plan from "./Plan/Plan";
-import { algaehApiCall, cancelRequest } from "../../utils/algaehApiCall";
+import {
+  algaehApiCall,
+  cancelRequest,
+  swalMessage
+} from "../../utils/algaehApiCall";
 import moment from "moment";
 import { setGlobal, displayFileFromServer } from "../../utils/GlobalFunctions";
 import { withRouter } from "react-router-dom";
@@ -96,7 +100,31 @@ class PatientProfile extends Component {
     document.getElementById("ehr-router").click();
   }
 
+  showAllergyAlert(data, e) {
+    debugger;
+    swalMessage({
+      title: "Allergic",
+      type: "warning"
+    });
+  }
+
   render() {
+    const _pat_profile =
+      this.props.patient_profile !== undefined &&
+      this.props.patient_profile.length > 0
+        ? this.props.patient_profile[0]
+        : {};
+
+    //TO DO
+    //Display Patient Vitals which are driven from the master
+    //To be Done after Noor completes the Vitals Implementation
+
+    // const _pat_vitals =
+    //   this.props.patient_vitals !== undefined &&
+    //   this.props.patient_vitals.length > 0
+    //     ? this.props.patient_vitals[0]
+    //     : {};
+
     const _patient_allergies =
       this.props.patient_allergies === undefined
         ? []
@@ -118,12 +146,14 @@ class PatientProfile extends Component {
               };
             })
             .toArray();
+
     const _diagnosis =
       this.props.patient_diagnosis === undefined
         ? []
         : this.props.patient_diagnosis;
     const _diet =
       this.props.patient_diet === undefined ? [] : this.props.patient_diet;
+
     return (
       <div className="row patientProfile">
         <div className="patientInfo-Top box-shadow-normal">
@@ -154,62 +184,67 @@ class PatientProfile extends Component {
           </div>
           <div className="patientName">
             <h6>
-              {this.props.patient_profile !== undefined &&
+              {/* {this.props.patient_profile !== undefined &&
               this.props.patient_profile.length > 0
                 ? this.props.patient_profile[0].full_name
-                : ""}
+                : ""} */}
+
+              {_pat_profile.full_name}
             </h6>
             <p>
-              {this.props.patient_profile !== undefined &&
+              {/* {this.props.patient_profile !== undefined &&
               this.props.patient_profile.length > 0
                 ? this.props.patient_profile[0].gender
-                : ""}
-              ,{" "}
-              {this.props.patient_profile !== undefined &&
+                : ""} */}
+              {_pat_profile.gender} ,
+              {/* {this.props.patient_profile !== undefined &&
               this.props.patient_profile.length > 0
                 ? this.props.patient_profile[0].age_in_years
-                : 0}
-              Y{" "}
-              {this.props.patient_profile !== undefined &&
+                : 0} */}
+              {_pat_profile.age_in_years}Y{" "}
+              {/* {this.props.patient_profile !== undefined &&
               this.props.patient_profile.length > 0
                 ? this.props.patient_profile[0].age_in_months
-                : 0}
-              M{" "}
-              {this.props.patient_profile !== undefined &&
+                : 0} */}
+              {_pat_profile.age_in_months}M{" "}
+              {/* {this.props.patient_profile !== undefined &&
               this.props.patient_profile.length > 0
                 ? this.props.patient_profile[0].age_in_days
-                : 0}
-              D
+                : 0} */}
+              {_pat_profile.age_in_days}D
             </p>
           </div>
           <div className="patientDemographic">
             <span>
               DOB:
               <b>
-                {moment(
+                {/* {moment(
                   this.props.patient_profile !== undefined &&
                     this.props.patient_profile.length > 0
                     ? this.props.patient_profile[0].date_of_birth
                     : ""
-                ).format("DD-MM-YYYY")}
+                ).format("DD-MM-YYYY")} */}
+                {moment(_pat_profile.date_of_birth).format("DD-MM-YYYY")}
               </b>
             </span>
             <span>
               Mobile:{" "}
               <b>
-                {this.props.patient_profile !== undefined &&
+                {/* {this.props.patient_profile !== undefined &&
                 this.props.patient_profile.length > 0
                   ? this.props.patient_profile[0].contact_number
-                  : ""}
+                  : ""} */}
+                {_pat_profile.contact_number}
               </b>
             </span>
             <span>
               Nationality:{" "}
               <b>
-                {this.props.patient_profile !== undefined &&
+                {/* {this.props.patient_profile !== undefined &&
                 this.props.patient_profile.length > 0
                   ? this.props.patient_profile[0].nationality
-                  : ""}
+                  : ""} */}
+                {_pat_profile.nationality}
               </b>
             </span>
           </div>
@@ -217,32 +252,41 @@ class PatientProfile extends Component {
             <span>
               MRN:{" "}
               <b>
-                {this.props.patient_profile !== undefined &&
+                {/* {this.props.patient_profile !== undefined &&
                 this.props.patient_profile.length > 0
                   ? this.props.patient_profile[0].patient_code
-                  : ""}
+                  : ""} */}
+                {_pat_profile.patient_code}
               </b>
             </span>
             <span>
               Encounter:{" "}
               <b>
-                {moment(
+                {moment(_pat_profile.Encounter_Date).format(
+                  "DD-MM-YYYY hh:mm a"
+                )}
+                {/* {moment(
                   this.props.patient_profile !== undefined &&
                     this.props.patient_profile.length > 0
                     ? this.props.patient_profile[0].Encounter_Date
                     : ""
-                ).format("DD-MM-YYYY HH:MM:SS A")}
+                ).format("DD-MM-YYYY HH:MM:SS A")} */}
               </b>
             </span>
             <span>
               Payment:{" "}
               <b>
-                {this.props.patient_profile !== undefined &&
+                {_pat_profile.payment_type === "I"
+                  ? "Insurance"
+                  : _pat_profile.payment_type === "S"
+                  ? "Self"
+                  : ""}
+                {/* {this.props.patient_profile !== undefined &&
                 this.props.patient_profile.length > 0
                   ? this.props.patient_profile[0].payment_type === "I"
                     ? "Insurance"
                     : "Self"
-                  : ""}
+                  : ""} */}
               </b>
             </span>
           </div>

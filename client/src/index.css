@@ -46,33 +46,23 @@
   :global .greenCell {
     background-color: #acffc0 !important; }
   :global .cancelledClass {
-    background-color: #ff4000 !important;
+    background-color: #ff400080 !important;
     color: white;
     font-weight: bolder; }
   :global .confirmedClass {
-    background-color: #ff99ff !important;
-    color: white;
-    font-weight: bolder; }
+    background-color: #ff99ff80 !important; }
   :global .orderedClass {
     background-color: #ffff00 !important;
     color: white;
     font-weight: bolder; }
   :global .collectedClass {
-    background-color: #00e6e6 !important;
-    color: white;
-    font-weight: bolder; }
+    background-color: #097bd880 !important; }
   :global .validateClass {
-    background-color: #2ccdd6 !important;
-    color: white;
-    font-weight: bolder; }
+    background-color: #2ccdd680 !important; }
   :global .scheduledClass {
-    background-color: #fca6c1 !important;
-    color: white;
-    font-weight: bolder; }
+    background-color: #fca6c180 !important; }
   :global .availableClass {
-    background-color: #56ce74 !important;
-    color: white;
-    font-weight: bolder; }
+    background-color: #56ce7480 !important; }
   :global .underProcessClass {
     background-color: #cea6fc !important;
     color: white;
@@ -653,6 +643,9 @@
     float: right;
     margin: 0;
     padding: 0; }
+  :global .cashReciptStyles span {
+    color: #696969;
+    text-transform: none; }
   :global .cashReciptStyles .table-report {
     border: none;
     border-bottom: 2px; }

@@ -34,6 +34,7 @@ class Dental extends Component {
     for (let i = 1; i < 9; i++) {
       plot.push(
         <div
+          key={i}
           className={
             "col tooth-sec up-side " +
             (i <= 3
@@ -76,6 +77,7 @@ class Dental extends Component {
     for (let i = 9; i < 17; i++) {
       plot.push(
         <div
+          key={i}
           className={
             "col tooth-sec up-side " +
             (i <= 10
@@ -121,6 +123,7 @@ class Dental extends Component {
     for (let i = 32; i >= 25; i--) {
       plot.push(
         <div
+          key={i}
           className={
             "col tooth-sec down-side " +
             (counter <= 3
@@ -165,6 +168,7 @@ class Dental extends Component {
     for (let i = 32; i < 26; i--) {
       plot.push(
         <div
+          key={i}
           className={
             "col tooth-sec up-side " +
             (i <= 10

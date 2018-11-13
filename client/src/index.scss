@@ -65,15 +65,15 @@ $forntSize: 0.7rem;
   }
 
   .cancelledClass {
-    background-color: #ff4000 !important;
+    background-color: #ff400080 !important;
     color: white;
     font-weight: bolder;
   }
 
   .confirmedClass {
-    background-color: #ff99ff !important;
-    color: white;
-    font-weight: bolder;
+    background-color: #ff99ff80 !important;
+    //color: white;
+    //font-weight: bolder;
   }
   .orderedClass {
     background-color: #ffff00 !important;
@@ -81,24 +81,24 @@ $forntSize: 0.7rem;
     font-weight: bolder;
   }
   .collectedClass {
-    background-color: #00e6e6 !important;
-    color: white;
-    font-weight: bolder;
+    background-color: #097bd880 !important;
+    //color: white;
+    //font-weight: bolder;
   }
   .validateClass {
-    background-color: #2ccdd6 !important;
-    color: white;
-    font-weight: bolder;
+    background-color: #2ccdd680 !important;
+    //color: white;
+    //font-weight: bolder;
   }
   .scheduledClass {
-    background-color: #fca6c1 !important;
-    color: white;
-    font-weight: bolder;
+    background-color: #fca6c180 !important;
+    //color: white;
+    //font-weight: bolder;
   }
   .availableClass {
-    background-color: #56ce74 !important;
-    color: white;
-    font-weight: bolder;
+    background-color: #56ce7480 !important;
+    //color: white;
+    //font-weight: bolder;
   }
   .underProcessClass {
     background-color: #cea6fc !important;
@@ -929,6 +929,11 @@ $forntSize: 0.7rem;
       float: right;
       margin: 0;
       padding: 0;
+    }
+
+    span {
+      color: #696969;
+      text-transform: none;
     }
 
     .table-report {

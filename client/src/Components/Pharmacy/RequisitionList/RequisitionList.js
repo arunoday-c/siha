@@ -8,7 +8,11 @@ import { setGlobal } from "../../../utils/GlobalFunctions";
 import "./RequisitionList.css";
 import "./../../../styles/site.css";
 
-import { LocationchangeTexts, dateFormater } from "./RequisitionListEvent";
+import {
+  LocationchangeTexts,
+  dateFormater,
+  radioChange
+} from "./RequisitionListEvent";
 
 import {
   AlgaehDataGrid,
@@ -25,7 +29,9 @@ class RequisitionList extends Component {
     this.state = {
       from_location_id: null,
       to_location_id: null,
-      requisition_list: []
+      requisition_list: [],
+      radioYes: true,
+      authorize1: "Y"
     };
   }
 
@@ -111,6 +117,31 @@ class RequisitionList extends Component {
                     onClear: LocationchangeTexts.bind(this, this, "From")
                   }}
                 />
+
+                <div className="col-lg-4" style={{ paddingTop: "25px" }}>
+                  <div className="customRadio">
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        name="insured"
+                        value="1"
+                        checked={this.state.radioYes}
+                        onChange={radioChange.bind(this, this)}
+                      />
+                      <span>Authorize 1</span>
+                    </label>
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        name="insured"
+                        value="2"
+                        checked={this.state.radioNo}
+                        onChange={radioChange.bind(this, this)}
+                      />
+                      <span>Authorize 2</span>
+                    </label>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
