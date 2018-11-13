@@ -1,11 +1,102 @@
 import React, { Component } from "react";
 import "./PatientHistory.css";
 import { AlagehFormGroup } from "../../Wrapper/algaehWrapper";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import Enumerable from "linq";
 
 class PatientHistory extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      patHistory: []
+    };
+    this.getPatientHistory();
+  }
+
+  componentWillUnmount() {
+    this.state.social_history.length === 0 &&
+    this.state.surgical_history.length === 0 &&
+    this.state.social_history.length === 0
+      ? null
+      : this.savePatientHistory();
+  }
+
+  savePatientHistory() {
+    let his_array = [];
+
+    this.state.social_history.length !== 0
+      ? his_array.push({
+          history_type: "SOH",
+          remarks: this.state.social_history
+        })
+      : this.state.surgical_history.length !== 0
+      ? his_array.push({
+          history_type: "SGH",
+          remarks: this.state.surgical_history
+        })
+      : this.state.medical_history.length !== 0
+      ? his_array.push({
+          history_type: "MEH",
+          remarks: this.state.medical_history
+        })
+      : null;
+
+    let send_obj = {
+      patient_id: Window.global["current_patient"],
+      provider_id: Window.global["provider_id"],
+      patient_history: his_array
+    };
+
+    algaehApiCall({
+      uri: "/doctorsWorkBench/addPatientHistory",
+      method: "POST",
+      data: send_obj,
+      onSuccess: response => {},
+      onFailure: error => {}
+    });
+  }
+
+  getPatientHistory() {
+    algaehApiCall({
+      uri: "/doctorsWorkBench/getPatientHistory",
+      method: "GET",
+      data: {
+        patient_id: Window.global["current_patient"]
+      },
+      onSuccess: response => {
+        if (response.data.success) {
+          console.log("History:", response.data.records);
+          this.setState(
+            {
+              patHistory: response.data.records
+            },
+            () => {
+              let soh = Enumerable.from(response.data.records)
+                .where(w => w.history_type === "SOH")
+                .firstOrDefault();
+              let meh = Enumerable.from(response.data.records)
+                .where(w => w.history_type === "MEH")
+                .firstOrDefault();
+              let sgh = Enumerable.from(response.data.records)
+                .where(w => w.history_type === "SGH")
+                .firstOrDefault();
+
+              this.setState({
+                social_history: soh !== undefined ? soh.remarks : "",
+                medical_history: meh !== undefined ? meh.remarks : "",
+                surgical_history: sgh !== undefined ? sgh.remarks : ""
+              });
+            }
+          );
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   textHandle(e) {
@@ -113,42 +204,6 @@ class PatientHistory extends Component {
             </div>
           </div>
         </div>
-
-        {/* <div className="row">
-            <div className="col portlet portlet-bordered box-shadow-normal">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">Medical History</h3>
-                </div>
-              </div>
-
-              <div className="portlet-body" style={{minHeight:"20vh"}}>
-                
-              </div>
-            </div>
-            <div className="col portlet portlet-bordered box-shadow-normal">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">Social History</h3>
-                </div>
-              </div>
-
-              <div className="portlet-body" style={{minHeight:"20vh"}}>
-               
-              </div>
-            </div>
-            <div className="col portlet portlet-bordered box-shadow-normal">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">Surgical History</h3>
-                </div>
-              </div>
-
-              <div className="portlet-body" style={{minHeight:"20vh"}}>
-               
-              </div>
-            </div>
-          </div> */}
       </React.Fragment>
     );
   }

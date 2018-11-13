@@ -359,11 +359,10 @@ class Encounters extends Component {
                     <div className="row">
                       <div className="col">
                         <h6 className="danger">
-                          {this.state.patientComplaints.map(
-                            (data, index) =>
-                              data.chief_complaint !== ""
-                                ? data.chief_complaint
-                                : "----------"
+                          {this.state.patientComplaints.map((data, index) =>
+                            data.chief_complaint !== ""
+                              ? data.chief_complaint
+                              : "----------"
                           )}
                         </h6>
                       </div>
@@ -502,11 +501,10 @@ class Encounters extends Component {
                     <div className="row">
                       <div className="col">
                         <h6 className="danger">
-                          {this.state.patientDiagnosis.map(
-                            (data, index) =>
-                              data.diagnosis_type === "P"
-                                ? "Primary: " + data.daignosis_description
-                                : "Primary : ----------"
+                          {this.state.patientDiagnosis.map((data, index) =>
+                            data.diagnosis_type === "P"
+                              ? "Primary: " + data.daignosis_description
+                              : null
                           )}
 
                           {/* Primary: History of Convlusion with fever (Febrile
@@ -516,11 +514,10 @@ class Encounters extends Component {
 
                       <div className="col">
                         <h6 className="">
-                          {this.state.patientDiagnosis.map(
-                            (data, index) =>
-                              data.diagnosis_type === "S"
-                                ? "Secondary: " + data.daignosis_description
-                                : "Secondary : ----------"
+                          {this.state.patientDiagnosis.map((data, index) =>
+                            data.diagnosis_type === "S"
+                              ? "Secondary: " + data.daignosis_description
+                              : null
                           )}
                           {/* Secondary: History of Convlusion with fever (Febrile
                           Convlusion) */}
@@ -551,14 +548,14 @@ class Encounters extends Component {
                                       {row.lab_ord_status === "O"
                                         ? "Ordered"
                                         : row.lab_ord_status === "CL"
-                                          ? "Sample Collected"
-                                          : row.lab_ord_status === "CN"
-                                            ? "Test Cancelled"
-                                            : row.lab_ord_status === "CF"
-                                              ? "Result Confirmed "
-                                              : row.lab_ord_status === "V"
-                                                ? "Result Validated"
-                                                : "----"}
+                                        ? "Sample Collected"
+                                        : row.lab_ord_status === "CN"
+                                        ? "Test Cancelled"
+                                        : row.lab_ord_status === "CF"
+                                        ? "Result Confirmed "
+                                        : row.lab_ord_status === "V"
+                                        ? "Result Validated"
+                                        : "----"}
                                     </span>
                                   );
                                 }
@@ -583,16 +580,16 @@ class Encounters extends Component {
                                       {row.rad_ord_status === "O"
                                         ? "Ordered"
                                         : row.rad_ord_status === "S"
-                                          ? "Scheduled"
-                                          : row.rad_ord_status === "UP"
-                                            ? "Under Process"
-                                            : row.rad_ord_status === "CN"
-                                              ? "Cancelled"
-                                              : row.rad_ord_status === "RC"
-                                                ? "Result Confirmed"
-                                                : row.rad_ord_status === "RA"
-                                                  ? "Result Avaiable"
-                                                  : "----"}
+                                        ? "Scheduled"
+                                        : row.rad_ord_status === "UP"
+                                        ? "Under Process"
+                                        : row.rad_ord_status === "CN"
+                                        ? "Cancelled"
+                                        : row.rad_ord_status === "RC"
+                                        ? "Result Confirmed"
+                                        : row.rad_ord_status === "RA"
+                                        ? "Result Avaiable"
+                                        : "----"}
                                     </span>
                                   );
                                 }

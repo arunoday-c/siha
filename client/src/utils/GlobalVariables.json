@@ -102,10 +102,10 @@
   ],
   "FORMAT_TEST_STATUS": [
     { "name": "Ordered", "value": "O", "color": "#f2f2f2" },
-    { "name": "Collected", "value": "CL", "color": "#00ffff" },
-    { "name": "Cancelled", "value": "CN", "color": "#ff4000" },
-    { "name": "Confirmed", "value": "CF", "color": "#ff99ff" },
-    { "name": "Validated", "value": "V", "color": "#4CAF50" }
+    { "name": "Collected", "value": "CL", "color": "#097bd880" },
+    { "name": "Cancelled", "value": "CN", "color": "#ff400080" },
+    { "name": "Confirmed", "value": "CF", "color": "#ff99ff80" },
+    { "name": "Validated", "value": "V", "color": "#2ccdd680" }
   ],
   "FORMAT_INSURANCE_EDIT_OPTION": [
     {
@@ -242,11 +242,11 @@
   ],
   "FORMAT_RAD_STATUS": [
     { "name": "Ordered", "value": "O", "color": "#f2f2f2" },
-    { "name": "Scheduled", "value": "S", "color": "#fca6c1" },
+    { "name": "Scheduled", "value": "S", "color": "#fca6c180" },
     { "name": "Under Process", "value": "UP", "color": "#cea6fc" },
     { "name": "Cancelled", "value": "CN", "color": "#ff4000" },
-    { "name": "Result  Confirmed ", "value": "RC", "color": "#ff99ff" },
-    { "name": "Result Avaiable", "value": "RA", "color": "#56ce74" }
+    { "name": "Result  Confirmed ", "value": "RC", "color": "#ff99ff80" },
+    { "name": "Result Avaiable", "value": "RA", "color": "#56ce7480" }
   ],
   "ALLERGY_TYPES": [
     {
@@ -415,5 +415,35 @@
     { "name": "No", "arabic_name": "لا", "value": "N" },
     { "name": "Yes", "arabic_name": "نعم فعلا", "value": "Y" },
     { "name": "Create Visit", "arabic_name": "خلق زيارة", "value": "C" }
+  ],
+  "TALLY_STATUS": [
+    { "name": "Tallied", "value": "T" },
+    { "name": "Shortage", "value": "S" },
+    { "name": "Excess", "value": "E" }
+  ],
+  "DECIMAL_PLACES": [
+    { "name": "0", "value": "0" },
+    { "name": "1", "value": "1" },
+    { "name": "2", "value": "2" },
+    { "name": "3", "value": "3" }
+  ],
+  "SYMBOL_POSITION": [
+    { "name": "BEFORE WITH SPACE", "value": "BWS" },
+    { "name": "BEFORE SPACE", "value": "BS" },
+    { "name": "AFTER WITH SPACE", "value": "AWS" },
+    { "name": "AFTER SPACE", "value": "AS" }
+  ],
+  "THOUSAND_SEPARATOR": [
+    { "name": "SPACE", "value": "S" },
+    { "name": "PERIOD", "value": "P" },
+    { "name": "COMMA", "value": "C" }
+  ],
+  "DECIMAL_SEPARATOR": [
+    { "name": "PERIOD", "value": "P" },
+    { "name": "COMMA", "value": "C" }
+  ],
+  "NEGATIVE_SEPARATOR": [
+    { "name": "TRAILING", "value": "TR" },
+    { "name": "LEADING", "value": "LD" }
   ]
 }

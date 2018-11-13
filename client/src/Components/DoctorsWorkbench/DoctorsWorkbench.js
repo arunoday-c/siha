@@ -290,7 +290,13 @@ class DoctorsWorkbench extends Component {
                           >
                             <span className="op-sec-1">
                               {/* <i className="appointment-icon" /> */}
-                              <i className="walking-icon" />
+                              <i
+                                className={
+                                  data.appointment_patient === "Y"
+                                    ? "appointment-icon"
+                                    : "walking-icon"
+                                }
+                              />
                               <span className="opTime">
                                 {moment(data.encountered_date).format(
                                   "HH:mm A"
