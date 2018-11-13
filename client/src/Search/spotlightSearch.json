@@ -157,6 +157,18 @@
       {
         "fieldName": "invoice_date",
         "label": "Invoice Date"
+      },
+      {
+        "fieldName": "visit_code",
+        "label": "Visit Code"
+      },
+      {
+        "fieldName": "patient_code",
+        "label": "Patient Code"
+      },
+      {
+        "fieldName": "full_name",
+        "label": "Patient Name"
       }
     ]
   }

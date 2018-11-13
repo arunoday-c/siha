@@ -108,7 +108,11 @@ let algaehSearchConfig = searchName => {
       },
       {
         searchName: "InvoiceGen",
-        searchQuery: "select SQL_CALC_FOUND_ROWS * from hims_f_invoice_header",
+        searchQuery:
+          "select hims_f_invoice_header_id, invoice_number, invoice_date, pat.patient_code, pat.full_name,\
+          pv.visit_code from hims_f_invoice_header , hims_f_patient pat,  hims_f_patient_visit pv where \
+          hims_f_invoice_header.patient_id = pat.hims_d_patient_id and pv.hims_f_patient_visit_id = hims_f_invoice_header.visit_id \
+          and pv.patient_id= pat.hims_d_patient_id",
         orderBy: "hims_f_invoice_header_id desc"
       }
 
