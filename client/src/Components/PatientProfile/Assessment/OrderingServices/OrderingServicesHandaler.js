@@ -153,7 +153,7 @@ const ProcessService = ($this, e) => {
                       preserviceInput: preserviceInput,
                       approval_limit_yesno: approval_limit_yesno,
                       saved: false,
-                      s_service_type: null,
+                      // s_service_type: null,
                       s_service: null,
                       test_type: "R"
                     });
@@ -237,7 +237,7 @@ const ProcessService = ($this, e) => {
               preserviceInput: preserviceInput,
               preapp_limit_amount: preapp_limit_amount,
               saved: false,
-              s_service_type: null,
+              // s_service_type: null,
               s_service: null,
               test_type: "R"
             });
@@ -323,11 +323,17 @@ const VisitSearch = ($this, e) => {
 
 //if services got delete and if pre apprival limit exceed
 const deleteServices = ($this, row, rowId) => {
+  debugger;
   let orderservicesdata = $this.state.orderservicesdata;
   let preserviceInput = $this.state.preserviceInput;
   let saved = false;
 
-  orderservicesdata.splice(rowId, 1);
+  for (var i = 0; i < orderservicesdata.length; i++) {
+    if (orderservicesdata[i].services_id === row["services_id"]) {
+      orderservicesdata.splice(i, 1);
+    }
+  }
+  // orderservicesdata.splice(rowId, 1);
 
   if (orderservicesdata.length === 0) {
     saved = true;
@@ -416,6 +422,13 @@ const SaveOrdersServices = ($this, e) => {
           type: "success"
         });
       }
+    },
+    onFailure: error => {
+      debugger;
+      swalMessage({
+        title: error.response.data.message,
+        type: "error"
+      });
     }
   });
 };

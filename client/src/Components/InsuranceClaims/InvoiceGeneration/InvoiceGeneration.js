@@ -33,6 +33,8 @@ class InvoiceGeneration extends Component {
     super(props);
 
     this.state = {
+      hims_f_invoice_header_id: null,
+      invoice_number: null,
       invoice_date: new Date(),
       visit_code: "",
       patient_code: "",
@@ -44,17 +46,17 @@ class InvoiceGeneration extends Component {
       clearEnable: true,
       Invoice_Detail: [],
       generateVoice: true,
-      gross_amount: 0,
-      discount_amount: 0,
-      patient_resp: 0,
-      patient_tax: 0,
-      patient_payable: 0,
-      company_resp: 0,
-      company_tax: 0,
-      company_payable: 0,
-      sec_company_resp: 0,
-      sec_company_tax: 0,
-      sec_company_payable: 0
+      gross_amount: null,
+      discount_amount: null,
+      patient_resp: null,
+      patient_tax: null,
+      patient_payable: null,
+      company_resp: null,
+      company_tax: null,
+      company_payable: null,
+      sec_company_resp: null,
+      sec_company_tax: null,
+      sec_company_payable: null
     };
   }
 
@@ -105,7 +107,7 @@ class InvoiceGeneration extends Component {
       let billOut = nextProps.invheadercal;
       billOut.patient_resp = billOut.patient_res;
       billOut.patient_payable = billOut.patient_payable;
-      billOut.comapany_resp = billOut.company_res;
+      billOut.company_resp = billOut.company_res;
       billOut.company_payable = billOut.company_payble;
       billOut.sec_comapany_resp = billOut.sec_company_res;
       billOut.sec_company_payable = billOut.sec_company_paybale;
@@ -475,7 +477,7 @@ class InvoiceGeneration extends Component {
                       disabled: true
                     },
                     {
-                      fieldName: "comapany_resp",
+                      fieldName: "company_resp",
                       label: (
                         <AlgaehLabel label={{ fieldName: "comapany_resp" }} />
                       ),
@@ -489,7 +491,7 @@ class InvoiceGeneration extends Component {
                       disabled: true
                     },
                     {
-                      fieldName: "company_payble",
+                      fieldName: "company_payable",
                       label: (
                         <AlgaehLabel label={{ fieldName: "company_payble" }} />
                       ),
@@ -608,8 +610,8 @@ class InvoiceGeneration extends Component {
                       }}
                     />
                     <h5>
-                      {this.state.comapany_resp
-                        ? "₹" + this.state.comapany_resp
+                      {this.state.company_resp
+                        ? "₹" + this.state.company_resp
                         : "₹0.00"}
                     </h5>
                   </div>

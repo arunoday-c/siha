@@ -137,6 +137,7 @@ app.use((error, req, res, next) => {
         if (typeof connection.rollback == "function") {
           connection.rollback(() => {
             if (typeof connection.release == "function") connection.release();
+
             res.status(error.status).json({
               success: false,
               message:
@@ -153,6 +154,12 @@ app.use((error, req, res, next) => {
             isSql: error.sqlMessage != null ? true : false
           });
         }
+      } else {
+        res.status(error.status).json({
+          success: false,
+          message: error.sqlMessage != null ? error.sqlMessage : error.message,
+          isSql: error.sqlMessage != null ? true : false
+        });
       }
     } else {
       res.status(error.status).json({
