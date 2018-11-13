@@ -5,7 +5,9 @@
         <div class="col-lg-4">
           <div class="hospitalLogo">Hospital Logo</div>
         </div>
-        <div class="col-lg-4"><h3 class="receipt-header">Tax Invoice</h3></div>
+        <div class="col-lg-4">
+          <h3 class="receipt-header">Dept. of Immunology</h3>
+        </div>
         <div class="col-lg-4">
           <p class="hospitalAddress">
             # 301A, Curzon Square, Lady Curzon Road Opposite State Bank of India
@@ -24,20 +26,20 @@
                 <td data-parameter="full_name"></td>
                 <td class="col"></td>
                 <td>Type:</td>
-                <td data-parameter="payment_type"></td>
+                <td>Immunology Report</td>
               </tr>
               <tr>
                 <td>Patient MRN:</td>
                 <td data-parameter="patient_code"></td>
                 <td></td>
-                <td>Invoice No.</td>
-                <td data-parameter="invoice_number"></td>
+                <td>Report No.</td>
+                <td>625345</td>
               </tr>
               <tr>
                 <td>Doctor Name:</td>
                 <td data-parameter="doctor_name"></td>
                 <td></td>
-                <td>Recepit Date:</td>
+                <td>Report Date:</td>
                 <td data-parameter="receipt_date"></td>
               </tr>
             </tbody>
@@ -50,21 +52,11 @@
             <table class="table table-bordered table-striped">
               <thead>
                 <tr>
-                  <th style="width : 1px">Service Type</th>
-                  <th>Service Description</th>
-                  <th>Quantity</th>
-                  <th>Gross Amount</th>
-                  <th>Discount</th>
-                  <th>Net Amount</th>
-                  <th>Patient Responsibility</th>
-                  <th> Patient Tax</th>
-                  <th>Patient Share</th>
-                  <th>Company Responsibility</th>
-                  <th> Company Tax</th>
-                  <th>Company Share</th>
-                  <th>Sec. Company Responsibility</th>
-                  <th>Sec. Company Tax</th>
-                  <th>Sec. Company Share</th>
+                  <th>Test Name</th>
+                  <th>Result</th>
+                  <th>Unit</th>
+                  <th>Bio. Ref Range</th>
+                  <th>Method</th>
                 </tr>
               </thead>
 
@@ -78,16 +70,6 @@
                 <td data-list-parameter="quantity"> </td>
                 <td data-list-parameter="gross_amount"> </td>
                 <td data-list-parameter="discount_amout"> </td>
-                <td data-list-parameter="net_amout"> </td>
-                <td data-list-parameter="patient_resp"> </td>
-                <td data-list-parameter="patient_tax"> </td>
-                <td data-list-parameter="patient_payable"> </td>
-                <td data-list-parameter="comapany_resp"> </td>
-                <td data-list-parameter="company_tax"> </td>
-                <td data-list-parameter="company_payble"> </td>
-                <td data-list-parameter="sec_comapany_resp"> </td>
-                <td data-list-parameter="sec_company_tax"> </td>
-                <td data-list-parameter="sec_company_payble"> </td>
               </tr>
 
 
@@ -125,25 +107,41 @@
           </div>
         </div>
       </div>
+      <span style="margin-right : 10px">Comment : </span>
+      <span>Lorem Ipsum Dolor sit Amet</span>
+      <hr />
       <div class="row receipt-header-mid">
-        <div class="table-responsive table-report">
-          <table class="table table-sm">
+        <div class="table-responsive">
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>For Pregnant Females</th>
+                <th>
+                  Bio Ref Range for TSH in uIU/ml(As per American Thyoid
+                  Association)
+                </th>
+              </tr>
+            </thead>
             <tbody>
               <tr>
-                <td>Remarks:</td>
-                <td data-parameter="remarks" />
-
-                <td>Previous Due:</td>
-                <td>0</td>
+                <td>First Trimester</td>
+                <td></td>
               </tr>
               <tr>
-                <td class="col"></td>
-                <td>Total:</td>
-                <td>76</td>
+                <td>Second Trimester</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Third Trimester</td>
+                <td></td>
               </tr>
             </tbody>
           </table>
         </div>
+        <hr />
+
+        <span style="margin-right : 10px">Results to follow : </span>
+        <span>Lorem Ipsum Dolor sit Amet</span>
       </div>
     </div>
   </div>

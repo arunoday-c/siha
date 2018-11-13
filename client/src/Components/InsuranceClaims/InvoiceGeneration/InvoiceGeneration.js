@@ -122,14 +122,14 @@ class InvoiceGeneration extends Component {
             fileName: "cashInvoice"
           },
           data: {
-            services: services,
-            remarks: 500 + " by Cash",
-            total_amount: 500,
+            services: this.state.Invoice_Detail,
+            remarks: this.state.totalGross + " by Cash",
+            total_amount: this.state.totalGross,
             payment_type: "cash",
-            patient_code: "PAT-00000asdfadsf",
-            full_name: "Allah Bakash",
+            patient_code: this.state.patient_code,
+            full_name: this.state.full_name,
             advance_amount: "PAT-00000asdfadsf",
-            invoice_number: "INV-A-0000989",
+            invoice_number: this.state.invoice_number,
             receipt_number: "PAT-00000asdfadsf",
             receipt_date: "11-11-2018",
             doctor_name: "Dr. Norman John",
@@ -354,7 +354,6 @@ class InvoiceGeneration extends Component {
                         );
                       }
                     },
-
                     {
                       fieldName: "services_id",
                       label: (
