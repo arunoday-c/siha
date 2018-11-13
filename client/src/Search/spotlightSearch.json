@@ -147,5 +147,17 @@
         "label": "CPT Description"
       }
     ]
+  },
+  "Invoice": {
+    "InvoiceGen": [
+      {
+        "fieldName": "invoice_number",
+        "label": "Invoice Number"
+      },
+      {
+        "fieldName": "invoice_date",
+        "label": "Invoice Date"
+      }
+    ]
   }
 }
