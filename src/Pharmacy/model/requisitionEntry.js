@@ -281,7 +281,9 @@ let updaterequisitionEntry = (req, res, next) => {
 let getAuthrequisitionList = (req, res, next) => {
   let selectWhere = {
     from_location_id: null,
-    to_location_id: null
+    to_location_id: null,
+    authorize1: null,
+    authorie2: null
   };
   try {
     if (req.db == null) {
@@ -293,7 +295,7 @@ let getAuthrequisitionList = (req, res, next) => {
 
     let strQuery =
       "SELECT * from  hims_f_pharamcy_material_header\
-    where (authorize1='N' or authorie2='N')";
+    where cancelled='N' ";
 
     if (inputParam.from_location_id !== null) {
       strQuery =
@@ -302,6 +304,12 @@ let getAuthrequisitionList = (req, res, next) => {
     if (inputParam.to_location_id !== null) {
       strQuery =
         strQuery + " and to_location_id = " + inputParam.to_location_id;
+    }
+    if (inputParam.authorize1 !== null) {
+      strQuery = strQuery + " and authorize1 = '" + inputParam.authorize1 + "'";
+    }
+    if (inputParam.authorie2 !== null) {
+      strQuery = strQuery + " and authorie2 = '" + inputParam.authorie2 + "'";
     }
 
     debugLog("strQuery", strQuery);

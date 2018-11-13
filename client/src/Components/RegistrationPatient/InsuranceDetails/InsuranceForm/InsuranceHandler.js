@@ -37,7 +37,8 @@ const insurancehandle = ($this, context, e) => {
       primary_policy_num: e.selected.policy_number,
       primary_card_number: e.selected.card_number,
       primary_effective_start_date: e.selected.effective_start_date,
-      primary_effective_end_date: e.selected.effective_end_date
+      primary_effective_end_date: e.selected.effective_end_date,
+      ProcessInsure: false
     });
 
     if (context != null) {
@@ -49,7 +50,8 @@ const insurancehandle = ($this, context, e) => {
         primary_card_number: e.selected.card_number,
         primary_effective_start_date: e.selected.effective_start_date,
         primary_effective_end_date: e.selected.effective_end_date,
-        primary_network_office_id: e.selected.network_id
+        primary_network_office_id: e.selected.network_id,
+        ProcessInsure: false
       });
     }
   }
@@ -194,7 +196,8 @@ const InsuranceDetails = ($this, context, e) => {
                       row.hims_d_insurance_network_office_id,
                     primary_effective_start_date: row.net_effective_start_date,
                     primary_effective_end_date: row.net_effective_end_date,
-                    insurance_effective_end_date: row.effective_end_date
+                    insurance_effective_end_date: row.effective_end_date,
+                    ProcessInsure: false
                   });
 
                   if (context != null) {
@@ -209,7 +212,8 @@ const InsuranceDetails = ($this, context, e) => {
                       primary_effective_start_date:
                         row.net_effective_start_date,
                       primary_effective_end_date: row.net_effective_end_date,
-                      insurance_effective_end_date: row.effective_end_date
+                      insurance_effective_end_date: row.effective_end_date,
+                      ProcessInsure: false
                     });
                   }
                 }
@@ -259,7 +263,8 @@ const InsuranceDetails = ($this, context, e) => {
                   row.hims_d_insurance_network_office_id,
                 primary_effective_start_date: row.net_effective_start_date,
                 primary_effective_end_date: row.net_effective_end_date,
-                insurance_effective_end_date: row.effective_end_date
+                insurance_effective_end_date: row.effective_end_date,
+                ProcessInsure: false
               });
 
               if (context != null) {
@@ -273,7 +278,8 @@ const InsuranceDetails = ($this, context, e) => {
                     row.hims_d_insurance_network_office_id,
                   primary_effective_start_date: row.net_effective_start_date,
                   primary_effective_end_date: row.net_effective_end_date,
-                  insurance_effective_end_date: row.effective_end_date
+                  insurance_effective_end_date: row.effective_end_date,
+                  ProcessInsure: false
                 });
               }
             }
