@@ -13,7 +13,8 @@ import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import {
   VisitSearch,
   FinalizedAndInvoice,
-  ClearData
+  ClearData,
+  getCtrlCode
 } from "./InvoiceGenerationHandaler";
 import "./InvoiceGeneration.css";
 import "../../../styles/site.css";
@@ -197,14 +198,13 @@ class InvoiceGeneration extends Component {
             value: this.state.invoice_number,
             selectValue: "invoice_number",
             events: {
-              //onChange: null //getCtrlCode.bind(this, this)
-              onChange: () => {}
+              onChange: getCtrlCode.bind(this, this)
             },
             jsonFile: {
               fileName: "spotlightSearch",
-              fieldName: "initialStock.intstock"
+              fieldName: "Invoice.InvoiceGen"
             },
-            searchName: "initialstock"
+            searchName: "InvoiceGen"
           }}
           userArea={
             <div className="row">
@@ -355,7 +355,7 @@ class InvoiceGeneration extends Component {
                       }
                     },
                     {
-                      fieldName: "services_id",
+                      fieldName: "service_id",
                       label: (
                         <AlgaehLabel label={{ fieldName: "services_id" }} />
                       ),
@@ -364,7 +364,7 @@ class InvoiceGeneration extends Component {
                           this.props.serviceslist === undefined
                             ? []
                             : this.props.serviceslist.filter(
-                                f => f.hims_d_services_id === row.services_id
+                                f => f.hims_d_services_id === row.service_id
                               );
 
                         return (
@@ -382,7 +382,7 @@ class InvoiceGeneration extends Component {
                           this.props.serviceslist === undefined
                             ? []
                             : this.props.serviceslist.filter(
-                                f => f.hims_d_services_id === row.services_id
+                                f => f.hims_d_services_id === row.service_id
                               );
 
                         return (
@@ -749,7 +749,8 @@ function mapStateToProps(state) {
     servicetype: state.servicetype,
     orderedserviceslist: state.orderedserviceslist,
     serviceslist: state.serviceslist,
-    invheadercal: state.invheadercal
+    invheadercal: state.invheadercal,
+    invoiceGen: state.invoiceGen
   };
 }
 
@@ -760,7 +761,8 @@ function mapDispatchToProps(dispatch) {
       getServices: AlgaehActions,
       getMedicationList: AlgaehActions,
       initialStateOrders: AlgaehActions,
-      billingCalculations: AlgaehActions
+      billingCalculations: AlgaehActions,
+      getInvoiceGeneration: AlgaehActions
     },
     dispatch
   );

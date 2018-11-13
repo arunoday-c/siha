@@ -1,7 +1,7 @@
 import { setGlobal } from "../../../utils/GlobalFunctions";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import config from "../../../utils/config.json";
-const getVitalHistory = $this => {
+const getVitalHistory = ($this, callBack) => {
   $this.props.getVitalHistory({
     uri: "/doctorsWorkBench/getPatientVitals",
     method: "GET",
@@ -13,6 +13,11 @@ const getVitalHistory = $this => {
     redux: {
       type: "PATIENT_VITALS",
       mappingName: "patient_vitals"
+    },
+    afterSuccess: data => {
+      if (typeof callBack === "function") {
+        callBack(data);
+      }
     }
   });
 };

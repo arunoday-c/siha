@@ -2,6 +2,7 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import Enumerable from "linq";
 import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
+import AlgaehLoader from "../../Wrapper/fullPageLoader";
 
 const VisitSearch = ($this, e) => {
   AlgaehSearch({
@@ -73,6 +74,13 @@ const getVisitWiseBillDetailS = $this => {
           .select(w => w.discount_amout)
           .sum();
         //created by Adnan
+        debugger;
+
+        for (let i = 0; i < data.length; i++) {
+          data[i].service_id = data[i].services_id;
+          data[i].bill_header_id = data[i].hims_f_billing_header_id;
+          data[i].bill_detail_id = data[i].hims_f_billing_details_id;
+        }
 
         $this.setState({
           saveEnable: false,
@@ -169,10 +177,34 @@ const ClearData = $this => {
   });
 };
 
+const getCtrlCode = ($this, docNumber) => {
+  debugger;
+  AlgaehLoader({ show: true });
+  $this.props.getInvoiceGeneration({
+    uri: "/invoiceGeneration/getInvoiceGeneration",
+    method: "GET",
+    // printInput: true,
+    data: { invoice_number: docNumber },
+    redux: {
+      type: "INVOICE_GEN_GET_DATA",
+      mappingName: "invoiceGen"
+    },
+    afterSuccess: data => {
+      debugger;
+      data.generateVoice = false;
+      data.clearEnable = false;
+
+      $this.setState(data);
+      AlgaehLoader({ show: false });
+    }
+  });
+};
+
 export {
   VisitSearch,
   getOrderServices,
   FinalizedAndInvoice,
   ClearData,
-  getVisitWiseBillDetailS
+  getVisitWiseBillDetailS,
+  getCtrlCode
 };
