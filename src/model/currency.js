@@ -85,4 +85,79 @@ let getCurrencyMaster = (req, res, next) => {
   }
 };
 
-module.exports = { addCurrencyMaster, getCurrencyMaster };
+//created by irfan: to deleteCurrencyMaster
+let deleteCurrencyMaster = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+
+    deleteRecord(
+      {
+        db: req.db,
+        tableName: "hims_d_currency",
+        id: req.body.hims_d_currency_id,
+        query:
+          "UPDATE hims_d_currency SET  record_status='I' WHERE hims_d_currency_id=?",
+        values: [req.body.hims_d_currency_id]
+      },
+      result => {
+        req.records = result;
+        next();
+      },
+      error => {
+        next(error);
+      },
+      true
+    );
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to  updateCurrencyMaster
+let updateCurrencyMaster = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.query(
+        "UPDATE `hims_d_currency` SET  decimal_places=?, symbol_position=?, thousand_separator=?, decimal_separator=?, negative_separator=?,\
+           updated_date=?, updated_by=? WHERE  `record_status`='A' and `hims_d_currency_id`=?;",
+        [
+          input.decimal_places,
+          input.symbol_position,
+          input.thousand_separator,
+          input.decimal_separator,
+          input.negative_separator,
+
+          new Date(),
+          input.updated_by,
+          input.hims_d_currency_id
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+module.exports = {
+  addCurrencyMaster,
+  getCurrencyMaster,
+  deleteCurrencyMaster,
+  updateCurrencyMaster
+};
