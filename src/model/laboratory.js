@@ -503,7 +503,8 @@ let getTestAnalytes = (req, res, next) => {
         next(error);
       }
       db.query(
-        "SELECT * from hims_f_ord_analytes where record_status='A' AND" +
+        "SELECT *,la.description from hims_f_ord_analytes, hims_d_lab_analytes la where hims_f_ord_analytes.record_status='A' \
+        and la.hims_d_lab_analytes_id = hims_f_ord_analytes.analyte_id AND" +
           where.condition,
         where.values,
 
