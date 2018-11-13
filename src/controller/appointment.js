@@ -25,7 +25,9 @@ import {
   getPatientAppointment,
   updatePatientAppointment,
   getEmployeeServiceID,
-  appointmentStatusAuthorized,deleteAppointmentRoom,cancelPatientAppointment
+  appointmentStatusAuthorized,
+  deleteAppointmentRoom,
+  cancelPatientAppointment
 } from "../model/appointment";
 
 export default ({ config, db }) => {
@@ -384,8 +386,7 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-
-  // created by irfan :to 
+  // created by irfan :to
   api.put(
     "/appointmentStatusAuthorized",
     appointmentStatusAuthorized,
@@ -399,7 +400,6 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
-
 
   // created by irfan :to cancelPatientAppointment
   api.put(
