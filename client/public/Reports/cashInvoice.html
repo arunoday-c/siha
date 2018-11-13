@@ -5,7 +5,7 @@
         <div class="col-lg-4">
           <div class="hospitalLogo">Hospital Logo</div>
         </div>
-        <div class="col-lg-4"><h3 class="receipt-header">Tax Invoice</h3></div>
+        <div class="col-lg-4"><h3 class="receipt-header">Cash Invoice</h3></div>
         <div class="col-lg-4">
           <p class="hospitalAddress">
             # 301A, Curzon Square, Lady Curzon Road Opposite State Bank of India
@@ -53,18 +53,11 @@
                   <th style="width : 1px">Service Type</th>
                   <th>Service Description</th>
                   <th>Quantity</th>
-                  <th>Gross Amount</th>
+                  <th>Price</th>
                   <th>Discount</th>
                   <th>Net Amount</th>
-                  <th>Patient Responsibility</th>
-                  <th> Patient Tax</th>
-                  <th>Patient Share</th>
-                  <th>Company Responsibility</th>
-                  <th> Company Tax</th>
-                  <th>Company Share</th>
-                  <th>Sec. Company Responsibility</th>
-                  <th>Sec. Company Tax</th>
-                  <th>Sec. Company Share</th>
+               <th>Vat Amount</th>
+               <th>Patient Share</th>
                 </tr>
               </thead>
 
@@ -73,21 +66,26 @@
             <script id="patientTable" type="text/x-algaeh-template">
 
               <tr>
-                <td data-list-parameter="service_type_id"> </td>
-                <td data-list-parameter="services_id"> </td>
+                <td data-list-parameter="service_type"> </td>
+                <td data-list-parameter="service_name"> </td>
                 <td data-list-parameter="quantity"> </td>
                 <td data-list-parameter="gross_amount"> </td>
                 <td data-list-parameter="discount_amout"> </td>
                 <td data-list-parameter="net_amout"> </td>
-                <td data-list-parameter="patient_resp"> </td>
                 <td data-list-parameter="patient_tax"> </td>
+                <td data-list-parameter="patient_resp"> </td>
+
+                <!-- 
+                
+                
+                
                 <td data-list-parameter="patient_payable"> </td>
                 <td data-list-parameter="comapany_resp"> </td>
                 <td data-list-parameter="company_tax"> </td>
                 <td data-list-parameter="company_payble"> </td>
                 <td data-list-parameter="sec_comapany_resp"> </td>
                 <td data-list-parameter="sec_company_tax"> </td>
-                <td data-list-parameter="sec_company_payble"> </td>
+                <td data-list-parameter="sec_company_payble"> </td> -->
               </tr>
 
 
@@ -139,7 +137,7 @@
               <tr>
                 <td class="col"></td>
                 <td>Total:</td>
-                <td>76</td>
+                <td data-parameter="total_amount"></td>
               </tr>
             </tbody>
           </table>

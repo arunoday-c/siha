@@ -129,12 +129,10 @@ class InvoiceGeneration extends Component {
             payment_type: "cash",
             patient_code: this.state.patient_code,
             full_name: this.state.full_name,
-            advance_amount: "PAT-00000asdfadsf",
             invoice_number: this.state.invoice_number,
             receipt_number: "PAT-00000asdfadsf",
             receipt_date: "11-11-2018",
-            doctor_name: "Dr. Norman John",
-            bill_details: "PAT-00000asdfadsf"
+            doctor_name: "Dr. Norman John"
           }
         })
       : AlgaehReport({
@@ -142,18 +140,16 @@ class InvoiceGeneration extends Component {
             fileName: "creditInvoice"
           },
           data: {
-            services: services,
-            remarks: 500 + " by Cash",
-            total_amount: 500,
+            services: this.state.Invoice_Detail,
+            remarks: this.state.totalGross + " by Cash",
+            total_amount: this.state.totalGross,
             payment_type: "credit",
-            patient_code: "PAT-00000asdfadsf",
-            full_name: "Allah Bakash",
-            advance_amount: "PAT-00000asdfadsf",
-            invoice_number: "INV-A-0000989",
+            patient_code: this.state.patient_code,
+            full_name: this.state.full_name,
+            invoice_number: this.state.invoice_number,
             receipt_number: "PAT-00000asdfadsf",
             receipt_date: "11-11-2018",
-            doctor_name: "Dr. Norman John",
-            bill_details: "PAT-00000asdfadsf"
+            doctor_name: "Dr. Norman John"
           }
         });
   }

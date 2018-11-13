@@ -176,7 +176,7 @@ class Currency extends Component {
               });
 
               this.getCurrency();
-              this.clearState();
+              this.resetSaveState();
             }
           },
           onFailure: error => {
