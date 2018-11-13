@@ -84,7 +84,6 @@ class ResultEntry extends Component {
       newProps.selectedPatient !== undefined &&
       newProps.selectedPatient.open === true
     ) {
-      debugger;
       newProps.selectedPatient.open = false;
       this.setState({ ...this.state, ...newProps.selectedPatient }, () => {
         getAnalytes(this, this);
@@ -101,7 +100,6 @@ class ResultEntry extends Component {
     }
   }
   render() {
-    debugger;
     let display =
       this.props.providers === undefined
         ? []
@@ -181,12 +179,13 @@ class ResultEntry extends Component {
                       <div className="col-lg-3">
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Specimen Name"
+                            forceLabel: "Investigation Name"
                           }}
                         />
+
                         <h6>
-                          {this.state.service_code - this.state.service_name
-                            ? this.state.service_code - this.state.service_name
+                          {this.state.service_name
+                            ? this.state.service_name
                             : "Lab Name"}
                         </h6>
                       </div>
