@@ -49,6 +49,7 @@
       <div class="row">
         <div class="col-lg-12">
           <div class="table-responsive">
+            <span>Test Name:</span> <span data-parameter="test_name"></span>
             <table class="table table-bordered table-striped">
               <thead>
                 <tr>
@@ -56,23 +57,22 @@
                   <th>Result</th>
                   <th>Unit</th>
                   <th>Bio. Ref Range</th>
-                  <th>Method</th>
                 </tr>
               </thead>
 
-              <tbody data-list="services" list-template="patientTable"></tbody>
+              <tbody
+                data-list="test_analytes"
+                list-template="patientTable"
+              ></tbody>
             </table>
             <script id="patientTable" type="text/x-algaeh-template">
 
               <tr>
-                <td data-list-parameter="service_type_id"> </td>
-                <td data-list-parameter="services_id"> </td>
-                <td data-list-parameter="quantity"> </td>
+                <td data-parameter="analyte"> </td>
+                <td data-list-parameter="result"> </td>
+                <td data-list-parameter="result_unit"> </td>
                 <td data-list-parameter="gross_amount"> </td>
-                <td data-list-parameter="discount_amout"> </td>
               </tr>
-
-
 
               <!--   <table class="table table-bordered table-striped">
                 <th></th>

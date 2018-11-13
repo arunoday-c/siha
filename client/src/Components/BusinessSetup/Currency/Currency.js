@@ -23,7 +23,7 @@ class Currency extends Component {
 
   getCurrency() {
     algaehApiCall({
-      uri: "/shiftAndCounter/getCounterMaster",
+      uri: "/currency/getCurrencyMaster",
       method: "GET",
       data: {},
       onSuccess: response => {
@@ -42,7 +42,7 @@ class Currency extends Component {
 
   deleteCurrency(data) {
     swal({
-      title: "Delete the counter " + data.currency_description + "?",
+      title: "Delete the currency " + data.currency_description + "?",
       type: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes!",
@@ -52,7 +52,7 @@ class Currency extends Component {
     }).then(willDelete => {
       if (willDelete.value) {
         algaehApiCall({
-          uri: "/shiftAndCounter/updateCounterMaster",
+          uri: "/currency/deleteCurrencyMaster",
           data: {
             hims_d_currency_id: data.hims_d_currency_id
           },
@@ -85,9 +85,8 @@ class Currency extends Component {
 
   updateCurrency(data) {
     algaehApiCall({
-      uri: "/shiftAndCounter/updateCounterMaster",
+      uri: "/currency/updateCurrencyMaster",
       data: {
-        record_status: "A",
         currency_code: data.currency_code,
         currency_description: data.currency_description,
         symbol: data.symbol,
@@ -105,12 +104,12 @@ class Currency extends Component {
             title: "Record updated successfully . .",
             type: "success"
           });
-          this.getCounters();
+          this.getCurrency();
         }
       },
       onFailure: error => {
         swalMessage({
-          title: error.response.data.message,
+          title: error.message,
           type: "error"
         });
       }
@@ -153,15 +152,14 @@ class Currency extends Component {
     e.preventDefault();
     AlgaehValidation({
       alertTypeIcon: "warning",
-
       onSuccess: () => {
         algaehApiCall({
-          uri: "/shiftAndCounter/addCounterMaster",
+          uri: "/currency/addCurrencyMaster",
           method: "POST",
           data: {
             currency_code: this.state.currency_code,
             currency_description: this.state.currency_description,
-            symbol: this.state.symbol,
+            currency_symbol: this.state.currency_symbol,
             decimal_places: this.state.decimal_places,
             symbol_position: this.state.symbol_position,
             thousand_separator: this.state.thousand_separator,
@@ -218,7 +216,7 @@ class Currency extends Component {
               }}
               textBox={{
                 className: "txt-fld",
-                name: "currency_code",
+                name: "currency_description",
                 value: this.state.currency_description,
                 events: {
                   onChange: this.changeTexts.bind(this)
@@ -233,8 +231,8 @@ class Currency extends Component {
               }}
               textBox={{
                 className: "txt-fld",
-                name: "symbol",
-                value: this.state.symbol,
+                name: "currency_symbol",
+                value: this.state.currency_symbol,
                 events: {
                   onChange: this.changeTexts.bind(this)
                 }
@@ -365,8 +363,8 @@ class Currency extends Component {
                         div={{ className: "col" }}
                         textBox={{
                           className: "txt-fld",
-                          name: "counter_description",
-                          value: row.counter_description,
+                          name: "currency_description",
+                          value: row.currency_description,
                           events: {
                             onChange: this.changeGridEditors.bind(this, row)
                           },
@@ -381,9 +379,7 @@ class Currency extends Component {
                 },
                 {
                   fieldName: "currency_symbol",
-                  label: (
-                    <AlgaehLabel label={{ fieldName: "currency_symbol" }} />
-                  ),
+                  label: <AlgaehLabel label={{ fieldName: "symbol" }} />,
                   editorTemplate: row => {
                     return (
                       <AlagehFormGroup
@@ -608,8 +604,8 @@ class Currency extends Component {
               paging={{ page: 0, rowsPerPage: 10 }}
               events={{
                 onEdit: () => {},
-                onDelete: () => {},
-                onDone: () => {}
+                onDelete: this.deleteCurrency.bind(this),
+                onDone: this.updateCurrency.bind(this)
               }}
             />
           </div>

@@ -16,8 +16,8 @@ import { AlgaehActions } from "../../actions/algaehActions";
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb";
 import { AlgaehValidation } from "../../utils/GlobalFunctions";
 import moment from "moment";
-import { TALLY_STATUS } from "../../utils/GlobalVariables.json";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
+import Enumerable from "linq";
 
 class InvestigationSetup extends Component {
   constructor(props) {
@@ -401,6 +401,12 @@ class InvestigationSetup extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Shift Type" }} />
                       ),
+                      displayTemplate: row => {
+                        let x = Enumerable.from(this.state.shifts)
+                          .where(w => w.hims_d_shift_id === row.shift_id)
+                          .firstOrDefault();
+                        return <span>{caches.shift_description}</span>;
+                      },
                       others: {
                         resizable: false,
                         style: { textAlign: "center" }
