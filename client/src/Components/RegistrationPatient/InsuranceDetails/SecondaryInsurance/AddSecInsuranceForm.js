@@ -128,6 +128,11 @@ class AddSecInsuranceForm extends Component {
                             className="go-button"
                             color="primary"
                             disabled={this.state.sec_insuranceYes}
+                            // disabled={
+                            //   this.state.saveEnable === true
+                            //     ? true
+                            //     : this.state.sec_insuranceYes
+                            // }
                           >
                             <AddCircle
                               onClick={InsuranceDetails.bind(

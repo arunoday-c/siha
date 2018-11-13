@@ -169,8 +169,21 @@ const deleteRequisitionDetail = ($this, context, row) => {
   }
 };
 
-const updatePosDetail = ($this, e) => {
+const updatePosDetail = ($this, context, row) => {
   debugger;
+  let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+  for (let k = 0; k < pharmacy_stock_detail.length; k++) {
+    if (pharmacy_stock_detail[k].item_id === row.item_id) {
+      pharmacy_stock_detail[k] = row;
+    }
+  }
+  $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
+
+  if (context !== undefined) {
+    context.updateState({
+      pharmacy_stock_detail: pharmacy_stock_detail
+    });
+  }
 };
 
 const onchangegridcol = ($this, context, row, e) => {

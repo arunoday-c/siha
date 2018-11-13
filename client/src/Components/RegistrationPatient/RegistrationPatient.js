@@ -214,7 +214,10 @@ class RegistrationPatient extends PureComponent {
                     patient_code: response.data.records.patient_code,
                     bill_number: response.data.records.bill_number,
                     receipt_number: response.data.records.receipt_number,
-                    saveEnable: true
+                    saveEnable: true,
+                    insuranceYes: true,
+                    sec_insuranceYes: true,
+                    ProcessInsure: true
                   });
                   swalMessage({
                     title: "Done Successfully",
@@ -659,7 +662,9 @@ function mapStateToProps(state) {
     patients: state.patients,
     genbill: state.genbill,
     existinsurance: state.existinsurance,
-    countries: state.countries
+    countries: state.countries,
+    primaryinsurance: state.primaryinsurance,
+    secondaryinsurance: state.secondaryinsurance
   };
 }
 
@@ -675,7 +680,8 @@ function mapDispatchToProps(dispatch) {
       getPatientInsurance: AlgaehActions,
       initialbillingCalculations: AlgaehActions,
       billingCalculations: AlgaehActions,
-      getCountries: AlgaehActions
+      getCountries: AlgaehActions,
+      setSelectedInsurance: AlgaehActions
     },
     dispatch
   );

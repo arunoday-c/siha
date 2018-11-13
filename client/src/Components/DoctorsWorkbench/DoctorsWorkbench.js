@@ -72,7 +72,8 @@ class DoctorsWorkbench extends Component {
             {
               "EHR-STD": "PatientProfile",
               current_patient: patient_id,
-              episode_id: patient_encounter_id
+              episode_id: patient_encounter_id,
+              case_type: "OP"
             },
             () => {
               document.getElementById("ehr-router").click();
@@ -205,8 +206,8 @@ class DoctorsWorkbench extends Component {
                         ? "col activeDate CurrentDate"
                         : "col activeDate"
                       : _currDate === moment().format("YYYYMMDD")
-                        ? "col CurrentDate"
-                        : "col"
+                      ? "col CurrentDate"
+                      : "col"
                   }
                   onClick={this.onSelectedDateHandler.bind(this)}
                 >
