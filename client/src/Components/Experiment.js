@@ -175,19 +175,19 @@ class Experiment extends Component {
           onClick={() => {
             AlgaehReport({
               report: {
-                fileName: "cashInvoice"
+                fileName: "haematologyReport"
               },
               data: {
                 services: services,
                 remarks: 500 + " by Cash",
                 total_amount: 500,
                 payment_type: "cash",
-                patient_code: "PAT-00000asdfadsf",
+                patient_code: "PAT-A-00005678",
                 full_name: "Allah Bakash",
                 advance_amount: "PAT-00000asdfadsf",
                 invoice_number: "INV-A-0000989",
                 receipt_number: "PAT-00000asdfadsf",
-                receipt_date: "11-11-2018",
+                receipt_date: "13-11-2018",
                 doctor_name: "Dr. Norman John",
                 bill_details: "PAT-00000asdfadsf"
               }

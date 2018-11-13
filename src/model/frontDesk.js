@@ -1205,7 +1205,7 @@ let getCashHandoverDetails = (req, res, next) => {
         hims_d_employee E where CH.record_status='A' and CH.record_status='A' and EDM.record_status='A' and \
         E.record_status='A' and  CH.hims_f_cash_handover_header_id=CD.cash_handover_header_id and \
          EDM.user_id=CD.casher_id and  EDM.employee_id=E.hims_d_employee_id and shift_id=? and \
-        date(daily_handover_date)=?",
+        date(daily_handover_date)=date(?)",
         [req.query.shift_id, req.query.daily_handover_date],
         (error, result) => {
           releaseDBConnection(db, connection);

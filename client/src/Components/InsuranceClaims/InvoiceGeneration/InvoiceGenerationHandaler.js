@@ -80,6 +80,9 @@ const getVisitWiseBillDetailS = $this => {
           data[i].service_id = data[i].services_id;
           data[i].bill_header_id = data[i].hims_f_billing_header_id;
           data[i].bill_detail_id = data[i].hims_f_billing_details_id;
+          data[i].bill_detail_id = data[i].hims_f_billing_details_id;
+          data[i].company_resp = data[i].comapany_resp;
+          data[i].company_payable = data[i].company_payble;
         }
 
         $this.setState({
@@ -156,25 +159,42 @@ const FinalizedAndInvoice = $this => {
 };
 
 const ClearData = $this => {
-  $this.setState({
-    visit_code: "",
-    patient_code: "",
-    full_name: "",
-    patient_id: "",
-    visit_id: "",
-    saveEnable: true,
-    clearEnable: true,
-    Invoice_Detail: [],
-    generateVoice: true
-  });
-
-  $this.props.initialStateOrders({
-    redux: {
-      type: "ORDERED_SERVICES_GET_DATA",
-      mappingName: "orderedserviceslist",
-      data: []
+  $this.setState(
+    {
+      hims_f_invoice_header_id: null,
+      invoice_number: null,
+      invoice_date: new Date(),
+      visit_code: "",
+      patient_code: "",
+      full_name: "",
+      patient_id: "",
+      visit_id: "",
+      saveEnable: true,
+      clearEnable: true,
+      Invoice_Detail: [],
+      generateVoice: true,
+      gross_amount: 0,
+      discount_amount: 0,
+      patient_resp: 0,
+      patient_tax: 0,
+      patient_payable: 0,
+      company_resp: 0,
+      company_tax: 0,
+      company_payable: 0,
+      sec_company_resp: 0,
+      sec_company_tax: 0,
+      sec_company_payable: 0
+    },
+    () => {
+      $this.props.initialStateOrders({
+        redux: {
+          type: "ORDERED_SERVICES_GET_DATA",
+          mappingName: "orderedserviceslist",
+          data: []
+        }
+      });
     }
-  });
+  );
 };
 
 const getCtrlCode = ($this, docNumber) => {
@@ -194,6 +214,17 @@ const getCtrlCode = ($this, docNumber) => {
       data.generateVoice = false;
       data.clearEnable = false;
 
+      let gross_total = Enumerable.from(data)
+        .select(w => w.gross_amount)
+        .sum();
+
+      let discout_total = Enumerable.from(data)
+        .select(w => w.discount_amout)
+        .sum();
+      //created by Adnan
+
+      data.totalGross = gross_total;
+      data.totalDiscount = discout_total;
       $this.setState(data);
       AlgaehLoader({ show: false });
     }

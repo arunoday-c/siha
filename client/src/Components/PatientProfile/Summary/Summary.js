@@ -11,29 +11,48 @@ class Summary extends Component {
     this.state = {};
   }
 
-  componentDidMount() {
-    this.props.getPatientSummary({
-      uri: "/masters/get/title",
-      method: "GET",
-      redux: {
-        type: "PATIENT_SUMMARY_GET_DATA",
-        mappingName: "patient_summary"
-      }
-    });
-  }
+  // componentDidMount() {
+  //   this.props.getPatientSummary({
+  //     uri: "/masters/get/title",
+  //     method: "GET",
+  //     redux: {
+  //       type: "PATIENT_SUMMARY_GET_DATA",
+  //       mappingName: "patient_summary"
+  //     }
+  //   });
+  // }
 
   render() {
     debugger;
+
+    const _pat_profile =
+      this.props.patient_profile !== undefined &&
+      this.props.patient_profile.length > 0
+        ? this.props.patient_profile[0]
+        : {};
+
+    const _pat_allergies =
+      this.props.patient_allergies !== undefined &&
+      this.props.patient_allergies.length > 0
+        ? this.props.patient_allergies
+        : [];
+
+    const _pat_diet =
+      this.props.patient_diet !== undefined &&
+      this.props.patient_diet.length > 0
+        ? this.props.patient_diet
+        : [];
+
     return (
       <div id="patientSummary">
         <div className="row">
           <div className="col-md-9 col-lg-9">
             <div className="bd-callout bd-callout-theme">
               <h6>Chief Complaints</h6>
-
               <p>
-                Patient Hafiz Begum Female 79 Yrs Visited Cardiology on
-                08/11/2018 for Chest Pain, duration 1 month.
+                Patient {_pat_profile.full_name} {_pat_profile.gender}{" "}
+                {_pat_profile.age_in_years} Yrs Visited Cardiology on 08/11/2018
+                for Chest Pain, duration 1 month.
               </p>
             </div>
             <div className="bd-callout bd-callout-theme">
@@ -152,17 +171,28 @@ class Summary extends Component {
             <div className="card">
               <div className="card-header">Allergies</div>
               <ul className="list-group list-group-flush">
-                <li className="list-group-item">Cras justo odio</li>
+                {_pat_allergies.map((data, index) => (
+                  <li key={index} className="list-group-item">
+                    {data.allergy_name}
+                  </li>
+                ))}
+
+                {/* <li className="list-group-item">Cras justo odio</li>
                 <li className="list-group-item">Dapibus ac facilisis in</li>
-                <li className="list-group-item">Vestibulum at eros</li>
+                <li className="list-group-item">Vestibulum at eros</li> */}
               </ul>
             </div>
             <div className="card">
               <div className="card-header">Diet Advice</div>
               <ul className="list-group list-group-flush">
-                <li className="list-group-item">Cras justo odio</li>
+                {_pat_diet.map((data, index) => (
+                  <li key={index} className="list-group-item">
+                    {data.hims_d_diet_description}
+                  </li>
+                ))}
+                {/* <li className="list-group-item">Cras justo odio</li>
                 <li className="list-group-item">Dapibus ac facilisis in</li>
-                <li className="list-group-item">Vestibulum at eros</li>
+                <li className="list-group-item">Vestibulum at eros</li> */}
               </ul>
             </div>
           </div>
@@ -175,7 +205,9 @@ class Summary extends Component {
 function mapStateToProps(state) {
   return {
     patient_summary: state.patient_summary,
-    patient_profile: state.patient_profile
+    patient_profile: state.patient_profile,
+    patient_allergies: state.patient_allergies,
+    patient_diet: state.patient_diet
   };
 }
 

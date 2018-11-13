@@ -6,6 +6,7 @@ import HolidayList from "./HolidayList/HolidayList.js";
 import Numbering from "./Numbering/Numbering";
 import Transaction from "./Transaction/Transaction";
 import Counter from "./Counter/Counter.js";
+import Currency from "./Currency/Currency";
 import Shift from "./Shift/Shift.js";
 import UserShiftMapping from "./UserShiftMapping/UserShiftMapping";
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
@@ -105,6 +106,20 @@ class BusinessSetup extends Component {
                 />
               }
             </li>
+            <li
+              algaehtabs={"Currency"}
+              style={{ marginRight: 2 }}
+              className={"nav-item tab-button"}
+              onClick={this.openTab.bind(this)}
+            >
+              {
+                <AlgaehLabel
+                  label={{
+                    fieldName: "currency"
+                  }}
+                />
+              }
+            </li>
           </ul>
         </div>
 
@@ -123,6 +138,8 @@ class BusinessSetup extends Component {
             <Numbering />
           ) : this.state.pageDisplay === "UserShiftMapping" ? (
             <UserShiftMapping />
+          ) : this.state.pageDisplay === "Currency" ? (
+            <Currency />
           ) : null}
         </div>
       </div>

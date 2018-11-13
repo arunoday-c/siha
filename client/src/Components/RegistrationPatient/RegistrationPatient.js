@@ -125,7 +125,36 @@ class RegistrationPatient extends PureComponent {
       );
     }
 
-    getHospitalDetails(this, this);
+    this.props.setSelectedInsurance({
+      redux: {
+        type: "PRIMARY_INSURANCE_DATA",
+        mappingName: "primaryinsurance",
+        data: []
+      }
+    });
+
+    this.props.setSelectedInsurance({
+      redux: {
+        type: "SECONDARY_INSURANCE_DATA",
+        mappingName: "secondaryinsurance",
+        data: []
+      }
+    });
+
+    debugger;
+
+    if (
+      this.props.hospitaldetails !== undefined &&
+      this.props.hospitaldetails.length !== 0
+    ) {
+      getHospitalDetails(this, this);
+    } else {
+      // this.setState({
+      //   vat_applicable: this.props.hospitaldetails[0].local_vat_applicable,
+      //   nationality_id: this.props.hospitaldetails[0].default_nationality,
+      //   country_id: this.props.hospitaldetails[0].default_country
+      // });
+    }
   }
 
   GenerateReciept(callback) {

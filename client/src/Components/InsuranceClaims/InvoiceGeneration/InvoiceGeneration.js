@@ -33,6 +33,8 @@ class InvoiceGeneration extends Component {
     super(props);
 
     this.state = {
+      hims_f_invoice_header_id: null,
+      invoice_number: null,
       invoice_date: new Date(),
       visit_code: "",
       patient_code: "",
@@ -44,17 +46,17 @@ class InvoiceGeneration extends Component {
       clearEnable: true,
       Invoice_Detail: [],
       generateVoice: true,
-      gross_amount: 0,
-      discount_amount: 0,
-      patient_resp: 0,
-      patient_tax: 0,
-      patient_payable: 0,
-      company_resp: 0,
-      company_tax: 0,
-      company_payable: 0,
-      sec_company_resp: 0,
-      sec_company_tax: 0,
-      sec_company_payable: 0
+      gross_amount: null,
+      discount_amount: null,
+      patient_resp: null,
+      patient_tax: null,
+      patient_payable: null,
+      company_resp: null,
+      company_tax: null,
+      company_payable: null,
+      sec_company_resp: null,
+      sec_company_tax: null,
+      sec_company_payable: null
     };
   }
 
@@ -105,12 +107,13 @@ class InvoiceGeneration extends Component {
       let billOut = nextProps.invheadercal;
       billOut.patient_resp = billOut.patient_res;
       billOut.patient_payable = billOut.patient_payable;
-      billOut.comapany_resp = billOut.company_res;
+      billOut.company_resp = billOut.company_res;
       billOut.company_payable = billOut.company_payble;
       billOut.sec_comapany_resp = billOut.sec_company_res;
       billOut.sec_company_payable = billOut.sec_company_paybale;
 
       this.setState({ ...this.state, ...billOut });
+      console.log("Invoice Details:", this.state.Invoice_Detail);
     }
   }
 
@@ -122,18 +125,16 @@ class InvoiceGeneration extends Component {
             fileName: "cashInvoice"
           },
           data: {
-            services: services,
-            remarks: 500 + " by Cash",
-            total_amount: 500,
+            services: this.state.Invoice_Detail,
+            remarks: this.state.totalGross + " by Cash",
+            total_amount: this.state.totalGross,
             payment_type: "cash",
-            patient_code: "PAT-00000asdfadsf",
-            full_name: "Allah Bakash",
-            advance_amount: "PAT-00000asdfadsf",
-            invoice_number: "INV-A-0000989",
+            patient_code: this.state.patient_code,
+            full_name: this.state.full_name,
+            invoice_number: this.state.invoice_number,
             receipt_number: "PAT-00000asdfadsf",
             receipt_date: "11-11-2018",
-            doctor_name: "Dr. Norman John",
-            bill_details: "PAT-00000asdfadsf"
+            doctor_name: "Dr. Norman John"
           }
         })
       : AlgaehReport({
@@ -141,18 +142,16 @@ class InvoiceGeneration extends Component {
             fileName: "creditInvoice"
           },
           data: {
-            services: services,
-            remarks: 500 + " by Cash",
-            total_amount: 500,
+            services: this.state.Invoice_Detail,
+            remarks: this.state.totalGross + " by Cash",
+            total_amount: this.state.totalGross,
             payment_type: "credit",
-            patient_code: "PAT-00000asdfadsf",
-            full_name: "Allah Bakash",
-            advance_amount: "PAT-00000asdfadsf",
-            invoice_number: "INV-A-0000989",
+            patient_code: this.state.patient_code,
+            full_name: this.state.full_name,
+            invoice_number: this.state.invoice_number,
             receipt_number: "PAT-00000asdfadsf",
             receipt_date: "11-11-2018",
-            doctor_name: "Dr. Norman John",
-            bill_details: "PAT-00000asdfadsf"
+            doctor_name: "Dr. Norman John"
           }
         });
   }
@@ -353,7 +352,6 @@ class InvoiceGeneration extends Component {
                         );
                       }
                     },
-
                     {
                       fieldName: "service_id",
                       label: (
@@ -475,7 +473,7 @@ class InvoiceGeneration extends Component {
                       disabled: true
                     },
                     {
-                      fieldName: "comapany_resp",
+                      fieldName: "company_resp",
                       label: (
                         <AlgaehLabel label={{ fieldName: "comapany_resp" }} />
                       ),
@@ -489,7 +487,7 @@ class InvoiceGeneration extends Component {
                       disabled: true
                     },
                     {
-                      fieldName: "company_payble",
+                      fieldName: "company_payable",
                       label: (
                         <AlgaehLabel label={{ fieldName: "company_payble" }} />
                       ),
@@ -608,8 +606,8 @@ class InvoiceGeneration extends Component {
                       }}
                     />
                     <h5>
-                      {this.state.comapany_resp
-                        ? "₹" + this.state.comapany_resp
+                      {this.state.company_resp
+                        ? "₹" + this.state.company_resp
                         : "₹0.00"}
                     </h5>
                   </div>
