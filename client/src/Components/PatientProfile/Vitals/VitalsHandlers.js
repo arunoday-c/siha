@@ -70,11 +70,15 @@ const BMICalculation = (weight, height, calculation) => {
   eval(calculation);
   return (BMI = typeof BMI === "number" ? BMI.toFixed(3) : BMI);
 };
-const temperatureConvertion = (temprature, tofarenheat = true) => {
-  if (temprature === "") {
+const temperatureConvertion = (temprature, tofarenheat = "C") => {
+  if (temprature === undefined || temprature === "") {
     return "";
   }
-  if (tofarenheat) return (temprature * 9) / 5 + 32;
+  temprature = parseFloat(temprature);
+  if (typeof temprature !== "number") {
+    return "";
+  }
+  if (tofarenheat === "C") return (temprature * 9) / 5 + 32;
   else return (temprature - 32) * (5 / 9);
 };
 
