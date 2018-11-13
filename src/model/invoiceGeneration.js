@@ -100,13 +100,22 @@ let getVisitWiseBillDetailS = (req, res, next) => {
               .Select(s => s.hims_f_billing_header_id)
               .ToArray();
 
+            // select hims_f_billing_details_id, hims_f_billing_header_id, service_type_id, services_id, quantity,\
+            // unit_cost, insurance_yesno, gross_amount, discount_amout, discount_percentage, net_amout, copay_percentage,\
+            // copay_amount, deductable_amount, deductable_percentage, tax_inclusive, patient_tax, company_tax, total_tax,\
+            //   patient_resp, patient_payable, comapany_resp, company_payble, sec_company, sec_deductable_percentage, \
+            //   sec_deductable_amount, sec_company_res, sec_company_tax, sec_company_paybale, sec_copay_percntage,\
+            //   sec_copay_amount, pre_approval, commission_given from hims_f_billing_details where record_status='A'
+
             connection.query(
-              "select hims_f_billing_details_id, hims_f_billing_header_id, service_type_id, services_id, quantity,\
-                  unit_cost, insurance_yesno, gross_amount, discount_amout, discount_percentage, net_amout, copay_percentage,\
-                  copay_amount, deductable_amount, deductable_percentage, tax_inclusive, patient_tax, company_tax, total_tax,\
-                    patient_resp, patient_payable, comapany_resp, company_payble, sec_company, sec_deductable_percentage, \
-                    sec_deductable_amount, sec_company_res, sec_company_tax, sec_company_paybale, sec_copay_percntage,\
-                    sec_copay_amount, pre_approval, commission_given from hims_f_billing_details where record_status='A'\
+              "select hims_f_billing_details_id, hims_f_billing_header_id, BD.service_type_id ,ST.service_type, services_id,S.service_name, quantity,\
+              unit_cost, insurance_yesno, gross_amount, discount_amout, discount_percentage, net_amout, copay_percentage,\
+              copay_amount, deductable_amount, deductable_percentage, tax_inclusive, patient_tax, company_tax, total_tax,\
+                patient_resp, patient_payable, comapany_resp, company_payble, sec_company, sec_deductable_percentage, \
+                sec_deductable_amount, sec_company_res, sec_company_tax, sec_company_paybale, sec_copay_percntage,\
+                sec_copay_amount, pre_approval, commission_given from hims_f_billing_details BD,hims_d_service_type ST,hims_d_services S\
+                where BD.record_status='A' and ST.record_status='A' and S.record_status='A' and \
+                BD.service_type_id=ST.hims_d_service_type_id and BD.services_id=S.hims_d_services_id\
                     and hims_f_billing_header_id in (?)",
               [bill_header_ids],
               (error, detailResult) => {
