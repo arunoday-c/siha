@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import "./reports.css";
 import { AlagehAutoComplete, AlagehFormGroup } from "../Wrapper/algaehWrapper";
-import Enumerable from "linq";
 import data from "./reports_data";
 import AlgaehReport from "../Wrapper/printReports";
 class Reports extends Component {
@@ -28,7 +27,8 @@ class Reports extends Component {
 
   dropDownHandler(value) {
     this.setState({
-      [value.name]: value.value, itemList: value.selected.submenu
+      [value.name]: value.value,
+      itemList: value.selected.submenu
     });
   }
 
@@ -70,7 +70,7 @@ class Reports extends Component {
                     placeholder: "Search for reports"
                   },
                   events: {
-                    onChange: () => { }
+                    onChange: () => {}
                   }
                 }}
               />
@@ -89,7 +89,6 @@ class Reports extends Component {
             style={{ height: "75vh", overflow: "auto" }}
           >
             <div className="col-lg-12">
-
               <div className="row">
                 {this.state.itemList.map((item, index) => (
                   <div
@@ -101,7 +100,7 @@ class Reports extends Component {
                           fileName: "printreceipt"
                         },
                         plotUI: {
-                          paramters: item.reportParamerts
+                          paramters: item.reportParameters
                         }
                       });
                     }}

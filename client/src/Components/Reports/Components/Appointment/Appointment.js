@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-
 import { AlagehAutoComplete } from "../../../Wrapper/algaehWrapper";
+
 export default class Appointment extends Component {
   constructor(props) {
     super(props);
@@ -41,10 +41,8 @@ export default class Appointment extends Component {
           />
         </div>
       );
+    } else {
+      return <h1>New Report parameters</h1>;
     }
-    else {
-      return (<h1>New Report parameters</h1>)
-    }
-
   }
 }

@@ -500,7 +500,23 @@ class NetworkPlanList extends PureComponent {
             },
             {
               fieldName: "trt_max",
-              label: <AlgaehLabel label={{ fieldName: "trt_max" }} />
+              label: <AlgaehLabel label={{ fieldName: "trt_max" }} />,
+              editorTemplate: row => {
+                return (
+                  <AlagehFormGroup
+                    div={{}}
+                    textBox={{
+                      decimal: { allowNegative: false },
+                      value: row.trt_max,
+                      className: "txt-fld",
+                      name: "trt_max",
+                      events: {
+                        onChange: onchangegridnumber.bind(this, this, row)
+                      }
+                    }}
+                  />
+                );
+              }
             },
             {
               fieldName: "deductible_dental",

@@ -1,5 +1,3 @@
-import Enumerable from "linq";
-
 const getItems = $this => {
   $this.props.getItemMaster({
     uri: "/pharmacy/getItemMasterAndItemUom",
@@ -7,11 +5,15 @@ const getItems = $this => {
     redux: {
       type: "ITEMS_GET_DATA",
       mappingName: "itemlist"
+    },
+    afterSuccess: data => {
+      debugger;
     }
   });
 };
 
 const EditItemMaster = ($this, row) => {
+  debugger;
   row.addNew = false;
   $this.setState({
     isOpen: !$this.state.isOpen,

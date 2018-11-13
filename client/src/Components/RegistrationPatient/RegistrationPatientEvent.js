@@ -78,9 +78,44 @@ const ClearData = ($this, e) => {
   IOputs.AGEMM = 0;
   IOputs.AGEDD = 0;
 
-  $this.setState(IOputs);
+  $this.setState(IOputs, () => {
+    $this.props.setSelectedInsurance({
+      redux: {
+        type: "PRIMARY_INSURANCE_DATA",
+        mappingName: "primaryinsurance",
+        data: []
+      }
+    });
+
+    $this.props.setSelectedInsurance({
+      redux: {
+        type: "SECONDARY_INSURANCE_DATA",
+        mappingName: "secondaryinsurance",
+        data: []
+      }
+    });
+  });
 };
 
+const getHospitalDetails = $this => {
+  $this.props.getHospitalDetails({
+    uri: "/organization/getOrganization",
+    method: "GET",
+    data: { hims_d_hospital_id: 1 },
+    redux: {
+      type: "HOSPITAL_DETAILS_GET_DATA",
+      mappingName: "hospitaldetails"
+    },
+    afterSuccess: data => {
+      debugger;
+      $this.setState({
+        vat_applicable: data[0].local_vat_applicable,
+        nationality_id: data[0].default_nationality,
+        country_id: data[0].default_country
+      });
+    }
+  });
+};
 const ShowAdvanceScreen = ($this, e) => {
   if (
     $this.state.patient_code !== undefined &&
@@ -98,4 +133,10 @@ const ShowAdvanceScreen = ($this, e) => {
   }
 };
 
-export { generateBillDetails, ShowRefundScreen, ClearData, ShowAdvanceScreen };
+export {
+  generateBillDetails,
+  ShowRefundScreen,
+  ClearData,
+  ShowAdvanceScreen,
+  getHospitalDetails
+};

@@ -860,7 +860,7 @@ PV.hims_f_patient_visit_id=PE.visit_id where P.hims_d_patient_id=? and PE.episod
 };
 
 //created by irfan: to  get Patient Vitals
-let getPatientVitals = (req, res, next) => {
+let getPatientVitalsOLD = (req, res, next) => {
   let selectWhere = {
     patient_id: "ALL",
     visit_id: "ALL"
@@ -888,6 +888,59 @@ let getPatientVitals = (req, res, next) => {
           }
           req.records = result;
           next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to  get Patient Vitals
+let getPatientVitals = (req, res, next) => {
+  let selectWhere = {
+    patient_id: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    // let inputData = extend({}, req.query);
+
+    let where = whereCondition(extend(selectWhere, req.query));
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.query(
+        "select count(hims_d_vitals_header_id) cnt from hims_d_vitals_header where record_status='A'",
+        (error, rec) => {
+          if (error) {
+            next(error);
+          }
+          const _limit = (rec.length > 0 ? rec[0]["cnt"] : 0) * 5;
+          connection.query(
+            "select hims_f_patient_vitals_id, patient_id, visit_id, visit_date, visit_time,\
+case_type, vital_id,PH.vitals_name,PH.uom, vital_value, vital_value_one, vital_value_two, formula_value from \
+hims_f_patient_vitals PV,hims_d_vitals_header PH where PV.record_status='A' and \
+PH.record_status='A' and PV.vital_id=PH.hims_d_vitals_header_id and " +
+              where.condition +
+              " group by visit_date , vital_id order by visit_date , visit_time desc LIMIT 0," +
+              _limit +
+              ";",
+            where.values,
+
+            (error, result) => {
+              releaseDBConnection(db, connection);
+              if (error) {
+                next(error);
+              }
+              req.records = result;
+              next();
+            }
+          );
         }
       );
     });
@@ -1701,7 +1754,7 @@ let updatePatientROS = (req, res, next) => {
 };
 
 //created by irfan: to add patient vitals
-let addPatientVitals = (req, res, next) => {
+let addPatientVitalsOLD = (req, res, next) => {
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -1759,6 +1812,93 @@ let addPatientVitals = (req, res, next) => {
             next(error);
           }
           req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+//created by irfan: to add patient vitals
+let addPatientVitals = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let inputparam = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      // connection.query(
+      //   "INSERT INTO `hims_f_patient_vitals` (patient_id, visit_id, visit_date, visit_time, case_type,\
+      //     vital_id, vital_value, vital_value_one, vital_value_two, formula_value,`created_date`, `created_by`, `updated_date`, `updated_by`)\
+      //   VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+      //   [
+      //     inputparam.patient_id,
+      //     inputparam.visit_id,
+      //     inputparam.visit_date,
+      //     inputparam.visit_time,
+      //     inputparam.case_type,
+      //     inputparam.vital_id,
+      //     inputparam.vital_value,
+      //     inputparam.vital_value_one,
+      //     inputparam.vital_value_two,
+      //     inputparam.formula_value,
+      //     new Date(),
+      //     inputparam.created_by,
+      //     new Date(),
+      //     inputparam.updated_by
+      //   ],
+      //   (error, result) => {
+      //     releaseDBConnection(db, connection);
+      //     if (error) {
+      //       next(error);
+      //     }
+      //     req.records = result;
+      //     next();
+      //   }
+      // );
+
+      const insurtColumns = [
+        "patient_id",
+        "visit_id",
+        "visit_date",
+        "visit_time",
+        "case_type",
+        "vital_id",
+        "vital_value",
+        "vital_value_one",
+        "vital_value_two",
+        "formula_value",
+        "created_by",
+        "updated_by"
+      ];
+
+      connection.query(
+        "INSERT INTO hims_f_patient_vitals(" +
+          insurtColumns.join(",") +
+          ",created_date,updated_date) VALUES ?",
+        [
+          jsonArrayToObject({
+            sampleInputObject: insurtColumns,
+            arrayObj: req.body,
+            newFieldToInsert: [new Date(), new Date()],
+            req: req
+          })
+        ],
+
+        (error, results) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          debugLog("Results are recorded...");
+          req.records = results;
           next();
         }
       );
@@ -2293,6 +2433,128 @@ let updatePatientPhysicalExam = (req, res, next) => {
   }
 };
 
+//created by irfan: to get
+let getVitalsHeaderMaster = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.query(
+        "with vitals (hims_d_vitals_header_id,vitals_name, uom, general,display,mandatory,vital_short_name) as \
+        ( \
+        SELECT H.hims_d_vitals_header_id, vitals_name, uom, general,display,mandatory,vital_short_name FROM hims_d_vitals_header H \
+         where general='Y' and H.record_status='A' \
+          UNION ALL \
+          select H.hims_d_vitals_header_id, vitals_name, uom, general,display,mandatory,vital_short_name from hims_d_vitals_header H,hims_m_department_vital_mapping M \
+         where general='N' and H.record_status='A' and H.hims_d_vitals_header_id =M.vital_header_id and  M.department_id=?  \
+        ) \
+        SELECT hims_d_vitals_header_id,vitals_name, uom, general,display,mandatory,vital_short_name from vitals",
+        [req.userIdentity.sub_department_id],
+
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to add patient_historty
+let addPatientHistory = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      let input = extend({}, req.body);
+
+      const insurtColumns = [
+        "history_type",
+        "remarks",
+        "created_by",
+        "updated_by"
+      ];
+
+      connection.query(
+        "INSERT INTO hims_f_patient_history(" +
+          insurtColumns.join(",") +
+          ",patient_id,provider_id, created_date,updated_date) VALUES ?",
+        [
+          jsonArrayToObject({
+            sampleInputObject: insurtColumns,
+            arrayObj: req.body.patient_history,
+            newFieldToInsert: [
+              input.patient_id,
+              input.provider_id,
+              new Date(),
+              new Date()
+            ],
+            req: req
+          })
+        ],
+
+        (error, results) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          debugLog("Results are recorded...");
+          req.records = results;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to getPatientHistory
+let getPatientHistory = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_f_patient_history_id,history_type, provider_id, patient_id, remarks from hims_f_patient_history\
+        where record_status='A' and patient_id=?",
+        [req.query.patient_id],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   physicalExaminationHeader,
   physicalExaminationDetails,
@@ -2341,5 +2603,8 @@ module.exports = {
   getPatientAllergies,
   getPatientDiagnosis,
   getPatientDiet,
-  getAllPhysicalExamination
+  getAllPhysicalExamination,
+  getVitalsHeaderMaster,
+  addPatientHistory,
+  getPatientHistory
 };

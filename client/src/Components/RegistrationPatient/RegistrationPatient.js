@@ -11,7 +11,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import AppBar from "@material-ui/core/AppBar";
-import AHSnackbar from "../common/Inputs/AHSnackbar.js";
+
 import {
   postPatientDetails,
   postVisitDetails
@@ -35,7 +35,8 @@ import {
   generateBillDetails,
   ShowRefundScreen,
   ClearData,
-  ShowAdvanceScreen
+  ShowAdvanceScreen,
+  getHospitalDetails
 } from "./RegistrationPatientEvent";
 const emptyObject = extend(
   PatRegIOputs.inputParam(),
@@ -123,6 +124,8 @@ class RegistrationPatient extends PureComponent {
         }
       );
     }
+
+    getHospitalDetails(this, this);
   }
 
   GenerateReciept(callback) {
@@ -214,7 +217,10 @@ class RegistrationPatient extends PureComponent {
                     patient_code: response.data.records.patient_code,
                     bill_number: response.data.records.bill_number,
                     receipt_number: response.data.records.receipt_number,
-                    saveEnable: true
+                    saveEnable: true,
+                    insuranceYes: true,
+                    sec_insuranceYes: true,
+                    ProcessInsure: true
                   });
                   swalMessage({
                     title: "Done Successfully",
@@ -533,6 +539,7 @@ class RegistrationPatient extends PureComponent {
             value={{
               state: this.state,
               updateState: obj => {
+                debugger;
                 this.setState({ ...obj });
               }
             }}
@@ -559,11 +566,6 @@ class RegistrationPatient extends PureComponent {
                       />
                     </button>
 
-                    <AHSnackbar
-                      open={this.state.open}
-                      handleClose={this.handleClose}
-                      MandatoryMsg={this.state.MandatoryMsg}
-                    />
                     <button
                       type="button"
                       className="btn btn-default"
@@ -663,7 +665,10 @@ function mapStateToProps(state) {
     patients: state.patients,
     genbill: state.genbill,
     existinsurance: state.existinsurance,
-    countries: state.countries
+    countries: state.countries,
+    primaryinsurance: state.primaryinsurance,
+    secondaryinsurance: state.secondaryinsurance,
+    hospitaldetails: state.hospitaldetails
   };
 }
 
@@ -679,7 +684,9 @@ function mapDispatchToProps(dispatch) {
       getPatientInsurance: AlgaehActions,
       initialbillingCalculations: AlgaehActions,
       billingCalculations: AlgaehActions,
-      getCountries: AlgaehActions
+      getCountries: AlgaehActions,
+      setSelectedInsurance: AlgaehActions,
+      getHospitalDetails: AlgaehActions
     },
     dispatch
   );

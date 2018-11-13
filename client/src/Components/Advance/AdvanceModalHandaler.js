@@ -1,4 +1,5 @@
 import moment from "moment";
+import { swalMessage } from "../../utils/algaehApiCall.js";
 
 const texthandle = ($this, ctrl, e) => {
   e = e || ctrl;
@@ -116,20 +117,22 @@ const Validations = ($this, e) => {
 
   if ($this.state.card_number.length !== 0 && $this.state.card_amount >= 0) {
     isError = true;
-    $this.setState({
-      open: true,
-      MandatoryMsg: "Invalid. Card amount cannot be zero."
+    swalMessage({
+      title: "Invalid. Card amount cannot be zero.",
+      type: "error"
     });
+
     document.querySelector("[name='card_amount']").focus();
     return isError;
   }
 
   if ($this.state.card_number.length !== 0 && $this.state.card_date === null) {
     isError = true;
-    $this.setState({
-      open: true,
-      MandatoryMsg: "Invalid. Card expiry date is mandatory."
+    swalMessage({
+      title: "Invalid. Card expiry date is mandatory.",
+      type: "error"
     });
+
     document.querySelector("[name='card_date']").focus();
     return isError;
   }
@@ -139,10 +142,11 @@ const Validations = ($this, e) => {
     $this.state.cheque_amount >= 0
   ) {
     isError = true;
-    $this.setState({
-      open: true,
-      MandatoryMsg: "Invalid. Check amount cannot be zero."
+    swalMessage({
+      title: "Invalid. Check amount cannot be zero.",
+      type: "error"
     });
+
     document.querySelector("[name='cheque_amount']").focus();
     return isError;
   }
@@ -152,10 +156,11 @@ const Validations = ($this, e) => {
     $this.state.cheque_date === null
   ) {
     isError = true;
-    $this.setState({
-      open: true,
-      MandatoryMsg: "Invalid. Check expiry date is mandatory."
+    swalMessage({
+      title: "Invalid. Check expiry date is mandatory.",
+      type: "error"
     });
+
     document.querySelector("[name='cheque_date']").focus();
     return isError;
   }
@@ -163,19 +168,24 @@ const Validations = ($this, e) => {
   if ($this.state.card_amount > 0) {
     if ($this.state.card_number === null || $this.state.card_number === "") {
       isError = true;
+      swalMessage({
+        title: "Invalid. Card Number cannot be blank.",
+        type: "error"
+      });
       $this.setState({
         open: true,
-        MandatoryMsg: "Invalid. Card Number cannot be blank."
+        MandatoryMsg: ""
       });
       return isError;
     }
 
     if ($this.state.card_date === null || $this.state.card_date === "") {
       isError = true;
-      $this.setState({
-        open: true,
-        MandatoryMsg: "Invalid. Card Date Cannot be blank."
+      swalMessage({
+        title: "Invalid. Card Date Cannot be blank.",
+        type: "error"
       });
+
       return isError;
     }
   }
@@ -186,29 +196,32 @@ const Validations = ($this, e) => {
       $this.state.cheque_number === ""
     ) {
       isError = true;
-      $this.setState({
-        open: true,
-        MandatoryMsg: "Invalid. Check Number cannot be blank."
+      swalMessage({
+        title: "Invalid. Check Number cannot be blank.",
+        type: "error"
       });
+
       return isError;
     }
 
     if ($this.state.cheque_date === null || $this.state.cheque_date === "") {
       isError = true;
-      $this.setState({
-        open: true,
-        MandatoryMsg: "Invalid. Cheque Date Cannot be blank."
+      swalMessage({
+        title: "Invalid. Cheque Date Cannot be blank.",
+        type: "error"
       });
+
       return isError;
     }
   }
 
   if ($this.state.total_amount < 0) {
     isError = true;
-    $this.setState({
-      open: true,
-      MandatoryMsg: "Invalid. Please enter the amount."
+    swalMessage({
+      title: "Invalid. Please enter the amount.",
+      type: "error"
     });
+
     document.querySelector("[name='cash_amount']").focus();
     return isError;
   }

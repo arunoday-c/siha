@@ -27,7 +27,8 @@ import {
   datehandle,
   PatientSearch,
   VerifyOrderModel,
-  CloseOrderModel
+  CloseOrderModel,
+  getPreAprovalList
 } from "./PreApprovalHandaler";
 import moment from "moment";
 import Options from "../../Options.json";
@@ -79,6 +80,8 @@ class PreApproval extends Component {
         }
       });
     }
+
+    getPreAprovalList(this, this);
   }
 
   ShowSubmitModel(row, e) {
@@ -94,9 +97,14 @@ class PreApproval extends Component {
   }
 
   CloseEditModel(e) {
-    this.setState({
-      isEditOpen: !this.state.isEditOpen
-    });
+    this.setState(
+      {
+        isEditOpen: !this.state.isEditOpen
+      },
+      () => {
+        getPreAprovalList(this, this);
+      }
+    );
   }
 
   ShowEditModel(row, e) {
@@ -139,219 +147,251 @@ class PreApproval extends Component {
           ]}
         />
 
-         <div className="row inner-top-search" style={{marginTop:"75px",paddingBottom:"10px"}}>
-            <div className="col-lg-12">
-              <div className="row">
-            <AlgaehDateHandler
-              div={{ className: "col" }}
-              label={{ fieldName: "date" }}
-              textBox={{ className: "txt-fld", name: "date" }}
-              events={{
-                onChange: datehandle.bind(this, this)
-              }}
-              value={this.state.date}
-            />
-
-            <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{
-                fieldName: "insurance_id"
-              }}
-              selector={{
-                name: "insurance_id",
-                className: "select-fld",
-                value: this.state.insurance_id,
-                dataSource: {
-                  textField: "insurance_provider_name",
-                  valueField: "hims_d_insurance_provider_id",
-                  data:
-                    this.props.insurarProviders === undefined
-                      ? []
-                      : this.props.insurarProviders
-                },
-                onChange: texthandle.bind(this, this)
-              }}
-            />
-
-            <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{
-                fieldName: "dis_status"
-              }}
-              selector={{
-                name: "dis_status",
-                className: "select-fld",
-                value: this.state.dis_status,
-                dataSource: {
-                  textField: "name",
-                  valueField: "value",
-                  data: variableJson.FORMAT_APPSTATUS
-                },
-                onChange: texthandle.bind(this, this)
-              }}
-            />
-
-            <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{
-                fieldName: "doctor_id"
-              }}
-              selector={{
-                name: "doctor_id",
-                className: "select-fld",
-                value: this.state.doctor_id,
-                dataSource: {
-                  textField: "full_name",
-                  valueField: "employee_id",
-                  data:
-                    this.props.deptanddoctors === undefined
-                      ? []
-                      : this.props.deptanddoctors.doctors
-                },
-                onChange: texthandle.bind(this, this)
-              }}
-            />
-
-            <AlagehFormGroup
-              div={{ className: "col" }}
-              label={{
-                fieldName: "patient_code"
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "patient_code",
-                value: this.state.patient_code,
-                events: {
-                  onChange: texthandle.bind(this, this)
-                },
-                disabled: true
-              }}
-            />
-
-            <div className="col-lg-1 form-group print_actions">
-              <span
-                 className="fas fa-search"style={{fontSize:" 1.2rem", marginTop: "6px",paddingBottom:"10px"}}
-                  onClick={PatientSearch.bind(this, this)}
+        <div
+          className="row inner-top-search"
+          style={{ marginTop: "75px", paddingBottom: "10px" }}
+        >
+          <div className="col-lg-12">
+            <div className="row">
+              <AlgaehDateHandler
+                div={{ className: "col" }}
+                label={{ fieldName: "date" }}
+                textBox={{ className: "txt-fld", name: "date" }}
+                events={{
+                  onChange: datehandle.bind(this, this)
+                }}
+                value={this.state.date}
               />
-            </div>
-          </div></div>
-          </div>
-           <div className="row">
-              <div className="col-lg-12">
-              <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
-                {/* <div className="portlet-title"><div className="caption"><h3 className="caption-subject"></h3></div></div>
-                */}
-                 <div className="portlet-body">
-            <AlgaehDataGrid
-              id="preapproval_grid"
-              columns={[
 
-                {
-                  fieldName: "action",
-                  label: <AlgaehLabel label={{ fieldName: "action" }} />,
-                  displayTemplate: row => {
-                    return (
-                      <span>
-                      <i className="fas fa-pen" onClick={this.ShowEditModel.bind(this, row)} ></i>
-                        <i className="fas fa-file-export" onClick={this.ShowSubmitModel.bind(this, row)}></i>
-                        <i className="fas fa-check" onClick={VerifyOrderModel.bind(this, this, row)}></i>
-                        
-                      </span>
-                    );
-                  },
-                       others:{maxWidth:120,resizable: false,style:{textAlign:"center"}}
-                },
-                {
-                  fieldName: "patient_code",
-                  label: <AlgaehLabel label={{ fieldName: "patient_code" }} />
-                },
-                {
-                  fieldName: "full_name",
-                  label: <AlgaehLabel label={{ fieldName: "patient_name" }} />
-                },
-                {
-                  fieldName: "created_date",
-                  label: <AlgaehLabel label={{ fieldName: "date" }} />,
-                  displayTemplate: row => {
-                    return (
-                      <span>{this.changeDateFormat(row.created_date)}</span>
-                    );
-                  }
-                },
-                {
-                  fieldName: "doctor_id",
-                  label: <AlgaehLabel label={{ fieldName: "doctor_id" }} />,
-                  displayTemplate: row => {
-                    let display =
-                      this.props.deptanddoctors.doctors === undefined
-                        ? []
-                        : this.props.deptanddoctors.doctors.filter(
-                            f => f.employee_id === row.doctor_id
-                          );
-
-                    return (
-                      <span>
-                        {display !== null && display.length !== 0
-                          ? display[0].full_name
-                          : ""}
-                      </span>
-                    );
-                  }
-                },
-                {
-                  fieldName: "insurance_provider_id",
-                  label: <AlgaehLabel label={{ fieldName: "insurance_id" }} />,
-                  displayTemplate: row => {
-                    let display =
+              <AlagehAutoComplete
+                div={{ className: "col" }}
+                label={{
+                  fieldName: "insurance_id"
+                }}
+                selector={{
+                  name: "insurance_id",
+                  className: "select-fld",
+                  value: this.state.insurance_id,
+                  dataSource: {
+                    textField: "insurance_provider_name",
+                    valueField: "hims_d_insurance_provider_id",
+                    data:
                       this.props.insurarProviders === undefined
                         ? []
-                        : this.props.insurarProviders.filter(
-                            f =>
-                              f.hims_d_insurance_provider_id ===
-                              row.insurance_provider_id
-                          );
+                        : this.props.insurarProviders
+                  },
+                  onChange: texthandle.bind(this, this)
+                }}
+              />
 
-                    return (
-                      <span>
-                        {display !== null && display.length !== 0
-                          ? display[0].insurance_provider_name
-                          : ""}
-                      </span>
-                    );
-                  }
-                },
-                {
-                  fieldName: "icd_code",
-                  label: <AlgaehLabel label={{ fieldName: "insurance_code" }} />
-                },
-                {
-                  fieldName: "number_of_Services",
-                  label: <AlgaehLabel label={{ fieldName: "no_of_services" }} />
-                },
-                {
-                  fieldName: "apprv_status",
-                  label: <AlgaehLabel label={{ fieldName: "dis_status" }} />,
-                  displayTemplate: row => {
-                    return row.apprv_status === "NR"
-                      ? "Not Requested"
-                      : row.apprv_status === "AW"
-                        ? "Awaiting Approval"
-                        : row.apprv_status === "AP"
-                          ? "Approved"
-                          : "Rejected";
-                  }
-                }
-              ]}
-              keyId="pre_approval_code"
-              dataSource={{
-                data: this.state.pre_approval_Services
-              }}
-              // isEditable={true}
-              paging={{ page: 0, rowsPerPage: 6 }}
-            />
+              <AlagehAutoComplete
+                div={{ className: "col" }}
+                label={{
+                  fieldName: "dis_status"
+                }}
+                selector={{
+                  name: "dis_status",
+                  className: "select-fld",
+                  value: this.state.dis_status,
+                  dataSource: {
+                    textField: "name",
+                    valueField: "value",
+                    data: variableJson.FORMAT_APPSTATUS
+                  },
+                  onChange: texthandle.bind(this, this)
+                }}
+              />
+
+              <AlagehAutoComplete
+                div={{ className: "col" }}
+                label={{
+                  fieldName: "doctor_id"
+                }}
+                selector={{
+                  name: "doctor_id",
+                  className: "select-fld",
+                  value: this.state.doctor_id,
+                  dataSource: {
+                    textField: "full_name",
+                    valueField: "employee_id",
+                    data:
+                      this.props.deptanddoctors === undefined
+                        ? []
+                        : this.props.deptanddoctors.doctors
+                  },
+                  onChange: texthandle.bind(this, this)
+                }}
+              />
+
+              <AlagehFormGroup
+                div={{ className: "col" }}
+                label={{
+                  fieldName: "patient_code"
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "patient_code",
+                  value: this.state.patient_code,
+                  events: {
+                    onChange: texthandle.bind(this, this)
+                  },
+                  disabled: true
+                }}
+              />
+
+              <div className="col-lg-1 form-group print_actions">
+                <span
+                  className="fas fa-search"
+                  style={{
+                    fontSize: " 1.2rem",
+                    marginTop: "6px",
+                    paddingBottom: "10px"
+                  }}
+                  onClick={PatientSearch.bind(this, this)}
+                />
+              </div>
+            </div>
           </div>
         </div>
-        </div>
+        <div className="row">
+          <div className="col-lg-12">
+            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+              {/* <div className="portlet-title"><div className="caption"><h3 className="caption-subject"></h3></div></div>
+               */}
+              <div className="portlet-body">
+                <AlgaehDataGrid
+                  id="preapproval_grid"
+                  columns={[
+                    {
+                      fieldName: "action",
+                      label: <AlgaehLabel label={{ fieldName: "action" }} />,
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            <i
+                              className="fas fa-pen"
+                              onClick={this.ShowEditModel.bind(this, row)}
+                            />
+                            <i
+                              className="fas fa-file-export"
+                              onClick={this.ShowSubmitModel.bind(this, row)}
+                            />
+                            <i
+                              className="fas fa-check"
+                              onClick={VerifyOrderModel.bind(this, this, row)}
+                            />
+                          </span>
+                        );
+                      },
+                      others: {
+                        maxWidth: 120,
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+                    {
+                      fieldName: "patient_code",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "patient_code" }} />
+                      )
+                    },
+                    {
+                      fieldName: "full_name",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "patient_name" }} />
+                      )
+                    },
+                    {
+                      fieldName: "created_date",
+                      label: <AlgaehLabel label={{ fieldName: "date" }} />,
+                      displayTemplate: row => {
+                        return (
+                          <span>{this.changeDateFormat(row.created_date)}</span>
+                        );
+                      }
+                    },
+                    {
+                      fieldName: "doctor_id",
+                      label: <AlgaehLabel label={{ fieldName: "doctor_id" }} />,
+                      displayTemplate: row => {
+                        let display =
+                          this.props.deptanddoctors === undefined
+                            ? []
+                            : this.props.deptanddoctors.doctors.filter(
+                                f => f.employee_id === row.doctor_id
+                              );
+
+                        return (
+                          <span>
+                            {display !== null && display.length !== 0
+                              ? display[0].full_name
+                              : ""}
+                          </span>
+                        );
+                      }
+                    },
+                    {
+                      fieldName: "insurance_provider_id",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "insurance_id" }} />
+                      ),
+                      displayTemplate: row => {
+                        let display =
+                          this.props.insurarProviders === undefined
+                            ? []
+                            : this.props.insurarProviders.filter(
+                                f =>
+                                  f.hims_d_insurance_provider_id ===
+                                  row.insurance_provider_id
+                              );
+
+                        return (
+                          <span>
+                            {display !== null && display.length !== 0
+                              ? display[0].insurance_provider_name
+                              : ""}
+                          </span>
+                        );
+                      }
+                    },
+                    {
+                      fieldName: "icd_code",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "insurance_code" }} />
+                      )
+                    },
+                    {
+                      fieldName: "number_of_Services",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "no_of_services" }} />
+                      )
+                    },
+                    {
+                      fieldName: "apprv_status",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "dis_status" }} />
+                      ),
+                      displayTemplate: row => {
+                        return row.apprv_status === "NR"
+                          ? "Not Requested"
+                          : row.apprv_status === "AW"
+                          ? "Awaiting Approval"
+                          : row.apprv_status === "AP"
+                          ? "Approved"
+                          : "Rejected";
+                      }
+                    }
+                  ]}
+                  keyId="pre_approval_code"
+                  dataSource={{
+                    data: this.state.pre_approval_Services
+                  }}
+                  // isEditable={true}
+                  paging={{ page: 0, rowsPerPage: 6 }}
+                />
+              </div>
+            </div>
+          </div>
         </div>
 
         <SubmitRequest

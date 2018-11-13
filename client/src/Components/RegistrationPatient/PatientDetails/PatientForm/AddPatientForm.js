@@ -17,7 +17,7 @@ import {
   nationalityhandle
 } from "./AddPatientDetails.js";
 import MyContext from "../../../../utils/MyContext.js";
-import AHSnackbar from "../../../common/Inputs/AHSnackbar.js";
+
 import {
   AlgaehDateHandler,
   AlagehFormGroup,
@@ -25,6 +25,7 @@ import {
   AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
 import variableJson from "../../../../utils/GlobalVariables.json";
+
 import Enumerable from "linq";
 
 class AddPatientForm extends PureComponent {
@@ -227,6 +228,7 @@ class AddPatientForm extends PureComponent {
                             data: this.props.titles
                           },
                           onChange: titlehandle.bind(this, this, context),
+                          onClear: titlehandle.bind(this, this, context),
                           others: {
                             disabled: this.state.existingPatient,
                             tabIndex: "1"
@@ -801,11 +803,6 @@ class AddPatientForm extends PureComponent {
                   </div>
                 </div>
               </div>
-              <AHSnackbar
-                open={this.state.DOBError}
-                // handleClose={this.handleClose}
-                MandatoryMsg={this.state.DOBErrorMsg}
-              />
             </div>
           )}
         </MyContext.Consumer>

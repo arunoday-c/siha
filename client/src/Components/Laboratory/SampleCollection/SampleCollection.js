@@ -41,7 +41,8 @@ class SampleCollection extends Component {
     let year = moment().format("YYYY");
     this.state = {
       to_date: new Date(),
-      from_date: moment("01" + month + year, "DDMMYYYY")._d,
+      // from_date: moment("01" + month + year, "DDMMYYYY")._d,
+      from_date: new Date(),
       patient_code: null,
       patient_name: null,
       patient_id: null,
@@ -252,7 +253,7 @@ class SampleCollection extends Component {
             <div className="col-lg-12">
               <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
                 {/* <div className="portlet-title"><div className="caption"><h3 className="caption-subject"></h3></div></div>
-                */}
+                 */}
                 <div className="portlet-body">
                   <AlgaehDataGrid
                     id="samplecollection_grid"
@@ -286,12 +287,12 @@ class SampleCollection extends Component {
                           return row.status == "O"
                             ? "Ordered"
                             : row.status == "CL"
-                              ? "Collected"
-                              : row.status == "CN"
-                                ? "Cancelled"
-                                : row.status == "CF"
-                                  ? "Confirmed"
-                                  : "Validated";
+                            ? "Collected"
+                            : row.status == "CN"
+                            ? "Cancelled"
+                            : row.status == "CF"
+                            ? "Confirmed"
+                            : "Validated";
                         },
                         disabled: true,
                         others: {

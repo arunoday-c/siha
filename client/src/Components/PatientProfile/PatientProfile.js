@@ -7,7 +7,7 @@ import Assesment from "./Assessment/Assessment";
 import Plan from "./Plan/Plan";
 import { algaehApiCall, cancelRequest } from "../../utils/algaehApiCall";
 import moment from "moment";
-import { setGlobal } from "../../utils/GlobalFunctions";
+import { setGlobal, displayFileFromServer } from "../../utils/GlobalFunctions";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -30,7 +30,13 @@ class PatientProfile extends Component {
 
     this.state = {
       pageDisplay: "subjective",
-      patientDiet: []
+      patientDiet: [],
+      patImg: "",
+      patient_code:
+        this.props.patient_profile !== undefined &&
+        this.props.patient_profile.length > 0
+          ? this.props.patient_profile[0].patient_code
+          : ""
     };
     getPatientProfile(this);
     getPatientVitals(this);
@@ -38,6 +44,10 @@ class PatientProfile extends Component {
     getPatientDiet(this);
     getPatientDiagnosis(this);
     this.changeTabs = this.changeTabs.bind(this);
+
+    // setTimeout(() => {
+    //   this.getPatientImage(this);
+    // }, 6000);
   }
 
   changeTabs(e) {
@@ -98,12 +108,12 @@ class PatientProfile extends Component {
                   k === "F"
                     ? "Food"
                     : k === "A"
-                      ? "Airborne"
-                      : k === "AI"
-                        ? "Animal  &  Insect"
-                        : k === "C"
-                          ? "Chemical & Others"
-                          : "",
+                    ? "Airborne"
+                    : k === "AI"
+                    ? "Animal  &  Insect"
+                    : k === "C"
+                    ? "Chemical & Others"
+                    : "",
                 allergyList: g.getSource()
               };
             })
@@ -133,7 +143,14 @@ class PatientProfile extends Component {
             </button>
           </div>
           <div className="patientImg box-shadow">
-            <img src="https://x1.xingassets.com/assets/frontend_minified/img/users/nobody_m.original.jpg" />
+            {/* <img src="https://x1.xingassets.com/assets/frontend_minified/img/users/nobody_m.original.jpg" /> */}
+            <img
+              src={
+                this.state.patImg.length > 0
+                  ? this.state.patImg
+                  : "https://x1.xingassets.com/assets/frontend_minified/img/users/nobody_m.original.jpg"
+              }
+            />
           </div>
           <div className="patientName">
             <h6>
@@ -171,7 +188,7 @@ class PatientProfile extends Component {
               <b>
                 {moment(
                   this.props.patient_profile !== undefined &&
-                  this.props.patient_profile.length > 0
+                    this.props.patient_profile.length > 0
                     ? this.props.patient_profile[0].date_of_birth
                     : ""
                 ).format("DD-MM-YYYY")}
@@ -211,7 +228,7 @@ class PatientProfile extends Component {
               <b>
                 {moment(
                   this.props.patient_profile !== undefined &&
-                  this.props.patient_profile.length > 0
+                    this.props.patient_profile.length > 0
                     ? this.props.patient_profile[0].Encounter_Date
                     : ""
                 ).format("DD-MM-YYYY HH:MM:SS A")}

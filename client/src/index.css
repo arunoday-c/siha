@@ -62,7 +62,7 @@
     color: white;
     font-weight: bolder; }
   :global .validateClass {
-    background-color: #66ffc2 !important;
+    background-color: #2ccdd6 !important;
     color: white;
     font-weight: bolder; }
   :global .scheduledClass {
@@ -70,7 +70,7 @@
     color: white;
     font-weight: bolder; }
   :global .availableClass {
-    background-color: #00ffff !important;
+    background-color: #56ce74 !important;
     color: white;
     font-weight: bolder; }
   :global .underProcessClass {

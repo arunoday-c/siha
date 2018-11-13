@@ -32,12 +32,12 @@ class PatientMRD extends Component {
                 k === "F"
                   ? "Food"
                   : k === "A"
-                    ? "Airborne"
-                    : k === "AI"
-                      ? "Animal  &  Insect"
-                      : k === "C"
-                        ? "Chemical & Others"
-                        : "",
+                  ? "Airborne"
+                  : k === "AI"
+                  ? "Animal  &  Insect"
+                  : k === "C"
+                  ? "Chemical & Others"
+                  : "",
               allergyList: g.getSource()
             };
           })
@@ -202,32 +202,31 @@ class PatientMRD extends Component {
                   <i className="fas fa-allergies" />
                   <p>
                     <b className="top-nav-sec-hdg">Allergies:</b>
-                    <section>
-                      {this.state.patientAllergies.map((data, index) => (
-                        <React.Fragment key={index}>
-                          <b>{data.allergy_type_desc}</b>
-                          {data.allergyList.map((allergy, aIndex) => (
-                            <span
-                              key={aIndex}
-                              className={
-                                "listofA-D-D " +
-                                (allergy.allergy_inactive === "Y" ? "red" : "")
-                              }
-                              title={
-                                "Onset Date : " +
-                                allergy.onset_date +
-                                "\n Comment : " +
-                                allergy.comment +
-                                "\n Severity : " +
-                                allergy.severity
-                              }
-                            >
-                              {allergy.allergy_name}
-                            </span>
-                          ))}
-                        </React.Fragment>
-                      ))}
-                    </section>
+
+                    {this.state.patientAllergies.map((data, index) => (
+                      <React.Fragment key={index}>
+                        <b>{data.allergy_type_desc}</b>
+                        {data.allergyList.map((allergy, aIndex) => (
+                          <span
+                            key={aIndex}
+                            className={
+                              "listofA-D-D " +
+                              (allergy.allergy_inactive === "Y" ? "red" : "")
+                            }
+                            title={
+                              "Onset Date : " +
+                              allergy.onset_date +
+                              "\n Comment : " +
+                              allergy.comment +
+                              "\n Severity : " +
+                              allergy.severity
+                            }
+                          >
+                            {allergy.allergy_name}
+                          </span>
+                        ))}
+                      </React.Fragment>
+                    ))}
                   </p>
                 </li>
               </ul>

@@ -5,7 +5,8 @@ import {
   paging,
   whereCondition,
   deleteRecord,
-  releaseDBConnection
+  releaseDBConnection,
+  jsonArrayToObject
 } from "../../utils";
 import httpStatus from "../../utils/httpStatus";
 //import { LINQ } from "node-linq";
@@ -230,9 +231,6 @@ let addPlanAndPolicy = (req, res, next) => {
   }
 };
 
-
-
-
 // created by : irfan to get chief complaint elements (hpi details)
 let getHpiElements = (req, res, next) => {
   try {
@@ -285,96 +283,87 @@ let addHpiElement = (req, res, next) => {
           });
         }
 
-      connection.query(
-        "insert into hims_d_hpi_details(hpi_header_id,element_description,element_type,created_date,created_by,updated_date,updated_by) \
+        connection.query(
+          "insert into hims_d_hpi_details(hpi_header_id,element_description,element_type,created_date,created_by,updated_date,updated_by) \
         values(?,?,?,?,?,?,?)",
-        [
-          input.hpi_header_id,
-          input.element_description,
-          input.element_type,
-          new Date(),
-          input.created_by,
-          new Date(),
-          input.updated_by
-        ],
-        (error, results) => {
-         
-          if (error) {
-            connection.rollback(() => {
-              releaseDBConnection(db, connection);
-              next(error);
-            });
-          }     
-//adding HPI element to [patient]
+          [
+            input.hpi_header_id,
+            input.element_description,
+            input.element_type,
+            new Date(),
+            input.created_by,
+            new Date(),
+            input.updated_by
+          ],
+          (error, results) => {
+            if (error) {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
+            //adding HPI element to [patient]
 
-
-if(input.patient_id!=null&&results.insertId!=null){
-
-  connection.query(
-    "insert into hims_f_episode_hpi(patient_id,episode_id, hpi_header_id, hpi_detail_id,created_date,created_by,updated_date,updated_by) \
+            if (input.patient_id != null && results.insertId != null) {
+              connection.query(
+                "insert into hims_f_episode_hpi(patient_id,episode_id, hpi_header_id, hpi_detail_id,created_date,created_by,updated_date,updated_by) \
     values(?,?,?,?,?,?,?,?)",
-    [
-      input.patient_id,
-      input.episode_id,
-      input.hpi_header_id,
-      results.insertId,
-      new Date(),
-      input.created_by,
-      new Date(),
-      input.updated_by
-    ],
-    (error, resultPatientEP) => {
-      if (error) {
-        connection.rollback(() => {
-          releaseDBConnection(db, connection);
-          next(error);
-        });
-      }
-    
-    connection.commit(error => {
-    if (error) {
-      connection.rollback(() => {
-        releaseDBConnection(db, connection);
-        next(error);
+                [
+                  input.patient_id,
+                  input.episode_id,
+                  input.hpi_header_id,
+                  results.insertId,
+                  new Date(),
+                  input.created_by,
+                  new Date(),
+                  input.updated_by
+                ],
+                (error, resultPatientEP) => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+
+                  connection.commit(error => {
+                    if (error) {
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      });
+                    }
+                    releaseDBConnection(db, connection);
+                    req.records = resultPatientEP;
+                    next();
+                  });
+                }
+              );
+            } else {
+              debugFunction("esle");
+              connection.commit(error => {
+                if (error) {
+                  connection.rollback(() => {
+                    releaseDBConnection(db, connection);
+                    next(error);
+                  });
+                }
+                releaseDBConnection(db, connection);
+                req.records = results;
+                next();
+              });
+            }
+          }
+        );
       });
-    }
-   releaseDBConnection(db, connection);
-    req.records = resultPatientEP;
-    next();
-  });
-    }
-  );
-}else{
-  debugFunction("esle");
-  connection.commit(error => {
-    if (error) {
-      connection.rollback(() => {
-        releaseDBConnection(db, connection);
-        next(error);
-      });
-    }
-    releaseDBConnection(db, connection);
-    req.records = results;
-    next();
-  });
-}
-  
-
-
-
-
-
-        }   );
     });
-  });
- } catch (e) {
+  } catch (e) {
     next(e);
   }
 };
 
-
 // created by : irfan to addPatientHpi
-let addPatientHpi = (req, res, next) => {
+let addPatientHpiBACKUP = (req, res, next) => {
   debugFunction("addPatientHpi");
   try {
     if (req.db == null) {
@@ -418,6 +407,58 @@ let addPatientHpi = (req, res, next) => {
   }
 };
 
+// created by : irfan to addPatientHpi
+let addPatientHpi = (req, res, next) => {
+  debugFunction("addPatientHpi");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        releaseDBConnection(db, connection);
+        next(error);
+      }
+
+      const insurtColumns = ["hpi_detail_id", "created_by", "updated_by"];
+
+      connection.query(
+        "INSERT INTO hims_f_episode_hpi(" +
+          insurtColumns.join(",") +
+          ",patient_id,episode_id, hpi_header_id,created_date,updated_date) VALUES ?",
+        [
+          jsonArrayToObject({
+            sampleInputObject: insurtColumns,
+            arrayObj: req.body.hpi_detail_ids,
+            newFieldToInsert: [
+              input.patient_id,
+              input.episode_id,
+              input.hpi_header_id,
+              new Date(),
+              new Date()
+            ],
+            req: req
+          })
+        ],
+
+        (error, results) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          debugLog("Results are recorded...");
+          req.records = results;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 // created by : irfan to getPatientHpi hpi elements
 let getPatientHpi = (req, res, next) => {
   try {
@@ -429,7 +470,7 @@ let getPatientHpi = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        " select EH.patient_id, EH.hpi_header_id,hpi_description as chief_complaint, hpi_detail_id, HD.element_description, episode_id\
+        "select EH.patient_id, EH.hpi_header_id,hpi_description as chief_complaint, hpi_detail_id, HD.element_description,HD.element_type, episode_id\
         from hims_f_episode_hpi EH,hims_d_hpi_details HD,hims_d_hpi_header HH\
         where EH.record_status='A' and   HH.record_status='A'  and  HD.record_status='A'  and\
         EH.hpi_detail_id=HD.hims_d_hpi_details_id and \
@@ -450,11 +491,31 @@ let getPatientHpi = (req, res, next) => {
   }
 };
 
-
-module.exports = { 
+module.exports = {
   addIcd,
-   getHpiElements,
+  getHpiElements,
   addHpiElement,
   addPatientHpi,
-  getPatientHpi 
+  getPatientHpi
 };
+
+// localhost:3002/api/v1/doctorsWorkBench/getPatientVitals?patient_id=48
+
+// localhost:3002/api/v1/doctorsWorkBench/addPatientVitals
+
+// {
+
+//   "patient_id":48,
+//            "visit_id":93,
+//            "visit_date":"20180909",
+//            "visit_time":"12:12:00",
+//            "case_type":"op",
+//            "vital_id":1,
+//            "vital_value":10,
+//            "vital_value_one":null,
+//            "vital_value_two":null,
+//            "formula_value":null
+
+// }
+
+// localhost:3002/api/v1/doctorsWorkBench/getVitalsHeaderMaster

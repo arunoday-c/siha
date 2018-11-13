@@ -52,6 +52,7 @@ export default {
       item_uom: null,
 
       completed: null,
+      total_quantity: 0,
 
       quantity_authorized: 0,
 

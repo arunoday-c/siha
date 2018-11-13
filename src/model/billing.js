@@ -2482,6 +2482,7 @@ let getBillDetails = (req, res, next) => {
     next(e);
   }
 };
+
 //Created by noor for synchronus
 let newReceiptData = (req, res, next) => {
   try {
@@ -2497,9 +2498,7 @@ let newReceiptData = (req, res, next) => {
         billing_header_id: null,
         total_amount: null,
         created_by: req.userIdentity.algaeh_d_app_user_id,
-
         updated_by: req.userIdentity.algaeh_d_app_user_id,
-
         counter_id: null,
         shift_id: null
       },
@@ -2609,6 +2608,323 @@ let newReceiptData = (req, res, next) => {
   }
 };
 //End synchronus
+
+//-------------------------------------
+
+//Created by irfan for synchronus
+let addCashHandover = (req, res, next) => {
+  try {
+    debugFunction("cash api");
+    let db = req.options == null ? req.db : req.options.db;
+
+    let inputParam = extend(
+      {
+        shift_id: null
+      },
+      req.body
+    );
+    debugLog("group_type:", req.userIdentity.group_type);
+    if (
+      inputParam.receiptdetails == null ||
+      inputParam.receiptdetails.length == 0
+    ) {
+      const genErr = httpStatus.generateError(
+        httpStatus.badRequest,
+        "Please select atleast one payment mode."
+      );
+      if (req.options == null) {
+        next(genErr);
+      } else {
+        req.options.onFailure(genErr);
+      }
+    }
+
+    if (req.userIdentity.group_type == "C") {
+      let hims_f_cash_handover_detail_id = "";
+      db.query(
+        "select hims_f_cash_handover_detail_id, cash_handover_header_id, casher_id, shift_status,open_date\
+      from  hims_f_cash_handover_detail where record_status='A' and casher_id=? and shift_status='O'",
+        [inputParam.created_by],
+        (error, checkShiftStatus) => {
+          if (error) {
+            if (req.options == null) {
+              db.rollback(() => {
+                releaseDBConnection(req.db, db);
+                next(error);
+              });
+            } else {
+              req.options.onFailure(checkShiftStatus);
+            }
+          }
+
+          debugLog("number of shift open", checkShiftStatus);
+          if (checkShiftStatus.length > 0) {
+            hims_f_cash_handover_detail_id =
+              checkShiftStatus[0].hims_f_cash_handover_detail_id;
+          }
+
+          new Promise((resolve, reject) => {
+            try {
+              if (
+                checkShiftStatus.length == null ||
+                checkShiftStatus.length == ""
+              ) {
+                db.query(
+                  "INSERT INTO `hims_f_cash_handover_header` ( shift_id, daily_handover_date,\
+               created_date, created_by, updated_date, updated_by)\
+              VALUE(?,?,?,?,?,?)",
+                  [
+                    inputParam.shift_id,
+                    new Date(),
+                    new Date(),
+                    inputParam.created_by,
+                    new Date(),
+                    inputParam.updated_by
+                  ],
+                  (error, headerCashHandover) => {
+                    if (error) {
+                      if (req.options == null) {
+                        db.rollback(() => {
+                          releaseDBConnection(req.db, db);
+                          next(error);
+                        });
+                      } else {
+                        req.options.onFailure(headerCashHandover);
+                      }
+                    }
+
+                    debugLog("headerCashHandover", headerCashHandover);
+
+                    if (
+                      headerCashHandover.insertId != null &&
+                      headerCashHandover.insertId != ""
+                    ) {
+                      db.query(
+                        "INSERT INTO `hims_f_cash_handover_detail` ( cash_handover_header_id, casher_id,\
+                        shift_status,open_date,  expected_cash, expected_card,  expected_cheque, \
+                      no_of_cheques,created_date, created_by, updated_date, updated_by)\
+                    VALUE(?,?,?,?,?,?,?,?,?,?,?,?)",
+                        [
+                          headerCashHandover.insertId,
+                          inputParam.created_by,
+                          "O",
+                          new Date(),
+                          0,
+                          0,
+                          0,
+                          0,
+                          new Date(),
+                          inputParam.created_by,
+                          new Date(),
+                          inputParam.updated_by
+                        ],
+                        (error, CashHandoverDetails) => {
+                          if (error) {
+                            if (req.options == null) {
+                              db.rollback(() => {
+                                releaseDBConnection(req.db, db);
+                                next(error);
+                              });
+                            } else {
+                              req.options.onFailure(error);
+                            }
+                          }
+                          if (
+                            CashHandoverDetails.insertId != null &&
+                            CashHandoverDetails.insertId != ""
+                          ) {
+                            hims_f_cash_handover_detail_id =
+                              CashHandoverDetails.insertId;
+                          }
+                          debugLog("CashHandoverDetails", CashHandoverDetails);
+                          resolve(CashHandoverDetails);
+                        }
+                      );
+                    }
+                  }
+                );
+              } else if (checkShiftStatus.length > 0) {
+                resolve({});
+              }
+            } catch (e) {
+              reject(e);
+            }
+          }).then(result => {
+            //hjjh
+
+            let expected_cash = 0;
+            let expected_card = 0;
+            let expected_cheque = 0;
+            let no_of_cheques = 0;
+
+            expected_cash = new LINQ(inputParam.receiptdetails)
+              .Where(w => w.pay_type == "CA")
+              .Sum(s => s.amount);
+            debugLog("expected_cash:", expected_cash);
+
+            expected_card = new LINQ(inputParam.receiptdetails)
+              .Where(w => w.pay_type == "CD")
+              .Sum(s => s.amount);
+            debugLog("expected_card:", expected_card);
+
+            expected_cheque = new LINQ(inputParam.receiptdetails)
+              .Where(w => w.pay_type == "CH")
+              .Sum(s => s.amount);
+            debugLog("expected_cheque:", expected_cheque);
+
+            no_of_cheques = new LINQ(inputParam.receiptdetails)
+              .Where(w => w.pay_type == "CH")
+              .ToArray().length;
+
+            debugLog("no_of_cheques:", no_of_cheques);
+
+            db.query(
+              "select expected_cash,expected_card, expected_cheque, no_of_cheques from \
+          hims_f_cash_handover_detail where record_status='A' and hims_f_cash_handover_detail_id=?",
+              [hims_f_cash_handover_detail_id],
+              (error, selectCurrentCash) => {
+                if (error) {
+                  if (req.options == null) {
+                    db.rollback(() => {
+                      releaseDBConnection(req.db, db);
+                      next(error);
+                    });
+                  } else {
+                    req.options.onFailure(selectCurrentCash);
+                  }
+                }
+                debugLog("selectCurrentCash:", selectCurrentCash);
+                expected_cash += selectCurrentCash[0].expected_cash;
+                expected_card += selectCurrentCash[0].expected_card;
+                expected_cheque += selectCurrentCash[0].expected_cheque;
+                no_of_cheques += selectCurrentCash[0].no_of_cheques;
+
+                db.query(
+                  "update hims_f_cash_handover_detail set expected_cash=?,expected_card=?,\
+              expected_cheque=?,no_of_cheques=?,updated_date=?,updated_by=? where record_status='A' \
+              and hims_f_cash_handover_detail_id=?;",
+                  [
+                    expected_cash,
+                    expected_card,
+                    expected_cheque,
+                    no_of_cheques,
+                    new Date(),
+                    inputParam.updated_by,
+                    hims_f_cash_handover_detail_id
+                  ],
+                  (error, updateResult) => {
+                    if (error) {
+                      if (req.options == null) {
+                        db.rollback(() => {
+                          releaseDBConnection(req.db, db);
+                          next(error);
+                        });
+                      } else {
+                        req.options.onFailure(updateResult);
+                      }
+                    }
+
+                    if (req.options == null) {
+                      req.records = updateResult;
+                      next();
+                      debugLog("indi pendent", updateResult);
+                    } else {
+                      req.options.onSuccess(updateResult);
+                      debugLog("updateResult", updateResult);
+                    }
+                  }
+                );
+              }
+            );
+          });
+        }
+      );
+    } else {
+      if (req.options == null) {
+        req.records = { mesage: "not a cahsier" };
+        next();
+        debugLog("ELSE KK");
+      } else {
+        req.options.onSuccess({});
+      }
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to hims_f_cash_handover_header
+let addCashHandoverBACKup = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT INTO `hims_f_cash_handover_header` ( shift_id, daily_handover_date,\
+           created_date, created_by, updated_date, updated_by)\
+          VALUE(?,?,?,?,?,?)",
+        [
+          input.shift_id,
+          input.daily_handover_date,
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
+        ],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+
+          if (result.insertId != null) {
+            connection.query(
+              "INSERT INTO `hims_f_cash_handover_detail` ( cash_handover_header_id, casher_id, shift_status,\
+                 open_date,  expected_cash, expected_card,  expected_cheque, remarks,\
+                  no_of_cheques,created_date, created_by, updated_date, updated_by)\
+                VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              [
+                result.insertId,
+                input.created_by,
+                input.shift_status,
+                input.open_date,
+                input.expected_cash,
+                input.expected_card,
+                input.expected_cheque,
+                input.remarks,
+                input.no_of_cheques,
+                new Date(),
+                input.created_by,
+                new Date(),
+                input.updated_by
+              ],
+              (error, detailResult) => {
+                if (error) {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                }
+
+                req.records = detailResult;
+                next();
+              }
+            );
+          }
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addBill,
   addBillData,
@@ -2619,5 +2935,6 @@ module.exports = {
   addEpisodeEncounter,
   getBillDetailsFunctionality,
   addEpisodeEncounterData,
-  newReceiptData
+  newReceiptData,
+  addCashHandover
 };

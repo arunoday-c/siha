@@ -456,7 +456,7 @@ class Examination extends Component {
                       ]}
                       keyId="hims_f_episode_examination_id"
                       dataSource={{
-                        data: this.state.patientPhysicalExamination
+                        data: this.props.all_patient_examinations
                       }}
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 10 }}

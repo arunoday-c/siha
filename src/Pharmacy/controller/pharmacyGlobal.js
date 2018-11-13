@@ -6,7 +6,8 @@ import {
   getVisitPrescriptionDetails,
   getItemMoment,
   getItemLocationStock,
-  getUserLocationPermission
+  getUserLocationPermission,
+  getItemandLocationStock
 } from "../model/pharmacyGlobal";
 
 export default ({ config, db }) => {
@@ -61,6 +62,21 @@ export default ({ config, db }) => {
   api.get(
     "/getItemLocationStock",
     getItemLocationStock,
+    (req, res, next) => {
+      let results = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: results
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by Nowshad :get item batch for selcted location
+  api.get(
+    "/getItemandLocationStock",
+    getItemandLocationStock,
     (req, res, next) => {
       let results = req.records;
       res.status(httpStatus.ok).json({

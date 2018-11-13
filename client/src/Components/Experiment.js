@@ -3,6 +3,13 @@ import ReactTable from "react-table";
 import "react-table/react-table.css";
 import Enumerable from "linq";
 import { algaehApiCall } from "../utils/algaehApiCall";
+import AlgaehReport from "./Wrapper/printReports";
+
+const services = [
+  { service_name: "Consultation", sl_no: 1 },
+  { service_name: "Procedure", sl_no: 2 }
+];
+
 const _data = [
   {
     hims_f_billing_header_id: 626,
@@ -103,6 +110,25 @@ const _data = [
   }
 ];
 class Experiment extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      patImg: ""
+    };
+
+    // displayFileFromServer({
+    //   uri: "/masters/getFile",
+    //   fileType: "PAT-A-0000530",
+    //   destinationName: "PAT-A-0000530",
+    //   fileName: "PAT-A-0000530.png",
+    //   resize: { width: 100, height: 100 },
+    //   onFileSuccess: data => {
+    //     this.setState({ patImg: data });
+    //   }
+    // });
+  }
+
   render() {
     const _groupData = Enumerable.from(_data)
       .groupBy("$.prov_date", null, (k, g) => {
@@ -141,6 +167,35 @@ class Experiment extends Component {
           After the click the request will crash , Don't worry .. It Works that
           way!!
         </div>
+        {/* <div>
+          <img src={this.state.patImg} />
+        </div> */}
+        <button
+          className="btn btn-primary"
+          onClick={() => {
+            AlgaehReport({
+              report: {
+                fileName: "cashInvoice"
+              },
+              data: {
+                services: services,
+                remarks: 500 + " by Cash",
+                total_amount: 500,
+                payment_type: "cash",
+                patient_code: "PAT-00000asdfadsf",
+                full_name: "Allah Bakash",
+                advance_amount: "PAT-00000asdfadsf",
+                invoice_number: "INV-A-0000989",
+                receipt_number: "PAT-00000asdfadsf",
+                receipt_date: "11-11-2018",
+                doctor_name: "Dr. Norman John",
+                bill_details: "PAT-00000asdfadsf"
+              }
+            });
+          }}
+        >
+          View Report
+        </button>
       </div>
     );
   }

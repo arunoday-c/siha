@@ -3,7 +3,8 @@ import {
   billingCalculations,
   patientAdvanceRefund,
   getBillDetails,
-  addEpisodeEncounter
+  addEpisodeEncounter,
+  addCashHandover
 } from "../model/billing";
 import { releaseConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
@@ -63,6 +64,20 @@ export default ({ config, db }) => {
   api.post(
     "/addEpisodeEncounter",
     addEpisodeEncounter,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  api.post(
+    "/addCashHandover",
+    addCashHandover,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

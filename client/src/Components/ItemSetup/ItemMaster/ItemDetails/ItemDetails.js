@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import "./ItemDetails.css";
 import {
@@ -60,6 +59,7 @@ class ItemDetails extends Component {
                 <div className="row card-deck panel-layout">
                   {/* Patient code */}
 
+                  {/* created by Adnan */}
                   <AlagehFormGroup
                     div={{ className: "col-lg-3" }}
                     label={{
@@ -75,6 +75,7 @@ class ItemDetails extends Component {
                       }
                     }}
                   />
+                  {/* created by Adnan */}
 
                   <AlagehFormGroup
                     div={{ className: "col-lg-3" }}

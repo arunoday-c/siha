@@ -93,10 +93,15 @@ const SaveRequisitionEntry = $this => {
 const AuthorizeRequisitionEntry = ($this, authorize) => {
   debugger;
 
+  let authorize1 = "";
+  let authorize2 = "";
   if (authorize === "authorize1") {
     $this.state.authorize1 = "Y";
+    authorize1 = "Y";
   } else if (authorize === "authorize2") {
     $this.state.authorie2 = "Y";
+    authorize1 = "Y";
+    authorize2 = "Y";
   }
 
   debugger;
@@ -108,7 +113,9 @@ const AuthorizeRequisitionEntry = ($this, authorize) => {
       debugger;
       if (response.data.success === true) {
         $this.setState({
-          postEnable: true
+          postEnable: true,
+          authorize1: authorize1,
+          authorie2: authorize2
         });
         swalMessage({
           title: "Authorized successfully . .",

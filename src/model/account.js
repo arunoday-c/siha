@@ -111,9 +111,10 @@ let authUser = (req, res, next) => {
         "select algaeh_d_app_user.algaeh_d_app_user_id,algaeh_d_app_user.username, \
       user_displayname,user_type,locked,login_attempts,password_expiry_rule, \
       change_password,password_expiry_date,hims_m_employee_department_mappings.employee_id,\
-      hims_m_employee_department_mappings.sub_department_id ,app_group_id,algaeh_m_group_user_mappings.role_id \
-      from algaeh_d_app_user,algaeh_d_app_password,hims_m_employee_department_mappings,algaeh_m_group_user_mappings \
-      WHERE algaeh_d_app_user.record_status='A' AND algaeh_d_app_password.record_status='A' \
+      hims_m_employee_department_mappings.sub_department_id ,app_group_id,algaeh_m_group_user_mappings.role_id,group_type \
+      from algaeh_d_app_user,algaeh_d_app_password,hims_m_employee_department_mappings,algaeh_m_group_user_mappings, algaeh_d_app_group \
+      WHERE algaeh_d_app_user.record_status='A' AND algaeh_d_app_password.record_status='A' and algaeh_d_app_group.algaeh_d_app_group_id= \
+      algaeh_m_group_user_mappings.app_group_id \
       AND algaeh_d_app_password.password=md5(?) AND algaeh_d_app_user.username=? \
       AND hims_m_employee_department_mappings.user_id=algaeh_d_app_user.algaeh_d_app_user_id \
       AND algaeh_m_group_user_mappings.user_id=algaeh_d_app_user.algaeh_d_app_user_id";

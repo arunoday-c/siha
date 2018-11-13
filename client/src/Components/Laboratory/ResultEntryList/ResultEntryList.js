@@ -43,7 +43,8 @@ class ResultEntryList extends Component {
     let year = moment().format("YYYY");
     this.state = {
       to_date: new Date(),
-      from_date: moment("01" + month + year, "DDMMYYYY")._d,
+      // from_date: moment("01" + month + year, "DDMMYYYY")._d,
+      from_date: new Date(),
       patient_code: null,
       patient_name: null,
       patient_id: null,
@@ -293,6 +294,20 @@ class ResultEntryList extends Component {
                         others: {
                           resizable: false,
                           style: { textAlign: "left" }
+                        }
+                      },
+                      {
+                        fieldName: "service_name",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Investigation Name" }}
+                          />
+                        ),
+
+                        disabled: true,
+                        others: {
+                          resizable: false,
+                          style: { textAlign: "center" }
                         }
                       },
                       {

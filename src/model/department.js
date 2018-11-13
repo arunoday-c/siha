@@ -77,15 +77,15 @@ let updateDepartment = (req, res, next) => {
           "UPDATE `hims_d_department`\
         SET   `department_name`=?, `department_desc`=?, `department_type`=?\
         , `effective_start_date`=?, `effective_end_date`=? \
-        , `updated_date`=?, `updated_by`=?\
+        ,`arabic_department_name`=?, `updated_date`=?, `updated_by`=?\
         WHERE record_status='A' AND `hims_d_department_id`=?;";
         let inputs = [
           departmentDetails.department_name,
           departmentDetails.department_desc,
           departmentDetails.department_type,
-
           departmentDetails.effective_start_date,
           departmentDetails.effective_end_date,
+          departmentDetails.arabic_department_name,
           new Date(),
           departmentDetails.updated_by,
           departmentDetails.hims_d_department_id

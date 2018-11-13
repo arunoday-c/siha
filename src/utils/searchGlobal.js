@@ -105,6 +105,11 @@ let algaehSearchConfig = searchName => {
         searchQuery:
           "select SQL_CALC_FOUND_ROWS hims_d_cpt_code_id, cpt_code, cpt_desc from hims_d_cpt_code where record_status='A'",
         orderBy: "hims_d_cpt_code_id desc"
+      },
+      {
+        searchName: "InvoiceGen",
+        searchQuery: "select SQL_CALC_FOUND_ROWS * from hims_f_invoice_header",
+        orderBy: "hims_f_invoice_header_id desc"
       }
 
       // visit

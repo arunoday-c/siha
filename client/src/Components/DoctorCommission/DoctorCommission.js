@@ -19,12 +19,7 @@ import {
   changeTexts,
   LoadBills,
   datehandle,
-  dateFormater,
-  getCtrlCode,
-  SaveDoctorCommission,
-  deleteDoctorCommission,
   ClearData,
-  PostDoctorCommission,
   CalculateCommission,
   AdjustAmountCalculate
 } from "./DoctorCommissionEvents";

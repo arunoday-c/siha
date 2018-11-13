@@ -1,7 +1,8 @@
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import Enumerable from "linq";
-import { swalMessage } from "../../../utils/algaehApiCall";
+import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
+import AlgaehLoader from "../../Wrapper/fullPageLoader";
 
 const VisitSearch = ($this, e) => {
   AlgaehSearch({
@@ -15,7 +16,6 @@ const VisitSearch = ($this, e) => {
       callBack(text);
     },
     onRowSelect: row => {
-      debugger;
       $this.setState(
         {
           visit_code: row.visit_code,
@@ -23,10 +23,6 @@ const VisitSearch = ($this, e) => {
           full_name: row.full_name,
           patient_id: row.patient_id,
           visit_id: row.hims_f_patient_visit_id
-
-          // insured: row.insured,
-          // sec_insured: row.sec_insured,
-          // episode_id: row.episode_id
         },
         () => {
           // if ($this.state.insured === "Y") {
@@ -49,14 +45,67 @@ const VisitSearch = ($this, e) => {
           //   });
           // }
           getOrderServices($this);
+          getVisitWiseBillDetailS($this);
         }
       );
     }
   });
 };
 
+const getVisitWiseBillDetailS = $this => {
+  let inputobj = { visit_id: $this.state.visit_id, insurance_yesno: "Y" };
+
+  $this.props.getMedicationList({
+    uri: "/invoiceGeneration/getVisitWiseBillDetailS",
+    method: "GET",
+    data: inputobj,
+    redux: {
+      type: "BILLED_VISITWISE_GET_DATA",
+      mappingName: "visitwisebilldetail"
+    },
+    afterSuccess: data => {
+      if (data.length != 0) {
+        //created by Adnan
+        let gross_total = Enumerable.from(data)
+          .select(w => w.gross_amount)
+          .sum();
+
+        let discout_total = Enumerable.from(data)
+          .select(w => w.discount_amout)
+          .sum();
+        //created by Adnan
+        debugger;
+
+        for (let i = 0; i < data.length; i++) {
+          data[i].service_id = data[i].services_id;
+          data[i].bill_header_id = data[i].hims_f_billing_header_id;
+          data[i].bill_detail_id = data[i].hims_f_billing_details_id;
+        }
+
+        $this.setState({
+          saveEnable: false,
+          clearEnable: false,
+          Invoice_Detail: data,
+          //created by Adnan
+          totalGross: gross_total,
+          totalDiscount: discout_total
+          //created by Adnan
+        });
+
+        $this.props.billingCalculations({
+          uri: "/billing/billingCalculations",
+          method: "POST",
+          data: { billdetails: data },
+          redux: {
+            type: "INVOICE_HEADER_GEN_GET_DATA",
+            mappingName: "invheadercal"
+          }
+        });
+      }
+    }
+  });
+};
 const getOrderServices = $this => {
-  debugger;
   let inputobj = { visit_id: $this.state.visit_id, insurance_yesno: "Y" };
 
   $this.props.getMedicationList({
@@ -66,14 +115,6 @@ const getOrderServices = $this => {
     redux: {
       type: "ORDERED_SERVICES_GET_DATA",
       mappingName: "orderedserviceslist"
-    },
-    afterSuccess: data => {
-      if (data.length != 0) {
-        $this.setState({
-          saveEnable: false,
-          clearEnable: true
-        });
-      }
     }
   });
 };
@@ -91,15 +132,30 @@ const FinalizedAndInvoice = $this => {
       type: "warning"
     });
   } else {
-    $this.setState({
-      clearEnable: false,
-      saveEnable: true
+    algaehApiCall({
+      uri: "/invoiceGeneration/addInvoiceGeneration",
+      data: $this.state,
+      onSuccess: response => {
+        if (response.data.success === true) {
+          $this.setState({
+            saveEnable: true,
+            generateVoice: false,
+
+            invoice_number: response.data.records.invoice_number,
+            hims_f_invoice_header_id:
+              response.data.records.hims_f_invoice_header_id
+          });
+          swalMessage({
+            title: "Invoice Generated Successfully . .",
+            type: "success"
+          });
+        }
+      }
     });
   }
 };
 
 const ClearData = $this => {
-  debugger;
   $this.setState({
     visit_code: "",
     patient_code: "",
@@ -107,7 +163,9 @@ const ClearData = $this => {
     patient_id: "",
     visit_id: "",
     saveEnable: true,
-    clearEnable: true
+    clearEnable: true,
+    Invoice_Detail: [],
+    generateVoice: true
   });
 
   $this.props.initialStateOrders({
@@ -119,4 +177,34 @@ const ClearData = $this => {
   });
 };
 
-export { VisitSearch, getOrderServices, FinalizedAndInvoice, ClearData };
+const getCtrlCode = ($this, docNumber) => {
+  debugger;
+  AlgaehLoader({ show: true });
+  $this.props.getInvoiceGeneration({
+    uri: "/invoiceGeneration/getInvoiceGeneration",
+    method: "GET",
+    // printInput: true,
+    data: { invoice_number: docNumber },
+    redux: {
+      type: "INVOICE_GEN_GET_DATA",
+      mappingName: "invoiceGen"
+    },
+    afterSuccess: data => {
+      debugger;
+      data.generateVoice = false;
+      data.clearEnable = false;
+
+      $this.setState(data);
+      AlgaehLoader({ show: false });
+    }
+  });
+};
+
+export {
+  VisitSearch,
+  getOrderServices,
+  FinalizedAndInvoice,
+  ClearData,
+  getVisitWiseBillDetailS,
+  getCtrlCode
+};

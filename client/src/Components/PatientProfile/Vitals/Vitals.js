@@ -7,14 +7,22 @@ import {
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import Modal from "@material-ui/core/Modal";
-import { getVitalHistory, getFormula } from "./VitalsHandlers";
+import {
+  getVitalHistory,
+  getFormula,
+  temperatureConvertion,
+  getDepartmentVitals
+} from "./VitalsHandlers";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { Line } from "react-chartjs-2";
-
+import config from "../../../utils/config.json";
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
+import Enumerable from "linq";
+import moment from "moment";
 const LineData = {
   labels: [
     "January",
@@ -78,26 +86,32 @@ class Vitals extends Component {
     super(props);
     this.state = {
       openVitalModal: false,
-      weight: "0",
-      height: "0"
+      weight: "",
+      height: "",
+      heart_rate: "",
+      respiratory_rate: "",
+      glucose_fbs: "",
+      glucose_rbs: "",
+      glucose_pbs: "",
+      temperature_from: "",
+      oxysat: "",
+      temperature_celsisus: "",
+      systolic: "",
+      diastolic: "",
+      recorded_date: new Date(),
+      recorded_time: moment().format(config.formators.time)
     };
     this.handleClose = this.handleClose.bind(this);
+    if (
+      this.props.department_vitals === undefined ||
+      this.props.department_vitals.length === 0
+    )
+      getDepartmentVitals(this);
     if (
       this.props.patient_vitals === undefined ||
       this.props.patient_vitals.length === 0
     )
       getVitalHistory(this);
-
-    getFormula();
-  }
-
-  calculatebmi() {
-    let w = this.state.weight;
-    let h = this.state.height;
-
-    if (w > 0 && h > 0) {
-      this.setState({ bmi: w / (((h / 100) * h) / 100) });
-    }
   }
 
   handleClose() {
@@ -108,6 +122,29 @@ class Vitals extends Component {
   }
 
   texthandle(e) {
+    if (e.target.name === "weight") {
+      //TODO  now hardCoded options need to pull from Db
+      getFormula({
+        WEIGHTAS: "KG",
+        HEIGHTAS: "CM",
+        WEIGHT: e.target.value,
+        HEIGHT: this.state.height,
+        onSuccess: bmi => {
+          this.setState({ bmi: bmi });
+        }
+      });
+    } else if (e.target.name === "height") {
+      //TODO  now hardCoded options need to pull from Db
+      getFormula({
+        WEIGHTAS: "KG",
+        HEIGHTAS: "CM",
+        WEIGHT: this.state.weight,
+        HEIGHT: e.target.value,
+        onSuccess: bmi => {
+          this.setState({ bmi: bmi });
+        }
+      });
+    }
     this.setState({
       [e.target.name]: e.target.value
     });
@@ -118,62 +155,79 @@ class Vitals extends Component {
   }
 
   resetVitals() {
-    this.setState({
-      recorded_date: "",
-      recorded_time: "",
-      height: "",
-      weight: "",
-      bmi: "",
-      oxysat: "",
-      temperature_from: "",
-      temperature_celsisus: "",
-      systolic: "",
-      diastolic: ""
-    });
-  }
-
-  addPatientVitals(e) {
-    e.preventDefault();
-
-    if (this.state.weight.length === 0) {
-      swalMessage({
-        title: "Please Capture at least one field",
-        type: "warning"
-      });
-    } else {
-      algaehApiCall({
-        uri: "/doctorsWorkBench/addPatientVitals",
-        method: "POST",
-        data: {
-          patient_id: Window.global["current_patient"],
-          visit_id: Window.global["visit_id"],
-          visit_date: this.state.recorded_date,
-          visit_time: this.state.recorded_time,
-          case_type: "OP",
-          height: this.state.height,
-          weight: this.state.weight,
-          bmi: this.state.bmi,
-          oxysat: this.state.oxysat,
-          temperature_from: this.state.temperature_from,
-          temperature_celsisus: this.state.temperature_celsisus,
-          systolic: this.state.systolic,
-          diastolic: this.state.diastolic
-        },
-        onSuccess: response => {
-          if (response.data.success) {
-            swalMessage({
-              title: "Vitals recorded successfully . .",
-              type: "success"
-            });
-            getVitalHistory(this);
-            this.resetVitals();
-          }
-        }
+    const _resetElements = document.getElementById("vitals_recording");
+    const _childs = _resetElements.querySelectorAll("[type='number']");
+    for (let i = 0; i < _childs.length; i++) {
+      let _name = _childs[i].name;
+      this.setState({
+        [_name]: ""
       });
     }
   }
 
+  addPatientVitals(e) {
+    e.preventDefault();
+    AlgaehValidation({
+      querySelector: "id='vitals_recording'",
+      onSuccess: () => {
+        let bodyArray = [];
+        const _elements = document.querySelectorAll("[vitalid]");
+
+        for (let i = 0; i < _elements.length; i++) {
+          if (_elements[i].value !== "") {
+            const _isDepended = _elements[i].getAttribute("dependent");
+            bodyArray.push({
+              patient_id: Window.global["current_patient"],
+              visit_id: Window.global["visit_id"],
+              visit_date: this.state.recorded_date,
+              visit_time: this.state.recorded_time,
+              case_type: Window.global["case_type"],
+              vital_id: _elements[i].getAttribute("vitalid"),
+              vital_value: _elements[i].value,
+              vital_value_one:
+                _isDepended !== null
+                  ? document.getElementsByName(_isDepended)[0].value
+                  : null,
+              formula_value: _elements[i].getAttribute("formula_value")
+            });
+          }
+        }
+
+        algaehApiCall({
+          uri: "/doctorsWorkBench/addPatientVitals",
+          method: "POST",
+          data: bodyArray,
+          onSuccess: response => {
+            if (response.data.success) {
+              swalMessage({
+                title: "Vitals recorded successfully . .",
+                type: "success"
+              });
+            }
+          }
+        });
+      }
+    });
+  }
+
   render() {
+    const _department_viatals =
+      this.props.department_vitals === undefined ||
+      this.props.department_vitals.length === 0
+        ? []
+        : this.props.department_vitals;
+    let _plotGraph = [];
+    const _vitalsGroup =
+      this.props.patient_vitals !== undefined
+        ? Enumerable.from(this.props.patient_vitals)
+            .groupBy("$.visit_date", null, (key, g) => {
+              return {
+                dateTime: key,
+                list: g.getSource()
+              };
+            })
+            .toArray()
+        : [];
     return (
       <React.Fragment>
         <Modal open={this.state.openVitalModal}>
@@ -213,80 +267,28 @@ class Vitals extends Component {
               <div className="row">
                 <div className="col-lg-3 popLeftDiv">
                   <div className="timeline">
-                    {this.props.patient_vitals !== undefined
-                      ? this.props.patient_vitals.map((data, index) => (
-                          <div key={index} className="timelineContainer right">
-                            <div className="content">
-                              <p className="dateStamp">
-                                {data.visit_date} - {data.visit_time}
-                              </p>
-                              <div className="vitalsCntr">
-                                <ul className="vitals-box">
-                                  <li className="each-vitals-box">
-                                    <p>Weight</p>
-                                    <span>{data.weight}</span>
-                                    <span>Kg</span>
-                                  </li>
-                                  <li className="each-vitals-box">
-                                    <p>Height</p>
-                                    <span>{data.height}</span>
-                                    <span>Cms</span>
-                                  </li>
-                                  <li className="each-vitals-box">
-                                    <p>BMI</p>
-                                    <span>{data.bmi}</span>
-                                    <span>Kg/m2</span>
-                                  </li>
-                                  <li className="each-vitals-box">
-                                    <p>Blood Pressure</p>
-                                    <span>
-                                      {data.systolic}/ {data.diastolic}
-                                    </span>
-                                    <span>mmHg</span>
-                                  </li>
-                                  <li className="each-vitals-box">
-                                    <p>
-                                      Temperature(
-                                      {data.temperature_from})
-                                    </p>
-                                    <span>{data.temperature_celsisus}</span>
-                                    <span> &deg;C</span>
-                                  </li>
-                                  <li className="each-vitals-box">
-                                    <p>Oxystat</p>
-                                    <span>
-                                      {data.oxysat
-                                        ? data.oxysat
-                                        : "Not Recorded"}
-                                    </span>
-                                    <span>%</span>
-                                  </li>
-                                </ul>
-                              </div>
-                            </div>
+                    {_vitalsGroup.map((data, index) => (
+                      <div key={index} className="timelineContainer right">
+                        <div className="content">
+                          <p className="dateStamp">{data.dateTime}</p>
+                          <div className="vitalsCntr">
+                            <ul className="vitals-box">
+                              {data.list.map((vitals, ind) => (
+                                <li className="each-vitals-box" key={ind}>
+                                  <p>{vitals.vitals_name}</p>
+                                  <span>{vitals.vital_value}</span>
+                                  <span>{vitals.formula_value}</span>
+                                </li>
+                              ))}
+                            </ul>
                           </div>
-                        ))
-                      : null}
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
                 <div className="col-lg-9 popRightDiv">
-                  <Line
-                    height={60}
-                    options={{
-                      maintainAspectRatio: true,
-                      legend: false
-                    }}
-                    data={LineData}
-                  />
-                  <Line
-                    height={60}
-                    options={{
-                      maintainAspectRatio: true,
-                      legend: false
-                    }}
-                    data={LineData1}
-                  />
                   <Line
                     height={60}
                     options={{
@@ -332,263 +334,126 @@ class Vitals extends Component {
             </div>
           </div>
 
-          <div className="portlet-body">
+          <div className="portlet-body" id="vitals_recording">
             <div className="row margin-bottom-15">
-              <AlagehFormGroup
-                div={{ className: "col-lg-2" }}
-                label={{
-                  forceLabel: "Weight(Kg)",
-                  isImp: false
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "weight",
-                  others: {
-                    type: "number"
-                  },
-                  value: this.state.weight,
-                  events: {
-                    onChange: this.texthandle.bind(this)
-                  }
-                }}
-              />
-              <AlagehFormGroup
-                div={{ className: "col-lg-2 vitalTopFld15" }}
-                label={{
-                  forceLabel: "Height(Cms)",
-                  isImp: false
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "height",
-                  others: {
-                    type: "number"
-                  },
-                  value: this.state.height,
-                  events: {
-                    onChange: this.texthandle.bind(this)
-                  }
-                }}
-              />
+              {_department_viatals.map((item, index) => {
+                const _className =
+                  item.hims_d_vitals_header_id === 1
+                    ? "col-lg-2"
+                    : item.hims_d_vitals_header_id >= 3
+                    ? "col-lg-2 vitalTopFld15"
+                    : item.hims_d_vitals_header_id === 5 ||
+                      item.hims_d_vitals_header_id === 6
+                    ? "col-lg-2 vitalTopFld20"
+                    : "col";
+                const _name = String(item.vitals_name)
+                  .replace(/\" "/g, "_")
+                  .toLowerCase();
+                const _disable = _name === "bmi" ? true : false;
+                const _dependent =
+                  item.hims_d_vitals_header_id === 8 ||
+                  item.hims_d_vitals_header_id === 9
+                    ? { dependent: "bp_position" }
+                    : item.hims_d_vitals_header_id === 4
+                    ? { dependent: "temperature_from" }
+                    : {};
+                return (
+                  <React.Fragment key={index}>
+                    {item.hims_d_vitals_header_id === 4 ? (
+                      <React.Fragment>
+                        <AlagehAutoComplete
+                          div={{ className: "col-lg-3" }}
+                          label={{
+                            forceLabel: "Temp. From"
+                          }}
+                          selector={{
+                            name: "temperature_from",
+                            className: "select-fld",
+                            value: this.state.temperature_from,
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: GlobalVariables.TEMP_FROM
+                            },
 
-              <AlagehFormGroup
-                div={{ className: "col-lg-2 vitalTopFld15" }}
-                label={{
-                  forceLabel: "BMI (Kg/m2)",
-                  isImp: false
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "bmi",
-                  others: {
-                    type: "number"
-                  },
-                  value: this.state.bmi,
-                  events: {
-                    onChange: this.texthandle.bind(this)
-                  }
-                }}
-              />
+                            onChange: this.dropDownHandle.bind(this)
+                          }}
+                        />
+                      </React.Fragment>
+                    ) : item.hims_d_vitals_header_id === 8 ? (
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-3" }}
+                        label={{
+                          forceLabel: "BP (mmHg)",
+                          fieldName: "BP_type"
+                        }}
+                        selector={{
+                          name: "bp_position",
+                          className: "select-fld",
+                          value: this.state.bp_position,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: GlobalVariables.BP_POSITION
+                          },
+                          onChange: this.dropDownHandle.bind(this)
+                        }}
+                      />
+                    ) : null}
 
-              <AlagehFormGroup
-                div={{ className: "col-lg-2 vitalTopFld20" }}
-                label={{
-                  forceLabel: "O2 Sat(%)",
-                  isImp: false
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "oxysat",
-                  others: {
-                    type: "number"
-                  },
-                  value: this.state.oxysat,
-                  events: {
-                    onChange: this.texthandle.bind(this)
-                  }
-                }}
-              />
-              <AlagehFormGroup
-                div={{ className: "col-lg-2 vitalTopFld20" }}
-                label={{
-                  forceLabel: "HR (bpm)",
-                  isImp: false
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "hr",
-                  others: {
-                    type: "number"
-                  },
-                  value: this.state.department_name,
-                  events: {
-                    onChange: this.texthandle.bind(this)
-                  }
-                }}
-              />
-              <AlagehFormGroup
-                div={{ className: "col-lg-2 vitalTopFld25" }}
-                label={{
-                  forceLabel: "RR (rpm)",
-                  isImp: false
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "rr",
-                  others: {
-                    type: "number"
-                  },
-                  //value: this.state.department_name,
-                  events: {
-                    //  onChange: this.changeDeptName.bind(this)
-                  }
-                }}
-              />
-            </div>
-            <div className="row margin-bottom-15">
-              <AlagehAutoComplete
-                div={{ className: "col-lg-3" }}
-                label={{
-                  forceLabel: "Temp. From"
-                }}
-                selector={{
-                  name: "temperature_from",
-                  className: "select-fld",
-                  value: this.state.temperature_from,
-                  dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: GlobalVariables.TEMP_FROM
-                  },
+                    <AlagehFormGroup
+                      div={{ className: _className, others: { key: index } }}
+                      label={{
+                        forceLabel:
+                          item.uom === "C"
+                            ? "°C"
+                            : item.uom === "F"
+                            ? "°F"
+                            : item.vital_short_name +
+                              " (" +
+                              String(item.uom).trim() +
+                              ")",
+                        isImp: item.mandatory === 0 ? false : true
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: _name,
+                        others: {
+                          type: "number",
+                          min: 0,
+                          disabled: _disable,
+                          vitalid: item.hims_d_vitals_header_id,
+                          formula_value: String(item.uom).trim(),
+                          ..._dependent
+                        },
+                        value: this.state[_name],
+                        events: {
+                          onChange: this.texthandle.bind(this)
+                        }
+                      }}
+                    />
 
-                  onChange: this.dropDownHandle.bind(this)
-                }}
-              />
-              <AlagehFormGroup
-                div={{ className: "col" }}
-                label={{
-                  forceLabel: "°C"
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "temperature_celsisus",
-                  others: {
-                    type: "number"
-                  },
-                  value: this.state.temperature_celsisus,
-                  events: {
-                    onChange: this.texthandle.bind(this)
-                  }
-                }}
-              />
+                    {item.hims_d_vitals_header_id === 4 ? (
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        label={{
+                          forceLabel: item.uom === "C" ? "°F" : "°C"
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          disabled: true,
+                          value: temperatureConvertion(
+                            this.state[_name],
+                            item.uom
+                          )
+                        }}
+                      />
+                    ) : null}
+                    {item.hims_d_vitals_header_id === 8 ? " / " : null}
+                  </React.Fragment>
+                );
+              })}
 
-              <AlagehAutoComplete
-                div={{ className: "col-lg-3" }}
-                label={{
-                  forceLabel: "BP",
-                  fieldName: "sample"
-                }}
-                selector={{
-                  name: "bp_position",
-                  className: "select-fld",
-                  value: this.state.bp_position,
-                  dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: GlobalVariables.BP_POSITION
-                  },
-                  onChange: this.dropDownHandle.bind(this)
-                }}
-              />
-
-              <AlagehFormGroup
-                div={{ className: "col" }}
-                label={{
-                  forceLabel: "Sys"
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "systolic",
-                  others: {
-                    type: "number"
-                  },
-                  value: this.state.systolic,
-                  events: {
-                    onChange: this.texthandle.bind(this)
-                  }
-                }}
-              />
-              {/* <span className="margin-top-15">/</span> */}
-              <AlagehFormGroup
-                div={{ className: "col" }}
-                label={{
-                  forceLabel: "Dia"
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "diastolic",
-                  others: {
-                    type: "number"
-                  },
-                  value: this.state.diastolic,
-                  events: {
-                    onChange: this.texthandle.bind(this)
-                  }
-                }}
-              />
-            </div>
-            <div className="row margin-bottom-15">
-              <AlagehFormGroup
-                div={{ className: "col" }}
-                label={{
-                  forceLabel: "FBS"
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "glucose_fbs",
-                  others: {
-                    type: "number"
-                  },
-                  value: this.state.diastolic,
-                  events: {
-                    onChange: this.texthandle.bind(this)
-                  }
-                }}
-              />
-              <AlagehFormGroup
-                div={{ className: "col" }}
-                label={{
-                  forceLabel: "RBS"
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "glucose_rbs",
-                  others: {
-                    type: "number"
-                  },
-                  value: this.state.diastolic,
-                  events: {
-                    onChange: this.texthandle.bind(this)
-                  }
-                }}
-              />
-              <AlagehFormGroup
-                div={{ className: "col" }}
-                label={{
-                  forceLabel: "PBS"
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "glucose_pbs",
-                  others: {
-                    type: "number"
-                  },
-                  value: this.state.diastolic,
-                  events: {
-                    onChange: this.texthandle.bind(this)
-                  }
-                }}
-              />
               <AlgaehDateHandler
                 div={{ className: "col-lg-3" }}
                 label={{ forceLabel: "Recorded Date", isImp: true }}
@@ -652,14 +517,16 @@ class Vitals extends Component {
 
 function mapStateToProps(state) {
   return {
-    patient_vitals: state.patient_vitals
+    patient_vitals: state.patient_vitals,
+    department_vitals: state.department_vitals
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getVitalHistory: AlgaehActions
+      getVitalHistory: AlgaehActions,
+      getDepartmentVitals: AlgaehActions
     },
     dispatch
   );

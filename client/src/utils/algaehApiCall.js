@@ -392,28 +392,64 @@ export function getLocalIP(callback) {
     callback(window.myIP);
     return;
   }
+  return new Promise((resolve, reject) => {
+    window.RTCPeerConnection =
+      /*window.RTCPeerConnection ||*/ window.webkitRTCPeerConnection ||
+      window.mozRTCPeerConnection;
 
-  window.RTCPeerConnection =
-    window.RTCPeerConnection ||
-    window.mozRTCPeerConnection ||
-    window.webkitRTCPeerConnection; //compatibility for Firefox and chrome
+    if (!window.RTCPeerConnection) {
+      reject("Your browser does not support this API");
+    }
 
-  let pc = new RTCPeerConnection({ iceServers: [] }),
-    noop = function(myIP) {
-      if (myIP !== undefined) {
-        window.myIP = myIP;
-        callback(myIP);
+    let pc = new RTCPeerConnection({ iceServers: [] }),
+      noop = function(myIP) {
+        if (myIP !== undefined) {
+          window.myIP = myIP;
+          resolve(myIP);
+        }
+      };
+    pc.createDataChannel(""); //create a bogus data channel
+    pc.createOffer(pc.setLocalDescription.bind(pc), noop); // create offer and set local description
+    pc.onicecandidate = function(ice) {
+      if (ice && ice.candidate && ice.candidate.candidate) {
+        let myIP = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(
+          ice.candidate.candidate
+        )[1];
+
+        pc.onicecandidate = noop(myIP);
       }
     };
-  pc.createDataChannel(""); //create a bogus data channel
-  pc.createOffer(pc.setLocalDescription.bind(pc), noop); // create offer and set local description
-  pc.onicecandidate = function(ice) {
-    if (ice && ice.candidate && ice.candidate.candidate) {
-      let myIP = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(
-        ice.candidate.candidate
-      )[1];
+  })
+    .then(myIP => {
+      callback(myIP);
+    })
+    .catch(e => {
+      debugger;
+      const generator = new IDGenerator();
+      const _IdGen = generator.generate();
+      window.myIP = _IdGen;
+      callback(_IdGen);
+    });
+}
 
-      pc.onicecandidate = noop(myIP);
+function IDGenerator() {
+  this.length = 9;
+  this.timestamp = +new Date();
+
+  var _getRandomInt = function(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
+
+  this.generate = function() {
+    var ts = this.timestamp.toString();
+    var parts = ts.split("").reverse();
+    var id = "";
+
+    for (var i = 0; i < this.length; ++i) {
+      var index = _getRandomInt(0, parts.length - 1);
+      id += parts[index];
     }
+
+    return id;
   };
 }

@@ -29,6 +29,180 @@ class Dental extends Component {
     // });
   }
 
+  generateToothUpperLeftSet() {
+    let plot = [];
+    for (let i = 1; i < 9; i++) {
+      plot.push(
+        <div
+          className={
+            "col tooth-sec up-side " +
+            (i <= 3
+              ? "molar-up-"
+              : i <= 5
+              ? "premolar-up-"
+              : i === 6
+              ? "canine-up-"
+              : "incisors-up-up-") +
+            i
+          }
+        >
+          <span>{i}</span>
+          <div className="surface-Marking">
+            <div className="top-surface">
+              <span>D</span>
+            </div>
+            <div className="right-surface">
+              <span>L</span>
+            </div>
+            <div className="bottom-surface">
+              <span>I</span>
+            </div>
+            <div className="left-surface">
+              <span>P</span>
+            </div>
+            {i >= 6 ? null : (
+              <div className="middle-surface">
+                <span>M</span>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+    return plot;
+  }
+  generateToothUpperRightSet() {
+    let plot = [];
+    for (let i = 9; i < 17; i++) {
+      plot.push(
+        <div
+          className={
+            "col tooth-sec up-side " +
+            (i <= 10
+              ? "incisors-up-up-"
+              : i === 11
+              ? "canine-up-"
+              : i <= 13
+              ? "premolar-up-"
+              : "i molar-up-") +
+            i
+          }
+        >
+          <span>{i}</span>
+          <div className="surface-Marking">
+            <div className="top-surface">
+              <span>D</span>
+            </div>
+            <div className="right-surface">
+              <span>L</span>
+            </div>
+            <div className="bottom-surface">
+              <span>I</span>
+            </div>
+            <div className="left-surface">
+              <span>P</span>
+            </div>
+            {i >= 12 ? (
+              <div className="middle-surface">
+                <span>M</span>
+              </div>
+            ) : null}
+          </div>
+        </div>
+      );
+    }
+    return plot;
+  }
+
+  generateToothLowerLeftSet() {
+    let plot = [];
+    let counter = 1;
+
+    for (let i = 32; i >= 25; i--) {
+      plot.push(
+        <div
+          className={
+            "col tooth-sec down-side " +
+            (counter <= 3
+              ? "molar-down-"
+              : counter <= 5
+              ? "premolar-down-"
+              : counter === 6
+              ? "canine-down-"
+              : "incisors-down-") +
+            counter
+          }
+        >
+          <span>{counter}</span>
+          <div className="surface-Marking">
+            <div className="top-surface">
+              <span>D</span>
+            </div>
+            <div className="right-surface">
+              <span>L</span>
+            </div>
+            <div className="bottom-surface">
+              <span>I</span>
+            </div>
+            <div className="left-surface">
+              <span>P</span>
+            </div>
+            {i >= 27 ? null : (
+              <div className="middle-surface">
+                <span>M</span>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+      counter++;
+    }
+    return plot;
+  }
+
+  generateToothLowerRightSet() {
+    let plot = [];
+    for (let i = 32; i < 26; i--) {
+      plot.push(
+        <div
+          className={
+            "col tooth-sec up-side " +
+            (i <= 10
+              ? "incisors-up-up-"
+              : i === 11
+              ? "canine-up-"
+              : i <= 13
+              ? "premolar-up-"
+              : "i molar-up-") +
+            i
+          }
+        >
+          <span>{i}</span>
+          <div className="surface-Marking">
+            <div className="top-surface">
+              <span>D</span>
+            </div>
+            <div className="right-surface">
+              <span>L</span>
+            </div>
+            <div className="bottom-surface">
+              <span>I</span>
+            </div>
+            <div className="left-surface">
+              <span>P</span>
+            </div>
+            {i >= 12 ? (
+              <div className="middle-surface">
+                <span>M</span>
+              </div>
+            ) : null}
+          </div>
+        </div>
+      );
+    }
+    return plot;
+  }
+
   render() {
     debugger;
     return (
@@ -71,7 +245,9 @@ class Dental extends Component {
                   name: "dentalProcedure",
                   className: "select-fld",
                   value: "",
-                  dataSource: {},
+                  dataSource: {
+                    data: []
+                  },
                   onChange: null,
                   others: {}
                 }}
@@ -91,7 +267,8 @@ class Dental extends Component {
             <div className="row top-teeth-sec">
               <div className="col-lg-6 teeth-sec">
                 <h6>Upper Left</h6>
-                <div className="row">
+                <div className="row">{this.generateToothUpperLeftSet()}</div>
+                {/* <div className="row">
                   <div className="col tooth-sec up-side molar-up-1">
                     <span>1</span>
                     <div className="surface-Marking">
@@ -243,11 +420,12 @@ class Dental extends Component {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
               <div className="col-lg-6 teeth-sec">
                 <h6>Upper Right</h6>
-                <div className="row">
+                <div className="row">{this.generateToothUpperRightSet()}</div>
+                {/* <div className="row">
                   <div className="col tooth-sec up-side incisors-up-up-9">
                     <span>9</span>
                     <div className="surface-Marking">
@@ -399,13 +577,14 @@ class Dental extends Component {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
 
             <div className="row bottom-teeth-sec">
               <div className="col-lg-6 teeth-sec">
-                <div className="row">
+                <div className="row">{this.generateToothLowerLeftSet()}</div>
+                {/* <div className="row">
                   <div className="col tooth-sec down-side molar-down-1">
                     <span>1</span>
                     <div className="surface-Marking">
@@ -557,7 +736,8 @@ class Dental extends Component {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
+
                 <h6>Lower Left</h6>
               </div>
               <div className="col-lg-6 teeth-sec">

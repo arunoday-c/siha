@@ -4,5 +4,6 @@
   "employee_id": null,
   "app_group_id": null,
   "sub_department_id": null,
-  "role_id": null
+  "role_id": null,
+  "group_type": null
 }
