@@ -1,10 +1,6 @@
 "use strict";
 import extend from "extend";
-import {
- 
-  whereCondition,
-  releaseDBConnection
-} from "../utils";
+import { whereCondition, releaseDBConnection } from "../utils";
 import moment from "moment";
 import httpStatus from "../utils/httpStatus";
 import { LINQ } from "node-linq";
@@ -14,7 +10,7 @@ import { debugLog } from "../utils/logging";
 let getPatientMrdList = (req, res, next) => {
   let selectWhere = {
     patient_code: "ALL",
-    registration_date: "ALL",
+
     arabic_name: "ALL",
     date_of_birth: "ALL",
     contact_number: "ALL",
@@ -32,6 +28,19 @@ let getPatientMrdList = (req, res, next) => {
     }
     delete req.query.full_name;
 
+    let registration_date = "";
+
+    if (
+      req.query.registration_date != "null" &&
+      req.query.registration_date != null
+    ) {
+      registration_date = `and date(registration_date)= date('${
+        req.query.registration_date
+      }')`;
+    }
+
+    delete req.query.registration_date;
+
     let where = whereCondition(extend(selectWhere, req.query));
 
     db.getConnection((error, connection) => {
@@ -47,6 +56,8 @@ let getPatientMrdList = (req, res, next) => {
         where P.record_status='A' and N.record_status='A' and DOC.record_status='A' and\
         P.nationality_id=N.hims_d_nationality_id and P.primary_identity_id=DOC.hims_d_identity_document_id  " +
           patientName +
+          "" +
+          registration_date +
           " AND " +
           where.condition,
         where.values,
