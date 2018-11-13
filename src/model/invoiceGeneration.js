@@ -3,7 +3,8 @@ import extend from "extend";
 import {
   releaseDBConnection,
   jsonArrayToObject,
-  runningNumberGen
+  runningNumberGen,
+  whereCondition
 } from "../utils";
 import moment from "moment";
 import httpStatus from "../utils/httpStatus";
@@ -100,13 +101,22 @@ let getVisitWiseBillDetailS = (req, res, next) => {
               .Select(s => s.hims_f_billing_header_id)
               .ToArray();
 
+            // select hims_f_billing_details_id, hims_f_billing_header_id, service_type_id, services_id, quantity,\
+            // unit_cost, insurance_yesno, gross_amount, discount_amout, discount_percentage, net_amout, copay_percentage,\
+            // copay_amount, deductable_amount, deductable_percentage, tax_inclusive, patient_tax, company_tax, total_tax,\
+            //   patient_resp, patient_payable, comapany_resp, company_payble, sec_company, sec_deductable_percentage, \
+            //   sec_deductable_amount, sec_company_res, sec_company_tax, sec_company_paybale, sec_copay_percntage,\
+            //   sec_copay_amount, pre_approval, commission_given from hims_f_billing_details where record_status='A'
+
             connection.query(
-              "select hims_f_billing_details_id, hims_f_billing_header_id, service_type_id, services_id, quantity,\
-                  unit_cost, insurance_yesno, gross_amount, discount_amout, discount_percentage, net_amout, copay_percentage,\
-                  copay_amount, deductable_amount, deductable_percentage, tax_inclusive, patient_tax, company_tax, total_tax,\
-                    patient_resp, patient_payable, comapany_resp, company_payble, sec_company, sec_deductable_percentage, \
-                    sec_deductable_amount, sec_company_res, sec_company_tax, sec_company_paybale, sec_copay_percntage,\
-                    sec_copay_amount, pre_approval, commission_given from hims_f_billing_details where record_status='A'\
+              "select hims_f_billing_details_id, hims_f_billing_header_id, BD.service_type_id ,ST.service_type, services_id,S.service_name, quantity,\
+              unit_cost, insurance_yesno, gross_amount, discount_amout, discount_percentage, net_amout, copay_percentage,\
+              copay_amount, deductable_amount, deductable_percentage, tax_inclusive, patient_tax, company_tax, total_tax,\
+                patient_resp, patient_payable, comapany_resp, company_payble, sec_company, sec_deductable_percentage, \
+                sec_deductable_amount, sec_company_res, sec_company_tax, sec_company_paybale, sec_copay_percntage,\
+                sec_copay_amount, pre_approval, commission_given from hims_f_billing_details BD,hims_d_service_type ST,hims_d_services S\
+                where BD.record_status='A' and ST.record_status='A' and S.record_status='A' and \
+                BD.service_type_id=ST.hims_d_service_type_id and BD.services_id=S.hims_d_services_id\
                     and hims_f_billing_header_id in (?)",
               [bill_header_ids],
               (error, detailResult) => {
@@ -216,6 +226,7 @@ let addInvoiceGeneration = (req, res, next) => {
                 const insurtColumns = [
                   "bill_header_id",
                   "bill_detail_id",
+                  "service_type_id",
                   "service_id",
                   "quantity",
                   "gross_amount",
@@ -283,4 +294,69 @@ let addInvoiceGeneration = (req, res, next) => {
   }
 };
 
-module.exports = { getVisitWiseBillDetailS, addInvoiceGeneration };
+//created by Nowshad: to get Pharmacy Requisition Entry
+let getInvoiceGeneration = (req, res, next) => {
+  let selectWhere = {
+    invoice_number: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let where = whereCondition(extend(selectWhere, req.query));
+
+    debugLog("where", where);
+    db.getConnection((error, connection) => {
+      connection.query(
+        "SELECT * from  hims_f_invoice_header\
+          where " +
+          where.condition,
+        where.values,
+        (error, headerResult) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+
+          debugLog("result: ", headerResult);
+          if (headerResult.length != 0) {
+            debugLog(
+              "hims_f_invoice_header_id: ",
+              headerResult[0].hims_f_invoice_header_id
+            );
+            connection.query(
+              "select * from hims_f_invoice_details where invoice_header_id=?",
+              headerResult[0].hims_f_invoice_header_id,
+              (error, Invoice_Detail) => {
+                if (error) {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                }
+                req.records = {
+                  ...headerResult[0],
+                  ...{ Invoice_Detail }
+                };
+                releaseDBConnection(db, connection);
+                next();
+              }
+            );
+          } else {
+            req.records = headerResult;
+            releaseDBConnection(db, connection);
+            next();
+          }
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports = {
+  getVisitWiseBillDetailS,
+  addInvoiceGeneration,
+  getInvoiceGeneration
+};

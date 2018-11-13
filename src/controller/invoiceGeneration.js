@@ -4,7 +4,8 @@ import httpStatus from "../utils/httpStatus";
 
 import {
   getVisitWiseBillDetailS,
-  addInvoiceGeneration
+  addInvoiceGeneration,
+  getInvoiceGeneration
 } from "../model/invoiceGeneration";
 
 export default ({ config, db }) => {
@@ -29,6 +30,20 @@ export default ({ config, db }) => {
   api.post(
     "/addInvoiceGeneration",
     addInvoiceGeneration,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  api.get(
+    "/getInvoiceGeneration",
+    getInvoiceGeneration,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
