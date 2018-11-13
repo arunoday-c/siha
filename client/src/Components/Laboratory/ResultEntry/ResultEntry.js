@@ -54,7 +54,8 @@ class ResultEntry extends Component {
         receipt_number: "123456",
         receipt_date: this.state.ordered_date,
         doctor_name: "Dr. Norman John",
-        test_name: this.state.service_name
+        test_name: this.state.service_name,
+        specimen: this.state.specimen
       }
     });
   }
@@ -622,7 +623,7 @@ class ResultEntry extends Component {
                 <button
                   className="btn btn-primary"
                   onClick={this.showReport.bind(this)}
-                  disabled={this.state.status === "V" ? true : false}
+                  disabled={this.state.status === "V" ? false : true}
                 >
                   Print
                 </button>

@@ -405,7 +405,7 @@ class InvestigationSetup extends Component {
                         let x = Enumerable.from(this.state.shifts)
                           .where(w => w.hims_d_shift_id === row.shift_id)
                           .firstOrDefault();
-                        return <span>{caches.shift_description}</span>;
+                        return <span>{x.shift_description}</span>;
                       },
                       others: {
                         resizable: false,
