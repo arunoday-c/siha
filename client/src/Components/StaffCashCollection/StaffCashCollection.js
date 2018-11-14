@@ -183,8 +183,6 @@ class InvestigationSetup extends Component {
   }
 
   selectCashier(data, e) {
-    debugger;
-
     this.setState({
       hims_f_cash_handover_detail_id: data.hims_f_cash_handover_detail_id,
       actual_cash: data.actual_cash,
@@ -216,6 +214,7 @@ class InvestigationSetup extends Component {
   }
 
   getCashHandoverDetails(e) {
+    this.resetSaveState();
     AlgaehValidation({
       alertTypeIcon: "warning",
       onSuccess: () => {
@@ -733,9 +732,9 @@ class InvestigationSetup extends Component {
                     </tr>
                     <tr>
                       <td>Difference</td>
-                      <td>{this.state.difference_cash}</td>
-                      <td>{this.state.difference_card}</td>
-                      <td>{this.state.difference_cheque}</td>
+                      <td>{Math.abs(this.state.difference_cash)}</td>
+                      <td>{Math.abs(this.state.difference_card)}</td>
+                      <td>{Math.abs(this.state.difference_cheque)}</td>
                     </tr>
                     <tr>
                       <td> Status</td>

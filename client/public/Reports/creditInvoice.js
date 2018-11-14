@@ -1,4 +1,6 @@
-<div>
+export function printReport(data) {
+  return `
+  
   <div class="cashReciptStyles">
     <div class="col-lg-12 popRightDiv">
       <div class="row">
@@ -81,24 +83,24 @@
               <tbody>
                 <tr>
                   <td>Patient Name:</td>
-                  <td data-parameter="full_name"></td>
+                  <td>${data.full_name}</td>
                   <td class="col"></td>
                   <td>Type:</td>
-                  <td data-parameter="payment_type"></td>
+                  <td>${data.payment_type}</td>
                 </tr>
                 <tr>
                   <td>Patient MRN:</td>
-                  <td data-parameter="patient_code"></td>
+                  <td>${data.patient_code}</td>
                   <td></td>
                   <td>Invoice No.</td>
-                  <td data-parameter="invoice_number"></td>
+                  <td>${data.invoice_number}</td>
                 </tr>
                 <tr>
                   <td>Doctor Name:</td>
-                  <td data-parameter="doctor_name"></td>
+                  <td>${data.doctor_name}</td>
                   <td></td>
                   <td>Recepit Date:</td>
-                  <td data-parameter="receipt_date"></td>
+                  <td>${data.receipt_date}</td>
                 </tr>
               </tbody>
             </table>
@@ -122,44 +124,27 @@
                     <th>Company Responsibility</th>
                     <th> Company Tax</th>
                     <th>Company Share</th>
-                    <!-- <th>Sec. Company Responsibility</th>
-                    <th>Sec. Company Tax</th>
-                    <th>Sec. Company Share</th> -->
                   </tr>
                 </thead>
   
-                <tbody data-list="services" list-template="patientTable"></tbody>
+                <tbody>
+                <tr>
+                <td >${data.service_type} </td>
+                <td > ${data.service_name}</td>
+                <td >${data.quantity} </td>
+                <td >${data.gross_amount} </td>
+                <td > ${data.discount_amount} </td>
+                <td >${data.net_amount} </td>
+                <td > ${data.patient_resp}</td>
+                <td > ${data.patient_tax}</td>
+                <td > ${data.patient_payabl}</td>
+                <td > ${data.company_resp}</td>
+                <td > ${data.company_tax}</td>
+                <td > ${data.company_payable}</td>
+              </tr>
+                
+                </tbody>
               </table>
-              <script id="patientTable" type="text/x-algaeh-template">
-  
-                <tr>
-                  <td data-list-parameter="service_type"> </td>
-                  <td data-list-parameter="service_name"> </td>
-                  <td data-list-parameter="quantity"> </td>
-                  <td data-list-parameter="gross_amount"> </td>
-                  <td data-list-parameter="discount_amout"> </td>
-                  <td data-list-parameter="net_amout"> </td>
-                  <td data-list-parameter="patient_resp"> </td>
-                  <td data-list-parameter="patient_tax"> </td>
-                  <td data-list-parameter="patient_payable"> </td>
-                  <td data-list-parameter="comapany_resp"> </td>
-                  <td data-list-parameter="company_tax"> </td>
-                  <td data-list-parameter="company_payble"> </td>
-                </tr>
-  
-              </script>
-              <!--
-                <tr>
-                    <td></td>
-                    <td data-list-parameter="quantity"></td>
-                    <td data-list-parameter="service_name"></td>
-                    <td data-list-parameter="test_parameter"></td>
-                    <td data-list-parameter="deductable_amount"></td>
-                    <td data-list-parameter="patient_tax"></td>
-                    <td data-list-parameter="patient_payable"></td>
-                    <td data-list-parameter="patient_payable"></td>
-                </tr>
-              -->
             </div>
           </div>
         </div>
@@ -169,14 +154,10 @@
               <tbody>
                 <tr>
                   <td>Remarks:</td>
-                  <td data-parameter="remarks" />
+                  <td> ${data.remarks}</td>
                   <td class="col"></td>
                   <td>Total:</td>
-                  <td data-parameter="total_amount"></td>
-              
-                </tr>
-                <tr>
-                 
+                  <td>${data.total_amount}</td>
                 </tr>
               </tbody>
             </table>
@@ -184,7 +165,5 @@
         </div>
       </div>
     </div>
-</div>
-</div>
-
-  
+</div>`;
+}

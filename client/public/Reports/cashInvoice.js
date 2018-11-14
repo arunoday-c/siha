@@ -1,4 +1,15 @@
+import Enumerable from "linq";
+
 export function printReport(data) {
+  const serviceGroup = Enumerable.from(data.services)
+    .groupBy("$.service_type", null, (key, group) => {
+      return {
+        service_type: key,
+        list: group.getSource()
+      };
+    })
+    .toArray();
+
   return `<div class="cashReciptStyles">
 <div class="col-lg-12 popRightDiv">
   <div class="row">
@@ -50,7 +61,6 @@ export function printReport(data) {
         <table class="table table-bordered table-striped">
           <thead>
             <tr>
-              <th style="width : 1px">Service Type</th>
               <th>Service Description</th>
               <th>Quantity</th>
               <th>Price</th>
@@ -61,25 +71,38 @@ export function printReport(data) {
             </tr>
           </thead>
 
-          <tbody data-list="" list-template="patientTable">
-           ${data.services
+          <tbody>
+           ${serviceGroup
              .map(
                item => `
-             <tr>
-               <td>${item.service_type}</td>
-               <td>${item.service_name} </td>
-               <td>${item.quantity} </td>
-               <td>${item.gross_amount} </td>
-               <td>${item.discount_amout} </td>
-               <td>${item.net_amout} </td>
-               <td>${item.patient_tax} </td>
-               <td>${item.patient_resp} </td>
-             
-             </tr>
-           `
+               <div class="table-responsive">
+               <table class="table table-bordered table-striped"> 
+              <thead> 
+              <tr> 
+              ${item.service_type}
+              </tr>
+              </thead>
+              <tbody>
+              ${item.list
+                .map(
+                  list =>
+                    `<tr> 
+                <td>${list.service_name} </td>
+                 <td>${list.quantity} </td>
+                 <td>${list.gross_amount} </td>
+                 <td>${list.discount_amout} </td>
+                 <td>${list.net_amout} </td>
+                 <td>${list.patient_tax} </td>
+                 <td>${list.patient_resp} </td>
+                </tr>`
+                )
+                .join("")} 
+              </tbody>
+              </table>
+              </div>
+              `
              )
              .join("")}
-          
           </tbody>
         </table>
       </div>
