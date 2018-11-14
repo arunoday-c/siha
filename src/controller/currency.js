@@ -2,7 +2,12 @@ import { Router } from "express";
 import { releaseConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
 
-import { addCurrencyMaster, getCurrencyMaster } from "../model/currency";
+import {
+  addCurrencyMaster,
+  getCurrencyMaster,
+  deleteCurrencyMaster,
+  updateCurrencyMaster
+} from "../model/currency";
 
 export default ({ config, db }) => {
   let api = Router();
@@ -26,6 +31,36 @@ export default ({ config, db }) => {
   api.get(
     "/getCurrencyMaster",
     getCurrencyMaster,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :to deleteCurrencyMaster
+  api.delete(
+    "/deleteCurrencyMaster",
+    deleteCurrencyMaster,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :to updateCurrencyMaster
+  api.put(
+    "/updateCurrencyMaster",
+    updateCurrencyMaster,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

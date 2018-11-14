@@ -1,0 +1,147 @@
+<div>
+  <div class="cashReciptStyles">
+    <div class="col-lg-12 popRightDiv">
+      <div class="row">
+        <div class="col-lg-4">
+          <div class="hospitalLogo">Hospital Logo</div>
+        </div>
+        <div class="col-lg-4"><h3 class="receipt-header">Cash Invoice</h3></div>
+        <div class="col-lg-4">
+          <p class="hospitalAddress">
+            # 301A, Curzon Square, Lady Curzon Road Opposite State Bank of India
+            Bangalore Karnataka 560001 IN, Lady Curzon Rd, Shivaji Nagar,
+            Bengaluru, Karnataka 560001
+          </p>
+        </div>
+      </div>
+      <hr />
+      <div class="row receipt-header-mid">
+        <div class="table-responsive table-report">
+          <table class="table table-sm">
+            <tbody>
+              <tr>
+                <td>Patient Name:</td>
+                <td data-parameter="full_name"></td>
+                <td class="col"></td>
+                <td>Type:</td>
+                <td data-parameter="payment_type"></td>
+              </tr>
+              <tr>
+                <td>Patient MRN:</td>
+                <td data-parameter="patient_code"></td>
+                <td></td>
+                <td>Invoice No.</td>
+                <td data-parameter="invoice_number"></td>
+              </tr>
+              <tr>
+                <td>Doctor Name:</td>
+                <td data-parameter="doctor_name"></td>
+                <td></td>
+                <td>Recepit Date:</td>
+                <td data-parameter="receipt_date"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+              <thead>
+                <tr>
+                  <th style="width : 1px">Service Type</th>
+                  <th>Service Description</th>
+                  <th>Quantity</th>
+                  <th>Price</th>
+                  <th>Discount</th>
+                  <th>Patient Share</th>
+               <th>Vat Amount</th>
+               <th>Net Amount</th>
+                </tr>
+              </thead>
+
+              <tbody data-list="services" list-template="patientTable"></tbody>
+            </table>
+            <script id="patientTable" type="text/x-algaeh-template">
+
+              <tr>
+                <td data-list-parameter="service_type"> </td>
+                <td data-list-parameter="service_name"> </td>
+                <td data-list-parameter="quantity"> </td>
+                <td data-list-parameter="gross_amount"> </td>
+                <td data-list-parameter="discount_amout"> </td>
+                <td data-list-parameter="patient_resp"> </td>
+                <td data-list-parameter="patient_tax"> </td>
+                <td data-list-parameter="patient_payable"> </td>
+                <!-- 
+                
+                
+                
+                <td data-list-parameter="patient_payable"> </td>
+                <td data-list-parameter="comapany_resp"> </td>
+                <td data-list-parameter="company_tax"> </td>
+                <td data-list-parameter="company_payble"> </td>
+                <td data-list-parameter="sec_comapany_resp"> </td>
+                <td data-list-parameter="sec_company_tax"> </td>
+                <td data-list-parameter="sec_company_payble"> </td> -->
+              </tr>
+
+
+
+              <!--   <table class="table table-bordered table-striped">
+                <th></th>
+                <th></th>
+                <th style="width : 400px" data-list-parameter='services_id'></th>
+                <th data-list-parameter="gross_amount"></th>
+
+               <tr>
+                  <td style="width : 1px" data-list-parameter="sl_no"></td>
+                  <td>10001</td>
+                  <td style="width : 400px">General Practiotioner</td>
+                  <td data-list-parameter="gross_amount"></td>
+                  <td>0</td>
+                  <td>6</td>
+                  <td>0</td>
+                  <td>6</td>
+                </tr>
+              </table>  -->
+            </script>
+            <!--
+              <tr>
+                  <td></td>
+                  <td data-list-parameter="quantity"></td>
+                  <td data-list-parameter="service_name"></td>
+                  <td data-list-parameter="test_parameter"></td>
+                  <td data-list-parameter="deductable_amount"></td>
+                  <td data-list-parameter="patient_tax"></td>
+                  <td data-list-parameter="patient_payable"></td>
+                  <td data-list-parameter="patient_payable"></td>
+              </tr>
+            -->
+          </div>
+        </div>
+      </div>
+      <div class="row receipt-header-mid">
+        <div class="table-responsive table-report">
+          <table class="table table-sm">
+            <tbody>
+              <tr>
+                <td>Remarks:</td>
+                <td data-parameter="remarks" />
+
+                <td>Previous Due:</td>
+                <td>0</td>
+              </tr>
+              <tr>
+                <td class="col"></td>
+                <td>Total:</td>
+                <td data-parameter="total_amount"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

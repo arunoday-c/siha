@@ -6,7 +6,7 @@
           <div class="hospitalLogo">Hospital Logo</div>
         </div>
         <div class="col-lg-4">
-          <h3 class="receipt-header">Dept. of Immunology</h3>
+          <h3 class="receipt-header">Dept. of Haematology</h3>
         </div>
         <div class="col-lg-4">
           <p class="hospitalAddress">
@@ -26,7 +26,7 @@
                 <td data-parameter="full_name"></td>
                 <td class="col"></td>
                 <td>Type:</td>
-                <td>Immunology Report</td>
+                <td>Haematology Report</td>
               </tr>
               <tr>
                 <td>Patient MRN:</td>
@@ -49,30 +49,35 @@
       <div class="row">
         <div class="col-lg-12">
           <div class="table-responsive">
+            <span>Test Name:</span> <span data-parameter="test_name"></span>
+            <!--
+              <span>Specimen:</span> <span data-parameter="specimen"></span>
+            -->
             <table class="table table-bordered table-striped">
               <thead>
                 <tr>
-                  <th>Test Name</th>
+                  <th>Analyte</th>
                   <th>Result</th>
                   <th>Unit</th>
-                  <th>Bio. Ref Range</th>
-                  <th>Method</th>
+                  <th>Normal Low</th>
+                  <th>Normal High</th>
                 </tr>
               </thead>
 
-              <tbody data-list="services" list-template="patientTable"></tbody>
+              <tbody
+                data-list="test_analytes"
+                list-template="patientTable"
+              ></tbody>
             </table>
             <script id="patientTable" type="text/x-algaeh-template">
 
               <tr>
-                <td data-list-parameter="service_type_id"> </td>
-                <td data-list-parameter="services_id"> </td>
-                <td data-list-parameter="quantity"> </td>
-                <td data-list-parameter="gross_amount"> </td>
-                <td data-list-parameter="discount_amout"> </td>
+                <td data-list-parameter="description"> </td>
+                <td data-list-parameter="result"> </td>
+                <td data-list-parameter="result_unit"> </td>
+                <td data-list-parameter="normal_low"> </td>
+                <td data-list-parameter="normal_high"> </td>
               </tr>
-
-
 
               <!--   <table class="table table-bordered table-striped">
                 <th></th>
@@ -107,58 +112,63 @@
           </div>
         </div>
       </div>
-      <span style="margin-right : 10px">Comment : </span>
-      <span
-        >Serum TSH concentrations exhibit a decimal variation with the peak
-        occuring during the night and occuring between 10:00 am and 04:00 pm. In
-        primary hypothyroidism, thyroid stimulating harmone(TSH) levels will be
-        elevated. In primary hyperthyroidism, TSH levels will be low. Elevated
-        or low TSH in the context of normal free thyroxime is often referred to
-        as subclinical hypo- or hyper-thyroidism, respectively. Phymogical rise
-        in Total T3/ T4 levels is seen in pregnancy and in patients on steroid
-        therapy
-      </span>
-      <span>
-        Recommended test for T3 and T4 is unbound fraction or free levels as it
-        is metabolically active.
-      </span>
-      <hr />
-      <div class="row receipt-header-mid">
-        <span>Note:</span>
-        <div class="table-responsive">
-          <table class="table table-bordered table-striped">
-            <thead>
-              <tr>
-                <th>For Pregnant Females</th>
-                <th>
-                  Bio Ref Range for TSH in uIU/ml(As per American Thyoid
-                  Association)
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>First Trimester</td>
-                <td>0.1 - 2.5</td>
-              </tr>
-              <tr>
-                <td>Second Trimester</td>
-                <td>0.2 -3.0</td>
-              </tr>
-              <tr>
-                <td>Third Trimester</td>
-                <td>0.3 - 3.0</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <span style="margin-right : 10px">Results to follow : </span>
+      <!--
+        <span style="margin-right : 10px">Comment : </span>
         <span
-          >Renal Profile Renal Function Test(RFI/RFT) VITAMIN D - 25 HYDROXY(D2
-          + D3)</span
-        >
-      </div>
+          >Serum TSH concentrations exhibit a decimal variation with the peak
+          occuring during the night and occuring between 10:00 am and 04:00 pm. In
+          primary hypothyroidism, thyroid stimulating harmone(TSH) levels will be
+          elevated. In primary hyperthyroidism, TSH levels will be low. Elevated
+          or low TSH in the context of normal free thyroxime is often referred to
+          as subclinical hypo- or hyper-thyroidism, respectively. Phymogical rise
+          in Total T3/ T4 levels is seen in pregnancy and in patients on steroid
+          therapy
+        </span>
+        <span>
+          Recommended test for T3 and T4 is unbound fraction or free levels as it
+          is metabolically active.
+        </span>
+        <hr />
+      -->
+
+      <!--
+        <div class="row receipt-header-mid">
+          <span>Note:</span>
+          <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+              <thead>
+                <tr>
+                  <th>For Pregnant Females</th>
+                  <th>
+                    Bio Ref Range for TSH in uIU/ml(As per American Thyoid
+                    Association)
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>First Trimester</td>
+                  <td>0.1 - 2.5</td>
+                </tr>
+                <tr>
+                  <td>Second Trimester</td>
+                  <td>0.2 -3.0</td>
+                </tr>
+                <tr>
+                  <td>Third Trimester</td>
+                  <td>0.3 - 3.0</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <span style="margin-right : 10px">Results to follow : </span>
+          <span
+            >Renal Profile Renal Function Test(RFI/RFT) VITAMIN D - 25 HYDROXY(D2
+            + D3)</span
+          >
+        </div>
+      -->
     </div>
   </div>
 </div>
