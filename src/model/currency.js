@@ -136,7 +136,6 @@ let updateCurrencyMaster = (req, res, next) => {
           input.thousand_separator,
           input.decimal_separator,
           input.negative_separator,
-
           new Date(),
           input.updated_by,
           input.hims_d_currency_id

@@ -27,6 +27,7 @@ import {
   onchangegridresult,
   onchangegridamended
 } from "./ResultEntryEvents";
+import AlgaehReport from "../../Wrapper/printReports";
 
 class ResultEntry extends Component {
   constructor(props) {
@@ -35,6 +36,28 @@ class ResultEntry extends Component {
       test_analytes: [],
       run_type: "N"
     };
+  }
+
+  showReport() {
+    console.log("test_analytes:", this.state.test_analytes);
+
+    AlgaehReport({
+      report: {
+        fileName: "haematologyReport"
+      },
+      data: {
+        test_analytes: this.state.test_analytes,
+        payment_type: "cash",
+        patient_code: this.state.patient_code,
+        full_name: this.state.full_name,
+        advance_amount: "PAT-00000asdfadsf",
+        receipt_number: "123456",
+        receipt_date: this.state.ordered_date,
+        doctor_name: "Dr. Norman John",
+        test_name: this.state.service_name,
+        specimen: this.state.specimen
+      }
+    });
   }
 
   componentDidMount() {
@@ -597,6 +620,14 @@ class ResultEntry extends Component {
 
             <div className="popupFooter">
               <div className="col-lg-12">
+                <button
+                  className="btn btn-primary"
+                  onClick={this.showReport.bind(this)}
+                  disabled={this.state.status === "V" ? false : true}
+                >
+                  Print
+                </button>
+
                 <button
                   type="button"
                   className="btn btn-primary"

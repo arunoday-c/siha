@@ -16,8 +16,8 @@ import { AlgaehActions } from "../../actions/algaehActions";
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb";
 import { AlgaehValidation } from "../../utils/GlobalFunctions";
 import moment from "moment";
-import { TALLY_STATUS } from "../../utils/GlobalVariables.json";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
+import Enumerable from "linq";
 
 class InvestigationSetup extends Component {
   constructor(props) {
@@ -183,8 +183,6 @@ class InvestigationSetup extends Component {
   }
 
   selectCashier(data, e) {
-    debugger;
-
     this.setState({
       hims_f_cash_handover_detail_id: data.hims_f_cash_handover_detail_id,
       actual_cash: data.actual_cash,
@@ -216,6 +214,7 @@ class InvestigationSetup extends Component {
   }
 
   getCashHandoverDetails(e) {
+    this.resetSaveState();
     AlgaehValidation({
       alertTypeIcon: "warning",
       onSuccess: () => {
@@ -401,6 +400,12 @@ class InvestigationSetup extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Shift Type" }} />
                       ),
+                      displayTemplate: row => {
+                        let x = Enumerable.from(this.state.shifts)
+                          .where(w => w.hims_d_shift_id === row.shift_id)
+                          .firstOrDefault();
+                        return <span>{x.shift_description}</span>;
+                      },
                       others: {
                         resizable: false,
                         style: { textAlign: "center" }
@@ -727,9 +732,9 @@ class InvestigationSetup extends Component {
                     </tr>
                     <tr>
                       <td>Difference</td>
-                      <td>{this.state.difference_cash}</td>
-                      <td>{this.state.difference_card}</td>
-                      <td>{this.state.difference_cheque}</td>
+                      <td>{Math.abs(this.state.difference_cash)}</td>
+                      <td>{Math.abs(this.state.difference_card)}</td>
+                      <td>{Math.abs(this.state.difference_cheque)}</td>
                     </tr>
                     <tr>
                       <td> Status</td>

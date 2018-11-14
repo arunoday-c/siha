@@ -237,10 +237,10 @@ let getrequisitionEntry = (req, res, next) => {
 //created by Nowshad: to Post Requisition Entry
 
 let updaterequisitionEntry = (req, res, next) => {
-  let RequisitionEntry = {
-    posted: null,
-    updated_by: req.userIdentity.algaeh_d_app_user_id
-  };
+  // let RequisitionEntry = {
+  //   posted: null,
+  //   updated_by: req.userIdentity.algaeh_d_app_user_id
+  // };
   if (req.db == null) {
     next(httpStatus.dataBaseNotInitilizedError());
   }
@@ -249,31 +249,135 @@ let updaterequisitionEntry = (req, res, next) => {
     if (error) {
       next(error);
     }
-    let inputParam = extend(RequisitionEntry, req.body);
-    connection.query(
-      "UPDATE `hims_f_pharamcy_material_header` SET `authorize1`=?, `authorize1_date`=?, `authorize1_by`=?, \
+
+    connection.beginTransaction(error => {
+      if (error) {
+        connection.rollback(() => {
+          releaseDBConnection(db, connection);
+          next(error);
+        });
+      }
+      let inputParam = extend({}, req.body);
+
+      connection.query(
+        "UPDATE `hims_f_pharamcy_material_header` SET `authorize1`=?, `authorize1_date`=?, `authorize1_by`=?, \
       `authorie2`=?, `authorize2_date`=?, `authorize2_by`=? \
       WHERE `hims_f_pharamcy_material_header_id`=?",
-      [
-        inputParam.authorize1,
-        new Date(),
-        req.userIdentity.algaeh_d_app_user_id,
-        inputParam.authorie2,
-        new Date(),
-        req.userIdentity.algaeh_d_app_user_id,
-        inputParam.hims_f_pharamcy_material_header_id
-      ],
-      (error, result) => {
-        releaseDBConnection(db, connection);
-        if (error) {
-          next(error);
-        }
-        req.records = result;
-        next();
+        [
+          inputParam.authorize1,
+          new Date(),
+          inputParam.updated_by,
+          inputParam.authorie2,
+          new Date(),
+          inputParam.updated_by,
+          inputParam.hims_f_pharamcy_material_header_id
+        ],
+        (error, result) => {
+          if (error) {
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(error);
+            });
+          }
 
-        // TODO hims_f_pharamcy_material_detail update
-      }
-    );
+          if (result !== "" && result != null) {
+            let details = inputParam.pharmacy_stock_detail;
+
+            let qry = "";
+
+            for (let i = 0; i < details.length; i++) {
+              qry +=
+                " UPDATE `hims_f_pharmacy_material_detail` SET pharmacy_header_id='" +
+                details[i].pharmacy_header_id +
+                "',completed='" +
+                details[i].completed +
+                "',item_category_id='" +
+                details[i].item_category_id +
+                "',item_group_id='" +
+                details[i].item_group_id +
+                "',item_id='" +
+                details[i].item_id +
+                "',quantity_required='" +
+                details[i].quantity_required +
+                "',quantity_authorized='" +
+                details[i].quantity_authorized +
+                "',item_uom='" +
+                details[i].item_uom +
+                "',quantity_recieved='" +
+                details[i].quantity_recieved +
+                "',quantity_outstanding='" +
+                details[i].quantity_outstanding +
+                "',po_created_date='" +
+                details[i].po_created_date +
+                "',po_created='" +
+                details[i].po_created +
+                "',po_created_quantity='" +
+                details[i].po_created_quantity +
+                "',po_outstanding_quantity='" +
+                details[i].po_outstanding_quantity +
+                "',po_completed='" +
+                details[i].po_completed +
+                "' WHERE hims_f_pharmacy_material_detail_id='" +
+                details[i].hims_f_pharmacy_material_detail_id +
+                "';";
+            }
+
+            if (qry != "") {
+              connection.query(qry, (error, detailResult) => {
+                if (error) {
+                  connection.rollback(() => {
+                    releaseDBConnection(db, connection);
+                    next(error);
+                  });
+                }
+
+                connection.commit(error => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+                  releaseDBConnection(db, connection);
+                  req.records = detailResult;
+                  next();
+                });
+              });
+            } else {
+              releaseDBConnection(db, connection);
+              req.records = {};
+              next();
+            }
+          } else {
+            // if (error) {
+            //   next(error);
+            // }
+            // req.records = result;
+            // next();
+
+            // TODO hims_f_pharamcy_material_detail update
+
+            // connection.commit(error => {
+            //   if (error) {
+            //     connection.rollback(() => {
+            //       releaseDBConnection(db, connection);
+            //       next(error);
+            //     });
+            //   }
+            //   releaseDBConnection(db, connection);
+            //   req.records = result;
+            //   next();
+            // });
+
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              req.records = {};
+              next();
+            });
+          }
+        }
+      );
+    });
   });
 };
 

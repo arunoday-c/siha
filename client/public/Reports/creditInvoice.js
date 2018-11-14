@@ -1,4 +1,6 @@
-<div>
+export function printReport(data) {
+  return `
+  
   <div class="cashReciptStyles">
     <div class="col-lg-12 popRightDiv">
       <div class="row">
@@ -21,43 +23,49 @@
 		<table id="creditInvoiceReport">
 			<tr>
 				<td><label>رقم التسجيل الضريبي   /  TRN</label></td>
-				<td>: <span>301270966900003</span></td>
+        <td>: <span>301270966900003</span></td>
+        <td colspan="3"></td>
 				<td><label>النوع / Type</label></td>
 				<td>: <span>ائتمان/ Credit</span></td>
 			</tr>
-			<tr>
+			<!-- <tr>
 				<td colspan="4" style="background:#f2f2f2;height:20px;"></td>
-			</tr>
+			</tr> -->
             <tr>
 				<td><label>رقم الملف الطبي / Reg. Number</label></td>
-				<td>: <span>301270966900003</span></td>
+        <td>: <span>301270966900003</span></td>
+        <td colspan="2"></td>
 				<td><label>رقم الفاتورة / Invoice No</label></td>
-				<td>: <span>005685</span></td>
+				<td>: <span data-parameter="invoice_number"></span></td>
 			</tr>
             
             <tr>
 				<td><label>اسم المريض / Patient Name</label></td>
-				<td>: <span>NOWSHAD</span></td>
+        <td>: <span data-parameter="full_name"></span></td>
+        <td colspan="2"></td>
 				<td><label>اريخ الفاتورة / Invoice Date</label></td>
 				<td>: <span>04-11-2018</span></td>
 			</tr>
             
             <tr>
 				<td><label>اسم الطبيب / Doctor</label></td>
-				<td>: <span>Dr. Samer Omar</span></td>
+        <td>: <span>Dr. Norman John</span></td>
+        <td colspan="2"></td>
 				<td><label>Department /  القسم</label></td>
 				<td>: <span>General Practioner(G.P)</span></td>
 			</tr>
             
             <tr>
 				<td><label>شركة التأمين / InsuranceCompany</label></td>
-				<td>: <span>BUPA [Sub Insurer : ABBOTT SAUDI ARABIA TRADING LLC]</span></td>
+        <td>: <span>BUPA </span></td>
+        <td colspan="2"></td>
 				<td colspan="2">BUPA ]شركة التأمين الفرعية : ABBOTT SAUDI ARABIA TRADING LLC[ ]رقم التسجيل الضريبي : </td>
 			</tr>
             
-            <tr>
+        <tr>
 				<td><label>رقم البطاقة / رقم السياسة  / Card No/ Policy No</label></td>
-				<td>: <span>123454323 / 427354001</span></td>
+        <td>: <span>123454323 / 427354001</span></td>
+        <td colspan="1"></td>
 				<td><label>حامل السياسة / PolicyHolder</label></td>
 				<td>: <span>ABBOTT SAUDIARABIA TRADING LLC</span></td>
 			</tr>
@@ -75,24 +83,24 @@
               <tbody>
                 <tr>
                   <td>Patient Name:</td>
-                  <td data-parameter="full_name"></td>
+                  <td>${data.full_name}</td>
                   <td class="col"></td>
                   <td>Type:</td>
-                  <td data-parameter="payment_type"></td>
+                  <td>${data.payment_type}</td>
                 </tr>
                 <tr>
                   <td>Patient MRN:</td>
-                  <td data-parameter="patient_code"></td>
+                  <td>${data.patient_code}</td>
                   <td></td>
                   <td>Invoice No.</td>
-                  <td data-parameter="invoice_number"></td>
+                  <td>${data.invoice_number}</td>
                 </tr>
                 <tr>
                   <td>Doctor Name:</td>
-                  <td data-parameter="doctor_name"></td>
+                  <td>${data.doctor_name}</td>
                   <td></td>
                   <td>Recepit Date:</td>
-                  <td data-parameter="receipt_date"></td>
+                  <td>${data.receipt_date}</td>
                 </tr>
               </tbody>
             </table>
@@ -106,7 +114,7 @@
                   <tr>
                     <th style="width : 1px">Service Type</th>
                     <th>Service Description</th>
-                    <th>Quantity</th>
+                    <th style="width : 1px">Quantity</th>
                     <th>Gross Amount</th>
                     <th>Discount</th>
                     <th>Net Amount</th>
@@ -116,66 +124,27 @@
                     <th>Company Responsibility</th>
                     <th> Company Tax</th>
                     <th>Company Share</th>
-                    <!-- <th>Sec. Company Responsibility</th>
-                    <th>Sec. Company Tax</th>
-                    <th>Sec. Company Share</th> -->
                   </tr>
                 </thead>
   
-                <tbody data-list="services" list-template="patientTable"></tbody>
+                <tbody>
+                <tr>
+                <td >${data.service_type} </td>
+                <td > ${data.service_name}</td>
+                <td >${data.quantity} </td>
+                <td >${data.gross_amount} </td>
+                <td > ${data.discount_amount} </td>
+                <td >${data.net_amount} </td>
+                <td > ${data.patient_resp}</td>
+                <td > ${data.patient_tax}</td>
+                <td > ${data.patient_payabl}</td>
+                <td > ${data.company_resp}</td>
+                <td > ${data.company_tax}</td>
+                <td > ${data.company_payable}</td>
+              </tr>
+                
+                </tbody>
               </table>
-              <script id="patientTable" type="text/x-algaeh-template">
-  
-                <tr>
-                  <td data-list-parameter="service_type"> </td>
-                  <td data-list-parameter="service_name"> </td>
-                  <td data-list-parameter="quantity"> </td>
-                  <td data-list-parameter="gross_amount"> </td>
-                  <td data-list-parameter="discount_amout"> </td>
-                  <td data-list-parameter="net_amout"> </td>
-                  <td data-list-parameter="patient_resp"> </td>
-                  <td data-list-parameter="patient_tax"> </td>
-                  <td data-list-parameter="patient_payable"> </td>
-                  <td data-list-parameter="comapany_resp"> </td>
-                  <td data-list-parameter="company_tax"> </td>
-                  <td data-list-parameter="company_payble"> </td>
-                  <!-- <td data-list-parameter="sec_comapany_resp"> </td>
-                  <td data-list-parameter="sec_company_tax"> </td>
-                  <td data-list-parameter="sec_company_payble"> </td> -->
-                </tr>
-  
-  
-  
-                <!--   <table class="table table-bordered table-striped">
-                  <th></th>
-                  <th></th>
-                  <th style="width : 400px" data-list-parameter='services_id'></th>
-                  <th data-list-parameter="gross_amount"></th>
-  
-                 <tr>
-                    <td style="width : 1px" data-list-parameter="sl_no"></td>
-                    <td>10001</td>
-                    <td style="width : 400px">General Practiotioner</td>
-                    <td data-list-parameter="gross_amount"></td>
-                    <td>0</td>
-                    <td>6</td>
-                    <td>0</td>
-                    <td>6</td>
-                  </tr>
-                </table>  -->
-              </script>
-              <!--
-                <tr>
-                    <td></td>
-                    <td data-list-parameter="quantity"></td>
-                    <td data-list-parameter="service_name"></td>
-                    <td data-list-parameter="test_parameter"></td>
-                    <td data-list-parameter="deductable_amount"></td>
-                    <td data-list-parameter="patient_tax"></td>
-                    <td data-list-parameter="patient_payable"></td>
-                    <td data-list-parameter="patient_payable"></td>
-                </tr>
-              -->
             </div>
           </div>
         </div>
@@ -185,15 +154,10 @@
               <tbody>
                 <tr>
                   <td>Remarks:</td>
-                  <td data-parameter="remarks" />
-  
-                  <td>Previous Due:</td>
-                  <td>0</td>
-                </tr>
-                <tr>
+                  <td> ${data.remarks}</td>
                   <td class="col"></td>
                   <td>Total:</td>
-                  <td data-parameter="total_amount"></td>
+                  <td>${data.total_amount}</td>
                 </tr>
               </tbody>
             </table>
@@ -201,5 +165,5 @@
         </div>
       </div>
     </div>
-  </div>
-  
+</div>`;
+}
