@@ -1,6 +1,7 @@
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const UpdateOrders = ($this, row) => {
+  debugger;
   let dataSend = [];
 
   if (row.apprv_status === "AP" || row.apprv_status === "RJ") {
@@ -14,7 +15,8 @@ const UpdateOrders = ($this, row) => {
         primary_insurance_provider_id: row.insurance_provider_id,
         primary_network_office_id: row.insurance_network_office_id,
         primary_network_id: row.network_id,
-        sec_insured: null,
+        sec_insured: "N",
+        sec_company: "N",
         secondary_insurance_provider_id: null,
         secondary_network_id: null,
         secondary_network_office_id: null,

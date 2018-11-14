@@ -48,19 +48,17 @@ export default class VerifyOrders extends PureComponent {
     return (
       <React.Fragment>
         <div>
-          <Modal
-            open={this.props.open}
-          >
-           <div className="algaeh-modal" style={{width:"50%"}}>
-
-     <div className="popupHeader"><div className="row">
+          <Modal open={this.props.open}>
+            <div className="algaeh-modal" style={{ width: "50%" }}>
+              <div className="popupHeader">
+                <div className="row">
                   <div className="col-lg-8">
                     <h4>{this.props.HeaderCaption}</h4>
                   </div>
                   <div className="col-lg-4">
                     <button
                       type="button"
-                      className=""  
+                      className=""
                       onClick={e => {
                         this.onClose(e);
                       }}
@@ -68,14 +66,14 @@ export default class VerifyOrders extends PureComponent {
                       <i className="fas fa-times-circle" />
                     </button>
                   </div>
-                </div></div>
-                <div className="col-lg-12 popupInner" style={{height:"60vh"}}>
-
-
-                <div className="row" style={{marginTop:10,marginBottom:10}}>
-
-
- <div className="col">
+                </div>
+              </div>
+              <div className="col-lg-12 popupInner" style={{ height: "60vh" }}>
+                <div
+                  className="row"
+                  style={{ marginTop: 10, marginBottom: 10 }}
+                >
+                  <div className="col">
                     <AlgaehLabel
                       label={{
                         fieldName: "patient_code"
@@ -88,7 +86,7 @@ export default class VerifyOrders extends PureComponent {
                     </h6>
                   </div>
 
- <div className="col">
+                  <div className="col">
                     <AlgaehLabel
                       label={{
                         fieldName: "patient_name"
@@ -100,10 +98,6 @@ export default class VerifyOrders extends PureComponent {
                         : "Patient Name"}
                     </h6>
                   </div>
-
-
-
-
                 </div>
 
                 <div className="row grid-details">
@@ -112,7 +106,6 @@ export default class VerifyOrders extends PureComponent {
                       <AlgaehDataGrid
                         id="update_order_grid"
                         columns={[
-
                           {
                             fieldName: "action",
                             label: (
@@ -121,11 +114,18 @@ export default class VerifyOrders extends PureComponent {
                             displayTemplate: row => {
                               return (
                                 <span>
-                                <i className="fas fa-sync-alt" onClick={UpdateOrders.bind(this,row)}></i>
+                                  <i
+                                    className="fas fa-sync-alt"
+                                    onClick={UpdateOrders.bind(this, this, row)}
+                                  />
                                 </span>
                               );
                             },
-                       others:{maxWidth:70,resizable: false,style:{textAlign:"center"}}
+                            others: {
+                              maxWidth: 70,
+                              resizable: false,
+                              style: { textAlign: "center" }
+                            }
                           },
                           {
                             fieldName: "service_code",
@@ -154,10 +154,10 @@ export default class VerifyOrders extends PureComponent {
                               return row.apprv_status === "NR"
                                 ? "Not Requested"
                                 : row.apprv_status === "AW"
-                                  ? "Awaiting Approval"
-                                  : row.apprv_status === "AP"
-                                    ? "Approved"
-                                    : "Rejected";
+                                ? "Awaiting Approval"
+                                : row.apprv_status === "AP"
+                                ? "Approved"
+                                : "Rejected";
                             }
                           }
                         ]}
@@ -171,23 +171,24 @@ export default class VerifyOrders extends PureComponent {
                     </div>
                   </div>
                 </div>
-
-
-
-
               </div>
 
-
-                <div className="popupFooter">
+              <div className="popupFooter">
                 <div className="col-lg-12">
-                <div className="row">
-                <div className="col-lg-12">
-               <button className="btn btn-default" onClick={e => {this.onClose(e)}}>Close</button>
+                  <div className="row">
+                    <div className="col-lg-12">
+                      <button
+                        className="btn btn-default"
+                        onClick={e => {
+                          this.onClose(e);
+                        }}
+                      >
+                        Close
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                </div>
-                </div>
-                </div>
-
+              </div>
             </div>
           </Modal>
         </div>

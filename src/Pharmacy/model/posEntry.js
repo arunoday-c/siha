@@ -26,49 +26,41 @@ let addPosEntry = (req, res, next) => {
     let input = extend({}, req.body);
 
     debugLog("inside", "add stock");
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
-      connection.beginTransaction(error => {
-        if (error) {
-          connection.rollback(() => {
-            releaseDBConnection(db, connection);
-            next(error);
-          });
+    debugLog("req date: ", req.records);
+
+    let connection = req.connection;
+
+    let requestCounter = 1;
+
+    return new Promise((resolve, reject) => {
+      runningNumberGen({
+        db: connection,
+        counter: requestCounter,
+        module_desc: ["POS_NUM"],
+        onFailure: error => {
+          reject(error);
+        },
+        onSuccess: result => {
+          resolve(result);
         }
+      });
+    }).then(result => {
+      let documentCode = result[0].completeNumber;
+      debugLog("documentCode:", documentCode);
 
-        let requestCounter = 1;
+      let year = moment().format("YYYY");
+      debugLog("onlyyear:", year);
 
-        return new Promise((resolve, reject) => {
-          runningNumberGen({
-            db: connection,
-            counter: requestCounter,
-            module_desc: ["POS_NUM"],
-            onFailure: error => {
-              reject(error);
-            },
-            onSuccess: result => {
-              resolve(result);
-            }
-          });
-        }).then(result => {
-          let documentCode = result[0].completeNumber;
-          debugLog("documentCode:", documentCode);
+      let today = moment().format("YYYY-MM-DD");
+      debugLog("today:", today);
 
-          let year = moment().format("YYYY");
-          debugLog("onlyyear:", year);
+      let month = moment().format("MM");
+      debugLog("month:", month);
+      let period = month;
 
-          let today = moment().format("YYYY-MM-DD");
-          debugLog("today:", today);
-
-          let month = moment().format("MM");
-          debugLog("month:", month);
-          let period = month;
-
-          debugLog("period:", period);
-          connection.query(
-            "INSERT INTO `hims_f_pharmacy_pos_header` (pos_number,pos_date,patient_id,visit_id,ip_id,`year`,period,\
+      debugLog("period:", period);
+      connection.query(
+        "INSERT INTO `hims_f_pharmacy_pos_header` (pos_number,pos_date,patient_id,visit_id,ip_id,`year`,period,\
                 location_id, location_type, sub_total, discount_percentage, discount_amount, net_total, copay_amount, patient_responsibility,\
                 patient_tax, patient_payable,company_responsibility,company_tax,company_payable,comments, sec_company_responsibility,\
                 sec_company_tax,sec_company_payable,sec_copay_amount,net_tax,gross_total,sheet_discount_amount,\
@@ -76,155 +68,155 @@ let addPosEntry = (req, res, next) => {
                 insurance_provider_id, sub_insurance_provider_id, network_id, network_type, network_office_id, policy_number, \
                 secondary_card_number, secondary_effective_start_date, secondary_effective_end_date, secondary_insurance_provider_id,\
                 secondary_network_id, secondary_network_type, secondary_sub_insurance_provider_id, secondary_network_office_id, \
-                created_date,created_by,updated_date,updated_by) \
-            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-            [
-              documentCode,
-              today,
-              input.patient_id,
-              input.visit_id,
-              input.ip_id,
-              year,
-              period,
-              input.location_id,
-              input.location_type,
-              input.sub_total,
-              input.discount_percentage,
-              input.discount_amount,
-              input.net_total,
-              input.copay_amount,
-              input.patient_responsibility,
-              input.patient_tax,
-              input.patient_payable,
-              input.company_responsibility,
-              input.company_tax,
-              input.company_payable,
-              input.comments,
-              input.sec_company_responsibility,
-              input.sec_company_tax,
-              input.sec_company_payable,
-              input.sec_copay_amount,
-              input.net_tax,
-              input.gross_total,
-              input.sheet_discount_amount,
-              input.sheet_discount_percentage,
-              input.net_amount,
-              input.credit_amount,
-              input.receiveable_amount,
-              input.card_number,
-              input.effective_start_date,
-              input.effective_end_date,
-              input.insurance_provider_id,
-              input.sub_insurance_provider_id,
-              input.network_id,
-              input.network_type,
-              input.network_office_id,
-              input.policy_number,
-              input.secondary_card_number,
-              input.secondary_effective_start_date,
-              input.secondary_effective_end_date,
-              input.secondary_insurance_provider_id,
-              input.secondary_network_id,
-              input.secondary_network_type,
-              input.secondary_sub_insurance_provider_id,
-              input.secondary_network_office_id,
-              new Date(),
-              req.userIdentity.algaeh_d_app_user_id,
-              new Date(),
-              req.userIdentity.algaeh_d_app_user_id
-            ],
-            (error, headerResult) => {
-              if (error) {
-                connection.rollback(() => {
-                  releaseDBConnection(db, connection);
-                  next(error);
-                });
-              }
+                receipt_header_id, created_date,created_by,updated_date,updated_by) \
+            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        [
+          documentCode,
+          today,
+          input.patient_id,
+          input.visit_id,
+          input.ip_id,
+          year,
+          period,
+          input.location_id,
+          input.location_type,
+          input.sub_total,
+          input.discount_percentage,
+          input.discount_amount,
+          input.net_total,
+          input.copay_amount,
+          input.patient_responsibility,
+          input.patient_tax,
+          input.patient_payable,
+          input.company_responsibility,
+          input.company_tax,
+          input.company_payable,
+          input.comments,
+          input.sec_company_responsibility,
+          input.sec_company_tax,
+          input.sec_company_payable,
+          input.sec_copay_amount,
+          input.net_tax,
+          input.gross_total,
+          input.sheet_discount_amount,
+          input.sheet_discount_percentage,
+          input.net_amount,
+          input.credit_amount,
+          input.receiveable_amount,
+          input.card_number,
+          input.effective_start_date,
+          input.effective_end_date,
+          input.insurance_provider_id,
+          input.sub_insurance_provider_id,
+          input.network_id,
+          input.network_type,
+          input.network_office_id,
+          input.policy_number,
+          input.secondary_card_number,
+          input.secondary_effective_start_date,
+          input.secondary_effective_end_date,
+          input.secondary_insurance_provider_id,
+          input.secondary_network_id,
+          input.secondary_network_type,
+          input.secondary_sub_insurance_provider_id,
+          input.secondary_network_office_id,
+          req.records.receipt_header_id,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id
+        ],
+        (error, headerResult) => {
+          if (error) {
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(error);
+            });
+          }
 
-              debugLog(" pos header id :", headerResult);
+          debugLog(" pos header id :", headerResult);
 
-              if (headerResult.insertId != null) {
-                const insurtColumns = [
-                  "item_id",
-                  "item_category",
-                  "item_group_id",
-                  "service_id",
-                  "grn_no",
-                  "barcode",
-                  "expiry_date",
-                  "batchno",
-                  "uom_id",
-                  "quantity",
-                  "insurance_yesno",
-                  "tax_inclusive",
-                  "unit_cost",
-                  "extended_cost",
-                  "discount_percentage",
-                  "discount_amount",
-                  "net_extended_cost",
-                  "copay_percent",
-                  "copay_amount",
-                  "patient_responsibility",
-                  "patient_tax",
-                  "patient_payable",
-                  "company_responsibility",
-                  "company_tax",
-                  "company_payable",
-                  "sec_copay_percent",
-                  "sec_copay_amount",
-                  "sec_company_responsibility",
-                  "sec_company_tax",
-                  "sec_company_payable"
-                ];
+          if (headerResult.insertId != null) {
+            const insurtColumns = [
+              "item_id",
+              "item_category",
+              "item_group_id",
+              "service_id",
+              "grn_no",
+              "barcode",
+              "expiry_date",
+              "batchno",
+              "uom_id",
+              "quantity",
+              "insurance_yesno",
+              "tax_inclusive",
+              "unit_cost",
+              "extended_cost",
+              "discount_percentage",
+              "discount_amount",
+              "net_extended_cost",
+              "copay_percent",
+              "copay_amount",
+              "patient_responsibility",
+              "patient_tax",
+              "patient_payable",
+              "company_responsibility",
+              "company_tax",
+              "company_payable",
+              "sec_copay_percent",
+              "sec_copay_amount",
+              "sec_company_responsibility",
+              "sec_company_tax",
+              "sec_company_payable"
+            ];
 
-                connection.query(
-                  "INSERT INTO hims_f_pharmacy_pos_detail(" +
-                    insurtColumns.join(",") +
-                    ",pharmacy_pos_header_id) VALUES ?",
-                  [
-                    jsonArrayToObject({
-                      sampleInputObject: insurtColumns,
-                      arrayObj: req.body.pharmacy_stock_detail,
-                      newFieldToInsert: [headerResult.insertId],
-                      req: req
-                    })
-                  ],
-                  (error, detailResult) => {
-                    if (error) {
-                      connection.rollback(() => {
-                        releaseDBConnection(db, connection);
-                        next(error);
-                      });
-                    }
+            connection.query(
+              "INSERT INTO hims_f_pharmacy_pos_detail(" +
+                insurtColumns.join(",") +
+                ",pharmacy_pos_header_id) VALUES ?",
+              [
+                jsonArrayToObject({
+                  sampleInputObject: insurtColumns,
+                  arrayObj: req.body.pharmacy_stock_detail,
+                  newFieldToInsert: [headerResult.insertId],
+                  req: req
+                })
+              ],
+              (error, detailResult) => {
+                if (error) {
+                  connection.rollback(() => {
+                    releaseDBConnection(db, connection);
+                    next(error);
+                  });
+                }
 
-                    connection.commit(error => {
-                      if (error) {
-                        connection.rollback(() => {
-                          releaseDBConnection(db, connection);
-                          next(error);
-                        });
-                      }
+                connection.commit(error => {
+                  if (error) {
+                    connection.rollback(() => {
                       releaseDBConnection(db, connection);
-                      req.records = {
-                        pos_number: documentCode,
-                        hims_f_pharmacy_pos_header_id: headerResult.insertId,
-                        year: year,
-                        period: period
-                      };
-                      next();
+                      next(error);
                     });
                   }
-                );
-              } else {
-                connection.rollback(() => {
                   releaseDBConnection(db, connection);
-                  next(error);
+                  req.records = {
+                    pos_number: documentCode,
+                    hims_f_pharmacy_pos_header_id: headerResult.insertId,
+                    receipt_number: req.records.receipt_number,
+                    year: year,
+                    period: period
+                  };
+                  next();
                 });
               }
-            }
-          );
-        });
-      });
+            );
+          } else {
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(error);
+            });
+          }
+        }
+      );
     });
   } catch (e) {
     next(e);

@@ -60,30 +60,91 @@ const ClearData = ($this, e) => {
   $this.setState(IOputs);
 };
 
+const GenerateReciept = ($this, callBack) => {
+  let obj = [];
+
+  if (
+    $this.state.Cashchecked === false &&
+    $this.state.Cardchecked === false &&
+    $this.state.Checkchecked === false
+  ) {
+    swalMessage({
+      title: "Invalid Input. Please select receipt type.",
+      type: "error"
+    });
+  } else {
+    if ($this.state.cash_amount > 0 || $this.state.Cashchecked === true) {
+      obj.push({
+        hims_f_receipt_header_id: null,
+        card_check_number: null,
+        expiry_date: null,
+        pay_type: $this.state.pay_cash,
+        amount: $this.state.cash_amount,
+        updated_date: null,
+        card_type: null
+      });
+    }
+
+    if ($this.state.card_amount > 0 || $this.state.Cardchecked === true) {
+      obj.push({
+        hims_f_receipt_header_id: null,
+        card_check_number: $this.state.card_check_number,
+        expiry_date: $this.state.card_date,
+        pay_type: $this.state.pay_card,
+        amount: $this.state.card_amount,
+        updated_date: null,
+        card_type: null
+      });
+    }
+    if ($this.state.cheque_amount > 0 || $this.state.Checkchecked === true) {
+      obj.push({
+        hims_f_receipt_header_id: null,
+        card_check_number: $this.state.cheque_number,
+        expiry_date: $this.state.cheque_date,
+        pay_type: $this.state.pay_cheque,
+        amount: $this.state.cheque_amount,
+        updated_date: null,
+        card_type: null
+      });
+    }
+
+    $this.setState(
+      {
+        receiptdetails: obj
+      },
+      () => {
+        callBack($this);
+      }
+    );
+  }
+};
+
 const SaveSalesReturn = $this => {
   debugger;
-  algaehApiCall({
-    uri: "/salesReturn/addsalesReturn",
-    data: $this.state,
-    onSuccess: response => {
-      debugger;
-      if (response.data.success === true) {
-        $this.setState({
-          sales_return_number: response.data.records.sales_return_number,
-          year: response.data.records.year,
-          period: response.data.records.period,
-          hims_f_pharmcy_sales_return_header_id:
-            response.data.records.hims_f_pharmcy_sales_return_header_id,
-
-          saveEnable: true,
-          postEnable: false
-        });
-        swalMessage({
-          title: "Saved successfully . .",
-          type: "success"
-        });
+  GenerateReciept($this, that => {
+    algaehApiCall({
+      uri: "/salesReturn/addsalesReturn",
+      data: $this.state,
+      onSuccess: response => {
+        debugger;
+        if (response.data.success === true) {
+          $this.setState({
+            sales_return_number: response.data.records.sales_return_number,
+            year: response.data.records.year,
+            period: response.data.records.period,
+            hims_f_pharmcy_sales_return_header_id:
+              response.data.records.hims_f_pharmcy_sales_return_header_id,
+            receipt_number: response.data.records.receipt_number,
+            saveEnable: true,
+            postEnable: false
+          });
+          swalMessage({
+            title: "Saved successfully . .",
+            type: "success"
+          });
+        }
       }
-    }
+    });
   });
 };
 
@@ -110,6 +171,9 @@ const PostSalesReturn = $this => {
 
     $this.state.pharmacy_stock_detail[i].net_total =
       $this.state.pharmacy_stock_detail[i].net_extended_cost;
+
+    $this.state.pharmacy_stock_detail[i].quantity =
+      $this.state.pharmacy_stock_detail[i].return_quantity;
 
     $this.state.pharmacy_stock_detail[i].return_extended_cost =
       $this.state.pharmacy_stock_detail[i].extended_cost || 0;

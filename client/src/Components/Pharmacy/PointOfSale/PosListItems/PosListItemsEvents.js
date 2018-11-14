@@ -403,9 +403,18 @@ const datehandle = ($this, ctrl, e) => {
   });
 };
 
-const deletePosDetail = ($this, context, e, rowId) => {
+const deletePosDetail = ($this, context, row) => {
+  debugger;
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
-  pharmacy_stock_detail.splice(rowId, 1);
+
+  for (var i = 0; i < pharmacy_stock_detail.length; i++) {
+    if (
+      pharmacy_stock_detail[i].item_id === row["item_id"] &&
+      pharmacy_stock_detail[i].batchno === row["batchno"]
+    ) {
+      pharmacy_stock_detail.splice(i, 1);
+    }
+  }
 
   $this.props.PosHeaderCalculations({
     uri: "/billing/billingCalculations",

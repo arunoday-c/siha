@@ -68,6 +68,10 @@ export default {
       saveEnable: true,
       postEnable: true,
       episode_id: null,
+      Cashchecked: true,
+      Cardchecked: false,
+      Checkchecked: false,
+      pay_type: "P",
 
       card_number: null,
       effective_end_date: null,

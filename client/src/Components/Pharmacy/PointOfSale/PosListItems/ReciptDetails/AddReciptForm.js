@@ -28,9 +28,6 @@ class AddReciptForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      Cashchecked: true,
-      Cardchecked: false,
-      Checkchecked: false,
       errorInCash: false,
       errorInCard: false,
       errorInCheck: false
