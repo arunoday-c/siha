@@ -5,121 +5,41 @@ import ReportUI from "../Wrapper/reportUI";
 import { successfulMessage } from "../../utils/GlobalFunctions";
 const reportWindow = document.getElementById("reportWindow");
 export function accessReport(options) {
-  try {
-    if (options.data === undefined) return;
-    let getReport = options.report;
-    let const_count = 0;
-    let fileName = "./Reports/" + getReport.fileName + ".html";
-    let xhr = new XMLHttpRequest();
-    xhr.open("GET", fileName, true);
-    xhr.onreadystatechange = function() {
-      if (this.response !== "" && const_count === 0) {
-        let parser = new DOMParser();
-        let _html = parser.parseFromString(this.response, "text/xml");
-        if (getReport.barcode !== undefined) {
-          let canvasElements = _html.querySelectorAll(
-            "[data-barcode-parameter]"
-          );
-          for (let e = 0; e < canvasElements.length; e++) {
-            if (
-              canvasElements[e].getAttribute("data-barcode-parameter") ===
-              getReport.barcode.parameter
-            ) {
-              var canvas = document.createElement("canvas");
-              const barCodeModel = {
-                format: "CODE128",
-                lineColor: "#000"
-              };
-              JsBarcode(canvas, options.data[getReport.barcode.parameter], {
-                ...barCodeModel,
-                ...getReport.options
-              });
-              canvasElements[e].onload = () => {
-                canvas.getContext("2d").drawImage(canvasElements[e], 0, 0);
-              };
-              canvasElements[e].setAttribute(
-                "src",
-                canvas.toDataURL("image/png")
-              );
-            }
-          }
-        }
-        let canvasElements = _html.querySelectorAll("[data-parameter]");
+  let getReport = options.report;
+  const { printReport } = require("../../../public/Reports/" +
+    getReport.fileName +
+    ".js");
+  const _modifiedTemplate = printReport(options.data, {
+    generateBarcode: stringToBarcode => {
+      let canvas = document.createElement("canvas");
+      const barCodeModel = {
+        format: "CODE128",
+        lineColor: "#000"
+      };
+      JsBarcode(canvas, stringToBarcode, {
+        ...barCodeModel,
+        ...options.report
+      });
 
-        for (let e = 0; e < canvasElements.length; e++) {
-          canvasElements[e].innerHTML =
-            options.data[canvasElements[e].getAttribute("data-parameter")];
-        }
-
-        let canvasList = _html.querySelectorAll("[data-list]");
-        debugger;
-        for (let l = 0; l < canvasList.length; l++) {
-          let listCanvas = canvasList[l];
-          let dataList = [];
-          eval("dataList=options.data." + listCanvas.getAttribute("data-list"));
-          if (!Array.isArray(dataList)) dataList = [];
-          let templateId = listCanvas.getAttribute("list-template");
-          let _templateParent = _html.getElementById(templateId);
-          const script_temp = _templateParent.cloneNode(true);
-          for (let r = 0; r < dataList.length; r++) {
-            let row = dataList[r];
-            let _templateView = script_temp.cloneNode(true).children;
-            for (let c = 0; c < _templateView.length; c++) {
-              let parentTemp = _templateView[c];
-              parentTemp.cloneNode(true);
-              let Tempchildrens = parentTemp.children;
-              if (Tempchildrens !== undefined && Tempchildrens.length > 0) {
-                debugger;
-                for (let ic = 0; ic < Tempchildrens.length; ic++) {
-                  let innerTemp = Tempchildrens[ic];
-                  let parName = innerTemp.getAttribute("data-list-parameter");
-
-                  if (parName !== null && parName !== undefined) {
-                    innerTemp.innerHTML = row[parName];
-                  } else {
-                    let _innerChilds = innerTemp.children;
-                    for (let _c = 0; _c < _innerChilds.length; _c++) {
-                      let _dtl = _innerChilds[_c].getAttribute(
-                        "data-list-parameter"
-                      );
-                      debugger;
-                      if (_dtl !== null && _dtl !== undefined)
-                        _innerChilds[_c].innerHTML = row[c];
-                    }
-                  }
-                }
-              } else {
-                let paramName = parentTemp.getAttribute("data-list-parameter");
-                parentTemp.innerHTML = row[paramName];
-              }
-              parentTemp.setAttribute("key", r);
-              listCanvas.appendChild(parentTemp);
-            }
-          }
-        }
-        if (options.getRaw === undefined) {
-          ReactDOM.render(
-            <ReportUI>
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: _html.firstElementChild.innerHTML
-                }}
-              />
-            </ReportUI>,
-            reportWindow
-          );
-        } else {
-          return _html.firstElementChild.innerHTML;
-        }
-
-        const_count = 1;
-      }
-    };
-    xhr.send();
-  } catch (e) {
-    successfulMessage({ message: e.message });
+      return canvas.toDataURL("image/png");
+    }
+  });
+  if (options.getRaw === undefined) {
+    ReactDOM.render(
+      <ReportUI>
+        <div
+          dangerouslySetInnerHTML={{
+            __html: _modifiedTemplate //_html.firstElementChild.innerHTML
+          }}
+        />
+      </ReportUI>,
+      reportWindow
+    );
+  } else {
+    return _modifiedTemplate;
   }
 }
+
 const AlgaehReport = options => {
   if (options.plotUI !== undefined) {
     plotUI(options);
