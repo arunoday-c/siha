@@ -445,5 +445,9 @@
   "NEGATIVE_SEPARATOR": [
     { "name": "TRAILING", "value": "TR" },
     { "name": "LEADING", "value": "LD" }
+  ],
+  "APPT_TYPE": [
+    { "name": "Available", "value": "A" },
+    { "name": "Occupied", "value": "O" }
   ]
 }

@@ -6,15 +6,36 @@ export default [
     submenu: [
       {
         subitem: "Appointment Availability Report",
-        reportParameters: () => <Appointment ui="avilability" />
+        reportParameters: () => <Appointment ui="availability" />
       },
-      { subitem: "Appointment Details Patient Wise" },
-      { subitem: "Appointment List" },
-      { subitem: "Appointment List - Cancellations" },
-      { subitem: "Appointment List - Detailed" },
-      { subitem: "Appointment List - Resources" },
-      { subitem: "Patient Recall Report" },
-      { subitem: "Rescheduled Resource Appointments" }
+      {
+        subitem: "Appointment Details Patient Wise",
+        reportParameters: () => <Appointment ui="appt_details_pat_wise" />
+      },
+      {
+        subitem: "Appointment List",
+        reportParameters: () => <Appointment ui="appt_list" />
+      },
+      {
+        subitem: "Appointment List - Cancellations",
+        reportParameters: () => <Appointment ui="appt_cancellations" />
+      },
+      {
+        subitem: "Appointment List - Detailed",
+        reportParameters: () => <Appointment ui="appt_list_detailed" />
+      },
+      {
+        subitem: "Appointment List - Resources",
+        reportParameters: () => <Appointment ui="appt_list_resources" />
+      },
+      {
+        subitem: "Patient Recall Report",
+        reportParameters: () => <Appointment ui="pat_recall_report" />
+      },
+      {
+        subitem: "Rescheduled Resource Appointments",
+        reportParameters: () => <Appointment ui="rescheduled_resources,appts" />
+      }
     ]
   },
 
@@ -23,7 +44,7 @@ export default [
     submenu: [{ subitem: "Asset Warranty Expiry Report" }]
   },
   {
-    name: "COOLECTION/REVENUE",
+    name: "COLLECTION/REVENUE",
     submenu: [
       { subitem: "Adjusted Advance Details" },
       { subitem: "Daily Billing Summary" },
