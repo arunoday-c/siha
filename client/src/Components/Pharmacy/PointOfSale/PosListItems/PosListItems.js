@@ -650,7 +650,6 @@ class PosListItems extends Component {
                           : "0 nos"}
                       </h6>
                     </div>
-                   
                   </div>
                   <div className="col-lg-5" />
                   <div className="col-lg-5" style={{ textAlign: "right" }}>
@@ -916,7 +915,7 @@ class PosListItems extends Component {
                               onChange: adjustadvance.bind(this, this, context)
                             },
                             others: {
-                              disabled: !this.state.Cashchecked,
+                              disabled: this.state.saveEnable,
                               placeholder: "0.00",
                               onBlur: PosheaderCalculation.bind(this, this),
                               onFocus: e => {
@@ -941,7 +940,7 @@ class PosListItems extends Component {
                               onChange: discounthandle.bind(this, this, context)
                             },
                             others: {
-                              disabled: !this.state.Cashchecked,
+                              disabled: this.state.saveEnable,
                               placeholder: "0.00",
                               onBlur: PosheaderCalculation.bind(this, this),
                               onFocus: e => {
@@ -966,7 +965,7 @@ class PosListItems extends Component {
                               onChange: discounthandle.bind(this, this, context)
                             },
                             others: {
-                              disabled: !this.state.Cashchecked,
+                              disabled: this.state.saveEnable,
                               placeholder: "0.00",
                               onBlur: PosheaderCalculation.bind(this, this),
                               onFocus: e => {
@@ -1017,9 +1016,10 @@ class PosListItems extends Component {
                             decimal: { allowNegative: false },
                             value: this.state.credit_amount,
                             className: "txt-fld",
-                            name: "state_credit_amount",
+                            name: "credit_amount",
 
                             events: {
+                              disabled: this.state.saveEnable,
                               onChange: null
                             }
                           }}

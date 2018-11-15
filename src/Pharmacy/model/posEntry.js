@@ -236,10 +236,10 @@ let getPosEntry = (req, res, next) => {
 
     let where = whereCondition(extend(selectWhere, req.query));
 
-    db.getConnection((error, connection) => {
-      // PH.recieve_amount
-      connection.query(
-        "SELECT hims_f_pharmacy_pos_header_id,PH.pos_number,PH.patient_id,P.patient_code,P.full_name as full_name,PH.visit_id,V.visit_code,PH.ip_id,PH.pos_date,PH.year,\
+    let connection = req.connection;
+    // PH.recieve_amount
+    connection.query(
+      "SELECT hims_f_pharmacy_pos_header_id,receipt_header_id,PH.pos_number,PH.patient_id,P.patient_code,P.full_name as full_name,PH.visit_id,V.visit_code,PH.ip_id,PH.pos_date,PH.year,\
         PH.period,PH.location_id,L.location_description,PH.location_type,PH.sub_total,PH.discount_percentage,PH.discount_amount,PH.net_total,\
         PH.copay_amount,PH.patient_responsibility,PH.patient_tax,PH.patient_payable,PH.company_responsibility,PH.company_tax,\
         PH.company_payable,PH.comments,PH.sec_company_responsibility,PH.sec_company_tax,PH.sec_company_payable,\
@@ -252,44 +252,47 @@ let getPosEntry = (req, res, next) => {
          on PH.location_id=L.hims_d_pharmacy_location_id left outer join hims_f_patient_visit V on\
          PH.visit_id=V.hims_f_patient_visit_id left outer join hims_f_patient P on PH.patient_id=P.hims_d_patient_id\
         where PH.record_status='A' and L.record_status='A' and  " +
-          where.condition,
-        where.values,
-        (error, headerResult) => {
-          if (error) {
-            releaseDBConnection(db, connection);
-            next(error);
-          }
-
-          debugLog("result: ", headerResult);
-          if (headerResult.length != 0) {
-            debugLog(
-              "hims_f_pharmacy_pos_header_id: ",
-              headerResult[0].hims_f_pharmacy_pos_header_id
-            );
-            connection.query(
-              "select * from hims_f_pharmacy_pos_detail where pharmacy_pos_header_id=? and record_status='A'",
-              headerResult[0].hims_f_pharmacy_pos_header_id,
-              (error, pharmacy_stock_detail) => {
-                if (error) {
-                  releaseDBConnection(db, connection);
-                  next(error);
-                }
-                req.records = {
-                  ...headerResult[0],
-                  ...{ pharmacy_stock_detail }
-                };
-                releaseDBConnection(db, connection);
-                next();
-              }
-            );
-          } else {
-            req.records = headerResult;
-            releaseDBConnection(db, connection);
-            next();
-          }
+        where.condition,
+      where.values,
+      (error, headerResult) => {
+        if (error) {
+          releaseDBConnection(db, connection);
+          next(error);
         }
-      );
-    });
+
+        debugLog("result: ", headerResult);
+        if (headerResult.length != 0) {
+          debugLog(
+            "hims_f_pharmacy_pos_header_id: ",
+            headerResult[0].hims_f_pharmacy_pos_header_id
+          );
+          connection.query(
+            "select * from hims_f_pharmacy_pos_detail where pharmacy_pos_header_id=? and record_status='A'",
+            headerResult[0].hims_f_pharmacy_pos_header_id,
+            (error, pharmacy_stock_detail) => {
+              if (error) {
+                releaseDBConnection(db, connection);
+                next(error);
+              }
+              req.records = {
+                ...headerResult[0],
+                ...{ pharmacy_stock_detail },
+                ...{
+                  hims_f_receipt_header_id: headerResult[0].receipt_header_id
+                }
+              };
+              releaseDBConnection(db, connection);
+              next();
+              debugLog("POS Result: ", req.records);
+            }
+          );
+        } else {
+          req.records = headerResult;
+          releaseDBConnection(db, connection);
+          next();
+        }
+      }
+    );
   } catch (e) {
     next(e);
   }

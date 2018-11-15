@@ -236,59 +236,67 @@ let getsalesReturn = (req, res, next) => {
 
     let where = whereCondition(extend(selectWhere, req.query));
 
-    db.getConnection((error, connection) => {
-      connection.query(
-        "SELECT hims_f_pharmcy_sales_return_header_id, PH.from_pos_id, PH.sales_return_number,PH.patient_id,P.patient_code,P.full_name as full_name,PH.visit_id,V.visit_code,PH.ip_id,PH.sales_return_date,PH.year,\
-        PH.period,PH.location_id,L.location_description,PH.location_type,PH.sub_total,PH.discount_percentage,PH.discount_amount,PH.net_total,\
-        PH.copay_amount,PH.patient_responsibility,PH.patient_tax,PH.patient_payable,PH.company_responsibility,PH.company_tax,\
-        PH.company_payable,PH.comments,PH.sec_company_responsibility,PH.sec_company_tax,PH.sec_company_payable,\
-        PH.sec_copay_amount,PH.net_tax,PH.gross_total,PH.sheet_discount_amount,PH.sheet_discount_percentage,\
-        PH.net_amount,PH.credit_amount,PH.payable_amount,PH.posted,PH.card_number,PH.effective_start_date,\
-        PH.effective_end_date,PH.insurance_provider_id,PH.sub_insurance_provider_id,PH.network_id,PH.network_type,\
-        PH.network_office_id,PH.policy_number,PH.secondary_card_number,PH.secondary_effective_start_date,\
-        PH.secondary_effective_end_date,PH.secondary_insurance_provider_id,PH.secondary_network_id,PH.secondary_network_type,\
-        PH.secondary_sub_insurance_provider_id,PH.secondary_network_office_id from  hims_f_pharmcy_sales_return_header PH inner join hims_d_pharmacy_location L\
-         on PH.location_id=L.hims_d_pharmacy_location_id left outer join hims_f_patient_visit V on\
-         PH.visit_id=V.hims_f_patient_visit_id left outer join hims_f_patient P on PH.patient_id=P.hims_d_patient_id\
-        where PH.record_status='A' and L.record_status='A' and  " +
-          where.condition,
-        where.values,
-        (error, headerResult) => {
-          if (error) {
-            releaseDBConnection(db, connection);
-            next(error);
-          }
-
-          debugLog("result: ", headerResult);
-          if (headerResult.length != 0) {
-            debugLog(
-              "hims_f_pharmcy_sales_return_header_id: ",
-              headerResult[0].hims_f_pharmcy_sales_return_header_id
-            );
-            connection.query(
-              "select * from hims_f_pharmacy_sales_return_detail where sales_return_header_id=?",
-              headerResult[0].hims_f_pharmcy_sales_return_header_id,
-              (error, pharmacy_stock_detail) => {
-                if (error) {
-                  releaseDBConnection(db, connection);
-                  next(error);
-                }
-                req.records = {
-                  ...headerResult[0],
-                  ...{ pharmacy_stock_detail }
-                };
-                releaseDBConnection(db, connection);
-                next();
-              }
-            );
-          } else {
-            req.records = headerResult;
-            releaseDBConnection(db, connection);
-            next();
-          }
+    let connection = req.connection;
+    connection.query(
+      "SELECT hims_f_pharmcy_sales_return_header_id, reciept_id, PH.from_pos_id, PH.sales_return_number,PH.patient_id,P.patient_code,\
+      P.full_name as full_name,PH.visit_id,V.visit_code,PH.ip_id,PH.sales_return_date,PH.year,\
+      PH.period,PH.location_id,L.location_description,PH.location_type,PH.sub_total,PH.discount_percentage,PH.discount_amount,PH.net_total,\
+      PH.copay_amount,PH.patient_responsibility,PH.patient_tax,PH.patient_payable,PH.company_responsibility,PH.company_tax,\
+      PH.company_payable,PH.comments,PH.sec_company_responsibility,PH.sec_company_tax,PH.sec_company_payable,\
+      PH.sec_copay_amount,PH.net_tax,PH.gross_total,PH.sheet_discount_amount,PH.sheet_discount_percentage,\
+      PH.net_amount,PH.credit_amount,PH.payable_amount,PH.posted,PH.card_number,PH.effective_start_date,\
+      PH.effective_end_date,PH.insurance_provider_id,PH.sub_insurance_provider_id,PH.network_id,PH.network_type,\
+      PH.network_office_id,PH.policy_number,PH.secondary_card_number,PH.secondary_effective_start_date,\
+      PH.secondary_effective_end_date,PH.secondary_insurance_provider_id,PH.secondary_network_id,PH.secondary_network_type,\
+      PH.secondary_sub_insurance_provider_id,PH.secondary_network_office_id, POS.pos_number from  \
+      hims_f_pharmcy_sales_return_header PH inner join hims_d_pharmacy_location L on PH.location_id=L.hims_d_pharmacy_location_id \
+      left outer join hims_f_patient_visit V on PH.visit_id=V.hims_f_patient_visit_id \
+      left outer join hims_f_patient P on PH.patient_id=P.hims_d_patient_id\
+      inner join hims_f_pharmacy_pos_header POS on PH.from_pos_id=POS.hims_f_pharmacy_pos_header_id\
+      where PH.record_status='A' and L.record_status='A' and  " +
+        where.condition,
+      where.values,
+      (error, headerResult) => {
+        if (error) {
+          releaseDBConnection(db, connection);
+          next(error);
         }
-      );
-    });
+
+        debugLog("result: ", headerResult);
+        if (headerResult.length != 0) {
+          debugLog(
+            "hims_f_pharmcy_sales_return_header_id: ",
+            headerResult[0].hims_f_pharmcy_sales_return_header_id
+          );
+          connection.query(
+            "select * from hims_f_pharmacy_sales_return_detail where sales_return_header_id=?",
+            headerResult[0].hims_f_pharmcy_sales_return_header_id,
+            (error, pharmacy_stock_detail) => {
+              if (error) {
+                releaseDBConnection(db, connection);
+                next(error);
+              }
+
+              debugLog("reciept_id: ", headerResult[0].reciept_id);
+
+              req.records = {
+                ...headerResult[0],
+                ...{ pharmacy_stock_detail },
+                ...{
+                  hims_f_receipt_header_id: headerResult[0].reciept_id
+                }
+              };
+              releaseDBConnection(db, connection);
+              next();
+            }
+          );
+        } else {
+          req.records = headerResult;
+          releaseDBConnection(db, connection);
+          next();
+        }
+      }
+    );
   } catch (e) {
     next(e);
   }
