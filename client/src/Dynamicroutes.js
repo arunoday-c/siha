@@ -59,6 +59,7 @@ import RCMDesktop from "./Components/InsuranceClaims/RCMDesktop/RCMDesktop";
 import StaffCashCollection from "./Components/StaffCashCollection/StaffCashCollection";
 import InvoiceGeneration from "./Components/InsuranceClaims/InvoiceGeneration/InvoiceGeneration";
 import InventorySetup from "./Components/InventorySetup/InventorySetup";
+import InventoryItemMaster from "./Components/InventoryItemMaster/InventoryItemMaster";
 
 // function height() {
 //   let height =
@@ -125,7 +126,8 @@ const componts = (selectedLang, breadStyle) => {
     RCMDesktop: <RCMDesktop SelectLanguage={selectedLang} />,
     StaffCashCollection: <StaffCashCollection SelectLanguage={selectedLang} />,
     InvoiceGeneration: <InvoiceGeneration SelectLanguage={selectedLang} />,
-    InventorySetup: <InventorySetup SelectLanguage={selectedLang} />
+    InventorySetup: <InventorySetup SelectLanguage={selectedLang} />,
+    InventoryItemMaster: <InventoryItemMaster SelectLanguage={selectedLang} />
   };
 };
 
