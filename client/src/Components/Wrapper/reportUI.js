@@ -5,6 +5,7 @@ import ReactToPrint from "react-to-print";
 import { successfulMessage } from "../../utils/GlobalFunctions";
 import { algaehApiCall } from "../../utils/algaehApiCall";
 import { accessReport } from "../Wrapper/printReports";
+import Enumerable from "linq";
 export default class ReportUI extends Component {
   constructor(props) {
     super(props);
@@ -14,8 +15,45 @@ export default class ReportUI extends Component {
       hasError: false,
       _htmlString: {}
     };
+
+    if (props.options.plotUI !== undefined) {
+      if (
+        props.options.plotUI.paramters !== undefined &&
+        props.options.plotUI.paramters.length > 0
+      ) {
+        this.callApiForParameters(
+          Enumerable.from(props.options.plotUI.paramters)
+            .where(w => w.link !== undefined)
+            .select(s => {
+              return {
+                ...s.link,
+                ...{ method: "GET" },
+                ...{
+                  onSuccess: response => {
+                    if (response.data.success)
+                      this.setState({
+                        [s.name + "_list"]: response.data.records[s.link.schema]
+                      });
+                  }
+                }
+              };
+            })
+            .toArray()
+        );
+      }
+    }
   }
-  componentWillMount() {
+  callApiForParameters(arrayUrl) {
+    if (arrayUrl !== undefined && arrayUrl.length > 0) {
+      for (let i = 0; i < arrayUrl.length; i++) {
+        debugger;
+        arrayUrl.initialLoad = arrayUrl.initialLoad || true;
+        if (arrayUrl.initialLoad) algaehApiCall(arrayUrl[i]);
+      }
+    }
+  }
+
+  componentDidMount() {
     this.setState({
       openPopup: true
     });
@@ -97,6 +135,74 @@ export default class ReportUI extends Component {
       }
     });
   }
+  dropDownHandle(e) {
+    debugger;
+  }
+  generateInputParameters() {
+    const _parameters = this.props.options.plotUI.paramters;
+    let _controls = [];
+    const {
+      AlagehAutoComplete,
+      AlagehFormGroup,
+      AlgaehDateHandler
+    } = require("./algaehWrapper");
+    for (let i = 0; i < _parameters.length; i++) {
+      const _param = _parameters[i];
+      const _data =
+        this.state[_param.name + "_list"] === undefined
+          ? []
+          : this.state[_param.name + "_list"];
+      switch (_param.type) {
+        case "dropdown":
+          _controls.push(
+            <AlagehAutoComplete
+              div={{ className: "col" }}
+              label={{
+                forceLabel: _param.label,
+                isImp: _param.isImp !== undefined ? false : _param.isImp
+              }}
+              selector={{
+                name: _param.name,
+                className: "select-fld",
+                value: this.state[_param.name],
+                dataSource: {
+                  textField: _param.dataSource.textField,
+                  valueField: _param.dataSource.valueField,
+                  data: _data
+                },
+                onChange: this.dropDownHandle.bind(this)
+              }}
+            />
+          );
+          break;
+        case "date":
+          _controls.push(
+            <AlgaehDateHandler
+              div={{ className: "col" }}
+              label={{
+                forceLabel: _param.label,
+                isImp: _param.isImp !== undefined ? false : _param.isImp
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: _param.name
+              }}
+              {..._param.others}
+              events={{
+                onChange: selectedDate => {
+                  this.setState({
+                    [_param.name]: selectedDate
+                  });
+                }
+              }}
+              value={this.state[_param.name]}
+            />
+          );
+          break;
+      }
+    }
+    return _controls;
+  }
 
   render() {
     if (this.state.hasError) {
@@ -127,8 +233,11 @@ export default class ReportUI extends Component {
               {this.props.options !== undefined &&
               this.props.options.plotUI !== undefined ? (
                 <div id="report_generation_interface">
-                  {this.props.options.plotUI.paramters()}
+                  {/* {this.props.options.plotUI.paramters()} */}
 
+                  <div className="col-lg-12">
+                    <div className="row">{this.generateInputParameters()}</div>
+                  </div>
                   <button
                     style={{ textAlign: "center", margin: "16px" }}
                     className="btn btn-primary"
