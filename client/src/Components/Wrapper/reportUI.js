@@ -127,7 +127,12 @@ export default class ReportUI extends Component {
             this.props.options.plotUI !== undefined ? (
               <div id="report_generation_interface">
                 {this.props.options.plotUI.paramters()}
-                <button onClick={this.generateReport.bind(this)}>
+
+                <button
+                  style={{ textAlign: "center", margin: "16px" }}
+                  className="btn btn-primary"
+                  onClick={this.generateReport.bind(this)}
+                >
                   Generate Report
                 </button>
               </div>
