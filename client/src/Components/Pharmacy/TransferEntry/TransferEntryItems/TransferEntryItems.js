@@ -220,6 +220,25 @@ class TransferEntryItems extends Component {
                           }
                         },
                         {
+                          fieldName: "from_qtyhand",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "From Qty in Hand" }}
+                            />
+                          ),
+                          disabled: true
+                        },
+                        {
+                          fieldName: "to_qtyhand",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "To Qty in Hand" }}
+                            />
+                          ),
+                          disabled: true
+                        },
+
+                        {
                           fieldName: "expiry_date",
                           label: (
                             <AlgaehLabel
@@ -355,29 +374,6 @@ class TransferEntryItems extends Component {
                         getItemLocationStock(this, row);
                       }}
                     />
-                  </div>
-                  <div className="row">
-                    <div
-                      className="col-lg-2"
-                      style={{
-                        paddingTop: "10px"
-                      }}
-                    >
-                      <div
-                        style={{
-                          border: "1px solid #000",
-                          paddingLeft: "10px"
-                        }}
-                      >
-                        <h5>Quantity in Hand</h5>
-                        <h6>
-                          {this.state.total_quantity
-                            ? this.state.total_quantity + " nos"
-                            : "0 nos"}
-                        </h6>
-                      </div>
-                    </div>
-                    <div className="col-lg-10" />
                   </div>
                 </div>
               </div>

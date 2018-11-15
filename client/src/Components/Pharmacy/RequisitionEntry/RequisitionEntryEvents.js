@@ -55,7 +55,9 @@ const getCtrlCode = ($this, docNumber) => {
       }
 
       data.addedItem = true;
-      $this.setState(data);
+      $this.setState(data, () => {
+        debugger;
+      });
       AlgaehLoader({ show: false });
     }
   });
@@ -98,6 +100,7 @@ const AuthorizeRequisitionEntry = ($this, authorize) => {
   if (authorize === "authorize1") {
     $this.state.authorize1 = "Y";
     authorize1 = "Y";
+    authorize2 = "N";
   } else if (authorize === "authorize2") {
     $this.state.authorie2 = "Y";
     authorize1 = "Y";

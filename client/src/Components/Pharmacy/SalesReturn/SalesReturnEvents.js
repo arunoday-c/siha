@@ -131,6 +131,45 @@ const GenerateReciept = ($this, callBack) => {
 const SaveSalesReturn = $this => {
   debugger;
   GenerateReciept($this, that => {
+    $this.state.posted = "Y";
+    $this.state.transaction_type = "SRT";
+    $this.state.transaction_date = $this.state.sales_return_date;
+    for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
+      $this.state.pharmacy_stock_detail[i].location_id =
+        $this.state.location_id;
+      $this.state.pharmacy_stock_detail[i].location_type =
+        $this.state.location_type;
+
+      $this.state.pharmacy_stock_detail[i].sales_uom =
+        $this.state.pharmacy_stock_detail[i].uom_id;
+      $this.state.pharmacy_stock_detail[i].item_code_id = $this.state.item_id;
+      $this.state.pharmacy_stock_detail[i].grn_number =
+        $this.state.pharmacy_stock_detail[i].grn_no;
+
+      $this.state.pharmacy_stock_detail[i].item_category_id =
+        $this.state.pharmacy_stock_detail[i].item_category;
+
+      $this.state.pharmacy_stock_detail[i].net_total =
+        $this.state.pharmacy_stock_detail[i].net_extended_cost;
+
+      $this.state.pharmacy_stock_detail[i].quantity =
+        $this.state.pharmacy_stock_detail[i].return_quantity;
+
+      $this.state.pharmacy_stock_detail[i].return_extended_cost =
+        $this.state.pharmacy_stock_detail[i].extended_cost || 0;
+      $this.state.pharmacy_stock_detail[i].return_discount_amt =
+        $this.state.pharmacy_stock_detail[i].discount_amount || 0;
+      $this.state.pharmacy_stock_detail[i].return_net_extended_cost =
+        $this.state.pharmacy_stock_detail[i].net_extended_cost || 0;
+      $this.state.pharmacy_stock_detail[i].return_pat_responsibility =
+        $this.state.pharmacy_stock_detail[i].patient_responsibility || 0;
+      $this.state.pharmacy_stock_detail[i].return_company_responsibility =
+        $this.state.pharmacy_stock_detail[i].company_responsibility || 0;
+      $this.state.pharmacy_stock_detail[i].return_sec_company_responsibility =
+        $this.state.pharmacy_stock_detail[i].sec_company_responsibility || 0;
+
+      $this.state.pharmacy_stock_detail[i].operation = "+";
+    }
     algaehApiCall({
       uri: "/salesReturn/addsalesReturn",
       data: $this.state,

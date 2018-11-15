@@ -1,6 +1,5 @@
 import moment from "moment";
 import Options from "../../../Options.json";
-import { swalMessage } from "../../../utils/algaehApiCall";
 
 const changeTexts = ($this, ctrl, e) => {
   debugger;
@@ -26,7 +25,7 @@ const changeTexts = ($this, ctrl, e) => {
   }
 };
 
-const dateFormater = value => {
+const dateFormater = ($this, value) => {
   if (value !== null) {
     return moment(value).format(Options.dateFormat);
   }

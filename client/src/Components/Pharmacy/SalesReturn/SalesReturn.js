@@ -342,7 +342,7 @@ class SalesReturn extends Component {
                       />
                     </button>
 
-                    <button
+                    {/* <button
                       type="button"
                       className="btn btn-other"
                       onClick={PostSalesReturn.bind(this, this)}
@@ -354,7 +354,7 @@ class SalesReturn extends Component {
                           returnText: true
                         }}
                       />
-                    </button>
+                    </button> */}
                   </div>
                 </div>
               </AppBar>

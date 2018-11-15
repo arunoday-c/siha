@@ -309,96 +309,84 @@ let updatesalesReturn = (req, res, next) => {
     updated_by: req.userIdentity.algaeh_d_app_user_id
   };
 
+  req.body.hims_f_pharmcy_sales_return_header_id =
+    req.records.hims_f_pharmcy_sales_return_header_id;
+  req.body.transaction_id = req.records.hims_f_pharmcy_sales_return_header_id;
+  req.body.year = req.records.year;
+  req.body.period = req.records.period;
+
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
+    let connection = req.connection;
+    return new Promise((resolve, reject) => {
+      let inputParam = extend(salesReturn, req.body);
 
-      connection.beginTransaction(error => {
-        if (error) {
-          connection.rollback(() => {
-            releaseDBConnection(db, connection);
-            next(error);
-          });
-        }
-        return new Promise((resolve, reject) => {
-          let inputParam = extend(salesReturn, req.body);
-
-          debugLog("posted", inputParam.posted);
-          debugLog("pharmacy_stock_detail", req.body.pharmacy_stock_detail);
-          connection.query(
-            "UPDATE `hims_f_pharmcy_sales_return_header` SET `posted`=?, `updated_by`=?, `updated_date`=? \
+      debugLog("posted", inputParam.posted);
+      debugLog("pharmacy_stock_detail", req.body.pharmacy_stock_detail);
+      connection.query(
+        "UPDATE `hims_f_pharmcy_sales_return_header` SET `posted`=?, `updated_by`=?, `updated_date`=? \
           WHERE `record_status`='A' and `hims_f_pharmcy_sales_return_header_id`=?",
-            [
-              inputParam.posted,
-              req.userIdentity.algaeh_d_app_user_id,
-              new Date(),
-              inputParam.hims_f_pharmcy_sales_return_header_id
-            ],
-            (error, result) => {
-              debugLog("error", error);
-              releaseDBConnection(db, connection);
-              if (error) {
-                reject(error);
-              } else {
-                resolve(result);
-              }
+        [
+          inputParam.posted,
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          inputParam.hims_f_pharmcy_sales_return_header_id
+        ],
+        (error, result) => {
+          debugLog("error", error);
+          releaseDBConnection(db, connection);
+          if (error) {
+            reject(error);
+          } else {
+            resolve(result);
+          }
+        }
+      );
+    })
+      .then(output => {
+        return new Promise((resolve, reject) => {
+          debugLog("output", output);
+          req.options = {
+            db: connection,
+            onFailure: error => {
+              reject(error);
+            },
+            onSuccess: result => {
+              resolve(result);
             }
-          );
+          };
+
+          updatePOSDetail(req, res, next);
+        });
+      })
+      .then(posoutput => {
+        return new Promise((resolve, reject) => {
+          debugLog("posoutput", posoutput);
+          req.options = {
+            db: connection,
+            onFailure: error => {
+              reject(error);
+            },
+            onSuccess: result => {
+              resolve(result);
+            }
+          };
+
+          updateIntoItemLocation(req, res, next);
         })
-          .then(output => {
-            return new Promise((resolve, reject) => {
-              debugLog("output", output);
-              req.options = {
-                db: connection,
-                onFailure: error => {
-                  reject(error);
-                },
-                onSuccess: result => {
-                  resolve(result);
-                }
-              };
-
-              updatePOSDetail(req, res, next);
+          .then(records => {
+            connection.commit(error => {
+              if (error) {
+                releaseDBConnection(db, connection);
+                next(error);
+              }
+              req.salesReturn = records;
+              releaseDBConnection(db, connection);
+              next();
             });
-          })
-          .then(posoutput => {
-            return new Promise((resolve, reject) => {
-              debugLog("posoutput", posoutput);
-              req.options = {
-                db: connection,
-                onFailure: error => {
-                  reject(error);
-                },
-                onSuccess: result => {
-                  resolve(result);
-                }
-              };
-
-              updateIntoItemLocation(req, res, next);
-            })
-              .then(records => {
-                connection.commit(error => {
-                  if (error) {
-                    releaseDBConnection(db, connection);
-                    next(error);
-                  }
-                  req.records = records;
-                  releaseDBConnection(db, connection);
-                  next();
-                });
-              })
-              .catch(error => {
-                connection.rollback(() => {
-                  releaseDBConnection(db, connection);
-                  next(error);
-                });
-              });
           })
           .catch(error => {
             connection.rollback(() => {
@@ -406,8 +394,13 @@ let updatesalesReturn = (req, res, next) => {
               next(error);
             });
           });
+      })
+      .catch(error => {
+        connection.rollback(() => {
+          releaseDBConnection(db, connection);
+          next(error);
+        });
       });
-    });
   } catch (e) {
     next(e);
   }

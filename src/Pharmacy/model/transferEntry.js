@@ -111,6 +111,8 @@ let addtransferEntry = (req, res, next) => {
                   "item_group_id",
                   "batchno",
                   "expiry_date",
+                  "to_qtyhand",
+                  "from_qtyhand",
                   "quantity_requested",
                   "quantity_authorized",
                   "uom_requested_id",

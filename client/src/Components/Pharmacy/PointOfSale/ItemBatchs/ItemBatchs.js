@@ -142,9 +142,10 @@ class ItemBatchs extends PureComponent {
                         keyId="item_id"
                         dataSource={{
                           data:
-                            this.props.itemBatch === undefined
+                            this.props.inputsparameters.Batch_Items ===
+                            undefined
                               ? []
-                              : this.props.itemBatch
+                              : this.props.inputsparameters.Batch_Items
                         }}
                         algaehSearch={true}
                         // isEditable={true}
@@ -168,7 +169,7 @@ class ItemBatchs extends PureComponent {
 
 function mapStateToProps(state) {
   return {
-    itemBatch: state.itemBatch,
+    // itemBatch: state.itemBatch,
     itemuom: state.itemuom,
     positemlist: state.positemlist
   };
@@ -177,7 +178,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getItemLocationStock: AlgaehActions
+      getItemUOM: AlgaehActions
     },
     dispatch
   );

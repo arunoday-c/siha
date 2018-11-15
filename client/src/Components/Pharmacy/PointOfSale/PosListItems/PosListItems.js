@@ -28,8 +28,7 @@ import {
   CloseItemBatch,
   onchangegridcol,
   PosheaderCalculation,
-  ViewInsurance,
-  getItemLocationStock
+  ViewInsurance
 } from "./PosListItemsEvents";
 import ReciptForm from "./ReciptDetails/AddReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -119,7 +118,10 @@ class PosListItems extends Component {
                               valueField: "hims_d_item_master_id",
                               data: this.props.positemlist
                             },
-                            onChange: itemchangeText.bind(this, this, context)
+                            onChange: itemchangeText.bind(this, this, context),
+                            others: {
+                              disabled: this.state.dataExitst
+                            }
                           }}
                         />
                         <AlagehAutoComplete
@@ -172,8 +174,10 @@ class PosListItems extends Component {
                               valueField: "uom_id",
                               data: this.state.ItemUOM
                             },
-
-                            onChange: UomchangeTexts.bind(this, this, context)
+                            onChange: UomchangeTexts.bind(this, this, context),
+                            others: {
+                              disabled: this.state.dataExitst
+                            }
                           }}
                         />
                         <AlagehFormGroup
@@ -226,6 +230,9 @@ class PosListItems extends Component {
                                 this,
                                 context
                               )
+                            },
+                            others: {
+                              disabled: this.state.dataExitst
                             }
                           }}
                         />
@@ -241,6 +248,24 @@ class PosListItems extends Component {
                             name: "unit_cost",
                             events: {
                               onChange: numberchangeTexts.bind(this, this)
+                            },
+                            others: {
+                              disabled: true
+                            }
+                          }}
+                        />
+                        <AlagehFormGroup
+                          div={{ className: "col" }}
+                          label={{
+                            forceLabel: "Quantity in Hand"
+                          }}
+                          textBox={{
+                            decimal: { allowNegative: false },
+                            value: this.state.qtyhand,
+                            className: "txt-fld",
+                            name: "qtyhand",
+                            events: {
+                              onChange: null
                             },
                             others: {
                               disabled: true
@@ -284,7 +309,8 @@ class PosListItems extends Component {
                           selectedLang={this.state.selectedLang}
                           inputsparameters={{
                             item_id: this.state.item_id,
-                            location_id: this.state.location_id
+                            location_id: this.state.location_id,
+                            Batch_Items: this.state.Batch_Items
                           }}
                         />
 
@@ -401,7 +427,8 @@ class PosListItems extends Component {
                                   <AlgaehLabel
                                     label={{ forceLabel: "Quantity In Hand" }}
                                   />
-                                )
+                                ),
+                                disabled: true
                               },
                               {
                                 fieldName: "expiry_date",
@@ -411,7 +438,6 @@ class PosListItems extends Component {
                                   />
                                 ),
                                 displayTemplate: row => {
-                                  debugger;
                                   return (
                                     <span>
                                       {dateFormater(this, row.expiry_date)}
@@ -637,9 +663,9 @@ class PosListItems extends Component {
                               onEdit: row => {},
                               onDone: updatePosDetail.bind(this, this)
                             }}
-                            onRowSelect={row => {
-                              getItemLocationStock(this, row);
-                            }}
+                            // onRowSelect={row => {
+                            //   getItemLocationStock(this, row);
+                            // }}
                           />
                         </div>
                       </div>
@@ -649,7 +675,7 @@ class PosListItems extends Component {
 
                 <div className="row">
                   <div className="col" />
-                  <div
+                  {/* <div
                     className="col-lg-2"
                     style={{
                       border: "1px solid #cccccc",
@@ -667,7 +693,7 @@ class PosListItems extends Component {
                         ? this.state.total_quantity + " nos"
                         : "0 nos"}
                     </h6>
-                  </div>
+                  </div> */}
                   <div className="col-lg-5" style={{ textAlign: "right" }}>
                     <div className="row">
                       <div className="col-lg-4">
@@ -1080,8 +1106,8 @@ function mapStateToProps(state) {
     itemcategory: state.itemcategory,
     itemuom: state.itemuom,
     posheader: state.posheader,
-    itemgroup: state.itemgroup,
-    itemBatch: state.itemBatch
+    itemgroup: state.itemgroup
+    // itemBatch: state.itemBatch
   };
 }
 
@@ -1097,8 +1123,8 @@ function mapDispatchToProps(dispatch) {
       getServicesCost: AlgaehActions,
       getInsuranceServicesCost: AlgaehActions,
       generateBill: AlgaehActions,
-      getItemGroup: AlgaehActions,
-      getItemLocationStock: AlgaehActions
+      getItemGroup: AlgaehActions
+      // getItemLocationStock: AlgaehActions
     },
     dispatch
   );
