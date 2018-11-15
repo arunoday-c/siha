@@ -57,36 +57,7 @@ class PharmacySetup extends Component {
   render() {
     return (
       <div className="hims_pharmacy_setup">
-        <BreadCrumb
-          title={
-            <AlgaehLabel
-              label={{ fieldName: "Pharmacy_setup", align: "ltr" }}
-            />
-          }
-          breadStyle={this.props.breadStyle}
-          pageNavPath={[
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{
-                    fieldName: "Pharmacy_settings",
-                    align: "ltr"
-                  }}
-                />
-              )
-            },
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{ fieldName: "Pharmacy_setup", align: "ltr" }}
-                />
-              )
-            }
-          ]}
-          //screenName="Master Setup"
-          //   HideHalfbread={false}
-        />
-        <div className="tab-container toggle-section spacing-push">
+        <div className="tab-container toggle-section margin-top-15">
           <ul className="nav">
             <li
               algaehtabs={"ItemCategory"}

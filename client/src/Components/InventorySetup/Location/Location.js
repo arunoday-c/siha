@@ -29,7 +29,7 @@ class Location extends Component {
     super(props);
 
     this.state = {
-      hims_d_pharmacy_location_id: "",
+      hims_d_inventory_location_id: "",
       location_description: "",
       location_type: null
     };
@@ -106,7 +106,7 @@ class Location extends Component {
             <div className="col" data-validate="pharLocDiv">
               <AlgaehDataGrid
                 datavalidate="data-validate='pharLocDiv'"
-                id="pharmacy_location"
+                id="inventory_location"
                 columns={[
                   {
                     fieldName: "location_description",
@@ -248,10 +248,12 @@ class Location extends Component {
                     }
                   }
                 ]}
-                keyId="hims_d_pharmacy_location_id"
+                keyId="hims_d_inventory_location_id"
                 dataSource={{
                   data:
-                    this.props.location === undefined ? [] : this.props.location
+                    this.props.inventorylocation === undefined
+                      ? []
+                      : this.props.inventorylocation
                 }}
                 isEditable={true}
                 paging={{ page: 0, rowsPerPage: 10 }}
@@ -272,7 +274,7 @@ class Location extends Component {
 
 function mapStateToProps(state) {
   return {
-    location: state.location,
+    inventorylocation: state.inventorylocation,
     userdrtails: state.userdrtails
   };
 }

@@ -53,7 +53,7 @@ class LocationPermission extends Component {
       this.props.locationpermi.length === 0
     ) {
       this.props.getLocation({
-        uri: "/pharmacy/getPharmacyLocation",
+        uri: "/inventory/getInventoryLocation",
         method: "GET",
         redux: {
           type: "ANALYTES_GET_DATA",
@@ -104,7 +104,7 @@ class LocationPermission extends Component {
                 value: this.state.location_id,
                 dataSource: {
                   textField: "location_description",
-                  valueField: "hims_d_pharmacy_location_id",
+                  valueField: "hims_d_inventory_location_id",
                   data: this.props.locationpermi
                 },
                 onChange: changeTexts.bind(this, this)
@@ -125,24 +125,7 @@ class LocationPermission extends Component {
                 <span style={{ fontSize: "0.8rem" }}>Allow</span>
               </label>
             </div>
-            {/* <AlagehAutoComplete
-              div={{ className: "col-lg-2" }}
-              label={{
-                fieldName: "to_location",
-                isImp: true
-              }}
-              selector={{
-                name: "to_location",
-                className: "select-fld",
-                value: this.state.to_location,
-                dataSource: {
-                  textField: "location_description",
-                  valueField: "hims_d_pharmacy_location_id",
-                  data: this.props.locationpermi
-                },
-                onChange: changeTexts.bind(this, this)
-              }}
-            /> */}
+
             <div className="col-lg-2 align-middle" style={{ paddingTop: 21 }}>
               <button
                 onClick={insertLocationPermission.bind(this, this)}
@@ -211,7 +194,7 @@ class LocationPermission extends Component {
                           ? []
                           : this.props.locationpermi.filter(
                               f =>
-                                f.hims_d_pharmacy_location_id ===
+                                f.hims_d_inventory_location_id ===
                                 row.location_id
                             );
 
@@ -232,7 +215,7 @@ class LocationPermission extends Component {
                             value: row.location_id,
                             dataSource: {
                               textField: "location_description",
-                              valueField: "hims_d_pharmacy_location_id",
+                              valueField: "hims_d_inventory_location_id",
                               data: this.props.locationpermi
                             },
                             onChange: onchangegridcol.bind(this, this, row),

@@ -239,12 +239,20 @@ class SearchModule extends Component {
         </div>
 
         <div className="row spotlightContainer ">
-          <input
+          {/* <input
             id="spotlightInput"
             type="text"
             placeholder={this.state.title}
             value={this.state.contains}
             onChange={this.handleSpotLightContains.bind(this)}
+          /> */}
+          <input
+            type="text"
+            id="spotlightInput"
+            tabIndex="1"
+            placeholder={this.state.title}
+            // value={this.state.contains}
+            //onChange={this.handleSpotLightContains.bind(this)}
           />
           <div id="spotlightFilterBy">
             <IconButton title="Speak" onClick={this.speakInput.bind(this)}>

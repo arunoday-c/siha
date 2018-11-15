@@ -212,7 +212,10 @@ class DeptUserDetails extends Component {
                 </div>
               </div>
               <div className="row">
-                <div className="col-lg-12" style={{ paddingTop: "10px" }}>
+                <div
+                  className="col-lg-12"
+                  style={{ paddingTop: 10, paddingBottom: 10 }}
+                >
                   <AlgaehDataGrid
                     id="dpet_user_grid"
                     columns={[
@@ -222,24 +225,21 @@ class DeptUserDetails extends Component {
                         displayTemplate: row => {
                           return (
                             <span>
-                              <IconButton
-                                color="primary"
-                                title="Add Template"
-                                style={{ maxHeight: "4vh" }}
-                              >
-                                <i
-                                  className="fa fa-trash"
-                                  aria-hidden="true"
-                                  onClick={deleteDeptUser.bind(
-                                    this,
-                                    this,
-                                    context,
-                                    row
-                                  )}
-                                />
-                              </IconButton>
+                              <i
+                                className="fas fa-trash-alt"
+                                aria-hidden="true"
+                                onClick={deleteDeptUser.bind(
+                                  this,
+                                  this,
+                                  context,
+                                  row
+                                )}
+                              />
                             </span>
                           );
+                        },
+                        others: {
+                          maxWidth: 50
                         }
                       },
                       {

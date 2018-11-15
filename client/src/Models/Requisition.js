@@ -52,8 +52,8 @@ export default {
       item_uom: null,
 
       completed: null,
-      total_quantity: 0,
-
+      to_qtyhand: 0,
+      from_qtyhand: 0,
       quantity_authorized: 0,
 
       quantity_recieved: 0,
@@ -63,7 +63,8 @@ export default {
       po_created_quantity: null,
       po_outstanding_quantity: null,
       po_completed: null,
-      addItemButton: true
+      addItemButton: true,
+      dummyField: false
     };
     return output;
   }

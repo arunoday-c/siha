@@ -48,6 +48,8 @@ import ucaf from "../controller/ucaf";
 import workBenchSetup from "../EHR/controller/workBenchSetup";
 import invoiceGeneration from "../controller/invoiceGeneration";
 import currency from "../controller/currency";
+import generateReport from "../controller/generateReport";
+import inventory from "../Inventory/controller/inventory";
 
 let router = express();
 
@@ -105,6 +107,8 @@ initializedDb(db => {
   router.use("/workBenchSetup", workBenchSetup({ config, db }));
   router.use("/invoiceGeneration", invoiceGeneration({ config, db }));
   router.use("/currency", currency({ config, db }));
+  router.use("/generateReport", generateReport({ config, db }));
+  router.use("/inventory", inventory({ config, db }));
 });
 
 export default router;

@@ -608,7 +608,7 @@
     padding: 0;
     border-radius: 5px;
     overflow: hidden;
-    width: 90vw;
+    width: 95vw;
     box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.4); }
     :global .algaeh-modal .popupHeader {
       background: #dbad64;
@@ -818,37 +818,6 @@
   :global .cashReciptStyles .receipt-header-mid {
     margin: 15px 0 5px;
     overflow: hidden; }
-  :global .tab-container .tab-button {
-    font-size: 0.7rem;
-    font-weight: normal;
-    border-radius: 7px 7px 0 0;
-    background-color: #f3f3f3;
-    border: solid 1px #d0d8dc;
-    color: #7c909b;
-    padding: 6px 10px;
-    cursor: pointer; }
-    :global .tab-container .tab-button:hover {
-      background-color: #fff !important;
-      color: #68509f !important;
-      cursor: pointer; }
-    :global .tab-container .tab-button:focus {
-      outline: none; }
-    :global .tab-container .tab-button.active {
-      background-color: #dbad64;
-      color: #fff;
-      border: solid 1px #dbad64;
-      pointer-events: none; }
-      :global .tab-container .tab-button.active:hover {
-        background-color: #dbad64 !important;
-        color: #fff !important; }
-  :global .tab-container .tab {
-    margin-right: -30px; }
-  :global .tab-container .tab-content {
-    padding: 10px 20px;
-    background-color: #fcfcfc;
-    border: solid 1px #eceff1; }
-    :global .tab-container .tab-content .tab-item {
-      position: relative; }
   :global .htpl-phase1-radio-btn {
     margin-right: 5px;
     -webkit-appearance: none;

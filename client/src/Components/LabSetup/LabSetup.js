@@ -55,32 +55,7 @@ class LabSetup extends Component {
   render() {
     return (
       <div className="hims_lab_setup">
-        <BreadCrumb
-          title={
-            <AlgaehLabel label={{ fieldName: "Lab_setup", align: "ltr" }} />
-          }
-          breadStyle={this.props.breadStyle}
-          pageNavPath={[
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{
-                    fieldName: "lab_settings",
-                    align: "ltr"
-                  }}
-                />
-              )
-            },
-            {
-              pageName: (
-                <AlgaehLabel label={{ fieldName: "Lab_setup", align: "ltr" }} />
-              )
-            }
-          ]}
-          //screenName="Master Setup"
-          //   HideHalfbread={false}
-        />
-        <div className="tab-container toggle-section spacing-push">
+        <div className="tab-container toggle-section margin-top-15">
           <ul className="nav">
             <li
               algaehtabs={"LabSection"}

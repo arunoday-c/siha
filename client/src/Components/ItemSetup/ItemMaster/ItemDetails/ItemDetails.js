@@ -56,7 +56,7 @@ class ItemDetails extends Component {
                 className="col-lg-12 card box-shadow-normal"
                 style={{ paddingBottom: "10px" }}
               >
-                <div className="row card-deck panel-layout">
+                <div className="row">
                   {/* Patient code */}
 
                   {/* created by Adnan */}
@@ -130,7 +130,7 @@ class ItemDetails extends Component {
                   />
                 </div>
 
-                <div className="row card-deck panel-layout">
+                <div className="row">
                   {/* Patient code */}
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
@@ -210,7 +210,7 @@ class ItemDetails extends Component {
                   />
                 </div>
 
-                <div className="row card-deck panel-layout">
+                <div className="row">
                   <AlagehAutoComplete
                     div={{ className: "col" }}
                     label={{
@@ -338,7 +338,7 @@ class ItemDetails extends Component {
                 </div>
 
                 {this.state.hims_d_item_master_id === null ? (
-                  <div className="row card-deck panel-layout">
+                  <div className="row">
                     <AlagehFormGroup
                       div={{ className: "col" }}
                       label={{
@@ -358,7 +358,7 @@ class ItemDetails extends Component {
                     <div className="col">
                       <div className="row">
                         <div
-                          className="col-lg-5 customCheckbox"
+                          className="col customCheckbox"
                           style={{ paddingTop: "10px" }}
                         >
                           <label className="checkbox inline">
@@ -381,7 +381,7 @@ class ItemDetails extends Component {
                           </label>
                         </div>
                         <AlagehFormGroup
-                          div={{ className: "col-lg-7" }}
+                          div={{ className: "col" }}
                           label={{
                             fieldName: "vat_percent"
                           }}

@@ -773,6 +773,7 @@ class DeptMaster extends Component {
           data-validate="depdd"
           className="col-lg-12"
           style={{ marginTop: 10, marginBottom: 10 }}
+          id="depddGridCntr"
         >
           <AlgaehDataGrid
             datavalidate="data-validate='depdd'"

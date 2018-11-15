@@ -114,6 +114,8 @@ body {
     border: 1px solid #93a4ad;
     min-height: 137px;
     position: relative; }
+  :global .tab-container .tab-button label {
+    cursor: pointer; }
 
 :global .image-drop-area {
   border: 1px solid #93a4ad;
@@ -1059,3 +1061,11 @@ th {
 
 .hijri-calender {
   z-index: 9; }
+
+.algaehModalWrapper {
+  position: fixed;
+  top: 0;
+  z-index: 999999;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  height: 100%; }
