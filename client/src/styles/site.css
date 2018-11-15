@@ -1054,3 +1054,11 @@ th {
 
 .hijri-calender {
   z-index: 9; }
+
+.algaehModalWrapper {
+  position: fixed;
+  top: 0;
+  z-index: 999999;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  height: 100%; }
