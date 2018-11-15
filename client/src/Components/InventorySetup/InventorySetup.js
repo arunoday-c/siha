@@ -55,34 +55,7 @@ class InventorySetup extends Component {
   render() {
     return (
       <div className="hims_Inventory_setup">
-        <BreadCrumb
-          title={
-            <AlgaehLabel
-              label={{ fieldName: "Inventory_setup", align: "ltr" }}
-            />
-          }
-          breadStyle={this.props.breadStyle}
-          pageNavPath={[
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{
-                    fieldName: "Inventory_settings",
-                    align: "ltr"
-                  }}
-                />
-              )
-            },
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{ fieldName: "Inventory_setup", align: "ltr" }}
-                />
-              )
-            }
-          ]}
-        />
-        <div className="tab-container toggle-section spacing-push">
+        <div className="tab-container toggle-section margin-top-15">
           <ul className="nav">
             <li
               algaehtabs={"ItemCategory"}

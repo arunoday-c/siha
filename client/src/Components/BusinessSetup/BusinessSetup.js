@@ -33,20 +33,7 @@ class BusinessSetup extends Component {
   render() {
     return (
       <div className="business_setup">
-        <BreadCrumb
-          title="Business Setup"
-          breadStyle={this.props.breadStyle}
-          pageNavPath={[
-            {
-              pageName: "Settings"
-            },
-            {
-              pageName: "Business Setup"
-            }
-          ]}
-        />
-
-        <div className="tab-container toggle-section spacing-push">
+        <div className="tab-container toggle-section" style={{ marginTop: 15 }}>
           <ul className="nav">
             <li
               algaehtabs={"DeptMaster"}

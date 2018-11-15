@@ -139,38 +139,7 @@ class InvestigationSetup extends Component {
   render() {
     return (
       <div className="hims_investigationsetup">
-        <BreadCrumb
-          title={
-            <AlgaehLabel
-              label={{ fieldName: "investigation_setup", align: "ltr" }}
-            />
-          }
-          breadStyle={this.props.breadStyle}
-          pageNavPath={[
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{
-                    fieldName: "investigation_settings",
-                    align: "ltr"
-                  }}
-                />
-              )
-            },
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{ fieldName: "investigation_setup", align: "ltr" }}
-                />
-              )
-            }
-          ]}
-        />
-
-        <div
-          className="row inner-top-search"
-          style={{ marginTop: 57, paddingBottom: 10 }}
-        >
+        <div className="row inner-top-search" style={{ paddingBottom: 10 }}>
           <div className="col-lg-12">
             <div className="row">
               <AlagehAutoComplete
@@ -305,7 +274,7 @@ class InvestigationSetup extends Component {
           </div>
           <div className="portlet-body">
             <div className="row">
-              <div className="col-lg-12" id="">
+              <div className="col-lg-12" id="investigationGridCntr">
                 <AlgaehDataGrid
                   id="investigation_grid"
                   columns={[
