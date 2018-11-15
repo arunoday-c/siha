@@ -74,7 +74,7 @@ class ItemGroup extends Component {
             />
 
             <AlagehAutoComplete
-              div={{ className: "col-lg-2" }}
+              div={{ className: "col-lg-3" }}
               label={{
                 fieldName: "category_id",
                 isImp: true

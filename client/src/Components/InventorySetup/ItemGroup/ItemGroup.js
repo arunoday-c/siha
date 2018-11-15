@@ -74,7 +74,7 @@ class ItemGroup extends Component {
             />
 
             <AlagehAutoComplete
-              div={{ className: "col-lg-2" }}
+              div={{ className: "col-lg-3" }}
               label={{
                 fieldName: "category_id",
                 isImp: true
@@ -85,8 +85,8 @@ class ItemGroup extends Component {
                 value: this.state.category_id,
                 dataSource: {
                   textField: "category_desc",
-                  valueField: "hims_d_item_category_id",
-                  data: this.props.itemcategory
+                  valueField: "hims_d_inventory_tem_category_id",
+                  data: this.props.inventoryitemcategory
                 },
                 onChange: changeTexts.bind(this, this)
               }}
@@ -136,10 +136,12 @@ class ItemGroup extends Component {
                     label: <AlgaehLabel label={{ fieldName: "category_id" }} />,
                     displayTemplate: row => {
                       let display =
-                        this.props.itemcategory === undefined
+                        this.props.inventoryitemcategory === undefined
                           ? []
-                          : this.props.itemcategory.filter(
-                              f => f.hims_d_item_category_id === row.category_id
+                          : this.props.inventoryitemcategory.filter(
+                              f =>
+                                f.hims_d_inventory_tem_category_id ===
+                                row.category_id
                             );
 
                       return (
@@ -160,8 +162,8 @@ class ItemGroup extends Component {
                             value: row.category_id,
                             dataSource: {
                               textField: "category_desc",
-                              valueField: "hims_d_item_category_id",
-                              data: this.props.itemcategory
+                              valueField: "hims_d_inventory_tem_category_id",
+                              data: this.props.inventoryitemcategory
                             },
                             onChange: onchangegridcol.bind(this, this, row),
                             others: {
@@ -254,9 +256,9 @@ class ItemGroup extends Component {
                 keyId="hims_d_item_group_id"
                 dataSource={{
                   data:
-                    this.props.itemgroup === undefined
+                    this.props.inventoryitemgroup === undefined
                       ? []
-                      : this.props.itemgroup
+                      : this.props.inventoryitemgroup
                 }}
                 isEditable={true}
                 paging={{ page: 0, rowsPerPage: 10 }}
@@ -277,8 +279,8 @@ class ItemGroup extends Component {
 
 function mapStateToProps(state) {
   return {
-    itemgroup: state.itemgroup,
-    itemcategory: state.itemcategory,
+    inventoryitemgroup: state.inventoryitemgroup,
+    inventoryitemcategory: state.inventoryitemcategory,
     userdrtails: state.userdrtails
   };
 }

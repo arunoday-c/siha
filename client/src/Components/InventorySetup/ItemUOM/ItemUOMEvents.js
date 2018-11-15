@@ -24,7 +24,7 @@ const updateItemUOM = ($this, data) => {
   // data.updated_by = getCookie("UserID");
 
   algaehApiCall({
-    uri: "/pharmacy/updatePharmacyUom",
+    uri: "/inventory/updateInventoryUom",
     data: data,
     method: "PUT",
     onSuccess: response => {
@@ -52,13 +52,13 @@ const showconfirmDialog = ($this, row) => {
   }).then(willDelete => {
     if (willDelete) {
       let data = {
-        hims_d_pharmacy_uom_id: row.hims_d_pharmacy_uom_id,
+        hims_d_Inventory_uom_id: row.hims_d_Inventory_uom_id,
         uom_description: row.uom_description,
         uom_status: row.uom_status,
         record_status: "I"
       };
       algaehApiCall({
-        uri: "/pharmacy/updatePharmacyUom",
+        uri: "/inventory/updateInventoryUom",
         data: data,
         method: "PUT",
         onSuccess: response => {
@@ -91,7 +91,7 @@ const insertItemUOM = ($this, e) => {
     alertTypeIcon: "warning",
     onSuccess: () => {
       algaehApiCall({
-        uri: "/pharmacy/addPharmacyUom",
+        uri: "/inventory/addInventoryUom",
         data: $this.state,
         onSuccess: response => {
           if (response.data.success == true) {
@@ -113,11 +113,11 @@ const insertItemUOM = ($this, e) => {
 
 const getItemUOM = $this => {
   $this.props.getItemUOM({
-    uri: "/pharmacy/getPharmacyUom",
+    uri: "/inventory/getInventoryUom",
     method: "GET",
     redux: {
       type: "ANALYTES_GET_DATA",
-      mappingName: "itemuom"
+      mappingName: "inventoryitemuom"
     },
     afterSuccess: data => {
       if (data.length === 0 || data.length === undefined) {
