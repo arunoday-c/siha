@@ -61,6 +61,13 @@
         "path": "/InvestigationSetup"
       },
       {
+        "name": "Inventory Item Master",
+        "label": "Inventory Item Master",
+        "arlabel": "بند المخزون",
+        "path": "/InventoryItemMaster"
+      },
+
+      {
         "name": "Item Setup",
         "label": "Item Setup",
         "arlabel": "إعداد العنصر",

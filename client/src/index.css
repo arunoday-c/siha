@@ -765,117 +765,43 @@
       color: rgba(72, 90, 99, 0.26);
       border: none;
       cursor: not-allowed; }
-  :global .ins-tab-container .tab-button,
-  :global .ins-tab-container label {
-    width: 100%;
-    font-size: 10px;
-    font-weight: normal;
-    border-radius: 0px;
-    background-color: #f3f3f3;
-    border: solid 1px #d0d8dc;
-    color: #7c909b;
-    padding: 6px 8px;
-    cursor: pointer;
-    border-top-right-radius: 10px;
-    border-top-left-radius: 10px; }
-    :global .ins-tab-container .tab-button:hover,
-    :global .ins-tab-container label:hover {
-      background-color: #fff !important;
-      color: #68509f !important; }
-    :global .ins-tab-container .tab-button:focus,
-    :global .ins-tab-container label:focus {
-      outline: none; }
-    :global .ins-tab-container .tab-button.active,
-    :global .ins-tab-container label.active {
-      background-color: #f7f7f7;
-      color: #000;
-      border: solid 1px #000;
-      pointer-events: none; }
-      :global .ins-tab-container .tab-button.active:hover,
-      :global .ins-tab-container label.active:hover {
-        background-color: #f7f7f7 !important;
-        color: #fff !important; }
-  :global .ins-tab-container .tab {
-    margin-right: -30px; }
-  :global .ins-tab-container .tab-content {
-    padding: 10px 20px;
-    background-color: #fcfcfc;
-    border: solid 1px #eceff1; }
-    :global .ins-tab-container .tab-content .tab-item {
-      position: relative; }
-  :global .spacing-push {
+  :global .ins-tab-container .spacing-push {
     margin-top: 5.5em !important; }
-  :global .box-shadow {
+  :global .ins-tab-container .box-shadow {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
-  :global .box-shadow:hover {
+  :global .ins-tab-container .box-shadow:hover {
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22); }
-  :global .box-shadow-normal {
+  :global .ins-tab-container .box-shadow-normal {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
-  :global .row-bottom-space {
+  :global .ins-tab-container .row-bottom-space {
     margin-bottom: 15px; }
-  :global .divider {
+  :global .ins-tab-container .divider {
     height: 1px;
     background-color: #485a63;
     margin: 1px; }
-  :global .portletHeader {
+  :global .ins-tab-container .portletHeader {
     border-bottom: 1px solid #e2e2e2;
     padding-top: 10px;
     padding-bottom: 4px;
     width: 100%; }
-    :global .portletHeader label {
+    :global .ins-tab-container .portletHeader label {
       font-weight: 500;
       font-size: 0.9rem; }
-
-.tab-container .tab-button {
-  font-size: 0.7rem;
-  font-weight: normal;
-  border-radius: 7px 7px 0 0;
-  background-color: #f3f3f3;
-  border: solid 1px #d0d8dc;
-  color: #7c909b;
-  padding: 6px 10px;
-  cursor: pointer; }
-  .tab-container .tab-button:hover {
-    background-color: #fff !important;
-    color: #68509f !important;
-    cursor: pointer; }
-  .tab-container .tab-button:focus {
-    outline: none; }
-  .tab-container .tab-button.active {
-    background-color: #dbad64;
-    color: #fff;
-    border: solid 1px #dbad64;
-    pointer-events: none; }
-    .tab-container .tab-button.active:hover {
-      background-color: #dbad64 !important;
-      color: #fff !important; }
-
-.tab-container .tab {
-  margin-right: -30px; }
-
-.tab-container .tab-content {
-  padding: 10px 20px;
-  background-color: #fcfcfc;
-  border: solid 1px #eceff1; }
-  .tab-container .tab-content .tab-item {
-    position: relative; }
-
-.hptl-phase1-footer {
-  margin-top: 50px; }
-
-.divInner {
-  overflow-y: auto;
-  overflow-x: hidden; }
-  .divInner .divInnerLeft {
-    border-right: 1px dashed #e0e0e0;
-    min-height: 30vh;
-    max-height: 70vh;
-    overflow: auto;
-    padding: 15px; }
-  .divInner .divInnerRight {
-    min-height: 30vh;
-    max-height: 70vh;
-    overflow: auto;
-    padding: 15px; }
+  :global .hptl-phase1-footer {
+    margin-top: 50px; }
+  :global .divInner {
+    overflow-y: auto;
+    overflow-x: hidden; }
+    :global .divInner .divInnerLeft {
+      border-right: 1px dashed #e0e0e0;
+      min-height: 30vh;
+      max-height: 70vh;
+      overflow: auto;
+      padding: 15px; }
+    :global .divInner .divInnerRight {
+      min-height: 30vh;
+      max-height: 70vh;
+      overflow: auto;
+      padding: 15px; }

@@ -31,7 +31,7 @@ let addItemMaster = (req, res, next) => {
           });
         }
         connection.query(
-          "INSERT INTO `hims_d_item_master` (`item_code`, `item_description`, `structure_id`,\
+          "INSERT INTO `hims_d_inventory_item_master` (`item_code`, `item_description`, `structure_id`,\
          `generic_id`, `category_id`, `group_id`, `item_uom_id`, `purchase_uom_id`, `sales_uom_id`, `stocking_uom_id`, `service_id`,\
          `created_date`, `created_by`, `update_date`, `updated_by`)\
         VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
@@ -69,13 +69,12 @@ let addItemMaster = (req, res, next) => {
                 "uom_id",
                 "stocking_uom",
                 "conversion_factor",
-
                 "created_by",
                 "updated_by"
               ];
 
               connection.query(
-                "INSERT INTO hims_m_item_uom(" +
+                "INSERT INTO hims_m_inventory_item_uom(" +
                   insurtColumns.join(",") +
                   ",item_master_id,created_date,updated_date) VALUES ?",
                 [
@@ -284,7 +283,7 @@ let addInventoryLocation = (req, res, next) => {
 //created by Nowshad: to get item master
 let getItemMaster = (req, res, next) => {
   let selectWhere = {
-    hims_d_item_master_id: "ALL"
+    hims_d_inventory_item_master_id: "ALL"
   };
   try {
     if (req.db == null) {
@@ -296,7 +295,7 @@ let getItemMaster = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select * FROM hims_d_item_master where record_status='A' AND" +
+        "select * FROM hims_d_inventory_item_master where record_status='A' AND" +
           where.condition,
         where.values,
         (error, result) => {
@@ -324,11 +323,11 @@ let getItemMasterAndItemUom = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select  MIU.hims_m_item_uom_id, MIU.item_master_id, MIU.uom_id,PH.uom_description, MIU.stocking_uom, \
-        MIU.conversion_factor,IM.hims_d_item_master_id, IM.item_code, IM.item_description, IM.structure_id, \
-        IM.generic_id, IM.category_id,IM.group_id, IM.form_id, IM.storage_id, IM.item_uom_id, IM.purchase_uom_id, \
-        IM.sales_uom_id, IM.stocking_uom_id, IM.item_status, IM.service_id from  hims_d_item_master IM left join \
-        hims_m_item_uom MIU on IM.hims_d_item_master_id=MIU.item_master_id and IM.record_status='A' and MIU.record_status='A' \
+        "select  MIU.hims_m_inventory_item_uom_id, MIU.item_master_id, MIU.uom_id,PH.uom_description, MIU.stocking_uom, \
+        MIU.conversion_factor,IM.hims_d_inventory_item_master_id, IM.item_code, IM.item_description, IM.structure_id, \
+        IM.category_id,IM.group_id, IM.item_uom_id, IM.purchase_uom_id, IM.sales_uom_id, IM.stocking_uom_id, \
+        IM.item_status, IM.service_id from  hims_d_inventory_item_master IM left join \
+        hims_m_inventory_item_uom MIU on IM.hims_d_inventory_item_master_id=MIU.item_master_id and IM.record_status='A' and MIU.record_status='A' \
         left join hims_d_pharmacy_uom PH  on  MIU.uom_id=PH.hims_d_pharmacy_uom_id;",
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -655,11 +654,11 @@ let updateItemMasterAndUom = (req, res, next) => {
           });
         }
         let queryBuilder =
-          "UPDATE `hims_d_item_master` SET `item_code`=?, `item_description`=?, `structure_id`=?,\
+          "UPDATE `hims_d_inventory_item_master` SET `item_code`=?, `item_description`=?, `structure_id`=?,\
           `generic_id`=?, `category_id`=?, `group_id`=?, `form_id`=?, `storage_id`=?, `item_uom_id`=?,\
            `purchase_uom_id`=?, `sales_uom_id`=?, `stocking_uom_id`=?, `item_status`=?, `service_id`=?,\
             `update_date`=?, `updated_by`=?, `record_status`=? WHERE record_status='A' and\
-           `hims_d_item_master_id`=?";
+           `hims_d_inventory_item_master_id`=?";
         let inputs = [
           input.item_code,
           input.item_description,
@@ -678,7 +677,7 @@ let updateItemMasterAndUom = (req, res, next) => {
           new Date(),
           input.updated_by,
           input.record_status,
-          input.hims_d_item_master_id
+          input.hims_d_inventory_item_master_id
         ];
 
         connection.query(queryBuilder, inputs, (error, result) => {
@@ -703,7 +702,7 @@ let updateItemMasterAndUom = (req, res, next) => {
                   ];
 
                   connection.query(
-                    "INSERT INTO hims_m_item_uom(" +
+                    "INSERT INTO hims_m_inventory_item_uom(" +
                       insurtColumns.join(",") +
                       ",created_date,updated_date) VALUES ?",
                     [
@@ -740,7 +739,7 @@ let updateItemMasterAndUom = (req, res, next) => {
 
                 for (let i = 0; i < req.body.updateUomMapResult.length; i++) {
                   qry +=
-                    "UPDATE `hims_m_item_uom` SET item_master_id='" +
+                    "UPDATE `hims_m_inventory_item_uom` SET item_master_id='" +
                     inputParam[i].item_master_id +
                     "', uom_id='" +
                     inputParam[i].uom_id +
@@ -754,8 +753,8 @@ let updateItemMasterAndUom = (req, res, next) => {
                     new Date().toLocaleString() +
                     "',updated_by='" +
                     req.body.updated_by +
-                    "' WHERE record_status='A' and hims_m_item_uom_id='" +
-                    inputParam[i].hims_m_item_uom_id +
+                    "' WHERE record_status='A' and hims_m_inventory_item_uom_id='" +
+                    inputParam[i].hims_m_inventory_item_uom_id +
                     "';";
                 }
 
