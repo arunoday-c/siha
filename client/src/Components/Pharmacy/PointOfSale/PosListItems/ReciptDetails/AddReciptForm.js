@@ -28,9 +28,6 @@ class AddReciptForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      Cashchecked: true,
-      Cardchecked: false,
-      Checkchecked: false,
       errorInCash: false,
       errorInCard: false,
       errorInCheck: false
@@ -116,7 +113,11 @@ class AddReciptForm extends Component {
                         onChange: cashtexthandle.bind(this, this, context)
                       },
                       others: {
-                        disabled: !this.state.Cashchecked,
+                        // disabled: !this.state.Cashchecked,
+                        disabled:
+                          this.state.saveEnable === true
+                            ? true
+                            : !this.state.Cashchecked,
                         placeholder: "0.00"
                       }
                     }}

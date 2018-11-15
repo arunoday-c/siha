@@ -1670,7 +1670,7 @@ class Appointment extends Component {
                     <div className="row">
                       <div className="col-lg-12 popRightDiv">
                         <div className="row">
-                          <div className="col-lg-3 margin-top-15">
+                          <div className="col margin-top-15">
                             <AlgaehLabel
                               label={{
                                 forceLabel: "Appo. Date"
@@ -1683,7 +1683,7 @@ class Appointment extends Component {
                             </h6>
                           </div>
 
-                          <div className="col-lg-2 margin-top-15">
+                          <div className="col margin-top-15">
                             <AlgaehLabel
                               label={{
                                 forceLabel: "Appo. Time"
@@ -1692,7 +1692,7 @@ class Appointment extends Component {
                             <h6>{this.state.apptFromTime}</h6>
                           </div>
                           <AlagehFormGroup
-                            div={{ className: "col-lg-3 margin-top-15 " }}
+                            div={{ className: "col  margin-top-15 " }}
                             label={{
                               forceLabel: "Patient Code",
                               isImp: false
@@ -1723,7 +1723,7 @@ class Appointment extends Component {
                           </div>
                           <AlagehAutoComplete
                             div={{
-                              className: "col-lg-3 margin-top-15 mandatory"
+                              className: "col margin-top-15 mandatory"
                             }}
                             label={{
                               forceLabel: "Select Slots",
@@ -1746,7 +1746,7 @@ class Appointment extends Component {
                         <div className="row">
                           <AlagehFormGroup
                             div={{
-                              className: "col-lg-6 margin-top-15 mandatory"
+                              className: "col margin-top-15 mandatory"
                             }}
                             label={{
                               forceLabel: "Patient Name",
@@ -1764,7 +1764,7 @@ class Appointment extends Component {
                           <AlagehFormGroup
                             div={{
                               className:
-                                "col-lg-6 margin-top-15 mandatory arabic-txt-fld"
+                                "col margin-top-15 mandatory arabic-txt-fld"
                             }}
                             label={{
                               forceLabel: "Patient Name Arabic",
@@ -1779,10 +1779,12 @@ class Appointment extends Component {
                               }
                             }}
                           />
+                        </div>
 
+                        <div className="row">
                           <AlgaehDateHandler
                             div={{
-                              className: "col-lg-3 margin-top-15 mandatory"
+                              className: "col margin-top-15 mandatory"
                             }}
                             label={{
                               forceLabel: "Date of Birth",
@@ -1812,7 +1814,7 @@ class Appointment extends Component {
 
                           <AlagehFormGroup
                             div={{
-                              className: "col-lg-2 margin-top-15 mandatory"
+                              className: "col margin-top-15 mandatory"
                             }}
                             label={{
                               forceLabel: "Age",
@@ -1833,7 +1835,7 @@ class Appointment extends Component {
 
                           <AlagehAutoComplete
                             div={{
-                              className: "col-lg-3 margin-top-15 mandatory"
+                              className: "col margin-top-15 mandatory"
                             }}
                             label={{
                               forceLabel: "Gender",
@@ -1854,7 +1856,7 @@ class Appointment extends Component {
 
                           <AlagehAutoComplete
                             div={{
-                              className: "col-lg-3 margin-top-15 mandatory"
+                              className: "col margin-top-15 mandatory"
                             }}
                             label={{
                               forceLabel: "Select Status",
@@ -1872,10 +1874,12 @@ class Appointment extends Component {
                               onChange: this.dropDownHandle.bind(this)
                             }}
                           />
+                        </div>
 
+                        <div className="row">
                           <AlagehFormGroup
                             div={{
-                              className: "col-lg-6 margin-top-15 mandatory"
+                              className: "col margin-top-15 mandatory"
                             }}
                             label={{
                               forceLabel: "Mobile No.",
@@ -1896,7 +1900,7 @@ class Appointment extends Component {
 
                           <AlagehFormGroup
                             div={{
-                              className: "col-lg-6 margin-top-15 mandatory"
+                              className: "col margin-top-15"
                             }}
                             label={{
                               forceLabel: "Email Address",
@@ -1911,9 +1915,11 @@ class Appointment extends Component {
                               }
                             }}
                           />
+                        </div>
 
+                        <div className="row">
                           <AlagehFormGroup
-                            div={{ className: "col-lg-12 margin-top-15" }}
+                            div={{ className: "col margin-top-15" }}
                             label={{
                               forceLabel: "Remarks",
                               isImp: false

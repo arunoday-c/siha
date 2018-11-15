@@ -1,5 +1,6 @@
 .hptl-phase1-dept-user-form {
-  padding: 5px; }
+  border-top: 1px solid #ccc;
+  margin-top: 10px; }
   .hptl-phase1-dept-user-form .form-details {
     padding: 5px;
     padding-bottom: 5px; }

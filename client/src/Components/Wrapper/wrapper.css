@@ -19,7 +19,8 @@
   text-align: center; }
   .ReactTable .rt-tbody .rt-td {
     font-size: 0.8rem !important;
-    overflow: inherit !important; }
+    overflow: inherit !important;
+    white-space: inherit !important; }
 
 .ReactTable .-btn {
   background: #34b8bc !important;

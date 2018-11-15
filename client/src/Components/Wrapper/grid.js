@@ -211,7 +211,6 @@ class DataGrid extends PureComponent {
     }
   };
   toggleRowSave = index => {
-   
     const existsing = JSON.parse(sessionStorage.getItem(this.props.id))[
       "collection"
     ];
@@ -351,14 +350,14 @@ class DataGrid extends PureComponent {
           this.props.actions === undefined
             ? true
             : this.props.actions.allowEdit !== undefined
-              ? this.props.actions.allowEdit
-              : true;
+            ? this.props.actions.allowEdit
+            : true;
         const _allowDeleteButton =
           this.props.actions === undefined
             ? true
             : this.props.actions.allowDelete !== undefined
-              ? this.props.actions.allowDelete
-              : true;
+            ? this.props.actions.allowDelete
+            : true;
         if (
           this.props.isEditable !== undefined &&
           this.props.isEditable === true
@@ -494,14 +493,14 @@ class DataGrid extends PureComponent {
           props.actions === undefined
             ? true
             : props.actions.allowEdit !== undefined
-              ? props.actions.allowEdit
-              : true;
+            ? props.actions.allowEdit
+            : true;
         const _allowDeleteButton =
           props.actions === undefined
             ? true
             : props.actions.allowDelete !== undefined
-              ? props.actions.allowDelete
-              : true;
+            ? props.actions.allowDelete
+            : true;
         if (props.isEditable !== undefined && props.isEditable === true) {
           if (_allowEditButton || _allowDeleteButton) {
             _columns.splice(0, 0, {
@@ -826,6 +825,7 @@ class DataGrid extends PureComponent {
                 : true
               : true
           }
+          resizable={false}
           pageSizeOptions={[10, 20, 25, 50, 100]}
           previousText="Previous"
           nextText="Next"

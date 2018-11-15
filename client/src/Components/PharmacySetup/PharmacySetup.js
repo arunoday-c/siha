@@ -102,20 +102,6 @@ class PharmacySetup extends Component {
                 />
               }
             </li>
-            <li
-              style={{ marginRight: 2 }}
-              algaehtabs={"ItemGeneric"}
-              className={"nav-item tab-button "}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "item_generic"
-                  }}
-                />
-              }
-            </li>
 
             <li
               algaehtabs={"ItemGroup"}
@@ -131,6 +117,22 @@ class PharmacySetup extends Component {
                 />
               }
             </li>
+
+            <li
+              style={{ marginRight: 2 }}
+              algaehtabs={"ItemGeneric"}
+              className={"nav-item tab-button "}
+              onClick={this.openTab.bind(this)}
+            >
+              {
+                <AlgaehLabel
+                  label={{
+                    fieldName: "item_generic"
+                  }}
+                />
+              }
+            </li>
+
             <li
               style={{ marginRight: 2 }}
               className={"nav-item tab-button "}
@@ -212,10 +214,10 @@ class PharmacySetup extends Component {
 
           {this.state.pageDisplay === "ItemCategory" ? (
             <ItemCategory />
-          ) : this.state.pageDisplay === "ItemGeneric" ? (
-            <ItemGeneric />
           ) : this.state.pageDisplay === "ItemGroup" ? (
             <ItemGroup />
+          ) : this.state.pageDisplay === "ItemGeneric" ? (
+            <ItemGeneric />
           ) : this.state.pageDisplay === "ItemUOM" ? (
             <ItemUOM />
           ) : this.state.pageDisplay === "Location" ? (
