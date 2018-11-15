@@ -50,9 +50,9 @@ const showconfirmDialog = ($this, row) => {
     cancelButtonColor: "#d33",
     cancelButtonText: "No"
   }).then(willDelete => {
-    if (willDelete) {
+    if (willDelete.value) {
       let data = {
-        hims_d_Inventory_uom_id: row.hims_d_Inventory_uom_id,
+        hims_d_inventory_uom_id: row.hims_d_inventory_uom_id,
         uom_description: row.uom_description,
         uom_status: row.uom_status,
         record_status: "I"

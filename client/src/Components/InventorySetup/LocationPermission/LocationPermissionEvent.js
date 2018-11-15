@@ -20,7 +20,7 @@ const onchangegridcol = ($this, row, e) => {
 const updateLocationPermission = ($this, data) => {
   debugger;
   algaehApiCall({
-    uri: "/pharmacy/updateLocationPermission",
+    uri: "/inventory/updateLocationPermission",
     data: data,
     method: "PUT",
     onSuccess: response => {
@@ -38,7 +38,7 @@ const updateLocationPermission = ($this, data) => {
 
 const getLocationPermission = $this => {
   $this.props.getLocationPermission({
-    uri: "/pharmacy/getLocationPermission",
+    uri: "/inventory/getLocationPermission",
     method: "GET",
     redux: {
       type: "LOCATION_PERMISSION_GET_DATA",
@@ -50,7 +50,7 @@ const getLocationPermission = $this => {
   });
 };
 
-const showconfirmDialog = ($this, id) => {
+const showconfirmDialog = ($this, row) => {
   swal({
     title: "Are you sure you want to delete this Location Permission?",
     type: "warning",
@@ -62,12 +62,17 @@ const showconfirmDialog = ($this, id) => {
   }).then(willDelete => {
     if (willDelete.value) {
       let data = {
-        hims_m_location_permission: id
+        hims_m_inventory_location_permission_id:
+          row.hims_m_inventory_location_permission_id,
+        user_id: row.user_id,
+        location_id: row.location_id,
+        allow: row.allow,
+        record_status: "I"
       };
       algaehApiCall({
-        uri: "/pharmacy/updateLocationPermission",
+        uri: "/inventory/updateLocationPermission",
         data: data,
-        method: "DELETE",
+        method: "PUT",
         onSuccess: response => {
           if (response.data.success) {
             swalMessage({
@@ -89,7 +94,7 @@ const showconfirmDialog = ($this, id) => {
 };
 
 const deleteLocationPermission = ($this, row) => {
-  showconfirmDialog($this, row.hims_m_location_permission);
+  showconfirmDialog($this, row);
 };
 
 const insertLocationPermission = ($this, e) => {
@@ -99,7 +104,7 @@ const insertLocationPermission = ($this, e) => {
     alertTypeIcon: "warning",
     onSuccess: () => {
       algaehApiCall({
-        uri: "/pharmacy/addLocationPermission",
+        uri: "/inventory/addLocationPermission",
         data: $this.state,
         onSuccess: response => {
           if (response.data.success == true) {

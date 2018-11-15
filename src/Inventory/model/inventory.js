@@ -830,7 +830,7 @@ let addLocationPermission = (req, res, next) => {
       }
 
       connection.query(
-        "INSERT INTO `hims_m_location_permission` (`user_id`, `location_id`, `allow`,`created_date`,`created_by`)\
+        "INSERT INTO `hims_m_inventory_location_permission` (`user_id`, `location_id`, `allow`,`created_date`,`created_by`)\
         VALUE(?,?,?,?,?)",
         [
           input.user_id,
@@ -857,7 +857,7 @@ let addLocationPermission = (req, res, next) => {
 //created by Nowshad: to get Location Permission
 let getLocationPermission = (req, res, next) => {
   let selectWhere = {
-    hims_m_location_permission_id: "ALL"
+    hims_m_inventory_location_permission_id: "ALL"
   };
 
   try {
@@ -870,7 +870,7 @@ let getLocationPermission = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select * FROM hims_m_location_permission where record_status='A' AND" +
+        "select * FROM hims_m_inventory_location_permission where record_status='A' AND" +
           where.condition,
         where.values,
         (error, result) => {
@@ -902,9 +902,9 @@ let updateLocationPermission = (req, res, next) => {
       }
 
       connection.query(
-        "UPDATE `hims_m_location_permission` SET `user_id`=?, `location_id`=?,\
+        "UPDATE `hims_m_inventory_location_permission` SET `user_id`=?, `location_id`=?,\
         `allow`=?, `updated_date`=?, `updated_by`=?, `record_status`=?\
-        WHERE `hims_m_location_permission_id`=? and `record_status`='A';",
+        WHERE `hims_m_inventory_location_permission_id`=? and `record_status`='A';",
         [
           input.user_id,
           input.location_id,
@@ -912,7 +912,7 @@ let updateLocationPermission = (req, res, next) => {
           new Date(),
           input.updated_by,
           input.record_status,
-          input.hims_m_location_permission_id
+          input.hims_m_inventory_location_permission_id
         ],
         (error, result) => {
           connection.release();
