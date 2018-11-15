@@ -47,6 +47,11 @@ body {
   background-color: #34b8bc;
   border-color: #34b8bc; }
 
+:global .btn-primary.disabled,
+:global .btn-primary:disabled {
+  opacity: 0.3;
+  cursor: not-allowed; }
+
 :global .btn-default {
   color: #212529;
   background-color: none;

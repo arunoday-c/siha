@@ -318,6 +318,12 @@ class NetworkPlan extends PureComponent {
                     <div className="col">
                       <label style={{ marginTop: 26 }}>Deductible</label>
                     </div>
+                    <div className="col d-none">
+                      <select>
+                        <option>%</option>
+                        <option>Amt.</option>
+                      </select>
+                    </div>
                     <AlagehFormGroup
                       //consultation
                       div={{ className: "col" }}
@@ -337,6 +343,12 @@ class NetworkPlan extends PureComponent {
                       }}
                     />
 
+                    <div className="col d-none">
+                      <select>
+                        <option>%</option>
+                        <option>Amt.</option>
+                      </select>
+                    </div>
                     <AlagehFormGroup
                       //Lab
                       div={{ className: "col" }}
@@ -356,6 +368,12 @@ class NetworkPlan extends PureComponent {
                       }}
                     />
 
+                    <div className="col d-none">
+                      <select>
+                        <option>%</option>
+                        <option>Amt.</option>
+                      </select>
+                    </div>
                     <AlagehFormGroup
                       //Radiology
                       div={{ className: "col" }}
@@ -375,6 +393,12 @@ class NetworkPlan extends PureComponent {
                       }}
                     />
 
+                    <div className="col d-none">
+                      <select>
+                        <option>%</option>
+                        <option>Amt.</option>
+                      </select>
+                    </div>
                     <AlagehFormGroup
                       //OPD Services
                       div={{ className: "col" }}
@@ -393,6 +417,12 @@ class NetworkPlan extends PureComponent {
                         }
                       }}
                     />
+                    <div className="col d-none">
+                      <select>
+                        <option>%</option>
+                        <option>Amt.</option>
+                      </select>
+                    </div>
 
                     <AlagehFormGroup
                       //Dental
@@ -412,6 +442,12 @@ class NetworkPlan extends PureComponent {
                         }
                       }}
                     />
+                    <div className="col d-none">
+                      <select>
+                        <option>%</option>
+                        <option>Amt.</option>
+                      </select>
+                    </div>
                     <AlagehFormGroup
                       //Medicine
                       div={{ className: "col" }}
@@ -436,6 +472,12 @@ class NetworkPlan extends PureComponent {
                       <label>Co Pay</label>
                     </div>
 
+                    <div className="col d-none">
+                      <select>
+                        <option>%</option>
+                        <option>Amt.</option>
+                      </select>
+                    </div>
                     <AlagehFormGroup
                       //consultation
                       div={{ className: "col" }}
@@ -454,6 +496,12 @@ class NetworkPlan extends PureComponent {
                       }}
                     />
 
+                    <div className="col d-none">
+                      <select>
+                        <option>%</option>
+                        <option>Amt.</option>
+                      </select>
+                    </div>
                     <AlagehFormGroup
                       //Lab
                       div={{ className: "col" }}
@@ -468,6 +516,12 @@ class NetworkPlan extends PureComponent {
                         }
                       }}
                     />
+                    <div className="col d-none">
+                      <select>
+                        <option>%</option>
+                        <option>Amt.</option>
+                      </select>
+                    </div>
                     <AlagehFormGroup
                       //Radiology
                       div={{ className: "col" }}
@@ -485,6 +539,12 @@ class NetworkPlan extends PureComponent {
                         }
                       }}
                     />
+                    <div className="col d-none">
+                      <select>
+                        <option>%</option>
+                        <option>Amt.</option>
+                      </select>
+                    </div>
 
                     <AlagehFormGroup
                       //OPD Services
@@ -503,6 +563,12 @@ class NetworkPlan extends PureComponent {
                         }
                       }}
                     />
+                    <div className="col d-none">
+                      <select>
+                        <option>%</option>
+                        <option>Amt.</option>
+                      </select>
+                    </div>
 
                     <AlagehFormGroup
                       //Dental
@@ -521,6 +587,12 @@ class NetworkPlan extends PureComponent {
                         }
                       }}
                     />
+                    <div className="col d-none">
+                      <select>
+                        <option>%</option>
+                        <option>Amt.</option>
+                      </select>
+                    </div>
 
                     <AlagehFormGroup
                       //Medicine
