@@ -144,6 +144,7 @@ let addPosEntry = (req, res, next) => {
               "service_id",
               "grn_no",
               "barcode",
+              "qtyhand",
               "expiry_date",
               "batchno",
               "uom_id",
@@ -305,100 +306,100 @@ let updatePosEntry = (req, res, next) => {
     updated_by: req.userIdentity.algaeh_d_app_user_id
   };
 
+  debugLog(
+    "hims_f_pharmacy_pos_header_id",
+    req.records.hims_f_pharmacy_pos_header_id
+  );
+
+  req.body.hims_f_pharmacy_pos_header_id =
+    req.records.hims_f_pharmacy_pos_header_id;
+  req.body.transaction_id = req.records.hims_f_pharmacy_pos_header_id;
+  req.body.year = req.records.year;
+  req.body.period = req.records.period;
+
+  debugLog("Body : ", req.body);
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
+    let connection = req.connection;
 
-      connection.beginTransaction(error => {
-        if (error) {
-          connection.rollback(() => {
-            releaseDBConnection(db, connection);
-            next(error);
-          });
-        }
-        return new Promise((resolve, reject) => {
-          let inputParam = extend(PosEntry, req.body);
+    return new Promise((resolve, reject) => {
+      let inputParam = extend(PosEntry, req.body);
 
-          debugLog("posted", inputParam.posted);
-          debugLog("pharmacy_stock_detail", req.body.pharmacy_stock_detail);
-          connection.query(
-            "UPDATE `hims_f_pharmacy_pos_header` SET `posted`=?, `updated_by`=?, `updated_date`=? \
+      debugLog("posted", inputParam.posted);
+      debugLog("pharmacy_stock_detail", req.body.pharmacy_stock_detail);
+      connection.query(
+        "UPDATE `hims_f_pharmacy_pos_header` SET `posted`=?, `updated_by`=?, `updated_date`=? \
           WHERE `record_status`='A' and `hims_f_pharmacy_pos_header_id`=?",
-            [
-              inputParam.posted,
-              req.userIdentity.algaeh_d_app_user_id,
-              new Date(),
-              inputParam.hims_f_pharmacy_pos_header_id
-            ],
-            (error, result) => {
-              debugLog("error", error);
-              releaseDBConnection(db, connection);
-              if (error) {
-                reject(error);
-              } else {
-                resolve(result);
-              }
+        [
+          inputParam.posted,
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          inputParam.hims_f_pharmacy_pos_header_id
+        ],
+        (error, result) => {
+          debugLog("error", error);
+          releaseDBConnection(db, connection);
+          if (error) {
+            reject(error);
+          } else {
+            resolve(result);
+          }
+        }
+      );
+    })
+      .then(output => {
+        return new Promise((resolve, reject) => {
+          debugLog("output", output);
+          req.options = {
+            db: connection,
+            onFailure: error => {
+              debugLog("error: ", error);
+              reject(error);
+            },
+            onSuccess: result => {
+              debugLog("Success: ", result);
+              resolve(result);
             }
-          );
+          };
+          // const error = new Error();
+          // error.message = "Test";
+          // reject(error);
+          updateIntoItemLocation(req, res, next);
         })
-          .then(output => {
-            return new Promise((resolve, reject) => {
-              debugLog("output", output);
-              req.options = {
-                db: connection,
-                onFailure: error => {
-                  debugLog("error: ", error);
-                  reject(error);
-                },
-                onSuccess: result => {
-                  debugLog("Success: ", result);
-                  resolve(result);
-                }
-              };
-              // const error = new Error();
-              // error.message = "Test";
-              // reject(error);
-              updateIntoItemLocation(req, res, next);
-            })
 
-              .then(records => {
-                debugLog("records: ", records);
-                if (records == null) {
-                  throw new exception();
-                }
-                connection.commit(error => {
-                  if (error) {
-                    releaseDBConnection(db, connection);
-                    next(error);
-                  }
-                  req.records = records;
-                  releaseDBConnection(db, connection);
-                  next();
-                });
-              })
-              .catch(error => {
-                debugLog("caught1: ", error);
-                connection.rollback(() => {
-                  releaseDBConnection(db, connection);
-                  next(error);
-                });
-              });
+          .then(records => {
+            debugLog("records: ", records);
+            if (records == null) {
+              throw new exception();
+            }
+            connection.commit(error => {
+              if (error) {
+                releaseDBConnection(db, connection);
+                next(error);
+              }
+              req.posUpdate = records;
+              releaseDBConnection(db, connection);
+              next();
+            });
           })
           .catch(error => {
-            debugLog("caught2: ", error);
+            debugLog("caught1: ", error);
             connection.rollback(() => {
               releaseDBConnection(db, connection);
               next(error);
             });
           });
+      })
+      .catch(error => {
+        debugLog("caught2: ", error);
+        connection.rollback(() => {
+          releaseDBConnection(db, connection);
+          next(error);
+        });
       });
-    });
   } catch (e) {
     next(e);
   }

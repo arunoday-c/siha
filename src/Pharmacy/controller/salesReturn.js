@@ -19,6 +19,7 @@ export default ({ config, db }) => {
     generateDbConnection,
     pharmacyReceiptInsert,
     addsalesReturn,
+    updatesalesReturn,
     (req, res, next) => {
       let connection = req.connection;
       connection.commit(error => {

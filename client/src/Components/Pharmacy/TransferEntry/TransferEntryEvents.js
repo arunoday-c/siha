@@ -190,8 +190,8 @@ const RequisitionSearch = ($this, e) => {
 
               data.pharmacy_stock_detail[i].quantity_requested =
                 data.pharmacy_stock_detail[i].quantity_required;
-              data.pharmacy_stock_detail[i].quantity_authorized =
-                data.pharmacy_stock_detail[i].quantity_required;
+              data.pharmacy_stock_detail[i].from_qtyhand =
+                data.pharmacy_stock_detail[i].qtyhand;
 
               data.pharmacy_stock_detail[i].uom_requested_id =
                 data.pharmacy_stock_detail[i].item_uom;

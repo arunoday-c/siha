@@ -115,6 +115,8 @@ let addrequisitionEntry = (req, res, next) => {
                   "item_category_id",
                   "item_group_id",
                   "item_uom",
+                  "to_qtyhand",
+                  "from_qtyhand",
                   "quantity_required"
                 ];
 
@@ -304,19 +306,19 @@ let updaterequisitionEntry = (req, res, next) => {
                 "',item_uom='" +
                 details[i].item_uom +
                 "',quantity_recieved='" +
-                details[i].quantity_recieved +
+                (details[i].quantity_recieved || 0) +
                 "',quantity_outstanding='" +
-                details[i].quantity_outstanding +
-                "',po_created_date='" +
-                details[i].po_created_date +
-                "',po_created='" +
-                details[i].po_created +
-                "',po_created_quantity='" +
-                details[i].po_created_quantity +
-                "',po_outstanding_quantity='" +
-                details[i].po_outstanding_quantity +
-                "',po_completed='" +
-                details[i].po_completed +
+                (details[i].quantity_outstanding || 0) +
+                // "',po_created_date='" +
+                // (details[i].po_created_date || new Date()) +
+                // "',po_created='" +
+                // details[i].po_created +
+                // "',po_created_quantity='" +
+                // (details[i].po_created_quantity || 0) +
+                // "',po_outstanding_quantity='" +
+                // (details[i].po_outstanding_quantity || 0) +
+                // "',po_completed='" +
+                // details[i].po_completed +
                 "' WHERE hims_f_pharmacy_material_detail_id='" +
                 details[i].hims_f_pharmacy_material_detail_id +
                 "';";

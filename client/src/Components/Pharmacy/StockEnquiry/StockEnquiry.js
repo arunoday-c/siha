@@ -240,12 +240,12 @@ class StockEnquiry extends Component {
                     label: <AlgaehLabel label={{ forceLabel: "Batch No." }} />
                   },
                   {
-                    fieldName: "expirt_date",
+                    fieldName: "expirydt",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Expiry Date" }} />
                     ),
                     displayTemplate: row => {
-                      return <span>{dateFormater(row.expirt_date)}</span>;
+                      return <span>{dateFormater(this, row.expirydt)}</span>;
                     }
                   },
                   {
