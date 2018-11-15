@@ -51,7 +51,7 @@ class OtherInfo extends Component {
                     },
                     others: {
                       disabled: this.state.existingPatient,
-                      placeHolder: "(+01)123-456-7890",
+                      placeholder: "(+01)123-456-7890",
                       type: "number"
                     }
                   }}
@@ -74,7 +74,7 @@ class OtherInfo extends Component {
                     },
                     others: {
                       disabled: this.state.existingPatient,
-                      placeHolder: "(+01)123-456-7890",
+                      placeholder: "(+01)123-456-7890",
                       type: "number"
                     }
                   }}
@@ -138,7 +138,7 @@ class OtherInfo extends Component {
                     },
                     others: {
                       disabled: this.state.existingPatient,
-                      placeHolder: "Enter Email Address",
+                      placeholder: "Enter Email Address",
                       type: "email"
                     }
                   }}
@@ -182,7 +182,7 @@ class OtherInfo extends Component {
                     },
                     others: {
                       disabled: this.state.existingPatient,
-                      placeHolder: "Enter Full Address 2"
+                      placeholder: "Enter Full Address 2"
                     }
                   }}
                 />

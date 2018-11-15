@@ -1389,4 +1389,60 @@ $forntSize: 0.7rem;
     overflow: auto;
     padding: 15px;
   }
+
+  .tab-container {
+    .tab-button {
+      // font-size: 12px;
+      font-weight: normal;
+      border-radius: 0px;
+      background-color: #f3f3f3;
+      color: #7c909b;
+      cursor: pointer;
+      border-top-right-radius: 5px;
+      border-top-left-radius: 5px;
+      border-bottom: none;
+      &:hover {
+        background-color: #fff !important;
+        color: #68509f !important;
+      }
+      &:focus {
+        outline: none;
+      }
+
+      &.active {
+        background-color: #dbad64;
+        color: #fff;
+        pointer-events: none;
+
+        &.active {
+          background-color: #dbad64;
+          color: #fff;
+          pointer-events: none;
+
+          &:hover {
+            background-color: #dbad64 !important;
+            color: #fff !important;
+          }
+        }
+      }
+
+      .tab {
+        margin-right: -30px;
+        &:last-child {
+          .tab-button {
+            //border-radius: 0px;
+            //border-top-right-radius: 4px;
+          }
+        }
+      }
+      .image-drop-area {
+        border: 1px solid #93a4ad;
+        min-height: 137px;
+        position: relative;
+      }
+      label {
+        cursor: pointer;
+      }
+    }
+  }
 }
