@@ -50,6 +50,25 @@ const getCtrlCode = ($this, docNumber) => {
         data.case_type = "OP";
       }
       data.dataExitst = true;
+      debugger;
+      if (data.receiptdetails.length !== 0) {
+        for (let i = 0; i < data.receiptdetails.length; i++) {
+          if (data.receiptdetails[i].pay_type === "CA") {
+            data.Cashchecked = true;
+            data.cash_amount = data.receiptdetails[i].amount;
+          }
+
+          if (data.receiptdetails[i].pay_type === "CD") {
+            data.Cardchecked = true;
+            data.card_amount = data.receiptdetails[i].amount;
+          }
+
+          if (data.receiptdetails[i].pay_type === "CH") {
+            data.Checkchecked = true;
+            data.cheque_amount = data.receiptdetails[i].amount;
+          }
+        }
+      }
       $this.setState(data);
       AlgaehLoader({ show: false });
     }

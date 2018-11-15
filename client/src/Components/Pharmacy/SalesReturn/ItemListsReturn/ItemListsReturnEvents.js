@@ -312,7 +312,7 @@ const calculateAmount = ($this, row, context, ctrl, e) => {
         e.target.name === "discount_percentage" ? 0 : row.discount_amout,
       discount_percentage:
         e.target.name === "discount_amout" ? 0 : row.discount_percentage,
-
+      unit_cost: row.unit_cost,
       insured: $this.state.insured,
       primary_insurance_provider_id: $this.state.insurance_provider_id,
       primary_network_office_id: $this.state.hims_d_insurance_network_office_id,

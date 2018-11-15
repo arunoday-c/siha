@@ -36,6 +36,15 @@ const getCtrlCode = ($this, docNumber) => {
         data.postEnable = false;
       }
 
+      if (data.receiptdetails.length !== 0) {
+        for (let i = 0; i < data.receiptdetails.length; i++) {
+          if (data.receiptdetails[i].pay_type === "CA") {
+            data.Cashchecked = true;
+            data.cash_amount = data.receiptdetails[i].amount;
+          }
+        }
+      }
+
       $this.setState(data);
       AlgaehLoader({ show: false });
     }

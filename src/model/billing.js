@@ -1000,7 +1000,10 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
             req.body[m].services_id = servicesDetails.hims_d_services_id;
 
             //Calculation Declarations
-            let unit_cost = 0;
+            let unit_cost =
+              servicesDetails.unit_cost === undefined
+                ? 0
+                : servicesDetails.unit_cost;
 
             let gross_amount = 0,
               net_amout = 0,
@@ -1162,9 +1165,11 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                   ser_gross_amt = policydtls.gross_amt;
 
                   if (policydtls.company_service_price_type == "N") {
-                    unit_cost = policydtls.net_amount;
+                    unit_cost =
+                      unit_cost != 0 ? unit_cost : policydtls.net_amount;
                   } else {
-                    unit_cost = policydtls.gross_amt;
+                    unit_cost =
+                      unit_cost != 0 ? unit_cost : policydtls.gross_amt;
                   }
 
                   if (conversion_factor != 0) {
@@ -1352,7 +1357,7 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                     });
                   }
                 } else {
-                  unit_cost = records.standard_fee;
+                  unit_cost = unit_cost != 0 ? unit_cost : records.standard_fee;
                   if (conversion_factor != 0) {
                     unit_cost = unit_cost * conversion_factor;
                   }

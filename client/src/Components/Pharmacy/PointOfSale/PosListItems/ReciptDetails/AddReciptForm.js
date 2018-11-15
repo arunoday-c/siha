@@ -113,7 +113,11 @@ class AddReciptForm extends Component {
                         onChange: cashtexthandle.bind(this, this, context)
                       },
                       others: {
-                        disabled: !this.state.Cashchecked,
+                        // disabled: !this.state.Cashchecked,
+                        disabled:
+                          this.state.saveEnable === true
+                            ? true
+                            : !this.state.Cashchecked,
                         placeholder: "0.00"
                       }
                     }}

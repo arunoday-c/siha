@@ -9,6 +9,7 @@ import {
 } from "../model/posEntry";
 import { debugFunction, debugLog } from "../../utils/logging";
 import { pharmacyReceiptInsert } from "../model/pharmacyGlobal";
+import { getReceiptEntry } from "../../model/receiptentry";
 
 export default ({ config, db }) => {
   let api = Router();
@@ -45,14 +46,41 @@ export default ({ config, db }) => {
   // created by Nowshad :to get Pos Entry
   api.get(
     "/getPosEntry",
+    generateDbConnection,
     getPosEntry,
+    getReceiptEntry,
     (req, res, next) => {
-      let result = req.records;
-      res.status(httpStatus.ok).json({
-        success: true,
-        records: result
+      let connection = req.connection;
+      connection.commit(error => {
+        debugLog("error", error);
+        debugLog("commit error", error);
+        if (error) {
+          debugLog("roll error", error);
+          connection.rollback(() => {
+            next(error);
+          });
+        } else {
+          let _receptEntry = req.receptEntry;
+          let _pos = req.records;
+
+          let result = { ..._receptEntry, ..._pos };
+          debugLog("result : ", result);
+
+          delete req.receptEntry;
+          delete req.pos;
+          res.status(httpStatus.ok).json({
+            success: true,
+            records: result
+          });
+          next();
+        }
       });
-      next();
+      // let result = req.records;
+      // res.status(httpStatus.ok).json({
+      //   success: true,
+      //   records: result
+      // });
+      // next();
     },
     releaseConnection
   );
