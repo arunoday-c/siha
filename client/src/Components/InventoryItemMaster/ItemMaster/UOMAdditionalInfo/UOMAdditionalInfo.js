@@ -70,7 +70,7 @@ class UOMAdditionalInfo extends Component {
                         dataSource: {
                           textField: "uom_description",
                           valueField: "hims_d_inventory_uom_id",
-                          data: this.props.itemuom
+                          data: this.props.inventoryitemuom
                         },
                         onChange: uomtexthandle.bind(this, this, context)
                       }}
@@ -166,11 +166,11 @@ class UOMAdditionalInfo extends Component {
                             ),
                             displayTemplate: row => {
                               let display =
-                                this.props.itemuom === undefined
+                                this.props.inventoryitemuom === undefined
                                   ? []
-                                  : this.props.itemuom.filter(
+                                  : this.props.inventoryitemuom.filter(
                                       f =>
-                                        f.hims_d_pharmacy_uom_id === row.uom_id
+                                        f.hims_d_inventory_uom_id === row.uom_id
                                     );
 
                               return (
@@ -192,7 +192,7 @@ class UOMAdditionalInfo extends Component {
                                     dataSource: {
                                       textField: "uom_description",
                                       valueField: "hims_d_inventory_uom_id",
-                                      data: this.props.itemuom
+                                      data: this.props.inventoryitemuom
                                     },
                                     others: {
                                       disabled: true
@@ -355,7 +355,7 @@ class UOMAdditionalInfo extends Component {
 
 function mapStateToProps(state) {
   return {
-    itemuom: state.itemuom
+    inventoryitemuom: state.inventoryitemuom
   };
 }
 

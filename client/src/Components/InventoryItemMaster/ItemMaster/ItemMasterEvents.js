@@ -10,13 +10,6 @@ const Validations = $this => {
       title: "Invalid Input. Test Name Cannot be blank."
     });
     return isError;
-  } else if ($this.state.generic_id === null) {
-    isError = true;
-    swalMessage({
-      type: "error",
-      title: "Invalid Input. Please Select Generic."
-    });
-    return isError;
   } else if ($this.state.category_id === null) {
     isError = true;
     swalMessage({
@@ -53,7 +46,7 @@ const Validations = $this => {
     });
     return isError;
   } else if (
-    $this.state.hims_d_item_master_id === null &&
+    $this.state.hims_d_inventory_item_master_id === null &&
     $this.state.standard_fee === 0
   ) {
     isError = true;
@@ -69,13 +62,14 @@ const InsertUpdateItems = $this => {
   const err = Validations($this);
 
   if (!err) {
-    if ($this.state.hims_d_item_master_id === null) {
+    debugger;
+    if ($this.state.hims_d_inventory_item_master_id === null) {
       $this.state.service_code = $this.state.item_code;
-      $this.state.service_type_id = "12";
+      $this.state.service_type_id = "4";
       $this.state.service_name = $this.state.item_description;
 
       algaehApiCall({
-        uri: "/pharmacy/addItemMaster",
+        uri: "/inventory/addItemMaster",
         data: $this.state,
         onSuccess: response => {
           if (response.data.success === true) {
@@ -89,7 +83,7 @@ const InsertUpdateItems = $this => {
     } else {
       $this.state.record_status = "A";
       algaehApiCall({
-        uri: "/pharmacy/updateItemMasterAndUom",
+        uri: "/inventory/updateItemMasterAndUom",
         data: $this.state,
         method: "PUT",
         onSuccess: response => {

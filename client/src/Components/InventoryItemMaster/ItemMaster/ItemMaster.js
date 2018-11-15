@@ -23,12 +23,14 @@ export default class PatientDetails extends Component {
   };
 
   componentWillMount() {
+    debugger;
     let IOputs = InventoryItem.inputParam();
     this.setState({ ...this.state, ...IOputs });
   }
 
   componentWillReceiveProps(newProps) {
-    if (newProps.itemPop.hims_d_item_master_id !== undefined) {
+    debugger;
+    if (newProps.itemPop.hims_d_inventory_item_master_id !== undefined) {
       let IOputs = newProps.itemPop;
       this.setState({ ...this.state, ...IOputs });
     }
@@ -88,7 +90,7 @@ export default class PatientDetails extends Component {
                       type="button"
                       className="btn btn-primary"
                     >
-                      {this.state.hims_d_item_master_id === null ? (
+                      {this.state.hims_d_inventory_item_master_id === null ? (
                         <AlgaehLabel label={{ fieldName: "btnSave" }} />
                       ) : (
                         <AlgaehLabel label={{ fieldName: "btnUpdate" }} />

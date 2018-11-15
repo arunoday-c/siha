@@ -3,7 +3,7 @@ export default {
     var output;
 
     output = {
-      hims_d_item_master_id: null,
+      hims_d_inventory_item_master_id: null,
       item_description: null,
 
       category_id: null,

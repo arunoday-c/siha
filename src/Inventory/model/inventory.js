@@ -32,14 +32,13 @@ let addItemMaster = (req, res, next) => {
         }
         connection.query(
           "INSERT INTO `hims_d_inventory_item_master` (`item_code`, `item_description`, `structure_id`,\
-         `generic_id`, `category_id`, `group_id`, `item_uom_id`, `purchase_uom_id`, `sales_uom_id`, `stocking_uom_id`, `service_id`,\
+          `category_id`, `group_id`, `item_uom_id`, `purchase_uom_id`, `sales_uom_id`, `stocking_uom_id`, `service_id`,\
          `created_date`, `created_by`, `update_date`, `updated_by`)\
-        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           [
             input.item_code,
             input.item_description,
             input.structure_id,
-            input.generic_id,
             input.category_id,
             input.group_id,
             input.item_uom_id,
@@ -328,7 +327,7 @@ let getItemMasterAndItemUom = (req, res, next) => {
         IM.category_id,IM.group_id, IM.item_uom_id, IM.purchase_uom_id, IM.sales_uom_id, IM.stocking_uom_id, \
         IM.item_status, IM.service_id from  hims_d_inventory_item_master IM left join \
         hims_m_inventory_item_uom MIU on IM.hims_d_inventory_item_master_id=MIU.item_master_id and IM.record_status='A' and MIU.record_status='A' \
-        left join hims_d_pharmacy_uom PH  on  MIU.uom_id=PH.hims_d_pharmacy_uom_id;",
+        left join hims_d_inventory_uom PH  on  MIU.uom_id=PH.hims_d_inventory_uom_id;",
         (error, result) => {
           releaseDBConnection(db, connection);
           if (error) {
@@ -377,7 +376,7 @@ let getItemCategory = (req, res, next) => {
   }
 };
 
-//created by Nowshad: to get item Generic
+//created by Nowshad: to get item Group
 let getItemGroup = (req, res, next) => {
   let selectWhere = {
     hims_d_inventory_item_group_id: "ALL"
@@ -655,7 +654,7 @@ let updateItemMasterAndUom = (req, res, next) => {
         }
         let queryBuilder =
           "UPDATE `hims_d_inventory_item_master` SET `item_code`=?, `item_description`=?, `structure_id`=?,\
-          `generic_id`=?, `category_id`=?, `group_id`=?, `form_id`=?, `storage_id`=?, `item_uom_id`=?,\
+          `category_id`=?, `group_id`=?,`item_uom_id`=?,\
            `purchase_uom_id`=?, `sales_uom_id`=?, `stocking_uom_id`=?, `item_status`=?, `service_id`=?,\
             `update_date`=?, `updated_by`=?, `record_status`=? WHERE record_status='A' and\
            `hims_d_inventory_item_master_id`=?";
@@ -663,11 +662,8 @@ let updateItemMasterAndUom = (req, res, next) => {
           input.item_code,
           input.item_description,
           input.structure_id,
-          input.generic_id,
           input.category_id,
           input.group_id,
-          input.form_id,
-          input.storage_id,
           input.item_uom_id,
           input.purchase_uom_id,
           input.sales_uom_id,

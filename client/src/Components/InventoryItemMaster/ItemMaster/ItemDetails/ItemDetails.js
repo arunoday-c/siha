@@ -29,12 +29,13 @@ class ItemDetails extends Component {
       method: "GET",
       redux: {
         type: "SERVICES_GET_DATA",
-        mappingName: "itemservices"
+        mappingName: "inventoryitemservices"
       }
     });
   }
 
   componentWillMount() {
+    debugger;
     let InputOutput = this.props.itemPop;
     this.setState({ ...this.state, ...InputOutput });
   }
@@ -102,7 +103,7 @@ class ItemDetails extends Component {
                       dataSource: {
                         textField: "category_desc",
                         valueField: "hims_d_inventory_tem_category_id",
-                        data: this.props.itemcategory
+                        data: this.props.inventoryitemcategory
                       },
                       onChange: texthandle.bind(this, this, context)
                     }}
@@ -121,7 +122,7 @@ class ItemDetails extends Component {
                       dataSource: {
                         textField: "group_description",
                         valueField: "hims_d_inventory_item_group_id",
-                        data: this.props.itemgroup
+                        data: this.props.inventoryitemgroup
                       },
                       onChange: texthandle.bind(this, this, context)
                     }}
@@ -178,7 +179,7 @@ class ItemDetails extends Component {
                       dataSource: {
                         textField: "uom_description",
                         valueField: "hims_d_inventory_uom_id",
-                        data: this.props.itemuom
+                        data: this.props.inventoryitemuom
                       },
                       others: {
                         disabled: true
@@ -221,7 +222,7 @@ class ItemDetails extends Component {
                         //   ? "service_name"
                         //   : "arabic_service_name",
                         valueField: "hims_d_services_id",
-                        data: this.props.itemservices
+                        data: this.props.inventoryitemservices
                       },
                       onChange: texthandle.bind(this, this, context)
                     }}
@@ -279,7 +280,7 @@ class ItemDetails extends Component {
                   </div>
                 </div>
 
-                {this.state.hims_d_item_master_id === null ? (
+                {this.state.hims_d_inventory_item_master_id === null ? (
                   <div className="row">
                     <AlagehFormGroup
                       div={{ className: "col" }}
@@ -381,12 +382,10 @@ class ItemDetails extends Component {
 
 function mapStateToProps(state) {
   return {
-    itemcategory: state.itemcategory,
-    itemgroup: state.itemgroup,
-    itemform: state.itemform,
-    itemuom: state.itemuom,
-    itemstorage: state.itemstorage,
-    itemservices: state.itemservices
+    inventoryitemcategory: state.inventoryitemcategory,
+    inventoryitemgroup: state.inventoryitemgroup,
+    inventoryitemuom: state.inventoryitemuom,
+    inventoryitemservices: state.inventoryitemservices
   };
 }
 
@@ -395,8 +394,6 @@ function mapDispatchToProps(dispatch) {
     {
       getItemCategory: AlgaehActions,
       getItemGroup: AlgaehActions,
-      getItemForm: AlgaehActions,
-      getItemStorage: AlgaehActions,
       getServices: AlgaehActions
     },
     dispatch

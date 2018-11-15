@@ -28,7 +28,7 @@ class InventoryItemMaster extends Component {
       method: "GET",
       redux: {
         type: "ITEM_CATEGORY_GET_DATA",
-        mappingName: "itemcategory"
+        mappingName: "inventoryitemcategory"
       }
     });
 
@@ -37,7 +37,7 @@ class InventoryItemMaster extends Component {
       method: "GET",
       redux: {
         type: "ITEM_GROUOP_GET_DATA",
-        mappingName: "itemgroup"
+        mappingName: "inventoryitemgroup"
       }
     });
 
@@ -46,7 +46,7 @@ class InventoryItemMaster extends Component {
       method: "GET",
       redux: {
         type: "ITEM_UOM_GET_DATA",
-        mappingName: "itemuom"
+        mappingName: "inventoryitemuom"
       }
     });
 
@@ -59,30 +59,30 @@ class InventoryItemMaster extends Component {
     //   }
     // });
 
-    this.props.getItemForm({
-      uri: "/inventory/getItemForm",
-      method: "GET",
-      redux: {
-        type: "ITEM_FORM_GET_DATA",
-        mappingName: "itemform"
-      }
-    });
+    // this.props.getItemForm({
+    //   uri: "/inventory/getItemForm",
+    //   method: "GET",
+    //   redux: {
+    //     type: "ITEM_FORM_GET_DATA",
+    //     mappingName: "itemform"
+    //   }
+    // });
 
-    this.props.getItemStorage({
-      uri: "/inventory/getItemStorage",
-      method: "GET",
-      redux: {
-        type: "ANALYTES_GET_DATA",
-        mappingName: "itemstorage"
-      }
-    });
+    // this.props.getItemStorage({
+    //   uri: "/inventory/getItemStorage",
+    //   method: "GET",
+    //   redux: {
+    //     type: "ANALYTES_GET_DATA",
+    //     mappingName: "itemstorage"
+    //   }
+    // });
 
     this.props.getServices({
       uri: "/serviceType/getService",
       method: "GET",
       redux: {
         type: "SERVICES_GET_DATA",
-        mappingName: "itemservices"
+        mappingName: "inventoryitemservices"
       }
     });
 
@@ -111,13 +111,13 @@ class InventoryItemMaster extends Component {
   }
 
   render() {
-    debugger;
     let ItemList = Enumerable.from(this.props.inventoryitemlist)
-      .groupBy("$.hims_d_item_master_id", null, (k, g) => {
+      .groupBy("$.hims_d_inventory_item_master_id", null, (k, g) => {
         let firstRecordSet = Enumerable.from(g).firstOrDefault();
         return {
           item_code: firstRecordSet.item_code,
-          hims_d_item_master_id: firstRecordSet.hims_d_item_master_id,
+          hims_d_inventory_item_master_id:
+            firstRecordSet.hims_d_inventory_item_master_id,
           item_description: firstRecordSet.item_description,
           generic_id: firstRecordSet.generic_id,
           category_id: firstRecordSet.category_id,
@@ -215,11 +215,12 @@ class InventoryItemMaster extends Component {
                       ),
                       displayTemplate: row => {
                         let display =
-                          this.props.itemcategory === undefined
+                          this.props.inventoryitemcategory === undefined
                             ? []
-                            : this.props.itemcategory.filter(
+                            : this.props.inventoryitemcategory.filter(
                                 f =>
-                                  f.hims_d_item_category_id === row.category_id
+                                  f.hims_d_inventory_tem_category_id ===
+                                  row.category_id
                               );
 
                         return (
@@ -236,10 +237,12 @@ class InventoryItemMaster extends Component {
                       label: <AlgaehLabel label={{ fieldName: "group_id" }} />,
                       displayTemplate: row => {
                         let display =
-                          this.props.itemgroup === undefined
+                          this.props.inventoryitemgroup === undefined
                             ? []
-                            : this.props.itemgroup.filter(
-                                f => f.hims_d_item_group_id === row.group_id
+                            : this.props.inventoryitemgroup.filter(
+                                f =>
+                                  f.hims_d_inventory_item_group_id ===
+                                  row.group_id
                               );
 
                         return (
@@ -259,11 +262,11 @@ class InventoryItemMaster extends Component {
                       ),
                       displayTemplate: row => {
                         let display =
-                          this.props.itemuom === undefined
+                          this.props.inventoryitemuom === undefined
                             ? []
-                            : this.props.itemuom.filter(
+                            : this.props.inventoryitemuom.filter(
                                 f =>
-                                  f.hims_d_pharmacy_uom_id ===
+                                  f.hims_d_inventory_uom_id ===
                                   row.purchase_uom_id
                               );
 
@@ -283,12 +286,11 @@ class InventoryItemMaster extends Component {
                       ),
                       displayTemplate: row => {
                         let display =
-                          this.props.itemuom === undefined
+                          this.props.inventoryitemuom === undefined
                             ? []
-                            : this.props.itemuom.filter(
+                            : this.props.inventoryitemuom.filter(
                                 f =>
-                                  f.hims_d_pharmacy_uom_id ===
-                                  row.purchase_uom_id
+                                  f.hims_d_inventory_uom_id === row.sales_uom_id
                               );
 
                         return (
@@ -307,11 +309,11 @@ class InventoryItemMaster extends Component {
                       ),
                       displayTemplate: row => {
                         let display =
-                          this.props.itemuom === undefined
+                          this.props.inventoryitemuom === undefined
                             ? []
-                            : this.props.itemuom.filter(
+                            : this.props.inventoryitemuom.filter(
                                 f =>
-                                  f.hims_d_pharmacy_uom_id ===
+                                  f.hims_d_inventory_uom_id ===
                                   row.stocking_uom_id
                               );
 
@@ -335,7 +337,7 @@ class InventoryItemMaster extends Component {
                       }
                     }
                   ]}
-                  keyId="hims_d_item_master_id"
+                  keyId="hims_d_inventory_item_master_id"
                   dataSource={{
                     data: ItemList
                   }}
@@ -354,12 +356,10 @@ class InventoryItemMaster extends Component {
 function mapStateToProps(state) {
   return {
     inventoryitemlist: state.inventoryitemlist,
-    itemcategory: state.itemcategory,
-    itemgroup: state.itemgroup,
-    itemuom: state.itemuom,
-    itemform: state.itemform,
-    itemstorage: state.itemstorage,
-    itemservices: state.itemservices
+    inventoryitemcategory: state.inventoryitemcategory,
+    inventoryitemgroup: state.inventoryitemgroup,
+    inventoryitemuom: state.inventoryitemuom,
+    inventoryitemservices: state.inventoryitemservices
   };
 }
 
@@ -370,9 +370,6 @@ function mapDispatchToProps(dispatch) {
       getItemCategory: AlgaehActions,
       getItemGroup: AlgaehActions,
       getItemUOM: AlgaehActions,
-
-      getItemForm: AlgaehActions,
-      getItemStorage: AlgaehActions,
       getServices: AlgaehActions
     },
     dispatch

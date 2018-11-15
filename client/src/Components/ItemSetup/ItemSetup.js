@@ -309,8 +309,7 @@ class ItemSetup extends Component {
                             ? []
                             : this.props.itemuom.filter(
                                 f =>
-                                  f.hims_d_pharmacy_uom_id ===
-                                  row.purchase_uom_id
+                                  f.hims_d_pharmacy_uom_id === row.sales_uom_id
                               );
 
                         return (
