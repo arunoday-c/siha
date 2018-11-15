@@ -114,6 +114,8 @@ body {
     border: 1px solid #93a4ad;
     min-height: 137px;
     position: relative; }
+  :global .tab-container .tab-button label {
+    cursor: pointer; }
 
 :global .image-drop-area {
   border: 1px solid #93a4ad;

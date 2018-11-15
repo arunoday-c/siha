@@ -155,6 +155,9 @@ body {
         min-height: 137px;
         position: relative;
       }
+      label {
+        cursor: pointer;
+      }
     }
   }
   .image-drop-area {
