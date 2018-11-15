@@ -244,7 +244,11 @@ class Shift extends Component {
               </div>
             </div>
           </form>
-          <div className="form-details" data-validate="shiftDiv">
+          <div
+            className="form-details"
+            data-validate="shiftDiv"
+            id="shiftGridCntr"
+          >
             <AlgaehDataGrid
               id="shift-grid"
               datavalidate="data-validate='shiftDiv'"

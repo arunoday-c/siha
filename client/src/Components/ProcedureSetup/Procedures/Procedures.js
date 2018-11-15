@@ -91,7 +91,7 @@ class Procedures extends Component {
             </div>
           </div>
 
-          <div className="form-details">
+          <div className="form-details" id="procedureGrid">
             <AlgaehDataGrid
               id="index"
               columns={[

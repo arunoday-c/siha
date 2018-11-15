@@ -212,38 +212,7 @@ class HospitalServiceSetup extends Component {
   render() {
     return (
       <div className="hims_hospitalservices">
-        <BreadCrumb
-          title={
-            <AlgaehLabel
-              label={{ fieldName: "hospital_services", align: "ltr" }}
-            />
-          }
-          breadStyle={this.props.breadStyle}
-          pageNavPath={[
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{
-                    fieldName: "hospital_services_settings",
-                    align: "ltr"
-                  }}
-                />
-              )
-            },
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{ fieldName: "hospital_services", align: "ltr" }}
-                />
-              )
-            }
-          ]}
-        />
-
-        <div
-          className="row inner-top-search"
-          style={{ marginTop: 57, paddingBottom: 10 }}
-        >
+        <div className="row inner-top-search" style={{ paddingBottom: 10 }}>
           <div className="col-lg-12">
             <div className="row">
               <AlagehAutoComplete

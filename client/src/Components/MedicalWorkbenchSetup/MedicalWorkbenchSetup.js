@@ -35,22 +35,7 @@ class MedicalWorkbenchSetup extends Component {
   render() {
     return (
       <div className="medical_wb_setup">
-        <BreadCrumb
-          title="Medical Workbench Setup"
-          breadStyle={this.props.breadStyle}
-          pageNavPath={[
-            {
-              pageName: "Settings"
-            },
-            {
-              pageName: "Medical Workbench Setup"
-            }
-          ]}
-          //screenName="Master Setup"
-          //   HideHalfbread={false}
-        />
-
-        <div className="tab-container toggle-section spacing-push">
+        <div className="tab-container toggle-section margin-top-15">
           <ul className="nav">
             <li
               style={{ marginRight: 2 }}

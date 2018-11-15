@@ -85,7 +85,7 @@ class ItemCategory extends Component {
           </div>
 
           <div className="row form-details">
-            <div className="col" data-validate="itemCatDiv">
+            <div className="col" data-validate="itemCatDiv" id="itemCatDivCntr">
               <AlgaehDataGrid
                 datavalidate="data-validate='itemCatDiv'"
                 id="item_category"
