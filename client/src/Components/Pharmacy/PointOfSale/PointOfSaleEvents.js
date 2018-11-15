@@ -50,6 +50,25 @@ const getCtrlCode = ($this, docNumber) => {
         data.case_type = "OP";
       }
       data.dataExitst = true;
+      debugger;
+      if (data.receiptdetails.length !== 0) {
+        for (let i = 0; i < data.receiptdetails.length; i++) {
+          if (data.receiptdetails[i].pay_type === "CA") {
+            data.Cashchecked = true;
+            data.cash_amount = data.receiptdetails[i].amount;
+          }
+
+          if (data.receiptdetails[i].pay_type === "CD") {
+            data.Cardchecked = true;
+            data.card_amount = data.receiptdetails[i].amount;
+          }
+
+          if (data.receiptdetails[i].pay_type === "CH") {
+            data.Checkchecked = true;
+            data.cheque_amount = data.receiptdetails[i].amount;
+          }
+        }
+      }
       $this.setState(data);
       AlgaehLoader({ show: false });
     }
@@ -131,6 +150,7 @@ const ClearData = ($this, e) => {
   IOputs.cheque_amount = 0;
   IOputs.advance = 0;
   IOputs.total_quantity = 0;
+  IOputs.dataExitst = false;
   $this.setState(IOputs);
 };
 
@@ -198,6 +218,27 @@ const SavePosEnrty = $this => {
 
   GenerateReciept($this, that => {
     debugger;
+
+    $this.state.posted = "Y";
+    $this.state.transaction_type = "POS";
+    $this.state.transaction_date = $this.state.pos_date;
+    for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
+      $this.state.pharmacy_stock_detail[i].location_id =
+        $this.state.location_id;
+      $this.state.pharmacy_stock_detail[i].location_type =
+        $this.state.location_type;
+      $this.state.pharmacy_stock_detail[i].operation = "-";
+      $this.state.pharmacy_stock_detail[i].sales_uom =
+        $this.state.pharmacy_stock_detail[i].uom_id;
+      $this.state.pharmacy_stock_detail[i].item_code_id = $this.state.item_id;
+      $this.state.pharmacy_stock_detail[i].grn_number =
+        $this.state.pharmacy_stock_detail[i].grn_no;
+      $this.state.pharmacy_stock_detail[i].item_category_id =
+        $this.state.pharmacy_stock_detail[i].item_category;
+      $this.state.pharmacy_stock_detail[i].net_total =
+        $this.state.pharmacy_stock_detail[i].net_extended_cost;
+    }
+
     algaehApiCall({
       uri: "/posEntry/addPosEntry",
       data: $this.state,

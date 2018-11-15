@@ -340,7 +340,11 @@ class Currency extends Component {
               </button>
             </div>
           </div>
-          <div className="form-details" data-validate="currencyDiv">
+          <div
+            className="form-details"
+            data-validate="currencyDiv"
+            id="currencyGridCntr"
+          >
             <AlgaehDataGrid
               datavalidate="data-validate='currencyDiv'"
               id="currency-grid"

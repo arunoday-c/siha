@@ -90,7 +90,6 @@ class PointOfSale extends Component {
 
   componentWillReceiveProps(nextProps) {
     let posHeaderOut = {};
-    debugger;
 
     if (nextProps.posheader !== undefined && nextProps.posheader.length !== 0) {
       nextProps.posheader.patient_payable_h =
@@ -124,7 +123,6 @@ class PointOfSale extends Component {
   }
 
   render() {
-    debugger;
     const _posLocation = Enumerable.from(this.props.poslocations)
       .where(w => w.allow_pos === "Y")
       .toArray();
@@ -212,7 +210,10 @@ class PointOfSale extends Component {
                       valueField: "hims_d_pharmacy_location_id",
                       data: _posLocation
                     },
-                    onChange: LocationchangeTexts.bind(this, this)
+                    onChange: LocationchangeTexts.bind(this, this),
+                    others: {
+                      disabled: this.state.dataExitst
+                    }
                   }}
                 />
 
@@ -229,7 +230,10 @@ class PointOfSale extends Component {
                       data: GlobalVariables.FORMAT_POS_CASE_TYPE
                     },
 
-                    onChange: changeTexts.bind(this, this)
+                    onChange: changeTexts.bind(this, this),
+                    others: {
+                      disabled: this.state.dataExitst
+                    }
                   }}
                 />
 
@@ -386,7 +390,7 @@ class PointOfSale extends Component {
                     />
                   </button>
 
-                  <button
+                  {/* <button
                     type="button"
                     className="btn btn-other"
                     onClick={PostPosEntry.bind(this, this)}
@@ -398,7 +402,7 @@ class PointOfSale extends Component {
                         returnText: true
                       }}
                     />
-                  </button>
+                  </button> */}
                 </div>
               </div>
             </AppBar>

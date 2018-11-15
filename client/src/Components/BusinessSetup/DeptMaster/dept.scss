@@ -57,3 +57,8 @@
 .testingHeight {
   max-height: 200px;
 }
+#depddGridCntr {
+  .ReactTable {
+    max-height: 65vh !important;
+  }
+}

@@ -79,7 +79,7 @@ const getRequisitionList = $this => {
   });
 };
 
-const dateFormater = ({ $this, value }) => {
+const dateFormater = ($this, value) => {
   if (value !== null) {
     return moment(value).format(Options.dateFormat);
   }

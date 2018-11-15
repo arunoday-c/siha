@@ -144,6 +144,7 @@ let addPosEntry = (req, res, next) => {
               "service_id",
               "grn_no",
               "barcode",
+              "qtyhand",
               "expiry_date",
               "batchno",
               "uom_id",
@@ -236,10 +237,10 @@ let getPosEntry = (req, res, next) => {
 
     let where = whereCondition(extend(selectWhere, req.query));
 
-    db.getConnection((error, connection) => {
-      // PH.recieve_amount
-      connection.query(
-        "SELECT hims_f_pharmacy_pos_header_id,PH.pos_number,PH.patient_id,P.patient_code,P.full_name as full_name,PH.visit_id,V.visit_code,PH.ip_id,PH.pos_date,PH.year,\
+    let connection = req.connection;
+    // PH.recieve_amount
+    connection.query(
+      "SELECT hims_f_pharmacy_pos_header_id,receipt_header_id,PH.pos_number,PH.patient_id,P.patient_code,P.full_name as full_name,PH.visit_id,V.visit_code,PH.ip_id,PH.pos_date,PH.year,\
         PH.period,PH.location_id,L.location_description,PH.location_type,PH.sub_total,PH.discount_percentage,PH.discount_amount,PH.net_total,\
         PH.copay_amount,PH.patient_responsibility,PH.patient_tax,PH.patient_payable,PH.company_responsibility,PH.company_tax,\
         PH.company_payable,PH.comments,PH.sec_company_responsibility,PH.sec_company_tax,PH.sec_company_payable,\
@@ -252,44 +253,47 @@ let getPosEntry = (req, res, next) => {
          on PH.location_id=L.hims_d_pharmacy_location_id left outer join hims_f_patient_visit V on\
          PH.visit_id=V.hims_f_patient_visit_id left outer join hims_f_patient P on PH.patient_id=P.hims_d_patient_id\
         where PH.record_status='A' and L.record_status='A' and  " +
-          where.condition,
-        where.values,
-        (error, headerResult) => {
-          if (error) {
-            releaseDBConnection(db, connection);
-            next(error);
-          }
-
-          debugLog("result: ", headerResult);
-          if (headerResult.length != 0) {
-            debugLog(
-              "hims_f_pharmacy_pos_header_id: ",
-              headerResult[0].hims_f_pharmacy_pos_header_id
-            );
-            connection.query(
-              "select * from hims_f_pharmacy_pos_detail where pharmacy_pos_header_id=? and record_status='A'",
-              headerResult[0].hims_f_pharmacy_pos_header_id,
-              (error, pharmacy_stock_detail) => {
-                if (error) {
-                  releaseDBConnection(db, connection);
-                  next(error);
-                }
-                req.records = {
-                  ...headerResult[0],
-                  ...{ pharmacy_stock_detail }
-                };
-                releaseDBConnection(db, connection);
-                next();
-              }
-            );
-          } else {
-            req.records = headerResult;
-            releaseDBConnection(db, connection);
-            next();
-          }
+        where.condition,
+      where.values,
+      (error, headerResult) => {
+        if (error) {
+          releaseDBConnection(db, connection);
+          next(error);
         }
-      );
-    });
+
+        debugLog("result: ", headerResult);
+        if (headerResult.length != 0) {
+          debugLog(
+            "hims_f_pharmacy_pos_header_id: ",
+            headerResult[0].hims_f_pharmacy_pos_header_id
+          );
+          connection.query(
+            "select * from hims_f_pharmacy_pos_detail where pharmacy_pos_header_id=? and record_status='A'",
+            headerResult[0].hims_f_pharmacy_pos_header_id,
+            (error, pharmacy_stock_detail) => {
+              if (error) {
+                releaseDBConnection(db, connection);
+                next(error);
+              }
+              req.records = {
+                ...headerResult[0],
+                ...{ pharmacy_stock_detail },
+                ...{
+                  hims_f_receipt_header_id: headerResult[0].receipt_header_id
+                }
+              };
+              releaseDBConnection(db, connection);
+              next();
+              debugLog("POS Result: ", req.records);
+            }
+          );
+        } else {
+          req.records = headerResult;
+          releaseDBConnection(db, connection);
+          next();
+        }
+      }
+    );
   } catch (e) {
     next(e);
   }
@@ -302,100 +306,100 @@ let updatePosEntry = (req, res, next) => {
     updated_by: req.userIdentity.algaeh_d_app_user_id
   };
 
+  debugLog(
+    "hims_f_pharmacy_pos_header_id",
+    req.records.hims_f_pharmacy_pos_header_id
+  );
+
+  req.body.hims_f_pharmacy_pos_header_id =
+    req.records.hims_f_pharmacy_pos_header_id;
+  req.body.transaction_id = req.records.hims_f_pharmacy_pos_header_id;
+  req.body.year = req.records.year;
+  req.body.period = req.records.period;
+
+  debugLog("Body : ", req.body);
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
+    let connection = req.connection;
 
-      connection.beginTransaction(error => {
-        if (error) {
-          connection.rollback(() => {
-            releaseDBConnection(db, connection);
-            next(error);
-          });
-        }
-        return new Promise((resolve, reject) => {
-          let inputParam = extend(PosEntry, req.body);
+    return new Promise((resolve, reject) => {
+      let inputParam = extend(PosEntry, req.body);
 
-          debugLog("posted", inputParam.posted);
-          debugLog("pharmacy_stock_detail", req.body.pharmacy_stock_detail);
-          connection.query(
-            "UPDATE `hims_f_pharmacy_pos_header` SET `posted`=?, `updated_by`=?, `updated_date`=? \
+      debugLog("posted", inputParam.posted);
+      debugLog("pharmacy_stock_detail", req.body.pharmacy_stock_detail);
+      connection.query(
+        "UPDATE `hims_f_pharmacy_pos_header` SET `posted`=?, `updated_by`=?, `updated_date`=? \
           WHERE `record_status`='A' and `hims_f_pharmacy_pos_header_id`=?",
-            [
-              inputParam.posted,
-              req.userIdentity.algaeh_d_app_user_id,
-              new Date(),
-              inputParam.hims_f_pharmacy_pos_header_id
-            ],
-            (error, result) => {
-              debugLog("error", error);
-              releaseDBConnection(db, connection);
-              if (error) {
-                reject(error);
-              } else {
-                resolve(result);
-              }
+        [
+          inputParam.posted,
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          inputParam.hims_f_pharmacy_pos_header_id
+        ],
+        (error, result) => {
+          debugLog("error", error);
+          releaseDBConnection(db, connection);
+          if (error) {
+            reject(error);
+          } else {
+            resolve(result);
+          }
+        }
+      );
+    })
+      .then(output => {
+        return new Promise((resolve, reject) => {
+          debugLog("output", output);
+          req.options = {
+            db: connection,
+            onFailure: error => {
+              debugLog("error: ", error);
+              reject(error);
+            },
+            onSuccess: result => {
+              debugLog("Success: ", result);
+              resolve(result);
             }
-          );
+          };
+          // const error = new Error();
+          // error.message = "Test";
+          // reject(error);
+          updateIntoItemLocation(req, res, next);
         })
-          .then(output => {
-            return new Promise((resolve, reject) => {
-              debugLog("output", output);
-              req.options = {
-                db: connection,
-                onFailure: error => {
-                  debugLog("error: ", error);
-                  reject(error);
-                },
-                onSuccess: result => {
-                  debugLog("Success: ", result);
-                  resolve(result);
-                }
-              };
-              // const error = new Error();
-              // error.message = "Test";
-              // reject(error);
-              updateIntoItemLocation(req, res, next);
-            })
 
-              .then(records => {
-                debugLog("records: ", records);
-                if (records == null) {
-                  throw new exception();
-                }
-                connection.commit(error => {
-                  if (error) {
-                    releaseDBConnection(db, connection);
-                    next(error);
-                  }
-                  req.records = records;
-                  releaseDBConnection(db, connection);
-                  next();
-                });
-              })
-              .catch(error => {
-                debugLog("caught1: ", error);
-                connection.rollback(() => {
-                  releaseDBConnection(db, connection);
-                  next(error);
-                });
-              });
+          .then(records => {
+            debugLog("records: ", records);
+            if (records == null) {
+              throw new exception();
+            }
+            connection.commit(error => {
+              if (error) {
+                releaseDBConnection(db, connection);
+                next(error);
+              }
+              req.posUpdate = records;
+              releaseDBConnection(db, connection);
+              next();
+            });
           })
           .catch(error => {
-            debugLog("caught2: ", error);
+            debugLog("caught1: ", error);
             connection.rollback(() => {
               releaseDBConnection(db, connection);
               next(error);
             });
           });
+      })
+      .catch(error => {
+        debugLog("caught2: ", error);
+        connection.rollback(() => {
+          releaseDBConnection(db, connection);
+          next(error);
+        });
       });
-    });
   } catch (e) {
     next(e);
   }

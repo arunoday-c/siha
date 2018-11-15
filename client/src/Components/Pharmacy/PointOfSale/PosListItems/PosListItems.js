@@ -28,8 +28,7 @@ import {
   CloseItemBatch,
   onchangegridcol,
   PosheaderCalculation,
-  ViewInsurance,
-  getItemLocationStock
+  ViewInsurance
 } from "./PosListItemsEvents";
 import ReciptForm from "./ReciptDetails/AddReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -119,7 +118,10 @@ class PosListItems extends Component {
                               valueField: "hims_d_item_master_id",
                               data: this.props.positemlist
                             },
-                            onChange: itemchangeText.bind(this, this, context)
+                            onChange: itemchangeText.bind(this, this, context),
+                            others: {
+                              disabled: this.state.dataExitst
+                            }
                           }}
                         />
                         <AlagehAutoComplete
@@ -158,6 +160,8 @@ class PosListItems extends Component {
                             onChange: null
                           }}
                         />
+                      </div>
+                      <div className="row">
                         <AlagehAutoComplete
                           div={{ className: "col" }}
                           label={{ forceLabel: "UOM", isImp: true }}
@@ -170,8 +174,10 @@ class PosListItems extends Component {
                               valueField: "uom_id",
                               data: this.state.ItemUOM
                             },
-
-                            onChange: UomchangeTexts.bind(this, this, context)
+                            onChange: UomchangeTexts.bind(this, this, context),
+                            others: {
+                              disabled: this.state.dataExitst
+                            }
                           }}
                         />
                         <AlagehFormGroup
@@ -224,6 +230,9 @@ class PosListItems extends Component {
                                 this,
                                 context
                               )
+                            },
+                            others: {
+                              disabled: this.state.dataExitst
                             }
                           }}
                         />
@@ -239,6 +248,24 @@ class PosListItems extends Component {
                             name: "unit_cost",
                             events: {
                               onChange: numberchangeTexts.bind(this, this)
+                            },
+                            others: {
+                              disabled: true
+                            }
+                          }}
+                        />
+                        <AlagehFormGroup
+                          div={{ className: "col" }}
+                          label={{
+                            forceLabel: "Quantity in Hand"
+                          }}
+                          textBox={{
+                            decimal: { allowNegative: false },
+                            value: this.state.qtyhand,
+                            className: "txt-fld",
+                            name: "qtyhand",
+                            events: {
+                              onChange: null
                             },
                             others: {
                               disabled: true
@@ -282,7 +309,8 @@ class PosListItems extends Component {
                           selectedLang={this.state.selectedLang}
                           inputsparameters={{
                             item_id: this.state.item_id,
-                            location_id: this.state.location_id
+                            location_id: this.state.location_id,
+                            Batch_Items: this.state.Batch_Items
                           }}
                         />
 
@@ -393,7 +421,15 @@ class PosListItems extends Component {
                                   );
                                 }
                               },
-
+                              {
+                                fieldName: "qtyhand",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ forceLabel: "Quantity In Hand" }}
+                                  />
+                                ),
+                                disabled: true
+                              },
                               {
                                 fieldName: "expiry_date",
                                 label: (
@@ -402,7 +438,6 @@ class PosListItems extends Component {
                                   />
                                 ),
                                 displayTemplate: row => {
-                                  debugger;
                                   return (
                                     <span>
                                       {dateFormater(this, row.expiry_date)}
@@ -628,9 +663,9 @@ class PosListItems extends Component {
                               onEdit: row => {},
                               onDone: updatePosDetail.bind(this, this)
                             }}
-                            onRowSelect={row => {
-                              getItemLocationStock(this, row);
-                            }}
+                            // onRowSelect={row => {
+                            //   getItemLocationStock(this, row);
+                            // }}
                           />
                         </div>
                       </div>
@@ -639,20 +674,26 @@ class PosListItems extends Component {
                 </div>
 
                 <div className="row">
-                  <div className="col-lg-2">
-                    <div
-                      style={{ border: "1px solid #000", paddingLeft: "10px" }}
-                    >
-                      <h5>Quantity in Hand</h5>
-                      <h6>
-                        {this.state.total_quantity
-                          ? this.state.total_quantity + " nos"
-                          : "0 nos"}
-                      </h6>
-                    </div>
-                   
-                  </div>
-                  <div className="col-lg-5" />
+                  <div className="col" />
+                  {/* <div
+                    className="col-lg-2"
+                    style={{
+                      border: "1px solid #cccccc",
+                      background: "f7f7f7",
+                      marginBottom: 10
+                    }}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Quantity in Hand"
+                      }}
+                    />
+                    <h6>
+                      {this.state.total_quantity
+                        ? this.state.total_quantity + " nos"
+                        : "0 nos"}
+                    </h6>
+                  </div> */}
                   <div className="col-lg-5" style={{ textAlign: "right" }}>
                     <div className="row">
                       <div className="col-lg-4">
@@ -916,7 +957,7 @@ class PosListItems extends Component {
                               onChange: adjustadvance.bind(this, this, context)
                             },
                             others: {
-                              disabled: !this.state.Cashchecked,
+                              disabled: this.state.saveEnable,
                               placeholder: "0.00",
                               onBlur: PosheaderCalculation.bind(this, this),
                               onFocus: e => {
@@ -941,7 +982,7 @@ class PosListItems extends Component {
                               onChange: discounthandle.bind(this, this, context)
                             },
                             others: {
-                              disabled: !this.state.Cashchecked,
+                              disabled: this.state.saveEnable,
                               placeholder: "0.00",
                               onBlur: PosheaderCalculation.bind(this, this),
                               onFocus: e => {
@@ -966,7 +1007,7 @@ class PosListItems extends Component {
                               onChange: discounthandle.bind(this, this, context)
                             },
                             others: {
-                              disabled: !this.state.Cashchecked,
+                              disabled: this.state.saveEnable,
                               placeholder: "0.00",
                               onBlur: PosheaderCalculation.bind(this, this),
                               onFocus: e => {
@@ -1017,9 +1058,10 @@ class PosListItems extends Component {
                             decimal: { allowNegative: false },
                             value: this.state.credit_amount,
                             className: "txt-fld",
-                            name: "state_credit_amount",
+                            name: "credit_amount",
 
                             events: {
+                              disabled: this.state.saveEnable,
                               onChange: null
                             }
                           }}
@@ -1064,8 +1106,8 @@ function mapStateToProps(state) {
     itemcategory: state.itemcategory,
     itemuom: state.itemuom,
     posheader: state.posheader,
-    itemgroup: state.itemgroup,
-    itemBatch: state.itemBatch
+    itemgroup: state.itemgroup
+    // itemBatch: state.itemBatch
   };
 }
 
@@ -1081,8 +1123,8 @@ function mapDispatchToProps(dispatch) {
       getServicesCost: AlgaehActions,
       getInsuranceServicesCost: AlgaehActions,
       generateBill: AlgaehActions,
-      getItemGroup: AlgaehActions,
-      getItemLocationStock: AlgaehActions
+      getItemGroup: AlgaehActions
+      // getItemLocationStock: AlgaehActions
     },
     dispatch
   );

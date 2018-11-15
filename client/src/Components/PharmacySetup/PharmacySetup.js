@@ -57,36 +57,7 @@ class PharmacySetup extends Component {
   render() {
     return (
       <div className="hims_pharmacy_setup">
-        <BreadCrumb
-          title={
-            <AlgaehLabel
-              label={{ fieldName: "Pharmacy_setup", align: "ltr" }}
-            />
-          }
-          breadStyle={this.props.breadStyle}
-          pageNavPath={[
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{
-                    fieldName: "Pharmacy_settings",
-                    align: "ltr"
-                  }}
-                />
-              )
-            },
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{ fieldName: "Pharmacy_setup", align: "ltr" }}
-                />
-              )
-            }
-          ]}
-          //screenName="Master Setup"
-          //   HideHalfbread={false}
-        />
-        <div className="tab-container toggle-section spacing-push">
+        <div className="tab-container toggle-section margin-top-15">
           <ul className="nav">
             <li
               algaehtabs={"ItemCategory"}
@@ -98,20 +69,6 @@ class PharmacySetup extends Component {
                 <AlgaehLabel
                   label={{
                     fieldName: "item_category"
-                  }}
-                />
-              }
-            </li>
-            <li
-              style={{ marginRight: 2 }}
-              algaehtabs={"ItemGeneric"}
-              className={"nav-item tab-button "}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "item_generic"
                   }}
                 />
               }
@@ -131,6 +88,22 @@ class PharmacySetup extends Component {
                 />
               }
             </li>
+
+            <li
+              style={{ marginRight: 2 }}
+              algaehtabs={"ItemGeneric"}
+              className={"nav-item tab-button "}
+              onClick={this.openTab.bind(this)}
+            >
+              {
+                <AlgaehLabel
+                  label={{
+                    fieldName: "item_generic"
+                  }}
+                />
+              }
+            </li>
+
             <li
               style={{ marginRight: 2 }}
               className={"nav-item tab-button "}
@@ -212,10 +185,10 @@ class PharmacySetup extends Component {
 
           {this.state.pageDisplay === "ItemCategory" ? (
             <ItemCategory />
-          ) : this.state.pageDisplay === "ItemGeneric" ? (
-            <ItemGeneric />
           ) : this.state.pageDisplay === "ItemGroup" ? (
             <ItemGroup />
+          ) : this.state.pageDisplay === "ItemGeneric" ? (
+            <ItemGeneric />
           ) : this.state.pageDisplay === "ItemUOM" ? (
             <ItemUOM />
           ) : this.state.pageDisplay === "Location" ? (

@@ -58,6 +58,8 @@ import WorkListGeneration from "./Components/InsuranceClaims/WorkListGeneration/
 import RCMDesktop from "./Components/InsuranceClaims/RCMDesktop/RCMDesktop";
 import StaffCashCollection from "./Components/StaffCashCollection/StaffCashCollection";
 import InvoiceGeneration from "./Components/InsuranceClaims/InvoiceGeneration/InvoiceGeneration";
+import InventorySetup from "./Components/InventorySetup/InventorySetup";
+
 // function height() {
 //   let height =
 //     window.innerHeight * (window.innerHeight / document.body.offsetHeight);
@@ -122,7 +124,8 @@ const componts = (selectedLang, breadStyle) => {
     WorkListGeneration: <WorkListGeneration SelectLanguage={selectedLang} />,
     RCMDesktop: <RCMDesktop SelectLanguage={selectedLang} />,
     StaffCashCollection: <StaffCashCollection SelectLanguage={selectedLang} />,
-    InvoiceGeneration: <InvoiceGeneration SelectLanguage={selectedLang} />
+    InvoiceGeneration: <InvoiceGeneration SelectLanguage={selectedLang} />,
+    InventorySetup: <InventorySetup SelectLanguage={selectedLang} />
   };
 };
 

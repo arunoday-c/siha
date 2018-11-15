@@ -1,2 +1,6 @@
-.procedures {
+#procedureGroupGrid,
+#procedureGrid {
+  .ReactTable {
+    max-height: 80vh !important;
+  }
 }

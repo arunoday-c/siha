@@ -28,20 +28,7 @@ class ProcedureSetup extends Component {
   render() {
     return (
       <div className="procedure-setup">
-        <BreadCrumb
-          title="Procedure Setup"
-          breadStyle={this.props.breadStyle}
-          pageNavPath={[
-            {
-              pageName: "Settings"
-            },
-            {
-              pageName: "Appointment Setup"
-            }
-          ]}
-        />
-
-        <div className="tab-container toggle-section spacing-push">
+        <div className="tab-container toggle-section margin-top-15">
           <ul className="nav">
             <li
               algaehtabs={"ProcedureGroup"}

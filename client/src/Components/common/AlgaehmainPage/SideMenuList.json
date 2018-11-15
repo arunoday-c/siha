@@ -48,6 +48,13 @@
         "path": "/InsuranceSetup"
       },
       {
+        "name": "Inventory Setup",
+        "label": "Inventory Setup",
+        "arlabel": "إعداد المخزون",
+        "path": "/InventorySetup"
+      },
+
+      {
         "name": "Investigation Setup",
         "label": "Investigation Setup",
         "arlabel": "إعداد التحقيق",

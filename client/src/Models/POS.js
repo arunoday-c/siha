@@ -47,7 +47,7 @@ export default {
       pharmacy_stock_detail: [],
       advance_adjust: 0,
       ItemUOM: [],
-      total_quantity: 0,
+      qtyhand: 0,
 
       insured: "N",
       sec_insured: "N",

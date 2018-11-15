@@ -94,15 +94,28 @@ class CommissionSetup extends Component {
           {context => (
             <div className="hptl-phase1-commissiom-setup-form">
               <div className="col-lg-12">
-                <div
-                  className="row card-deck panel-layout"
-                  style={{ paddingTop: "1%", paddingBottom: "1%" }}
-                >
+                <div className="row">
                   {/* Patient code */}
-                  <div className="col-lg-6 card box-shadow-normal">
+                  <div
+                    className="col-lg-6"
+                    style={{
+                      borderRight: "1px solid #d3d3d3",
+                      paddingBottom: 10
+                    }}
+                  >
+                    <h6
+                      style={{
+                        borderBottom: "1px solid #ccc",
+                        paddingBottom: 5,
+                        paddingTop: 10,
+                        fontSize: "0.9rem"
+                      }}
+                    >
+                      Service Commission
+                    </h6>
                     <div className="row">
                       <AlagehAutoComplete
-                        div={{ className: "col-lg-4 mandatory" }}
+                        div={{ className: "col mandatory" }}
                         label={{
                           fieldName: "service_type_id",
                           isImp: true
@@ -129,7 +142,7 @@ class CommissionSetup extends Component {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col-lg-4" }}
+                        div={{ className: "col" }}
                         label={{
                           fieldName: "op_cash_comission_percent"
                         }}
@@ -145,7 +158,7 @@ class CommissionSetup extends Component {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col-lg-4" }}
+                        div={{ className: "col" }}
                         label={{
                           fieldName: "op_credit_comission_percent"
                         }}
@@ -159,8 +172,10 @@ class CommissionSetup extends Component {
                           }
                         }}
                       />
+                    </div>
+                    <div className="row">
                       <AlagehFormGroup
-                        div={{ className: "col-lg-4" }}
+                        div={{ className: "col" }}
                         label={{
                           fieldName: "ip_cash_commission_percent"
                         }}
@@ -175,7 +190,7 @@ class CommissionSetup extends Component {
                         }}
                       />
                       <AlagehFormGroup
-                        div={{ className: "col-lg-4" }}
+                        div={{ className: "col" }}
                         label={{
                           fieldName: "ip_credit_commission_percent"
                         }}
@@ -190,10 +205,7 @@ class CommissionSetup extends Component {
                         }}
                       />
 
-                      <div
-                        className="col-lg-1 actions"
-                        style={{ paddingTop: "4%" }}
-                      >
+                      <div className="col actions" style={{ paddingTop: "4%" }}>
                         <a className="btn btn-primary btn-circle active">
                           <i
                             className="fas fa-plus"
@@ -220,24 +232,21 @@ class CommissionSetup extends Component {
                               displayTemplate: row => {
                                 return (
                                   <span>
-                                    <IconButton
-                                      color="primary"
-                                      title="Add Template"
-                                      style={{ maxHeight: "4vh" }}
-                                    >
-                                      <i
-                                        className="fa fa-trash"
-                                        aria-hidden="true"
-                                        onClick={deleteSeviceTypeComm.bind(
-                                          this,
-                                          this,
-                                          context,
-                                          row
-                                        )}
-                                      />
-                                    </IconButton>
+                                    <i
+                                      className="fas fa-trash-alt"
+                                      aria-hidden="true"
+                                      onClick={deleteSeviceTypeComm.bind(
+                                        this,
+                                        this,
+                                        context,
+                                        row
+                                      )}
+                                    />
                                   </span>
                                 );
+                              },
+                              others: {
+                                maxWidth: 50
                               }
                             },
                             {
@@ -325,10 +334,20 @@ class CommissionSetup extends Component {
                       </div>
                     </div>
                   </div>
-                  <div className="col-lg-6 card box-shadow-normal">
+                  <div className="col-lg-6">
+                    <h6
+                      style={{
+                        borderBottom: "1px solid #ccc",
+                        paddingBottom: 5,
+                        paddingTop: 10,
+                        fontSize: "0.9rem"
+                      }}
+                    >
+                      Service Type Commission
+                    </h6>
                     <div className="row">
                       <AlagehAutoComplete
-                        div={{ className: "col-lg-4 mandatory" }}
+                        div={{ className: "col mandatory" }}
                         label={{
                           fieldName: "service_type_id",
                           isImp: true
@@ -355,7 +374,7 @@ class CommissionSetup extends Component {
                       />
 
                       <AlagehAutoComplete
-                        div={{ className: "col-lg-4 mandatory" }}
+                        div={{ className: "col-5 mandatory" }}
                         label={{
                           forceLabel: "Select Service Type",
                           isImp: true
@@ -377,7 +396,7 @@ class CommissionSetup extends Component {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col-lg-4" }}
+                        div={{ className: "col" }}
                         label={{
                           fieldName: "op_cash_comission_percent"
                         }}
@@ -391,9 +410,10 @@ class CommissionSetup extends Component {
                           }
                         }}
                       />
-
+                    </div>
+                    <div className="row">
                       <AlagehFormGroup
-                        div={{ className: "col-lg-4" }}
+                        div={{ className: "col" }}
                         label={{
                           fieldName: "op_credit_comission_percent"
                         }}
@@ -408,7 +428,7 @@ class CommissionSetup extends Component {
                         }}
                       />
                       <AlagehFormGroup
-                        div={{ className: "col-lg-4" }}
+                        div={{ className: "col" }}
                         label={{
                           fieldName: "ip_cash_commission_percent"
                         }}
@@ -423,7 +443,7 @@ class CommissionSetup extends Component {
                         }}
                       />
                       <AlagehFormGroup
-                        div={{ className: "col-lg-3" }}
+                        div={{ className: "col" }}
                         label={{
                           fieldName: "ip_credit_commission_percent"
                         }}
@@ -438,10 +458,7 @@ class CommissionSetup extends Component {
                         }}
                       />
 
-                      <div
-                        className="col-lg-1 actions"
-                        style={{ paddingTop: "4%" }}
-                      >
+                      <div className="col actions" style={{ paddingTop: "4%" }}>
                         <a
                           href="javascript:;"
                           className="btn btn-primary btn-circle active"
@@ -467,24 +484,21 @@ class CommissionSetup extends Component {
                               displayTemplate: row => {
                                 return (
                                   <span>
-                                    <IconButton
-                                      color="primary"
-                                      title="Add Template"
-                                      style={{ maxHeight: "4vh" }}
-                                    >
-                                      <i
-                                        className="fa fa-trash"
-                                        aria-hidden="true"
-                                        onClick={deleteServiceComm.bind(
-                                          this,
-                                          this,
-                                          context,
-                                          row
-                                        )}
-                                      />
-                                    </IconButton>
+                                    <i
+                                      className="fas fa-trash-alt"
+                                      aria-hidden="true"
+                                      onClick={deleteServiceComm.bind(
+                                        this,
+                                        this,
+                                        context,
+                                        row
+                                      )}
+                                    />
                                   </span>
                                 );
+                              },
+                              others: {
+                                maxWidth: 50
                               }
                             },
                             {

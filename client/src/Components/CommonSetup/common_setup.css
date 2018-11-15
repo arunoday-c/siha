@@ -4,3 +4,6 @@
   border-bottom-right-radius: 5px;
   border-top-right-radius: 5px;
   background: #fff; }
+
+.common_setup .ReactTable {
+  max-height: 80vh !important; }

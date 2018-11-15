@@ -54,21 +54,7 @@ class CommonSetup extends Component {
   render() {
     return (
       <div className="common_setup">
-        <BreadCrumb
-          title="Common Setup"
-          breadStyle={this.props.breadStyle}
-          pageNavPath={[
-            {
-              pageName: "Settings"
-            },
-            {
-              pageName: "Common Setup"
-            }
-          ]}
-          //screenName="Master Setup"
-          //   HideHalfbread={false}
-        />
-        <div className="tab-container toggle-section spacing-push">
+        <div className="tab-container toggle-section" style={{ marginTop: 15 }}>
           <ul className="nav">
             <li
               algaehtabs={"VisitType"}
@@ -84,7 +70,6 @@ class CommonSetup extends Component {
               }
             </li>
             <li
-              
               algaehtabs={"VisaType"}
               className={"nav-item tab-button"}
               onClick={this.openTab.bind(this)}
@@ -98,7 +83,6 @@ class CommonSetup extends Component {
               }
             </li>
             <li
-              
               algaehtabs={"IDType"}
               className={"nav-item tab-button"}
               onClick={this.openTab.bind(this)}
@@ -113,7 +97,6 @@ class CommonSetup extends Component {
             </li>
             <li
               algaehtabs={"PatientType"}
-              
               className={"nav-item tab-button"}
               onClick={this.openTab.bind(this)}
             >

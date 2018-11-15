@@ -19,8 +19,7 @@ import {
   deleteRequisitionDetail,
   updatePosDetail,
   onchangegridcol,
-  UomchangeTexts,
-  getItemLocationStock
+  UomchangeTexts
 } from "./RequisitionItemsEvents";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 
@@ -190,6 +189,50 @@ class RequisitionItems extends Component {
                           }
                         }}
                       />
+
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        label={{
+                          forceLabel: "To Qty In Hand"
+                        }}
+                        textBox={{
+                          number: {
+                            allowNegative: false,
+                            thousandSeparator: ","
+                          },
+                          className: "txt-fld",
+                          name: "to_qtyhand",
+                          value: this.state.to_qtyhand,
+                          events: {
+                            onChange: null
+                          },
+                          others: {
+                            disabled: true
+                          }
+                        }}
+                      />
+
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        label={{
+                          forceLabel: "Fron Qty In Hand"
+                        }}
+                        textBox={{
+                          number: {
+                            allowNegative: false,
+                            thousandSeparator: ","
+                          },
+                          className: "txt-fld",
+                          name: "from_qtyhand",
+                          value: this.state.from_qtyhand,
+                          events: {
+                            onChange: null
+                          },
+                          others: {
+                            disabled: true
+                          }
+                        }}
+                      />
                     </div>
                   </div>
                   <div className="row">
@@ -201,12 +244,6 @@ class RequisitionItems extends Component {
                       >
                         Add Item
                       </button>
-                      {/* <button
-                          className="btn btn-default"
-                          //   onClick={processItems.bind(this, this)}
-                        >
-                          Select Batch
-                        </button> */}
                     </div>
                   </div>
                 </div>
@@ -399,6 +436,25 @@ class RequisitionItems extends Component {
                             },
 
                             {
+                              fieldName: "to_qtyhand",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "To Qty in Hand" }}
+                                />
+                              ),
+                              disabled: true
+                            },
+                            {
+                              fieldName: "from_qtyhand",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "From Qty in Hand" }}
+                                />
+                              ),
+                              disabled: true
+                            },
+
+                            {
                               fieldName: "quantity_required",
                               label: (
                                 <AlgaehLabel
@@ -406,22 +462,6 @@ class RequisitionItems extends Component {
                                 />
                               ),
                               disabled: true
-                              // editorTemplate: row => {
-                              //   return (
-                              //     <AlagehFormGroup
-                              //       div={{}}
-                              //       textBox={{
-                              //         value: row.quantity_required,
-                              //         className: "txt-fld",
-                              //         name: "quantity_required",
-                              //         events: { onChange: null },
-                              //         others: {
-                              //           disabled: true
-                              //         }
-                              //       }}
-                              //     />
-                              //   );
-                              // }
                             },
                             {
                               fieldName: "quantity_authorized",
@@ -472,34 +512,11 @@ class RequisitionItems extends Component {
                             onEdit: row => {},
                             onDone: updatePosDetail.bind(this, this, context)
                           }}
-                          onRowSelect={row => {
-                            getItemLocationStock(this, row);
-                          }}
+                          // onRowSelect={row => {
+                          //   getItemLocationStock(this, row);
+                          // }}
                         />
                       </div>
-                    </div>
-                    <div className="row">
-                      <div
-                        className="col-lg-2"
-                        style={{
-                          paddingTop: "10px"
-                        }}
-                      >
-                        <div
-                          style={{
-                            border: "1px solid #000",
-                            paddingLeft: "10px"
-                          }}
-                        >
-                          <h5>Quantity in Hand</h5>
-                          <h6>
-                            {this.state.total_quantity
-                              ? this.state.total_quantity + " nos"
-                              : "0 nos"}
-                          </h6>
-                        </div>
-                      </div>
-                      <div className="col-lg-10" />
                     </div>
                   </div>
                 </div>

@@ -104,40 +104,7 @@ class InsuranceSetup extends Component {
   render() {
     return (
       <div>
-        <BreadCrumb
-          title={
-            <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
-          }
-          breadStyle={this.props.breadStyle}
-          pageNavPath={[
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{
-                    fieldName: "form_home",
-                    align: "ltr"
-                  }}
-                />
-              )
-            },
-            {
-              pageName: (
-                <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
-              )
-            }
-          ]}
-        />
-        {/* <div className="tab-container toggle-section">
-              <ul className="nav">
-                <li className={"nav-item tab-button active"}>
-                  <label className="style_Label ">Insurance Provider List</label>
-                </li>
-              </ul>
-            </div> */}
-        <div
-          className="portlet portlet-bordered box-shadow-normal margin-bottom-15"
-          style={{ marginTop: 90 }}
-        >
+        <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15 margin-top-15">
           <div className="portlet-title">
             <div className="caption">
               <h3 className="caption-subject">Insurance Provider List</h3>

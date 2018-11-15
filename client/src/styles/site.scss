@@ -60,6 +60,12 @@ body {
     border-color: #34b8bc;
   }
 
+  .btn-primary.disabled,
+  .btn-primary:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
   .btn-default {
     color: #212529;
     background-color: none;

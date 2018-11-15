@@ -99,33 +99,33 @@ const numberchangeTexts = ($this, context, e) => {
   }
 };
 
-const getItemLocationStock = ($this, value) => {
-  debugger;
-  $this.props.getItemLocationStock({
-    uri: "/pharmacyGlobal/getItemLocationStock",
-    method: "GET",
-    data: {
-      location_id: $this.state.location_id,
-      item_id: value.item_id
-    },
-    redux: {
-      type: "ITEMS_BATCH_GET_DATA",
-      mappingName: "itemBatch"
-    },
-    afterSuccess: data => {
-      if (data.length !== 0) {
-        let total_quantity = 0;
-        for (let i = 0; i < data.length; i++) {
-          let qtyhand = data[i].qtyhand;
-          total_quantity = total_quantity + qtyhand;
-        }
-        $this.setState({
-          total_quantity: total_quantity
-        });
-      }
-    }
-  });
-};
+// const getItemLocationStock = ($this, value) => {
+//   debugger;
+//   $this.props.getItemLocationStock({
+//     uri: "/pharmacyGlobal/getItemLocationStock",
+//     method: "GET",
+//     data: {
+//       location_id: $this.state.location_id,
+//       item_id: value.item_id
+//     },
+//     redux: {
+//       type: "ITEMS_BATCH_GET_DATA",
+//       mappingName: "itemBatch"
+//     },
+//     afterSuccess: data => {
+//       if (data.length !== 0) {
+//         let total_quantity = 0;
+//         for (let i = 0; i < data.length; i++) {
+//           let qtyhand = data[i].qtyhand;
+//           total_quantity = total_quantity + qtyhand;
+//         }
+//         $this.setState({
+//           total_quantity: total_quantity
+//         });
+//       }
+//     }
+//   });
+// };
 const itemchangeText = ($this, context, e) => {
   debugger;
   let name = e.name || e.target.name;
@@ -158,8 +158,10 @@ const itemchangeText = ($this, context, e) => {
             expiry_date: data.locationResult[0].expirydt,
             batchno: data.locationResult[0].batchno,
             grn_no: data.locationResult[0].grnno,
+            qtyhand: data.locationResult[0].qtyhand,
             ItemUOM: data.uomResult,
             Batch_Items: data.locationResult,
+
             addItemButton: false
           });
 
@@ -175,12 +177,13 @@ const itemchangeText = ($this, context, e) => {
               expiry_date: data.locationResult[0].expirydt,
               batchno: data.locationResult[0].batchno,
               grn_no: data.locationResult[0].grnno,
+              qtyhand: data.locationResult[0].qtyhand,
               ItemUOM: data.uomResult,
               Batch_Items: data.locationResult,
               addItemButton: false
             });
           }
-          getItemLocationStock($this, { item_id: value });
+          // getItemLocationStock($this, { item_id: value });
         } else {
           swalMessage({
             title: "No stock available for selected Item.",
@@ -342,6 +345,7 @@ const AddItems = ($this, context) => {
             data.billdetails[0].uom_id = $this.state.uom_id;
             data.billdetails[0].operation = "-";
             data.billdetails[0].grn_no = $this.state.grn_no;
+            data.billdetails[0].qtyhand = $this.state.qtyhand;
             data.billdetails[0].service_id = data.billdetails[0].services_id;
             data.billdetails[0].discount_amount =
               data.billdetails[0].discount_amout;
@@ -363,7 +367,8 @@ const AddItems = ($this, context) => {
               conversion_factor: 1,
               grn_no: null,
               item_group_id: null,
-              item_category: null
+              item_category: null,
+              qtyhand: 0
             });
           }
 
@@ -379,7 +384,8 @@ const AddItems = ($this, context) => {
             conversion_factor: 1,
             grn_no: null,
             item_group_id: null,
-            selectBatchButton: false
+            selectBatchButton: false,
+            qtyhand: 0
           });
 
           $this.props.PosHeaderCalculations({
@@ -660,6 +666,5 @@ export {
   CloseItemBatch,
   onchangegridcol,
   PosheaderCalculation,
-  ViewInsurance,
-  getItemLocationStock
+  ViewInsurance
 };

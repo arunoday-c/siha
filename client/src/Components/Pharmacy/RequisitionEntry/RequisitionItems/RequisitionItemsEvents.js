@@ -47,7 +47,17 @@ const itemchangeText = ($this, context, e) => {
       afterSuccess: data => {
         if (data.locationResult.length > 0) {
           debugger;
-          getItemLocationStock($this, { item_id: value });
+          getItemLocationStock($this, context, {
+            location_id: $this.state.to_location_id,
+            item_id: value,
+            set: "To"
+          });
+
+          getItemLocationStock($this, context, {
+            location_id: $this.state.from_location_id,
+            item_id: value,
+            set: "From"
+          });
           $this.setState({
             [name]: value,
             item_category_id: e.selected.category_id,
@@ -117,7 +127,9 @@ const AddItems = ($this, context) => {
       item_id: $this.state.item_id,
       quantity_required: $this.state.quantity_required,
       quantity_authorized: 0,
-      item_uom: $this.state.item_uom
+      item_uom: $this.state.item_uom,
+      from_qtyhand: $this.state.from_qtyhand,
+      to_qtyhand: $this.state.to_qtyhand
     };
     pharmacy_stock_detail.push(ItemInput);
     $this.setState({
@@ -128,7 +140,9 @@ const AddItems = ($this, context) => {
       item_id: null,
       quantity_required: 0,
 
-      item_uom: null
+      item_uom: null,
+      from_qtyhand: 0,
+      to_qtyhand: 0
     });
 
     if (context !== undefined) {
@@ -140,7 +154,9 @@ const AddItems = ($this, context) => {
         item_group_id: null,
         item_id: null,
         quantity_required: 0,
-        item_uom: null
+        item_uom: null,
+        from_qtyhand: 0,
+        to_qtyhand: 0
       });
     }
   }
@@ -215,13 +231,13 @@ const onchangegridcol = ($this, context, row, e) => {
   }
 };
 
-const getItemLocationStock = ($this, value) => {
+const getItemLocationStock = ($this, context, value) => {
   debugger;
   $this.props.getItemLocationStock({
     uri: "/pharmacyGlobal/getItemLocationStock",
     method: "GET",
     data: {
-      location_id: $this.state.to_location_id,
+      location_id: value.location_id,
       item_id: value.item_id
     },
     redux: {
@@ -235,9 +251,26 @@ const getItemLocationStock = ($this, value) => {
           let qtyhand = data[i].qtyhand;
           total_quantity = total_quantity + qtyhand;
         }
-        $this.setState({
-          total_quantity: total_quantity
-        });
+        if (value.set === "To") {
+          $this.setState({
+            to_qtyhand: total_quantity
+          });
+
+          if (context !== undefined) {
+            context.updateState({
+              to_qtyhand: total_quantity
+            });
+          }
+        } else if (value.set === "From") {
+          $this.setState({
+            from_qtyhand: total_quantity
+          });
+          if (context !== undefined) {
+            context.updateState({
+              from_qtyhand: total_quantity
+            });
+          }
+        }
       }
     }
   });
@@ -251,6 +284,5 @@ export {
   datehandle,
   deleteRequisitionDetail,
   updatePosDetail,
-  onchangegridcol,
-  getItemLocationStock
+  onchangegridcol
 };
