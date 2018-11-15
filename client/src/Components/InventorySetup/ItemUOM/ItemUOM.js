@@ -28,7 +28,7 @@ class ItemUOM extends Component {
     super(props);
 
     this.state = {
-      hims_d_pharmacy_uom_id: "",
+      hims_d_Inventory_uom_id: "",
       uom_description: "",
 
       description_error: false,
@@ -191,10 +191,12 @@ class ItemUOM extends Component {
                     }
                   }
                 ]}
-                keyId="hims_d_pharmacy_uom_id"
+                keyId="hims_d_Inventory_uom_id"
                 dataSource={{
                   data:
-                    this.props.itemuom === undefined ? [] : this.props.itemuom
+                    this.props.inventoryitemuom === undefined
+                      ? []
+                      : this.props.inventoryitemuom
                 }}
                 isEditable={true}
                 paging={{ page: 0, rowsPerPage: 10 }}
@@ -215,7 +217,7 @@ class ItemUOM extends Component {
 
 function mapStateToProps(state) {
   return {
-    itemuom: state.itemuom,
+    inventoryitemuom: state.inventoryitemuom,
     userdrtails: state.userdrtails
   };
 }

@@ -1,7 +1,6 @@
 import http from "http";
 import express from "express";
 import bodyParser from "body-parser";
-import config from "./keys/keys";
 import routes from "./routes";
 import passport from "passport";
 import cors from "cors";
@@ -29,7 +28,7 @@ app.use(cors());
 //parse application json
 app.use(
   bodyParser.json({
-    limit: config.bodyLimit
+    limit: keys.bodyLimit
   })
 );
 //passport config

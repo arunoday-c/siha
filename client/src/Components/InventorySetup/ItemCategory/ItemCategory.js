@@ -48,7 +48,6 @@ class ItemCategory extends Component {
   }
 
   dateFormater({ date }) {
-    debugger;
     if (date !== null) {
       return moment(date).format(Options.dateFormat);
     }

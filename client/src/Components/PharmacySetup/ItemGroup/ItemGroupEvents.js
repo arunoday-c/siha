@@ -41,7 +41,7 @@ const updateItemGroup = ($this, data) => {
 
 const showconfirmDialog = ($this, row) => {
   swal({
-    title: "Are you sure you want to delete this Analytes?",
+    title: "Are you sure you want to delete this Group?",
     type: "warning",
     showCancelButton: true,
     confirmButtonText: "Yes!",

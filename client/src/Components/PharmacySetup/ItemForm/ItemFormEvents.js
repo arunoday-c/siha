@@ -40,7 +40,7 @@ const updateItemForm = ($this, data) => {
 
 const showconfirmDialog = ($this, row) => {
   swal({
-    title: "Are you sure you want to delete this Category?",
+    title: "Are you sure you want to delete this Form?",
     type: "warning",
     showCancelButton: true,
     confirmButtonText: "Yes!",

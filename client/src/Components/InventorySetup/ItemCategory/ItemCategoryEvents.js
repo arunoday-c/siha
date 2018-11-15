@@ -17,12 +17,11 @@ const onchangegridcol = ($this, row, e) => {
   let value = e.value || e.target.value;
   row[name] = value;
   row.update();
-  //resetState($this);
 };
 
 const updateItemCategory = ($this, data) => {
   algaehApiCall({
-    uri: "/pharmacy/updateItemCategory",
+    uri: "/inventory/updateItemCategory",
     data: data,
     method: "PUT",
     onSuccess: response => {
@@ -39,6 +38,7 @@ const updateItemCategory = ($this, data) => {
 };
 
 const showconfirmDialog = ($this, row) => {
+  debugger;
   swal({
     title: "Are you sure you want to delete this Category?",
     type: "warning",
@@ -50,13 +50,13 @@ const showconfirmDialog = ($this, row) => {
   }).then(willDelete => {
     if (willDelete.value) {
       let data = {
-        hims_d_item_category_id: row.hims_d_item_category_id,
+        hims_d_inventory_tem_category_id: row.hims_d_inventory_tem_category_id,
         category_desc: row.category_desc,
         category_status: row.category_status,
         record_status: "I"
       };
       algaehApiCall({
-        uri: "/pharmacy/updateItemCategory",
+        uri: "/inventory/updateItemCategory",
         data: data,
         method: "PUT",
         onSuccess: response => {
@@ -89,7 +89,7 @@ const insertItemCategory = ($this, e) => {
     alertTypeIcon: "warning",
     onSuccess: () => {
       algaehApiCall({
-        uri: "/pharmacy/addItemCategory",
+        uri: "/inventory/addItemCategory",
         data: $this.state,
         onSuccess: response => {
           if (response.data.success == true) {
@@ -111,7 +111,7 @@ const insertItemCategory = ($this, e) => {
 
 const getItemCategory = $this => {
   $this.props.getItemCategory({
-    uri: "/pharmacy/getItemCategory",
+    uri: "/inventory/getItemCategory",
     method: "GET",
     redux: {
       type: "ITEM_CATEGORY_GET_DATA",

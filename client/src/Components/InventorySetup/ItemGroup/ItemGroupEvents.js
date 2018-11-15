@@ -3,6 +3,7 @@ import swal from "sweetalert2";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 const changeTexts = ($this, e) => {
+  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   $this.setState({ [name]: value });
@@ -24,7 +25,7 @@ const updateItemGroup = ($this, data) => {
   // data.updated_by = getCookie("UserID");
 
   algaehApiCall({
-    uri: "/pharmacy/updateItemGroup",
+    uri: "/inventory/updateItemGroup",
     data: data,
     method: "PUT",
     onSuccess: response => {
@@ -41,7 +42,7 @@ const updateItemGroup = ($this, data) => {
 
 const showconfirmDialog = ($this, row) => {
   swal({
-    title: "Are you sure you want to delete this Analytes?",
+    title: "Are you sure you want to delete this Item Group?",
     type: "warning",
     showCancelButton: true,
     confirmButtonText: "Yes!",
@@ -51,14 +52,14 @@ const showconfirmDialog = ($this, row) => {
   }).then(willDelete => {
     if (willDelete.value) {
       let data = {
-        hims_d_item_group_id: row.hims_d_item_group_id,
+        hims_d_inventory_item_group_id: row.hims_d_inventory_item_group_id,
         group_description: row.group_description,
         category_id: row.category_id,
         group_status: row.group_status,
         record_status: "I"
       };
       algaehApiCall({
-        uri: "/pharmacy/updateItemGroup",
+        uri: "/inventory/updateItemGroup",
         data: data,
         method: "PUT",
         onSuccess: response => {
@@ -91,7 +92,7 @@ const insertItemGroup = ($this, e) => {
     alertTypeIcon: "warning",
     onSuccess: () => {
       algaehApiCall({
-        uri: "/pharmacy/addItemGroup",
+        uri: "/inventory/addItemGroup",
         data: $this.state,
         onSuccess: response => {
           if (response.data.success == true) {
@@ -113,11 +114,11 @@ const insertItemGroup = ($this, e) => {
 
 const getItemGroup = $this => {
   $this.props.getItemGroup({
-    uri: "/pharmacy/getItemGroup",
+    uri: "/inventory/getItemGroup",
     method: "GET",
     redux: {
-      type: "ANALYTES_GET_DATA",
-      mappingName: "itemgroup"
+      type: "INV_ITEM_GROUP_GET_DATA",
+      mappingName: "inventoryitemgroup"
     },
     afterSuccess: data => {
       if (data.length === 0 || data.length === undefined) {
@@ -132,11 +133,11 @@ const getItemGroup = $this => {
 
 const getItemCategory = $this => {
   $this.props.getItemCategory({
-    uri: "/pharmacy/getItemCategory",
+    uri: "/inventory/getItemCategory",
     method: "GET",
     redux: {
       type: "ANALYTES_GET_DATA",
-      mappingName: "itemcategory"
+      mappingName: "inventoryitemcategory"
     }
   });
 };

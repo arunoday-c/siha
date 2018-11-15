@@ -1,0 +1,52 @@
+{
+  "name": "documentmanagement",
+  "version": "1.0.0",
+  "description": "Algaeh document management",
+  "main": "dist",
+  "scripts": {
+    "document_server": "cross-env NODE_ENV=development nodemon -w src --exec \"babel-node src/document_management_server.js --presets es2015,stage-0\"",
+    "build": "babel src -s -D -d dist --presets es2015,stage-0",
+    "api": "npm run document_server",
+    "lint": "eslint src && eslint test",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "eslintConfig": {
+    "parserOptions": {
+      "ecmaVersion": 7,
+      "sourceType": "module"
+    },
+    "env": {
+      "node": true
+    },
+    "rules": {
+      "no-eval": true,
+      "no-console": 0,
+      "no-unused-vars": 1,
+      "no-script-url": 0
+    }
+  },
+  "author": "Algaeh technologies private limited.",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "concurrently": "^3.5.1",
+    "cors": "^2.8.4",
+    "cross-env": "^5.1.4",
+    "express": "^4.16.3",
+    "moment": "^2.22.1",
+    "mongoose": "^5.3.12",
+    "rotating-file-stream": "^1.3.6",
+    "sharp": "^0.21.0",
+    "winston": "^2.4.2",
+    "winston-daily-rotate-file": "^3.1.4"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^8.2.3",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "eslint": "^4.19.1",
+    "nodemon": "^1.17.3"
+  }
+}

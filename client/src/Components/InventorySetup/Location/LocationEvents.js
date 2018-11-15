@@ -19,10 +19,10 @@ const onchangegridcol = ($this, row, e) => {
   row.update();
   //resetState($this);
 };
-
+// Inventory
 const updateLocation = ($this, data) => {
   algaehApiCall({
-    uri: "/pharmacy/updatePharmacyLocation",
+    uri: "/inventory/updateInventoryLocation",
     data: data,
     method: "PUT",
     onSuccess: response => {
@@ -49,7 +49,7 @@ const showconfirmDialog = ($this, row) => {
   }).then(willDelete => {
     if (willDelete.value) {
       let data = {
-        hims_d_pharmacy_location_id: row.hims_d_pharmacy_location_id,
+        hims_d_inventory_location_id: row.hims_d_inventory_location_id,
         location_description: row.location_description,
         location_status: row.location_status,
         location_type: row.location_type,
@@ -57,7 +57,7 @@ const showconfirmDialog = ($this, row) => {
         record_status: "I"
       };
       algaehApiCall({
-        uri: "/pharmacy/updatePharmacyLocation",
+        uri: "/inventory/updateInventoryLocation",
         data: data,
         method: "PUT",
         onSuccess: response => {
@@ -91,7 +91,7 @@ const insertLocation = ($this, e) => {
     alertTypeIcon: "warning",
     onSuccess: () => {
       algaehApiCall({
-        uri: "/pharmacy/addPharmacyLocation",
+        uri: "/inventory/addInventoryLocation",
         data: $this.state,
         onSuccess: response => {
           if (response.data.success == true) {
@@ -113,11 +113,11 @@ const insertLocation = ($this, e) => {
 
 const getLocation = $this => {
   $this.props.getLocation({
-    uri: "/pharmacy/getPharmacyLocation",
+    uri: "/inventory/getInventoryLocation",
     method: "GET",
     redux: {
       type: "ANALYTES_GET_DATA",
-      mappingName: "location"
+      mappingName: "inventorylocation"
     },
     afterSuccess: data => {
       if (data.length === 0 || data.length === undefined) {
