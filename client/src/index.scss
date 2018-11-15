@@ -6,6 +6,226 @@ $forntSize: 0.7rem;
     height: 8px;
   }
 
+  //Reports Styles
+  .print-body {
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #3d3d3d;
+      font-size: 0.8rem;
+      background: #f2f2f2;
+    }
+
+    /*Main Print Only CSS*/
+    .print-body {
+      width: 98%;
+      margin: 10px auto;
+      padding: 10px;
+      border: 1px solid #e4e4e4;
+      box-sizing: border-box;
+      box-shadow: 0 3px 10px #ececec;
+      background: #fff;
+    }
+
+    /*Header Only CSS*/
+    header {
+      margin: 0 0 10px;
+      padding: 0 0 10px;
+      border-bottom: 1px solid #3d3d3d;
+      display: block;
+      width: 100%;
+    }
+
+    .hospitalLogo {
+      color: #ccc;
+      text-align: center;
+      float: left;
+      border-right: 1px dotted #ccc;
+    }
+
+    .hospitalLogo img {
+      margin: 0;
+      padding: 0;
+      border: none;
+      height: 60px;
+    }
+
+    .otherInfo {
+      text-align: right;
+      float: right;
+      width: 15%;
+      border-left: 1px dotted #ccc;
+    }
+
+    .hospitalAddress {
+      text-align: center;
+      margin: 0 auto;
+      padding: 0 1%;
+      width: 65%;
+      min-height: 54px;
+    }
+
+    .hospitalAddress h4 {
+      margin: 0 0 5px;
+      padding: 0;
+      font-size: 1.3rem;
+    }
+
+    .hospitalAddress p {
+      margin: 0;
+      padding: 0;
+      line-height: 15px;
+      font-size: 0.7rem;
+    }
+
+    /*Content Only CSS*/
+
+    section h2 {
+      text-align: left;
+      border-bottom: 1px solid #c5c5c5;
+      line-height: 6px;
+      margin-bottom: 20px;
+    }
+
+    section h2 span {
+      background-color: #3d3d3d;
+      padding: 5px 15px;
+      color: #f2f2f2;
+      border: 1px solid #c5c5c5;
+      font-size: 0.8rem;
+    }
+
+    /* Clear floats after the columns */
+    section:after {
+      content: "";
+      display: table;
+      clear: both;
+      margin-bottom: 20px;
+    }
+
+    .tableForLabel {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .tableForLabel tbody {
+      margin: 0;
+      padding: 0;
+    }
+
+    .tableForLabel td {
+      border: 1px solid #ccc;
+      padding: 3px;
+      margin: 0;
+    }
+
+    .tableForLabel td span {
+      font-weight: bold;
+    }
+
+    .tableForData {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid #00babe;
+    }
+
+    .tableForData thead {
+      margin: 0;
+      padding: 0;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .tableForData tbody {
+      margin: 0;
+      padding: 0;
+    }
+
+    .tableForData .tableSubHdg {
+      font-weight: bold;
+      background: #f2f2f2;
+      border-bottom: 2px dashed #979797;
+      padding: 5px 3px;
+    }
+
+    .tableForData th {
+      border-bottom: 2px solid #34b8bc !important;
+      vertical-align: middle !important;
+      background-color: #e8feff !important;
+      padding: 5px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      text-align: center;
+      border-right: 1px solid rgba(52, 184, 188, 0.4);
+    }
+
+    .tableForData td {
+      border: 1px solid #ccc;
+      padding: 3px;
+      margin: 0;
+    }
+
+    /*Footer Only CSS*/
+
+    footer {
+      margin: 0 0 10px;
+      padding: 0 0 10px;
+      display: block;
+      width: 100%;
+    }
+
+    .hospitalSeal {
+      float: right;
+    }
+
+    .hospitalSeal img {
+      height: 75px;
+    }
+
+    .doctorName {
+      text-align: left;
+      margin: 0 auto;
+      padding: 0 1%;
+      width: 75%;
+      height: 55px;
+    }
+
+    .doctorName h6 {
+      margin: 0 0 5px;
+      padding: 0;
+      font-size: 0.9rem;
+    }
+
+    .doctorName p {
+      margin: 0;
+      padding: 0;
+      line-height: 15px;
+      font-size: 0.7rem;
+    }
+
+    .signatureDiv {
+      text-align: left;
+      float: left;
+      width: 15%;
+      height: 60px;
+    }
+
+    /*Print Only CSS*/
+
+    @media print {
+      .print-body {
+        width: 100%;
+        margin: 0;
+        -webkit-print-color-adjust: exact;
+      }
+
+      button {
+        display: none;
+      }
+    }
+  }
+
   ul.ul-legend {
     li {
       float: left;
@@ -1106,8 +1326,6 @@ $forntSize: 0.7rem;
     }
   }
 
-  .ins-tab-container {
-
   .spacing-push {
     margin-top: 5.5em !important;
   }
@@ -1148,7 +1366,6 @@ $forntSize: 0.7rem;
     }
   }
 }
-
 
 .hptl-phase1-footer {
   margin-top: 50px;

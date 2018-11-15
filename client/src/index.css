@@ -13,6 +13,158 @@
   :global ::-webkit-scrollbar {
     width: 8px;
     height: 8px; }
+  :global .print-body {
+    /*Main Print Only CSS*/
+    /*Header Only CSS*/
+    /*Content Only CSS*/
+    /* Clear floats after the columns */
+    /*Footer Only CSS*/
+    /*Print Only CSS*/ }
+    :global .print-body body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #3d3d3d;
+      font-size: 0.8rem;
+      background: #f2f2f2; }
+    :global .print-body .print-body {
+      width: 98%;
+      margin: 10px auto;
+      padding: 10px;
+      border: 1px solid #e4e4e4;
+      box-sizing: border-box;
+      box-shadow: 0 3px 10px #ececec;
+      background: #fff; }
+    :global .print-body header {
+      margin: 0 0 10px;
+      padding: 0 0 10px;
+      border-bottom: 1px solid #3d3d3d;
+      display: block;
+      width: 100%; }
+    :global .print-body .hospitalLogo {
+      color: #ccc;
+      text-align: center;
+      float: left;
+      border-right: 1px dotted #ccc; }
+    :global .print-body .hospitalLogo img {
+      margin: 0;
+      padding: 0;
+      border: none;
+      height: 60px; }
+    :global .print-body .otherInfo {
+      text-align: right;
+      float: right;
+      width: 15%;
+      border-left: 1px dotted #ccc; }
+    :global .print-body .hospitalAddress {
+      text-align: center;
+      margin: 0 auto;
+      padding: 0 1%;
+      width: 65%;
+      min-height: 54px; }
+    :global .print-body .hospitalAddress h4 {
+      margin: 0 0 5px;
+      padding: 0;
+      font-size: 1.3rem; }
+    :global .print-body .hospitalAddress p {
+      margin: 0;
+      padding: 0;
+      line-height: 15px;
+      font-size: 0.7rem; }
+    :global .print-body section h2 {
+      text-align: left;
+      border-bottom: 1px solid #c5c5c5;
+      line-height: 6px;
+      margin-bottom: 20px; }
+    :global .print-body section h2 span {
+      background-color: #3d3d3d;
+      padding: 5px 15px;
+      color: #f2f2f2;
+      border: 1px solid #c5c5c5;
+      font-size: 0.8rem; }
+    :global .print-body section:after {
+      content: "";
+      display: table;
+      clear: both;
+      margin-bottom: 20px; }
+    :global .print-body .tableForLabel {
+      width: 100%;
+      border-collapse: collapse; }
+    :global .print-body .tableForLabel tbody {
+      margin: 0;
+      padding: 0; }
+    :global .print-body .tableForLabel td {
+      border: 1px solid #ccc;
+      padding: 3px;
+      margin: 0; }
+    :global .print-body .tableForLabel td span {
+      font-weight: bold; }
+    :global .print-body .tableForData {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid #00babe; }
+    :global .print-body .tableForData thead {
+      margin: 0;
+      padding: 0;
+      font-weight: bold;
+      text-transform: uppercase; }
+    :global .print-body .tableForData tbody {
+      margin: 0;
+      padding: 0; }
+    :global .print-body .tableForData .tableSubHdg {
+      font-weight: bold;
+      background: #f2f2f2;
+      border-bottom: 2px dashed #979797;
+      padding: 5px 3px; }
+    :global .print-body .tableForData th {
+      border-bottom: 2px solid #34b8bc !important;
+      vertical-align: middle !important;
+      background-color: #e8feff !important;
+      padding: 5px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      text-align: center;
+      border-right: 1px solid rgba(52, 184, 188, 0.4); }
+    :global .print-body .tableForData td {
+      border: 1px solid #ccc;
+      padding: 3px;
+      margin: 0; }
+    :global .print-body footer {
+      margin: 0 0 10px;
+      padding: 0 0 10px;
+      display: block;
+      width: 100%; }
+    :global .print-body .hospitalSeal {
+      float: right; }
+    :global .print-body .hospitalSeal img {
+      height: 75px; }
+    :global .print-body .doctorName {
+      text-align: left;
+      margin: 0 auto;
+      padding: 0 1%;
+      width: 75%;
+      height: 55px; }
+    :global .print-body .doctorName h6 {
+      margin: 0 0 5px;
+      padding: 0;
+      font-size: 0.9rem; }
+    :global .print-body .doctorName p {
+      margin: 0;
+      padding: 0;
+      line-height: 15px;
+      font-size: 0.7rem; }
+    :global .print-body .signatureDiv {
+      text-align: left;
+      float: left;
+      width: 15%;
+      height: 60px; }
+    @media print {
+      :global .print-body .print-body {
+        width: 100%;
+        margin: 0;
+        -webkit-print-color-adjust: exact; }
+      :global .print-body button {
+        display: none; } }
   :global ul.ul-legend li {
     float: left;
     margin-right: 10px;
@@ -765,43 +917,45 @@
       color: rgba(72, 90, 99, 0.26);
       border: none;
       cursor: not-allowed; }
-  :global .ins-tab-container .spacing-push {
+  :global .spacing-push {
     margin-top: 5.5em !important; }
-  :global .ins-tab-container .box-shadow {
+  :global .box-shadow {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
-  :global .ins-tab-container .box-shadow:hover {
+  :global .box-shadow:hover {
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22); }
-  :global .ins-tab-container .box-shadow-normal {
+  :global .box-shadow-normal {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
-  :global .ins-tab-container .row-bottom-space {
+  :global .row-bottom-space {
     margin-bottom: 15px; }
-  :global .ins-tab-container .divider {
+  :global .divider {
     height: 1px;
     background-color: #485a63;
     margin: 1px; }
-  :global .ins-tab-container .portletHeader {
+  :global .portletHeader {
     border-bottom: 1px solid #e2e2e2;
     padding-top: 10px;
     padding-bottom: 4px;
     width: 100%; }
-    :global .ins-tab-container .portletHeader label {
+    :global .portletHeader label {
       font-weight: 500;
       font-size: 0.9rem; }
-  :global .hptl-phase1-footer {
-    margin-top: 50px; }
-  :global .divInner {
-    overflow-y: auto;
-    overflow-x: hidden; }
-    :global .divInner .divInnerLeft {
-      border-right: 1px dashed #e0e0e0;
-      min-height: 30vh;
-      max-height: 70vh;
-      overflow: auto;
-      padding: 15px; }
-    :global .divInner .divInnerRight {
-      min-height: 30vh;
-      max-height: 70vh;
-      overflow: auto;
-      padding: 15px; }
+
+.hptl-phase1-footer {
+  margin-top: 50px; }
+
+.divInner {
+  overflow-y: auto;
+  overflow-x: hidden; }
+  .divInner .divInnerLeft {
+    border-right: 1px dashed #e0e0e0;
+    min-height: 30vh;
+    max-height: 70vh;
+    overflow: auto;
+    padding: 15px; }
+  .divInner .divInnerRight {
+    min-height: 30vh;
+    max-height: 70vh;
+    overflow: auto;
+    padding: 15px; }

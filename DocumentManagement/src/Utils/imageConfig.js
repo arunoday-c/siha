@@ -1,5 +1,5 @@
 import shape from "sharp";
 
-module.exports ={
-    resizeImage:
-}
+module.exports = {
+  resizeImage: ""
+};
