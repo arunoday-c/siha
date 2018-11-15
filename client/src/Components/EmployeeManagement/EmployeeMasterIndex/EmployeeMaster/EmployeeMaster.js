@@ -180,7 +180,7 @@ class EmployeeMaster extends Component {
                 </div>
               </div>
 
-              <div className="col-lg-12 popupInner" style={{ height: "75vh" }}>
+              <div className="popupInner" style={{ height: "75vh" }}>
                 <div className="tab-container toggle-section">
                   <ul className="nav">
                     <li

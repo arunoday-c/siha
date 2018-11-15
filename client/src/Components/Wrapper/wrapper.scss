@@ -26,6 +26,7 @@
     .rt-td {
       font-size: 0.8rem !important;
       overflow: inherit !important;
+      white-space: inherit !important;
     }
   }
   .-btn {
@@ -97,6 +98,6 @@
 
 @media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
   .ReactTable {
-    max-width: 93vw !important;
+    max-width: 95vw !important;
   }
 }

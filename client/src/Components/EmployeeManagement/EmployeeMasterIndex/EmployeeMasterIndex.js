@@ -124,132 +124,151 @@ class EmployeeMasterIndex extends Component {
             }
           ]}
         />
-
-        <div className="row">
-          <div className="col-lg-12" style={{ marginTop: "75px" }}>
-            <AlgaehDataGrid
-              id="employee_grid"
-              columns={[
-                {
-                  fieldName: "action",
-                  label: <AlgaehLabel label={{ fieldName: "action" }} />,
-                  displayTemplate: row => {
-                    return (
-                      <span>
-                        <i
-                          className="fas fa-pen"
-                          onClick={EditEmployeeMaster.bind(this, this, row)}
-                        />
-                      </span>
-                    );
-                  },
-                  others: {
-                    maxWidth: 65,
-                    resizable: false,
-                    style: { textAlign: "center" }
-                  }
-                },
-
-                {
-                  fieldName: "employee_code",
-                  label: <AlgaehLabel label={{ fieldName: "employee_code" }} />,
-                  others: { resizable: false, style: { textAlign: "center" } }
-                },
-
-                {
-                  fieldName: "full_name",
-                  label: <AlgaehLabel label={{ fieldName: "full_name" }} />,
-                  others: { resizable: false, style: { textAlign: "center" } }
-                },
-                {
-                  fieldName: "employee_designation_id",
-                  label: (
-                    <AlgaehLabel
-                      label={{ fieldName: "employee_designation_id" }}
-                    />
-                  ),
-                  displayTemplate: row => {
-                    let display =
-                      this.props.designations === undefined
-                        ? []
-                        : this.props.designations.filter(
-                            f =>
-                              f.hims_d_designation_id ===
-                              row.employee_designation_id
-                          );
-
-                    return (
-                      <span>
-                        {display !== null && display.length !== 0
-                          ? display[0].designation
-                          : ""}
-                      </span>
-                    );
-                  },
-                  others: { resizable: false, style: { textAlign: "center" } }
-                },
-                {
-                  fieldName: "license_number",
-                  label: (
-                    <AlgaehLabel label={{ fieldName: "license_number" }} />
-                  ),
-                  others: { resizable: false, style: { textAlign: "center" } }
-                },
-                {
-                  fieldName: "primary_contact_no",
-                  label: <AlgaehLabel label={{ fieldName: "contact_no" }} />,
-                  others: { resizable: false, style: { textAlign: "center" } }
-                },
-                {
-                  fieldName: "email",
-                  label: <AlgaehLabel label={{ fieldName: "email" }} />,
-                  others: { resizable: false, style: { textAlign: "center" } }
+        <div
+          className="portlet portlet-bordered box-shadow-normal margin-bottom-15"
+          style={{ marginTop: 70 }}
+        >
+          <div className="portlet-title">
+            <div className="caption">
+              <h3 className="caption-subject">Employee Master Lists</h3>
+            </div>
+            <div className="actions">
+              <a
+                className="btn btn-primary btn-circle active"
+                onClick={this.ShowModel.bind(this)}
+              >
+                <i className="fas fa-plus" />
+              </a>
+              <EmployeeMaster
+                HeaderCaption={
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "employee_master",
+                      align: "ltr"
+                    }}
+                  />
                 }
-              ]}
-              keyId="service_code"
-              dataSource={{
-                data: this.state.Employeedetails
-              }}
-              // isEditable={true}
-              paging={{ page: 0, rowsPerPage: 10 }}
-            />
+                open={this.state.isOpen}
+                onClose={this.CloseModel.bind(this)}
+                employeeDetailsPop={this.state.employeeDetailsPop}
+              />
+            </div>
           </div>
-        </div>
-        {/* Footer Start */}
-
-        <div className="hptl-phase1-footer">
-          <AppBar position="static" className="main">
+          <div className="portlet-body">
             <div className="row">
-              <div className="col-lg-12">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={this.ShowModel.bind(this)}
-                >
-                  {/* <AlgaehLabel
-                    label={{ fieldName: "btn_addnew", returnText: true }}
-                  /> */}
-                  Add New
-                </button>
+              <div className="col-lg-12" id="employeeIndexGrid">
+                <AlgaehDataGrid
+                  id="employee_grid"
+                  columns={[
+                    {
+                      fieldName: "action",
+                      label: <AlgaehLabel label={{ fieldName: "action" }} />,
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            <i
+                              className="fas fa-pen"
+                              onClick={EditEmployeeMaster.bind(this, this, row)}
+                            />
+                          </span>
+                        );
+                      },
+                      others: {
+                        maxWidth: 65,
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
 
-                <EmployeeMaster
-                  HeaderCaption={
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "employee_master",
-                        align: "ltr"
-                      }}
-                    />
-                  }
-                  open={this.state.isOpen}
-                  onClose={this.CloseModel.bind(this)}
-                  employeeDetailsPop={this.state.employeeDetailsPop}
+                    {
+                      fieldName: "employee_code",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "employee_code" }} />
+                      ),
+                      others: {
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+
+                    {
+                      fieldName: "full_name",
+                      label: <AlgaehLabel label={{ fieldName: "full_name" }} />,
+                      others: {
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+                    {
+                      fieldName: "employee_designation_id",
+                      label: (
+                        <AlgaehLabel
+                          label={{ fieldName: "employee_designation_id" }}
+                        />
+                      ),
+                      displayTemplate: row => {
+                        let display =
+                          this.props.designations === undefined
+                            ? []
+                            : this.props.designations.filter(
+                                f =>
+                                  f.hims_d_designation_id ===
+                                  row.employee_designation_id
+                              );
+
+                        return (
+                          <span>
+                            {display !== null && display.length !== 0
+                              ? display[0].designation
+                              : ""}
+                          </span>
+                        );
+                      },
+                      others: {
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+                    {
+                      fieldName: "license_number",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "license_number" }} />
+                      ),
+                      others: {
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+                    {
+                      fieldName: "primary_contact_no",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "contact_no" }} />
+                      ),
+                      others: {
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+                    {
+                      fieldName: "email",
+                      label: <AlgaehLabel label={{ fieldName: "email" }} />,
+                      others: {
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    }
+                  ]}
+                  keyId="service_code"
+                  dataSource={{
+                    data: this.state.Employeedetails
+                  }}
+                  // isEditable={true}
+                  paging={{ page: 0, rowsPerPage: 10 }}
                 />
               </div>
             </div>
-          </AppBar>
+          </div>
         </div>
-        {/* Footer End */}
       </div>
     );
   }

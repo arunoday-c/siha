@@ -133,7 +133,7 @@ class PersonalDetails extends PureComponent {
                   <div className="col-lg-8 primary-details">
                     <div className="row paddin-bottom-5">
                       <AlagehFormGroup
-                        div={{ className: "col-lg-3 mandatory" }}
+                        div={{ className: "col mandatory" }}
                         label={{
                           fieldName: "employee_code",
                           isImp: true
@@ -151,7 +151,7 @@ class PersonalDetails extends PureComponent {
                         }}
                       />
                       <AlagehAutoComplete
-                        div={{ className: "col-lg-3 mandatory" }}
+                        div={{ className: "col-2 mandatory" }}
                         label={{
                           fieldName: "title_id",
                           isImp: true
@@ -176,7 +176,7 @@ class PersonalDetails extends PureComponent {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col-lg-3 mandatory" }}
+                        div={{ className: "col mandatory" }}
                         label={{
                           fieldName: "full_name",
                           isImp: true
@@ -195,7 +195,7 @@ class PersonalDetails extends PureComponent {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col-lg-3 mandatory arabic-txt-fld" }}
+                        div={{ className: "col mandatory arabic-txt-fld" }}
                         label={{
                           fieldName: "arabic_name",
                           isImp: true
@@ -215,7 +215,7 @@ class PersonalDetails extends PureComponent {
                     </div>
                     <div className="row paddin-bottom-5">
                       <AlgaehDateHandler
-                        div={{ className: "col-lg-3 mandatory", tabIndex: "5" }}
+                        div={{ className: "col-3 mandatory", tabIndex: "5" }}
                         label={{ fieldName: "date_of_birth", isImp: true }}
                         textBox={{
                           className: "txt-fld",
@@ -228,7 +228,7 @@ class PersonalDetails extends PureComponent {
                         value={this.state.date_of_birth}
                       />
                       <AlagehAutoComplete
-                        div={{ className: "col-lg-3 mandatory" }}
+                        div={{ className: "col-2 mandatory" }}
                         label={{
                           fieldName: "gender",
                           isImp: true
@@ -253,7 +253,7 @@ class PersonalDetails extends PureComponent {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col-lg-3 mandatory" }}
+                        div={{ className: "col mandatory" }}
                         label={{
                           fieldName: "email",
                           isImp: true
@@ -270,7 +270,7 @@ class PersonalDetails extends PureComponent {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col-lg-3 mandatory" }}
+                        div={{ className: "col mandatory" }}
                         label={{
                           fieldName: "contact_no",
                           isImp: true
@@ -291,7 +291,7 @@ class PersonalDetails extends PureComponent {
                     </div>
                     <div className="row paddin-bottom-5">
                       <AlagehAutoComplete
-                        div={{ className: "col-lg-3 mandatory" }}
+                        div={{ className: "col mandatory" }}
                         label={{
                           fieldName: "employee_designation_id",
                           isImp: true
@@ -316,7 +316,7 @@ class PersonalDetails extends PureComponent {
                       />
 
                       <AlagehAutoComplete
-                        div={{ className: "col-lg-3 mandatory" }}
+                        div={{ className: "col mandatory" }}
                         label={{
                           fieldName: "country_id",
                           isImp: true
@@ -345,7 +345,7 @@ class PersonalDetails extends PureComponent {
                       />
 
                       <AlagehAutoComplete
-                        div={{ className: "col-lg-3" }}
+                        div={{ className: "col" }}
                         label={{
                           fieldName: "state_id",
                           isImp: false
@@ -372,8 +372,11 @@ class PersonalDetails extends PureComponent {
                           }
                         }}
                       />
+                    </div>
+
+                    <div className="row paddin-bottom-5">
                       <AlagehAutoComplete
-                        div={{ className: "col-lg-3" }}
+                        div={{ className: "col" }}
                         label={{
                           fieldName: "city_id",
                           isImp: false
@@ -396,11 +399,8 @@ class PersonalDetails extends PureComponent {
                           }
                         }}
                       />
-                    </div>
-
-                    <div className="row paddin-bottom-5">
                       <AlagehAutoComplete
-                        div={{ className: "col-lg-3" }}
+                        div={{ className: "col" }}
                         label={{
                           fieldName: "blood_group"
                         }}
@@ -418,7 +418,7 @@ class PersonalDetails extends PureComponent {
                         }}
                       />
                       <AlagehFormGroup
-                        div={{ className: "col-lg-6" }}
+                        div={{ className: "col-6" }}
                         label={{
                           fieldName: "address"
                         }}
@@ -435,51 +435,7 @@ class PersonalDetails extends PureComponent {
                   </div>
                   <div className="col-lg-4 secondary-details">
                     <div className="row secondary-box-container">
-                      <div
-                        className="col-lg-4 customCheckbox"
-                        style={{ paddingTop: "20px" }}
-                      >
-                        <label className="checkbox inline">
-                          <input
-                            type="checkbox"
-                            name="isdoctor"
-                            value="Y"
-                            checked={this.state.Applicable}
-                            onChange={isDoctorChange.bind(this, this, context)}
-                          />
-                          <span>
-                            <AlgaehLabel label={{ fieldName: "isdoctor" }} />
-                          </span>
-                        </label>
-                      </div>
-
-                      <AlagehFormGroup
-                        div={{ className: "col-lg-8 mandatory" }}
-                        label={{
-                          fieldName: "license_number",
-                          isImp: true
-                        }}
-                        textBox={{
-                          value: this.state.license_number,
-                          className: "txt-fld",
-                          name: "license_number",
-
-                          events: {
-                            onChange: texthandle.bind(this, this, context)
-                          },
-                          others: {
-                            disabled:
-                              this.state.isdoctor === "Y" ? false : true,
-                            tabIndex: "6"
-                          }
-                        }}
-                      />
-                    </div>
-                    <div
-                      className="row secondary-box-container"
-                      style={{ paddingTop: "5px" }}
-                    >
-                      <div className="col-lg-4">
+                      <div className="col-lg-6">
                         <div className="image-drop-area">
                           <Dropzone
                             onDrop={onDrop.bind(
@@ -530,6 +486,50 @@ class PersonalDetails extends PureComponent {
                         </div>
                       </div>
                     </div>
+                    <div
+                      className="row secondary-box-container"
+                      style={{ paddingTop: "5px" }}
+                    >
+                      <div
+                        className="col-lg-4 customCheckbox"
+                        style={{ paddingTop: "20px" }}
+                      >
+                        <label className="checkbox inline">
+                          <input
+                            type="checkbox"
+                            name="isdoctor"
+                            value="Y"
+                            checked={this.state.Applicable}
+                            onChange={isDoctorChange.bind(this, this, context)}
+                          />
+                          <span>
+                            <AlgaehLabel label={{ fieldName: "isdoctor" }} />
+                          </span>
+                        </label>
+                      </div>
+
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-8 mandatory" }}
+                        label={{
+                          fieldName: "license_number",
+                          isImp: true
+                        }}
+                        textBox={{
+                          value: this.state.license_number,
+                          className: "txt-fld",
+                          name: "license_number",
+
+                          events: {
+                            onChange: texthandle.bind(this, this, context)
+                          },
+                          others: {
+                            disabled:
+                              this.state.isdoctor === "Y" ? false : true,
+                            tabIndex: "6"
+                          }
+                        }}
+                      />
+                    </div>
 
                     <div
                       className="row secondary-box-container"
@@ -566,13 +566,8 @@ class PersonalDetails extends PureComponent {
                 </div>
               </div>
 
-              <div
-                className="row card-deck panel-layout"
-                style={{ padding: "10px" }}
-              >
-                <div className="col-lg-12 card box-shadow-normal">
-                  <DeptUserDetails EmpMasterIOputs={this.state} />
-                </div>
+              <div className="col-lg-12">
+                <DeptUserDetails EmpMasterIOputs={this.state} />
               </div>
               <AHSnackbar
                 open={this.state.DOBError}
