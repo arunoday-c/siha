@@ -3,22 +3,20 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import "./PharmacySetup.css";
+import "./InventorySetup.css";
 import "../../index.css";
 import ItemCategory from "./ItemCategory/ItemCategory";
-import ItemGeneric from "./ItemGeneric/ItemGeneric";
 import ItemGroup from "./ItemGroup/ItemGroup";
 import ItemUOM from "./ItemUOM/ItemUOM";
 import Location from "./Location/Location";
-import ItemForm from "./ItemForm/ItemForm";
-import ItemStorage from "./ItemStorage/ItemStorage";
+
 import LocationPermission from "./LocationPermission/LocationPermission";
 
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
 
-class PharmacySetup extends Component {
+class InventorySetup extends Component {
   constructor(props) {
     super(props);
 
@@ -56,11 +54,11 @@ class PharmacySetup extends Component {
 
   render() {
     return (
-      <div className="hims_pharmacy_setup">
+      <div className="hims_Inventory_setup">
         <BreadCrumb
           title={
             <AlgaehLabel
-              label={{ fieldName: "Pharmacy_setup", align: "ltr" }}
+              label={{ fieldName: "Inventory_setup", align: "ltr" }}
             />
           }
           breadStyle={this.props.breadStyle}
@@ -69,7 +67,7 @@ class PharmacySetup extends Component {
               pageName: (
                 <AlgaehLabel
                   label={{
-                    fieldName: "Pharmacy_settings",
+                    fieldName: "Inventory_settings",
                     align: "ltr"
                   }}
                 />
@@ -78,13 +76,11 @@ class PharmacySetup extends Component {
             {
               pageName: (
                 <AlgaehLabel
-                  label={{ fieldName: "Pharmacy_setup", align: "ltr" }}
+                  label={{ fieldName: "Inventory_setup", align: "ltr" }}
                 />
               )
             }
           ]}
-          //screenName="Master Setup"
-          //   HideHalfbread={false}
         />
         <div className="tab-container toggle-section spacing-push">
           <ul className="nav">
@@ -113,21 +109,6 @@ class PharmacySetup extends Component {
                 <AlgaehLabel
                   label={{
                     fieldName: "item_group"
-                  }}
-                />
-              }
-            </li>
-
-            <li
-              style={{ marginRight: 2 }}
-              algaehtabs={"ItemGeneric"}
-              className={"nav-item tab-button "}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "item_generic"
                   }}
                 />
               }
@@ -165,36 +146,6 @@ class PharmacySetup extends Component {
             <li
               style={{ marginRight: 2 }}
               className={"nav-item tab-button "}
-              algaehtabs={"Form"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "item_form"
-                  }}
-                />
-              }
-            </li>
-
-            <li
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button "}
-              algaehtabs={"Storage"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "item_storage"
-                  }}
-                />
-              }
-            </li>
-
-            <li
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button "}
               algaehtabs={"LocationPermission"}
               onClick={this.openTab.bind(this)}
             >
@@ -216,16 +167,10 @@ class PharmacySetup extends Component {
             <ItemCategory />
           ) : this.state.pageDisplay === "ItemGroup" ? (
             <ItemGroup />
-          ) : this.state.pageDisplay === "ItemGeneric" ? (
-            <ItemGeneric />
           ) : this.state.pageDisplay === "ItemUOM" ? (
             <ItemUOM />
           ) : this.state.pageDisplay === "Location" ? (
             <Location />
-          ) : this.state.pageDisplay === "Form" ? (
-            <ItemForm />
-          ) : this.state.pageDisplay === "Storage" ? (
-            <ItemStorage />
           ) : this.state.pageDisplay === "LocationPermission" ? (
             <LocationPermission />
           ) : null}
@@ -254,5 +199,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(PharmacySetup)
+  )(InventorySetup)
 );

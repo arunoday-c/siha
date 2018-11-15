@@ -202,7 +202,7 @@ class RequisitionList extends Component {
                         displayTemplate: row => {
                           return (
                             <span>
-                              {dateFormater(this, row.requistion_date)}
+                              {dateFormater(this, this, row.requistion_date)}
                             </span>
                           );
                         },

@@ -393,7 +393,14 @@ class PosListItems extends Component {
                                   );
                                 }
                               },
-
+                              {
+                                fieldName: "qtyhand",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ forceLabel: "Quantity In Hand" }}
+                                  />
+                                )
+                              },
                               {
                                 fieldName: "expiry_date",
                                 label: (
