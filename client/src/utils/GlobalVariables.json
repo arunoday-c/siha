@@ -414,7 +414,8 @@
   "FORMAT_APPT_STATUS": [
     { "name": "No", "arabic_name": "لا", "value": "N" },
     { "name": "Yes", "arabic_name": "نعم فعلا", "value": "Y" },
-    { "name": "Create Visit", "arabic_name": "خلق زيارة", "value": "C" }
+    { "name": "Create Visit", "arabic_name": "خلق زيارة", "value": "C" },
+    { "name": "Re Schedule", "arabic_name": "إعادة جدولة", "value": "RS" }
   ],
   "TALLY_STATUS": [
     { "name": "Tallied", "value": "T" },

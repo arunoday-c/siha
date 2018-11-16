@@ -44,19 +44,6 @@ class Appointment extends Component {
   componentDidMount() {
     this.getDoctorsAndDepts();
     this.getAppointmentStatus();
-    //let appCriteria = JSON.parse(localStorage.getItem("ApptCriteria"));
-
-    // this.setState(
-    //   {
-    //     sub_department_id:
-    //       appCriteria !== null ? appCriteria.sub_dept_id : null,
-    //     schedule_date: appCriteria !== null ? appCriteria.schedule_date : null,
-    //     provider_id: appCriteria !== null ? appCriteria.provider_id : null
-    //   },
-    //   () => {
-    //     this.getAppointmentSchedule();
-    //   }
-    // );
   }
 
   cancelAppt(row) {
@@ -110,7 +97,7 @@ class Appointment extends Component {
     let doc = Enumerable.from(
       this.state.doctors.length !== 0 ? this.state.doctors : null
     )
-      .where(w => w.employee_id === parseInt(id))
+      .where(w => w.employee_id === parseInt(id, 10))
       .firstOrDefault();
     return doc !== undefined ? doc.full_name : "";
   }
@@ -119,7 +106,7 @@ class Appointment extends Component {
     let dept = Enumerable.from(
       this.state.departments.length !== 0 ? this.state.departments : null
     )
-      .where(w => w.sub_department_id === parseInt(id))
+      .where(w => w.sub_department_id === parseInt(id, 10))
       .firstOrDefault();
     return dept !== undefined ? dept.sub_department_name : "";
   }
@@ -365,6 +352,10 @@ class Appointment extends Component {
               .where(w => w.default_status === "C")
               .firstOrDefault();
 
+            let Reschedule = Enumerable.from(this.state.appointmentStatus)
+              .where(w => w.default_status === "RS")
+              .firstOrDefault();
+
             this.setState({
               defaultStatus: DefaultStatus,
               appointment_status_id:
@@ -374,6 +365,10 @@ class Appointment extends Component {
               checkInId:
                 CreateVisit !== undefined
                   ? CreateVisit.hims_d_appointment_status_id
+                  : null,
+              RescheduleId:
+                Reschedule !== undefined
+                  ? Reschedule.hims_d_appointment_status_id
                   : null
             });
           });
@@ -617,9 +612,7 @@ class Appointment extends Component {
           pat_edit.appointment_from_time,
           "HH:mm:ss"
         ).add(pat_edit.number_of_slot * this.state.slot, "minutes");
-        //debugger;
-        // console.log("ssssss1:", pat_edit.number_of_slot * this.state.slot);
-        //console.log("ssssss:", moment(new_to_time).format("HH:mm:ss"));
+        debugger;
         this.setState({
           edit_appointment_status_id: pat_edit.appointment_status_id,
           edit_appt_date: pat_edit.appointment_date,
@@ -637,7 +630,6 @@ class Appointment extends Component {
           edit_patient_id: pat_edit.patient_id,
           edit_from_time: pat_edit.appointment_from_time,
           edit_to_time: moment(new_to_time).format("HH:mm:ss"),
-          edit_arabic_name: pat_edit.arabic_name,
           edit_sub_dep_id: pat_edit.sub_department_id,
           edit_appointment_date: pat_edit.appointment_date,
           patient_code: pat_edit.patient_code,
@@ -1228,7 +1220,6 @@ class Appointment extends Component {
               isstandby="Y"
               onClick={this.showModal.bind(this)}
               className="fas fa-plus"
-              className="fas fa-plus"
             />
             {this.renderStandByMultiple(_standByPatients)}
           </td>
@@ -1249,7 +1240,7 @@ class Appointment extends Component {
     const to_break_hr1 = moment(data.to_break_hr1, "hh:mm:ss");
     const from_break_hr2 = moment(data.from_break_hr2, "hh:mm:ss");
     const to_break_hr2 = moment(data.to_break_hr2, "hh:mm:ss");
-    const slot = parseInt(data.slot);
+    const slot = parseInt(data.slot, 10);
     let isPrevbreak = null;
     let tds = [];
     let count = 0;
@@ -1575,14 +1566,12 @@ class Appointment extends Component {
                               className: "txt-fld",
                               name: "edit_contact_number",
                               others: {
-                                type: "number"
+                                type: "number",
+                                disabled: true
                               },
                               value: this.state.edit_contact_number,
                               events: {
                                 onChange: this.texthandle.bind(this)
-                              },
-                              others: {
-                                disabled: true
                               }
                             }}
                           />

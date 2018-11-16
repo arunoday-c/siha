@@ -1348,18 +1348,17 @@ th {
     border-top-left-radius: 5px;
     border-bottom: none;
 
-    &.active {
-      background-color: #dbad64;
-      color: #fff;
-      pointer-events: none;
-      border-color: #dbad64;
-    }
-
     &:hover {
       background-color: #fffcf8;
       color: #9e670f;
       border-color: #dbad64;
       cursor: pointer;
+    }
+    &.active {
+      background-color: #dbad64;
+      color: #fff;
+      pointer-events: none;
+      border-color: #dbad64;
     }
     &:focus {
       outline: none;

@@ -34,7 +34,8 @@ class Label extends PureComponent {
         });
       }
     } else {
-      console.error("Label is missing with 'fieldName'");
+      callBack("");
+      //console.error("Label is missing with 'fieldName'");
     }
   };
   loadJSON = (file, callback) => {
@@ -76,10 +77,10 @@ class Label extends PureComponent {
                 ? this.state.Language === "ar"
                   ? "text-arabic style_Label " + lClassName
                   : this.props.label.align === "rtl"
-                    ? "text-arabic style_Label " + lClassName
-                    : this.props.label.align === "ltl"
-                      ? "float-left style_Label " + lClassName
-                      : "style_Label " + lClassName
+                  ? "text-arabic style_Label " + lClassName
+                  : this.props.label.align === "ltl"
+                  ? "float-left style_Label " + lClassName
+                  : "style_Label " + lClassName
                 : null
             }
             {...this.props.label.others}
@@ -106,29 +107,47 @@ class Label extends PureComponent {
         this.setState({ Language: getCookie("Language") });
       }
 
-      if (this.props.label.forceLabel === undefined) {
-        this.getTargetLanguage(this.props.label.fieldName, data => {
-          this.setState({ languageBind: data });
-        });
-      } else {
-        this.setState({ languageBind: this.props.label.forceLabel });
-      }
+      // if (this.props.label.forceLabel === undefined) {
+      //   this.getTargetLanguage(this.props.label.fieldName, data => {
+      //     this.setState({ languageBind: data });
+      //   });
+      // } else {
+      //   this.setState({ languageBind: this.props.label.forceLabel });
+      // }
+      this.getTargetLanguage(this.props.label.fieldName, data => {
+        const _bindTo =
+          data !== undefined && data !== null && data !== ""
+            ? data
+            : this.props.label.forceLabel !== undefined
+            ? this.props.label.forceLabel
+            : data;
+        this.setState({ languageBind: _bindTo });
+      });
     }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps !== undefined) {
       if (this.currentPageCanRender()) {
         if (this.props.label !== undefined) {
-          if (
-            this.props.label.forceLabel === undefined &&
-            this.props.label.fieldName !== undefined
-          ) {
-            this.getTargetLanguage(this.props.label.fieldName, data => {
-              this.setState({ languageBind: data });
-            });
-          } else {
-            this.setState({ languageBind: this.props.label.forceLabel });
-          }
+          // if (
+          //   this.props.label.forceLabel === undefined &&
+          //   this.props.label.fieldName !== undefined
+          // ) {
+          //   this.getTargetLanguage(this.props.label.fieldName, data => {
+          //     this.setState({ languageBind: data });
+          //   });
+          // } else {
+          //   this.setState({ languageBind: this.props.label.forceLabel });
+          // }
+          this.getTargetLanguage(this.props.label.fieldName, data => {
+            const _bindTo =
+              data !== undefined && data !== null && data !== ""
+                ? data
+                : this.props.label.forceLabel !== undefined
+                ? this.props.label.forceLabel
+                : data;
+            this.setState({ languageBind: _bindTo });
+          });
         }
       }
       this.setState({ Language: getCookie("Language") });
