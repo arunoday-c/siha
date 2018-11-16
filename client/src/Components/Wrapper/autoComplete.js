@@ -130,6 +130,7 @@ class AutoComplete extends PureComponent {
   }
 
   componentDidMount() {
+    debugger;
     document.addEventListener("mousedown", this.handleClickOutside, false);
     const _required =
       this.props.label !== undefined
