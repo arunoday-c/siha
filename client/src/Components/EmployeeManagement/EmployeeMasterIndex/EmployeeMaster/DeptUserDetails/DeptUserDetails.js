@@ -93,7 +93,7 @@ class DeptUserDetails extends Component {
         <MyContext.Consumer>
           {context => (
             <div className="hptl-phase1-dept-user-form">
-              <div className="row">
+              <div className="row" data-validate="deptUserdtl">
                 <AlagehAutoComplete
                   div={{ className: "col-lg-2" }}
                   label={{

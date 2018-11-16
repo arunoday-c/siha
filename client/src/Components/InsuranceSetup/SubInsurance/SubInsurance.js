@@ -159,7 +159,7 @@ class SubInsurance extends PureComponent {
                     }}
                     textBox={{
                       value: this.state.arabic_sub_name,
-                      className: "txt-fld",
+                      className: "txt-fld arabicInput",
                       name: "arabic_sub_name",
 
                       events: {

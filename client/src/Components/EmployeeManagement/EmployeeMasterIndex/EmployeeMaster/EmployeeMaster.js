@@ -10,7 +10,7 @@ import PersonalDetails from "./PersonalDetails/PersonalDetails";
 import { AlgaehLabel, Modal } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import MyContext from "../../../../utils/MyContext";
-import AHSnackbar from "../../../common/Inputs/AHSnackbar";
+
 import EmpMasterIOputs from "../../../../Models/EmployeeMaster";
 import { getCookie } from "../../../../utils/algaehApiCall";
 import { InsertUpdateEmployee, ClearEmployee } from "./EmployeeMasterEvents";
@@ -48,11 +48,15 @@ class EmployeeMaster extends Component {
   }
 
   onClose = e => {
+    let IOputs = EmpMasterIOputs.inputParam();
+    // this.setState(IOputs);
     this.setState(
       {
-        pageDisplay: "PersonalDetails"
+        pageDisplay: "PersonalDetails",
+        ...IOputs
       },
       () => {
+        debugger;
         this.props.onClose && this.props.onClose(e);
       }
     );
@@ -134,20 +138,17 @@ class EmployeeMaster extends Component {
     }
   }
 
-  handleClose = () => {
-    this.setState({ open: false });
-  };
-
   componentWillReceiveProps(newProps) {
+    debugger;
     if (
-      newProps.employeeDetailsPop.hims_d_employee_id !== undefined ||
+      newProps.employeeDetailsPop.hims_d_employee_id !== undefined &&
       this.state.full_name !== null
     ) {
       let IOputs = newProps.employeeDetailsPop;
       this.setState({ ...this.state, ...IOputs });
     } else {
-      // let IOputs = EmpMasterIOputs.inputParam();
-      // this.setState(IOputs);
+      let IOputs = EmpMasterIOputs.inputParam();
+      this.setState(IOputs);
     }
   }
 
@@ -264,11 +265,6 @@ class EmployeeMaster extends Component {
                       >
                         <AlgaehLabel label={{ fieldName: "btnCancel" }} />
                       </button>
-                      <AHSnackbar
-                        open={this.state.open}
-                        handleClose={this.handleClose}
-                        MandatoryMsg={this.state.MandatoryMsg}
-                      />
                     </div>
                   </div>
                 </div>

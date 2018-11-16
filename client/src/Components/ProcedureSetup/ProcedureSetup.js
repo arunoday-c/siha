@@ -28,39 +28,41 @@ class ProcedureSetup extends Component {
   render() {
     return (
       <div className="procedure-setup">
-        <div className="tab-container toggle-section margin-top-15">
-          <ul className="nav">
-            <li
-              algaehtabs={"ProcedureGroup"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button active"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Procedure Groups"
-                  }}
-                />
-              }
-            </li>
-            <li
-              algaehtabs={"Procedures"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Procedures"
-                  }}
-                />
-              }
-            </li>
-          </ul>
+        {" "}
+        <div className="row">
+          <div className="tabMaster toggle-section">
+            <ul className="nav">
+              <li
+                algaehtabs={"ProcedureGroup"}
+                style={{ marginRight: 2 }}
+                className={"nav-item tab-button active"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Procedure Groups"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"Procedures"}
+                style={{ marginRight: 2 }}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Procedures"
+                    }}
+                  />
+                }
+              </li>
+            </ul>
+          </div>
         </div>
-
         <div className="procedure-section">
           {this.state.pageDisplay === "ProcedureGroup" ? (
             <ProcedureGroup />

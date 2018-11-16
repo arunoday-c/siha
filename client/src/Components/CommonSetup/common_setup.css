@@ -1,8 +1,6 @@
 .common_setup .common-section {
   border: 1px solid #d3d3d3;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  border-top-right-radius: 5px;
+  border-radius: 5px;
   background: #fff; }
 
 .common_setup .ReactTable {
