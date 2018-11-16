@@ -63,7 +63,6 @@ class PharmacySetup extends Component {
             <ul className="nav">
               <li
                 algaehtabs={"ItemCategory"}
-                style={{ marginRight: 2 }}
                 className={"nav-item tab-button active"}
                 onClick={this.openTab.bind(this)}
               >
@@ -78,7 +77,6 @@ class PharmacySetup extends Component {
 
               <li
                 algaehtabs={"ItemGroup"}
-                style={{ marginRight: 2 }}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
               >
@@ -92,7 +90,6 @@ class PharmacySetup extends Component {
               </li>
 
               <li
-                style={{ marginRight: 2 }}
                 algaehtabs={"ItemGeneric"}
                 className={"nav-item tab-button "}
                 onClick={this.openTab.bind(this)}
@@ -107,7 +104,6 @@ class PharmacySetup extends Component {
               </li>
 
               <li
-                style={{ marginRight: 2 }}
                 className={"nav-item tab-button "}
                 algaehtabs={"ItemUOM"}
                 onClick={this.openTab.bind(this)}
@@ -121,7 +117,6 @@ class PharmacySetup extends Component {
                 }
               </li>
               <li
-                style={{ marginRight: 2 }}
                 className={"nav-item tab-button "}
                 algaehtabs={"Location"}
                 onClick={this.openTab.bind(this)}
@@ -136,7 +131,6 @@ class PharmacySetup extends Component {
               </li>
 
               <li
-                style={{ marginRight: 2 }}
                 className={"nav-item tab-button "}
                 algaehtabs={"Form"}
                 onClick={this.openTab.bind(this)}
@@ -151,7 +145,6 @@ class PharmacySetup extends Component {
               </li>
 
               <li
-                style={{ marginRight: 2 }}
                 className={"nav-item tab-button "}
                 algaehtabs={"Storage"}
                 onClick={this.openTab.bind(this)}
@@ -166,7 +159,6 @@ class PharmacySetup extends Component {
               </li>
 
               <li
-                style={{ marginRight: 2 }}
                 className={"nav-item tab-button "}
                 algaehtabs={"LocationPermission"}
                 onClick={this.openTab.bind(this)}

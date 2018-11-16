@@ -34,7 +34,6 @@ class ProcedureSetup extends Component {
             <ul className="nav">
               <li
                 algaehtabs={"ProcedureGroup"}
-                style={{ marginRight: 2 }}
                 className={"nav-item tab-button active"}
                 onClick={this.openTab.bind(this)}
               >
@@ -48,7 +47,6 @@ class ProcedureSetup extends Component {
               </li>
               <li
                 algaehtabs={"Procedures"}
-                style={{ marginRight: 2 }}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
               >

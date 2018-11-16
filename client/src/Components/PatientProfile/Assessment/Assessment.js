@@ -370,7 +370,7 @@ class Assessment extends Component {
               <ul className="nav">
                 <li
                   algaehtabs={"Orders"}
-                  style={{ marginRight: 2 }}
+                  
                   className={"nav-item tab-button active"}
                   onClick={this.openTab.bind(this)}
                 >
@@ -384,7 +384,7 @@ class Assessment extends Component {
                 </li>
 
                 <li
-                  style={{ marginRight: 2 }}
+                  
                   algaehtabs={"LabResults"}
                   className={"nav-item tab-button"}
                   onClick={this.openTab.bind(this)}
@@ -398,7 +398,7 @@ class Assessment extends Component {
                   }
                 </li>
                 <li
-                  style={{ marginRight: 2 }}
+                  
                   algaehtabs={"RisResults"}
                   className={"nav-item tab-button"}
                   onClick={this.openTab.bind(this)}
@@ -413,7 +413,7 @@ class Assessment extends Component {
                 </li>
                 <li
                   algaehtabs={"AssesmentsNotes"}
-                  style={{ marginRight: 2 }}
+                  
                   className={"nav-item tab-button"}
                   onClick={this.openTab.bind(this)}
                 >
