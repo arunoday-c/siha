@@ -1,12 +1,7 @@
 .hims_pharmacy_setup .common-section {
   border: 1px solid #d3d3d3;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  border-top-right-radius: 5px;
+  border-radius: 5px;
   background-color: #ffffff; }
-
-.hims_pharmacy_setup .toggle-section {
-  margin-bottom: 0px; }
 
 .hims_pharmacy_setup .ReactTable {
   max-height: 80vh !important; }

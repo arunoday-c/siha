@@ -55,82 +55,84 @@ class InventorySetup extends Component {
   render() {
     return (
       <div className="hims_Inventory_setup">
-        <div className="tab-container toggle-section margin-top-15">
-          <ul className="nav">
-            <li
-              algaehtabs={"ItemCategory"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button active"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "item_category"
-                  }}
-                />
-              }
-            </li>
+        <div className="row">
+          <div className="tabMaster toggle-section">
+            <ul className="nav">
+              <li
+                algaehtabs={"ItemCategory"}
+                style={{ marginRight: 2 }}
+                className={"nav-item tab-button active"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "item_category"
+                    }}
+                  />
+                }
+              </li>
 
-            <li
-              algaehtabs={"ItemGroup"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "item_group"
-                  }}
-                />
-              }
-            </li>
+              <li
+                algaehtabs={"ItemGroup"}
+                style={{ marginRight: 2 }}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "item_group"
+                    }}
+                  />
+                }
+              </li>
 
-            <li
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button "}
-              algaehtabs={"ItemUOM"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "item_uom"
-                  }}
-                />
-              }
-            </li>
-            <li
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button "}
-              algaehtabs={"Location"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "location"
-                  }}
-                />
-              }
-            </li>
+              <li
+                style={{ marginRight: 2 }}
+                className={"nav-item tab-button "}
+                algaehtabs={"ItemUOM"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "item_uom"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                style={{ marginRight: 2 }}
+                className={"nav-item tab-button "}
+                algaehtabs={"Location"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "location"
+                    }}
+                  />
+                }
+              </li>
 
-            <li
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button "}
-              algaehtabs={"LocationPermission"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "location_permission"
-                  }}
-                />
-              }
-            </li>
-          </ul>
+              <li
+                style={{ marginRight: 2 }}
+                className={"nav-item tab-button "}
+                algaehtabs={"LocationPermission"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "location_permission"
+                    }}
+                  />
+                }
+              </li>
+            </ul>
+          </div>
         </div>
 
         <div className="common-section">

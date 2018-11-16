@@ -29,53 +29,53 @@ class AppointmentSetup extends Component {
   render() {
     return (
       <div className="appointment_setup">
-        <div className="tab-container toggle-section" style={{ marginTop: 15 }}>
-          <ul className="nav">
-            <li
-              algaehtabs={"AppointmentStatus"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button active"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "appointment_status"
-                  }}
-                />
-              }
-            </li>
-            <li
-              algaehtabs={"AppointmentRooms"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "appointment_rooms"
-                  }}
-                />
-              }
-            </li>
-            <li
-              algaehtabs={"AppointmentClinics"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "appointment_clinics"
-                  }}
-                />
-              }
-            </li>
-          </ul>
+        <div className="row">
+          <div className="tabMaster toggle-section">
+            <ul className="nav">
+              <li
+                algaehtabs={"AppointmentStatus"}
+                className={"nav-item tab-button active"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "appointment_status"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"AppointmentRooms"}
+                style={{ marginRight: 2 }}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "appointment_rooms"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"AppointmentClinics"}
+                style={{ marginRight: 2 }}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "appointment_clinics"
+                    }}
+                  />
+                }
+              </li>
+            </ul>
+          </div>
         </div>
-
         <div className="appointment-section">
           {this.state.pageDisplay === "AppointmentStatus" ? (
             <AppointmentStatus />
