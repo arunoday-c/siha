@@ -385,7 +385,7 @@ class AppointmentStatus extends Component {
                 style={{ marginTop: 21, pointerEvents: this.state.disableAdd }}
                 onClick={this.addAppointmentStatus.bind(this)}
                 type="button"
-                className="btn btn-default"
+                className="btn btn-primary"
               >
                 Add to List
               </button>
@@ -393,7 +393,7 @@ class AppointmentStatus extends Component {
             <div className="col" style={{ textAlign: "right", marginTop: 21 }}>
               <button
                 onClick={this.authorizeApptStatus.bind(this)}
-                className="btn btn-primary"
+                className="btn btn-default"
               >
                 Authorize Status
               </button>
@@ -480,8 +480,8 @@ class AppointmentStatus extends Component {
                       return row.default_status === "Y"
                         ? "Yes"
                         : row.default_status === "N"
-                          ? "No"
-                          : "Create Visit";
+                        ? "No"
+                        : "Create Visit";
                     },
                     editorTemplate: row => {
                       return (

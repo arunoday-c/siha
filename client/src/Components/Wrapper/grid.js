@@ -507,6 +507,7 @@ class DataGrid extends PureComponent {
               Header: "Actions",
               headerClassName: "sticky",
               fixed: "left",
+              filterable: false,
               Cell: ({ index }) => {
                 const edit =
                   this.state.editableRows[index] === undefined

@@ -177,12 +177,12 @@ class AppointmentRooms extends Component {
             <AlagehFormGroup
               div={{ className: "col-lg-3" }}
               label={{
-                fieldName: "description",
+                fieldName: "roomName",
                 isImp: true
               }}
               textBox={{
                 className: "txt-fld",
-                name: "description",
+                name: "roomName",
                 value: this.state.description,
                 events: {
                   onChange: this.changeTexts.bind(this)
@@ -209,6 +209,7 @@ class AppointmentRooms extends Component {
           className="col-lg-12"
           style={{ marginTop: 10 }}
           data-validate="apptRoomsDiv"
+          id="apptRoomsDivCntr"
         >
           <AlgaehDataGrid
             datavalidate="data-validate='apptRoomsDiv'"
