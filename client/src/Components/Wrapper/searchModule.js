@@ -22,6 +22,7 @@ class SearchModule extends Component {
       stop: false,
       start: false
     };
+    this.handleKeyUp = this.handleKeyUp.bind(this);
   }
 
   handleOpen = () => {
@@ -33,13 +34,23 @@ class SearchModule extends Component {
       open: false
     });
   };
-
-  componentDidMount() {
-    document.addEventListener("keyup", function(e) {
-      if (e.keyCode == 27) {
+  handleKeyUp(event) {
+    if (!this.spotlight.contains(event.target)) {
+      if (event.keyCode === 27) {
         document.getElementById("closeSearch").click();
       }
-    });
+    }
+  }
+  componentWillUnmount() {
+    document.removeEventListener("keyup", this.handleKeyUp, false);
+  }
+  componentDidMount() {
+    document.addEventListener("keyup", this.handleKeyUp, false);
+    // document.addEventListener("keyup", function(e) {
+    //   if (e.keyCode === 27) {
+    //     document.getElementById("closeSearch").click();
+    //   }
+    // });
 
     this.getUserSelectedValue(
       { searchName: this.props.searchName },
@@ -60,6 +71,11 @@ class SearchModule extends Component {
         });
       }
     );
+    this.handleSpotLightContains.bind({
+      target: {
+        value: " "
+      }
+    });
   }
   /*
     to get the previously stored value into UserPreferences
@@ -226,6 +242,7 @@ class SearchModule extends Component {
       <div
         id="spotlight_wrapper"
         className={this.state.open === true ? "d-block" : "d-none"}
+        ref={spotlight => (this.spotlight = spotlight)}
       >
         <div className="helpText">
           <span className="helpTextEsc">press [esc] to close window</span>
