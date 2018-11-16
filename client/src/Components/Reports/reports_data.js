@@ -34,6 +34,7 @@ export default [
             type: "dropdown",
             name: "provider_id",
             label: "Doctor",
+            initialLoad: true,
             link: {
               uri: "/department/get/get_All_Doctors_DepartmentWise",
               schema: [{ provider_id: "doctors" }]
