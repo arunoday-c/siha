@@ -11,7 +11,7 @@ import Insurance from "./Components/Insurance/Insurance";
 import Laboratory from "./Components/Laboratory/Laboratory";
 import Package from "./Components/Package/Package";
 import VatReports from "./Components/VatReports/VatReports";
-
+import FrontDesk from "../../Search/FrontDesk.json";
 export default [
   {
     name: "APPOINTMENTS",
@@ -37,13 +37,37 @@ export default [
             initialLoad: true,
             link: {
               uri: "/department/get/get_All_Doctors_DepartmentWise",
-              schema: [{ provider_id: "doctors" }]
+              schema: [{ name: "provider_id", response: "doctors" }]
+            },
+            events: {
+              onChange: (reportState, currentValue) => {
+                debugger;
+              }
             },
             dataSource: {
               textField: "full_name",
               valueField: "employee_id",
-              data: null
+              data: undefined
             }
+          },
+          {
+            type: "search",
+            name: "patient_code",
+            label: "Patient Code",
+            search: {
+              searchName: "patients",
+              columns: FrontDesk,
+              schema: [
+                { name: "patient_code", response: "patient_code" },
+                { name: "hims_d_patient_id", response: "hims_d_patient_id" }
+              ]
+            }
+          },
+          {
+            type: "checkbox",
+            name: "employee_type",
+            label: "Not able",
+            default: true
           }
         ] //() => <Appointment ui="availability" />
       },
