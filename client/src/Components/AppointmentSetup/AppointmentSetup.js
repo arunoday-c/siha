@@ -47,7 +47,6 @@ class AppointmentSetup extends Component {
               </li>
               <li
                 algaehtabs={"AppointmentRooms"}
-                style={{ marginRight: 2 }}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
               >
@@ -61,7 +60,6 @@ class AppointmentSetup extends Component {
               </li>
               <li
                 algaehtabs={"AppointmentClinics"}
-                style={{ marginRight: 2 }}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
               >

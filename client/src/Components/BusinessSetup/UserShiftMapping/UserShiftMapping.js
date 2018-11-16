@@ -223,7 +223,7 @@ class UserShiftMapping extends Component {
         <div className="col-lg-12">
           <div className="row">
             <AlagehAutoComplete
-              div={{ className: "col-lg-2" }}
+              div={{ className: "col" }}
               label={{
                 forceLabel: "Shift Type",
                 isImp: true
@@ -241,7 +241,7 @@ class UserShiftMapping extends Component {
               }}
             />
             <AlagehAutoComplete
-              div={{ className: "col-lg-2" }}
+              div={{ className: "col" }}
               label={{
                 forceLabel: "Select Cashier",
                 isImp: true
@@ -260,7 +260,7 @@ class UserShiftMapping extends Component {
             />
 
             <AlagehAutoComplete
-              div={{ className: "col-lg-2" }}
+              div={{ className: "col" }}
               label={{
                 forceLabel: "Select Month"
               }}
@@ -278,7 +278,7 @@ class UserShiftMapping extends Component {
             />
 
             <AlagehFormGroup
-              div={{ className: "col-lg-1" }}
+              div={{ className: "col" }}
               label={{
                 forceLabel: "Year",
                 isImp: true
@@ -297,16 +297,17 @@ class UserShiftMapping extends Component {
               }}
             />
 
-            <div className="col-lg-3 margin-top-15">
+            <div className="col">
               <button
                 onClick={this.mapUserShift.bind(this)}
+                style={{ marginTop: 21 }}
                 className="btn btn-primary"
               >
                 Add to List
               </button>
             </div>
           </div>
-          <div className="form-details" data-validate="usmDiv">
+          <div data-validate="usmDiv" id="usmDivCntr">
             <AlgaehDataGrid
               datavalidate="data-validate='usmDiv'"
               id="usm-grid"
