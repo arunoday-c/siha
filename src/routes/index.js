@@ -50,6 +50,7 @@ import invoiceGeneration from "../controller/invoiceGeneration";
 import currency from "../controller/currency";
 import generateReport from "../controller/generateReport";
 import inventory from "../Inventory/controller/inventory";
+import specialityAndCategory from "../controller/specialityAndCategory";
 
 let router = express();
 
@@ -109,6 +110,7 @@ initializedDb(db => {
   router.use("/currency", currency({ config, db }));
   router.use("/generateReport", generateReport({ config, db }));
   router.use("/inventory", inventory({ config, db }));
+  router.use("/specialityAndCategory", specialityAndCategory({ config, db }));
 });
 
 export default router;
