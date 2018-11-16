@@ -43,7 +43,7 @@ class Plan extends Component {
                   <ul className="nav">
                     <li
                       algaehtabs={"OrderMedication"}
-                      style={{ marginRight: 2 }}
+                      
                       className={"nav-item tab-button active"}
                       onClick={this.openTab.bind(this)}
                     >
@@ -56,7 +56,7 @@ class Plan extends Component {
                       }
                     </li>
                     <li
-                      style={{ marginRight: 2 }}
+                      
                       algaehtabs={"ActiveMedication"}
                       className={"nav-item tab-button"}
                       onClick={this.openTab.bind(this)}
@@ -70,7 +70,7 @@ class Plan extends Component {
                       }
                     </li>
                     <li
-                      style={{ marginRight: 2 }}
+                      
                       algaehtabs={"MedicationHistory"}
                       className={"nav-item tab-button"}
                       onClick={this.openTab.bind(this)}
@@ -85,7 +85,7 @@ class Plan extends Component {
                     </li>
                     <li
                       algaehtabs={"OwnMedication"}
-                      style={{ marginRight: 2 }}
+                      
                       className={"nav-item tab-button"}
                       onClick={this.openTab.bind(this)}
                     >

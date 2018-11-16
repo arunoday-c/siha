@@ -38,7 +38,6 @@ class BusinessSetup extends Component {
             <ul className="nav">
               <li
                 algaehtabs={"DeptMaster"}
-                style={{ marginRight: 2 }}
                 className={"nav-item tab-button active"}
                 onClick={this.openTab.bind(this)}
               >
@@ -54,7 +53,6 @@ class BusinessSetup extends Component {
 
               <li
                 algaehtabs={"Shift"}
-                style={{ marginRight: 2 }}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
               >
@@ -68,7 +66,6 @@ class BusinessSetup extends Component {
               </li>
               <li
                 algaehtabs={"Counter"}
-                style={{ marginRight: 2 }}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
               >
@@ -82,7 +79,6 @@ class BusinessSetup extends Component {
               </li>
               <li
                 algaehtabs={"UserShiftMapping"}
-                style={{ marginRight: 2 }}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
               >
@@ -96,7 +92,6 @@ class BusinessSetup extends Component {
               </li>
               <li
                 algaehtabs={"Currency"}
-                style={{ marginRight: 2 }}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
               >

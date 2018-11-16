@@ -40,7 +40,6 @@ class MedicalWorkbenchSetup extends Component {
           <div className="tabMaster toggle-section">
             <ul className="nav">
               <li
-                style={{ marginRight: 2 }}
                 algaehtabs={"VitalsMaster"}
                 className={"nav-item tab-button active"}
                 onClick={this.openTab.bind(this)}
@@ -55,7 +54,6 @@ class MedicalWorkbenchSetup extends Component {
               </li>
               <li
                 algaehtabs={"PhysicalExaminationMaster"}
-                style={{ marginRight: 2 }}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
               >
@@ -68,7 +66,6 @@ class MedicalWorkbenchSetup extends Component {
                 }
               </li>
               <li
-                style={{ marginRight: 2 }}
                 algaehtabs={"ReviewofSystems"}
                 className={"nav-item tab-button "}
                 onClick={this.openTab.bind(this)}
