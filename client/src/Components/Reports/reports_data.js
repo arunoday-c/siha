@@ -12,6 +12,8 @@ import Laboratory from "./Components/Laboratory/Laboratory";
 import Package from "./Components/Package/Package";
 import VatReports from "./Components/VatReports/VatReports";
 import FrontDesk from "../../Search/FrontDesk.json";
+import { AlgaehLabel } from "../Wrapper/algaehWrapper";
+
 export default [
   {
     name: "APPOINTMENTS",
@@ -28,6 +30,21 @@ export default [
             others: {
               maxDate: new Date(),
               minDate: null
+            }
+          },
+          {
+            type: "date",
+            name: "to_date",
+            label: "To Date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            },
+            events: {
+              onChange: (reportState, currentValue) => {
+                debugger;
+              }
             }
           },
           {
@@ -67,14 +84,24 @@ export default [
             type: "checkbox",
             name: "employee_type",
             label: "Not able",
-            default: true
+            default: false
           }
-        ] //() => <Appointment ui="availability" />
+        ]
       },
       {
         subitem: "Appointment Details Patient Wise",
         template_name: "appt_availability",
-        reportParameters: () => <Appointment ui="appt_details_pat_wise" />
+        reportParameters: [
+          {
+            type: "date",
+            name: "from_date",
+            label: "From Date",
+            isImp: true,
+            others: {
+              maxDate: new Date()
+            }
+          }
+        ]
       },
       {
         subitem: "Appointment List",
