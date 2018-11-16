@@ -1,0 +1,14 @@
+{
+  "from_date": "From Date",
+  "to_date": "To Date",
+  "from_time": "From Time",
+  "to_time": "To Time",
+  "doctors": "Doctors",
+  "department": "Department",
+  "appointment_type": "Appointment Type",
+  "patient_code": "Patient Code",
+  "all_departments": "All Departments",
+  "all_doctors": "All Doctors",
+  "office_branch": "Office / Branch",
+  "appt_status": "Appointment Status"
+}

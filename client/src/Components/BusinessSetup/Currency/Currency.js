@@ -84,6 +84,7 @@ class Currency extends Component {
   }
 
   updateCurrency(data) {
+    debugger;
     algaehApiCall({
       uri: "/currency/updateCurrencyMaster",
       data: {
