@@ -1,2 +1,4 @@
 #currencyGridCntr .ReactTable {
-  max-height: 70vh !important; }
+  max-height: 65vh !important;
+  margin-top: 10px;
+  margin-bottom: 15px; }

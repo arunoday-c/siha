@@ -422,9 +422,9 @@ class DeptMaster extends Component {
 
             <div className="popupInner">
               <div className="col-lg-12">
-                <div className="row" data-validate="subdepDiv">
+                <div className="row margin-top-15" data-validate="subdepDiv">
                   <AlagehFormGroup
-                    div={{ className: "col-lg-2" }}
+                    div={{ className: "col" }}
                     label={{
                       fieldName: "head_department",
                       isImp: false
@@ -443,7 +443,7 @@ class DeptMaster extends Component {
                   />
 
                   <AlagehFormGroup
-                    div={{ className: "col-lg-2" }}
+                    div={{ className: "col" }}
                     label={{
                       fieldName: "sub_department_code",
                       isImp: true
@@ -459,7 +459,7 @@ class DeptMaster extends Component {
                   />
 
                   <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col" }}
                     label={{
                       fieldName: "sub_department_name",
                       isImp: true
@@ -475,7 +475,7 @@ class DeptMaster extends Component {
                   />
 
                   <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col" }}
                     label={{
                       fieldName: "sub_department_name_arabic",
                       isImp: true
@@ -491,7 +491,7 @@ class DeptMaster extends Component {
                   />
 
                   <AlgaehDateHandler
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col" }}
                     label={{ fieldName: "effective_start_date", isImp: true }}
                     textBox={{
                       className: "txt-fld",
@@ -508,150 +508,190 @@ class DeptMaster extends Component {
                     value={this.state.effective_start_date}
                   />
 
-                  <div className="col-lg-1 align-middle">
+                  <div className="col align-middle">
                     <br />
 
                     <button
                       className="btn btn-primary"
                       onClick={this.addSubDepartment.bind(this)}
                     >
-                      ADD TO LIST
+                      Add to List
                     </button>
                   </div>
                 </div>
+                <div className="row">
+                  <div
+                    className="col-lg-12"
+                    data-validate="subdepdd"
+                    id="subdepddCntr"
+                  >
+                    <AlgaehDataGrid
+                      datavalidate="data-validate='subdepdd'"
+                      id="sub_dep_grid"
+                      columns={[
+                        {
+                          fieldName: "sub_department_code",
+                          label: (
+                            <label className="style_Label">
+                              Sub Department Code
+                            </label>
+                          ),
+                          disabled: true
+                        },
+                        {
+                          fieldName: "sub_department_name",
+                          label: (
+                            <label className="style_Label">
+                              Sub Department Name
+                            </label>
+                          ),
 
-                <div
-                  className="col-lg-12"
-                  style={{ marginTop: 10, marginBottom: 10 }}
-                  data-validate="subdepdd"
-                >
-                  <AlgaehDataGrid
-                    datavalidate="data-validate='subdepdd'"
-                    id="sub_dep_grid"
-                    columns={[
-                      {
-                        fieldName: "sub_department_code",
-                        label: "Sub Department Code",
-                        disabled: true
-                      },
-                      {
-                        fieldName: "sub_department_name",
-                        label: "Sub Department Name",
-                        editorTemplate: row => {
-                          return (
-                            <AlagehFormGroup
-                              div={{ className: "col" }}
-                              textBox={{
-                                className: "txt-fld",
-                                name: "sub_department_name",
-                                value: row.sub_department_name,
-                                events: {
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                div={{ className: "col" }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "sub_department_name",
+                                  value: row.sub_department_name,
+                                  events: {
+                                    onChange: this.changeGridEditors.bind(
+                                      this,
+                                      row
+                                    )
+                                  },
+                                  others: {
+                                    errormessage: "Name - cannot be blank",
+                                    required: true
+                                  }
+                                }}
+                              />
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "arabic_sub_department_name",
+                          label: (
+                            <label className="style_Label">
+                              Sub Department Arabic Name
+                            </label>
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                div={{ className: "col" }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "arabic_sub_department_name",
+                                  value: row.arabic_sub_department_name,
+                                  events: {
+                                    onChange: this.changeGridEditors.bind(
+                                      this,
+                                      row
+                                    )
+                                  },
+                                  others: {
+                                    errormessage:
+                                      "Arabic Name - cannot be blank",
+                                    required: true
+                                  }
+                                }}
+                              />
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "effective_start_date",
+                          label: (
+                            <label className="style_Label">
+                              Effective Start Date
+                            </label>
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {moment(row.effective_start_date).format(
+                                  "DD-MM-YYYY"
+                                )}
+                              </span>
+                            );
+                          },
+                          editorTemplate: row => {
+                            return (
+                              <span>
+                                {moment(row.effective_start_date).format(
+                                  "DD-MM-YYYY"
+                                )}
+                              </span>
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "sub_department_status",
+                          label: <label className="style_Label">Status</label>,
+                          displayTemplate: row => {
+                            return row.sub_department_status === "A"
+                              ? "Active"
+                              : "Inactive";
+                          },
+                          editorTemplate: row => {
+                            return (
+                              <AlagehAutoComplete
+                                div={{}}
+                                selector={{
+                                  name: "sub_department_status",
+                                  className: "select-fld",
+                                  value: row.sub_department_status,
+                                  dataSource: {
+                                    textField: "name",
+                                    valueField: "value",
+                                    data: GlobalVariables.FORMAT_STATUS
+                                  },
+                                  others: {
+                                    errormessage: "Status - cannot be blank",
+                                    required: true
+                                  },
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
                                   )
-                                },
-                                others: {
-                                  errormessage: "Name - cannot be blank",
-                                  required: true
-                                }
-                              }}
-                            />
-                          );
+                                }}
+                              />
+                            );
+                          }
                         }
-                      },
-                      {
-                        fieldName: "arabic_sub_department_name",
-                        label: "Sub Department Arabic Name",
-                        editorTemplate: row => {
-                          return (
-                            <AlagehFormGroup
-                              div={{ className: "col" }}
-                              textBox={{
-                                className: "txt-fld",
-                                name: "arabic_sub_department_name",
-                                value: row.arabic_sub_department_name,
-                                events: {
-                                  onChange: this.changeGridEditors.bind(
-                                    this,
-                                    row
-                                  )
-                                },
-                                others: {
-                                  errormessage: "Arabic Name - cannot be blank",
-                                  required: true
-                                }
-                              }}
-                            />
-                          );
-                        }
-                      },
-                      {
-                        fieldName: "effective_start_date",
-                        label: "Effective Start Date",
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {moment(row.effective_start_date).format(
-                                "DD-MM-YYYY"
-                              )}
-                            </span>
-                          );
-                        },
-                        editorTemplate: row => {
-                          return (
-                            <span>
-                              {moment(row.effective_start_date).format(
-                                "DD-MM-YYYY"
-                              )}
-                            </span>
-                          );
-                        }
-                      },
-                      {
-                        fieldName: "sub_department_status",
-                        label: "Status",
-                        displayTemplate: row => {
-                          return row.sub_department_status === "A"
-                            ? "Active"
-                            : "Inactive";
-                        },
-                        editorTemplate: row => {
-                          return (
-                            <AlagehAutoComplete
-                              div={{}}
-                              selector={{
-                                name: "sub_department_status",
-                                className: "select-fld",
-                                value: row.sub_department_status,
-                                dataSource: {
-                                  textField: "name",
-                                  valueField: "value",
-                                  data: GlobalVariables.FORMAT_STATUS
-                                },
-                                others: {
-                                  errormessage: "Status - cannot be blank",
-                                  required: true
-                                },
-                                onChange: this.changeGridEditors.bind(this, row)
-                              }}
-                            />
-                          );
-                        }
-                      }
-                    ]}
-                    keyId="hims_d_sub_department_id"
-                    dataSource={{
-                      data: this.state.subDepartments
-                    }}
-                    isEditable={true}
-                    paging={{ page: 0, rowsPerPage: 10 }}
-                    events={{
-                      onDelete: this.deleteSubDepartment.bind(this),
-                      onEdit: row => {},
-                      onDone: this.updateSubDepartment.bind(this)
-                    }}
-                  />
+                      ]}
+                      keyId="hims_d_sub_department_id"
+                      dataSource={{
+                        data: this.state.subDepartments
+                      }}
+                      isEditable={true}
+                      paging={{ page: 0, rowsPerPage: 10 }}
+                      events={{
+                        onDelete: this.deleteSubDepartment.bind(this),
+                        onEdit: row => {},
+                        onDone: this.updateSubDepartment.bind(this)
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="popupFooter">
+              <div className="col-lg-12">
+                <div className="row">
+                  <div className="col-lg-4"> &nbsp;</div>
+                  <div className="col-lg-8">
+                    <button
+                      type="button"
+                      className="btn btn-default"
+                      onClick={() => {
+                        this.setState({ showSubDeptModal: false });
+                      }}
+                    >
+                      <label className="style_Label ">Cancel</label>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -661,7 +701,7 @@ class DeptMaster extends Component {
         <div className="col-lg-12">
           <div className="row">
             <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
+              div={{ className: "col" }}
               label={{
                 fieldName: "department_code",
                 isImp: true
@@ -679,7 +719,7 @@ class DeptMaster extends Component {
             />
 
             <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
+              div={{ className: "col" }}
               label={{
                 fieldName: "department_name",
                 isImp: true
@@ -697,7 +737,7 @@ class DeptMaster extends Component {
             />
 
             <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
+              div={{ className: "col" }}
               label={{
                 fieldName: "department_name_arabic",
                 isImp: true
@@ -713,16 +753,8 @@ class DeptMaster extends Component {
                 helperText: this.state.department_name_arabic_error_text
               }}
             />
-          </div>
-
-          <div
-            className="row"
-            style={{
-              marginTop: 5
-            }}
-          >
             <AlgaehDateHandler
-              div={{ className: "col-lg-3" }}
+              div={{ className: "col" }}
               label={{ fieldName: "effective_start_date", isImp: true }}
               textBox={{
                 className: "txt-fld",
@@ -740,7 +772,7 @@ class DeptMaster extends Component {
             />
 
             <AlagehAutoComplete
-              div={{ className: "col-lg-3" }}
+              div={{ className: "col" }}
               label={{
                 fieldName: "department_type"
               }}
@@ -757,25 +789,19 @@ class DeptMaster extends Component {
               }}
             />
 
-            <div className="col-lg-3 align-middle">
-              <br />
-
+            <div className="col align-middle">
               <button
                 className="btn btn-primary"
+                style={{ marginTop: 21 }}
                 onClick={this.addDepartment.bind(this)}
               >
-                ADD TO LIST
+                Add to List
               </button>
             </div>
           </div>
         </div>
 
-        <div
-          data-validate="depdd"
-          className="col-lg-12"
-          style={{ marginTop: 10, marginBottom: 10 }}
-          id="depddGridCntr"
-        >
+        <div data-validate="depdd" className="col-lg-12" id="depddGridCntr">
           <AlgaehDataGrid
             datavalidate="data-validate='depdd'"
             id="dept_grid"

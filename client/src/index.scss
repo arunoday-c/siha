@@ -1373,26 +1373,33 @@ $forntSize: 0.7rem;
 
   .tabMaster {
     background: white;
-    height: 35px;
-    padding: 5px 0 0;
     width: 100%;
     color: #797979;
     margin-bottom: 15px;
-    font-size: 1rem;
-    text-transform: uppercase;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     ul {
       position: relative;
       li {
+        border-right: 1px solid #e9e9e9;
+        margin: 0;
+        padding: 0;
         label {
           font-size: 0.8rem;
           text-transform: uppercase;
-          padding: 5px 15px;
+          padding: 7px 15px;
           color: #858585;
+          margin: 0;
+          border: none;
+          height: 33px;
         }
         label:hover {
           cursor: pointer;
           color: #000;
+          background: linear-gradient(
+            to bottom,
+            #f1f1f1 0%,
+            rgb(255, 255, 255) 100%
+          );
         }
       }
       li.active {

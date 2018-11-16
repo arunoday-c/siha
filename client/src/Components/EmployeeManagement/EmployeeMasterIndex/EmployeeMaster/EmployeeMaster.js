@@ -186,7 +186,7 @@ class EmployeeMaster extends Component {
                   <ul className="nav">
                     <li
                       algaehtabs={"PersonalDetails"}
-                      style={{ marginRight: 2 }}
+                      
                       className={"nav-item tab-button active"}
                       onClick={this.openTab.bind(this)}
                     >
@@ -199,7 +199,7 @@ class EmployeeMaster extends Component {
                       }
                     </li>
                     <li
-                      style={{ marginRight: 2 }}
+                      
                       algaehtabs={"CommissionSetup"}
                       className={"nav-item tab-button"}
                       onClick={this.openTab.bind(this)}

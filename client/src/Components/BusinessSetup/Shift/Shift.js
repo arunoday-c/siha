@@ -227,9 +227,10 @@ class Shift extends Component {
               }}
             />
 
-            <div className="col-lg-3 margin-top-15">
+            <div className="col-lg-3">
               <button
                 type="submit"
+                style={{ marginTop: 21 }}
                 onClick={this.addShift.bind(this)}
                 className="btn btn-primary"
               >
@@ -237,11 +238,8 @@ class Shift extends Component {
               </button>
             </div>
           </div>
-          <div
-            className="form-details"
-            data-validate="shiftDiv"
-            id="shiftGridCntr"
-          >
+
+          <div data-validate="shiftDiv" id="shiftGridCntr">
             <AlgaehDataGrid
               id="shift-grid"
               datavalidate="data-validate='shiftDiv'"

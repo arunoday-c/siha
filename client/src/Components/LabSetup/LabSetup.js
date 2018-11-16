@@ -60,7 +60,6 @@ class LabSetup extends Component {
             <ul className="nav">
               <li
                 algaehtabs={"LabSection"}
-                style={{ marginRight: 2 }}
                 className={"nav-item tab-button active"}
                 onClick={this.openTab.bind(this)}
               >
@@ -73,7 +72,6 @@ class LabSetup extends Component {
                 }
               </li>
               <li
-                style={{ marginRight: 2 }}
                 algaehtabs={"LabContainer"}
                 className={"nav-item tab-button "}
                 onClick={this.openTab.bind(this)}
@@ -89,7 +87,6 @@ class LabSetup extends Component {
 
               <li
                 algaehtabs={"LabSpecimen"}
-                style={{ marginRight: 2 }}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
               >
@@ -102,7 +99,6 @@ class LabSetup extends Component {
                 }
               </li>
               <li
-                style={{ marginRight: 2 }}
                 className={"nav-item tab-button "}
                 algaehtabs={"Analyte"}
                 onClick={this.openTab.bind(this)}
@@ -117,7 +113,7 @@ class LabSetup extends Component {
               </li>
               {/* <li
               algaehtabs={"Equipment"}
-              style={{ marginRight: 2 }}
+              
               className={"nav-item tab-button "}
               onClick={this.openTab.bind(this)}
             >
@@ -132,7 +128,6 @@ class LabSetup extends Component {
 
               <li
                 algaehtabs={"TestCategory"}
-                style={{ marginRight: 2 }}
                 className={"nav-item tab-button "}
                 onClick={this.openTab.bind(this)}
               >
