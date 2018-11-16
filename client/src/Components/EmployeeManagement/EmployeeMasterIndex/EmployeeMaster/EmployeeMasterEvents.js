@@ -6,89 +6,101 @@ const Validations = $this => {
 
   if ($this.state.employee_code.length <= 0) {
     isError = true;
-    $this.setState({
-      open: true,
-      MandatoryMsg: "Invalid Input. Employee Code Cannot be blank."
+    swalMessage({
+      type: "warning",
+      title: "Invalid Input. Employee Code Cannot be blank."
     });
+
     return isError;
   } else if ($this.state.title_id === null) {
     isError = true;
-    $this.setState({
-      open: true,
-      MandatoryMsg: "Invalid Input. Please Select Title."
+    swalMessage({
+      type: "warning",
+      title: "Invalid Input. Please Select Title."
     });
+
     return isError;
   } else if ($this.state.full_name.length <= 0) {
     isError = true;
-    $this.setState({
-      open: true,
-      MandatoryMsg: "Invalid Input. Name Cannot be blank."
+    swalMessage({
+      type: "warning",
+      title: "Invalid Input. Name Cannot be blank."
     });
+
     return isError;
   } else if ($this.state.arabic_name.length <= 0) {
     isError = true;
-    $this.setState({
-      open: true,
-      MandatoryMsg: "Invalid Input. Arabic Name Cannot be blank."
+
+    swalMessage({
+      type: "warning",
+      title: "Invalid Input. Arabic Name Cannot be blank."
     });
+
     return isError;
   } else if ($this.state.employee_designation_id === null) {
     isError = true;
-    $this.setState({
-      open: true,
-      MandatoryMsg: "Invalid Input. Please Select Designation."
+    swalMessage({
+      type: "warning",
+      title: "Invalid Input. Please Select Designation."
     });
+
     return isError;
   } else if (
     $this.state.license_number.length <= 0 &&
     $this.state.isdoctor === "Y"
   ) {
     isError = true;
-    $this.setState({
-      open: true,
-      MandatoryMsg: "Invalid Input. License Number Cannot be blank."
+    swalMessage({
+      type: "warning",
+      title: "IInvalid Input. License Number Cannot be blank."
     });
+
     return isError;
   } else if ($this.state.sex === null) {
     isError = true;
-    $this.setState({
-      open: true,
-      MandatoryMsg: "Invalid Input. Please Select Gender."
+    swalMessage({
+      type: "warning",
+      title: "Invalid Input. Please Select Gender."
     });
+
     return isError;
   } else if ($this.state.date_of_birth === null) {
     isError = true;
-    $this.setState({
-      open: true,
-      MandatoryMsg: "Invalid Input. Date Of Birth Cannot be blank."
+    swalMessage({
+      type: "warning",
+      title: "Invalid Input. Date Of Birth Cannot be blank."
     });
+
     return isError;
   } else if ($this.state.country_id === null) {
     isError = true;
-    $this.setState({
-      open: true,
-      MandatoryMsg: "Invalid Input. Please Select Country."
+    swalMessage({
+      type: "warning",
+      title: "Invalid Input. Please Select Country."
     });
+
     return isError;
   } else if ($this.state.email.length <= 0) {
     isError = true;
-    $this.setState({
-      open: true,
-      MandatoryMsg: "Invalid Input. Email Cannot be blank."
+    swalMessage({
+      type: "warning",
+      title: "Invalid Input. Email Cannot be blank."
     });
+
     return isError;
   } else if ($this.state.primary_contact_no === 0) {
     isError = true;
-    $this.setState({
-      open: true,
-      MandatoryMsg: "Invalid Input. Mobile No. Cannot be blank."
+    swalMessage({
+      type: "warning",
+      title: "Invalid Input. Mobile No. Cannot be blank."
     });
+
     return isError;
   } else if ($this.state.deptDetails.length <= 0) {
     isError = true;
-    $this.setState({
-      open: true,
-      MandatoryMsg: "Invalid Input. Atleast one department to attach."
+    swalMessage({
+      type: "warning",
+      title: "Invalid Input. Atleast one department to attach."
     });
     return isError;
   }

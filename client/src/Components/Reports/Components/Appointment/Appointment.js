@@ -72,7 +72,6 @@ export default class Appointment extends Component {
         callBack(text);
       },
       onRowSelect: row => {
-        console.log("Selected Row:", row);
         this.setState({
           patient_code: row.patient_code,
           patient_id: row.hims_d_patient_id

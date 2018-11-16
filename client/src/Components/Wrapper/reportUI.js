@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import "./wrapper.scss";
-import Modal from "@material-ui/core/Modal";
 import ReactToPrint from "react-to-print";
 import { successfulMessage } from "../../utils/GlobalFunctions";
-import { algaehApiCall } from "../../utils/algaehApiCall";
+import { algaehApiCall, valueReviver } from "../../utils/algaehApiCall";
 import { accessReport } from "../Wrapper/printReports";
 import Enumerable from "linq";
+import ReactDOM from "react-dom";
+import AlgaehSearch from "../Wrapper/globalSearch";
 export default class ReportUI extends Component {
   constructor(props) {
     super(props);
@@ -30,10 +31,21 @@ export default class ReportUI extends Component {
                 ...{ method: "GET" },
                 ...{
                   onSuccess: response => {
-                    if (response.data.success)
-                      this.setState({
-                        [s.name + "_list"]: response.data.records[s.link.schema]
-                      });
+                    if (response.data.success) {
+                      if (s.link.schema !== undefined) {
+                        s.link.schema.map(sch => {
+                          this.setState({
+                            [sch.name + "_list"]: eval(
+                              "response.data.records." + sch.response
+                            )
+                          });
+                        });
+                      } else {
+                        this.setState({
+                          [s.name + "_list"]: response.data.records
+                        });
+                      }
+                    }
                   }
                 }
               };
@@ -46,9 +58,11 @@ export default class ReportUI extends Component {
   callApiForParameters(arrayUrl) {
     if (arrayUrl !== undefined && arrayUrl.length > 0) {
       for (let i = 0; i < arrayUrl.length; i++) {
-        debugger;
-        arrayUrl.initialLoad = arrayUrl.initialLoad || true;
-        if (arrayUrl.initialLoad) algaehApiCall(arrayUrl[i]);
+        const _initalLoad =
+          arrayUrl[i].initialLoad === undefined
+            ? true
+            : arrayUrl[i].initialLoad;
+        if (_initalLoad) algaehApiCall(arrayUrl[i]);
       }
     }
   }
@@ -58,7 +72,31 @@ export default class ReportUI extends Component {
       openPopup: true
     });
   }
-
+  internallyCallAPI(parametes) {
+    algaehApiCall({
+      ...parametes,
+      ...{ method: "GET" },
+      ...{
+        onSuccess: response => {
+          if (response.data.success) {
+            if (parametes.link.schema !== undefined) {
+              parametes.link.schema.map(sch => {
+                this.setState({
+                  [sch.name + "_list"]: eval(
+                    "response.data.records." + sch.response
+                  )
+                });
+              });
+            } else {
+              this.setState({
+                [parametes.name + "_list"]: response.data.records
+              });
+            }
+          }
+        }
+      }
+    });
+  }
   componentWillReceiveProps() {
     this.setState({
       openPopup: true
@@ -66,9 +104,7 @@ export default class ReportUI extends Component {
   }
 
   handleClose = e => {
-    this.setState({
-      openPopup: false
-    });
+    ReactDOM.unmountComponentAtNode(document.getElementById("reportWindow"));
   };
 
   componentDidCatch(error, info) {
@@ -83,39 +119,25 @@ export default class ReportUI extends Component {
     });
   }
   generateReport(e) {
-    let _inputServiceParameter = {};
-    const _rootElements = document.querySelectorAll("[report-parameter]");
-    for (let i = 0; i < _rootElements.length; i++) {
-      let _value = "";
-      switch (_rootElements[i].type) {
-        case "date":
-          _value = new Date(_rootElements[i].value);
-          break;
-
-        default:
-          const _refValue = _rootElements[i].getAttribute("referencevalue");
-          if (_refValue !== undefined) {
-            _value = _refValue;
-          } else {
-            const _checkBox = _rootElements[i].getAttribute("checkvalue");
-            if (_checkBox !== undefined) {
-              _value = _checkBox;
-            } else _value = _rootElements[i].value;
-          }
+    let inputs = "";
+    let counter = 0;
+    Object.keys(this.state).map(name => {
+      if (
+        name !== "pageDisplay" ||
+        name !== "openPopup" ||
+        name !== "hasError" ||
+        name !== "_htmlString"
+      ) {
+        if (Array.isArray(this.state[name])) {
+          inputs += name + "=" + valueReviver(name, this.state[name]);
+          if (counter > 0) inputs += "&";
+        }
       }
-      _inputServiceParameter[
-        _rootElements[i].getAttribute("report-parameter")
-      ] = _value;
-    }
-    const _checkInput =
-      this.props.options.onInput !== undefined
-        ? this.props.options.onInput(_inputServiceParameter)
-        : _inputServiceParameter;
+    });
     const that = this;
     let options = { ...this.props.options, ...{ getRaw: true } };
     algaehApiCall({
-      uri: options.plotUI.api,
-      data: _checkInput,
+      uri: "/generateReport/getReport?" + inputs,
       method: "GET",
       onSucesss: response => {
         if (response.data.success === true) {
@@ -136,8 +158,94 @@ export default class ReportUI extends Component {
     });
   }
   dropDownHandle(e) {
-    debugger;
+    const _hasEvents = Enumerable.from(this.props.options.plotUI.paramters)
+      .where(w => w.name === e.name)
+      .firstOrDefault().events;
+    if (_hasEvents !== undefined) {
+      if (_hasEvents.onChange !== undefined) {
+        _hasEvents.onChange(this, e);
+      }
+    }
   }
+  searchButton(e) {
+    const _name = e.currentTarget.getAttribute("surrounds");
+    const _hasSearch = Enumerable.from(this.props.options.plotUI.paramters)
+      .where(w => w.name === _name)
+      .firstOrDefault();
+    AlgaehSearch({
+      searchGrid: {
+        columns: _hasSearch.search.columns
+      },
+      searchName: _hasSearch.search.searchName,
+      uri: "/gloabelSearch/get",
+      onContainsChange: (text, serchBy, callBack) => {
+        callBack(text);
+      },
+      onRowSelect: row => {
+        if (
+          _hasSearch.search.schema !== undefined &&
+          _hasSearch.search.schema.length > 0
+        ) {
+          _hasSearch.search.schema.map(item => {
+            this.setState({ [item.name]: row[item.response] });
+          });
+        } else {
+          this.setState({ [_name]: row[_name] });
+        }
+      }
+    });
+  }
+  checkBoxRadioHandle(e) {
+    const _name = e.currentTarget.name;
+    const _hasEvents = Enumerable.from(this.props.options.plotUI.paramters)
+      .where(w => w.name === _name)
+      .firstOrDefault().events;
+    if (_hasEvents !== undefined) {
+      if (_hasEvents.onChange !== undefined) {
+        _hasEvents.onChange(this, e);
+      }
+    } else {
+      const _checked = e.currentTarget.checked;
+      this.setState({
+        [_name + "_checked"]: _checked
+      });
+    }
+  }
+
+  textBoxHandle(e) {
+    const _name = e.currentTarget.name;
+    const _hasEvents = Enumerable.from(this.props.options.plotUI.paramters)
+      .where(w => w.name === _name)
+      .firstOrDefault().events;
+    if (_hasEvents !== undefined) {
+      if (_hasEvents.onChange !== undefined) {
+        _hasEvents.onChange(this, e);
+      }
+    } else {
+      this.setState({
+        [_name]: e.currentTarget.value
+      });
+    }
+  }
+  datePickerHandler(selectedDate) {
+    const _hasEvents = Enumerable.from(this.props.options.plotUI.paramters)
+      .where(w => w.name === selectedDate.name)
+      .firstOrDefault().events;
+    if (_hasEvents !== undefined) {
+      if (_hasEvents.onChange !== undefined) {
+        _hasEvents.onChange(this, selectedDate);
+      }
+    } else {
+      this.setState({
+        [selectedDate.name]: selectedDate.value
+      });
+    }
+
+    // this.setState({
+    //   [_param.name]: selectedDate
+    // });
+  }
+
   generateInputParameters() {
     const _parameters = this.props.options.plotUI.paramters;
     let _controls = [];
@@ -148,14 +256,17 @@ export default class ReportUI extends Component {
     } = require("./algaehWrapper");
     for (let i = 0; i < _parameters.length; i++) {
       const _param = _parameters[i];
-      const _data =
-        this.state[_param.name + "_list"] === undefined
-          ? []
-          : this.state[_param.name + "_list"];
       switch (_param.type) {
         case "dropdown":
+          const _data =
+            this.state[_param.name + "_list"] === undefined
+              ? _param.dataSource.data === undefined
+                ? []
+                : _param.dataSource.data
+              : this.state[_param.name + "_list"];
           _controls.push(
             <AlagehAutoComplete
+              key={i}
               div={{ className: "col" }}
               label={{
                 forceLabel: _param.label,
@@ -170,7 +281,8 @@ export default class ReportUI extends Component {
                   valueField: _param.dataSource.valueField,
                   data: _data
                 },
-                onChange: this.dropDownHandle.bind(this)
+                onChange: this.dropDownHandle.bind(this),
+                ..._param.others
               }}
             />
           );
@@ -178,6 +290,8 @@ export default class ReportUI extends Component {
         case "date":
           _controls.push(
             <AlgaehDateHandler
+              key={i}
+              singleOutput={false}
               div={{ className: "col" }}
               label={{
                 forceLabel: _param.label,
@@ -189,13 +303,109 @@ export default class ReportUI extends Component {
               }}
               {..._param.others}
               events={{
-                onChange: selectedDate => {
-                  this.setState({
-                    [_param.name]: selectedDate
-                  });
-                }
+                onChange: this.datePickerHandler.bind(this)
               }}
               value={this.state[_param.name]}
+            />
+          );
+          break;
+        case "search":
+          _controls.push(
+            <React.Fragment key={i}>
+              <AlagehFormGroup
+                div={{ className: "col" }}
+                label={{
+                  forceLabel: _param.label,
+                  isImp: _param.isImp !== undefined ? false : _param.isImp
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: _param.name,
+
+                  value: this.state[_param.name],
+                  ..._param.others
+                }}
+              />
+              <div className="col-1">
+                <i
+                  surrounds={_param.name}
+                  onClick={this.searchButton.bind(this)}
+                  className="fas fa-search"
+                  style={{
+                    cursor: "pointer",
+                    marginTop: "28px"
+                  }}
+                />
+              </div>
+            </React.Fragment>
+          );
+          break;
+        case "checkbox":
+          const _default =
+            this.state[_param.name + "_checked"] === undefined
+              ? _param.default === undefined
+                ? false
+                : _param.default
+              : this.state[_param.name + "_checked"];
+          _controls.push(
+            <div
+              key={i}
+              className="customCheckbox col-2"
+              style={{ border: "none", marginTop: "28px" }}
+            >
+              <label className="checkbox" style={{ color: "rgb(33, 37, 41)" }}>
+                <input
+                  type="checkbox"
+                  name={_param.name}
+                  checked={_default}
+                  value={_default ? "Y" : "N"}
+                  onChange={this.checkBoxRadioHandle.bind(this)}
+                />
+                <span style={{ fontSize: "0.8rem" }}>{_param.label}</span>
+              </label>
+            </div>
+          );
+          break;
+        case "radio":
+          const _Rdefault =
+            this.state[_param.name + "_checked"] === undefined
+              ? _param.default === undefined
+                ? false
+                : _param.default
+              : this.state[_param.name + "_checked"];
+          _controls.push(
+            <div key={i} className="customRadio col-2">
+              <label className="radio inline">
+                <input
+                  type="radio"
+                  checked={_Rdefault}
+                  name={_param.name}
+                  value={_Rdefault ? "Y" : "N"}
+                  onChange={this.checkBoxRadioHandle.bind(this)}
+                />
+                <span>{_param.label}</span>
+              </label>
+            </div>
+          );
+          break;
+        default:
+          _controls.push(
+            <AlagehFormGroup
+              key={i}
+              div={{ className: "col" }}
+              label={{
+                forceLabel: _param.label,
+                isImp: _param.isImp !== undefined ? false : _param.isImp
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: _param.name,
+                value: this.state[_param.name],
+                events: {
+                  onChange: this.textBoxHandle.bind(this)
+                },
+                ..._param.others
+              }}
             />
           );
           break;

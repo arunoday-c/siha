@@ -8,7 +8,7 @@ import DataGrid from "../Wrapper/grid";
 import Button from "@material-ui/core/Button";
 import Tooltip from "@material-ui/core/Tooltip";
 import Modal from "@material-ui/core/Modal";
-
+import AlgaehSearch from "./globalSearch";
 import "hijri-date";
 
 const AlgaehLabel = Label;
@@ -18,6 +18,7 @@ const AlgaehDateHandler = DateHandler;
 const AlgaehOptions = Options;
 const AlagehAutoComplete = AutoComplete;
 const AlgaehDataGrid = DataGrid;
+const AlgaehGlobalSearch = AlgaehSearch;
 const AlgaehConvertToHijri = date => {
   if (date !== null && date !== "") {
     let nowGreg = new Date(date);

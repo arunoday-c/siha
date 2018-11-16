@@ -97,65 +97,82 @@ const AddUom = ($this, context) => {
     let detail_item_uom = $this.state.detail_item_uom;
     let insertItemUomMap = $this.state.insertItemUomMap;
 
-    let StockingExit = Enumerable.from(
+    debugger;
+    let uomExists = Enumerable.from(
       detail_item_uom.length !== 0 ? detail_item_uom : null
     )
-      .where(w => w.stocking_uom === "Y")
+      .where(w => w.uom_id === $this.state.uom_id)
       .toArray();
 
-    if (
-      StockingExit.length === 0 ||
-      (StockingExit.length !== 0 && $this.state.stocking_uom === "N")
-    ) {
-      if ($this.state.stocking_uom === "Y") {
-        stocking_uom_id = $this.state.uom_id;
-      } else {
-        stocking_uom_id = $this.state.stocking_uom_id;
-      }
-      if ($this.state.hims_d_item_master_id !== null) {
-        let Insertobj = {
-          item_master_id: $this.state.hims_d_item_master_id,
+    if (uomExists.length === 0) {
+      let StockingExit = Enumerable.from(
+        detail_item_uom.length !== 0 ? detail_item_uom : null
+      )
+        .where(w => w.stocking_uom === "Y")
+        .toArray();
+
+      if (
+        StockingExit.length === 0 ||
+        (StockingExit.length !== 0 && $this.state.stocking_uom === "N")
+      ) {
+        if ($this.state.stocking_uom === "Y") {
+          stocking_uom_id = $this.state.uom_id;
+        } else {
+          stocking_uom_id = $this.state.stocking_uom_id;
+        }
+        if ($this.state.hims_d_item_master_id !== null) {
+          let Insertobj = {
+            item_master_id: $this.state.hims_d_item_master_id,
+            uom_id: $this.state.uom_id,
+            stocking_uom: $this.state.stocking_uom,
+            conversion_factor: $this.state.conversion_factor,
+            uom_description: $this.state.uom_description,
+            uom_status: "A"
+          };
+          insertItemUomMap.push(Insertobj);
+        }
+
+        let uomObj = {
           uom_id: $this.state.uom_id,
-          stocking_uom: $this.state.stocking_uom,
           conversion_factor: $this.state.conversion_factor,
-          uom_description: $this.state.uom_description,
-          uom_status: "A"
+          stocking_uom: $this.state.stocking_uom,
+          uom_description: $this.state.uom_description
         };
-        insertItemUomMap.push(Insertobj);
-      }
-
-      let uomObj = {
-        uom_id: $this.state.uom_id,
-        conversion_factor: $this.state.conversion_factor,
-        stocking_uom: $this.state.stocking_uom,
-        uom_description: $this.state.uom_description
-      };
-      detail_item_uom.push(uomObj);
-      $this.setState({
-        detail_item_uom: detail_item_uom,
-        insertItemUomMap: insertItemUomMap,
-        uom_id: null,
-        stocking_uom: null,
-        conversion_factor: null,
-        stocking_uom_id: stocking_uom_id,
-        convertEnable: false
-      });
-
-      if (context !== undefined) {
-        context.updateState({
+        detail_item_uom.push(uomObj);
+        $this.setState({
           detail_item_uom: detail_item_uom,
           insertItemUomMap: insertItemUomMap,
-          stocking_uom_id: stocking_uom_id,
           uom_id: null,
           stocking_uom: null,
-          conversion_factor: null
+          conversion_factor: null,
+          stocking_uom_id: stocking_uom_id,
+          convertEnable: false
         });
+
+        if (context !== undefined) {
+          context.updateState({
+            detail_item_uom: detail_item_uom,
+            insertItemUomMap: insertItemUomMap,
+            stocking_uom_id: stocking_uom_id,
+            uom_id: null,
+            stocking_uom: null,
+            conversion_factor: null
+          });
+        }
+      } else {
+        isError = true;
+        swalMessage({
+          type: "warning",
+          title: "Invalid Input. Only one should be stocking UOM"
+        });
+
+        return isError;
       }
     } else {
       isError = true;
       swalMessage({
         type: "warning",
-        title: "Invalid Input. Only one should be stocking UOM"
+        title: "Invalid Input. Selected UOM Already exists"
       });
 
       return isError;
