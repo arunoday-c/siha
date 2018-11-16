@@ -12,7 +12,8 @@ import {
   updateEmployeeSpecialityMaster,
   updateEmployeeCategoryMaster,
   makeEmployeeCategoryInActive,
-  addCategorySpecialityMappings
+  addCategorySpecialityMappings,
+  getCategorySpecialityMap
 } from "../model/specialityAndCategory";
 
 export default ({ config, db }) => {
@@ -156,6 +157,21 @@ export default ({ config, db }) => {
   api.post(
     "/addCategorySpecialityMappings",
     addCategorySpecialityMappings,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :to get
+  api.get(
+    "/getCategorySpecialityMap",
+    getCategorySpecialityMap,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
