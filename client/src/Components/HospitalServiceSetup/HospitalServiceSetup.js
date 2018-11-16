@@ -212,7 +212,10 @@ class HospitalServiceSetup extends Component {
   render() {
     return (
       <div className="hims_hospitalservices">
-        <div className="row inner-top-search" style={{ paddingBottom: 10 }}>
+        <div
+          className="row inner-top-search d-none"
+          style={{ paddingBottom: 10 }}
+        >
           <div className="col-lg-12">
             <div className="row">
               <AlagehAutoComplete
@@ -308,7 +311,7 @@ class HospitalServiceSetup extends Component {
           </div>
         </div>
 
-        <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+        <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15 margin-top-15">
           <div className="portlet-title">
             <div className="caption">
               <h3 className="caption-subject">Hospital Services List</h3>
@@ -354,6 +357,10 @@ class HospitalServiceSetup extends Component {
                             />
                           </span>
                         );
+                      },
+                      others: {
+                        maxWidth: 55,
+                        filterable: false
                       }
                     },
                     {
@@ -478,7 +485,7 @@ class HospitalServiceSetup extends Component {
                         ? []
                         : this.props.hospitalservices
                   }}
-                  // isEditable={true}
+                  filter={true}
                   paging={{ page: 0, rowsPerPage: 10 }}
                 />
               </div>
