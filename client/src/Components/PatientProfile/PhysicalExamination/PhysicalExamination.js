@@ -20,10 +20,7 @@ class PhysicalExamination extends Component {
         <div className="row">
           <div className="col-lg-8">
             <Examination />
-            <PatientHistory />
-          </div>
-          <div className="col-lg-4 margin-top-15">
-            <div className="portlet portlet-bordered box-shadow-normal">
+            <div className="portlet portlet-bordered box-shadow-normal margin-top-15">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Examination Notes</h3>
@@ -54,6 +51,9 @@ class PhysicalExamination extends Component {
                 </div>
               </div>
             </div>
+          </div>
+          <div className="col-lg-4">
+            <PatientHistory />
           </div>
         </div>
       </div>

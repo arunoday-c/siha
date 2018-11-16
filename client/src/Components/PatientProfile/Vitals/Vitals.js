@@ -270,7 +270,7 @@ class Vitals extends Component {
                 }}
               >
                 <div
-                  className="col-lg-3"
+                  className="col-6"
                   style={{ borderBottom: "1px solid #e5e5e5" }}
                 >
                   <h6>Vital Timeline</h6>
@@ -283,7 +283,7 @@ class Vitals extends Component {
                 </div>
               </div>
               <div className="row">
-                <div className="col-lg-3 popLeftDiv">
+                <div className="col-6 popLeftDiv">
                   <div className="timeline">
                     {_vitalsGroup.map((data, index) => (
                       <div key={index} className="timelineContainer right">
@@ -360,13 +360,13 @@ class Vitals extends Component {
               {_department_viatals.map((item, index) => {
                 const _className =
                   item.hims_d_vitals_header_id === 1
-                    ? "col-lg-2"
+                    ? "col-6"
                     : item.hims_d_vitals_header_id >= 3
-                    ? "col-lg-2 vitalTopFld15"
+                    ? "col-6 vitalTopFld15"
                     : item.hims_d_vitals_header_id === 5 ||
                       item.hims_d_vitals_header_id === 6
-                    ? "col-lg-2 vitalTopFld20"
-                    : "col";
+                    ? "col-6 vitalTopFld20"
+                    : "col-6";
                 const _name = String(item.vitals_name)
                   .replace(/\" "/g, "_")
                   .toLowerCase();
@@ -383,7 +383,7 @@ class Vitals extends Component {
                     {item.hims_d_vitals_header_id === 4 ? (
                       <React.Fragment>
                         <AlagehAutoComplete
-                          div={{ className: "col-lg-3" }}
+                          div={{ className: "col-6" }}
                           label={{
                             forceLabel: "Temp. From"
                           }}
@@ -403,7 +403,7 @@ class Vitals extends Component {
                       </React.Fragment>
                     ) : item.hims_d_vitals_header_id === 8 ? (
                       <AlagehAutoComplete
-                        div={{ className: "col-lg-3" }}
+                        div={{ className: "col-6" }}
                         label={{
                           forceLabel: "BP (mmHg)",
                           fieldName: "BP_type"
@@ -456,7 +456,7 @@ class Vitals extends Component {
 
                     {item.hims_d_vitals_header_id === 4 ? (
                       <AlagehFormGroup
-                        div={{ className: "col" }}
+                        div={{ className: "col-6" }}
                         label={{
                           forceLabel: item.uom === "C" ? "°F" : "°C"
                         }}
@@ -476,7 +476,7 @@ class Vitals extends Component {
               })}
 
               <AlgaehDateHandler
-                div={{ className: "col-lg-3" }}
+                div={{ className: "col-6" }}
                 label={{ forceLabel: "Recorded Date", isImp: true }}
                 textBox={{
                   className: "txt-fld",
@@ -492,7 +492,7 @@ class Vitals extends Component {
               />
 
               <AlagehFormGroup
-                div={{ className: "col-lg-3" }}
+                div={{ className: "col-6" }}
                 label={{
                   isImp: true,
                   forceLabel: "Recorded Time"
