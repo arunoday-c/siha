@@ -65,6 +65,7 @@ let selectStatement = (
     });
   });
 };
+
 let deleteRecord = (
   options,
   successCallback,
@@ -94,7 +95,6 @@ let deleteRecord = (
         }
         let records = "";
         let values = [];
-       
 
         if (tables.length == 0) {
           connection.query(
@@ -131,7 +131,6 @@ let deleteRecord = (
             values.push(options.id);
           }
 
-        
           connection.query(records, values, (error, result) => {
             if (error) {
               if (isreleaseConnection) connection.release();
@@ -141,22 +140,21 @@ let deleteRecord = (
               }
             } else {
               var hasRecords = false;
-            
+
               for (var c = 0; c < result.length; c++) {
-              if(result[c][0] != null){
-                if (result[c][0]["CNT"] >0) {
-                  hasRecords = true;
-                  break;
+                if (result[c][0] != null) {
+                  if (result[c][0]["CNT"] > 0) {
+                    hasRecords = true;
+                    break;
+                  }
+                } else {
+                  if (result[c]["CNT"] > 0) {
+                    hasRecords = true;
+                    break;
+                  }
                 }
-              }else{
-              if(result[c]["CNT"] >0)
-              { hasRecords = true;
-                break;
               }
-              }
-               
-              }
-            
+
               if (hasRecords == true) {
                 result = {
                   success: false,

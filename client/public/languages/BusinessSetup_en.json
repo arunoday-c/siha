@@ -53,5 +53,11 @@
   "thousand_separator": "Thousand Separator",
   "decimal_places": "Decimal Places",
   "decimal_separator": "Decimal Separator",
-  "negative_separator": "Negative Separator"
+  "negative_separator": "Negative Separator",
+  "speciality": "Speciality",
+  "speciality_code": "Speciality Code",
+  "speciality_name": "Speciality Name",
+  "category": "Category",
+  "category_code": "Category Code",
+  "category_name": "Category Name"
 }

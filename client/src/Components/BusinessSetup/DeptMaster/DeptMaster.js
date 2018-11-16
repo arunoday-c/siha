@@ -207,6 +207,7 @@ class DeptMaster extends Component {
   }
 
   updateSubDepartment(data) {
+    debugger;
     data.sub_department_status === "I"
       ? algaehApiCall({
           uri: "/department/makeSubDepartmentInActive",
@@ -220,7 +221,7 @@ class DeptMaster extends Component {
                 title: "Record updated successfully",
                 type: "success"
               });
-              this.getAllSubDepartments(data.hims_d_department_id);
+              this.getAllSubDepartments(data.department_id);
             } else if (!response.data.records.success) {
               swalMessage({
                 title: response.data.records.message,
@@ -251,7 +252,7 @@ class DeptMaster extends Component {
                 title: "Record updated successfully",
                 type: "success"
               });
-              this.getAllSubDepartments(data.hims_d_department_id);
+              this.getAllSubDepartments(data.department_id);
             }
           },
           onFailure: error => {
