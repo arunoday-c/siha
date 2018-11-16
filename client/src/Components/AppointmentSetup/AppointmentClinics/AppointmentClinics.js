@@ -362,8 +362,8 @@ class AppointmentClinics extends Component {
 
         <div
           className="col-lg-12"
-          style={{ marginTop: 0 }}
           data-validate="apptClinicsDiv"
+          id="apptClinicsDivCntr"
         >
           <AlgaehDataGrid
             id="appt-status-grid"

@@ -190,9 +190,9 @@ class InventoryItemMaster extends Component {
                         maxWidth: 55,
                         style: {
                           textAlign: "center"
-                        }
-                      },
-                      filter: false
+                        },
+                        filterable: false
+                      }
                     },
 
                     {
