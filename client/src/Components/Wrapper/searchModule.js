@@ -125,6 +125,7 @@ class SearchModule extends Component {
        ends when it continue in typing if not service call in 500 ms
    */
   handleSpotLightContains(e) {
+    debugger;
     let contains = e.target.value;
     this.setState({ contains: contains });
 
@@ -132,7 +133,6 @@ class SearchModule extends Component {
     clearInterval(intervalId);
     intervalId = setInterval(() => {
       if (typeof $this.props.onContainsChange === "function") {
-        debugger;
         $this.props.onContainsChange(contains, $this.state.searchBy, value => {
           return value;
         });
@@ -251,8 +251,8 @@ class SearchModule extends Component {
             id="spotlightInput"
             tabIndex="1"
             placeholder={this.state.title}
-            // value={this.state.contains}
-            //onChange={this.handleSpotLightContains.bind(this)}
+            value={this.state.contains}
+            onChange={this.handleSpotLightContains.bind(this)}
           />
           <div id="spotlightFilterBy">
             <IconButton title="Speak" onClick={this.speakInput.bind(this)}>

@@ -227,6 +227,24 @@ export default class ReportUI extends Component {
       });
     }
   }
+  datePickerHandler(selectedDate) {
+    const _hasEvents = Enumerable.from(this.props.options.plotUI.paramters)
+      .where(w => w.name === selectedDate.name)
+      .firstOrDefault().events;
+    if (_hasEvents !== undefined) {
+      if (_hasEvents.onChange !== undefined) {
+        _hasEvents.onChange(this, selectedDate);
+      }
+    } else {
+      this.setState({
+        [selectedDate.name]: selectedDate.value
+      });
+    }
+
+    // this.setState({
+    //   [_param.name]: selectedDate
+    // });
+  }
 
   generateInputParameters() {
     const _parameters = this.props.options.plotUI.paramters;
@@ -273,6 +291,7 @@ export default class ReportUI extends Component {
           _controls.push(
             <AlgaehDateHandler
               key={i}
+              singleOutput={false}
               div={{ className: "col" }}
               label={{
                 forceLabel: _param.label,
@@ -284,11 +303,7 @@ export default class ReportUI extends Component {
               }}
               {..._param.others}
               events={{
-                onChange: selectedDate => {
-                  this.setState({
-                    [_param.name]: selectedDate
-                  });
-                }
+                onChange: this.datePickerHandler.bind(this)
               }}
               value={this.state[_param.name]}
             />
