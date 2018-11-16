@@ -1,4 +1,4 @@
-import seal_stamp from "../images/seal-stamp.png";
+import seal_stamp from "../assets/images/seal-stamp.png";
 export function signature_footer(data) {
   return `
     <div class="signatureDiv">
