@@ -67,7 +67,7 @@ class Speciality extends Component {
 
   getSpeciality() {
     algaehApiCall({
-      uri: "/shiftAndCounter/getShiftMaster",
+      uri: "/getEmployeeSpecialityMaster",
       method: "GET",
       data: {},
       onSuccess: response => {
