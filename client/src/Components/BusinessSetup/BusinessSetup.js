@@ -53,7 +53,6 @@ class BusinessSetup extends Component {
               </li>
               <li
                 algaehtabs={"Speciality"}
-                style={{ marginRight: 2 }}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
               >
@@ -67,7 +66,6 @@ class BusinessSetup extends Component {
               </li>
               <li
                 algaehtabs={"Category"}
-                style={{ marginRight: 2 }}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
               >
@@ -81,7 +79,6 @@ class BusinessSetup extends Component {
               </li>
               <li
                 algaehtabs={"CategorySpeciality"}
-                style={{ marginRight: 2 }}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
               >
