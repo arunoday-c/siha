@@ -13,11 +13,8 @@ import {
   updateEmployeeCategoryMaster,
   makeEmployeeCategoryInActive,
   addCategorySpecialityMappings,
-<<<<<<< HEAD
-  makeEmployeeSpecialityInActive
-=======
+  makeEmployeeSpecialityInActive,
   getCategorySpecialityMap
->>>>>>> 414419f6a2dfcadbe10822ba7352aa38a8c2a71a
 } from "../model/specialityAndCategory";
 
 export default ({ config, db }) => {

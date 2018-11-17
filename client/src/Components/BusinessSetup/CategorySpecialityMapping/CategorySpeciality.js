@@ -171,40 +171,21 @@ class CategorySpeciality extends Component {
               id="currency-grid"
               columns={[
                 {
-                  fieldName: "currency_code",
-                  label: <AlgaehLabel label={{ fieldName: "currency_code" }} />,
+                  fieldName: "category_id",
+                  label: <AlgaehLabel label={{ fieldName: "category" }} />,
                   disabled: true
                 },
                 {
-                  fieldName: "currency_description",
+                  fieldName: "speciality_id",
                   label: (
                     <AlgaehLabel
                       label={{ fieldName: "currency_description" }}
                     />
                   ),
                   disabled: true
-                  // editorTemplate: row => {
-                  //   return (
-                  //     <AlagehFormGroup
-                  //       div={{ className: "col" }}
-                  //       textBox={{
-                  //         className: "txt-fld",
-                  //         name: "currency_description",
-                  //         value: row.currency_description,
-                  //         events: {
-                  //           onChange: this.changeGridEditors.bind(this, row)
-                  //         },
-                  //         others: {
-                  //           errormessage: "Description - cannot be blank",
-                  //           required: true
-                  //         }
-                  //       }}
-                  //     />
-                  //   );
-                  // }
                 },
                 {
-                  fieldName: "currency_symbol",
+                  fieldName: "description",
                   label: <AlgaehLabel label={{ fieldName: "symbol" }} />,
                   editorTemplate: row => {
                     return (
@@ -227,7 +208,7 @@ class CategorySpeciality extends Component {
                   }
                 },
                 {
-                  fieldName: "decimal_places",
+                  fieldName: "description",
                   label: (
                     <AlgaehLabel label={{ fieldName: "decimal_places" }} />
                   ),
@@ -258,7 +239,7 @@ class CategorySpeciality extends Component {
                   }
                 },
                 {
-                  fieldName: "symbol_position",
+                  fieldName: "category_speciality_status",
                   label: (
                     <AlgaehLabel label={{ fieldName: "symbol_position" }} />
                   ),
@@ -292,127 +273,6 @@ class CategorySpeciality extends Component {
                           },
                           others: {
                             errormessage: "Symbol Position - cannot be blank",
-                            required: true
-                          },
-                          onChange: this.changeGridEditors.bind(this, row)
-                        }}
-                      />
-                    );
-                  }
-                },
-                {
-                  fieldName: "thousand_separator",
-                  label: (
-                    <AlgaehLabel label={{ fieldName: "thousand_separator" }} />
-                  ),
-                  displayTemplate: row => {
-                    return (
-                      <span>
-                        {row.thousand_separator === "S"
-                          ? "Space"
-                          : row.thousand_separator === "P"
-                          ? "Period"
-                          : row.thousand_separator === "C"
-                          ? "Comma"
-                          : null}
-                      </span>
-                    );
-                  },
-                  editorTemplate: row => {
-                    return (
-                      <AlagehAutoComplete
-                        div={{ className: "col" }}
-                        selector={{
-                          name: "thousand_separator",
-                          className: "select-fld",
-                          value: row.thousand_separator,
-                          dataSource: {
-                            textField: "name",
-                            valueField: "value",
-                            data: GlobalVariables.THOUSAND_SEPARATOR
-                          },
-                          others: {
-                            errormessage:
-                              "Thousand Separator - cannot be blank",
-                            required: true
-                          },
-                          onChange: this.changeGridEditors.bind(this, row)
-                        }}
-                      />
-                    );
-                  }
-                },
-                {
-                  fieldName: "decimal_separator",
-                  label: (
-                    <AlgaehLabel label={{ fieldName: "decimal_separator" }} />
-                  ),
-                  displayTemplate: row => {
-                    return (
-                      <span>
-                        {row.decimal_separator === "P"
-                          ? "Period"
-                          : row.decimal_separator === "C"
-                          ? "Comma"
-                          : null}
-                      </span>
-                    );
-                  },
-                  editorTemplate: row => {
-                    return (
-                      <AlagehAutoComplete
-                        div={{ className: "col" }}
-                        selector={{
-                          name: "decimal_separator",
-                          className: "select-fld",
-                          value: row.decimal_separator,
-                          dataSource: {
-                            textField: "name",
-                            valueField: "value",
-                            data: GlobalVariables.DECIMAL_SEPARATOR
-                          },
-                          others: {
-                            errormessage: "Decimal Separator - cannot be blank",
-                            required: true
-                          },
-                          onChange: this.changeGridEditors.bind(this, row)
-                        }}
-                      />
-                    );
-                  }
-                },
-                {
-                  fieldName: "negative_separator",
-                  label: (
-                    <AlgaehLabel label={{ fieldName: "negative_separator" }} />
-                  ),
-                  displayTemplate: row => {
-                    return (
-                      <span>
-                        {row.negative_separator === "TR"
-                          ? "Trailing"
-                          : row.negative_separator === "LD"
-                          ? "Leading"
-                          : null}
-                      </span>
-                    );
-                  },
-                  editorTemplate: row => {
-                    return (
-                      <AlagehAutoComplete
-                        div={{ className: "col" }}
-                        selector={{
-                          name: "negative_separator",
-                          className: "select-fld",
-                          value: row.negative_separator,
-                          dataSource: {
-                            textField: "name",
-                            valueField: "value",
-                            data: GlobalVariables.NEGATIVE_SEPARATOR
-                          },
-                          others: {
-                            errormessage:
-                              "Negative Separator - cannot be blank",
                             required: true
                           },
                           onChange: this.changeGridEditors.bind(this, row)
