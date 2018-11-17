@@ -14,9 +14,13 @@ import {
   makeEmployeeCategoryInActive,
   addCategorySpecialityMappings,
   makeEmployeeSpecialityInActive,
+<<<<<<< HEAD
   getCategorySpecialityMap,
   makeEmployeeCategoryActive,
   makeEmployeeSpecialityActive
+=======
+  getCategorySpecialityMap
+>>>>>>> 0338f535e7620462130d0f1e39b10c405f374d7d
 } from "../model/specialityAndCategory";
 
 export default ({ config, db }) => {
