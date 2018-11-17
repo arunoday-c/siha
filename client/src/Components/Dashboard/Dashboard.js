@@ -94,8 +94,7 @@ class Dashboard extends Component {
         mappingName: "hospitaldetails"
       },
       afterSuccess: data => {
-        
-        if (data.length != 0) {
+        if (data.length > 0) {
           setCookie("Currency", data[0].currency_symbol, 30);
           setCookie("Position", data[0].symbol_position, 30);
         }

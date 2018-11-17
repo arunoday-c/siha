@@ -70,7 +70,7 @@ let getEmployeeSpecialityMaster = (req, res, next) => {
     db.getConnection((error, connection) => {
       connection.query(
         "select hims_d_employee_speciality_id, sub_department_id, speciality_code,\
-        speciality_name, arabic_name,speciality_desc from hims_d_employee_speciality where record_status='A' and" +
+        speciality_status,speciality_name, arabic_name,speciality_desc from hims_d_employee_speciality where record_status='A' and" +
           where.condition +
           " order by hims_d_employee_speciality_id desc",
         where.values,
