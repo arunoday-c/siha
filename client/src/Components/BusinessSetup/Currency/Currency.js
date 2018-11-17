@@ -339,7 +339,11 @@ class Currency extends Component {
                 style={{ marginTop: 21 }}
                 className="btn btn-primary"
               >
-                Add to List
+                <AlgaehLabel
+                  label={{
+                    fieldName: "add_to_list"
+                  }}
+                />
               </button>
             </div>
           </div>
@@ -360,25 +364,26 @@ class Currency extends Component {
                       label={{ fieldName: "currency_description" }}
                     />
                   ),
-                  editorTemplate: row => {
-                    return (
-                      <AlagehFormGroup
-                        div={{ className: "col" }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "currency_description",
-                          value: row.currency_description,
-                          events: {
-                            onChange: this.changeGridEditors.bind(this, row)
-                          },
-                          others: {
-                            errormessage: "Description - cannot be blank",
-                            required: true
-                          }
-                        }}
-                      />
-                    );
-                  }
+                  disabled: true
+                  // editorTemplate: row => {
+                  //   return (
+                  //     <AlagehFormGroup
+                  //       div={{ className: "col" }}
+                  //       textBox={{
+                  //         className: "txt-fld",
+                  //         name: "currency_description",
+                  //         value: row.currency_description,
+                  //         events: {
+                  //           onChange: this.changeGridEditors.bind(this, row)
+                  //         },
+                  //         others: {
+                  //           errormessage: "Description - cannot be blank",
+                  //           required: true
+                  //         }
+                  //       }}
+                  //     />
+                  //   );
+                  // }
                 },
                 {
                   fieldName: "currency_symbol",
@@ -527,9 +532,9 @@ class Currency extends Component {
                   displayTemplate: row => {
                     return (
                       <span>
-                        {row.thousand_separator === "P"
+                        {row.decimal_separator === "P"
                           ? "Period"
-                          : row.thousand_separator === "C"
+                          : row.decimal_separator === "C"
                           ? "Comma"
                           : null}
                       </span>
@@ -566,9 +571,9 @@ class Currency extends Component {
                   displayTemplate: row => {
                     return (
                       <span>
-                        {row.thousand_separator === "TR"
+                        {row.negative_separator === "TR"
                           ? "Trailing"
-                          : row.thousand_separator === "LD"
+                          : row.negative_separator === "LD"
                           ? "Leading"
                           : null}
                       </span>
