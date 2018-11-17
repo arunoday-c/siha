@@ -1,15 +1,16 @@
 import React, { Component } from "react";
 import "./business_setup.css";
 import "../../styles/site.css";
-import DeptMaster from "./DeptMaster/DeptMaster.js";
-import HolidayList from "./HolidayList/HolidayList.js";
+import DeptMaster from "./DeptMaster/DeptMaster";
+import HolidayList from "./HolidayList/HolidayList";
 import Numbering from "./Numbering/Numbering";
 import Transaction from "./Transaction/Transaction";
-import Counter from "./Counter/Counter.js";
+import Counter from "./Counter/Counter";
 import Currency from "./Currency/Currency";
-import Shift from "./Shift/Shift.js";
+import Shift from "./Shift/Shift";
+import Category from "./Category/Category";
+import Speciality from "./Speciality/Speciality";
 import UserShiftMapping from "./UserShiftMapping/UserShiftMapping";
-import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 
 class BusinessSetup extends Component {
@@ -41,11 +42,38 @@ class BusinessSetup extends Component {
                 className={"nav-item tab-button active"}
                 onClick={this.openTab.bind(this)}
               >
-                {/* DEPARTMENTS */}
                 {
                   <AlgaehLabel
                     label={{
                       fieldName: "departments"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"Speciality"}
+                style={{ marginRight: 2 }}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "speciality"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"Category"}
+                style={{ marginRight: 2 }}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "category"
                     }}
                   />
                 }
@@ -123,6 +151,10 @@ class BusinessSetup extends Component {
             <UserShiftMapping />
           ) : this.state.pageDisplay === "Currency" ? (
             <Currency />
+          ) : this.state.pageDisplay === "Category" ? (
+            <Category />
+          ) : this.state.pageDisplay === "Speciality" ? (
+            <Speciality />
           ) : null}
         </div>
       </div>

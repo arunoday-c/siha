@@ -4,11 +4,14 @@
   "from_time": "From Time",
   "to_time": "To Time",
   "doctors": "Doctors",
+  "provider_id": "Doctors",
   "department": "Department",
+  "sub_dep_id": "Department",
   "appointment_type": "Appointment Type",
   "patient_code": "Patient Code",
   "all_departments": "All Departments",
   "all_doctors": "All Doctors",
   "office_branch": "Office / Branch",
-  "appt_status": "Appointment Status"
+  "appt_status": "Appointment Status",
+  "appt_type": "Appointment Type"
 }

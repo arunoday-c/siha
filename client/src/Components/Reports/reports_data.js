@@ -11,8 +11,8 @@ import Insurance from "./Components/Insurance/Insurance";
 import Laboratory from "./Components/Laboratory/Laboratory";
 import Package from "./Components/Package/Package";
 import VatReports from "./Components/VatReports/VatReports";
-import FrontDesk from "../../Search/FrontDesk.json";
-import { AlgaehLabel } from "../Wrapper/algaehWrapper";
+//import FrontDesk from "../../Search/FrontDesk.json";
+import { APPT_TYPE } from "../../utils/GlobalVariables.json";
 
 export default [
   {
@@ -25,7 +25,6 @@ export default [
           {
             type: "date",
             name: "from_date",
-            label: "From Date",
             isImp: true,
             others: {
               maxDate: new Date(),
@@ -35,7 +34,6 @@ export default [
           {
             type: "date",
             name: "to_date",
-            label: "To Date",
             isImp: true,
             others: {
               maxDate: new Date(),
@@ -49,8 +47,22 @@ export default [
           },
           {
             type: "dropdown",
+            name: "appt_type",
+            initialLoad: true,
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: APPT_TYPE
+            },
+            events: {
+              onChange: (reportState, currentValue) => {
+                debugger;
+              }
+            }
+          },
+          {
+            type: "dropdown",
             name: "provider_id",
-            label: "Doctor",
             initialLoad: true,
             link: {
               uri: "/department/get/get_All_Doctors_DepartmentWise",
@@ -66,26 +78,26 @@ export default [
               valueField: "employee_id",
               data: undefined
             }
-          },
-          {
-            type: "search",
-            name: "patient_code",
-            label: "Patient Code",
-            search: {
-              searchName: "patients",
-              columns: FrontDesk,
-              schema: [
-                { name: "patient_code", response: "patient_code" },
-                { name: "hims_d_patient_id", response: "hims_d_patient_id" }
-              ]
-            }
-          },
-          {
-            type: "checkbox",
-            name: "employee_type",
-            label: "Not able",
-            default: false
           }
+          // {
+          //   type: "search",
+          //   name: "patient_code",
+          //   label: "Patient Code",
+          //   search: {
+          //     searchName: "patients",
+          //     columns: FrontDesk,
+          //     schema: [
+          //       { name: "patient_code", response: "patient_code" },
+          //       { name: "hims_d_patient_id", response: "hims_d_patient_id" }
+          //     ]
+          //   }
+          // },
+          // {
+          //   type: "checkbox",
+          //   name: "employee_type",
+          //   label: "Not able",
+          //   default: false
+          // }
         ]
       },
       {

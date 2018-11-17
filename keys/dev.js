@@ -22,7 +22,9 @@ export default {
     queueLimit: 0 // Unlimited - default value.
   },
   mongoDb: {
-    connectionURI: "mongodb://49.206.18.38:27017/dbname"
+    connectionURI: "mongodb://49.206.18.38:27017/algaeh_hims_mongo_db",
+    user: "algaeh_root",
+    password: "medteam2013"
   },
 
   //Db Date format
