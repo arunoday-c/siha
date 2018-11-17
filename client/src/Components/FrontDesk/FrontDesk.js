@@ -108,7 +108,7 @@ class FrontDesk extends Component {
             style={{
               display: this.state.FD_Screen === "Appointment" ? "none" : "block"
             }}
-            className="btn btn-primary bk-bn"
+            className="btn btn-default bk-bn"
             onClick={() => {
               setGlobal({
                 "FD-STD": "Appointment"
@@ -117,7 +117,8 @@ class FrontDesk extends Component {
               this.routeComponents();
             }}
           >
-            Back
+            <i class="fas fa-angle-double-left fa-lg" />
+            Back to Appointment
           </button>
 
           <div>{this.changeDisplays()}</div>
