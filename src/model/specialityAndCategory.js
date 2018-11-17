@@ -243,7 +243,7 @@ let updateEmployeeSpecialityMaster = (req, res, next) => {
 
       connection.query(
         "UPDATE `hims_d_employee_speciality` SET  speciality_code=?,speciality_name=?, arabic_name=? , speciality_desc=?,\
-        speciality_status='A',updated_date=?, updated_by=?  WHERE  `record_status`='A' and `hims_d_employee_speciality_id`=?;",
+        speciality_status=?,updated_date=?, updated_by=?  WHERE  `record_status`='A' and `hims_d_employee_speciality_id`=?;",
         [
           input.speciality_code,
           input.speciality_name,
@@ -446,69 +446,69 @@ let getCategorySpecialityMap = (req, res, next) => {
   }
 };
 
-//created by irfan: to
-let makeEmployeeCategoryActive = (req, res, next) => {
-  try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    let input = extend({}, req.body);
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
+// //created by irfan: to
+// let makeEmployeeCategoryActive = (req, res, next) => {
+//   try {
+//     if (req.db == null) {
+//       next(httpStatus.dataBaseNotInitilizedError());
+//     }
+//     let db = req.db;
+//     let input = extend({}, req.body);
+//     db.getConnection((error, connection) => {
+//       if (error) {
+//         next(error);
+//       }
 
-      connection.query(
-        "UPDATE `hims_d_employee_category` SET  employee_category_status='A', \
-           updated_date=?, updated_by=?  WHERE  `record_status`='A' and employee_category_status='I' and `hims_employee_category_id`=?;",
-        [new Date(), input.updated_by, input.hims_employee_category_id],
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          req.records = result;
-          next();
-        }
-      );
-    });
-  } catch (e) {
-    next(e);
-  }
-};
+//       connection.query(
+//         "UPDATE `hims_d_employee_category` SET  employee_category_status='A', \
+//            updated_date=?, updated_by=?  WHERE  `record_status`='A' and employee_category_status='I' and `hims_employee_category_id`=?;",
+//         [new Date(), input.updated_by, input.hims_employee_category_id],
+//         (error, result) => {
+//           releaseDBConnection(db, connection);
+//           if (error) {
+//             next(error);
+//           }
+//           req.records = result;
+//           next();
+//         }
+//       );
+//     });
+//   } catch (e) {
+//     next(e);
+//   }
+// };
 
-//created by irfan: to
-let makeEmployeeSpecialityActive = (req, res, next) => {
-  try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    let input = extend({}, req.body);
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
+// //created by irfan: to
+// let makeEmployeeSpecialityActive = (req, res, next) => {
+//   try {
+//     if (req.db == null) {
+//       next(httpStatus.dataBaseNotInitilizedError());
+//     }
+//     let db = req.db;
+//     let input = extend({}, req.body);
+//     db.getConnection((error, connection) => {
+//       if (error) {
+//         next(error);
+//       }
 
-      connection.query(
-        "UPDATE `hims_d_employee_speciality` SET  speciality_status='A', \
-           updated_date=?, updated_by=?  WHERE  record_status='A' and `speciality_status`='I' and `hims_d_employee_speciality_id`=?;",
-        [new Date(), input.updated_by, input.hims_d_employee_speciality_id],
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          req.records = result;
-          next();
-        }
-      );
-    });
-  } catch (e) {
-    next(e);
-  }
-};
+//       connection.query(
+//         "UPDATE `hims_d_employee_speciality` SET  speciality_status='A', \
+//            updated_date=?, updated_by=?  WHERE  record_status='A' and `speciality_status`='I' and `hims_d_employee_speciality_id`=?;",
+//         [new Date(), input.updated_by, input.hims_d_employee_speciality_id],
+//         (error, result) => {
+//           releaseDBConnection(db, connection);
+//           if (error) {
+//             next(error);
+//           }
+//           req.records = result;
+//           next();
+//         }
+//       );
+//     });
+//   } catch (e) {
+//     next(e);
+//   }
+// };
 
 module.exports = {
   addEmployeeSpecialityMaster,
@@ -523,7 +523,6 @@ module.exports = {
   addCategorySpecialityMappings,
   makeEmployeeSpecialityInActive,
   getCategorySpecialityMap,
-  makeEmployeeCategoryActive,
-  makeEmployeeSpecialityActive,
+
   getCategorySpecialityMap
 };
