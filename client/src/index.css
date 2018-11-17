@@ -962,8 +962,7 @@
           padding: 7px 15px;
           color: #858585;
           margin: 0;
-          border: none;
-          height: 33px; }
+          border: none; }
         :global .tabMaster ul li label:hover {
           cursor: pointer;
           color: #000;
