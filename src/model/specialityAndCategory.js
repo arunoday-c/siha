@@ -181,7 +181,7 @@ let deleteEmployeeCategoryMaster = (req, res, next) => {
         tableName: "hims_d_employee_category",
         id: req.body.hims_employee_category_id,
         query:
-          "UPDATE hims_d_employee_category SET  record_status='I' WHERE hims_employee_category_id=?",
+          "UPDATE hims_d_employee_category SET  record_status='I' WHERE  record_status='A' and hims_employee_category_id=?",
         values: [req.body.hims_employee_category_id]
       },
       result => {
@@ -211,7 +211,7 @@ let deleteEmployeeSpecialityMaster = (req, res, next) => {
         tableName: "hims_d_employee_speciality",
         id: req.body.hims_d_employee_speciality_id,
         query:
-          "UPDATE hims_d_employee_speciality SET  record_status='I' WHERE hims_d_employee_speciality_id=?",
+          "UPDATE hims_d_employee_speciality SET  record_status='I' WHERE  record_status='A' and hims_d_employee_speciality_id=?",
         values: [req.body.hims_d_employee_speciality_id]
       },
       result => {
@@ -446,6 +446,70 @@ let getCategorySpecialityMap = (req, res, next) => {
   }
 };
 
+//created by irfan: to
+let makeEmployeeCategoryActive = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "UPDATE `hims_d_employee_category` SET  employee_category_status='A', \
+           updated_date=?, updated_by=?  WHERE  `record_status`='A' and employee_category_status='I' and `hims_employee_category_id`=?;",
+        [new Date(), input.updated_by, input.hims_employee_category_id],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to
+let makeEmployeeSpecialityActive = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "UPDATE `hims_d_employee_speciality` SET  speciality_status='A', \
+           updated_date=?, updated_by=?  WHERE  record_status='A' and `speciality_status`='I' and `hims_d_employee_speciality_id`=?;",
+        [new Date(), input.updated_by, input.hims_d_employee_speciality_id],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addEmployeeSpecialityMaster,
   getEmployeeSpecialityMaster,
@@ -457,9 +521,8 @@ module.exports = {
   updateEmployeeCategoryMaster,
   makeEmployeeCategoryInActive,
   addCategorySpecialityMappings,
-<<<<<<< HEAD
-  makeEmployeeSpecialityInActive
-=======
-  getCategorySpecialityMap
->>>>>>> 414419f6a2dfcadbe10822ba7352aa38a8c2a71a
+  makeEmployeeSpecialityInActive,
+  getCategorySpecialityMap,
+  makeEmployeeCategoryActive,
+  makeEmployeeSpecialityActive
 };
