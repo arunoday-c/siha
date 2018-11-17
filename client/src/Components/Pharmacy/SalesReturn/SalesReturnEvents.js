@@ -6,7 +6,7 @@ import SalesReturnputs from "../../../Models/SalesReturn";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const changeTexts = ($this, ctrl, e) => {
-  debugger;
+  
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -14,7 +14,7 @@ const changeTexts = ($this, ctrl, e) => {
 };
 
 const getCtrlCode = ($this, docNumber) => {
-  debugger;
+  
   AlgaehLoader({ show: true });
   $this.props.getSalesReturn({
     uri: "/salesReturn/getsalesReturn",
@@ -26,7 +26,7 @@ const getCtrlCode = ($this, docNumber) => {
       mappingName: "salesReturnEntry"
     },
     afterSuccess: data => {
-      debugger;
+      
       data.saveEnable = true;
       data.patient_payable_h = data.patient_payable;
 
@@ -129,7 +129,7 @@ const GenerateReciept = ($this, callBack) => {
 };
 
 const SaveSalesReturn = $this => {
-  debugger;
+  
   GenerateReciept($this, that => {
     $this.state.posted = "Y";
     $this.state.transaction_type = "SRT";
@@ -174,7 +174,7 @@ const SaveSalesReturn = $this => {
       uri: "/salesReturn/addsalesReturn",
       data: $this.state,
       onSuccess: response => {
-        debugger;
+        
         if (response.data.success === true) {
           $this.setState({
             sales_return_number: response.data.records.sales_return_number,
@@ -197,7 +197,7 @@ const SaveSalesReturn = $this => {
 };
 
 const PostSalesReturn = $this => {
-  debugger;
+  
   $this.state.posted = "Y";
   $this.state.transaction_type = "SRT";
   $this.state.transaction_id =
@@ -238,13 +238,13 @@ const PostSalesReturn = $this => {
 
     $this.state.pharmacy_stock_detail[i].operation = "+";
   }
-  debugger;
+  
   algaehApiCall({
     uri: "/salesReturn/updatesalesReturn",
     data: $this.state,
     method: "PUT",
     onSuccess: response => {
-      debugger;
+      
       if (response.data.success === true) {
         $this.setState({
           postEnable: true
@@ -269,7 +269,7 @@ const POSSearch = ($this, e) => {
       callBack(text);
     },
     onRowSelect: row => {
-      debugger;
+      
       AlgaehLoader({ show: true });
       $this.setState(
         {
@@ -286,7 +286,7 @@ const POSSearch = ($this, e) => {
 };
 
 const getPOSEntry = $this => {
-  debugger;
+  
 
   $this.props.getPOSEntry({
     uri: "/posEntry/getPosEntry",
@@ -298,7 +298,7 @@ const getPOSEntry = $this => {
       mappingName: "posentry"
     },
     afterSuccess: data => {
-      debugger;
+      
       data.patient_payable_h = data.patient_payable;
       data.cash_amount = data.receiveable_amount;
       data.payable_amount = data.receiveable_amount;

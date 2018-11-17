@@ -42,7 +42,7 @@ class ItemDetails extends Component {
   componentWillReceiveProps(newProps) {
     let InputOutput = newProps.itemPop;
     this.setState({ ...this.state, ...InputOutput }, () => {
-      debugger;
+      
     });
   }
 

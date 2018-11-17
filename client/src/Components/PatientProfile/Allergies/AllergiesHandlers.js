@@ -61,7 +61,7 @@ const getPatientAllergies = $this => {
 
 //Date Handaler Change
 const datehandle = ($this, ctrl, e) => {
-  debugger;
+  
 
   if (Date.parse(new Date()) < Date.parse(moment(ctrl)._d)) {
     swalMessage({

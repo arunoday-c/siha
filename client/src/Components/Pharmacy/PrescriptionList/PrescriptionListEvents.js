@@ -5,7 +5,7 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 import FrontDesk from "../../../Search/FrontDesk.json";
 
 const getMedicationList = $this => {
-  debugger;
+  
   let inputobj = {};
 
   if ($this.state.prescription_date !== null) {
@@ -27,7 +27,7 @@ const getMedicationList = $this => {
       mappingName: "medicationlist"
     },
     afterSuccess: data => {
-      debugger;
+      
       if (data.length !== 0) {
         let medication_list = Enumerable.from(data)
           .groupBy("$.patient_id", null, (k, g) => {
@@ -98,7 +98,7 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const ListOfItems = ($this, row) => {
-  debugger;
+  
   // let rowSelected = {};
   // let saveupdate = false,
   //   btnupdate = true;

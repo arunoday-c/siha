@@ -207,7 +207,7 @@ class DeptMaster extends Component {
   }
 
   updateSubDepartment(data) {
-    debugger;
+    
     data.sub_department_status === "I"
       ? algaehApiCall({
           uri: "/department/makeSubDepartmentInActive",

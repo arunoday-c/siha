@@ -45,7 +45,7 @@ class OrderedList extends PureComponent {
             mappingName: "orderedList"
           },
           afterSuccess: data => {
-            debugger;
+            
           }
         });
       }
@@ -98,7 +98,7 @@ class OrderedList extends PureComponent {
         mappingName: "orderedList"
       },
       afterSuccess: data => {
-        debugger;
+        
       }
     });
   }
@@ -165,7 +165,7 @@ class OrderedList extends PureComponent {
                     fieldName: "services_id",
                     label: <AlgaehLabel label={{ fieldName: "services_id" }} />,
                     displayTemplate: row => {
-                      debugger;
+                      
                       let display =
                         this.props.serviceslist === undefined
                           ? []

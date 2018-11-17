@@ -612,7 +612,7 @@ class Appointment extends Component {
           pat_edit.appointment_from_time,
           "HH:mm:ss"
         ).add(pat_edit.number_of_slot * this.state.slot, "minutes");
-        debugger;
+        
         this.setState({
           edit_appointment_status_id: pat_edit.appointment_status_id,
           edit_appt_date: pat_edit.appointment_date,
@@ -1310,7 +1310,7 @@ class Appointment extends Component {
       const _completeWidth = doctorCntr[0].width * doctorCntr.length;
       return { width: _completeWidth };
       // this.setState({ outerStyles: { width: _completeWidth } }, () => {
-      //   debugger;
+      //   
       // });
     }
     return null;

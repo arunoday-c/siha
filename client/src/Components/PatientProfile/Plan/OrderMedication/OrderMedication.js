@@ -78,7 +78,7 @@ class OrderMedication extends Component {
         mappingName: "itemlist"
       },
       afterSuccess: data => {
-        debugger;
+        
         this.setState({
           itemlist: data
         });

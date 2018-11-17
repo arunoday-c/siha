@@ -65,7 +65,7 @@ const updatePriceList = ($this, data) => {
 
 const bulkUpdate = ($this, data) => {
   let updateobj = {};
-  debugger;
+  
   if (data === "pre_approval") {
     updateobj = {
       update: data,

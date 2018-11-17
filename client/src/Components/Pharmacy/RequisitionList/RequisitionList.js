@@ -47,7 +47,7 @@ class RequisitionList extends Component {
   }
 
   render() {
-    debugger;
+    
     return (
       <React.Fragment>
         <div className="hptl-phase1-requisition-list-form">

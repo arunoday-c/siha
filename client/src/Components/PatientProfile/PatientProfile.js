@@ -101,7 +101,7 @@ class PatientProfile extends Component {
   }
 
   showAllergyAlert(data, e) {
-    debugger;
+    
     swalMessage({
       title: "Allergic",
       type: "warning"

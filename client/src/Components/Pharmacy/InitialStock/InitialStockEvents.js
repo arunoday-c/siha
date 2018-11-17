@@ -108,7 +108,7 @@ const AddItems = $this => {
       MandatoryMsg: "Invalid Input. Recipt Number(GRN) cannot be blank."
     });
   } else {
-    debugger;
+    
     let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
     let itemObj = {
       location_id: $this.state.location_id,
@@ -151,7 +151,7 @@ const AddItems = $this => {
         sales_uom: null
       },
       () => {
-        debugger;
+        
       }
     );
   }
@@ -206,7 +206,7 @@ const SaveInitialStock = $this => {
     data: $this.state,
     onSuccess: response => {
       if (response.data.success === true) {
-        debugger;
+        
         $this.setState({
           document_number: response.data.records.document_number,
           hims_f_pharmacy_stock_header_id:
@@ -261,7 +261,7 @@ const ClearData = $this => {
 };
 
 const PostInitialStock = $this => {
-  debugger;
+  
   $this.state.posted = "Y";
   $this.state.transaction_type = "INT";
   $this.state.transaction_id = $this.state.hims_f_pharmacy_stock_header_id;

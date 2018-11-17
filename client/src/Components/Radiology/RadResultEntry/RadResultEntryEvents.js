@@ -16,7 +16,7 @@ const examhandle = ($this, e) => {
   let value = e.value || e.target.value;
 
   if ($this.state.pre_exam_status === "CO") {
-    debugger;
+    
     $this.setState({
       [name]: $this.state.exam_status
     });

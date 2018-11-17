@@ -2,7 +2,7 @@ import moment from "moment";
 import { swalMessage } from "../../../../utils/algaehApiCall.js";
 
 const UomchangeTexts = ($this, ctrl, e) => {
-  debugger;
+  
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -15,7 +15,7 @@ const UomchangeTexts = ($this, ctrl, e) => {
 };
 
 const numberchangeTexts = ($this, context, e) => {
-  debugger;
+  
 
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -35,7 +35,7 @@ const numberchangeTexts = ($this, context, e) => {
 };
 
 const itemchangeText = ($this, context, e) => {
-  debugger;
+  
   let name = e.name || e.target.name;
   if ($this.state.to_location_id !== null) {
     let value = e.value || e.target.value;
@@ -53,7 +53,7 @@ const itemchangeText = ($this, context, e) => {
       },
       afterSuccess: data => {
         if (data.locationResult.length > 0) {
-          debugger;
+          
           getItemLocationStock($this, context, {
             location_id: $this.state.to_location_id,
             item_id: value,
@@ -126,7 +126,7 @@ const AddItems = ($this, context) => {
     });
   } else {
     let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
-    debugger;
+    
     let ItemInput = {
       completed: "N",
       item_category_id: $this.state.item_category_id,
@@ -193,7 +193,7 @@ const deleteRequisitionDetail = ($this, context, row) => {
 };
 
 const updatePosDetail = ($this, context, row) => {
-  debugger;
+  
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
   for (let k = 0; k < pharmacy_stock_detail.length; k++) {
     if (pharmacy_stock_detail[k].item_id === row.item_id) {
@@ -210,7 +210,7 @@ const updatePosDetail = ($this, context, row) => {
 };
 
 const onchangegridcol = ($this, context, row, e) => {
-  debugger;
+  
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -239,7 +239,7 @@ const onchangegridcol = ($this, context, row, e) => {
 };
 
 const getItemLocationStock = ($this, context, value) => {
-  debugger;
+  
   $this.props.getItemLocationStock({
     uri: "/pharmacyGlobal/getItemLocationStock",
     method: "GET",

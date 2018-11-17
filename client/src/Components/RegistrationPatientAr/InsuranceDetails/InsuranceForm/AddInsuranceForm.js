@@ -87,7 +87,7 @@ class AddInsuranceForm extends Component {
   }
 
   render() {
-    debugger;
+    
     return (
       <React.Fragment>
         <MyContext.Consumer>

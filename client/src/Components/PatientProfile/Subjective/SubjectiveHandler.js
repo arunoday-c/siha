@@ -132,7 +132,7 @@ const updatePatientAllergy = ($this, row) => {
 };
 
 const updatePatientROS = ($this, row) => {
-  debugger;
+  
 };
 
 export {

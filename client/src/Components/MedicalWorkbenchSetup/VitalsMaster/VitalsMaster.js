@@ -98,7 +98,7 @@ class VitalsMaster extends Component {
       // },
       onSuccess: response => {
         if (response.data.success) {
-          debugger;
+          
           this.setState({ depts: response.data.records });
         }
       },

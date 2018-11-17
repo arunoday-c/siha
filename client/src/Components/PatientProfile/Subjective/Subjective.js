@@ -59,7 +59,7 @@ export default Subjective;
 //   onChange: this.dropDownHandle.bind(this),
 //   userList: list => {
 //     //TODO need to change with appropriate service call --noor
-//     debugger;
+//     
 //     alert(JSON.stringify(list));
 //   }
 // }}

@@ -23,7 +23,7 @@ class Summary extends Component {
   // }
 
   render() {
-    debugger;
+    
 
     const _pat_profile =
       this.props.patient_profile !== undefined &&

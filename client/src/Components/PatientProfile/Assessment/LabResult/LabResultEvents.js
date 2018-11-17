@@ -1,5 +1,5 @@
 const getLabResult = $this => {
-  debugger;
+  
   let inputobj = {
     patient_id: Window.global["current_patient"],
     visit_id: Window.global["visit_id"]
@@ -16,7 +16,7 @@ const getLabResult = $this => {
 };
 
 const getAnalytes = ($this, row) => {
-  debugger;
+  
   $this.props.getTestAnalytes({
     uri: "/laboratory/getTestAnalytes",
     method: "GET",

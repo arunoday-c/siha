@@ -21,7 +21,7 @@ const datehandle = ($this, row, ctrl, e) => {
 };
 
 const updateServices = ($this, context, row) => {
-  debugger;
+  
   let service_array = [];
 
   row.update();
@@ -35,7 +35,7 @@ const updateServices = ($this, context, row) => {
   }
 };
 const deleteServices = ($this, context, row) => {
-  debugger;
+  
 };
 
 export { texthandle, datehandle, updateServices, deleteServices };

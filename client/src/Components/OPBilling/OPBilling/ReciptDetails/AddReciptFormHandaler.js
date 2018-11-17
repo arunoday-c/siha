@@ -24,7 +24,7 @@ const texthandle = ($this, context, ctrl, e) => {
 };
 
 const calculateRecipt = ($this, e) => {
-  debugger;
+  
   if (e.target === null || e.target.value !== e.target.oldvalue) {
     let serviceInput = {
       isReceipt: true,
@@ -198,7 +198,7 @@ const checkcardhandaler = ($this, context, e) => {
       calculateRecipt($this, e);
     }
   );
-  debugger;
+  
   if (context !== undefined) {
     context.updateState({
       card_amount: 0,

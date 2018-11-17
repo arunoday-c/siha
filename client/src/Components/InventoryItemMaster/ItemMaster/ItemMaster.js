@@ -23,13 +23,13 @@ export default class PatientDetails extends Component {
   };
 
   componentWillMount() {
-    debugger;
+    
     let IOputs = InventoryItem.inputParam();
     this.setState({ ...this.state, ...IOputs });
   }
 
   componentWillReceiveProps(newProps) {
-    debugger;
+    
     if (newProps.itemPop.hims_d_inventory_item_master_id !== undefined) {
       let IOputs = newProps.itemPop;
       this.setState({ ...this.state, ...IOputs });

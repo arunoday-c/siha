@@ -72,7 +72,7 @@ const datehandle = ($this, context, ctrl, e) => {
 };
 
 const enddatehandle = ($this, context, ctrl, e) => {
-  debugger;
+  
   if (
     Date.parse(moment(ctrl)._d) >
     Date.parse($this.state.insurance_effective_end_date)
@@ -127,7 +127,7 @@ const InsuranceDetails = ($this, context, e) => {
       callBack(text);
     },
     onRowSelect: row => {
-      debugger;
+      
       if (
         $this.state.secondary_network_id === row.hims_d_insurance_network_id
       ) {
@@ -221,7 +221,7 @@ const InsuranceDetails = ($this, context, e) => {
             }
           });
         } else {
-          debugger;
+          
           let mappingName = "";
           let obj = {
             insurance_provider_id: row.hims_d_insurance_provider_id,
@@ -292,7 +292,7 @@ const InsuranceDetails = ($this, context, e) => {
 
 const radioChange = ($this, context, e) => {
   if ($this.state.doctor_id !== null) {
-    debugger;
+    
     let PatType = null;
     let saveEnable = false;
     let ProcessInsure = false;

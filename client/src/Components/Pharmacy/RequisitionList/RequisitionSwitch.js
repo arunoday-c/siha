@@ -15,7 +15,7 @@ class RequisitionSwitch extends Component {
   }
 
   routeComponents() {
-    debugger;
+    
     this.setState(
       {
         RQ_Screen: Window.global["RQ-STD"],

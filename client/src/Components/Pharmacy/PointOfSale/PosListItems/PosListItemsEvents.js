@@ -11,7 +11,7 @@ const discounthandle = ($this, context, ctrl, e) => {
 
   let sheet_discount_percentage = 0;
   let sheet_discount_amount = 0;
-  debugger;
+  
   if (e.target.name === "sheet_discount_percentage") {
     sheet_discount_percentage = parseFloat(e.target.value.replace(" %", ""));
     sheet_discount_amount = 0;
@@ -40,7 +40,7 @@ const discounthandle = ($this, context, ctrl, e) => {
 };
 
 const UomchangeTexts = ($this, context, ctrl, e) => {
-  debugger;
+  
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -74,7 +74,7 @@ const UomchangeTexts = ($this, context, ctrl, e) => {
 };
 
 const numberchangeTexts = ($this, context, e) => {
-  debugger;
+  
 
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -100,7 +100,7 @@ const numberchangeTexts = ($this, context, e) => {
 };
 
 // const getItemLocationStock = ($this, value) => {
-//   debugger;
+//   
 //   $this.props.getItemLocationStock({
 //     uri: "/pharmacyGlobal/getItemLocationStock",
 //     method: "GET",
@@ -127,7 +127,7 @@ const numberchangeTexts = ($this, context, e) => {
 //   });
 // };
 const itemchangeText = ($this, context, e) => {
-  debugger;
+  
   let name = e.name || e.target.name;
   if ($this.state.location_id !== null) {
     let value = e.value || e.target.value;
@@ -144,7 +144,7 @@ const itemchangeText = ($this, context, e) => {
         mappingName: "itemdetaillist"
       },
       afterSuccess: data => {
-        debugger;
+        
         if (data.locationResult.length > 0) {
           getUnitCost($this, context, e.selected.service_id);
           $this.setState({
@@ -218,7 +218,7 @@ const getUnitCost = ($this, context, serviceid) => {
         mappingName: "hospitalservices"
       },
       afterSuccess: data => {
-        debugger;
+        
 
         let servdata = Enumerable.from(data)
           .where(w => w.hims_d_services_id === parseInt(serviceid))
@@ -256,7 +256,7 @@ const getUnitCost = ($this, context, serviceid) => {
         mappingName: "hospitalservices"
       },
       afterSuccess: data => {
-        debugger;
+        
 
         if (data !== undefined || data !== null) {
           $this.setState({
@@ -287,7 +287,7 @@ const AddItems = ($this, context) => {
       type: "warning"
     });
   } else {
-    debugger;
+    
     let ItemInput = [
       {
         // item_id: $this.state.item_id,
@@ -321,7 +321,7 @@ const AddItems = ($this, context) => {
         mappingName: "xxx"
       },
       afterSuccess: data => {
-        debugger;
+        
         if (data.billdetails[0].pre_approval === "Y") {
           swalMessage({
             title:
@@ -330,7 +330,7 @@ const AddItems = ($this, context) => {
           });
         } else {
           let existingservices = $this.state.pharmacy_stock_detail;
-          debugger;
+          
           if (data.billdetails.length !== 0) {
             data.billdetails[0].extended_cost =
               data.billdetails[0].gross_amount;
@@ -410,7 +410,7 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const deletePosDetail = ($this, context, row) => {
-  debugger;
+  
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
 
   for (var i = 0; i < pharmacy_stock_detail.length; i++) {
@@ -498,11 +498,11 @@ const updatePosDetail = ($this, e) => {
 
 //Calculate Row Detail
 const calculateAmount = ($this, row, ctrl, e) => {
-  debugger;
+  
   e = e || ctrl;
   if (e.target.value !== e.target.oldvalue) {
     let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
-    debugger;
+    
     row[e.target.name] = parseFloat(e.target.value);
     let inputParam = [
       {
@@ -538,7 +538,7 @@ const calculateAmount = ($this, row, ctrl, e) => {
         mappingName: "xxx"
       },
       afterSuccess: data => {
-        debugger;
+        
         data.billdetails[0].extended_cost = data.billdetails[0].gross_amount;
         data.billdetails[0].net_extended_cost = data.billdetails[0].net_amout;
 
@@ -584,7 +584,7 @@ const adjustadvance = ($this, context, ctrl, e) => {
 };
 
 const PosheaderCalculation = ($this, e) => {
-  debugger;
+  
   if (e.target.value !== e.target.oldvalue) {
     let ItemInput = {
       isReceipt: false,
@@ -623,7 +623,7 @@ const ShowItemBatch = ($this, e) => {
 };
 
 const CloseItemBatch = ($this, e) => {
-  debugger;
+  
 
   $this.setState({
     ...$this.state,

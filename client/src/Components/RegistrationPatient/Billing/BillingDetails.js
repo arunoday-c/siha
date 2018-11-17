@@ -28,7 +28,7 @@ export default class BillingDetails extends PureComponent {
     }
   }
   // componentDidMount() {
-  //   debugger;
+  //   
   //   if (this.props.loader) AlgaehLoader({ show: false });
   // }
 

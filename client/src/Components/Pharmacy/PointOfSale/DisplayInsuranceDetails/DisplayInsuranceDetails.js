@@ -14,7 +14,7 @@ export default class DisplayInsuranceDetails extends Component {
   }
 
   componentDidMount() {
-    debugger;
+    
   }
 
   onClose = e => {

@@ -152,7 +152,7 @@ const PostDoctorCommission = $this => {
   //   uri: "/pharmacy/addPharmacyInitialStock",
   //   data: $this.state,
   //   onSuccess: response => {
-  //     debugger;
+  //     
   //     if (response.data.success === true) {
   //       $this.setState({
   //         document_number: response.data.records.document_number,
