@@ -82,6 +82,13 @@
   text-decoration: none;
   display: block;
   font-size: 0.8rem; }
+  .myUL li span span {
+    border: none;
+    background-color: transparent !important; }
+    .myUL li span span:before {
+      top: 11px !important; }
+    .myUL li span span:after {
+      top: 6px !important; }
 
 .myUL li span:hover:not(.header) {
   background-color: #eee; }

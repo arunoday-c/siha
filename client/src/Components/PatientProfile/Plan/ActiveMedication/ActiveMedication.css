@@ -16,3 +16,5 @@
   .hptl-active-medication-form .go-button {
     cursor: pointer;
     margin-top: 2.5vh; }
+  .hptl-active-medication-form .ReactTable {
+    max-height: 25vh !important; }

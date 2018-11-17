@@ -73,6 +73,9 @@ class LabResult extends Component {
                             <i className="fas fa-file-image" />
                           </span>
                         );
+                      },
+                      others: {
+                        maxWidth: 90
                       }
                     },
                     {
@@ -102,12 +105,12 @@ class LabResult extends Component {
                         return row.status === "O"
                           ? "Ordered"
                           : row.status === "S"
-                            ? "Scheduled"
-                            : row.status === "CN"
-                              ? "Cancelled"
-                              : row.status === "CF"
-                                ? "Result Confirmed"
-                                : "Result Avaiable";
+                          ? "Scheduled"
+                          : row.status === "CN"
+                          ? "Cancelled"
+                          : row.status === "CF"
+                          ? "Result Confirmed"
+                          : "Result Avaiable";
                       }
                     },
                     {

@@ -324,7 +324,7 @@ class UOMAdditionalInfo extends Component {
                             multiline: true,
                             rows: "4",
                             style: {
-                              height: "28vh"
+                              height: "25vh"
                             }
                           },
                           events: {
