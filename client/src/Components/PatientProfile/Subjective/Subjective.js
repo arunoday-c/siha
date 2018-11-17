@@ -15,14 +15,20 @@ class Subjective extends Component {
     return (
       <div className="subjective">
         <div className="row margin-top-15">
-          <div className="col-lg-8">
+          <div className="col-lg-3">
             <Vitals />
-            <ChiefComplaints />
           </div>
 
-          <div className="col-lg-4">
-            <Allergies />
-            <ReviewofSystems />
+          <div className="col-lg-9">
+            <ChiefComplaints />
+            <div className="row">
+              <div className="col-lg-6">
+                <Allergies />
+              </div>
+              <div className="col-lg-6">
+                <ReviewofSystems />
+              </div>
+            </div>
           </div>
         </div>
       </div>

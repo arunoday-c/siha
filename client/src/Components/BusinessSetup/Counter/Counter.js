@@ -68,7 +68,7 @@ class Counter extends Component {
           onSuccess: response => {
             if (response.data.success) {
               swalMessage({
-                title: "counter added Successfully",
+                title: "Counter added successfully",
                 type: "success"
               });
 
@@ -228,9 +228,10 @@ class Counter extends Component {
                 }}
               />
 
-              <div className="col-lg-3 margin-top-15">
+              <div className="col-lg-3">
                 <button
                   onClick={this.addCounter.bind(this)}
+                  style={{ marginTop: 21 }}
                   className="btn btn-primary"
                 >
                   Add to List
@@ -238,7 +239,7 @@ class Counter extends Component {
               </div>
             </div>
           </form>
-          <div className="form-details" data-validate="counterDiv">
+          <div data-validate="counterDiv" id="counterDivCntr">
             <AlgaehDataGrid
               datavalidate="data-validate='counterDiv'"
               id="appt-status-grid"

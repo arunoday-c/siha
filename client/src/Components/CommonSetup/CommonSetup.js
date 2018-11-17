@@ -54,63 +54,64 @@ class CommonSetup extends Component {
   render() {
     return (
       <div className="common_setup">
-        <div className="tab-container toggle-section" style={{ marginTop: 15 }}>
-          <ul className="nav">
-            <li
-              algaehtabs={"VisitType"}
-              className={"nav-item tab-button active"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "visit_type"
-                  }}
-                />
-              }
-            </li>
-            <li
-              algaehtabs={"VisaType"}
-              className={"nav-item tab-button"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "visa_type"
-                  }}
-                />
-              }
-            </li>
-            <li
-              algaehtabs={"IDType"}
-              className={"nav-item tab-button"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "identification_type"
-                  }}
-                />
-              }
-            </li>
-            <li
-              algaehtabs={"PatientType"}
-              className={"nav-item tab-button"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "patient_type"
-                  }}
-                />
-              }
-            </li>
-          </ul>
+        <div className="row">
+          <div className="tabMaster toggle-section">
+            <ul className="nav">
+              <li
+                algaehtabs={"VisitType"}
+                className={"nav-item tab-button active"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "visit_type"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"VisaType"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "visa_type"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"IDType"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "identification_type"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"PatientType"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "patient_type"
+                    }}
+                  />
+                }
+              </li>
+            </ul>
+          </div>
         </div>
-
         <div className="common-section">
           {/*  {<this.state.pageDisplay />} */}
 

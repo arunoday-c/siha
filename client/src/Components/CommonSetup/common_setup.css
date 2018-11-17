@@ -1,9 +1,8 @@
 .common_setup .common-section {
   border: 1px solid #d3d3d3;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  border-top-right-radius: 5px;
-  background: #fff; }
+  border-radius: 5px;
+  background: #fff;
+  padding-top: 15px; }
 
 .common_setup .ReactTable {
   max-height: 80vh !important; }

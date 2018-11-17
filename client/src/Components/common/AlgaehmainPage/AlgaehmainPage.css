@@ -1,4 +1,8 @@
 /* width */
+header {
+  box-shadow: none !important;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.1); }
+
 .btn-userProfile {
   background: none;
   font-size: 1rem;

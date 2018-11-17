@@ -55,68 +55,65 @@ class LabSetup extends Component {
   render() {
     return (
       <div className="hims_lab_setup">
-        <div className="tab-container toggle-section margin-top-15">
-          <ul className="nav">
-            <li
-              algaehtabs={"LabSection"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button active"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "lab_section"
-                  }}
-                />
-              }
-            </li>
-            <li
-              style={{ marginRight: 2 }}
-              algaehtabs={"LabContainer"}
-              className={"nav-item tab-button "}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "lab_container"
-                  }}
-                />
-              }
-            </li>
+        <div className="row">
+          <div className="tabMaster toggle-section">
+            <ul className="nav">
+              <li
+                algaehtabs={"LabSection"}
+                className={"nav-item tab-button active"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "lab_section"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"LabContainer"}
+                className={"nav-item tab-button "}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "lab_container"
+                    }}
+                  />
+                }
+              </li>
 
-            <li
-              algaehtabs={"LabSpecimen"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "lab_specimen"
-                  }}
-                />
-              }
-            </li>
-            <li
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button "}
-              algaehtabs={"Analyte"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "lab_analyte"
-                  }}
-                />
-              }
-            </li>
-            {/* <li
+              <li
+                algaehtabs={"LabSpecimen"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "lab_specimen"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                className={"nav-item tab-button "}
+                algaehtabs={"Analyte"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "lab_analyte"
+                    }}
+                  />
+                }
+              </li>
+              {/* <li
               algaehtabs={"Equipment"}
-              style={{ marginRight: 2 }}
+              
               className={"nav-item tab-button "}
               onClick={this.openTab.bind(this)}
             >
@@ -129,21 +126,21 @@ class LabSetup extends Component {
               }
             </li> */}
 
-            <li
-              algaehtabs={"TestCategory"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button "}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "test_category"
-                  }}
-                />
-              }
-            </li>
-          </ul>
+              <li
+                algaehtabs={"TestCategory"}
+                className={"nav-item tab-button "}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "test_category"
+                    }}
+                  />
+                }
+              </li>
+            </ul>
+          </div>
         </div>
 
         <div className="common-section">

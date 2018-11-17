@@ -347,8 +347,8 @@
     { "name": "Supine", "value": "supine" }
   ],
   "DEPT_TYPE": [
-    { "name": "CLINICAL", "value": "CLINICAL" },
-    { "name": "NON-CLINICAL", "value": "NON-CLINICAL" }
+    { "name": "Clinical", "value": "CLINICAL" },
+    { "name": "Non-Clinical", "value": "NON-CLINICAL" }
   ],
   "SERVICE_COMMISSION": [
     { "name": "All Service Type", "value": "AS" },
@@ -414,7 +414,8 @@
   "FORMAT_APPT_STATUS": [
     { "name": "No", "arabic_name": "لا", "value": "N" },
     { "name": "Yes", "arabic_name": "نعم فعلا", "value": "Y" },
-    { "name": "Create Visit", "arabic_name": "خلق زيارة", "value": "C" }
+    { "name": "Create Visit", "arabic_name": "خلق زيارة", "value": "C" },
+    { "name": "Re Schedule", "arabic_name": "إعادة جدولة", "value": "RS" }
   ],
   "TALLY_STATUS": [
     { "name": "Tallied", "value": "T" },
@@ -428,23 +429,23 @@
     { "name": "3", "value": "3" }
   ],
   "SYMBOL_POSITION": [
-    { "name": "BEFORE WITH SPACE", "value": "BWS" },
-    { "name": "BEFORE SPACE", "value": "BS" },
-    { "name": "AFTER WITH SPACE", "value": "AWS" },
-    { "name": "AFTER SPACE", "value": "AS" }
+    { "name": "Before without space", "value": "BWS" },
+    { "name": "Before space", "value": "BS" },
+    { "name": "After without space", "value": "AWS" },
+    { "name": "After space", "value": "AS" }
   ],
   "THOUSAND_SEPARATOR": [
-    { "name": "SPACE", "value": "S" },
-    { "name": "PERIOD", "value": "P" },
-    { "name": "COMMA", "value": "C" }
+    { "name": "Space", "value": "S" },
+    { "name": "Period", "value": "P" },
+    { "name": "Comma", "value": "C" }
   ],
   "DECIMAL_SEPARATOR": [
-    { "name": "PERIOD", "value": "P" },
-    { "name": "COMMA", "value": "C" }
+    { "name": "Period", "value": "P" },
+    { "name": "Comma", "value": "C" }
   ],
   "NEGATIVE_SEPARATOR": [
-    { "name": "TRAILING", "value": "TR" },
-    { "name": "LEADING", "value": "LD" }
+    { "name": "Trailing", "value": "TR" },
+    { "name": "Leading", "value": "LD" }
   ],
   "APPT_TYPE": [
     { "name": "Available", "value": "A" },

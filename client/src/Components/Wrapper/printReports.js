@@ -6,7 +6,8 @@ import { successfulMessage } from "../../utils/GlobalFunctions";
 const reportWindow = document.getElementById("reportWindow");
 export function accessReport(options) {
   let getReport = options.report;
-  const { printReport } = require("../../../public/Reports/" +
+
+  const { printReport } = require("../../Reports/" +
     getReport.fileName +
     ".js");
   const _modifiedTemplate = printReport(options.data, {

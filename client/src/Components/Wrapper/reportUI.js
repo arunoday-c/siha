@@ -97,6 +97,7 @@ export default class ReportUI extends Component {
       }
     });
   }
+
   componentWillReceiveProps() {
     this.setState({
       openPopup: true
@@ -269,6 +270,7 @@ export default class ReportUI extends Component {
               key={i}
               div={{ className: "col" }}
               label={{
+                fieldName: _param.name,
                 forceLabel: _param.label,
                 isImp: _param.isImp !== undefined ? false : _param.isImp
               }}
@@ -294,6 +296,7 @@ export default class ReportUI extends Component {
               singleOutput={false}
               div={{ className: "col" }}
               label={{
+                fieldName: _param.name,
                 forceLabel: _param.label,
                 isImp: _param.isImp !== undefined ? false : _param.isImp
               }}
@@ -315,6 +318,7 @@ export default class ReportUI extends Component {
               <AlagehFormGroup
                 div={{ className: "col" }}
                 label={{
+                  fieldName: _param.name,
                   forceLabel: _param.label,
                   isImp: _param.isImp !== undefined ? false : _param.isImp
                 }}
@@ -394,6 +398,7 @@ export default class ReportUI extends Component {
               key={i}
               div={{ className: "col" }}
               label={{
+                fieldName: _param.name,
                 forceLabel: _param.label,
                 isImp: _param.isImp !== undefined ? false : _param.isImp
               }}

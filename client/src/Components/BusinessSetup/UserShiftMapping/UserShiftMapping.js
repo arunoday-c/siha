@@ -223,7 +223,7 @@ class UserShiftMapping extends Component {
         <div className="col-lg-12">
           <div className="row">
             <AlagehAutoComplete
-              div={{ className: "col-lg-2" }}
+              div={{ className: "col" }}
               label={{
                 forceLabel: "Shift Type",
                 isImp: true
@@ -241,7 +241,7 @@ class UserShiftMapping extends Component {
               }}
             />
             <AlagehAutoComplete
-              div={{ className: "col-lg-2" }}
+              div={{ className: "col" }}
               label={{
                 forceLabel: "Select Cashier",
                 isImp: true
@@ -260,7 +260,7 @@ class UserShiftMapping extends Component {
             />
 
             <AlagehAutoComplete
-              div={{ className: "col-lg-2" }}
+              div={{ className: "col" }}
               label={{
                 forceLabel: "Select Month"
               }}
@@ -278,7 +278,7 @@ class UserShiftMapping extends Component {
             />
 
             <AlagehFormGroup
-              div={{ className: "col-lg-1" }}
+              div={{ className: "col" }}
               label={{
                 forceLabel: "Year",
                 isImp: true
@@ -297,16 +297,17 @@ class UserShiftMapping extends Component {
               }}
             />
 
-            <div className="col-lg-3 margin-top-15">
+            <div className="col">
               <button
                 onClick={this.mapUserShift.bind(this)}
+                style={{ marginTop: 21 }}
                 className="btn btn-primary"
               >
                 Add to List
               </button>
             </div>
           </div>
-          <div className="form-details" data-validate="usmDiv">
+          <div data-validate="usmDiv" id="usmDivCntr">
             <AlgaehDataGrid
               datavalidate="data-validate='usmDiv'"
               id="usm-grid"
@@ -349,46 +350,101 @@ class UserShiftMapping extends Component {
                   label: "Month",
                   displayTemplate: row => {
                     return (
-                      <AlagehAutoComplete
-                        div={{ className: "col" }}
-                        selector={{
-                          name: "month",
-                          className: "select-fld",
-                          value: row.month,
-                          dataSource: {
-                            textField: "name",
-                            valueField: "value",
-                            data: GlobalVariables.MONTHS
-                          },
-                          others: {
-                            disabled: true
-                          },
-                          onChange: this.changeGridEditors.bind(this, row)
-                        }}
-                      />
+                      <span>
+                        {row.month === "1"
+                          ? "January"
+                          : row.month === "2"
+                          ? "February"
+                          : row.month === "3"
+                          ? "March"
+                          : row.month === "4"
+                          ? "April"
+                          : row.month === "5"
+                          ? "May"
+                          : row.month === "6"
+                          ? "June"
+                          : row.month === "7"
+                          ? "July"
+                          : row.month === "8"
+                          ? "August"
+                          : row.month === "9"
+                          ? "September"
+                          : row.month === "10"
+                          ? "October"
+                          : row.month === "11"
+                          ? "November"
+                          : row.month === "12"
+                          ? "December"
+                          : null}
+                      </span>
+                      // <AlagehAutoComplete
+                      //   div={{ className: "col" }}
+                      //   selector={{
+                      //     name: "month",
+                      //     className: "select-fld",
+                      //     value: row.month,
+                      //     dataSource: {
+                      //       textField: "name",
+                      //       valueField: "value",
+                      //       data: GlobalVariables.MONTHS
+                      //     },
+                      //     others: {
+                      //       disabled: true
+                      //     },
+                      //     onChange: this.changeGridEditors.bind(this, row)
+                      //   }}
+                      // />
                     );
                   },
                   editorTemplate: row => {
                     return (
-                      <AlagehAutoComplete
-                        div={{ className: "col" }}
-                        selector={{
-                          name: "month",
-                          className: "select-fld",
-                          value: row.month,
-                          dataSource: {
-                            textField: "name",
-                            valueField: "value",
-                            data: GlobalVariables.MONTHS
-                          },
-                          others: {
-                            errormessage: "Month - cannot be blank",
-                            required: true,
-                            disabled: true
-                          },
-                          onChange: this.changeGridEditors.bind(this, row)
-                        }}
-                      />
+                      <span>
+                        {row.month === "1"
+                          ? "January"
+                          : row.month === "2"
+                          ? "February"
+                          : row.month === "3"
+                          ? "March"
+                          : row.month === "4"
+                          ? "April"
+                          : row.month === "5"
+                          ? "May"
+                          : row.month === "6"
+                          ? "June"
+                          : row.month === "7"
+                          ? "July"
+                          : row.month === "8"
+                          ? "August"
+                          : row.month === "9"
+                          ? "September"
+                          : row.month === "10"
+                          ? "October"
+                          : row.month === "11"
+                          ? "November"
+                          : row.month === "12"
+                          ? "December"
+                          : null}
+                      </span>
+
+                      // <AlagehAutoComplete
+                      //   div={{ className: "col" }}
+                      //   selector={{
+                      //     name: "month",
+                      //     className: "select-fld",
+                      //     value: row.month,
+                      //     dataSource: {
+                      //       textField: "name",
+                      //       valueField: "value",
+                      //       data: GlobalVariables.MONTHS
+                      //     },
+                      //     others: {
+                      //       errormessage: "Month - cannot be blank",
+                      //       required: true,
+                      //       disabled: true
+                      //     },
+                      //     onChange: this.changeGridEditors.bind(this, row)
+                      //   }}
+                      // />
                     );
                   }
                 },

@@ -35,6 +35,9 @@ body {
     transition: all 0.2s ease-in-out;
   }
 
+  .btn-rounded {
+    border-radius: 50%;
+  }
   .btn-primary {
     color: #fff;
     background-color: none;
@@ -1348,18 +1351,17 @@ th {
     border-top-left-radius: 5px;
     border-bottom: none;
 
-    &.active {
-      background-color: #dbad64;
-      color: #fff;
-      pointer-events: none;
-      border-color: #dbad64;
-    }
-
     &:hover {
       background-color: #fffcf8;
       color: #9e670f;
       border-color: #dbad64;
       cursor: pointer;
+    }
+    &.active {
+      background-color: #dbad64;
+      color: #fff;
+      pointer-events: none;
+      border-color: #dbad64;
     }
     &:focus {
       outline: none;

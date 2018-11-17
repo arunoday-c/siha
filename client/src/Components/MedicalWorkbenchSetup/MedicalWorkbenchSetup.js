@@ -35,51 +35,51 @@ class MedicalWorkbenchSetup extends Component {
   render() {
     return (
       <div className="medical_wb_setup">
-        <div className="tab-container toggle-section margin-top-15">
-          <ul className="nav">
-            <li
-              style={{ marginRight: 2 }}
-              algaehtabs={"VitalsMaster"}
-              className={"nav-item tab-button active"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "vitals_master"
-                  }}
-                />
-              }
-            </li>
-            <li
-              algaehtabs={"PhysicalExaminationMaster"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "physical_examination"
-                  }}
-                />
-              }
-            </li>
-            <li
-              style={{ marginRight: 2 }}
-              algaehtabs={"ReviewofSystems"}
-              className={"nav-item tab-button "}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "review_of_systems"
-                  }}
-                />
-              }
-            </li>
-          </ul>
+        {" "}
+        <div className="row">
+          <div className="tabMaster toggle-section">
+            <ul className="nav">
+              <li
+                algaehtabs={"VitalsMaster"}
+                className={"nav-item tab-button active"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "vitals_master"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"PhysicalExaminationMaster"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "physical_examination"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"ReviewofSystems"}
+                className={"nav-item tab-button "}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "review_of_systems"
+                    }}
+                  />
+                }
+              </li>
+            </ul>
+          </div>
         </div>
         <div className="wb-setup-section">
           {this.state.pageDisplay === "PhysicalExaminationMaster" ? (

@@ -169,86 +169,77 @@ class Shift extends Component {
     this.setState({ [e.target.name]: e.target.value });
   }
 
-  refreshState() {
-    this.setState({ ...this.state });
-  }
-
   changeGridEditors(row, e) {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
     row[name] = value;
     row.update();
-    //this.refreshState();
   }
 
   render() {
     return (
       <div className="shift">
         <div className="col-lg-12">
-          <form action="none">
-            <div className="row">
-              <AlagehFormGroup
-                div={{ className: "col-lg-3" }}
-                label={{
-                  fieldName: "shift_code",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "shift_code",
-                  value: this.state.shift_code,
-                  events: {
-                    onChange: this.changeTexts.bind(this)
-                  }
-                }}
-              />
-              <AlagehFormGroup
-                div={{ className: "col-lg-3" }}
-                label={{
-                  fieldName: "shift_description",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "shift_description",
-                  value: this.state.shift_description,
-                  events: {
-                    onChange: this.changeTexts.bind(this)
-                  }
-                }}
-              />
-              <AlagehFormGroup
-                div={{ className: "col-lg-3" }}
-                label={{
-                  fieldName: "arabic_name",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "arabic_name",
-                  value: this.state.arabic_name,
-                  events: {
-                    onChange: this.changeTexts.bind(this)
-                  }
-                }}
-              />
+          <div className="row">
+            <AlagehFormGroup
+              div={{ className: "col-lg-3" }}
+              label={{
+                fieldName: "shift_code",
+                isImp: true
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "shift_code",
+                value: this.state.shift_code,
+                events: {
+                  onChange: this.changeTexts.bind(this)
+                }
+              }}
+            />
+            <AlagehFormGroup
+              div={{ className: "col-lg-3" }}
+              label={{
+                fieldName: "shift_description",
+                isImp: true
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "shift_description",
+                value: this.state.shift_description,
+                events: {
+                  onChange: this.changeTexts.bind(this)
+                }
+              }}
+            />
+            <AlagehFormGroup
+              div={{ className: "col-lg-3" }}
+              label={{
+                fieldName: "arabic_name",
+                isImp: true
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "arabic_name",
+                value: this.state.arabic_name,
+                events: {
+                  onChange: this.changeTexts.bind(this)
+                }
+              }}
+            />
 
-              <div className="col-lg-3 margin-top-15">
-                <button
-                  type="submit"
-                  onClick={this.addShift.bind(this)}
-                  className="btn btn-primary"
-                >
-                  Add to List
-                </button>
-              </div>
+            <div className="col-lg-3">
+              <button
+                type="submit"
+                style={{ marginTop: 21 }}
+                onClick={this.addShift.bind(this)}
+                className="btn btn-primary"
+              >
+                Add to List
+              </button>
             </div>
-          </form>
-          <div
-            className="form-details"
-            data-validate="shiftDiv"
-            id="shiftGridCntr"
-          >
+          </div>
+
+          <div data-validate="shiftDiv" id="shiftGridCntr">
             <AlgaehDataGrid
               id="shift-grid"
               datavalidate="data-validate='shiftDiv'"

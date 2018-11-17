@@ -84,6 +84,7 @@ class Currency extends Component {
   }
 
   updateCurrency(data) {
+    debugger;
     algaehApiCall({
       uri: "/currency/updateCurrencyMaster",
       data: {
@@ -194,7 +195,7 @@ class Currency extends Component {
         <div className="col-lg-12">
           <div className="row">
             <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
+              div={{ className: "col" }}
               label={{
                 fieldName: "currency_code",
                 isImp: true
@@ -209,7 +210,7 @@ class Currency extends Component {
               }}
             />
             <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
+              div={{ className: "col" }}
               label={{
                 fieldName: "currency_description",
                 isImp: true
@@ -224,7 +225,7 @@ class Currency extends Component {
               }}
             />
             <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
+              div={{ className: "col" }}
               label={{
                 fieldName: "symbol",
                 isImp: true
@@ -240,7 +241,7 @@ class Currency extends Component {
             />
 
             <AlagehAutoComplete
-              div={{ className: "col-lg-2" }}
+              div={{ className: "col" }}
               label={{
                 fieldName: "decimal_places",
                 isImp: true
@@ -258,7 +259,7 @@ class Currency extends Component {
               }}
             />
             <AlagehAutoComplete
-              div={{ className: "col-lg-2" }}
+              div={{ className: "col" }}
               label={{
                 fieldName: "symbol_position",
                 isImp: true
@@ -275,9 +276,10 @@ class Currency extends Component {
                 onChange: this.dropDownHandle.bind(this)
               }}
             />
-
+          </div>
+          <div className="row">
             <AlagehAutoComplete
-              div={{ className: "col-lg-2" }}
+              div={{ className: "col" }}
               label={{
                 fieldName: "thousand_separator",
                 isImp: true
@@ -295,7 +297,7 @@ class Currency extends Component {
               }}
             />
             <AlagehAutoComplete
-              div={{ className: "col-lg-2" }}
+              div={{ className: "col" }}
               label={{
                 fieldName: "decimal_separator",
                 isImp: true
@@ -313,7 +315,7 @@ class Currency extends Component {
               }}
             />
             <AlagehAutoComplete
-              div={{ className: "col-lg-2" }}
+              div={{ className: "col" }}
               label={{
                 fieldName: "negative_separator",
                 isImp: true
@@ -331,20 +333,17 @@ class Currency extends Component {
               }}
             />
 
-            <div className="col-lg-3 margin-top-15">
+            <div className="col">
               <button
                 onClick={this.addCurrencyCodes.bind(this)}
+                style={{ marginTop: 21 }}
                 className="btn btn-primary"
               >
                 Add to List
               </button>
             </div>
           </div>
-          <div
-            className="form-details"
-            data-validate="currencyDiv"
-            id="currencyGridCntr"
-          >
+          <div data-validate="currencyDiv" id="currencyGridCntr">
             <AlgaehDataGrid
               datavalidate="data-validate='currencyDiv'"
               id="currency-grid"
@@ -444,13 +443,13 @@ class Currency extends Component {
                     return (
                       <span>
                         {row.symbol_position === "BWS"
-                          ? "BEFORE WITH SPACE"
+                          ? "Before without space"
                           : row.symbol_position === "BS"
-                          ? "BEFORE SPACE"
+                          ? "Before space"
                           : row.symbol_position === "AWS"
-                          ? "AFTER WITH SPACE"
+                          ? "After without space"
                           : row.symbol_position === "AS"
-                          ? "AFTER SPACE"
+                          ? "After space"
                           : null}
                       </span>
                     );
@@ -487,11 +486,11 @@ class Currency extends Component {
                     return (
                       <span>
                         {row.thousand_separator === "S"
-                          ? "SPACE"
+                          ? "Space"
                           : row.thousand_separator === "P"
-                          ? "PERIOD"
+                          ? "Period"
                           : row.thousand_separator === "C"
-                          ? "COMMA"
+                          ? "Comma"
                           : null}
                       </span>
                     );
@@ -529,9 +528,9 @@ class Currency extends Component {
                     return (
                       <span>
                         {row.thousand_separator === "P"
-                          ? "PERIOD"
+                          ? "Period"
                           : row.thousand_separator === "C"
-                          ? "COMMA"
+                          ? "Comma"
                           : null}
                       </span>
                     );
@@ -568,9 +567,9 @@ class Currency extends Component {
                     return (
                       <span>
                         {row.thousand_separator === "TR"
-                          ? "TRAILING"
+                          ? "Trailing"
                           : row.thousand_separator === "LD"
-                          ? "LEADING"
+                          ? "Leading"
                           : null}
                       </span>
                     );

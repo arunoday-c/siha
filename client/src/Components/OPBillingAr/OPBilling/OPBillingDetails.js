@@ -35,7 +35,7 @@ export default class OPBillingDetails extends Component {
           <ul className="nav">
             <li
               algaehtabs={"BillingDetails"}
-              style={{ marginRight: 2 }}
+              
               className={"nav-item tab-button active"}
               onClick={this.openTab.bind(this)}
             >
@@ -48,7 +48,7 @@ export default class OPBillingDetails extends Component {
               }
             </li>
             <li
-              style={{ marginRight: 2 }}
+              
               algaehtabs={"PrimaryInsurance"}
               className={"nav-item tab-button"}
               onClick={this.openTab.bind(this)}
@@ -63,7 +63,7 @@ export default class OPBillingDetails extends Component {
             </li>
             <li
               algaehtabs={"SecondaryDetails"}
-              style={{ marginRight: 2 }}
+              
               className={"nav-item tab-button"}
               onClick={this.openTab.bind(this)}
             >

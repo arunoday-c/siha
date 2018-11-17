@@ -1,15 +1,16 @@
 import React, { Component } from "react";
 import "./business_setup.css";
 import "../../styles/site.css";
-import DeptMaster from "./DeptMaster/DeptMaster.js";
-import HolidayList from "./HolidayList/HolidayList.js";
+import DeptMaster from "./DeptMaster/DeptMaster";
+import HolidayList from "./HolidayList/HolidayList";
 import Numbering from "./Numbering/Numbering";
 import Transaction from "./Transaction/Transaction";
-import Counter from "./Counter/Counter.js";
+import Counter from "./Counter/Counter";
 import Currency from "./Currency/Currency";
-import Shift from "./Shift/Shift.js";
+import Shift from "./Shift/Shift";
+import Category from "./Category/Category";
+import Speciality from "./Speciality/Speciality";
 import UserShiftMapping from "./UserShiftMapping/UserShiftMapping";
-import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 
 class BusinessSetup extends Component {
@@ -33,83 +34,106 @@ class BusinessSetup extends Component {
   render() {
     return (
       <div className="business_setup">
-        <div className="tab-container toggle-section" style={{ marginTop: 15 }}>
-          <ul className="nav">
-            <li
-              algaehtabs={"DeptMaster"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button active"}
-              onClick={this.openTab.bind(this)}
-            >
-              {/* DEPARTMENTS */}
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "departments"
-                  }}
-                />
-              }
-            </li>
+        <div className="row">
+          <div className="tabMaster toggle-section">
+            <ul className="nav">
+              <li
+                algaehtabs={"DeptMaster"}
+                className={"nav-item tab-button active"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "departments"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"Speciality"}
+                style={{ marginRight: 2 }}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "speciality"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"Category"}
+                style={{ marginRight: 2 }}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "category"
+                    }}
+                  />
+                }
+              </li>
 
-            <li
-              algaehtabs={"Shift"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "shift"
-                  }}
-                />
-              }
-            </li>
-            <li
-              algaehtabs={"Counter"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "counter"
-                  }}
-                />
-              }
-            </li>
-            <li
-              algaehtabs={"UserShiftMapping"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "users_shift"
-                  }}
-                />
-              }
-            </li>
-            <li
-              algaehtabs={"Currency"}
-              style={{ marginRight: 2 }}
-              className={"nav-item tab-button"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "currency"
-                  }}
-                />
-              }
-            </li>
-          </ul>
+              <li
+                algaehtabs={"Shift"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "shift"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"Counter"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "counter"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"UserShiftMapping"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "users_shift"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"Currency"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "currency"
+                    }}
+                  />
+                }
+              </li>
+            </ul>
+          </div>
         </div>
-
         <div className="business-section">
           {this.state.pageDisplay === "DeptMaster" ? (
             <DeptMaster />
@@ -127,6 +151,10 @@ class BusinessSetup extends Component {
             <UserShiftMapping />
           ) : this.state.pageDisplay === "Currency" ? (
             <Currency />
+          ) : this.state.pageDisplay === "Category" ? (
+            <Category />
+          ) : this.state.pageDisplay === "Speciality" ? (
+            <Speciality />
           ) : null}
         </div>
       </div>

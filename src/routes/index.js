@@ -54,6 +54,7 @@ import inventoryinitialstock from "../Inventory/controller/inventoryinitialstock
 import inventoryGlobal from "../Inventory/controller/inventoryGlobal";
 import inventoryrequisitionEntry from "../Inventory/controller/inventoryrequisitionEntry";
 import inventorytransferEntry from "../Inventory/controller/inventorytransferEntry";
+import specialityAndCategory from "../controller/specialityAndCategory";
 
 let router = express();
 
@@ -120,6 +121,7 @@ initializedDb(db => {
     inventoryrequisitionEntry({ config, db })
   );
   router.use("/inventorytransferEntry", inventorytransferEntry({ config, db }));
+  router.use("/specialityAndCategory", specialityAndCategory({ config, db }));
 });
 
 export default router;
