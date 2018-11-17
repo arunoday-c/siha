@@ -44,7 +44,7 @@ export function postVisitDetails(dataValue, callback) {
       method: "POST",
       data: dataValue,
       onSuccess: response => {
-        if (response.data.success == true) {
+        if (response.data.success === true) {
           if (typeof callback === "function") {
             callback(response.data.records);
           }

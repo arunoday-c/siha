@@ -2,19 +2,18 @@ import { Router } from "express";
 import { releaseConnection } from "../../utils";
 import httpStatus from "../../utils/httpStatus";
 import {
-  addtransferEntry,
-  gettransferEntry,
-  updatetransferEntry,
-  getrequisitionEntryTransfer
-} from "../model/transferEntry";
+  addInventoryInitialStock,
+  getInventoryInitialStock,
+  updateInventoryInitialStock
+} from "../model/inventoryinitialstock";
 
 export default ({ config, db }) => {
   let api = Router();
 
-  // created by Nowshad :to add Pharmacy POS Entry
+  // created by Nowshad :to add Pharmacy Initial Stock
   api.post(
-    "/addtransferEntry",
-    addtransferEntry,
+    "/addInventoryInitialStock",
+    addInventoryInitialStock,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
@@ -26,10 +25,10 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-  // created by Nowshad :to get Pos Entry
+  // created by irfan :to getInventoryInitialStock
   api.get(
-    "/gettransferEntry",
-    gettransferEntry,
+    "/getInventoryInitialStock",
+    getInventoryInitialStock,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
@@ -41,30 +40,15 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-  // created by Nowshad :update Item Storage and POS
+  // created by Nowshad :update Item Storage
   api.put(
-    "/updatetransferEntry",
-    updatetransferEntry,
+    "/updateInventoryInitialStock",
+    updateInventoryInitialStock,
     (req, res, next) => {
       let results = req.records;
       res.status(httpStatus.ok).json({
         success: true,
         records: results
-      });
-      next();
-    },
-    releaseConnection
-  );
-
-  // created by Nowshad :to get Pos Entry
-  api.get(
-    "/getrequisitionEntryTransfer",
-    getrequisitionEntryTransfer,
-    (req, res, next) => {
-      let result = req.records;
-      res.status(httpStatus.ok).json({
-        success: true,
-        records: result
       });
       next();
     },

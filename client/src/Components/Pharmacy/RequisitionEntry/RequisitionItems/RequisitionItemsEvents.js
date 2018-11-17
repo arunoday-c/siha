@@ -19,11 +19,18 @@ const numberchangeTexts = ($this, context, e) => {
 
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  $this.setState({ [name]: value });
-  if (context !== undefined) {
-    context.updateState({
-      [name]: value
+  if (value < 0) {
+    swalMessage({
+      title: "Invalid Input. cannot be less than zero.",
+      type: "warning"
     });
+  } else {
+    $this.setState({ [name]: value });
+    if (context !== undefined) {
+      context.updateState({
+        [name]: value
+      });
+    }
   }
 };
 
@@ -114,7 +121,7 @@ const AddItems = ($this, context) => {
     });
   } else if ($this.state.quantity_required === 0) {
     swalMessage({
-      message: "Invalid Input. Please enter Quantity Required .",
+      title: "Invalid Input. Please enter Quantity Required .",
       type: "warning"
     });
   } else {

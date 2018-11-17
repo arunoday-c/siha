@@ -61,11 +61,12 @@ import InvoiceGeneration from "./Components/InsuranceClaims/InvoiceGeneration/In
 import InventorySetup from "./Components/InventorySetup/InventorySetup";
 import InventoryItemMaster from "./Components/InventoryItemMaster/InventoryItemMaster";
 
-// function height() {
-//   let height =
-//     window.innerHeight * (window.innerHeight / document.body.offsetHeight);
-//   return height;
-// }
+import InvInitialStock from "./Components/Inventory/InvInitialStock/InvInitialStock";
+import InvStockEnquiry from "./Components/Inventory/InvStockEnquiry/InvStockEnquiry";
+import InvItemMomentEnquiry from "./Components/Inventory/InvItemMomentEnquiry/InvItemMomentEnquiry";
+import InvRequisitionEntry from "./Components/Inventory/InvRequisitionEntry/InvRequisitionEntry";
+import InvRequisitionSwitch from "./Components/Inventory/InvRequisitionList/InvRequisitionSwitch";
+import InvTransferEntry from "./Components/Inventory/InvTransferEntry/InvTransferEntry";
 
 const componts = (selectedLang, breadStyle) => {
   return {
@@ -127,7 +128,15 @@ const componts = (selectedLang, breadStyle) => {
     StaffCashCollection: <StaffCashCollection SelectLanguage={selectedLang} />,
     InvoiceGeneration: <InvoiceGeneration SelectLanguage={selectedLang} />,
     InventorySetup: <InventorySetup SelectLanguage={selectedLang} />,
-    InventoryItemMaster: <InventoryItemMaster SelectLanguage={selectedLang} />
+    InventoryItemMaster: <InventoryItemMaster SelectLanguage={selectedLang} />,
+    InvInitialStock: <InvInitialStock SelectLanguage={selectedLang} />,
+    InvStockEnquiry: <InvStockEnquiry SelectLanguage={selectedLang} />,
+    InvItemMomentEnquiry: (
+      <InvItemMomentEnquiry SelectLanguage={selectedLang} />
+    ),
+    InvRequisitionEntry: <InvRequisitionEntry SelectLanguage={selectedLang} />,
+    InvRequisitionList: <InvRequisitionSwitch SelectLanguage={selectedLang} />,
+    InvTransferEntry: <InvTransferEntry SelectLanguage={selectedLang} />
   };
 };
 

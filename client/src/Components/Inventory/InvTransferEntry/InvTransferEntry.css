@@ -1,0 +1,13 @@
+.hptl-phase1-inv-transfer-form {
+  min-height: 80vh; }
+  .hptl-phase1-inv-transfer-form .form-details {
+    padding: 5px;
+    padding-bottom: 0px; }
+  .hptl-phase1-inv-transfer-form mark {
+    background: none;
+    color: red; }
+  .hptl-phase1-inv-transfer-form .form-group {
+    padding: 2vh; }
+  .hptl-phase1-inv-transfer-form .go-button {
+    cursor: pointer;
+    margin-top: 2.5vh; }

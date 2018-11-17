@@ -440,9 +440,37 @@ let getAuthrequisitionList = (req, res, next) => {
   }
 };
 
+//created by Nowshad: to Update Requisition Entry
+let updaterequisitionEntryOnceTranfer = (req, res, next) => {
+  if (req.db == null) {
+    next(httpStatus.dataBaseNotInitilizedError());
+  }
+  let db = req.db;
+  let connection = req.connection;
+  let inputParam = extend({}, req.body);
+
+  connection.query(
+    "UPDATE `hims_f_pharamcy_material_header` SET `is_completed`=?, `completed_date`=? \
+      WHERE `hims_f_pharamcy_material_header_id`=?",
+    ["Y", new Date(), inputParam.hims_f_pharamcy_material_header_id],
+    (error, result) => {
+      if (error) {
+        connection.rollback(() => {
+          releaseDBConnection(db, connection);
+          next(error);
+        });
+      }
+      releaseDBConnection(db, connection);
+      req.records = result;
+      next();
+    }
+  );
+};
+
 module.exports = {
   addrequisitionEntry,
   getrequisitionEntry,
   updaterequisitionEntry,
-  getAuthrequisitionList
+  getAuthrequisitionList,
+  updaterequisitionEntryOnceTranfer
 };

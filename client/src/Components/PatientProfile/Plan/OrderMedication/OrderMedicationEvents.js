@@ -78,7 +78,7 @@ const genericnamehandle = ($this, ctrl, e) => {
   let value = e.value || e.target.value;
 
   let items = Enumerable.from($this.props.itemlist)
-    .where(w => w.generic_id == value)
+    .where(w => w.generic_id === value)
     .toArray();
   $this.setState({
     [name]: value,
@@ -207,7 +207,7 @@ const deleteItems = $this => {};
 
 const calcuateDispense = ($this, e) => {
   debugger;
-  if (e.target == null || e.target.value !== e.target.oldvalue) {
+  if (e.target === null || e.target.value !== e.target.oldvalue) {
     let frequency = 0;
     let frequency_type = 0;
     let dispense = 0;

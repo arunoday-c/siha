@@ -98,6 +98,16 @@
   text-decoration: none;
   display: block;
   font-size: 0.8rem;
+  span {
+    border: none;
+    background-color: transparent !important;
+    &:before {
+      top: 11px !important;
+    }
+    &:after {
+      top: 6px !important;
+    }
+  }
 }
 
 .myUL li span:hover:not(.header) {

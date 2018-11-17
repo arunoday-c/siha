@@ -3,8 +3,6 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import IconButton from "@material-ui/core/IconButton";
-
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import "./UOMAdditionalInfo.css";
 import {
@@ -324,7 +322,7 @@ class UOMAdditionalInfo extends Component {
                             multiline: true,
                             rows: "4",
                             style: {
-                              height: "28vh"
+                              height: "25vh"
                             }
                           },
                           events: {

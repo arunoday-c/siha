@@ -5,9 +5,9 @@ import { bindActionCreators } from "redux";
 
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import "./PatientDisplayForm.css";
-import { AlagehFormGroup, AlgaehLabel } from "../../../Wrapper/algaehWrapper";
+import { AlgaehLabel } from "../../../Wrapper/algaehWrapper";
 import MyContext from "../../../../utils/MyContext.js";
-import { texthandle, PatientSearch } from "./DisPatientHandlers";
+import { PatientSearch } from "./DisPatientHandlers";
 // import variableJson from "../../../../utils/GlobalVariables.json";
 
 class DisPatientForm extends Component {
@@ -83,8 +83,8 @@ class DisPatientForm extends Component {
                             this.state.Billexists === true
                               ? "none"
                               : this.state.patient_code
-                                ? "none"
-                                : ""
+                              ? "none"
+                              : ""
                         }}
                         onClick={PatientSearch.bind(this, this, context)}
                       />

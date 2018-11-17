@@ -115,7 +115,7 @@ class InsuranceProvider extends PureComponent {
                     }}
                     textBox={{
                       value: this.state.arabic_provider_name,
-                      className: "txt-fld",
+                      className: "txt-fld arabicInput",
                       name: "arabic_provider_name",
 
                       events: {

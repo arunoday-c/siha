@@ -94,7 +94,7 @@ const insertLocation = ($this, e) => {
         uri: "/inventory/addInventoryLocation",
         data: $this.state,
         onSuccess: response => {
-          if (response.data.success == true) {
+          if (response.data.success === true) {
             resetState($this);
             //Handle Successful Add here
             getLocation($this);

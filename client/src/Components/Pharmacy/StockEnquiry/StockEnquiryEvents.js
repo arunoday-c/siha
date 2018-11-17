@@ -11,15 +11,8 @@ const changeTexts = ($this, ctrl, e) => {
   } else {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
-    // if (name === "item_id" && $this.state.location_id === null) {
-    //   swalMessage({
-    //     type: "warning",
-    //     title: "Invalid. Please select the input."
-    //   });
-    // } else {
 
-    // }
-    $this.setState({ [name]: value, total_quantity: 0 }, () => {
+    $this.setState({ [name]: value }, () => {
       getItemLocationStock($this);
     });
   }
@@ -49,19 +42,6 @@ const getItemLocationStock = $this => {
     redux: {
       type: "ITEMS_BATCH_GET_DATA",
       mappingName: "itemBatch"
-    },
-    afterSuccess: data => {
-      debugger;
-      if (data.length !== 0) {
-        let total_quantity = 0;
-        for (let i = 0; i < data.length; i++) {
-          let qtyhand = data[i].qtyhand;
-          total_quantity = total_quantity + qtyhand;
-        }
-        $this.setState({
-          total_quantity: total_quantity
-        });
-      }
     }
   });
 };

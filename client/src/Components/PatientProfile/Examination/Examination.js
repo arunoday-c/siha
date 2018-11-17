@@ -312,7 +312,7 @@ class Examination extends Component {
             <div className="popupInner">
               <div className="col-lg-12">
                 <div className="row">
-                  <div className="col-lg-4 popLeftDiv">
+                  <div className="col-lg-3 popLeftDiv">
                     <label className="switch">
                       <input
                         className="switch-input"
@@ -412,8 +412,8 @@ class Examination extends Component {
                     </div>
                   </div>
 
-                  <div className="col-lg-8 popRightDiv">
-                    <h6> List of Examinations</h6>
+                  <div className="col-lg-9 popRightDiv">
+                    <h6>List of Examinations</h6>
                     <hr />
                     <AlgaehDataGrid
                       id="patient-exam-grid"

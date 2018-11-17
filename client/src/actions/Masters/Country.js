@@ -10,7 +10,7 @@ export function getCountries() {
       uri: "/masters/get/countryStateCity",
       method: "GET",
       onSuccess: response => {
-        if (response.data.success == true) {
+        if (response.data.success === true) {
           dispatch({
             type: "CTRY_GET_DATA",
             payload: response.data.records

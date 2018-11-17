@@ -2,19 +2,19 @@ import { Router } from "express";
 import { releaseConnection } from "../../utils";
 import httpStatus from "../../utils/httpStatus";
 import {
-  addrequisitionEntry,
-  getrequisitionEntry,
-  updaterequisitionEntry,
-  getAuthrequisitionList
-} from "../model/requisitionEntry";
+  addinventoryrequisitionEntry,
+  getinventoryrequisitionEntry,
+  updateinventoryrequisitionEntry,
+  getinventoryAuthrequisitionList
+} from "../model/inventoryrequisitionEntry";
 
 export default ({ config, db }) => {
   let api = Router();
 
   // created by Nowshad :to add Requisition Entry
   api.post(
-    "/addrequisitionEntry",
-    addrequisitionEntry,
+    "/addinventoryrequisitionEntry",
+    addinventoryrequisitionEntry,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
@@ -28,8 +28,8 @@ export default ({ config, db }) => {
 
   // created by Nowshad :update Item Storage and POS
   api.put(
-    "/updaterequisitionEntry",
-    updaterequisitionEntry,
+    "/updateinventoryrequisitionEntry",
+    updateinventoryrequisitionEntry,
     (req, res, next) => {
       let results = req.records;
       res.status(httpStatus.ok).json({
@@ -43,8 +43,8 @@ export default ({ config, db }) => {
 
   // created by Nowshad :to get Pos Entry
   api.get(
-    "/getrequisitionEntry",
-    getrequisitionEntry,
+    "/getinventoryrequisitionEntry",
+    getinventoryrequisitionEntry,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
@@ -58,8 +58,8 @@ export default ({ config, db }) => {
 
   // created by Nowshad :to get Authorize List of Requisition Entry
   api.get(
-    "/getAuthrequisitionList",
-    getAuthrequisitionList,
+    "/getinventoryAuthrequisitionList",
+    getinventoryAuthrequisitionList,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

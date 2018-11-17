@@ -282,24 +282,35 @@
     "icon": "fas fa-warehouse",
     "subMenu": [
       {
-        "name": "Initial Stock",
+        "name": "Inv Initial Stock",
         "label": "الأسهم الأولية",
-        "path": "/InitialStock"
+        "path": "/InvInitialStock"
       },
       {
-        "name": "Requisition Entry",
+        "name": "Stock Enquiry",
+        "label": "مخزون تحقيق",
+        "path": "/InvStockEnquiry"
+      },
+      {
+        "name": "Inv Item Moment Enquiry",
+        "label": "البند لحظة التحقيق",
+        "path": "/InvItemMomentEnquiry"
+      },
+
+      {
+        "name": "Inv Requisition Entry",
         "label": "طلب دخول",
-        "path": "/RequisitionEntry"
+        "path": "/InvRequisitionEntry"
       },
       {
-        "name": "Requisition List",
+        "name": "Inv Requisition List",
         "label": "قائمة الطلبات",
-        "path": "/RequisitionList"
+        "path": "/InvRequisitionList"
       },
       {
-        "name": "Transfer Entry",
+        "name": "Inv Transfer Entry",
         "label": "طلب دخول",
-        "path": "/TransferEntry"
+        "path": "/InvTransferEntry"
       }
     ]
   },

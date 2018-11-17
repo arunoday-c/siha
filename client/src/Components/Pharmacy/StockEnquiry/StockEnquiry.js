@@ -12,6 +12,7 @@ import { changeTexts, dateFormater } from "./StockEnquiryEvents";
 import "./StockEnquiry.css";
 import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
+import Enumerable from "linq";
 
 class StockEnquiry extends Component {
   constructor(props) {
@@ -69,6 +70,9 @@ class StockEnquiry extends Component {
   }
 
   render() {
+    let total_quantity = Enumerable.from(this.props.inventoryitemBatch)
+      .select(w => w.qtyhand)
+      .sum();
     return (
       <React.Fragment>
         <div className="hptl-phase1-speciman-collection-form">
@@ -146,11 +150,7 @@ class StockEnquiry extends Component {
                       forceLabel: "Total Quantity"
                     }}
                   />
-                  <h6>
-                    {this.state.total_quantity
-                      ? this.state.total_quantity + " nos"
-                      : "0 nos"}
-                  </h6>
+                  <h6>{total_quantity ? total_quantity + " nos" : "0 nos"}</h6>
                 </div>
               </div>
             </div>

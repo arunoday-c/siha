@@ -354,7 +354,7 @@ class SubInsurance extends PureComponent {
                                 div={{}}
                                 textBox={{
                                   value: row.arabic_sub_name,
-                                  className: "txt-fld",
+                                  className: "txt-fld arabicInput",
                                   name: "arabic_sub_name",
                                   events: {
                                     onChange: onchangegridcol.bind(
