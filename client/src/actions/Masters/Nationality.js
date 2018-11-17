@@ -9,7 +9,7 @@ export function getNationalities() {
       uri: "/masters/get/nationality",
       method: "GET",
       onSuccess: response => {
-        if (response.data.success == true) {
+        if (response.data.success === true) {
           dispatch({
             type: "NAT_GET_DATA",
             payload: response.data.records

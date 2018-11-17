@@ -9,7 +9,7 @@ export function getRelegion() {
       uri: "/masters/get/relegion",
       method: "GET",
       onSuccess: response => {
-        if (response.data.success == true) {
+        if (response.data.success === true) {
           dispatch({
             type: "RELGE_GET_DATA",
             payload: response.data.records
