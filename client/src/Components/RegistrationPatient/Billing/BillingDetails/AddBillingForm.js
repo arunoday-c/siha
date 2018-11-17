@@ -34,6 +34,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../../actions/algaehActions";
+import { getCookie } from "../../../../utils/algaehApiCall";
 
 class AddBillingForm extends Component {
   constructor(props) {
@@ -89,6 +90,8 @@ class AddBillingForm extends Component {
   }
 
   render() {
+    debugger;
+    let currencySymbol = getCookie("Currency");
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -149,8 +152,8 @@ class AddBillingForm extends Component {
                           />
                           <h6>
                             {this.state.gross_total
-                              ? "₹" + this.state.gross_total
-                              : "₹0.00"}
+                              ? currencySymbol + " " + this.state.gross_total
+                              : currencySymbol + " 0.00"}
                           </h6>
                         </div>
 
@@ -162,8 +165,10 @@ class AddBillingForm extends Component {
                           />
                           <h6>
                             {this.state.patient_payable
-                              ? "₹" + this.state.patient_payable
-                              : "₹0.00"}
+                              ? currencySymbol +
+                                " " +
+                                this.state.patient_payable
+                              : currencySymbol + " 0.00"}
                           </h6>
                         </div>
 
@@ -175,8 +180,8 @@ class AddBillingForm extends Component {
                           />
                           <h6>
                             {this.state.advance_amount
-                              ? "₹" + this.state.advance_amount
-                              : "₹0.00"}
+                              ? currencySymbol + " " + this.state.advance_amount
+                              : currencySymbol + " 0.00"}
                           </h6>
                         </div>
                       </div>
@@ -272,8 +277,8 @@ class AddBillingForm extends Component {
                           />
                           <h6>
                             {this.state.net_amount
-                              ? "₹" + this.state.net_amount
-                              : "₹0.00"}
+                              ? currencySymbol + " " + this.state.net_amount
+                              : currencySymbol + " 0.00"}
                           </h6>
                         </div>
 
@@ -312,8 +317,10 @@ class AddBillingForm extends Component {
                           />
                           <h6>
                             {this.state.receiveable_amount
-                              ? "₹" + this.state.receiveable_amount
-                              : "₹0.00"}
+                              ? currencySymbol +
+                                " " +
+                                this.state.receiveable_amount
+                              : currencySymbol + " 0.00"}
                           </h6>
                         </div>
                       </div>
@@ -670,8 +677,10 @@ class AddBillingForm extends Component {
                           />
                           <h6>
                             {this.state.unbalanced_amount
-                              ? "₹" + this.state.unbalanced_amount
-                              : "₹0.00"}
+                              ? currencySymbol +
+                                " " +
+                                this.state.unbalanced_amount
+                              : currencySymbol + " 0.00"}
                           </h6>
                         </div>
 
@@ -683,8 +692,8 @@ class AddBillingForm extends Component {
                           />
                           <h5>
                             {this.state.total_amount
-                              ? "₹" + this.state.total_amount
-                              : "₹0.00"}
+                              ? currencySymbol + " " + this.state.total_amount
+                              : currencySymbol + " 0.00"}
                           </h5>
                         </div>
                         <div className="col-lg-3">

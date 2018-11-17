@@ -35,6 +35,8 @@ import { AlgaehActions } from "../../../../actions/algaehActions";
 import Paper from "@material-ui/core/Paper";
 import ItemBatchs from "../ItemBatchs/ItemBatchs";
 import DisplayInsuranceDetails from "../DisplayInsuranceDetails/DisplayInsuranceDetails";
+import { getCookie } from "../../../../utils/algaehApiCall";
+
 class PosListItems extends Component {
   constructor(props) {
     super(props);
@@ -96,6 +98,7 @@ class PosListItems extends Component {
   }
 
   render() {
+    const currencySymbol = getCookie("Currency");
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -704,8 +707,8 @@ class PosListItems extends Component {
                         />
                         <h6>
                           {this.state.sub_total
-                            ? "₹" + this.state.sub_total
-                            : "₹0.00"}
+                            ? currencySymbol + " " + this.state.sub_total
+                            : currencySymbol + " 0.00"}
                         </h6>
                       </div>
                       <div className="col-lg-4">
@@ -716,8 +719,8 @@ class PosListItems extends Component {
                         />
                         <h6>
                           {this.state.discount_amount
-                            ? "₹" + this.state.discount_amount
-                            : "₹0.00"}
+                            ? currencySymbol + " " + this.state.discount_amount
+                            : currencySymbol + " 0.00"}
                         </h6>
                       </div>
 
@@ -729,8 +732,8 @@ class PosListItems extends Component {
                         />
                         <h6>
                           {this.state.net_total
-                            ? "₹" + this.state.net_total
-                            : "₹0.00"}
+                            ? currencySymbol + " " + this.state.net_total
+                            : currencySymbol + " 0.00"}
                         </h6>
                       </div>
                     </div>
@@ -749,8 +752,8 @@ class PosListItems extends Component {
                           />
                           <h6>
                             {this.state.copay_amount
-                              ? "₹" + this.state.copay_amount
-                              : "₹0.00"}
+                              ? currencySymbol + " " + this.state.copay_amount
+                              : currencySymbol + " 0.00"}
                           </h6>
                         </div>
                         {/* <div className="col-lg-6">
@@ -761,8 +764,8 @@ class PosListItems extends Component {
                           />
                           <h6>
                             {this.state.deductable_amount
-                              ? "₹" + this.state.deductable_amount
-                              : "₹0.00"}
+                              ? currencySymbol + " " + this.state.deductable_amount
+                              : currencySymbol + " 0.00"}
                           </h6>
                         </div> */}
                         <div className="col-lg-6">
@@ -773,8 +776,10 @@ class PosListItems extends Component {
                           />
                           <h6>
                             {this.state.sec_copay_amount
-                              ? "₹" + this.state.sec_copay_amount
-                              : "₹0.00"}
+                              ? currencySymbol +
+                                " " +
+                                this.state.sec_copay_amount
+                              : currencySymbol + " 0.00"}
                           </h6>
                         </div>
                         {/* <div className="col-lg-6">
@@ -785,8 +790,8 @@ class PosListItems extends Component {
                           />
                           <h6>
                             {this.state.sec_deductable_amount
-                              ? "₹" + this.state.sec_deductable_amount
-                              : "₹0.00"}
+                              ? currencySymbol + " " + this.state.sec_deductable_amount
+                              : currencySymbol + " 0.00"}
                           </h6>
                         </div> */}
                       </div>
@@ -806,8 +811,10 @@ class PosListItems extends Component {
                               />
                               <h6>
                                 {this.state.patient_responsibility
-                                  ? "₹" + this.state.patient_responsibility
-                                  : "₹0.00"}
+                                  ? currencySymbol +
+                                    " " +
+                                    this.state.patient_responsibility
+                                  : currencySymbol + " 0.00"}
                               </h6>
                             </div>
 
@@ -819,8 +826,10 @@ class PosListItems extends Component {
                               />
                               <h6>
                                 {this.state.patient_tax
-                                  ? "₹" + this.state.patient_tax
-                                  : "₹0.00"}
+                                  ? currencySymbol +
+                                    " " +
+                                    this.state.patient_tax
+                                  : currencySymbol + " 0.00"}
                               </h6>
                             </div>
 
@@ -832,8 +841,10 @@ class PosListItems extends Component {
                               />
                               <h6>
                                 {this.state.patient_payable_h
-                                  ? "₹" + this.state.patient_payable_h
-                                  : "₹0.00"}
+                                  ? currencySymbol +
+                                    " " +
+                                    this.state.patient_payable_h
+                                  : currencySymbol + " 0.00"}
                               </h6>
                             </div>
                           </div>
@@ -855,8 +866,10 @@ class PosListItems extends Component {
                               />
                               <h6>
                                 {this.state.company_responsibility
-                                  ? "₹" + this.state.company_responsibility
-                                  : "₹0.00"}
+                                  ? currencySymbol +
+                                    " " +
+                                    this.state.company_responsibility
+                                  : currencySymbol + " 0.00"}
                               </h6>
                             </div>
 
@@ -868,8 +881,10 @@ class PosListItems extends Component {
                               />
                               <h6>
                                 {this.state.company_tax
-                                  ? "₹" + this.state.company_tax
-                                  : "₹0.00"}
+                                  ? currencySymbol +
+                                    " " +
+                                    this.state.company_tax
+                                  : currencySymbol + " 0.00"}
                               </h6>
                             </div>
 
@@ -881,8 +896,10 @@ class PosListItems extends Component {
                               />
                               <h6>
                                 {this.state.company_payable
-                                  ? "₹" + this.state.company_payable
-                                  : "₹0.00"}
+                                  ? currencySymbol +
+                                    " " +
+                                    this.state.company_payable
+                                  : currencySymbol + " 0.00"}
                               </h6>
                             </div>
                           </div>
@@ -903,8 +920,10 @@ class PosListItems extends Component {
                               />
                               <h6>
                                 {this.state.sec_company_responsibility
-                                  ? "₹" + this.state.sec_company_responsibility
-                                  : "₹0.00"}
+                                  ? currencySymbol +
+                                    " " +
+                                    this.state.sec_company_responsibility
+                                  : currencySymbol + " 0.00"}
                               </h6>
                             </div>
 
@@ -916,8 +935,10 @@ class PosListItems extends Component {
                               />
                               <h6>
                                 {this.state.sec_company_tax
-                                  ? "₹" + this.state.sec_company_tax
-                                  : "₹0.00"}
+                                  ? currencySymbol +
+                                    " " +
+                                    this.state.sec_company_tax
+                                  : currencySymbol + " 0.00"}
                               </h6>
                             </div>
 
@@ -929,8 +950,10 @@ class PosListItems extends Component {
                               />
                               <h6>
                                 {this.state.sec_company_payable
-                                  ? "₹" + this.state.sec_company_payable
-                                  : "₹0.00"}
+                                  ? currencySymbol +
+                                    " " +
+                                    this.state.sec_company_payable
+                                  : currencySymbol + " 0.00"}
                               </h6>
                             </div>
                           </div>
@@ -1031,8 +1054,8 @@ class PosListItems extends Component {
                           />
                           <h6>
                             {this.state.advance_amount
-                              ? "₹" + this.state.advance_amount
-                              : "₹0.00"}
+                              ? currencySymbol + " " + this.state.advance_amount
+                              : currencySymbol + " 0.00"}
                           </h6>
                         </div>
 
@@ -1044,8 +1067,8 @@ class PosListItems extends Component {
                           />
                           <h6>
                             {this.state.net_amount
-                              ? "₹" + this.state.net_amount
-                              : "₹0.00"}
+                              ? currencySymbol + " " + this.state.net_amount
+                              : currencySymbol + " 0.00"}
                           </h6>
                         </div>
 
@@ -1081,8 +1104,10 @@ class PosListItems extends Component {
                           />
                           <h4>
                             {this.state.receiveable_amount
-                              ? "₹" + this.state.receiveable_amount
-                              : "₹0.00"}
+                              ? currencySymbol +
+                                " " +
+                                this.state.receiveable_amount
+                              : currencySymbol + " 0.00"}
                           </h4>
                         </div>
                       </div>

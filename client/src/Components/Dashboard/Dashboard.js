@@ -3,6 +3,11 @@ import "./dashboard.css";
 import { Bar } from "react-chartjs-2";
 import { Doughnut } from "react-chartjs-2";
 import { Line } from "react-chartjs-2";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { AlgaehActions } from "../../actions/algaehActions";
+import { setCookie } from "../../utils/algaehApiCall.js";
 
 const BarData = {
   labels: [
@@ -79,6 +84,21 @@ class Dashboard extends Component {
     };
   }
 
+  componentDidMount() {
+    this.props.getHospitalDetails({
+      uri: "/organization/getOrganization",
+      method: "GET",
+      data: { hims_d_hospital_id: 1 },
+      redux: {
+        type: "HOSPITAL_DETAILS_GET_DATA",
+        mappingName: "hospitaldetails"
+      },
+      afterSuccess: data => {
+        debugger;
+        setCookie("Currency", data[0].currency_symbol, 30);
+      }
+    });
+  }
   SideMenuBarOpen(sidOpen) {
     this.setState({
       sidBarOpen: sidOpen
@@ -152,4 +172,24 @@ class Dashboard extends Component {
   }
 }
 
-export default Dashboard;
+function mapStateToProps(state) {
+  return {
+    hospitaldetails: state.hospitaldetails
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getHospitalDetails: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Dashboard)
+);
