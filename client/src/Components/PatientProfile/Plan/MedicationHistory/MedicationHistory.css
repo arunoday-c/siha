@@ -16,3 +16,5 @@
   .hptl-phase1-medication-history-form .go-button {
     cursor: pointer;
     margin-top: 2.5vh; }
+  .hptl-phase1-medication-history-form .ReactTable {
+    max-height: 25vh !important; }

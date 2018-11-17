@@ -9,7 +9,7 @@ export function getVisittypes() {
       uri: "/visitType/get",
       method: "GET",
       onSuccess: response => {
-        if (response.data.success == true) {
+        if (response.data.success === true) {
           dispatch({
             type: "VISITTYPE_GET_DATA",
             payload: response.data.records

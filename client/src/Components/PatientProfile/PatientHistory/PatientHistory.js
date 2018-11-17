@@ -146,7 +146,7 @@ class PatientHistory extends Component {
                   others: {
                     multiline: true,
                     rows: "6",
-                    placeholder: "Enter Social History"
+                    placeholder: "Enter Social History, If any"
                   },
                   events: {
                     onChange: this.textHandle.bind(this)
@@ -170,7 +170,7 @@ class PatientHistory extends Component {
                   others: {
                     multiline: true,
                     rows: "6",
-                    placeholder: "Enter Medical History"
+                    placeholder: "Enter Medical History, If any"
                   },
                   events: {
                     onChange: this.textHandle.bind(this)
@@ -194,7 +194,7 @@ class PatientHistory extends Component {
                   others: {
                     multiline: true,
                     rows: "6",
-                    placeholder: "Enter Surgical History"
+                    placeholder: "Enter Surgical History, If any"
                   },
                   events: {
                     onChange: this.textHandle.bind(this)

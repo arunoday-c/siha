@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import {
-  AlagehFormGroup,
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehAutoComplete,
@@ -114,7 +113,7 @@ class ItemMomentEnquiry extends Component {
                 <div className="row">
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
-                    label={{ forceLabel: "Location" }}
+                    label={{ forceLabel: "Location", isImp: true }}
                     selector={{
                       name: "location_id",
                       className: "select-fld",
@@ -131,7 +130,7 @@ class ItemMomentEnquiry extends Component {
 
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
-                    label={{ forceLabel: "Item Name" }}
+                    label={{ forceLabel: "Item Name", isImp: true }}
                     selector={{
                       name: "item_id",
                       className: "select-fld",
@@ -147,7 +146,7 @@ class ItemMomentEnquiry extends Component {
 
                   <AlgaehDateHandler
                     div={{ className: "col-lg-2" }}
-                    label={{ forceLabel: "From Date" }}
+                    label={{ forceLabel: "From Date", isImp: true }}
                     textBox={{ className: "txt-fld", name: "from_date" }}
                     events={{
                       onChange: datehandle.bind(this, this)
@@ -156,7 +155,7 @@ class ItemMomentEnquiry extends Component {
                   />
                   <AlgaehDateHandler
                     div={{ className: "col-lg-2" }}
-                    label={{ forceLabel: "To Date" }}
+                    label={{ forceLabel: "To Date", isImp: true }}
                     textBox={{ className: "txt-fld", name: "to_date" }}
                     events={{
                       onChange: datehandle.bind(this, this)

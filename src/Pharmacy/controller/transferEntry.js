@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { releaseConnection } from "../../utils";
+import { releaseConnection, generateDbConnection } from "../../utils";
 import httpStatus from "../../utils/httpStatus";
 import {
   addtransferEntry,
@@ -7,6 +7,8 @@ import {
   updatetransferEntry,
   getrequisitionEntryTransfer
 } from "../model/transferEntry";
+import { debugFunction, debugLog } from "../../utils/logging";
+import { updaterequisitionEntryOnceTranfer } from "../model/requisitionEntry";
 
 export default ({ config, db }) => {
   let api = Router();
@@ -44,14 +46,28 @@ export default ({ config, db }) => {
   // created by Nowshad :update Item Storage and POS
   api.put(
     "/updatetransferEntry",
+    generateDbConnection,
     updatetransferEntry,
+    updaterequisitionEntryOnceTranfer,
     (req, res, next) => {
-      let results = req.records;
-      res.status(httpStatus.ok).json({
-        success: true,
-        records: results
+      let connection = req.connection;
+      connection.commit(error => {
+        debugLog("error", error);
+        debugLog("commit error", error);
+        if (error) {
+          debugLog("roll error", error);
+          connection.rollback(() => {
+            next(error);
+          });
+        } else {
+          let result = req.records;
+          res.status(httpStatus.ok).json({
+            success: true,
+            records: result
+          });
+          next();
+        }
       });
-      next();
     },
     releaseConnection
   );

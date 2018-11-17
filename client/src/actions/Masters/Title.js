@@ -9,7 +9,7 @@ export function getTitles() {
       uri: "/masters/get/title",
       method: "GET",
       onSuccess: response => {
-        if (response.data.success == true) {
+        if (response.data.success === true) {
           dispatch({
             type: "TITLE_GET_DATA",
             payload: response.data.records

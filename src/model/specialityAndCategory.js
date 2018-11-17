@@ -413,6 +413,39 @@ let addCategorySpecialityMappings = (req, res, next) => {
   }
 };
 
+//created by irfan: to get
+let getCategorySpecialityMap = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    //et where = whereCondition(extend(selectWhere, req.query));
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_m_category_speciality_mappings_id,speciality_id, category_speciality_status, \
+        hims_employee_category_id, employee_category_code, employee_category_name, employee_category_desc\
+        from hims_m_category_speciality_mappings  CSM,hims_d_employee_category C where CSM.record_status='A' and category_speciality_status='A' \
+        and  C.record_status='A' and C.employee_category_status='A' and CSM.category_id=C.hims_employee_category_id\
+        and speciality_id=? order by hims_m_category_speciality_mappings_id desc",
+        [req.query.hims_d_employee_speciality_id],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addEmployeeSpecialityMaster,
   getEmployeeSpecialityMaster,
@@ -424,5 +457,9 @@ module.exports = {
   updateEmployeeCategoryMaster,
   makeEmployeeCategoryInActive,
   addCategorySpecialityMappings,
+<<<<<<< HEAD
   makeEmployeeSpecialityInActive
+=======
+  getCategorySpecialityMap
+>>>>>>> 414419f6a2dfcadbe10822ba7352aa38a8c2a71a
 };

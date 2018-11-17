@@ -95,10 +95,12 @@
       font-size: 1.3rem;
       padding-right: 3px;
       padding-left: 3px;
+      text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
     }
     .calendar .col:hover {
       background: #3aa4a9;
       cursor: pointer;
+      text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.3);
     }
 
     .calendar .col span {

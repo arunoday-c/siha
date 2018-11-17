@@ -3,9 +3,6 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import IconButton from "@material-ui/core/IconButton";
-import Edit from "@material-ui/icons/Edit";
-
 import RadTemplate from "../RadTemplate/RadTemplate";
 import "./RadInvestigation.css";
 import "./../../../styles/site.css";

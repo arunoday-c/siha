@@ -64,20 +64,20 @@ class DisplayVisitDetails extends Component {
     let mode_of_pay = "Self";
     let applydiscount = false;
     let x = Enumerable.from(this.state.visitDetails)
-      .where(w => w.radioselect == 1)
+      .where(w => w.radioselect === 1)
       .toArray();
     var index;
 
     let doctor_name = "";
 
     let employee_list = Enumerable.from(this.props.deptanddoctors.doctors)
-      .where(w => w.employee_id == row.doctor_id)
+      .where(w => w.employee_id === row.doctor_id)
       .toArray();
     if (employee_list !== null && employee_list.length > 0) {
       doctor_name = employee_list[0].full_name;
     }
 
-    if (x != null && x.length > 0) {
+    if (x !== null && x.length > 0) {
       index = this.state.visitDetails.indexOf(x[0]);
       if (index > -1) {
         this.state.visitDetails[index]["radioselect"] = 0;
@@ -241,7 +241,7 @@ class DisplayVisitDetails extends Component {
                                   row,
                                   context
                                 )}
-                                checked={row.radioselect == 1 ? true : false}
+                                checked={row.radioselect === 1 ? true : false}
                                 disabled={this.state.Billexists}
                               />
                             );
@@ -277,13 +277,13 @@ class DisplayVisitDetails extends Component {
                                 ? []
                                 : this.props.visittypes.filter(
                                     f =>
-                                      f.hims_d_visit_type_id == row.visit_type
+                                      f.hims_d_visit_type_id === row.visit_type
                                   );
 
                             return (
                               <span>
-                                {display != null && display.length != 0
-                                  ? this.state.selectedLang == "en"
+                                {display !== null && display.length !== 0
+                                  ? this.state.selectedLang === "en"
                                     ? display[0].visit_type_desc
                                     : display[0].arabic_visit_type_desc
                                   : ""}
@@ -301,21 +301,21 @@ class DisplayVisitDetails extends Component {
                           ),
                           displayTemplate: row => {
                             let display = [];
-                            this.props.deptanddoctors != 0
+                            this.props.deptanddoctors !== 0
                               ? (display =
                                   this.props.deptanddoctors === undefined
                                     ? []
                                     : this.props.deptanddoctors.departmets.filter(
                                         f =>
-                                          f.sub_department_id ==
+                                          f.sub_department_id ===
                                           row.sub_department_id
                                       ))
                               : [];
 
                             return (
                               <span>
-                                {display != null && display.length != 0
-                                  ? this.state.selectedLang == "en"
+                                {display !== null && display.length !== 0
+                                  ? this.state.selectedLang === "en"
                                     ? display[0].sub_department_name
                                     : display[0].arabic_sub_department_name
                                   : ""}
@@ -333,19 +333,19 @@ class DisplayVisitDetails extends Component {
                           ),
                           displayTemplate: row => {
                             let display;
-                            this.props.deptanddoctors != 0
+                            this.props.deptanddoctors !== 0
                               ? (display =
                                   this.props.deptanddoctors === undefined
                                     ? []
                                     : this.props.deptanddoctors.doctors.filter(
-                                        f => f.employee_id == row.doctor_id
+                                        f => f.employee_id === row.doctor_id
                                       ))
                               : [];
 
                             return (
                               <span>
-                                {display != null && display.length != 0
-                                  ? this.state.selectedLang == "en"
+                                {display !== null && display.length !== 0
+                                  ? this.state.selectedLang === "en"
                                     ? display[0].full_name
                                     : display[0].arabic_name
                                   : ""}

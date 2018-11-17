@@ -950,16 +950,15 @@ class AddOPBillingForm extends Component {
                             value: this.state.sheet_discount_percentage,
                             className: "txt-fld",
                             name: "sheet_discount_percentage",
-                            others: {
-                              disabled:
-                                this.state.Billexists === true
-                                  ? true
-                                  : this.state.applydiscount
-                            },
+
                             events: {
                               onChange: discounthandle.bind(this, this, context)
                             },
                             others: {
+                              disabled:
+                                this.state.Billexists === true
+                                  ? true
+                                  : this.state.applydiscount,
                               placeholder: "0.00",
                               onBlur: billheaderCalculation.bind(this, this),
                               onFocus: e => {
@@ -979,16 +978,14 @@ class AddOPBillingForm extends Component {
                             value: this.state.sheet_discount_amount,
                             className: "txt-fld",
                             name: "sheet_discount_amount",
-                            others: {
-                              disabled:
-                                this.state.Billexists === true
-                                  ? true
-                                  : this.state.applydiscount
-                            },
                             events: {
                               onChange: discounthandle.bind(this, this, context)
                             },
                             others: {
+                              disabled:
+                                this.state.Billexists === true
+                                  ? true
+                                  : this.state.applydiscount,
                               placeholder: "0.00",
                               onBlur: billheaderCalculation.bind(this, this),
                               onFocus: e => {

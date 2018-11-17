@@ -93,7 +93,7 @@ const insertItemGeneric = ($this, e) => {
         uri: "/pharmacy/addItemGeneric",
         data: $this.state,
         onSuccess: response => {
-          if (response.data.success == true) {
+          if (response.data.success === true) {
             resetState($this);
             //Handle Successful Add here
             getItemGeneric($this);

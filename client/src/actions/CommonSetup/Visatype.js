@@ -9,7 +9,7 @@ export function getVisatypes() {
       uri: "/masters/get/visa",
       method: "GET",
       onSuccess: response => {
-        if (response.data.success == true) {
+        if (response.data.success === true) {
           dispatch({
             type: "VISA_GET_DATA",
             payload: response.data.records

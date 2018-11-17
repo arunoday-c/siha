@@ -447,13 +447,15 @@ class InvestigationSetup extends Component {
                         <AlgaehLabel label={{ forceLabel: "Cash Status" }} />
                       ),
                       displayTemplate: row => {
-                        return row.cash_status === "T"
-                          ? "Tallied"
-                          : row.cash_status === "E"
-                          ? "Excess"
-                          : row.cash_status === "S"
-                          ? "Shortage"
-                          : "------";
+                        return row.cash_status === "T" ? (
+                          <span className="badge badge-success">Tallied</span>
+                        ) : row.cash_status === "E" ? (
+                          <span className="badge badge-warning">Excess</span>
+                        ) : row.cash_status === "S" ? (
+                          <span className="badge badge-danger">Shortage</span>
+                        ) : (
+                          "------"
+                        );
                       },
                       others: {
                         resizable: false,
@@ -490,13 +492,15 @@ class InvestigationSetup extends Component {
                       fieldName: "card_status",
                       label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
                       displayTemplate: row => {
-                        return row.card_status === "T"
-                          ? "Tallied"
-                          : row.card_status === "E"
-                          ? "Excess"
-                          : row.card_status === "S"
-                          ? "Shortage"
-                          : "------";
+                        return row.card_status === "T" ? (
+                          <span className="badge badge-success">Tallied</span>
+                        ) : row.card_status === "E" ? (
+                          <span className="badge badge-warning">Excess</span>
+                        ) : row.card_status === "S" ? (
+                          <span className="badge badge-danger">Shortage</span>
+                        ) : (
+                          "------"
+                        );
                       },
                       others: {
                         resizable: false,
@@ -540,13 +544,15 @@ class InvestigationSetup extends Component {
                         <AlgaehLabel label={{ forceLabel: "Cheque Status" }} />
                       ),
                       displayTemplate: row => {
-                        return row.cheque_status === "T"
-                          ? "Tallied"
-                          : row.cheque_status === "E"
-                          ? "Excess"
-                          : row.cheque_status === "S"
-                          ? "Shortage"
-                          : "------";
+                        return row.cheque_status === "T" ? (
+                          <span className="badge badge-success">Tallied</span>
+                        ) : row.cheque_status === "E" ? (
+                          <span className="badge badge-warning">Excess</span>
+                        ) : row.cheque_status === "S" ? (
+                          <span className="badge badge-danger">Shortage</span>
+                        ) : (
+                          "------"
+                        );
                       },
                       others: {
                         resizable: false,
@@ -739,31 +745,37 @@ class InvestigationSetup extends Component {
                     <tr>
                       <td> Status</td>
                       <td>
-                        {this.state.cash_status === "T"
-                          ? "Tallied"
-                          : this.state.cash_status === "E"
-                          ? "Excess"
-                          : this.state.cash_status === "S"
-                          ? "Shortage"
-                          : "------"}
+                        {this.state.cash_status === "T" ? (
+                          <span className="badge badge-success">Tallied</span>
+                        ) : this.state.cash_status === "E" ? (
+                          <span className="badge badge-warning">Excess</span>
+                        ) : this.state.cash_status === "S" ? (
+                          <span className="badge badge-danger">Shortage</span>
+                        ) : (
+                          "------"
+                        )}
                       </td>
                       <td>
-                        {this.state.card_status === "T"
-                          ? "Tallied"
-                          : this.state.card_status === "E"
-                          ? "Excess"
-                          : this.state.card_status === "S"
-                          ? "Shortage"
-                          : "------"}
+                        {this.state.card_status === "T" ? (
+                          <span className="badge badge-success">Tallied</span>
+                        ) : this.state.card_status === "E" ? (
+                          <span className="badge badge-warning">Excess</span>
+                        ) : this.state.card_status === "S" ? (
+                          <span className="badge badge-danger">Shortage</span>
+                        ) : (
+                          "------"
+                        )}
                       </td>
                       <td>
-                        {this.state.cheque_status === "T"
-                          ? "Tallied"
-                          : this.state.cheque_status === "E"
-                          ? "Excess"
-                          : this.state.cheque_status === "S"
-                          ? "Shortage"
-                          : "------"}
+                        {this.state.cheque_status === "T" ? (
+                          <span className="badge badge-success">Tallied</span>
+                        ) : this.state.cheque_status === "E" ? (
+                          <span className="badge badge-warning">Excess</span>
+                        ) : this.state.cheque_status === "S" ? (
+                          <span className="badge badge-danger">Shortage</span>
+                        ) : (
+                          "------"
+                        )}
                       </td>
                     </tr>
                     {/* <tr>
