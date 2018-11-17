@@ -97,7 +97,7 @@ class DisplayVisitDetails extends Component {
         doctor_name: doctor_name
       },
       () => {
-        debugger;
+        
         if (this.state.insured === "Y") {
           this.props.getPatientInsurance({
             uri: "/insurance/getPatientInsurance",

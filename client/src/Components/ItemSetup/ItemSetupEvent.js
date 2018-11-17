@@ -7,13 +7,13 @@ const getItems = $this => {
       mappingName: "itemlist"
     },
     afterSuccess: data => {
-      debugger;
+      
     }
   });
 };
 
 const EditItemMaster = ($this, row) => {
-  debugger;
+  
   row.addNew = false;
   $this.setState({
     isOpen: !$this.state.isOpen,

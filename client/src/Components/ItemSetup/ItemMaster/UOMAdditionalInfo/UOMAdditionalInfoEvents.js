@@ -63,7 +63,7 @@ const stockingtexthandle = ($this, ctrl, e) => {
 };
 
 const AddUom = ($this, context) => {
-  debugger;
+  
   let isError = false;
 
   let stocking_uom_id = null;
@@ -234,7 +234,7 @@ const updateUOM = ($this, context, row) => {
 };
 
 const deleteUOM = ($this, context, row, rowId) => {
-  debugger;
+  
   if (row.hims_m_item_uom_id !== undefined) {
     let detail_item_uom = $this.state.detail_item_uom;
     let updateUomMapResult = $this.state.updateUomMapResult;

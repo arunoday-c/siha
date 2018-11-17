@@ -56,7 +56,7 @@ class EmployeeMaster extends Component {
         ...IOputs
       },
       () => {
-        debugger;
+        
         this.props.onClose && this.props.onClose(e);
       }
     );
@@ -139,7 +139,7 @@ class EmployeeMaster extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    debugger;
+    
     if (
       newProps.employeeDetailsPop.hims_d_employee_id !== undefined &&
       this.state.full_name !== null

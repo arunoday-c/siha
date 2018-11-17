@@ -250,7 +250,7 @@ class PhySchSetup extends Component {
             }
           },
           onFailure: error => {
-            debugger;
+            
             swalMessage({
               title: error.response.data.message,
               type: "error"
@@ -1080,7 +1080,7 @@ class PhySchSetup extends Component {
                         }}
                         events={{
                           onChange: selectedDate => {
-                            debugger;
+                            
                             this.setState({
                               from_date: selectedDate
                             });

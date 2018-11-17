@@ -90,7 +90,7 @@ class AddBillingForm extends Component {
   }
 
   render() {
-    debugger;
+    
     let currencySymbol = getCookie("Currency");
     return (
       <React.Fragment>

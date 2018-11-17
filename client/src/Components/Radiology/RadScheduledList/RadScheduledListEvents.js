@@ -43,7 +43,7 @@ const PatientSearch = ($this, e) => {
 };
 
 const datehandle = ($this, ctrl, e) => {
-  debugger;
+  
   let intFailure = false;
   if (e === "from_date") {
     if (Date.parse($this.state.to_date) < Date.parse(moment(ctrl)._d)) {

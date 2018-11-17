@@ -1,7 +1,7 @@
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const UpdateOrders = ($this, row) => {
-  debugger;
+  
   let dataSend = [];
 
   if (row.apprv_status === "AP" || row.apprv_status === "RJ") {

@@ -41,7 +41,7 @@ export default [
             },
             events: {
               onChange: (reportState, currentValue) => {
-                debugger;
+                
               }
             }
           },
@@ -56,7 +56,7 @@ export default [
             },
             events: {
               onChange: (reportState, currentValue) => {
-                debugger;
+                
               }
             }
           },
@@ -70,7 +70,7 @@ export default [
             },
             events: {
               onChange: (reportState, currentValue) => {
-                debugger;
+                
               }
             },
             dataSource: {

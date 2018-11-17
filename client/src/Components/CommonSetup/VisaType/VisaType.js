@@ -392,7 +392,7 @@ class VisaType extends Component {
                       );
                     },
                     editorTemplate: row => {
-                      debugger;
+                      
                       let display =
                         this.props.userdrtails === undefined
                           ? []
@@ -428,7 +428,7 @@ class VisaType extends Component {
                       return row.visa_status === "A" ? "Active" : "Inactive";
                     },
                     editorTemplate: row => {
-                      debugger;
+                      
                       return (
                         <AlagehAutoComplete
                           div={{}}

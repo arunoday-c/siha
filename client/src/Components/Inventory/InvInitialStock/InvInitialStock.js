@@ -89,7 +89,7 @@ class InvInitialStock extends Component {
         mappingName: "inventoryitemcategory"
       },
       afterSuccess: data => {
-        debugger;
+        
       }
     });
 

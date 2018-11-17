@@ -87,7 +87,7 @@ class OPBillingAr extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
+    
     let output = {};
     let billOut = {};
     if (
@@ -105,7 +105,7 @@ class OPBillingAr extends Component {
   }
 
   getPatientDetails($this, output) {
-    debugger;
+    
     clearInterval(intervalId);
     // let patient_type = "";
     intervalId = setInterval(() => {
@@ -187,7 +187,7 @@ class OPBillingAr extends Component {
         mappingName: "bills"
       },
       afterSuccess: data => {
-        debugger;
+        
         data.Billexists = true;
         $this.setState(data, () => {
           this.getPatientDetails(this, data);
@@ -248,7 +248,7 @@ class OPBillingAr extends Component {
   SaveBill(e) {
     this.GenerateReciept($this => {
       let Inputobj = $this.state;
-      debugger;
+      
       Inputobj.patient_payable = $this.state.patient_payable_h;
       AlgaehLoader({ show: true });
       algaehApiCall({
@@ -344,7 +344,7 @@ class OPBillingAr extends Component {
                 label: "Print Receipt",
                 events: {
                   onClick: () => {
-                    debugger;
+                    
                     AlgaehReport({
                       report: {
                         fileName: "printreceipt"

@@ -176,7 +176,7 @@ class AddOPBillingForm extends Component {
   }
   //Calculate Row Detail
   calculateAmount(row, ctrl, e) {
-    debugger;
+    
 
     e = e || ctrl;
     if (e.target.value !== e.target.oldvalue) {

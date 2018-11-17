@@ -519,7 +519,7 @@ class Allergies extends Component {
                               );
                             },
                             editorTemplate: data => {
-                              debugger;
+                              
                               return (
                                 <AlgaehDateHandler
                                   div={{}}

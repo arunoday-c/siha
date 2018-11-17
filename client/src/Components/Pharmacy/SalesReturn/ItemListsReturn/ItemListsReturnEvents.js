@@ -10,7 +10,7 @@ const discounthandle = ($this, context, ctrl, e) => {
 
   let sheet_discount_percentage = 0;
   let sheet_discount_amount = 0;
-  debugger;
+  
   if (e.target.name === "sheet_discount_percentage") {
     sheet_discount_percentage = parseFloat(e.target.value.replace(" %", ""));
     sheet_discount_amount = 0;
@@ -45,7 +45,7 @@ const discounthandle = ($this, context, ctrl, e) => {
 };
 
 const changeTexts = ($this, ctrl, e) => {
-  debugger;
+  
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -53,7 +53,7 @@ const changeTexts = ($this, ctrl, e) => {
 };
 
 const numberchangeTexts = ($this, context, e) => {
-  debugger;
+  
 
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -71,7 +71,7 @@ const numberchangeTexts = ($this, context, e) => {
 };
 
 const itemchangeText = ($this, e) => {
-  debugger;
+  
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
@@ -87,9 +87,9 @@ const itemchangeText = ($this, e) => {
       mappingName: "itemdetaillist"
     },
     afterSuccess: data => {
-      debugger;
+      
       if (data.locationResult.length > 0) {
-        debugger;
+        
         $this.setState({
           [name]: value,
           item_category: e.selected.category_id,
@@ -115,7 +115,7 @@ const itemchangeText = ($this, e) => {
 };
 
 const AddItems = ($this, context) => {
-  debugger;
+  
   let ItemInput = [
     {
       insured: $this.state.insured,
@@ -297,11 +297,11 @@ const updateSalesReturnDetail = ($this, e) => {
 
 //Calculate Row Detail
 const calculateAmount = ($this, row, context, ctrl, e) => {
-  debugger;
+  
   e = e || ctrl;
 
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
-  debugger;
+  
   row[e.target.name] = parseFloat(e.target.value);
   let inputParam = [
     {
@@ -334,7 +334,7 @@ const calculateAmount = ($this, row, context, ctrl, e) => {
       mappingName: "xxx"
     },
     afterSuccess: data => {
-      debugger;
+      
       data.billdetails[0].extended_cost = data.billdetails[0].gross_amount;
       data.billdetails[0].net_extended_cost = data.billdetails[0].net_amout;
       data.billdetails[0].quantity = row.quantity;
@@ -379,7 +379,7 @@ const adjustadvance = ($this, context, ctrl, e) => {
 };
 
 const SalesReturnheaderCalculation = ($this, context) => {
-  debugger;
+  
   var intervalId;
   let ItemInput = {
     isReceipt: false,

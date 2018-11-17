@@ -208,7 +208,7 @@ class Dental extends Component {
   }
 
   render() {
-    debugger;
+    
     return (
       <div id="dentalTreatment">
         <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">

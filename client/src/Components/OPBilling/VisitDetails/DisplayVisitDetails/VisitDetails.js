@@ -125,7 +125,7 @@ class DisplayVisitDetails extends Component {
             mappingName: "orderlist"
           },
           afterSuccess: data => {
-            debugger;
+            
             if (data.length !== 0) {
               let pre_approval_Required = Enumerable.from(data)
                 .where(w => w.pre_approval === "Y" && w.apprv_status === "NR")
@@ -161,7 +161,7 @@ class DisplayVisitDetails extends Component {
                 });
               }
             } else {
-              debugger;
+              
               if (context !== null) {
                 context.updateState({
                   billdetails: data,

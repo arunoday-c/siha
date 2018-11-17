@@ -4,7 +4,7 @@ const getRadResult = $this => {
     visit_id: Window.global["visit_id"]
   };
 
-  debugger;
+  
   $this.props.getRadResult({
     uri: "/radiology/getRadOrderedServices",
     method: "GET",

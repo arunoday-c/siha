@@ -29,7 +29,7 @@ const updateServices = ($this, context, row) => {
   }
 };
 const deleteServices = $this => {
-  debugger;
+  
 };
 
 export { texthandle, datehandle, updateServices, deleteServices };

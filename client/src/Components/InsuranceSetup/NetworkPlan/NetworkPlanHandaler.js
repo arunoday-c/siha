@@ -24,7 +24,7 @@ const texthandle = ($this, ctrl, e) => {
 };
 
 const numberhandle = ($this, ctrl, e) => {
-  debugger;
+  
   e = e || ctrl;
 
   let name = e.name || e.target.name;
@@ -61,7 +61,7 @@ const prenumberhandle = ($this, ctrl, e) => {
 };
 
 const saveNetworkPlan = ($this, context) => {
-  debugger;
+  
   const err = Validations($this);
 
   let newdata = [];

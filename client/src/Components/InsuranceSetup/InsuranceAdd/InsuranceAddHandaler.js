@@ -3,7 +3,7 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 const handleNext = ($this, setp, e) => {
-  debugger;
+  
   const err = Validations($this);
   if (!err) {
     if ($this.state.screenName === "InsuranceProvider") {
@@ -51,7 +51,7 @@ const handleNext = ($this, setp, e) => {
       // }
     } else if ($this.state.screenName === "NetworkPlan") {
       //Save Network and Plan
-      debugger;
+      
       if (setp === "Close") {
         $this.onClose(e);
       } else if (setp === "Next") {

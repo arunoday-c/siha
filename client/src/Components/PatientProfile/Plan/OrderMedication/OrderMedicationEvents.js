@@ -50,7 +50,7 @@ const SaveMedication = ($this, e) => {
       data: inputObj,
       method: "POST",
       onSuccess: response => {
-        debugger;
+        
         if (response.data.success) {
           swalMessage({
             title: "Ordered Successfully...",
@@ -133,7 +133,7 @@ const itemhandle = ($this, ctrl, e) => {
 };
 
 const AddItems = $this => {
-  debugger;
+  
   if (
     $this.state.item_id !== null &&
     $this.state.generic_id !== null &&
@@ -206,7 +206,7 @@ const dateFormater = value => {
 const deleteItems = $this => {};
 
 const calcuateDispense = ($this, e) => {
-  debugger;
+  
   if (e.target === null || e.target.value !== e.target.oldvalue) {
     let frequency = 0;
     let frequency_type = 0;
@@ -272,7 +272,7 @@ const calcuateDispense = ($this, e) => {
 };
 
 const getItemStock = $this => {
-  debugger;
+  
   $this.props.getItemStock({
     uri: "/pharmacyGlobal/getItemandLocationStock",
     method: "GET",

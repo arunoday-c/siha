@@ -85,14 +85,14 @@ class InvTransferEntry extends Component {
           mappingName: "invuserwiselocations"
         },
         afterSuccess: data => {
-          debugger;
+          
         }
       });
     }
   }
 
   render() {
-    debugger;
+    
     let display =
       this.props.inventorylocations === undefined
         ? []

@@ -44,7 +44,7 @@ const PatientSearch = ($this, e) => {
 };
 
 const datehandle = ($this, ctrl, e) => {
-  debugger;
+  
   let intFailure = false;
   if (e === "from_date") {
     if (Date.parse($this.state.to_date) < Date.parse(moment(ctrl)._d)) {
@@ -78,7 +78,7 @@ const datehandle = ($this, ctrl, e) => {
 
 const getRadTestList = $this => {
   let inputobj = {};
-  debugger;
+  
 
   if ($this.state.from_date !== null) {
     inputobj.from_date = moment($this.state.from_date).format(

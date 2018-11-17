@@ -108,7 +108,7 @@ class Assessment extends Component {
     // }
   }
   render() {
-    debugger;
+    
     const _diagnosis =
       this.props.patient_diagnosis !== undefined
         ? this.props.patient_diagnosis

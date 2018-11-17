@@ -77,7 +77,7 @@ class LabResult extends Component {
                       fieldName: "services_id",
                       label: <AlgaehLabel label={{ forceLabel: "Test" }} />,
                       displayTemplate: row => {
-                        debugger;
+                        
                         let display =
                           this.props.assservices === undefined
                             ? []

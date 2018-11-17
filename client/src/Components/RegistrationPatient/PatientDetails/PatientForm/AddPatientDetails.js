@@ -22,7 +22,7 @@ const texthandle = ($this, context, e) => {
 const countryStatehandle = ($this, context, e) => {
   let name;
   let value;
-  debugger;
+  
   if (e.name !== undefined) {
     if (e.name === "country_id") {
       name = e.name;
@@ -78,7 +78,7 @@ const countryStatehandle = ($this, context, e) => {
 //Todo title and gender related chnage need to do
 const titlehandle = ($this, context, e) => {
   let setGender = null;
-  debugger;
+  
   if (e.value === undefined) {
     $this.setState({
       gender: setGender,
@@ -199,7 +199,7 @@ const nationalityhandle = ($this, context, e) => {
       mappingName: "hospitaldetails"
     },
     afterSuccess: data => {
-      debugger;
+      
       let vat_applicable = "Y";
 
       if (

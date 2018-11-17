@@ -32,7 +32,7 @@ class FrontDesk extends Component {
         mappingName: "employeeSerDetails"
       },
       afterSuccess: data => {
-        debugger;
+        
         this.setState(
           {
             FD_Screen: Window.global["FD-STD"],

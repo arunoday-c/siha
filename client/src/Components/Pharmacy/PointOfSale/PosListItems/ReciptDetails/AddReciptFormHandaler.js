@@ -178,7 +178,7 @@ const datehandle = ($this, context, ctrl, e) => {
 };
 
 const checkcashhandaler = ($this, context, e) => {
-  debugger;
+  
 
   $this.setState(
     {
@@ -202,7 +202,7 @@ const checkcashhandaler = ($this, context, e) => {
 };
 
 const checkcardhandaler = ($this, context, e) => {
-  debugger;
+  
 
   $this.setState(
     {
@@ -230,7 +230,7 @@ const checkcardhandaler = ($this, context, e) => {
 };
 
 const checkcheckhandaler = ($this, context, e) => {
-  debugger;
+  
 
   $this.setState(
     {

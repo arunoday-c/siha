@@ -107,7 +107,7 @@ const getHospitalDetails = $this => {
       mappingName: "hospitaldetails"
     },
     afterSuccess: data => {
-      debugger;
+      
       $this.setState({
         vat_applicable: data[0].local_vat_applicable,
         nationality_id: data[0].default_nationality,

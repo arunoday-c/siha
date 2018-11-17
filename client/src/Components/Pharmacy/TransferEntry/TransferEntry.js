@@ -82,14 +82,14 @@ class TransferEntry extends Component {
           mappingName: "userwiselocations"
         },
         afterSuccess: data => {
-          debugger;
+          
         }
       });
     }
   }
 
   render() {
-    debugger;
+    
     let display =
       this.props.locations === undefined
         ? []

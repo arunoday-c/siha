@@ -284,7 +284,7 @@ class RadOrderedList extends Component {
                         fieldName: "billed",
                         label: <AlgaehLabel label={{ fieldName: "billed" }} />,
                         displayTemplate: row => {
-                          debugger;
+                          
                           return row.billed === "N" ? "Not Billed" : "Billed";
                         },
                         others: {

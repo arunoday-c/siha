@@ -23,14 +23,14 @@ const serviceTypeHandeler = ($this, context, e) => {
 };
 
 const serviceHandeler = ($this, context, e) => {
-  debugger;
+  
   $this.setState(
     {
       [e.name]: e.value,
       visittypeselect: false
     },
     () => {
-      debugger;
+      
     }
   );
   if (context != null) {
@@ -120,7 +120,7 @@ const discounthandle = ($this, context, ctrl, e) => {
 };
 
 const billheaderCalculation = ($this, e) => {
-  debugger;
+  
   if (e.target.value !== e.target.oldvalue) {
     let serviceInput = {
       isReceipt: false,
