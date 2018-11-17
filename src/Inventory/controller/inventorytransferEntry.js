@@ -6,9 +6,9 @@ import {
   gettransferEntry,
   updatetransferEntry,
   getrequisitionEntryTransfer
-} from "../model/transferEntry";
+} from "../model/inventorytransferEntry";
 import { debugFunction, debugLog } from "../../utils/logging";
-import { updaterequisitionEntryOnceTranfer } from "../model/requisitionEntry";
+import { updateinvreqEntryOnceTranfer } from "../model/inventoryrequisitionEntry";
 
 export default ({ config, db }) => {
   let api = Router();
@@ -48,7 +48,7 @@ export default ({ config, db }) => {
     "/updatetransferEntry",
     generateDbConnection,
     updatetransferEntry,
-    updaterequisitionEntryOnceTranfer,
+    updateinvreqEntryOnceTranfer,
     (req, res, next) => {
       let connection = req.connection;
       connection.commit(error => {

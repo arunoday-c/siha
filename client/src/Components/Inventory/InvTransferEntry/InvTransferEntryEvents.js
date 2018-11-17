@@ -2,7 +2,7 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 // import Enumerable from "linq";
-import TransferIOputs from "../../../Models/TransferEntry";
+import TransferIOputs from "../../../Models/InventoryTransferEntry";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const changeTexts = ($this, ctrl, e) => {
@@ -17,7 +17,7 @@ const getCtrlCode = ($this, docNumber) => {
   debugger;
   AlgaehLoader({ show: true });
   $this.props.getTransferEntry({
-    uri: "/transferEntry/gettransferEntry",
+    uri: "/inventorytransferEntry/gettransferEntry",
     method: "GET",
     printInput: true,
     data: { transfer_number: docNumber },
@@ -50,15 +50,15 @@ const ClearData = ($this, e) => {
 const SaveTransferEntry = $this => {
   debugger;
   algaehApiCall({
-    uri: "/transferEntry/addtransferEntry",
+    uri: "/inventorytransferEntry/addtransferEntry",
     data: $this.state,
     onSuccess: response => {
       debugger;
       if (response.data.success === true) {
         $this.setState({
           transfer_number: response.data.records.transfer_number,
-          hims_f_pharmacy_transfer_header_id:
-            response.data.records.hims_f_pharmacy_transfer_header_id,
+          hims_f_inventory_transfer_header_id:
+            response.data.records.hims_f_inventory_transfer_header_id,
           year: response.data.records.year,
           period: response.data.records.period,
           saveEnable: true,
@@ -77,35 +77,35 @@ const PostTransferEntry = $this => {
   debugger;
   $this.state.completed = "Y";
   $this.state.transaction_type = "ST";
-  $this.state.transaction_id = $this.state.hims_f_pharmacy_transfer_header_id;
+  $this.state.transaction_id = $this.state.hims_f_inventory_transfer_header_id;
   $this.state.transaction_date = $this.state.transfer_date;
-  for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
-    $this.state.pharmacy_stock_detail[i].location_id =
+  for (let i = 0; i < $this.state.inventory_stock_detail.length; i++) {
+    $this.state.inventory_stock_detail[i].location_id =
       $this.state.from_location_id;
-    $this.state.pharmacy_stock_detail[i].location_type =
+    $this.state.inventory_stock_detail[i].location_type =
       $this.state.from_location_type;
-    $this.state.pharmacy_stock_detail[i].operation = "-";
+    $this.state.inventory_stock_detail[i].operation = "-";
 
-    $this.state.pharmacy_stock_detail[i].uom_id =
-      $this.state.pharmacy_stock_detail[i].uom_transferred_id;
+    $this.state.inventory_stock_detail[i].uom_id =
+      $this.state.inventory_stock_detail[i].uom_transferred_id;
 
-    $this.state.pharmacy_stock_detail[i].quantity =
-      $this.state.pharmacy_stock_detail[i].quantity_transferred;
+    $this.state.inventory_stock_detail[i].quantity =
+      $this.state.inventory_stock_detail[i].quantity_transferred;
 
-    $this.state.pharmacy_stock_detail[i].grn_number =
-      $this.state.pharmacy_stock_detail[i].grnno;
+    $this.state.inventory_stock_detail[i].grn_number =
+      $this.state.inventory_stock_detail[i].grnno;
 
-    $this.state.pharmacy_stock_detail[i].net_total =
-      $this.state.pharmacy_stock_detail[i].unit_cost *
-      $this.state.pharmacy_stock_detail[i].quantity_transferred;
+    $this.state.inventory_stock_detail[i].net_total =
+      $this.state.inventory_stock_detail[i].unit_cost *
+      $this.state.inventory_stock_detail[i].quantity_transferred;
 
-    $this.state.pharmacy_stock_detail[i].extended_cost =
-      $this.state.pharmacy_stock_detail[i].unit_cost *
-      $this.state.pharmacy_stock_detail[i].quantity_transferred;
+    $this.state.inventory_stock_detail[i].extended_cost =
+      $this.state.inventory_stock_detail[i].unit_cost *
+      $this.state.inventory_stock_detail[i].quantity_transferred;
   }
   debugger;
   algaehApiCall({
-    uri: "/transferEntry/updatetransferEntry",
+    uri: "/inventorytransferEntry/updatetransferEntry",
     data: $this.state,
     method: "PUT",
     onSuccess: response => {
@@ -138,7 +138,7 @@ const RequisitionSearch = ($this, e) => {
       searchGrid: {
         columns: spotlightSearch.RequisitionEntry.ReqEntry
       },
-      searchName: "REQTransEntry",
+      searchName: "InvREQTransEntry",
       uri: "/gloabelSearch/get",
       inputs: "to_location_id = " + $this.state.from_location_id,
       onContainsChange: (text, serchBy, callBack) => {
@@ -147,7 +147,7 @@ const RequisitionSearch = ($this, e) => {
       onRowSelect: row => {
         debugger;
         $this.props.getRequisitionEntry({
-          uri: "/transferEntry/getrequisitionEntryTransfer",
+          uri: "/inventorytransferEntry/getrequisitionEntryTransfer",
           method: "GET",
           printInput: true,
           data: {
@@ -156,7 +156,7 @@ const RequisitionSearch = ($this, e) => {
           },
           redux: {
             type: "POS_ENTRY_GET_DATA",
-            mappingName: "requisitionentry"
+            mappingName: "inventoryrequisitionentry"
           },
           afterSuccess: data => {
             debugger;
@@ -170,37 +170,36 @@ const RequisitionSearch = ($this, e) => {
             data.from_location_type = data.to_location_type;
             data.to_location_type = from_location_type;
 
-            debugger;
             data.dataExitst = true;
+            debugger;
+            for (let i = 0; i < data.inventory_stock_detail.length; i++) {
+              data.inventory_stock_detail[i].material_requisition_header_id =
+                data.hims_f_inventory_material_header_id;
 
-            for (let i = 0; i < data.pharmacy_stock_detail.length; i++) {
-              data.pharmacy_stock_detail[i].material_requisition_header_id =
-                data.hims_f_pharamcy_material_header_id;
-
-              data.pharmacy_stock_detail[i].material_requisition_detail_id =
-                data.pharmacy_stock_detail[
+              data.inventory_stock_detail[i].material_requisition_detail_id =
+                data.inventory_stock_detail[
                   i
-                ].hims_f_pharmacy_material_detail_id;
+                ].hims_f_inventory_material_detail_id;
 
               // grnno
-              data.pharmacy_stock_detail[i].quantity_transferred =
-                data.pharmacy_stock_detail[i].quantity_required;
+              data.inventory_stock_detail[i].quantity_transferred =
+                data.inventory_stock_detail[i].quantity_required;
 
-              data.pharmacy_stock_detail[i].expiry_date =
-                data.pharmacy_stock_detail[i].expirydt;
+              data.inventory_stock_detail[i].expiry_date =
+                data.inventory_stock_detail[i].expirydt;
 
-              data.pharmacy_stock_detail[i].quantity_requested =
-                data.pharmacy_stock_detail[i].quantity_required;
-              data.pharmacy_stock_detail[i].from_qtyhand =
-                data.pharmacy_stock_detail[i].qtyhand;
+              data.inventory_stock_detail[i].quantity_requested =
+                data.inventory_stock_detail[i].quantity_required;
+              data.inventory_stock_detail[i].from_qtyhand =
+                data.inventory_stock_detail[i].qtyhand;
 
-              data.pharmacy_stock_detail[i].uom_requested_id =
-                data.pharmacy_stock_detail[i].item_uom;
-              data.pharmacy_stock_detail[i].uom_transferred_id =
-                data.pharmacy_stock_detail[i].item_uom;
+              data.inventory_stock_detail[i].uom_requested_id =
+                data.inventory_stock_detail[i].item_uom;
+              data.inventory_stock_detail[i].uom_transferred_id =
+                data.inventory_stock_detail[i].item_uom;
 
-              data.pharmacy_stock_detail[i].unit_cost =
-                data.pharmacy_stock_detail[i].avgcost;
+              data.inventory_stock_detail[i].unit_cost =
+                data.inventory_stock_detail[i].avgcost;
             }
             $this.setState(data);
             AlgaehLoader({ show: false });

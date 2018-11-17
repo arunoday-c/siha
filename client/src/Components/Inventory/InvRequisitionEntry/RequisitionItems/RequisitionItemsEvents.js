@@ -41,7 +41,7 @@ const itemchangeText = ($this, context, e) => {
     let value = e.value || e.target.value;
 
     $this.props.getSelectedItemDetais({
-      uri: "/pharmacyGlobal/getUomLocationStock",
+      uri: "/inventoryGlobal/getUomLocationStock",
       method: "GET",
       data: {
         location_id: $this.state.to_location_id,
@@ -49,7 +49,7 @@ const itemchangeText = ($this, context, e) => {
       },
       redux: {
         type: "ITEMS_UOM_DETAILS_GET_DATA",
-        mappingName: "itemdetaillist"
+        mappingName: "inventoryitemdetaillist"
       },
       afterSuccess: data => {
         if (data.locationResult.length > 0) {
@@ -125,7 +125,7 @@ const AddItems = ($this, context) => {
       type: "warning"
     });
   } else {
-    let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+    let inventory_stock_detail = $this.state.inventory_stock_detail;
     debugger;
     let ItemInput = {
       completed: "N",
@@ -138,9 +138,9 @@ const AddItems = ($this, context) => {
       from_qtyhand: $this.state.from_qtyhand,
       to_qtyhand: $this.state.to_qtyhand
     };
-    pharmacy_stock_detail.push(ItemInput);
+    inventory_stock_detail.push(ItemInput);
     $this.setState({
-      pharmacy_stock_detail: pharmacy_stock_detail,
+      inventory_stock_detail: inventory_stock_detail,
       addedItem: true,
       item_category_id: null,
       item_group_id: null,
@@ -154,7 +154,7 @@ const AddItems = ($this, context) => {
 
     if (context !== undefined) {
       context.updateState({
-        pharmacy_stock_detail: pharmacy_stock_detail,
+        inventory_stock_detail: inventory_stock_detail,
         addedItem: true,
         saveEnable: false,
         item_category_id: null,
@@ -176,42 +176,42 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const deleteRequisitionDetail = ($this, context, row) => {
-  let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+  let inventory_stock_detail = $this.state.inventory_stock_detail;
 
-  for (let i = 0; i < pharmacy_stock_detail.length; i++) {
-    if (pharmacy_stock_detail[i].item_id === row.item_id) {
-      pharmacy_stock_detail.splice(i, 1);
+  for (let i = 0; i < inventory_stock_detail.length; i++) {
+    if (inventory_stock_detail[i].item_id === row.item_id) {
+      inventory_stock_detail.splice(i, 1);
     }
   }
-  $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
+  $this.setState({ inventory_stock_detail: inventory_stock_detail });
 
   if (context !== undefined) {
     context.updateState({
-      pharmacy_stock_detail: pharmacy_stock_detail
+      inventory_stock_detail: inventory_stock_detail
     });
   }
 };
 
 const updatePosDetail = ($this, context, row) => {
   debugger;
-  let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
-  for (let k = 0; k < pharmacy_stock_detail.length; k++) {
-    if (pharmacy_stock_detail[k].item_id === row.item_id) {
-      pharmacy_stock_detail[k] = row;
+  let inventory_stock_detail = $this.state.inventory_stock_detail;
+  for (let k = 0; k < inventory_stock_detail.length; k++) {
+    if (inventory_stock_detail[k].item_id === row.item_id) {
+      inventory_stock_detail[k] = row;
     }
   }
-  $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
+  $this.setState({ inventory_stock_detail: inventory_stock_detail });
 
   if (context !== undefined) {
     context.updateState({
-      pharmacy_stock_detail: pharmacy_stock_detail
+      inventory_stock_detail: inventory_stock_detail
     });
   }
 };
 
 const onchangegridcol = ($this, context, row, e) => {
   debugger;
-  let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+  let inventory_stock_detail = $this.state.inventory_stock_detail;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   if (value > row.quantity_required) {
@@ -223,16 +223,16 @@ const onchangegridcol = ($this, context, row, e) => {
   } else {
     row[name] = value;
 
-    for (let x = 0; x < pharmacy_stock_detail.length; x++) {
-      if (pharmacy_stock_detail[x].item_id === row.item_id) {
-        pharmacy_stock_detail[x] = row;
+    for (let x = 0; x < inventory_stock_detail.length; x++) {
+      if (inventory_stock_detail[x].item_id === row.item_id) {
+        inventory_stock_detail[x] = row;
       }
     }
-    $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
+    $this.setState({ inventory_stock_detail: inventory_stock_detail });
 
     if (context !== undefined) {
       context.updateState({
-        pharmacy_stock_detail: pharmacy_stock_detail
+        inventory_stock_detail: inventory_stock_detail
       });
     }
   }
@@ -241,7 +241,7 @@ const onchangegridcol = ($this, context, row, e) => {
 const getItemLocationStock = ($this, context, value) => {
   debugger;
   $this.props.getItemLocationStock({
-    uri: "/pharmacyGlobal/getItemLocationStock",
+    uri: "/inventoryGlobal/getItemLocationStock",
     method: "GET",
     data: {
       location_id: value.location_id,
@@ -249,7 +249,7 @@ const getItemLocationStock = ($this, context, value) => {
     },
     redux: {
       type: "ITEMS_BATCH_GET_DATA",
-      mappingName: "itemBatch"
+      mappingName: "inventoryitemBatch"
     },
     afterSuccess: data => {
       if (data.length !== 0) {

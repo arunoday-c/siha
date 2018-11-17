@@ -50,6 +50,10 @@ import invoiceGeneration from "../controller/invoiceGeneration";
 import currency from "../controller/currency";
 import generateReport from "../controller/generateReport";
 import inventory from "../Inventory/controller/inventory";
+import inventoryinitialstock from "../Inventory/controller/inventoryinitialstock";
+import inventoryGlobal from "../Inventory/controller/inventoryGlobal";
+import inventoryrequisitionEntry from "../Inventory/controller/inventoryrequisitionEntry";
+import inventorytransferEntry from "../Inventory/controller/inventorytransferEntry";
 
 let router = express();
 
@@ -109,6 +113,13 @@ initializedDb(db => {
   router.use("/currency", currency({ config, db }));
   router.use("/generateReport", generateReport({ config, db }));
   router.use("/inventory", inventory({ config, db }));
+  router.use("/inventoryinitialstock", inventoryinitialstock({ config, db }));
+  router.use("/inventoryGlobal", inventoryGlobal({ config, db }));
+  router.use(
+    "/inventoryrequisitionEntry",
+    inventoryrequisitionEntry({ config, db })
+  );
+  router.use("/inventorytransferEntry", inventorytransferEntry({ config, db }));
 });
 
 export default router;

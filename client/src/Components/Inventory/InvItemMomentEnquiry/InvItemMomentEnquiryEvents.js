@@ -29,7 +29,7 @@ const ProcessItemMoment = $this => {
     onSuccess: () => {
       AlgaehLoader({ show: true });
       $this.props.getItemMoment({
-        uri: "/pharmacyGlobal/getItemMoment",
+        uri: "/inventoryGlobal/getItemMoment",
         method: "GET",
         printInput: true,
         data: {
@@ -42,7 +42,7 @@ const ProcessItemMoment = $this => {
         },
         redux: {
           type: "ITEM_MOMENT_DATA",
-          mappingName: "itemmoment"
+          mappingName: "insuranceitemmoment"
         },
         afterSuccess: data => {
           AlgaehLoader({ show: false });

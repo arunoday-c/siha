@@ -17,13 +17,13 @@ import {
   dateFormater,
   datehandle,
   ProcessItemMoment
-} from "./ItemMomentEnquiryEvents";
-import "./ItemMomentEnquiry.css";
+} from "./InvItemMomentEnquiryEvents";
+import "./InvItemMomentEnquiry.css";
 import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import AHSnackbar from "../../common/Inputs/AHSnackbar.js";
 
-class ItemMomentEnquiry extends Component {
+class InvItemMomentEnquiry extends Component {
   constructor(props) {
     super(props);
 
@@ -40,30 +40,30 @@ class ItemMomentEnquiry extends Component {
 
   componentDidMount() {
     this.props.getItems({
-      uri: "/pharmacy/getItemMaster",
+      uri: "/inventory/getItemMaster",
       method: "GET",
       redux: {
         type: "ITEM_GET_DATA",
-        mappingName: "itemlist"
+        mappingName: "inventoryitemlist"
       }
     });
 
     this.props.getLocation({
-      uri: "/pharmacy/getPharmacyLocation",
+      uri: "/inventory/getInventoryLocation",
       method: "GET",
       redux: {
         type: "ANALYTES_GET_DATA",
-        mappingName: "locations"
+        mappingName: "inventorylocations"
       }
     });
 
     if (this.props.itemuom === undefined || this.props.itemuom.length === 0) {
       this.props.getItemUOM({
-        uri: "/pharmacy/getPharmacyUom",
+        uri: "/inventory/getInventoryUom",
         method: "GET",
         redux: {
           type: "ITEM_UOM_GET_DATA",
-          mappingName: "itemuom"
+          mappingName: "inventoryitemuom"
         }
       });
     }
@@ -109,6 +109,7 @@ class ItemMomentEnquiry extends Component {
             <div
               className="row inner-top-search"
               style={{ marginTop: 76, paddingBottom: 10 }}
+              data-validate="itemMoment"
             >
               <div className="col-lg-12">
                 <div className="row">
@@ -121,8 +122,8 @@ class ItemMomentEnquiry extends Component {
                       value: this.state.location_id,
                       dataSource: {
                         textField: "location_description",
-                        valueField: "hims_d_pharmacy_location_id",
-                        data: this.props.locations
+                        valueField: "hims_d_inventory_location_id",
+                        data: this.props.inventorylocations
                       },
 
                       onChange: changeTexts.bind(this, this)
@@ -138,8 +139,8 @@ class ItemMomentEnquiry extends Component {
                       value: this.state.item_id,
                       dataSource: {
                         textField: "item_description",
-                        valueField: "hims_d_item_master_id",
-                        data: this.props.itemlist
+                        valueField: "hims_d_inventory_item_master_id",
+                        data: this.props.inventoryitemlist
                       },
                       onChange: changeTexts.bind(this, this)
                     }}
@@ -177,13 +178,6 @@ class ItemMomentEnquiry extends Component {
               </div>
             </div>
             <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
-              {/* <div className="portlet-title">
-            <div className="caption">
-              <h3 className="caption-subject">Investigation Lists</h3>
-            </div>
-            <div className="actions">
-            </div>
-          </div> */}
               <div className="portlet-body" id="initialStock_Cntr">
                 <AlgaehDataGrid
                   id="initial_stock"
@@ -218,11 +212,11 @@ class ItemMomentEnquiry extends Component {
                       ),
                       displayTemplate: row => {
                         let display =
-                          this.props.itemuom === undefined
+                          this.props.inventoryitemuom === undefined
                             ? []
-                            : this.props.itemuom.filter(
+                            : this.props.inventoryitemuom.filter(
                                 f =>
-                                  f.hims_d_pharmacy_uom_id ===
+                                  f.hims_d_inventory_uom_id ===
                                   row.transaction_uom
                               );
 
@@ -261,9 +255,9 @@ class ItemMomentEnquiry extends Component {
                   keyId="item_id"
                   dataSource={{
                     data:
-                      this.props.itemmoment === undefined
+                      this.props.insuranceitemmoment === undefined
                         ? []
-                        : this.props.itemmoment
+                        : this.props.insuranceitemmoment
                   }}
                   paging={{ page: 0, rowsPerPage: 20 }}
                 />
@@ -283,10 +277,10 @@ class ItemMomentEnquiry extends Component {
 
 function mapStateToProps(state) {
   return {
-    itemlist: state.itemlist,
-    locations: state.locations,
-    itemmoment: state.itemmoment,
-    itemuom: state.itemuom
+    inventoryitemlist: state.inventoryitemlist,
+    inventorylocations: state.inventorylocations,
+    insuranceitemmoment: state.insuranceitemmoment,
+    inventoryitemuom: state.inventoryitemuom
   };
 }
 
@@ -306,5 +300,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(ItemMomentEnquiry)
+  )(InvItemMomentEnquiry)
 );

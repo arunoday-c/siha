@@ -28,7 +28,7 @@ const getItemLocationStock = $this => {
   let inputObj = {};
 
   if ($this.state.location_id !== null) {
-    inputObj.pharmacy_location_id = $this.state.location_id;
+    inputObj.inventory_location_id = $this.state.location_id;
   }
 
   if ($this.state.item_id !== null) {
@@ -36,12 +36,12 @@ const getItemLocationStock = $this => {
   }
 
   $this.props.getItemLocationStock({
-    uri: "/pharmacyGlobal/getItemandLocationStock",
+    uri: "/inventoryGlobal/getItemandLocationStock",
     method: "GET",
     data: inputObj,
     redux: {
       type: "ITEMS_BATCH_GET_DATA",
-      mappingName: "itemBatch"
+      mappingName: "inventoryitemBatch"
     }
   });
 };

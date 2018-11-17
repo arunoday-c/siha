@@ -14,7 +14,7 @@ import moment from "moment";
 import Promise from "bluebird";
 
 //created by Nowshad: to Insert Requisition Entry
-let addrequisitionEntry = (req, res, next) => {
+let addinventoryrequisitionEntry = (req, res, next) => {
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -41,7 +41,7 @@ let addrequisitionEntry = (req, res, next) => {
           runningNumberGen({
             db: connection,
             counter: requestCounter,
-            module_desc: ["REQ_NUM"],
+            module_desc: ["INV_REQ_NUM"],
             onFailure: error => {
               reject(error);
             },
@@ -58,7 +58,7 @@ let addrequisitionEntry = (req, res, next) => {
           debugLog("today:", today);
 
           connection.query(
-            "INSERT INTO `hims_f_pharamcy_material_header` (material_requisition_number,requistion_date,from_location_type,\
+            "INSERT INTO `hims_f_inventory_material_header` (material_requisition_number,requistion_date,from_location_type,\
                 from_location_id, expiration_date,required_date,requested_by,on_hold, to_location_id, \
                 to_location_type, description, comment, is_completed, completed_date, completed_lines,requested_lines, \
                 purchase_created_lines,status,requistion_type,no_of_transfers,no_of_po, authorize1,authorize1_date, \
@@ -121,13 +121,13 @@ let addrequisitionEntry = (req, res, next) => {
                 ];
 
                 connection.query(
-                  "INSERT INTO hims_f_pharmacy_material_detail(" +
+                  "INSERT INTO hims_f_inventory_material_detail(" +
                     insurtColumns.join(",") +
-                    ",pharmacy_header_id) VALUES ?",
+                    ",inventory_header_id) VALUES ?",
                   [
                     jsonArrayToObject({
                       sampleInputObject: insurtColumns,
-                      arrayObj: req.body.pharmacy_stock_detail,
+                      arrayObj: req.body.inventory_stock_detail,
                       newFieldToInsert: [headerResult.insertId],
                       req: req
                     })
@@ -171,8 +171,8 @@ let addrequisitionEntry = (req, res, next) => {
   }
 };
 
-//created by Nowshad: to get Pharmacy Requisition Entry
-let getrequisitionEntry = (req, res, next) => {
+//created by Nowshad: to get inventory Requisition Entry
+let getinventoryrequisitionEntry = (req, res, next) => {
   let selectWhere = {
     material_requisition_number: "ALL",
     from_location_id: "ALL",
@@ -191,7 +191,7 @@ let getrequisitionEntry = (req, res, next) => {
     debugLog("where", where);
     db.getConnection((error, connection) => {
       connection.query(
-        "SELECT * from  hims_f_pharamcy_material_header\
+        "SELECT * from  hims_f_inventory_material_header\
           where " +
           where.condition,
         where.values,
@@ -204,20 +204,20 @@ let getrequisitionEntry = (req, res, next) => {
           debugLog("result: ", headerResult);
           if (headerResult.length != 0) {
             debugLog(
-              "hims_f_pharamcy_material_header_id: ",
-              headerResult[0].hims_f_pharamcy_material_header_id
+              "hims_f_inventory_material_header_id: ",
+              headerResult[0].hims_f_inventory_material_header_id
             );
             connection.query(
-              "select * from hims_f_pharmacy_material_detail where pharmacy_header_id=?",
-              headerResult[0].hims_f_pharamcy_material_header_id,
-              (error, pharmacy_stock_detail) => {
+              "select * from hims_f_inventory_material_detail where inventory_header_id=?",
+              headerResult[0].hims_f_inventory_material_header_id,
+              (error, inventory_stock_detail) => {
                 if (error) {
                   releaseDBConnection(db, connection);
                   next(error);
                 }
                 req.records = {
                   ...headerResult[0],
-                  ...{ pharmacy_stock_detail }
+                  ...{ inventory_stock_detail }
                 };
                 releaseDBConnection(db, connection);
                 next();
@@ -238,7 +238,7 @@ let getrequisitionEntry = (req, res, next) => {
 
 //created by Nowshad: to Post Requisition Entry
 
-let updaterequisitionEntry = (req, res, next) => {
+let updateinventoryrequisitionEntry = (req, res, next) => {
   // let RequisitionEntry = {
   //   posted: null,
   //   updated_by: req.userIdentity.algaeh_d_app_user_id
@@ -262,9 +262,9 @@ let updaterequisitionEntry = (req, res, next) => {
       let inputParam = extend({}, req.body);
 
       connection.query(
-        "UPDATE `hims_f_pharamcy_material_header` SET `authorize1`=?, `authorize1_date`=?, `authorize1_by`=?, \
+        "UPDATE `hims_f_inventory_material_header` SET `authorize1`=?, `authorize1_date`=?, `authorize1_by`=?, \
       `authorie2`=?, `authorize2_date`=?, `authorize2_by`=? \
-      WHERE `hims_f_pharamcy_material_header_id`=?",
+      WHERE `hims_f_inventory_material_header_id`=?",
         [
           inputParam.authorize1,
           new Date(),
@@ -272,7 +272,7 @@ let updaterequisitionEntry = (req, res, next) => {
           inputParam.authorie2,
           new Date(),
           inputParam.updated_by,
-          inputParam.hims_f_pharamcy_material_header_id
+          inputParam.hims_f_inventory_material_header_id
         ],
         (error, result) => {
           if (error) {
@@ -283,14 +283,14 @@ let updaterequisitionEntry = (req, res, next) => {
           }
 
           if (result !== "" && result != null) {
-            let details = inputParam.pharmacy_stock_detail;
+            let details = inputParam.inventory_stock_detail;
 
             let qry = "";
 
             for (let i = 0; i < details.length; i++) {
               qry +=
-                " UPDATE `hims_f_pharmacy_material_detail` SET pharmacy_header_id='" +
-                details[i].pharmacy_header_id +
+                " UPDATE `hims_f_inventory_material_detail` SET inventory_header_id='" +
+                details[i].inventory_header_id +
                 "',completed='" +
                 details[i].completed +
                 "',item_category_id='" +
@@ -309,18 +309,8 @@ let updaterequisitionEntry = (req, res, next) => {
                 (details[i].quantity_recieved || 0) +
                 "',quantity_outstanding='" +
                 (details[i].quantity_outstanding || 0) +
-                // "',po_created_date='" +
-                // (details[i].po_created_date || new Date()) +
-                // "',po_created='" +
-                // details[i].po_created +
-                // "',po_created_quantity='" +
-                // (details[i].po_created_quantity || 0) +
-                // "',po_outstanding_quantity='" +
-                // (details[i].po_outstanding_quantity || 0) +
-                // "',po_completed='" +
-                // details[i].po_completed +
-                "' WHERE hims_f_pharmacy_material_detail_id='" +
-                details[i].hims_f_pharmacy_material_detail_id +
+                "' WHERE hims_f_inventory_material_detail_id='" +
+                details[i].hims_f_inventory_material_detail_id +
                 "';";
             }
 
@@ -351,26 +341,6 @@ let updaterequisitionEntry = (req, res, next) => {
               next();
             }
           } else {
-            // if (error) {
-            //   next(error);
-            // }
-            // req.records = result;
-            // next();
-
-            // TODO hims_f_pharamcy_material_detail update
-
-            // connection.commit(error => {
-            //   if (error) {
-            //     connection.rollback(() => {
-            //       releaseDBConnection(db, connection);
-            //       next(error);
-            //     });
-            //   }
-            //   releaseDBConnection(db, connection);
-            //   req.records = result;
-            //   next();
-            // });
-
             connection.rollback(() => {
               releaseDBConnection(db, connection);
               req.records = {};
@@ -383,8 +353,8 @@ let updaterequisitionEntry = (req, res, next) => {
   });
 };
 
-//created by Nowshad: to get Pharmacy Requisition Entry
-let getAuthrequisitionList = (req, res, next) => {
+//created by Nowshad: to get inventory Requisition Entry
+let getinventoryAuthrequisitionList = (req, res, next) => {
   let selectWhere = {
     from_location_id: null,
     to_location_id: null,
@@ -400,7 +370,7 @@ let getAuthrequisitionList = (req, res, next) => {
     let inputParam = extend(selectWhere, req.query);
 
     let strQuery =
-      "SELECT * from  hims_f_pharamcy_material_header\
+      "SELECT * from  hims_f_inventory_material_header\
     where cancelled='N' ";
 
     if (inputParam.from_location_id !== null) {
@@ -439,10 +409,37 @@ let getAuthrequisitionList = (req, res, next) => {
     next(e);
   }
 };
+//created by Nowshad: to Update Requisition Entry
+let updateinvreqEntryOnceTranfer = (req, res, next) => {
+  if (req.db == null) {
+    next(httpStatus.dataBaseNotInitilizedError());
+  }
+  let db = req.db;
+  let connection = req.connection;
+  let inputParam = extend({}, req.body);
+
+  connection.query(
+    "UPDATE `hims_f_inventory_material_header` SET `is_completed`=?, `completed_date`=? \
+      WHERE `hims_f_inventory_material_header_id`=?",
+    ["Y", new Date(), inputParam.hims_f_inventory_material_header_id],
+    (error, result) => {
+      if (error) {
+        connection.rollback(() => {
+          releaseDBConnection(db, connection);
+          next(error);
+        });
+      }
+      releaseDBConnection(db, connection);
+      req.records = result;
+      next();
+    }
+  );
+};
 
 module.exports = {
-  addrequisitionEntry,
-  getrequisitionEntry,
-  updaterequisitionEntry,
-  getAuthrequisitionList
+  addinventoryrequisitionEntry,
+  getinventoryrequisitionEntry,
+  updateinventoryrequisitionEntry,
+  getinventoryAuthrequisitionList,
+  updateinvreqEntryOnceTranfer
 };

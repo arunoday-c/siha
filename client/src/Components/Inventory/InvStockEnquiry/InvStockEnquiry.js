@@ -8,13 +8,13 @@ import {
   AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
-import { changeTexts, dateFormater } from "./StockEnquiryEvents";
-import "./StockEnquiry.css";
+import { changeTexts, dateFormater } from "./InvStockEnquiryEvents";
+import "./InvStockEnquiry.css";
 import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import Enumerable from "linq";
 
-class StockEnquiry extends Component {
+class InvStockEnquiry extends Component {
   constructor(props) {
     super(props);
 
@@ -35,11 +35,11 @@ class StockEnquiry extends Component {
   componentDidMount() {
     if (this.props.itemlist === undefined || this.props.itemlist.length === 0) {
       this.props.getItems({
-        uri: "/pharmacy/getItemMaster",
+        uri: "/inventory/getItemMaster",
         method: "GET",
         redux: {
           type: "ITEM_GET_DATA",
-          mappingName: "itemlist"
+          mappingName: "inventoryitemlist"
         }
       });
     }
@@ -49,30 +49,33 @@ class StockEnquiry extends Component {
       this.props.locations.length === 0
     ) {
       this.props.getLocation({
-        uri: "/pharmacy/getPharmacyLocation",
+        uri: "/inventory/getInventoryLocation",
         method: "GET",
         redux: {
           type: "ANALYTES_GET_DATA",
-          mappingName: "locations"
+          mappingName: "inventorylocations"
         }
       });
     }
     if (this.props.itemuom === undefined || this.props.itemuom.length === 0) {
       this.props.getItemUOM({
-        uri: "/pharmacy/getPharmacyUom",
+        uri: "/inventory/getInventoryUom",
         method: "GET",
         redux: {
           type: "ITEM_UOM_GET_DATA",
-          mappingName: "itemuom"
+          mappingName: "inventoryitemuom"
         }
       });
     }
   }
 
   render() {
+    // inventoryitemBatch
+
     let total_quantity = Enumerable.from(this.props.inventoryitemBatch)
       .select(w => w.qtyhand)
       .sum();
+
     return (
       <React.Fragment>
         <div className="hptl-phase1-speciman-collection-form">
@@ -119,8 +122,8 @@ class StockEnquiry extends Component {
                     value: this.state.location_id,
                     dataSource: {
                       textField: "location_description",
-                      valueField: "hims_d_pharmacy_location_id",
-                      data: this.props.locations
+                      valueField: "hims_d_inventory_location_id",
+                      data: this.props.inventorylocations
                     },
 
                     onChange: changeTexts.bind(this, this),
@@ -137,8 +140,8 @@ class StockEnquiry extends Component {
                     value: this.state.item_id,
                     dataSource: {
                       textField: "item_description",
-                      valueField: "hims_d_item_master_id",
-                      data: this.props.itemlist
+                      valueField: "hims_d_inventory_item_master_id",
+                      data: this.props.inventoryitemlist
                     },
                     onChange: changeTexts.bind(this, this),
                     onClear: changeTexts.bind(this, this)
@@ -166,19 +169,19 @@ class StockEnquiry extends Component {
           </div> */}
             <div className="portlet-body" id="precriptionList_Cntr">
               <AlgaehDataGrid
-                id="initial_stock"
+                id="inv_initial_stock"
                 columns={[
                   {
-                    fieldName: "pharmacy_location_id",
+                    fieldName: "inventory_location_id",
                     label: <AlgaehLabel label={{ forceLabel: "Location" }} />,
                     displayTemplate: row => {
                       let display =
-                        this.props.locations === undefined
+                        this.props.inventorylocations === undefined
                           ? []
-                          : this.props.locations.filter(
+                          : this.props.inventorylocations.filter(
                               f =>
-                                f.hims_d_pharmacy_location_id ===
-                                row.pharmacy_location_id
+                                f.hims_d_inventory_location_id ===
+                                row.inventory_location_id
                             );
 
                       return (
@@ -197,10 +200,12 @@ class StockEnquiry extends Component {
                     label: <AlgaehLabel label={{ forceLabel: "Item Name" }} />,
                     displayTemplate: row => {
                       let display =
-                        this.props.itemlist === undefined
+                        this.props.inventoryitemlist === undefined
                           ? []
-                          : this.props.itemlist.filter(
-                              f => f.hims_d_item_master_id === row.item_id
+                          : this.props.inventoryitemlist.filter(
+                              f =>
+                                f.hims_d_inventory_item_master_id ===
+                                row.item_id
                             );
 
                       return (
@@ -218,10 +223,10 @@ class StockEnquiry extends Component {
                     label: <AlgaehLabel label={{ forceLabel: "Sales UOM" }} />,
                     displayTemplate: row => {
                       let display =
-                        this.props.itemuom === undefined
+                        this.props.inventoryitemuom === undefined
                           ? []
-                          : this.props.itemuom.filter(
-                              f => f.hims_d_pharmacy_uom_id === row.sales_uom
+                          : this.props.inventoryitemuom.filter(
+                              f => f.hims_d_inventory_uom_id === row.sales_uom
                             );
 
                       return (
@@ -259,7 +264,7 @@ class StockEnquiry extends Component {
                 ]}
                 keyId="item_id"
                 dataSource={{
-                  data: this.props.itemBatch
+                  data: this.props.inventoryitemBatch
                 }}
                 noDataText="No Stock available for selected Item in the selected Location"
                 // isEditable={true}
@@ -280,10 +285,10 @@ class StockEnquiry extends Component {
 
 function mapStateToProps(state) {
   return {
-    itemlist: state.itemlist,
-    locations: state.locations,
-    itemBatch: state.itemBatch,
-    itemuom: state.itemuom
+    inventoryitemlist: state.inventoryitemlist,
+    inventorylocations: state.inventorylocations,
+    inventoryitemBatch: state.inventoryitemBatch,
+    inventoryitemuom: state.inventoryitemuom
   };
 }
 
@@ -303,5 +308,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(StockEnquiry)
+  )(InvStockEnquiry)
 );
