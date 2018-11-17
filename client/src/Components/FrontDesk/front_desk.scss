@@ -2,7 +2,18 @@
   .bk-bn {
     z-index: 1031;
     position: fixed;
-    top: 74px;
-    left: 271px;
+    top: 56px;
+    left: 23%;
+    display: block;
+    height: 65px;
+    border: 1px solid #cdd4db;
+    width: 110px;
+    white-space: unset;
+    font-size: 0.7rem;
+    i {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 0.7rem;
+    }
   }
 }

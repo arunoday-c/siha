@@ -23,6 +23,7 @@ import MyContext from "../../../../../utils/MyContext";
 import "./AddReciptForm.css";
 import "./../../../../../styles/site.css";
 import { AlgaehActions } from "../../../../../actions/algaehActions";
+import { getCookie } from "../../../../../utils/algaehApiCall";
 
 class AddReciptForm extends Component {
   constructor(props) {
@@ -44,6 +45,7 @@ class AddReciptForm extends Component {
   }
 
   render() {
+    const currencySymbol = getCookie("Currency");
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -285,8 +287,8 @@ class AddReciptForm extends Component {
                     />
                     <h6>
                       {this.state.unbalanced_amount
-                        ? "₹" + this.state.unbalanced_amount
-                        : "₹0.00"}
+                        ? currencySymbol + " " + this.state.unbalanced_amount
+                        : currencySymbol + " 0.00"}
                     </h6>
                   </div>
                 </div>
