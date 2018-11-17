@@ -66,16 +66,17 @@ let addtransferEntry = (req, res, next) => {
 
           connection.query(
             "INSERT INTO `hims_f_pharmacy_transfer_header` (transfer_number,transfer_date,`year`,period,\
-                from_location_type,from_location_id, material_requisition_number, to_location_id, \
+                hims_f_pharamcy_material_header_id,from_location_type,from_location_id, material_requisition_number, to_location_id, \
                 to_location_type, description, completed, completed_date, completed_lines, \
                 transfer_quantity,requested_quantity,recieved_quantity,outstanding_quantity, \
                 cancelled, cancelled_by,cancelled_date) \
-            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             [
               documentCode,
               today,
               year,
               period,
+              input.hims_f_pharamcy_material_header_id,
               input.from_location_type,
               input.from_location_id,
               input.material_requisition_number,
@@ -255,113 +256,109 @@ let updatetransferEntry = (req, res, next) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
+    let connection = req.connection;
 
-      connection.beginTransaction(error => {
-        if (error) {
+    connection.beginTransaction(error => {
+      if (error) {
+        connection.rollback(() => {
+          releaseDBConnection(db, connection);
+          next(error);
+        });
+      }
+      return new Promise((resolve, reject) => {
+        let inputParam = extend(TransferEntry, req.body);
+
+        debugLog("completed", inputParam.completed);
+        debugLog("pharmacy_stock_detail", req.body.pharmacy_stock_detail);
+        connection.query(
+          "UPDATE `hims_f_pharmacy_transfer_header` SET `completed`=?, `completed_date`=? \
+          WHERE `hims_f_pharmacy_transfer_header_id`=?",
+          [
+            inputParam.completed,
+            new Date(),
+            inputParam.hims_f_pharmacy_transfer_header_id
+          ],
+          (error, result) => {
+            debugLog("error", error);
+            releaseDBConnection(db, connection);
+            if (error) {
+              reject(error);
+            } else {
+              resolve(result);
+            }
+          }
+        );
+      })
+        .then(output => {
+          return new Promise((resolve, reject) => {
+            debugLog("output", output);
+            req.options = {
+              db: connection,
+              onFailure: error => {
+                reject(error);
+              },
+              onSuccess: result => {
+                resolve(result);
+              }
+            };
+            //Update From Location
+            debugLog("From", "Data");
+            updateIntoItemLocation(req, res, next);
+          });
+        })
+        .then(output => {
+          return new Promise((resolve, reject) => {
+            debugLog("output", output);
+            req.options = {
+              db: connection,
+              onFailure: error => {
+                reject(error);
+              },
+              onSuccess: result => {
+                resolve(result);
+              }
+            };
+            //Update To location
+            for (let i = 0; i < req.body.pharmacy_stock_detail.length; i++) {
+              req.body.pharmacy_stock_detail[i].location_id =
+                req.body.to_location_id;
+              req.body.pharmacy_stock_detail[i].location_type =
+                req.body.to_location_type;
+
+              req.body.pharmacy_stock_detail[i].sales_uom =
+                req.body.pharmacy_stock_detail[i].uom_transferred_id;
+
+              delete req.body.pharmacy_stock_detail[i].operation;
+            }
+
+            debugLog("To ", "Data");
+            updateIntoItemLocation(req, res, next);
+          })
+
+            .then(records => {
+              connection.commit(error => {
+                if (error) {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                }
+                req.records = records;
+                releaseDBConnection(db, connection);
+                next();
+              });
+            })
+            .catch(error => {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            });
+        })
+        .catch(error => {
           connection.rollback(() => {
             releaseDBConnection(db, connection);
             next(error);
           });
-        }
-        return new Promise((resolve, reject) => {
-          let inputParam = extend(TransferEntry, req.body);
-
-          debugLog("completed", inputParam.completed);
-          debugLog("pharmacy_stock_detail", req.body.pharmacy_stock_detail);
-          connection.query(
-            "UPDATE `hims_f_pharmacy_transfer_header` SET `completed`=?, `completed_date`=? \
-          WHERE `hims_f_pharmacy_transfer_header_id`=?",
-            [
-              inputParam.completed,
-              new Date(),
-              inputParam.hims_f_pharmacy_transfer_header_id
-            ],
-            (error, result) => {
-              debugLog("error", error);
-              releaseDBConnection(db, connection);
-              if (error) {
-                reject(error);
-              } else {
-                resolve(result);
-              }
-            }
-          );
-        })
-          .then(output => {
-            return new Promise((resolve, reject) => {
-              debugLog("output", output);
-              req.options = {
-                db: connection,
-                onFailure: error => {
-                  reject(error);
-                },
-                onSuccess: result => {
-                  resolve(result);
-                }
-              };
-              //Update From Location
-              debugLog("From", "Data");
-              updateIntoItemLocation(req, res, next);
-            });
-          })
-          .then(output => {
-            return new Promise((resolve, reject) => {
-              debugLog("output", output);
-              req.options = {
-                db: connection,
-                onFailure: error => {
-                  reject(error);
-                },
-                onSuccess: result => {
-                  resolve(result);
-                }
-              };
-              //Update To location
-              for (let i = 0; i < req.body.pharmacy_stock_detail.length; i++) {
-                req.body.pharmacy_stock_detail[i].location_id =
-                  req.body.to_location_id;
-                req.body.pharmacy_stock_detail[i].location_type =
-                  req.body.to_location_type;
-
-                req.body.pharmacy_stock_detail[i].sales_uom =
-                  req.body.pharmacy_stock_detail[i].uom_transferred_id;
-
-                delete req.body.pharmacy_stock_detail[i].operation;
-              }
-
-              debugLog("To ", "Data");
-              updateIntoItemLocation(req, res, next);
-            })
-
-              .then(records => {
-                connection.commit(error => {
-                  if (error) {
-                    releaseDBConnection(db, connection);
-                    next(error);
-                  }
-                  req.records = records;
-                  releaseDBConnection(db, connection);
-                  next();
-                });
-              })
-              .catch(error => {
-                connection.rollback(() => {
-                  releaseDBConnection(db, connection);
-                  next(error);
-                });
-              });
-          })
-          .catch(error => {
-            connection.rollback(() => {
-              releaseDBConnection(db, connection);
-              next(error);
-            });
-          });
-      });
+        });
     });
   } catch (e) {
     next(e);

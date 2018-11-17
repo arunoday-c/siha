@@ -92,7 +92,7 @@ const insertItemStorage = ($this, e) => {
         uri: "/pharmacy/addItemStorage",
         data: $this.state,
         onSuccess: response => {
-          if (response.data.success == true) {
+          if (response.data.success === true) {
             resetState($this);
             //Handle Successful Add here
             getItemStorage($this);

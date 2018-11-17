@@ -10,7 +10,7 @@ export function getServices(dataValue) {
           : "/serviceType/getService",
       method: "GET",
       onSuccess: response => {
-        if (response.data.success == true) {
+        if (response.data.success === true) {
           dispatch({
             type: "SERVICES_GET_DATA",
             payload: response.data.records

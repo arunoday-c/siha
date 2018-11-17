@@ -7,7 +7,7 @@ export function getProviderDetails() {
       uri: "  ",
       method: "GET",
       onSuccess: response => {
-        if (response.data.success == true) {
+        if (response.data.success === true) {
           dispatch({
             type: "DOCT_GET_DATA",
             payload: response.data.records

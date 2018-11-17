@@ -79,7 +79,8 @@ let algaehSearchConfig = searchName => {
       {
         searchName: "REQTransEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS * from hims_f_pharamcy_material_header where authorize1 = 'Y' and authorie2 = 'Y'",
+          "select SQL_CALC_FOUND_ROWS * from hims_f_pharamcy_material_header where authorize1 = 'Y' and authorie2 = 'Y'\
+          and is_completed = 'N'",
         orderBy: "hims_f_pharamcy_material_header_id desc"
       },
       {
@@ -114,6 +115,31 @@ let algaehSearchConfig = searchName => {
           hims_f_invoice_header.patient_id = pat.hims_d_patient_id and pv.hims_f_patient_visit_id = hims_f_invoice_header.visit_id \
           and pv.patient_id= pat.hims_d_patient_id",
         orderBy: "hims_f_invoice_header_id desc"
+      },
+      {
+        searchName: "invinitialstock",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS * from hims_f_inventory_stock_header where record_status ='A'",
+        orderBy: "hims_f_inventory_stock_header_id desc"
+      },
+      {
+        searchName: "InvREQEntry",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS * from hims_f_inventory_material_header",
+        orderBy: "hims_f_inventory_material_header_id desc"
+      },
+      {
+        searchName: "InvTransferEntry",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS * from hims_f_inventory_transfer_header",
+        orderBy: "hims_f_inventory_transfer_header_id desc"
+      },
+      {
+        searchName: "InvREQTransEntry",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS * from hims_f_inventory_material_header where authorize1 = 'Y' and authorie2 = 'Y'\
+          and is_completed = 'N'",
+        orderBy: "hims_f_inventory_material_header_id desc"
       }
 
       // visit

@@ -170,6 +170,7 @@ const RequisitionSearch = ($this, e) => {
             data.from_location_type = data.to_location_type;
             data.to_location_type = from_location_type;
 
+            debugger;
             data.dataExitst = true;
 
             for (let i = 0; i < data.pharmacy_stock_detail.length; i++) {

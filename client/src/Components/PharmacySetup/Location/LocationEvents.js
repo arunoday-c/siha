@@ -94,7 +94,7 @@ const insertLocation = ($this, e) => {
         uri: "/pharmacy/addPharmacyLocation",
         data: $this.state,
         onSuccess: response => {
-          if (response.data.success == true) {
+          if (response.data.success === true) {
             resetState($this);
             //Handle Successful Add here
             getLocation($this);

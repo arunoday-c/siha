@@ -1,0 +1,83 @@
+import React, { Component } from "react";
+import "./InvRequisitionList.css";
+import InvRequisitionList from "./InvRequisitionList";
+import InvRequisitionEntry from "../InvRequisitionEntry/InvRequisitionEntry";
+import { getCookie } from "../../../utils/algaehApiCall";
+import { removeGlobal, setGlobal } from "../../../utils/GlobalFunctions";
+
+class RequisitionSwitch extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      RQ_Screen: getCookie("ScreenName").replace("/", "")
+    };
+    this.routeComponents = this.routeComponents.bind(this);
+  }
+
+  routeComponents() {
+    this.setState(
+      {
+        RQ_Screen: Window.global["RQ-STD"],
+        material_requisition_number:
+          Window.global["material_requisition_number"]
+      },
+      () => {
+        this.changeDisplays(Window.global["RQ-STD"]);
+      }
+    );
+  }
+
+  componentWillUnmount() {
+    removeGlobal("RQ-STD");
+  }
+
+  componentList() {
+    return {
+      InvRequisitionList: <InvRequisitionList />,
+      InvRequisitionEntry: (
+        <InvRequisitionEntry
+          material_requisition_number={this.state.material_requisition_number}
+          requisition_auth={true}
+        />
+      )
+    };
+  }
+
+  changeDisplays() {
+    return this.componentList()[this.state.RQ_Screen];
+  }
+
+  render() {
+    return (
+      <div className="front-desk">
+        <div>
+          <button
+            className="d-none"
+            id="rq-router"
+            onClick={this.routeComponents}
+          />
+          <button
+            style={{
+              display:
+                this.state.RQ_Screen === "InvRequisitionList" ? "none" : "block"
+            }}
+            className="btn btn-primary bk-bn"
+            onClick={() => {
+              setGlobal({
+                "RQ-STD": "InvRequisitionList"
+              });
+
+              this.routeComponents();
+            }}
+          >
+            Back
+          </button>
+
+          <div>{this.changeDisplays()}</div>
+        </div>
+      </div>
+    );
+  }
+}
+
+export default RequisitionSwitch;

@@ -94,7 +94,7 @@ const insertItemUOM = ($this, e) => {
         uri: "/inventory/addInventoryUom",
         data: $this.state,
         onSuccess: response => {
-          if (response.data.success == true) {
+          if (response.data.success === true) {
             resetState($this);
             //Handle Successful Add here
             getItemUOM($this);
