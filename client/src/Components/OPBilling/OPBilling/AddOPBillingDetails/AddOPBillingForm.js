@@ -24,6 +24,7 @@ import {
 import ReciptForm from "../ReciptDetails/ReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { successfulMessage } from "../../../../utils/GlobalFunctions";
+import { getCookie } from "../../../../utils/algaehApiCall";
 
 class AddOPBillingForm extends Component {
   constructor(props) {
@@ -309,6 +310,7 @@ class AddOPBillingForm extends Component {
   }
 
   render() {
+    const currencySymbol = getCookie("Currency");
     const opbilservices =
       this.props.opbilservices === undefined ? [] : this.props.opbilservices;
     return (
@@ -661,8 +663,8 @@ class AddOPBillingForm extends Component {
                         />
                         <h6>
                           {this.state.sub_total_amount
-                            ? "₹" + this.state.sub_total_amount
-                            : "₹0.00"}
+                            ? currencySymbol + " " + this.state.sub_total_amount
+                            : currencySymbol + " 0.00"}
                         </h6>
                       </div>
                       <div className="col-lg-4">
@@ -673,8 +675,8 @@ class AddOPBillingForm extends Component {
                         />
                         <h6>
                           {this.state.discount_amount
-                            ? "₹" + this.state.discount_amount
-                            : "₹0.00"}
+                            ? currencySymbol + " " + this.state.discount_amount
+                            : currencySymbol + " 0.00"}
                         </h6>
                       </div>
 
@@ -686,8 +688,8 @@ class AddOPBillingForm extends Component {
                         />
                         <h6>
                           {this.state.net_total
-                            ? "₹" + this.state.net_total
-                            : "₹0.00"}
+                            ? currencySymbol + " " + this.state.net_total
+                            : currencySymbol + " 0.00"}
                         </h6>
                       </div>
                     </div>
@@ -713,8 +715,8 @@ class AddOPBillingForm extends Component {
                           />
                           <h6>
                             {this.state.copay_amount
-                              ? "₹" + this.state.copay_amount
-                              : "₹0.00"}
+                              ? currencySymbol + " " + this.state.copay_amount
+                              : currencySymbol + " 0.00"}
                           </h6>
                         </div>
                         <div className="col-lg-6">
@@ -725,8 +727,10 @@ class AddOPBillingForm extends Component {
                           />
                           <h6>
                             {this.state.deductable_amount
-                              ? "₹" + this.state.deductable_amount
-                              : "₹0.00"}
+                              ? currencySymbol +
+                                " " +
+                                this.state.deductable_amount
+                              : currencySymbol + " 0.00"}
                           </h6>
                         </div>
                         <div className="col-lg-6">
@@ -737,8 +741,10 @@ class AddOPBillingForm extends Component {
                           />
                           <h6>
                             {this.state.sec_copay_amount
-                              ? "₹" + this.state.sec_copay_amount
-                              : "₹0.00"}
+                              ? currencySymbol +
+                                " " +
+                                this.state.sec_copay_amount
+                              : currencySymbol + " 0.00"}
                           </h6>
                         </div>
                         <div className="col-lg-6">
@@ -749,8 +755,10 @@ class AddOPBillingForm extends Component {
                           />
                           <h6>
                             {this.state.sec_deductable_amount
-                              ? "₹" + this.state.sec_deductable_amount
-                              : "₹0.00"}
+                              ? currencySymbol +
+                                " " +
+                                this.state.sec_deductable_amount
+                              : currencySymbol + " 0.00"}
                           </h6>
                         </div>
                       </div>
@@ -770,8 +778,10 @@ class AddOPBillingForm extends Component {
                               />
                               <h6>
                                 {this.state.patient_res
-                                  ? "₹" + this.state.patient_res
-                                  : "₹0.00"}
+                                  ? currencySymbol +
+                                    " " +
+                                    this.state.patient_res
+                                  : currencySymbol + " 0.00"}
                               </h6>
                             </div>
 
@@ -783,8 +793,10 @@ class AddOPBillingForm extends Component {
                               />
                               <h6>
                                 {this.state.patient_tax
-                                  ? "₹" + this.state.patient_tax
-                                  : "₹0.00"}
+                                  ? currencySymbol +
+                                    " " +
+                                    this.state.patient_tax
+                                  : currencySymbol + " 0.00"}
                               </h6>
                             </div>
 
@@ -796,8 +808,10 @@ class AddOPBillingForm extends Component {
                               />
                               <h6>
                                 {this.state.patient_payable_h
-                                  ? "₹" + this.state.patient_payable_h
-                                  : "₹0.00"}
+                                  ? currencySymbol +
+                                    " " +
+                                    this.state.patient_payable_h
+                                  : currencySymbol + " 0.00"}
                               </h6>
                             </div>
                           </div>
@@ -819,8 +833,10 @@ class AddOPBillingForm extends Component {
                               />
                               <h6>
                                 {this.state.company_res
-                                  ? "₹" + this.state.company_res
-                                  : "₹0.00"}
+                                  ? currencySymbol +
+                                    " " +
+                                    this.state.company_res
+                                  : currencySymbol + " 0.00"}
                               </h6>
                             </div>
 
@@ -832,8 +848,10 @@ class AddOPBillingForm extends Component {
                               />
                               <h6>
                                 {this.state.company_tax
-                                  ? "₹" + this.state.company_tax
-                                  : "₹0.00"}
+                                  ? currencySymbol +
+                                    " " +
+                                    this.state.company_tax
+                                  : currencySymbol + " 0.00"}
                               </h6>
                             </div>
 
@@ -845,8 +863,10 @@ class AddOPBillingForm extends Component {
                               />
                               <h6>
                                 {this.state.company_payble
-                                  ? "₹" + this.state.company_payble
-                                  : "₹0.00"}
+                                  ? currencySymbol +
+                                    " " +
+                                    this.state.company_payble
+                                  : currencySymbol + " 0.00"}
                               </h6>
                             </div>
                           </div>
@@ -867,8 +887,10 @@ class AddOPBillingForm extends Component {
                               />
                               <h6>
                                 {this.state.sec_company_res
-                                  ? "₹" + this.state.sec_company_res
-                                  : "₹0.00"}
+                                  ? currencySymbol +
+                                    " " +
+                                    this.state.sec_company_res
+                                  : currencySymbol + " 0.00"}
                               </h6>
                             </div>
 
@@ -880,8 +902,10 @@ class AddOPBillingForm extends Component {
                               />
                               <h6>
                                 {this.state.sec_company_tax
-                                  ? "₹" + this.state.sec_company_tax
-                                  : "₹0.00"}
+                                  ? currencySymbol +
+                                    " " +
+                                    this.state.sec_company_tax
+                                  : currencySymbol + " 0.00"}
                               </h6>
                             </div>
 
@@ -893,8 +917,10 @@ class AddOPBillingForm extends Component {
                               />
                               <h6>
                                 {this.state.sec_company_paybale
-                                  ? "₹" + this.state.sec_company_paybale
-                                  : "₹0.00"}
+                                  ? currencySymbol +
+                                    " " +
+                                    this.state.sec_company_paybale
+                                  : currencySymbol + " 0.00"}
                               </h6>
                             </div>
                           </div>
@@ -1009,8 +1035,8 @@ class AddOPBillingForm extends Component {
                           />
                           <h6>
                             {this.state.advance_amount
-                              ? "₹" + this.state.advance_amount
-                              : "₹0.00"}
+                              ? currencySymbol + " " + this.state.advance_amount
+                              : currencySymbol + " 0.00"}
                           </h6>
                         </div>
 
@@ -1022,8 +1048,8 @@ class AddOPBillingForm extends Component {
                           />
                           <h6>
                             {this.state.net_amount
-                              ? "₹" + this.state.net_amount
-                              : "₹0.00"}
+                              ? currencySymbol + " " + this.state.net_amount
+                              : currencySymbol + " 0.00"}
                           </h6>
                         </div>
 
@@ -1060,8 +1086,10 @@ class AddOPBillingForm extends Component {
                           />
                           <h4>
                             {this.state.receiveable_amount
-                              ? "₹" + this.state.receiveable_amount
-                              : "₹0.00"}
+                              ? currencySymbol +
+                                " " +
+                                this.state.receiveable_amount
+                              : currencySymbol + " 0.00"}
                           </h4>
                         </div>
                       </div>
