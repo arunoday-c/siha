@@ -26,12 +26,13 @@ let addEmployeeSpecialityMaster = (req, res, next) => {
       }
 
       connection.query(
-        "INSERT INTO `hims_d_employee_speciality` (sub_department_id, speciality_code, speciality_name, speciality_desc  ,created_date, created_by, updated_date, updated_by)\
-            VALUE(?,?,?,?,?,?,?,?)",
+        "INSERT INTO `hims_d_employee_speciality` (sub_department_id, speciality_code, speciality_name, arabic_name,speciality_desc  ,created_date, created_by, updated_date, updated_by)\
+            VALUE(?,?,?,?,?,?,?,?,?)",
         [
           input.sub_department_id,
           input.speciality_code,
           input.speciality_name,
+          input.arabic_name,
           input.speciality_desc,
           new Date(),
           input.created_by,
@@ -55,18 +56,24 @@ let addEmployeeSpecialityMaster = (req, res, next) => {
 
 //created by irfan: to get SpecialityMaster
 let getEmployeeSpecialityMaster = (req, res, next) => {
+  let selectWhere = {
+    sub_department_id: "ALL"
+  };
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
 
-    //et where = whereCondition(extend(selectWhere, req.query));
+    let where = whereCondition(extend(selectWhere, req.query));
 
     db.getConnection((error, connection) => {
       connection.query(
         "select hims_d_employee_speciality_id, sub_department_id, speciality_code,\
-        speciality_name, speciality_desc from hims_d_employee_speciality where record_status='A'  order by hims_d_employee_speciality_id desc",
+        speciality_name, arabic_name,speciality_desc from hims_d_employee_speciality where record_status='A' and" +
+          where.condition +
+          " order by hims_d_employee_speciality_id desc",
+        where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
           if (error) {
@@ -97,16 +104,15 @@ let addEmployeeCategoryMaster = (req, res, next) => {
       }
 
       connection.query(
-        "INSERT INTO `hims_d_employee_category` (employee_category_code, employee_category_name, employee_category_desc, employee_category_status, \
-            effective_start_date, effective_end_date,  created_date, created_by, updated_date, updated_by)\
-              VALUE(?,?,?,?,?,?,?,?,?,?)",
+        "INSERT INTO `hims_d_employee_category` (employee_category_code, employee_category_name, arabic_name,employee_category_desc,  \
+            effective_start_date,   created_date, created_by, updated_date, updated_by)\
+              VALUE(?,?,?,?,?,?,?,?,?)",
         [
           input.employee_category_code,
           input.employee_category_name,
+          input.arabic_name,
           input.employee_category_desc,
-          input.employee_category_status,
           input.effective_start_date,
-          input.effective_end_date,
           new Date(),
           input.created_by,
           new Date(),
@@ -129,16 +135,24 @@ let addEmployeeCategoryMaster = (req, res, next) => {
 
 //created by irfan: to get
 let getEmployeeCategoryMaster = (req, res, next) => {
+  let selectWhere = {
+    hims_employee_category_id: "ALL"
+  };
+
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-
+    let where = whereCondition(extend(selectWhere, req.query));
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_employee_category_id, employee_category_code, employee_category_name, employee_category_desc, employee_category_status, \
-          effective_start_date, effective_end_date from hims_d_employee_category where record_status='A' order by hims_employee_category_id desc",
+        "select hims_employee_category_id, employee_category_code, employee_category_name, arabic_name,employee_category_desc, employee_category_status, \
+          effective_start_date, effective_end_date from hims_d_employee_category where record_status='A' and" +
+          where.condition +
+          " order by hims_employee_category_id desc",
+        where.values,
+
         (error, result) => {
           releaseDBConnection(db, connection);
           if (error) {
@@ -183,6 +197,7 @@ let deleteEmployeeCategoryMaster = (req, res, next) => {
     next(e);
   }
 };
+
 //created by irfan: to delete
 let deleteEmployeeSpecialityMaster = (req, res, next) => {
   try {
@@ -227,11 +242,12 @@ let updateEmployeeSpecialityMaster = (req, res, next) => {
       }
 
       connection.query(
-        "UPDATE `hims_d_employee_speciality` SET  speciality_code=?,speciality_name=?,speciality_desc=?,\
+        "UPDATE `hims_d_employee_speciality` SET  speciality_code=?,speciality_name=?, arabic_name=? , speciality_desc=?,\
            updated_date=?, updated_by=?  WHERE  `record_status`='A' and `hims_d_employee_speciality_id`=?;",
         [
           input.speciality_code,
           input.speciality_name,
+          input.arabic_name,
           input.speciality_desc,
           new Date(),
           input.updated_by,
@@ -265,15 +281,15 @@ let updateEmployeeCategoryMaster = (req, res, next) => {
       }
 
       connection.query(
-        "UPDATE `hims_d_employee_category` SET  employee_category_code=?, employee_category_name=?,employee_category_desc=?,\
-         effective_start_date=?, effective_end_date=?,\
+        "UPDATE `hims_d_employee_category` SET  employee_category_code=?, employee_category_name=?,arabic_name=?,employee_category_desc=?,\
+         effective_start_date=?,\
            updated_date=?, updated_by=?  WHERE  `record_status`='A' and `hims_employee_category_id`=?;",
         [
           input.employee_category_code,
           input.employee_category_name,
+          input.arabic_name,
           input.employee_category_desc,
           input.effective_start_date,
-          input.effective_end_date,
 
           new Date(),
           input.updated_by,
@@ -306,8 +322,37 @@ let makeEmployeeCategoryInActive = (req, res, next) => {
         tableName: "hims_d_employee_category",
         id: req.body.hims_employee_category_id,
         query:
-          "UPDATE hims_d_employee_category SET  sub_department_status='I' WHERE hims_employee_category_id=?",
+          "UPDATE hims_d_employee_category SET  employee_category_status='I',effective_end_date=CURDATE() WHERE hims_employee_category_id=?",
         values: [req.body.hims_employee_category_id]
+      },
+      result => {
+        req.records = result;
+        next();
+      },
+      error => {
+        next(error);
+      },
+      true
+    );
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by:irfan to
+let makeEmployeeSpecialityInActive = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    deleteRecord(
+      {
+        db: req.db,
+        tableName: "hims_d_employee_speciality",
+        id: req.body.hims_d_employee_speciality_id,
+        query:
+          "UPDATE hims_d_employee_speciality SET  speciality_status='I' WHERE hims_d_employee_speciality_id=?",
+        values: [req.body.hims_d_employee_speciality_id]
       },
       result => {
         req.records = result;
@@ -378,5 +423,6 @@ module.exports = {
   updateEmployeeSpecialityMaster,
   updateEmployeeCategoryMaster,
   makeEmployeeCategoryInActive,
-  addCategorySpecialityMappings
+  addCategorySpecialityMappings,
+  makeEmployeeSpecialityInActive
 };
