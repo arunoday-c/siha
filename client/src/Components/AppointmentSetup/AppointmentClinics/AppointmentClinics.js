@@ -21,7 +21,8 @@ class AppointmentClinics extends Component {
       appointmentRooms: [],
       description: "",
       description_error: false,
-      description_error_text: ""
+      description_error_text: "",
+      all_docs: []
     };
   }
 
@@ -104,7 +105,8 @@ class AppointmentClinics extends Component {
         if (response.data.success) {
           this.setState({
             departments: response.data.records.departmets,
-            doctors: response.data.records.doctors
+            doctors: response.data.records.doctors,
+            all_docs: response.data.records.doctors
           });
         }
       },
@@ -248,7 +250,7 @@ class AppointmentClinics extends Component {
 
   getDoctorName(id) {
     let doc = Enumerable.from(
-      this.state.doctors.length !== 0 ? this.state.doctors : null
+      this.state.all_docs.length !== 0 ? this.state.all_docs : null
     )
       .where(w => w.employee_id === id)
       .firstOrDefault();
@@ -438,7 +440,7 @@ class AppointmentClinics extends Component {
                         dataSource: {
                           textField: "full_name",
                           valueField: "employee_id",
-                          data: this.state.doctors
+                          data: this.state.all_docs
                         },
                         others: {
                           errormessage: "Doctor - cannot be blank",

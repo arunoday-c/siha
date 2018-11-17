@@ -11,6 +11,7 @@ import Shift from "./Shift/Shift";
 import Category from "./Category/Category";
 import Speciality from "./Speciality/Speciality";
 import UserShiftMapping from "./UserShiftMapping/UserShiftMapping";
+import CategorySpeciality from "./CategorySpecialityMapping/CategorySpeciality";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 
 class BusinessSetup extends Component {
@@ -74,6 +75,20 @@ class BusinessSetup extends Component {
                   <AlgaehLabel
                     label={{
                       fieldName: "category"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"CategorySpeciality"}
+                style={{ marginRight: 2 }}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "category_speciality_map"
                     }}
                   />
                 }
@@ -155,6 +170,8 @@ class BusinessSetup extends Component {
             <Category />
           ) : this.state.pageDisplay === "Speciality" ? (
             <Speciality />
+          ) : this.state.pageDisplay === "CategorySpeciality" ? (
+            <CategorySpeciality />
           ) : null}
         </div>
       </div>

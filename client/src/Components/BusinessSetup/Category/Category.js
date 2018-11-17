@@ -16,11 +16,9 @@ class Category extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      categories: [],
-      departments: []
+      categories: []
     };
     this.getCategories();
-    this.getDepts();
   }
 
   changeTexts(e) {
@@ -35,8 +33,8 @@ class Category extends Component {
 
   clearState() {
     this.setState({
-      category_code: "",
-      category_name: "",
+      employee_category_code: "",
+      employee_category_name: "",
       sub_department_id: null
     });
   }
@@ -48,32 +46,14 @@ class Category extends Component {
     row.update();
   }
 
-  getDepts() {
-    algaehApiCall({
-      uri: "/department/get/subdepartment",
-      method: "GET",
-      onSuccess: response => {
-        if (response.data.success) {
-          this.setState({ departments: response.data.records });
-        }
-      },
-      onFailure: error => {
-        swalMessage({
-          title: error.message,
-          type: "error"
-        });
-      }
-    });
-  }
-
   getCategories() {
     algaehApiCall({
-      uri: "/shiftAndCounter/getShiftMaster",
+      uri: "/specialityAndCategory/getEmployeeCategoryMaster",
       method: "GET",
       data: {},
       onSuccess: response => {
         if (response.data.success) {
-          this.setState({ shifts: response.data.records });
+          this.setState({ categories: response.data.records });
         }
       },
       onFailure: error => {
@@ -145,7 +125,7 @@ class Category extends Component {
 
   deleteSpeciality(data) {
     swal({
-      title: "Delete Speciality " + data.category_name + "?",
+      title: "Delete Speciality " + data.employee_category_name + "?",
       type: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes!",
@@ -191,23 +171,27 @@ class Category extends Component {
     });
   }
 
-  addSpeciality(e) {
+  addCategory(e) {
     e.preventDefault();
 
     AlgaehValidation({
       alertTypeIcon: "warning",
       onSuccess: () => {
         algaehApiCall({
-          uri: "/shiftAndCounter/addShiftMaster",
+          uri: "/specialityAndCategory/addEmployeeCategoryMaster",
           method: "POST",
           data: {
-            category_code: this.state.category_code,
-            category_name: this.state.category_name
+            employee_category_code: this.state.employee_category_code,
+            employee_category_name: this.state.employee_category_name,
+            employee_category_desc: this.state.employee_category_name,
+            arabic_name: this.state.arabic_name,
+            employee_category_status: "A",
+            effective_start_date: this.state.effective_start_date
           },
           onSuccess: response => {
             if (response.data.success) {
               swalMessage({
-                title: "Speciality added Successfully",
+                title: "Category added Successfully",
                 type: "success"
               });
 
@@ -239,8 +223,8 @@ class Category extends Component {
               }}
               textBox={{
                 className: "txt-fld",
-                name: "category_code",
-                value: this.state.category_code,
+                name: "employee_category_code",
+                value: this.state.employee_category_code,
                 events: {
                   onChange: this.changeTexts.bind(this)
                 }
@@ -254,8 +238,8 @@ class Category extends Component {
               }}
               textBox={{
                 className: "txt-fld",
-                name: "category_name",
-                value: this.state.category_name,
+                name: "employee_category_name",
+                value: this.state.employee_category_name,
                 events: {
                   onChange: this.changeTexts.bind(this)
                 }
@@ -287,8 +271,7 @@ class Category extends Component {
                 className: "txt-fld",
                 name: "effective_start_date"
               }}
-              disabled={!this.state.effective_start_date}
-              minDate={new Date()}
+              // maxDate={new Date()}
               events={{
                 onChange: selDate => {
                   this.setState({
@@ -302,7 +285,7 @@ class Category extends Component {
             <div className="col margin-top-15">
               <button
                 type="submit"
-                onClick={this.addSpeciality.bind(this)}
+                onClick={this.addCategory.bind(this)}
                 className="btn btn-primary"
               >
                 <AlgaehLabel
@@ -323,12 +306,12 @@ class Category extends Component {
               datavalidate="data-validate='specialityDiv'"
               columns={[
                 {
-                  fieldName: "category_code",
+                  fieldName: "employee_category_code",
                   label: <AlgaehLabel label={{ fieldName: "category_code" }} />,
                   disabled: true
                 },
                 {
-                  fieldName: "category_name",
+                  fieldName: "employee_category_name",
                   label: <AlgaehLabel label={{ fieldName: "category_name" }} />,
                   editorTemplate: row => {
                     return (
@@ -336,8 +319,8 @@ class Category extends Component {
                         div={{ className: "col" }}
                         textBox={{
                           className: "txt-fld",
-                          name: "category_name",
-                          value: row.category_name,
+                          name: "employee_category_name",
+                          value: row.employee_category_name,
                           events: {
                             onChange: this.changeGridEditors.bind(this, row)
                           },
@@ -374,14 +357,14 @@ class Category extends Component {
                   }
                 },
                 {
-                  fieldName: "sub_department_id",
-                  label: (
-                    <AlgaehLabel label={{ fieldName: "sub_department_id" }} />
-                  ),
+                  fieldName: "employee_category_status",
+                  label: <AlgaehLabel label={{ fieldName: "status" }} />,
                   displayTemplate: row => {
                     return (
                       <span>
-                        {row.shift_status === "A" ? "Active" : "Inactive"}
+                        {row.employee_category_status === "A"
+                          ? "Active"
+                          : "Inactive"}
                       </span>
                     );
                   },
@@ -390,13 +373,13 @@ class Category extends Component {
                       <AlagehAutoComplete
                         div={{ className: "col" }}
                         selector={{
-                          name: "sub_department_id",
+                          name: "employee_category_status",
                           className: "select-fld",
-                          value: row.shift_status,
+                          value: row.employee_category_status,
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: this.state.departments
+                            data: GlobalVariables.FORMAT_STATUS
                           },
                           others: {
                             errormessage: "Status - cannot be blank",

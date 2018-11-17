@@ -59,5 +59,7 @@
   "speciality_name": "Speciality Name",
   "category": "Category",
   "category_code": "Category Code",
-  "category_name": "Category Name"
+  "category_name": "Category Name",
+  "category_speciality_map": "Category Speciality Mapping",
+  "description": "Description"
 }

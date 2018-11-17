@@ -182,14 +182,11 @@ class AppointmentRooms extends Component {
               }}
               textBox={{
                 className: "txt-fld",
-                name: "roomName",
+                name: "description",
                 value: this.state.description,
                 events: {
                   onChange: this.changeTexts.bind(this)
-                },
-
-                error: this.state.description_error,
-                helperText: this.state.description_error_text
+                }
               }}
             />
 

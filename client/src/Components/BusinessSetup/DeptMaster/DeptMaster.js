@@ -753,23 +753,6 @@ class DeptMaster extends Component {
                 helperText: this.state.department_name_arabic_error_text
               }}
             />
-            <AlgaehDateHandler
-              div={{ className: "col" }}
-              label={{ fieldName: "effective_start_date", isImp: true }}
-              textBox={{
-                className: "txt-fld",
-                name: "effective_start_date",
-                error: this.state.effective_start_date_error,
-                helperText: this.state.effective_start_date_error_text
-              }}
-              maxDate={new Date()}
-              events={{
-                onChange: date => {
-                  this.setState({ effective_start_date: date });
-                }
-              }}
-              value={this.state.effective_start_date}
-            />
 
             <AlagehAutoComplete
               div={{ className: "col" }}
@@ -787,6 +770,24 @@ class DeptMaster extends Component {
                 },
                 onChange: this.dropDownHandle.bind(this)
               }}
+            />
+
+            <AlgaehDateHandler
+              div={{ className: "col" }}
+              label={{ fieldName: "effective_start_date", isImp: true }}
+              textBox={{
+                className: "txt-fld",
+                name: "effective_start_date",
+                error: this.state.effective_start_date_error,
+                helperText: this.state.effective_start_date_error_text
+              }}
+              maxDate={new Date()}
+              events={{
+                onChange: date => {
+                  this.setState({ effective_start_date: date });
+                }
+              }}
+              value={this.state.effective_start_date}
             />
 
             <div className="col align-middle">

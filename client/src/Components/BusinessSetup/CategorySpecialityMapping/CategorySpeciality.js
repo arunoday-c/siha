@@ -1,34 +1,35 @@
 import React, { Component } from "react";
-import "./currency.css";
+import "./cat_spl_map.css";
 import {
+  AlgaehLabel,
+  AlagehAutoComplete,
   AlagehFormGroup,
   AlgaehDataGrid,
-  AlagehAutoComplete,
-  AlgaehLabel
+  AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
-import GlobalVariables from "../../../utils/GlobalVariables.json";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import swal from "sweetalert2";
-import { AlgaehValidation } from "../../../utils/GlobalFunctions";
+import GlobalVariables from "../../../utils/GlobalVariables.json";
 
-class Currency extends Component {
+class CategorySpeciality extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currency_code: "",
-      currency_description: ""
+      categories: [],
+      specialities: []
     };
-    this.getCurrency();
+
+    this.getCategories();
+    this.getSpecialities();
   }
 
-  getCurrency() {
+  getCategories() {
     algaehApiCall({
-      uri: "/currency/getCurrencyMaster",
+      uri: "/specialityAndCategory/getEmployeeCategoryMaster",
       method: "GET",
       data: {},
       onSuccess: response => {
         if (response.data.success) {
-          this.setState({ currencies: response.data.records });
+          this.setState({ categories: response.data.records });
         }
       },
       onFailure: error => {
@@ -39,73 +40,14 @@ class Currency extends Component {
       }
     });
   }
-
-  deleteCurrency(data) {
-    swal({
-      title: "Delete the currency " + data.currency_description + "?",
-      type: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes!",
-      confirmButtonColor: "#",
-      cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
-      if (willDelete.value) {
-        algaehApiCall({
-          uri: "/currency/deleteCurrencyMaster",
-          data: {
-            hims_d_currency_id: data.hims_d_currency_id
-          },
-          method: "DELETE",
-          onSuccess: response => {
-            if (response.data.success) {
-              swalMessage({
-                title: "Record deleted successfully . .",
-                type: "success"
-              });
-
-              this.getCurrency();
-            }
-          },
-          onFailure: error => {
-            swalMessage({
-              title: error.message,
-              type: "error"
-            });
-          }
-        });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "warning"
-        });
-      }
-    });
-  }
-
-  updateCurrency(data) {
-    debugger;
+  getSpecialities() {
     algaehApiCall({
-      uri: "/currency/updateCurrencyMaster",
-      data: {
-        currency_code: data.currency_code,
-        currency_description: data.currency_description,
-        symbol: data.symbol,
-        decimal_places: data.decimal_places,
-        symbol_position: data.symbol_position,
-        thousand_separator: data.thousand_separator,
-        decimal_separator: data.decimal_separator,
-        negative_separator: data.negative_separator,
-        hims_d_currency_id: data.hims_d_currency_id
-      },
-      method: "PUT",
+      uri: "/specialityAndCategory/getEmployeeSpecialityMaster",
+      method: "GET",
+      data: {},
       onSuccess: response => {
         if (response.data.success) {
-          swalMessage({
-            title: "Record updated successfully . .",
-            type: "success"
-          });
-          this.getCurrency();
+          this.setState({ specialities: response.data.records });
         }
       },
       onFailure: error => {
@@ -114,19 +56,6 @@ class Currency extends Component {
           type: "error"
         });
       }
-    });
-  }
-
-  resetSaveState() {
-    this.setState({
-      currency_code: "",
-      currency_description: "",
-      symbol: "",
-      decimal_places: "",
-      symbol_position: "",
-      thousand_separator: "",
-      decimal_separator: "",
-      negative_separator: ""
     });
   }
 
@@ -136,206 +65,95 @@ class Currency extends Component {
     });
   }
 
-  dropDownHandle(value) {
+  handleDropDown(value) {
     this.setState({
       [value.name]: value.value
     });
   }
 
-  changeGridEditors(row, e) {
-    let name = e.name || e.target.name;
-    let value = e.value || e.target.value;
-    row[name] = value;
-    row.update();
-  }
-
-  addCurrencyCodes(e) {
-    e.preventDefault();
-    AlgaehValidation({
-      alertTypeIcon: "warning",
-      onSuccess: () => {
-        algaehApiCall({
-          uri: "/currency/addCurrencyMaster",
-          method: "POST",
-          data: {
-            currency_code: this.state.currency_code,
-            currency_description: this.state.currency_description,
-            currency_symbol: this.state.currency_symbol,
-            decimal_places: this.state.decimal_places,
-            symbol_position: this.state.symbol_position,
-            thousand_separator: this.state.thousand_separator,
-            decimal_separator: this.state.decimal_separator,
-            negative_separator: this.state.negative_separator
-          },
-          onSuccess: response => {
-            if (response.data.success) {
-              swalMessage({
-                title: "currency added Successfully",
-                type: "success"
-              });
-
-              this.getCurrency();
-              this.resetSaveState();
-            }
-          },
-          onFailure: error => {
-            swalMessage({
-              title: error.response.data.message,
-              type: "error"
-            });
-          }
-        });
-      }
-    });
-  }
+  mapCatSpl(e) {}
 
   render() {
     return (
-      <div className="currency">
+      <div className="cat_spl_map">
         <div className="col-lg-12">
           <div className="row">
-            <AlagehFormGroup
+            <AlagehAutoComplete
               div={{ className: "col" }}
               label={{
-                fieldName: "currency_code",
+                fieldName: "category",
                 isImp: true
               }}
-              textBox={{
-                className: "txt-fld",
-                name: "currency_code",
-                value: this.state.currency_code,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                }
+              selector={{
+                name: "category_id",
+                className: "select-fld",
+                value: this.state.category_id,
+                dataSource: {
+                  textField: "employee_category_name",
+                  valueField: "hims_employee_category_id",
+                  data: this.state.categories
+                },
+                onChange: this.handleDropDown.bind(this)
               }}
             />
-            <AlagehFormGroup
+            <AlagehAutoComplete
               div={{ className: "col" }}
               label={{
-                fieldName: "currency_description",
+                fieldName: "speciality",
                 isImp: true
               }}
-              textBox={{
-                className: "txt-fld",
-                name: "currency_description",
-                value: this.state.currency_description,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                }
+              selector={{
+                name: "speciality_id",
+                className: "select-fld",
+                value: this.state.speciality_id,
+                dataSource: {
+                  textField: "speciality_name",
+                  valueField: "hims_d_employee_speciality_id",
+                  data: this.state.specialities
+                },
+                onChange: this.handleDropDown.bind(this)
               }}
             />
+
             <AlagehFormGroup
               div={{ className: "col" }}
               label={{
-                fieldName: "symbol",
+                fieldName: "description",
                 isImp: true
               }}
               textBox={{
                 className: "txt-fld",
-                name: "currency_symbol",
-                value: this.state.currency_symbol,
+                name: "description",
+                value: this.state.description,
                 events: {
                   onChange: this.changeTexts.bind(this)
                 }
               }}
             />
 
-            <AlagehAutoComplete
+            <AlgaehDateHandler
               div={{ className: "col" }}
               label={{
-                fieldName: "decimal_places",
-                isImp: true
+                fieldName: "effective_start_date"
               }}
-              selector={{
-                name: "decimal_places",
-                className: "select-fld",
-                value: this.state.decimal_places,
-                dataSource: {
-                  textField: "name",
-                  valueField: "value",
-                  data: GlobalVariables.DECIMAL_PLACES
-                },
-                onChange: this.dropDownHandle.bind(this)
+              textBox={{
+                className: "txt-fld",
+                name: "effective_start_date"
               }}
-            />
-            <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{
-                fieldName: "symbol_position",
-                isImp: true
+              // maxDate={new Date()}
+              events={{
+                onChange: selDate => {
+                  this.setState({
+                    effective_start_date: selDate
+                  });
+                }
               }}
-              selector={{
-                name: "symbol_position",
-                className: "select-fld",
-                value: this.state.symbol_position,
-                dataSource: {
-                  textField: "name",
-                  valueField: "value",
-                  data: GlobalVariables.SYMBOL_POSITION
-                },
-                onChange: this.dropDownHandle.bind(this)
-              }}
-            />
-          </div>
-          <div className="row">
-            <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{
-                fieldName: "thousand_separator",
-                isImp: true
-              }}
-              selector={{
-                name: "thousand_separator",
-                className: "select-fld",
-                value: this.state.thousand_separator,
-                dataSource: {
-                  textField: "name",
-                  valueField: "value",
-                  data: GlobalVariables.THOUSAND_SEPARATOR
-                },
-                onChange: this.dropDownHandle.bind(this)
-              }}
-            />
-            <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{
-                fieldName: "decimal_separator",
-                isImp: true
-              }}
-              selector={{
-                name: "decimal_separator",
-                className: "select-fld",
-                value: this.state.decimal_separator,
-                dataSource: {
-                  textField: "name",
-                  valueField: "value",
-                  data: GlobalVariables.DECIMAL_SEPARATOR
-                },
-                onChange: this.dropDownHandle.bind(this)
-              }}
-            />
-            <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{
-                fieldName: "negative_separator",
-                isImp: true
-              }}
-              selector={{
-                name: "negative_separator",
-                className: "select-fld",
-                value: this.state.negative_separator,
-                dataSource: {
-                  textField: "name",
-                  valueField: "value",
-                  data: GlobalVariables.NEGATIVE_SEPARATOR
-                },
-                onChange: this.dropDownHandle.bind(this)
-              }}
+              value={this.state.effective_start_date}
             />
 
             <div className="col">
               <button
-                onClick={this.addCurrencyCodes.bind(this)}
+                onClick={this.mapCatSpl.bind(this)}
                 style={{ marginTop: 21 }}
                 className="btn btn-primary"
               >
@@ -612,8 +430,8 @@ class Currency extends Component {
               paging={{ page: 0, rowsPerPage: 10 }}
               events={{
                 onEdit: () => {},
-                onDelete: this.deleteCurrency.bind(this),
-                onDone: this.updateCurrency.bind(this)
+                onDelete: () => {},
+                onDone: () => {}
               }}
             />
           </div>
@@ -623,4 +441,4 @@ class Currency extends Component {
   }
 }
 
-export default Currency;
+export default CategorySpeciality;

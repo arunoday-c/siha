@@ -10,6 +10,7 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import swal from "sweetalert2";
+import Enumerable from "linq";
 
 class Speciality extends Component {
   constructor(props) {
@@ -36,6 +37,7 @@ class Speciality extends Component {
     this.setState({
       speciality_code: "",
       speciality_name: "",
+      arabic_name: "",
       sub_department_id: null
     });
   }
@@ -67,12 +69,12 @@ class Speciality extends Component {
 
   getSpeciality() {
     algaehApiCall({
-      uri: "/getEmployeeSpecialityMaster",
+      uri: "/specialityAndCategory/getEmployeeSpecialityMaster",
       method: "GET",
       data: {},
       onSuccess: response => {
         if (response.data.success) {
-          this.setState({ shifts: response.data.records });
+          this.setState({ specialities: response.data.records });
         }
       },
       onFailure: error => {
@@ -154,7 +156,7 @@ class Speciality extends Component {
     }).then(willDelete => {
       if (willDelete.value) {
         algaehApiCall({
-          uri: "/department/deleteDepartment",
+          uri: "/specialityAndCategory/deleteEmployeeSpecialityMaster",
           data: {
             hims_d_employee_speciality_id: data.hims_d_employee_speciality_id
           },
@@ -197,7 +199,7 @@ class Speciality extends Component {
       alertTypeIcon: "warning",
       onSuccess: () => {
         algaehApiCall({
-          uri: "/shiftAndCounter/addShiftMaster",
+          uri: "/specialityAndCategory/addEmployeeSpecialityMaster",
           method: "POST",
           data: {
             speciality_code: this.state.speciality_code,
@@ -376,12 +378,20 @@ class Speciality extends Component {
                 {
                   fieldName: "sub_department_id",
                   label: (
-                    <AlgaehLabel label={{ fieldName: "sub_department_id" }} />
+                    <AlgaehLabel label={{ fieldName: "department_name" }} />
                   ),
                   displayTemplate: row => {
+                    debugger;
+                    let x = Enumerable.from(this.state.departments)
+                      .where(
+                        w =>
+                          w.hims_d_sub_department_id === row.sub_department_id
+                      )
+                      .firstOrDefault();
+
                     return (
                       <span>
-                        {row.shift_status === "A" ? "Active" : "Inactive"}
+                        {x !== undefined ? x.sub_department_name : ""}
                       </span>
                     );
                   },
