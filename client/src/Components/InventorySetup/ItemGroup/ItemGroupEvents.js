@@ -95,7 +95,7 @@ const insertItemGroup = ($this, e) => {
         uri: "/inventory/addItemGroup",
         data: $this.state,
         onSuccess: response => {
-          if (response.data.success == true) {
+          if (response.data.success === true) {
             resetState($this);
             //Handle Successful Add here
             getItemGroup($this);

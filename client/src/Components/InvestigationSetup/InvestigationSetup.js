@@ -3,10 +3,6 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import Edit from "@material-ui/icons/Edit";
-import IconButton from "@material-ui/core/IconButton";
-// import AddCircle from "@material-ui/icons/AddCircle";
-// import Update from "@material-ui/icons/Update";
 import Enumerable from "linq";
 import "./InvestigationSetup.css";
 import "../../styles/site.css";
@@ -23,12 +19,10 @@ import {
   EditInvestigationTest
 } from "./InvestigationSetupEvent";
 
-import BreadCrumb from "../common/BreadCrumb/BreadCrumb";
 import { FORMAT_LAB_RAD } from "../../utils/GlobalVariables.json";
 import moment from "moment";
 import Options from "../../Options.json";
 import NewInvestigation from "./NewInvestigation/NewInvestigation";
-import AppBar from "@material-ui/core/AppBar";
 
 class InvestigationSetup extends Component {
   constructor(props) {
@@ -251,7 +245,7 @@ class InvestigationSetup extends Component {
             </div>
             <div className="actions">
               <a
-                href="javascript:;"
+                // href="javascript:;"
                 class="btn btn-primary btn-circle active"
                 onClick={this.ShowModel.bind(this)}
               >

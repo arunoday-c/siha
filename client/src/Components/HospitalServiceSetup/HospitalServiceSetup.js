@@ -3,8 +3,6 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import Edit from "@material-ui/icons/Edit";
-import IconButton from "@material-ui/core/IconButton";
 import Enumerable from "linq";
 import "./HospitalServiceSetup.css";
 import "../../styles/site.css";
@@ -15,10 +13,10 @@ import {
 } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
 import HospitalServices from "./HospitalServices/HospitalServices";
-import BreadCrumb from "../common/BreadCrumb/BreadCrumb";
+
 import moment from "moment";
 import Options from "../../Options.json";
-import AppBar from "@material-ui/core/AppBar";
+
 import { getCookie } from "../../utils/algaehApiCall";
 import { setGlobal } from "../../utils/GlobalFunctions";
 import { texthandle, getHospotalServices } from "./HospitalServiceSetupEvents";
@@ -247,7 +245,7 @@ class HospitalServiceSetup extends Component {
                   value: this.state.sub_department_id,
                   dataSource: {
                     textField:
-                      this.state.selectedLang == "en"
+                      this.state.selectedLang === "en"
                         ? "sub_department_name"
                         : "arabic_sub_department_name",
                     valueField: "hims_d_sub_department_id",
@@ -268,7 +266,7 @@ class HospitalServiceSetup extends Component {
                   value: this.state.hospital_id,
                   dataSource: {
                     textField:
-                      this.state.selectedLang == "en"
+                      this.state.selectedLang === "en"
                         ? "hospital_name"
                         : "arabic_hospital_name",
                     valueField: "hims_d_hospital_id",
@@ -289,7 +287,7 @@ class HospitalServiceSetup extends Component {
                   value: this.state.service_type_id,
                   dataSource: {
                     textField:
-                      this.state.selectedLang == "en"
+                      this.state.selectedLang === "en"
                         ? "service_type"
                         : "arabic_service_type",
                     valueField: "hims_d_service_type_id",
@@ -468,7 +466,7 @@ class HospitalServiceSetup extends Component {
                         <AlgaehLabel label={{ fieldName: "vat_applicable" }} />
                       ),
                       displayTemplate: row => {
-                        return row.vat_applicable == "Y" ? "Yes" : "No";
+                        return row.vat_applicable === "Y" ? "Yes" : "No";
                       }
                     },
                     {

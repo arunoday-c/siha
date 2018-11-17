@@ -78,7 +78,7 @@ const unsuccessfulSignIn = (message, title) => {
 const doctorselectedHandeler = ($this, context, e) => {
   if ($this.state.sub_department_id !== null) {
     let employee_list = Enumerable.from($this.props.providers)
-      .where(w => w.hims_d_employee_id == e.value)
+      .where(w => w.hims_d_employee_id === e.value)
       .toArray();
     let doctor_name = "";
     if (employee_list !== null && employee_list.length > 0) {
@@ -90,7 +90,7 @@ const doctorselectedHandeler = ($this, context, e) => {
           uri: "/visit/checkVisitExists",
           data: $this.state,
           onSuccess: response => {
-            if (response.data.success == true) {
+            if (response.data.success === true) {
               $this.setState(
                 {
                   [e.name]: e.value,

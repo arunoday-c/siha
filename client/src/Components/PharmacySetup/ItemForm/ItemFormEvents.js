@@ -92,7 +92,7 @@ const insertItemForm = ($this, e) => {
         uri: "/pharmacy/addItemForm",
         data: $this.state,
         onSuccess: response => {
-          if (response.data.success == true) {
+          if (response.data.success === true) {
             resetState($this);
             //Handle Successful Add here
             getItemForm($this);

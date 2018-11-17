@@ -107,7 +107,7 @@ const insertLocationPermission = ($this, e) => {
         uri: "/inventory/addLocationPermission",
         data: $this.state,
         onSuccess: response => {
-          if (response.data.success == true) {
+          if (response.data.success === true) {
             //Handle Successful Add here
             getLocationPermission($this);
 
