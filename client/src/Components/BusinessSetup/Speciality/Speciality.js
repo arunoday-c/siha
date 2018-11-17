@@ -203,7 +203,10 @@ class Speciality extends Component {
           method: "POST",
           data: {
             speciality_code: this.state.speciality_code,
-            speciality_name: this.state.speciality_name
+            speciality_name: this.state.speciality_name,
+            speciality_desc: this.state.speciality_name,
+            sub_department_id: this.state.sub_department_id,
+            arabic_name: this.state.arabic_name
           },
           onSuccess: response => {
             if (response.data.success) {
@@ -404,9 +407,49 @@ class Speciality extends Component {
                           className: "select-fld",
                           value: row.shift_status,
                           dataSource: {
+                            textField: "sub_department_name",
+                            valueField: "hims_d_sub_department_id",
+                            data: this.state.departments
+                          },
+                          others: {
+                            errormessage: "Status - cannot be blank",
+                            required: true
+                          },
+                          onChange: this.changeGridEditors.bind(this, row)
+                        }}
+                      />
+                    );
+                  }
+                },
+                {
+                  fieldName: "effective_start_date",
+                  label: (
+                    <AlgaehLabel
+                      label={{ fieldName: "effective_start_date" }}
+                    />
+                  )
+                },
+                {
+                  fieldName: "speciality_status",
+                  label: <label className="style_Label">Status</label>,
+                  displayTemplate: row => {
+                    return row.speciality_status === "A"
+                      ? "Active"
+                      : row.speciality_status === "I"
+                      ? "Inactive"
+                      : "----------";
+                  },
+                  editorTemplate: row => {
+                    return (
+                      <AlagehAutoComplete
+                        selector={{
+                          name: "speciality_status",
+                          className: "select-fld",
+                          value: row.speciality_status,
+                          dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: this.state.departments
+                            data: GlobalVariables.FORMAT_STATUS
                           },
                           others: {
                             errormessage: "Status - cannot be blank",

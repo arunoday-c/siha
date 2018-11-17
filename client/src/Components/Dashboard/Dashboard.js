@@ -95,7 +95,7 @@ class Dashboard extends Component {
       },
       afterSuccess: data => {
         debugger;
-        if (data.length != 0) {
+        if (data.length > 0) {
           setCookie("Currency", data[0].currency_symbol, 30);
           setCookie("Position", data[0].symbol_position, 30);
         }
