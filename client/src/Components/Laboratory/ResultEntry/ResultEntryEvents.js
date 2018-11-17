@@ -11,13 +11,13 @@ const texthandle = ($this, e) => {
 };
 
 const UpdateLabOrder = ($this, value, status) => {
-  debugger;
+  
   algaehApiCall({
     uri: "/laboratory/updateLabResultEntry",
     data: value,
     method: "PUT",
     onSuccess: response => {
-      debugger;
+      
       if (response.data.success === true) {
         swalMessage({
           type: "success",
@@ -176,7 +176,7 @@ const onchangegridcol = ($this, row, e) => {
 };
 
 const resultEntryUpdate = $this => {
-  debugger;
+  
   let test_analytes = $this.state.test_analytes;
   let enterResult = true;
   let enterRemarks = true;
@@ -246,7 +246,7 @@ const onconfirm = $this => {
       cancelButtonText: "No"
     }).then(willProceed => {
       if (willProceed.value) {
-        debugger;
+        
         test_analytes.push({ run_type: $this.state.run_type });
         UpdateLabOrder($this, test_analytes, "CF");
       }
@@ -255,7 +255,7 @@ const onconfirm = $this => {
 };
 
 const onReRun = $this => {
-  debugger;
+  
   let test_analytes = $this.state.test_analytes;
   let success = true;
   let runtype = [];

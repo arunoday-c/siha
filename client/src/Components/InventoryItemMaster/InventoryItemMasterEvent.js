@@ -10,7 +10,7 @@ const getItems = $this => {
 };
 
 const EditItemMaster = ($this, row) => {
-  debugger;
+  
   row.addNew = false;
   $this.setState({
     isOpen: !$this.state.isOpen,

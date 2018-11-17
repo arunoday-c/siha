@@ -48,7 +48,7 @@ const showconfirmDialog = ($this, row) => {
           }
         },
         onFailure: error => {
-          debugger;
+          
           swalMessage({
             title: error.response.data.message,
             type: "error"
@@ -69,7 +69,7 @@ const deleteNetWorkPlan = ($this, row) => {
 };
 
 const UpdateNetworkPlan = ($this, row) => {
-  debugger;
+  
   let updateobj = {
     hims_d_insurance_network_id: row.hims_d_insurance_network_id,
     network_type: row.network_type,

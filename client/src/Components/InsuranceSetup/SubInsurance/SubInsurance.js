@@ -49,14 +49,14 @@ class SubInsurance extends PureComponent {
   }
 
   componentWillMount() {
-    debugger;
+    
     let InputOutput = this.props.InsuranceSetup;
     InputOutput.maxDate_end_date = InputOutput.effective_end_date;
     this.setState({ ...this.state, ...InputOutput });
   }
 
   componentDidMount() {
-    debugger;
+    
     if (this.state.insurance_provider_id !== null) {
       getSubInsuranceDetails(this, this);
       // this.props.getSubInsuranceDetails({

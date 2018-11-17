@@ -2,7 +2,7 @@ import moment from "moment";
 import Options from "../../../Options.json";
 
 const changeTexts = ($this, ctrl, e) => {
-  debugger;
+  
   e = ctrl || e;
   if (e.value === undefined) {
     $this.setState({ [e]: null }, () => {

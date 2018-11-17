@@ -276,7 +276,7 @@ class HistoricalData extends Component {
                       Header: "Recorded Time",
                       accessor: "visit_time"
                       // Cell: row => {
-                      //   debugger;
+                      //   
                       //   return (
                       //     <span>
                       //       {moment(row.value, "HH:MM:SS").format("HH:MM A")}

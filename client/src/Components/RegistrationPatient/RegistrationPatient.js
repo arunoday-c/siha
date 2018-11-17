@@ -92,7 +92,7 @@ class RegistrationPatient extends PureComponent {
     ) {
       this.getCtrlCode(this.props.patient_code);
     } else if (this.props.patient_details !== undefined) {
-      debugger;
+      
 
       this.setState(
         {
@@ -141,7 +141,7 @@ class RegistrationPatient extends PureComponent {
       }
     });
 
-    debugger;
+    
 
     if (
       this.props.hospitaldetails === undefined ||
@@ -228,7 +228,7 @@ class RegistrationPatient extends PureComponent {
       if (this.state.unbalanced_amount === 0) {
         this.GenerateReciept($this => {
           AlgaehLoader({ show: true });
-          debugger;
+          
           if ($this.state.hims_d_patient_id === null) {
             let patientdata = {};
 
@@ -313,7 +313,7 @@ class RegistrationPatient extends PureComponent {
   };
 
   componentWillReceiveProps(nextProps) {
-    debugger;
+    
     if (
       nextProps.genbill !== undefined &&
       nextProps.genbill.length !== 0 &&
@@ -573,7 +573,7 @@ class RegistrationPatient extends PureComponent {
             value={{
               state: this.state,
               updateState: obj => {
-                debugger;
+                
                 this.setState({ ...obj });
               }
             }}

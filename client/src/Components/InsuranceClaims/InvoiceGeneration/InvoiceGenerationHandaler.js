@@ -38,7 +38,7 @@ const VisitSearch = ($this, e) => {
           //       mappingName: "existinsurance"
           //     },
           //     afterSuccess: data => {
-          //       debugger;
+          //       
           //       data[0].mode_of_pay = "2";
           //       $this.setState(data[0]);
           //     }
@@ -74,7 +74,7 @@ const getVisitWiseBillDetailS = $this => {
           .select(w => w.discount_amout)
           .sum();
         //created by Adnan
-        debugger;
+        
 
         for (let i = 0; i < data.length; i++) {
           data[i].service_id = data[i].services_id;
@@ -123,7 +123,7 @@ const getOrderServices = $this => {
 };
 
 const FinalizedAndInvoice = $this => {
-  debugger;
+  
   let NotBilled = Enumerable.from($this.props.orderedserviceslist)
     .where(w => w.billed === "N")
     .toArray();
@@ -198,7 +198,7 @@ const ClearData = $this => {
 };
 
 const getCtrlCode = ($this, docNumber) => {
-  debugger;
+  
   AlgaehLoader({ show: true });
   $this.props.getInvoiceGeneration({
     uri: "/invoiceGeneration/getInvoiceGeneration",
@@ -210,7 +210,7 @@ const getCtrlCode = ($this, docNumber) => {
       mappingName: "invoiceGen"
     },
     afterSuccess: data => {
-      debugger;
+      
       data.generateVoice = false;
       data.clearEnable = false;
 

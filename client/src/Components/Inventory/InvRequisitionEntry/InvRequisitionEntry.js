@@ -90,11 +90,11 @@ class InvRequisitionEntry extends Component {
   }
 
   componentWillUnmount() {
-    debugger;
+    
     ClearData(this, this);
   }
   render() {
-    debugger;
+    
     return (
       <React.Fragment>
         <div>

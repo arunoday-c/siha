@@ -36,7 +36,7 @@ const PatientSearch = ($this, e) => {
       callBack(text);
     },
     onRowSelect: row => {
-      debugger;
+      
       $this.setState(
         {
           patient_code: row.patient_code,
@@ -115,7 +115,7 @@ const getSampleCollectionDetails = $this => {
       mappingName: "samplecollection"
     },
     afterSuccess: data => {
-      debugger;
+      
       let sample_collection = Enumerable.from(data)
         .groupBy("$.visit_id", null, (k, g) => {
           let firstRecordSet = Enumerable.from(g).firstOrDefault();

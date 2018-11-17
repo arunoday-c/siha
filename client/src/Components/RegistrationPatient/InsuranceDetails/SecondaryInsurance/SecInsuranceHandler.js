@@ -79,7 +79,7 @@ const datehandle = ($this, context, ctrl, e) => {
 };
 
 const enddatehandle = ($this, context, ctrl, e) => {
-  debugger;
+  
   if (
     Date.parse(moment(ctrl)._d) >
     Date.parse($this.state.sec_insurance_effective_end_date)

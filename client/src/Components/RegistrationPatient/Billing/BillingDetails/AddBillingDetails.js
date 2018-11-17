@@ -236,7 +236,7 @@ const datehandle = ($this, context, ctrl, e) => {
 };
 
 const ProcessInsurance = ($this, context, ctrl, e) => {
-  debugger;
+  
   if (
     $this.state.insured === "Y" &&
     ($this.state.primary_insurance_provider_id == null ||
@@ -311,7 +311,7 @@ const ProcessInsurance = ($this, context, ctrl, e) => {
 };
 
 const checkcashhandaler = ($this, context, e) => {
-  debugger;
+  
   let Cashchecked = e.target.checked;
   $this.setState(
     {
@@ -418,7 +418,7 @@ const credittextCal = ($this, e) => {
 };
 
 const cashtexthCal = ($this, e) => {
-  debugger;
+  
   if (e.target.value !== e.target.oldvalue) {
     calculateRecipt($this);
   }

@@ -53,7 +53,7 @@ class RegistrationPatientAr extends Component {
     setGlobal({ selectedLang: "en" });
   }
   componentDidMount() {
-    debugger;
+    
 
     let prevLang = getCookie("Language");
     setGlobal({ selectedLang: prevLang });
@@ -86,7 +86,7 @@ class RegistrationPatientAr extends Component {
     let IOputs = emptyObject;
 
     this.setState(IOputs, () => {
-      debugger;
+      
     });
   }
 
@@ -139,7 +139,7 @@ class RegistrationPatientAr extends Component {
     }
   }
   SavePatientDetails(e) {
-    debugger;
+    
     const err = Validations(this);
 
     if (!err) {
@@ -286,14 +286,14 @@ class RegistrationPatientAr extends Component {
         mappingName: "patients"
       },
       afterSuccess: data => {
-        debugger;
+        
         if (data.response === undefined) {
           data.patientRegistration.visitDetails = data.visitDetails;
           data.patientRegistration.patient_id =
             data.patientRegistration.hims_d_patient_id;
           data.patientRegistration.existingPatient = true;
 
-          debugger;
+          
           data.patientRegistration.filePreview =
             "data:image/png;base64, " + data.patient_Image;
           $this.setState(data.patientRegistration);
@@ -313,7 +313,7 @@ class RegistrationPatientAr extends Component {
             data.patientRegistration.patient_id =
               data.patientRegistration.hims_d_patient_id;
             data.patientRegistration.existingPatient = true;
-            debugger;
+            
             data.patientRegistration.filePreview =
               "data:image/png;base64, " + data.patient_Image;
             data.patientRegistration.arabic_name = "No Name";
@@ -336,7 +336,7 @@ class RegistrationPatientAr extends Component {
               title: "Error",
               icon: "error"
             });
-            debugger;
+            
             let IOputs = emptyObject;
             this.setState(IOputs);
           }
@@ -446,7 +446,7 @@ class RegistrationPatientAr extends Component {
                 label: "Print Receipt",
                 events: {
                   onClick: () => {
-                    debugger;
+                    
                     AlgaehReport({
                       report: {
                         fileName: "printreceipt"
@@ -475,7 +475,7 @@ class RegistrationPatientAr extends Component {
             value={{
               state: this.state,
               updateState: obj => {
-                debugger;
+                
                 this.setState({ ...obj });
               }
             }}

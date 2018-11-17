@@ -128,7 +128,7 @@ export function setLocaion(data) {
   });
 }
 export function getPatientDetails(callBack) {
-  debugger;
+  
   const dbPromise = idb.open("Hims", 1, upgradeDB => {
     upgradeDB.createObjectStore("patientComplaints", { keyPath: "id" });
   });
@@ -141,7 +141,7 @@ export function getPatientDetails(callBack) {
         .getAll();
     })
     .then(result => {
-      debugger;
+      
       alert(JSON.stringify(result));
     })
     .catch(e => {

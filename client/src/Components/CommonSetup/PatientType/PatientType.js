@@ -172,7 +172,7 @@ class PatientType extends Component {
         }
       },
       onFailure: error => {
-        debugger;
+        
         swalMessage({
           title: error.response.data.message,
           type: "error"

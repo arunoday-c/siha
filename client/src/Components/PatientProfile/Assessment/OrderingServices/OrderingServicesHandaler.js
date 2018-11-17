@@ -323,7 +323,7 @@ const VisitSearch = ($this, e) => {
 
 //if services got delete and if pre apprival limit exceed
 const deleteServices = ($this, row, rowId) => {
-  debugger;
+  
   let orderservicesdata = $this.state.orderservicesdata;
   let preserviceInput = $this.state.preserviceInput;
   let saved = false;
@@ -424,7 +424,7 @@ const SaveOrdersServices = ($this, e) => {
       }
     },
     onFailure: error => {
-      debugger;
+      
       swalMessage({
         title: error.response.data.message,
         type: "error"
@@ -435,7 +435,7 @@ const SaveOrdersServices = ($this, e) => {
 
 const calculateAmount = ($this, row, ctrl, e) => {
   e = e || ctrl;
-  debugger;
+  
   if (e.target.value !== e.target.oldvalue) {
     let orderservicesdata = $this.state.orderservicesdata;
 

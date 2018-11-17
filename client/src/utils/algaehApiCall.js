@@ -424,7 +424,7 @@ export function getLocalIP(callback) {
       callback(myIP);
     })
     .catch(e => {
-      debugger;
+      
       const generator = new IDGenerator();
       const _IdGen = generator.generate();
       window.myIP = _IdGen;

@@ -195,7 +195,7 @@ const adjustadvance = ($this, context, ctrl, e) => {
 
 const discounthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
-  debugger;
+  
   let sheet_discount_percentage = 0;
   let sheet_discount_amount = 0;
 
@@ -234,7 +234,7 @@ const discounthandle = ($this, context, ctrl, e) => {
 
 const billheaderCalculation = ($this, context) => {
   var intervalId;
-  debugger;
+  
   let serviceInput = {
     isReceipt: false,
     intCalculateall: false,
@@ -344,7 +344,7 @@ const ProcessInsurance = ($this, context, ctrl, e) => {
 };
 
 const checkcashhandaler = ($this, context, e) => {
-  debugger;
+  
 
   $this.setState(
     {
@@ -368,7 +368,7 @@ const checkcashhandaler = ($this, context, e) => {
 };
 
 const checkcardhandaler = ($this, context, e) => {
-  debugger;
+  
 
   $this.setState(
     {
@@ -396,7 +396,7 @@ const checkcardhandaler = ($this, context, e) => {
 };
 
 const checkcheckhandaler = ($this, context, e) => {
-  debugger;
+  
 
   $this.setState(
     {
@@ -433,7 +433,7 @@ const credittexthandle = ($this, context, ctrl, e) => {
       icon: "warning"
     });
   } else {
-    debugger;
+    
     $this.setState(
       {
         [e.target.name]: e.target.value

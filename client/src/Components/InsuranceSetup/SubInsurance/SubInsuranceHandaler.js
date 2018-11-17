@@ -20,7 +20,7 @@ const texthandle = ($this, context, e) => {
 };
 
 const saveSubInsurance = ($this, context) => {
-  debugger;
+  
   let updatedata = [];
   const err = Validations($this);
   if (!err) {
@@ -114,7 +114,7 @@ const showconfirmDialog = ($this, id) => {
         method: "DELETE",
         onSuccess: response => {
           if (response.data.success) {
-            debugger;
+            
             getSubInsuranceDetails($this);
             swalMessage({
               type: "success",
@@ -160,14 +160,14 @@ const getSubInsuranceDetails = $this => {
   });
 };
 const updateSubInsurance = ($this, data) => {
-  debugger;
+  
   algaehApiCall({
     uri: "/insurance/updateSubInsuranceProvider",
     data: data,
     method: "PUT",
     onSuccess: response => {
       if (response.data.success) {
-        debugger;
+        
         getSubInsuranceDetails($this);
         swalMessage({
           type: "success",

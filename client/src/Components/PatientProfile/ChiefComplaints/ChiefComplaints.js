@@ -339,7 +339,7 @@ class ChiefComplaints extends Component {
             }
           })
           .toArray();
-        debugger;
+        
         this.setState({
           openHpiModal: true,
           hims_f_episode_chief_complaint_id:
@@ -601,7 +601,7 @@ class ChiefComplaints extends Component {
   }
 
   HPIElementsSaveToPatient(e) {
-    debugger;
+    
     let _hpi_details_ids = [];
     Enumerable.from(this.state.location)
       .select(s => {

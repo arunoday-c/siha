@@ -5,7 +5,7 @@ import AlgaehSearch from "../Wrapper/globalSearch";
 import FrontDesk from "../../Search/FrontDesk.json";
 
 const getBillPatientList = $this => {
-  debugger;
+  
   let inputobj = {};
 
   if ($this.state.today_date !== null) {
@@ -27,7 +27,7 @@ const getBillPatientList = $this => {
       mappingName: "patientlist"
     },
     afterSuccess: data => {
-      debugger;
+      
       let patient_list = Enumerable.from(data)
         .groupBy("$.patient_id", null, (k, g) => {
           let firstRecordSet = Enumerable.from(g).firstOrDefault();

@@ -184,7 +184,7 @@ const nationalityhandle = ($this, context, e) => {
       mappingName: "hospitaldetails"
     },
     afterSuccess: data => {
-      debugger;
+      
       let vat_applicable = "Y";
 
       if (

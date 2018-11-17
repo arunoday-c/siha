@@ -154,7 +154,7 @@ class HospitalServiceSetup extends Component {
   }
 
   EditItemMaster(row) {
-    debugger;
+    
     if (row.cpt_code !== null) {
       this.props.getCptCodes({
         uri: "/icdcptcodes/selectCptCodes",

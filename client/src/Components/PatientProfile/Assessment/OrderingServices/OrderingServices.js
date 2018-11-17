@@ -118,7 +118,7 @@ class OrderingServices extends Component {
         }
       });
     }
-    debugger;
+    
     this.props.getPatientInsurance({
       uri: "/insurance/getPatientInsurance",
       method: "GET",
@@ -157,7 +157,7 @@ class OrderingServices extends Component {
       this.setState({ ...output });
     }
 
-    debugger;
+    
     if (nextProps.addNew === true && this.state.addNew === true) {
       this.setState({
         s_service_type: null,
@@ -198,7 +198,7 @@ class OrderingServices extends Component {
     }
   }
   playclick() {
-    debugger;
+    
   }
 
   onClose = e => {

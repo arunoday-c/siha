@@ -97,13 +97,13 @@ class InvoiceGeneration extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
+    
     if (
       nextProps.invheadercal !== undefined &&
       nextProps.invheadercal.length !== 0 &&
       this.state.Invoice_Detail.length !== 0
     ) {
-      debugger;
+      
       let billOut = nextProps.invheadercal;
       billOut.patient_resp = billOut.patient_res;
       billOut.patient_payable = billOut.patient_payable;

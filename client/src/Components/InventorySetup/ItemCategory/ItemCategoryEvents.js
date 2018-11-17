@@ -38,7 +38,7 @@ const updateItemCategory = ($this, data) => {
 };
 
 const showconfirmDialog = ($this, row) => {
-  debugger;
+  
   swal({
     title: "Are you sure you want to delete this Category?",
     type: "warning",

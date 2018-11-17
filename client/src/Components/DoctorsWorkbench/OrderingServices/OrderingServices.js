@@ -114,7 +114,7 @@ class OrderingServices extends Component {
     }
   }
   playclick() {
-    debugger;
+    
   }
 
   render() {

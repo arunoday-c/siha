@@ -3,7 +3,7 @@ import swal from "sweetalert2";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 const changeTexts = ($this, ctrl, e) => {
-  debugger;
+  
   e = e || ctrl;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -18,7 +18,7 @@ const onchangegridcol = ($this, row, e) => {
 };
 
 const updateLocationPermission = ($this, data) => {
-  debugger;
+  
   algaehApiCall({
     uri: "/pharmacy/updateLocationPermission",
     data: data,
@@ -45,7 +45,7 @@ const getLocationPermission = $this => {
       mappingName: "locationpermission"
     },
     afterSuccess: data => {
-      debugger;
+      
     }
   });
 };
@@ -97,7 +97,7 @@ const deleteLocationPermission = ($this, row) => {
 };
 
 const insertLocationPermission = ($this, e) => {
-  debugger;
+  
 
   AlgaehValidation({
     alertTypeIcon: "warning",
