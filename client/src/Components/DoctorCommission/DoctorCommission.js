@@ -30,7 +30,8 @@ import AHSnackbar from "../common/Inputs/AHSnackbar.js";
 import GlobalVariables from "../../utils/GlobalVariables.json";
 import moment from "moment";
 import Options from "../../Options.json";
-import { getCookie } from "../../utils/algaehApiCall";
+
+import { getAmountFormart } from "../../utils/GlobalFunctions";
 
 class DoctorCommission extends Component {
   constructor(props) {
@@ -99,7 +100,6 @@ class DoctorCommission extends Component {
   };
 
   render() {
-    const currencySymbol = getCookie("Currency");
     return (
       <React.Fragment>
         <div>
@@ -512,11 +512,7 @@ class DoctorCommission extends Component {
                     forceLabel: "OP Commision"
                   }}
                 />
-                <h6>
-                  {this.state.op_commision
-                    ? currencySymbol + " " + this.state.op_commision
-                    : currencySymbol + " 0.00"}
-                </h6>
+                <h6>{getAmountFormart(this.state.op_commision)}</h6>
               </div>
               <div className="col">
                 <AlgaehLabel
@@ -524,11 +520,7 @@ class DoctorCommission extends Component {
                     forceLabel: "OP Credit Comission"
                   }}
                 />
-                <h6>
-                  {this.state.op_credit_comission
-                    ? currencySymbol + " " + this.state.op_credit_comission
-                    : currencySymbol + " 0.00"}
-                </h6>
+                <h6>{getAmountFormart(this.state.op_credit_comission)}</h6>
               </div>
 
               <div className="col">
@@ -537,11 +529,7 @@ class DoctorCommission extends Component {
                     forceLabel: "Gross Comission"
                   }}
                 />
-                <h6>
-                  {this.state.gross_comission
-                    ? currencySymbol + " " + this.state.gross_comission
-                    : currencySymbol + " 0.00"}
-                </h6>
+                <h6>{getAmountFormart(this.state.gross_comission)}</h6>
 
                 {/* adjust_amount */}
               </div>
@@ -572,11 +560,7 @@ class DoctorCommission extends Component {
                     forceLabel: "Comission Payable"
                   }}
                 />
-                <h6>
-                  {this.state.comission_payable
-                    ? currencySymbol + " " + this.state.comission_payable
-                    : currencySymbol + " 0.00"}
-                </h6>
+                <h6>{getAmountFormart(this.state.comission_payable)}</h6>
               </div>
             </div>
 

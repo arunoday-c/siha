@@ -24,7 +24,7 @@ import {
 import ReciptForm from "../ReciptDetails/ReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { successfulMessage } from "../../../../utils/GlobalFunctions";
-import { getCookie } from "../../../../utils/algaehApiCall";
+import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 
 class AddOPBillingForm extends Component {
   constructor(props) {
@@ -176,8 +176,6 @@ class AddOPBillingForm extends Component {
   }
   //Calculate Row Detail
   calculateAmount(row, ctrl, e) {
-    
-
     e = e || ctrl;
     if (e.target.value !== e.target.oldvalue) {
       let $this = this;
@@ -310,7 +308,6 @@ class AddOPBillingForm extends Component {
   }
 
   render() {
-    const currencySymbol = getCookie("Currency");
     const opbilservices =
       this.props.opbilservices === undefined ? [] : this.props.opbilservices;
     return (
@@ -661,11 +658,7 @@ class AddOPBillingForm extends Component {
                             fieldName: "sub_total_amount"
                           }}
                         />
-                        <h6>
-                          {this.state.sub_total_amount
-                            ? currencySymbol + " " + this.state.sub_total_amount
-                            : currencySymbol + " 0.00"}
-                        </h6>
+                        <h6>{getAmountFormart(this.state.sub_total_amount)}</h6>
                       </div>
                       <div className="col-lg-4">
                         <AlgaehLabel
@@ -673,11 +666,7 @@ class AddOPBillingForm extends Component {
                             fieldName: "discount_amount"
                           }}
                         />
-                        <h6>
-                          {this.state.discount_amount
-                            ? currencySymbol + " " + this.state.discount_amount
-                            : currencySymbol + " 0.00"}
-                        </h6>
+                        <h6>{getAmountFormart(this.state.discount_amount)}</h6>
                       </div>
 
                       <div className="col-lg-4">
@@ -686,11 +675,7 @@ class AddOPBillingForm extends Component {
                             fieldName: "net_total"
                           }}
                         />
-                        <h6>
-                          {this.state.net_total
-                            ? currencySymbol + " " + this.state.net_total
-                            : currencySymbol + " 0.00"}
-                        </h6>
+                        <h6>{getAmountFormart(this.state.net_total)}</h6>
                       </div>
                     </div>
                   </div>
@@ -713,11 +698,7 @@ class AddOPBillingForm extends Component {
                               fieldName: "copay_amount"
                             }}
                           />
-                          <h6>
-                            {this.state.copay_amount
-                              ? currencySymbol + " " + this.state.copay_amount
-                              : currencySymbol + " 0.00"}
-                          </h6>
+                          <h6>{getAmountFormart(this.state.copay_amount)}</h6>
                         </div>
                         <div className="col-lg-6">
                           <AlgaehLabel
@@ -726,11 +707,7 @@ class AddOPBillingForm extends Component {
                             }}
                           />
                           <h6>
-                            {this.state.deductable_amount
-                              ? currencySymbol +
-                                " " +
-                                this.state.deductable_amount
-                              : currencySymbol + " 0.00"}
+                            {getAmountFormart(this.state.deductable_amount)}
                           </h6>
                         </div>
                         <div className="col-lg-6">
@@ -740,11 +717,7 @@ class AddOPBillingForm extends Component {
                             }}
                           />
                           <h6>
-                            {this.state.sec_copay_amount
-                              ? currencySymbol +
-                                " " +
-                                this.state.sec_copay_amount
-                              : currencySymbol + " 0.00"}
+                            {getAmountFormart(this.state.sec_copay_amount)}
                           </h6>
                         </div>
                         <div className="col-lg-6">
@@ -754,11 +727,7 @@ class AddOPBillingForm extends Component {
                             }}
                           />
                           <h6>
-                            {this.state.sec_deductable_amount
-                              ? currencySymbol +
-                                " " +
-                                this.state.sec_deductable_amount
-                              : currencySymbol + " 0.00"}
+                            {getAmountFormart(this.state.sec_deductable_amount)}
                           </h6>
                         </div>
                       </div>
@@ -777,11 +746,7 @@ class AddOPBillingForm extends Component {
                                 }}
                               />
                               <h6>
-                                {this.state.patient_res
-                                  ? currencySymbol +
-                                    " " +
-                                    this.state.patient_res
-                                  : currencySymbol + " 0.00"}
+                                {getAmountFormart(this.state.patient_res)}
                               </h6>
                             </div>
 
@@ -792,11 +757,7 @@ class AddOPBillingForm extends Component {
                                 }}
                               />
                               <h6>
-                                {this.state.patient_tax
-                                  ? currencySymbol +
-                                    " " +
-                                    this.state.patient_tax
-                                  : currencySymbol + " 0.00"}
+                                {getAmountFormart(this.state.patient_tax)}
                               </h6>
                             </div>
 
@@ -807,11 +768,7 @@ class AddOPBillingForm extends Component {
                                 }}
                               />
                               <h6>
-                                {this.state.patient_payable_h
-                                  ? currencySymbol +
-                                    " " +
-                                    this.state.patient_payable_h
-                                  : currencySymbol + " 0.00"}
+                                {getAmountFormart(this.state.patient_payable_h)}
                               </h6>
                             </div>
                           </div>
@@ -832,11 +789,7 @@ class AddOPBillingForm extends Component {
                                 }}
                               />
                               <h6>
-                                {this.state.company_res
-                                  ? currencySymbol +
-                                    " " +
-                                    this.state.company_res
-                                  : currencySymbol + " 0.00"}
+                                {getAmountFormart(this.state.company_res)}
                               </h6>
                             </div>
 
@@ -847,11 +800,7 @@ class AddOPBillingForm extends Component {
                                 }}
                               />
                               <h6>
-                                {this.state.company_tax
-                                  ? currencySymbol +
-                                    " " +
-                                    this.state.company_tax
-                                  : currencySymbol + " 0.00"}
+                                {getAmountFormart(this.state.company_tax)}
                               </h6>
                             </div>
 
@@ -862,11 +811,7 @@ class AddOPBillingForm extends Component {
                                 }}
                               />
                               <h6>
-                                {this.state.company_payble
-                                  ? currencySymbol +
-                                    " " +
-                                    this.state.company_payble
-                                  : currencySymbol + " 0.00"}
+                                {getAmountFormart(this.state.company_payble)}
                               </h6>
                             </div>
                           </div>
@@ -886,11 +831,7 @@ class AddOPBillingForm extends Component {
                                 }}
                               />
                               <h6>
-                                {this.state.sec_company_res
-                                  ? currencySymbol +
-                                    " " +
-                                    this.state.sec_company_res
-                                  : currencySymbol + " 0.00"}
+                                {getAmountFormart(this.state.sec_company_res)}
                               </h6>
                             </div>
 
@@ -901,11 +842,7 @@ class AddOPBillingForm extends Component {
                                 }}
                               />
                               <h6>
-                                {this.state.sec_company_tax
-                                  ? currencySymbol +
-                                    " " +
-                                    this.state.sec_company_tax
-                                  : currencySymbol + " 0.00"}
+                                {getAmountFormart(this.state.sec_company_tax)}
                               </h6>
                             </div>
 
@@ -916,11 +853,9 @@ class AddOPBillingForm extends Component {
                                 }}
                               />
                               <h6>
-                                {this.state.sec_company_paybale
-                                  ? currencySymbol +
-                                    " " +
-                                    this.state.sec_company_paybale
-                                  : currencySymbol + " 0.00"}
+                                {getAmountFormart(
+                                  this.state.sec_company_paybale
+                                )}
                               </h6>
                             </div>
                           </div>
@@ -1033,11 +968,7 @@ class AddOPBillingForm extends Component {
                               fieldName: "advance_amount"
                             }}
                           />
-                          <h6>
-                            {this.state.advance_amount
-                              ? currencySymbol + " " + this.state.advance_amount
-                              : currencySymbol + " 0.00"}
-                          </h6>
+                          <h6>{getAmountFormart(this.state.advance_amount)}</h6>
                         </div>
 
                         <div className="col-3">
@@ -1046,11 +977,7 @@ class AddOPBillingForm extends Component {
                               fieldName: "net_amount"
                             }}
                           />
-                          <h6>
-                            {this.state.net_amount
-                              ? currencySymbol + " " + this.state.net_amount
-                              : currencySymbol + " 0.00"}
-                          </h6>
+                          <h6>{getAmountFormart(this.state.net_amount)}</h6>
                         </div>
 
                         <AlagehFormGroup
@@ -1085,11 +1012,7 @@ class AddOPBillingForm extends Component {
                             }}
                           />
                           <h4>
-                            {this.state.receiveable_amount
-                              ? currencySymbol +
-                                " " +
-                                this.state.receiveable_amount
-                              : currencySymbol + " 0.00"}
+                            {getAmountFormart(this.state.receiveable_amount)}
                           </h4>
                         </div>
                       </div>

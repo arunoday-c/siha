@@ -34,7 +34,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../../actions/algaehActions";
-import { getCookie } from "../../../../utils/algaehApiCall";
+import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 
 class AddBillingForm extends Component {
   constructor(props) {
@@ -90,8 +90,6 @@ class AddBillingForm extends Component {
   }
 
   render() {
-    
-    let currencySymbol = getCookie("Currency");
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -150,11 +148,8 @@ class AddBillingForm extends Component {
                               fieldName: "gross_total"
                             }}
                           />
-                          <h6>
-                            {this.state.gross_total
-                              ? currencySymbol + " " + this.state.gross_total
-                              : currencySymbol + " 0.00"}
-                          </h6>
+
+                          <h6>{getAmountFormart(this.state.gross_total)}</h6>
                         </div>
 
                         <div className="col">
@@ -164,11 +159,7 @@ class AddBillingForm extends Component {
                             }}
                           />
                           <h6>
-                            {this.state.patient_payable
-                              ? currencySymbol +
-                                " " +
-                                this.state.patient_payable
-                              : currencySymbol + " 0.00"}
+                            {getAmountFormart(this.state.patient_payable)}
                           </h6>
                         </div>
 
@@ -178,11 +169,7 @@ class AddBillingForm extends Component {
                               fieldName: "advance"
                             }}
                           />
-                          <h6>
-                            {this.state.advance_amount
-                              ? currencySymbol + " " + this.state.advance_amount
-                              : currencySymbol + " 0.00"}
-                          </h6>
+                          <h6>{getAmountFormart(this.state.advance_amount)}</h6>
                         </div>
                       </div>
                       <hr style={{ margin: "0.6rem 0rem" }} />
@@ -275,11 +262,7 @@ class AddBillingForm extends Component {
                               fieldName: "net_amount"
                             }}
                           />
-                          <h6>
-                            {this.state.net_amount
-                              ? currencySymbol + " " + this.state.net_amount
-                              : currencySymbol + " 0.00"}
-                          </h6>
+                          <h6>{getAmountFormart(this.state.net_amount)}</h6>
                         </div>
 
                         <AlagehFormGroup
@@ -316,11 +299,7 @@ class AddBillingForm extends Component {
                             }}
                           />
                           <h6>
-                            {this.state.receiveable_amount
-                              ? currencySymbol +
-                                " " +
-                                this.state.receiveable_amount
-                              : currencySymbol + " 0.00"}
+                            {getAmountFormart(this.state.receiveable_amount)}
                           </h6>
                         </div>
                       </div>
@@ -676,11 +655,7 @@ class AddBillingForm extends Component {
                             }}
                           />
                           <h6>
-                            {this.state.unbalanced_amount
-                              ? currencySymbol +
-                                " " +
-                                this.state.unbalanced_amount
-                              : currencySymbol + " 0.00"}
+                            {getAmountFormart(this.state.unbalanced_amount)}
                           </h6>
                         </div>
 
@@ -690,11 +665,7 @@ class AddBillingForm extends Component {
                               fieldName: "total_amount"
                             }}
                           />
-                          <h5>
-                            {this.state.total_amount
-                              ? currencySymbol + " " + this.state.total_amount
-                              : currencySymbol + " 0.00"}
-                          </h5>
+                          <h5>{getAmountFormart(this.state.total_amount)}</h5>
                         </div>
                         <div className="col-lg-3">
                           <AlgaehLabel

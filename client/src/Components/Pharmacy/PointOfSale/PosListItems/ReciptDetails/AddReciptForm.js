@@ -23,7 +23,7 @@ import MyContext from "../../../../../utils/MyContext";
 import "./AddReciptForm.css";
 import "./../../../../../styles/site.css";
 import { AlgaehActions } from "../../../../../actions/algaehActions";
-import { getCookie } from "../../../../../utils/algaehApiCall";
+import { getAmountFormart } from "../../../../../utils/GlobalFunctions";
 
 class AddReciptForm extends Component {
   constructor(props) {
@@ -45,7 +45,6 @@ class AddReciptForm extends Component {
   }
 
   render() {
-    const currencySymbol = getCookie("Currency");
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -285,11 +284,7 @@ class AddReciptForm extends Component {
                         forceLabel: "Unbalanced Amount"
                       }}
                     />
-                    <h6>
-                      {this.state.unbalanced_amount
-                        ? currencySymbol + " " + this.state.unbalanced_amount
-                        : currencySymbol + " 0.00"}
-                    </h6>
+                    <h6>{getAmountFormart(this.state.unbalanced_amount)}</h6>
                   </div>
                 </div>
               </div>
