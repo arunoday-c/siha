@@ -158,6 +158,7 @@ class InvoiceGeneration extends Component {
   //created by Adnan
 
   render() {
+    const currencySymbol = getCookie("Currency");
     return (
       <div>
         <BreadCrumb
@@ -537,8 +538,8 @@ class InvoiceGeneration extends Component {
                     />
                     <h5>
                       {this.state.totalGross
-                        ? "₹" + this.state.totalGross
-                        : "₹0.00"}
+                        ? currencySymbol + " " + this.state.totalGross
+                        : currencySymbol + " 0.00"}
                     </h5>
                   </div>
                 </div>
@@ -551,8 +552,8 @@ class InvoiceGeneration extends Component {
                     />
                     <h5>
                       {this.state.totalDiscount
-                        ? "₹" + this.state.totalDiscount
-                        : "₹0.00"}
+                        ? currencySymbol + " " + this.state.totalDiscount
+                        : currencySymbol + " 0.00"}
                     </h5>
                   </div>
                 </div>
@@ -568,8 +569,8 @@ class InvoiceGeneration extends Component {
                     />
                     <h5>
                       {this.state.patient_resp
-                        ? "₹" + this.state.patient_resp
-                        : "₹0.00"}
+                        ? currencySymbol + " " + this.state.patient_resp
+                        : currencySymbol + " 0.00"}
                     </h5>
                   </div>
 
@@ -581,8 +582,8 @@ class InvoiceGeneration extends Component {
                     />
                     <h5>
                       {this.state.patient_tax
-                        ? "₹" + this.state.patient_tax
-                        : "₹0.00"}
+                        ? currencySymbol + " " + this.state.patient_tax
+                        : currencySymbol + " 0.00"}
                     </h5>
                   </div>
 
@@ -594,8 +595,8 @@ class InvoiceGeneration extends Component {
                     />
                     <h5>
                       {this.state.patient_payable
-                        ? "₹" + this.state.patient_payable
-                        : "₹0.00"}
+                        ? currencySymbol + " " + this.state.patient_payable
+                        : currencySymbol + " 0.00"}
                     </h5>
                   </div>
 
@@ -607,8 +608,8 @@ class InvoiceGeneration extends Component {
                     />
                     <h5>
                       {this.state.company_resp
-                        ? "₹" + this.state.company_resp
-                        : "₹0.00"}
+                        ? currencySymbol + " " + this.state.company_resp
+                        : currencySymbol + " 0.00"}
                     </h5>
                   </div>
                 </div>
@@ -621,8 +622,8 @@ class InvoiceGeneration extends Component {
                     />
                     <h5>
                       {this.state.company_tax
-                        ? "₹" + this.state.company_tax
-                        : "₹0.00"}
+                        ? currencySymbol + " " + this.state.company_tax
+                        : currencySymbol + " 0.00"}
                     </h5>
                   </div>
                   <div className="col-lg-3">
@@ -633,8 +634,8 @@ class InvoiceGeneration extends Component {
                     />
                     <h5>
                       {this.state.company_payble
-                        ? "₹" + this.state.company_payble
-                        : "₹0.00"}
+                        ? currencySymbol + " " + this.state.company_payble
+                        : currencySymbol + " 0.00"}
                     </h5>
                   </div>
 
@@ -646,8 +647,8 @@ class InvoiceGeneration extends Component {
                     />
                     <h5>
                       {this.state.sec_comapany_resp
-                        ? "₹" + this.state.sec_comapany_resp
-                        : "₹0.00"}
+                        ? currencySymbol + " " + this.state.sec_comapany_resp
+                        : currencySymbol + " 0.00"}
                     </h5>
                   </div>
                   <div className="col-lg-3">
@@ -658,8 +659,8 @@ class InvoiceGeneration extends Component {
                     />
                     <h5>
                       {this.state.sec_company_tax
-                        ? "₹" + this.state.sec_company_tax
-                        : "₹0.00"}
+                        ? currencySymbol + " " + this.state.sec_company_tax
+                        : currencySymbol + " 0.00"}
                     </h5>
                   </div>
                 </div>
@@ -672,8 +673,8 @@ class InvoiceGeneration extends Component {
                     />
                     <h5>
                       {this.state.sec_company_payable
-                        ? "₹" + this.state.sec_company_payable
-                        : "₹0.00"}
+                        ? currencySymbol + " " + this.state.sec_company_payable
+                        : currencySymbol + " 0.00"}
                     </h5>
                   </div>
                 </div>

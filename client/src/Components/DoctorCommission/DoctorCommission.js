@@ -30,6 +30,7 @@ import AHSnackbar from "../common/Inputs/AHSnackbar.js";
 import GlobalVariables from "../../utils/GlobalVariables.json";
 import moment from "moment";
 import Options from "../../Options.json";
+import { getCookie } from "../../utils/algaehApiCall";
 
 class DoctorCommission extends Component {
   constructor(props) {
@@ -98,6 +99,7 @@ class DoctorCommission extends Component {
   };
 
   render() {
+    const currencySymbol = getCookie("Currency");
     return (
       <React.Fragment>
         <div>
@@ -512,8 +514,8 @@ class DoctorCommission extends Component {
                 />
                 <h6>
                   {this.state.op_commision
-                    ? "₹" + this.state.op_commision
-                    : "₹0.00"}
+                    ? currencySymbol + " " + this.state.op_commision
+                    : currencySymbol + " 0.00"}
                 </h6>
               </div>
               <div className="col">
@@ -524,8 +526,8 @@ class DoctorCommission extends Component {
                 />
                 <h6>
                   {this.state.op_credit_comission
-                    ? "₹" + this.state.op_credit_comission
-                    : "₹0.00"}
+                    ? currencySymbol + " " + this.state.op_credit_comission
+                    : currencySymbol + " 0.00"}
                 </h6>
               </div>
 
@@ -537,8 +539,8 @@ class DoctorCommission extends Component {
                 />
                 <h6>
                   {this.state.gross_comission
-                    ? "₹" + this.state.gross_comission
-                    : "₹0.00"}
+                    ? currencySymbol + " " + this.state.gross_comission
+                    : currencySymbol + " 0.00"}
                 </h6>
 
                 {/* adjust_amount */}
@@ -572,8 +574,8 @@ class DoctorCommission extends Component {
                 />
                 <h6>
                   {this.state.comission_payable
-                    ? "₹" + this.state.comission_payable
-                    : "₹0.00"}
+                    ? currencySymbol + " " + this.state.comission_payable
+                    : currencySymbol + " 0.00"}
                 </h6>
               </div>
             </div>

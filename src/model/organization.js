@@ -1,10 +1,7 @@
-import {
-  whereCondition,
-  selectStatement
-} from "../utils";
+import { whereCondition, selectStatement } from "../utils";
 import extend from "extend";
 import httpStatus from "../utils/httpStatus";
-import {  debugLog } from "../utils/logging";
+import { debugLog } from "../utils/logging";
 
 let getOrganization = (req, res, next) => {
   let labSection = {
@@ -25,7 +22,8 @@ let getOrganization = (req, res, next) => {
       {
         db: req.db,
         query:
-          "SELECT * FROM `hims_d_hospital` WHERE `record_status`='A' AND " +
+          "SELECT * FROM hims_d_hospital, hims_d_currency CUR WHERE hims_d_hospital.record_status='A' AND \
+          CUR.hims_d_currency_id=default_currency AND " +
           condition.condition +
           " " +
           pagePaging,

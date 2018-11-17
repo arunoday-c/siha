@@ -8,8 +8,7 @@ import "./../../../../styles/site.css";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehFormGroup,
-  AlagehAutoComplete
+  AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
 
 import {
@@ -19,10 +18,10 @@ import {
 } from "./ItemListsReturnEvents";
 
 import { AlgaehActions } from "../../../../actions/algaehActions";
-import Paper from "@material-ui/core/Paper";
 import Options from "../../../../Options.json";
 import moment from "moment";
 import ReciptForm from "./ReciptDetails/AddReciptForm";
+import { getCookie } from "../../../../utils/algaehApiCall";
 
 class ItemListsReturn extends Component {
   constructor(props) {
@@ -72,19 +71,13 @@ class ItemListsReturn extends Component {
   }
 
   render() {
+    const currencySymbol = getCookie("Currency");
     return (
       <React.Fragment>
         <MyContext.Consumer>
           {context => (
             <div className="hptl-phase1-item-list-billing-form">
               <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
-                {/* <div className="portlet-title">
-            <div className="caption">
-              <h3 className="caption-subject">Investigation Lists</h3>
-            </div>
-            <div className="actions">
-            </div>
-          </div> */}
                 <div className="portlet-body">
                   <AlgaehDataGrid
                     id="RETURN_details"
@@ -346,8 +339,8 @@ class ItemListsReturn extends Component {
                           />
                           <h6>
                             {this.state.sub_total
-                              ? "₹" + this.state.sub_total
-                              : "₹0.00"}
+                              ? currencySymbol + " " + this.state.sub_total
+                              : currencySymbol + " 0.00"}
                           </h6>
                         </div>
                         <div className="col-lg-4">
@@ -358,8 +351,10 @@ class ItemListsReturn extends Component {
                           />
                           <h6>
                             {this.state.discount_amount
-                              ? "₹" + this.state.discount_amount
-                              : "₹0.00"}
+                              ? currencySymbol +
+                                " " +
+                                this.state.discount_amount
+                              : currencySymbol + " 0.00"}
                           </h6>
                         </div>
 
@@ -371,8 +366,8 @@ class ItemListsReturn extends Component {
                           />
                           <h6>
                             {this.state.net_total
-                              ? "₹" + this.state.net_total
-                              : "₹0.00"}
+                              ? currencySymbol + " " + this.state.net_total
+                              : currencySymbol + " 0.00"}
                           </h6>
                         </div>
                       </div>
@@ -391,8 +386,8 @@ class ItemListsReturn extends Component {
                             />
                             <h6>
                               {this.state.copay_amount
-                                ? "₹" + this.state.copay_amount
-                                : "₹0.00"}
+                                ? currencySymbol + " " + this.state.copay_amount
+                                : currencySymbol + " 0.00"}
                             </h6>
                           </div>
                           <div className="col-lg-6">
@@ -403,8 +398,10 @@ class ItemListsReturn extends Component {
                             />
                             <h6>
                               {this.state.sec_copay_amount
-                                ? "₹" + this.state.sec_copay_amount
-                                : "₹0.00"}
+                                ? currencySymbol +
+                                  " " +
+                                  this.state.sec_copay_amount
+                                : currencySymbol + " 0.00"}
                             </h6>
                           </div>
                         </div>
@@ -424,8 +421,10 @@ class ItemListsReturn extends Component {
                                 />
                                 <h6>
                                   {this.state.patient_responsibility
-                                    ? "₹" + this.state.patient_responsibility
-                                    : "₹0.00"}
+                                    ? currencySymbol +
+                                      " " +
+                                      this.state.patient_responsibility
+                                    : currencySymbol + " 0.00"}
                                 </h6>
                               </div>
 
@@ -437,8 +436,10 @@ class ItemListsReturn extends Component {
                                 />
                                 <h6>
                                   {this.state.patient_tax
-                                    ? "₹" + this.state.patient_tax
-                                    : "₹0.00"}
+                                    ? currencySymbol +
+                                      " " +
+                                      this.state.patient_tax
+                                    : currencySymbol + " 0.00"}
                                 </h6>
                               </div>
 
@@ -450,8 +451,10 @@ class ItemListsReturn extends Component {
                                 />
                                 <h6>
                                   {this.state.patient_payable_h
-                                    ? "₹" + this.state.patient_payable_h
-                                    : "₹0.00"}
+                                    ? currencySymbol +
+                                      " " +
+                                      this.state.patient_payable_h
+                                    : currencySymbol + " 0.00"}
                                 </h6>
                               </div>
                             </div>
@@ -472,8 +475,10 @@ class ItemListsReturn extends Component {
                                 />
                                 <h6>
                                   {this.state.company_responsibility
-                                    ? "₹" + this.state.company_responsibility
-                                    : "₹0.00"}
+                                    ? currencySymbol +
+                                      " " +
+                                      this.state.company_responsibility
+                                    : currencySymbol + " 0.00"}
                                 </h6>
                               </div>
 
@@ -485,8 +490,10 @@ class ItemListsReturn extends Component {
                                 />
                                 <h6>
                                   {this.state.company_tax
-                                    ? "₹" + this.state.company_tax
-                                    : "₹0.00"}
+                                    ? currencySymbol +
+                                      " " +
+                                      this.state.company_tax
+                                    : currencySymbol + " 0.00"}
                                 </h6>
                               </div>
 
@@ -498,8 +505,10 @@ class ItemListsReturn extends Component {
                                 />
                                 <h6>
                                   {this.state.company_payable
-                                    ? "₹" + this.state.company_payable
-                                    : "₹0.00"}
+                                    ? currencySymbol +
+                                      " " +
+                                      this.state.company_payable
+                                    : currencySymbol + " 0.00"}
                                 </h6>
                               </div>
                             </div>
@@ -520,9 +529,10 @@ class ItemListsReturn extends Component {
                                 />
                                 <h6>
                                   {this.state.sec_company_responsibility
-                                    ? "₹" +
+                                    ? currencySymbol +
+                                      " " +
                                       this.state.sec_company_responsibility
-                                    : "₹0.00"}
+                                    : currencySymbol + " 0.00"}
                                 </h6>
                               </div>
 
@@ -534,8 +544,10 @@ class ItemListsReturn extends Component {
                                 />
                                 <h6>
                                   {this.state.sec_company_tax
-                                    ? "₹" + this.state.sec_company_tax
-                                    : "₹0.00"}
+                                    ? currencySymbol +
+                                      " " +
+                                      this.state.sec_company_tax
+                                    : currencySymbol + " 0.00"}
                                 </h6>
                               </div>
 
@@ -547,8 +559,10 @@ class ItemListsReturn extends Component {
                                 />
                                 <h6>
                                   {this.state.sec_company_payable
-                                    ? "₹" + this.state.sec_company_payable
-                                    : "₹0.00"}
+                                    ? currencySymbol +
+                                      " " +
+                                      this.state.sec_company_payable
+                                    : currencySymbol + " 0.00"}
                                 </h6>
                               </div>
                             </div>
@@ -568,8 +582,10 @@ class ItemListsReturn extends Component {
                             />
                             <h6>
                               {this.state.sheet_discount_percentage
-                                ? "₹" + this.state.sheet_discount_percentage
-                                : "₹0.00"}
+                                ? currencySymbol +
+                                  " " +
+                                  this.state.sheet_discount_percentage
+                                : currencySymbol + " 0.00"}
                             </h6>
                           </div>
                           <div className="col-3">
@@ -580,8 +596,10 @@ class ItemListsReturn extends Component {
                             />
                             <h6>
                               {this.state.sheet_discount_amount
-                                ? "₹" + this.state.sheet_discount_amount
-                                : "₹0.00"}
+                                ? currencySymbol +
+                                  " " +
+                                  this.state.sheet_discount_amount
+                                : currencySymbol + " 0.00"}
                             </h6>
                           </div>
                         </div>
@@ -599,8 +617,8 @@ class ItemListsReturn extends Component {
                             />
                             <h6>
                               {this.state.net_amount
-                                ? "₹" + this.state.net_amount
-                                : "₹0.00"}
+                                ? currencySymbol + " " + this.state.net_amount
+                                : currencySymbol + " 0.00"}
                             </h6>
                           </div>
 
@@ -612,8 +630,10 @@ class ItemListsReturn extends Component {
                             />
                             <h6>
                               {this.state.credit_amount
-                                ? "₹" + this.state.credit_amount
-                                : "₹0.00"}
+                                ? currencySymbol +
+                                  " " +
+                                  this.state.credit_amount
+                                : currencySymbol + " 0.00"}
                             </h6>
                           </div>
 
@@ -631,8 +651,10 @@ class ItemListsReturn extends Component {
                             />
                             <h4>
                               {this.state.payable_amount
-                                ? "₹" + this.state.payable_amount
-                                : "₹0.00"}
+                                ? currencySymbol +
+                                  " " +
+                                  this.state.payable_amount
+                                : currencySymbol + " 0.00"}
                             </h4>
                           </div>
                         </div>

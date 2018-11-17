@@ -29,7 +29,7 @@ import {
 
 import AdvRefunIOputs from "../../Models/AdvanceRefund";
 import { successfulMessage } from "../../utils/GlobalFunctions";
-// import { getCookie } from "../../utils/algaehApiCall";
+import { getCookie } from "../../utils/algaehApiCall";
 
 import { postAdvance } from "../../actions/RegistrationPatient/Billingactions";
 
@@ -128,6 +128,7 @@ class AddAdvanceModal extends PureComponent {
   }
 
   render() {
+    const currencySymbol = getCookie("Currency");
     return (
       <React.Fragment>
         <div>
@@ -424,8 +425,8 @@ class AddAdvanceModal extends PureComponent {
                     />
                     <h5>
                       {this.state.total_amount
-                        ? "₹" + this.state.total_amount
-                        : "₹0.00"}
+                        ? currencySymbol + this.state.total_amount
+                        : currencySymbol + " 0.00"}
                     </h5>
                   </div>
                   <div className="col-lg-3">

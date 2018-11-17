@@ -122,7 +122,9 @@ class AddReciptForm extends Component {
                       }
                     }}
                   />
-                  {/* <div className="col-lg-5">
+                  {/* 
+                  const currencySymbol = getCookie("Currency");
+                  <div className="col-lg-5">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Unbalanced Amount"
@@ -130,8 +132,8 @@ class AddReciptForm extends Component {
                     />
                     <h6>
                       {this.state.unbalanced_amount
-                        ? "₹" + this.state.unbalanced_amount
-                        : "₹0.00"}
+                        ? currencySymbol + " " + this.state.unbalanced_amount
+                        : currencySymbol + " 0.00"}
                     </h6>
                   </div> */}
                 </div>
