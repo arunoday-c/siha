@@ -462,6 +462,78 @@ CSM.category_id=C.hims_employee_category_id and CSM.speciality_id=S.hims_d_emplo
   }
 };
 
+//created by irfan: to updateCategory Speciality Map
+let updateCategorySpecialityMap = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "UPDATE `hims_m_category_speciality_mappings` SET  category_id=?,speciality_id=?,description=?,category_speciality_status=?,effective_start_date=?,\
+        updated_date=?, updated_by=?  WHERE  `record_status`='A' and `hims_m_category_speciality_mappings_id`=?;",
+        [
+          input.category_id,
+          input.speciality_id,
+          input.description,
+          input.category_speciality_status,
+          input.effective_start_date,
+          new Date(),
+          input.updated_by,
+          input.hims_m_category_speciality_mappings_id
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to delete
+let deleteCategorySpecialityMap = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+
+    deleteRecord(
+      {
+        db: req.db,
+        tableName: "hims_m_category_speciality_mappings",
+        id: req.body.hims_m_category_speciality_mappings_id,
+
+        query:
+          "UPDATE hims_m_category_speciality_mappings SET  record_status='I' WHERE  record_status='A' and hims_m_category_speciality_mappings_id=?",
+        values: [req.body.hims_m_category_speciality_mappings_id]
+      },
+      result => {
+        req.records = result;
+        next();
+      },
+      error => {
+        next(error);
+      },
+      true
+    );
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addEmployeeSpecialityMaster,
   getEmployeeSpecialityMaster,
@@ -475,5 +547,7 @@ module.exports = {
   addCategorySpecialityMappings,
   makeEmployeeSpecialityInActive,
   getCategorySpecialityMap,
-  getCategorySpecialityMap
+  getCategorySpecialityMap,
+  updateCategorySpecialityMap,
+  deleteCategorySpecialityMap
 };

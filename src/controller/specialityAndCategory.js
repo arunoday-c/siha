@@ -14,7 +14,8 @@ import {
   makeEmployeeCategoryInActive,
   addCategorySpecialityMappings,
   makeEmployeeSpecialityInActive,
-  getCategorySpecialityMap
+  getCategorySpecialityMap,
+  updateCategorySpecialityMap
 } from "../model/specialityAndCategory";
 
 export default ({ config, db }) => {
@@ -198,20 +199,21 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-  // // created by irfan :to get
-  // api.put(
-  //   "/makeEmployeeCategoryActive",
-  //   makeEmployeeCategoryActive,
-  //   (req, res, next) => {
-  //     let result = req.records;
-  //     res.status(httpStatus.ok).json({
-  //       success: true,
-  //       records: result
-  //     });
-  //     next();
-  //   },
-  //   releaseConnection
-  // );
+  // created by irfan :to get
+  api.put(
+    "/updateCategorySpecialityMap",
+    updateCategorySpecialityMap,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
   // // created by irfan :to get
   // api.put(
   //   "/makeEmployeeSpecialityActive",
