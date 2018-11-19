@@ -11,7 +11,7 @@ const discounthandle = ($this, context, ctrl, e) => {
 
   let sheet_discount_percentage = 0;
   let sheet_discount_amount = 0;
-  
+
   if (e.target.name === "sheet_discount_percentage") {
     sheet_discount_percentage = parseFloat(e.target.value.replace(" %", ""));
     sheet_discount_amount = 0;
@@ -40,7 +40,6 @@ const discounthandle = ($this, context, ctrl, e) => {
 };
 
 const UomchangeTexts = ($this, context, ctrl, e) => {
-  
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -74,14 +73,17 @@ const UomchangeTexts = ($this, context, ctrl, e) => {
 };
 
 const numberchangeTexts = ($this, context, e) => {
-  
-
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
   if (value < 0) {
     swalMessage({
       title: "Invalid Input. Quantity cannot be less than Zero",
+      type: "warning"
+    });
+  } else if (value > $this.state.qtyhand) {
+    swalMessage({
+      title: "Invalid Input. Quantity cannot be greater than Quantity in hand",
       type: "warning"
     });
   } else {
@@ -100,7 +102,7 @@ const numberchangeTexts = ($this, context, e) => {
 };
 
 // const getItemLocationStock = ($this, value) => {
-//   
+//
 //   $this.props.getItemLocationStock({
 //     uri: "/pharmacyGlobal/getItemLocationStock",
 //     method: "GET",
@@ -127,7 +129,6 @@ const numberchangeTexts = ($this, context, e) => {
 //   });
 // };
 const itemchangeText = ($this, context, e) => {
-  
   let name = e.name || e.target.name;
   if ($this.state.location_id !== null) {
     let value = e.value || e.target.value;
@@ -144,7 +145,6 @@ const itemchangeText = ($this, context, e) => {
         mappingName: "itemdetaillist"
       },
       afterSuccess: data => {
-        
         if (data.locationResult.length > 0) {
           getUnitCost($this, context, e.selected.service_id);
           $this.setState({
@@ -218,8 +218,6 @@ const getUnitCost = ($this, context, serviceid) => {
         mappingName: "hospitalservices"
       },
       afterSuccess: data => {
-        
-
         let servdata = Enumerable.from(data)
           .where(w => w.hims_d_services_id === parseInt(serviceid))
           .firstOrDefault();
@@ -256,8 +254,6 @@ const getUnitCost = ($this, context, serviceid) => {
         mappingName: "hospitalservices"
       },
       afterSuccess: data => {
-        
-
         if (data !== undefined || data !== null) {
           $this.setState({
             unit_cost: data[0].gross_amt,
@@ -287,7 +283,6 @@ const AddItems = ($this, context) => {
       type: "warning"
     });
   } else {
-    
     let ItemInput = [
       {
         // item_id: $this.state.item_id,
@@ -321,7 +316,6 @@ const AddItems = ($this, context) => {
         mappingName: "xxx"
       },
       afterSuccess: data => {
-        
         if (data.billdetails[0].pre_approval === "Y") {
           swalMessage({
             title:
@@ -330,7 +324,7 @@ const AddItems = ($this, context) => {
           });
         } else {
           let existingservices = $this.state.pharmacy_stock_detail;
-          
+
           if (data.billdetails.length !== 0) {
             data.billdetails[0].extended_cost =
               data.billdetails[0].gross_amount;
@@ -410,7 +404,6 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const deletePosDetail = ($this, context, row) => {
-  
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
 
   for (var i = 0; i < pharmacy_stock_detail.length; i++) {
@@ -498,11 +491,10 @@ const updatePosDetail = ($this, e) => {
 
 //Calculate Row Detail
 const calculateAmount = ($this, row, ctrl, e) => {
-  
   e = e || ctrl;
   if (e.target.value !== e.target.oldvalue) {
     let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
-    
+
     row[e.target.name] = parseFloat(e.target.value);
     let inputParam = [
       {
@@ -538,7 +530,6 @@ const calculateAmount = ($this, row, ctrl, e) => {
         mappingName: "xxx"
       },
       afterSuccess: data => {
-        
         data.billdetails[0].extended_cost = data.billdetails[0].gross_amount;
         data.billdetails[0].net_extended_cost = data.billdetails[0].net_amout;
 
@@ -584,7 +575,6 @@ const adjustadvance = ($this, context, ctrl, e) => {
 };
 
 const PosheaderCalculation = ($this, e) => {
-  
   if (e.target.value !== e.target.oldvalue) {
     let ItemInput = {
       isReceipt: false,
@@ -623,8 +613,6 @@ const ShowItemBatch = ($this, e) => {
 };
 
 const CloseItemBatch = ($this, e) => {
-  
-
   $this.setState({
     ...$this.state,
     selectBatch: !$this.state.selectBatch,

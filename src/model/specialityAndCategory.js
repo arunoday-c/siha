@@ -523,6 +523,5 @@ module.exports = {
   addCategorySpecialityMappings,
   makeEmployeeSpecialityInActive,
   getCategorySpecialityMap,
-
   getCategorySpecialityMap
 };
