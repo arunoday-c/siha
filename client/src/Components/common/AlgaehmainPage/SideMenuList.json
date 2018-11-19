@@ -96,6 +96,12 @@
         "label": "Procedure Setup",
         "arlabel": "إعداد الإجراء",
         "path": "/Procedure Setup"
+      },
+      {
+        "name": "Vendor Setup",
+        "label": "Vendor Setup",
+        "arlabel": "إعداد البائع",
+        "path": "/VendorSetup"
       }
     ]
   },

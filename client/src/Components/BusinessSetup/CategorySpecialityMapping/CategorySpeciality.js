@@ -15,7 +15,8 @@ class CategorySpeciality extends Component {
     super(props);
     this.state = {
       categories: [],
-      specialities: []
+      specialities: [],
+      cat_specialities: []
     };
 
     this.getCategories();
@@ -26,7 +27,9 @@ class CategorySpeciality extends Component {
     algaehApiCall({
       uri: "/specialityAndCategory/getEmployeeCategoryMaster",
       method: "GET",
-      data: {},
+      data: {
+        employee_category_status: "A"
+      },
       onSuccess: response => {
         if (response.data.success) {
           this.setState({ categories: response.data.records });
@@ -44,10 +47,55 @@ class CategorySpeciality extends Component {
     algaehApiCall({
       uri: "/specialityAndCategory/getEmployeeSpecialityMaster",
       method: "GET",
-      data: {},
+      data: {
+        speciality_status: "A"
+      },
       onSuccess: response => {
         if (response.data.success) {
           this.setState({ specialities: response.data.records });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  addCategorySpecialityMappings() {
+    algaehApiCall({
+      uri: "/specialityAndCategory/addCategorySpecialityMappings",
+      method: "POST",
+      data: {
+        category_id: this.state.category_id,
+        speciality_id: this.state.speciality_id,
+        description: this.state.description,
+        effective_start_date: this.state.effective_start_date
+      },
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({ specialities: response.data.records });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  getCategorySpecialityMap() {
+    algaehApiCall({
+      uri: "/specialityAndCategory/getCategorySpecialityMap",
+      method: "GET",
+      data: {},
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({ cat_specialities: response.data.records });
         }
       },
       onFailure: error => {
@@ -81,24 +129,6 @@ class CategorySpeciality extends Component {
             <AlagehAutoComplete
               div={{ className: "col" }}
               label={{
-                fieldName: "category",
-                isImp: true
-              }}
-              selector={{
-                name: "category_id",
-                className: "select-fld",
-                value: this.state.category_id,
-                dataSource: {
-                  textField: "employee_category_name",
-                  valueField: "hims_employee_category_id",
-                  data: this.state.categories
-                },
-                onChange: this.handleDropDown.bind(this)
-              }}
-            />
-            <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{
                 fieldName: "speciality",
                 isImp: true
               }}
@@ -110,6 +140,25 @@ class CategorySpeciality extends Component {
                   textField: "speciality_name",
                   valueField: "hims_d_employee_speciality_id",
                   data: this.state.specialities
+                },
+                onChange: this.handleDropDown.bind(this)
+              }}
+            />
+
+            <AlagehAutoComplete
+              div={{ className: "col" }}
+              label={{
+                fieldName: "category",
+                isImp: true
+              }}
+              selector={{
+                name: "category_id",
+                className: "select-fld",
+                value: this.state.category_id,
+                dataSource: {
+                  textField: "employee_category_name",
+                  valueField: "hims_employee_category_id",
+                  data: this.state.categories
                 },
                 onChange: this.handleDropDown.bind(this)
               }}
@@ -177,29 +226,25 @@ class CategorySpeciality extends Component {
                 },
                 {
                   fieldName: "speciality_id",
-                  label: (
-                    <AlgaehLabel
-                      label={{ fieldName: "currency_description" }}
-                    />
-                  ),
+                  label: <AlgaehLabel label={{ fieldName: "speciality" }} />,
                   disabled: true
                 },
                 {
                   fieldName: "description",
-                  label: <AlgaehLabel label={{ fieldName: "symbol" }} />,
+                  label: <AlgaehLabel label={{ fieldName: "description" }} />,
                   editorTemplate: row => {
                     return (
                       <AlagehFormGroup
                         div={{ className: "col" }}
                         textBox={{
                           className: "txt-fld",
-                          name: "currency_symbol",
-                          value: row.currency_symbol,
+                          name: "description",
+                          value: row.description,
                           events: {
                             onChange: this.changeGridEditors.bind(this, row)
                           },
                           others: {
-                            errormessage: "Symbol - cannot be blank",
+                            errormessage: "Description - cannot be blank",
                             required: true
                           }
                         }}
@@ -207,37 +252,7 @@ class CategorySpeciality extends Component {
                     );
                   }
                 },
-                {
-                  fieldName: "description",
-                  label: (
-                    <AlgaehLabel label={{ fieldName: "decimal_places" }} />
-                  ),
-                  displayTemplate: row => {
-                    return <span>{row.decimal_places}</span>;
-                  },
-                  editorTemplate: row => {
-                    return (
-                      <AlagehAutoComplete
-                        div={{ className: "col" }}
-                        selector={{
-                          name: "decimal_places",
-                          className: "select-fld",
-                          value: row.decimal_places,
-                          dataSource: {
-                            textField: "name",
-                            valueField: "value",
-                            data: GlobalVariables.DECIMAL_PLACES
-                          },
-                          others: {
-                            errormessage: "Decimal Places - cannot be blank",
-                            required: true
-                          },
-                          onChange: this.changeGridEditors.bind(this, row)
-                        }}
-                      />
-                    );
-                  }
-                },
+
                 {
                   fieldName: "category_speciality_status",
                   label: (
@@ -284,7 +299,7 @@ class CategorySpeciality extends Component {
               ]}
               keyId="hims_d_counter_id"
               dataSource={{
-                data: this.state.currencies
+                data: this.state.cat_specialities
               }}
               isEditable={true}
               paging={{ page: 0, rowsPerPage: 10 }}

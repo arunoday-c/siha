@@ -68,6 +68,8 @@ import InvRequisitionEntry from "./Components/Inventory/InvRequisitionEntry/InvR
 import InvRequisitionSwitch from "./Components/Inventory/InvRequisitionList/InvRequisitionSwitch";
 import InvTransferEntry from "./Components/Inventory/InvTransferEntry/InvTransferEntry";
 
+import VendorSetup from "./Components/VendorSetup/VendorSetup";
+
 const componts = (selectedLang, breadStyle) => {
   return {
     Dashboard: <Dashboard SelectLanguage={selectedLang} />,
@@ -136,7 +138,8 @@ const componts = (selectedLang, breadStyle) => {
     ),
     InvRequisitionEntry: <InvRequisitionEntry SelectLanguage={selectedLang} />,
     InvRequisitionList: <InvRequisitionSwitch SelectLanguage={selectedLang} />,
-    InvTransferEntry: <InvTransferEntry SelectLanguage={selectedLang} />
+    InvTransferEntry: <InvTransferEntry SelectLanguage={selectedLang} />,
+    VendorSetup: <VendorSetup SelectLanguage={selectedLang} />
   };
 };
 
