@@ -21,7 +21,6 @@
     /*Footer Only CSS*/
     /*Print Only CSS*/ }
     :global .print-body body {
-      font-family: sans-serif;
       margin: 0;
       padding: 0;
       color: #3d3d3d;
@@ -962,7 +961,7 @@
           content: "";
           border-bottom: solid 3px #34b8bc;
           transform: scaleX(0);
-          transition: transform 250ms ease-in-out; }
+          transition: transform 150ms ease-in-out; }
         :global .tabMaster ul li:hover:after {
           transform: scaleX(1); }
         :global .tabMaster ul li label {
@@ -971,13 +970,16 @@
           padding: 7px 15px;
           color: #858585;
           margin: 0;
-          border: none; }
+          border: none;
+          cursor: pointer; }
       :global .tabMaster ul li.active:hover:after {
         display: none !important;
-        border: none !important; }
+        border: none !important;
+        cursor: pointer; }
       :global .tabMaster ul li.active label {
         border-bottom: 3px solid #34b8bc;
-        color: #000; }
+        color: #000;
+        cursor: pointer; }
   :global .hptl-phase1-footer {
     margin-top: 50px; }
   :global .divInner {

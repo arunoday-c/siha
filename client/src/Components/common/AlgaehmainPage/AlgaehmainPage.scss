@@ -44,29 +44,38 @@ header {
   margin-top: 0;
   z-index: 9999;
   position: fixed;
-  background: #292929;
   height: 100%;
   width: 255px;
   overflow: auto;
   box-shadow: 0 0 300px rgba(0, 0, 0, 0.5);
   animation-duration: 0.4s;
 }
+
+/* Light Side Bar Menu */
 .hptl-phase1-sideMenuBar {
   .sideMenu-header {
-    color: white;
-    background: #292929;
+    color: #212529;
+    background: #f7f7f7;
     padding-top: 50px;
   }
   .side-menu-title {
     padding: 5px 0;
     line-height: 35px;
-    border-bottom: 2px solid #000000;
-    border-top: 1px solid #505050;
+    border-bottom: 2px solid #d2d2d2;
+    border-top: 1px solid #fff;
     cursor: pointer;
     font-size: 0.9rem;
+    i {
+      text-shadow: 0px 2px 0px #fff;
+    }
   }
   .side-menu-title:hover {
     background: rgb(0, 188, 176);
+    color: #fff;
+    text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.1);
+    i {
+      text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.1);
+    }
   }
   .side-menu-arrow {
     margin-top: 5px;
@@ -87,26 +96,24 @@ header {
       border-bottom: 1px dotted #4e4e4e;
       text-transform: uppercase;
       cursor: pointer;
-      color: #dcac66;
       line-height: 20px;
+      background: #7b7b7b;
+      color: #fff;
       i {
-        margin-right: 12px;
-        margin-left: 14px;
+        margin-right: 27px;
+        margin-left: 12px;
         display: inline-block;
         vertical-align: initial;
       }
       span {
         display: inline-block;
-        width: 80%;
+        width: 78%;
       }
     }
     li:hover {
       background: rgb(0, 188, 176);
       color: #fff;
     }
-  }
-  .sub-menu-option {
-    background: #000000;
   }
 
   .close-menu {
@@ -119,7 +126,7 @@ header {
     display: flex;
     padding: 5px;
     font-size: 20px;
-    height: 49px;
+    height: 52px;
     background: #000;
     position: fixed;
     width: 255px;
@@ -141,6 +148,102 @@ header {
     height: 23px;
   }
 }
+
+/* Dark Side Bar Menu */
+// .hptl-phase1-sideMenuBar {
+//   .sideMenu-header {
+//     color: white;
+//     background: #292929;
+//     padding-top: 50px;
+//   }
+//   .side-menu-title {
+//     padding: 5px 0;
+//     line-height: 35px;
+//     border-bottom: 2px solid #000000;
+//     border-top: 1px solid #505050;
+//     cursor: pointer;
+//     font-size: 0.9rem; i {
+//     text-shadow: 0px 2px 0px #fff;
+// }
+//   }
+//   .side-menu-title:hover {
+//     background: rgb(0, 188, 176); i {
+//    text-shadow: 0px 2px 0px #fff;
+//   }
+//   }
+//   .side-menu-arrow {
+//     margin-top: 5px;
+//   }
+//   .side-menu-downIcon {
+//     padding-top: 5px;
+//     padding-right: 5px;
+//     cursor: pointer;
+//   }
+//   ul.tree-structure-menu {
+//     margin: 0;
+//     padding: 0;
+//     width: 100%;
+//     li {
+//       padding: 8px 5px;
+//       margin: 0;
+//       font-size: 0.8rem;
+//       border-bottom: 1px dotted #4e4e4e;
+//       text-transform: uppercase;
+//       cursor: pointer;
+//       color: #dcac66;
+//       line-height: 20px;
+//       i {
+//         margin-right: 12px;
+//         margin-left: 14px;
+//         display: inline-block;
+//         vertical-align: initial;
+//       }
+//       span {
+//         display: inline-block;
+//         width: 80%;
+//       }
+//     }
+//     li:hover {
+//       background: rgb(0, 188, 176);
+//       color: #fff;
+//     }
+//   }
+//   .sub-menu-option {
+//     background: #000000;
+//   }
+
+//   .close-menu {
+//     padding-top: 5px;
+//     cursor: pointer;
+//     color: #fff;
+//   }
+
+//   .menuBar-title {
+//     display: flex;
+//     padding: 5px;
+//     font-size: 20px;
+//     height: 49px;
+//     background: #000;
+//     position: fixed;
+//     width: 255px;
+//     z-index: 9;
+//     border-bottom: 1px solid #3e3e3e;
+//   }
+//   .sideBarClose {
+//     position: absolute;
+//     right: 19px;
+//     top: 14px;
+//     color: #fff;
+//     font-size: 1.3rem;
+//   }
+//   .sideBarClose:hover {
+//     color: #00bcb0;
+//     cursor: pointer;
+//   }
+//   svg {
+//     height: 23px;
+//   }
+// }
 
 .hptl-phase1-footer {
   .main {

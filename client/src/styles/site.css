@@ -80,11 +80,19 @@ body {
 
 :global .algaehLabelGroup {
   font-weight: bold;
-  text-decoration: underline;
-  text-transform: inherit;
-  padding-bottom: 5px;
-  margin-bottom: 5px;
-  color: #369c92; }
+  color: #575b5e;
+  position: absolute;
+  top: -11px;
+  left: 5px;
+  background: #fff;
+  padding: 2px 6px 4px; }
+
+:global .algaehLabelFormGroup {
+  border: 1px solid #c1c1c1;
+  padding-top: 15px;
+  margin-bottom: 20px; }
+  :global .algaehLabelFormGroup h6 {
+    font-size: 0.9rem; }
 
 :global .image-drop-area {
   border: 1px solid #93a4ad;

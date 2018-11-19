@@ -1,42 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="theme-color" content="#000000" />
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="theme-color" content="#000000">
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.webp" />
 
-  <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
-  <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.webp">
+    <link rel="stylesheet" href="css/Bootstrap.css?v=001" />
+    <!--
+      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.1/css/all.css" integrity="sha384-O8whS3fhG2OnA5Kas0Y9l3cfpmYjapjI0E4theH4iuMD+pLhbf6JI0jIMfYcK3yZ"
+      crossorigin="anonymous">
+    -->
+    <link rel="stylesheet" href="css/font-awssome/all.min.css?v=001" />
+    <link rel="stylesheet" href="css/animate.min.css?v=001" />
+    <!-- <link rel="stylesheet" href="css/OpenSans.css?v=001"> -->
 
-  <link rel="stylesheet" href="css/Bootstrap.css?v=001" />
-  <!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.1/css/all.css" integrity="sha384-O8whS3fhG2OnA5Kas0Y9l3cfpmYjapjI0E4theH4iuMD+pLhbf6JI0jIMfYcK3yZ"
-    crossorigin="anonymous"> -->
-  <link rel="stylesheet" href="css/font-awssome/all.min.css?v=001">
-  <link rel="stylesheet" href="css/animate.min.css?v=001">
-  <!-- <link rel="stylesheet" href="css/OpenSans.css?v=001"> -->
-  <link href="https://fonts.googleapis.com/css?family=Titillium+Web:300,400,600,700" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css?family=Titillium+Web:300,400,600,700"
+      rel="stylesheet"
+    />
 
-  <link rel="stylesheet" href="css/loader.css?v=001" />
+    <!--
+      <link
+        href="https://fonts.googleapis.com/css?family=Nunito:400,600,700"
+        rel="stylesheet"
+      />
+    -->
 
-  <title>ALGAEH HIMS</title>
-</head>
+    <link rel="stylesheet" href="css/loader.css?v=001" />
 
-<body>
-  <noscript>
-    You need to enable JavaScript to run this app.
-  </noscript>
-  <div id="root"></div>
-  <div id="searchWindow"></div>
-  <div id="reportWindow"></div>
-  <div id="fullPageLoader" class="d-none">
-    <div class="loader-container">
-      <div class="algaeh-progress float shadow">
-        <div class="progress__item">loading</div>
+    <title>ALGAEH HIMS</title>
+  </head>
+
+  <body>
+    <noscript> You need to enable JavaScript to run this app. </noscript>
+    <div id="root"></div>
+    <div id="searchWindow"></div>
+    <div id="reportWindow"></div>
+    <div id="fullPageLoader" class="d-none">
+      <div class="loader-container">
+        <div class="algaeh-progress float shadow">
+          <div class="progress__item">loading</div>
+        </div>
       </div>
     </div>
-  </div>
-  <!--
+    <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
 
@@ -46,11 +59,10 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
-  <script>
-    window.onpopstate = function (event) {
-      window.history.go(1);
-    };
-  </script>
-</body>
-
+    <script>
+      window.onpopstate = function(event) {
+        window.history.go(1);
+      };
+    </script>
+  </body>
 </html>

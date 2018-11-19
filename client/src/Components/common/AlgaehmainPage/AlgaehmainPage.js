@@ -265,22 +265,16 @@ class PersistentDrawer extends React.Component {
             onClick={this.openSubMenuSelection.bind(this, data)}
           >
             <div className="col-2" style={{ marginTop: "2px" }}>
-              <i className={icon} style={{ textShadow: "0px 2px 0px #000" }} />
+              <i className={icon} />
             </div>
             <div className="col-8 ">{data.label}</div>
 
             <div className="col-2" style={{ marginTop: "2px" }}>
               {this.state.menuSelected === data.name &&
               this.state.toggleSubMenu === false ? (
-                <i
-                  className="fas fa-angle-up"
-                  style={{ textShadow: "0px 2px 0px #000" }}
-                />
+                <i className="fas fa-angle-up" />
               ) : (
-                <i
-                  className="fas fa-angle-down"
-                  style={{ textShadow: "0px 2px 0px #000" }}
-                />
+                <i className="fas fa-angle-down" />
               )}
             </div>
           </div>

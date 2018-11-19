@@ -250,7 +250,6 @@ class PhySchSetup extends Component {
             }
           },
           onFailure: error => {
-            
             swalMessage({
               title: error.response.data.message,
               type: "error"
@@ -1080,7 +1079,6 @@ class PhySchSetup extends Component {
                         }}
                         events={{
                           onChange: selectedDate => {
-                            
                             this.setState({
                               from_date: selectedDate
                             });
@@ -1349,9 +1347,9 @@ class PhySchSetup extends Component {
         {/* Schedule Modal End */}
 
         {/* Top Filter Start */}
-        <div className="row  inner-top-search">
+        <div className="row inner-top-search">
           <AlagehAutoComplete
-            div={{ className: "col-lg-3" }}
+            div={{ className: "col" }}
             label={{
               fieldName: "department_name"
             }}
@@ -1371,7 +1369,7 @@ class PhySchSetup extends Component {
           />
 
           <AlagehAutoComplete
-            div={{ className: "col-lg-3" }}
+            div={{ className: "col" }}
             label={{
               forceLabel: "Select Month"
             }}
@@ -1389,7 +1387,7 @@ class PhySchSetup extends Component {
           />
 
           <AlagehFormGroup
-            div={{ className: "col-lg-1" }}
+            div={{ className: "col-2" }}
             label={{
               forceLabel: "Year",
               isImp: true
@@ -1408,13 +1406,15 @@ class PhySchSetup extends Component {
             }}
           />
 
-          <div className="col-lg-1 form-group margin-top-15">
-            <span
+          <div className="col form-group">
+            <button
+              style={{ marginTop: 21 }}
+              className="btn btn-primary"
               id="srch-sch"
-              style={{ cursor: "pointer" }}
               onClick={this.getApptSchedule.bind(this)}
-              className="fas fa-search fa-2x"
-            />
+            >
+              Search
+            </button>
           </div>
         </div>
         {/* Top Filter End */}
@@ -1439,7 +1439,7 @@ class PhySchSetup extends Component {
               </div>
               <div className="portlet-body">
                 <div className="bordered-layout-radius">
-                  <ul id="schedule-ul" style={{ height: "53vh" }}>
+                  <ul id="schedule-ul" style={{ height: "65vh" }}>
                     {this.state.scheduleList.length !== 0 ? (
                       this.state.scheduleList.map((data, index) => (
                         <li
@@ -1447,6 +1447,7 @@ class PhySchSetup extends Component {
                           header-id={data.hims_d_appointment_schedule_header_id}
                           key={index}
                           onClick={this.loadDetails.bind(this)}
+                          style={{ paddingRight: 25 }}
                         >
                           <span>{data.schedule_description}</span>
                           {/* <span className="fas fa-trash" /> */}
@@ -1475,7 +1476,11 @@ class PhySchSetup extends Component {
             <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">{this.state.description}</h3>
+                  <h3 className="caption-subject">
+                    {this.state.description
+                      ? this.state.description
+                      : "Selected Schedule Name"}
+                  </h3>
                 </div>
 
                 {this.state.description ? (
@@ -1499,335 +1504,174 @@ class PhySchSetup extends Component {
               </div>
               <div className="portlet-body">
                 <div className="row">
-                  <div className="col-lg-8">
-                    <div className="row">
-                      <div className="col-lg-6">
-                        <label className="algaehLabelGroup">Date Range</label>
-                        <div className="row">
-                          <div className="col-lg-6">
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "From Date",
-                                isImp: true
-                              }}
-                            />
+                  <div className="col-lg-8" style={{ paddingTop: 15 }}>
+                    <div className="col-lg-12">
+                      <div className="row">
+                        <div className="col-lg-6 algaehLabelFormGroup">
+                          <label className="algaehLabelGroup">Date Range</label>
+                          <div className="row">
+                            <div className="col-lg-6">
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "From Date",
+                                  isImp: true
+                                }}
+                              />
 
-                            <h6>
-                              {this.state.from_date
-                                ? moment(this.state.from_date).format(
-                                    "DD-MM-YYYY"
-                                  )
-                                : "DD/MM/YYYY"}
-                            </h6>
+                              <h6>
+                                {this.state.from_date
+                                  ? moment(this.state.from_date).format(
+                                      "DD-MM-YYYY"
+                                    )
+                                  : "DD/MM/YYYY"}
+                              </h6>
+                            </div>
+
+                            <div className="col-lg-6">
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "To Date",
+                                  isImp: true
+                                }}
+                              />
+
+                              <h6>
+                                {this.state.to_date
+                                  ? moment(this.state.to_date).format(
+                                      "DD-MM-YYYY"
+                                    )
+                                  : "DD/MM/YYYY"}
+                              </h6>
+                            </div>
                           </div>
-                          {/* <AlgaehDateHandler
-                            div={{ className: "col-lg-6" }}
-                            label={{ forceLabel: "From Date", isImp: true }}
-                            textBox={{
-                              className: "txt-fld",
-                              name: "from_date",
-                              others: {
-                                disabled: this.state.scheduleDisable
-                              }
-                            }}
-                            events={{
-                              onChange: selectedDate => {
-                                this.setState({ from_date: selectedDate });
-                              }
-                            }}
-                            value={this.state.from_date}
-                          /> */}
+                        </div>
+                        <div className="col-lg-6 algaehLabelFormGroup">
+                          <label className="algaehLabelGroup">
+                            Working Hours
+                          </label>
+                          <div className="row">
+                            <div className="col-lg-6">
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "From Time",
+                                  isImp: true
+                                }}
+                              />
 
-                          <div className="col-lg-6">
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "To Date",
-                                isImp: true
-                              }}
-                            />
+                              <h6>
+                                {this.state.from_work_hr
+                                  ? moment(
+                                      this.state.from_work_hr,
+                                      "hh:mm:ss"
+                                    ).format("hh:mm a")
+                                  : "00:00"}
+                              </h6>
+                            </div>
 
-                            <h6>
-                              {this.state.to_date
-                                ? moment(this.state.to_date).format(
-                                    "DD-MM-YYYY"
-                                  )
-                                : "DD/MM/YYYY"}
-                            </h6>
+                            <div className="col-lg-6 ">
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "To Time",
+                                  isImp: true
+                                }}
+                              />
+
+                              <h6>
+                                {this.state.to_work_hr
+                                  ? moment(
+                                      this.state.to_work_hr,
+                                      "hh:mm:ss"
+                                    ).format("hh:mm a")
+                                  : "00:00"}
+                              </h6>
+                            </div>
                           </div>
-                          {/* <AlgaehDateHandler
-                            div={{ className: "col-lg-6" }}
-                            label={{ forceLabel: "To Date", isImp: true }}
-                            textBox={{
-                              className: "txt-fld",
-                              name: "to_date",
-                              others: {
-                                disabled: this.state.scheduleDisable
-                              }
-                            }}
-                            events={{
-                              onChange: selectedDate => {
-                                this.setState({ to_date: selectedDate });
-                              }
-                            }}
-                            value={this.state.to_date}
-                          /> */}
                         </div>
                       </div>
-                      <div className="col-lg-6">
-                        <label className="algaehLabelGroup">
-                          Working Hours
-                        </label>
-                        <div className="row">
-                          <div className="col-lg-6">
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "From Time",
-                                isImp: true
-                              }}
-                            />
 
-                            <h6>
-                              {this.state.from_work_hr
-                                ? moment(
-                                    this.state.from_work_hr,
-                                    "hh:mm:ss"
-                                  ).format("hh:mm a")
-                                : "00:00"}
-                            </h6>
+                      <div className="row">
+                        <div className="col-lg-6 algaehLabelFormGroup">
+                          <label className="algaehLabelGroup">
+                            Day Break 1
+                          </label>
+                          <div className="row">
+                            <div className="col-lg-6">
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "From Time",
+                                  isImp: true
+                                }}
+                              />
+                              <h6>
+                                {this.state.from_break_hr1
+                                  ? moment(
+                                      this.state.from_break_hr1,
+                                      "hh:mm:ss"
+                                    ).format("hh:mm a")
+                                  : "00:00"}
+                              </h6>
+                            </div>
+
+                            <div className="col-lg-6">
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "To Time",
+                                  isImp: true
+                                }}
+                              />
+
+                              <h6>
+                                {this.state.to_break_hr1
+                                  ? moment(
+                                      this.state.to_break_hr1,
+                                      "hh:mm:ss"
+                                    ).format("hh:mm a")
+                                  : "00:00"}
+                              </h6>
+                            </div>
                           </div>
-
-                          {/* <AlagehFormGroup
-                            div={{ className: "col" }}
-                            label={{
-                              forceLabel: "From Time",
-                              isImp: true
-                            }}
-                            textBox={{
-                              className: "txt-fld",
-                              name: "from_work_hr",
-                              value: this.state.from_work_hr,
-                              events: {
-                                onChange: this.changeTexts.bind(this)
-                              },
-                              others: {
-                                type: "time",
-                                disabled: this.state.scheduleDisable
-                              }
-
-                              // error: this.state.description_error,
-                              // helperText: this.state.description_error_text
-                            }}
-                          /> */}
-
-                          <div className="col-lg-6">
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "To Time",
-                                isImp: true
-                              }}
-                            />
-
-                            <h6>
-                              {this.state.to_work_hr
-                                ? moment(
-                                    this.state.to_work_hr,
-                                    "hh:mm:ss"
-                                  ).format("hh:mm a")
-                                : "00:00"}
-                            </h6>
-                          </div>
-
-                          {/* <AlagehFormGroup
-                            div={{ className: "col" }}
-                            label={{
-                              forceLabel: "To Time",
-                              isImp: true
-                            }}
-                            textBox={{
-                              className: "txt-fld",
-                              name: "to_work_hr",
-                              value: this.state.to_work_hr,
-                              events: {
-                                onChange: this.changeTexts.bind(this)
-                              },
-                              others: {
-                                type: "time",
-                                disabled: this.state.scheduleDisable
-                              }
-
-                              // error: this.state.description_error,
-                              // helperText: this.state.description_error_text
-                            }}
-                          /> */}
                         </div>
-                      </div>
-                    </div>
+                        <div className="col-lg-6 algaehLabelFormGroup">
+                          <label className="algaehLabelGroup">
+                            Day Break 2
+                          </label>
+                          <div className="row">
+                            <div className="col-lg-6">
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "From Time",
+                                  isImp: true
+                                }}
+                              />
 
-                    <div className="row">
-                      <div className="col-lg-6">
-                        <label className="algaehLabelGroup">Day Break 1</label>
-                        <div className="row">
-                          <div className="col-lg-6">
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "From Time",
-                                isImp: true
-                              }}
-                            />
-                            <h6>
-                              {this.state.from_break_hr1
-                                ? moment(
-                                    this.state.from_break_hr1,
-                                    "hh:mm:ss"
-                                  ).format("hh:mm a")
-                                : "00:00"}
-                            </h6>
+                              <h6>
+                                {this.state.from_break_hr2
+                                  ? moment(
+                                      this.state.from_break_hr2,
+                                      "hh:mm:ss"
+                                    ).format("hh:mm a")
+                                  : "00:00"}
+                              </h6>
+                            </div>
+
+                            <div className="col-lg-6">
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "To Time",
+                                  isImp: true
+                                }}
+                              />
+
+                              <h6>
+                                {this.state.to_break_hr2
+                                  ? moment(
+                                      this.state.to_break_hr2,
+                                      "hh:mm:ss"
+                                    ).format("hh:mm a")
+                                  : "00:00"}
+                              </h6>
+                            </div>
                           </div>
-                          {/* <AlagehFormGroup
-                            div={{ className: "col" }}
-                            label={{
-                              forceLabel: "From Time",
-                              isImp: true
-                            }}
-                            textBox={{
-                              className: "txt-fld",
-                              name: "from_break_hr1",
-                              value: this.state.from_break_hr1,
-                              events: {
-                                onChange: this.changeTexts.bind(this)
-                              },
-                              others: {
-                                type: "time",
-                                disabled: this.state.scheduleDisable
-                              }
-                              // error: this.state.description_error,
-                              // helperText: this.state.description_error_text
-                            }}
-                          /> */}
-
-                          <div className="col-lg-6">
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "To Time",
-                                isImp: true
-                              }}
-                            />
-
-                            <h6>
-                              {this.state.to_break_hr1
-                                ? moment(
-                                    this.state.to_break_hr1,
-                                    "hh:mm:ss"
-                                  ).format("hh:mm a")
-                                : "00:00"}
-                            </h6>
-                          </div>
-                          {/* <AlagehFormGroup
-                            div={{ className: "col" }}
-                            label={{
-                              forceLabel: "To Time",
-                              isImp: true
-                            }}
-                            textBox={{
-                              className: "txt-fld",
-                              name: "to_break_hr1",
-                              value: this.state.to_break_hr1,
-                              events: {
-                                onChange: this.changeTexts.bind(this)
-                              },
-                              others: {
-                                type: "time",
-                                disabled: this.state.scheduleDisable
-                              }
-
-                              // error: this.state.description_error,
-                              // helperText: this.state.description_error_text
-                            }}
-                          /> */}
-                        </div>
-                      </div>
-                      <div className="col-lg-6">
-                        <label className="algaehLabelGroup">Day Break 2</label>
-                        <div className="row">
-                          <div className="col-lg-6">
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "From Time",
-                                isImp: true
-                              }}
-                            />
-
-                            <h6>
-                              {this.state.from_break_hr2
-                                ? moment(
-                                    this.state.from_break_hr2,
-                                    "hh:mm:ss"
-                                  ).format("hh:mm a")
-                                : "00:00"}
-                            </h6>
-                          </div>
-
-                          {/* <AlagehFormGroup
-                            div={{ className: "col" }}
-                            label={{
-                              forceLabel: "From Time",
-                              isImp: true
-                            }}
-                            textBox={{
-                              className: "txt-fld",
-                              name: "from_break_hr2",
-                              value: this.state.from_break_hr2,
-                              events: {
-                                onChange: this.changeTexts.bind(this)
-                              },
-                              others: {
-                                type: "time",
-                                disabled: this.state.scheduleDisable
-                              }
-                              // error: this.state.description_error,
-                              // helperText: this.state.description_error_text
-                            }}
-                          /> */}
-
-                          <div className="col-lg-6">
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "To Time",
-                                isImp: true
-                              }}
-                            />
-
-                            <h6>
-                              {this.state.to_break_hr2
-                                ? moment(
-                                    this.state.to_break_hr2,
-                                    "hh:mm:ss"
-                                  ).format("hh:mm a")
-                                : "00:00"}
-                            </h6>
-                          </div>
-
-                          {/* <AlagehFormGroup
-                            div={{ className: "col" }}
-                            label={{
-                              forceLabel: "To Time",
-                              isImp: true
-                            }}
-                            textBox={{
-                              className: "txt-fld",
-                              name: "to_break_hr2",
-                              value: this.state.to_break_hr2,
-                              events: {
-                                onChange: this.changeTexts.bind(this)
-                              },
-                              others: {
-                                type: "time",
-                                disabled: this.state.scheduleDisable
-                              }
-                              // error: this.state.description_error,
-                              // helperText: this.state.description_error_text
-                            }}
-                          /> */}
                         </div>
                       </div>
                     </div>
@@ -1850,102 +1694,17 @@ class PhySchSetup extends Component {
                           {this.state.friday ? " FRI" : ""}
                           {this.state.saturday ? " SAT" : ""}
                         </h6>
+
+                        {/* <h6>Weekdays</h6> */}
                       </div>
-
-                      {/* <div className="col-lg-12">
-                        <label>Working Days</label>
-                          
-
-                        <div
-                          className="customCheckbox"
-                          style={{
-                            border: "none",
-                            pointerEvents: this.state.scheduleDisable
-                              ? "none"
-                              : ""
-                          }}
-                        >
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="All"
-                              checked={this.state.all}
-                              onClick={this.changeChecks.bind(this)}
-                            />
-                            <span>All</span>
-                          </label>
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="sunday"
-                              checked={this.state.sunday}
-                              onClick={this.changeChecks.bind(this)}
-                            />
-                            <span>Sunday</span>
-                          </label>
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="monday"
-                              checked={this.state.monday}
-                              onClick={this.changeChecks.bind(this)}
-                            />
-                            <span>Monday</span>
-                          </label>
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="tuesday"
-                              checked={this.state.tuesday}
-                              onClick={this.changeChecks.bind(this)}
-                            />
-                            <span>Tuesday</span>
-                          </label>
-
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="wednesday"
-                              checked={this.state.wednesday}
-                              onClick={this.changeChecks.bind(this)}
-                            />
-                            <span>Wednesday</span>
-                          </label>
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="thursday"
-                              checked={this.state.thursday}
-                              onClick={this.changeChecks.bind(this)}
-                            />
-                            <span>Thursday</span>
-                          </label>
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="friday"
-                              checked={this.state.friday}
-                              onClick={this.changeChecks.bind(this)}
-                            />
-                            <span>Friday</span>
-                          </label>
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="saturday"
-                              checked={this.state.saturday}
-                              onClick={this.changeChecks.bind(this)}
-                            />
-                            <span>Saturday</span>
-                          </label>
-                        </div>
-                      </div> */}
                     </div>
                   </div>
-                  <div className="col-lg-4">
-                    <label>Doctors in the Schedule</label>
+                  <div className="col-lg-4" style={{ marginTop: 15 }}>
+                    <label className="algaehLabelGroup" style={{ left: 22 }}>
+                      Doctors in the Schedule
+                    </label>
                     <div className="bordered-layout-radius">
-                      <ul style={{ height: "50vh" }}>
+                      <ul style={{ height: "63vh", paddingTop: 3 }}>
                         {this.state.scheduleDoctors !== undefined ? (
                           this.state.scheduleDoctors.map((data, index) => (
                             <li key={index}>

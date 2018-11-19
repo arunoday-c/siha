@@ -9,7 +9,6 @@ $forntSize: 0.7rem;
   //Reports Styles
   .print-body {
     body {
-      font-family: sans-serif;
       margin: 0;
       padding: 0;
       color: #3d3d3d;
@@ -1390,7 +1389,7 @@ $forntSize: 0.7rem;
           content: "";
           border-bottom: solid 3px #34b8bc;
           transform: scaleX(0);
-          transition: transform 250ms ease-in-out;
+          transition: transform 150ms ease-in-out;
         }
         &:hover:after {
           transform: scaleX(1);
@@ -1402,6 +1401,7 @@ $forntSize: 0.7rem;
           color: #858585;
           margin: 0;
           border: none;
+          cursor: pointer;
         }
         // label:hover {
         //   cursor: pointer;
@@ -1417,11 +1417,13 @@ $forntSize: 0.7rem;
         &:hover:after {
           display: none !important;
           border: none !important;
+          cursor: pointer;
         }
 
         label {
           border-bottom: 3px solid #34b8bc;
           color: #000;
+          cursor: pointer;
         }
       }
     }
