@@ -107,11 +107,11 @@ let deleteVendorMaster = (req, res, next) => {
     deleteRecord(
       {
         db: req.db,
-        tableName: "hims_d_employee_category",
-        id: req.body.hims_employee_category_id,
+        tableName: "hims_d_vendor",
+        id: req.body.hims_d_vendor_id,
         query:
-          "UPDATE hims_d_employee_category SET  record_status='I' WHERE  record_status='A' and hims_employee_category_id=?",
-        values: [req.body.hims_employee_category_id]
+          "UPDATE hims_d_vendor SET  record_status='I' WHERE  record_status='A' and hims_d_vendor_id=?",
+        values: [req.body.hims_d_vendor_id]
       },
       result => {
         req.records = result;
@@ -141,17 +141,25 @@ let updateVendorMaster = (req, res, next) => {
       }
 
       connection.query(
-        "UPDATE `hims_d_employee_speciality` SET  speciality_code=?,speciality_name=?, arabic_name=? , speciality_desc=?,\
-        speciality_status=?,updated_date=?, updated_by=?  WHERE  `record_status`='A' and `hims_d_employee_speciality_id`=?;",
+        "UPDATE `hims_d_vendor` SET  vendor_name=?,vendor_status=?,business_registration_no=?,email_id_1=?,email_id_2=?,website=?,\
+        contact_number=?,payment_terms=?,payment_mode=?,vat_applicable=?,vat_percentage=?,bank_name=?,\
+        updated_date=?, updated_by=?  WHERE  `record_status`='A' and `hims_d_vendor_id`=?;",
         [
-          input.speciality_code,
-          input.speciality_name,
-          input.arabic_name,
-          input.speciality_desc,
-          input.speciality_status,
+          input.vendor_name,
+          input.vendor_status,
+          input.business_registration_no,
+          input.email_id_1,
+          input.email_id_2,
+          input.website,
+          input.contact_number,
+          input.payment_terms,
+          input.payment_mode,
+          input.vat_applicable,
+          input.vat_percentage,
+          input.bank_name,
           new Date(),
           input.updated_by,
-          input.hims_d_employee_speciality_id
+          input.hims_d_vendor_id
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -177,11 +185,11 @@ let makeVendorMasterInActive = (req, res, next) => {
     deleteRecord(
       {
         db: req.db,
-        tableName: "hims_d_employee_speciality",
-        id: req.body.hims_d_employee_speciality_id,
+        tableName: "hims_d_vendor",
+        id: req.body.hims_d_vendor_id,
         query:
-          "UPDATE hims_d_employee_speciality SET  speciality_status='I' WHERE record_status='A' and hims_d_employee_speciality_id=?",
-        values: [req.body.hims_d_employee_speciality_id]
+          "UPDATE hims_d_vendor SET  vendor_status='I' WHERE record_status='A' and hims_d_vendor_id=?",
+        values: [req.body.hims_d_vendor_id]
       },
       result => {
         req.records = result;
@@ -197,4 +205,10 @@ let makeVendorMasterInActive = (req, res, next) => {
   }
 };
 
-module.exports = { addVendorMaster, getVendorMaster };
+module.exports = {
+  addVendorMaster,
+  getVendorMaster,
+  updateVendorMaster,
+  deleteVendorMaster,
+  makeVendorMasterInActive
+};
