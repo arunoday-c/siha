@@ -450,5 +450,21 @@
   "APPT_TYPE": [
     { "name": "Available", "value": "A" },
     { "name": "Occupied", "value": "O" }
+  ],
+  "PAYMENT_TERMS": [
+    { "name": "0 Days", "value": "0" },
+    { "name": "30 Days", "value": "30" },
+    { "name": "60 Days", "value": "60" },
+    { "name": "90 Days", "value": "90" },
+    { "name": "120 Days", "value": "120" },
+    { "name": "180 Days", "value": "180" },
+    { "name": "365 Days", "value": "365" }
+  ],
+  "PAYMENT_MODE": [
+    { "name": "Cash", "value": "CS" },
+    { "name": "Cheque", "value": "CH" },
+    { "name": "Bank Transfer", "value": "BT" },
+    { "name": "Debit Card", "value": "DC" },
+    { "name": "Credi Card", "value": "CC" }
   ]
 }
