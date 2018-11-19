@@ -533,6 +533,36 @@ let deleteCategorySpecialityMap = (req, res, next) => {
     next(e);
   }
 };
+//created by irfan: to Make Inactive
+let makeCategorySpecialityMapInActive = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+
+    deleteRecord(
+      {
+        db: req.db,
+        tableName: "hims_m_category_speciality_mappings",
+        id: req.body.hims_m_category_speciality_mappings_id,
+
+        query:
+          "UPDATE hims_m_category_speciality_mappings SET  category_speciality_status='I' WHERE  record_status='A' and hims_m_category_speciality_mappings_id=?",
+        values: [req.body.hims_m_category_speciality_mappings_id]
+      },
+      result => {
+        req.records = result;
+        next();
+      },
+      error => {
+        next(error);
+      },
+      true
+    );
+  } catch (e) {
+    next(e);
+  }
+};
 
 module.exports = {
   addEmployeeSpecialityMaster,
@@ -549,5 +579,6 @@ module.exports = {
   getCategorySpecialityMap,
   getCategorySpecialityMap,
   updateCategorySpecialityMap,
-  deleteCategorySpecialityMap
+  deleteCategorySpecialityMap,
+  makeCategorySpecialityMapInActive
 };

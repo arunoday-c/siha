@@ -72,6 +72,10 @@ import PurchaseOrderEntry from "./Components/Procurement/PurchaseOrderEntry/Purc
 import ReceiptEntry from "./Components/Procurement/ReceiptEntry/ReceiptEntry";
 
 import VendorSetup from "./Components/VendorSetup/VendorSetup";
+import AcquisitionEntry from "./Components/AssetManagement/AcquisitionEntry/AcquisitionEntry";
+import DepreciationEntry from "./Components/AssetManagement/DepreciationEntry/DepreciationEntry";
+import DepreciationReversal from "./Components/AssetManagement/DepreciationReversal/DepreciationReversal";
+import Disposal from "./Components/AssetManagement/Disposal/Disposal";
 
 const componts = (selectedLang, breadStyle) => {
   return {
@@ -146,7 +150,13 @@ const componts = (selectedLang, breadStyle) => {
 
     DeliveryNoteEntry: <DeliveryNoteEntry SelectLanguage={selectedLang} />,
     PurchaseOrderEntry: <PurchaseOrderEntry SelectLanguage={selectedLang} />,
-    ReceiptEntry: <ReceiptEntry SelectLanguage={selectedLang} />
+    ReceiptEntry: <ReceiptEntry SelectLanguage={selectedLang} />,
+    AcquisitionEntry: <AcquisitionEntry SelectLanguage={selectedLang} />,
+    DepreciationEntry: <DepreciationEntry SelectLanguage={selectedLang} />,
+    DepreciationReversal: (
+      <DepreciationReversal SelectLanguage={selectedLang} />
+    ),
+    Disposal: <Disposal SelectLanguage={selectedLang} />
   };
 };
 

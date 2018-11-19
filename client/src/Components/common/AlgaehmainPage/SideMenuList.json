@@ -431,6 +431,37 @@
     ]
   },
   {
+    "name": "Asset Management",
+    "label": "Asset Management",
+    "icon": "fa fa-money-bill",
+    "subMenu": [
+      {
+        "name": "Acquisition Entry",
+        "label": "Acquisition Entry",
+        "arlabel": "عملية نهاية اليوم",
+        "path": "/AcquisitionEntry"
+      },
+      {
+        "name": "Depreciation Entry",
+        "label": "Depreciation Entry",
+        "arlabel": "عملية نهاية اليوم",
+        "path": "/DepreciationEntry"
+      },
+      {
+        "name": "Depreciation Reversal",
+        "label": "Depreciation Reversal",
+        "arlabel": "عملية نهاية اليوم",
+        "path": "/DepreciationReversal"
+      },
+      {
+        "name": "Disposal",
+        "label": "Disposal",
+        "arlabel": "عملية نهاية اليوم",
+        "path": "/Disposal"
+      }
+    ]
+  },
+  {
     "name": "MRD",
     "label": "MRD",
     "icon": "fas fa-paste",
