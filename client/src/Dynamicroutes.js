@@ -67,6 +67,9 @@ import InvItemMomentEnquiry from "./Components/Inventory/InvItemMomentEnquiry/In
 import InvRequisitionEntry from "./Components/Inventory/InvRequisitionEntry/InvRequisitionEntry";
 import InvRequisitionSwitch from "./Components/Inventory/InvRequisitionList/InvRequisitionSwitch";
 import InvTransferEntry from "./Components/Inventory/InvTransferEntry/InvTransferEntry";
+import DeliveryNoteEntry from "./Components/Procurement/DeliveryNoteEntry/DeliveryNoteEntry";
+import PurchaseOrderEntry from "./Components/Procurement/PurchaseOrderEntry/PurchaseOrderEntry";
+import ReceiptEntry from "./Components/Procurement/ReceiptEntry/ReceiptEntry";
 
 const componts = (selectedLang, breadStyle) => {
   return {
@@ -136,7 +139,11 @@ const componts = (selectedLang, breadStyle) => {
     ),
     InvRequisitionEntry: <InvRequisitionEntry SelectLanguage={selectedLang} />,
     InvRequisitionList: <InvRequisitionSwitch SelectLanguage={selectedLang} />,
-    InvTransferEntry: <InvTransferEntry SelectLanguage={selectedLang} />
+    InvTransferEntry: <InvTransferEntry SelectLanguage={selectedLang} />,
+
+    DeliveryNoteEntry: <DeliveryNoteEntry SelectLanguage={selectedLang} />,
+    PurchaseOrderEntry: <PurchaseOrderEntry SelectLanguage={selectedLang} />,
+    ReceiptEntry: <ReceiptEntry SelectLanguage={selectedLang} />
   };
 };
 

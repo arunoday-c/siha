@@ -402,24 +402,6 @@
         "label": "Receipt Entry",
         "arlabel": "دخول الإيصال",
         "path": "/ReceiptEntry"
-      },
-      {
-        "name": "Purchase Return Entry",
-        "label": "Purchase Return Entry",
-        "arlabel": "شراء العودة الدخول",
-        "path": "/PurchaseReturnEntry"
-      },
-      {
-        "name": "Credit/Debit Note Entry",
-        "label": "Credit/Debit Note Entry",
-        "arlabel": "الائتمان / الخصم ملاحظة الدخول",
-        "path": "/CreditDebitNoteEntry"
-      },
-      {
-        "name": "Shipment Entry",
-        "label": "Shipment Entry",
-        "arlabel": "دخول الشحنة",
-        "path": "/ShipmentEntry"
       }
     ]
   },
