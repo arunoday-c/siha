@@ -433,7 +433,7 @@
   {
     "name": "Asset Management",
     "label": "Asset Management",
-    "icon": "fa fa-money-bill",
+    "icon": "fa fa-boxes",
     "subMenu": [
       {
         "name": "Acquisition Entry",
