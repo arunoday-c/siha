@@ -11,7 +11,6 @@ import { AlgaehLabel, AlgaehDataGrid } from "../Wrapper/algaehWrapper";
 import ItemMaster from "./ItemMaster/ItemMaster";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { getItems, EditItemMaster } from "./ItemSetupEvent";
-import BreadCrumb from "../common/BreadCrumb/BreadCrumb";
 
 class ItemSetup extends Component {
   constructor(props) {
@@ -112,7 +111,6 @@ class ItemSetup extends Component {
   }
 
   render() {
-    
     let ItemList = Enumerable.from(this.props.itemlist)
       .groupBy("$.hims_d_item_master_id", null, (k, g) => {
         let firstRecordSet = Enumerable.from(g).firstOrDefault();

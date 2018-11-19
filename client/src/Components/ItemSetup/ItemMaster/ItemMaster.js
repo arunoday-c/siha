@@ -1,10 +1,8 @@
 import React, { Component } from "react";
 import ItemDetails from "./ItemDetails/ItemDetails";
 import UOMAdditionalInfo from "./UOMAdditionalInfo/UOMAdditionalInfo";
-
 import "./../../../styles/site.css";
 import "./ItemMaster.css";
-
 import { AlgaehLabel, Modal } from "../../Wrapper/algaehWrapper";
 import MyContext from "../../../utils/MyContext.js";
 import ItemSetup from "../../../Models/ItemSetup";

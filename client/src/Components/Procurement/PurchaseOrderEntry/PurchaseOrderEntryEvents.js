@@ -10,12 +10,16 @@ let texthandlerInterval = null;
 
 const texthandle = ($this, e) => {
   debugger;
-  let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
+  if (e.value === undefined) {
+    $this.setState({ [e]: null });
+  } else {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
 
-  $this.setState({
-    [name]: value
-  });
+    $this.setState({
+      [name]: value
+    });
+  }
 };
 
 const poforhandle = ($this, e) => {

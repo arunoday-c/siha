@@ -147,8 +147,8 @@ class PurchaseOrderEntry extends Component {
                       data: GlobalVariables.PO_FOR
                     },
 
-                    onChange: poforhandle.bind(this, this)
-                    // onClear: texthandle.bind(this, this)
+                    onChange: poforhandle.bind(this, this),
+                    onClear: texthandle.bind(this, this)
                   }}
                 />
                 <AlagehAutoComplete
@@ -174,7 +174,7 @@ class PurchaseOrderEntry extends Component {
                     },
 
                     onChange: texthandle.bind(this, this),
-                    onClear: null
+                    onClear: texthandle.bind(this, this)
                   }}
                 />
 
@@ -191,7 +191,7 @@ class PurchaseOrderEntry extends Component {
                       data: this.props.povendors
                     },
                     onChange: texthandle.bind(this, this),
-                    onClear: null
+                    onClear: texthandle.bind(this, this)
                   }}
                 />
 
@@ -238,18 +238,18 @@ class PurchaseOrderEntry extends Component {
               <div className="row">
                 <AlagehAutoComplete
                   div={{ className: "col" }}
-                  label={{ forceLabel: "Terms Code" }}
+                  label={{ forceLabel: "Payment Terms" }}
                   selector={{
-                    name: "item_id",
+                    name: "payment_terms",
                     className: "select-fld",
-                    value: this.state.item_id,
+                    value: this.state.payment_terms,
                     dataSource: {
-                      textField: "item_description",
-                      valueField: "hims_d_item_master_id",
-                      data: this.props.poitemlist
+                      textField: "name",
+                      valueField: "value",
+                      data: GlobalVariables.PAYMENT_TERMS
                     },
-                    onChange: null,
-                    onClear: null
+                    onChange: texthandle.bind(this, this),
+                    onClear: texthandle.bind(this, this)
                   }}
                 />
                 <AlgaehDateHandler
