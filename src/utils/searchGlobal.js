@@ -140,6 +140,20 @@ let algaehSearchConfig = searchName => {
           "select SQL_CALC_FOUND_ROWS * from hims_f_inventory_material_header where authorize1 = 'Y' and authorie2 = 'Y'\
           and is_completed = 'N' and requistion_type='MR'",
         orderBy: "hims_f_inventory_material_header_id desc"
+      },
+      {
+        searchName: "InvPOEntry",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS * from hims_f_inventory_material_header where authorize1 = 'Y' and authorie2 = 'Y'\
+          and is_completed = 'N' and requistion_type='PR'",
+        orderBy: "hims_f_inventory_material_header_id desc"
+      },
+      {
+        searchName: "PhrPOEntry",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS * from hims_f_pharamcy_material_header where authorize1 = 'Y' and authorie2 = 'Y'\
+          and is_completed = 'N' and requistion_type='PR'",
+        orderBy: "hims_f_pharamcy_material_header_id desc"
       }
 
       // visit

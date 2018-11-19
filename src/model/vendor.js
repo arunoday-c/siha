@@ -80,6 +80,7 @@ let getVendorMaster = (req, res, next) => {
 
     let where = whereCondition(extend(selectWhere, req.query));
 
+    debugLog("where : ", where);
     db.getConnection((error, connection) => {
       connection.query(
         " select hims_d_vendor_id, vendor_code, vendor_name, vendor_status, business_registration_no, email_id_1,\

@@ -1,9 +1,12 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+
 import "./PurchaseOrderEntry.css";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
-
+import MyContext from "../../../utils/MyContext";
 import {
-  AlgaehDataGrid,
   AlgaehLabel,
   AlagehFormGroup,
   AlagehAutoComplete,
@@ -11,6 +14,28 @@ import {
 } from "../../Wrapper/algaehWrapper";
 import Options from "../../../Options.json";
 import moment from "moment";
+import GlobalVariables from "../../../utils/GlobalVariables.json";
+import POItemList from "./POItemList/POItemList";
+import {
+  texthandle,
+  poforhandle,
+  RequisitionSearch
+} from "./PurchaseOrderEntryEvents";
+import { AlgaehActions } from "../../../actions/algaehActions";
+import POEntry from "../../../Models/POEntry";
+import Enumerable from "linq";
+
+// discounthandle,
+//   itemchangeText,
+//   numberchangeTexts,
+//   AddItems,
+//   deletePosDetail,
+//   updatePosDetail,
+//   calculateAmount,
+//   UomchangeTexts,
+//   dateFormater,
+//   onchangegridcol,
+//   PosheaderCalculation
 
 class PurchaseOrderEntry extends Component {
   constructor(props) {
@@ -18,7 +43,27 @@ class PurchaseOrderEntry extends Component {
     this.state = {};
   }
 
+  componentWillMount() {
+    let IOputs = POEntry.inputParam();
+    this.setState(IOputs);
+  }
+
+  componentDidMount() {
+    this.props.getVendorMaster({
+      uri: "/vendor/getVendorMaster",
+      method: "GET",
+      data: { vendor_status: "A" },
+      redux: {
+        type: "VENDORS_GET_DATA",
+        mappingName: "povendors"
+      }
+    });
+  }
+
   render() {
+    const _mainStore = Enumerable.from(this.props.polocations)
+      .where(w => w.location_type === "MS")
+      .toArray();
     return (
       <div>
         <BreadCrumb
@@ -91,35 +136,44 @@ class PurchaseOrderEntry extends Component {
               <div className="row">
                 <AlagehAutoComplete
                   div={{ className: "col" }}
-                  label={{ forceLabel: "Location Type" }}
+                  label={{ forceLabel: "PO For" }}
                   selector={{
-                    name: "location_id",
+                    name: "po_for",
                     className: "select-fld",
-                    value: this.state.location_id,
+                    value: this.state.po_for,
                     dataSource: {
-                      textField: "location_description",
-                      valueField: "hims_d_pharmacy_location_id",
-                      data: this.props.locations
+                      textField: "name",
+                      valueField: "value",
+                      data: GlobalVariables.PO_FOR
                     },
 
-                    onChange: null,
-                    onClear: null
+                    onChange: poforhandle.bind(this, this)
+                    // onClear: texthandle.bind(this, this)
                   }}
                 />
                 <AlagehAutoComplete
                   div={{ className: "col" }}
                   label={{ forceLabel: "Location Code" }}
                   selector={{
-                    name: "location_id",
+                    name:
+                      this.state.po_for === "PHR"
+                        ? "pharmcy_location_id"
+                        : "inventory_location_id",
                     className: "select-fld",
-                    value: this.state.location_id,
+                    value:
+                      this.state.po_for === "PHR"
+                        ? this.state.pharmcy_location_id
+                        : this.state.inventory_location_id,
                     dataSource: {
                       textField: "location_description",
-                      valueField: "hims_d_pharmacy_location_id",
-                      data: this.props.locations
+                      valueField:
+                        this.state.po_for === "PHR"
+                          ? "hims_d_pharmacy_location_id"
+                          : "hims_d_inventory_location_id",
+                      data: _mainStore
                     },
 
-                    onChange: null,
+                    onChange: texthandle.bind(this, this),
                     onClear: null
                   }}
                 />
@@ -132,11 +186,11 @@ class PurchaseOrderEntry extends Component {
                     className: "select-fld",
                     value: this.state.item_id,
                     dataSource: {
-                      textField: "item_description",
-                      valueField: "hims_d_item_master_id",
-                      data: this.props.itemlist
+                      textField: "vendor_name",
+                      valueField: "hims_d_vendor_id",
+                      data: this.props.povendors
                     },
-                    onChange: null,
+                    onChange: texthandle.bind(this, this),
                     onClear: null
                   }}
                 />
@@ -170,8 +224,14 @@ class PurchaseOrderEntry extends Component {
                     style={{
                       fontSize: " 1.2rem",
                       marginTop: 26,
-                      paddingBottom: 0
+                      paddingBottom: 0,
+                      pointerEvents:
+                        this.state.pharmcy_location_id === null &&
+                        this.state.inventory_location_id === null
+                          ? "none"
+                          : ""
                     }}
+                    onClick={RequisitionSearch.bind(this, this)}
                   />
                 </div>
               </div>
@@ -186,7 +246,7 @@ class PurchaseOrderEntry extends Component {
                     dataSource: {
                       textField: "item_description",
                       valueField: "hims_d_item_master_id",
-                      data: this.props.itemlist
+                      data: this.props.poitemlist
                     },
                     onChange: null,
                     onClear: null
@@ -200,11 +260,11 @@ class PurchaseOrderEntry extends Component {
                     name: "expiry_date"
                   }}
                   minDate={new Date()}
-                  disabled={true}
+                  // disabled={true}
                   events={{
                     onChange: null
                   }}
-                  value={this.state.expiry_date}
+                  value={this.state.expected_date}
                 />
                 {/* <div
                   className="customCheckbox col-lg-3"
@@ -225,359 +285,52 @@ class PurchaseOrderEntry extends Component {
             </div>
           </div>
 
-          <div className="row">
-            <div className="col-lg-12">
-              <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
-                <div className="row">
-                  <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
-                    label={{ forceLabel: "Item Name" }}
-                    selector={{
-                      name: "item_id",
-                      className: "select-fld",
-                      value: this.state.item_id,
-                      dataSource: {
-                        textField: "item_description",
-                        valueField: "hims_d_item_master_id",
-                        data: this.props.positemlist
-                      }
-                    }}
-                  />
-                  <AlagehAutoComplete
-                    div={{ className: "col" }}
-                    label={{ forceLabel: "Item Category" }}
-                    selector={{
-                      name: "item_category",
-                      className: "select-fld",
-                      value: this.state.item_category,
-                      dataSource: {
-                        textField: "category_desc",
-                        valueField: "hims_d_item_category_id",
-                        data: this.props.itemcategory
-                      },
-                      others: {
-                        disabled: true
-                      }
-                    }}
-                  />
-                  <AlagehAutoComplete
-                    div={{ className: "col" }}
-                    label={{ forceLabel: "Item Group" }}
-                    selector={{
-                      name: "item_group_id",
-                      className: "select-fld",
-                      value: this.state.item_group_id,
-                      dataSource: {
-                        textField: "group_description",
-                        valueField: "hims_d_item_group_id",
-                        data: this.props.itemgroup
-                      },
-                      others: {
-                        disabled: true
-                      },
-                      onChange: null
-                    }}
-                  />
-                </div>
-                <div className="row">
-                  <AlagehAutoComplete
-                    div={{ className: "col" }}
-                    label={{ forceLabel: "UOM", isImp: true }}
-                    selector={{
-                      name: "uom_id",
-                      className: "select-fld",
-                      value: this.state.uom_id,
-                      dataSource: {
-                        textField: "uom_description",
-                        valueField: "uom_id",
-                        data: this.state.ItemUOM
-                      },
-                      others: {
-                        disabled: this.state.dataExitst
-                      }
-                    }}
-                  />
-                  <AlagehFormGroup
-                    div={{ className: "col" }}
-                    label={{
-                      forceLabel: "Batch No."
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "batchno",
-                      value: this.state.batchno,
-                      events: {
-                        onChange: null
-                      },
-                      others: {
-                        disabled: true
-                      }
-                    }}
-                  />
-                  <AlgaehDateHandler
-                    div={{ className: "col" }}
-                    label={{ forceLabel: "Expiry Date" }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "expiry_date"
-                    }}
-                    minDate={new Date()}
-                    disabled={true}
-                    events={{
-                      onChange: null
-                    }}
-                    value={this.state.expiry_date}
-                  />
-                  <AlagehFormGroup
-                    div={{ className: "col" }}
-                    label={{
-                      forceLabel: "Quantity"
-                    }}
-                    textBox={{
-                      number: {
-                        allowNegative: false,
-                        thousandSeparator: ","
-                      },
-                      className: "txt-fld",
-                      name: "quantity",
-                      value: this.state.quantity,
-                      events: {
-                        onChange: null
-                      },
-                      others: {
-                        disabled: this.state.dataExitst
-                      }
-                    }}
-                  />
-                  <AlagehFormGroup
-                    div={{ className: "col" }}
-                    label={{
-                      forceLabel: "Unit Cost"
-                    }}
-                    textBox={{
-                      decimal: { allowNegative: false },
-                      value: this.state.unit_cost,
-                      className: "txt-fld",
-                      name: "unit_cost",
-                      events: {
-                        onChange: null
-                      },
-                      others: {
-                        disabled: true
-                      }
-                    }}
-                  />
-                  <AlagehFormGroup
-                    div={{ className: "col" }}
-                    label={{
-                      forceLabel: "Quantity in Hand"
-                    }}
-                    textBox={{
-                      decimal: { allowNegative: false },
-                      value: this.state.qtyhand,
-                      className: "txt-fld",
-                      name: "qtyhand",
-                      events: {
-                        onChange: null
-                      },
-                      others: {
-                        disabled: true
-                      }
-                    }}
-                  />
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-lg-12 subFooter-btn">
-                  <button
-                    className="btn btn-primary"
-                    onClick={null}
-                    disabled={this.state.addItemButton}
-                  >
-                    Add Item
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-12">
-              <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
-                <div className="row">
-                  <div className="col-lg-12" id="PointSaleGrid">
-                    <AlgaehDataGrid
-                      id="PO_details"
-                      columns={[
-                        {
-                          fieldName: "item_id",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Item Name" }} />
-                          )
-                        },
-
-                        {
-                          fieldName: "item_category",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Item Category" }}
-                            />
-                          )
-                        },
-                        {
-                          fieldName: "qtyhand",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Quantity In Hand" }}
-                            />
-                          ),
-                          disabled: true
-                        },
-                        {
-                          fieldName: "expiry_date",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Expiry Date" }}
-                            />
-                          )
-                        },
-                        {
-                          fieldName: "batchno",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Batch No." }} />
-                          ),
-                          disabled: true
-                        },
-                        {
-                          fieldName: "uom_id",
-                          label: <AlgaehLabel label={{ forceLabel: "UOM" }} />
-                        },
-                        {
-                          fieldName: "unit_cost",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Unit Cost" }} />
-                          ),
-                          disabled: true
-                        },
-                        {
-                          fieldName: "quantity",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Quantity" }} />
-                          )
-                        },
-
-                        {
-                          fieldName: "extended_cost",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Extended Cost" }}
-                            />
-                          ),
-                          disabled: true
-                        },
-                        {
-                          fieldName: "discount_percentage",
-                          label: (
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "discount %"
-                              }}
-                            />
-                          )
-                        },
-                        {
-                          fieldName: "discount_amout",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "discount Amount" }}
-                            />
-                          )
-                        },
-
-                        {
-                          fieldName: "net_extended_cost",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Net Extended Cost" }}
-                            />
-                          ),
-                          disabled: true
-                        }
-                      ]}
-                      keyId="service_type_id"
-                      dataSource={{
-                        data: this.state.pharmacy_stock_detail
-                      }}
-                      isEditable={true}
-                      paging={{ page: 0, rowsPerPage: 10 }}
-                      // events={{
-                      //   onDelete: deletePosDetail.bind(this, this, context),
-                      //   onEdit: row => {},
-                      //   onDone: updatePosDetail.bind(this, this)
-                      // }}
-                      // onRowSelect={row => {
-                      //   getItemLocationStock(this, row);
-                      // }}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-12">
-              <div className="row">
-                <div className="col" />
-                {/* <div
-                    className="col-lg-2"
-                    style={{
-                      border: "1px solid #cccccc",
-                      background: "f7f7f7",
-                      marginBottom: 10
-                    }}
-                  >
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Quantity in Hand"
-                      }}
-                    />
-                    <h6>
-                      {this.state.total_quantity
-                        ? this.state.total_quantity + " nos"
-                        : "0 nos"}
-                    </h6>
-                  </div> */}
-                <div className="col-lg-5" style={{ textAlign: "right" }}>
-                  <div className="row">
-                    <div className="col-lg-4">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Sub Total"
-                        }}
-                      />
-                      <h6>0.00</h6>
-                    </div>
-                    <div className="col-lg-4">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Discount Amount"
-                        }}
-                      />
-                      <h6>0.00</h6>
-                    </div>
-
-                    <div className="col-lg-4">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Net Total"
-                        }}
-                      />
-                      <h6>0.00</h6>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <MyContext.Provider
+            value={{
+              state: this.state,
+              updateState: obj => {
+                this.setState({ ...obj });
+              }
+            }}
+          >
+            <POItemList POEntry={this.state} />
+          </MyContext.Provider>
         </div>
       </div>
     );
   }
 }
 
-export default PurchaseOrderEntry;
+function mapStateToProps(state) {
+  return {
+    poitemlist: state.poitemlist,
+    polocations: state.polocations,
+    poitemcategory: state.poitemcategory,
+    poitemgroup: state.poitemgroup,
+    poitemuom: state.poitemuom,
+    povendors: state.povendors,
+    porequisitionentry: state.porequisitionentry
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getItems: AlgaehActions,
+      getLocation: AlgaehActions,
+      getItemCategory: AlgaehActions,
+      getItemGroup: AlgaehActions,
+      getItemUOM: AlgaehActions,
+      getVendorMaster: AlgaehActions,
+      getRequisitionEntry: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(PurchaseOrderEntry)
+);

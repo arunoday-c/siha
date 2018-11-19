@@ -325,30 +325,19 @@
         "path": "/PurchaseOederEntry"
       },
       {
+        "name": "Purchase Order List",
+        "label": "قائمة أوامر الشراء",
+        "path": "/PurchaseOederList"
+      },
+      {
         "name": "Delivery Note Entry",
         "label": "ملاحظة إدخال التسليم",
         "path": "/DeliveryNoteEntry"
       },
-
       {
         "name": "Receipt Entry",
         "label": "دخول الإيصال",
         "path": "/ReceiptEntry"
-      },
-      {
-        "name": "Purchase Return Entry",
-        "label": "شراء العودة الدخول",
-        "path": "/PurchaseReturnEntry"
-      },
-      {
-        "name": "Credit/Debit Note Entry",
-        "label": "الائتمان / الخصم ملاحظة الدخول",
-        "path": "/CreditDebitNoteEntry"
-      },
-      {
-        "name": "Shipment Entry",
-        "label": "دخول الشحنة",
-        "path": "/ShipmentEntry"
       }
     ]
   },

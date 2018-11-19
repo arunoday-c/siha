@@ -450,5 +450,9 @@
   "APPT_TYPE": [
     { "name": "Available", "value": "A" },
     { "name": "Occupied", "value": "O" }
+  ],
+  "PO_FOR": [
+    { "name": "Pharmacy", "value": "PHR" },
+    { "name": "Inventory", "value": "INV" }
   ]
 }

@@ -391,6 +391,12 @@
         "path": "/PurchaseOederEntry"
       },
       {
+        "name": "Purchase Order List",
+        "label": "Purchase Order List",
+        "arlabel": "قائمة أوامر الشراء",
+        "path": "/PurchaseOederList"
+      },
+      {
         "name": "Delivery Note Entry",
         "label": "Delivery Note Entry",
         "arlabel": "ملاحظة إدخال التسليم",
