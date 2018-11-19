@@ -972,57 +972,58 @@
           color: #858585;
           margin: 0;
           border: none; }
+      :global .tabMaster ul li.active:hover:after {
+        display: none !important;
+        border: none !important; }
       :global .tabMaster ul li.active label {
         border-bottom: 3px solid #34b8bc;
         color: #000; }
-
-.hptl-phase1-footer {
-  margin-top: 50px; }
-
-.divInner {
-  overflow-y: auto;
-  overflow-x: hidden; }
-  .divInner .divInnerLeft {
-    border-right: 1px dashed #e0e0e0;
-    min-height: 30vh;
-    max-height: 70vh;
-    overflow: auto;
-    padding: 15px; }
-  .divInner .divInnerRight {
-    min-height: 30vh;
-    max-height: 70vh;
-    overflow: auto;
-    padding: 15px; }
-  .divInner .tab-container .tab-button {
-    font-weight: normal;
-    border-radius: 0px;
-    background-color: #f3f3f3;
-    color: #7c909b;
-    cursor: pointer;
-    border-top-right-radius: 5px;
-    border-top-left-radius: 5px;
-    border-bottom: none; }
-    .divInner .tab-container .tab-button:hover {
-      background-color: #fff !important;
-      color: #68509f !important; }
-    .divInner .tab-container .tab-button:focus {
-      outline: none; }
-    .divInner .tab-container .tab-button.active {
-      background-color: #dbad64;
-      color: #fff;
-      pointer-events: none; }
-      .divInner .tab-container .tab-button.active.active {
+  :global .hptl-phase1-footer {
+    margin-top: 50px; }
+  :global .divInner {
+    overflow-y: auto;
+    overflow-x: hidden; }
+    :global .divInner .divInnerLeft {
+      border-right: 1px dashed #e0e0e0;
+      min-height: 30vh;
+      max-height: 70vh;
+      overflow: auto;
+      padding: 15px; }
+    :global .divInner .divInnerRight {
+      min-height: 30vh;
+      max-height: 70vh;
+      overflow: auto;
+      padding: 15px; }
+    :global .divInner .tab-container .tab-button {
+      font-weight: normal;
+      border-radius: 0px;
+      background-color: #f3f3f3;
+      color: #7c909b;
+      cursor: pointer;
+      border-top-right-radius: 5px;
+      border-top-left-radius: 5px;
+      border-bottom: none; }
+      :global .divInner .tab-container .tab-button:hover {
+        background-color: #fff !important;
+        color: #68509f !important; }
+      :global .divInner .tab-container .tab-button:focus {
+        outline: none; }
+      :global .divInner .tab-container .tab-button.active {
         background-color: #dbad64;
         color: #fff;
         pointer-events: none; }
-        .divInner .tab-container .tab-button.active.active:hover {
-          background-color: #dbad64 !important;
-          color: #fff !important; }
-    .divInner .tab-container .tab-button .tab {
-      margin-right: -30px; }
-    .divInner .tab-container .tab-button .image-drop-area {
-      border: 1px solid #93a4ad;
-      min-height: 137px;
-      position: relative; }
-    .divInner .tab-container .tab-button label {
-      cursor: pointer; }
+        :global .divInner .tab-container .tab-button.active.active {
+          background-color: #dbad64;
+          color: #fff;
+          pointer-events: none; }
+          :global .divInner .tab-container .tab-button.active.active:hover {
+            background-color: #dbad64 !important;
+            color: #fff !important; }
+      :global .divInner .tab-container .tab-button .tab {
+        margin-right: -30px; }
+      :global .divInner .tab-container .tab-button .image-drop-area {
+        border: 1px solid #93a4ad;
+        min-height: 137px;
+        position: relative; }
+      :global .divInner .tab-container .tab-button label {
+        cursor: pointer; }
