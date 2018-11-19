@@ -27,8 +27,9 @@ let addVendorMaster = (req, res, next) => {
 
       connection.query(
         "INSERT INTO `hims_d_vendor` (vendor_code,vendor_name,bank_name,business_registration_no,email_id_1,email_id_2,website,\
-          contact_number,payment_terms,payment_mode,vat_applicable,vat_percentage,created_date, created_by, updated_date, updated_by)\
-            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          contact_number,payment_terms,payment_mode,vat_applicable,vat_percentage,  postal_code, country_id, state_id, city_id,\
+          created_date, created_by, updated_date, updated_by)\
+            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
           input.vendor_code,
           input.vendor_name,
@@ -42,6 +43,10 @@ let addVendorMaster = (req, res, next) => {
           input.payment_mode,
           input.vat_applicable,
           input.vat_percentage,
+          input.postal_code,
+          input.country_id,
+          input.state_id,
+          input.city_id,
           new Date(),
           input.created_by,
           new Date(),
@@ -78,7 +83,8 @@ let getVendorMaster = (req, res, next) => {
     db.getConnection((error, connection) => {
       connection.query(
         " select hims_d_vendor_id, vendor_code, vendor_name, vendor_status, business_registration_no, email_id_1,\
-        email_id_2, website, contact_number, payment_terms, payment_mode, vat_applicable, vat_percentage, bank_name from hims_d_vendor where record_status='A' and " +
+        email_id_2, website, contact_number, payment_terms, payment_mode, vat_applicable, vat_percentage, bank_name,\
+        postal_code, country_id, state_id, city_id from hims_d_vendor where record_status='A' and " +
           where.condition +
           " order by hims_d_vendor_id desc",
         where.values,
@@ -142,7 +148,7 @@ let updateVendorMaster = (req, res, next) => {
 
       connection.query(
         "UPDATE `hims_d_vendor` SET  vendor_name=?,vendor_status=?,business_registration_no=?,email_id_1=?,email_id_2=?,website=?,\
-        contact_number=?,payment_terms=?,payment_mode=?,vat_applicable=?,vat_percentage=?,bank_name=?,\
+        contact_number=?,payment_terms=?,payment_mode=?,vat_applicable=?,vat_percentage=?,bank_name=?,postal_code=?, country_id=?, state_id=?, city_id=?,\
         updated_date=?, updated_by=?  WHERE  `record_status`='A' and `hims_d_vendor_id`=?;",
         [
           input.vendor_name,
@@ -157,6 +163,10 @@ let updateVendorMaster = (req, res, next) => {
           input.vat_applicable,
           input.vat_percentage,
           input.bank_name,
+          input.postal_code,
+          input.country_id,
+          input.state_id,
+          input.city_id,
           new Date(),
           input.updated_by,
           input.hims_d_vendor_id
