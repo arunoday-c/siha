@@ -10,6 +10,10 @@ import {
 } from "../Wrapper/algaehWrapper";
 import GlobalVariables from "../../utils/GlobalVariables.json";
 import { AlgaehValidation } from "../../utils/GlobalFunctions";
+import swal from "sweetalert2";
+
+//TODO
+//Inactive Different API Call Integration
 
 class VendorSetup extends Component {
   constructor(props) {
@@ -94,7 +98,18 @@ class VendorSetup extends Component {
       querySelector: "data-validate='VendorDiv'",
       alertTypeIcon: "warning",
       onSuccess: () => {
+        let uri =
+          this.state.hims_d_vendor_id === null
+            ? "/vendor/addVendorMaster"
+            : "/vendor/updateVendorMaster";
+        let method = this.state.hims_d_vendor_id === null ? "POST" : "PUT";
+        let success_msg =
+          this.state.hims_d_vendor_id === null
+            ? "Added Successfully"
+            : "Updated Successfully";
+
         let sen_data = {
+          hims_d_vendor_id: this.state.hims_d_vendor_id,
           vendor_code: this.state.vendor_code,
           vendor_name: this.state.vendor_name,
           business_registration_no: this.state.business_registration_no,
@@ -105,22 +120,25 @@ class VendorSetup extends Component {
           payment_terms: this.state.payment_terms,
           payment_mode: this.state.payment_mode,
           vat_applicable: this.state.vat_applicable === true ? "Y" : "N",
-          vat_percentage: this.state.vat_percentage,
+          vat_percentage:
+            this.state.vat_applicable === false ? 0 : this.state.vat_percentage,
           country_id: this.state.country_id,
           state_id: this.state.state_id,
           city_id: this.state.city_id,
           postal_code: this.state.postal_code,
-          bank_name: this.state.bank_name
+          bank_name: this.state.bank_name,
+          address: this.state.address,
+          vendor_status: "A"
         };
 
         algaehApiCall({
-          uri: "/vendor/addVendorMaster",
-          method: "POST",
+          uri: uri,
+          method: method,
           data: sen_data,
           onSuccess: response => {
             if (response.data.success) {
               swalMessage({
-                title: "Added Successfully",
+                title: success_msg,
                 type: "success"
               });
               this.resetSaveState();
@@ -182,6 +200,55 @@ class VendorSetup extends Component {
         });
         break;
     }
+  }
+
+  deleteVendor(data, e) {
+    swal({
+      title: "Delete Vendor " + data.vendor_name + "?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        algaehApiCall({
+          uri: "/vendor/deleteVendorMaster",
+          data: {
+            hims_d_vendor_id: data.hims_d_vendor_id
+          },
+          method: "DELETE",
+          onSuccess: response => {
+            if (response.data.success) {
+              swalMessage({
+                title: "Record deleted successfully . .",
+                type: "success"
+              });
+
+              this.getAllVendors();
+              this.resetSaveState();
+            } else if (!response.data.success) {
+              swalMessage({
+                title: response.data.message,
+                type: "error"
+              });
+            }
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
+        });
+      } else {
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "error"
+        });
+      }
+    });
   }
 
   render() {
@@ -491,7 +558,7 @@ class VendorSetup extends Component {
                       div={{ className: "col-lg-2" }}
                       label={{
                         fieldName: "vat_percentage",
-                        isImp: !this.state.vat_applicable
+                        isImp: this.state.vat_applicable
                       }}
                       textBox={{
                         className: "txt-fld",
@@ -572,16 +639,22 @@ class VendorSetup extends Component {
                       label: <AlgaehLabel label={{ fieldName: "action" }} />,
                       displayTemplate: row => {
                         return (
-                          <span>
-                            <i
-                              className="fas fa-pen"
-                              onClick={this.editVendor.bind(this, row)}
-                            />
-                          </span>
+                          <div className="row">
+                            <div className="col">
+                              <i
+                                className="fas fa-pen"
+                                onClick={this.editVendor.bind(this, row)}
+                              />
+                              <i
+                                className="fas fa-trash-alt"
+                                onClick={this.deleteVendor.bind(this, row)}
+                              />
+                            </div>
+                          </div>
                         );
                       },
                       others: {
-                        maxWidth: 55,
+                        maxWidth: 120,
                         style: {
                           textAlign: "center"
                         },
