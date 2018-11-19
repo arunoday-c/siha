@@ -415,22 +415,38 @@ let addCategorySpecialityMappings = (req, res, next) => {
 
 //created by irfan: to get
 let getCategorySpecialityMap = (req, res, next) => {
+  let selectWhere = {
+    hims_d_employee_speciality_id: "ALL",
+    category_speciality_status: "ALL",
+    employee_category_status: "ALL",
+    speciality_status: "ALL",
+    hims_m_category_speciality_mappings_id: "ALL"
+  };
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
 
-    //et where = whereCondition(extend(selectWhere, req.query));
+    let where = whereCondition(extend(selectWhere, req.query));
+
+    // select hims_m_category_speciality_mappings_id,speciality_id, category_speciality_status, \
+    //     hims_employee_category_id, employee_category_code, employee_category_name, employee_category_desc\
+    //     from hims_m_category_speciality_mappings  CSM,hims_d_employee_category C where CSM.record_status='A' and category_speciality_status='A' \
+    //     and  C.record_status='A' and C.employee_category_status='A' and CSM.category_id=C.hims_employee_category_id\
+    //     and speciality_id=? order by hims_m_category_speciality_mappings_id desc
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_m_category_speciality_mappings_id,speciality_id, category_speciality_status, \
-        hims_employee_category_id, employee_category_code, employee_category_name, employee_category_desc\
-        from hims_m_category_speciality_mappings  CSM,hims_d_employee_category C where CSM.record_status='A' and category_speciality_status='A' \
-        and  C.record_status='A' and C.employee_category_status='A' and CSM.category_id=C.hims_employee_category_id\
-        and speciality_id=? order by hims_m_category_speciality_mappings_id desc",
-        [req.query.hims_d_employee_speciality_id],
+        "select hims_m_category_speciality_mappings_id, category_id, speciality_id, description, category_speciality_status,\
+hims_employee_category_id, employee_category_code, employee_category_name,C.arabic_name as category_arabic_name, employee_category_desc, employee_category_status, \
+hims_d_employee_speciality_id,  speciality_code, speciality_name, S.arabic_name as speciality_arabic_name, speciality_desc, speciality_status \
+ from hims_m_category_speciality_mappings CSM,hims_d_employee_category C,hims_d_employee_speciality S \
+where CSM.record_status='A' and C.record_status='A' and S.record_status='A' and \
+CSM.category_id=C.hims_employee_category_id and CSM.speciality_id=S.hims_d_employee_speciality_id  and " +
+          where.condition +
+          " order by hims_m_category_speciality_mappings_id desc ",
+        where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
           if (error) {
@@ -445,70 +461,6 @@ let getCategorySpecialityMap = (req, res, next) => {
     next(e);
   }
 };
-
-// //created by irfan: to
-// let makeEmployeeCategoryActive = (req, res, next) => {
-//   try {
-//     if (req.db == null) {
-//       next(httpStatus.dataBaseNotInitilizedError());
-//     }
-//     let db = req.db;
-//     let input = extend({}, req.body);
-//     db.getConnection((error, connection) => {
-//       if (error) {
-//         next(error);
-//       }
-
-//       connection.query(
-//         "UPDATE `hims_d_employee_category` SET  employee_category_status='A', \
-//            updated_date=?, updated_by=?  WHERE  `record_status`='A' and employee_category_status='I' and `hims_employee_category_id`=?;",
-//         [new Date(), input.updated_by, input.hims_employee_category_id],
-//         (error, result) => {
-//           releaseDBConnection(db, connection);
-//           if (error) {
-//             next(error);
-//           }
-//           req.records = result;
-//           next();
-//         }
-//       );
-//     });
-//   } catch (e) {
-//     next(e);
-//   }
-// };
-
-// //created by irfan: to
-// let makeEmployeeSpecialityActive = (req, res, next) => {
-//   try {
-//     if (req.db == null) {
-//       next(httpStatus.dataBaseNotInitilizedError());
-//     }
-//     let db = req.db;
-//     let input = extend({}, req.body);
-//     db.getConnection((error, connection) => {
-//       if (error) {
-//         next(error);
-//       }
-
-//       connection.query(
-//         "UPDATE `hims_d_employee_speciality` SET  speciality_status='A', \
-//            updated_date=?, updated_by=?  WHERE  record_status='A' and `speciality_status`='I' and `hims_d_employee_speciality_id`=?;",
-//         [new Date(), input.updated_by, input.hims_d_employee_speciality_id],
-//         (error, result) => {
-//           releaseDBConnection(db, connection);
-//           if (error) {
-//             next(error);
-//           }
-//           req.records = result;
-//           next();
-//         }
-//       );
-//     });
-//   } catch (e) {
-//     next(e);
-//   }
-// };
 
 module.exports = {
   addEmployeeSpecialityMaster,
