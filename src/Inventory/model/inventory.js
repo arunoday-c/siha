@@ -9,7 +9,7 @@ import httpStatus from "../../utils/httpStatus";
 import { debugFunction, debugLog } from "../../utils/logging";
 
 //created by Nowshad: to add in itemMaster
-let addItemMaster = (req, res, next) => {
+let  addItemMaster = (req, res, next) => {
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -31,13 +31,15 @@ let addItemMaster = (req, res, next) => {
           });
         }
         connection.query(
-          "INSERT INTO `hims_d_inventory_item_master` (`item_code`, `item_description`, `structure_id`,\
+          "INSERT INTO `hims_d_inventory_item_master` (`item_code`, `item_description`,item_type, `structure_id`,\
           `category_id`, `group_id`, `item_uom_id`, `purchase_uom_id`, `sales_uom_id`, `stocking_uom_id`, `service_id`,\
+          addl_information,decimals, purchase_cost, markup_percent, sales_price, \
          `created_date`, `created_by`, `update_date`, `updated_by`)\
-        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           [
             input.item_code,
             input.item_description,
+            input.item_type,
             input.structure_id,
             input.category_id,
             input.group_id,
@@ -46,6 +48,14 @@ let addItemMaster = (req, res, next) => {
             input.sales_uom_id,
             input.stocking_uom_id,
             input.service_id,
+            input.addl_information,
+            input.decimals,
+            input.purchase_cost,
+            input.markup_percent,
+            input.sales_price,
+
+
+
             new Date(),
             input.created_by,
             new Date(),
@@ -656,6 +666,7 @@ let updateItemMasterAndUom = (req, res, next) => {
           "UPDATE `hims_d_inventory_item_master` SET `item_code`=?, `item_description`=?, `structure_id`=?,\
           `category_id`=?, `group_id`=?,`item_uom_id`=?,\
            `purchase_uom_id`=?, `sales_uom_id`=?, `stocking_uom_id`=?, `item_status`=?, `service_id`=?,\
+            item_type=?, addl_information=?, decimals=?, purchase_cost=?, markup_percent=?, sales_price=?,\
             `update_date`=?, `updated_by`=?, `record_status`=? WHERE record_status='A' and\
            `hims_d_inventory_item_master_id`=?";
         let inputs = [
@@ -670,6 +681,14 @@ let updateItemMasterAndUom = (req, res, next) => {
           input.stocking_uom_id,
           input.item_status,
           input.service_id,
+          input.item_type,
+          input.addl_information,
+          input.decimals,
+          input.purchase_cost,
+          input.markup_percent,
+          input.sales_price,
+
+
           new Date(),
           input.updated_by,
           input.record_status,

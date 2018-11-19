@@ -30,11 +30,15 @@ let addItemMaster = (req, res, next) => {
             next(error);
           });
         }
+        addl_information, decimals, purchase_cost, markup_percent, sales_price,
+        
+
         connection.query(
           "INSERT INTO `hims_d_item_master` (`item_code`, `item_description`, `structure_id`,\
          `generic_id`, `category_id`, `group_id`, `item_uom_id`, `purchase_uom_id`, `sales_uom_id`, `stocking_uom_id`, `service_id`,\
+           addl_information, decimals, purchase_cost, markup_percent, sales_price,\
          `created_date`, `created_by`, `update_date`, `updated_by`)\
-        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           [
             input.item_code,
             input.item_description,
@@ -47,6 +51,11 @@ let addItemMaster = (req, res, next) => {
             input.sales_uom_id,
             input.stocking_uom_id,
             input.service_id,
+            input.addl_information,
+            input.decimals,
+            input.purchase_cost,
+            input.markup_percent,
+            input.sales_price,
             new Date(),
             input.created_by,
             new Date(),
@@ -767,6 +776,7 @@ let updateItemMasterAndUom = (req, res, next) => {
           "UPDATE `hims_d_item_master` SET `item_code`=?, `item_description`=?, `structure_id`=?,\
           `generic_id`=?, `category_id`=?, `group_id`=?, `form_id`=?, `storage_id`=?, `item_uom_id`=?,\
            `purchase_uom_id`=?, `sales_uom_id`=?, `stocking_uom_id`=?, `item_status`=?, `service_id`=?,\
+           addl_information=?, decimals=?, purchase_cost=?, markup_percent=?, sales_price=?,\
             `update_date`=?, `updated_by`=?, `record_status`=? WHERE record_status='A' and\
            `hims_d_item_master_id`=?";
         let inputs = [
@@ -784,6 +794,11 @@ let updateItemMasterAndUom = (req, res, next) => {
           input.stocking_uom_id,
           input.item_status,
           input.service_id,
+          input.addl_information,
+          input.decimals,
+          input.purchase_cost,
+          input.markup_percent,
+          input.sales_price,
           new Date(),
           input.updated_by,
           input.record_status,
