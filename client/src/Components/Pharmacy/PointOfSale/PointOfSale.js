@@ -18,7 +18,6 @@ import {
   ClearData,
   Patientchange,
   SavePosEnrty,
-  PostPosEntry,
   VisitSearch,
   LocationchangeTexts
 } from "./PointOfSaleEvents";

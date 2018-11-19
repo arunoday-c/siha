@@ -96,6 +96,12 @@
         "label": "Procedure Setup",
         "arlabel": "إعداد الإجراء",
         "path": "/Procedure Setup"
+      },
+      {
+        "name": "Vendor Setup",
+        "label": "Vendor Setup",
+        "arlabel": "إعداد البائع",
+        "path": "/VendorSetup"
       }
     ]
   },
@@ -391,6 +397,12 @@
         "path": "/PurchaseOederEntry"
       },
       {
+        "name": "Purchase Order List",
+        "label": "Purchase Order List",
+        "arlabel": "قائمة أوامر الشراء",
+        "path": "/PurchaseOederList"
+      },
+      {
         "name": "Delivery Note Entry",
         "label": "Delivery Note Entry",
         "arlabel": "ملاحظة إدخال التسليم",
@@ -415,6 +427,37 @@
         "label": "Day End Process",
         "arlabel": "عملية نهاية اليوم",
         "path": "/DayEndProcess"
+      }
+    ]
+  },
+  {
+    "name": "Asset Management",
+    "label": "Asset Management",
+    "icon": "fa fa-money-bill",
+    "subMenu": [
+      {
+        "name": "Acquisition Entry",
+        "label": "Acquisition Entry",
+        "arlabel": "عملية نهاية اليوم",
+        "path": "/AcquisitionEntry"
+      },
+      {
+        "name": "Depreciation Entry",
+        "label": "Depreciation Entry",
+        "arlabel": "عملية نهاية اليوم",
+        "path": "/DepreciationEntry"
+      },
+      {
+        "name": "Depreciation Reversal",
+        "label": "Depreciation Reversal",
+        "arlabel": "عملية نهاية اليوم",
+        "path": "/DepreciationReversal"
+      },
+      {
+        "name": "Disposal",
+        "label": "Disposal",
+        "arlabel": "عملية نهاية اليوم",
+        "path": "/Disposal"
       }
     ]
   },

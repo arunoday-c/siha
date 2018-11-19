@@ -1,6 +1,7 @@
 {
   "business_setup": "Business Setup",
   "departments": "Departments",
+  "department": "Department",
   "status": "Status",
   "active": "Active",
   "inactive": "Inactive",

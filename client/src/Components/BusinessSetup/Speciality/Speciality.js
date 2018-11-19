@@ -87,11 +87,11 @@ class Speciality extends Component {
   }
 
   updateSpeciality(data) {
-    data.department_status === "I"
+    data.speciality_status === "I"
       ? algaehApiCall({
-          uri: "/department/makeDepartmentInActive",
+          uri: "/specialityAndCategory/makeEmployeeSpecialityInActive",
           data: {
-            hims_d_department_id: data.hims_d_department_id
+            hims_d_employee_speciality_id: data.hims_d_employee_speciality_id
           },
           method: "PUT",
           onSuccess: response => {
@@ -100,12 +100,13 @@ class Speciality extends Component {
                 title: "Record updated successfully",
                 type: "success"
               });
-              this.getAllDepartments();
+              this.getSpeciality();
             } else if (!response.data.records.success) {
               swalMessage({
                 title: response.data.records.message,
                 type: "error"
               });
+              this.getSpeciality();
             }
           },
           onFailure: error => {
@@ -116,14 +117,15 @@ class Speciality extends Component {
           }
         })
       : algaehApiCall({
-          uri: "/department/updateDepartment",
+          uri: "/specialityAndCategory/updateEmployeeSpecialityMaster",
           data: {
-            department_name: data.department_name,
-            department_desc: data.department_name,
-            department_type: data.department_type,
-            arabic_department_name: data.arabic_department_name,
-            effective_start_date: data.effective_start_date,
-            hims_d_department_id: data.hims_d_department_id
+            hims_d_employee_speciality_id: data.hims_d_employee_speciality_id,
+            speciality_code: data.speciality_code,
+            speciality_name: data.speciality_name,
+            speciality_desc: data.speciality_name,
+            arabic_name: data.arabic_name,
+            sub_department_id: data.sub_department_id,
+            speciality_status: data.speciality_status
           },
           method: "PUT",
           onSuccess: response => {
@@ -285,7 +287,8 @@ class Speciality extends Component {
             <AlagehAutoComplete
               div={{ className: "col" }}
               label={{
-                fieldName: "departments"
+                fieldName: "department",
+                isImp: true
               }}
               selector={{
                 name: "sub_department_id",
@@ -405,7 +408,7 @@ class Speciality extends Component {
                         selector={{
                           name: "sub_department_id",
                           className: "select-fld",
-                          value: row.shift_status,
+                          value: row.sub_department_id,
                           dataSource: {
                             textField: "sub_department_name",
                             valueField: "hims_d_sub_department_id",
@@ -421,14 +424,14 @@ class Speciality extends Component {
                     );
                   }
                 },
-                {
-                  fieldName: "effective_start_date",
-                  label: (
-                    <AlgaehLabel
-                      label={{ fieldName: "effective_start_date" }}
-                    />
-                  )
-                },
+                // {
+                //   fieldName: "effective_start_date",
+                //   label: (
+                //     <AlgaehLabel
+                //       label={{ fieldName: "effective_start_date" }}
+                //     />
+                //   )
+                // },
                 {
                   fieldName: "speciality_status",
                   label: <label className="style_Label">Status</label>,

@@ -1,0 +1,21 @@
+{
+  "vendor_code": "رمز البائع",
+  "vendor_name": "اسم البائع",
+  "business_registration_no": "رقم تسجيل العمل",
+  "email_id_1": "البريد الإلكتروني 1",
+  "email_id_2": "البريد الإلكتروني 2",
+  "contact_number": "رقم الاتصال",
+  "website": "موقع الكتروني",
+  "vendor_status": "حالة البائع",
+  "action": "عمل",
+  "country": "بلد",
+  "state": "حالة",
+  "city": "مدينة",
+  "address": "عنوان",
+  "postal_code": "الرمز البريدي",
+  "payment_terms": "شروط الدفع",
+  "payment_mode": "طريقة الدفع",
+  "bank_name": "اسم البنك",
+  "vat_applicable": "ضريبة القيمة المضافة قابلة للتطبيق",
+  "vat_percentage": "نسبة ضريبة القيمة المضافة"
+}

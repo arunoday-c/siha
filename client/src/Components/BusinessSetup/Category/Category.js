@@ -11,6 +11,7 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import swal from "sweetalert2";
+import moment from "moment";
 
 class Category extends Component {
   constructor(props) {
@@ -35,6 +36,7 @@ class Category extends Component {
     this.setState({
       employee_category_code: "",
       employee_category_name: "",
+      arabic_name: "",
       sub_department_id: null
     });
   }
@@ -50,7 +52,6 @@ class Category extends Component {
     algaehApiCall({
       uri: "/specialityAndCategory/getEmployeeCategoryMaster",
       method: "GET",
-      data: {},
       onSuccess: response => {
         if (response.data.success) {
           this.setState({ categories: response.data.records });
@@ -68,9 +69,9 @@ class Category extends Component {
   updateSpeciality(data) {
     data.department_status === "I"
       ? algaehApiCall({
-          uri: "/department/makeDepartmentInActive",
+          uri: "/specialityAndCategory/makeEmployeeCategoryInActive",
           data: {
-            hims_d_department_id: data.hims_d_department_id
+            hims_employee_category_id: data.hims_employee_category_id
           },
           method: "PUT",
           onSuccess: response => {
@@ -79,7 +80,7 @@ class Category extends Component {
                 title: "Record updated successfully",
                 type: "success"
               });
-              this.getAllDepartments();
+              this.getCategories();
             } else if (!response.data.records.success) {
               swalMessage({
                 title: response.data.records.message,
@@ -95,14 +96,14 @@ class Category extends Component {
           }
         })
       : algaehApiCall({
-          uri: "/department/updateDepartment",
+          uri: "/specialityAndCategory/updateEmployeeCategoryMaster",
           data: {
-            department_name: data.department_name,
-            department_desc: data.department_name,
-            department_type: data.department_type,
-            arabic_department_name: data.arabic_department_name,
+            hims_employee_category_id: data.hims_employee_category_id,
+            employee_category_code: data.employee_category_code,
+            employee_category_name: data.employee_category_name,
+            employee_category_desc: data.employee_category_name,
             effective_start_date: data.effective_start_date,
-            hims_d_department_id: data.hims_d_department_id
+            employee_category_status: data.employee_category_status
           },
           method: "PUT",
           onSuccess: response => {
@@ -123,9 +124,9 @@ class Category extends Component {
         });
   }
 
-  deleteSpeciality(data) {
+  deleteCategory(data) {
     swal({
-      title: "Delete Speciality " + data.employee_category_name + "?",
+      title: "Delete category " + data.employee_category_name + "?",
       type: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes!",
@@ -135,22 +136,22 @@ class Category extends Component {
     }).then(willDelete => {
       if (willDelete.value) {
         algaehApiCall({
-          uri: "/department/deleteDepartment",
+          uri: "/specialityAndCategory/deleteEmployeeCategoryMaster",
           data: {
-            hims_d_employee_category_id: data.hims_d_employee_category_id
+            hims_employee_category_id: data.hims_employee_category_id
           },
           method: "DELETE",
           onSuccess: response => {
-            if (response.data.success) {
+            if (response.data.records.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
                 type: "success"
               });
 
               this.getCategories();
-            } else if (!response.data.success) {
+            } else if (!response.data.records.success) {
               swalMessage({
-                title: response.data.message,
+                title: response.data.records.message,
                 type: "error"
               });
             }
@@ -265,7 +266,8 @@ class Category extends Component {
             <AlgaehDateHandler
               div={{ className: "col-lg-3" }}
               label={{
-                fieldName: "effective_start_date"
+                fieldName: "effective_start_date",
+                isImp: true
               }}
               textBox={{
                 className: "txt-fld",
@@ -357,6 +359,22 @@ class Category extends Component {
                   }
                 },
                 {
+                  fieldName: "effective_start_date",
+                  label: (
+                    <AlgaehLabel
+                      label={{ fieldName: "effective_start_date" }}
+                    />
+                  ),
+                  displayTemplate: row => {
+                    return (
+                      <span>
+                        {moment(row.effective_start_date).format("DD-MM-YYYY")}
+                      </span>
+                    );
+                  },
+                  disabled: true
+                },
+                {
                   fieldName: "employee_category_status",
                   label: <AlgaehLabel label={{ fieldName: "status" }} />,
                   displayTemplate: row => {
@@ -400,7 +418,7 @@ class Category extends Component {
               paging={{ page: 0, rowsPerPage: 10 }}
               events={{
                 onEdit: () => {},
-                onDelete: this.deleteSpeciality.bind(this),
+                onDelete: this.deleteCategory.bind(this),
                 onDone: this.updateSpeciality.bind(this)
               }}
             />
