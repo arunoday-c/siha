@@ -94,7 +94,7 @@ class Dashboard extends Component {
         mappingName: "hospitaldetails"
       },
       afterSuccess: data => {
-        if (data.length != 0) {
+        if (data.length > 0) {
           let CurrencyDetail = {
             Symbol: data[0].currency_symbol,
             Position: data[0].symbol_position
