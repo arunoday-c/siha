@@ -133,7 +133,10 @@ class InvestigationSetup extends Component {
   render() {
     return (
       <div className="hims_investigationsetup">
-        <div className="row inner-top-search" style={{ paddingBottom: 10 }}>
+        <div
+          className="row inner-top-search d-none"
+          style={{ paddingBottom: 10 }}
+        >
           <div className="col-lg-12">
             <div className="row">
               <AlagehAutoComplete
@@ -238,7 +241,7 @@ class InvestigationSetup extends Component {
             </div>
           </div>
         </div>
-        <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+        <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15 margin-top-15">
           <div className="portlet-title">
             <div className="caption">
               <h3 className="caption-subject">Investigation Lists</h3>
@@ -292,6 +295,7 @@ class InvestigationSetup extends Component {
                       others: {
                         maxWidth: 65,
                         resizable: false,
+                        filterable: false,
                         style: { textAlign: "center" }
                       }
                     },
@@ -395,6 +399,7 @@ class InvestigationSetup extends Component {
                     data: this.state.Investigations
                   }}
                   // isEditable={true}
+                  filter={true}
                   paging={{ page: 0, rowsPerPage: 10 }}
                 />
               </div>
