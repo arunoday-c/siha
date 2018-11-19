@@ -277,3 +277,35 @@ export function AlgaehValidation(options) {
       settings.onSuccess();
   }
 }
+
+export function getAmountFormart(value) {
+  let currencySymbol = JSON.parse(sessionStorage.getItem("CurrencyDetail"));
+  let printData = "";
+
+  switch (currencySymbol.Position) {
+    case "BWS":
+      printData = value
+        ? currencySymbol.Symbol + value
+        : currencySymbol.Symbol + "0.00";
+      break;
+    case "BS":
+      printData = value
+        ? currencySymbol.Symbol + " " + value
+        : currencySymbol.Symbol + " 0.00";
+      break;
+    case "AWS":
+      printData = value
+        ? value + currencySymbol.Symbol
+        : "0.00" + currencySymbol.Symbol;
+      break;
+    case "AS":
+      printData = value
+        ? value + " " + currencySymbol.Symbol
+        : "0.00 " + currencySymbol.Symbol;
+      break;
+    default:
+      printData = "";
+  }
+
+  return printData;
+}

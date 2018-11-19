@@ -43,6 +43,10 @@
 #PointSaleGrid .ReactTable {
   max-height: 40vh !important; }
 
+@media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
+  #PointSaleGrid .ReactTable {
+    max-width: 93.5vw !important; } }
+
 .algaehPaperDefault {
   margin: 15px 0px;
   border: 1px solid #ccc;

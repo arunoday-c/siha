@@ -22,6 +22,7 @@ import Options from "../../../../Options.json";
 import moment from "moment";
 import ReciptForm from "./ReciptDetails/AddReciptForm";
 import { getCookie } from "../../../../utils/algaehApiCall";
+import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 
 class ItemListsReturn extends Component {
   constructor(props) {
@@ -71,7 +72,6 @@ class ItemListsReturn extends Component {
   }
 
   render() {
-    const currencySymbol = getCookie("Currency");
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -337,11 +337,7 @@ class ItemListsReturn extends Component {
                               forceLabel: "Return Sub Total"
                             }}
                           />
-                          <h6>
-                            {this.state.sub_total
-                              ? currencySymbol + " " + this.state.sub_total
-                              : currencySymbol + " 0.00"}
-                          </h6>
+                          <h6>{getAmountFormart(this.state.sub_total)}</h6>
                         </div>
                         <div className="col-lg-4">
                           <AlgaehLabel
@@ -350,11 +346,7 @@ class ItemListsReturn extends Component {
                             }}
                           />
                           <h6>
-                            {this.state.discount_amount
-                              ? currencySymbol +
-                                " " +
-                                this.state.discount_amount
-                              : currencySymbol + " 0.00"}
+                            {getAmountFormart(this.state.discount_amount)}
                           </h6>
                         </div>
 
@@ -364,11 +356,7 @@ class ItemListsReturn extends Component {
                               forceLabel: "Net Total"
                             }}
                           />
-                          <h6>
-                            {this.state.net_total
-                              ? currencySymbol + " " + this.state.net_total
-                              : currencySymbol + " 0.00"}
-                          </h6>
+                          <h6>{getAmountFormart(this.state.net_total)}</h6>
                         </div>
                       </div>
                     </div>
@@ -384,11 +372,7 @@ class ItemListsReturn extends Component {
                                 forceLabel: "Copay Amount"
                               }}
                             />
-                            <h6>
-                              {this.state.copay_amount
-                                ? currencySymbol + " " + this.state.copay_amount
-                                : currencySymbol + " 0.00"}
-                            </h6>
+                            <h6>{getAmountFormart(this.state.copay_amount)}</h6>
                           </div>
                           <div className="col-lg-6">
                             <AlgaehLabel
@@ -397,11 +381,7 @@ class ItemListsReturn extends Component {
                               }}
                             />
                             <h6>
-                              {this.state.sec_copay_amount
-                                ? currencySymbol +
-                                  " " +
-                                  this.state.sec_copay_amount
-                                : currencySymbol + " 0.00"}
+                              {getAmountFormart(this.state.sec_copay_amount)}
                             </h6>
                           </div>
                         </div>
@@ -420,11 +400,9 @@ class ItemListsReturn extends Component {
                                   }}
                                 />
                                 <h6>
-                                  {this.state.patient_responsibility
-                                    ? currencySymbol +
-                                      " " +
-                                      this.state.patient_responsibility
-                                    : currencySymbol + " 0.00"}
+                                  {getAmountFormart(
+                                    this.state.patient_responsibility
+                                  )}
                                 </h6>
                               </div>
 
@@ -435,11 +413,7 @@ class ItemListsReturn extends Component {
                                   }}
                                 />
                                 <h6>
-                                  {this.state.patient_tax
-                                    ? currencySymbol +
-                                      " " +
-                                      this.state.patient_tax
-                                    : currencySymbol + " 0.00"}
+                                  {getAmountFormart(this.state.patient_tax)}
                                 </h6>
                               </div>
 
@@ -450,11 +424,9 @@ class ItemListsReturn extends Component {
                                   }}
                                 />
                                 <h6>
-                                  {this.state.patient_payable_h
-                                    ? currencySymbol +
-                                      " " +
-                                      this.state.patient_payable_h
-                                    : currencySymbol + " 0.00"}
+                                  {getAmountFormart(
+                                    this.state.patient_payable_h
+                                  )}
                                 </h6>
                               </div>
                             </div>
@@ -474,11 +446,9 @@ class ItemListsReturn extends Component {
                                   }}
                                 />
                                 <h6>
-                                  {this.state.company_responsibility
-                                    ? currencySymbol +
-                                      " " +
-                                      this.state.company_responsibility
-                                    : currencySymbol + " 0.00"}
+                                  {getAmountFormart(
+                                    this.state.company_responsibility
+                                  )}
                                 </h6>
                               </div>
 
@@ -489,11 +459,7 @@ class ItemListsReturn extends Component {
                                   }}
                                 />
                                 <h6>
-                                  {this.state.company_tax
-                                    ? currencySymbol +
-                                      " " +
-                                      this.state.company_tax
-                                    : currencySymbol + " 0.00"}
+                                  {getAmountFormart(this.state.company_tax)}
                                 </h6>
                               </div>
 
@@ -504,11 +470,7 @@ class ItemListsReturn extends Component {
                                   }}
                                 />
                                 <h6>
-                                  {this.state.company_payable
-                                    ? currencySymbol +
-                                      " " +
-                                      this.state.company_payable
-                                    : currencySymbol + " 0.00"}
+                                  {getAmountFormart(this.state.company_payable)}
                                 </h6>
                               </div>
                             </div>
@@ -528,11 +490,9 @@ class ItemListsReturn extends Component {
                                   }}
                                 />
                                 <h6>
-                                  {this.state.sec_company_responsibility
-                                    ? currencySymbol +
-                                      " " +
-                                      this.state.sec_company_responsibility
-                                    : currencySymbol + " 0.00"}
+                                  {getAmountFormart(
+                                    this.state.sec_company_responsibility
+                                  )}
                                 </h6>
                               </div>
 
@@ -543,11 +503,7 @@ class ItemListsReturn extends Component {
                                   }}
                                 />
                                 <h6>
-                                  {this.state.sec_company_tax
-                                    ? currencySymbol +
-                                      " " +
-                                      this.state.sec_company_tax
-                                    : currencySymbol + " 0.00"}
+                                  {getAmountFormart(this.state.sec_company_tax)}
                                 </h6>
                               </div>
 
@@ -558,11 +514,9 @@ class ItemListsReturn extends Component {
                                   }}
                                 />
                                 <h6>
-                                  {this.state.sec_company_payable
-                                    ? currencySymbol +
-                                      " " +
-                                      this.state.sec_company_payable
-                                    : currencySymbol + " 0.00"}
+                                  {getAmountFormart(
+                                    this.state.sec_company_payable
+                                  )}
                                 </h6>
                               </div>
                             </div>
@@ -581,11 +535,9 @@ class ItemListsReturn extends Component {
                               }}
                             />
                             <h6>
-                              {this.state.sheet_discount_percentage
-                                ? currencySymbol +
-                                  " " +
-                                  this.state.sheet_discount_percentage
-                                : currencySymbol + " 0.00"}
+                              {getAmountFormart(
+                                this.state.sheet_discount_percentage
+                              )}
                             </h6>
                           </div>
                           <div className="col-3">
@@ -595,11 +547,9 @@ class ItemListsReturn extends Component {
                               }}
                             />
                             <h6>
-                              {this.state.sheet_discount_amount
-                                ? currencySymbol +
-                                  " " +
-                                  this.state.sheet_discount_amount
-                                : currencySymbol + " 0.00"}
+                              {getAmountFormart(
+                                this.state.sheet_discount_amount
+                              )}
                             </h6>
                           </div>
                         </div>
@@ -615,11 +565,7 @@ class ItemListsReturn extends Component {
                                 forceLabel: "Net Amount"
                               }}
                             />
-                            <h6>
-                              {this.state.net_amount
-                                ? currencySymbol + " " + this.state.net_amount
-                                : currencySymbol + " 0.00"}
-                            </h6>
+                            <h6>{getAmountFormart(this.state.net_amount)}</h6>
                           </div>
 
                           <div className="col-3">
@@ -629,11 +575,7 @@ class ItemListsReturn extends Component {
                               }}
                             />
                             <h6>
-                              {this.state.credit_amount
-                                ? currencySymbol +
-                                  " " +
-                                  this.state.credit_amount
-                                : currencySymbol + " 0.00"}
+                              {getAmountFormart(this.state.credit_amount)}
                             </h6>
                           </div>
 
@@ -650,11 +592,7 @@ class ItemListsReturn extends Component {
                               }}
                             />
                             <h4>
-                              {this.state.payable_amount
-                                ? currencySymbol +
-                                  " " +
-                                  this.state.payable_amount
-                                : currencySymbol + " 0.00"}
+                              {getAmountFormart(this.state.payable_amount)}
                             </h4>
                           </div>
                         </div>

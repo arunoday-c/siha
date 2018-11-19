@@ -29,6 +29,7 @@ import "../../../../styles/site.css";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { getCookie } from "../../../../utils/algaehApiCall";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
+import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 
 class OrderingServices extends Component {
   constructor(props) {
@@ -118,7 +119,7 @@ class OrderingServices extends Component {
         }
       });
     }
-    
+
     this.props.getPatientInsurance({
       uri: "/insurance/getPatientInsurance",
       method: "GET",
@@ -157,7 +158,6 @@ class OrderingServices extends Component {
       this.setState({ ...output });
     }
 
-    
     if (nextProps.addNew === true && this.state.addNew === true) {
       this.setState({
         s_service_type: null,
@@ -197,9 +197,7 @@ class OrderingServices extends Component {
       });
     }
   }
-  playclick() {
-    
-  }
+  playclick() {}
 
   onClose = e => {
     this.setState(
@@ -212,7 +210,6 @@ class OrderingServices extends Component {
     );
   };
   render() {
-    const currencySymbol = getCookie("Currency");
     return (
       <div className="hptl-phase1-ordering-services-form">
         <Modal open={this.props.open}>
@@ -655,11 +652,7 @@ class OrderingServices extends Component {
                             forceLabel: "Patient Payable"
                           }}
                         />
-                        <h5>
-                          {this.state.patient_payable
-                            ? currencySymbol + " " + this.state.patient_payable
-                            : currencySymbol + " 0.00"}
-                        </h5>
+                        <h5>{getAmountFormart(this.state.patient_payable)}</h5>
                       </div>
                       <div className="col-lg-4">
                         <AlgaehLabel
@@ -667,11 +660,7 @@ class OrderingServices extends Component {
                             forceLabel: "Company Payable"
                           }}
                         />
-                        <h5>
-                          {this.state.company_payble
-                            ? currencySymbol + " " + this.state.company_payble
-                            : currencySymbol + " 0.00"}
-                        </h5>
+                        <h5>{getAmountFormart(this.state.company_payble)}</h5>
                       </div>
                       <div className="col-lg-4">
                         <AlgaehLabel
@@ -680,11 +669,7 @@ class OrderingServices extends Component {
                           }}
                         />
                         <h5>
-                          {this.state.sec_company_paybale
-                            ? currencySymbol +
-                              " " +
-                              this.state.sec_company_paybale
-                            : currencySymbol + " 0.00"}
+                          {getAmountFormart(this.state.sec_company_paybale)}
                         </h5>
                       </div>
                     </div>
@@ -697,11 +682,7 @@ class OrderingServices extends Component {
                             forceLabel: "Sub Total"
                           }}
                         />
-                        <h5>
-                          {this.state.sub_total_amount
-                            ? currencySymbol + " " + this.state.sub_total_amount
-                            : currencySymbol + " 0.00"}
-                        </h5>
+                        <h5>{getAmountFormart(this.state.sub_total_amount)}</h5>
                       </div>
                       <div className="col-lg-4">
                         <AlgaehLabel
@@ -709,11 +690,7 @@ class OrderingServices extends Component {
                             forceLabel: "Discount Amount"
                           }}
                         />
-                        <h5>
-                          {this.state.discount_amount
-                            ? currencySymbol + " " + this.state.discount_amount
-                            : currencySymbol + " 0.00"}
-                        </h5>
+                        <h5>{getAmountFormart(this.state.discount_amount)}</h5>
                       </div>
 
                       <div className="col-lg-4">
@@ -722,11 +699,7 @@ class OrderingServices extends Component {
                             forceLabel: "Net Total"
                           }}
                         />
-                        <h5>
-                          {this.state.net_total
-                            ? currencySymbol + " " + this.state.net_total
-                            : currencySymbol + " 0.00"}
-                        </h5>
+                        <h5>{getAmountFormart(this.state.net_total)}</h5>
                       </div>
                     </div>
                   </div>

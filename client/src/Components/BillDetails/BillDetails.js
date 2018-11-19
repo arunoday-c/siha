@@ -14,7 +14,8 @@ import {
 import Paper from "@material-ui/core/Paper";
 
 import { AlgaehActions } from "../../actions/algaehActions";
-import { getCookie } from "../../utils/algaehApiCall";
+import { getAmountFormart } from "../../utils/GlobalFunctions";
+
 class DisplayOPBilling extends PureComponent {
   constructor(props) {
     super(props);
@@ -175,7 +176,6 @@ class DisplayOPBilling extends PureComponent {
   }
 
   render() {
-    let currencySymbol = getCookie("Currency");
     return (
       <React.Fragment>
         <div className="hptl-phase1-op-display-billing-form">
@@ -319,11 +319,7 @@ class DisplayOPBilling extends PureComponent {
                         fieldName: "unit_cost"
                       }}
                     />
-                    <h6>
-                      {this.state.unit_cost
-                        ? currencySymbol + " " + this.state.unit_cost
-                        : currencySymbol + " 0.00"}
-                    </h6>
+                    <h6>{getAmountFormart(this.state.unit_cost)}</h6>
                   </div>
 
                   <div className="col-lg-2">
@@ -332,11 +328,7 @@ class DisplayOPBilling extends PureComponent {
                         fieldName: "gross_amount"
                       }}
                     />
-                    <h6>
-                      {this.state.gross_amount
-                        ? currencySymbol + " " + this.state.gross_amount
-                        : currencySymbol + " 0.00"}
-                    </h6>
+                    <h6>{getAmountFormart(this.state.gross_amount)}</h6>
                   </div>
 
                   <div className="col-lg-2">
@@ -358,11 +350,7 @@ class DisplayOPBilling extends PureComponent {
                         fieldName: "discount_amout"
                       }}
                     />
-                    <h6>
-                      {this.state.discount_amout
-                        ? currencySymbol + " " + this.state.discount_amout
-                        : currencySymbol + " 0.00"}
-                    </h6>
+                    <h6>{getAmountFormart(this.state.discount_amout)}</h6>
                   </div>
 
                   <div className="col-lg-2">
@@ -371,11 +359,7 @@ class DisplayOPBilling extends PureComponent {
                         fieldName: "net_amout"
                       }}
                     />
-                    <h6>
-                      {this.state.net_amout
-                        ? currencySymbol + " " + this.state.net_amout
-                        : currencySymbol + " 0.00"}
-                    </h6>
+                    <h6>{getAmountFormart(this.state.net_amout)}</h6>
                   </div>
                 </div>
                 <hr />
@@ -408,11 +392,7 @@ class DisplayOPBilling extends PureComponent {
                               fieldName: "copay_amount"
                             }}
                           />
-                          <h6>
-                            {this.state.copay_amount
-                              ? currencySymbol + " " + this.state.copay_amount
-                              : currencySymbol + " 0.00"}
-                          </h6>
+                          <h6>{getAmountFormart(this.state.copay_amount)}</h6>
                         </div>
 
                         <div className="col-3">
@@ -435,11 +415,7 @@ class DisplayOPBilling extends PureComponent {
                             }}
                           />
                           <h6>
-                            {this.state.deductable_amount
-                              ? currencySymbol +
-                                " " +
-                                this.state.deductable_amount
-                              : currencySymbol + " 0.00"}
+                            {getAmountFormart(this.state.deductable_amount)}
                           </h6>
                         </div>
                       </div>
@@ -474,11 +450,7 @@ class DisplayOPBilling extends PureComponent {
                             }}
                           />
                           <h6>
-                            {this.state.sec_copay_amount
-                              ? currencySymbol +
-                                " " +
-                                this.state.sec_copay_amount
-                              : currencySymbol + " 0.00"}
+                            {getAmountFormart(this.state.sec_copay_amount)}
                           </h6>
                         </div>
 
@@ -502,11 +474,7 @@ class DisplayOPBilling extends PureComponent {
                             }}
                           />
                           <h6>
-                            {this.state.sec_deductable_amount
-                              ? currencySymbol +
-                                " " +
-                                this.state.sec_deductable_amount
-                              : currencySymbol + " 0.00"}
+                            {getAmountFormart(this.state.sec_deductable_amount)}
                           </h6>
                         </div>
                       </div>
@@ -530,11 +498,7 @@ class DisplayOPBilling extends PureComponent {
                               fieldName: "responsibility_lbl"
                             }}
                           />
-                          <h6>
-                            {this.state.patient_resp
-                              ? currencySymbol + " " + this.state.patient_resp
-                              : currencySymbol + " 0.00"}
-                          </h6>
+                          <h6>{getAmountFormart(this.state.patient_resp)}</h6>
                         </div>
 
                         <div className="col-3">
@@ -543,11 +507,7 @@ class DisplayOPBilling extends PureComponent {
                               fieldName: "tax_lbl"
                             }}
                           />
-                          <h6>
-                            {this.state.patient_tax
-                              ? currencySymbol + " " + this.state.patient_tax
-                              : currencySymbol + " 0.00"}
-                          </h6>
+                          <h6>{getAmountFormart(this.state.patient_tax)}</h6>
                         </div>
 
                         <div className="col-4">
@@ -557,11 +517,7 @@ class DisplayOPBilling extends PureComponent {
                             }}
                           />
                           <h6>
-                            {this.state.patient_payable
-                              ? currencySymbol +
-                                " " +
-                                this.state.patient_payable
-                              : currencySymbol + " 0.00"}
+                            {getAmountFormart(this.state.patient_payable)}
                           </h6>
                         </div>
                       </div>
@@ -583,11 +539,7 @@ class DisplayOPBilling extends PureComponent {
                               fieldName: "responsibility_lbl"
                             }}
                           />
-                          <h6>
-                            {this.state.comapany_resp
-                              ? currencySymbol + " " + this.state.comapany_resp
-                              : currencySymbol + " 0.00"}
-                          </h6>
+                          <h6>{getAmountFormart(this.state.comapany_resp)}</h6>
                         </div>
 
                         <div className="col-3">
@@ -596,11 +548,7 @@ class DisplayOPBilling extends PureComponent {
                               fieldName: "tax_lbl"
                             }}
                           />
-                          <h6>
-                            {this.state.company_tax
-                              ? currencySymbol + " " + this.state.company_tax
-                              : currencySymbol + " 0.00"}
-                          </h6>
+                          <h6>{getAmountFormart(this.state.company_tax)}</h6>
                         </div>
 
                         <div className="col-4">
@@ -609,11 +557,7 @@ class DisplayOPBilling extends PureComponent {
                               fieldName: "payable_lbl"
                             }}
                           />
-                          <h6>
-                            {this.state.company_payble
-                              ? currencySymbol + " " + this.state.company_payble
-                              : currencySymbol + " 0.00"}
-                          </h6>
+                          <h6>{getAmountFormart(this.state.company_payble)}</h6>
                         </div>
                       </div>
                     </Paper>
@@ -636,11 +580,7 @@ class DisplayOPBilling extends PureComponent {
                             }}
                           />
                           <h6>
-                            {this.state.sec_company_res
-                              ? currencySymbol +
-                                " " +
-                                this.state.sec_company_res
-                              : currencySymbol + " 0.00"}
+                            {getAmountFormart(this.state.sec_company_res)}
                           </h6>
                         </div>
 
@@ -651,11 +591,7 @@ class DisplayOPBilling extends PureComponent {
                             }}
                           />
                           <h6>
-                            {this.state.sec_company_tax
-                              ? currencySymbol +
-                                " " +
-                                this.state.sec_company_tax
-                              : currencySymbol + " 0.00"}
+                            {getAmountFormart(this.state.sec_company_tax)}
                           </h6>
                         </div>
 
@@ -666,11 +602,7 @@ class DisplayOPBilling extends PureComponent {
                             }}
                           />
                           <h6>
-                            {this.state.sec_company_paybale
-                              ? currencySymbol +
-                                " " +
-                                this.state.sec_company_paybale
-                              : currencySymbol + " 0.00"}
+                            {getAmountFormart(this.state.sec_company_paybale)}
                           </h6>
                         </div>
                       </div>

@@ -95,8 +95,14 @@ class Dashboard extends Component {
       },
       afterSuccess: data => {
         if (data.length > 0) {
-          setCookie("Currency", data[0].currency_symbol, 30);
-          setCookie("Position", data[0].symbol_position, 30);
+          let CurrencyDetail = {
+            Symbol: data[0].currency_symbol,
+            Position: data[0].symbol_position
+          };
+          sessionStorage.setItem(
+            "CurrencyDetail",
+            JSON.stringify(CurrencyDetail)
+          );
         }
       }
     });

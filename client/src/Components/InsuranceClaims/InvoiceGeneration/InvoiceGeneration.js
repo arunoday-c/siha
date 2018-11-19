@@ -22,11 +22,7 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import { getCookie } from "../../../utils/algaehApiCall";
 import AppBar from "@material-ui/core/AppBar";
 import AlgaehReport from "../../Wrapper/printReports.js";
-
-const services = [
-  { service_name: "Consultation", sl_no: 1 },
-  { service_name: "Procedure", sl_no: 2 }
-];
+import { getAmountFormart } from "../../../utils/GlobalFunctions";
 
 class InvoiceGeneration extends Component {
   constructor(props) {
@@ -97,13 +93,11 @@ class InvoiceGeneration extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    
     if (
       nextProps.invheadercal !== undefined &&
       nextProps.invheadercal.length !== 0 &&
       this.state.Invoice_Detail.length !== 0
     ) {
-      
       let billOut = nextProps.invheadercal;
       billOut.patient_resp = billOut.patient_res;
       billOut.patient_payable = billOut.patient_payable;
@@ -158,7 +152,6 @@ class InvoiceGeneration extends Component {
   //created by Adnan
 
   render() {
-    const currencySymbol = getCookie("Currency");
     return (
       <div>
         <BreadCrumb
@@ -536,11 +529,7 @@ class InvoiceGeneration extends Component {
                         forceLabel: "Gross Amount"
                       }}
                     />
-                    <h5>
-                      {this.state.totalGross
-                        ? currencySymbol + " " + this.state.totalGross
-                        : currencySymbol + " 0.00"}
-                    </h5>
+                    <h5>{getAmountFormart(this.state.totalGross)}</h5>
                   </div>
                 </div>
                 <div className="row">
@@ -550,11 +539,7 @@ class InvoiceGeneration extends Component {
                         forceLabel: "Discount Amount"
                       }}
                     />
-                    <h5>
-                      {this.state.totalDiscount
-                        ? currencySymbol + " " + this.state.totalDiscount
-                        : currencySymbol + " 0.00"}
-                    </h5>
+                    <h5>{getAmountFormart(this.state.totalDiscount)}</h5>
                   </div>
                 </div>
               </div>
@@ -567,11 +552,7 @@ class InvoiceGeneration extends Component {
                         forceLabel: "Patient Resp."
                       }}
                     />
-                    <h5>
-                      {this.state.patient_resp
-                        ? currencySymbol + " " + this.state.patient_resp
-                        : currencySymbol + " 0.00"}
-                    </h5>
+                    <h5>{getAmountFormart(this.state.patient_resp)}</h5>
                   </div>
 
                   <div className="col-lg-3">
@@ -580,11 +561,7 @@ class InvoiceGeneration extends Component {
                         forceLabel: "Patient Tax"
                       }}
                     />
-                    <h5>
-                      {this.state.patient_tax
-                        ? currencySymbol + " " + this.state.patient_tax
-                        : currencySymbol + " 0.00"}
-                    </h5>
+                    <h5>{getAmountFormart(this.state.patient_tax)}</h5>
                   </div>
 
                   <div className="col-lg-3">
@@ -593,11 +570,7 @@ class InvoiceGeneration extends Component {
                         forceLabel: "Patient Payable"
                       }}
                     />
-                    <h5>
-                      {this.state.patient_payable
-                        ? currencySymbol + " " + this.state.patient_payable
-                        : currencySymbol + " 0.00"}
-                    </h5>
+                    <h5>{getAmountFormart(this.state.patient_payable)}</h5>
                   </div>
 
                   <div className="col-lg-3">
@@ -606,11 +579,7 @@ class InvoiceGeneration extends Component {
                         forceLabel: "Company Resp."
                       }}
                     />
-                    <h5>
-                      {this.state.company_resp
-                        ? currencySymbol + " " + this.state.company_resp
-                        : currencySymbol + " 0.00"}
-                    </h5>
+                    <h5>{getAmountFormart(this.state.company_resp)}</h5>
                   </div>
                 </div>
                 <div className="row">
@@ -620,11 +589,7 @@ class InvoiceGeneration extends Component {
                         forceLabel: "Company Tax"
                       }}
                     />
-                    <h5>
-                      {this.state.company_tax
-                        ? currencySymbol + " " + this.state.company_tax
-                        : currencySymbol + " 0.00"}
-                    </h5>
+                    <h5>{getAmountFormart(this.state.company_tax)}</h5>
                   </div>
                   <div className="col-lg-3">
                     <AlgaehLabel
@@ -632,11 +597,7 @@ class InvoiceGeneration extends Component {
                         forceLabel: "Company Payable"
                       }}
                     />
-                    <h5>
-                      {this.state.company_payble
-                        ? currencySymbol + " " + this.state.company_payble
-                        : currencySymbol + " 0.00"}
-                    </h5>
+                    <h5>{getAmountFormart(this.state.company_payble)}</h5>
                   </div>
 
                   <div className="col-lg-3">
@@ -645,11 +606,7 @@ class InvoiceGeneration extends Component {
                         forceLabel: "Sec Company Resp."
                       }}
                     />
-                    <h5>
-                      {this.state.sec_comapany_resp
-                        ? currencySymbol + " " + this.state.sec_comapany_resp
-                        : currencySymbol + " 0.00"}
-                    </h5>
+                    <h5>{getAmountFormart(this.state.sec_comapany_resp)}</h5>
                   </div>
                   <div className="col-lg-3">
                     <AlgaehLabel
@@ -657,11 +614,7 @@ class InvoiceGeneration extends Component {
                         forceLabel: "Sec Company Tax"
                       }}
                     />
-                    <h5>
-                      {this.state.sec_company_tax
-                        ? currencySymbol + " " + this.state.sec_company_tax
-                        : currencySymbol + " 0.00"}
-                    </h5>
+                    <h5>{getAmountFormart(this.state.sec_company_tax)}</h5>
                   </div>
                 </div>
                 <div className="row">
@@ -671,11 +624,7 @@ class InvoiceGeneration extends Component {
                         forceLabel: "Sec Company Payable"
                       }}
                     />
-                    <h5>
-                      {this.state.sec_company_payable
-                        ? currencySymbol + " " + this.state.sec_company_payable
-                        : currencySymbol + " 0.00"}
-                    </h5>
+                    <h5>{getAmountFormart(this.state.sec_company_payable)}</h5>
                   </div>
                 </div>
               </div>
