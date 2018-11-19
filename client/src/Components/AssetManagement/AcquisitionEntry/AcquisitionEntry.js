@@ -82,147 +82,167 @@ class AcquisitionEntry extends Component {
           selectedLang={this.state.selectedLang}
         />
         <div
-          className="row inner-top-search"
-          style={{ marginTop: "75px", paddingBottom: "10px" }}
+          className="portlet portlet-bordered box-shadow-normal margin-bottom-15"
+          style={{ marginTop: 90 }}
         >
-          <div className="col-lg-12">
-            <div className="row">
-              <AlagehAutoComplete
-                div={{ className: "col" }}
-                label={{ forceLabel: "Transaction Type" }}
-                selector={{
-                  name: "location_id",
-                  className: "select-fld",
-                  value: this.state.location_id,
-                  dataSource: {
-                    textField: "location_description",
-                    valueField: "hims_d_pharmacy_location_id",
-                    data: this.props.locations
-                  },
+          <div className="row">
+            <AlagehAutoComplete
+              div={{ className: "col" }}
+              label={{ forceLabel: "Transaction Type" }}
+              selector={{
+                name: "location_id",
+                className: "select-fld",
+                value: this.state.location_id,
+                dataSource: {
+                  textField: "location_description",
+                  valueField: "hims_d_pharmacy_location_id",
+                  data: this.props.locations
+                },
 
-                  onChange: null,
-                  onClear: null
-                }}
-              />
-              <AlagehAutoComplete
-                div={{ className: "col" }}
-                label={{ forceLabel: "Location" }}
-                selector={{
-                  name: "location_id",
-                  className: "select-fld",
-                  value: this.state.location_id,
-                  dataSource: {
-                    textField: "location_description",
-                    valueField: "hims_d_pharmacy_location_id",
-                    data: this.props.locations
-                  },
+                onChange: null,
+                onClear: null
+              }}
+            />
+            <AlagehAutoComplete
+              div={{ className: "col" }}
+              label={{ forceLabel: "Location" }}
+              selector={{
+                name: "location_id",
+                className: "select-fld",
+                value: this.state.location_id,
+                dataSource: {
+                  textField: "location_description",
+                  valueField: "hims_d_pharmacy_location_id",
+                  data: this.props.locations
+                },
 
-                  onChange: null,
-                  onClear: null
-                }}
-              />
+                onChange: null,
+                onClear: null
+              }}
+            />
 
-              <AlagehAutoComplete
-                div={{ className: "col" }}
-                label={{ forceLabel: "Department" }}
-                selector={{
-                  name: "location_id",
-                  className: "select-fld",
-                  value: this.state.location_id,
-                  dataSource: {
-                    textField: "location_description",
-                    valueField: "hims_d_pharmacy_location_id",
-                    data: this.props.locations
-                  },
+            <AlagehAutoComplete
+              div={{ className: "col" }}
+              label={{ forceLabel: "Department" }}
+              selector={{
+                name: "location_id",
+                className: "select-fld",
+                value: this.state.location_id,
+                dataSource: {
+                  textField: "location_description",
+                  valueField: "hims_d_pharmacy_location_id",
+                  data: this.props.locations
+                },
 
-                  onChange: null,
-                  onClear: null
-                }}
-              />
+                onChange: null,
+                onClear: null
+              }}
+            />
 
-              <AlagehAutoComplete
-                div={{ className: "col" }}
-                label={{ forceLabel: "Depreciation Category" }}
-                selector={{
-                  name: "item_id",
-                  className: "select-fld",
-                  value: this.state.item_id,
-                  dataSource: {
-                    textField: "item_description",
-                    valueField: "hims_d_item_master_id",
-                    data: this.props.itemlist
-                  },
-                  onChange: null,
-                  onClear: null
-                }}
-              />
-
-              <AlagehAutoComplete
-                div={{ className: "col" }}
-                label={{ forceLabel: "Vendor Code" }}
-                selector={{
-                  name: "item_id",
-                  className: "select-fld",
-                  value: this.state.item_id,
-                  dataSource: {
-                    textField: "item_description",
-                    valueField: "hims_d_item_master_id",
-                    data: this.props.itemlist
-                  },
-                  onChange: null,
-                  onClear: null
-                }}
-              />
-            </div>
-            <div className="row">
-              {" "}
-              <AlagehAutoComplete
-                div={{ className: "col" }}
-                label={{ forceLabel: "Acquisition Account" }}
-                selector={{
-                  name: "item_id",
-                  className: "select-fld",
-                  value: this.state.item_id,
-                  dataSource: {
-                    textField: "item_description",
-                    valueField: "hims_d_item_master_id",
-                    data: this.props.itemlist
-                  },
-                  onChange: null,
-                  onClear: null
-                }}
-              />
-              <AlagehAutoComplete
-                div={{ className: "col" }}
-                label={{ forceLabel: "Invoice Number" }}
-                selector={{
-                  name: "item_id",
-                  className: "select-fld",
-                  value: this.state.item_id,
-                  dataSource: {
-                    textField: "item_description",
-                    valueField: "hims_d_item_master_id",
-                    data: this.props.itemlist
-                  },
-                  onChange: null,
-                  onClear: null
-                }}
-              />
-              <AlgaehDateHandler
-                div={{ className: "col-3" }}
-                label={{ forceLabel: "Transaction Date" }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "expiry_date"
-                }}
-                minDate={new Date()}
-                disabled={true}
-                events={{
+            <AlagehAutoComplete
+              div={{ className: "col" }}
+              label={{ forceLabel: "Depreciation Category" }}
+              selector={{
+                name: "item_id",
+                className: "select-fld",
+                value: this.state.item_id,
+                dataSource: {
+                  textField: "item_description",
+                  valueField: "hims_d_item_master_id",
+                  data: this.props.itemlist
+                },
+                onChange: null,
+                onClear: null
+              }}
+            />
+            <AlgaehDateHandler
+              div={{ className: "col-3" }}
+              label={{ forceLabel: "Transaction Date" }}
+              textBox={{
+                className: "txt-fld",
+                name: "expiry_date"
+              }}
+              minDate={new Date()}
+              //disabled={true}
+              events={{
+                onChange: null
+              }}
+              value={this.state.expiry_date}
+            />
+          </div>
+          <div className="row">
+            <AlagehAutoComplete
+              div={{ className: "col" }}
+              label={{ forceLabel: "Acquisition Type" }}
+              selector={{
+                name: "item_id",
+                className: "select-fld",
+                value: this.state.item_id,
+                dataSource: {
+                  textField: "item_description",
+                  valueField: "hims_d_item_master_id",
+                  data: this.props.itemlist
+                },
+                onChange: null,
+                onClear: null
+              }}
+            />
+            <AlagehAutoComplete
+              div={{ className: "col" }}
+              label={{ forceLabel: "Acquisition Account" }}
+              selector={{
+                name: "item_id",
+                className: "select-fld",
+                value: this.state.item_id,
+                dataSource: {
+                  textField: "item_description",
+                  valueField: "hims_d_item_master_id",
+                  data: this.props.itemlist
+                },
+                onChange: null,
+                onClear: null
+              }}
+            />
+            <AlagehFormGroup
+              div={{ className: "col-4" }}
+              label={{
+                forceLabel: "Asset Desc."
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "batchno",
+                value: this.state.batchno,
+                events: {
                   onChange: null
-                }}
-                value={this.state.expiry_date}
-              />
-              {/* <div
+                },
+                others: {
+                  // disabled: true
+                }
+              }}
+            />
+            <AlagehFormGroup
+              div={{ className: "col" }}
+              label={{
+                forceLabel: "Asset Group."
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "batchno",
+                value: this.state.batchno,
+                events: {
+                  onChange: null
+                },
+                others: {
+                  // disabled: true
+                }
+              }}
+            />
+            <div className="col">
+              <button className="btn btn-primary" style={{ marginTop: 21 }}>
+                Add to List
+              </button>
+            </div>
+            {/* <div
                 className="customCheckbox col-lg-3"
                 style={{ border: "none", marginTop: "28px" }}
               >
@@ -237,7 +257,6 @@ class AcquisitionEntry extends Component {
                   <span style={{ fontSize: "0.8rem" }}>From Multiple PO</span>
                 </label>
               </div> */}
-            </div>
           </div>
         </div>
 
