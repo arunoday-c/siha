@@ -80,7 +80,7 @@ let algaehSearchConfig = searchName => {
         searchName: "REQTransEntry",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS * from hims_f_pharamcy_material_header where authorize1 = 'Y' and authorie2 = 'Y'\
-          and is_completed = 'N'",
+          and is_completed = 'N' and requistion_type='MR'",
         orderBy: "hims_f_pharamcy_material_header_id desc"
       },
       {
@@ -138,7 +138,7 @@ let algaehSearchConfig = searchName => {
         searchName: "InvREQTransEntry",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS * from hims_f_inventory_material_header where authorize1 = 'Y' and authorie2 = 'Y'\
-          and is_completed = 'N'",
+          and is_completed = 'N' and requistion_type='MR'",
         orderBy: "hims_f_inventory_material_header_id desc"
       }
 
