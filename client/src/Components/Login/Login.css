@@ -15,19 +15,29 @@
     background: #fff;
     border: 1px solid #3a95aa;
     width: 100%; }
+  .login .showall {
+    position: absolute;
+    top: 0;
+    padding: 5px 11px;
+    right: 0;
+    background: #fff;
+    color: #929292;
+    cursor: pointer;
+    margin: 2px;
+    height: 32px; }
   .login .margintop15 {
-    margin-top: 12%; }
+    margin-top: 9%; }
   .login .row-eq-height {
     display: -webkit-box;
     display: -webkit-flex;
     display: -ms-flexbox;
     display: flex; }
   .login .loginFormContainer {
-    padding: 15px;
     margin: 0 auto;
     background: rgba(255, 255, 255, 0.9);
     border-radius: 10px;
-    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.12); }
+    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.12);
+    width: 320px; }
   .login .frgtPass {
     text-align: center;
     font-size: 12px;

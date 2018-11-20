@@ -270,7 +270,7 @@ class Vitals extends Component {
                 }}
               >
                 <div
-                  className="col-6"
+                  className="col-3"
                   style={{ borderBottom: "1px solid #e5e5e5" }}
                 >
                   <h6>Vital Timeline</h6>
@@ -283,7 +283,7 @@ class Vitals extends Component {
                 </div>
               </div>
               <div className="row">
-                <div className="col-6 popLeftDiv">
+                <div className="col-3 popLeftDiv">
                   <div className="timeline">
                     {_vitalsGroup.map((data, index) => (
                       <div key={index} className="timelineContainer right">
