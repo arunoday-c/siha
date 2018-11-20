@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import "./RequisitionList.css";
-import RequisitionList from "./RequisitionList";
-import RequisitionEntry from "../RequisitionEntry/RequisitionEntry";
+import "./PurchaseOrderList.css";
+import PurchaseOrderList from "./PurchaseOrderList";
+import PurchaseOrderEntry from "../PurchaseOrderEntry/PurchaseOrderEntry";
 import { getCookie } from "../../../utils/algaehApiCall";
 import { removeGlobal, setGlobal } from "../../../utils/GlobalFunctions";
 
@@ -18,8 +18,7 @@ class PurchaseSwitch extends Component {
     this.setState(
       {
         RQ_Screen: Window.global["RQ-STD"],
-        material_requisition_number:
-          Window.global["material_requisition_number"]
+        purchase_number: Window.global["purchase_number"]
       },
       () => {
         this.changeDisplays(Window.global["RQ-STD"]);
@@ -33,11 +32,11 @@ class PurchaseSwitch extends Component {
 
   componentList() {
     return {
-      RequisitionList: <RequisitionList />,
-      RequisitionEntry: (
-        <RequisitionEntry
-          material_requisition_number={this.state.material_requisition_number}
-          requisition_auth={true}
+      PurchaseOrderList: <PurchaseOrderList />,
+      PurchaseOrderEntry: (
+        <PurchaseOrderEntry
+          purchase_number={this.state.purchase_number}
+          purchase_auth={true}
         />
       )
     };
@@ -59,12 +58,12 @@ class PurchaseSwitch extends Component {
           <button
             style={{
               display:
-                this.state.RQ_Screen === "RequisitionList" ? "none" : "block"
+                this.state.RQ_Screen === "PurchaseOrderList" ? "none" : "block"
             }}
             className="btn btn-primary bk-bn"
             onClick={() => {
               setGlobal({
-                "RQ-STD": "RequisitionList"
+                "RQ-STD": "PurchaseOrderList"
               });
 
               this.routeComponents();
