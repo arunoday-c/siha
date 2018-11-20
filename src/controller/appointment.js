@@ -373,7 +373,7 @@ export default ({ config, db }) => {
     updatePatientAppointment,
     (req, res, next) => {
       let result = req.records;
-if(req.records.slotExist==true)
+if(req.records.slotExist==true||req.records.bookedtwice==true)
     {
     res.status(httpStatus.ok).json({
       success: false,

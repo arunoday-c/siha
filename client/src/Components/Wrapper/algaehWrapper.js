@@ -1,14 +1,14 @@
-import FormGroup from "../Wrapper/formGroup";
-import Label from "../Wrapper/label";
-import Selector from "../Wrapper/selector";
-import DateHandler from "../Wrapper/datePicker";
-import Options from "../Wrapper/optionButton";
-import AutoComplete from "../Wrapper/autoComplete";
-import DataGrid from "../Wrapper/grid";
-import Button from "@material-ui/core/Button";
+import FormGroup from "./formGroup";
+import Label from "./label";
+import Selector from "./selector";
+import DateHandler from "./datePicker";
+import Options from "./optionButton";
+import AutoComplete from "./autoComplete";
+import DataGrid from "./grid";
 import Tooltip from "@material-ui/core/Tooltip";
 import Modal from "@material-ui/core/Modal";
 import AlgaehSearch from "./globalSearch";
+import AlgaehModalPopUp from "./modulePopUp";
 import "hijri-date";
 
 const AlgaehLabel = Label;
@@ -34,7 +34,8 @@ export {
   AlgaehOptions,
   AlagehAutoComplete,
   AlgaehDataGrid,
-  Button,
   Tooltip,
-  Modal
+  Modal,
+  AlgaehGlobalSearch,
+  AlgaehModalPopUp
 };
