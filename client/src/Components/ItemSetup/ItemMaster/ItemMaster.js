@@ -7,12 +7,14 @@ import { AlgaehLabel, Modal } from "../../Wrapper/algaehWrapper";
 import MyContext from "../../../utils/MyContext.js";
 import ItemSetup from "../../../Models/ItemSetup";
 import { InsertUpdateItems } from "./ItemMasterEvents";
+import ItemPriceList from "./ItemPriceList/ItemPriceList";
 
 export default class PatientDetails extends Component {
   constructor(props) {
     super(props);
     this.state = {};
   }
+
   onClose = e => {
     let IOputs = ItemSetup.inputParam();
     this.setState({ ...this.state, ...IOputs }, () => {
@@ -71,6 +73,7 @@ export default class PatientDetails extends Component {
                 >
                   <ItemDetails itemPop={this.state} />
                   <UOMAdditionalInfo itemPop={this.state} />
+                  <ItemPriceList itemPop={this.state} />
                 </MyContext.Provider>
               </div>
             </div>

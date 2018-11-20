@@ -470,5 +470,19 @@
   "PO_FROM": [
     { "name": "Pharmacy", "value": "PHR" },
     { "name": "Inventory", "value": "INV" }
+  ],
+  "DECIMALS": [
+    { "name": "0", "value": "0" },
+    { "name": "1", "value": "1" },
+    { "name": "2", "value": "2" },
+    { "name": "3", "value": "3" },
+    { "name": "4", "value": "4" },
+    { "name": "5", "value": "5" },
+    { "name": "6", "value": "6" }
+  ],
+  "ITEM_TYPE": [
+    { "name": "Stock Item", "value": "STK" },
+    { "name": "Non Stock Item", "value": "NSK" },
+    { "name": "Asset Item", "value": "AST" }
   ]
 }

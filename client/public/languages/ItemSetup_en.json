@@ -29,6 +29,11 @@
   "vat_applicable": "Vat Applicable",
   "vat_percent": "Vat Percent",
 
+  "purchase_cost": "Purchase Cost",
+  "markup_percent": "Markup Percentage",
+  "sales_price": "Sales Price",
+  "decimal": "Decimals",
+
   "btnSave": "Save",
   "btnUpdate": "Update"
 }

@@ -32,7 +32,6 @@ class FrontDesk extends Component {
         mappingName: "employeeSerDetails"
       },
       afterSuccess: data => {
-        
         this.setState(
           {
             FD_Screen: Window.global["FD-STD"],
@@ -117,7 +116,7 @@ class FrontDesk extends Component {
               this.routeComponents();
             }}
           >
-            <i class="fas fa-angle-double-left fa-lg" />
+            <i className="fas fa-angle-double-left fa-lg" />
             Back to Appointment
           </button>
 

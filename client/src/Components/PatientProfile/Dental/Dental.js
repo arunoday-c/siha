@@ -9,9 +9,9 @@ import {
   AlgaehDateHandler,
   AlagehAutoComplete,
   AlagehFormGroup,
-  AlgaehLabel,
-  Button
+  AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
+import Button from "@material-ui/core/Button";
 class Dental extends Component {
   constructor(props) {
     super(props);
@@ -208,7 +208,6 @@ class Dental extends Component {
   }
 
   render() {
-    
     return (
       <div id="dentalTreatment">
         <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">

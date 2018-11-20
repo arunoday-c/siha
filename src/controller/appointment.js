@@ -332,11 +332,22 @@ export default ({ config, db }) => {
     addPatientAppointment,
     (req, res, next) => {
       let result = req.records;
+    if(req.records.slotExist==true)
+    {
       res.status(httpStatus.ok).json({
-        success: true,
+        success: false,
         records: result
       });
+
       next();
+    }else{
+          res.status(httpStatus.ok).json({
+            success: true,
+            records: result
+          });
+
+          next();
+        }
     },
     releaseConnection
   );
@@ -362,11 +373,22 @@ export default ({ config, db }) => {
     updatePatientAppointment,
     (req, res, next) => {
       let result = req.records;
+if(req.records.slotExist==true||req.records.bookedtwice==true)
+    {
+    res.status(httpStatus.ok).json({
+      success: false,
+      records: result
+    });
+
+       next();
+      }else{
       res.status(httpStatus.ok).json({
         success: true,
         records: result
       });
+
       next();
+    }
     },
     releaseConnection
   );

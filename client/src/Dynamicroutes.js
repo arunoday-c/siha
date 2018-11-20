@@ -77,6 +77,7 @@ import DepreciationEntry from "./Components/AssetManagement/DepreciationEntry/De
 import DepreciationReversal from "./Components/AssetManagement/DepreciationReversal/DepreciationReversal";
 import Disposal from "./Components/AssetManagement/Disposal/Disposal";
 import PurchaseOrderList from "./Components/Procurement/PurchaseOrderList/PurchaseSwitch";
+import DayEndProcess from "./Components/Finance/DayEndProcess/DayEndProcess";
 
 const componts = (selectedLang, breadStyle) => {
   return {
@@ -148,6 +149,8 @@ const componts = (selectedLang, breadStyle) => {
     InvRequisitionList: <InvRequisitionSwitch SelectLanguage={selectedLang} />,
     InvTransferEntry: <InvTransferEntry SelectLanguage={selectedLang} />,
     VendorSetup: <VendorSetup SelectLanguage={selectedLang} />,
+
+    DayEndProcess: <DayEndProcess SelectLanguage={selectedLang} />,
 
     DeliveryNoteEntry: <DeliveryNoteEntry SelectLanguage={selectedLang} />,
     PurchaseOrderEntry: <PurchaseOrderEntry SelectLanguage={selectedLang} />,
