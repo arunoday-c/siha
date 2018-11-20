@@ -1406,7 +1406,7 @@ let getDoctorScheduleDateWise = (req, res, next) => {
                 "select hims_f_patient_appointment_id, patient_id,patient_code, provider_id, sub_department_id,number_of_slot, appointment_date, appointment_from_time,\
     appointment_to_time, appointment_status_id, patient_name, arabic_name, date_of_birth, age, contact_number, email, send_to_provider,\
     gender, confirmed, confirmed_by,comfirmed_date, cancelled, cancelled_by, cancelled_date, cancel_reason,\
-    appointment_remarks, visit_created,is_stand_by  from hims_f_patient_appointment where record_status='A' and sub_department_id=?\
+    appointment_remarks, visit_created,is_stand_by  from hims_f_patient_appointment where record_status='A' and   cancelled<>'Y' and sub_department_id=?\
     and appointment_date=? and provider_id=? ",
                 [
                   result[i].sub_dept_id,
@@ -2553,12 +2553,20 @@ let addPatientAppointment = (req, res, next) => {
 // (('08:20:00'>=appointment_from_time and '08:20:00'<appointment_to_time)
 // or('08:30:00'>appointment_from_time and '08:30:00'<=appointment_to_time))
 
+
+// SELECT hims_f_patient_appointment_id,patient_id,sub_department_id FROM hims_f_patient_appointment
+// where record_status='A' and cancelled='N' and is_stand_by='N' and contact_number='9901968745'
+// and sub_department_id=39 and provider_id=2 and appointment_date
+
       connection.query(
         "select hims_f_patient_appointment_id,provider_id,patient_name,appointment_date,appointment_from_time,\
         appointment_to_time from hims_f_patient_appointment where record_status='A'\
-        and date(appointment_date)=date(?) and provider_id=? and cancelled='N' and sub_department_id=? and\
+        and date(appointment_date)=date(?) and provider_id=? and cancelled='N' and is_stand_by='N' and sub_department_id=? and\
         ((?>=appointment_from_time and ?<appointment_to_time)\
-        or(?>appointment_from_time and ?<=appointment_to_time))",
+        or(?>appointment_from_time and ?<=appointment_to_time));\
+        SELECT hims_f_patient_appointment_id,patient_id,sub_department_id,patient_name FROM hims_f_patient_appointment\
+        where record_status='A' and cancelled='N' and is_stand_by='N' and contact_number=?\
+        and sub_department_id=? and provider_id=? and appointment_date=?",
         [
           input.appointment_date,
           input.provider_id,
@@ -2567,6 +2575,11 @@ let addPatientAppointment = (req, res, next) => {
           input.appointment_from_time,
           input.appointment_to_time,
           input.appointment_to_time,
+          input.contact_number,
+          input.sub_department_id,
+          input.provider_id,
+          input.appointment_date
+
         ],
         (error, slotResult) => {
           if (error) {
@@ -2576,10 +2589,20 @@ let addPatientAppointment = (req, res, next) => {
             });
           }
 
-    if (slotResult.length>0){
+
+          debugLog("slotResult:",slotResult);
+          debugLog("slotResult len:",slotResult[1].length);
+    if (slotResult[0].length>0 &&input.is_stand_by!='Y'){
       releaseDBConnection(db, connection);
       req.records = {slotExist:true};
       next();
+    }
+    else if(slotResult[1].length>=2 && input.is_stand_by!='Y'){
+      releaseDBConnection(db, connection);
+      req.records = {bookedtwice:true};
+      next();
+
+
     }else{
       
 
@@ -2713,7 +2736,7 @@ let updatePatientAppointment = (req, res, next) => {
       connection.query(
         "select hims_f_patient_appointment_id,provider_id,patient_name,appointment_date,appointment_from_time,\
         appointment_to_time from hims_f_patient_appointment where record_status='A'\
-        and date(appointment_date)=date(?) and provider_id=? and cancelled='N' and sub_department_id=? and\
+        and date(appointment_date)=date(?) and provider_id=? and cancelled='N' and is_stand_by='N' and sub_department_id=? and\
         ((?>=appointment_from_time and ?<appointment_to_time)\
         or(?>appointment_from_time and ?<=appointment_to_time))",
         [
@@ -2733,7 +2756,7 @@ let updatePatientAppointment = (req, res, next) => {
             });
           }
 
-    if (slotResult.length>0){
+    if (slotResult.length>0&&input.is_stand_by!='Y'){
       releaseDBConnection(db, connection);
       req.records = {slotExist:true};
       next();
@@ -2744,7 +2767,7 @@ let updatePatientAppointment = (req, res, next) => {
         appointment_status_id=?,patient_name=?,arabic_name=?,date_of_birth=?,age=?,contact_number=?,email=?,\
         send_to_provider=?,gender=?,confirmed=?,confirmed_by=?,comfirmed_date=?,cancelled=?,cancelled_by=?,\
         cancelled_date=?,cancel_reason=?,appointment_remarks=?,is_stand_by=?,\
-           updated_date=?, updated_by=? ,`record_status`=? WHERE  `record_status`='A' and `hims_f_patient_appointment_id`=?;",
+           updated_date=?, updated_by=? ,`record_status`=? WHERE  `record_status`='A' and  cancelled<>'Y' and `hims_f_patient_appointment_id`=?;",
         [
           input.patient_id,
           input.provider_id,
