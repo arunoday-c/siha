@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./Login.css";
-import { Button } from "../Wrapper/algaehWrapper";
+import Button from "@material-ui/core/Button";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import { setSecure } from "../../utils/indexer";
 import {
