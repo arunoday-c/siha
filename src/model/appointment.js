@@ -2738,7 +2738,7 @@ let updatePatientAppointment = (req, res, next) => {
         appointment_to_time from hims_f_patient_appointment where record_status='A'\
         and date(appointment_date)=date(?) and provider_id=? and cancelled='N' and is_stand_by='N' and sub_department_id=? and\
         ((?>=appointment_from_time and ?<appointment_to_time)\
-        or(?>appointment_from_time and ?<=appointment_to_time))",
+        or(?>appointment_from_time and ?<=appointment_to_time)) and hims_f_patient_appointment_id!=?;",
         [
           input.appointment_date,
           input.provider_id,
@@ -2747,6 +2747,7 @@ let updatePatientAppointment = (req, res, next) => {
           input.appointment_from_time,
           input.appointment_to_time,
           input.appointment_to_time,
+          input.hims_f_patient_appointment_id,
         ],
         (error, slotResult) => {
           if (error) {
