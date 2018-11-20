@@ -1,10 +1,6 @@
 import React, { Component } from "react";
 import "./Login.css";
-import {
-  Button,
-  AlgaehLabel,
-  AlagehAutoComplete
-} from "../Wrapper/algaehWrapper";
+import { AlgaehLabel, AlagehAutoComplete } from "../Wrapper/algaehWrapper";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import { setSecure } from "../../utils/indexer";
 import {
@@ -234,12 +230,12 @@ export default class Login extends Component {
                             Remember me
                           </label>
                         </div>
-                        <Button
+                        <button
                           className="btn btn-lg btn-primary btn-block sign-btn"
                           type="submit"
                         >
                           Log In
-                        </Button>
+                        </button>
                         <p className="frgtPass">
                           <a>Forgot Password?</a>
                         </p>

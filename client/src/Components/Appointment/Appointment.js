@@ -7,11 +7,7 @@ import {
   AlgaehLabel,
   AlgaehDateHandler
 } from "../Wrapper/algaehWrapper";
-import {
-  setGlobal,
-  AlgaehValidation,
-  removeGlobal
-} from "../../utils/GlobalFunctions";
+import { setGlobal, AlgaehValidation } from "../../utils/GlobalFunctions";
 import Modal from "@material-ui/core/Modal";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 import Enumerable from "linq";
@@ -48,11 +44,24 @@ class Appointment extends Component {
   componentDidMount() {
     this.getDoctorsAndDepts();
     this.getAppointmentStatus();
-    this.getAppointmentSchedule();
-  }
 
-  componentWillUnmount() {
-    setGlobal({});
+    let x = JSON.parse(localStorage.getItem("ApptCriteria"));
+
+    console.log("X", x);
+
+    x !== undefined && x !== null
+      ? this.setState(
+          {
+            sub_department_id: x.sub_dept_id,
+            provider_id: x.provider_id,
+            activeDateHeader: x.schedule_date
+          },
+          () => {
+            // this.getAppointmentSchedule();
+            document.getElementById("load-appt-sch").click();
+          }
+        )
+      : null;
   }
 
   cancelAppt(row) {
@@ -67,7 +76,7 @@ class Appointment extends Component {
     }).then(willDelete => {
       if (willDelete.value) {
         let data = {
-          cancel_reason: "I cancelled to test",
+          cancel_reason: "Cancelled",
           hims_f_patient_appointment_id: row.hims_f_patient_appointment_id
         };
         algaehApiCall({
@@ -308,7 +317,6 @@ class Appointment extends Component {
   }
 
   getAppointmentStatus() {
-    debugger;
     algaehApiCall({
       uri: "/appointment/getAppointmentStatus",
       method: "GET",
@@ -360,28 +368,27 @@ class Appointment extends Component {
     debugger;
     if (e !== undefined) e.preventDefault();
 
-    localStorage.setItem(
-      "ApptCriteria",
-      JSON.stringify({
-        sub_dept_id: this.state.sub_department_id,
-        schedule_date: moment(this.state.activeDateHeader).format("YYYY-MM-DD"),
-        provider_id: this.state.provider_id
-      })
-    );
-
     AlgaehValidation({
       alertTypeIcon: "warning",
       onSuccess: () => {
-        let send_data =
-          localStorage.getItem("ApptCriteria") !== null
-            ? JSON.parse(localStorage.getItem("ApptCriteria"))
-            : {
-                sub_dept_id: this.state.sub_department_id,
-                schedule_date: moment(this.state.activeDateHeader).format(
-                  "YYYY-MM-DD"
-                ),
-                provider_id: this.state.provider_id
-              };
+        let send_data = {
+          sub_dept_id: this.state.sub_department_id,
+          schedule_date: moment(this.state.activeDateHeader).format(
+            "YYYY-MM-DD"
+          ),
+          provider_id: this.state.provider_id
+        };
+
+        localStorage.setItem(
+          "ApptCriteria",
+          JSON.stringify({
+            sub_dept_id: this.state.sub_department_id,
+            schedule_date: moment(this.state.activeDateHeader).format(
+              "YYYY-MM-DD"
+            ),
+            provider_id: this.state.provider_id
+          })
+        );
 
         algaehLoader({ show: true });
         algaehApiCall({
@@ -454,6 +461,17 @@ class Appointment extends Component {
   }
 
   dropDownHandle(value) {
+    // const _maxSlots =
+    //   this.state.maxSlots === undefined ? 0 : this.state.maxSlots;
+    // if (value.name === "no_of_slots") {
+    //   if (parseInt(value.value) > parseInt(_maxSlots)) {
+    //     swalMessage({
+    //       type: "error",
+    //       title: "Maximum " + _maxSlots + " slots avilable "
+    //     });
+    //     return;
+    //   }
+    // }
     this.setState({ [value.name]: value.value });
   }
 
@@ -710,6 +728,23 @@ class Appointment extends Component {
   }
 
   showModal(e) {
+    debugger;
+    let maxSlots = 1;
+    const _currentRow = e.target.parentElement.parentNode.sectionRowIndex + 1;
+    const _allRows =
+      e.target.parentElement.parentElement.parentElement.childElementCount;
+
+    for (let i = _currentRow; i < _allRows; i++) {
+      const _element =
+        e.target.parentElement.parentElement.parentElement.children[i];
+      const _firstChild = _element.children[0];
+      const _hasPatient = _firstChild.querySelector("div[appt-pat]");
+      if (_hasPatient) break;
+      else {
+        maxSlots = maxSlots + 1;
+      }
+    }
+
     const appt_time = e.currentTarget.getAttribute("appt-time");
     if (
       (moment(appt_time, "HH:mm a").format("HHmm") <
@@ -743,6 +778,7 @@ class Appointment extends Component {
       const doc_name = this.getDoctorName(provider_id);
 
       this.setState({
+        maxSlots: maxSlots,
         showApt: true,
         apptFromTime: appt_time,
         apptProvider: provider_id,
@@ -964,19 +1000,20 @@ class Appointment extends Component {
       patient === null || patient === undefined
         ? "N"
         : patient.is_stand_by === "Y"
-        ? "N"
+        ? "Y"
         : patient.cancelled === "Y"
         ? "N"
         : null;
 
-    // let date_time_condition =
-    //   moment(data.time, "HH:mm a").format("HHm") >
-    //     moment(new Date()).format("HHm") &&
-    //   moment(this.state.activeDateHeader).format("YYYYMMDD") >=
-    //     moment(new Date()).format("YYYYMMDD");
+    let date_time_val =
+      (moment(data.time, "HH:mm a").format("HHmm") <
+        moment(new Date()).format("HHmm") ||
+        moment(this.state.activeDateHeader).format("YYYYMMDD") <
+          moment(new Date()).format("YYYYMMDD")) &&
+      moment(this.state.activeDateHeader).format("YYYYMMDD") <=
+        moment(new Date()).format("YYYYMMDD");
 
-    // if (_isstandby !== null && date_time_condition) {
-    if (_isstandby !== null) {
+    if (_isstandby !== null && !date_time_val) {
       return (
         <i
           appt-time={data.time}
@@ -991,7 +1028,41 @@ class Appointment extends Component {
           sch_header_id={data.sch_header_id}
           sch_detail_id={data.sch_detail_id}
           sub_dept_id={data.sub_dept_id}
-          isstandby={_isstandby}
+          isstandby="N"
+          onClick={this.showModal.bind(this)}
+          className="fas fa-plus"
+        />
+      );
+    } else {
+      return null;
+    }
+  }
+
+  plotStandByAddIcon(patient, data) {
+    let date_time_val =
+      (moment(data.time, "HH:mm a").format("HHmm") <
+        moment(new Date()).format("HHmm") ||
+        moment(this.state.activeDateHeader).format("YYYYMMDD") <
+          moment(new Date()).format("YYYYMMDD")) &&
+      moment(this.state.activeDateHeader).format("YYYYMMDD") <=
+        moment(new Date()).format("YYYYMMDD");
+
+    if (!date_time_val) {
+      return (
+        <i
+          appt-time={data.time}
+          to_work_hr={data.to_work_hr}
+          from_break_hr1={data.from_break_hr1}
+          to_break_hr1={data.to_break_hr1}
+          from_break_hr2={data.from_break_hr2}
+          to_break_hr2={data.to_work_hr}
+          slot={data.slot}
+          clinic_id={data.clinic_id}
+          provider_id={data.provider_id}
+          sch_header_id={data.sch_header_id}
+          sch_detail_id={data.sch_detail_id}
+          sub_dept_id={data.sub_dept_id}
+          isstandby="Y"
           onClick={this.showModal.bind(this)}
           className="fas fa-plus"
         />
@@ -1097,8 +1168,8 @@ class Appointment extends Component {
         ? this.getColorCode(patient.appointment_status_id)
         : data.mark_as_break
         ? "#f2f2f2"
-        : moment(data.time, "HH:mm a").format("HHm") <
-            moment(new Date()).format("HHm") &&
+        : moment(data.time, "HH:mm a").format("HHmm") <
+            moment(new Date()).format("HHmm") &&
           moment(this.state.activeDateHeader).format("YYYYMMDD") <
             moment(new Date()).format("YYYYMMDD")
         ? "#fbfbfb"
@@ -1160,8 +1231,15 @@ class Appointment extends Component {
           <td className="tg-baqh">
             <span className="dynSlot">{data.time}</span>
 
-            {/* {this.plotAddIcon(patient, data)} */}
-            <i
+            {(moment(data.time, "HH:mm a").format("HHmm") <
+              moment(new Date()).format("HHmm") ||
+              moment(this.state.activeDateHeader).format("YYYYMMDD") <
+                moment(new Date()).format("YYYYMMDD")) &&
+              moment(this.state.activeDateHeader).format("YYYYMMDD") <=
+                moment(new Date()).format("YYYYMMDD")}
+
+            {this.plotStandByAddIcon(patient, data)}
+            {/* <i
               appt-time={data.time}
               to_work_hr={data.to_work_hr}
               from_break_hr1={data.from_break_hr1}
@@ -1177,7 +1255,8 @@ class Appointment extends Component {
               isstandby="Y"
               onClick={this.showModal.bind(this)}
               className="fas fa-plus"
-            />
+            /> */}
+
             {this.renderStandByMultiple(_standByPatients)}
           </td>
         ) : null}
@@ -1570,7 +1649,7 @@ class Appointment extends Component {
                                 onChange: this.texthandle.bind(this)
                               },
                               others: {
-                                disabled: false
+                                disabled: true
                               }
                             }}
                           />
@@ -1684,7 +1763,15 @@ class Appointment extends Component {
                                 valueField: "value",
                                 data: GlobalVariables.NO_OF_SLOTS
                               },
-                              onChange: this.dropDownHandle.bind(this)
+                              onChange: this.dropDownHandle.bind(this),
+                              others: {
+                                checkvalidation:
+                                  "$value >" + this.state.maxSlots,
+                                errormessage:
+                                  "Maximum " +
+                                  this.state.maxSlots +
+                                  " slot(s) avilable "
+                              }
                             }}
                           />
                         </div>
@@ -1918,7 +2005,9 @@ class Appointment extends Component {
                     />
                     <button
                       onClick={() => {
-                        //Implement Today Functionality here
+                        this.setState({
+                          activeDateHeader: new Date()
+                        });
                       }}
                       className="btn btn-default btn-sm  todayBtn"
                     >
@@ -1974,6 +2063,7 @@ class Appointment extends Component {
 
               <div className="col-lg-1 form-group" style={{ marginTop: 22 }}>
                 <button
+                  id="load-appt-sch"
                   type="submit"
                   onClick={this.getAppointmentSchedule.bind(this)}
                   className="btn btn-primary"
