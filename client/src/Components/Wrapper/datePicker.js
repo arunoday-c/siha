@@ -15,9 +15,10 @@ export default class DateHandler extends PureComponent {
 
   constructor(props) {
     super(props);
+    let momentDate = props.value ? moment(props.value) : null;
     this.state = {
       language: "en",
-      value: new Date()
+      value: momentDate
     };
   }
 

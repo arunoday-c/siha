@@ -22,9 +22,14 @@ const logger = new winston.Logger({
     })
   ]
 });
+
+
+
 let debugFunction = functionName => {
   debugLog("Function Name : " + functionName);
 };
+
+
 let debugLog = (message, obj) => {
   obj = obj || null;
   if (obj == null) {
@@ -35,6 +40,8 @@ let debugLog = (message, obj) => {
     else logger.log("debug", message + "%j", obj);
   }
 };
+
+
 const wLogger = new winston.Logger({
   transports: [
     new rotatingDate({
