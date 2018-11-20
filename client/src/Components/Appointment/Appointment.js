@@ -7,7 +7,11 @@ import {
   AlgaehLabel,
   AlgaehDateHandler
 } from "../Wrapper/algaehWrapper";
-import { setGlobal, AlgaehValidation } from "../../utils/GlobalFunctions";
+import {
+  setGlobal,
+  AlgaehValidation,
+  removeGlobal
+} from "../../utils/GlobalFunctions";
 import Modal from "@material-ui/core/Modal";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 import Enumerable from "linq";
@@ -44,6 +48,11 @@ class Appointment extends Component {
   componentDidMount() {
     this.getDoctorsAndDepts();
     this.getAppointmentStatus();
+    this.getAppointmentSchedule();
+  }
+
+  componentWillUnmount() {
+    setGlobal({});
   }
 
   cancelAppt(row) {
@@ -146,46 +155,6 @@ class Appointment extends Component {
         });
       }
     });
-  }
-
-  getPatient() {
-    //  e.preventDefault();
-    if (this.state.patient_code.length === 0) {
-      swalMessage({
-        title: "Please Enter the Patient Code",
-        type: "warning"
-      });
-    } else {
-      algaehApiCall({
-        uri: "/patient/get",
-        method: "GET",
-        data: {
-          patient_code: this.state.patient_code
-        },
-        onSuccess: response => {
-          if (response.data.success) {
-            let pat_obj = response.data.records[0];
-            this.setState({
-              age: pat_obj.age,
-              arabic_name: pat_obj.arabic_name,
-              patient_name: pat_obj.full_name,
-              gender: pat_obj.gender,
-              contact_number: pat_obj.contact_number,
-              date_of_birth: pat_obj.date_of_birth,
-              email: pat_obj.email
-            });
-
-            //console.log("Pat Code:", response.data.records);
-          }
-        },
-        onFailure: error => {
-          swalMessage({
-            title: "Patient Not Found",
-            type: "warning"
-          });
-        }
-      });
-    }
   }
 
   getPatientAppointment(e) {
@@ -294,6 +263,7 @@ class Appointment extends Component {
                   "appt-pat-email": this.state.email,
                   "appt-department-id": this.state.department_id
                 });
+
                 document.getElementById("fd-router").click();
               } else {
                 this.clearSaveState();
@@ -338,6 +308,7 @@ class Appointment extends Component {
   }
 
   getAppointmentStatus() {
+    debugger;
     algaehApiCall({
       uri: "/appointment/getAppointmentStatus",
       method: "GET",
@@ -373,7 +344,7 @@ class Appointment extends Component {
             });
           });
 
-          //console.log("Default Status:", this.state.defaultStatus);
+          console.log("Reschedule Status:", this.state.RescheduleId);
         }
       },
       onFailure: error => {
@@ -386,75 +357,73 @@ class Appointment extends Component {
   }
 
   getAppointmentSchedule(e) {
+    debugger;
     if (e !== undefined) e.preventDefault();
-    if (e !== undefined && this.state.sub_department_id === null) {
-      swalMessage({
-        title: "Please Select a Department",
-        type: "warning"
-      });
-    } else {
-      // localStorage.setItem(
-      //   "ApptCriteria",
-      //   JSON.stringify({
-      //     sub_dept_id: this.state.sub_department_id,
-      //     schedule_date: moment(this.state.activeDateHeader).format(
-      //       "YYYY-MM-DD"
-      //     ),
-      //     provider_id: this.state.provider_id
-      //   })
-      // );
 
-      let send_data =
-        localStorage.getItem("ApptCriteria") !== null
-          ? JSON.parse(localStorage.getItem("ApptCriteria"))
-          : {
-              sub_dept_id: this.state.sub_department_id,
-              schedule_date: moment(this.state.activeDateHeader).format(
-                "YYYY-MM-DD"
-              ),
-              provider_id: this.state.provider_id
-            };
+    localStorage.setItem(
+      "ApptCriteria",
+      JSON.stringify({
+        sub_dept_id: this.state.sub_department_id,
+        schedule_date: moment(this.state.activeDateHeader).format("YYYY-MM-DD"),
+        provider_id: this.state.provider_id
+      })
+    );
 
-      algaehLoader({ show: true });
-      algaehApiCall({
-        uri: "/appointment/getDoctorScheduleDateWise",
-        method: "GET",
-        data: send_data,
-        onSuccess: response => {
-          algaehLoader({ show: false });
-          if (response.data.success && response.data.records.length > 0) {
-            console.log("Appt Schedule:", response.data.records);
-            this.setState(
-              { appointmentSchedule: response.data.records },
-              () => {
-                this.setState({
-                  slot:
-                    this.state.appointmentSchedule !== undefined
-                      ? this.state.appointmentSchedule[0].slot
-                      : null
-                });
-              }
-            );
-          } else {
-            this.setState({
-              appointmentSchedule: []
-            });
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      onSuccess: () => {
+        let send_data =
+          localStorage.getItem("ApptCriteria") !== null
+            ? JSON.parse(localStorage.getItem("ApptCriteria"))
+            : {
+                sub_dept_id: this.state.sub_department_id,
+                schedule_date: moment(this.state.activeDateHeader).format(
+                  "YYYY-MM-DD"
+                ),
+                provider_id: this.state.provider_id
+              };
 
+        algaehLoader({ show: true });
+        algaehApiCall({
+          uri: "/appointment/getDoctorScheduleDateWise",
+          method: "GET",
+          data: send_data,
+          onSuccess: response => {
+            algaehLoader({ show: false });
+            if (response.data.success && response.data.records.length > 0) {
+              console.log("Appt Schedule:", response.data.records);
+              this.setState(
+                { appointmentSchedule: response.data.records },
+                () => {
+                  this.setState({
+                    slot:
+                      this.state.appointmentSchedule !== undefined
+                        ? this.state.appointmentSchedule[0].slot
+                        : null
+                  });
+                }
+              );
+            } else {
+              this.setState({
+                appointmentSchedule: []
+              });
+
+              swalMessage({
+                title: "No Schecule Available",
+                type: "warning"
+              });
+            }
+          },
+          onFailure: error => {
+            algaehLoader({ show: false });
             swalMessage({
-              title: "No Schecule Available",
-              type: "warning"
+              title: error.message,
+              type: "error"
             });
           }
-        },
-        onFailure: error => {
-          algaehLoader({ show: false });
-          swalMessage({
-            title: error.message,
-            type: "error"
-          });
-        }
-      });
-    }
+        });
+      }
+    });
   }
 
   onSelectedDateHandler(e) {
@@ -612,7 +581,7 @@ class Appointment extends Component {
           pat_edit.appointment_from_time,
           "HH:mm:ss"
         ).add(pat_edit.number_of_slot * this.state.slot, "minutes");
-        
+
         this.setState({
           edit_appointment_status_id: pat_edit.appointment_status_id,
           edit_appt_date: pat_edit.appointment_date,
@@ -793,14 +762,6 @@ class Appointment extends Component {
       });
     }
   }
-
-  // allowDrop(ev) {
-  //   ev.preventDefault();
-
-  //   ev.currentTarget.classList.contains("highlight-Drop")
-  //     ? ev.currentTarget.classList.remove("highlight-Drop")
-  //     : ev.currentTarget.classList.add("highlight-Drop");
-  // }
 
   enterDrag(ev) {
     ev.currentTarget.classList.add("highlight-Drop");
@@ -1007,6 +968,14 @@ class Appointment extends Component {
         : patient.cancelled === "Y"
         ? "N"
         : null;
+
+    // let date_time_condition =
+    //   moment(data.time, "HH:mm a").format("HHm") >
+    //     moment(new Date()).format("HHm") &&
+    //   moment(this.state.activeDateHeader).format("YYYYMMDD") >=
+    //     moment(new Date()).format("YYYYMMDD");
+
+    // if (_isstandby !== null && date_time_condition) {
     if (_isstandby !== null) {
       return (
         <i
@@ -1044,11 +1013,7 @@ class Appointment extends Component {
                 return (
                   <li key={index}>
                     {item.patient_name}{" "}
-                    <b
-                      onClick={this.cancelAppt.bind(this, item)}
-                    >
-                      x
-                    </b>
+                    <b onClick={this.cancelAppt.bind(this, item)}>x</b>
                   </li>
                 );
               })}
@@ -1072,17 +1037,16 @@ class Appointment extends Component {
               appt-pat={JSON.stringify(_firstPatient)}
               className="dynPatient"
               style={{ background: "#f2f2f2" }}
-              //draggable={true}
-              //onDragStart={this.drag.bind(this)}
-              onClick={this.openEditModal.bind(this, _firstPatient)}
             >
-              {_firstPatient.patient_name}
-              <br />
-              {_firstPatient.contact_number}
+              <span onClick={this.openEditModal.bind(this, _firstPatient)}>
+                {_firstPatient.patient_name}
+                <br />
+                {_firstPatient.contact_number}
+              </span>
+
               <i
                 className="fas fa-times"
-                onClick={
-                  this.cancelAppt.bind(this, _firstPatient)}
+                onClick={this.cancelAppt.bind(this, _firstPatient)}
               />
             </div>
             {this.loadSubStandBy(standByPatients)}
@@ -1113,7 +1077,7 @@ class Appointment extends Component {
     const _standByPatients =
       _patientList !== null
         ? Enumerable.from(_patientList)
-            .where(w => w.is_stand_by === "Y")
+            .where(w => w.is_stand_by === "Y" && w.cancelled === "N")
             .toArray()
         : undefined;
 
@@ -1180,7 +1144,6 @@ class Appointment extends Component {
 
                   <i
                     className="fas fa-times"
-                    // onClick={this.openEditModal.bind(this, _standByPatients)}
                     onClick={this.cancelAppt.bind(this, patient)}
                   />
                 </div>
@@ -1197,12 +1160,7 @@ class Appointment extends Component {
           <td className="tg-baqh">
             <span className="dynSlot">{data.time}</span>
 
-            {/* {patient === null ? (
-              <i onClick={this.showModal.bind(this)} className="fas fa-plus" />
-            ) : (
-              <i onClick={this.showModal.bind(this)} className="fas fa-edit" />
-            )} */}
-
+            {/* {this.plotAddIcon(patient, data)} */}
             <i
               appt-time={data.time}
               to_work_hr={data.to_work_hr}
@@ -1309,7 +1267,7 @@ class Appointment extends Component {
       const _completeWidth = doctorCntr[0].width * doctorCntr.length;
       return { width: _completeWidth };
       // this.setState({ outerStyles: { width: _completeWidth } }, () => {
-      //   
+      //
       // });
     }
     return null;
@@ -1975,57 +1933,55 @@ class Appointment extends Component {
 
             {/* Filter Bar Start */}
             {/* <form onSubmit={this.getAppointmentSchedule.bind(this)}> */}
-            <form action="none">
-              <div className="row inner-top-search">
-                <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
-                  label={{
-                    fieldName: "department_name",
-                    isImp: true
-                  }}
-                  selector={{
-                    name: "sub_department_id",
-                    className: "select-fld",
-                    value: this.state.sub_department_id,
-                    dataSource: {
-                      textField: "sub_department_name",
-                      valueField: "sub_dept_id",
-                      data: this.state.departments
-                    },
-                    onChange: this.deptDropDownHandler.bind(this)
-                  }}
-                />
 
-                <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
-                  label={{
-                    forceLabel: "Filter by Doctor"
-                  }}
-                  selector={{
-                    name: "provider_id",
-                    className: "select-fld",
-                    value: this.state.provider_id,
-                    dataSource: {
-                      textField: "full_name",
-                      valueField: "provider_id",
-                      data: this.state.doctors
-                    },
-                    onChange: this.dropDownHandle.bind(this)
-                  }}
-                />
+            <div className="row inner-top-search">
+              <AlagehAutoComplete
+                div={{ className: "col-lg-3 mandatory" }}
+                label={{
+                  fieldName: "department_name",
+                  isImp: true
+                }}
+                selector={{
+                  name: "sub_department_id",
+                  className: "select-fld",
+                  value: this.state.sub_department_id,
+                  dataSource: {
+                    textField: "sub_department_name",
+                    valueField: "sub_dept_id",
+                    data: this.state.departments
+                  },
+                  onChange: this.deptDropDownHandler.bind(this)
+                }}
+              />
 
-                <div className="col-lg-1 form-group" style={{ marginTop: 22 }}>
-                  <button
-                    type="submit"
-                    onClick={this.getAppointmentSchedule.bind(this)}
-                    //onClick={this.getAppointmentSchedule.bind(this)}
-                    className="btn btn-primary"
-                  >
-                    Load
-                  </button>
-                </div>
+              <AlagehAutoComplete
+                div={{ className: "col-lg-3" }}
+                label={{
+                  forceLabel: "Filter by Doctor"
+                }}
+                selector={{
+                  name: "provider_id",
+                  className: "select-fld",
+                  value: this.state.provider_id,
+                  dataSource: {
+                    textField: "full_name",
+                    valueField: "provider_id",
+                    data: this.state.doctors
+                  },
+                  onChange: this.dropDownHandle.bind(this)
+                }}
+              />
+
+              <div className="col-lg-1 form-group" style={{ marginTop: 22 }}>
+                <button
+                  type="submit"
+                  onClick={this.getAppointmentSchedule.bind(this)}
+                  className="btn btn-primary"
+                >
+                  Load
+                </button>
               </div>
-            </form>
+            </div>
 
             {/* Filter Bar End */}
 
