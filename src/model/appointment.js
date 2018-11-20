@@ -2635,7 +2635,7 @@ let addPatientAppointment = (req, res, next) => {
 };
 
 //created by irfan: to update Patient Appointment
-let updatePatientAppointment = (req, res, next) => {
+let updatePatientAppointmentBACKUP_20_nov = (req, res, next) => {
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -2692,6 +2692,104 @@ let updatePatientAppointment = (req, res, next) => {
           next();
         }
       );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+//created by irfan: to update Patient Appointment
+let updatePatientAppointment = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "select hims_f_patient_appointment_id,provider_id,patient_name,appointment_date,appointment_from_time,\
+        appointment_to_time from hims_f_patient_appointment where record_status='A'\
+        and date(appointment_date)=date(?) and provider_id=? and cancelled='N' and sub_department_id=? and\
+        ((?>=appointment_from_time and ?<appointment_to_time)\
+        or(?>appointment_from_time and ?<=appointment_to_time))",
+        [
+          input.appointment_date,
+          input.provider_id,
+          input.sub_department_id,
+          input.appointment_from_time,
+          input.appointment_from_time,
+          input.appointment_to_time,
+          input.appointment_to_time,
+        ],
+        (error, slotResult) => {
+          if (error) {
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(error);
+            });
+          }
+
+    if (slotResult.length>0){
+      releaseDBConnection(db, connection);
+      req.records = {slotExist:true};
+      next();
+    }else{
+
+      connection.query(
+        "UPDATE `hims_f_patient_appointment` SET patient_id=?,provider_id=?,sub_department_id=?,number_of_slot=?,appointment_date=?,appointment_from_time=?,appointment_to_time=?,\
+        appointment_status_id=?,patient_name=?,arabic_name=?,date_of_birth=?,age=?,contact_number=?,email=?,\
+        send_to_provider=?,gender=?,confirmed=?,confirmed_by=?,comfirmed_date=?,cancelled=?,cancelled_by=?,\
+        cancelled_date=?,cancel_reason=?,appointment_remarks=?,is_stand_by=?,\
+           updated_date=?, updated_by=? ,`record_status`=? WHERE  `record_status`='A' and `hims_f_patient_appointment_id`=?;",
+        [
+          input.patient_id,
+          input.provider_id,
+          input.sub_department_id,
+          input.number_of_slot,
+          input.appointment_date,
+          input.appointment_from_time,
+          input.appointment_to_time,
+          input.appointment_status_id,
+          input.patient_name,
+          input.arabic_name,
+          input.date_of_birth,
+          input.age,
+          input.contact_number,
+          input.email,
+          input.send_to_provider,
+          input.gender,
+          input.confirmed,
+          input.confirmed_by,
+          input.comfirmed_date,
+          input.cancelled,
+          input.cancelled_by,
+          input.cancelled_date,
+          input.cancel_reason,
+          input.appointment_remarks,         
+          input.is_stand_by,
+          new Date(),
+          input.updated_by,
+          input.record_status,
+          input.hims_f_patient_appointment_id
+        ],
+        (error, results) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = results;
+          next();
+        }
+      );
+      }
+      });
+
+
+
     });
   } catch (e) {
     next(e);
