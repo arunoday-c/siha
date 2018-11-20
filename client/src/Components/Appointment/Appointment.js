@@ -37,7 +37,8 @@ class Appointment extends Component {
       sub_department_id: null,
       date_of_birth: null,
       activeDateHeader: moment()._d,
-      outerStyles: {}
+      outerStyles: {},
+      byPassValidation: false
     };
   }
 
@@ -54,11 +55,11 @@ class Appointment extends Component {
           {
             sub_department_id: x.sub_dept_id,
             provider_id: x.provider_id,
-            activeDateHeader: x.schedule_date
+            activeDateHeader: x.schedule_date,
+            byPassValidation: true
           },
           () => {
-            // this.getAppointmentSchedule();
-            document.getElementById("load-appt-sch").click();
+            this.getAppointmentSchedule();
           }
         )
       : null;
@@ -365,12 +366,13 @@ class Appointment extends Component {
   }
 
   getAppointmentSchedule(e) {
-    debugger;
     if (e !== undefined) e.preventDefault();
 
     AlgaehValidation({
       alertTypeIcon: "warning",
+      skip: this.state.byPassValidation,
       onSuccess: () => {
+        this.setState({ byPassValidation: false });
         let send_data = {
           sub_dept_id: this.state.sub_department_id,
           schedule_date: moment(this.state.activeDateHeader).format(
@@ -594,11 +596,8 @@ class Appointment extends Component {
       });
     } else {
       this.setState({ patToEdit: patient, openPatEdit: true }, () => {
+        debugger;
         let pat_edit = this.state.patToEdit;
-        let new_to_time = moment(
-          pat_edit.appointment_from_time,
-          "HH:mm:ss"
-        ).add(pat_edit.number_of_slot * this.state.slot, "minutes");
 
         this.setState({
           edit_appointment_status_id: pat_edit.appointment_status_id,
@@ -616,7 +615,7 @@ class Appointment extends Component {
           edit_provider_id: pat_edit.provider_id,
           edit_patient_id: pat_edit.patient_id,
           edit_from_time: pat_edit.appointment_from_time,
-          edit_to_time: moment(new_to_time).format("HH:mm:ss"),
+          // edit_to_time: moment(new_to_time).format("HH:mm:ss"),
           edit_sub_dep_id: pat_edit.sub_department_id,
           edit_appointment_date: pat_edit.appointment_date,
           patient_code: pat_edit.patient_code,
@@ -641,6 +640,11 @@ class Appointment extends Component {
           cancelButtonColor: "#d33",
           cancelButtonText: "No"
         }).then(willUpdate => {
+          let new_to_time = moment(this.state.edit_from_time, "HH:mm:ss").add(
+            this.state.edit_no_of_slots * this.state.slot,
+            "minutes"
+          );
+
           if (willUpdate.value) {
             let edit_details = {
               hims_f_patient_appointment_id: this.state.edit_appointment_id,
@@ -649,9 +653,9 @@ class Appointment extends Component {
               patient_id: this.state.edit_patient_id,
               provider_id: this.state.edit_provider_id,
               sub_department_id: this.state.edit_sub_dep_id,
-              appointment_date: this.state.edit_appointment_date,
+              appointment_date: this.state.edit_appt_date,
               appointment_from_time: this.state.edit_from_time,
-              appointment_to_time: this.state.edit_to_time,
+              appointment_to_time: moment(new_to_time).format("HH:mm:ss"),
               patient_name: this.state.edit_patient_name,
               arabic_name: this.state.edit_arabic_name,
               date_of_birth: this.state.edit_date_of_birth,
@@ -1403,9 +1407,10 @@ class Appointment extends Component {
                               className: "txt-fld",
                               name: "edit_appt_date",
                               others: {
-                                disabled: true
+                                disabled: false
                               }
                             }}
+                            minDate={new Date()}
                             events={{
                               onChange: selectedDate => {
                                 this.setState(
@@ -1458,7 +1463,7 @@ class Appointment extends Component {
                               },
 
                               others: {
-                                disabled: true
+                                disabled: false
                               },
                               onChange: this.dropDownHandle.bind(this)
                             }}

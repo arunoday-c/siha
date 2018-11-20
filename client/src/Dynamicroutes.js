@@ -38,7 +38,7 @@ import ItemMomentEnquiry from "./Components/Pharmacy/ItemMomentEnquiry/ItemMomen
 import AppointmentSetup from "./Components/AppointmentSetup/AppointmentSetup";
 import ItemSetup from "./Components/ItemSetup/ItemSetup";
 import EmployeeMasterIndex from "./Components/EmployeeManagement/EmployeeMasterIndex/EmployeeMasterIndex";
-import PhysicianScheduleSetup from "./Components/PhysicianScheduleSetup/PhysicianScheduleSetup";
+import PhysicianScheduleSetup from "./Components/PhysicianScheduleSetup/PhySchSetup";
 import FrontDeskAr from "./Components/RegistrationPatientAr/RegistrationPatientAr";
 import OPBillingAr from "./Components/OPBillingAr/OPBillingAr";
 import DoctorCommission from "./Components/DoctorCommission/DoctorCommission";

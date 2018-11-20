@@ -30,6 +30,7 @@ export default class Login extends Component {
     setCookie("ScreenName", "Login", 30);
     setCookie("Language", "en", 30);
   }
+
   deleteAllPreviousLocalStorage() {
     window.localStorage.clear();
   }

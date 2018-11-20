@@ -379,6 +379,8 @@ class PhySchSetup extends Component {
       title: "Are you sure you want to delete this Doctor?",
       type: "warning",
       confirmButtonText: "Yes!",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
       cancelButtonText: "No"
@@ -903,9 +905,389 @@ class PhySchSetup extends Component {
             <div className="popupInner">
               <div className="col-lg-12 divInner">
                 <div className="row">
-                  <div className="col-lg-3 divInnerLeft">Left Screen</div>
+                  <div className="col-lg-3 divInnerLeft">
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      label={{
+                        fieldName: "department_name"
+                      }}
+                      selector={{
+                        name: "sub_department_id",
+                        className: "select-fld",
+                        value: this.state.sub_department_id,
+                        dataSource: {
+                          textField: "sub_department_name",
+                          valueField: "sub_dept_id",
+                          data: this.state.departments
+                        },
+                        onChange: this.deptDropDownHandler.bind(this)
+                      }}
+                      error={this.state.department_error}
+                      helperText={this.state.department_error_text}
+                    />
+                    <label>Doctors</label>
+                    <div className="bordered-layout">
+                      <ul
+                        style={
+                          {
+                            //  pointerEvents: this.state.disable ? "none" : ""
+                          }
+                        }
+                      >
+                        {this.state.doctors.map((data, index) => (
+                          <li key={index}>
+                            <input
+                              row={JSON.stringify(data)}
+                              onChange={this.checkHandle.bind(this)}
+                              type="checkbox"
+                            />
+                            <span
+                              style={{
+                                width: "80%"
+                              }}
+                            >
+                              {data.full_name}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                  <div className="col-lg-9 divInnerRight">
+                    <div className="row">
+                      <AlagehFormGroup
+                        div={{ className: "col-4" }}
+                        label={{
+                          forceLabel: "Schedule Description",
+                          isImp: true
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "description",
+                          value: this.state.description,
+                          events: {
+                            onChange: this.changeTexts.bind(this)
+                          },
+                          error: this.state.description_error,
+                          helperText: this.state.description_error_text
+                        }}
+                      />
+                      {/* <div className="col">
+                        <input type="checkbox" id="default_slot" />
+                        <span>Set Default Slot</span>
+                      </div> */}
+                      <AlagehAutoComplete
+                        div={{ className: "col-5" }}
+                        label={{
+                          forceLabel: "Select Slot Time"
+                        }}
+                        selector={{
+                          name: "slot",
+                          className: "select-fld",
+                          value: this.state.slot,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: GlobalVariables.SLOTS
+                          },
+                          onChange: this.dropDownHandler.bind(this)
+                        }}
+                        //  error={this.state.department_error}
+                        //  helperText={this.state.department_error_text}
+                      />
+                    </div>
+                    <div className="row">
+                      <AlagehAutoComplete
+                        div={{ className: "col-3" }}
+                        label={{
+                          forceLabel: "Select Month"
+                        }}
+                        selector={{
+                          name: "month",
+                          className: "select-fld",
+                          value: this.state.month,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: GlobalVariables.MONTHS
+                          },
+                          onChange: this.dropDownHandler.bind(this)
+                        }}
+                      />
 
-                  <div className="col-lg-9 divInnerRight">Right Screen</div>
+                      <AlagehFormGroup
+                        div={{ className: "col-3" }}
+                        label={{
+                          forceLabel: "Year",
+                          isImp: true
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "year",
+                          value: this.state.year,
+                          events: {
+                            onChange: this.changeTexts.bind(this)
+                          },
+                          others: {
+                            type: "number",
+                            min: moment().year()
+                          }
+                        }}
+                      />
+
+                      <AlgaehDateHandler
+                        div={{ className: "col-lg-3" }}
+                        label={{ forceLabel: "From Date", isImp: true }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "from_date"
+                        }}
+                        events={{
+                          onChange: selectedDate => {
+                            this.setState({
+                              from_date: selectedDate
+                            });
+                          }
+                        }}
+                        value={this.state.from_date}
+                        minDate={new Date()}
+                      />
+                      <AlgaehDateHandler
+                        div={{ className: "col-lg-3" }}
+                        label={{ forceLabel: "To Date", isImp: true }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "to_date"
+                        }}
+                        events={{
+                          onChange: selectedDate => {
+                            this.setState({ to_date: selectedDate });
+                          }
+                        }}
+                        value={this.state.to_date}
+                      />
+                    </div>
+                    <div className="row">
+                      <label className="margin-top-15 col-12">
+                        Working Hours
+                      </label>
+                      <AlagehFormGroup
+                        div={{ className: "col-3" }}
+                        label={{
+                          forceLabel: "From Time",
+                          isImp: true
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "from_work_hr",
+                          value: this.state.from_work_hr,
+                          events: {
+                            onChange: this.changeTexts.bind(this)
+                          },
+                          others: {
+                            type: "time"
+                          }
+
+                          // error: this.state.description_error,
+                          // helperText: this.state.description_error_text
+                        }}
+                      />
+
+                      <AlagehFormGroup
+                        div={{ className: "col-3" }}
+                        label={{
+                          forceLabel: "To Time",
+                          isImp: true
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "to_work_hr",
+                          value: this.state.to_work_hr,
+                          events: {
+                            onChange: this.changeTexts.bind(this)
+                          },
+                          others: {
+                            type: "time"
+                          }
+                        }}
+                      />
+                    </div>
+
+                    <div className="row">
+                      <div className="col-lg-6">
+                        <label className="margin-top-15">Day Break 1</label>
+                        <div className="row">
+                          <AlagehFormGroup
+                            div={{ className: "col" }}
+                            label={{
+                              forceLabel: "From Time",
+                              isImp: true
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "from_break_hr1",
+                              value: this.state.from_break_hr1,
+                              events: {
+                                onChange: this.changeTexts.bind(this)
+                              },
+                              others: {
+                                type: "time"
+                              }
+                              // error: this.state.description_error,
+                              // helperText: this.state.description_error_text
+                            }}
+                          />
+                          <AlagehFormGroup
+                            div={{ className: "col" }}
+                            label={{
+                              forceLabel: "To Time",
+                              isImp: true
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "to_break_hr1",
+                              value: this.state.to_break_hr1,
+                              events: {
+                                onChange: this.changeTexts.bind(this)
+                              },
+                              others: {
+                                type: "time"
+                              }
+
+                              // error: this.state.description_error,
+                              // helperText: this.state.description_error_text
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="col-lg-6">
+                        <label className="margin-top-15">Day Break 2</label>
+                        <div className="row">
+                          <AlagehFormGroup
+                            div={{ className: "col" }}
+                            label={{
+                              forceLabel: "From Time",
+                              isImp: true
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "from_break_hr2",
+                              value: this.state.from_break_hr2,
+                              events: {
+                                onChange: this.changeTexts.bind(this)
+                              },
+                              others: {
+                                type: "time"
+                              }
+                              // error: this.state.description_error,
+                              // helperText: this.state.description_error_text
+                            }}
+                          />
+                          <AlagehFormGroup
+                            div={{ className: "col" }}
+                            label={{
+                              forceLabel: "To Time",
+                              isImp: true
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "to_break_hr2",
+                              value: this.state.to_break_hr2,
+                              events: {
+                                onChange: this.changeTexts.bind(this)
+                              },
+                              others: {
+                                type: "time"
+                              }
+                              // error: this.state.description_error,
+                              // helperText: this.state.description_error_text
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="row margin-top-15">
+                      <div className="col-lg-12">
+                        <label>Working Days</label>
+                        <div className="customCheckbox">
+                          <label className="checkbox inline">
+                            <input
+                              type="checkbox"
+                              name="All"
+                              checked={this.state.all}
+                              onChange={this.changeChecks.bind(this)}
+                            />
+                            <span>All</span>
+                          </label>
+                          <label className="checkbox inline">
+                            <input
+                              type="checkbox"
+                              name="sunday"
+                              checked={this.state.sunday}
+                              onChange={this.changeChecks.bind(this)}
+                            />
+                            <span>Sunday</span>
+                          </label>
+                          <label className="checkbox inline">
+                            <input
+                              type="checkbox"
+                              name="monday"
+                              checked={this.state.monday}
+                              onChange={this.changeChecks.bind(this)}
+                            />
+                            <span>Monday</span>
+                          </label>
+                          <label className="checkbox inline">
+                            <input
+                              type="checkbox"
+                              name="tuesday"
+                              checked={this.state.tuesday}
+                              onChange={this.changeChecks.bind(this)}
+                            />
+                            <span>Tuesday</span>
+                          </label>
+
+                          <label className="checkbox inline">
+                            <input
+                              type="checkbox"
+                              name="wednesday"
+                              checked={this.state.wednesday}
+                              onChange={this.changeChecks.bind(this)}
+                            />
+                            <span>Wednesday</span>
+                          </label>
+                          <label className="checkbox inline">
+                            <input
+                              type="checkbox"
+                              name="thursday"
+                              checked={this.state.thursday}
+                              onChange={this.changeChecks.bind(this)}
+                            />
+                            <span>Thursday</span>
+                          </label>
+                          <label className="checkbox inline">
+                            <input
+                              type="checkbox"
+                              name="friday"
+                              checked={this.state.friday}
+                              onChange={this.changeChecks.bind(this)}
+                            />
+                            <span>Friday</span>
+                          </label>
+                          <label className="checkbox inline">
+                            <input
+                              type="checkbox"
+                              name="saturday"
+                              checked={this.state.saturday}
+                              onChange={this.changeChecks.bind(this)}
+                            />
+                            <span>Saturday</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

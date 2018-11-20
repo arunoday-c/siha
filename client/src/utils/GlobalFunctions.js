@@ -202,6 +202,15 @@ export function AlgaehValidation(options) {
     alertTypeIcon: "warning",
     ...options
   };
+  if (settings.skip !== undefined && settings.skip === true) {
+    if (
+      settings.onSuccess !== undefined &&
+      typeof settings.onSuccess === "function"
+    )
+      settings.onSuccess();
+
+    return;
+  }
   let _rootValidationElement = null;
   if (settings.querySelector !== undefined && settings.querySelector !== "")
     _rootValidationElement = document.querySelector(
