@@ -48,7 +48,19 @@ class DataGrid extends PureComponent {
 
     this.setState({ data });
   }
-
+  filterCaseInsensitive = (filter, row) => {
+    const id = filter.pivotId || filter.id;
+    if (typeof row[id] === "object") {
+      const _value = row[id].props.children;
+      return row[id] !== undefined
+        ? String(_value.toLowerCase()).startsWith(filter.value.toLowerCase())
+        : true;
+    } else {
+      return row[id] !== undefined
+        ? String(row[id].toLowerCase()).startsWith(filter.value.toLowerCase())
+        : true;
+    }
+  };
   onDateHandleEditChange(e, index, columnId) {
     const data = [...this.state.data];
     const _rowIndex = index;
@@ -368,6 +380,7 @@ class DataGrid extends PureComponent {
               headerClassName: "sticky",
               fixed: "left",
               width: 100,
+              filterable: false,
               Cell: ({ index }) => {
                 const edit =
                   this.state.editableRows[index] === undefined
@@ -740,11 +753,16 @@ class DataGrid extends PureComponent {
   render() {
     const _data = this.state.data;
     const _filter =
-      this.props.filter !== undefined ? { filterable: this.props.filter } : {};
+      this.props.filter !== undefined
+        ? {
+            filterable: this.props.filter,
+            defaultFilterMethod: this.filterCaseInsensitive
+          }
+        : {};
     const _noDataText =
       this.props.noDataText !== undefined
         ? this.props.noDataText
-        : "No records to show";
+        : "No Records Available";
     const _defaultSize =
       this.props.paging !== undefined
         ? this.props.paging.rowsPerPage !== undefined
