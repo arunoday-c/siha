@@ -467,7 +467,7 @@
     { "name": "Debit Card", "value": "DC" },
     { "name": "Credi Card", "value": "CC" }
   ],
-  "PO_FOR": [
+  "PO_FROM": [
     { "name": "Pharmacy", "value": "PHR" },
     { "name": "Inventory", "value": "INV" }
   ],

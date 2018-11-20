@@ -76,6 +76,8 @@ import AcquisitionEntry from "./Components/AssetManagement/AcquisitionEntry/Acqu
 import DepreciationEntry from "./Components/AssetManagement/DepreciationEntry/DepreciationEntry";
 import DepreciationReversal from "./Components/AssetManagement/DepreciationReversal/DepreciationReversal";
 import Disposal from "./Components/AssetManagement/Disposal/Disposal";
+import PurchaseOrderList from "./Components/Procurement/PurchaseOrderList/PurchaseSwitch";
+import DayEndProcess from "./Components/Finance/DayEndProcess/DayEndProcess";
 
 const componts = (selectedLang, breadStyle) => {
   return {
@@ -148,6 +150,8 @@ const componts = (selectedLang, breadStyle) => {
     InvTransferEntry: <InvTransferEntry SelectLanguage={selectedLang} />,
     VendorSetup: <VendorSetup SelectLanguage={selectedLang} />,
 
+    DayEndProcess: <DayEndProcess SelectLanguage={selectedLang} />,
+
     DeliveryNoteEntry: <DeliveryNoteEntry SelectLanguage={selectedLang} />,
     PurchaseOrderEntry: <PurchaseOrderEntry SelectLanguage={selectedLang} />,
     ReceiptEntry: <ReceiptEntry SelectLanguage={selectedLang} />,
@@ -156,7 +160,8 @@ const componts = (selectedLang, breadStyle) => {
     DepreciationReversal: (
       <DepreciationReversal SelectLanguage={selectedLang} />
     ),
-    Disposal: <Disposal SelectLanguage={selectedLang} />
+    Disposal: <Disposal SelectLanguage={selectedLang} />,
+    PurchaseOrderList: <PurchaseOrderList SelectLanguage={selectedLang} />
   };
 };
 

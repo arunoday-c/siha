@@ -18,8 +18,19 @@
     border: 1px solid #3a95aa;
     width: 100%;
   }
+  .showall {
+    position: absolute;
+    top: 0;
+    padding: 5px 11px;
+    right: 0;
+    background: #fff;
+    color: #929292;
+    cursor: pointer;
+    margin: 2px;
+    height: 32px;
+  }
   .margintop15 {
-    margin-top:12%;
+    margin-top: 9%;
   }
   .row-eq-height {
     display: -webkit-box;
@@ -28,11 +39,11 @@
     display: flex;
   }
   .loginFormContainer {
-    padding: 15px;
     margin: 0 auto;
     background: rgba(255, 255, 255, 0.9);
     border-radius: 10px;
     box-shadow: 0 10px 10px rgba(0, 0, 0, 0.12);
+    width: 320px;
   }
   .frgtPass {
     text-align: center;
@@ -60,8 +71,6 @@
     transition: all 0.2s ease-in-out;
   }
 
-
-
   .btn-primary {
     color: #fff;
     background-color: none;
@@ -72,17 +81,13 @@
       #34b8bc,
       #25d8df
     );
-    //box-shadow: 0 4px 15px 0 rgba(23, 168, 108, 0.75);
+    // box-shadow: 0 4px 15px 0 rgba(23, 168, 108, 0.75);
     border-color: #44b8bd;
   }
-
   .btn-primary:hover {
     background-color: none;
     border-color: #44b8bd;
   }
-
-
-
   .checkbox {
     font-weight: normal;
     margin-bottom: 10px;
@@ -97,46 +102,44 @@
   background-repeat: no-repeat;
   background-size: cover;
 }
-
-.loginTopbar{
+.loginTopbar {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   background: #fff;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-    .companyLogo{
-      float: left;
-      background: url(../../assets/svg/ALGAEH_LOGO.svg) no-repeat center;
-      height: 70px;
-      background-size: 100%;
-      width: 175px;
-      margin-left: 15px;
-    }
-    .productLogo{
-      float: right;
-      background: url(../../assets/svg/HIMS_LOGO.svg) no-repeat center;
-      height: 70px;
-      background-size: 100%;
-      width: 100px;
-      margin-right: 15px;
-    }
-  
+  .companyLogo {
+    float: left;
+    background: url(../../assets/svg/ALGAEH_LOGO.svg) no-repeat center;
+    height: 70px;
+    background-size: 100%;
+    width: 175px;
+    margin-left: 15px;
   }
-  .loginFooter{
-    position: fixed;
-    bottom: 20px;
-    left: 0;
-    width: 100%;
-    text-align: center;
-    color: #fff;
-    font-size: 0.7rem;
-    text-shadow:0 2px 3px rgba(0, 0, 0, 0.5);
-    a{
+  .productLogo {
+    float: right;
+    background: url(../../assets/svg/HIMS_LOGO.svg) no-repeat center;
+    height: 70px;
+    background-size: 100%;
+    width: 100px;
+    margin-right: 15px;
+  }
+}
+.loginFooter {
+  position: fixed;
+  bottom: 20px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  color: #fff;
+  font-size: 0.7rem;
+  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
+  a {
     text-decoration: none;
     color: yellow;
-    }
-    a:hover{
-      text-decoration: underline;
-    }    
-    }
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+}

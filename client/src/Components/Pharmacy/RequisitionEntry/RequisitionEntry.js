@@ -87,11 +87,9 @@ class RequisitionEntry extends Component {
   }
 
   componentWillUnmount() {
-    
     ClearData(this, this);
   }
   render() {
-    
     return (
       <React.Fragment>
         <div>
@@ -308,6 +306,12 @@ class RequisitionEntry extends Component {
                       <button
                         type="button"
                         className="btn btn-other"
+                        disabled={
+                          this.state.authorize1 === "Y" &&
+                          this.state.authorie2 === "Y"
+                            ? true
+                            : false
+                        }
                         onClick={AuthorizeRequisitionEntry.bind(
                           this,
                           this,

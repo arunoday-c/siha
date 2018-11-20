@@ -7,11 +7,13 @@ import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import { setGlobal } from "../../../utils/GlobalFunctions";
 import "./PurchaseOrderList.css";
 import "./../../../styles/site.css";
+import GlobalVariables from "../../../utils/GlobalVariables.json";
 
 import {
   LocationchangeTexts,
   dateFormater,
-  radioChange
+  texthandle,
+  poforhandle
 } from "./PurchaseOrderListEvent";
 
 import {
@@ -27,33 +29,26 @@ class PurchaseOrderList extends Component {
     super(props);
 
     this.state = {
-      from_location_id: null,
+      po_from: null,
       to_location_id: null,
       requisition_list: [],
-      radioYes: true,
+
       authorize1: "Y"
     };
   }
 
-  componentDidMount() {
-    this.props.getLocation({
-      uri: "/pharmacy/getPharmacyLocation",
-      method: "GET",
-      redux: {
-        type: "LOCATIOS_GET_DATA",
-        mappingName: "locations"
-      }
-    });
-  }
-
   render() {
+    debugger;
+    const _mainStore = Enumerable.from(this.props.polocations)
+      .where(w => w.location_type === "MS")
+      .toArray();
     return (
       <React.Fragment>
         <div className="hptl-phase1-requisition-list-form">
           <BreadCrumb
             title={
               <AlgaehLabel
-                label={{ forceLabel: "Requisition List", align: "ltr" }}
+                label={{ forceLabel: "Purchase List", align: "ltr" }}
               />
             }
             breadStyle={this.props.breadStyle}
@@ -71,7 +66,7 @@ class PurchaseOrderList extends Component {
               {
                 pageName: (
                   <AlgaehLabel
-                    label={{ forceLabel: "Requisition List", align: "ltr" }}
+                    label={{ forceLabel: "Purchase List", align: "ltr" }}
                   />
                 )
               }
@@ -84,63 +79,48 @@ class PurchaseOrderList extends Component {
             <div className="col-lg-12">
               <div className="row">
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-4" }}
-                  label={{ forceLabel: "Location" }}
+                  div={{ className: "col" }}
+                  label={{ forceLabel: "PO For" }}
                   selector={{
-                    name: "from_location_id",
+                    name: "po_from",
                     className: "select-fld",
-                    value: this.state.from_location_id,
+                    value: this.state.po_from,
                     dataSource: {
-                      textField: "location_description",
-                      valueField: "hims_d_pharmacy_location_id",
-                      data: this.props.locations
+                      textField: "name",
+                      valueField: "value",
+                      data: GlobalVariables.PO_FROM
                     },
-                    onChange: LocationchangeTexts.bind(this, this, "From"),
-                    onClear: LocationchangeTexts.bind(this, this, "From")
+
+                    onChange: poforhandle.bind(this, this),
+                    onClear: texthandle.bind(this, this)
                   }}
                 />
 
                 <AlagehAutoComplete
                   div={{ className: "col-lg-4" }}
-                  label={{ forceLabel: "Requested Location" }}
+                  label={{ forceLabel: "Location" }}
                   selector={{
-                    name: "to_location_id",
+                    name:
+                      this.state.po_from === "PHR"
+                        ? "pharmcy_location_id"
+                        : "inventory_location_id",
                     className: "select-fld",
-                    value: this.state.to_location_id,
+                    value:
+                      this.state.po_from === "PHR"
+                        ? this.state.pharmcy_location_id
+                        : this.state.inventory_location_id,
                     dataSource: {
                       textField: "location_description",
-                      valueField: "hims_d_pharmacy_location_id",
-                      data: this.props.locations
+                      valueField:
+                        this.state.po_from === "PHR"
+                          ? "hims_d_pharmacy_location_id"
+                          : "hims_d_inventory_location_id",
+                      data: _mainStore
                     },
-                    onChange: LocationchangeTexts.bind(this, this, "To"),
-                    onClear: LocationchangeTexts.bind(this, this, "From")
+                    onChange: LocationchangeTexts.bind(this, this),
+                    onClear: LocationchangeTexts.bind(this, this)
                   }}
                 />
-
-                <div className="col-lg-4" style={{ paddingTop: "25px" }}>
-                  <div className="customRadio">
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        name="insured"
-                        value="1"
-                        checked={this.state.radioYes}
-                        onChange={radioChange.bind(this, this)}
-                      />
-                      <span>Authorize 1</span>
-                    </label>
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        name="insured"
-                        value="2"
-                        checked={this.state.radioNo}
-                        onChange={radioChange.bind(this, this)}
-                      />
-                      <span>Authorize 2</span>
-                    </label>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -162,9 +142,8 @@ class PurchaseOrderList extends Component {
                                 className="fas fa-flask"
                                 onClick={() => {
                                   setGlobal({
-                                    "RQ-STD": "RequisitionEntry",
-                                    material_requisition_number:
-                                      row.material_requisition_number
+                                    "RQ-STD": "PurchaseOrderEntry",
+                                    purchase_number: row.purchase_number
                                   });
                                   document.getElementById("rq-router").click();
                                 }}
@@ -179,11 +158,9 @@ class PurchaseOrderList extends Component {
                         }
                       },
                       {
-                        fieldName: "material_requisition_number",
+                        fieldName: "purchase_number",
                         label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Requisition Number" }}
-                          />
+                          <AlgaehLabel label={{ forceLabel: "PO Number" }} />
                         ),
                         disabled: true,
                         others: {
@@ -192,11 +169,9 @@ class PurchaseOrderList extends Component {
                         }
                       },
                       {
-                        fieldName: "requistion_date",
+                        fieldName: "po_date",
                         label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Requistion Date" }}
-                          />
+                          <AlgaehLabel label={{ forceLabel: "PO Date" }} />
                         ),
                         displayTemplate: row => {
                           return (
@@ -214,30 +189,38 @@ class PurchaseOrderList extends Component {
                         }
                       },
                       {
-                        fieldName: "from_location_id",
+                        fieldName: "location_id",
                         label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "From Location" }}
-                          />
+                          <AlgaehLabel label={{ forceLabel: "Location" }} />
                         ),
-                        //created by Adnan
+
                         displayTemplate: row => {
-                          let x;
-                          if (
-                            this.props.locations !== undefined &&
-                            this.props.locations.length !== 0
-                          ) {
-                            x = Enumerable.from(this.props.locations)
-                              .where(
-                                w =>
-                                  w.hims_d_pharmacy_location_id ===
-                                  row.from_location_id
-                              )
-                              .firstOrDefault();
+                          let display;
+                          {
+                            this.state.po_from === "PHR"
+                              ? (display =
+                                  this.props.polocations === undefined
+                                    ? []
+                                    : this.props.polocations.filter(
+                                        f =>
+                                          f.hims_d_pharmacy_location_id ===
+                                          row.pharmcy_location_id
+                                      ))
+                              : (display =
+                                  this.props.polocations === undefined
+                                    ? []
+                                    : this.props.polocations.filter(
+                                        f =>
+                                          f.hims_d_inventory_location_id ===
+                                          row.inventory_location_id
+                                      ));
                           }
+
                           return (
                             <span>
-                              {x !== undefined ? x.location_description : ""}
+                              {display !== undefined && display.length !== 0
+                                ? display[0].location_description
+                                : ""}
                             </span>
                           );
                         },
@@ -247,43 +230,9 @@ class PurchaseOrderList extends Component {
                           resizable: false,
                           style: { textAlign: "center" }
                         }
-                        //created by Adnan
-                      },
-                      {
-                        fieldName: "to_location_id",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "To Location" }} />
-                        ),
-                        //created by Adnan
-                        displayTemplate: row => {
-                          let x;
-                          if (
-                            this.props.locations !== undefined &&
-                            this.props.locations.length !== 0
-                          ) {
-                            x = Enumerable.from(this.props.locations)
-                              .where(
-                                w =>
-                                  w.hims_d_pharmacy_location_id ===
-                                  row.to_location_id
-                              )
-                              .firstOrDefault();
-                          }
-                          return (
-                            <span>
-                              {x !== undefined ? x.location_description : ""}
-                            </span>
-                          );
-                          //created by Adnan
-                        },
-                        others: {
-                          maxWidth: 200,
-                          resizable: false,
-                          style: { textAlign: "center" }
-                        }
                       }
                     ]}
-                    keyId="material_requisition_number"
+                    keyId="purchase_number"
                     dataSource={{
                       data: this.state.requisition_list
                     }}
@@ -302,7 +251,7 @@ class PurchaseOrderList extends Component {
 
 function mapStateToProps(state) {
   return {
-    locations: state.locations,
+    polocations: state.polocations,
     purchaseorderlist: state.purchaseorderlist
   };
 }

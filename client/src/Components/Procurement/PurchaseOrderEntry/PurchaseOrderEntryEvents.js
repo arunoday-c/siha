@@ -1,10 +1,11 @@
-import { swalMessage } from "../../../utils/algaehApiCall";
+import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import moment from "moment";
 import Enumerable from "linq";
-import extend from "extend";
+
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
+import POEntry from "../../../Models/POEntry";
 
 let texthandlerInterval = null;
 
@@ -22,6 +23,48 @@ const texthandle = ($this, e) => {
   }
 };
 
+const loctexthandle = ($this, e) => {
+  debugger;
+  if (e.value === undefined) {
+    $this.setState({ [e]: null });
+  } else {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    let ReqData = true;
+    if ($this.state.vendor_id !== null) {
+      ReqData = false;
+    }
+    $this.setState({
+      [name]: value,
+      ReqData: ReqData
+    });
+  }
+};
+
+const vendortexthandle = ($this, e) => {
+  debugger;
+  if (e.value === undefined) {
+    $this.setState({ [e]: null, payment_terms: null });
+  } else {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    let ReqData = true;
+    if (
+      $this.state.pharmcy_location_id !== null ||
+      $this.state.inventory_location_id !== null
+    ) {
+      ReqData = false;
+    }
+
+    $this.setState({
+      [name]: value,
+      payment_terms: e.selected.payment_terms,
+      tax_percentage: e.selected.vat_percentage,
+      ReqData: ReqData
+    });
+  }
+};
+
 const poforhandle = ($this, e) => {
   debugger;
   let name = e.name || e.target.name;
@@ -32,98 +75,7 @@ const poforhandle = ($this, e) => {
       [name]: value
     },
     () => {
-      if ($this.state.po_for === "PHR") {
-        $this.props.getItems({
-          uri: "/pharmacy/getItemMaster",
-          method: "GET",
-          redux: {
-            type: "ITEM_GET_DATA",
-            mappingName: "poitemlist"
-          }
-        });
-
-        $this.props.getLocation({
-          uri: "/pharmacy/getPharmacyLocation",
-          method: "GET",
-          redux: {
-            type: "LOCATIONS_GET_DATA",
-            mappingName: "polocations"
-          }
-        });
-
-        $this.props.getItemCategory({
-          uri: "/pharmacy/getItemCategory",
-          method: "GET",
-          redux: {
-            type: "ITEM_CATEGORY_GET_DATA",
-            mappingName: "poitemcategory"
-          }
-        });
-
-        $this.props.getItemGroup({
-          uri: "/pharmacy/getItemGroup",
-          method: "GET",
-          redux: {
-            type: "ITEM_GROUP_GET_DATA",
-            mappingName: "poitemgroup"
-          }
-        });
-
-        $this.props.getItemUOM({
-          uri: "/pharmacy/getPharmacyUom",
-          method: "GET",
-          redux: {
-            type: "ITEM_UOM_GET_DATA",
-            mappingName: "poitemuom"
-          }
-        });
-      } else if ($this.state.po_for === "INV") {
-        $this.props.getItems({
-          uri: "/inventory/getItemMaster",
-          method: "GET",
-          redux: {
-            type: "ITEM_GET_DATA",
-            mappingName: "poitemlist"
-          }
-        });
-
-        $this.props.getLocation({
-          uri: "/inventory/getInventoryLocation",
-          method: "GET",
-          redux: {
-            type: "LOCATIONS_GET_DATA",
-            mappingName: "polocations"
-          }
-        });
-
-        $this.props.getItemCategory({
-          uri: "/inventory/getItemCategory",
-          method: "GET",
-          redux: {
-            type: "ITEM_CATEGORY_GET_DATA",
-            mappingName: "poitemcategory"
-          },
-          afterSuccess: data => {}
-        });
-
-        $this.props.getItemGroup({
-          uri: "/inventory/getItemGroup",
-          method: "GET",
-          redux: {
-            type: "ITEM_GROUP_GET_DATA",
-            mappingName: "poitemgroup"
-          }
-        });
-
-        $this.props.getItemUOM({
-          uri: "/inventory/getInventoryUom",
-          method: "GET",
-          redux: {
-            type: "ITEM_UOM_GET_DATA",
-            mappingName: "poitemuom"
-          }
-        });
-      }
+      getData($this);
     }
   );
 };
@@ -341,6 +293,7 @@ const deletePosDetail = ($this, context, row) => {
 };
 
 const RequisitionSearch = ($this, e) => {
+  debugger;
   if (
     $this.state.pharmcy_location_id === null &&
     $this.state.inventory_location_id === null
@@ -352,14 +305,14 @@ const RequisitionSearch = ($this, e) => {
   } else {
     debugger;
     let from_location_id =
-      $this.state.po_for === "PHR"
+      $this.state.po_from === "PHR"
         ? $this.state.pharmcy_location_id
         : $this.state.inventory_location_id;
     AlgaehSearch({
       searchGrid: {
         columns: spotlightSearch.RequisitionEntry.ReqEntry
       },
-      searchName: $this.state.po_for === "PHR" ? "PhrPOEntry" : "InvPOEntry",
+      searchName: $this.state.po_from === "PHR" ? "PhrPOEntry" : "InvPOEntry",
       uri: "/gloabelSearch/get",
       inputs: "from_location_id = " + from_location_id,
       onContainsChange: (text, serchBy, callBack) => {
@@ -368,9 +321,9 @@ const RequisitionSearch = ($this, e) => {
       onRowSelect: row => {
         $this.props.getRequisitionEntry({
           uri:
-            $this.state.po_for === "PHR"
-              ? "/transferEntry/getrequisitionEntryTransfer"
-              : "/inventorytransferEntry/getrequisitionEntryTransfer",
+            $this.state.po_from === "PHR"
+              ? "/PurchaseOrderEntry/getPharRequisitionEntryPO"
+              : "/PurchaseOrderEntry/getInvRequisitionEntryPO",
           method: "GET",
           data: {
             material_requisition_number: row.material_requisition_number,
@@ -381,49 +334,92 @@ const RequisitionSearch = ($this, e) => {
             mappingName: "porequisitionentry"
           },
           afterSuccess: data => {
-            AlgaehLoader({ show: true });
-            let from_location_id = data.from_location_id;
-            let from_location_type = data.from_location_type;
-            data.saveEnable = false;
+            debugger;
+            if (data !== null && data !== undefined) {
+              AlgaehLoader({ show: true });
 
-            data.from_location_id = data.to_location_id;
-            data.to_location_id = from_location_id;
-            data.from_location_type = data.to_location_type;
-            data.to_location_type = from_location_type;
+              data.saveEnable = false;
 
-            data.dataExitst = true;
+              data.location_type = "MS";
 
-            for (let i = 0; i < data.inventory_stock_detail.length; i++) {
-              data.inventory_stock_detail[i].material_requisition_header_id =
-                data.hims_f_inventory_material_header_id;
+              data.dataExitst = true;
 
-              data.inventory_stock_detail[i].material_requisition_detail_id =
-                data.inventory_stock_detail[
-                  i
-                ].hims_f_inventory_material_detail_id;
+              for (let i = 0; i < data.po_entry_detail.length; i++) {
+                let purchase_cost = data.po_entry_detail[i].purchase_cost;
+                if ($this.state.po_from === "PHR") {
+                  data.po_entry_detail[i].pharmacy_requisition_id =
+                    data.po_entry_detail[i].hims_f_pharmacy_material_detail_id;
 
-              // grnno
-              data.inventory_stock_detail[i].quantity_transferred =
-                data.inventory_stock_detail[i].quantity_required;
+                  data.po_entry_detail[i].phar_item_category =
+                    data.po_entry_detail[i].item_category_id;
+                  data.po_entry_detail[i].phar_item_group =
+                    data.po_entry_detail[i].item_group_id;
+                  data.po_entry_detail[i].phar_item_id =
+                    data.po_entry_detail[i].item_id;
+                } else {
+                  data.po_entry_detail[i].inventory_requisition_id =
+                    data.po_entry_detail[i].hims_f_inventory_material_detail_id;
 
-              data.inventory_stock_detail[i].expiry_date =
-                data.inventory_stock_detail[i].expirydt;
+                  data.po_entry_detail[i].inv_item_category_id =
+                    data.po_entry_detail[i].item_category_id;
+                  data.po_entry_detail[i].inv_item_group_id =
+                    data.po_entry_detail[i].item_group_id;
+                  data.po_entry_detail[i].inv_item_id =
+                    data.po_entry_detail[i].item_id;
+                }
 
-              data.inventory_stock_detail[i].quantity_requested =
-                data.inventory_stock_detail[i].quantity_required;
-              data.inventory_stock_detail[i].from_qtyhand =
-                data.inventory_stock_detail[i].qtyhand;
+                data.po_entry_detail[i].order_quantity =
+                  data.po_entry_detail[i].quantity_authorized;
+                data.po_entry_detail[i].total_quantity =
+                  data.po_entry_detail[i].quantity_authorized;
 
-              data.inventory_stock_detail[i].uom_requested_id =
-                data.inventory_stock_detail[i].item_uom;
-              data.inventory_stock_detail[i].uom_transferred_id =
-                data.inventory_stock_detail[i].item_uom;
+                data.po_entry_detail[i].uom_requested_id =
+                  data.po_entry_detail[i].item_uom;
 
-              data.inventory_stock_detail[i].unit_cost =
-                data.inventory_stock_detail[i].avgcost;
+                data.po_entry_detail[i].unit_price = purchase_cost;
+                data.po_entry_detail[i].unit_cost = purchase_cost;
+
+                data.po_entry_detail[i].extended_price =
+                  purchase_cost * data.po_entry_detail[i].quantity_authorized;
+
+                data.po_entry_detail[i].extended_cost =
+                  purchase_cost * data.po_entry_detail[i].quantity_authorized;
+                data.po_entry_detail[i].net_extended_cost =
+                  purchase_cost * data.po_entry_detail[i].quantity_authorized;
+                data.po_entry_detail[i].extended_price =
+                  purchase_cost * data.po_entry_detail[i].quantity_authorized;
+                data.po_entry_detail[i].extended_price =
+                  purchase_cost * data.po_entry_detail[i].quantity_authorized;
+
+                data.po_entry_detail[i].sub_discount_percentage = 0;
+                data.po_entry_detail[i].sub_discount_amount = 0;
+                data.po_entry_detail[i].expected_arrival_date =
+                  $this.state.expected_date;
+                data.po_entry_detail[i].authorize_quantity = 0;
+                data.po_entry_detail[i].rejected_quantity = 0;
+                data.po_entry_detail[i].tax_amount =
+                  (parseFloat(data.po_entry_detail[i].extended_cost) *
+                    parseFloat($this.state.tax_percentage)) /
+                  100;
+
+                data.po_entry_detail[i].total_amount =
+                  parseFloat(data.po_entry_detail[i].extended_cost) +
+                  data.po_entry_detail[i].tax_amount;
+              }
+
+              if ($this.state.po_from === "PHR") {
+                data.phar_requisition_id =
+                  data.hims_f_pharamcy_material_header_id;
+                data.pharmacy_stock_detail = data.po_entry_detail;
+              } else {
+                data.inv_requisition_id =
+                  data.hims_f_inventory_material_header_id;
+                data.inventory_stock_detail = data.po_entry_detail;
+              }
+
+              $this.setState(data);
+              AlgaehLoader({ show: false });
             }
-            $this.setState(data);
-            AlgaehLoader({ show: false });
           }
         });
       }
@@ -431,6 +427,214 @@ const RequisitionSearch = ($this, e) => {
   }
 };
 
+const ClearData = ($this, e) => {
+  let IOputs = POEntry.inputParam();
+
+  IOputs.dataExitst = false;
+  $this.setState(IOputs);
+};
+
+const SavePOEnrty = $this => {
+  if ($this.state.po_from === "PHR") {
+    $this.state.po_entry_detail = $this.state.pharmacy_stock_detail;
+  } else {
+    $this.state.po_entry_detail = $this.state.inventory_stock_detail;
+  }
+
+  algaehApiCall({
+    uri: "/PurchaseOrderEntry/addPurchaseOrderEntry",
+    data: $this.state,
+    onSuccess: response => {
+      if (response.data.success === true) {
+        $this.setState({
+          purchase_number: response.data.records.purchase_number,
+          hims_f_procurement_po_header_id:
+            response.data.records.hims_f_procurement_po_header_id,
+          saveEnable: true
+        });
+
+        swalMessage({
+          type: "success",
+          title: "Saved successfully . ."
+        });
+      }
+    }
+  });
+};
+
+const getCtrlCode = ($this, docNumber) => {
+  AlgaehLoader({ show: true });
+  $this.props.getPurchaseOrderEntry({
+    uri: "/PurchaseOrderEntry/getPurchaseOrderEntry",
+    method: "GET",
+    printInput: true,
+    data: { purchase_number: docNumber },
+    redux: {
+      type: "PO_ENTRY_GET_DATA",
+      mappingName: "purchaseorderentry"
+    },
+    afterSuccess: data => {
+      debugger;
+      if (
+        $this.props.purchase_number !== undefined &&
+        $this.props.purchase_number.length !== 0
+      ) {
+        data.authorizeEnable = false;
+        data.ItemDisable = true;
+        data.ClearDisable = true;
+      }
+      data.saveEnable = true;
+      data.dataExitst = true;
+
+      if (data.po_from === "PHR") {
+        $this.state.pharmacy_stock_detail = data.po_entry_detail;
+      } else {
+        $this.state.inventory_stock_detail = data.po_entry_detail;
+      }
+
+      data.addedItem = true;
+      $this.setState(data, () => {
+        getData($this);
+      });
+      AlgaehLoader({ show: false });
+    }
+  });
+};
+
+const getData = $this => {
+  if ($this.state.po_from === "PHR") {
+    $this.props.getItems({
+      uri: "/pharmacy/getItemMaster",
+      method: "GET",
+      redux: {
+        type: "ITEM_GET_DATA",
+        mappingName: "poitemlist"
+      }
+    });
+
+    $this.props.getLocation({
+      uri: "/pharmacy/getPharmacyLocation",
+      method: "GET",
+      redux: {
+        type: "LOCATIONS_GET_DATA",
+        mappingName: "polocations"
+      }
+    });
+
+    $this.props.getItemCategory({
+      uri: "/pharmacy/getItemCategory",
+      method: "GET",
+      redux: {
+        type: "ITEM_CATEGORY_GET_DATA",
+        mappingName: "poitemcategory"
+      }
+    });
+
+    $this.props.getItemGroup({
+      uri: "/pharmacy/getItemGroup",
+      method: "GET",
+      redux: {
+        type: "ITEM_GROUP_GET_DATA",
+        mappingName: "poitemgroup"
+      }
+    });
+
+    $this.props.getItemUOM({
+      uri: "/pharmacy/getPharmacyUom",
+      method: "GET",
+      redux: {
+        type: "ITEM_UOM_GET_DATA",
+        mappingName: "poitemuom"
+      }
+    });
+  } else if ($this.state.po_from === "INV") {
+    $this.props.getItems({
+      uri: "/inventory/getItemMaster",
+      method: "GET",
+      redux: {
+        type: "ITEM_GET_DATA",
+        mappingName: "poitemlist"
+      }
+    });
+
+    $this.props.getLocation({
+      uri: "/inventory/getInventoryLocation",
+      method: "GET",
+      redux: {
+        type: "LOCATIONS_GET_DATA",
+        mappingName: "polocations"
+      }
+    });
+
+    $this.props.getItemCategory({
+      uri: "/inventory/getItemCategory",
+      method: "GET",
+      redux: {
+        type: "ITEM_CATEGORY_GET_DATA",
+        mappingName: "poitemcategory"
+      },
+      afterSuccess: data => {}
+    });
+
+    $this.props.getItemGroup({
+      uri: "/inventory/getItemGroup",
+      method: "GET",
+      redux: {
+        type: "ITEM_GROUP_GET_DATA",
+        mappingName: "poitemgroup"
+      }
+    });
+
+    $this.props.getItemUOM({
+      uri: "/inventory/getInventoryUom",
+      method: "GET",
+      redux: {
+        type: "ITEM_UOM_GET_DATA",
+        mappingName: "poitemuom"
+      }
+    });
+  }
+};
+
+const AuthorizePOEntry = $this => {
+  debugger;
+  let stock_detail =
+    $this.state.po_from === "PHR"
+      ? $this.state.pharmacy_stock_detail
+      : $this.state.inventory_stock_detail;
+  let auth_qty = Enumerable.from(stock_detail).any(
+    w => parseFloat(w.authorize_quantity) === 0 || w.authorize_quantity === null
+  );
+  if (auth_qty === true) {
+    swalMessage({
+      title: "Invalid Input. Please enter Authorize Quantity.",
+      type: "warning"
+    });
+  } else {
+    if ($this.state.po_from === "PHR") {
+      $this.state.po_entry_detail = $this.state.pharmacy_stock_detail;
+    } else {
+      $this.state.po_entry_detail = $this.state.inventory_stock_detail;
+    }
+    $this.state.authorize1 = "Y";
+    algaehApiCall({
+      uri: "/PurchaseOrderEntry/updatePurchaseOrderEntry",
+      data: $this.state,
+      method: "PUT",
+      onSuccess: response => {
+        if (response.data.success === true) {
+          $this.setState({
+            authorize1: "Y"
+          });
+          swalMessage({
+            title: "Authorized successfully . .",
+            type: "success"
+          });
+        }
+      }
+    });
+  }
+};
 export {
   texthandle,
   poforhandle,
@@ -438,5 +642,11 @@ export {
   numberchangeTexts,
   datehandle,
   deletePosDetail,
-  RequisitionSearch
+  RequisitionSearch,
+  vendortexthandle,
+  ClearData,
+  SavePOEnrty,
+  getCtrlCode,
+  loctexthandle,
+  AuthorizePOEntry
 };

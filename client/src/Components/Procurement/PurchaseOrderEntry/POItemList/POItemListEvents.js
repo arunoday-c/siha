@@ -24,64 +24,117 @@ const texthandle = ($this, context, e) => {
 };
 
 const discounthandle = ($this, context, ctrl, e) => {
-  e = e || ctrl;
-
-  let sheet_discount_percentage = 0;
-  let sheet_discount_amount = 0;
-
-  if (e.target.name === "sheet_discount_percentage") {
-    sheet_discount_percentage = parseFloat(e.target.value.replace(" %", ""));
-    sheet_discount_amount = 0;
-  } else {
-    sheet_discount_amount = parseFloat(e.target.value);
-    sheet_discount_percentage = 0;
-  }
-  if (sheet_discount_percentage > 100) {
+  debugger;
+  if ($this.state.order_quantity <= 0) {
     swalMessage({
-      title: "Invalid Input. Discount % cannot be greater than 100.",
+      title: "Invalid Input. Please Enter Quantity",
       type: "warning"
     });
   } else {
-    $this.setState({
-      sheet_discount_percentage: sheet_discount_percentage,
-      sheet_discount_amount: sheet_discount_amount
-    });
+    e = e || ctrl;
 
-    if (context != null) {
-      context.updateState({
-        sheet_discount_percentage: sheet_discount_percentage,
-        sheet_discount_amount: sheet_discount_amount
+    if (e.target.value === "") {
+      $this.setState({
+        [e.target.name]: 0
       });
+    } else {
+      let sub_discount_percentage = 0;
+      let sub_discount_amount = 0;
+      let extended_cost = 0;
+      let unit_cost = 0;
+      let tax_amount = 0;
+      let total_amount = 0;
+      if (e.target.name === "sub_discount_percentage") {
+        sub_discount_percentage = parseFloat(e.target.value);
+        sub_discount_amount =
+          (parseFloat($this.state.extended_price) * sub_discount_percentage) /
+          100;
+      } else {
+        sub_discount_amount = parseFloat(e.target.value);
+        sub_discount_percentage =
+          (sub_discount_amount / parseFloat($this.state.extended_price)) * 100;
+      }
+      if (sub_discount_percentage > 100) {
+        swalMessage({
+          title: "Invalid Input. Discount % cannot be greater than 100.",
+          type: "warning"
+        });
+      } else {
+        debugger;
+        extended_cost =
+          parseFloat($this.state.extended_price) - sub_discount_amount;
+        unit_cost = extended_cost / parseFloat($this.state.order_quantity);
+
+        tax_amount =
+          (extended_cost * parseFloat($this.state.tax_percentage)) / 100;
+        total_amount = tax_amount + extended_cost;
+
+        $this.setState({
+          sub_discount_percentage: sub_discount_percentage,
+          sub_discount_amount: sub_discount_amount.toFixed(2),
+          extended_cost: extended_cost.toFixed(2),
+          net_extended_cost: extended_cost.toFixed(2),
+          unit_cost: unit_cost.toFixed(2),
+          tax_amount: tax_amount.toFixed(2),
+          total_amount: total_amount.toFixed(2)
+        });
+
+        if (context != null) {
+          context.updateState({
+            sub_discount_percentage: sub_discount_percentage,
+            sub_discount_amount: sub_discount_amount.toFixed(2),
+            extended_cost: extended_cost.toFixed(2),
+            net_extended_cost: extended_cost.toFixed(2),
+            unit_cost: unit_cost.toFixed(2),
+            tax_amount: tax_amount.toFixed(2),
+            total_amount: total_amount.toFixed(2)
+          });
+        }
+      }
     }
   }
 };
 
-const UomchangeTexts = ($this, context, ctrl, e) => {
-  e = ctrl || e;
+const numberchangeTexts = ($this, context, e) => {
+  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  if ($this.state.uom_id !== value) {
-    let unit_cost = 0;
-    if (e.selected.conversion_factor === 1) {
-      unit_cost = $this.state.Real_unit_cost;
-    } else {
-      unit_cost = e.selected.conversion_factor * $this.state.Real_unit_cost;
+
+  if (value < 0) {
+    swalMessage({
+      title: "Invalid Input. Cannot be less than Zero",
+      type: "warning"
+    });
+  } else {
+    debugger;
+    let extended_price = 0;
+    if (parseFloat(value) > 0 && parseFloat($this.state.unit_price) > 0) {
+      extended_price = parseFloat(value) * parseFloat($this.state.unit_price);
     }
+    let unit_cost = extended_price / parseFloat(value);
+    let tax_amount =
+      (extended_price * parseFloat($this.state.tax_percentage)) / 100;
+    let total_amount = tax_amount + extended_price;
     $this.setState({
       [name]: value,
-      conversion_factor: e.selected.conversion_factor,
-      // quantity: e.selected.conversion_factor,
-      unit_cost: unit_cost
+      extended_price: extended_price.toFixed(2),
+      extended_cost: extended_price.toFixed(2),
+      net_extended_cost: extended_price.toFixed(2),
+      unit_cost: unit_cost.toFixed(2),
+      tax_amount: tax_amount.toFixed(2),
+      total_amount: total_amount.toFixed(2)
     });
-
     clearInterval(texthandlerInterval);
     texthandlerInterval = setInterval(() => {
       if (context !== undefined) {
         context.updateState({
           [name]: value,
-          conversion_factor: e.selected.conversion_factor,
-          // quantity: e.selected.conversion_factor,
-          unit_cost: unit_cost
+          extended_price: extended_price.toFixed(2),
+          extended_cost: extended_price.toFixed(2),
+          net_extended_cost: extended_price.toFixed(2),
+          unit_cost: unit_cost.toFixed(2),
+          tax_amount: tax_amount.toFixed(2),
+          total_amount: total_amount.toFixed(2)
         });
       }
       clearInterval(texthandlerInterval);
@@ -89,28 +142,48 @@ const UomchangeTexts = ($this, context, ctrl, e) => {
   }
 };
 
-const numberchangeTexts = ($this, context, e) => {
+const unitpricenumberchangeTexts = ($this, context, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
   if (value < 0) {
     swalMessage({
-      title: "Invalid Input. Quantity cannot be less than Zero",
-      type: "warning"
-    });
-  } else if (value > $this.state.qtyhand) {
-    swalMessage({
-      title: "Invalid Input. Quantity cannot be greater than Quantity in hand",
+      title: "Invalid Input. Cannot be less than Zero",
       type: "warning"
     });
   } else {
-    $this.setState({ [name]: value });
+    debugger;
+    let extended_price = 0;
+    if (parseFloat($this.state.order_quantity) > 0 && parseFloat(value) > 0) {
+      extended_price =
+        parseFloat($this.state.order_quantity) * parseFloat(value);
+    }
 
+    let unit_cost = extended_price / parseFloat(value);
+    let tax_amount =
+      (extended_price * parseFloat($this.state.tax_percentage)) / 100;
+    let total_amount = tax_amount + extended_price;
+
+    $this.setState({
+      [name]: parseFloat(value).toFixed(6),
+      extended_price: extended_price.toFixed(2),
+      extended_cost: extended_price.toFixed(2),
+      net_extended_cost: extended_price.toFixed(2),
+      unit_cost: unit_cost.toFixed(2),
+      tax_amount: tax_amount.toFixed(2),
+      total_amount: total_amount.toFixed(2)
+    });
     clearInterval(texthandlerInterval);
     texthandlerInterval = setInterval(() => {
       if (context !== undefined) {
         context.updateState({
-          [name]: value
+          [name]: parseFloat(value).toFixed(6),
+          extended_price: extended_price.toFixed(2),
+          extended_cost: extended_price.toFixed(2),
+          net_extended_cost: extended_price.toFixed(2),
+          unit_cost: unit_cost.toFixed(2),
+          tax_amount: tax_amount.toFixed(2),
+          total_amount: total_amount.toFixed(2)
         });
       }
       clearInterval(texthandlerInterval);
@@ -119,69 +192,85 @@ const numberchangeTexts = ($this, context, e) => {
 };
 
 const itemchangeText = ($this, context, e) => {
+  debugger;
   let name = e.name || e.target.name;
-  if ($this.state.location_id !== null) {
-    let value = e.value || e.target.value;
+  if (
+    $this.state.pharmcy_location_id !== null ||
+    $this.state.inventory_location_id !== null
+  ) {
+    if ($this.state.vendor_id !== null) {
+      let value = e.value || e.target.value;
+      debugger;
+      if ($this.state.po_from === "PHR") {
+        $this.setState({
+          [name]: value,
+          phar_item_category: e.selected.category_id,
+          pharmacy_uom_id: e.selected.purchase_uom_id,
+          phar_item_group: e.selected.group_id,
+          unit_price:
+            e.selected.purchase_cost === null
+              ? 0
+              : e.selected.purchase_cost.toFixed(6),
 
-    $this.props.getSelectedItemDetais({
-      uri: "/pharmacyGlobal/getUomLocationStock",
-      method: "GET",
-      data: {
-        location_id: $this.state.location_id,
-        item_id: value
-      },
-      redux: {
-        type: "ITEMS_UOM_DETAILS_GET_DATA",
-        mappingName: "itemdetaillist"
-      },
-      afterSuccess: data => {
-        if (data.locationResult.length > 0) {
-          getUnitCost($this, context, e.selected.service_id);
-          $this.setState({
+          addItemButton: false
+        });
+
+        if (context !== undefined) {
+          context.updateState({
             [name]: value,
-            item_category: e.selected.category_id,
-            uom_id: e.selected.sales_uom_id,
-            service_id: e.selected.service_id,
-            item_group_id: e.selected.group_id,
-            quantity: 1,
-
-            expiry_date: data.locationResult[0].expirydt,
-            batchno: data.locationResult[0].batchno,
-            grn_no: data.locationResult[0].grnno,
-            qtyhand: data.locationResult[0].qtyhand,
-            ItemUOM: data.uomResult,
-            Batch_Items: data.locationResult,
+            phar_item_category: e.selected.category_id,
+            pharmacy_uom_id: e.selected.purchase_uom_id,
+            phar_item_group: e.selected.group_id,
+            unit_price:
+              e.selected.purchase_cost === null
+                ? 0
+                : e.selected.purchase_cost.toFixed(6),
 
             addItemButton: false
           });
+        }
+      } else {
+        $this.setState({
+          [name]: value,
+          inv_item_category_id: e.selected.category_id,
+          inventory_uom_id: e.selected.purchase_uom_id,
+          inv_item_group_id: e.selected.group_id,
+          unit_price:
+            e.selected.purchase_cost === null
+              ? 0
+              : e.selected.purchase_cost.toFixed(6),
 
-          if (context !== undefined) {
-            context.updateState({
-              [name]: value,
-              item_category: e.selected.category_id,
-              uom_id: e.selected.sales_uom_id,
-              service_id: e.selected.service_id,
-              item_group_id: e.selected.group_id,
-              quantity: 1,
+          addItemButton: false
+        });
 
-              expiry_date: data.locationResult[0].expirydt,
-              batchno: data.locationResult[0].batchno,
-              grn_no: data.locationResult[0].grnno,
-              qtyhand: data.locationResult[0].qtyhand,
-              ItemUOM: data.uomResult,
-              Batch_Items: data.locationResult,
-              addItemButton: false
-            });
-          }
-          // getItemLocationStock($this, { item_id: value });
-        } else {
-          swalMessage({
-            title: "No stock available for selected Item.",
-            type: "warning"
+        if (context !== undefined) {
+          context.updateState({
+            [name]: value,
+            inv_item_category_id: e.selected.category_id,
+            inventory_uom_id: e.selected.purchase_uom_id,
+            inv_item_group_id: e.selected.group_id,
+            unit_price:
+              e.selected.purchase_cost === null
+                ? 0
+                : e.selected.purchase_cost.toFixed(6),
+
+            addItemButton: false
           });
         }
       }
-    });
+    } else {
+      $this.setState(
+        {
+          [name]: null
+        },
+        () => {
+          swalMessage({
+            title: "Invalid Input. Please select Vendor.",
+            type: "warning"
+          });
+        }
+      );
+    }
   } else {
     $this.setState(
       {
@@ -197,309 +286,333 @@ const itemchangeText = ($this, context, e) => {
   }
 };
 
-const getUnitCost = ($this, context, serviceid) => {
-  if ($this.state.insured === "N") {
-    $this.props.getServicesCost({
-      uri: "/serviceType/getService",
-      method: "GET",
-      data: { hims_d_services_id: serviceid },
-      redux: {
-        type: "SERVICES_GET_DATA",
-        mappingName: "hospitalservices"
-      },
-      afterSuccess: data => {
-        let servdata = Enumerable.from(data)
-          .where(w => w.hims_d_services_id === parseInt(serviceid))
-          .firstOrDefault();
-        if (servdata !== undefined || servdata !== null) {
-          $this.setState({
-            unit_cost: servdata.standard_fee,
-            Real_unit_cost: servdata.standard_fee
-          });
-
-          if (context !== undefined) {
-            context.updateState({
-              unit_cost: servdata.standard_fee,
-              Real_unit_cost: servdata.standard_fee
-            });
-          }
-        } else {
-          swalMessage({
-            title: "Invalid Input. No Service for the selected item.",
-            type: "warning"
-          });
-        }
-      }
-    });
-  } else {
-    $this.props.getInsuranceServicesCost({
-      uri: "/insurance/getPriceList",
-      method: "GET",
-      data: {
-        services_id: serviceid,
-        insurance_id: $this.state.insurance_provider_id
-      },
-      redux: {
-        type: "SERVICES_GET_DATA",
-        mappingName: "hospitalservices"
-      },
-      afterSuccess: data => {
-        if (data !== undefined || data !== null) {
-          $this.setState({
-            unit_cost: data[0].gross_amt,
-            Real_unit_cost: data[0].gross_amt
-          });
-
-          if (context !== undefined) {
-            context.updateState({
-              unit_cost: data[0].gross_amt,
-              Real_unit_cost: data[0].gross_amt
-            });
-          }
-        } else {
-          swalMessage({
-            title: "Invalid Input. No Service for the selected item.",
-            type: "warning"
-          });
-        }
-      }
-    });
-  }
-};
-
 const AddItems = ($this, context) => {
-  if ($this.state.item_id === null) {
-    swalMessage({
-      title: "Invalid Input. Select Item.",
-      type: "warning"
-    });
-  } else if ($this.state.quantity_required === 0) {
+  debugger;
+  if ($this.state.order_quantity === 0) {
     swalMessage({
       title: "Invalid Input. Please enter Quantity Required .",
       type: "warning"
     });
+  } else if ($this.state.unit_price === 0) {
+    swalMessage({
+      title: "Invalid Input. Please enter Unit Price .",
+      type: "warning"
+    });
   } else {
-    let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
-
     let ItemInput = {
       completed: "N",
-      item_category_id: $this.state.item_category_id,
-      item_group_id: $this.state.item_group_id,
-      item_id: $this.state.item_id,
-      quantity_required: $this.state.quantity_required,
-      quantity_authorized: 0,
-      item_uom: $this.state.item_uom,
-      from_qtyhand: $this.state.from_qtyhand,
-      to_qtyhand: $this.state.to_qtyhand
+      phar_item_category: $this.state.phar_item_category,
+      phar_item_group: $this.state.phar_item_group,
+      phar_item_id: $this.state.phar_item_id,
+      inv_item_category_id: $this.state.inv_item_category_id,
+      inv_item_group_id: $this.state.inv_item_group_id,
+      inv_item_id: $this.state.inv_item_id,
+
+      pharmacy_uom_id: $this.state.pharmacy_uom_id,
+      inventory_uom_id: $this.state.inventory_uom_id,
+
+      order_quantity: $this.state.order_quantity,
+      total_quantity: $this.state.order_quantity,
+      unit_price: $this.state.unit_price,
+      extended_price: $this.state.extended_price,
+      sub_discount_percentage: $this.state.sub_discount_percentage,
+      sub_discount_amount: $this.state.sub_discount_amount,
+      extended_cost: $this.state.extended_cost,
+      discount_percentage: $this.state.discount_percentage,
+      discount_amount: $this.state.discount_amount,
+      net_extended_cost: $this.state.net_extended_cost,
+      unit_cost: $this.state.unit_cost,
+      expected_arrival_date: $this.state.expected_date,
+      authorize_quantity: $this.state.authorize_quantity,
+      rejected_quantity: $this.state.rejected_quantity,
+      pharmacy_requisition_id: $this.state.pharmacy_requisition_id,
+      inventory_requisition_id: $this.state.inventory_requisition_id,
+      tax_percentage: $this.state.tax_percentage,
+      tax_amount: $this.state.tax_amount,
+      total_amount: $this.state.total_amount,
+      item_type: $this.state.item_type
     };
-    pharmacy_stock_detail.push(ItemInput);
+
+    if ($this.state.po_from === "PHR") {
+      let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+      pharmacy_stock_detail.push(ItemInput);
+      assignDataandclear(
+        $this,
+        context,
+        pharmacy_stock_detail,
+        "pharmacy_stock_detail"
+      );
+    } else {
+      let inventory_stock_detail = $this.state.inventory_stock_detail;
+      inventory_stock_detail.push(ItemInput);
+      assignDataandclear(
+        $this,
+        context,
+        inventory_stock_detail,
+        "inventory_stock_detail"
+      );
+    }
+  }
+};
+
+const assignDataandclear = ($this, context, stock_detail, assignData) => {
+  let sub_total = Enumerable.from(stock_detail).sum(s =>
+    parseFloat(s.extended_price)
+  );
+
+  let net_total = Enumerable.from(stock_detail).sum(s =>
+    parseFloat(s.net_extended_cost)
+  );
+
+  let net_payable = Enumerable.from(stock_detail).sum(s =>
+    parseFloat(s.total_amount)
+  );
+
+  let total_tax = Enumerable.from(stock_detail).sum(s =>
+    parseFloat(s.tax_amount)
+  );
+
+  let detail_discount = Enumerable.from(stock_detail).sum(s =>
+    parseFloat(s.sub_discount_amount)
+  );
+
+  $this.setState({
+    [assignData]: stock_detail,
+    completed: "N",
+    addedItem: true,
+    saveEnable: false,
+    phar_item_category: null,
+    phar_item_group: null,
+    phar_item_id: null,
+    inv_item_category_id: null,
+    inv_item_group_id: null,
+    inv_item_id: null,
+
+    pharmacy_uom_id: null,
+    inventory_uom_id: null,
+
+    order_quantity: 0,
+    total_quantity: 0,
+    unit_price: 0,
+    extended_price: 0,
+    sub_discount_percentage: 0,
+    sub_discount_amount: 0,
+    extended_cost: 0,
+    discount_percentage: 0,
+    discount_amount: 0,
+    net_extended_cost: 0,
+    unit_cost: 0,
+    expected_arrival_date: null,
+    authorize_quantity: 0,
+    rejected_quantity: 0,
+    pharmacy_requisition_id: null,
+    inventory_requisition_id: null,
+    tax_amount: 0,
+    total_amount: 0,
+    item_type: null,
+    sub_total: sub_total,
+    net_total: net_total,
+    net_payable: net_payable,
+    total_tax: total_tax,
+    detail_discount: detail_discount,
+    addItemButton: true
+  });
+
+  if (context !== undefined) {
+    context.updateState({
+      [assignData]: stock_detail,
+      addedItem: true,
+      saveEnable: false,
+      completed: "N",
+      phar_item_category: null,
+      phar_item_group: null,
+      phar_item_id: null,
+      inv_item_category_id: null,
+      inv_item_group_id: null,
+      inv_item_id: null,
+
+      pharmacy_uom_id: null,
+      inventory_uom_id: null,
+
+      order_quantity: 0,
+      total_quantity: 0,
+      unit_price: 0,
+      extended_price: 0,
+      sub_discount_percentage: 0,
+      sub_discount_amount: 0,
+      extended_cost: 0,
+      discount_percentage: 0,
+      discount_amount: 0,
+      net_extended_cost: 0,
+      unit_cost: 0,
+      expected_arrival_date: null,
+      authorize_quantity: 0,
+      rejected_quantity: 0,
+      pharmacy_requisition_id: null,
+      inventory_requisition_id: null,
+      tax_amount: 0,
+      total_amount: 0,
+      item_type: null,
+      sub_total: sub_total,
+      net_total: net_total,
+      net_payable: net_payable,
+      total_tax: total_tax,
+      detail_discount: detail_discount,
+      addItemButton: true
+    });
+  }
+};
+
+const deletePODetail = ($this, context, row) => {
+  if ($this.state.po_from === "PHR") {
+    let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+
+    for (var i = 0; i < pharmacy_stock_detail.length; i++) {
+      if (pharmacy_stock_detail[i].phar_item_id === row["phar_item_id"]) {
+        pharmacy_stock_detail.splice(i, 1);
+      }
+    }
+
+    if (pharmacy_stock_detail.length === 0) {
+      assignDataandclear(
+        $this,
+        context,
+        pharmacy_stock_detail,
+        "pharmacy_stock_detail"
+      );
+    } else {
+      if (context !== undefined) {
+        context.updateState({
+          pharmacy_stock_detail: pharmacy_stock_detail
+        });
+      }
+    }
+  } else {
+    {
+      let inventory_stock_detail = $this.state.inventory_stock_detail;
+
+      for (var i = 0; i < inventory_stock_detail.length; i++) {
+        if (inventory_stock_detail[i].inv_item_id === row["inv_item_id"]) {
+          inventory_stock_detail.splice(i, 1);
+        }
+      }
+
+      if (inventory_stock_detail.length === 0) {
+        assignDataandclear(
+          $this,
+          context,
+          inventory_stock_detail,
+          "inventory_stock_detail"
+        );
+      } else {
+        if (context !== undefined) {
+          context.updateState({
+            inventory_stock_detail: inventory_stock_detail
+          });
+        }
+      }
+    }
+  }
+};
+
+const updatePODetail = ($this, context, row) => {
+  debugger;
+  if ($this.state.po_from === "PHR") {
+    let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+
+    for (var i = 0; i < pharmacy_stock_detail.length; i++) {
+      if (pharmacy_stock_detail[i].phar_item_id === row["phar_item_id"]) {
+        pharmacy_stock_detail[i] = row;
+      }
+    }
+
+    let sub_total = Enumerable.from(pharmacy_stock_detail).sum(s =>
+      parseFloat(s.extended_price)
+    );
+
+    let net_total = Enumerable.from(pharmacy_stock_detail).sum(s =>
+      parseFloat(s.net_extended_cost)
+    );
+
+    let net_payable = Enumerable.from(pharmacy_stock_detail).sum(s =>
+      parseFloat(s.total_amount)
+    );
+
+    let total_tax = Enumerable.from(pharmacy_stock_detail).sum(s =>
+      parseFloat(s.tax_amount)
+    );
+
+    let detail_discount = Enumerable.from(pharmacy_stock_detail).sum(s =>
+      parseFloat(s.sub_discount_amount)
+    );
+
     $this.setState({
       pharmacy_stock_detail: pharmacy_stock_detail,
-      addedItem: true,
-      item_category_id: null,
-      item_group_id: null,
-      item_id: null,
-      quantity_required: 0,
-
-      item_uom: null,
-      from_qtyhand: 0,
-      to_qtyhand: 0
+      sub_total: sub_total,
+      net_total: net_total,
+      net_payable: net_payable,
+      total_tax: total_tax,
+      detail_discount: detail_discount
     });
 
     if (context !== undefined) {
       context.updateState({
         pharmacy_stock_detail: pharmacy_stock_detail,
-        addedItem: true,
-        saveEnable: false,
-        item_category_id: null,
-        item_group_id: null,
-        item_id: null,
-        quantity_required: 0,
-        item_uom: null,
-        from_qtyhand: 0,
-        to_qtyhand: 0
-      });
-    }
-  }
-};
-
-const datehandle = ($this, ctrl, e) => {
-  $this.setState({
-    [e]: moment(ctrl)._d
-  });
-};
-
-const deletePosDetail = ($this, context, row) => {
-  let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
-
-  for (var i = 0; i < pharmacy_stock_detail.length; i++) {
-    if (
-      pharmacy_stock_detail[i].item_id === row["item_id"] &&
-      pharmacy_stock_detail[i].batchno === row["batchno"]
-    ) {
-      pharmacy_stock_detail.splice(i, 1);
-    }
-  }
-
-  $this.props.PosHeaderCalculations({
-    uri: "/billing/billingCalculations",
-    method: "POST",
-    data: { billdetails: pharmacy_stock_detail },
-    redux: {
-      type: "POS_HEADER_GEN_GET_DATA",
-      mappingName: "posheader"
-    }
-  });
-
-  if (pharmacy_stock_detail.length === 0) {
-    if (context !== undefined) {
-      context.updateState({
-        pharmacy_stock_detail: pharmacy_stock_detail,
-        advance_amount: 0,
-        discount_amount: 0,
-        sub_total: 0,
-        total_tax: 0,
-        net_total: 0,
-        copay_amount: 0,
-        sec_copay_amount: 0,
-        deductable_amount: 0,
-        sec_deductable_amount: 0,
-        gross_total: 0,
-        sheet_discount_amount: 0,
-        sheet_discount_percentage: 0,
-        net_amount: 0,
-        patient_res: 0,
-        company_res: 0,
-        sec_company_res: 0,
-        patient_payable: 0,
-        patient_payable_h: 0,
-        company_payable: 0,
-        sec_company_payable: 0,
-        patient_tax: 0,
-        company_tax: 0,
-        sec_company_tax: 0,
-        net_tax: 0,
-        credit_amount: 0,
-        receiveable_amount: 0,
-
-        cash_amount: 0,
-        card_number: "",
-        card_date: null,
-        card_amount: 0,
-        cheque_number: "",
-        cheque_date: null,
-        cheque_amount: 0,
-        total_amount: 0,
-        saveEnable: true,
-        unbalanced_amount: 0
+        sub_total: sub_total,
+        net_total: net_total,
+        net_payable: net_payable,
+        total_tax: total_tax,
+        detail_discount: detail_discount
       });
     }
   } else {
+    let inventory_stock_detail = $this.state.inventory_stock_detail;
+
+    for (var i = 0; i < inventory_stock_detail.length; i++) {
+      if (inventory_stock_detail[i].inv_item_id === row["inv_item_id"]) {
+        inventory_stock_detail[i] = row;
+      }
+    }
+
+    let sub_total = Enumerable.from(inventory_stock_detail).sum(s =>
+      parseFloat(s.extended_price)
+    );
+
+    let net_total = Enumerable.from(inventory_stock_detail).sum(s =>
+      parseFloat(s.net_extended_cost)
+    );
+
+    let net_payable = Enumerable.from(inventory_stock_detail).sum(s =>
+      parseFloat(s.total_amount)
+    );
+
+    let total_tax = Enumerable.from(inventory_stock_detail).sum(s =>
+      parseFloat(s.tax_amount)
+    );
+
+    let detail_discount = Enumerable.from(inventory_stock_detail).sum(s =>
+      parseFloat(s.sub_discount_amount)
+    );
+
+    $this.setState({
+      inventory_stock_detail: inventory_stock_detail,
+      sub_total: sub_total,
+      net_total: net_total,
+      net_payable: net_payable,
+      total_tax: total_tax,
+      detail_discount: detail_discount
+    });
+
     if (context !== undefined) {
       context.updateState({
-        pharmacy_stock_detail: pharmacy_stock_detail
+        inventory_stock_detail: inventory_stock_detail,
+        sub_total: sub_total,
+        net_total: net_total,
+        net_payable: net_payable,
+        total_tax: total_tax,
+        detail_discount: detail_discount
       });
     }
-  }
-};
-
-const updatePosDetail = ($this, e) => {
-  $this.props.PosHeaderCalculations({
-    uri: "/billing/billingCalculations",
-    method: "POST",
-    data: { billdetails: $this.state.pharmacy_stock_detail },
-    redux: {
-      type: "posheader",
-      mappingName: "posheader"
-    }
-  });
-};
-
-//Calculate Row Detail
-const calculateAmount = ($this, row, ctrl, e) => {
-  e = e || ctrl;
-  if (e.target.value !== e.target.oldvalue) {
-    let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
-
-    row[e.target.name] = parseFloat(e.target.value);
-    let inputParam = [
-      {
-        hims_d_services_id: row.service_id,
-        vat_applicable: "Y",
-        unit_cost: row.unit_cost,
-        pharmacy_item: "Y",
-        quantity: row.quantity,
-        discount_amount:
-          e.target.name === "discount_percentage" ? 0 : row.discount_amount,
-        discount_percentage:
-          e.target.name === "discount_amount" ? 0 : row.discount_percentage,
-
-        insured: $this.state.insured,
-        primary_insurance_provider_id: $this.state.insurance_provider_id,
-        primary_network_office_id:
-          $this.state.hims_d_insurance_network_office_id,
-        primary_network_id: $this.state.network_id,
-        sec_insured: $this.state.sec_insured,
-        secondary_insurance_provider_id:
-          $this.state.secondary_insurance_provider_id,
-        secondary_network_id: $this.state.secondary_network_id,
-        secondary_network_office_id: $this.state.secondary_network_office_id
-      }
-    ];
-
-    $this.props.generateBill({
-      uri: "/billing/getBillDetails",
-      method: "POST",
-      data: inputParam,
-      redux: {
-        type: "BILL_GEN_GET_DATA",
-        mappingName: "xxx"
-      },
-      afterSuccess: data => {
-        data.billdetails[0].extended_cost = data.billdetails[0].gross_amount;
-        data.billdetails[0].net_extended_cost = data.billdetails[0].net_amout;
-
-        data.billdetails[0].item_id = row.item_id;
-        data.billdetails[0].item_category = row.item_category;
-        data.billdetails[0].expiry_date = row.expiry_date;
-        data.billdetails[0].batchno = row.batchno;
-        data.billdetails[0].uom_id = row.uom_id;
-        extend(row, data.billdetails[0]);
-        for (let i = 0; i < pharmacy_stock_detail.length; i++) {
-          if (
-            pharmacy_stock_detail[i].service_type_id === row.service_type_id
-          ) {
-            pharmacy_stock_detail[i] = row;
-          }
-        }
-        $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
-      }
-    });
-  }
-};
-
-const PosheaderCalculation = ($this, e) => {
-  if (e.target.value !== e.target.oldvalue) {
-    let ItemInput = {
-      isReceipt: false,
-      intCalculateall: false,
-      sheet_discount_percentage: parseFloat(
-        $this.state.sheet_discount_percentage
-      ),
-      sheet_discount_amount: parseFloat($this.state.sheet_discount_amount),
-      advance_adjust: parseFloat($this.state.advance_adjust),
-      gross_total: parseFloat($this.state.gross_total)
-    };
-
-    $this.props.PosHeaderCalculations({
-      uri: "/billing/billingCalculations",
-      method: "POST",
-      data: ItemInput,
-      redux: {
-        type: "POS_HEADER_GEN_GET_DATA",
-        mappingName: "posheader"
-      }
-    });
   }
 };
 
@@ -510,24 +623,91 @@ const dateFormater = ($this, value) => {
 };
 
 const onchangegridcol = ($this, row, e) => {
+  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  row[name] = value;
-  row.update();
+  if (value > row.total_quantity) {
+    swalMessage({
+      title:
+        "Invalid Input. Authorize Quantity cannot be greater than Ordered Quantity.",
+      type: "warning"
+    });
+  } else {
+    row[name] = value;
+    row["rejected_quantity"] = row.total_quantity - value;
+    row.update();
+  }
+};
+
+const onchhangegriddiscount = ($this, row, ctrl, e) => {
+  debugger;
+
+  e = e || ctrl;
+
+  if (e.target.value === "") {
+    $this.setState({
+      [e.target.name]: 0
+    });
+  } else {
+    let sub_discount_percentage = 0;
+    let sub_discount_amount = 0;
+    let extended_cost = 0;
+
+    let tax_amount = 0;
+
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    if (name === "sub_discount_percentage") {
+      sub_discount_percentage = parseFloat(value);
+      sub_discount_amount =
+        (parseFloat(row.extended_price) * sub_discount_percentage) / 100;
+    } else {
+      sub_discount_amount = parseFloat(value);
+      sub_discount_percentage =
+        (sub_discount_amount / parseFloat(row.extended_price)) * 100;
+    }
+    if (sub_discount_percentage > 100) {
+      swalMessage({
+        title: "Invalid Input. Discount % cannot be greater than 100.",
+        type: "warning"
+      });
+    } else {
+      debugger;
+      extended_cost = parseFloat(row.extended_price) - sub_discount_amount;
+
+      tax_amount = (extended_cost * parseFloat(row.tax_percentage)) / 100;
+
+      row["extended_cost"] = extended_cost.toFixed(2);
+      row["unit_cost"] = (
+        extended_cost / parseFloat(row.order_quantity)
+      ).toFixed(2);
+
+      row["tax_amount"] = (
+        (extended_cost * parseFloat(row.tax_percentage)) /
+        100
+      ).toFixed(2);
+      row["total_amount"] = (tax_amount + extended_cost).toFixed(2);
+
+      row["sub_discount_percentage"] = sub_discount_percentage;
+      row["sub_discount_amount"] = sub_discount_amount.toFixed(2);
+      row["extended_cost"] = extended_cost.toFixed(2);
+      row["net_extended_cost"] = extended_cost.toFixed(2);
+      row.update();
+    }
+  }
 };
 
 export {
   texthandle,
   discounthandle,
-  UomchangeTexts,
   itemchangeText,
   numberchangeTexts,
   AddItems,
-  datehandle,
-  deletePosDetail,
-  updatePosDetail,
-  calculateAmount,
+  deletePODetail,
+  updatePODetail,
   dateFormater,
   onchangegridcol,
-  PosheaderCalculation
+  unitpricenumberchangeTexts,
+  assignDataandclear,
+  onchhangegriddiscount
 };
