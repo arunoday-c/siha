@@ -1045,9 +1045,7 @@ class Appointment extends Component {
                   <li key={index}>
                     {item.patient_name}{" "}
                     <b
-                      onClick={() => {
-                        alert("Remove Stand By");
-                      }}
+                      onClick={this.cancelAppt.bind(this, item)}
                     >
                       x
                     </b>
@@ -1083,7 +1081,8 @@ class Appointment extends Component {
               {_firstPatient.contact_number}
               <i
                 className="fas fa-times"
-                onClick={this.openEditModal.bind(this, _firstPatient)}
+                onClick={
+                  this.cancelAppt.bind(this, _firstPatient)}
               />
             </div>
             {this.loadSubStandBy(standByPatients)}

@@ -56,7 +56,6 @@ class EmployeeMaster extends Component {
         ...IOputs
       },
       () => {
-        
         this.props.onClose && this.props.onClose(e);
       }
     );
@@ -71,6 +70,9 @@ class EmployeeMaster extends Component {
 
     this.props.getSubDepartment({
       uri: "/department/get/subdepartment",
+      data: {
+        sub_department_status: "A"
+      },
       method: "GET",
       redux: {
         type: "SUB_DEPT_GET_DATA",
@@ -139,7 +141,6 @@ class EmployeeMaster extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    
     if (
       newProps.employeeDetailsPop.hims_d_employee_id !== undefined &&
       this.state.full_name !== null
@@ -186,7 +187,6 @@ class EmployeeMaster extends Component {
                   <ul className="nav">
                     <li
                       algaehtabs={"PersonalDetails"}
-                      
                       className={"nav-item tab-button active"}
                       onClick={this.openTab.bind(this)}
                     >
@@ -199,7 +199,6 @@ class EmployeeMaster extends Component {
                       }
                     </li>
                     <li
-                      
                       algaehtabs={"CommissionSetup"}
                       className={"nav-item tab-button"}
                       onClick={this.openTab.bind(this)}

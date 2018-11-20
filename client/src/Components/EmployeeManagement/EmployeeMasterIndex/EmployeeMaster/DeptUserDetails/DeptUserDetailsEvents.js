@@ -22,9 +22,12 @@ const departmenttexthandle = ($this, ctrl, e) => {
     },
     () => {
       $this.props.getEmpSpeciality({
-        uri: "/employeesetups/getEmpSpeciality",
+        uri: "/specialityAndCategory/getEmployeeSpecialityMaster",
         method: "GET",
-        data: { sub_department_id: $this.state.sub_department_id },
+        data: {
+          sub_department_id: $this.state.sub_department_id,
+          speciality_status: "A"
+        },
         redux: {
           type: "EMP_SPECILITY_GET_DATA",
           mappingName: "empdepspeciality"
@@ -45,9 +48,15 @@ const specialitytexthandle = ($this, ctrl, e) => {
     },
     () => {
       $this.props.getEmployeeCategory({
-        uri: "/employee/getEmployeeCategory",
+        uri: "/specialityAndCategory/getCategorySpecialityMap",
         method: "GET",
-        data: { speciality_id: $this.state.speciality_id },
+        //data: { speciality_id: $this.state.speciality_id },
+        data: {
+          category_speciality_status: "A",
+          speciality_status: "A",
+          employee_category_status: "A",
+          hims_d_employee_speciality_id: $this.state.speciality_id
+        },
         redux: {
           type: "EMP_SPEC_CATEGORY_GET_DATA",
           mappingName: "specimapcategory"
@@ -70,7 +79,7 @@ const categorytexthandle = ($this, ctrl, e) => {
 
 const AddDeptUser = ($this, context, e) => {
   e.preventDefault();
-  
+
   AlgaehValidation({
     alertTypeIcon: "warning",
     querySelector: "data-validate='deptUserdtl'",
