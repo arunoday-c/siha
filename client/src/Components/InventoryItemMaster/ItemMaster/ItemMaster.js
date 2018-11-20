@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import ItemDetails from "./ItemDetails/ItemDetails";
 import UOMAdditionalInfo from "./UOMAdditionalInfo/UOMAdditionalInfo";
+import ItemPriceList from "./ItemPriceList/ItemPriceList";
 
 import "./../../../styles/site.css";
 import "./ItemMaster.css";
@@ -23,13 +24,11 @@ export default class PatientDetails extends Component {
   };
 
   componentWillMount() {
-    
     let IOputs = InventoryItem.inputParam();
     this.setState({ ...this.state, ...IOputs });
   }
 
   componentWillReceiveProps(newProps) {
-    
     if (newProps.itemPop.hims_d_inventory_item_master_id !== undefined) {
       let IOputs = newProps.itemPop;
       this.setState({ ...this.state, ...IOputs });
@@ -75,6 +74,7 @@ export default class PatientDetails extends Component {
                 >
                   <ItemDetails itemPop={this.state} />
                   <UOMAdditionalInfo itemPop={this.state} />
+                  <ItemPriceList itemPop={this.state} />
                 </MyContext.Provider>
               </div>
             </div>

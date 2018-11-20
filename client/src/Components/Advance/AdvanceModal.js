@@ -166,18 +166,15 @@ class AddAdvanceModal extends PureComponent {
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3 mandatory" }}
                     label={{
-                      fieldName: "counter_id",
+                      fieldName: "decimal",
                       isImp: true
                     }}
                     selector={{
-                      name: "counter_id",
+                      name: "decimal",
                       className: "select-fld",
-                      value: this.state.counter_id,
+                      value: this.state.decimal,
                       dataSource: {
-                        textField:
-                          this.state.selectedLang === "en"
-                            ? "name"
-                            : "arabic_name",
+                        textField: "name",
                         valueField: "value",
                         data: variableJson.FORMAT_COUNTER
                       },

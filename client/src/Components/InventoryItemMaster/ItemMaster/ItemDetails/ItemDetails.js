@@ -17,6 +17,7 @@ import {
   CptCodesSearch,
   VatAppilicable
 } from "./ItemDetailsEvents";
+import GlobalVariables from "../../../../utils/GlobalVariables.json";
 
 class ItemDetails extends Component {
   constructor(props) {
@@ -35,16 +36,13 @@ class ItemDetails extends Component {
   }
 
   componentWillMount() {
-    
     let InputOutput = this.props.itemPop;
     this.setState({ ...this.state, ...InputOutput });
   }
 
   componentWillReceiveProps(newProps) {
     let InputOutput = newProps.itemPop;
-    this.setState({ ...this.state, ...InputOutput }, () => {
-      
-    });
+    this.setState({ ...this.state, ...InputOutput }, () => {});
   }
 
   render() {
@@ -87,6 +85,25 @@ class ItemDetails extends Component {
                       events: {
                         onChange: texthandle.bind(this, this, context)
                       }
+                    }}
+                  />
+
+                  <AlagehAutoComplete
+                    div={{ className: "col-lg-3" }}
+                    label={{
+                      fieldName: "item_type",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "item_type",
+                      className: "select-fld",
+                      value: this.state.item_type,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: GlobalVariables.ITEM_TYPE
+                      },
+                      onChange: texthandle.bind(this, this, context)
                     }}
                   />
 

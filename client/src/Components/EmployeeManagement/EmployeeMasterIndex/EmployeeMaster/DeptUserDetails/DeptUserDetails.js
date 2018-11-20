@@ -41,7 +41,6 @@ class DeptUserDetails extends Component {
   }
 
   componentDidMount() {
-    
     if (
       this.props.empcategory === undefined ||
       this.props.empcategory.length === 0
@@ -152,7 +151,7 @@ class DeptUserDetails extends Component {
 
                     dataSource: {
                       textField: "employee_category_name",
-                      valueField: "hims_employee_category_id",
+                      valueField: "hims_m_category_speciality_mappings_id",
                       data: this.props.specimapcategory
                     },
 
@@ -303,11 +302,11 @@ class DeptUserDetails extends Component {
                         ),
                         displayTemplate: row => {
                           let display =
-                            this.props.empcategory === undefined
+                            this.props.specimapcategory === undefined
                               ? []
-                              : this.props.empcategory.filter(
+                              : this.props.specimapcategory.filter(
                                   f =>
-                                    f.hims_employee_category_id ===
+                                    f.hims_m_category_speciality_mappings_id ===
                                     row.category_id
                                 );
 
