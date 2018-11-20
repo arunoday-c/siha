@@ -130,7 +130,6 @@ class AutoComplete extends PureComponent {
   }
 
   componentDidMount() {
-    
     document.addEventListener("mousedown", this.handleClickOutside, false);
     const _required =
       this.props.label !== undefined
@@ -146,7 +145,8 @@ class AutoComplete extends PureComponent {
       });
     } else {
       this.setState({
-        displayValue: this.props.selector.value
+        displayValue: this.props.selector.value,
+        displayText: this.getTextByValue(this.props.selector.value)
       });
     }
   }

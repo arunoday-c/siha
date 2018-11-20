@@ -1570,7 +1570,7 @@ class Appointment extends Component {
                                 onChange: this.texthandle.bind(this)
                               },
                               others: {
-                                disabled: true
+                                disabled: false
                               }
                             }}
                           />
