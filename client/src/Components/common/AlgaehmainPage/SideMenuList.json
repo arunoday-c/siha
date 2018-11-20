@@ -400,7 +400,7 @@
         "name": "Purchase Order List",
         "label": "Purchase Order List",
         "arlabel": "قائمة أوامر الشراء",
-        "path": "/PurchaseOederList"
+        "path": "/PurchaseOrderList"
       },
       {
         "name": "Delivery Note Entry",

@@ -185,5 +185,17 @@
         "label": "Patient Name"
       }
     ]
+  },
+  "Purchase": {
+    "POEntry": [
+      {
+        "fieldName": "purchase_number",
+        "label": "PO Number"
+      },
+      {
+        "fieldName": "po_date",
+        "label": "PO Date"
+      }
+    ]
   }
 }

@@ -191,23 +191,32 @@ let addPosEntry = (req, res, next) => {
                   });
                 }
 
-                connection.commit(error => {
-                  if (error) {
-                    connection.rollback(() => {
-                      releaseDBConnection(db, connection);
-                      next(error);
-                    });
-                  }
-                  releaseDBConnection(db, connection);
-                  req.records = {
-                    pos_number: documentCode,
-                    hims_f_pharmacy_pos_header_id: headerResult.insertId,
-                    receipt_number: req.records.receipt_number,
-                    year: year,
-                    period: period
-                  };
-                  next();
-                });
+                req.records = {
+                  pos_number: documentCode,
+                  hims_f_pharmacy_pos_header_id: headerResult.insertId,
+                  receipt_number: req.records.receipt_number,
+                  year: year,
+                  period: period
+                };
+                next();
+
+                // connection.commit(error => {
+                //   if (error) {
+                //     connection.rollback(() => {
+                //       releaseDBConnection(db, connection);
+                //       next(error);
+                //     });
+                //   }
+                //   releaseDBConnection(db, connection);
+                //   req.records = {
+                //     pos_number: documentCode,
+                //     hims_f_pharmacy_pos_header_id: headerResult.insertId,
+                //     receipt_number: req.records.receipt_number,
+                //     year: year,
+                //     period: period
+                //   };
+                //   next();
+                // });
               }
             );
           } else {

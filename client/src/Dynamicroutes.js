@@ -76,6 +76,7 @@ import AcquisitionEntry from "./Components/AssetManagement/AcquisitionEntry/Acqu
 import DepreciationEntry from "./Components/AssetManagement/DepreciationEntry/DepreciationEntry";
 import DepreciationReversal from "./Components/AssetManagement/DepreciationReversal/DepreciationReversal";
 import Disposal from "./Components/AssetManagement/Disposal/Disposal";
+import PurchaseOrderList from "./Components/Procurement/PurchaseOrderList/PurchaseSwitch";
 
 const componts = (selectedLang, breadStyle) => {
   return {
@@ -156,7 +157,8 @@ const componts = (selectedLang, breadStyle) => {
     DepreciationReversal: (
       <DepreciationReversal SelectLanguage={selectedLang} />
     ),
-    Disposal: <Disposal SelectLanguage={selectedLang} />
+    Disposal: <Disposal SelectLanguage={selectedLang} />,
+    PurchaseOrderList: <PurchaseOrderList SelectLanguage={selectedLang} />
   };
 };
 
