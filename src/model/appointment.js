@@ -2472,7 +2472,7 @@ let BAckupaddDoctorToExistingSchedule = (req, res, next) => {
 };
 
 //created by irfan: to add patient appointment
-let addPatientAppointment = (req, res, next) => {
+let addPatientAppointmentBACKUP_20_nov = (req, res, next) => {
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -2524,6 +2524,110 @@ let addPatientAppointment = (req, res, next) => {
           next();
         }
       );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+
+
+//created by irfan: to add patient appointment
+let addPatientAppointment = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+
+//       select hims_f_patient_appointment_id,provider_id,patient_name,appointment_date,appointment_from_time,
+// appointment_to_time from hims_f_patient_appointment where record_status='A'
+// and date(appointment_date)=date('2018-11-21') and provider_id=2 and cancelled='N' and
+// (('08:20:00'>=appointment_from_time and '08:20:00'<appointment_to_time)
+// or('08:30:00'>appointment_from_time and '08:30:00'<=appointment_to_time))
+
+      connection.query(
+        "select hims_f_patient_appointment_id,provider_id,patient_name,appointment_date,appointment_from_time,\
+        appointment_to_time from hims_f_patient_appointment where record_status='A'\
+        and date(appointment_date)=date(?) and provider_id=? and cancelled='N' and sub_department_id=? and\
+        ((?>=appointment_from_time and ?<appointment_to_time)\
+        or(?>appointment_from_time and ?<=appointment_to_time))",
+        [
+          input.appointment_date,
+          input.provider_id,
+          input.sub_department_id,
+          input.appointment_from_time,
+          input.appointment_from_time,
+          input.appointment_to_time,
+          input.appointment_to_time,
+        ],
+        (error, slotResult) => {
+          if (error) {
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(error);
+            });
+          }
+
+    if (slotResult.length>0){
+      releaseDBConnection(db, connection);
+      req.records = {slotExist:true};
+      next();
+    }else{
+      
+
+      connection.query(
+        "INSERT INTO `hims_f_patient_appointment` (patient_id,patient_code,provider_id,sub_department_id,number_of_slot,appointment_date,appointment_from_time,appointment_to_time,\
+          appointment_status_id,patient_name,arabic_name,date_of_birth,age,contact_number,email,send_to_provider,gender,appointment_remarks,is_stand_by,\
+          created_date, created_by, updated_date, updated_by)\
+          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        [
+          input.patient_id,
+          input.patient_code,
+          input.provider_id,
+          input.sub_department_id,
+          input.number_of_slot,
+          input.appointment_date,
+          input.appointment_from_time,
+          input.appointment_to_time,
+          input.appointment_status_id,
+          input.patient_name,
+          input.arabic_name,
+          input.date_of_birth,
+          input.age,
+          input.contact_number,
+          input.email,
+          input.send_to_provider,
+          input.gender,
+          input.appointment_remarks,
+          input.is_stand_by,
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+      }
+
+      }
+      );
+
+
     });
   } catch (e) {
     next(e);
@@ -2593,10 +2697,6 @@ let updatePatientAppointment = (req, res, next) => {
     next(e);
   }
 };
-
-
-
-
 
 
 //created by irfan: to get Patient Appointment
