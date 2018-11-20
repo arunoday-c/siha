@@ -612,7 +612,7 @@ class Appointment extends Component {
           pat_edit.appointment_from_time,
           "HH:mm:ss"
         ).add(pat_edit.number_of_slot * this.state.slot, "minutes");
-        
+
         this.setState({
           edit_appointment_status_id: pat_edit.appointment_status_id,
           edit_appt_date: pat_edit.appointment_date,
@@ -1044,11 +1044,7 @@ class Appointment extends Component {
                 return (
                   <li key={index}>
                     {item.patient_name}{" "}
-                    <b
-                      onClick={this.cancelAppt.bind(this, item)}
-                    >
-                      x
-                    </b>
+                    <b onClick={this.cancelAppt.bind(this, item)}>x</b>
                   </li>
                 );
               })}
@@ -1081,8 +1077,7 @@ class Appointment extends Component {
               {_firstPatient.contact_number}
               <i
                 className="fas fa-times"
-                onClick={
-                  this.cancelAppt.bind(this, _firstPatient)}
+                onClick={this.cancelAppt.bind(this, _firstPatient)}
               />
             </div>
             {this.loadSubStandBy(standByPatients)}
@@ -1309,7 +1304,7 @@ class Appointment extends Component {
       const _completeWidth = doctorCntr[0].width * doctorCntr.length;
       return { width: _completeWidth };
       // this.setState({ outerStyles: { width: _completeWidth } }, () => {
-      //   
+      //
       // });
     }
     return null;
@@ -1612,7 +1607,7 @@ class Appointment extends Component {
                                 onChange: this.texthandle.bind(this)
                               },
                               others: {
-                                disabled: true
+                                disabled: false
                               }
                             }}
                           />

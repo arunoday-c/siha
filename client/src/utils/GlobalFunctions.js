@@ -97,7 +97,7 @@ export function saveImageOnServer(options) {
         data: formData,
         method: "POST",
         header: {
-          "content-type": "application/json",
+          "content-type": "multipart/form-data",
           "x-file-details": JSON.stringify({
             tempFileName: settings.fileName,
             pageName: settings.pageName,
