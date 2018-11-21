@@ -20,11 +20,11 @@ class PatientRecall extends Component {
 
   loadPatients() {
     algaehApiCall({
-      uri: "/patientRecall",
+      uri: "/doctorsWorkBench/getFollowUp",
       method: "GET",
       data: {
         department_id: this.state.sub_department_id,
-        provider_id: this.state.provider_id,
+        doctor_id: this.state.provider_id,
         date_of_recall: this.state.date_of_recall
       },
       onSuccess: response => {
@@ -130,7 +130,7 @@ class PatientRecall extends Component {
               className: "txt-fld",
               name: "date_of_recall"
             }}
-            maxDate={new Date()}
+            minDate={new Date()}
             events={{
               onChange: selectedDate => {
                 this.setState({
@@ -195,7 +195,10 @@ class PatientRecall extends Component {
                     {
                       fieldName: "full_name",
                       label: "Patient Name",
-                      others: { resizable: false, style: { textAlign: "left" } }
+                      others: {
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
                     },
                     {
                       fieldName: "gender",
@@ -211,15 +214,6 @@ class PatientRecall extends Component {
                       label: "Date of Birth",
                       others: {
                         maxWidth: 120,
-                        resizable: false,
-                        style: { textAlign: "center" }
-                      }
-                    },
-                    {
-                      fieldName: "age",
-                      label: "Age",
-                      others: {
-                        maxWidth: 60,
                         resizable: false,
                         style: { textAlign: "center" }
                       }
