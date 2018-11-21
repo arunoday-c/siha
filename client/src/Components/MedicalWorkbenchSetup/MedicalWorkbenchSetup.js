@@ -35,7 +35,6 @@ class MedicalWorkbenchSetup extends Component {
   render() {
     return (
       <div className="medical_wb_setup">
-        {" "}
         <div className="row">
           <div className="tabMaster toggle-section">
             <ul className="nav">

@@ -47,7 +47,7 @@ import Reports from "./Components/Reports/Reports";
 import PatientRecall from "./Components/PatientRecall/PatientRecall";
 
 import WorkListGeneration from "./Components/InsuranceClaims/WorkListGeneration/WorkListGeneration";
-import RCMDesktop from "./Components/InsuranceClaims/RCMDesktop/RCMDesktop";
+import RCMWorkbench from "./Components/InsuranceClaims/RCMWorkbench/RCMWorkbench";
 import StaffCashCollection from "./Components/StaffCashCollection/StaffCashCollection";
 import InvoiceGeneration from "./Components/InsuranceClaims/InvoiceGeneration/InvoiceGeneration";
 import InventorySetup from "./Components/InventorySetup/InventorySetup";
@@ -127,7 +127,7 @@ const componts = (selectedLang, breadStyle) => {
     RequisitionList: <RequisitionSwitch SelectLanguage={selectedLang} />,
     ReportsList: <Reports SelectLanguage={selectedLang} />,
     WorkListGeneration: <WorkListGeneration SelectLanguage={selectedLang} />,
-    RCMDesktop: <RCMDesktop SelectLanguage={selectedLang} />,
+    RCMWorkbench: <RCMWorkbench SelectLanguage={selectedLang} />,
     StaffCashCollection: <StaffCashCollection SelectLanguage={selectedLang} />,
     InvoiceGeneration: <InvoiceGeneration SelectLanguage={selectedLang} />,
     InventorySetup: <InventorySetup SelectLanguage={selectedLang} />,

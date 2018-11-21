@@ -217,9 +217,9 @@
         "path": "/WorkListGeneration"
       },
       {
-        "name": "RCM Desktop",
+        "name": "RCM Workbench",
         "label": "سطح المكتب RCM",
-        "path": "/RCMDesktop"
+        "path": "/RCMWorkbench"
       }
     ]
   },

@@ -2277,7 +2277,7 @@ let addFollowUp = (req, res, next) => {
     hims_f_patient_followup_id: null,
     patient_id: null,
     doctor_id: null,
-    followup_type: null,    
+    followup_type: null,
     followup_date: null,
     reason: null,
     created_by: req.userIdentity.algaeh_d_app_user_id,
@@ -2300,7 +2300,7 @@ let addFollowUp = (req, res, next) => {
       [
         inputParam.patient_id,
         inputParam.doctor_id,
-        inputParam.followup_type,        
+        inputParam.followup_type,
         inputParam.followup_date,
         inputParam.reason,
         inputParam.created_by,
@@ -2554,6 +2554,46 @@ let getPatientHistory = (req, res, next) => {
   }
 };
 
+let getFollowUp = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let inputData = extend({}, req.query);
+
+    // let followup_date = "date(inputData.date_of_recall)"";
+    let strQuery =
+      "SELECT p.patient_code,p.full_name, p.registration_date,p.gender,p.date_of_birth,p.contact_number \
+      FROM hims_f_patient_followup, hims_f_patient p where hims_f_patient_followup.patient_id = p.hims_d_patient_id \
+      and hims_f_patient_followup.doctor_id=?";
+
+    if (
+      inputData.date_of_recall != undefined ||
+      inputData.date_of_recall != null
+    ) {
+      let followup_date =
+        "date(followup_date)= date('" + inputData.date_of_recall + "')";
+
+      strQuery = strQuery + " and " + followup_date;
+    }
+
+    debugLog("strQuery: ", strQuery);
+    db.getConnection((error, connection) => {
+      connection.query(strQuery, [inputData.doctor_id], (error, result) => {
+        releaseDBConnection(db, connection);
+        if (error) {
+          next(error);
+        }
+        req.records = result;
+        next();
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   physicalExaminationHeader,
   physicalExaminationDetails,
@@ -2572,6 +2612,7 @@ module.exports = {
   updatdePatEncntrStatus,
   getPatientProfile,
   getChiefComplaints,
+  getFollowUp,
 
   addPatientChiefComplaints,
   addNewChiefComplaint,
