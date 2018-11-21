@@ -70,7 +70,8 @@ export default {
       dataExitst: false,
       addItemButton: true,
       ReqData: true,
-      ClearDisable: false
+      ClearDisable: false,
+      saveEnable: true
     };
     return output;
   }
