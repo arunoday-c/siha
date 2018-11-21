@@ -86,9 +86,12 @@ class AutoComplete extends PureComponent {
   }
 
   menuHeight() {
-    const _height = this.props.selector.dataSource.data.length * 30;
-    console.log("Menu height", _height);
-    return _height;
+    if (this.props.selector.dataSource.data !== undefined) {
+      const _height = this.props.selector.dataSource.data.length * 30;
+      console.log("Menu height", _height);
+      return _height;
+    }
+    return 0;
   }
 
   distanceFromBottom() {
