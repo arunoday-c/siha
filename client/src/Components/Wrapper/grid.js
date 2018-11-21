@@ -223,11 +223,14 @@ class DataGrid extends PureComponent {
     }
   };
   toggleRowSave = index => {
-    const existsing = JSON.parse(sessionStorage.getItem(this.props.id))[
-      "collection"
-    ];
+    const existsing = Enumerable.from(
+      JSON.parse(sessionStorage.getItem(this.props.id))["collection"]
+    )
+      .where(w => w.rowIdx === index)
+      .firstOrDefault();
+
     const row = this.state.data[index];
-    if (JSON.stringify(existsing[index]) === JSON.stringify(row)) {
+    if (JSON.stringify(existsing) === JSON.stringify(row)) {
       this.setState({
         editableRows: {
           ...this.state.editableRows,
