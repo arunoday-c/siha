@@ -48,10 +48,6 @@ class PatientProfile extends Component {
     getPatientDiet(this);
     getPatientDiagnosis(this);
     this.changeTabs = this.changeTabs.bind(this);
-
-    // setTimeout(() => {
-    //   this.getPatientImage(this);
-    // }, 6000);
   }
 
   changeTabs(e) {
@@ -73,7 +69,7 @@ class PatientProfile extends Component {
     cancelRequest("getPatientDiagnosis");
   }
 
-  openUCAFReport(e) {
+  openUCAFReport(data, e) {
     algaehApiCall({
       uri: "/ucaf/getPatientUCAF",
       method: "GET",
@@ -88,7 +84,7 @@ class PatientProfile extends Component {
             report: {
               fileName: "ucafReport"
             },
-            data: _dataG
+            data: data
           });
         }
         console.log("Report ", response);
@@ -303,72 +299,11 @@ class PatientProfile extends Component {
           </div>
           <div className="patientVital">
             {_Vitals.map((row, idx) => (
-              <span>
+              <span key={idx}>
                 {row.vitals_name}
                 <b>{" : " + row.vital_value}</b>
               </span>
             ))}
-
-            {/* <span>
-              BP:{" "}
-              <b>
-                {this.props.patient_vitals !== undefined &&
-                this.props.patient_vitals.length !== 0
-                  ? this.props.patient_vitals[0].systolic
-                  : 0}
-                /
-                {this.props.patient_vitals !== undefined &&
-                this.props.patient_vitals.length !== 0
-                  ? this.props.patient_vitals[0].diastolic
-                  : 0}
-              </b>
-            </span>
-            <span>
-              Temp &deg;C:{" "}
-              <b>
-                {this.props.patient_vitals !== undefined &&
-                this.props.patient_vitals.length !== 0
-                  ? this.props.patient_vitals[0].temperature_celsisus
-                  : 0}{" "}
-                (
-                {this.props.patient_vitals !== undefined &&
-                this.props.patient_vitals.length !== 0
-                  ? this.props.patient_vitals[0].temperature_from
-                  : 0}
-                )
-              </b>
-            </span>
-            <span>
-              H:{" "}
-              <b>
-                {this.props.patient_vitals !== undefined &&
-                this.props.patient_vitals.length !== 0
-                  ? this.props.patient_vitals[0].height
-                  : 0}{" "}
-                CM
-              </b>
-            </span>
-            <span>
-              W:{" "}
-              <b>
-                {this.props.patient_vitals !== undefined &&
-                this.props.patient_vitals.length !== 0
-                  ? this.props.patient_vitals[0].weight
-                  : 0}{" "}
-                KG
-              </b>
-            </span>
-
-            <span>
-              BMI :{" "}
-              <b>
-                {" "}
-                {this.props.patient_vitals !== undefined &&
-                this.props.patient_vitals.length !== 0
-                  ? this.props.patient_vitals[0].bmi
-                  : 0}{" "}
-              </b>
-            </span> */}
           </div>
           <div className="moreAction">
             <button type="button" className="btn btn-outline-secondary btn-sm">
@@ -379,7 +314,7 @@ class PatientProfile extends Component {
               <li>
                 <span>Open MRD</span>
               </li>
-              <li onClick={this.openUCAFReport.bind(this)}>
+              <li onClick={this.openUCAFReport.bind(this, _pat_profile)}>
                 <span>UCAF Report</span>
               </li>
             </ul>

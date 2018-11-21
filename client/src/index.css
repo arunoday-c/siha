@@ -13,6 +13,19 @@
   :global ::-webkit-scrollbar {
     width: 8px;
     height: 8px; }
+  :global label {
+    text-transform: uppercase;
+    font-weight: 500;
+    font-size: 0.7rem; }
+  :global .UCAF20_Report {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    font-size: 0.9rem; }
+  :global .UCAF20_Report td {
+    border: 1px solid #f2f2f2;
+    padding: 2px 4px;
+    margin: 0; }
   :global .print-body {
     /*Main Print Only CSS*/
     /*Header Only CSS*/
