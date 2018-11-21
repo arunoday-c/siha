@@ -62,8 +62,6 @@ const itemchangeText = ($this, e) => {
   let value = e.value || e.target.value;
   getItemUom($this);
 
-  
-
   $this.setState({
     [name]: value,
     item_category_id: e.selected.category_id,
@@ -79,7 +77,6 @@ const AddItems = $this => {
     alertTypeIcon: "warning",
     querySelector: "data-validate='InvIntialStock'",
     onSuccess: () => {
-      
       let inventory_stock_detail = $this.state.inventory_stock_detail;
       let itemObj = {
         location_id: $this.state.location_id,
@@ -121,9 +118,7 @@ const AddItems = $this => {
           grn_number: null,
           sales_uom: null
         },
-        () => {
-          
-        }
+        () => {}
       );
     }
   });
@@ -178,11 +173,11 @@ const SaveInitialStock = $this => {
     data: $this.state,
     onSuccess: response => {
       if (response.data.success === true) {
-        
+        debugger;
         $this.setState({
           document_number: response.data.records.document_number,
-          hims_f_pharmacy_stock_header_id:
-            response.data.records.hims_f_pharmacy_stock_header_id,
+          hims_f_inventory_stock_header_id:
+            response.data.records.hims_f_inventory_stock_header_id,
           year: response.data.records.year,
           period: response.data.records.period,
           saveEnable: true,
@@ -228,12 +223,12 @@ const ClearData = $this => {
     extended_cost: 0,
     saveEnable: true,
     postEnable: true,
-    dataExitst: false
+    dataExitst: false,
+    posted: "N"
   });
 };
 
 const PostInitialStock = $this => {
-  
   $this.state.posted = "Y";
   $this.state.transaction_type = "INT";
   $this.state.transaction_id = $this.state.hims_f_inventory_stock_header_id;
