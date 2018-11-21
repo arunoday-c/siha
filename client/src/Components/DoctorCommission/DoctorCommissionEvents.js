@@ -152,7 +152,7 @@ const PostDoctorCommission = $this => {
   //   uri: "/pharmacy/addPharmacyInitialStock",
   //   data: $this.state,
   //   onSuccess: response => {
-  //     
+  //
   //     if (response.data.success === true) {
   //       $this.setState({
   //         document_number: response.data.records.document_number,
@@ -219,6 +219,7 @@ const LoadBills = $this => {
         mappingName: "billscommission"
       },
       afterSuccess: data => {
+        debugger;
         // let providers = Enumerable.from(data)
         //   .where(w => w.isdoctor === "Y")
         //   .toArray();

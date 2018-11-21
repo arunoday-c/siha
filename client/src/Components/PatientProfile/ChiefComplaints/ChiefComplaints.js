@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import "./chiefcomplaints.css";
-import "react-rangeslider/lib/index.css";
 import Modal from "@material-ui/core/Modal";
 import {
   AlgaehDataGrid,
