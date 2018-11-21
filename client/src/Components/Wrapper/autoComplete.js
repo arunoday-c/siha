@@ -205,7 +205,6 @@ class AutoComplete extends PureComponent {
   }
 
   handleKeyUpNavigation(e) {
-    debugger;
     const prent =
       e.currentTarget.nextElementSibling.nextElementSibling.children;
     if (e.keyCode === 40) {

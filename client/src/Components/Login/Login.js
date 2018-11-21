@@ -20,10 +20,14 @@ export default class Login extends Component {
       pwdError: false,
       username: "",
       password: "",
-      token: ""
+      token: "",
+      item_id: ""
     };
   }
 
+  componentWillUnmount() {
+    window.sessionStorage.removeItem("hospitalList");
+  }
   componentWillMount() {
     this.deleteAllPreviousCookies();
     this.deleteAllPreviousLocalStorage();
@@ -125,7 +129,18 @@ export default class Login extends Component {
       [e.target.name]: e.target.value
     });
   }
+  onHospitalChange(selector) {
+    this.setState({ item_id: selector.value });
+  }
+  onHospitalClear(name) {
+    this.setState({ item_id: null });
+  }
   render() {
+    const _hospitalList =
+      window.sessionStorage.getItem("hospitalList") === null ||
+      window.sessionStorage.getItem("hospitalList") === "undefined"
+        ? []
+        : JSON.parse(window.sessionStorage.getItem("hospitalList"));
     return (
       <div className="login bg">
         <div className="container margintop15">
@@ -216,12 +231,12 @@ export default class Login extends Component {
                           className: "select-fld",
                           value: this.state.item_id,
                           dataSource: {
-                            textField: "item_description",
-                            valueField: "hims_d_item_master_id",
-                            data: this.props.itemlist
+                            textField: "hospital_name",
+                            valueField: "hims_d_hospital_id",
+                            data: _hospitalList
                           },
-                          onChange: null,
-                          onClear: null
+                          onChange: this.onHospitalChange.bind(this),
+                          onClear: this.onHospitalClear.bind(this)
                         }}
                       />
                       <div className="col-12">

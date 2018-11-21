@@ -28,6 +28,10 @@ export function getTokenDetals() {
     })
       .then(response => {
         setToken(response.data.token, response.data.days);
+        window.sessionStorage.setItem(
+          "hospitalList",
+          JSON.stringify(response.data.hospitalList)
+        );
       })
       .catch(err => {
         console.error("Error : ", err.message);
