@@ -227,101 +227,48 @@ class DepreciationEntry extends Component {
           <div className="col-lg-12">
             <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
               <div className="row">
-                <div className="col-lg-12" id="PointSaleGrid">
+                <div className="col-lg-12" id="depreEntryCntr">
                   <AlgaehDataGrid
                     id="PO_details"
                     columns={[
                       {
                         fieldName: "item_id",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Item Name" }} />
+                          <AlgaehLabel label={{ forceLabel: "Asset Code" }} />
                         )
                       },
 
                       {
                         fieldName: "item_category",
                         label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Item Category" }}
-                          />
+                          <AlgaehLabel label={{ forceLabel: "Asset Desc." }} />
                         )
                       },
                       {
                         fieldName: "qtyhand",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Quantity In Hand" }}
-                          />
-                        ),
+                        label: <AlgaehLabel label={{ forceLabel: "Method" }} />,
                         disabled: true
                       },
                       {
                         fieldName: "expiry_date",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Expiry Date" }} />
+                          <AlgaehLabel label={{ forceLabel: "Fiscal Year" }} />
                         )
                       },
                       {
                         fieldName: "batchno",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Batch No." }} />
+                          <AlgaehLabel
+                            label={{ forceLabel: "Fiscal Period" }}
+                          />
                         ),
                         disabled: true
                       },
                       {
                         fieldName: "uom_id",
-                        label: <AlgaehLabel label={{ forceLabel: "UOM" }} />
-                      },
-                      {
-                        fieldName: "unit_cost",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Unit Cost" }} />
-                        ),
-                        disabled: true
-                      },
-                      {
-                        fieldName: "quantity",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Quantity" }} />
+                          <AlgaehLabel label={{ forceLabel: "Actual Year" }} />
                         )
-                      },
-
-                      {
-                        fieldName: "extended_cost",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Extended Cost" }}
-                          />
-                        ),
-                        disabled: true
-                      },
-                      {
-                        fieldName: "discount_percentage",
-                        label: (
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "discount %"
-                            }}
-                          />
-                        )
-                      },
-                      {
-                        fieldName: "discount_amout",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "discount Amount" }}
-                          />
-                        )
-                      },
-
-                      {
-                        fieldName: "net_extended_cost",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Net Extended Cost" }}
-                          />
-                        ),
-                        disabled: true
                       }
                     ]}
                     keyId="service_type_id"
