@@ -574,6 +574,23 @@ class Appointment extends Component {
   openEditModal(patient, e) {
     e.preventDefault();
 
+    debugger;
+    let maxSlots = 1;
+    const _currentRow = e.target.parentElement.parentNode.sectionRowIndex + 1;
+    const _allRows =
+      e.target.parentElement.parentElement.parentElement.childElementCount;
+
+    for (let i = _currentRow; i < _allRows; i++) {
+      const _element =
+        e.target.parentElement.parentElement.parentElement.children[i];
+      const _firstChild = _element.children[0];
+      const _hasPatient = _firstChild.querySelector("div[appt-pat]");
+      if (_hasPatient) break;
+      else {
+        maxSlots = maxSlots + 1;
+      }
+    }
+
     if (
       (moment(patient.appointment_from_time, "HH:mm:ss").format("HHmm") <
         moment(new Date()).format("HHmm") ||
@@ -615,7 +632,6 @@ class Appointment extends Component {
           edit_provider_id: pat_edit.provider_id,
           edit_patient_id: pat_edit.patient_id,
           edit_from_time: pat_edit.appointment_from_time,
-          // edit_to_time: moment(new_to_time).format("HH:mm:ss"),
           edit_sub_dep_id: pat_edit.sub_department_id,
           edit_appointment_date: pat_edit.appointment_date,
           patient_code: pat_edit.patient_code,
@@ -835,7 +851,6 @@ class Appointment extends Component {
         this.setState({
           edit_appointment_status_id: pat_edit.appointment_status_id,
           edit_appt_date: pat_edit.appointment_date,
-          // edit_appt_time: pat_edit.appointment_from_time,
           edit_contact_number: pat_edit.contact_number,
           edit_patient_name: pat_edit.patient_name,
           edit_arabic_name: pat_edit.arabic_name,
@@ -845,10 +860,7 @@ class Appointment extends Component {
           edit_email: pat_edit.email,
           edit_appointment_remarks: pat_edit.appointment_remarks,
           edit_appointment_id: pat_edit.hims_f_patient_appointment_id,
-          //edit_provider_id: pat_edit.provider_id,
           edit_patient_id: pat_edit.patient_id,
-          //edit_from_time: pat_edit.appointment_from_time,
-          //edit_to_time: pat_edit.appointment_to_time,
           edit_sub_dep_id: pat_edit.sub_department_id,
           edit_appointment_date: pat_edit.appointment_date,
           patient_code: pat_edit.patient_code,
@@ -1243,24 +1255,6 @@ class Appointment extends Component {
                 moment(new Date()).format("YYYYMMDD")}
 
             {this.plotStandByAddIcon(patient, data)}
-            {/* <i
-              appt-time={data.time}
-              to_work_hr={data.to_work_hr}
-              from_break_hr1={data.from_break_hr1}
-              to_break_hr1={data.to_break_hr1}
-              from_break_hr2={data.from_break_hr2}
-              to_break_hr2={data.to_work_hr}
-              slot={data.slot}
-              clinic_id={data.clinic_id}
-              provider_id={data.provider_id}
-              sch_header_id={data.sch_header_id}
-              sch_detail_id={data.sch_detail_id}
-              sub_dept_id={data.sub_dept_id}
-              isstandby="Y"
-              onClick={this.showModal.bind(this)}
-              className="fas fa-plus"
-            /> */}
-
             {this.renderStandByMultiple(_standByPatients)}
           </td>
         ) : null}
@@ -1461,9 +1455,13 @@ class Appointment extends Component {
                                 valueField: "value",
                                 data: GlobalVariables.NO_OF_SLOTS
                               },
-
                               others: {
-                                disabled: false
+                                checkvalidation:
+                                  "$value >" + this.state.maxSlots,
+                                errormessage:
+                                  "Maximum " +
+                                  this.state.maxSlots +
+                                  " slot(s) avilable "
                               },
                               onChange: this.dropDownHandle.bind(this)
                             }}

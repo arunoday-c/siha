@@ -1,12 +1,4 @@
 import React from "react";
-import {
-  BrowserRouter,
-  Switch,
-  Route,
-  Redirect,
-  HashRouter,
-  ReactRouter
-} from "react-router-dom";
 import AlgaehLoader from "./Components/Wrapper/fullPageLoader";
 import FrontDesk from "./Components/RegistrationPatient/RegistrationPatient";
 import Dashboard from "./Components/Dashboard/Dashboard";
@@ -31,7 +23,6 @@ import RadScheduledList from "./Components/Radiology/RadScheduledList/RadSchedul
 import ResultEntryList from "./Components/Laboratory/ResultEntryList/ResultEntryList";
 import InitialStock from "./Components/Pharmacy/InitialStock/InitialStock";
 import PrescriptionList from "./Components/Pharmacy/PrescriptionList/PrescriptionList";
-import Appointment from "./Components/Appointment/Appointment";
 import PharmacySetup from "./Components/PharmacySetup/PharmacySetup";
 import StockEnquiry from "./Components/Pharmacy/StockEnquiry/StockEnquiry";
 import ItemMomentEnquiry from "./Components/Pharmacy/ItemMomentEnquiry/ItemMomentEnquiry";
@@ -53,6 +44,7 @@ import TransferEntry from "./Components/Pharmacy/TransferEntry/TransferEntry";
 import FrontDeskAppt from "./Components/FrontDesk/FrontDesk";
 import RequisitionSwitch from "./Components/Pharmacy/RequisitionList/RequisitionSwitch";
 import Reports from "./Components/Reports/Reports";
+import PatientRecall from "./Components/PatientRecall/PatientRecall";
 
 import WorkListGeneration from "./Components/InsuranceClaims/WorkListGeneration/WorkListGeneration";
 import RCMDesktop from "./Components/InsuranceClaims/RCMDesktop/RCMDesktop";
@@ -161,7 +153,8 @@ const componts = (selectedLang, breadStyle) => {
       <DepreciationReversal SelectLanguage={selectedLang} />
     ),
     Disposal: <Disposal SelectLanguage={selectedLang} />,
-    PurchaseOrderList: <PurchaseOrderList SelectLanguage={selectedLang} />
+    PurchaseOrderList: <PurchaseOrderList SelectLanguage={selectedLang} />,
+    PatientRecall: <PatientRecall SelectLanguage={selectedLang} />
   };
 };
 

@@ -3,7 +3,7 @@ import extend from "extend";
 import httpStatus from "../utils/httpStatus";
 import { debugLog } from "../utils/logging";
 
-let getOrganizationOLD = (req, res, next) => {
+let getOrganization = (req, res, next) => {
   let labSection = {
     hims_d_hospital_id: "ALL"
   };
@@ -43,18 +43,15 @@ let getOrganizationOLD = (req, res, next) => {
   }
 };
 //created by irfan: to get hospitals
-let getOrganization = (req, res, next) => {
+let getOrganizationBkUp = (req, res, next) => {
   let selectWhere = {
     hims_d_hospital_id: "ALL"
-   
   };
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-
-    
 
     let where = whereCondition(extend(selectWhere, req.query));
 

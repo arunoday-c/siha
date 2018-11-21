@@ -125,7 +125,6 @@
       {
         "name": "Patient Recall",
         "label": "Patient Recall",
-
         "path": "/PatientRecall"
       },
       {
