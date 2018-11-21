@@ -420,6 +420,8 @@ const AddItems = ($this, ItemInput) => {
             data.billdetails[i].operation = "-";
             data.billdetails[0].service_id = data.billdetails[0].services_id;
 
+            data.billdetails[0].grn_no = data.billdetails[0].grnno;
+
             existingservices.splice(0, 0, data.billdetails[i]);
           }
 
