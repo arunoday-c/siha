@@ -3,6 +3,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
+import AppBar from "@material-ui/core/AppBar";
 import "./PurchaseOrderEntry.css";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import MyContext from "../../../utils/MyContext";
@@ -17,25 +18,19 @@ import moment from "moment";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import POItemList from "./POItemList/POItemList";
 import {
+  vendortexthandle,
+  loctexthandle,
   texthandle,
   poforhandle,
-  RequisitionSearch
+  RequisitionSearch,
+  ClearData,
+  SavePOEnrty,
+  getCtrlCode,
+  AuthorizePOEntry
 } from "./PurchaseOrderEntryEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import POEntry from "../../../Models/POEntry";
 import Enumerable from "linq";
-
-// discounthandle,
-//   itemchangeText,
-//   numberchangeTexts,
-//   AddItems,
-//   deletePosDetail,
-//   updatePosDetail,
-//   calculateAmount,
-//   UomchangeTexts,
-//   dateFormater,
-//   onchangegridcol,
-//   PosheaderCalculation
 
 class PurchaseOrderEntry extends Component {
   constructor(props) {
@@ -58,6 +53,13 @@ class PurchaseOrderEntry extends Component {
         mappingName: "povendors"
       }
     });
+
+    if (
+      this.props.purchase_number !== undefined &&
+      this.props.purchase_number.length !== 0
+    ) {
+      getCtrlCode(this, this.props.purchase_number);
+    }
   }
 
   render() {
@@ -98,16 +100,16 @@ class PurchaseOrderEntry extends Component {
                 label={{ forceLabel: "PO Number", returnText: true }}
               />
             ),
-            value: this.state.document_number,
-            selectValue: "document_number",
+            value: this.state.purchase_number,
+            selectValue: "purchase_number",
             events: {
-              onChange: null //getCtrlCode.bind(this, this)
+              onChange: getCtrlCode.bind(this, this)
             },
             jsonFile: {
               fileName: "spotlightSearch",
-              fieldName: "initialStock.intstock"
+              fieldName: "Purchase.POEntry"
             },
-            searchName: "initialstock"
+            searchName: "POEntry"
           }}
           userArea={
             <div className="row">
@@ -138,15 +140,17 @@ class PurchaseOrderEntry extends Component {
                   div={{ className: "col" }}
                   label={{ forceLabel: "PO For" }}
                   selector={{
-                    name: "po_for",
+                    name: "po_from",
                     className: "select-fld",
-                    value: this.state.po_for,
+                    value: this.state.po_from,
                     dataSource: {
                       textField: "name",
                       valueField: "value",
-                      data: GlobalVariables.PO_FOR
+                      data: GlobalVariables.PO_FROM
                     },
-
+                    others: {
+                      disabled: this.state.dataExitst
+                    },
                     onChange: poforhandle.bind(this, this),
                     onClear: texthandle.bind(this, this)
                   }}
@@ -156,24 +160,26 @@ class PurchaseOrderEntry extends Component {
                   label={{ forceLabel: "Location Code" }}
                   selector={{
                     name:
-                      this.state.po_for === "PHR"
+                      this.state.po_from === "PHR"
                         ? "pharmcy_location_id"
                         : "inventory_location_id",
                     className: "select-fld",
                     value:
-                      this.state.po_for === "PHR"
+                      this.state.po_from === "PHR"
                         ? this.state.pharmcy_location_id
                         : this.state.inventory_location_id,
                     dataSource: {
                       textField: "location_description",
                       valueField:
-                        this.state.po_for === "PHR"
+                        this.state.po_from === "PHR"
                           ? "hims_d_pharmacy_location_id"
                           : "hims_d_inventory_location_id",
                       data: _mainStore
                     },
-
-                    onChange: texthandle.bind(this, this),
+                    others: {
+                      disabled: this.state.dataExitst
+                    },
+                    onChange: loctexthandle.bind(this, this),
                     onClear: texthandle.bind(this, this)
                   }}
                 />
@@ -182,16 +188,19 @@ class PurchaseOrderEntry extends Component {
                   div={{ className: "col" }}
                   label={{ forceLabel: "Vendor No." }}
                   selector={{
-                    name: "item_id",
+                    name: "vendor_id",
                     className: "select-fld",
-                    value: this.state.item_id,
+                    value: this.state.vendor_id,
                     dataSource: {
                       textField: "vendor_name",
                       valueField: "hims_d_vendor_id",
                       data: this.props.povendors
                     },
-                    onChange: texthandle.bind(this, this),
-                    onClear: texthandle.bind(this, this)
+                    others: {
+                      disabled: this.state.dataExitst
+                    },
+                    onChange: vendortexthandle.bind(this, this),
+                    onClear: vendortexthandle.bind(this, this)
                   }}
                 />
 
@@ -226,8 +235,9 @@ class PurchaseOrderEntry extends Component {
                       marginTop: 26,
                       paddingBottom: 0,
                       pointerEvents:
-                        this.state.pharmcy_location_id === null &&
-                        this.state.inventory_location_id === null
+                        this.state.dataExitst === true
+                          ? "none"
+                          : this.state.ReqData === true
                           ? "none"
                           : ""
                     }}
@@ -248,6 +258,9 @@ class PurchaseOrderEntry extends Component {
                       valueField: "value",
                       data: GlobalVariables.PAYMENT_TERMS
                     },
+                    others: {
+                      disabled: this.state.dataExitst
+                    },
                     onChange: texthandle.bind(this, this),
                     onClear: texthandle.bind(this, this)
                   }}
@@ -260,10 +273,10 @@ class PurchaseOrderEntry extends Component {
                     name: "expiry_date"
                   }}
                   minDate={new Date()}
-                  // disabled={true}
                   events={{
                     onChange: null
                   }}
+                  disabled={this.state.dataExitst}
                   value={this.state.expected_date}
                 />
                 {/* <div
@@ -296,6 +309,55 @@ class PurchaseOrderEntry extends Component {
             <POItemList POEntry={this.state} />
           </MyContext.Provider>
         </div>
+
+        <div className="hptl-phase1-footer">
+          <AppBar position="static" className="main">
+            <div className="row">
+              <div className="col-lg-12">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={SavePOEnrty.bind(this, this)}
+                  disabled={this.state.saveEnable}
+                >
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Save Order",
+                      returnText: true
+                    }}
+                  />
+                </button>
+
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  disabled={this.state.ClearDisable}
+                  onClick={ClearData.bind(this, this)}
+                >
+                  <AlgaehLabel
+                    label={{ forceLabel: "Clear", returnText: true }}
+                  />
+                </button>
+
+                {this.props.purchase_auth === true ? (
+                  <button
+                    type="button"
+                    className="btn btn-other"
+                    disabled={this.state.authorize1 === "Y" ? true : false}
+                    onClick={AuthorizePOEntry.bind(this, this)}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Authorize",
+                        returnText: true
+                      }}
+                    />
+                  </button>
+                ) : null}
+              </div>
+            </div>
+          </AppBar>
+        </div>
       </div>
     );
   }
@@ -309,7 +371,8 @@ function mapStateToProps(state) {
     poitemgroup: state.poitemgroup,
     poitemuom: state.poitemuom,
     povendors: state.povendors,
-    porequisitionentry: state.porequisitionentry
+    porequisitionentry: state.porequisitionentry,
+    purchaseorderentry: state.purchaseorderentry
   };
 }
 
@@ -322,7 +385,8 @@ function mapDispatchToProps(dispatch) {
       getItemGroup: AlgaehActions,
       getItemUOM: AlgaehActions,
       getVendorMaster: AlgaehActions,
-      getRequisitionEntry: AlgaehActions
+      getRequisitionEntry: AlgaehActions,
+      getPurchaseOrderEntry: AlgaehActions
     },
     dispatch
   );

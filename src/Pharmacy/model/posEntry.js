@@ -191,23 +191,32 @@ let addPosEntry = (req, res, next) => {
                   });
                 }
 
-                connection.commit(error => {
-                  if (error) {
-                    connection.rollback(() => {
-                      releaseDBConnection(db, connection);
-                      next(error);
-                    });
-                  }
-                  releaseDBConnection(db, connection);
-                  req.records = {
-                    pos_number: documentCode,
-                    hims_f_pharmacy_pos_header_id: headerResult.insertId,
-                    receipt_number: req.records.receipt_number,
-                    year: year,
-                    period: period
-                  };
-                  next();
-                });
+                req.records = {
+                  pos_number: documentCode,
+                  hims_f_pharmacy_pos_header_id: headerResult.insertId,
+                  receipt_number: req.records.receipt_number,
+                  year: year,
+                  period: period
+                };
+                next();
+
+                // connection.commit(error => {
+                //   if (error) {
+                //     connection.rollback(() => {
+                //       releaseDBConnection(db, connection);
+                //       next(error);
+                //     });
+                //   }
+                //   releaseDBConnection(db, connection);
+                //   req.records = {
+                //     pos_number: documentCode,
+                //     hims_f_pharmacy_pos_header_id: headerResult.insertId,
+                //     receipt_number: req.records.receipt_number,
+                //     year: year,
+                //     period: period
+                //   };
+                //   next();
+                // });
               }
             );
           } else {
@@ -440,7 +449,8 @@ let getPrescriptionPOS = (req, res, next) => {
         return new Promise((resolve, reject) => {
           //Select bachno,exp,itemcat,Query hims_mitem_location... input item_id and location_id
           connection.query(
-            "select item_id, pharmacy_location_id, batchno, expirydt, grnno, sales_uom from hims_m_item_location where item_id in (?) and pharmacy_location_id in (?) and qtyhand <>0",
+            "select item_id, pharmacy_location_id, batchno, expirydt, qtyhand, grnno, sales_uom from hims_m_item_location where \
+            item_id in (?) and pharmacy_location_id in (?) and qtyhand > 0",
             [item_ids, location_ids],
             (error, result) => {
               if (error) {
@@ -471,6 +481,7 @@ let getPrescriptionPOS = (req, res, next) => {
                       expirydt: s.expirydt,
                       grnno: s.grnno,
                       sales_uom: s.sales_uom,
+                      qtyhand: s.qtyhand,
 
                       item_category_id: ItemcatrgoryGroup.item_category_id,
                       item_group_id: ItemcatrgoryGroup.item_group_id

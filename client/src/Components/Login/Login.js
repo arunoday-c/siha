@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./Login.css";
-import Button from "@material-ui/core/Button";
+import { AlgaehLabel, AlagehAutoComplete } from "../Wrapper/algaehWrapper";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import { setSecure } from "../../utils/indexer";
 import {
@@ -30,6 +30,7 @@ export default class Login extends Component {
     setCookie("ScreenName", "Login", 30);
     setCookie("Language", "en", 30);
   }
+
   deleteAllPreviousLocalStorage() {
     window.localStorage.clear();
   }
@@ -142,74 +143,107 @@ export default class Login extends Component {
             </div>
 
             <div id="loginForm" className="loginFormContainer">
-              <LinearProgress id="myProg" style={{ display: "none" }} />
-
-              <h3
-                style={{ marginTop: 20, marginBottom: 20, textAlign: "center" }}
-              >
-                <span style={{ color: "#3A95AA" }}>Login In</span>
-              </h3>
-              <div>
-                <form
-                  onSubmit={this.handleLogin.bind(this)}
-                  style={{ margin: " 0 -15px" }}
-                >
-                  <AlagehFormGroup
-                    div={{ className: "col" }}
-                    label={{
-                      fieldName: "username",
-                      isImp: true
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "username",
-                      value: this.state.username,
-                      events: {
-                        onChange: this.texthandle.bind(this)
-                      },
-                      error: this.state.userError,
-                      helperText: this.state.userErrorText
-                    }}
-                  />
-                  <br />
-                  <AlagehFormGroup
-                    div={{ className: "col" }}
-                    label={{
-                      fieldName: "password",
-                      isImp: true
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "password",
-                      value: this.state.password,
-                      events: {
-                        onChange: this.texthandle.bind(this)
-                      },
-                      others: {
-                        type: "password"
-                      },
-                      error: this.state.pwdError,
-                      helperText: this.state.pwdErrorText
-                    }}
-                  />
-                  <div className="col">
-                    <div className="checkbox">
-                      <label>
-                        <input type="checkbox" value="remember-me" /> Remember
-                        me
-                      </label>
-                    </div>
-                    <Button
-                      className="btn btn-lg btn-primary btn-block sign-btn"
-                      type="submit"
+              <div className="col-12">
+                <div className="row">
+                  <LinearProgress id="myProg" style={{ display: "none" }} />
+                  <div className="col-12">
+                    {" "}
+                    <h3
+                      style={{
+                        marginTop: 20,
+                        marginBottom: 20,
+                        textAlign: "center"
+                      }}
                     >
-                      Log In
-                    </Button>
-                    <p className="frgtPass">
-                      <a>Forgot Password?</a>
-                    </p>
+                      <span style={{ color: "#3A95AA" }}>Login In</span>
+                    </h3>
                   </div>
-                </form>
+                  <div
+                    className="col-12"
+                    style={{
+                      paddingTop: 15,
+                      paddingBottom: 15
+                    }}
+                  >
+                    <form
+                      onSubmit={this.handleLogin.bind(this)}
+                      className="row"
+                    >
+                      <AlagehFormGroup
+                        div={{ className: "col-12" }}
+                        label={{
+                          fieldName: "username",
+                          isImp: true
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "username",
+                          value: this.state.username,
+                          events: {
+                            onChange: this.texthandle.bind(this)
+                          },
+                          error: this.state.userError,
+                          helperText: this.state.userErrorText
+                        }}
+                      />
+                      <br />
+                      <AlagehFormGroup
+                        div={{ className: "col-12" }}
+                        label={{
+                          fieldName: "password",
+                          isImp: true
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "password",
+                          value: this.state.password,
+                          events: {
+                            onChange: this.texthandle.bind(this)
+                          },
+                          others: {
+                            type: "password"
+                          },
+                          error: this.state.pwdError,
+                          helperText: this.state.pwdErrorText
+                        }}
+                      />
+                      <br />
+                      <AlagehAutoComplete
+                        div={{ className: "col-12" }}
+                        label={{ forceLabel: "Select Hospital Location" }}
+                        selector={{
+                          name: "item_id",
+                          className: "select-fld",
+                          value: this.state.item_id,
+                          dataSource: {
+                            textField: "item_description",
+                            valueField: "hims_d_item_master_id",
+                            data: this.props.itemlist
+                          },
+                          onChange: null,
+                          onClear: null
+                        }}
+                      />
+                      <div className="col-12">
+                        <div className="checkbox">
+                          <label>
+                            <input type="checkbox" value="remember-me" />{" "}
+                            Remember me
+                          </label>
+                        </div>
+                        <button
+                          className="btn btn-lg btn-primary btn-block sign-btn"
+                          type="submit"
+                        >
+                          Log In
+                        </button>
+                        <p className="frgtPass">
+                          <a>Forgot Password?</a>
+                        </p>
+                      </div>
+                    </form>
+                  </div>
+                </div>
               </div>
             </div>
             <div className="loginFooter">

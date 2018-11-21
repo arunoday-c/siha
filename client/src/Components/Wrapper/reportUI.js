@@ -9,6 +9,7 @@ import ReactDOM from "react-dom";
 import AlgaehSearch from "../Wrapper/globalSearch";
 export default class ReportUI extends Component {
   constructor(props) {
+    debugger;
     super(props);
     this.state = {
       pageDisplay: "",
@@ -17,7 +18,7 @@ export default class ReportUI extends Component {
       _htmlString: {}
     };
 
-    if (props.options.plotUI !== undefined) {
+    if (props.options !== undefined && props.options.plotUI !== undefined) {
       if (
         props.options.plotUI.paramters !== undefined &&
         props.options.plotUI.paramters.length > 0

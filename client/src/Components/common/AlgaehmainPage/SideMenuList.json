@@ -125,7 +125,6 @@
       {
         "name": "Patient Recall",
         "label": "Patient Recall",
-
         "path": "/PatientRecall"
       },
       {
@@ -272,10 +271,10 @@
         "path": "/WorkListGeneration"
       },
       {
-        "name": "RCM Desktop",
-        "label": "RCM Desktop",
+        "name": "RCM Workbench",
+        "label": "RCM Workbench",
         "arlabel": "سطح المكتب RCM",
-        "path": "/RCMDesktop"
+        "path": "/RCMWorkbench"
       }
     ]
   },
@@ -400,7 +399,7 @@
         "name": "Purchase Order List",
         "label": "Purchase Order List",
         "arlabel": "قائمة أوامر الشراء",
-        "path": "/PurchaseOederList"
+        "path": "/PurchaseOrderList"
       },
       {
         "name": "Delivery Note Entry",

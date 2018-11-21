@@ -1,12 +1,4 @@
 import React from "react";
-import {
-  BrowserRouter,
-  Switch,
-  Route,
-  Redirect,
-  HashRouter,
-  ReactRouter
-} from "react-router-dom";
 import AlgaehLoader from "./Components/Wrapper/fullPageLoader";
 import FrontDesk from "./Components/RegistrationPatient/RegistrationPatient";
 import Dashboard from "./Components/Dashboard/Dashboard";
@@ -31,14 +23,13 @@ import RadScheduledList from "./Components/Radiology/RadScheduledList/RadSchedul
 import ResultEntryList from "./Components/Laboratory/ResultEntryList/ResultEntryList";
 import InitialStock from "./Components/Pharmacy/InitialStock/InitialStock";
 import PrescriptionList from "./Components/Pharmacy/PrescriptionList/PrescriptionList";
-import Appointment from "./Components/Appointment/Appointment";
 import PharmacySetup from "./Components/PharmacySetup/PharmacySetup";
 import StockEnquiry from "./Components/Pharmacy/StockEnquiry/StockEnquiry";
 import ItemMomentEnquiry from "./Components/Pharmacy/ItemMomentEnquiry/ItemMomentEnquiry";
 import AppointmentSetup from "./Components/AppointmentSetup/AppointmentSetup";
 import ItemSetup from "./Components/ItemSetup/ItemSetup";
 import EmployeeMasterIndex from "./Components/EmployeeManagement/EmployeeMasterIndex/EmployeeMasterIndex";
-import PhysicianScheduleSetup from "./Components/PhysicianScheduleSetup/PhysicianScheduleSetup";
+import PhysicianScheduleSetup from "./Components/PhysicianScheduleSetup/PhySchSetup";
 import FrontDeskAr from "./Components/RegistrationPatientAr/RegistrationPatientAr";
 import OPBillingAr from "./Components/OPBillingAr/OPBillingAr";
 import DoctorCommission from "./Components/DoctorCommission/DoctorCommission";
@@ -53,9 +44,10 @@ import TransferEntry from "./Components/Pharmacy/TransferEntry/TransferEntry";
 import FrontDeskAppt from "./Components/FrontDesk/FrontDesk";
 import RequisitionSwitch from "./Components/Pharmacy/RequisitionList/RequisitionSwitch";
 import Reports from "./Components/Reports/Reports";
+import PatientRecall from "./Components/PatientRecall/PatientRecall";
 
 import WorkListGeneration from "./Components/InsuranceClaims/WorkListGeneration/WorkListGeneration";
-import RCMDesktop from "./Components/InsuranceClaims/RCMDesktop/RCMDesktop";
+import RCMWorkbench from "./Components/InsuranceClaims/RCMWorkbench/RCMWorkbench";
 import StaffCashCollection from "./Components/StaffCashCollection/StaffCashCollection";
 import InvoiceGeneration from "./Components/InsuranceClaims/InvoiceGeneration/InvoiceGeneration";
 import InventorySetup from "./Components/InventorySetup/InventorySetup";
@@ -76,6 +68,8 @@ import AcquisitionEntry from "./Components/AssetManagement/AcquisitionEntry/Acqu
 import DepreciationEntry from "./Components/AssetManagement/DepreciationEntry/DepreciationEntry";
 import DepreciationReversal from "./Components/AssetManagement/DepreciationReversal/DepreciationReversal";
 import Disposal from "./Components/AssetManagement/Disposal/Disposal";
+import PurchaseOrderList from "./Components/Procurement/PurchaseOrderList/PurchaseSwitch";
+import DayEndProcess from "./Components/Finance/DayEndProcess/DayEndProcess";
 
 const componts = (selectedLang, breadStyle) => {
   return {
@@ -133,7 +127,7 @@ const componts = (selectedLang, breadStyle) => {
     RequisitionList: <RequisitionSwitch SelectLanguage={selectedLang} />,
     ReportsList: <Reports SelectLanguage={selectedLang} />,
     WorkListGeneration: <WorkListGeneration SelectLanguage={selectedLang} />,
-    RCMDesktop: <RCMDesktop SelectLanguage={selectedLang} />,
+    RCMWorkbench: <RCMWorkbench SelectLanguage={selectedLang} />,
     StaffCashCollection: <StaffCashCollection SelectLanguage={selectedLang} />,
     InvoiceGeneration: <InvoiceGeneration SelectLanguage={selectedLang} />,
     InventorySetup: <InventorySetup SelectLanguage={selectedLang} />,
@@ -148,6 +142,8 @@ const componts = (selectedLang, breadStyle) => {
     InvTransferEntry: <InvTransferEntry SelectLanguage={selectedLang} />,
     VendorSetup: <VendorSetup SelectLanguage={selectedLang} />,
 
+    DayEndProcess: <DayEndProcess SelectLanguage={selectedLang} />,
+
     DeliveryNoteEntry: <DeliveryNoteEntry SelectLanguage={selectedLang} />,
     PurchaseOrderEntry: <PurchaseOrderEntry SelectLanguage={selectedLang} />,
     ReceiptEntry: <ReceiptEntry SelectLanguage={selectedLang} />,
@@ -156,7 +152,9 @@ const componts = (selectedLang, breadStyle) => {
     DepreciationReversal: (
       <DepreciationReversal SelectLanguage={selectedLang} />
     ),
-    Disposal: <Disposal SelectLanguage={selectedLang} />
+    Disposal: <Disposal SelectLanguage={selectedLang} />,
+    PurchaseOrderList: <PurchaseOrderList SelectLanguage={selectedLang} />,
+    PatientRecall: <PatientRecall SelectLanguage={selectedLang} />
   };
 };
 

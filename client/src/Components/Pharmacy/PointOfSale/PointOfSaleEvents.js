@@ -7,7 +7,6 @@ import POSIOputs from "../../../Models/POS";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const changeTexts = ($this, ctrl, e) => {
-  
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -15,7 +14,6 @@ const changeTexts = ($this, ctrl, e) => {
 };
 
 const Patientchange = ($this, ctrl, e) => {
-  
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -25,7 +23,6 @@ const Patientchange = ($this, ctrl, e) => {
 };
 
 const getCtrlCode = ($this, docNumber) => {
-  
   AlgaehLoader({ show: true });
   $this.props.getPosEntry({
     uri: "/posEntry/getPosEntry",
@@ -37,7 +34,6 @@ const getCtrlCode = ($this, docNumber) => {
       mappingName: "posentry"
     },
     afterSuccess: data => {
-      
       data.saveEnable = true;
       data.patient_payable_h = data.patient_payable;
       data.case_type = "O";
@@ -50,7 +46,7 @@ const getCtrlCode = ($this, docNumber) => {
         data.case_type = "OP";
       }
       data.dataExitst = true;
-      
+
       if (data.receiptdetails.length !== 0) {
         for (let i = 0; i < data.receiptdetails.length; i++) {
           if (data.receiptdetails[i].pay_type === "CA") {
@@ -92,8 +88,6 @@ const PatientSearch = ($this, e) => {
 };
 
 const getPatientDetails = ($this, output) => {
-  
-
   AlgaehLoader({ show: true });
   $this.props.getPatientDetails({
     uri: "/frontDesk/get",
@@ -106,8 +100,6 @@ const getPatientDetails = ($this, output) => {
     },
     afterSuccess: data => {
       if (data.length !== 0) {
-        
-
         // data.patientRegistration.visitDetails = data.visitDetails;
         data.patientRegistration.patient_id =
           data.patientRegistration.hims_d_patient_id;
@@ -214,14 +206,11 @@ const GenerateReciept = ($this, callBack) => {
 };
 
 const SavePosEnrty = $this => {
-  
-
   GenerateReciept($this, that => {
-    
-
     $this.state.posted = "Y";
     $this.state.transaction_type = "POS";
     $this.state.transaction_date = $this.state.pos_date;
+    debugger;
     for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
       $this.state.pharmacy_stock_detail[i].location_id =
         $this.state.location_id;
@@ -243,9 +232,7 @@ const SavePosEnrty = $this => {
       uri: "/posEntry/addPosEntry",
       data: $this.state,
       onSuccess: response => {
-        
         if (response.data.success === true) {
-          
           $this.setState({
             pos_number: response.data.records.pos_number,
             hims_f_pharmacy_pos_header_id:
@@ -268,8 +255,6 @@ const SavePosEnrty = $this => {
 };
 
 const PostPosEntry = $this => {
-  
-
   $this.state.posted = "Y";
   $this.state.transaction_type = "POS";
   $this.state.transaction_id = $this.state.hims_f_pharmacy_pos_header_id;
@@ -289,13 +274,12 @@ const PostPosEntry = $this => {
     $this.state.pharmacy_stock_detail[i].net_total =
       $this.state.pharmacy_stock_detail[i].net_extended_cost;
   }
-  
+
   algaehApiCall({
     uri: "/posEntry/updatePosEntry",
     data: $this.state,
     method: "PUT",
     onSuccess: response => {
-      
       if (response.data.success === true) {
         $this.setState({
           postEnable: true
@@ -327,7 +311,6 @@ const VisitSearch = ($this, e) => {
         callBack(text);
       },
       onRowSelect: row => {
-        
         $this.setState(
           {
             visit_code: row.visit_code,
@@ -353,7 +336,6 @@ const VisitSearch = ($this, e) => {
                   mappingName: "existinsurance"
                 },
                 afterSuccess: data => {
-                  
                   data[0].mode_of_pay = "2";
                   $this.setState(data[0]);
                 }
@@ -384,13 +366,13 @@ const getMedicationList = $this => {
       mappingName: "medicationlist"
     },
     afterSuccess: data => {
+      debugger;
       AddItems($this, data);
     }
   });
 };
 
 const AddItems = ($this, ItemInput) => {
-  
   if (ItemInput.length > 0) {
     let inputObj = {};
     let inputArray = [];
@@ -417,7 +399,7 @@ const AddItems = ($this, ItemInput) => {
       };
       inputArray.push(inputObj);
     }
-    
+
     $this.props.getPrescriptionPOS({
       uri: "/posEntry/getPrescriptionPOS",
       method: "POST",
@@ -427,8 +409,6 @@ const AddItems = ($this, ItemInput) => {
         mappingName: "xxx"
       },
       afterSuccess: data => {
-        
-
         let existingservices = [];
 
         if (data.billdetails.length !== 0) {
@@ -439,6 +419,8 @@ const AddItems = ($this, ItemInput) => {
               data.billdetails[i].net_amout;
             data.billdetails[i].operation = "-";
             data.billdetails[0].service_id = data.billdetails[0].services_id;
+
+            data.billdetails[0].grn_no = data.billdetails[0].grnno;
 
             existingservices.splice(0, 0, data.billdetails[i]);
           }

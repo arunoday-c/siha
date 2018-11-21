@@ -1594,6 +1594,7 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                     item_id: servicesDetails.item_id,
                     expiry_date: servicesDetails.expirydt,
                     batchno: servicesDetails.batchno,
+                    qtyhand: servicesDetails.qtyhand,
                     grnno: servicesDetails.grnno,
                     uom_id: servicesDetails.sales_uom,
                     item_category: servicesDetails.item_category_id,

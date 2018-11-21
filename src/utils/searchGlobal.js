@@ -154,6 +154,18 @@ let algaehSearchConfig = searchName => {
           "select SQL_CALC_FOUND_ROWS * from hims_f_pharamcy_material_header where authorize1 = 'Y' and authorie2 = 'Y'\
           and is_completed = 'N' and requistion_type='PR'",
         orderBy: "hims_f_pharamcy_material_header_id desc"
+      },
+      {
+        searchName: "POEntry",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS * from hims_f_procurement_po_header",
+        orderBy: "hims_f_procurement_po_header_id desc"
+      },
+      {
+        searchName: "POEntryGetDN",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS * from hims_f_procurement_po_header where authorize1 = 'Y'",
+        orderBy: "hims_f_procurement_po_header_id desc"
       }
 
       // visit

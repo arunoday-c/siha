@@ -77,9 +77,6 @@
   position: absolute;
   max-width: 22vw;
   min-width: -webkit-fill-available;
-
-  top: 100%;
-  bottom: auto;
   left: 0;
   max-height: 30vh;
   overflow: auto;
@@ -88,6 +85,16 @@
   -webkit-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
   box-shadow: 3px 5px 5px rgba(0, 0, 0, 0.06);
   z-index: 100;
+}
+
+.dropUp {
+  top: 100%;
+  bottom: auto;
+}
+
+.dropDown {
+  top: auto;
+  bottom: 100%;
 }
 
 .myUL li span {

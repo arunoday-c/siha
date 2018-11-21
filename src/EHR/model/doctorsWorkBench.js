@@ -2276,11 +2276,10 @@ let addFollowUp = (req, res, next) => {
   let followup = {
     hims_f_patient_followup_id: null,
     patient_id: null,
-    encounter_id: null,
+    doctor_id: null,
     followup_type: null,
-    followup_days: null,
     followup_date: null,
-    followup_comments: null,
+    reason: null,
     created_by: req.userIdentity.algaeh_d_app_user_id,
     updated_by: req.userIdentity.algaeh_d_app_user_id
   };
@@ -2295,16 +2294,15 @@ let addFollowUp = (req, res, next) => {
     }
     let inputParam = extend(followup, req.body);
     connection.query(
-      "INSERT INTO `hims_f_patient_followup` (`patient_id`, `encounter_id`,`followup_type`, \
-      `followup_days` ,`followup_date`, `followup_comments`, `created_by` ,`created_date`) \
-      VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO `hims_f_patient_followup` (`patient_id`, `doctor_id`,`followup_type`, \
+       `followup_date`, `reason`, `created_by` ,`created_date`) \
+      VALUES ( ?, ?, ?, ?, ?, ?, ?)",
       [
         inputParam.patient_id,
-        inputParam.encounter_id,
+        inputParam.doctor_id,
         inputParam.followup_type,
-        inputParam.followup_days,
         inputParam.followup_date,
-        inputParam.followup_comments,
+        inputParam.reason,
         inputParam.created_by,
         new Date()
       ],
@@ -2556,6 +2554,46 @@ let getPatientHistory = (req, res, next) => {
   }
 };
 
+let getFollowUp = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let inputData = extend({}, req.query);
+
+    // let followup_date = "date(inputData.date_of_recall)"";
+    let strQuery =
+      "SELECT p.patient_code,p.full_name, p.registration_date,p.gender,p.date_of_birth,p.contact_number \
+      FROM hims_f_patient_followup, hims_f_patient p where hims_f_patient_followup.patient_id = p.hims_d_patient_id \
+      and hims_f_patient_followup.doctor_id=?";
+
+    if (
+      inputData.date_of_recall != undefined ||
+      inputData.date_of_recall != null
+    ) {
+      let followup_date =
+        "date(followup_date)= date('" + inputData.date_of_recall + "')";
+
+      strQuery = strQuery + " and " + followup_date;
+    }
+
+    debugLog("strQuery: ", strQuery);
+    db.getConnection((error, connection) => {
+      connection.query(strQuery, [inputData.doctor_id], (error, result) => {
+        releaseDBConnection(db, connection);
+        if (error) {
+          next(error);
+        }
+        req.records = result;
+        next();
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   physicalExaminationHeader,
   physicalExaminationDetails,
@@ -2574,6 +2612,7 @@ module.exports = {
   updatdePatEncntrStatus,
   getPatientProfile,
   getChiefComplaints,
+  getFollowUp,
 
   addPatientChiefComplaints,
   addNewChiefComplaint,

@@ -51,7 +51,8 @@ import {
   getAllPhysicalExamination,
   getVitalsHeaderMaster,
   addPatientHistory,
-  getPatientHistory
+  getPatientHistory,
+  getFollowUp
 } from "../model/doctorsWorkBench";
 export default ({ config, db }) => {
   let api = Router();
@@ -817,6 +818,21 @@ export default ({ config, db }) => {
   api.get(
     "/getPatientHistory",
     getPatientHistory,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  //created by Nowshad: to  get Follow up Recall
+  api.get(
+    "/getFollowUp",
+    getFollowUp,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

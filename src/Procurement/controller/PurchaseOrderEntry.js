@@ -1,27 +1,61 @@
 import { Router } from "express";
-import { releaseConnection } from "../../utils";
+import { releaseConnection, generateDbConnection } from "../../utils";
 import httpStatus from "../../utils/httpStatus";
 import {
   addPurchaseOrderEntry,
   getPurchaseOrderEntry,
   updatePurchaseOrderEntry,
-  getAuthrequisitionList
-} from "../model/initialstock";
-
+  getAuthPurchaseList,
+  getInvRequisitionEntryPO,
+  getPharRequisitionEntryPO,
+  updatePharReqEntry,
+  updateInvReqEntry
+} from "../model/PurchaseOrderEntry";
+import { debugFunction, debugLog } from "../../utils/logging";
 export default ({ config, db }) => {
   let api = Router();
 
   // created by Nowshad :to add Pharmacy Initial Stock
   api.post(
     "/addPurchaseOrderEntry",
+    generateDbConnection,
     addPurchaseOrderEntry,
+
     (req, res, next) => {
-      let result = req.records;
-      res.status(httpStatus.ok).json({
-        success: true,
-        records: result
+      debugLog("phr.req.body", req.body);
+      if (req.body.po_from == "PHR" && req.body.phar_requisition_id != null) {
+        updatePharReqEntry(req, res, next);
+      } else {
+        next();
+      }
+    },
+    (req, res, next) => {
+      debugLog("inv.req.body", req.body);
+      if (req.body.po_from == "INV" && req.body.inv_requisition_id != null) {
+        debugLog("Data Exist: ", "Yes");
+        updateInvReqEntry(req, res, next);
+      } else {
+        next();
+      }
+    },
+
+    (req, res, next) => {
+      let connection = req.connection;
+      connection.commit(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        } else {
+          let result = req.records;
+          res.status(httpStatus.ok).json({
+            success: true,
+            records: result
+          });
+          next();
+        }
       });
-      next();
     },
     releaseConnection
   );
@@ -43,8 +77,38 @@ export default ({ config, db }) => {
 
   // created by Nowshad :to getAuthrequisitionList
   api.get(
-    "/getAuthrequisitionList",
-    getAuthrequisitionList,
+    "/getAuthPurchaseList",
+    getAuthPurchaseList,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by Nowshad :to get Pharmacy RequisitionEntry for PO
+  api.get(
+    "/getPharRequisitionEntryPO",
+    getPharRequisitionEntryPO,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by Nowshad :to get Inventory RequisitionEntry for PO
+  api.get(
+    "/getInvRequisitionEntryPO",
+    getInvRequisitionEntryPO,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

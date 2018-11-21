@@ -101,7 +101,6 @@ class PatientProfile extends Component {
   }
 
   showAllergyAlert(data, e) {
-    
     swalMessage({
       title: "Allergic",
       type: "warning"
@@ -115,6 +114,18 @@ class PatientProfile extends Component {
         ? this.props.patient_profile[0]
         : {};
 
+    const _Vitals =
+      this.props.patient_vitals !== undefined &&
+      this.props.patient_vitals.length > 0
+        ? Enumerable.from(this.props.patient_vitals)
+            .groupBy("$.visit_date", null, (k, g) => {
+              return g.getSource();
+            })
+            .orderBy(g => g.visit_date)
+            .firstOrDefault()
+        : [];
+
+    console.log("_Vitals", _Vitals);
     //TO DO
     //Display Patient Vitals which are driven from the master
     //To be Done after Noor completes the Vitals Implementation
@@ -291,7 +302,14 @@ class PatientProfile extends Component {
             </span>
           </div>
           <div className="patientVital">
-            <span>
+            {_Vitals.map((row, idx) => (
+              <span>
+                {row.vitals_name}
+                <b>{" : " + row.vital_value}</b>
+              </span>
+            ))}
+
+            {/* <span>
               BP:{" "}
               <b>
                 {this.props.patient_vitals !== undefined &&
@@ -350,7 +368,7 @@ class PatientProfile extends Component {
                   ? this.props.patient_vitals[0].bmi
                   : 0}{" "}
               </b>
-            </span>
+            </span> */}
           </div>
           <div className="moreAction">
             <button type="button" className="btn btn-outline-secondary btn-sm">
