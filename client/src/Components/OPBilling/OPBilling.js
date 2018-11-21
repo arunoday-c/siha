@@ -98,7 +98,7 @@ class PatientDisplayDetails extends Component {
   componentWillReceiveProps(nextProps) {
     let output = {};
     let billOut = {};
-    
+
     if (
       nextProps.existinsurance !== undefined &&
       nextProps.existinsurance.length !== 0
