@@ -11,20 +11,66 @@ class PatientRecall extends Component {
     super(props);
     this.state = {
       departments: [],
-      doctors: []
+      doctors: [],
+      patients: [],
+      sub_department_id: null
     };
-    this.getAllSubDepartments();
+    this.getDoctorsAndDepts();
   }
 
-  dropDownHandle(value) {}
-
-  getAllSubDepartments() {
+  loadPatients() {
     algaehApiCall({
-      uri: "/department/get/subdepartment",
+      uri: "/patientRecall",
+      method: "GET",
+      data: {
+        department_id: this.state.sub_department_id,
+        provider_id: this.state.provider_id,
+        date_of_recall: this.state.date_of_recall
+      },
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({
+            patients: response.data.records
+          });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  dropDownHandle(value) {
+    debugger;
+    switch (value.name) {
+      case "sub_department_id":
+        this.setState({
+          [value.name]: value.value,
+          doctors: value.selected.doctors
+        });
+        return;
+
+      default:
+        this.setState({
+          [value.name]: value.value
+        });
+
+        return;
+    }
+  }
+
+  getDoctorsAndDepts() {
+    algaehApiCall({
+      uri: "/department/get/get_All_Doctors_DepartmentWise",
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
-          this.setState({ departments: response.data.records });
+          this.setState({
+            departments: response.data.records.departmets
+          });
         }
       },
       onFailure: error => {
@@ -40,61 +86,69 @@ class PatientRecall extends Component {
     return (
       <div className="patient_recall">
         <div className="row inner-top-search">
-          <div className="row padding-10">
-            <AlagehAutoComplete
-              div={{ className: "col mandatory" }}
-              label={{
-                forceLabel: "Department",
-                isImp: true
-              }}
-              selector={{
-                name: "hims_d_sub_department_id",
-                className: "select-fld",
-                value: this.state.hims_d_sub_department_id,
-                dataSource: {
-                  textField: "sub_department_name",
-                  valueField: "hims_d_sub_department_id",
-                  data: this.state.departments
-                },
-                onChange: this.dropDownHandle.bind(this)
-              }}
-            />
+          <AlagehAutoComplete
+            div={{ className: "col mandatory" }}
+            label={{
+              forceLabel: "Department",
+              isImp: true
+            }}
+            selector={{
+              name: "sub_department_id",
+              className: "select-fld",
+              value: this.state.sub_department_id,
+              dataSource: {
+                textField: "sub_department_name",
+                valueField: "sub_department_id",
+                data: this.state.departments
+              },
+              onChange: this.dropDownHandle.bind(this)
+            }}
+          />
 
-            <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{
-                forceLabel: "Doctor"
-              }}
-              selector={{
-                name: "provider_id",
-                className: "select-fld",
-                value: this.state.provider_id,
-                dataSource: {
-                  textField: "full_name",
-                  valueField: "provider_id",
-                  data: this.state.doctors
-                },
-                onChange: this.dropDownHandle.bind(this)
-              }}
-            />
+          <AlagehAutoComplete
+            div={{ className: "col" }}
+            label={{
+              forceLabel: "Doctor"
+            }}
+            selector={{
+              name: "provider_id",
+              className: "select-fld",
+              value: this.state.provider_id,
+              dataSource: {
+                textField: "full_name",
+                valueField: "employee_id",
+                data: this.state.doctors
+              },
+              onChange: this.dropDownHandle.bind(this)
+            }}
+          />
 
-            <AlgaehDateHandler
-              div={{ className: "col" }}
-              label={{ forceLabel: "Date", isImp: false }}
-              textBox={{
-                className: "txt-fld",
-                name: "date_of_recall"
-              }}
-              maxDate={new Date()}
-              events={{
-                onChange: selectedDate => {
-                  this.setState({
-                    date_of_recall: selectedDate
-                  });
-                }
-              }}
-              value={this.state.date_of_recall}
-            />
+          <AlgaehDateHandler
+            div={{ className: "col" }}
+            label={{ forceLabel: "Date", isImp: false }}
+            textBox={{
+              className: "txt-fld",
+              name: "date_of_recall"
+            }}
+            maxDate={new Date()}
+            events={{
+              onChange: selectedDate => {
+                this.setState({
+                  date_of_recall: selectedDate
+                });
+              }
+            }}
+            value={this.state.date_of_recall}
+          />
+
+          <div className="col form-group">
+            <button
+              onClick={this.loadPatients.bind(this)}
+              style={{ marginTop: 21 }}
+              className="btn btn-primary"
+            >
+              LOAD
+            </button>
           </div>
         </div>
 
@@ -182,7 +236,7 @@ class PatientRecall extends Component {
                   ]}
                   keyId="index"
                   dataSource={{
-                    data: this.state.patientData
+                    data: this.state.patients
                   }}
                   isEditable={false}
                   paging={{ page: 0, rowsPerPage: 20 }}
