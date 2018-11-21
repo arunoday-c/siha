@@ -66,7 +66,7 @@ export function printReport(data) {
             .map(
               item => `
             <tr>
-              <td class="co-4"> ${item.service_name}</td>
+              <td class="co-4"> ${item.services_id}</td>
               <td class="co-4"> ${item.quantity}</td>
               <td class="co-4"> ${item.unit_cost}</td>
               <td class="co-4"> ${item.discount_amout}</td>
