@@ -29,8 +29,8 @@ const addFollowUp = $this => {
   } else {
     let inputObj = {
       patient_id: Window.global["current_patient"],
-      encounter_id: Window.global["encounter_id"],
-      followup_comments: $this.state.followup_comments,
+      doctor_id: Window.global["provider_id"],
+      reason: $this.state.followup_comments,
       followup_type: $this.state.followup_type,
       followup_days: $this.state.followup_days,
       followup_date: $this.state.followup_date

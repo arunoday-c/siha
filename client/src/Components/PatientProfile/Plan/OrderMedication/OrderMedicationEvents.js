@@ -50,7 +50,6 @@ const SaveMedication = ($this, e) => {
       data: inputObj,
       method: "POST",
       onSuccess: response => {
-        
         if (response.data.success) {
           swalMessage({
             title: "Ordered Successfully...",
@@ -133,7 +132,6 @@ const itemhandle = ($this, ctrl, e) => {
 };
 
 const AddItems = $this => {
-  
   if (
     $this.state.item_id !== null &&
     $this.state.generic_id !== null &&
@@ -206,73 +204,73 @@ const dateFormater = value => {
 const deleteItems = $this => {};
 
 const calcuateDispense = ($this, e) => {
-  
-  if (e.target === null || e.target.value !== e.target.oldvalue) {
-    let frequency = 0;
-    let frequency_type = 0;
-    let dispense = 0;
-    if ($this.state.no_of_days !== 0) {
-      //Frequency
-      if (
-        $this.state.frequency === "0" ||
-        $this.state.frequency === "4" ||
-        $this.state.frequency === "5"
-      ) {
-        frequency = 2;
-      } else if (
-        $this.state.frequency === "1" ||
-        $this.state.frequency === "2" ||
-        $this.state.frequency === "3"
-      ) {
-        frequency = 1;
-      } else if ($this.state.frequency === "6") {
-        frequency = 3;
-      }
+  debugger;
 
-      //Frequency Type
-      if ($this.state.frequency_type === "PD" && frequency === 2) {
-        frequency_type = 2;
-      } else if ($this.state.frequency_type === "PD" && frequency === 1) {
-        frequency_type = 1;
-      } else if ($this.state.frequency_type === "PD" && frequency === 3) {
-        frequency_type = 3;
-      } else if ($this.state.frequency_type === "PH" && frequency === 2) {
-        frequency_type = 2 * 24;
-      } else if ($this.state.frequency_type === "PH" && frequency === 1) {
-        frequency_type = 1 * 24;
-      } else if ($this.state.frequency_type === "PH" && frequency === 3) {
-        frequency_type = 3 * 24;
-      } else if ($this.state.frequency_type === "PW" && frequency === 2) {
-        frequency_type = 2;
-      } else if ($this.state.frequency_type === "PW" && frequency === 1) {
-        frequency_type = 1;
-      } else if ($this.state.frequency_type === "PW" && frequency === 3) {
-        frequency_type = 3;
-      } else if ($this.state.frequency_type === "PM" && frequency === 2) {
-        frequency_type = 2;
-      } else if ($this.state.frequency_type === "PM" && frequency === 1) {
-        frequency_type = 1;
-      } else if ($this.state.frequency_type === "PM" && frequency === 3) {
-        frequency_type = 3;
-      } else if ($this.state.frequency_type === "AD" && frequency === 2) {
-        frequency_type = 2;
-      } else if ($this.state.frequency_type === "AD" && frequency === 1) {
-        frequency_type = 1;
-      } else if ($this.state.frequency_type === "AD" && frequency === 3) {
-        frequency_type = 3;
-      }
-
-      dispense = $this.state.no_of_days * $this.state.dosage * frequency_type;
-
-      $this.setState({
-        dispense: dispense
-      });
+  // if (e.target === null || e.target.value !== e.target.oldvalue) {
+  let frequency = 0;
+  let frequency_type = 0;
+  let dispense = 0;
+  if ($this.state.no_of_days !== 0) {
+    //Frequency
+    if (
+      $this.state.frequency === "0" ||
+      $this.state.frequency === "4" ||
+      $this.state.frequency === "5"
+    ) {
+      frequency = 2;
+    } else if (
+      $this.state.frequency === "1" ||
+      $this.state.frequency === "2" ||
+      $this.state.frequency === "3"
+    ) {
+      frequency = 1;
+    } else if ($this.state.frequency === "6") {
+      frequency = 3;
     }
+
+    //Frequency Type
+    if ($this.state.frequency_type === "PD" && frequency === 2) {
+      frequency_type = 2;
+    } else if ($this.state.frequency_type === "PD" && frequency === 1) {
+      frequency_type = 1;
+    } else if ($this.state.frequency_type === "PD" && frequency === 3) {
+      frequency_type = 3;
+    } else if ($this.state.frequency_type === "PH" && frequency === 2) {
+      frequency_type = 2 * 24;
+    } else if ($this.state.frequency_type === "PH" && frequency === 1) {
+      frequency_type = 1 * 24;
+    } else if ($this.state.frequency_type === "PH" && frequency === 3) {
+      frequency_type = 3 * 24;
+    } else if ($this.state.frequency_type === "PW" && frequency === 2) {
+      frequency_type = 2;
+    } else if ($this.state.frequency_type === "PW" && frequency === 1) {
+      frequency_type = 1;
+    } else if ($this.state.frequency_type === "PW" && frequency === 3) {
+      frequency_type = 3;
+    } else if ($this.state.frequency_type === "PM" && frequency === 2) {
+      frequency_type = 2;
+    } else if ($this.state.frequency_type === "PM" && frequency === 1) {
+      frequency_type = 1;
+    } else if ($this.state.frequency_type === "PM" && frequency === 3) {
+      frequency_type = 3;
+    } else if ($this.state.frequency_type === "AD" && frequency === 2) {
+      frequency_type = 2;
+    } else if ($this.state.frequency_type === "AD" && frequency === 1) {
+      frequency_type = 1;
+    } else if ($this.state.frequency_type === "AD" && frequency === 3) {
+      frequency_type = 3;
+    }
+
+    dispense = $this.state.no_of_days * $this.state.dosage * frequency_type;
+
+    $this.setState({
+      dispense: dispense
+    });
   }
+  // }
 };
 
 const getItemStock = $this => {
-  
   $this.props.getItemStock({
     uri: "/pharmacyGlobal/getItemandLocationStock",
     method: "GET",

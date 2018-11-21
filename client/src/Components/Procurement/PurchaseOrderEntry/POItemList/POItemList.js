@@ -317,7 +317,7 @@ class POItemList extends Component {
                 <div className="col-lg-12">
                   <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
                     <div className="row">
-                      <div className="col-lg-12" id="PointSaleGrid">
+                      <div className="col-lg-12" id="POGrid">
                         <AlgaehDataGrid
                           id="PO_details"
                           columns={[

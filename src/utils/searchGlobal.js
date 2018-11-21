@@ -160,6 +160,12 @@ let algaehSearchConfig = searchName => {
         searchQuery:
           "select SQL_CALC_FOUND_ROWS * from hims_f_procurement_po_header",
         orderBy: "hims_f_procurement_po_header_id desc"
+      },
+      {
+        searchName: "POEntryGetDN",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS * from hims_f_procurement_po_header where authorize1 = 'Y'",
+        orderBy: "hims_f_procurement_po_header_id desc"
       }
 
       // visit
