@@ -271,10 +271,10 @@
         "path": "/WorkListGeneration"
       },
       {
-        "name": "RCM Desktop",
-        "label": "RCM Desktop",
+        "name": "RCM Workbench",
+        "label": "RCM Workbench",
         "arlabel": "سطح المكتب RCM",
-        "path": "/RCMDesktop"
+        "path": "/RCMWorkbench"
       }
     ]
   },
