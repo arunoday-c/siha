@@ -1,2 +1,6 @@
-{"rules":{
-    "no-unused-expression": 1}}
+{
+  "rules": {
+    "no-eval": false,
+    "no-unused-expression": 1
+  }
+}

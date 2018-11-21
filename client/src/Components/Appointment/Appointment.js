@@ -2042,7 +2042,12 @@ class Appointment extends Component {
                     valueField: "sub_dept_id",
                     data: this.state.departments
                   },
-                  onChange: this.deptDropDownHandler.bind(this)
+                  onChange: this.deptDropDownHandler.bind(this),
+                  onClear: () => {
+                    this.setState({
+                      sub_department_id: null
+                    });
+                  }
                 }}
               />
 
@@ -2060,7 +2065,12 @@ class Appointment extends Component {
                     valueField: "provider_id",
                     data: this.state.doctors
                   },
-                  onChange: this.dropDownHandle.bind(this)
+                  onChange: this.dropDownHandle.bind(this),
+                  onClear: () => {
+                    this.setState({
+                      provider_id: null
+                    });
+                  }
                 }}
               />
 

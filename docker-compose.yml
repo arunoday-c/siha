@@ -5,4 +5,4 @@ services:
     restart: always
     build: .
     ports:
-      - "3002:3002"
+      - "80:1313"
