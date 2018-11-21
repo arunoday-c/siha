@@ -40,6 +40,32 @@
       }
     ]
   },
+  "DoctorCommission": {
+    "doccpmmission": [
+      {
+        "fieldName": "comission_code",
+        "label": "Comission Code"
+      },
+
+      {
+        "fieldName": "provider_code",
+        "label": "Provider Code"
+      },
+      {
+        "fieldName": "full_name",
+        "label": "Provider Name"
+      },
+      {
+        "fieldName": "from_date",
+        "label": "From Date"
+      },
+      {
+        "fieldName": "to_date",
+        "label": "To Date"
+      }
+    ]
+  },
+
   "initialStock": {
     "intstock": [
       {
