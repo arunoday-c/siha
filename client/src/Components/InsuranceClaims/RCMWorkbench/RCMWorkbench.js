@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./RCMWorkbench.css";
 
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
+import AppBar from "@material-ui/core/AppBar";
 
 import {
   AlgaehDataGrid,
@@ -284,6 +285,49 @@ class RCMWorkbench extends Component {
               </div>
             </div>
           </div>
+        </div>
+        <div className="hptl-phase1-footer">
+          <AppBar position="static" className="main">
+            <div className="row">
+              <div className="col-lg-12">
+                <button type="button" className="btn btn-primary">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Validate",
+                      returnText: true
+                    }}
+                  />
+                </button>
+
+                <button type="button" className="btn btn-default">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Post",
+                      returnText: true
+                    }}
+                  />
+                </button>
+
+                <button type="button" className="btn btn-other">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Re-Submit",
+                      returnText: true
+                    }}
+                  />
+                </button>
+
+                <button type="button" className="btn btn-other">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Submit",
+                      returnText: true
+                    }}
+                  />
+                </button>
+              </div>
+            </div>
+          </AppBar>
         </div>
       </div>
     );
