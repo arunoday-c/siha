@@ -308,15 +308,21 @@ class PersistentDrawer extends React.Component {
       <div className="">
         <div className={classes.root}>
           <div className={classNames(classes.appFrame, "sticky-top")}>
-            <AppBar>
+            <AppBar style={{ backgroundColor: "#00babe" }}>
               <Toolbar
                 disableGutters={!sideopen}
-                style={{ minHeight: "50px", padding: "0px" }}
+                style={{
+                  minHeight: "50px",
+                  padding: "0px",
+                  backgroundColor: "#00babe"
+                }}
               >
                 <div className="screenDisplay">
-                  <IconButton
-                    color="inherit"
-                    aria-label="open drawer"
+                  <div className="appLogoCntr">
+                    <p className="appLogoOnly" />
+                  </div>
+                  <i
+                    className="fas fa-bars"
                     onClick={this.handleDrawerOpen}
                     className={classNames(
                       classes.menuButton,
@@ -324,7 +330,7 @@ class PersistentDrawer extends React.Component {
                     )}
                   >
                     <MenuIcon />
-                  </IconButton>
+                  </i>
 
                   <h5>{this.state.title}</h5>
                 </div>
@@ -389,10 +395,15 @@ class PersistentDrawer extends React.Component {
               >
                 <div className="hptl-phase1-sideMenuBar">
                   <div className="menuBar-title">
-                    <div className="appLogoOnly" />
+                    {/* <div className="appLogoOnly" />*/}
                     <i
                       onClick={this.handleDrawerClose}
-                      className="fas fa-times-circle sideBarClose"
+                      className="fas fa-chevron-circle-left sideBarClose"
+                    />
+                    <input
+                      type="text"
+                      className="subMenuSearchFld"
+                      placeholder="Search Modules"
                     />
                   </div>
                   <div className="sideMenu-header">{MenuListItems}</div>

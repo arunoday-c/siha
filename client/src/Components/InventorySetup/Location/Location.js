@@ -45,7 +45,7 @@ class Location extends Component {
     getLocation(this, this);
   }
 
-  dateFormater({ date }) {
+  dateFormater(date) {
     if (date !== null) {
       return moment(date).format(Options.dateFormat);
     }
@@ -138,7 +138,7 @@ class Location extends Component {
                     ),
                     displayTemplate: row => {
                       return row.location_type === "MS"
-                        ? "Mian Store"
+                        ? "Main Store"
                         : row.location_type === "SS"
                         ? "Sub Store"
                         : null;

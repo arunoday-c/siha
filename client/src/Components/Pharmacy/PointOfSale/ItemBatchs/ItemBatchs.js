@@ -28,7 +28,6 @@ class ItemBatchs extends PureComponent {
       <React.Fragment>
         <div>
           <Modal
-            className="model-set"
             open={this.props.show}
             onClose={e => {
               this.onClose(e);

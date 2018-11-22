@@ -46,8 +46,7 @@ class ItemForm extends Component {
     getItemForm(this, this);
   }
 
-  dateFormater({ date }) {
-    
+  dateFormater(date) {
     if (date !== null) {
       return moment(date).format(Options.dateFormat);
     }

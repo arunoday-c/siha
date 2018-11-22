@@ -142,154 +142,10 @@ const numberchangeTexts = ($this, context, e) => {
   }
 };
 
-const getUnitCost = ($this, context, serviceid) => {
-  if ($this.state.insured === "N") {
-    $this.props.getServicesCost({
-      uri: "/serviceType/getService",
-      method: "GET",
-      data: { hims_d_services_id: serviceid },
-      redux: {
-        type: "SERVICES_GET_DATA",
-        mappingName: "hospitalservices"
-      },
-      afterSuccess: data => {
-        let servdata = Enumerable.from(data)
-          .where(w => w.hims_d_services_id === parseInt(serviceid))
-          .firstOrDefault();
-        if (servdata !== undefined || servdata !== null) {
-          $this.setState({
-            unit_cost: servdata.standard_fee,
-            Real_unit_cost: servdata.standard_fee
-          });
-
-          if (context !== undefined) {
-            context.updateState({
-              unit_cost: servdata.standard_fee,
-              Real_unit_cost: servdata.standard_fee
-            });
-          }
-        } else {
-          swalMessage({
-            title: "Invalid Input. No Service for the selected item.",
-            type: "warning"
-          });
-        }
-      }
-    });
-  } else {
-    $this.props.getInsuranceServicesCost({
-      uri: "/insurance/getPriceList",
-      method: "GET",
-      data: {
-        services_id: serviceid,
-        insurance_id: $this.state.insurance_provider_id
-      },
-      redux: {
-        type: "SERVICES_GET_DATA",
-        mappingName: "hospitalservices"
-      },
-      afterSuccess: data => {
-        if (data !== undefined || data !== null) {
-          $this.setState({
-            unit_cost: data[0].gross_amt,
-            Real_unit_cost: data[0].gross_amt
-          });
-
-          if (context !== undefined) {
-            context.updateState({
-              unit_cost: data[0].gross_amt,
-              Real_unit_cost: data[0].gross_amt
-            });
-          }
-        } else {
-          swalMessage({
-            title: "Invalid Input. No Service for the selected item.",
-            type: "warning"
-          });
-        }
-      }
-    });
-  }
-};
-
 const datehandle = ($this, ctrl, e) => {
   $this.setState({
     [e]: moment(ctrl)._d
   });
-};
-
-const deletePosDetail = ($this, context, row) => {
-  let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
-
-  for (var i = 0; i < pharmacy_stock_detail.length; i++) {
-    if (
-      pharmacy_stock_detail[i].item_id === row["item_id"] &&
-      pharmacy_stock_detail[i].batchno === row["batchno"]
-    ) {
-      pharmacy_stock_detail.splice(i, 1);
-    }
-  }
-
-  $this.props.PosHeaderCalculations({
-    uri: "/billing/billingCalculations",
-    method: "POST",
-    data: { billdetails: pharmacy_stock_detail },
-    redux: {
-      type: "POS_HEADER_GEN_GET_DATA",
-      mappingName: "posheader"
-    }
-  });
-
-  if (pharmacy_stock_detail.length === 0) {
-    if (context !== undefined) {
-      context.updateState({
-        pharmacy_stock_detail: pharmacy_stock_detail,
-        advance_amount: 0,
-        discount_amount: 0,
-        sub_total: 0,
-        total_tax: 0,
-        net_total: 0,
-        copay_amount: 0,
-        sec_copay_amount: 0,
-        deductable_amount: 0,
-        sec_deductable_amount: 0,
-        gross_total: 0,
-        sheet_discount_amount: 0,
-        sheet_discount_percentage: 0,
-        net_amount: 0,
-        patient_res: 0,
-        company_res: 0,
-        sec_company_res: 0,
-        patient_payable: 0,
-        patient_payable_h: 0,
-        company_payable: 0,
-        sec_company_payable: 0,
-        patient_tax: 0,
-        company_tax: 0,
-        sec_company_tax: 0,
-        net_tax: 0,
-        credit_amount: 0,
-        receiveable_amount: 0,
-
-        cash_amount: 0,
-        card_number: "",
-        card_date: null,
-        card_amount: 0,
-        cheque_number: "",
-        cheque_date: null,
-        cheque_amount: 0,
-        total_amount: 0,
-        saveEnable: true,
-        unbalanced_amount: 0
-      });
-    }
-  } else {
-    if (context !== undefined) {
-      context.updateState({
-        pharmacy_stock_detail: pharmacy_stock_detail
-      });
-    }
-  }
 };
 
 const RequisitionSearch = ($this, e) => {
@@ -397,6 +253,8 @@ const RequisitionSearch = ($this, e) => {
                   $this.state.expected_date;
                 data.po_entry_detail[i].authorize_quantity = 0;
                 data.po_entry_detail[i].rejected_quantity = 0;
+                data.po_entry_detail[i].tax_percentage =
+                  $this.state.tax_percentage;
                 data.po_entry_detail[i].tax_amount =
                   (parseFloat(data.po_entry_detail[i].extended_cost) *
                     parseFloat($this.state.tax_percentage)) /
@@ -406,6 +264,32 @@ const RequisitionSearch = ($this, e) => {
                   parseFloat(data.po_entry_detail[i].extended_cost) +
                   data.po_entry_detail[i].tax_amount;
               }
+
+              let sub_total = Enumerable.from(data.po_entry_detail).sum(s =>
+                parseFloat(s.extended_price)
+              );
+
+              let net_total = Enumerable.from(data.po_entry_detail).sum(s =>
+                parseFloat(s.net_extended_cost)
+              );
+
+              let net_payable = Enumerable.from(data.po_entry_detail).sum(s =>
+                parseFloat(s.total_amount)
+              );
+
+              let total_tax = Enumerable.from(data.po_entry_detail).sum(s =>
+                parseFloat(s.tax_amount)
+              );
+
+              let detail_discount = Enumerable.from(data.po_entry_detail).sum(
+                s => parseFloat(s.sub_discount_amount)
+              );
+
+              data.sub_total = sub_total;
+              data.net_total = net_total;
+              data.net_payable = net_payable;
+              data.total_tax = total_tax;
+              data.detail_discount = detail_discount;
 
               if ($this.state.po_from === "PHR") {
                 data.phar_requisition_id =
@@ -641,7 +525,6 @@ export {
   discounthandle,
   numberchangeTexts,
   datehandle,
-  deletePosDetail,
   RequisitionSearch,
   vendortexthandle,
   ClearData,

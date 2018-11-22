@@ -21,7 +21,7 @@ import {
   texthandle,
   poforhandle,
   ClearData,
-  SavePOEnrty,
+  SaveDNEnrty,
   PurchaseOrderSearch,
   getCtrlCode
 } from "./DeliveryNoteEntryEvent";
@@ -54,10 +54,10 @@ class DeliveryNoteEntry extends Component {
     });
 
     if (
-      this.props.purchase_number !== undefined &&
-      this.props.purchase_number.length !== 0
+      this.props.delivery_note_number !== undefined &&
+      this.props.delivery_note_number.length !== 0
     ) {
-      getCtrlCode(this, this.props.purchase_number);
+      getCtrlCode(this, this.props.delivery_note_number);
     }
   }
 
@@ -99,8 +99,8 @@ class DeliveryNoteEntry extends Component {
                 label={{ forceLabel: "Delivery Number", returnText: true }}
               />
             ),
-            value: this.state.document_number,
-            selectValue: "document_number",
+            value: this.state.delivery_note_number,
+            selectValue: "delivery_note_number",
             events: {
               onChange: null //getCtrlCode.bind(this, this)
             },
@@ -315,7 +315,7 @@ class DeliveryNoteEntry extends Component {
                   <button
                     type="button"
                     className="btn btn-primary"
-                    onClick={SavePOEnrty.bind(this, this)}
+                    onClick={SaveDNEnrty.bind(this, this)}
                     disabled={this.state.saveEnable}
                   >
                     <AlgaehLabel

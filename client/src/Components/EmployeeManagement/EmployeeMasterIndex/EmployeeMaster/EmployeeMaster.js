@@ -156,11 +156,7 @@ class EmployeeMaster extends Component {
   render() {
     return (
       <div className="hims_employee_master">
-        <Modal
-          className="model-set"
-          open={this.props.open}
-          style={{ width: "100%" }}
-        >
+        <Modal open={this.props.open}>
           <div className="algaeh-modal">
             <div className="hims_employee_master">
               <div className="popupHeader">
