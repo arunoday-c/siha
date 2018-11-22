@@ -63,7 +63,6 @@ class ListofItems extends PureComponent {
       <React.Fragment>
         <div>
           <Modal
-            className="model-set"
             open={this.props.show}
             onClose={e => {
               this.onClose(e);
@@ -158,18 +157,18 @@ class ListofItems extends PureComponent {
                         return row.frequency === "0"
                           ? "1-0-1"
                           : row.frequency === "1"
-                            ? "1-0-0"
-                            : row.frequency === "2"
-                              ? "0-0-1"
-                              : row.frequency === "3"
-                                ? "0-1-0"
-                                : row.frequency === "4"
-                                  ? "1-1-0"
-                                  : row.frequency === "5"
-                                    ? "0-1-1"
-                                    : row.frequency === "6"
-                                      ? "1-1-1"
-                                      : null;
+                          ? "1-0-0"
+                          : row.frequency === "2"
+                          ? "0-0-1"
+                          : row.frequency === "3"
+                          ? "0-1-0"
+                          : row.frequency === "4"
+                          ? "1-1-0"
+                          : row.frequency === "5"
+                          ? "0-1-1"
+                          : row.frequency === "6"
+                          ? "1-1-1"
+                          : null;
                       },
                       others: {
                         //minWidth: 200,
@@ -185,14 +184,14 @@ class ListofItems extends PureComponent {
                         return row.frequency_type === "PD"
                           ? "Per Day"
                           : row.frequency_type === "PH"
-                            ? "Per Hour"
-                            : row.frequency_type === "PW"
-                              ? "Per Week"
-                              : row.frequency_type === "PM"
-                                ? "Per Month"
-                                : row.frequency_type === "AD"
-                                  ? "Alternate Day"
-                                  : null;
+                          ? "Per Hour"
+                          : row.frequency_type === "PW"
+                          ? "Per Week"
+                          : row.frequency_type === "PM"
+                          ? "Per Month"
+                          : row.frequency_type === "AD"
+                          ? "Alternate Day"
+                          : null;
                       },
                       others: {
                         //minWidth: 200,
@@ -208,8 +207,8 @@ class ListofItems extends PureComponent {
                         return row.frequency_time === "BM"
                           ? "Before Meals"
                           : row.frequency_time === "AM"
-                            ? "After Meals"
-                            : null;
+                          ? "After Meals"
+                          : null;
                       },
                       others: {
                         //minWidth: 200,

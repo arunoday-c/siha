@@ -99,7 +99,7 @@ const insertItemGroup = ($this, e) => {
             //Handle Successful Add here
             getItemGroup($this);
             swalMessage({
-              title: "Group addedsuccessfully . .",
+              title: "Group added successfully . .",
               type: "success"
             });
           } else {

@@ -3,7 +3,6 @@ import swal from "sweetalert2";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 const changeTexts = ($this, e) => {
-  
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   $this.setState({ [name]: value });
@@ -100,7 +99,7 @@ const insertItemGroup = ($this, e) => {
             //Handle Successful Add here
             getItemGroup($this);
             swalMessage({
-              title: "Group addedsuccessfully . .",
+              title: "Group added successfully . .",
               type: "success"
             });
           } else {

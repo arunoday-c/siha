@@ -215,7 +215,7 @@ class RequisitionItems extends Component {
                       <AlagehFormGroup
                         div={{ className: "col" }}
                         label={{
-                          forceLabel: "Fron Qty In Hand"
+                          forceLabel: "From Qty In Hand"
                         }}
                         textBox={{
                           number: {

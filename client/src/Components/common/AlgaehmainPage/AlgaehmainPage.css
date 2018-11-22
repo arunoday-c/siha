@@ -96,6 +96,9 @@ header {
   .hptl-phase1-sideMenuBar ul.tree-structure-menu li:hover {
     background: #00bcb0;
     color: #fff; }
+  .hptl-phase1-sideMenuBar ul.tree-structure-menu li.active {
+    background: #00bcb0;
+    color: #fff; }
 
 .hptl-phase1-sideMenuBar .sub-menu-option {
   background: #000000; }

@@ -389,10 +389,15 @@ class PersistentDrawer extends React.Component {
               >
                 <div className="hptl-phase1-sideMenuBar">
                   <div className="menuBar-title">
-                    <div className="appLogoOnly" />
+                    {/* <div className="appLogoOnly" />
                     <i
                       onClick={this.handleDrawerClose}
                       className="fas fa-times-circle sideBarClose"
+                    /> */}
+                    <input
+                      type="text"
+                      className="subMenuSearchFld"
+                      placeholder="Search Modules"
                     />
                   </div>
                   <div className="sideMenu-header">{MenuListItems}</div>
