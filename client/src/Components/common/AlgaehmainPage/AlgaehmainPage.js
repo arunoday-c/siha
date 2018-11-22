@@ -308,10 +308,14 @@ class PersistentDrawer extends React.Component {
       <div className="">
         <div className={classes.root}>
           <div className={classNames(classes.appFrame, "sticky-top")}>
-            <AppBar>
+            <AppBar style={{ backgroundColor: "#00babe" }}>
               <Toolbar
                 disableGutters={!sideopen}
-                style={{ minHeight: "50px", padding: "0px" }}
+                style={{
+                  minHeight: "50px",
+                  padding: "0px",
+                  backgroundColor: "#00babe"
+                }}
               >
                 <div className="screenDisplay">
                   <IconButton
