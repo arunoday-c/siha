@@ -1,0 +1,22 @@
+.concurrentTest {
+  /* The typing effect */
+  /* The typewriter cursor effect */ }
+  .concurrentTest .console-log-Cntr {
+    border: 1px solid #000;
+    background-color: #000;
+    color: #fff;
+    min-height: 80vh;
+    text-align: left; }
+
+@keyframes typing {
+  from {
+    width: 0; }
+  to {
+    width: 100%; } }
+
+@keyframes blink-caret {
+  from,
+  to {
+    border-color: transparent; }
+  50% {
+    border-color: orange; } }
