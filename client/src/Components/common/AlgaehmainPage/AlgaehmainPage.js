@@ -314,9 +314,9 @@ class PersistentDrawer extends React.Component {
                 style={{ minHeight: "50px", padding: "0px" }}
               >
                 <div className="screenDisplay">
-                  <IconButton
-                    color="inherit"
-                    aria-label="open drawer"
+                  <div className="appLogoOnly" />
+                  <i
+                    className="fas fa-bars"
                     onClick={this.handleDrawerOpen}
                     className={classNames(
                       classes.menuButton,
@@ -324,7 +324,7 @@ class PersistentDrawer extends React.Component {
                     )}
                   >
                     <MenuIcon />
-                  </IconButton>
+                  </i>
 
                   <h5>{this.state.title}</h5>
                 </div>
