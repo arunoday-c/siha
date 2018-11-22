@@ -318,7 +318,9 @@ class PersistentDrawer extends React.Component {
                 }}
               >
                 <div className="screenDisplay">
-                  <div className="appLogoOnly" />
+                  <div className="appLogoCntr">
+                    <p className="appLogoOnly" />
+                  </div>
                   <i
                     className="fas fa-bars"
                     onClick={this.handleDrawerOpen}
