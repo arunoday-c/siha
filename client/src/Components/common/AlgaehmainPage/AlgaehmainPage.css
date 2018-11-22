@@ -115,8 +115,7 @@ header {
   background: #000;
   position: fixed;
   width: 255px;
-  z-index: 9;
-  border-bottom: 1px solid #3e3e3e; }
+  z-index: 9; }
 
 .hptl-phase1-sideMenuBar .sideBarClose {
   position: absolute;
@@ -171,3 +170,22 @@ header {
     float: right;
     position: absolute;
     margin-left: 88%; }
+
+.selectedLang {
+  float: right;
+  font-size: 0.7rem;
+  margin-right: 10px;
+  border: 1px solid #fff;
+  padding: 0px 3px;
+  border-radius: 2px; }
+
+.loginProfileInfo {
+  font-size: 0.8rem; }
+  .loginProfileInfo span {
+    display: block;
+    white-space: nowrap;
+    margin-right: 10px;
+    padding-left: 10px; }
+    .loginProfileInfo span:first-child {
+      font-size: 0.9rem;
+      font-weight: 600; }

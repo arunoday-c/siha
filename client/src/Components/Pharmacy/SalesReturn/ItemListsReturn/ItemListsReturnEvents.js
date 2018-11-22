@@ -10,7 +10,7 @@ const discounthandle = ($this, context, ctrl, e) => {
 
   let sheet_discount_percentage = 0;
   let sheet_discount_amount = 0;
-  
+
   if (e.target.name === "sheet_discount_percentage") {
     sheet_discount_percentage = parseFloat(e.target.value.replace(" %", ""));
     sheet_discount_amount = 0;
@@ -45,7 +45,6 @@ const discounthandle = ($this, context, ctrl, e) => {
 };
 
 const changeTexts = ($this, ctrl, e) => {
-  
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -53,8 +52,6 @@ const changeTexts = ($this, ctrl, e) => {
 };
 
 const numberchangeTexts = ($this, context, e) => {
-  
-
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   $this.setState({ [name]: value });
@@ -71,7 +68,6 @@ const numberchangeTexts = ($this, context, e) => {
 };
 
 const itemchangeText = ($this, e) => {
-  
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
@@ -87,9 +83,7 @@ const itemchangeText = ($this, e) => {
       mappingName: "itemdetaillist"
     },
     afterSuccess: data => {
-      
       if (data.locationResult.length > 0) {
-        
         $this.setState({
           [name]: value,
           item_category: e.selected.category_id,
@@ -115,7 +109,6 @@ const itemchangeText = ($this, e) => {
 };
 
 const AddItems = ($this, context) => {
-  
   let ItemInput = [
     {
       insured: $this.state.insured,
@@ -217,9 +210,10 @@ const datehandle = ($this, ctrl, e) => {
   });
 };
 
-const deleteSalesReturnDetail = ($this, context, e, rowId) => {
+const deleteSalesReturnDetail = ($this, context, row) => {
+  debugger;
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
-  pharmacy_stock_detail.splice(rowId, 1);
+  pharmacy_stock_detail.splice(row.rowIdx, 1);
 
   $this.props.SalesReturnCalculations({
     uri: "/billing/billingCalculations",
@@ -283,25 +277,33 @@ const deleteSalesReturnDetail = ($this, context, e, rowId) => {
   }
 };
 
-const updateSalesReturnDetail = ($this, e) => {
-  $this.props.SalesReturnCalculations({
-    uri: "/billing/billingCalculations",
-    method: "POST",
-    data: { billdetails: $this.state.pharmacy_stock_detail },
-    redux: {
-      type: "RETURN_HEADER_GEN_GET_DATA",
-      mappingName: "salesReturn"
+const updateSalesReturnDetail = ($this, context) => {
+  debugger;
+  if ($this.state.dataChange === true) {
+    $this.props.SalesReturnCalculations({
+      uri: "/billing/billingCalculations",
+      method: "POST",
+      data: { billdetails: $this.state.pharmacy_stock_detail },
+      redux: {
+        type: "RETURN_HEADER_GEN_GET_DATA",
+        mappingName: "salesReturn"
+      }
+    });
+  } else {
+    if (context != null) {
+      context.updateState({
+        saveEnable: false
+      });
     }
-  });
+  }
 };
 
 //Calculate Row Detail
 const calculateAmount = ($this, row, context, ctrl, e) => {
-  
   e = e || ctrl;
 
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
-  
+
   row[e.target.name] = parseFloat(e.target.value);
   let inputParam = [
     {
@@ -334,18 +336,28 @@ const calculateAmount = ($this, row, context, ctrl, e) => {
       mappingName: "xxx"
     },
     afterSuccess: data => {
-      
       data.billdetails[0].extended_cost = data.billdetails[0].gross_amount;
       data.billdetails[0].net_extended_cost = data.billdetails[0].net_amout;
       data.billdetails[0].quantity = row.quantity;
 
       extend(row, data.billdetails[0]);
-      for (let i = 0; i < pharmacy_stock_detail.length; i++) {
-        if (pharmacy_stock_detail[i].item_id === row.item_id) {
-          pharmacy_stock_detail[i] = row;
-        }
+      // for (let i = 0; i < pharmacy_stock_detail.length; i++) {
+      //   if (pharmacy_stock_detail[i].item_id === row.item_id) {
+      //     pharmacy_stock_detail[i] = row;
+      //   }
+      // }
+      pharmacy_stock_detail[row.rowIdx] = row;
+      $this.setState({
+        pharmacy_stock_detail: pharmacy_stock_detail,
+        dataChange: true
+      });
+
+      if (context !== undefined) {
+        context.updateState({
+          pharmacy_stock_detail: pharmacy_stock_detail,
+          dataChange: true
+        });
       }
-      $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
     }
   });
 };
@@ -379,7 +391,6 @@ const adjustadvance = ($this, context, ctrl, e) => {
 };
 
 const SalesReturnheaderCalculation = ($this, context) => {
-  
   var intervalId;
   let ItemInput = {
     isReceipt: false,
@@ -407,6 +418,20 @@ const SalesReturnheaderCalculation = ($this, context) => {
     clearInterval(intervalId);
   }, 1000);
 };
+
+const EditGrid = ($this, context, cancelRow) => {
+  if (context != null) {
+    let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+    if (cancelRow !== undefined) {
+      _pharmacy_stock_detail[cancelRow.rowIdx] = cancelRow;
+    }
+    context.updateState({
+      saveEnable: !$this.state.saveEnable,
+      pharmacy_stock_detail: _pharmacy_stock_detail
+    });
+  }
+};
+
 export {
   discounthandle,
   changeTexts,
@@ -417,5 +442,6 @@ export {
   deleteSalesReturnDetail,
   updateSalesReturnDetail,
   calculateAmount,
-  adjustadvance
+  adjustadvance,
+  EditGrid
 };

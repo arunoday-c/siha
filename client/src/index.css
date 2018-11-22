@@ -338,7 +338,8 @@
   :global .portlet.portlet-bordered {
     border: 1px solid #eee; }
   :global .portlet-title {
-    padding: 0;
+    padding: 0 15px;
+    margin: -5px -15px 0;
     min-height: 35px;
     border-bottom: 1px dashed #eee;
     margin-bottom: 5px; }
@@ -990,9 +991,11 @@
         border: none !important;
         cursor: pointer; }
       :global .tabMaster ul li.active label {
-        border-bottom: 3px solid #34b8bc;
-        color: #000;
-        cursor: pointer; }
+        border-bottom: 3px solid #238386;
+        color: #fff;
+        cursor: pointer;
+        background: #34b8bc;
+        text-shadow: 0 1px 1px #868686; }
   :global .hptl-phase1-footer {
     margin-top: 50px; }
   :global .divInner {

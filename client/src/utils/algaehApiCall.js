@@ -347,9 +347,9 @@ export function isDateFormat(options, isSend) {
 export function defaultOptions() {
   var output = {
     clientDateFormat: "YYYY-MM-DD",
-    ClientTimeFormat: "HH:MM",
+    ClientTimeFormat: "HH:mm",
     serverDateFromat: "YYYYMMDD",
-    serverTimeFormat: "HHMMSS"
+    serverTimeFormat: "HHmmss"
   };
   return output;
 }
@@ -388,7 +388,7 @@ export function valueReviver(key, value) {
     value = String(value).trim();
   }
   if (typeof value === "string" && dateFormat.test(value)) {
-    return moment(value).format("YYYY-MM-DD HH:MM");
+    return moment(value).format("YYYY-MM-DD HH:mm");
   }
 
   return value;

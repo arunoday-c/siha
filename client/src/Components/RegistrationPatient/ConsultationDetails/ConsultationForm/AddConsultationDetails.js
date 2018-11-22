@@ -21,6 +21,7 @@ const DeptselectedHandeler = ($this, context, e) => {
 };
 
 const selectedHandeler = ($this, context, e) => {
+  debugger;
   if (
     $this.state.full_name !== "" &&
     $this.state.title_id !== null &&
@@ -28,7 +29,8 @@ const selectedHandeler = ($this, context, e) => {
     $this.state.gender !== null &&
     $this.state.date_of_birth !== null &&
     $this.state.age !== 0 &&
-    $this.state.contact_number !== 0 &&
+    ($this.state.contact_number !== null ||
+      $this.state.contact_number !== "") &&
     $this.state.patient_type !== null &&
     $this.state.nationality_id !== null &&
     $this.state.country_id !== null &&

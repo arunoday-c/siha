@@ -44,7 +44,6 @@ class PatientRecall extends Component {
   }
 
   dropDownHandle(value) {
-    debugger;
     switch (value.name) {
       case "sub_department_id":
         this.setState({

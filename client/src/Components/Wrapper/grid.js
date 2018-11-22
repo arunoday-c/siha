@@ -190,13 +190,20 @@ class DataGrid extends PureComponent {
     const row = this.settingPreviousRowData(index);
     const data = [...this.state.data];
     data[row.rowIdx] = row;
-    this.setState({
-      editableRows: {
-        ...this.state.editableRows,
-        [index]: !this.state.editableRows[index]
+    this.setState(
+      {
+        editableRows: {
+          ...this.state.editableRows,
+          [index]: !this.state.editableRows[index]
+        },
+        data
       },
-      data
-    });
+      () => {
+        if (typeof this.props.events.onCancel === "function") {
+          this.props.events.onCancel(row);
+        }
+      }
+    );
   };
   settingPreviousRowData = index => {
     let existsing = sessionStorage.getItem(this.props.id);
@@ -217,11 +224,14 @@ class DataGrid extends PureComponent {
     return row;
   };
   toggleRowDelete = index => {
+    debugger;
     if (
       this.props.events !== undefined &&
       this.props.events.onDelete !== undefined
     ) {
-      this.props.events.onDelete(this.state.data[index]);
+      let _row = this.state.data[index];
+      _row["rowIdx"] = index;
+      this.props.events.onDelete(_row);
     }
   };
   toggleRowSave = index => {
@@ -232,15 +242,18 @@ class DataGrid extends PureComponent {
       .firstOrDefault();
 
     const row = this.state.data[index];
-    if (JSON.stringify(existsing) === JSON.stringify(row)) {
-      this.setState({
-        editableRows: {
-          ...this.state.editableRows,
-          [index]: !this.state.editableRows[index]
-        }
-      });
-      return;
+    if (this.props.byForceEvents === undefined) {
+      if (JSON.stringify(existsing) === JSON.stringify(row)) {
+        this.setState({
+          editableRows: {
+            ...this.state.editableRows,
+            [index]: !this.state.editableRows[index]
+          }
+        });
+        return;
+      }
     }
+
     let isError = false;
     if (this.props.datavalidate !== undefined) {
       AlgaehValidation({
@@ -252,6 +265,7 @@ class DataGrid extends PureComponent {
     }
     if (isError) return;
     this.settingPreviousRowData(index);
+
     if (this.props.events !== undefined) {
       if (this.props.events.onDone !== undefined) {
         this.setState(

@@ -16,7 +16,7 @@ class Encounters extends Component {
       patientMedications: [],
       patientInvestigations: [],
       patientProcedures: [],
-      patientVital: {}
+      patientVital: []
     };
   }
 
@@ -50,10 +50,21 @@ class Encounters extends Component {
       },
       cancelRequestId: "getPatientVitals",
       onSuccess: response => {
+        debugger;
         algaehLoader({ show: false });
         if (response.data.success && response.data.records.length !== 0) {
-          console.log("Vital: ", response.data.records[0]);
-          this.setState({ patientVital: response.data.records[0] });
+          const _Vitals =
+            response.data.records !== undefined &&
+            response.data.records.length > 0
+              ? Enumerable.from(response.data.records)
+                  .groupBy("$.visit_date", null, (k, g) => {
+                    return g.getSource();
+                  })
+                  .orderBy(g => g.visit_date)
+                  .lastOrDefault()
+              : [];
+
+          this.setState({ patientVital: _Vitals });
         }
       },
       onFailure: error => {
@@ -144,7 +155,6 @@ class Encounters extends Component {
       uri: "/mrd/getPatientInvestigation",
       method: "GET",
       data: {
-        //visit_id: 502
         visit_id: visit_id
       },
       cancelRequestId: "getPatientInvestigation",
@@ -222,7 +232,7 @@ class Encounters extends Component {
                             className="pat-code"
                           >
                             {moment(row.encountered_date).format(
-                              "DD-MM-YYYY HH:MM A"
+                              "DD-MM-YYYY HH:mm A"
                             )}
                           </span>
                         );
@@ -374,25 +384,21 @@ class Encounters extends Component {
                   <div className="col-lg-12">
                     <h6 className="smallh6">Vitals</h6>
                     <div className="row">
-                      <div className="col borderVitals">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Weight"
-                          }}
-                        />
-                        <h6>
-                          {this.state.patientVital.weight !== undefined
-                            ? this.state.patientVital.weight
-                            : 0}
-                          <span>
-                            {this.state.patientVital.weight_uom !== undefined
-                              ? this.state.patientVital.weight_uom
-                              : ""}
-                          </span>
-                        </h6>
-                      </div>
+                      {this.state.patientVital.map((row, index) => (
+                        <div key={index} className="col borderVitals">
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: row.vitals_name
+                            }}
+                          />
+                          <h6>
+                            {row.vital_value}
+                            <span>{row.uom}</span>
+                          </h6>
+                        </div>
+                      ))}
 
-                      <div className="col borderVitals">
+                      {/* <div className="col borderVitals">
                         <AlgaehLabel
                           label={{
                             forceLabel: "Height"
@@ -490,7 +496,7 @@ class Encounters extends Component {
                             : 0}
                           <span>kg</span>
                         </h6>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 </div>

@@ -6,7 +6,6 @@ import Options from "../../../../Options.json";
 let texthandlerInterval = null;
 
 const UomchangeTexts = ($this, ctrl, e) => {
-  
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -19,8 +18,6 @@ const UomchangeTexts = ($this, ctrl, e) => {
 };
 
 const numberchangeTexts = ($this, context, e) => {
-  
-
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   $this.setState({ [name]: value });
@@ -37,7 +34,6 @@ const numberchangeTexts = ($this, context, e) => {
 };
 
 const itemchangeText = ($this, e) => {
-  
   let name = e.name || e.target.name;
   if (
     $this.state.from_location_id !== null &&
@@ -57,7 +53,6 @@ const itemchangeText = ($this, e) => {
         mappingName: "itemdetaillist"
       },
       afterSuccess: data => {
-        
         if (data.locationResult.length > 0) {
           $this.setState({
             [name]: value,
@@ -104,7 +99,6 @@ const AddItems = ($this, context) => {
       type: "warning"
     });
   } else {
-    
     let ItemInput = [
       {
         item_id: $this.state.item_id,
@@ -129,7 +123,6 @@ const AddItems = ($this, context) => {
         mappingName: "xxx"
       },
       afterSuccess: data => {
-        
         if (data.billdetails[0].pre_approval === "Y") {
           swalMessage({
             title:
@@ -202,15 +195,15 @@ const deleteTransEntryDetail = ($this, context, e, rowId) => {
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
   pharmacy_stock_detail.splice(rowId, 1);
 
-  $this.props.PosHeaderCalculations({
-    uri: "/billing/billingCalculations",
-    method: "POST",
-    data: { billdetails: pharmacy_stock_detail },
-    redux: {
-      type: "POS_HEADER_GEN_GET_DATA",
-      mappingName: "posheader"
-    }
-  });
+  // $this.props.PosHeaderCalculations({
+  //   uri: "/billing/billingCalculations",
+  //   method: "POST",
+  //   data: { billdetails: pharmacy_stock_detail },
+  //   redux: {
+  //     type: "POS_HEADER_GEN_GET_DATA",
+  //     mappingName: "posheader"
+  //   }
+  // });
 
   if (pharmacy_stock_detail.length === 0) {
     if (context !== undefined) {
@@ -264,20 +257,16 @@ const deleteTransEntryDetail = ($this, context, e, rowId) => {
   }
 };
 
-const updateTransEntryDetail = ($this, e) => {
-  $this.props.PosHeaderCalculations({
-    uri: "/billing/billingCalculations",
-    method: "POST",
-    data: { billdetails: $this.state.pharmacy_stock_detail },
-    redux: {
-      type: "posheader",
-      mappingName: "posheader"
-    }
-  });
+const updateTransEntryDetail = ($this, context) => {
+  debugger;
+  if (context != null) {
+    context.updateState({
+      saveEnable: false
+    });
+  }
 };
 
 const onchangegridcol = ($this, context, row, e) => {
-  
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   if (value > row.quantity_authorized) {
@@ -313,7 +302,6 @@ const dateFormater = ($this, value) => {
 };
 
 const getItemLocationStock = ($this, value) => {
-  
   $this.props.getItemLocationStock({
     uri: "/pharmacyGlobal/getItemLocationStock",
     method: "GET",
@@ -340,6 +328,20 @@ const getItemLocationStock = ($this, value) => {
   });
 };
 
+const EditGrid = ($this, context, cancelRow) => {
+  debugger;
+  if (context != null) {
+    let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+    if (cancelRow !== undefined) {
+      _pharmacy_stock_detail[cancelRow.rowIdx] = cancelRow;
+    }
+    context.updateState({
+      saveEnable: !$this.state.saveEnable,
+      pharmacy_stock_detail: _pharmacy_stock_detail
+    });
+  }
+};
+
 export {
   UomchangeTexts,
   itemchangeText,
@@ -350,5 +352,6 @@ export {
   updateTransEntryDetail,
   onchangegridcol,
   dateFormater,
-  getItemLocationStock
+  getItemLocationStock,
+  EditGrid
 };

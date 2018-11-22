@@ -174,6 +174,7 @@ class Vitals extends Component {
                 list: g.getSource()
               };
             })
+            .orderByDescending()
             .toArray()
         : [];
 
