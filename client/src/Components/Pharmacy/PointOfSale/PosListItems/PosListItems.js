@@ -28,7 +28,11 @@ import {
   CloseItemBatch,
   onchangegridcol,
   PosheaderCalculation,
-  ViewInsurance
+  ViewInsurance,
+  qtyonchangegridcol,
+  EditGrid,
+  credittexthandle,
+  credittextCal
 } from "./PosListItemsEvents";
 import ReciptForm from "./ReciptDetails/AddReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -530,18 +534,18 @@ class PosListItems extends Component {
                                         className: "txt-fld",
                                         name: "quantity",
                                         events: {
-                                          onChange: onchangegridcol.bind(
+                                          onChange: qtyonchangegridcol.bind(
                                             this,
                                             this,
                                             row
                                           )
                                         },
                                         others: {
-                                          onBlur: calculateAmount.bind(
-                                            this,
-                                            this,
-                                            row
-                                          ),
+                                          // onBlur: calculateAmount.bind(
+                                          //   this,
+                                          //   this,
+                                          //   row
+                                          // ),
                                           onFocus: e => {
                                             e.target.oldvalue = e.target.value;
                                           }
@@ -587,11 +591,11 @@ class PosListItems extends Component {
                                           )
                                         },
                                         others: {
-                                          onBlur: calculateAmount.bind(
-                                            this,
-                                            this,
-                                            row
-                                          ),
+                                          // onBlur: calculateAmount.bind(
+                                          //   this,
+                                          //   this,
+                                          //   row
+                                          // ),
                                           onFocus: e => {
                                             e.target.oldvalue = e.target.value;
                                           }
@@ -602,7 +606,7 @@ class PosListItems extends Component {
                                 }
                               },
                               {
-                                fieldName: "discount_amout",
+                                fieldName: "discount_amount",
                                 label: (
                                   <AlgaehLabel
                                     label={{ forceLabel: "discount Amount" }}
@@ -625,11 +629,11 @@ class PosListItems extends Component {
                                           )
                                         },
                                         others: {
-                                          onBlur: calculateAmount.bind(
-                                            this,
-                                            this,
-                                            row
-                                          ),
+                                          // onBlur: calculateAmount.bind(
+                                          //   this,
+                                          //   this,
+                                          //   row
+                                          // ),
                                           onFocus: e => {
                                             e.target.oldvalue = e.target.value;
                                           }
@@ -662,9 +666,11 @@ class PosListItems extends Component {
                                 this,
                                 context
                               ),
-                              onEdit: row => {},
+                              onEdit: EditGrid.bind(this, this, context),
+                              onCancel: EditGrid.bind(this, this, context),
                               onDone: updatePosDetail.bind(this, this)
                             }}
+                            byForceEvents={true}
                             // onRowSelect={row => {
                             //   getItemLocationStock(this, row);
                             // }}
@@ -928,7 +934,7 @@ class PosListItems extends Component {
                             others: {
                               disabled: this.state.saveEnable,
                               placeholder: "0.00",
-                              onBlur: PosheaderCalculation.bind(this, this),
+                              // onBlur: PosheaderCalculation.bind(this, this),
                               onFocus: e => {
                                 e.target.oldvalue = e.target.value;
                               }
@@ -953,7 +959,7 @@ class PosListItems extends Component {
                             others: {
                               disabled: this.state.saveEnable,
                               placeholder: "0.00",
-                              onBlur: PosheaderCalculation.bind(this, this),
+                              // onBlur: PosheaderCalculation.bind(this, this),
                               onFocus: e => {
                                 e.target.oldvalue = e.target.value;
                               }
@@ -1022,8 +1028,18 @@ class PosListItems extends Component {
                             name: "credit_amount",
 
                             events: {
-                              disabled: this.state.saveEnable,
-                              onChange: null
+                              onChange: credittexthandle.bind(
+                                this,
+                                this,
+                                context
+                              )
+                            },
+                            others: {
+                              placeholder: "0.00",
+                              onBlur: credittextCal.bind(this, this),
+                              onFocus: e => {
+                                e.target.oldvalue = e.target.value;
+                              }
                             }
                           }}
                         />

@@ -169,7 +169,10 @@ export function Validations(state) {
     });
 
     return isError;
-  } else if (state.state.patient_type === null) {
+  } else if (
+    state.state.patient_type === null ||
+    state.state.patient_type === ""
+  ) {
     isError = true;
 
     swalMessage({
