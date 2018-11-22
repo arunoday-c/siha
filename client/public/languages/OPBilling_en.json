@@ -26,6 +26,7 @@
   "net_total": "Net Total",
   "net_amount": "Net Amount",
   "credit_amount": "Credit",
+  "balance_due": "Balance Due",
   "receiveable_amount": "Receivable",
   "sub_total_amount": "Sub Total",
   "discount_amount": "Discount",
