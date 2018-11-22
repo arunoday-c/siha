@@ -660,6 +660,7 @@ class PosListItems extends Component {
                             }}
                             isEditable={true}
                             paging={{ page: 0, rowsPerPage: 10 }}
+                            byForceEvents={true}
                             events={{
                               onDelete: deletePosDetail.bind(
                                 this,
@@ -670,7 +671,7 @@ class PosListItems extends Component {
                               onCancel: EditGrid.bind(this, this, context),
                               onDone: updatePosDetail.bind(this, this)
                             }}
-                            byForceEvents={true}
+
                             // onRowSelect={row => {
                             //   getItemLocationStock(this, row);
                             // }}

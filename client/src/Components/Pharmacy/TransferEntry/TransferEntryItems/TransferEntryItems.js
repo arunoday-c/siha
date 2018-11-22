@@ -20,7 +20,8 @@ import {
   updateTransEntryDetail,
   // UomchangeTexts,
   dateFormater,
-  getItemLocationStock
+  getItemLocationStock,
+  EditGrid
 } from "./TransferEntryItemsEvents";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 
@@ -367,8 +368,9 @@ class TransferEntryItems extends Component {
                           this,
                           context
                         ),
-                        onEdit: row => {},
-                        onDone: updateTransEntryDetail.bind(this, this)
+                        onEdit: EditGrid.bind(this, this, context),
+                        onCancel: EditGrid.bind(this, this, context),
+                        onDone: updateTransEntryDetail.bind(this, this, context)
                       }}
                       onRowSelect={row => {
                         getItemLocationStock(this, row);

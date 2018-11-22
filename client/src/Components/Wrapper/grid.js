@@ -224,11 +224,14 @@ class DataGrid extends PureComponent {
     return row;
   };
   toggleRowDelete = index => {
+    debugger;
     if (
       this.props.events !== undefined &&
       this.props.events.onDelete !== undefined
     ) {
-      this.props.events.onDelete(this.state.data[index]);
+      let _row = this.state.data[index];
+      _row["rowIdx"] = index;
+      this.props.events.onDelete(_row);
     }
   };
   toggleRowSave = index => {
