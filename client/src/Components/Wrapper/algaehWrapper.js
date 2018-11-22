@@ -9,6 +9,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Modal from "@material-ui/core/Modal";
 import AlgaehSearch from "./globalSearch";
 import AlgaehModalPopUp from "./modulePopUp";
+import algaehErrorBoundary from "./algaehErrorBoundary";
 import "hijri-date";
 
 const AlgaehLabel = Label;
@@ -19,6 +20,8 @@ const AlgaehOptions = Options;
 const AlagehAutoComplete = AutoComplete;
 const AlgaehDataGrid = DataGrid;
 const AlgaehGlobalSearch = AlgaehSearch;
+const AlgaehErrorBoundary = algaehErrorBoundary;
+
 const AlgaehConvertToHijri = date => {
   if (date !== null && date !== "") {
     let nowGreg = new Date(date);
@@ -37,5 +40,6 @@ export {
   Tooltip,
   Modal,
   AlgaehGlobalSearch,
-  AlgaehModalPopUp
+  AlgaehModalPopUp,
+  AlgaehErrorBoundary
 };

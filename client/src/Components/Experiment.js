@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import ReactTable from "react-table";
+import { AlgaehErrorBoundary } from "./Wrapper/algaehWrapper";
 import "react-table/react-table.css";
 import Enumerable from "linq";
 import { algaehApiCall } from "../utils/algaehApiCall";
@@ -196,6 +196,26 @@ class Experiment extends Component {
         >
           View Report
         </button>
+        <div
+          style={{
+            marginTop: "30px"
+          }}
+        >
+          <AlgaehErrorBoundary>
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                throw new Error("I crashed!");
+              }}
+            >
+              Click me to Crash me
+            </button>
+          </AlgaehErrorBoundary>
+        </div>
+        <div>
+          The Above component has a bug so this is how our wrapper handles We
+          can still use the other elements apart from the crashed element
+        </div>
       </div>
     );
   }
