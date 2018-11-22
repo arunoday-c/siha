@@ -128,10 +128,8 @@ let addPosEntry = (req, res, next) => {
         ],
         (error, headerResult) => {
           if (error) {
-            connection.rollback(() => {
-              releaseDBConnection(db, connection);
-              next(error);
-            });
+            releaseDBConnection(db, connection);
+            next(error);
           }
 
           debugLog(" pos header id :", headerResult);
@@ -185,10 +183,8 @@ let addPosEntry = (req, res, next) => {
               ],
               (error, detailResult) => {
                 if (error) {
-                  connection.rollback(() => {
-                    releaseDBConnection(db, connection);
-                    next(error);
-                  });
+                  releaseDBConnection(db, connection);
+                  next(error);
                 }
 
                 req.records = {
@@ -220,10 +216,8 @@ let addPosEntry = (req, res, next) => {
               }
             );
           } else {
-            connection.rollback(() => {
-              releaseDBConnection(db, connection);
-              next(error);
-            });
+            releaseDBConnection(db, connection);
+            next(error);
           }
         }
       );
@@ -384,15 +378,18 @@ let updatePosEntry = (req, res, next) => {
             if (records == null) {
               throw new exception();
             }
-            connection.commit(error => {
-              if (error) {
-                releaseDBConnection(db, connection);
-                next(error);
-              }
-              req.posUpdate = records;
-              releaseDBConnection(db, connection);
-              next();
-            });
+
+            req.posUpdate = records;
+            next();
+            // connection.commit(error => {
+            //   if (error) {
+            //     releaseDBConnection(db, connection);
+            //     next(error);
+            //   }
+            //   req.posUpdate = records;
+            //   releaseDBConnection(db, connection);
+            //   next();
+            // });
           })
           .catch(error => {
             debugLog("caught1: ", error);

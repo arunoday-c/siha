@@ -42,14 +42,19 @@ class InventorySetup extends Component {
   }
 
   componentDidMount() {
-    this.props.getUserDetails({
-      uri: "/algaehappuser/selectAppUsers",
-      method: "GET",
-      redux: {
-        type: "USER_DETAILS_GET_DATA",
-        mappingName: "userdrtails"
-      }
-    });
+    if (
+      this.props.userdrtails === undefined ||
+      this.props.userdrtails.length === 0
+    ) {
+      this.props.getUserDetails({
+        uri: "/algaehappuser/selectAppUsers",
+        method: "GET",
+        redux: {
+          type: "USER_DETAILS_GET_DATA",
+          mappingName: "userdrtails"
+        }
+      });
+    }
   }
 
   render() {

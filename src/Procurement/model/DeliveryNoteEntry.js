@@ -12,8 +12,8 @@ import moment, { now } from "moment";
 
 import Promise from "bluebird";
 
-//created by Nowshad: to save Purchase Order Entry
-let addPurchaseOrderEntry = (req, res, next) => {
+//created by Nowshad: to save Delivery Note Entry
+let addDeliveryNoteEntry = (req, res, next) => {
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -21,10 +21,8 @@ let addPurchaseOrderEntry = (req, res, next) => {
     let db = req.db;
     let input = extend({}, req.body);
 
-    debugLog("PurchaseOrderEntry: ", "Purchase Order Entry");
+    debugLog("DeliveryNoteEntry: ", "Delivery Note Entry");
     let connection = req.connection;
-
-    let requestCounter = 1;
 
     connection.beginTransaction(error => {
       if (error) {
@@ -33,11 +31,13 @@ let addPurchaseOrderEntry = (req, res, next) => {
           next(error);
         });
       }
+      let requestCounter = 1;
+
       return new Promise((resolve, reject) => {
         runningNumberGen({
           db: connection,
           counter: requestCounter,
-          module_desc: ["PO_NUM"],
+          module_desc: ["DN_NUM"],
           onFailure: error => {
             reject(error);
           },
@@ -54,26 +54,23 @@ let addPurchaseOrderEntry = (req, res, next) => {
         debugLog("today:", today);
 
         connection.query(
-          "INSERT INTO `hims_f_procurement_po_header` (purchase_number,po_date,po_type,po_from, pharmcy_location_id,\
-              inventory_location_id,location_type,vendor_id,expected_date,on_hold, phar_requisition_id,inv_requisition_id, \
-              from_multiple_requisition, payment_terms, comment, sub_total, detail_discount, extended_total,sheet_level_discount_percent, \
+          "INSERT INTO `hims_f_procurement_dn_header` (delivery_note_number,dn_date,dn_type,dn_from, pharmcy_location_id,\
+              inventory_location_id,location_type,vendor_id, purchase_order_id, from_multiple_purchase_orders, \
+              payment_terms, comment, sub_total, detail_discount, extended_total,sheet_level_discount_percent, \
               sheet_level_discount_amount,description,net_total,total_tax, created_by,created_date, \
               updated_by,updated_date) \
-            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           [
             documentCode,
             today,
-            input.po_type,
-            input.po_from,
+            input.dn_type,
+            input.dn_from,
             input.pharmcy_location_id,
             input.inventory_location_id,
             input.location_type,
             input.vendor_id,
-            input.expected_date,
-            input.on_hold,
-            input.requisition_id,
-            input.inv_requisition_id,
-            input.from_multiple_requisition,
+            input.purchase_order_id,
+            input.from_multiple_purchase_orders,
             input.payment_terms,
             input.comment,
             input.sub_total,
@@ -92,8 +89,8 @@ let addPurchaseOrderEntry = (req, res, next) => {
             new Date()
           ],
           (error, headerResult) => {
-            debugLog("error: ", "Check");
             if (error) {
+              debugLog("error: ", "Check");
               connection.rollback(() => {
                 releaseDBConnection(db, connection);
                 next(error);
@@ -110,29 +107,28 @@ let addPurchaseOrderEntry = (req, res, next) => {
                 "inv_item_category_id",
                 "inv_item_group_id",
                 "inv_item_id",
-                "order_quantity",
-                "total_quantity",
+                "po_quantity",
+                "dn_quantity",
                 "pharmacy_uom_id",
-                "unit_price",
-                "extended_price",
-                "sub_discount_percentage",
-                "sub_discount_amount",
-                "extended_cost",
-                "net_extended_cost",
+                "inventory_uom_id",
                 "unit_cost",
-                "expected_arrival_date",
-                "pharmacy_requisition_id",
-                "inventory_requisition_id",
+                "extended_cost",
+                "discount_percentage",
+                "discount_amount",
+                "net_extended_cost",
                 "tax_percentage",
                 "tax_amount",
                 "total_amount",
-                "item_type"
+                "item_type",
+                "batchno_expiry_required",
+                "batchno",
+                "expiry_date"
               ];
 
               connection.query(
-                "INSERT INTO hims_f_procurement_po_detail(" +
+                "INSERT INTO hims_f_procurement_dn_detail(" +
                   insurtColumns.join(",") +
-                  ",procurement_header_id) VALUES ?",
+                  ",hims_f_procurement_dn_header_id) VALUES ?",
                 [
                   jsonArrayToObject({
                     sampleInputObject: insurtColumns,
@@ -143,30 +139,19 @@ let addPurchaseOrderEntry = (req, res, next) => {
                 ],
                 (error, detailResult) => {
                   if (error) {
+                    debugLog("Error: ", error);
+
                     connection.rollback(() => {
+                      debugLog("Roll Back: ", error);
                       releaseDBConnection(db, connection);
                       next(error);
                     });
                   }
 
                   req.records = {
-                    purchase_number: documentCode
+                    delivery_note_number: documentCode
                   };
                   next();
-
-                  // connection.commit(error => {
-                  //   if (error) {
-                  //     connection.rollback(() => {
-                  //       releaseDBConnection(db, connection);
-                  //       next(error);
-                  //     });
-                  //   }
-                  //   releaseDBConnection(db, connection);
-                  //   req.records = {
-                  //     purchase_number: documentCode
-                  //   };
-                  //   next();
-                  // });
                 }
               );
             } else {
@@ -184,8 +169,8 @@ let addPurchaseOrderEntry = (req, res, next) => {
   }
 };
 
-//created by Nowshad: to get PurchaseOrderEntry
-let getPurchaseOrderEntry = (req, res, next) => {
+//created by Nowshad: to get DeliveryNoteEntry
+let getDeliveryNoteEntry = (req, res, next) => {
   let selectWhere = {
     purchase_number: "ALL"
   };
@@ -200,7 +185,7 @@ let getPurchaseOrderEntry = (req, res, next) => {
     debugLog("where", where);
     db.getConnection((error, connection) => {
       connection.query(
-        "SELECT * from  hims_f_procurement_po_header\
+        "SELECT * from  hims_f_procurement_dn_header\
           where " +
           where.condition,
         where.values,
@@ -213,12 +198,12 @@ let getPurchaseOrderEntry = (req, res, next) => {
           debugLog("result: ", headerResult);
           if (headerResult.length != 0) {
             debugLog(
-              "hims_f_procurement_po_header_id: ",
-              headerResult[0].hims_f_procurement_po_header_id
+              "hims_f_procurement_dn_header_id: ",
+              headerResult[0].hims_f_procurement_dn_header_id
             );
             connection.query(
-              "select * from hims_f_procurement_po_detail where procurement_header_id=?",
-              headerResult[0].hims_f_procurement_po_header_id,
+              "select * from hims_f_procurement_dn_detail where hims_f_procurement_dn_header_id=?",
+              headerResult[0].hims_f_procurement_dn_header_id,
               (error, po_entry_detail) => {
                 if (error) {
                   releaseDBConnection(db, connection);
@@ -245,7 +230,7 @@ let getPurchaseOrderEntry = (req, res, next) => {
   }
 };
 
-let updatePurchaseOrderEntry = (req, res, next) => {
+let updateDeliveryNoteEntry = (req, res, next) => {
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -542,8 +527,8 @@ let getAuthPurchaseList = (req, res, next) => {
   }
 };
 
-//created by Nowshad: to Update Pharmacy Requisition Entry
-let updatePharReqEntry = (req, res, next) => {
+//created by Nowshad: to Update PO Entry
+let updatePOEntry = (req, res, next) => {
   if (req.db == null) {
     next(httpStatus.dataBaseNotInitilizedError());
   }
@@ -552,157 +537,32 @@ let updatePharReqEntry = (req, res, next) => {
   let inputParam = extend({}, req.body);
 
   connection.query(
-    "UPDATE `hims_f_pharamcy_material_header` SET `is_completed`=?, `completed_date`=? \
-      WHERE `hims_f_pharamcy_material_header_id`=?",
-    ["Y", new Date(), inputParam.phar_requisition_id],
+    "UPDATE `hims_f_procurement_po_header` SET `is_completed`=?, `completed_date`=?, `updated_by` = ?,`updated_date` = ? \
+      WHERE `hims_f_procurement_po_header_id`=?",
+    [
+      "Y",
+      new Date(),
+      req.userIdentity.algaeh_d_app_user_id,
+      new Date(),
+      inputParam.purchase_order_id
+    ],
     (error, result) => {
       if (error) {
-        connection.rollback(() => {
-          releaseDBConnection(db, connection);
-          next(error);
-        });
+        releaseDBConnection(db, connection);
+        next(error);
       }
-      if (result !== "" && result != null) {
-        let details = inputParam.pharmacy_stock_detail;
-
-        let qry = "";
-
-        for (let i = 0; i < details.length; i++) {
-          debugLog("Data:n ", details[i].pharmacy_requisition_id);
-          qry +=
-            " UPDATE `hims_f_pharmacy_material_detail` SET po_created_date=now()" +
-            ",po_created='" +
-            "Y" +
-            "',po_created_quantity='" +
-            details[i].total_quantity +
-            "' WHERE hims_f_pharmacy_material_detail_id='" +
-            details[i].pharmacy_requisition_id +
-            "';";
-        }
-
-        if (qry != "") {
-          connection.query(qry, (error, detailResult) => {
-            if (error) {
-              connection.rollback(() => {
-                releaseDBConnection(db, connection);
-                next(error);
-              });
-            }
-
-            req.data = req.records.purchase_number;
-            next();
-            // connection.commit(error => {
-            //   if (error) {
-            //     connection.rollback(() => {
-            //       releaseDBConnection(db, connection);
-            //       next(error);
-            //     });
-            //   }
-            //   releaseDBConnection(db, connection);
-            //   req.records = req.records.purchase_number;
-            //   next();
-            // });
-          });
-        } else {
-          releaseDBConnection(db, connection);
-          req.records = {};
-          next();
-        }
-      } else {
-        connection.rollback(() => {
-          releaseDBConnection(db, connection);
-          req.records = {};
-          next();
-        });
-      }
-    }
-  );
-};
-
-//created by Nowshad: to Update Inventory Requisition Entry
-let updateInvReqEntry = (req, res, next) => {
-  if (req.db == null) {
-    next(httpStatus.dataBaseNotInitilizedError());
-  }
-  let db = req.db;
-  let connection = req.connection;
-  let inputParam = extend({}, req.body);
-
-  connection.query(
-    "UPDATE `hims_f_inventory_material_header` SET `is_completed`=?, `completed_date`=? \
-      WHERE `hims_f_inventory_material_header_id`=?",
-    ["Y", new Date(), inputParam.inv_requisition_id],
-    (error, result) => {
-      if (error) {
-        connection.rollback(() => {
-          releaseDBConnection(db, connection);
-          next(error);
-        });
-      }
-      if (result !== "" && result != null) {
-        let details = inputParam.inventory_stock_detail;
-
-        let qry = "";
-
-        for (let i = 0; i < details.length; i++) {
-          qry +=
-            " UPDATE `hims_f_inventory_material_detail` SET po_created_date=now()" +
-            ",po_created='" +
-            "Y" +
-            "',po_created_quantity='" +
-            details[i].total_quantity +
-            "' WHERE hims_f_inventory_material_detail_id='" +
-            details[i].inventory_requisition_id +
-            "';";
-        }
-
-        if (qry != "") {
-          connection.query(qry, (error, detailResult) => {
-            if (error) {
-              connection.rollback(() => {
-                releaseDBConnection(db, connection);
-                next(error);
-              });
-            }
-
-            req.data = req.records.purchase_number;
-            next();
-
-            // connection.commit(error => {
-            //   if (error) {
-            //     connection.rollback(() => {
-            //       releaseDBConnection(db, connection);
-            //       next(error);
-            //     });
-            //   }
-            //   releaseDBConnection(db, connection);
-            //   req.records = detailResult;
-            //   next();
-            // });
-          });
-        } else {
-          releaseDBConnection(db, connection);
-          req.records = {};
-          next();
-        }
-      } else {
-        connection.rollback(() => {
-          releaseDBConnection(db, connection);
-          req.records = {};
-          next();
-        });
-      }
+      req.data = req.records.delivery_note_number;
+      next();
     }
   );
 };
 
 module.exports = {
-  addPurchaseOrderEntry,
-  getPurchaseOrderEntry,
-  updatePurchaseOrderEntry,
+  addDeliveryNoteEntry,
+  getDeliveryNoteEntry,
+  updateDeliveryNoteEntry,
   getAuthPurchaseList,
   getInvRequisitionEntryPO,
   getPharRequisitionEntryPO,
-  updatePharReqEntry,
-  updateInvReqEntry
+  updatePOEntry
 };

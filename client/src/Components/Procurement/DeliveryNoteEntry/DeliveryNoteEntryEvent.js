@@ -148,80 +148,6 @@ const datehandle = ($this, ctrl, e) => {
   });
 };
 
-const deletePosDetail = ($this, context, row) => {
-  let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
-
-  for (var i = 0; i < pharmacy_stock_detail.length; i++) {
-    if (
-      pharmacy_stock_detail[i].item_id === row["item_id"] &&
-      pharmacy_stock_detail[i].batchno === row["batchno"]
-    ) {
-      pharmacy_stock_detail.splice(i, 1);
-    }
-  }
-
-  $this.props.PosHeaderCalculations({
-    uri: "/billing/billingCalculations",
-    method: "POST",
-    data: { billdetails: pharmacy_stock_detail },
-    redux: {
-      type: "POS_HEADER_GEN_GET_DATA",
-      mappingName: "posheader"
-    }
-  });
-
-  if (pharmacy_stock_detail.length === 0) {
-    if (context !== undefined) {
-      context.updateState({
-        pharmacy_stock_detail: pharmacy_stock_detail,
-        advance_amount: 0,
-        discount_amount: 0,
-        sub_total: 0,
-        total_tax: 0,
-        net_total: 0,
-        copay_amount: 0,
-        sec_copay_amount: 0,
-        deductable_amount: 0,
-        sec_deductable_amount: 0,
-        gross_total: 0,
-        sheet_discount_amount: 0,
-        sheet_discount_percentage: 0,
-        net_amount: 0,
-        patient_res: 0,
-        company_res: 0,
-        sec_company_res: 0,
-        patient_payable: 0,
-        patient_payable_h: 0,
-        company_payable: 0,
-        sec_company_payable: 0,
-        patient_tax: 0,
-        company_tax: 0,
-        sec_company_tax: 0,
-        net_tax: 0,
-        credit_amount: 0,
-        receiveable_amount: 0,
-
-        cash_amount: 0,
-        card_number: "",
-        card_date: null,
-        card_amount: 0,
-        cheque_number: "",
-        cheque_date: null,
-        cheque_amount: 0,
-        total_amount: 0,
-        saveEnable: true,
-        unbalanced_amount: 0
-      });
-    }
-  } else {
-    if (context !== undefined) {
-      context.updateState({
-        pharmacy_stock_detail: pharmacy_stock_detail
-      });
-    }
-  }
-};
-
 const PurchaseOrderSearch = ($this, e) => {
   debugger;
   if (
@@ -275,10 +201,20 @@ const PurchaseOrderSearch = ($this, e) => {
               data.dataExitst = true;
               data.purchase_order_id = data.hims_f_procurement_po_header_id;
               for (let i = 0; i < data.po_entry_detail.length; i++) {
+                data.po_entry_detail[i].po_quantity =
+                  data.po_entry_detail[i].authorize_quantity;
                 data.po_entry_detail[i].dn_quantity =
                   data.po_entry_detail[i].authorize_quantity;
-              }
 
+                data.po_entry_detail[i].authorize_quantity = 0;
+
+                data.po_entry_detail[i].discount_percentage =
+                  data.po_entry_detail[i].sub_discount_percentage;
+
+                data.po_entry_detail[i].discount_amount =
+                  data.po_entry_detail[i].sub_discount_amount;
+              }
+              data.dn_entry_detail = data.po_entry_detail;
               $this.setState(data);
               AlgaehLoader({ show: false });
             }
@@ -296,22 +232,17 @@ const ClearData = ($this, e) => {
   $this.setState(IOputs);
 };
 
-const SavePOEnrty = $this => {
-  if ($this.state.dn_from === "PHR") {
-    $this.state.po_entry_detail = $this.state.pharmacy_stock_detail;
-  } else {
-    $this.state.po_entry_detail = $this.state.inventory_stock_detail;
-  }
-
+const SaveDNEnrty = $this => {
+  debugger;
   algaehApiCall({
-    uri: "/PurchaseOrderEntry/addPurchaseOrderEntry",
+    uri: "/DeliveryNoteEntry/addDeliveryNoteEntry",
     data: $this.state,
     onSuccess: response => {
       if (response.data.success === true) {
         $this.setState({
-          purchase_number: response.data.records.purchase_number,
-          hims_f_procurement_po_header_id:
-            response.data.records.hims_f_procurement_po_header_id,
+          delivery_note_number: response.data.records.delivery_note_number,
+          hims_f_procurement_dn_header_id:
+            response.data.records.hims_f_procurement_dn_header_id,
           saveEnable: true
         });
 
@@ -330,7 +261,7 @@ const getCtrlCode = ($this, docNumber) => {
     uri: "/PurchaseOrderEntry/getPurchaseOrderEntry",
     method: "GET",
     printInput: true,
-    data: { purchase_number: docNumber },
+    data: { delivery_note_number: docNumber },
     redux: {
       type: "PO_ENTRY_GET_DATA",
       mappingName: "purchaseorderentry"
@@ -338,8 +269,8 @@ const getCtrlCode = ($this, docNumber) => {
     afterSuccess: data => {
       debugger;
       if (
-        $this.props.purchase_number !== undefined &&
-        $this.props.purchase_number.length !== 0
+        $this.props.delivery_note_number !== undefined &&
+        $this.props.delivery_note_number.length !== 0
       ) {
         data.authorizeEnable = false;
         data.ItemDisable = true;
@@ -347,12 +278,6 @@ const getCtrlCode = ($this, docNumber) => {
       }
       data.saveEnable = true;
       data.dataExitst = true;
-
-      if (data.dn_from === "PHR") {
-        $this.state.pharmacy_stock_detail = data.po_entry_detail;
-      } else {
-        $this.state.inventory_stock_detail = data.po_entry_detail;
-      }
 
       data.addedItem = true;
       $this.setState(data, () => {
@@ -464,11 +389,10 @@ export {
   discounthandle,
   numberchangeTexts,
   datehandle,
-  deletePosDetail,
   PurchaseOrderSearch,
   vendortexthandle,
   ClearData,
-  SavePOEnrty,
+  SaveDNEnrty,
   getCtrlCode,
   loctexthandle
 };

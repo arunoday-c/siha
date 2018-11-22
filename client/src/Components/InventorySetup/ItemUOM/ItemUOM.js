@@ -47,7 +47,7 @@ class ItemUOM extends Component {
     getItemUOM(this, this);
   }
 
-  dateFormater({ date }) {
+  dateFormater(date) {
     if (date !== null) {
       return moment(date).format(Options.dateFormat);
     }

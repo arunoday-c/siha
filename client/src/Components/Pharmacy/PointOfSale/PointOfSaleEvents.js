@@ -34,6 +34,7 @@ const getCtrlCode = ($this, docNumber) => {
       mappingName: "posentry"
     },
     afterSuccess: data => {
+      debugger;
       data.saveEnable = true;
       data.patient_payable_h = data.patient_payable;
       data.case_type = "O";

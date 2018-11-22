@@ -63,7 +63,7 @@ class LocationPermission extends Component {
     }
   }
 
-  dateFormater({ date }) {
+  dateFormater(date) {
     if (date !== null) {
       return moment(date).format(Options.dateFormat);
     }
@@ -311,9 +311,9 @@ class LocationPermission extends Component {
                 keyId="hims_d_location_permission_id"
                 dataSource={{
                   data:
-                    this.props.locationpermission === undefined
+                    this.props.invlocationpermission === undefined
                       ? []
-                      : this.props.locationpermission
+                      : this.props.invlocationpermission
                 }}
                 isEditable={true}
                 paging={{ page: 0, rowsPerPage: 10 }}
@@ -333,7 +333,7 @@ class LocationPermission extends Component {
 
 function mapStateToProps(state) {
   return {
-    locationpermission: state.locationpermission,
+    invlocationpermission: state.invlocationpermission,
     userdrtails: state.userdrtails,
     locationpermi: state.locationpermi
   };

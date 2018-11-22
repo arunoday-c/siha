@@ -272,10 +272,39 @@ class DNItemList extends Component {
                             },
 
                             {
-                              fieldName: "unit_price",
+                              fieldName: "batchno",
                               label: (
                                 <AlgaehLabel
-                                  label={{ forceLabel: "Unit Price" }}
+                                  label={{ forceLabel: "Batch  No." }}
+                                />
+                              ),
+                              disabled: true
+                            },
+                            {
+                              fieldName: "expiry_date",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Expiry Date" }}
+                                />
+                              ),
+                              disabled: true
+                            },
+
+                            {
+                              fieldName: "po_quantity",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "PO Quantity" }}
+                                />
+                              ),
+                              disabled: true
+                            },
+
+                            {
+                              fieldName: "unit_cost",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Unit Cost" }}
                                 />
                               ),
                               disabled: true
@@ -311,17 +340,9 @@ class DNItemList extends Component {
                                 );
                               }
                             },
+
                             {
-                              fieldName: "extended_price",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Extended Price" }}
-                                />
-                              ),
-                              disabled: true
-                            },
-                            {
-                              fieldName: "sub_discount_percentage",
+                              fieldName: "discount_percentage",
                               label: (
                                 <AlgaehLabel
                                   label={{ forceLabel: "Discount %" }}
@@ -330,7 +351,7 @@ class DNItemList extends Component {
                               disabled: true
                             },
                             {
-                              fieldName: "sub_discount_amount",
+                              fieldName: "discount_amount",
                               label: (
                                 <AlgaehLabel
                                   label={{ forceLabel: "Discount Amount" }}
@@ -343,15 +364,6 @@ class DNItemList extends Component {
                               label: (
                                 <AlgaehLabel
                                   label={{ forceLabel: "Net Extended Cost" }}
-                                />
-                              ),
-                              disabled: true
-                            },
-                            {
-                              fieldName: "unit_cost",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Unit Cost" }}
                                 />
                               ),
                               disabled: true
@@ -379,7 +391,7 @@ class DNItemList extends Component {
                           ]}
                           keyId="hims_f_procurement_dn_detail_id"
                           dataSource={{
-                            data: this.state.po_entry_detail
+                            data: this.state.dn_entry_detail
                           }}
                           isEditable={true}
                           paging={{ page: 0, rowsPerPage: 10 }}
