@@ -11,22 +11,10 @@ import { setCookie, getCookie } from "../../../utils/algaehApiCall";
 import directRoutes from "../../../Dynamicroutes";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-import IconButton from "@material-ui/core/IconButton";
+
 import Menu from "@material-ui/core/Menu";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
-
 const drawerWidth = 230;
-
-const titleStyles = {
-  title: {
-    color: "#fff",
-    padding: "5px"
-  },
-  organisation: {
-    color: "#34b8bc",
-    padding: "5px"
-  }
-};
 
 const styles = theme => ({
   root: {
@@ -98,7 +86,8 @@ class PersistentDrawer extends React.Component {
       languageName: "English",
       Language: "en",
       arlabl: "",
-      enlabl: ""
+      enlabl: "",
+      searchModules: ""
     };
   }
 
@@ -231,6 +220,33 @@ class PersistentDrawer extends React.Component {
   logoutLink(e) {
     window.location.href = window.location.origin + "/#";
   }
+
+  SearchModuleHandler(e) {
+    this.setState({ searchModules: e.target.value });
+  }
+
+  CreateMenuListDropDownFilter() {
+    let LangSideMenu = [];
+    const _menuSearch = this.state.searchModules;
+    if (this.state.Language === "en") {
+      LangSideMenu = sideMenuEn;
+    } else if (this.state.Language === "ar") {
+      LangSideMenu = sideMenuAr;
+    }
+    return LangSideMenu.filter(obj => {
+      for (let i = 0, length = obj.subMenu.length; i < length; i++) {
+        if (
+          String(obj.subMenu[i].name)
+            .toLowerCase()
+            .indexOf(String(_menuSearch).toLowerCase()) > -1
+        ) {
+          return true;
+        }
+      }
+      return false;
+    });
+  }
+
   render() {
     const authToken = getCookie("authToken");
     // const keyResources = getCookie("keyResources");
@@ -249,13 +265,13 @@ class PersistentDrawer extends React.Component {
     const { classes } = this.props;
     const { anchor, sideopen } = this.state;
 
-    let LangSideMenu = [];
+    let LangSideMenu = this.CreateMenuListDropDownFilter();
 
-    if (this.state.Language === "en") {
-      LangSideMenu = sideMenuEn;
-    } else if (this.state.Language === "ar") {
-      LangSideMenu = sideMenuAr;
-    }
+    // if (this.state.Language === "en") {
+    //   LangSideMenu = sideMenuEn;
+    // } else if (this.state.Language === "ar") {
+    //   LangSideMenu = sideMenuAr;
+    // }
     var MenuListItems = LangSideMenu.map((data, idx) => {
       let icon = data.icon;
       return (
@@ -402,8 +418,10 @@ class PersistentDrawer extends React.Component {
                     />
                     <input
                       type="text"
+                      name="searchModules"
                       className="subMenuSearchFld"
                       placeholder="Search Modules"
+                      onChange={this.SearchModuleHandler.bind(this)}
                     />
                   </div>
                   <div className="sideMenu-header">{MenuListItems}</div>
