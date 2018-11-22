@@ -7,6 +7,17 @@
     color: #fff;
     min-height: 80vh;
     text-align: left; }
+  .concurrentTest .console-log-div {
+    position: relative; }
+    .concurrentTest .console-log-div i {
+      position: absolute;
+      right: 15px;
+      top: 0px;
+      border: 1px solid #000;
+      font-size: 2rem; }
+      .concurrentTest .console-log-div i:hover {
+        color: yellow;
+        cursor: pointer; }
 
 @keyframes typing {
   from {
