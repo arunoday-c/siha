@@ -14,7 +14,8 @@ import {
 import {
   deleteSalesReturnDetail,
   updateSalesReturnDetail,
-  calculateAmount
+  calculateAmount,
+  EditGrid
 } from "./ItemListsReturnEvents";
 
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -316,14 +317,16 @@ class ItemListsReturn extends Component {
                     }}
                     isEditable={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
+                    byForceEvents={true}
                     events={{
                       onDelete: deleteSalesReturnDetail.bind(
                         this,
                         this,
                         context
                       ),
-                      onEdit: row => {},
-                      onDone: updateSalesReturnDetail.bind(this, this)
+                      onEdit: EditGrid.bind(this, this, context),
+                      onCancel: EditGrid.bind(this, this, context),
+                      onDone: updateSalesReturnDetail.bind(this, this, context)
                     }}
                   />
 
