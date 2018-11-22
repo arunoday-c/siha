@@ -219,7 +219,6 @@ const LoadBills = $this => {
         mappingName: "billscommission"
       },
       afterSuccess: data => {
-        debugger;
         // let providers = Enumerable.from(data)
         //   .where(w => w.isdoctor === "Y")
         //   .toArray();
