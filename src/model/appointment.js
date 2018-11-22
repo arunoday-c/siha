@@ -1323,11 +1323,9 @@ let getDoctorScheduleDateWise = (req, res, next) => {
     }
     delete req.query.provider_id;
 
-   
+    
 
     let where = whereCondition(extend(selectWhere, req.query));
-
-
 
     
 
@@ -1343,7 +1341,8 @@ let getDoctorScheduleDateWise = (req, res, next) => {
          SH.record_status='A' and E.record_status='A' and C.record_status='A' and  SD.record_status='A'\
          and ASD.record_status='A' and R.record_status='A' and ASD.provider_id=E.hims_d_employee_id and \
          SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id \
-         and ASD.clinic_id=C.hims_d_appointment_clinic_id and C.room_id=R.hims_d_appointment_room_id and C.sub_department_id=SD.hims_d_sub_department_id and " +
+         and ASD.clinic_id=C.hims_d_appointment_clinic_id and C.room_id=R.hims_d_appointment_room_id and C.sub_department_id=SD.hims_d_sub_department_id\
+          and sub_dept_id= SD.hims_d_sub_department_id  and " +
           selectDoctor +
           "" +
           where.condition,
@@ -1355,7 +1354,8 @@ let getDoctorScheduleDateWise = (req, res, next) => {
           }
 
 
-          debugLog("result:",result);
+        
+         
 
           if (result.length > 0) {
           new Promise((resolve, reject) => {
@@ -1381,7 +1381,7 @@ let getDoctorScheduleDateWise = (req, res, next) => {
                     releaseDBConnection(db, connection);
                     next(error);
                   }
-                  debugLog("modifyResult:",modifyResult);
+                
 
                 result[j]=modifyResult[0];               
                
@@ -1422,7 +1422,7 @@ let getDoctorScheduleDateWise = (req, res, next) => {
                     ...result[i],
                     ...{ patientList: appResult }
                   };
-                 debugLog("appResult:",appResult);
+                
                   outputArray.push(obj);
                   if (i == result.length - 1) {
                     req.records = outputArray;

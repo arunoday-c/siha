@@ -201,6 +201,7 @@ class ItemCategory extends Component {
                       : this.props.itemcategory
                 }}
                 isEditable={true}
+                filter={true}
                 paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
                   onDelete: deleteItemCategory.bind(this, this),

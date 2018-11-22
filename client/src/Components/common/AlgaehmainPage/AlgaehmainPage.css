@@ -96,6 +96,9 @@ header {
   .hptl-phase1-sideMenuBar ul.tree-structure-menu li:hover {
     background: #00bcb0;
     color: #fff; }
+  .hptl-phase1-sideMenuBar ul.tree-structure-menu li.active {
+    background: #00bcb0;
+    color: #fff; }
 
 .hptl-phase1-sideMenuBar .sub-menu-option {
   background: #000000; }
@@ -107,7 +110,6 @@ header {
 
 .hptl-phase1-sideMenuBar .menuBar-title {
   display: flex;
-  padding: 5px;
   font-size: 20px;
   height: 49px;
   background: #000;
@@ -146,6 +148,16 @@ header {
 .screenDisplay {
   display: flex;
   width: 100%; }
+  .screenDisplay i {
+    border-left: 1px solid rgba(0, 0, 0, 0.12);
+    border-right: 1px solid rgba(0, 0, 0, 0.12);
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 13px;
+    margin: -2px 10px -2px 0; }
+    .screenDisplay i:hover {
+      background: rgba(0, 0, 0, 0.1);
+      cursor: pointer; }
   .screenDisplay h5 {
     line-height: 46px;
     padding: 0;

@@ -100,11 +100,14 @@
   right: 0;
   top: 75px;
   position: absolute;
-  overflow: hidden; }
+  overflow: hidden;
+  width: 15vw; }
   .print-area .printActionMenu li {
     list-style: none;
     border-bottom: 1px solid #000;
     padding: 15px; }
+    .print-area .printActionMenu li span {
+      color: #000; }
 
 .print-area .printActionMenu:hover {
   display: block; }

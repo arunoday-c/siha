@@ -155,7 +155,7 @@ class Location extends Component {
                     ),
                     displayTemplate: row => {
                       return row.location_type === "MS"
-                        ? "Mian Store"
+                        ? "Main Store"
                         : row.location_type === "SS"
                         ? "Sub Store"
                         : null;

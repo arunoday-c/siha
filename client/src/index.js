@@ -32,8 +32,8 @@ const theme = createMuiTheme({
 const store = createStore(AlagehReducers, middleware);
 
 ReactDOM.render(
-  <MuiThemeProvider theme={theme}>
-    <Provider store={store}>{routes}</Provider>
-  </MuiThemeProvider>,
+  // <MuiThemeProvider theme={theme}>
+  <Provider store={store}>{routes}</Provider>,
+  // </MuiThemeProvider>,
   document.getElementById("root")
 );

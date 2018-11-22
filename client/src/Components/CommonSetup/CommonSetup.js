@@ -11,7 +11,6 @@ import VisaType from "./VisaType/VisaType.js";
 import IDType from "./IDType/IDType";
 import VisitType from "./VisitType/VisitType";
 //import EquipmentType from "./EquipmentType/EquipmentType";
-import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
 
@@ -120,6 +119,7 @@ class CommonSetup extends Component {
           ) : this.state.pageDisplay === "EquipmentType" ? (
             <EquipmentType />
           ) : */}
+
           {this.state.pageDisplay === "VisitType" ? (
             <VisitType />
           ) : this.state.pageDisplay === "VisaType" ? (
