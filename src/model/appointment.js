@@ -1327,7 +1327,7 @@ let getDoctorScheduleDateWise = (req, res, next) => {
 
     let where = whereCondition(extend(selectWhere, req.query));
 
-    
+   
 
     db.getConnection((error, connection) => {
       connection.query(
