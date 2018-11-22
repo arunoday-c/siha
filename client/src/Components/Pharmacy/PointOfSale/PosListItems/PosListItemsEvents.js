@@ -25,10 +25,15 @@ const discounthandle = ($this, context, ctrl, e) => {
       type: "warning"
     });
   } else {
-    $this.setState({
-      sheet_discount_percentage: sheet_discount_percentage,
-      sheet_discount_amount: sheet_discount_amount
-    });
+    $this.setState(
+      {
+        sheet_discount_percentage: sheet_discount_percentage,
+        sheet_discount_amount: sheet_discount_amount
+      },
+      () => {
+        PosheaderCalculation($this, e);
+      }
+    );
 
     if (context != null) {
       context.updateState({
@@ -76,9 +81,9 @@ const numberchangeTexts = ($this, context, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
-  if (value < 0) {
+  if (value <= 0) {
     swalMessage({
-      title: "Invalid Input. Quantity cannot be less than Zero",
+      title: "Invalid Input. Quantity cannot be less than or equal to Zero",
       type: "warning"
     });
   } else if (value > $this.state.qtyhand) {
@@ -477,13 +482,15 @@ const deletePosDetail = ($this, context, row) => {
   }
 };
 
-const updatePosDetail = ($this, e) => {
+const updatePosDetail = $this => {
+  debugger;
+
   $this.props.PosHeaderCalculations({
     uri: "/billing/billingCalculations",
     method: "POST",
     data: { billdetails: $this.state.pharmacy_stock_detail },
     redux: {
-      type: "posheader",
+      type: "POS_HEADER_GEN_GET_DATA",
       mappingName: "posheader"
     }
   });
@@ -491,6 +498,7 @@ const updatePosDetail = ($this, e) => {
 
 //Calculate Row Detail
 const calculateAmount = ($this, row, ctrl, e) => {
+  debugger;
   e = e || ctrl;
   if (e.target.value !== e.target.oldvalue) {
     let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
@@ -503,7 +511,7 @@ const calculateAmount = ($this, row, ctrl, e) => {
         unit_cost: row.unit_cost,
         pharmacy_item: "Y",
         quantity: row.quantity,
-        discount_amount:
+        discount_amout:
           e.target.name === "discount_percentage" ? 0 : row.discount_amount,
         discount_percentage:
           e.target.name === "discount_amount" ? 0 : row.discount_percentage,
@@ -530,6 +538,7 @@ const calculateAmount = ($this, row, ctrl, e) => {
         mappingName: "xxx"
       },
       afterSuccess: data => {
+        debugger;
         data.billdetails[0].extended_cost = data.billdetails[0].gross_amount;
         data.billdetails[0].net_extended_cost = data.billdetails[0].net_amout;
 
@@ -538,14 +547,15 @@ const calculateAmount = ($this, row, ctrl, e) => {
         data.billdetails[0].expiry_date = row.expiry_date;
         data.billdetails[0].batchno = row.batchno;
         data.billdetails[0].uom_id = row.uom_id;
+        data.billdetails[0].discount_amount =
+          data.billdetails[0].discount_amout;
         extend(row, data.billdetails[0]);
-        for (let i = 0; i < pharmacy_stock_detail.length; i++) {
-          if (
-            pharmacy_stock_detail[i].service_type_id === row.service_type_id
-          ) {
-            pharmacy_stock_detail[i] = row;
-          }
-        }
+        pharmacy_stock_detail[row.rowIdx] = row;
+        // for (let i = 0; i < pharmacy_stock_detail.length; i++) {
+        //   if (pharmacy_stock_detail[i].item_id === row.item_id) {
+        //     pharmacy_stock_detail[i] = row;
+        //   }
+        // }
         $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
       }
     });
@@ -562,9 +572,14 @@ const adjustadvance = ($this, context, ctrl, e) => {
       type: "warning"
     });
   } else {
-    $this.setState({
-      [e.target.name]: e.target.value
-    });
+    $this.setState(
+      {
+        [e.target.name]: e.target.value
+      },
+      () => {
+        PosheaderCalculation($this, e);
+      }
+    );
 
     if (context != null) {
       context.updateState({
@@ -627,8 +642,36 @@ const CloseItemBatch = ($this, e) => {
 const onchangegridcol = ($this, row, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  row[name] = value;
-  row.update();
+  if (value <= 0) {
+    swalMessage({
+      title: "Invalid Input. Quantity cannot be less than or equal to Zero",
+      type: "warning"
+    });
+  } else {
+    row[name] = value;
+    row.update();
+    calculateAmount($this, row, e);
+  }
+};
+
+const qtyonchangegridcol = ($this, row, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  if (value <= 0) {
+    swalMessage({
+      title: "Invalid Input. Quantity cannot be less than or equal to Zero",
+      type: "warning"
+    });
+  } else if (parseFloat(value) > row.qtyhand) {
+    swalMessage({
+      title: "Invalid Input. Quantity cannot be greater than Quantity in hand",
+      type: "warning"
+    });
+  } else {
+    row[name] = value;
+    row.update();
+    calculateAmount($this, row, e);
+  }
 };
 
 const ViewInsurance = ($this, e) => {
@@ -636,6 +679,55 @@ const ViewInsurance = ($this, e) => {
     ...$this.state,
     viewInsurance: !$this.state.viewInsurance
   });
+};
+
+const EditGrid = ($this, context, cancelRow) => {
+  debugger;
+  if (context != null) {
+    let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+    if (cancelRow !== undefined) {
+      _pharmacy_stock_detail[cancelRow.rowIdx] = cancelRow;
+    }
+    context.updateState({
+      saveEnable: !$this.state.saveEnable,
+      pharmacy_stock_detail: _pharmacy_stock_detail
+    });
+  }
+};
+
+const credittexthandle = ($this, context, ctrl, e) => {
+  e = e || ctrl;
+
+  if (e.target.value > $this.state.net_amount) {
+    swalMessage({
+      title: "Invalid Input. Criedt amount cannot be greater than Net amount",
+      type: "warning"
+    });
+  } else {
+    $this.setState({
+      [e.target.name]: e.target.value
+    });
+
+    if (context != null) {
+      context.updateState({
+        [e.target.name]: e.target.value
+      });
+    }
+  }
+};
+
+const credittextCal = ($this, e) => {
+  if (e.target.value !== e.target.oldvalue) {
+    $this.props.PosHeaderCalculations({
+      uri: "/billing/billingCalculations",
+      method: "POST",
+      data: { billdetails: $this.state.pharmacy_stock_detail },
+      redux: {
+        type: "POS_HEADER_GEN_GET_DATA",
+        mappingName: "posheader"
+      }
+    });
+  }
 };
 
 export {
@@ -654,5 +746,9 @@ export {
   CloseItemBatch,
   onchangegridcol,
   PosheaderCalculation,
-  ViewInsurance
+  ViewInsurance,
+  qtyonchangegridcol,
+  EditGrid,
+  credittexthandle,
+  credittextCal
 };

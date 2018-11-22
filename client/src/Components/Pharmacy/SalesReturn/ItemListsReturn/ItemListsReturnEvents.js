@@ -10,7 +10,7 @@ const discounthandle = ($this, context, ctrl, e) => {
 
   let sheet_discount_percentage = 0;
   let sheet_discount_amount = 0;
-  
+
   if (e.target.name === "sheet_discount_percentage") {
     sheet_discount_percentage = parseFloat(e.target.value.replace(" %", ""));
     sheet_discount_amount = 0;
@@ -45,7 +45,6 @@ const discounthandle = ($this, context, ctrl, e) => {
 };
 
 const changeTexts = ($this, ctrl, e) => {
-  
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -53,8 +52,6 @@ const changeTexts = ($this, ctrl, e) => {
 };
 
 const numberchangeTexts = ($this, context, e) => {
-  
-
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   $this.setState({ [name]: value });
@@ -71,7 +68,6 @@ const numberchangeTexts = ($this, context, e) => {
 };
 
 const itemchangeText = ($this, e) => {
-  
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
@@ -87,9 +83,7 @@ const itemchangeText = ($this, e) => {
       mappingName: "itemdetaillist"
     },
     afterSuccess: data => {
-      
       if (data.locationResult.length > 0) {
-        
         $this.setState({
           [name]: value,
           item_category: e.selected.category_id,
@@ -115,7 +109,6 @@ const itemchangeText = ($this, e) => {
 };
 
 const AddItems = ($this, context) => {
-  
   let ItemInput = [
     {
       insured: $this.state.insured,
@@ -217,9 +210,9 @@ const datehandle = ($this, ctrl, e) => {
   });
 };
 
-const deleteSalesReturnDetail = ($this, context, e, rowId) => {
+const deleteSalesReturnDetail = ($this, context, e, row) => {
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
-  pharmacy_stock_detail.splice(rowId, 1);
+  pharmacy_stock_detail.splice(row.rowIdx, 1);
 
   $this.props.SalesReturnCalculations({
     uri: "/billing/billingCalculations",
@@ -297,11 +290,10 @@ const updateSalesReturnDetail = ($this, e) => {
 
 //Calculate Row Detail
 const calculateAmount = ($this, row, context, ctrl, e) => {
-  
   e = e || ctrl;
 
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
-  
+
   row[e.target.name] = parseFloat(e.target.value);
   let inputParam = [
     {
@@ -334,7 +326,6 @@ const calculateAmount = ($this, row, context, ctrl, e) => {
       mappingName: "xxx"
     },
     afterSuccess: data => {
-      
       data.billdetails[0].extended_cost = data.billdetails[0].gross_amount;
       data.billdetails[0].net_extended_cost = data.billdetails[0].net_amout;
       data.billdetails[0].quantity = row.quantity;
@@ -379,7 +370,6 @@ const adjustadvance = ($this, context, ctrl, e) => {
 };
 
 const SalesReturnheaderCalculation = ($this, context) => {
-  
   var intervalId;
   let ItemInput = {
     isReceipt: false,

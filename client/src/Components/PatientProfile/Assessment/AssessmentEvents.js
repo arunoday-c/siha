@@ -36,7 +36,8 @@ const insertFinalICDS = ($this, row) => {
     diagnosis_type = "P";
   }
 
-  finalICDS.push({
+  let insertfinalICDS = [];
+  insertfinalICDS.push({
     daignosis_id: row.hims_d_icd_id,
     diagnosis_type: diagnosis_type,
     patient_id: Window.global["current_patient"],
@@ -45,7 +46,7 @@ const insertFinalICDS = ($this, row) => {
     final_daignosis: "Y"
   });
 
-  saveDiagnosis($this, finalICDS);
+  saveDiagnosis($this, insertfinalICDS);
 };
 
 const IcdsSearch = ($this, diagType) => {
@@ -69,7 +70,6 @@ const IcdsSearch = ($this, diagType) => {
 };
 
 const insertInitialICDS = ($this, row) => {
-  
   if (
     $this.props.patient_diagnosis !== undefined ||
     $this.props.patient_diagnosis.length !== 0
@@ -101,7 +101,6 @@ const insertInitialICDS = ($this, row) => {
 };
 
 const addFinalIcd = ($this, row) => {
-  
   const finalICDS = Enumerable.from($this.props.patient_diagnosis)
     .where(w => w.final_daignosis === "Y")
     .toArray();
@@ -226,7 +225,6 @@ const showconfirmDialog = ($this, row) => {
 };
 
 const getPatientDiagnosis = $this => {
-  
   $this.props.getPatientDiagnosis({
     uri: "/doctorsWorkBench/getPatientDiagnosis",
     cancelRequestId: "getPatientDiagnosis",
@@ -255,7 +253,6 @@ const getPatientDiagnosis = $this => {
 };
 
 const deleteDiagnosis = ($this, row, from) => {
-  
   if (row.final_daignosis === "Y") {
     swalMessage({
       title:
