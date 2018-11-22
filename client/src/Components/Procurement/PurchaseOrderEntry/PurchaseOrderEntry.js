@@ -210,9 +210,9 @@ class PurchaseOrderEntry extends Component {
                     forceLabel: "Requisition No."
                   }}
                   textBox={{
-                    value: this.state.patient_code,
+                    value: this.state.material_requisition_number,
                     className: "txt-fld",
-                    name: "patient_code",
+                    name: "material_requisition_number",
 
                     events: {
                       onChange: null

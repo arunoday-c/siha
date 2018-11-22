@@ -47,7 +47,7 @@ class Location extends Component {
     getLocation(this, this);
   }
 
-  dateFormater({ date }) {
+  dateFormater(date) {
     if (date !== null) {
       return moment(date).format(Options.dateFormat);
     }

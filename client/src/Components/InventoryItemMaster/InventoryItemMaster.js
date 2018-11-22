@@ -23,69 +23,59 @@ class InventoryItemMaster extends Component {
   }
 
   componentDidMount() {
-    this.props.getItemCategory({
-      uri: "/inventory/getItemCategory",
-      method: "GET",
-      redux: {
-        type: "ITEM_CATEGORY_GET_DATA",
-        mappingName: "inventoryitemcategory"
-      }
-    });
+    if (
+      this.props.inventoryitemcategory === undefined ||
+      this.props.inventoryitemcategory.length === 0
+    ) {
+      this.props.getItemCategory({
+        uri: "/inventory/getItemCategory",
+        method: "GET",
+        redux: {
+          type: "ITEM_CATEGORY_GET_DATA",
+          mappingName: "inventoryitemcategory"
+        }
+      });
+    }
+    if (
+      this.props.inventoryitemgroup === undefined ||
+      this.props.inventoryitemgroup.length === 0
+    ) {
+      this.props.getItemGroup({
+        uri: "/inventory/getItemGroup",
+        method: "GET",
+        redux: {
+          type: "ITEM_GROUOP_GET_DATA",
+          mappingName: "inventoryitemgroup"
+        }
+      });
+    }
 
-    this.props.getItemGroup({
-      uri: "/inventory/getItemGroup",
-      method: "GET",
-      redux: {
-        type: "ITEM_GROUOP_GET_DATA",
-        mappingName: "inventoryitemgroup"
-      }
-    });
-
-    this.props.getItemUOM({
-      uri: "/inventory/getInventoryUom",
-      method: "GET",
-      redux: {
-        type: "ITEM_UOM_GET_DATA",
-        mappingName: "inventoryitemuom"
-      }
-    });
-
-    // this.props.getItemGeneric({
-    //   uri: "/pharmacy/getItemGeneric",
-    //   method: "GET",
-    //   redux: {
-    //     type: "ITEM_GENERIC_GET_DATA",
-    //     mappingName: "itemgeneric"
-    //   }
-    // });
-
-    // this.props.getItemForm({
-    //   uri: "/inventory/getItemForm",
-    //   method: "GET",
-    //   redux: {
-    //     type: "ITEM_FORM_GET_DATA",
-    //     mappingName: "itemform"
-    //   }
-    // });
-
-    // this.props.getItemStorage({
-    //   uri: "/inventory/getItemStorage",
-    //   method: "GET",
-    //   redux: {
-    //     type: "ANALYTES_GET_DATA",
-    //     mappingName: "itemstorage"
-    //   }
-    // });
-
-    this.props.getServices({
-      uri: "/serviceType/getService",
-      method: "GET",
-      redux: {
-        type: "SERVICES_GET_DATA",
-        mappingName: "inventoryitemservices"
-      }
-    });
-
+    if (
+      this.props.inventoryitemuom === undefined ||
+      this.props.inventoryitemuom.length === 0
+    ) {
+      this.props.getItemUOM({
+        uri: "/inventory/getInventoryUom",
+        method: "GET",
+        redux: {
+          type: "ITEM_UOM_GET_DATA",
+          mappingName: "inventoryitemuom"
+        }
+      });
+    }
+    if (
+      this.props.inventoryitemservices === undefined ||
+      this.props.inventoryitemservices.length === 0
+    ) {
+      this.props.getServices({
+        uri: "/serviceType/getService",
+        method: "GET",
+        redux: {
+          type: "SERVICES_GET_DATA",
+          mappingName: "inventoryitemservices"
+        }
+      });
+    }
     getItems(this, this);
   }
 

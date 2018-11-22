@@ -189,24 +189,33 @@ let addsalesReturn = (req, res, next) => {
                   });
                 }
 
-                connection.commit(error => {
-                  if (error) {
-                    connection.rollback(() => {
-                      releaseDBConnection(db, connection);
-                      next(error);
-                    });
-                  }
-                  releaseDBConnection(db, connection);
-                  req.records = {
-                    sales_return_number: documentCode,
-                    hims_f_pharmcy_sales_return_header_id:
-                      headerResult.insertId,
-                    receipt_number: req.records.receipt_number,
-                    year: year,
-                    period: period
-                  };
-                  next();
-                });
+                req.records = {
+                  sales_return_number: documentCode,
+                  hims_f_pharmcy_sales_return_header_id: headerResult.insertId,
+                  receipt_number: req.records.receipt_number,
+                  year: year,
+                  period: period
+                };
+                next();
+
+                // connection.commit(error => {
+                //   if (error) {
+                //     connection.rollback(() => {
+                //       releaseDBConnection(db, connection);
+                //       next(error);
+                //     });
+                //   }
+                //   releaseDBConnection(db, connection);
+                //   req.records = {
+                //     sales_return_number: documentCode,
+                //     hims_f_pharmcy_sales_return_header_id:
+                //       headerResult.insertId,
+                //     receipt_number: req.records.receipt_number,
+                //     year: year,
+                //     period: period
+                //   };
+                //   next();
+                // });
               }
             );
           } else {
@@ -378,15 +387,17 @@ let updatesalesReturn = (req, res, next) => {
           updateIntoItemLocation(req, res, next);
         })
           .then(records => {
-            connection.commit(error => {
-              if (error) {
-                releaseDBConnection(db, connection);
-                next(error);
-              }
-              req.salesReturn = records;
-              releaseDBConnection(db, connection);
-              next();
-            });
+            req.salesReturn = records;
+            next();
+            // connection.commit(error => {
+            //   if (error) {
+            //     releaseDBConnection(db, connection);
+            //     next(error);
+            //   }
+            //   req.salesReturn = records;
+            //   releaseDBConnection(db, connection);
+            //   next();
+            // });
           })
           .catch(error => {
             connection.rollback(() => {

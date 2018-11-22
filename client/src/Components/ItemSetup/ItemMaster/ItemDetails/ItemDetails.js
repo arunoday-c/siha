@@ -24,14 +24,20 @@ class ItemDetails extends Component {
     this.state = {
       batchexpreq: false
     };
-    this.props.getServices({
-      uri: "/serviceType/getService",
-      method: "GET",
-      redux: {
-        type: "SERVICES_GET_DATA",
-        mappingName: "itemservices"
-      }
-    });
+
+    if (
+      this.props.itemservices === undefined ||
+      this.props.itemservices.length === 0
+    ) {
+      this.props.getServices({
+        uri: "/serviceType/getService",
+        method: "GET",
+        redux: {
+          type: "SERVICES_GET_DATA",
+          mappingName: "itemservices"
+        }
+      });
+    }
   }
 
   componentWillMount() {
@@ -41,9 +47,7 @@ class ItemDetails extends Component {
 
   componentWillReceiveProps(newProps) {
     let InputOutput = newProps.itemPop;
-    this.setState({ ...this.state, ...InputOutput }, () => {
-      
-    });
+    this.setState({ ...this.state, ...InputOutput }, () => {});
   }
 
   render() {

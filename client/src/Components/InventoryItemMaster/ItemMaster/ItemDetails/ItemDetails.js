@@ -25,14 +25,20 @@ class ItemDetails extends Component {
     this.state = {
       batchexpreq: false
     };
-    this.props.getServices({
-      uri: "/serviceType/getService",
-      method: "GET",
-      redux: {
-        type: "SERVICES_GET_DATA",
-        mappingName: "inventoryitemservices"
-      }
-    });
+
+    if (
+      this.props.inventoryitemservices === undefined ||
+      this.props.inventoryitemservices.length === 0
+    ) {
+      this.props.getServices({
+        uri: "/serviceType/getService",
+        method: "GET",
+        redux: {
+          type: "SERVICES_GET_DATA",
+          mappingName: "inventoryitemservices"
+        }
+      });
+    }
   }
 
   componentWillMount() {

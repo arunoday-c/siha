@@ -1,6 +1,9 @@
 {
+  "root": true,
+
   "rules": {
-    "no-eval": false,
-    "no-unused-expression": 1
+    "no-unused-expression": 1,
+    "no-eval": ["error", { "allowIndirect": true }],
+    "no-script-url": false
   }
 }

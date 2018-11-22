@@ -38,7 +38,6 @@ const updateItemCategory = ($this, data) => {
 };
 
 const showconfirmDialog = ($this, row) => {
-  
   swal({
     title: "Are you sure you want to delete this Category?",
     type: "warning",
@@ -115,7 +114,7 @@ const getItemCategory = $this => {
     method: "GET",
     redux: {
       type: "ITEM_CATEGORY_GET_DATA",
-      mappingName: "itemcategory"
+      mappingName: "invitemcategory"
     },
     afterSuccess: data => {
       if (data.length === 0 || data.length === undefined) {
