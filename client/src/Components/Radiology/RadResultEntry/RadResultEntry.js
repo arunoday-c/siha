@@ -70,7 +70,6 @@ class RadResultEntry extends Component {
     }
   }
   componentWillReceiveProps(newProps) {
-    
     if (
       newProps.selectedPatient !== undefined &&
       (newProps.radschlist === undefined || newProps.radschlist.length === 0)
@@ -102,7 +101,7 @@ class RadResultEntry extends Component {
           );
     return (
       <div>
-        <Modal className="model-set" open={this.props.open}>
+        <Modal open={this.props.open}>
           <div className="algaeh-modal">
             <div className="popupHeader">
               <div className="row">

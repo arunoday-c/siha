@@ -50,6 +50,8 @@ class DataGrid extends PureComponent {
   }
   filterCaseInsensitive = (filter, row) => {
     const id = filter.pivotId || filter.id;
+    if (id === undefined || id === null) return false;
+    if (row[id] === undefined || row[id] === null) return false;
     if (typeof row[id] === "object") {
       const _value = row[id].props.children;
       return row[id] !== undefined

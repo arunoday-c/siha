@@ -155,10 +155,10 @@ class Location extends Component {
                     ),
                     displayTemplate: row => {
                       return row.location_type === "MS"
-                        ? "Mian Store"
+                        ? "Main Store"
                         : row.location_type === "SS"
-                          ? "Sub Store"
-                          : null;
+                        ? "Sub Store"
+                        : null;
                     },
                     editorTemplate: row => {
                       return (
@@ -190,8 +190,8 @@ class Location extends Component {
                       return row.allow_pos === "N"
                         ? "No"
                         : row.allow_pos === "Y"
-                          ? "Yes"
-                          : null;
+                        ? "Yes"
+                        : null;
                     },
                     editorTemplate: row => {
                       return (

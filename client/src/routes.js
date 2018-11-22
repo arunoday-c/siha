@@ -15,6 +15,7 @@ import InsuranceSetup from "./Components/InsuranceSetup/InsuranceSetup.js";
 import BusinessSetup from "./Components/BusinessSetup/BusinessSetup";
 import CommonSetup from "./Components/CommonSetup/CommonSetup";
 import Experiment from "./Components/Experiment";
+import ConcurrentTest from "./Components/concurrent-test";
 import AlgaehMainpg from "./Components/common/AlgaehmainPage/AlgaehmainPage";
 import DoctorsWorkbench from "./Components/DoctorsWorkbench/DoctorsWorkbench";
 import PatientProfile from "./Components/PatientProfile/PatientProfile";
@@ -57,6 +58,11 @@ const appRoutes = [
     path: "/Experiment",
     isExactPath: true,
     component: <Experiment />
+  },
+  {
+    path: "/ConcurrentTest",
+    isExactPath: true,
+    component: <ConcurrentTest />
   },
   {
     path: "/Dashboard",
