@@ -15,7 +15,7 @@ body {
   margin: -4px 0; }
   :global .appLogoCntr .appLogoOnly {
     background: url(../assets/svg/HIMS_LOGO_ONLY.svg) no-repeat center;
-    background-size: 90%;
+    background-size: 80%;
     width: 100%;
     height: 54px;
     margin: 0;
