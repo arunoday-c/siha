@@ -991,9 +991,11 @@
         border: none !important;
         cursor: pointer; }
       :global .tabMaster ul li.active label {
-        border-bottom: 3px solid #34b8bc;
-        color: #000;
-        cursor: pointer; }
+        border-bottom: 3px solid #238386;
+        color: #fff;
+        cursor: pointer;
+        background: #34b8bc;
+        text-shadow: 0 1px 1px #868686; }
   :global .hptl-phase1-footer {
     margin-top: 50px; }
   :global .divInner {

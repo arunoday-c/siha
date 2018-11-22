@@ -259,7 +259,7 @@ class InvStockEnquiry extends Component {
                   },
                   {
                     fieldName: "avgcost",
-                    label: <AlgaehLabel label={{ forceLabel: "Avrage Cost" }} />
+                    label: <AlgaehLabel label={{ forceLabel: "Avg. Cost" }} />
                   }
                 ]}
                 keyId="item_id"

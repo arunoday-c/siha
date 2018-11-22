@@ -1442,9 +1442,11 @@ $forntSize: 0.7rem;
         }
 
         label {
-          border-bottom: 3px solid #34b8bc;
-          color: #000;
+          border-bottom: 3px solid #238386;
+          color: #fff;
           cursor: pointer;
+          background: #34b8bc;
+          text-shadow: 0 1px 1px #868686;
         }
       }
     }
