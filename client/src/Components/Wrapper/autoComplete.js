@@ -397,16 +397,16 @@ class AutoComplete extends PureComponent {
                     key={index}
                   >
                     {!_enableMultiselect ? (
-                      <span
+                      <a
                         tabIndex="1"
                         value={item[this.props.selector.dataSource.valueField]}
                       >
                         {this.props.selector.displayTemplate !== undefined
                           ? this.renderTemplate.bind(this, item, index)
                           : item[this.props.selector.dataSource.textField]}
-                      </span>
+                      </a>
                     ) : (
-                      <span className="customCheckbox">
+                      <a className="customCheckbox">
                         <label
                           tabIndex="1"
                           className="checkbox"
@@ -420,7 +420,7 @@ class AutoComplete extends PureComponent {
                             {item[this.props.selector.dataSource.textField]}
                           </span>
                         </label>
-                      </span>
+                      </a>
                     )}
                   </li>
                 ))}
