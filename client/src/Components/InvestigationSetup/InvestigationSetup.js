@@ -69,29 +69,6 @@ class InvestigationSetup extends Component {
       }
     });
 
-    this.props.getInvestigationDetails({
-      uri: "/investigation/getInvestigTestList",
-      method: "GET",
-      redux: {
-        type: "INSURANCE_PROVIDER_GET_DATA",
-        mappingName: "investigationdetails"
-      },
-      afterSuccess: data => {
-        let InvestigationName = Enumerable.from(data)
-          .groupBy("$.hims_d_investigation_test_id", null, (k, g) => {
-            let firstRecordSet = Enumerable.from(g).firstOrDefault();
-            return {
-              description: firstRecordSet.description,
-              hims_d_investigation_test_id:
-                firstRecordSet.hims_d_investigation_test_id
-            };
-          })
-          .toArray();
-
-        this.setState({ InvestigationName: InvestigationName });
-      }
-    });
-
     getInvestigations(this, this);
   }
 
@@ -133,7 +110,7 @@ class InvestigationSetup extends Component {
   render() {
     return (
       <div className="hims_investigationsetup">
-        <div
+        {/* <div
           className="row inner-top-search d-none"
           style={{ paddingBottom: 10 }}
         >
@@ -240,7 +217,7 @@ class InvestigationSetup extends Component {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
         <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15 margin-top-15">
           <div className="portlet-title">
             <div className="caption">
@@ -249,10 +226,10 @@ class InvestigationSetup extends Component {
             <div className="actions">
               <a
                 // href="javascript:;"
-                class="btn btn-primary btn-circle active"
+                className="btn btn-primary btn-circle active"
                 onClick={this.ShowModel.bind(this)}
               >
-                <i class="fas fa-plus" />
+                <i className="fas fa-plus" />
               </a>
               <NewInvestigation
                 HeaderCaption={

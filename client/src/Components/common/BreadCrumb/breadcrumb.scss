@@ -138,10 +138,14 @@
     top: 75px;
     position: absolute;
     overflow: hidden;
+    width: 15vw;
     li {
       list-style: none;
       border-bottom: 1px solid #000;
       padding: 15px;
+      span {
+        color: #000;
+      }
     }
   }
   .printActionMenu:hover {

@@ -44,8 +44,7 @@ class ItemStorage extends Component {
     getItemStorage(this, this);
   }
 
-  dateFormater({ date }) {
-    
+  dateFormater(date) {
     if (date !== null) {
       return moment(date).format(Options.dateFormat);
     }

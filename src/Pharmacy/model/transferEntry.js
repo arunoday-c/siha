@@ -336,15 +336,17 @@ let updatetransferEntry = (req, res, next) => {
           })
 
             .then(records => {
-              connection.commit(error => {
-                if (error) {
-                  releaseDBConnection(db, connection);
-                  next(error);
-                }
-                req.records = records;
-                releaseDBConnection(db, connection);
-                next();
-              });
+              req.records = records;
+              next();
+              // connection.commit(error => {
+              //   if (error) {
+              //     releaseDBConnection(db, connection);
+              //     next(error);
+              //   }
+              //   req.records = records;
+              //   releaseDBConnection(db, connection);
+              //   next();
+              // });
             })
             .catch(error => {
               connection.rollback(() => {

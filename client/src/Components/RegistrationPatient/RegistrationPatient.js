@@ -92,8 +92,6 @@ class RegistrationPatient extends PureComponent {
     ) {
       this.getCtrlCode(this.props.patient_code);
     } else if (this.props.patient_details !== undefined) {
-      
-
       this.setState(
         {
           full_name: this.props.patient_details.patient_name,
@@ -140,8 +138,6 @@ class RegistrationPatient extends PureComponent {
         data: []
       }
     });
-
-    
 
     if (
       this.props.hospitaldetails === undefined ||
@@ -228,7 +224,7 @@ class RegistrationPatient extends PureComponent {
       if (this.state.unbalanced_amount === 0) {
         this.GenerateReciept($this => {
           AlgaehLoader({ show: true });
-          
+
           if ($this.state.hims_d_patient_id === null) {
             let patientdata = {};
 
@@ -313,7 +309,6 @@ class RegistrationPatient extends PureComponent {
   };
 
   componentWillReceiveProps(nextProps) {
-    
     if (
       nextProps.genbill !== undefined &&
       nextProps.genbill.length !== 0 &&
@@ -452,6 +447,7 @@ class RegistrationPatient extends PureComponent {
   //Render Page Start Here
 
   render() {
+    debugger;
     return (
       <div id="attach" style={{ marginBottom: "50px" }}>
         {/* <Barcode value='PAT-A-000017'/> */}
@@ -557,7 +553,8 @@ class RegistrationPatient extends PureComponent {
                           Options.dateFormat
                         ),
                         receipt_number: this.state.receipt_number,
-                        doctor_name: this.state.doctor_name,
+                        doctor_name: document.getElementsByName("doctor_id")[0]
+                          .value,
                         bill_details: this.state.billdetails
                       }
                     });
@@ -573,7 +570,6 @@ class RegistrationPatient extends PureComponent {
             value={{
               state: this.state,
               updateState: obj => {
-                
                 this.setState({ ...obj });
               }
             }}

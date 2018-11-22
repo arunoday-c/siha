@@ -171,7 +171,7 @@ let algaehSearchConfig = searchName => {
       {
         searchName: "POEntryGetDN",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS * from hims_f_procurement_po_header where authorize1 = 'Y'",
+          "select SQL_CALC_FOUND_ROWS * from hims_f_procurement_po_header where authorize1 = 'Y' and cancelled='N' and is_completed='N'",
         orderBy: "hims_f_procurement_po_header_id desc"
       }
 

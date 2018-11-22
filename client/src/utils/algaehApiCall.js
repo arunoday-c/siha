@@ -129,6 +129,12 @@ export function algaehApiCall(options) {
             console.error("request failed", error);
           });
       }
+      const timmer =
+        settings.timerNotRequired === undefined
+          ? {
+              timeout: settings.timeout !== undefined ? settings.timeout : 60000
+            }
+          : {};
 
       axios({
         method: settings.method,
@@ -141,7 +147,7 @@ export function algaehApiCall(options) {
         },
         ...settings.others,
         data: settings.data,
-        timeout: settings.timeout !== undefined ? settings.timeout : 20000,
+        ...timmer,
         ...cancelRequest
       })
         .then(response => {
@@ -424,7 +430,6 @@ export function getLocalIP(callback) {
       callback(myIP);
     })
     .catch(e => {
-      
       const generator = new IDGenerator();
       const _IdGen = generator.generate();
       window.myIP = _IdGen;

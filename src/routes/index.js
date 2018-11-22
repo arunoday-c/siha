@@ -57,6 +57,7 @@ import inventorytransferEntry from "../Inventory/controller/inventorytransferEnt
 import specialityAndCategory from "../controller/specialityAndCategory";
 import vendor from "../controller/vendor";
 import PurchaseOrderEntry from "../Procurement/controller/PurchaseOrderEntry";
+import DeliveryNoteEntry from "../Procurement/controller/DeliveryNoteEntry";
 let router = express();
 
 //connect to DB
@@ -125,6 +126,7 @@ initializedDb(db => {
   router.use("/specialityAndCategory", specialityAndCategory({ config, db }));
   router.use("/vendor", vendor({ config, db }));
   router.use("/PurchaseOrderEntry", PurchaseOrderEntry({ config, db }));
+  router.use("/DeliveryNoteEntry", DeliveryNoteEntry({ config, db }));
 });
 
 export default router;

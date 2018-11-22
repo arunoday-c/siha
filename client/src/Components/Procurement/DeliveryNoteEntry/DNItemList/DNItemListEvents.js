@@ -24,7 +24,7 @@ const assignDataandclear = ($this, context, stock_detail, assignData) => {
   );
 
   let detail_discount = Enumerable.from(stock_detail).sum(s =>
-    parseFloat(s.sub_discount_amount)
+    parseFloat(s.discount_amount)
   );
 
   $this.setState({
@@ -42,24 +42,6 @@ const assignDataandclear = ($this, context, stock_detail, assignData) => {
     pharmacy_uom_id: null,
     inventory_uom_id: null,
 
-    order_quantity: 0,
-    total_quantity: 0,
-    unit_price: 0,
-    extended_price: 0,
-    sub_discount_percentage: 0,
-    sub_discount_amount: 0,
-    extended_cost: 0,
-    discount_percentage: 0,
-    discount_amount: 0,
-    net_extended_cost: 0,
-    unit_cost: 0,
-    expected_arrival_date: null,
-    authorize_quantity: 0,
-    rejected_quantity: 0,
-    pharmacy_requisition_id: null,
-    inventory_requisition_id: null,
-    tax_amount: 0,
-    total_amount: 0,
     item_type: null,
     sub_total: sub_total,
     net_total: net_total,
@@ -85,24 +67,6 @@ const assignDataandclear = ($this, context, stock_detail, assignData) => {
       pharmacy_uom_id: null,
       inventory_uom_id: null,
 
-      order_quantity: 0,
-      total_quantity: 0,
-      unit_price: 0,
-      extended_price: 0,
-      sub_discount_percentage: 0,
-      sub_discount_amount: 0,
-      extended_cost: 0,
-      discount_percentage: 0,
-      discount_amount: 0,
-      net_extended_cost: 0,
-      unit_cost: 0,
-      expected_arrival_date: null,
-      authorize_quantity: 0,
-      rejected_quantity: 0,
-      pharmacy_requisition_id: null,
-      inventory_requisition_id: null,
-      tax_amount: 0,
-      total_amount: 0,
       item_type: null,
       sub_total: sub_total,
       net_total: net_total,
@@ -115,96 +79,65 @@ const assignDataandclear = ($this, context, stock_detail, assignData) => {
 };
 
 const deleteDNDetail = ($this, context, row) => {
-  if ($this.state.dn_from === "PHR") {
-    let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+  let dn_entry_detail = $this.state.dn_entry_detail;
 
-    for (var i = 0; i < pharmacy_stock_detail.length; i++) {
-      if (pharmacy_stock_detail[i].phar_item_id === row["phar_item_id"]) {
-        pharmacy_stock_detail.splice(i, 1);
-      }
+  for (var i = 0; i < dn_entry_detail.length; i++) {
+    if (dn_entry_detail[i].phar_item_id === row["phar_item_id"]) {
+      dn_entry_detail.splice(i, 1);
     }
+  }
+  dn_entry_detail;
 
-    if (pharmacy_stock_detail.length === 0) {
-      assignDataandclear(
-        $this,
-        context,
-        pharmacy_stock_detail,
-        "pharmacy_stock_detail"
-      );
-    } else {
-      if (context !== undefined) {
-        context.updateState({
-          pharmacy_stock_detail: pharmacy_stock_detail
-        });
-      }
-    }
+  if (dn_entry_detail.length === 0) {
+    assignDataandclear($this, context, dn_entry_detail, "dn_entry_detail");
   } else {
-    {
-      let inventory_stock_detail = $this.state.inventory_stock_detail;
-
-      for (var i = 0; i < inventory_stock_detail.length; i++) {
-        if (inventory_stock_detail[i].inv_item_id === row["inv_item_id"]) {
-          inventory_stock_detail.splice(i, 1);
-        }
-      }
-
-      if (inventory_stock_detail.length === 0) {
-        assignDataandclear(
-          $this,
-          context,
-          inventory_stock_detail,
-          "inventory_stock_detail"
-        );
-      } else {
-        if (context !== undefined) {
-          context.updateState({
-            inventory_stock_detail: inventory_stock_detail
-          });
-        }
-      }
+    if (context !== undefined) {
+      context.updateState({
+        dn_entry_detail: dn_entry_detail
+      });
     }
   }
 };
 
 const updateDNDetail = ($this, context, row) => {
   debugger;
-  let po_entry_detail = $this.state.po_entry_detail;
+  let dn_entry_detail = $this.state.dn_entry_detail;
   if ($this.state.dn_from === "PHR") {
-    for (var i = 0; i < po_entry_detail.length; i++) {
-      if (po_entry_detail[i].phar_item_id === row["phar_item_id"]) {
-        po_entry_detail[i] = row;
+    for (var i = 0; i < dn_entry_detail.length; i++) {
+      if (dn_entry_detail[i].phar_item_id === row["phar_item_id"]) {
+        dn_entry_detail[i] = row;
       }
     }
   } else {
-    for (var i = 0; i < po_entry_detail.length; i++) {
-      if (po_entry_detail[i].inv_item_id === row["inv_item_id"]) {
-        po_entry_detail[i] = row;
+    for (var i = 0; i < dn_entry_detail.length; i++) {
+      if (dn_entry_detail[i].inv_item_id === row["inv_item_id"]) {
+        dn_entry_detail[i] = row;
       }
     }
   }
 
-  let sub_total = Enumerable.from(po_entry_detail).sum(s =>
+  let sub_total = Enumerable.from(dn_entry_detail).sum(s =>
     parseFloat(s.extended_price)
   );
 
-  let net_total = Enumerable.from(po_entry_detail).sum(s =>
+  let net_total = Enumerable.from(dn_entry_detail).sum(s =>
     parseFloat(s.net_extended_cost)
   );
 
-  let net_payable = Enumerable.from(po_entry_detail).sum(s =>
+  let net_payable = Enumerable.from(dn_entry_detail).sum(s =>
     parseFloat(s.total_amount)
   );
 
-  let total_tax = Enumerable.from(po_entry_detail).sum(s =>
+  let total_tax = Enumerable.from(dn_entry_detail).sum(s =>
     parseFloat(s.tax_amount)
   );
 
-  let detail_discount = Enumerable.from(po_entry_detail).sum(s =>
-    parseFloat(s.sub_discount_amount)
+  let detail_discount = Enumerable.from(dn_entry_detail).sum(s =>
+    parseFloat(s.discount_amount)
   );
 
   $this.setState({
-    po_entry_detail: po_entry_detail,
+    dn_entry_detail: dn_entry_detail,
     sub_total: sub_total,
     net_total: net_total,
     net_payable: net_payable,
@@ -214,7 +147,7 @@ const updateDNDetail = ($this, context, row) => {
 
   if (context !== undefined) {
     context.updateState({
-      po_entry_detail: po_entry_detail,
+      dn_entry_detail: dn_entry_detail,
       sub_total: sub_total,
       net_total: net_total,
       net_payable: net_payable,
@@ -257,8 +190,8 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
       [e.target.name]: 0
     });
   } else {
-    let sub_discount_percentage = row.sub_discount_percentage;
-    let sub_discount_amount = 0;
+    let discount_percentage = row.discount_percentage;
+    let discount_amount = 0;
     let extended_cost = 0;
     let extended_price = 0;
     let tax_amount = 0;
@@ -277,12 +210,11 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
       extended_price = (parseFloat(row.unit_price) * parseFloat(value)).toFixed(
         2
       );
-      sub_discount_amount = (
-        (extended_price * sub_discount_percentage) /
-        100
-      ).toFixed(2);
+      discount_amount = ((extended_price * discount_percentage) / 100).toFixed(
+        2
+      );
 
-      extended_cost = extended_price - sub_discount_amount;
+      extended_cost = extended_price - discount_amount;
 
       tax_amount = (extended_cost * parseFloat(row.tax_percentage)) / 100;
 
@@ -296,7 +228,7 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
       row["tax_amount"] = tax_amount.toFixed(2);
       row["total_amount"] = (tax_amount + extended_cost).toFixed(2);
 
-      row["sub_discount_amount"] = sub_discount_amount;
+      row["discount_amount"] = discount_amount;
       row["extended_cost"] = extended_cost.toFixed(2);
       row["net_extended_cost"] = extended_cost.toFixed(2);
       row.update();

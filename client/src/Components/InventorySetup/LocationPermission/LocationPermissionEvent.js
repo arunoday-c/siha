@@ -3,7 +3,6 @@ import swal from "sweetalert2";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 const changeTexts = ($this, ctrl, e) => {
-  
   e = e || ctrl;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -18,7 +17,6 @@ const onchangegridcol = ($this, row, e) => {
 };
 
 const updateLocationPermission = ($this, data) => {
-  
   algaehApiCall({
     uri: "/inventory/updateLocationPermission",
     data: data,
@@ -42,11 +40,9 @@ const getLocationPermission = $this => {
     method: "GET",
     redux: {
       type: "LOCATION_PERMISSION_GET_DATA",
-      mappingName: "locationpermission"
+      mappingName: "invlocationpermission"
     },
-    afterSuccess: data => {
-      
-    }
+    afterSuccess: data => {}
   });
 };
 
@@ -98,8 +94,6 @@ const deleteLocationPermission = ($this, row) => {
 };
 
 const insertLocationPermission = ($this, e) => {
-  
-
   AlgaehValidation({
     alertTypeIcon: "warning",
     onSuccess: () => {

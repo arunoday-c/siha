@@ -47,7 +47,7 @@ class ItemCategory extends Component {
     getItemCategory(this, this);
   }
 
-  dateFormater({ date }) {
+  dateFormater(date) {
     if (date !== null) {
       return moment(date).format(Options.dateFormat);
     }
@@ -196,9 +196,9 @@ class ItemCategory extends Component {
                 keyId="hims_d_item_category_id"
                 dataSource={{
                   data:
-                    this.props.itemcategory === undefined
+                    this.props.invitemcategory === undefined
                       ? []
-                      : this.props.itemcategory
+                      : this.props.invitemcategory
                 }}
                 isEditable={true}
                 paging={{ page: 0, rowsPerPage: 10 }}
@@ -219,7 +219,7 @@ class ItemCategory extends Component {
 
 function mapStateToProps(state) {
   return {
-    itemcategory: state.itemcategory,
+    invitemcategory: state.invitemcategory,
     userdrtails: state.userdrtails
   };
 }
