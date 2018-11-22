@@ -338,7 +338,8 @@
   :global .portlet.portlet-bordered {
     border: 1px solid #eee; }
   :global .portlet-title {
-    padding: 0;
+    padding: 0 15px;
+    margin: -5px -15px 0;
     min-height: 35px;
     border-bottom: 1px dashed #eee;
     margin-bottom: 5px; }

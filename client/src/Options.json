@@ -1,5 +1,5 @@
 {
   "dateFormat": "DD-MM-YYYY",
-  "timeFormat": "HH:MM:SS",
+  "timeFormat": "HH:mm:ss",
   "dateFormatYear": "YYYY-MM-DD"
 }
