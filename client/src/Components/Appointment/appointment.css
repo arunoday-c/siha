@@ -67,13 +67,15 @@
   .appointment .my-calendar .arrow-box-right {
     float: right; }
   .appointment .my-calendar .calendar .col {
-    border: 1px solid #009e94;
+    border: 1px solid #3aa4a9;
     font-size: 1.3rem;
     padding-right: 3px;
-    padding-left: 3px; }
+    padding-left: 3px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3); }
   .appointment .my-calendar .calendar .col:hover {
-    background: #009e94;
-    cursor: pointer; }
+    background: #3aa4a9;
+    cursor: pointer;
+    text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.3); }
   .appointment .my-calendar .calendar .col span {
     padding: 0;
     margin: 0;
@@ -82,7 +84,7 @@
     text-transform: uppercase; }
   .appointment .my-calendar .activeDate {
     border-bottom: 4px solid yellow !important;
-    background: #009e94; }
+    background: #3aa4a9; }
   .appointment .my-calendar .CurrentDate {
     border-top: 2px solid yellow !important; }
 

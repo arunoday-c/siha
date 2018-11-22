@@ -350,21 +350,16 @@ class PersistentDrawer extends React.Component {
 
                   <h5>{this.state.title}</h5>
                 </div>
-                <span
-                  style={{
-                    float: "right",
-                    fontSize: "0.9rem",
-                    marginRight: 10
-                  }}
-                >
-                  {this.state.languageName}
-                </span>
+                {/* <span className="selectedLang">{this.state.languageName}</span> */}
+                <div className="loginProfileInfo">
+                  <span>{getCookie("userName")},</span>
+                  <span>Apollo Hospitals - Bannerghatta Road</span>
+                </div>
                 <button
                   className="btn btn-userProfile"
                   onClick={this.handleOpenClick}
                 >
-                  <span>{getCookie("userName")} </span>
-                  <i className="fas fa-user-circle" />
+                  {/* <i className="fas fa-user-circle" /> */}
                   <i className="fas fa-angle-down" />
                 </button>
 

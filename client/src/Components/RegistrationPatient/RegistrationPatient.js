@@ -447,7 +447,6 @@ class RegistrationPatient extends PureComponent {
   //Render Page Start Here
 
   render() {
-    debugger;
     return (
       <div id="attach" style={{ marginBottom: "50px" }}>
         {/* <Barcode value='PAT-A-000017'/> */}

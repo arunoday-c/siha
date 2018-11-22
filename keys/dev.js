@@ -10,7 +10,7 @@ export default {
     connectionLimit: 20,
     // host: "166.62.10.184",
     host: "49.206.18.38",
-    port: 3306,
+    port: 3302,
     user: "algaeh_root",
     password: "medteam2013",
     database: "algaeh_hims_db",
