@@ -18,7 +18,7 @@ class MRDList extends Component {
       registration_date: null,
       patientData: []
     };
-
+    this.getPatientMrdList();
     this.baseState = this.state;
   }
 
@@ -27,7 +27,7 @@ class MRDList extends Component {
   }
 
   getPatientMrdList(e) {
-    e.preventDefault();
+    if (e !== undefined) e.preventDefault();
     algaehLoader({ show: true });
 
     let reg_date = moment(this.state.registration_date).isValid()
@@ -75,7 +75,7 @@ class MRDList extends Component {
   render() {
     return (
       <div className="mrd-list">
-        <div className="row inner-top-search">
+        {/* <div className="row inner-top-search">
           <form onSubmit={this.getPatientMrdList.bind(this)}>
             <div className="row padding-10">
               <AlagehFormGroup
@@ -180,7 +180,7 @@ class MRDList extends Component {
               </div>
             </div>
           </form>
-        </div>
+        </div> */}
         <div className="portlet portlet-bordered box-shadow-normal ">
           <div className="portlet-title">
             <div className="caption">
@@ -282,6 +282,7 @@ class MRDList extends Component {
                     }
                   ]}
                   keyId="index"
+                  filter={true}
                   dataSource={{
                     data: this.state.patientData
                   }}

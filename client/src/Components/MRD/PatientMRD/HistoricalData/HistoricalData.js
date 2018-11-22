@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import "./historical_data.css";
-import { AlgaehDataGrid } from "../../../Wrapper/algaehWrapper";
 import ReactTable from "react-table";
 import "react-table/react-table.css";
 import treeTableHOC from "react-table/lib/hoc/treeTable";
@@ -8,56 +7,10 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import algaehLoader from "../../../Wrapper/fullPageLoader";
 import moment from "moment";
 import Enumerable from "linq";
+import config from "../../../../utils/config.json";
+import { Line } from "react-chartjs-2";
 
 const TreeTable = treeTableHOC(ReactTable);
-
-const _data = [
-  {
-    date: "2018-01-01 06:00 AM",
-    oral: 36.8,
-    bpSystole: 120,
-    bpdyastole: 70,
-    pulse: 84,
-    resp: 20,
-    bloodsugar: 98.81,
-    height: 78,
-    weight: 87,
-    bmi: 36.3,
-    duration: "2 week agao",
-    doctor: "Dr. Amina Nazir Hussain",
-    date_doctor: "2018-01-01 06:00 AM - Dr. Amina Nazir Hussain"
-  },
-  {
-    date: "2018-01-01 07:00 AM",
-    oral: 36.8,
-    bpSystole: 120,
-    bpdyastole: 70,
-    pulse: 70,
-    resp: 22,
-    bloodsugar: 100,
-    height: 78,
-    weight: 87,
-    bmi: 36,
-    duration: "2 week agao",
-    doctor: "Dr. Amina Nazir Hussain",
-    date_doctor: "2018-01-01 07:00 AM - Dr. Amina Nazir Hussain"
-  },
-  {
-    date: "2018-01-01 12:00 PM",
-    oral: 36,
-    bpSystole: 100,
-    bpdyastole: 33,
-    pulse: 87,
-    resp: 21,
-    bloodsugar: 60,
-    height: 78,
-    weight: 87,
-    bmi: 36,
-    duration: "2 week agao",
-    doctor: "Dr. Ahmad Mustafa",
-    date_doctor: "2018-01-01 12:00 PM - Dr. Ahmad Mustafa"
-  }
-];
 
 class HistoricalData extends Component {
   constructor(props) {
@@ -85,11 +38,13 @@ class HistoricalData extends Component {
       data: {
         patient_id: Window.global["mrd_patient"]
       },
-      cancelRequestId: "getPatientVitals",
+      cancelRequestId: "getPatientVitals1",
       onSuccess: response => {
+        debugger;
         algaehLoader({ show: false });
         if (response.data.success) {
           this.setState({ patientVitals: response.data.records });
+          console.log("Vitals:", response.data.records);
         }
       },
       onFailure: error => {
@@ -227,6 +182,65 @@ class HistoricalData extends Component {
     });
   }
 
+  generateVitalColumns(data) {
+    debugger;
+    let x = Enumerable.from(data)
+      .groupBy("$.vital_id", null, (k, g) => {
+        return g.getSource();
+      })
+      .toArray();
+
+    console.log("X", JSON.stringify(x));
+    return [
+      {
+        accessor: "visit_date",
+        Cell: props => (
+          <span>{moment(props.visit_date).format("DD-MM-YYYY")}</span>
+        )
+      },
+      {
+        Header: "Recorded Time",
+        accessor: "visit_time"
+      },
+      {
+        Header: "Temp. Oral",
+        accessor: "temperature_celsisus"
+      },
+      {
+        Header: "BP Systole",
+        accessor: "systolic"
+      },
+      {
+        Header: "bp Dyastole",
+        accessor: "diastolic"
+      },
+      {
+        Header: "Heart Rate",
+        accessor: "heart_rate"
+      },
+      {
+        Header: "Respiratory Rate",
+        accessor: "respiratory_rate"
+      },
+      {
+        Header: "Height",
+        accessor: "height"
+      },
+      {
+        Header: "Weight",
+        accessor: "weight"
+      },
+      {
+        Header: "BMI",
+        accessor: "bmi"
+      },
+      {
+        Header: "BSA",
+        accessor: "bsa"
+      }
+    ];
+  }
+
   render() {
     const _patientVitals = this.state.patientVitals;
     const _groupData = Enumerable.from(this.state.patientPayments)
@@ -244,85 +258,164 @@ class HistoricalData extends Component {
       })
       .toArray();
 
+    let _chartLabels = [];
+    let _yAxes = [];
+    let _plotGraph = [];
+
+    const _vitalsGroup =
+      this.state.patientVitals !== undefined
+        ? Enumerable.from(this.state.patientVitals)
+            .groupBy("$.visit_date", null, (key, g) => {
+              //_chartLabels.push(key);
+              return {
+                dateTime: key,
+                list: g.getSource()
+              };
+            })
+            .orderByDescending(g => g.visit_date)
+            .toArray()
+            .sort((a, b) => {
+              debugger;
+              b > a;
+            })
+        : [];
+
+    Enumerable.from(
+      this.state.patientVitals !== undefined ? this.state.patientVitals : []
+    )
+      .groupBy("$.vital_id", null, (k, gg) => {
+        if (k === 1 || k === 3 || k === 4 || k === 7 || k === 8 || k === 9) {
+          let _gId = Enumerable.from(gg.getSource())
+            .where(w => w.vital_id === k)
+            .firstOrDefault();
+          let _names = String(_gId.vital_short_name).replace(/\" "/g, "_");
+
+          let row = Enumerable.from(_yAxes)
+            .where(w => w.id === _names)
+            .firstOrDefault();
+          const _index = _yAxes.indexOf(row);
+          if (_index > -1) {
+            _yAxes.splice(_index, 1);
+          }
+          _yAxes.push({
+            id: _names
+          });
+
+          let _bground = "";
+          let _borderColor = "";
+          switch (k) {
+            case 1:
+              _bground = config.colors.weight.backgroundColor;
+              _borderColor = config.colors.weight.borderColor;
+              break;
+            case 3:
+              _bground = config.colors.bmi.backgroundColor;
+              _borderColor = config.colors.bmi.borderColor;
+              break;
+            case 4:
+              _bground = config.colors.temperature.backgroundColor;
+              _borderColor = config.colors.temperature.borderColor;
+              break;
+            case 6:
+              _bground = config.colors.heart_rate.backgroundColor;
+              _borderColor = config.colors.heart_rate.borderColor;
+              break;
+            case 7:
+              _bground = config.colors.resp_rate.backgroundColor;
+              _borderColor = config.colors.resp_rate.borderColor;
+              break;
+            case 8:
+              _bground = config.colors.bp.sys.backgroundColor;
+              _borderColor = config.colors.bp.sys.borderColor;
+              break;
+            case 9:
+              _bground = config.colors.bp.dia.backgroundColor;
+              _borderColor = config.colors.bp.dia.borderColor;
+              break;
+          }
+
+          _plotGraph.push({
+            label: _gId.vital_short_name,
+            fill: false,
+            lineTension: 0.9,
+            backgroundColor: _bground,
+            borderColor: _borderColor,
+            yAxisID: _names,
+            data: Enumerable.from(gg.getSource())
+              .where(w => w.vital_id === k)
+              .select(s => s.vital_value)
+              .toArray()
+          });
+        }
+      })
+      .toArray();
+
     return (
       <div className="historical-data">
-        <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
-          <div className="portlet-title">
-            <div className="caption">
-              <h3 className="caption-subject">Vitals</h3>
+        <div className="row">
+          <div className="col-lg-3">
+            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Vitals</h3>
+                </div>
+              </div>
+              <div className="portlet-body">
+                <div className="row">
+                  <div className="col-lg-12">
+                    <div
+                      className="timeline"
+                      style={{
+                        overflowY: "auto",
+                        overflowX: "hidden",
+                        maxHeight: "40vh"
+                      }}
+                    >
+                      {_vitalsGroup.map((data, index) => (
+                        <div key={index} className="timelineContainer right">
+                          <div className="content">
+                            <p className="dateStamp">{data.dateTime}</p>
+                            <div className="vitalsCntr">
+                              <ul className="vitals-box">
+                                {data.list.map((vitals, ind) => (
+                                  <li className="each-vitals-box" key={ind}>
+                                    <p>{vitals.vitals_name}</p>
+                                    <span>{vitals.vital_value}</span>
+                                    <span>{vitals.formula_value}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="portlet-body">
-            <div className="row">
-              <div className="col-lg-12">
-                <TreeTable
-                  //Expand All rows
-                  expanded={this.state.patientVitals.map((data, index) => {
-                    return { index: true };
-                  })}
-                  data={_patientVitals}
-                  pivotBy={["visit_date"]}
-                  noDataText="No Vitals Captured"
-                  columns={[
-                    {
-                      accessor: "visit_date",
-                      Cell: props => (
-                        <span>
-                          {moment(props.visit_date).format("DD-MM-YYYY")}
-                        </span>
-                      )
-                    },
-                    {
-                      Header: "Recorded Time",
-                      accessor: "visit_time"
-                      // Cell: row => {
-                      //   
-                      //   return (
-                      //     <span>
-                      //       {moment(row.value, "HH:MM:SS").format("HH:MM A")}
-                      //     </span>
-                      //   );
-                      // }
-                    },
-                    {
-                      Header: "Temp. Oral",
-                      accessor: "temperature_celsisus"
-                    },
-                    {
-                      Header: "BP Systole",
-                      accessor: "systolic"
-                    },
-                    {
-                      Header: "bp Dyastole",
-                      accessor: "diastolic"
-                    },
-                    {
-                      Header: "Heart Rate",
-                      accessor: "heart_rate"
-                    },
-                    {
-                      Header: "Respiratory Rate",
-                      accessor: "respiratory_rate"
-                    },
-                    {
-                      Header: "Height",
-                      accessor: "height"
-                    },
-                    {
-                      Header: "Weight",
-                      accessor: "weight"
-                    },
-                    {
-                      Header: "BMI",
-                      accessor: "bmi"
-                    },
-                    {
-                      Header: "BSA",
-                      accessor: "bsa"
-                    }
-                  ]}
-                  defaultPageSize={5}
-                />
+          <div className="col-lg-9">
+            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Vitals Charts</h3>
+                </div>
+              </div>
+              <div className="portlet-body">
+                <div className="row">
+                  <Line
+                    options={{
+                      scales: {
+                        yAxes: _yAxes
+                      }
+                    }}
+                    data={{
+                      datasets: _plotGraph,
+                      labels: _chartLabels
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -494,6 +587,127 @@ class HistoricalData extends Component {
             <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
+                  <h3 className="caption-subject">Investigations</h3>
+                </div>
+              </div>
+              <div className="portlet-body">
+                <div className="row">
+                  <div className="col-lg-12">
+                    <TreeTable
+                      //Most recent 3 rows are expanded
+                      //expanded={{ 0: true, 1: true, 2: true, 3: true }}
+                      expanded={this.state.patientInvestigations.map(
+                        (data, index) => {
+                          return { index: true };
+                        }
+                      )}
+                      data={this.state.patientInvestigations}
+                      pivotBy={["visit_date"]}
+                      columns={[
+                        {
+                          accessor: "visit_date"
+                        },
+
+                        {
+                          Header: "Service Name",
+                          accessor: "service_name"
+                        },
+                        {
+                          Header: "Doctor Name",
+                          accessor: "provider_name"
+                        },
+                        {
+                          Header: "Lab Order Status",
+                          accessor: "lab_ord_status"
+                        },
+                        {
+                          Header: "Lab Billed",
+                          accessor: "lab_billed"
+                        },
+                        {
+                          Header: "Radiology Order Status",
+                          accessor: "rad_ord_status"
+                        },
+                        {
+                          Header: "Radiology Billed",
+                          accessor: "rad_billed"
+                        }
+                      ]}
+                      defaultPageSize={5}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* Second Two Sections End */}
+
+        {/* Third Two Sections Start */}
+
+        {/* <div className="row">
+          <div className="col-lg-6">
+            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Attachments</h3>
+                </div>
+              </div>
+              <div className="portlet-body">
+                <div className="row">
+                  <div className="col-lg-12">
+                    <TreeTable
+                      //Most recent 3 rows are expanded
+                      //expanded={{ 0: true, 1: true, 2: true, 3: true }}
+                      expanded={this.state.patientMedication.map(
+                        (data, index) => {
+                          return { index: true };
+                        }
+                      )}
+                      //data={this.state.patientMedication}
+                      data={[]}
+                      pivotBy={["prescription_date"]}
+                      columns={[
+                        {
+                          accessor: "prescription_date"
+                        },
+                        {
+                          accessor: "start_date",
+                          Header: "Start Date"
+                        },
+                        {
+                          accessor: "generic_name",
+                          Header: "Generic Name"
+                        },
+                        {
+                          accessor: "item_description",
+                          Header: "Item Description"
+                        },
+
+                        {
+                          accessor: "dosage",
+                          Header: "Dosage"
+                        },
+                        {
+                          accessor: "frequency",
+                          Header: "Frequency"
+                        },
+                        {
+                          accessor: "no_of_days",
+                          Header: "No. of Days"
+                        }
+                      ]}
+                      defaultPageSize={5}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="col-lg-6">
+            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
                   <h3 className="caption-subject">Nurse's Notes</h3>
                 </div>
               </div>
@@ -562,128 +776,7 @@ class HistoricalData extends Component {
             </div>
           </div>
         </div>
-        {/* Second Two Sections End */}
-
-        {/* Third Two Sections Start */}
-
-        <div className="row">
-          <div className="col-lg-6">
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">Attachments</h3>
-                </div>
-              </div>
-              <div className="portlet-body">
-                <div className="row">
-                  <div className="col-lg-12">
-                    <TreeTable
-                      //Most recent 3 rows are expanded
-                      //expanded={{ 0: true, 1: true, 2: true, 3: true }}
-                      expanded={this.state.patientMedication.map(
-                        (data, index) => {
-                          return { index: true };
-                        }
-                      )}
-                      //data={this.state.patientMedication}
-                      data={[]}
-                      pivotBy={["prescription_date"]}
-                      columns={[
-                        {
-                          accessor: "prescription_date"
-                        },
-                        {
-                          accessor: "start_date",
-                          Header: "Start Date"
-                        },
-                        {
-                          accessor: "generic_name",
-                          Header: "Generic Name"
-                        },
-                        {
-                          accessor: "item_description",
-                          Header: "Item Description"
-                        },
-
-                        {
-                          accessor: "dosage",
-                          Header: "Dosage"
-                        },
-                        {
-                          accessor: "frequency",
-                          Header: "Frequency"
-                        },
-                        {
-                          accessor: "no_of_days",
-                          Header: "No. of Days"
-                        }
-                      ]}
-                      defaultPageSize={5}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="col-lg-6">
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">Investigations</h3>
-                </div>
-              </div>
-              <div className="portlet-body">
-                <div className="row">
-                  <div className="col-lg-12">
-                    <TreeTable
-                      //Most recent 3 rows are expanded
-                      //expanded={{ 0: true, 1: true, 2: true, 3: true }}
-                      expanded={this.state.patientInvestigations.map(
-                        (data, index) => {
-                          return { index: true };
-                        }
-                      )}
-                      data={this.state.patientInvestigations}
-                      pivotBy={["visit_date"]}
-                      columns={[
-                        {
-                          accessor: "visit_date"
-                        },
-
-                        {
-                          Header: "Service Name",
-                          accessor: "service_name"
-                        },
-                        {
-                          Header: "Doctor Name",
-                          accessor: "provider_name"
-                        },
-                        {
-                          Header: "Lab Order Status",
-                          accessor: "lab_ord_status"
-                        },
-                        {
-                          Header: "Lab Billed",
-                          accessor: "lab_billed"
-                        },
-                        {
-                          Header: "Radiology Order Status",
-                          accessor: "rad_ord_status"
-                        },
-                        {
-                          Header: "Radiology Billed",
-                          accessor: "rad_billed"
-                        }
-                      ]}
-                      defaultPageSize={5}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
+ */}
         {/* Third Two Sections End */}
 
         <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">

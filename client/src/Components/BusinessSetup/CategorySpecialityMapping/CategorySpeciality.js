@@ -9,6 +9,7 @@ import {
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import swal from "sweetalert2";
 
@@ -77,30 +78,35 @@ class CategorySpeciality extends Component {
   }
 
   addCategorySpecialityMappings() {
-    algaehApiCall({
-      uri: "/specialityAndCategory/addCategorySpecialityMappings",
-      method: "POST",
-      data: {
-        category_id: this.state.category_id,
-        speciality_id: this.state.speciality_id,
-        description: this.state.description,
-        effective_start_date: this.state.effective_start_date,
-        category_speciality_status: "A"
-      },
-      onSuccess: response => {
-        if (response.data.success) {
-          swalMessage({
-            title: "Record Added Successfully",
-            type: "success"
-          });
-          this.resetSaveState();
-          this.getCategorySpecialityMap();
-        }
-      },
-      onFailure: error => {
-        swalMessage({
-          title: error.message,
-          type: "error"
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      onSuccess: () => {
+        algaehApiCall({
+          uri: "/specialityAndCategory/addCategorySpecialityMappings",
+          method: "POST",
+          data: {
+            category_id: this.state.category_id,
+            speciality_id: this.state.speciality_id,
+            description: this.state.description,
+            effective_start_date: this.state.effective_start_date,
+            category_speciality_status: "A"
+          },
+          onSuccess: response => {
+            if (response.data.success) {
+              swalMessage({
+                title: "Record Added Successfully",
+                type: "success"
+              });
+              this.resetSaveState();
+              this.getCategorySpecialityMap();
+            }
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
         });
       }
     });
@@ -311,7 +317,8 @@ class CategorySpeciality extends Component {
             <AlgaehDateHandler
               div={{ className: "col" }}
               label={{
-                fieldName: "effective_start_date"
+                fieldName: "effective_start_date",
+                isImp: true
               }}
               textBox={{
                 className: "txt-fld",
