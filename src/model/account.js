@@ -5,7 +5,7 @@ import { debugLog } from "../utils/logging";
 let getUserNamePassWord = base64String => {
   try {
     const temp = base64String.split(" ");
-    const buffer = new Buffer(temp[1], "base64");
+    const buffer = new Buffer.from(temp[1], "base64");
     const UserNamePassword = buffer.toString().split(":");
     return {
       username: UserNamePassword[0],
@@ -63,18 +63,21 @@ let apiAuth = (req, res, next) => {
         next(error);
       }
       connection.query(
-        "SELECT username FROM algaeh_d_api_auth WHERE password=md5(?)\
-            AND record_status='A' AND username =?",
+        "SELECT  hims_d_hospital_id,hospital_code,hospital_name,arabic_hospital_name, \
+        username FROM algaeh_d_api_auth,hims_d_hospital WHERE password=md5(?)\
+            AND algaeh_d_api_auth.record_status='A' AND username =? and hims_d_hospital.algaeh_api_auth_id =\
+            algaeh_d_api_auth. algaeh_d_api_auth_id",
         [inputData.password, inputData.username],
         (error, result) => {
           connection.release();
           if (error) {
             next(error);
           }
-          if (result.length == 1) {
+          if (result.length > 0) {
             req.result = {
               success: true,
-              results: result[0]
+              results: result[0]["username"],
+              hospitalList: result
             };
             next();
           } else {

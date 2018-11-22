@@ -143,9 +143,9 @@ class DoctorCommission extends Component {
               },
               jsonFile: {
                 fileName: "spotlightSearch",
-                fieldName: "doctorcommission.intstock"
+                fieldName: "DoctorCommission.doccpmmission"
               },
-              searchName: "doctorcommission"
+              searchName: "DoctorCommission"
             }}
             userArea={
               <AlgaehDateHandler

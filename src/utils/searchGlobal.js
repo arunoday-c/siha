@@ -49,6 +49,13 @@ let algaehSearchConfig = searchName => {
           pv.patient_id=hims_f_patient.hims_d_patient_id and pv.record_status='A'",
         orderBy: "pv.hims_f_patient_visit_id desc"
       },
+
+      {
+        searchName: "DoctorCommission",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS * from hims_f_doctor_comission_header",
+        orderBy: "hims_f_doctor_comission_header_id desc"
+      },
       {
         searchName: "initialstock",
         searchQuery:

@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import expressjwt from "express-jwt";
 import config from "../keys/keys";
 import moment from "moment";
+import { debugLog } from "../utils/logging";
 const TOKENTIME = config.TOKENTIME;
 const SECRET = config.SECRETKey;
 
@@ -28,7 +29,8 @@ let respond = (req, res) => {
   res.status(200).json({
     user: req.user,
     token: req.token,
-    days: days
+    days: days,
+    hospitalList: req.result.hospitalList
   });
 };
 

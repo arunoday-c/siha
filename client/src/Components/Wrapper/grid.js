@@ -50,6 +50,8 @@ class DataGrid extends PureComponent {
   }
   filterCaseInsensitive = (filter, row) => {
     const id = filter.pivotId || filter.id;
+    if (id === undefined || id === null) return false;
+    if (row[id] === undefined || row[id] === null) return false;
     if (typeof row[id] === "object") {
       const _value = row[id].props.children;
       return row[id] !== undefined
@@ -223,11 +225,14 @@ class DataGrid extends PureComponent {
     }
   };
   toggleRowSave = index => {
-    const existsing = JSON.parse(sessionStorage.getItem(this.props.id))[
-      "collection"
-    ];
+    const existsing = Enumerable.from(
+      JSON.parse(sessionStorage.getItem(this.props.id))["collection"]
+    )
+      .where(w => w.rowIdx === index)
+      .firstOrDefault();
+
     const row = this.state.data[index];
-    if (JSON.stringify(existsing[index]) === JSON.stringify(row)) {
+    if (JSON.stringify(existsing) === JSON.stringify(row)) {
       this.setState({
         editableRows: {
           ...this.state.editableRows,

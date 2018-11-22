@@ -12,10 +12,12 @@ class AutoComplete extends PureComponent {
       disabled: false,
       listState: "d-none",
       arrowIcon: "fa-angle-down",
+      directonClass: "‘dropdown’",
       _sortData: [],
       multiselect: []
     };
     this.handleClickOutside = this.handleClickOutside.bind(this);
+    // this.handleKeyUpNavigation = this.handleKeyUpNavigation.bind(this);
   }
 
   componentWillReceiveProps(props) {
@@ -58,6 +60,7 @@ class AutoComplete extends PureComponent {
   }
 
   onFocusTextbox(e) {
+    this.setDropDirection();
     let data = {};
     if (
       this.state._sortData !== this.props.selector.dataSource.data ||
@@ -73,6 +76,43 @@ class AutoComplete extends PureComponent {
       arrowIcon: "fa-angle-up",
       ...data
     });
+  }
+
+  setDropDirection() {
+    const canDropDown = this.menuHeight() < this.distanceFromBottom();
+    const _directonClass = !canDropDown ? "dropup" : "dropdown";
+    this.setState({ directonClass: _directonClass });
+    console.log("direction class", _directonClass);
+  }
+
+  menuHeight() {
+    if (this.props.selector.dataSource.data !== undefined) {
+      const _height = this.props.selector.dataSource.data.length * 30;
+      console.log("Menu height", _height);
+      return _height;
+    }
+    return 0;
+  }
+
+  distanceFromBottom() {
+    const _element = this.autoComp;
+    const _parent = this.autoComp.parentElement.parentNode.classList;
+    let windowHeight = window.innerHeight;
+    let distanceFromWindowTop = _element.getBoundingClientRect().top;
+    const _ifGrid = this.autoComp.parentElement.offsetParent;
+    if (_parent.length > 0) {
+      if (_parent[0] === "rt-td") {
+        windowHeight = _ifGrid.clientHeight;
+        distanceFromWindowTop = _ifGrid
+          .querySelector("div[id='internal_" + this.props.selector.name + "']")
+          .getBoundingClientRect().top;
+      }
+    }
+
+    const elementHeight = _element.clientHeight;
+    const _inHeight = windowHeight - distanceFromWindowTop - elementHeight;
+    console.log("Distance", _inHeight);
+    return _inHeight;
   }
 
   checkValueExistsInMultiSelect(item) {
@@ -131,6 +171,7 @@ class AutoComplete extends PureComponent {
 
   componentDidMount() {
     document.addEventListener("mousedown", this.handleClickOutside, false);
+    // document.addEventListener("keypress", this.handleKeyUpNavigation, false);
     const _required =
       this.props.label !== undefined
         ? this.props.label.isImp !== undefined
@@ -151,6 +192,7 @@ class AutoComplete extends PureComponent {
     }
   }
   componentWillUnmount() {
+    // document.removeEventListener("keypress", this.handleKeyUpNavigation, false);
     document.removeEventListener("mousedown", this.handleClickOutside, false);
   }
   handleClickOutside(event) {
@@ -162,22 +204,11 @@ class AutoComplete extends PureComponent {
     }
   }
 
-  dropDownKeyDown(e) {
-    if (e.keyCode == 38) {
-      // up
-      var selected = document.getElementsByClassName("myUL");
-      document.getElementsByClassName("myUL li").removeClass("selected");
-
-      // if there is no element before the selected one, we select the last one
-      if (selected.prev().length == 0) {
-        selected
-          .siblings()
-          .last()
-          .addClass("selected");
-      } else {
-        // otherwise we just select the next one
-        selected.prev().addClass("selected");
-      }
+  handleKeyUpNavigation(e) {
+    const prent =
+      e.currentTarget.nextElementSibling.nextElementSibling.children;
+    if (e.keyCode === 40) {
+      prent[0].focus();
     }
   }
 
@@ -319,6 +350,7 @@ class AutoComplete extends PureComponent {
         : this.props.selector.placeholder;
     return (
       <div
+        id={"internal_" + this.props.selector.name}
         className="autoselect-Div"
         ref={autoComp => (this.autoComp = autoComp)}
       >
@@ -337,6 +369,7 @@ class AutoComplete extends PureComponent {
             value={this.state.displayText}
             disabled={isDisable}
             onChange={this.onAutoCompleteTextHandler.bind(this)}
+            onKeyDown={this.handleKeyUpNavigation.bind(this)}
             onBlur={this.bluringEvent.bind(this)}
             {...this.props.selector.others}
             autoComplete="off"
@@ -365,6 +398,7 @@ class AutoComplete extends PureComponent {
                   >
                     {!_enableMultiselect ? (
                       <span
+                        tabIndex="1"
                         value={item[this.props.selector.dataSource.valueField]}
                       >
                         {this.props.selector.displayTemplate !== undefined
@@ -374,6 +408,7 @@ class AutoComplete extends PureComponent {
                     ) : (
                       <span className="customCheckbox">
                         <label
+                          tabIndex="1"
                           className="checkbox"
                           style={{ color: "rgb(33, 37, 41)" }}
                         >
