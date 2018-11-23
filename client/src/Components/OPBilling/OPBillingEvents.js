@@ -20,7 +20,7 @@ const Validations = $this => {
         title: "Invalid. Card Number cannot be blank."
       });
 
-      document.querySelector("[name='card_number']").focus();
+      document.querySelector("[name='card_check_number']").focus();
       return isError;
     }
 

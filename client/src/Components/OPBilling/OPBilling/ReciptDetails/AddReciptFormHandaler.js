@@ -1,6 +1,6 @@
 import moment from "moment";
 import { successfulMessage } from "../../../../utils/GlobalFunctions";
-let texthandlerInterval = null;
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 
 const texthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
@@ -23,8 +23,7 @@ const texthandle = ($this, context, ctrl, e) => {
   }
 };
 
-const calculateRecipt = ($this, e) => {
-  
+const calculateRecipt = ($this, context, e) => {
   if (e.target === null || e.target.value !== e.target.oldvalue) {
     let serviceInput = {
       isReceipt: true,
@@ -36,15 +35,38 @@ const calculateRecipt = ($this, e) => {
       receiveable_amount: parseFloat($this.state.receiveable_amount)
     };
 
-    $this.props.billingCalculations({
+    algaehApiCall({
       uri: "/billing/billingCalculations",
       method: "POST",
       data: serviceInput,
-      redux: {
-        type: "BILL_HEADER_GEN_GET_DATA",
-        mappingName: "genbill"
+      onSuccess: response => {
+        debugger;
+        if (response.data.success) {
+          if (context != null) {
+            response.data.records.patient_payable_h =
+              response.data.records.patient_payable ||
+              $this.state.patient_payable;
+            context.updateState({ ...response.data.records });
+          }
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
       }
     });
+
+    // $this.props.billingCalculations({
+    //   uri: "/billing/billingCalculations",
+    //   method: "POST",
+    //   data: serviceInput,
+    //   redux: {
+    //     type: "BILL_HEADER_GEN_GET_DATA",
+    //     mappingName: "genbill"
+    //   }
+    // });
   }
 };
 
@@ -173,7 +195,7 @@ const checkcashhandaler = ($this, context, e) => {
       cash_amount: 0
     },
     () => {
-      calculateRecipt($this, e);
+      calculateRecipt($this, context, e);
     }
   );
 
@@ -195,10 +217,10 @@ const checkcardhandaler = ($this, context, e) => {
       expiry_date: null
     },
     () => {
-      calculateRecipt($this, e);
+      calculateRecipt($this, context, e);
     }
   );
-  
+
   if (context !== undefined) {
     context.updateState({
       card_amount: 0,
@@ -219,7 +241,7 @@ const checkcheckhandaler = ($this, context, e) => {
       cheque_date: null
     },
     () => {
-      calculateRecipt($this, e);
+      calculateRecipt($this, context, e);
     }
   );
 
