@@ -6,6 +6,7 @@ import {
   AlagehAutoComplete,
   AlagehFormGroup
 } from "../../Wrapper/algaehWrapper";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 class LoginUsers extends Component {
   constructor(props) {
@@ -13,6 +14,25 @@ class LoginUsers extends Component {
     this.state = {
       login_users: []
     };
+    this.getGroups();
+  }
+
+  getGroups() {
+    algaehApiCall({
+      uri: "/algaehappuser/selectAppGroup",
+      method: "GET",
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({ groups: response.data.records });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   changeTexts(e) {

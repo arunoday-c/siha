@@ -180,11 +180,11 @@ class HistoricalData extends Component {
 
   generateVitalColumns(data) {
     //debugger;
-    let x = Enumerable.from(data)
-      .groupBy("$.vital_id", null, (k, g) => {
-        return g.getSource();
-      })
-      .toArray();
+    // let x = Enumerable.from(data)
+    //   .groupBy("$.vital_id", null, (k, g) => {
+    //     return g.getSource();
+    //   })
+    //   .toArray();
 
     return [
       {
@@ -237,7 +237,7 @@ class HistoricalData extends Component {
   }
 
   render() {
-    const _patientVitals = this.state.patientVitals;
+    //const _patientVitals = this.state.patientVitals;
     const _groupData = Enumerable.from(this.state.patientPayments)
       .groupBy("$.prov_date", null, (k, g) => {
         const _get = Enumerable.from(g.getSource()).firstOrDefault();
@@ -269,11 +269,11 @@ class HistoricalData extends Component {
             })
             .orderByDescending(g => g.visit_date)
             .toArray()
-            .sort((a, b) => {
-              //debugger;
-              b > a;
-            })
-        : [];
+        : // .sort((a, b) => {
+          //   //debugger;
+          //   b > a;
+          // })
+          [];
 
     Enumerable.from(
       this.state.patientVitals !== undefined ? this.state.patientVitals : []
@@ -283,7 +283,7 @@ class HistoricalData extends Component {
           let _gId = Enumerable.from(gg.getSource())
             .where(w => w.vital_id === k)
             .firstOrDefault();
-          let _names = String(_gId.vital_short_name).replace(/\" "/g, "_");
+          let _names = String(_gId.vital_short_name).replace(/" "/g, "_");
 
           let row = Enumerable.from(_yAxes)
             .where(w => w.id === _names)
@@ -326,6 +326,11 @@ class HistoricalData extends Component {
             case 9:
               _bground = config.colors.bp.dia.backgroundColor;
               _borderColor = config.colors.bp.dia.borderColor;
+              break;
+
+            default:
+              _bground = "#FFFFFF";
+              _borderColor = "#FFFFFF";
               break;
           }
 

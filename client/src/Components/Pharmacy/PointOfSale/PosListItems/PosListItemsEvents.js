@@ -224,7 +224,7 @@ const getUnitCost = ($this, context, serviceid) => {
       },
       afterSuccess: data => {
         let servdata = Enumerable.from(data)
-          .where(w => w.hims_d_services_id === parseInt(serviceid))
+          .where(w => w.hims_d_services_id === parseInt(serviceid, 10))
           .firstOrDefault();
         if (servdata !== undefined || servdata !== null) {
           $this.setState({

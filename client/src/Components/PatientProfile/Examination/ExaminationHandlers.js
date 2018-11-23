@@ -1,5 +1,5 @@
 import algaehLoader from "../../Wrapper/fullPageLoader";
-import Enumerable from "linq";
+//import Enumerable from "linq";
 const getAllDepartmentBased = options => {
   options.that.props.getAllDepartmentBased({
     uri: "/doctorsWorkBench/getPhysicalExamination/getAllDepartmentBased",
@@ -15,20 +15,20 @@ const getAllDepartmentBased = options => {
     }
   });
 };
-const getPhysicalExaminationOnSpecility = options => {
-  return Enumerable.from(options.data)
-    .where(w => w.examination_type === options.examType)
-    .groupBy("$.hims_d_physical_examination_header_id", null, (k, g) => {
-      const source = Enumerable.from(g.getSource())
-        .where(w => w.hims_d_physical_examination_header_id === k)
-        .firstOrDefault();
-      return {
-        header_description: source.description,
-        hims_d_physical_examination_header_id: k
-      };
-    })
-    .toArray();
-};
+// const getPhysicalExaminationOnSpecility = options => {
+//   return Enumerable.from(options.data)
+//     .where(w => w.examination_type === options.examType)
+//     .groupBy("$.hims_d_physical_examination_header_id", null, (k, g) => {
+//       const source = Enumerable.from(g.getSource())
+//         .where(w => w.hims_d_physical_examination_header_id === k)
+//         .firstOrDefault();
+//       return {
+//         header_description: source.description,
+//         hims_d_physical_examination_header_id: k
+//       };
+//     })
+//     .toArray();
+// };
 
 const getPatientPhysicalExamination = $this => {
   $this.props.getPatientPhysicalExamination({
