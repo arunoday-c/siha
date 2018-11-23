@@ -195,10 +195,10 @@ let createUserLogin = (req, res, next) => {
 
             connection.query(
               "INSERT INTO `algaeh_d_app_password` ( userid,password,created_date, created_by, updated_date, updated_by)\
-                VALUE(?,?,?,?,?,?)",
+                VALUE(?,md5(?),?,?,?,?)",
               [
                 result.insertId,
-                "md5('"+input.password+"')",
+                input.password,
                 new Date(),
                 input.created_by,
                 new Date(),
