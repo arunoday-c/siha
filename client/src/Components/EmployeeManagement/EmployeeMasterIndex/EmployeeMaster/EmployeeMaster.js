@@ -81,7 +81,7 @@ class EmployeeMaster extends Component {
     });
 
     this.props.getUserDetails({
-      uri: "/algaehappuser/selectAppUsers",
+      uri: "/algaehappuser/selectLoginUser",
       method: "GET",
       redux: {
         type: "USER_DETAILS_GET_DATA",

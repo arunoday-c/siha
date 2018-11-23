@@ -353,7 +353,12 @@ class PersistentDrawer extends React.Component {
                 {/* <span className="selectedLang">{this.state.languageName}</span> */}
                 <div className="loginProfileInfo">
                   <span>{getCookie("userName")},</span>
-                  <span>Apollo Hospitals - Bannerghatta Road</span>
+                  <span>
+                    {getCookie("HospitalName") !== undefined
+                      ? getCookie("HospitalName")
+                      : ""}
+                  </span>
+                  {/* <span>Apollo Hospitals - Bannerghatta Road</span> */}
                 </div>
                 <button
                   className="btn btn-userProfile"

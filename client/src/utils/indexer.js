@@ -18,13 +18,14 @@ export function checkToken(callBack) {
         result !== undefined && result.length > 0
           ? momemt(result[0]["auth"]["expiryDate"]).format("YYYYMMDD")
           : momemt().format("YYYYMMDD");
-      const reg_date = parseInt(_date);
+      const reg_date = parseInt(_date, 10);
       const current_date = parseInt(
         result !== undefined && result.length > 0
           ? momemt().format("YYYYMMDD")
           : momemt()
               .add(1, "days")
-              .format("YYYYMMDD")
+              .format("YYYYMMDD"),
+        10
       );
       if (current_date >= reg_date) {
         return dbPromise.then(db => {
@@ -128,7 +129,6 @@ export function setLocaion(data) {
   });
 }
 export function getPatientDetails(callBack) {
-  
   const dbPromise = idb.open("Hims", 1, upgradeDB => {
     upgradeDB.createObjectStore("patientComplaints", { keyPath: "id" });
   });
@@ -141,7 +141,6 @@ export function getPatientDetails(callBack) {
         .getAll();
     })
     .then(result => {
-      
       alert(JSON.stringify(result));
     })
     .catch(e => {

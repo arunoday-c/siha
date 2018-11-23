@@ -180,6 +180,7 @@ class PatientProfile extends Component {
           <div className="patientImg box-shadow">
             {/* <img src="https://x1.xingassets.com/assets/frontend_minified/img/users/nobody_m.original.jpg" /> */}
             <img
+              alt="Algaeh-HIS"
               src={
                 this.state.patImg.length > 0
                   ? this.state.patImg

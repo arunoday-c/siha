@@ -1,3 +1,10 @@
 {
-  "login_users": "مستخدمو تسجيل الدخول"
+  "login_users": "مستخدمو تسجيل الدخول",
+  "username": "اسم المستخدم",
+  "password": "كلمه السر",
+  "confirm_password": "تأكيد كلمة المرور",
+  "group": "مجموعة",
+  "role": "وظيفة",
+  "add_to_list": "أضف إلى القائمة",
+  "display_name": "اسم العرض"
 }

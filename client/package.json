@@ -51,7 +51,7 @@
   },
   "eslintConfig": {
     "rules": {
-      "no-eval": true,
+      "no-eval": false,
       "no-script-url": 0
     }
   },
