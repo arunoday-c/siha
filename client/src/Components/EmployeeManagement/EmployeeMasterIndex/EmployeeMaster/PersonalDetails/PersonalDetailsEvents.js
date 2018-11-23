@@ -163,7 +163,8 @@ const isDoctorChange = ($this, context, e) => {
   texthandlerInterval = setInterval(() => {
     if (context !== undefined) {
       context.updateState({
-        [name]: Value
+        [name]: Value,
+        Applicable: Applicable
       });
     }
     clearInterval(texthandlerInterval);
