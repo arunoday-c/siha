@@ -74,7 +74,7 @@ export function getPatientDetails(dataValue, callback) {
           : "/frontDesk/get",
       method: "GET",
       onSuccess: response => {
-        if (response.data.success == true) {
+        if (response.data.success === true) {
           dispatch({
             type: "PAT_GET_DATA",
             payload: response.data.records.patientRegistration

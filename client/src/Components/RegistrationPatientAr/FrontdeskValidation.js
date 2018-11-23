@@ -71,7 +71,7 @@ export function Validations(state) {
     document.querySelector("[name='contact_number']").focus();
     return isError;
   } else if (state.state.card_amount > 0) {
-    if (state.state.card_number == null || state.state.card_number == "") {
+    if (state.state.card_number === null || state.state.card_number === "") {
       isError = true;
       state.setState({
         open: true,
@@ -81,7 +81,7 @@ export function Validations(state) {
       return isError;
     }
 
-    if (state.state.card_date == null || state.state.card_date == "") {
+    if (state.state.card_date === null || state.state.card_date === "") {
       isError = true;
       state.setState({
         open: true,
@@ -91,7 +91,10 @@ export function Validations(state) {
       return isError;
     }
   } else if (state.state.cheque_amount > 0) {
-    if (state.state.cheque_number == null || state.state.cheque_number == "") {
+    if (
+      state.state.cheque_number === null ||
+      state.state.cheque_number === ""
+    ) {
       isError = true;
       state.setState({
         open: true,
@@ -101,7 +104,7 @@ export function Validations(state) {
       return isError;
     }
 
-    if (state.state.cheque_date == null || state.state.cheque_date == "") {
+    if (state.state.cheque_date === null || state.state.cheque_date === "") {
       isError = true;
       state.setState({
         open: true,
@@ -111,10 +114,10 @@ export function Validations(state) {
       return isError;
     }
   } else if (
-    state.state.insured == "Y" &&
-    (state.state.primary_insurance_provider_id == null ||
-      state.state.primary_network_office_id == null ||
-      state.state.primary_network_id == null)
+    state.state.insured === "Y" &&
+    (state.state.primary_insurance_provider_id === null ||
+      state.state.primary_network_office_id === null ||
+      state.state.primary_network_id === null)
   ) {
     successfulMessage({
       message:
@@ -123,10 +126,10 @@ export function Validations(state) {
       icon: "error"
     });
   } else if (
-    state.state.sec_insured == "Y" &&
-    (state.state.secondary_insurance_provider_id == null ||
-      state.state.secondary_network_office_id == null ||
-      state.state.secondary_network_id == null)
+    state.state.sec_insured === "Y" &&
+    (state.state.secondary_insurance_provider_id === null ||
+      state.state.secondary_network_office_id === null ||
+      state.state.secondary_network_id === null)
   ) {
     successfulMessage({
       message:

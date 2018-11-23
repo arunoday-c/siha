@@ -12,7 +12,7 @@ import {
   getCtrlCode,
   ClearData,
   SaveSalesReturn,
-  PostSalesReturn,
+  // PostSalesReturn,
   POSSearch
 } from "./SalesReturnEvents";
 import "./SalesReturn.css";

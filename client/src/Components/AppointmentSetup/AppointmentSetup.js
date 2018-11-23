@@ -3,7 +3,6 @@ import "./appointment_setup.css";
 import AppointmentStatus from "./AppointmentStatus/AppointmentStatus";
 import AppointmentRooms from "./AppointmentRooms/AppointmentRooms";
 import AppointmentClinics from "./AppointmentClinics/AppointmentClinics";
-import BreadCrumb from "../common/BreadCrumb/BreadCrumb";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 
 class AppointmentSetup extends Component {

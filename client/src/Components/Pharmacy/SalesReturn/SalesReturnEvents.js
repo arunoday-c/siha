@@ -6,7 +6,6 @@ import SalesReturnputs from "../../../Models/SalesReturn";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const changeTexts = ($this, ctrl, e) => {
-  
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -14,7 +13,6 @@ const changeTexts = ($this, ctrl, e) => {
 };
 
 const getCtrlCode = ($this, docNumber) => {
-  
   AlgaehLoader({ show: true });
   $this.props.getSalesReturn({
     uri: "/salesReturn/getsalesReturn",
@@ -26,7 +24,6 @@ const getCtrlCode = ($this, docNumber) => {
       mappingName: "salesReturnEntry"
     },
     afterSuccess: data => {
-      
       data.saveEnable = true;
       data.patient_payable_h = data.patient_payable;
 
@@ -129,7 +126,6 @@ const GenerateReciept = ($this, callBack) => {
 };
 
 const SaveSalesReturn = $this => {
-  
   GenerateReciept($this, that => {
     $this.state.posted = "Y";
     $this.state.transaction_type = "SRT";
@@ -174,7 +170,6 @@ const SaveSalesReturn = $this => {
       uri: "/salesReturn/addsalesReturn",
       data: $this.state,
       onSuccess: response => {
-        
         if (response.data.success === true) {
           $this.setState({
             sales_return_number: response.data.records.sales_return_number,
@@ -196,67 +191,67 @@ const SaveSalesReturn = $this => {
   });
 };
 
-const PostSalesReturn = $this => {
-  
-  $this.state.posted = "Y";
-  $this.state.transaction_type = "SRT";
-  $this.state.transaction_id =
-    $this.state.hims_f_pharmcy_sales_return_header_id;
-  $this.state.transaction_date = $this.state.sales_return_date;
-  for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
-    $this.state.pharmacy_stock_detail[i].location_id = $this.state.location_id;
-    $this.state.pharmacy_stock_detail[i].location_type =
-      $this.state.location_type;
+// const PostSalesReturn = $this => {
 
-    $this.state.pharmacy_stock_detail[i].sales_uom =
-      $this.state.pharmacy_stock_detail[i].uom_id;
-    $this.state.pharmacy_stock_detail[i].item_code_id = $this.state.item_id;
-    $this.state.pharmacy_stock_detail[i].grn_number =
-      $this.state.pharmacy_stock_detail[i].grn_no;
+//   $this.state.posted = "Y";
+//   $this.state.transaction_type = "SRT";
+//   $this.state.transaction_id =
+//     $this.state.hims_f_pharmcy_sales_return_header_id;
+//   $this.state.transaction_date = $this.state.sales_return_date;
+//   for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
+//     $this.state.pharmacy_stock_detail[i].location_id = $this.state.location_id;
+//     $this.state.pharmacy_stock_detail[i].location_type =
+//       $this.state.location_type;
 
-    $this.state.pharmacy_stock_detail[i].item_category_id =
-      $this.state.pharmacy_stock_detail[i].item_category;
+//     $this.state.pharmacy_stock_detail[i].sales_uom =
+//       $this.state.pharmacy_stock_detail[i].uom_id;
+//     $this.state.pharmacy_stock_detail[i].item_code_id = $this.state.item_id;
+//     $this.state.pharmacy_stock_detail[i].grn_number =
+//       $this.state.pharmacy_stock_detail[i].grn_no;
 
-    $this.state.pharmacy_stock_detail[i].net_total =
-      $this.state.pharmacy_stock_detail[i].net_extended_cost;
+//     $this.state.pharmacy_stock_detail[i].item_category_id =
+//       $this.state.pharmacy_stock_detail[i].item_category;
 
-    $this.state.pharmacy_stock_detail[i].quantity =
-      $this.state.pharmacy_stock_detail[i].return_quantity;
+//     $this.state.pharmacy_stock_detail[i].net_total =
+//       $this.state.pharmacy_stock_detail[i].net_extended_cost;
 
-    $this.state.pharmacy_stock_detail[i].return_extended_cost =
-      $this.state.pharmacy_stock_detail[i].extended_cost || 0;
-    $this.state.pharmacy_stock_detail[i].return_discount_amt =
-      $this.state.pharmacy_stock_detail[i].discount_amount || 0;
-    $this.state.pharmacy_stock_detail[i].return_net_extended_cost =
-      $this.state.pharmacy_stock_detail[i].net_extended_cost || 0;
-    $this.state.pharmacy_stock_detail[i].return_pat_responsibility =
-      $this.state.pharmacy_stock_detail[i].patient_responsibility || 0;
-    $this.state.pharmacy_stock_detail[i].return_company_responsibility =
-      $this.state.pharmacy_stock_detail[i].company_responsibility || 0;
-    $this.state.pharmacy_stock_detail[i].return_sec_company_responsibility =
-      $this.state.pharmacy_stock_detail[i].sec_company_responsibility || 0;
+//     $this.state.pharmacy_stock_detail[i].quantity =
+//       $this.state.pharmacy_stock_detail[i].return_quantity;
 
-    $this.state.pharmacy_stock_detail[i].operation = "+";
-  }
-  
-  algaehApiCall({
-    uri: "/salesReturn/updatesalesReturn",
-    data: $this.state,
-    method: "PUT",
-    onSuccess: response => {
-      
-      if (response.data.success === true) {
-        $this.setState({
-          postEnable: true
-        });
-        swalMessage({
-          title: "Posted successfully . .",
-          type: "success"
-        });
-      }
-    }
-  });
-};
+//     $this.state.pharmacy_stock_detail[i].return_extended_cost =
+//       $this.state.pharmacy_stock_detail[i].extended_cost || 0;
+//     $this.state.pharmacy_stock_detail[i].return_discount_amt =
+//       $this.state.pharmacy_stock_detail[i].discount_amount || 0;
+//     $this.state.pharmacy_stock_detail[i].return_net_extended_cost =
+//       $this.state.pharmacy_stock_detail[i].net_extended_cost || 0;
+//     $this.state.pharmacy_stock_detail[i].return_pat_responsibility =
+//       $this.state.pharmacy_stock_detail[i].patient_responsibility || 0;
+//     $this.state.pharmacy_stock_detail[i].return_company_responsibility =
+//       $this.state.pharmacy_stock_detail[i].company_responsibility || 0;
+//     $this.state.pharmacy_stock_detail[i].return_sec_company_responsibility =
+//       $this.state.pharmacy_stock_detail[i].sec_company_responsibility || 0;
+
+//     $this.state.pharmacy_stock_detail[i].operation = "+";
+//   }
+
+//   algaehApiCall({
+//     uri: "/salesReturn/updatesalesReturn",
+//     data: $this.state,
+//     method: "PUT",
+//     onSuccess: response => {
+
+//       if (response.data.success === true) {
+//         $this.setState({
+//           postEnable: true
+//         });
+//         swalMessage({
+//           title: "Posted successfully . .",
+//           type: "success"
+//         });
+//       }
+//     }
+//   });
+// };
 
 const POSSearch = ($this, e) => {
   AlgaehSearch({
@@ -269,7 +264,6 @@ const POSSearch = ($this, e) => {
       callBack(text);
     },
     onRowSelect: row => {
-      
       AlgaehLoader({ show: true });
       $this.setState(
         {
@@ -286,8 +280,6 @@ const POSSearch = ($this, e) => {
 };
 
 const getPOSEntry = $this => {
-  
-
   $this.props.getPOSEntry({
     uri: "/posEntry/getPosEntry",
     method: "GET",
@@ -298,7 +290,6 @@ const getPOSEntry = $this => {
       mappingName: "posentry"
     },
     afterSuccess: data => {
-      
       data.patient_payable_h = data.patient_payable;
       data.cash_amount = data.receiveable_amount;
       data.payable_amount = data.receiveable_amount;
@@ -318,7 +309,7 @@ export {
   getCtrlCode,
   ClearData,
   SaveSalesReturn,
-  PostSalesReturn,
+  // PostSalesReturn,
   POSSearch,
   getPOSEntry
 };

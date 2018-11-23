@@ -239,6 +239,7 @@ const deleteRequisitionDetail = ($this, context, row) => {
 };
 
 const updatePosDetail = ($this, context, row) => {
+  let authBtnEnable = true;
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
   for (let k = 0; k < pharmacy_stock_detail.length; k++) {
     if (pharmacy_stock_detail[k].item_id === row.item_id) {
@@ -246,9 +247,14 @@ const updatePosDetail = ($this, context, row) => {
     }
   }
   $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
+  debugger;
+  if ($this.state.hims_f_pharamcy_material_header_id !== null) {
+    authBtnEnable = !$this.state.authBtnEnable;
+  }
 
   if (context !== undefined) {
     context.updateState({
+      authBtnEnable: authBtnEnable,
       pharmacy_stock_detail: pharmacy_stock_detail
     });
   }
@@ -326,6 +332,22 @@ const getItemLocationStock = ($this, context, value) => {
   });
 };
 
+const EditGrid = ($this, context, cancelRow) => {
+  debugger;
+  if ($this.state.hims_f_pharamcy_material_header_id !== null) {
+    if (context != null) {
+      let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+      if (cancelRow !== undefined) {
+        _pharmacy_stock_detail[cancelRow.rowIdx] = cancelRow;
+      }
+      context.updateState({
+        authBtnEnable: !$this.state.authBtnEnable,
+        pharmacy_stock_detail: _pharmacy_stock_detail
+      });
+    }
+  }
+};
+
 export {
   UomchangeTexts,
   itemchangeText,
@@ -334,5 +356,6 @@ export {
   datehandle,
   deleteRequisitionDetail,
   updatePosDetail,
-  onchangegridcol
+  onchangegridcol,
+  EditGrid
 };

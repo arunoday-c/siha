@@ -103,7 +103,7 @@ const insertLabSection = ($this, e) => {
         data: $this.state,
         onSuccess: response => {
           resetState($this);
-          if (response.data.success == true) {
+          if (response.data.success === true) {
             //Handle Successful Add here
             $this.props.getLabsection({
               uri: "/labmasters/selectSection",

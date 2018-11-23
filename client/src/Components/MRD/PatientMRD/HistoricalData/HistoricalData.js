@@ -44,7 +44,6 @@ class HistoricalData extends Component {
         algaehLoader({ show: false });
         if (response.data.success) {
           this.setState({ patientVitals: response.data.records });
-          console.log("Vitals:", response.data.records);
         }
       },
       onFailure: error => {
@@ -118,7 +117,6 @@ class HistoricalData extends Component {
       onSuccess: response => {
         algaehLoader({ show: false });
         if (response.data.success) {
-          console.log("patientMedication: ", response.data.records);
           this.setState({ patientMedication: response.data.records });
         }
       },
@@ -143,7 +141,6 @@ class HistoricalData extends Component {
       onSuccess: response => {
         algaehLoader({ show: false });
         if (response.data.success) {
-          console.log("patientMedication: ", response.data.records);
           this.setState({ patientPayments: response.data.records });
         }
       },
@@ -169,7 +166,6 @@ class HistoricalData extends Component {
         algaehLoader({ show: false });
         if (response.data.success) {
           this.setState({ patientInvestigations: response.data.records });
-          console.log("Investigations:", response.data.records);
         }
       },
       onFailure: error => {
@@ -190,7 +186,6 @@ class HistoricalData extends Component {
       })
       .toArray();
 
-    console.log("X", JSON.stringify(x));
     return [
       {
         accessor: "visit_date",

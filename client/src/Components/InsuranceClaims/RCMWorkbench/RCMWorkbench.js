@@ -7,12 +7,9 @@ import AppBar from "@material-ui/core/AppBar";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehFormGroup,
   AlagehAutoComplete,
   AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
-import Options from "../../../Options.json";
-import moment from "moment";
 
 const myData = [
   {

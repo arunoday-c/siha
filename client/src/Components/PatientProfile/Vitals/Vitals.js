@@ -230,6 +230,9 @@ class Vitals extends Component {
               _bground = config.colors.bp.dia.backgroundColor;
               _borderColor = config.colors.bp.dia.borderColor;
               break;
+            default:
+              _bground = "";
+              _borderColor = "";
           }
 
           _plotGraph.push({

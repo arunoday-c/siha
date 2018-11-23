@@ -55,12 +55,12 @@ class Allergies extends Component {
               k === "F"
                 ? "Food"
                 : k === "A"
-                  ? "Airborne"
-                  : k === "AI"
-                    ? "Animal  &  Insect"
-                    : k === "C"
-                      ? "Chemical & Others"
-                      : "",
+                ? "Airborne"
+                : k === "AI"
+                ? "Animal  &  Insect"
+                : k === "C"
+                ? "Chemical & Others"
+                : "",
             allergyList: g.getSource()
           };
         })
@@ -171,8 +171,6 @@ class Allergies extends Component {
   }
 
   deleteAllergy(row) {
-    // console.log("delete Allergy row:", row);
-
     swal({
       title: "Delete Allergy " + row.allergy_name + "?",
       type: "warning",
@@ -519,7 +517,6 @@ class Allergies extends Component {
                               );
                             },
                             editorTemplate: data => {
-                              
                               return (
                                 <AlgaehDateHandler
                                   div={{}}
