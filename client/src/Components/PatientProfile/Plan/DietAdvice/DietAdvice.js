@@ -83,7 +83,10 @@ class DietAdvice extends Component {
           />
 
           <div className="col-lg-2 actions" style={{ paddingTop: "3.5vh" }}>
-            <a href="javascript" className="btn btn-primary btn-circle active">
+            <a
+              // href="javascript"
+              className="btn btn-primary btn-circle active"
+            >
               <i className="fas fa-plus" onClick={addDiet.bind(this, this)} />
             </a>
           </div>

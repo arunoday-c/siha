@@ -129,7 +129,10 @@ class Referal extends Component {
           />
 
           <div className="actions" style={{ paddingTop: "3.5vh" }}>
-            <a href="javascript" className="btn btn-primary btn-circle active">
+            <a
+              // href="javascript"
+              className="btn btn-primary btn-circle active"
+            >
               <i
                 className="fas fa-plus"
                 onClick={addReferal.bind(this, this)}

@@ -127,7 +127,7 @@ class Assessment extends Component {
                 </div>
                 <div className="actions">
                   <a
-                    href="javascript"
+                    // href="javascript"
                     className="btn btn-primary btn-circle active"
                     onClick={IcdsSearch.bind(this, this, "Intial")}
                   >
@@ -258,7 +258,7 @@ class Assessment extends Component {
                 </div>
                 <div className="actions">
                   <a
-                    href="javascript"
+                    // href="javascript"
                     className="btn btn-primary btn-circle active"
                     onClick={IcdsSearch.bind(this, this, "Final")}
                   >

@@ -198,7 +198,7 @@ class DeptUserDetails extends Component {
 
                 <div className="col-lg-1 actions" style={{ paddingTop: "2%" }}>
                   <a
-                    href="javascript"
+                    // href="javascript"
                     className="btn btn-primary btn-circle active"
                   >
                     <i
