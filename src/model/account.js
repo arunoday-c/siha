@@ -112,7 +112,7 @@ let authUser = (req, res, next) => {
     db.getConnection((error, connection) => {
       let query =
         "select algaeh_d_app_user.algaeh_d_app_user_id,algaeh_d_app_user.username, \
-      user_displayname,user_type,locked,login_attempts,password_expiry_rule, \
+        user_display_name,user_type,locked,login_attempts,password_expiry_rule, \
       change_password,password_expiry_date,hims_m_employee_department_mappings.employee_id,\
       hims_m_employee_department_mappings.sub_department_id ,app_group_id,algaeh_m_group_user_mappings.role_id,group_type \
       from algaeh_d_app_user,algaeh_d_app_password,hims_m_employee_department_mappings,algaeh_m_group_user_mappings, algaeh_d_app_group \
