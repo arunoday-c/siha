@@ -166,7 +166,7 @@ class DeptUserDetails extends Component {
                     className: "select-fld",
                     value: this.state.user_id,
                     dataSource: {
-                      textField: "user_displayname",
+                      textField: "username",
                       valueField: "algaeh_d_app_user_id",
                       data: this.props.userdrtails
                     },

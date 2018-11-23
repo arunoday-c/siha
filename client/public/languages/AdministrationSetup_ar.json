@@ -6,5 +6,6 @@
   "group": "مجموعة",
   "role": "وظيفة",
   "add_to_list": "أضف إلى القائمة",
-  "display_name": "اسم العرض"
+  "display_name": "اسم العرض",
+  "effective_start_date": "Effective Start Date"
 }

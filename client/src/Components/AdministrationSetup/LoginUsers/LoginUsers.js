@@ -4,8 +4,10 @@ import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlagehFormGroup
+  AlagehFormGroup,
+  AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 class LoginUsers extends Component {
@@ -19,9 +21,21 @@ class LoginUsers extends Component {
     this.getLoginUsers();
   }
 
+  resetSaveState() {
+    this.setState({
+      username: "",
+      display_name: "",
+      effective_start_date: null,
+      password: "",
+      confirm_password: "",
+      app_group_id: null,
+      role_id: null
+    });
+  }
+
   getLoginUsers() {
     algaehApiCall({
-      uri: "/algaehappuser/selectLoginUser",
+      uri: "/algaehappuser/selectAppUsers",
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
@@ -86,7 +100,38 @@ class LoginUsers extends Component {
 
   deleteLoginUser() {}
   updateLoginUser() {}
-  addLoginUser() {}
+
+  addLoginUser() {
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      onSuccess: () => {
+        algaehApiCall({
+          uri: "/algaehappuser/createUserLogin",
+          method: "POST",
+          data: {
+            username: this.state.username,
+            user_display_name: this.state.display_name,
+            effective_start_date: this.state.effective_start_date,
+            password: this.state.password,
+            app_group_id: this.state.app_group_id,
+            role_id: this.state.role_id
+          },
+          onSuccess: response => {
+            if (response.data.success) {
+              swalMessage({
+                title: "Record added successfully",
+                type: "success"
+              });
+
+              this.getLoginUsers();
+              this.resetSaveState();
+            }
+          },
+          onError: error => {}
+        });
+      }
+    });
+  }
 
   render() {
     return (
@@ -135,6 +180,10 @@ class LoginUsers extends Component {
                 value: this.state.confirm_password,
                 events: {
                   onChange: this.changeTexts.bind(this)
+                },
+                others: {
+                  checkvalidation: "'$value' !=='" + this.state.password + "'",
+                  errormessage: "Passwords doesn't match"
                 }
               }}
             />
@@ -162,9 +211,9 @@ class LoginUsers extends Component {
                 isImp: true
               }}
               selector={{
-                name: "group_id",
+                name: "app_group_id",
                 className: "select-fld",
-                value: this.state.group_id,
+                value: this.state.app_group_id,
                 dataSource: {
                   textField: "app_group_name",
                   valueField: "algaeh_d_app_group_id",
@@ -191,6 +240,27 @@ class LoginUsers extends Component {
                 },
                 onChange: this.dropDownHandler.bind(this)
               }}
+            />
+
+            <AlgaehDateHandler
+              div={{ className: "col" }}
+              label={{
+                fieldName: "effective_start_date",
+                isImp: true
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "effective_start_date"
+              }}
+              // maxDate={new Date()}
+              events={{
+                onChange: selDate => {
+                  this.setState({
+                    effective_start_date: selDate
+                  });
+                }
+              }}
+              value={this.state.effective_start_date}
             />
 
             <div className="col">
@@ -224,11 +294,15 @@ class LoginUsers extends Component {
                 label: <AlgaehLabel label={{ fieldName: "username" }} />
               },
               {
+                fieldName: "user_display_name",
+                label: <AlgaehLabel label={{ fieldName: "display_name" }} />
+              },
+              {
                 fieldName: "password",
                 label: <AlgaehLabel label={{ fieldName: "password" }} />
               },
               {
-                fieldName: "group_id",
+                fieldName: "app_group_id",
                 label: <AlgaehLabel label={{ fieldName: "group" }} />
                 // displayTemplate: row => {
                 //   return this.getDoctorName(row.provider_id);
