@@ -15,8 +15,27 @@ class LoginUsers extends Component {
       login_users: []
     };
     this.getGroups();
+    this.getRoles();
+    this.getLoginUsers();
   }
 
+  getLoginUsers() {
+    algaehApiCall({
+      uri: "/algaehappuser/selectLoginUser",
+      method: "GET",
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({ login_users: response.data.records });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
   getGroups() {
     algaehApiCall({
       uri: "/algaehappuser/selectAppGroup",
@@ -24,6 +43,24 @@ class LoginUsers extends Component {
       onSuccess: response => {
         if (response.data.success) {
           this.setState({ groups: response.data.records });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  getRoles() {
+    algaehApiCall({
+      uri: "/algaehappuser/selectRoles",
+      method: "GET",
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({ roles: response.data.records });
         }
       },
       onFailure: error => {
@@ -57,7 +94,7 @@ class LoginUsers extends Component {
         <div className="col-lg-12">
           <div className="row">
             <AlagehFormGroup
-              div={{ className: "col-lg-2" }}
+              div={{ className: "col" }}
               label={{
                 fieldName: "username",
                 isImp: true
@@ -72,7 +109,7 @@ class LoginUsers extends Component {
               }}
             />
             <AlagehFormGroup
-              div={{ className: "col-lg-2" }}
+              div={{ className: "col" }}
               label={{
                 fieldName: "password",
                 isImp: true
@@ -87,7 +124,7 @@ class LoginUsers extends Component {
               }}
             />
             <AlagehFormGroup
-              div={{ className: "col-lg-2" }}
+              div={{ className: "col" }}
               label={{
                 fieldName: "confirm_password",
                 isImp: true
@@ -102,8 +139,24 @@ class LoginUsers extends Component {
               }}
             />
 
+            <AlagehFormGroup
+              div={{ className: "col" }}
+              label={{
+                fieldName: "display_name",
+                isImp: true
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "display_name",
+                value: this.state.display_name,
+                events: {
+                  onChange: this.changeTexts.bind(this)
+                }
+              }}
+            />
+
             <AlagehAutoComplete
-              div={{ className: "col-lg-2" }}
+              div={{ className: "col" }}
               label={{
                 fieldName: "group",
                 isImp: true
@@ -113,8 +166,8 @@ class LoginUsers extends Component {
                 className: "select-fld",
                 value: this.state.group_id,
                 dataSource: {
-                  textField: "sub_department_name",
-                  valueField: "sub_department_id",
+                  textField: "app_group_name",
+                  valueField: "algaeh_d_app_group_id",
                   data: this.state.groups
                 },
                 onChange: this.dropDownHandler.bind(this)
@@ -122,7 +175,7 @@ class LoginUsers extends Component {
             />
 
             <AlagehAutoComplete
-              div={{ className: "col-lg-2" }}
+              div={{ className: "col" }}
               label={{
                 fieldName: "role",
                 isImp: true
@@ -132,15 +185,15 @@ class LoginUsers extends Component {
                 className: "select-fld",
                 value: this.state.role_id,
                 dataSource: {
-                  textField: "full_name",
-                  valueField: "employee_id",
+                  textField: "role_name",
+                  valueField: "app_d_app_roles_id",
                   data: this.state.roles
                 },
                 onChange: this.dropDownHandler.bind(this)
               }}
             />
 
-            <div className="col-lg-2">
+            <div className="col">
               <button
                 style={{ marginTop: 21 }}
                 onClick={this.addLoginUser.bind(this)}
@@ -167,8 +220,8 @@ class LoginUsers extends Component {
             datavalidate="data-validate='apptClinicsDiv'"
             columns={[
               {
-                fieldName: "user_name",
-                label: <AlgaehLabel label={{ fieldName: "description" }} />
+                fieldName: "username",
+                label: <AlgaehLabel label={{ fieldName: "username" }} />
               },
               {
                 fieldName: "password",

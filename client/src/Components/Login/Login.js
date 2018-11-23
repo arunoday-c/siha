@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import "./Login.css";
 import { AlgaehLabel, AlagehAutoComplete } from "../Wrapper/algaehWrapper";
-import LinearProgress from "@material-ui/core/LinearProgress";
 import { setSecure } from "../../utils/indexer";
 import {
   algaehApiCall,
@@ -52,12 +51,6 @@ export default class Login extends Component {
 
   handleLogin(e) {
     e.preventDefault();
-    let x = document.getElementById("myProg");
-    if (x.style.display === "none") {
-      x.style.display = "block";
-    } else {
-      x.style.display = "none";
-    }
 
     algaehApiCall({
       uri: "/apiAuth/authUser",
@@ -65,7 +58,7 @@ export default class Login extends Component {
       timeout: 10000,
       onSuccess: response => {
         if (response.data.success === true) {
-          setCookie("userName", response.data.records.user_displayname);
+          setCookie("userName", response.data.records.username);
           setCookie("keyResources", response.data.records.keyResources, 30);
           setSecure(response.data.records.secureModels);
 
@@ -78,7 +71,6 @@ export default class Login extends Component {
         }
       },
       onFailure: error => {
-        x.style.display = "none";
         if (error) {
           if (error.response) {
             if (
@@ -131,6 +123,8 @@ export default class Login extends Component {
   }
   onHospitalChange(selector) {
     this.setState({ item_id: selector.value });
+
+    setCookie("HospitalName", selector.selected.hospital_name);
   }
   onHospitalClear(name) {
     this.setState({ item_id: null });
@@ -160,7 +154,6 @@ export default class Login extends Component {
             <div id="loginForm" className="loginFormContainer">
               <div className="col-12">
                 <div className="row">
-                  <LinearProgress id="myProg" style={{ display: "none" }} />
                   <div className="col-12">
                     {" "}
                     <h3
@@ -225,7 +218,10 @@ export default class Login extends Component {
                       <br />
                       <AlagehAutoComplete
                         div={{ className: "col-12" }}
-                        label={{ forceLabel: "Select Hospital Location" }}
+                        label={{
+                          forceLabel: "Select Hospital Location",
+                          isImp: true
+                        }}
                         selector={{
                           name: "item_id",
                           className: "select-fld",
