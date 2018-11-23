@@ -148,7 +148,7 @@ let selectRoles = (req, res, next) => {
 
 
 //created by irfan: to 
-let createLoginCredentials = (req, res, next) => {
+let createUserLogin = (req, res, next) => {
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -161,25 +161,126 @@ let createLoginCredentials = (req, res, next) => {
         next(error);
       }
 
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        }
+
       connection.query(
-        "INSERT INTO `hims_d_appointment_room` (description, created_date, created_by, updated_date, updated_by)\
-          VALUE(?,?,?,?,?)",
+        "INSERT INTO `algaeh_d_app_user` (username,user_display_name,effective_start_date, created_date, created_by, updated_date, updated_by)\
+          VALUE(?,?,?,?,?,?,?)",
         [
-          input.description,
+          input.username,
+          input.user_display_name,
+          input.effective_start_date,
           new Date(),
           input.created_by,
           new Date(),
           input.updated_by
         ],
         (error, result) => {
-          releaseDBConnection(db, connection);
+         
           if (error) {
-            next(error);
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(error);
+            });
           }
+          debugLog("result:",result);
+          if(result.insertId!=null && result.insertId!=undefined){
+
+
+            connection.query(
+              "INSERT INTO `algaeh_d_app_password` ( userid,password,created_date, created_by, updated_date, updated_by)\
+                VALUE(?,?,?,?,?,?)",
+              [
+                result.insertId,
+                "md5('"+input.password+"')",
+                new Date(),
+                input.created_by,
+                new Date(),
+                input.updated_by
+              ],
+              (error, pwdResult) => {
+               
+                if (error) {
+                  connection.rollback(() => {
+                    releaseDBConnection(db, connection);
+                    next(error);
+                  });
+                }
+
+                debugLog("pwdResult:",pwdResult);
+                if(pwdResult.insertId!=null && pwdResult.insertId!=undefined){
+
+                  connection.query(
+                    "INSERT INTO `algaeh_m_group_user_mappings` ( app_group_id, user_id, role_id,created_date, created_by, updated_date, updated_by)\
+                      VALUE(?,?,?,?,?,?,?)",
+                    [
+                      input.app_group_id,
+                      result.insertId,
+                      input.role_id,
+                      new Date(),
+                      input.created_by,
+                      new Date(),
+                      input.updated_by
+                    ],
+                    (error, finalResult) => {
+                     
+                      if (error) {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                      }
+
+                      connection.commit(error => {
+                        if (error) {
+                          connection.rollback(() => {
+                            releaseDBConnection(db, connection);
+                            next(error);
+                          });
+                        }
+
+                      releaseDBConnection(db, connection);
+                       req.records = finalResult;
+                       next();
+                      });
+                    });
+
+                }
+                else{
+                  connection.rollback(() => {
+                    releaseDBConnection(db, connection);
+                    next(error);
+                  });
+                req.records = pwdResult;
+                next();
+      
+      
+                }
+
+              });
+
+          }
+          else{
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(error);
+            });
           req.records = result;
           next();
+
+
+          }
+
+
         }
       );
+      });
     });
   } catch (e) {
     next(e);
@@ -189,5 +290,6 @@ module.exports = {
   selectAppUsers,
   selectLoginUser,
   selectAppGroup,
-  selectRoles
+  selectRoles,
+  createUserLogin
 };
