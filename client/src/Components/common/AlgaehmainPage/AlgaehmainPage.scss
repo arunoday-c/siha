@@ -30,6 +30,13 @@ header {
     background: #00999c;
   }
 }
+.navTopBarRight {
+  float: right;
+  div,
+  button {
+    display: inline-block;
+  }
+}
 .topNavbar-title {
   font-size: 1.2rem;
   margin: 0;
@@ -58,6 +65,7 @@ header {
   font-size: 1rem;
   color: #fff;
   border-left: 1px solid #009689;
+  margin-top: -21px;
   i {
     margin: 3px;
   }
@@ -366,6 +374,7 @@ Follow me on Twitter @maridlcrmn
 }
 .loginProfileInfo {
   font-size: 0.8rem;
+  margin-top: 4px;
   span {
     display: block;
     white-space: nowrap;

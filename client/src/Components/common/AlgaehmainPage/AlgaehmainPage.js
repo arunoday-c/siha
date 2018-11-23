@@ -305,7 +305,26 @@ class PersistentDrawer extends React.Component {
             <p className="appLogoOnly" />
           </div>
 
-          <h5 className="topNavbar-title">{this.state.title}</h5>
+          <h5 className="topNavbar-title mr-auto">{this.state.title}</h5>
+          <div className="navTopBarRight">
+            <div className="loginProfileInfo">
+              <span>{getCookie("userName")},</span>
+              <span>
+                {getCookie("HospitalName") !== undefined
+                  ? getCookie("HospitalName")
+                  : ""}
+              </span>
+              {/* <span>Apollo Hospitals - Bannerghatta Road</span> */}
+            </div>
+            <button
+              className="btn btn-userProfile"
+              // onClick={this.handleOpenClick}
+              onClick={this.logoutLink.bind(this)}
+            >
+              {/* <i className="fas fa-user-circle" /> */}
+              <i className="fas fa-power-off" />
+            </button>
+          </div>
         </nav>
 
         {/* Side Bar Functionality */}

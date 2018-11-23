@@ -25,6 +25,12 @@ header {
   .sideMenuBars:hover {
     background: #00999c; }
 
+.navTopBarRight {
+  float: right; }
+  .navTopBarRight div,
+  .navTopBarRight button {
+    display: inline-block; }
+
 .topNavbar-title {
   font-size: 1.2rem;
   margin: 0;
@@ -48,7 +54,8 @@ header {
   background: none;
   font-size: 1rem;
   color: #fff;
-  border-left: 1px solid #009689; }
+  border-left: 1px solid #009689;
+  margin-top: -21px; }
   .btn-userProfile i {
     margin: 3px; }
   .btn-userProfile span {
@@ -227,7 +234,8 @@ Follow me on Twitter @maridlcrmn
   border-radius: 2px; }
 
 .loginProfileInfo {
-  font-size: 0.8rem; }
+  font-size: 0.8rem;
+  margin-top: 4px; }
   .loginProfileInfo span {
     display: block;
     white-space: nowrap;

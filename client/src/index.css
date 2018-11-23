@@ -226,9 +226,9 @@
   :global .scheduledClass {
     background-color: #fca6c180 !important; }
   :global .availableClass {
-    background-color: #56ce7480 !important; }
+    background-color: rgba(0, 255, 64, 0.13) !important; }
   :global .underProcessClass {
-    background-color: #cea6fc !important;
+    background-color: rgba(255, 0, 0, 0.08) !important;
     color: white;
     font-weight: bolder; }
   :global .cursor-pointer {
