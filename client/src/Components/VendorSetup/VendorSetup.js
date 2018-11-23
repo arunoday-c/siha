@@ -157,7 +157,7 @@ class VendorSetup extends Component {
   }
 
   editVendor(data, e) {
-    debugger;
+    //debugger;
     this.setState({
       openModal: true,
       btn_txt: "Update",

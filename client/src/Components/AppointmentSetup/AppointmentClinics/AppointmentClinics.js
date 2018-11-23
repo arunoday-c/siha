@@ -204,6 +204,15 @@ class AppointmentClinics extends Component {
     });
   }
 
+  clearSaveState() {
+    this.setState({
+      description: "",
+      sub_department_id: null,
+      provider_id: null,
+      room_id: null
+    });
+  }
+
   addAppointmentClinics(e) {
     e.preventDefault();
 
@@ -222,6 +231,7 @@ class AppointmentClinics extends Component {
           onSuccess: response => {
             if (response.data.success) {
               this.getAppointmentClinics();
+              this.clearSaveState();
               swalMessage({
                 title: "Record Added Successfully",
                 type: "success"

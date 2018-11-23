@@ -49,7 +49,7 @@ class DataGrid extends PureComponent {
     this.setState({ data });
   }
   filterCaseInsensitive = (filter, row) => {
-    debugger;
+    //debugger;
     const id = filter.pivotId || filter.id;
     if (id === undefined || id === null) return false;
     if (row[id] === undefined || row[id] === null) return false;
@@ -229,7 +229,7 @@ class DataGrid extends PureComponent {
     return row;
   };
   toggleRowDelete = index => {
-    debugger;
+    //debugger;
     if (
       this.props.events !== undefined &&
       this.props.events.onDelete !== undefined

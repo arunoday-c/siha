@@ -40,7 +40,7 @@ class HistoricalData extends Component {
       },
       cancelRequestId: "getPatientVitals1",
       onSuccess: response => {
-        debugger;
+        //debugger;
         algaehLoader({ show: false });
         if (response.data.success) {
           this.setState({ patientVitals: response.data.records });
@@ -179,7 +179,7 @@ class HistoricalData extends Component {
   }
 
   generateVitalColumns(data) {
-    debugger;
+    //debugger;
     let x = Enumerable.from(data)
       .groupBy("$.vital_id", null, (k, g) => {
         return g.getSource();
@@ -270,7 +270,7 @@ class HistoricalData extends Component {
             .orderByDescending(g => g.visit_date)
             .toArray()
             .sort((a, b) => {
-              debugger;
+              //debugger;
               b > a;
             })
         : [];
