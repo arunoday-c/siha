@@ -296,8 +296,6 @@ function mapDispatchToProps(dispatch) {
       getDoctorServiceTypeCommission: AlgaehActions,
       getDoctorServiceCommission: AlgaehActions,
       getCountries: AlgaehActions
-
-      // /get/subdepartment
     },
     dispatch
   );
