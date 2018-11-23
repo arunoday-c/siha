@@ -97,7 +97,7 @@ const deleteDNDetail = ($this, context, row) => {
 };
 
 const updateDNDetail = ($this, context, row) => {
-  debugger;
+  //debugger;
   let dn_entry_detail = $this.state.dn_entry_detail;
   if ($this.state.dn_from === "PHR") {
     for (var i = 0; i < dn_entry_detail.length; i++) {
@@ -161,7 +161,7 @@ const dateFormater = ($this, value) => {
 };
 
 const onchangegridcol = ($this, row, e) => {
-  debugger;
+  //debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   if (value > row.total_quantity) {
@@ -178,7 +178,7 @@ const onchangegridcol = ($this, row, e) => {
 };
 
 const onchhangegriddiscount = ($this, row, ctrl, e) => {
-  debugger;
+  //debugger;
 
   e = e || ctrl;
 
@@ -203,7 +203,7 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
         type: "warning"
       });
     } else {
-      debugger;
+      //debugger;
       extended_price = (parseFloat(row.unit_price) * parseFloat(value)).toFixed(
         2
       );

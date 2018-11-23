@@ -10,7 +10,7 @@ class algaehErrorBoundary extends Component {
   }
 
   componentDidCatch(error, info) {
-    console.error("Crash Reason", error + "" + "" + info);
+    console.error("Crash Reason", error + "Info:" + info);
 
     if (error) {
       this.setState({

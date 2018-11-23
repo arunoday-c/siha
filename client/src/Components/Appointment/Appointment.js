@@ -576,7 +576,7 @@ class Appointment extends Component {
   openEditModal(patient, e) {
     e.preventDefault();
 
-    debugger;
+    //debugger;
     let maxSlots = 1;
     const _currentRow = e.target.parentElement.parentNode.sectionRowIndex + 1;
     const _allRows =
@@ -615,7 +615,7 @@ class Appointment extends Component {
       });
     } else {
       this.setState({ patToEdit: patient, openPatEdit: true }, () => {
-        debugger;
+        //debugger;
         let pat_edit = this.state.patToEdit;
 
         this.setState({
@@ -750,7 +750,7 @@ class Appointment extends Component {
   }
 
   showModal(e) {
-    debugger;
+    //debugger;
     let maxSlots = 1;
     const _currentRow = e.target.parentElement.parentNode.sectionRowIndex + 1;
     const _allRows =
