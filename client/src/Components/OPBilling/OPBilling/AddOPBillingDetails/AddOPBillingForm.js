@@ -981,9 +981,9 @@ class AddOPBillingForm extends Component {
                         </div>
 
                         <AlagehFormGroup
-                          div={{ className: "col-lg-3" }}
+                          div={{ className: "col-lg-3 highlightGrey" }}
                           label={{
-                            fieldName: "credit_amount"
+                            fieldName: "balance_due"
                           }}
                           textBox={{
                             decimal: { allowNegative: false },

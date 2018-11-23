@@ -1328,7 +1328,7 @@ let getDoctorScheduleDateWise = (req, res, next) => {
     let where = whereCondition(extend(selectWhere, req.query));
 
    
-
+debugLog("where:",where);
     db.getConnection((error, connection) => {
       connection.query(
         "select hims_d_appointment_schedule_header_id, sub_dept_id,SD.sub_department_name, SH.schedule_status as schedule_status, schedule_description, month, year,\
@@ -1339,9 +1339,9 @@ let getDoctorScheduleDateWise = (req, res, next) => {
          from hims_d_appointment_schedule_header SH, hims_d_appointment_schedule_detail ASD,hims_d_employee E ,\
          hims_d_appointment_clinic C,hims_d_appointment_room R,hims_d_sub_department SD where \
          SH.record_status='A' and E.record_status='A' and C.record_status='A' and  SD.record_status='A'\
-         and ASD.record_status='A' and R.record_status='A' and ASD.provider_id=E.hims_d_employee_id and \
+     and ASD.record_status='A' and R.record_status='A' and ASD.provider_id=E.hims_d_employee_id and \
          SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id \
-         and ASD.clinic_id=C.hims_d_appointment_clinic_id and C.room_id=R.hims_d_appointment_room_id and C.sub_department_id=SD.hims_d_sub_department_id\
+         and ASD.clinic_id=C.hims_d_appointment_clinic_id and C.room_id=R.hims_d_appointment_room_id \
           and sub_dept_id= SD.hims_d_sub_department_id  and " +
           selectDoctor +
           "" +
@@ -1354,8 +1354,6 @@ let getDoctorScheduleDateWise = (req, res, next) => {
           }
 
 
-        
-         
 
           if (result.length > 0) {
           new Promise((resolve, reject) => {

@@ -43,3 +43,7 @@
   color: #000; }
   #Bill_details input[type="text"]:disabled :after {
     border: none; }
+
+.highlightGrey {
+  background: #e4e4e4;
+  border: 1px solid #acaaaa; }
