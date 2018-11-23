@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import AddBillingForm from "./AddBillingForm.js";
-import styles from "./AddBillingForm.css";
 
 export default class BillingForm extends Component {
   constructor(props) {

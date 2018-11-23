@@ -151,11 +151,11 @@ const onchangegridcol = ($this, row, from, e) => {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
 
-    let intIcd = $this.props.patient_diagnosis;
+    // let intIcd = $this.props.patient_diagnosis;
 
-    let finIcd = Enumerable.from($this.props.patient_diagnosis)
-      .where(w => w.final_daignosis === "Y")
-      .toArray();
+    // let finIcd = Enumerable.from($this.props.patient_diagnosis)
+    //   .where(w => w.final_daignosis === "Y")
+    //   .toArray();
     if (from === "Intial") {
       // for (let i = 0; i < intIcd.length; i++) {
       //   if (

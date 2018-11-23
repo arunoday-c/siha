@@ -18,6 +18,12 @@
     "icon": "fas fa-cog",
     "subMenu": [
       {
+        "name": "Administration Setup",
+        "label": "Administration Setup",
+        "arlabel": "إعداد الإدارة",
+        "path": "/AdministrationSetup"
+      },
+      {
         "name": "Appointment Setup",
         "label": "Appointment Setup",
         "arlabel": "إعداد موعد",

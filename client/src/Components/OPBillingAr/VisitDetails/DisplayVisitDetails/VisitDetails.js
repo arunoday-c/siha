@@ -97,7 +97,6 @@ class DisplayVisitDetails extends Component {
         doctor_name: doctor_name
       },
       () => {
-        
         if (this.state.insured === "Y") {
           this.props.getPatientInsurance({
             uri: "/insurance/getPatientInsurance",
@@ -231,7 +230,7 @@ class DisplayVisitDetails extends Component {
                             return (
                               <span>
                                 {display != null && display.length != 0
-                                  ? this.state.selectedLang == "en"
+                                  ? this.state.selectedLang === "en"
                                     ? display[0].visit_type_desc
                                     : display[0].arabic_visit_type_desc
                                   : ""}
@@ -263,7 +262,7 @@ class DisplayVisitDetails extends Component {
                             return (
                               <span>
                                 {display != null && display.length != 0
-                                  ? this.state.selectedLang == "en"
+                                  ? this.state.selectedLang === "en"
                                     ? display[0].sub_department_name
                                     : display[0].arabic_sub_department_name
                                   : ""}
@@ -293,7 +292,7 @@ class DisplayVisitDetails extends Component {
                             return (
                               <span>
                                 {display != null && display.length != 0
-                                  ? this.state.selectedLang == "en"
+                                  ? this.state.selectedLang === "en"
                                     ? display[0].full_name
                                     : display[0].arabic_name
                                   : ""}

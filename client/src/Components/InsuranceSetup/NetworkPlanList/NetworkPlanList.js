@@ -10,8 +10,7 @@ import "./../../../styles/site.css";
 import {
   AlgaehLabel,
   AlgaehDataGrid,
-  AlagehFormGroup,
-  AlagehAutoComplete
+  AlagehFormGroup
 } from "../../Wrapper/algaehWrapper";
 import {
   deleteNetWorkPlan,
@@ -20,7 +19,6 @@ import {
   onchangegridnumber
 } from "./NetworkPlanListEvent.js";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import GlobalVariables from "../../../utils/GlobalVariables.json";
 
 class NetworkPlanList extends PureComponent {
   constructor(props) {

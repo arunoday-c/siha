@@ -13,6 +13,7 @@ import MedicalWorkbenchSetup from "./Components/MedicalWorkbenchSetup/MedicalWor
 import Workbench from "./Components/Workbench/Workbench";
 import OrderingServices from "./Components/DoctorsWorkbench/OrderingServices/OrderingServices";
 import AccessionAcknowledgement from "./Components/Laboratory/AccessionAcknowledgement/AccessionAcknowledgement";
+import AdministrationSetup from "./Components/AdministrationSetup/AdminSetup";
 
 import PreApproval from "./Components/PreApproval/PreApproval";
 import LabSetup from "./Components/LabSetup/LabSetup";
@@ -154,7 +155,8 @@ const componts = (selectedLang, breadStyle) => {
     ),
     Disposal: <Disposal SelectLanguage={selectedLang} />,
     PurchaseOrderList: <PurchaseOrderList SelectLanguage={selectedLang} />,
-    PatientRecall: <PatientRecall SelectLanguage={selectedLang} />
+    PatientRecall: <PatientRecall SelectLanguage={selectedLang} />,
+    AdministrationSetup: <AdministrationSetup SelectLanguage={selectedLang} />
   };
 };
 

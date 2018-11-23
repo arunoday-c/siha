@@ -1,10 +1,8 @@
 import { swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import Enumerable from "linq";
-import extend from "extend";
-import Options from "../../../../Options.json";
 
-let texthandlerInterval = null;
+import Options from "../../../../Options.json";
 
 const assignDataandclear = ($this, context, stock_detail, assignData) => {
   let sub_total = Enumerable.from(stock_detail).sum(s =>
@@ -86,7 +84,6 @@ const deleteDNDetail = ($this, context, row) => {
       dn_entry_detail.splice(i, 1);
     }
   }
-  dn_entry_detail;
 
   if (dn_entry_detail.length === 0) {
     assignDataandclear($this, context, dn_entry_detail, "dn_entry_detail");
@@ -109,9 +106,9 @@ const updateDNDetail = ($this, context, row) => {
       }
     }
   } else {
-    for (var i = 0; i < dn_entry_detail.length; i++) {
-      if (dn_entry_detail[i].inv_item_id === row["inv_item_id"]) {
-        dn_entry_detail[i] = row;
+    for (var k = 0; k < dn_entry_detail.length; k++) {
+      if (dn_entry_detail[k].inv_item_id === row["inv_item_id"]) {
+        dn_entry_detail[k] = row;
       }
     }
   }

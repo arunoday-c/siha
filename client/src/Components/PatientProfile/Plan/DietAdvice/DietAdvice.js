@@ -55,99 +55,102 @@ class DietAdvice extends Component {
   render() {
     return (
       <div className="hptl-diet-advice-form">
-          <div className="row" style={{ paddingBottom: "10px" }}>
-            <AlgaehDateHandler
-              div={{ className: "col" }}
-              label={{ forceLabel: "Till Date" }}
-              textBox={{ className: "txt-fld", name: "till_date" }}
-              minDate={new Date()}
-              events={{
-                onChange: datehandle.bind(this, this)
-              }}
-              value={this.state.till_date}
-            />
-            <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{ forceLabel: "Diet" }}
-              selector={{
-                name: "diet_id",
-                className: "select-fld",
-                value: this.state.diet_id,
-                dataSource: {
-                  textField: "hims_d_diet_description",
-                  valueField: "hims_d_diet_master_id",
-                  data: this.props.dietmaster
-                },
-                onChange: texthandle.bind(this, this)
-              }}
-            />
+        <div className="row" style={{ paddingBottom: "10px" }}>
+          <AlgaehDateHandler
+            div={{ className: "col" }}
+            label={{ forceLabel: "Till Date" }}
+            textBox={{ className: "txt-fld", name: "till_date" }}
+            minDate={new Date()}
+            events={{
+              onChange: datehandle.bind(this, this)
+            }}
+            value={this.state.till_date}
+          />
+          <AlagehAutoComplete
+            div={{ className: "col" }}
+            label={{ forceLabel: "Diet" }}
+            selector={{
+              name: "diet_id",
+              className: "select-fld",
+              value: this.state.diet_id,
+              dataSource: {
+                textField: "hims_d_diet_description",
+                valueField: "hims_d_diet_master_id",
+                data: this.props.dietmaster
+              },
+              onChange: texthandle.bind(this, this)
+            }}
+          />
 
-            <div className="col-lg-2 actions" style={{ paddingTop: "3.5vh" }}>
-              <a
-                href="javascript:;"
-                className="btn btn-primary btn-circle active"
-              >
-                <i className="fas fa-plus" onClick={addDiet.bind(this, this)} />
-              </a>
-            </div>
+          <div className="col-lg-2 actions" style={{ paddingTop: "3.5vh" }}>
+            <a href="javascript" className="btn btn-primary btn-circle active">
+              <i className="fas fa-plus" onClick={addDiet.bind(this, this)} />
+            </a>
           </div>
+        </div>
 
-            <div className="row" style={{ paddingBottom: "10px" }}>
+        <div className="row" style={{ paddingBottom: "10px" }}>
           <div className="col-lg-12">
-              <AlgaehDataGrid
-                id="Lab_Result_grid"
-                columns={[
-                  {
-                    fieldName: "created_date",
-                    label: <AlgaehLabel label={{ forceLabel: "From Date" }} />,
-                    displayTemplate: row => {
-                      return (
-                        <span>{this.changeDateFormat(row.created_date)}</span>
-                      );
-                    },
-                    others:{maxWidth:100,resizable: false,style:{textAlign:"center"}}
+            <AlgaehDataGrid
+              id="Lab_Result_grid"
+              columns={[
+                {
+                  fieldName: "created_date",
+                  label: <AlgaehLabel label={{ forceLabel: "From Date" }} />,
+                  displayTemplate: row => {
+                    return (
+                      <span>{this.changeDateFormat(row.created_date)}</span>
+                    );
                   },
-                  {
-                    fieldName: "till_date",
-                    label: <AlgaehLabel label={{ forceLabel: "Till Date" }} />,
-                    displayTemplate: row => {
-                      return (
-                        <span>{this.changeDateFormat(row.till_date)}</span>
-                      );
-                    },
-                    others:{maxWidth:100,resizable: false,style:{textAlign:"center"}}
-                  },
-                  {
-                    fieldName: "diet_id",
-                    label: <AlgaehLabel label={{ forceLabel: "Diet" }} />,
-                    displayTemplate: row => {
-                      let display =
-                        this.props.dietmaster === undefined
-                          ? []
-                          : this.props.dietmaster.filter(
-                              f => f.hims_d_diet_master_id === row.diet_id
-                            );
-
-                      return (
-                        <span>
-                          {display !== null && display.length !== 0
-                            ? display[0].hims_d_diet_description
-                            : ""}
-                        </span>
-                      );
-                    },
-                    others:{style:{textAlign:"center"}}
+                  others: {
+                    maxWidth: 100,
+                    resizable: false,
+                    style: { textAlign: "center" }
                   }
-                ]}
-                keyId="patient_code"
-                dataSource={{
-                  data:
-                    this.props.dietList === undefined ? [] : this.props.dietList
-                }}
-                paging={{ page: 0, rowsPerPage: 3 }}
-              />
-            </div>
+                },
+                {
+                  fieldName: "till_date",
+                  label: <AlgaehLabel label={{ forceLabel: "Till Date" }} />,
+                  displayTemplate: row => {
+                    return <span>{this.changeDateFormat(row.till_date)}</span>;
+                  },
+                  others: {
+                    maxWidth: 100,
+                    resizable: false,
+                    style: { textAlign: "center" }
+                  }
+                },
+                {
+                  fieldName: "diet_id",
+                  label: <AlgaehLabel label={{ forceLabel: "Diet" }} />,
+                  displayTemplate: row => {
+                    let display =
+                      this.props.dietmaster === undefined
+                        ? []
+                        : this.props.dietmaster.filter(
+                            f => f.hims_d_diet_master_id === row.diet_id
+                          );
+
+                    return (
+                      <span>
+                        {display !== null && display.length !== 0
+                          ? display[0].hims_d_diet_description
+                          : ""}
+                      </span>
+                    );
+                  },
+                  others: { style: { textAlign: "center" } }
+                }
+              ]}
+              keyId="patient_code"
+              dataSource={{
+                data:
+                  this.props.dietList === undefined ? [] : this.props.dietList
+              }}
+              paging={{ page: 0, rowsPerPage: 3 }}
+            />
           </div>
+        </div>
       </div>
     );
   }

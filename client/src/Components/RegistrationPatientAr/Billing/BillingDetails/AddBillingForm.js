@@ -326,7 +326,7 @@ class AddBillingForm extends Component {
                             value: this.state.counter_id,
                             dataSource: {
                               textField:
-                                this.state.selectedLang == "en"
+                                this.state.selectedLang === "en"
                                   ? "name"
                                   : "arabic_name",
                               valueField: "value",
@@ -348,7 +348,7 @@ class AddBillingForm extends Component {
                             value: this.state.shift_id,
                             dataSource: {
                               textField:
-                                this.state.selectedLang == "en"
+                                this.state.selectedLang === "en"
                                   ? "name"
                                   : "arabic_name",
                               valueField: "value",

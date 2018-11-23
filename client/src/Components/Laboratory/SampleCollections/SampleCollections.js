@@ -14,7 +14,6 @@ import {
 import {
   AlgaehLabel,
   AlgaehDataGrid,
-  AlagehAutoComplete,
   Modal
 } from "../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -70,7 +69,6 @@ class SampleCollectionPatient extends PureComponent {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.selected_patient !== null) {
-      
       let InputOutput = nextProps.selected_patient;
       this.setState({ ...this.state, ...InputOutput });
     }

@@ -8,8 +8,6 @@ import {
   AlagehAutoComplete,
   AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
-import Options from "../../../Options.json";
-import moment from "moment";
 
 const modules = [
   {

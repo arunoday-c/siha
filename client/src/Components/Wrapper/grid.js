@@ -49,17 +49,22 @@ class DataGrid extends PureComponent {
     this.setState({ data });
   }
   filterCaseInsensitive = (filter, row) => {
+    debugger;
     const id = filter.pivotId || filter.id;
     if (id === undefined || id === null) return false;
     if (row[id] === undefined || row[id] === null) return false;
     if (typeof row[id] === "object") {
       const _value = row[id].props.children;
       return row[id] !== undefined
-        ? String(_value.toLowerCase()).startsWith(filter.value.toLowerCase())
+        ? String(_value.toString().toLowerCase()).startsWith(
+            filter.value.toLowerCase()
+          )
         : true;
     } else {
       return row[id] !== undefined
-        ? String(row[id].toLowerCase()).startsWith(filter.value.toLowerCase())
+        ? String(row[id].toString().toLowerCase()).startsWith(
+            filter.value.toLowerCase()
+          )
         : true;
     }
   };

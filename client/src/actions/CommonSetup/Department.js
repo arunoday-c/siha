@@ -9,7 +9,7 @@ export function getDepartments() {
       uri: "/department/get",
       method: "GET",
       onSuccess: response => {
-        if (response.data.success == true) {
+        if (response.data.success === true) {
           dispatch({
             type: "DEPTGET_DATA",
             payload: response.data.records
@@ -36,7 +36,7 @@ export function getSubDepartments(datavalue) {
           : "/department/get/subdepartment",
       method: "GET",
       onSuccess: response => {
-        if (response.data.success == true) {
+        if (response.data.success === true) {
           dispatch({
             type: "SUBDEPGET_DATA",
             payload: response.data.records
@@ -64,7 +64,7 @@ export function getDepartmentsClinicalNon(datavalue) {
           : "/masters/get/subDeptClinicalNonClinicalAll",
       method: "GET",
       onSuccess: response => {
-        if (response.data.success == true) {
+        if (response.data.success === true) {
           dispatch({
             type: "SUBDEP_NCL_GET_DATA",
             payload: response.data.records

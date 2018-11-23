@@ -3,8 +3,6 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import IconButton from "@material-ui/core/IconButton";
-
 import { AlgaehActions } from "../../../../../actions/algaehActions";
 import "./DeptUserDetails.css";
 import {
@@ -200,7 +198,7 @@ class DeptUserDetails extends Component {
 
                 <div className="col-lg-1 actions" style={{ paddingTop: "2%" }}>
                   <a
-                    href="javascript:;"
+                    href="javascript"
                     className="btn btn-primary btn-circle active"
                   >
                     <i

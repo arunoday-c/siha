@@ -284,13 +284,13 @@ class SampleCollection extends Component {
                         fieldName: "status",
                         label: <AlgaehLabel label={{ fieldName: "status" }} />,
                         displayTemplate: row => {
-                          return row.status == "O"
+                          return row.status === "O"
                             ? "Ordered"
-                            : row.status == "CL"
+                            : row.status === "CL"
                             ? "Collected"
-                            : row.status == "CN"
+                            : row.status === "CN"
                             ? "Cancelled"
-                            : row.status == "CF"
+                            : row.status === "CF"
                             ? "Confirmed"
                             : "Validated";
                         },

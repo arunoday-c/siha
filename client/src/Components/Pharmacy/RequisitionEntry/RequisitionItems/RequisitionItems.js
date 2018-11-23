@@ -19,7 +19,8 @@ import {
   deleteRequisitionDetail,
   updatePosDetail,
   onchangegridcol,
-  UomchangeTexts
+  UomchangeTexts,
+  EditGrid
 } from "./RequisitionItemsEvents";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 
@@ -503,13 +504,15 @@ class RequisitionItems extends Component {
                           }}
                           isEditable={true}
                           paging={{ page: 0, rowsPerPage: 10 }}
+                          byForceEvents={true}
                           events={{
                             onDelete: deleteRequisitionDetail.bind(
                               this,
                               this,
                               context
                             ),
-                            onEdit: row => {},
+                            onEdit: EditGrid.bind(this, this, context),
+                            onCancel: EditGrid.bind(this, this, context),
                             onDone: updatePosDetail.bind(this, this, context)
                           }}
                           // onRowSelect={row => {

@@ -12,11 +12,11 @@ import {
 } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
 import InsuranceAdd from "./InsuranceAdd/InsuranceAdd";
-import BreadCrumb from "../common/BreadCrumb/BreadCrumb";
+
 import GlobalVariables from "../../utils/GlobalVariables.json";
 import moment from "moment";
 import Options from "../../Options.json";
-import AppBar from "@material-ui/core/AppBar";
+
 import { setGlobal } from "../../utils/GlobalFunctions";
 import { getCookie } from "../../utils/algaehApiCall";
 
@@ -111,7 +111,7 @@ class InsuranceSetup extends Component {
             </div>
             <div className="actions">
               <a
-                href="javascript:;"
+                href="javascript"
                 className="btn btn-primary btn-circle active"
                 onClick={this.ShowModel.bind(this)}
               >

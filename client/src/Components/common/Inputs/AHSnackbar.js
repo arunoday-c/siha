@@ -30,9 +30,8 @@ export default class AlgaehSnackBar extends PureComponent {
   }
 
   renderSweetalert(message, isopen) {
-    
     if (message !== null) {
-      console.log("MEssage", isopen);
+      // console.log("MEssage", isopen);
       if (isopen)
         swalMessage({
           title: message,

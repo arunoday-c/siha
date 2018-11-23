@@ -82,13 +82,12 @@ class AutoComplete extends PureComponent {
     const canDropDown = this.menuHeight() < this.distanceFromBottom();
     const _directonClass = !canDropDown ? "dropup" : "dropdown";
     this.setState({ directonClass: _directonClass });
-    console.log("direction class", _directonClass);
   }
 
   menuHeight() {
     if (this.props.selector.dataSource.data !== undefined) {
       const _height = this.props.selector.dataSource.data.length * 30;
-      console.log("Menu height", _height);
+
       return _height;
     }
     return 0;
@@ -111,7 +110,7 @@ class AutoComplete extends PureComponent {
 
     const elementHeight = _element.clientHeight;
     const _inHeight = windowHeight - distanceFromWindowTop - elementHeight;
-    console.log("Distance", _inHeight);
+
     return _inHeight;
   }
 

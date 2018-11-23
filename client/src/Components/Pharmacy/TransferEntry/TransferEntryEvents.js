@@ -6,7 +6,6 @@ import TransferIOputs from "../../../Models/TransferEntry";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const changeTexts = ($this, ctrl, e) => {
-  
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -14,7 +13,6 @@ const changeTexts = ($this, ctrl, e) => {
 };
 
 const getCtrlCode = ($this, docNumber) => {
-  
   AlgaehLoader({ show: true });
   $this.props.getTransferEntry({
     uri: "/transferEntry/gettransferEntry",
@@ -26,7 +24,6 @@ const getCtrlCode = ($this, docNumber) => {
       mappingName: "tranferEntry"
     },
     afterSuccess: data => {
-      
       data.saveEnable = true;
 
       if (data.completed === "Y") {
@@ -48,12 +45,10 @@ const ClearData = ($this, e) => {
 };
 
 const SaveTransferEntry = $this => {
-  
   algaehApiCall({
     uri: "/transferEntry/addtransferEntry",
     data: $this.state,
     onSuccess: response => {
-      
       if (response.data.success === true) {
         $this.setState({
           transfer_number: response.data.records.transfer_number,
@@ -74,7 +69,6 @@ const SaveTransferEntry = $this => {
 };
 
 const PostTransferEntry = $this => {
-  
   $this.state.completed = "Y";
   $this.state.transaction_type = "ST";
   $this.state.transaction_id = $this.state.hims_f_pharmacy_transfer_header_id;
@@ -103,13 +97,12 @@ const PostTransferEntry = $this => {
       $this.state.pharmacy_stock_detail[i].unit_cost *
       $this.state.pharmacy_stock_detail[i].quantity_transferred;
   }
-  
+
   algaehApiCall({
     uri: "/transferEntry/updatetransferEntry",
     data: $this.state,
     method: "PUT",
     onSuccess: response => {
-      
       if (response.data.success === true) {
         $this.setState({
           postEnable: true
@@ -131,8 +124,6 @@ const PostTransferEntry = $this => {
 };
 
 const RequisitionSearch = ($this, e) => {
-  
-  let che = "to_location_id = " + $this.state.from_location_id;
   if ($this.state.from_location_id !== null) {
     AlgaehSearch({
       searchGrid: {
@@ -145,7 +136,6 @@ const RequisitionSearch = ($this, e) => {
         callBack(text);
       },
       onRowSelect: row => {
-        
         $this.props.getRequisitionEntry({
           uri: "/transferEntry/getrequisitionEntryTransfer",
           method: "GET",
@@ -159,7 +149,6 @@ const RequisitionSearch = ($this, e) => {
             mappingName: "requisitionentry"
           },
           afterSuccess: data => {
-            
             AlgaehLoader({ show: true });
             let from_location_id = data.from_location_id;
             let from_location_type = data.from_location_type;
@@ -170,7 +159,6 @@ const RequisitionSearch = ($this, e) => {
             data.from_location_type = data.to_location_type;
             data.to_location_type = from_location_type;
 
-            
             data.dataExitst = true;
 
             for (let i = 0; i < data.pharmacy_stock_detail.length; i++) {

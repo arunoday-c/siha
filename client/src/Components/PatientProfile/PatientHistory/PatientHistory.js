@@ -65,7 +65,6 @@ class PatientHistory extends Component {
       },
       onSuccess: response => {
         if (response.data.success) {
-          console.log("History:", response.data.records);
           this.setState(
             {
               patHistory: response.data.records

@@ -39,7 +39,7 @@ class PhysicalExamination extends Component {
     } else if (this.state.name.length === 0) {
       this.setState({ nameError: true, nameErrorText: "Code cannot be empty" });
     } else {
-      console.log("Added");
+      // console.log("Added");
       //Do the Api Call here
     }
   }

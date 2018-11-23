@@ -106,7 +106,7 @@ const insertTestCategory = ($this, e) => {
         uri: "/labmasters/insertTestCategory",
         data: $this.state,
         onSuccess: response => {
-          if (response.data.success == true) {
+          if (response.data.success === true) {
             resetState($this);
             $this.props.getTestCategory({
               uri: "/labmasters/selectTestCategory",
