@@ -6,8 +6,6 @@ import {
   getDeliveryNoteEntry,
   updateDeliveryNoteEntry,
   getAuthPurchaseList,
-  getInvRequisitionEntryPO,
-  getPharRequisitionEntryPO,
   updatePOEntry
 } from "../model/DeliveryNoteEntry";
 import { debugFunction, debugLog } from "../../utils/logging";
@@ -42,7 +40,7 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-  // created by Nowshad :to getPharmacyInitialStock
+  // created by Nowshad :to getDeliveryNoteEntry
   api.get(
     "/getDeliveryNoteEntry",
     getDeliveryNoteEntry,
@@ -61,36 +59,6 @@ export default ({ config, db }) => {
   api.get(
     "/getAuthPurchaseList",
     getAuthPurchaseList,
-    (req, res, next) => {
-      let result = req.records;
-      res.status(httpStatus.ok).json({
-        success: true,
-        records: result
-      });
-      next();
-    },
-    releaseConnection
-  );
-
-  // created by Nowshad :to get Pharmacy RequisitionEntry for PO
-  api.get(
-    "/getPharRequisitionEntryPO",
-    getPharRequisitionEntryPO,
-    (req, res, next) => {
-      let result = req.records;
-      res.status(httpStatus.ok).json({
-        success: true,
-        records: result
-      });
-      next();
-    },
-    releaseConnection
-  );
-
-  // created by Nowshad :to get Inventory RequisitionEntry for PO
-  api.get(
-    "/getInvRequisitionEntryPO",
-    getInvRequisitionEntryPO,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

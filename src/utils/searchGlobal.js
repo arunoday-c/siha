@@ -173,6 +173,18 @@ let algaehSearchConfig = searchName => {
         searchQuery:
           "select SQL_CALC_FOUND_ROWS * from hims_f_procurement_po_header where authorize1 = 'Y' and cancelled='N' and is_completed='N'",
         orderBy: "hims_f_procurement_po_header_id desc"
+      },
+      {
+        searchName: "DNEntry",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS * from hims_f_procurement_dn_header",
+        orderBy: "hims_f_procurement_dn_header_id desc"
+      },
+      {
+        searchName: "DNEntryInReceipt",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS * from hims_f_procurement_dn_header where cancelled='N'",
+        orderBy: "hims_f_procurement_dn_header_id desc"
       }
 
       // visit

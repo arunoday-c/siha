@@ -256,33 +256,39 @@ const SaveDNEnrty = $this => {
 
 const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
-  $this.props.getPurchaseOrderEntry({
-    uri: "/PurchaseOrderEntry/getPurchaseOrderEntry",
+  debugger;
+  algaehApiCall({
+    uri: "/DeliveryNoteEntry/getDeliveryNoteEntry",
     method: "GET",
-    printInput: true,
     data: { delivery_note_number: docNumber },
-    redux: {
-      type: "PO_ENTRY_GET_DATA",
-      mappingName: "purchaseorderentry"
-    },
-    afterSuccess: data => {
+    onSuccess: response => {
       debugger;
-      if (
-        $this.props.delivery_note_number !== undefined &&
-        $this.props.delivery_note_number.length !== 0
-      ) {
-        data.authorizeEnable = false;
-        data.ItemDisable = true;
-        data.ClearDisable = true;
-      }
-      data.saveEnable = true;
-      data.dataExitst = true;
+      if (response.data.success) {
+        let data = response.data.records;
+        if (
+          $this.props.delivery_note_number !== undefined &&
+          $this.props.delivery_note_number.length !== 0
+        ) {
+          data.authorizeEnable = false;
+          data.ItemDisable = true;
+          data.ClearDisable = true;
+        }
+        data.saveEnable = true;
+        data.dataExitst = true;
 
-      data.addedItem = true;
-      $this.setState(data, () => {
-        getData($this);
-      });
+        data.addedItem = true;
+        $this.setState(data, () => {
+          getData($this);
+        });
+        AlgaehLoader({ show: false });
+      }
+    },
+    onFailure: error => {
       AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
 };
