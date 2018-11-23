@@ -35,9 +35,7 @@ const getReviewOfSystems = $this => {
       type: "ALL_ROS",
       mappingName: "allros"
     },
-    afterSuccess: data => {
-      console.log("ROS data from redux:", data);
-    }
+    afterSuccess: data => {}
   });
 };
 
@@ -51,9 +49,6 @@ const getReviewOfSystemsDetails = ($this, type) => {
     redux: {
       type: "ALL_ROS_DETAILS",
       mappingName: "allrosdetails"
-    },
-    afterSuccess: data => {
-      console.log("ROS data from redux:", data);
     }
   });
 };
@@ -69,9 +64,6 @@ const getPatientROS = $this => {
     redux: {
       type: "PATIENT_ROS",
       mappingName: "patientros"
-    },
-    afterSuccess: data => {
-      console.log("ROS data from redux:", data);
     }
   });
 };
@@ -124,16 +116,13 @@ const updatePatientAllergy = ($this, row) => {
     },
     onSuccess: response => {
       if (response.data.success) {
-        console.log("Allergy Update Response:", response.data.records);
       }
     },
     onFailure: error => {}
   });
 };
 
-const updatePatientROS = ($this, row) => {
-  
-};
+const updatePatientROS = ($this, row) => {};
 
 export {
   getAllAllergies,

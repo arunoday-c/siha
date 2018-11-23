@@ -49,14 +49,12 @@ class SubInsurance extends PureComponent {
   }
 
   componentWillMount() {
-    
     let InputOutput = this.props.InsuranceSetup;
     InputOutput.maxDate_end_date = InputOutput.effective_end_date;
     this.setState({ ...this.state, ...InputOutput });
   }
 
   componentDidMount() {
-    
     if (this.state.insurance_provider_id !== null) {
       getSubInsuranceDetails(this, this);
       // this.props.getSubInsuranceDetails({
@@ -87,7 +85,7 @@ class SubInsurance extends PureComponent {
   };
 
   render() {
-    console.log("Sub Data: ", this.state.sub_insurance);
+    // console.log("Sub Data: ", this.state.sub_insurance);
     return (
       <React.Fragment>
         <MyContext.Consumer>

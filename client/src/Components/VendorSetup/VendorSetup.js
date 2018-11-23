@@ -64,7 +64,7 @@ class VendorSetup extends Component {
       onSuccess: response => {
         if (response.data.success) {
           this.setState({ countries: response.data.records });
-          console.log("Countries:", response.data.records);
+          
         }
       },
       onFailure: error => {

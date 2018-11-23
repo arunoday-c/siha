@@ -87,7 +87,6 @@ class PatientProfile extends Component {
             data: data
           });
         }
-        console.log("Report ", response);
       }
     });
   }
@@ -121,7 +120,6 @@ class PatientProfile extends Component {
             .firstOrDefault()
         : [];
 
-    console.log("_Vitals", _Vitals);
     //TO DO
     //Display Patient Vitals which are driven from the master
     //To be Done after Noor completes the Vitals Implementation

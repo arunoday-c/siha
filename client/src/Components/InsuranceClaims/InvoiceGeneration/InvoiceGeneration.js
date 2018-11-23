@@ -107,7 +107,7 @@ class InvoiceGeneration extends Component {
       billOut.sec_company_payable = billOut.sec_company_paybale;
 
       this.setState({ ...this.state, ...billOut });
-      console.log("Invoice Details:", this.state.Invoice_Detail);
+      // console.log("Invoice Details:", this.state.Invoice_Detail);
     }
   }
 
