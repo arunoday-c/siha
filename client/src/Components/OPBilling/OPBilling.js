@@ -70,15 +70,15 @@ class PatientDisplayDetails extends Component {
       selectedLang: prevLang
     });
 
-    if (this.props.genbill !== undefined && this.props.genbill.length !== 0) {
-      this.props.initialbillingCalculations({
-        redux: {
-          type: "BILL_HEADER_GEN_GET_DATA",
-          mappingName: "genbill",
-          data: {}
-        }
-      });
-    }
+    // if (this.props.genbill !== undefined && this.props.genbill.length !== 0) {
+    //   this.props.initialbillingCalculations({
+    //     redux: {
+    //       type: "BILL_HEADER_GEN_GET_DATA",
+    //       mappingName: "genbill",
+    //       data: {}
+    //     }
+    //   });
+    // }
 
     if (
       this.props.patienttype === undefined ||
@@ -97,7 +97,7 @@ class PatientDisplayDetails extends Component {
 
   componentWillReceiveProps(nextProps) {
     let output = {};
-    let billOut = {};
+    // let billOut = {};
 
     if (
       nextProps.existinsurance !== undefined &&
@@ -105,18 +105,18 @@ class PatientDisplayDetails extends Component {
     ) {
       output = nextProps.existinsurance[0];
     }
-    if (
-      nextProps.genbill !== undefined &&
-      nextProps.genbill.length !== 0 &&
-      this.state.billdetails.length !== 0
-    ) {
-      nextProps.genbill.patient_payable_h =
-        nextProps.genbill.patient_payable || this.state.patient_payable;
-      // nextProps.genbill.saveEnable = false;
-      billOut = nextProps.genbill;
-    }
+    // if (
+    //   nextProps.genbill !== undefined &&
+    //   nextProps.genbill.length !== 0 &&
+    //   this.state.billdetails.length !== 0
+    // ) {
+    //   nextProps.genbill.patient_payable_h =
+    //     nextProps.genbill.patient_payable || this.state.patient_payable;
+    //   // nextProps.genbill.saveEnable = false;
+    //   billOut = nextProps.genbill;
+    // }
 
-    this.setState({ ...this.state, ...billOut, ...output });
+    this.setState({ ...this.state, ...output });
   }
 
   handleClose = () => {
@@ -475,7 +475,6 @@ class PatientDisplayDetails extends Component {
 
 function mapStateToProps(state) {
   return {
-    genbill: state.genbill,
     patients: state.patients,
     existinsurance: state.existinsurance,
     patienttype: state.patienttype
@@ -487,7 +486,6 @@ function mapDispatchToProps(dispatch) {
     {
       getPatientDetails: AlgaehActions,
       getBIllDetails: AlgaehActions,
-      initialbillingCalculations: AlgaehActions,
       getPatientType: AlgaehActions
     },
     dispatch

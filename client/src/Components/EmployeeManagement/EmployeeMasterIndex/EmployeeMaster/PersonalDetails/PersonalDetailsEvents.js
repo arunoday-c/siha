@@ -9,13 +9,16 @@ const texthandle = ($this, context, e) => {
     [name]: value
   });
 
+  // if (context !== undefined) {
+  //   context.updateState({ [name]: value });
+  // }
   clearInterval(texthandlerInterval);
   texthandlerInterval = setInterval(() => {
     if (context !== undefined) {
       context.updateState({ [name]: value });
     }
     clearInterval(texthandlerInterval);
-  }, 1000);
+  }, 500);
 };
 
 const countryStatehandle = ($this, context, e) => {
@@ -160,7 +163,8 @@ const isDoctorChange = ($this, context, e) => {
   texthandlerInterval = setInterval(() => {
     if (context !== undefined) {
       context.updateState({
-        [name]: Value
+        [name]: Value,
+        Applicable: Applicable
       });
     }
     clearInterval(texthandlerInterval);

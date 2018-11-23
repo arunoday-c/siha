@@ -132,7 +132,7 @@ let addDeliveryNoteEntry = (req, res, next) => {
                 [
                   jsonArrayToObject({
                     sampleInputObject: insurtColumns,
-                    arrayObj: req.body.po_entry_detail,
+                    arrayObj: req.body.dn_entry_detail,
                     newFieldToInsert: [headerResult.insertId],
                     req: req
                   })
@@ -172,7 +172,7 @@ let addDeliveryNoteEntry = (req, res, next) => {
 //created by Nowshad: to get DeliveryNoteEntry
 let getDeliveryNoteEntry = (req, res, next) => {
   let selectWhere = {
-    purchase_number: "ALL"
+    delivery_note_number: "ALL"
   };
   try {
     if (req.db == null) {
@@ -204,14 +204,14 @@ let getDeliveryNoteEntry = (req, res, next) => {
             connection.query(
               "select * from hims_f_procurement_dn_detail where hims_f_procurement_dn_header_id=?",
               headerResult[0].hims_f_procurement_dn_header_id,
-              (error, po_entry_detail) => {
+              (error, dn_entry_detail) => {
                 if (error) {
                   releaseDBConnection(db, connection);
                   next(error);
                 }
                 req.records = {
                   ...headerResult[0],
-                  ...{ po_entry_detail }
+                  ...{ dn_entry_detail }
                 };
                 releaseDBConnection(db, connection);
                 next();
@@ -269,7 +269,7 @@ let updateDeliveryNoteEntry = (req, res, next) => {
             }
 
             if (result !== "" && result != null) {
-              let details = inputParam.po_entry_detail;
+              let details = inputParam.dn_entry_detail;
 
               let qry = "";
 
@@ -324,144 +324,6 @@ let updateDeliveryNoteEntry = (req, res, next) => {
           }
         );
       });
-    });
-  } catch (e) {
-    next(e);
-  }
-};
-
-//created by Nowshad: to get Pharmacy Requisition Entry to PO
-let getPharRequisitionEntryPO = (req, res, next) => {
-  let selectWhere = {
-    material_requisition_number: "ALL"
-  };
-  let RequisitionEntry = {
-    material_requisition_number: null,
-    from_location_id: null
-  };
-  try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-
-    // let where = whereCondition(extend(selectWhere, req.query));
-    let inputParam = extend(RequisitionEntry, req.query);
-
-    debugLog("inputParam: ", inputParam);
-    db.getConnection((error, connection) => {
-      connection.query(
-        "SELECT * from  hims_f_pharamcy_material_header \
-            where material_requisition_number=?",
-        [inputParam.material_requisition_number],
-        (error, headerResult) => {
-          if (error) {
-            releaseDBConnection(db, connection);
-            next(error);
-          }
-
-          debugLog("result: ", headerResult);
-          if (headerResult.length != 0) {
-            debugLog(
-              "hims_f_pharamcy_material_header_id: ",
-              headerResult[0].hims_f_pharamcy_material_header_id
-            );
-            debugLog("from_location_id: ", inputParam.from_location_id);
-
-            debugLog("to_location_id: ", headerResult[0].to_location_id);
-            connection.query(
-              "select * from hims_f_pharmacy_material_detail p left outer join hims_d_item_master l \
-                on l.hims_d_item_master_id =p.item_id where pharmacy_header_id=?",
-              [headerResult[0].hims_f_pharamcy_material_header_id],
-              (error, po_entry_detail) => {
-                if (error) {
-                  releaseDBConnection(db, connection);
-                  next(error);
-                }
-                req.records = {
-                  ...headerResult[0],
-                  ...{ po_entry_detail }
-                };
-                releaseDBConnection(db, connection);
-                next();
-              }
-            );
-          } else {
-            req.records = headerResult;
-            releaseDBConnection(db, connection);
-            next();
-          }
-        }
-      );
-    });
-  } catch (e) {
-    next(e);
-  }
-};
-
-//created by Nowshad: to get Inventory Requisition Entry to PO
-let getInvRequisitionEntryPO = (req, res, next) => {
-  let selectWhere = {
-    material_requisition_number: "ALL"
-  };
-  let RequisitionEntry = {
-    material_requisition_number: null,
-    from_location_id: null
-  };
-  try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-
-    // let where = whereCondition(extend(selectWhere, req.query));
-    let inputParam = extend(RequisitionEntry, req.query);
-
-    debugLog("inputParam: ", inputParam);
-    db.getConnection((error, connection) => {
-      connection.query(
-        "SELECT * from  hims_f_inventory_material_header \
-            where material_requisition_number=?",
-        [inputParam.material_requisition_number],
-        (error, headerResult) => {
-          if (error) {
-            releaseDBConnection(db, connection);
-            next(error);
-          }
-
-          debugLog("result: ", headerResult);
-          if (headerResult.length != 0) {
-            debugLog(
-              "hims_f_inventory_material_header_id: ",
-              headerResult[0].hims_f_inventory_material_header_id
-            );
-            debugLog("from_location_id: ", inputParam.from_location_id);
-
-            debugLog("to_location_id: ", headerResult[0].to_location_id);
-            connection.query(
-              "select * from hims_f_inventory_material_detail p left outer join hims_d_item_master l \
-                on l.hims_d_item_master_id =p.item_id where inventory_header_id=?",
-              [headerResult[0].hims_f_inventory_material_header_id],
-              (error, po_entry_detail) => {
-                if (error) {
-                  releaseDBConnection(db, connection);
-                  next(error);
-                }
-                req.records = {
-                  ...headerResult[0],
-                  ...{ po_entry_detail }
-                };
-                releaseDBConnection(db, connection);
-                next();
-              }
-            );
-          } else {
-            req.records = headerResult;
-            releaseDBConnection(db, connection);
-            next();
-          }
-        }
-      );
     });
   } catch (e) {
     next(e);
@@ -562,7 +424,5 @@ module.exports = {
   getDeliveryNoteEntry,
   updateDeliveryNoteEntry,
   getAuthPurchaseList,
-  getInvRequisitionEntryPO,
-  getPharRequisitionEntryPO,
   updatePOEntry
 };

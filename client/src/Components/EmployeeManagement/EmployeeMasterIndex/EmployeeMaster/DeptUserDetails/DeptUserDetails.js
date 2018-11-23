@@ -19,6 +19,7 @@ import {
   specialitytexthandle,
   categorytexthandle
 } from "./DeptUserDetailsEvents";
+import Enumerable from "linq";
 // import GlobalVariables from "../../../../../utils/GlobalVariables.json";
 // import AHSnackbar from "../../../../common/Inputs/AHSnackbar";
 
@@ -28,8 +29,7 @@ class DeptUserDetails extends Component {
     this.state = {
       sub_department_id: null,
       user_id: null,
-      category_speciality_id: null,
-      depserviceslist: []
+      category_speciality_id: null
     };
   }
 
@@ -73,18 +73,20 @@ class DeptUserDetails extends Component {
       this.props.getDepServices({
         uri: "/serviceType/getService",
         method: "GET",
+        data: { hims_d_services_id: 1 },
         redux: {
           type: "SERVICES_GET_DATA",
           mappingName: "depservices"
-        },
-        afterSuccess: data => {
-          this.setState({ depserviceslist: data });
         }
       });
     }
   }
 
   render() {
+    const _depservices = Enumerable.from(this.props.depservices)
+      .where(w => w.service_type_id === 1)
+      .toArray();
+
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -166,7 +168,7 @@ class DeptUserDetails extends Component {
                     className: "select-fld",
                     value: this.state.user_id,
                     dataSource: {
-                      textField: "user_displayname",
+                      textField: "username",
                       valueField: "algaeh_d_app_user_id",
                       data: this.props.userdrtails
                     },
@@ -189,16 +191,23 @@ class DeptUserDetails extends Component {
                           ? "service_name"
                           : "arabic_service_name",
                       valueField: "hims_d_services_id",
-                      data: this.props.depservices
+                      data: _depservices
                     },
-                    others: { disabled: this.state.Billexists },
+                    others: {
+                      disabled:
+                        this.state.Billexists === true
+                          ? true
+                          : this.state.isdoctor === "Y"
+                          ? false
+                          : true
+                    },
                     onChange: texthandle.bind(this, this, context)
                   }}
                 />
 
                 <div className="col-lg-1 actions" style={{ paddingTop: "2%" }}>
                   <a
-                    href="javascript"
+                    // href="javascript"
                     className="btn btn-primary btn-circle active"
                   >
                     <i
@@ -348,9 +357,9 @@ class DeptUserDetails extends Component {
                         ),
                         displayTemplate: row => {
                           let display =
-                            this.state.depserviceslist === undefined
+                            this.props.depservices === undefined
                               ? []
-                              : this.state.depserviceslist.filter(
+                              : this.props.depservices.filter(
                                   f => f.hims_d_services_id === row.services_id
                                 );
 

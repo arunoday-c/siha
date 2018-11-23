@@ -12,21 +12,19 @@ const ClearData = ($this, e) => {
 const Validations = $this => {
   let isError = false;
 
-  
-
   if ($this.state.card_amount > 0) {
-    if ($this.state.card_number == null || $this.state.card_number == "") {
+    if ($this.state.card_number === null || $this.state.card_number === "") {
       isError = true;
       swalMessage({
         type: "warning",
         title: "Invalid. Card Number cannot be blank."
       });
 
-      document.querySelector("[name='card_number']").focus();
+      document.querySelector("[name='card_check_number']").focus();
       return isError;
     }
 
-    if ($this.state.card_date == null || $this.state.card_date == "") {
+    if ($this.state.card_date === null || $this.state.card_date === "") {
       isError = true;
       swalMessage({
         type: "warning",
@@ -37,7 +35,10 @@ const Validations = $this => {
       return isError;
     }
   } else if ($this.state.cheque_amount > 0) {
-    if ($this.state.cheque_number == null || $this.state.cheque_number == "") {
+    if (
+      $this.state.cheque_number === null ||
+      $this.state.cheque_number === ""
+    ) {
       isError = true;
       swalMessage({
         type: "warning",
@@ -48,7 +49,7 @@ const Validations = $this => {
       return isError;
     }
 
-    if ($this.state.cheque_date == null || $this.state.cheque_date == "") {
+    if ($this.state.cheque_date === null || $this.state.cheque_date === "") {
       isError = true;
       swalMessage({
         type: "warning",

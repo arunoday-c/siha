@@ -458,7 +458,7 @@ class CommissionSetup extends Component {
 
                       <div className="col actions" style={{ paddingTop: "4%" }}>
                         <a
-                          href="javascript"
+                          // href="javascript"
                           className="btn btn-primary btn-circle active"
                         >
                           <i

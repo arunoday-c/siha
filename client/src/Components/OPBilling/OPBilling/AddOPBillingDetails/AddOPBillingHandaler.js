@@ -1,4 +1,5 @@
 import { successfulMessage } from "../../../../utils/GlobalFunctions";
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 
 const serviceTypeHandeler = ($this, context, e) => {
   $this.setState(
@@ -116,7 +117,7 @@ const discounthandle = ($this, context, ctrl, e) => {
   }
 };
 
-const billheaderCalculation = ($this, e) => {
+const billheaderCalculation = ($this, context, e) => {
   if (e.target.value !== e.target.oldvalue) {
     let serviceInput = {
       isReceipt: false,
@@ -130,15 +131,38 @@ const billheaderCalculation = ($this, e) => {
       credit_amount: parseFloat($this.state.credit_amount)
     };
 
-    $this.props.billingCalculations({
+    algaehApiCall({
       uri: "/billing/billingCalculations",
       method: "POST",
       data: serviceInput,
-      redux: {
-        type: "BILL_HEADER_GEN_GET_DATA",
-        mappingName: "genbill"
+      onSuccess: response => {
+        debugger;
+        if (response.data.success) {
+          if (context != null) {
+            response.data.records.patient_payable_h =
+              response.data.records.patient_payable ||
+              $this.state.patient_payable;
+            context.updateState({ ...response.data.records });
+          }
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
       }
     });
+
+    // $this.props.billingCalculations({
+    //   uri: "/billing/billingCalculations",
+    //   method: "POST",
+    //   data: serviceInput,
+    //   redux: {
+    //     type: "BILL_HEADER_GEN_GET_DATA",
+    //     mappingName: "genbill"
+    //   }
+    // });
   }
 };
 
@@ -164,7 +188,8 @@ const credittexthandle = ($this, context, ctrl, e) => {
         [e.target.name]: e.target.value
       },
       () => {
-        credittextCal($this, e);
+        debugger;
+        // credittextCal($this, e);
       }
     );
 
@@ -177,8 +202,22 @@ const credittexthandle = ($this, context, ctrl, e) => {
 };
 
 const credittextCal = ($this, e) => {
+  debugger;
   if (e.target.value !== e.target.oldvalue) {
     billheaderCalculation($this);
+  }
+};
+
+const EditGrid = ($this, context, cancelRow) => {
+  if (context != null) {
+    let _billdetails = $this.state.billdetails;
+    if (cancelRow !== undefined) {
+      _billdetails[cancelRow.rowIdx] = cancelRow;
+    }
+    context.updateState({
+      saveEnable: !$this.state.saveEnable,
+      billdetails: _billdetails
+    });
   }
 };
 
@@ -190,5 +229,7 @@ export {
   adjustadvance,
   billheaderCalculation,
   onchangegridcol,
-  credittexthandle
+  credittexthandle,
+  credittextCal,
+  EditGrid
 };

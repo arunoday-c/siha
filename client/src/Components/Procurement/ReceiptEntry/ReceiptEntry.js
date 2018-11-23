@@ -23,7 +23,7 @@ import {
   poforhandle,
   ClearData,
   SaveDNEnrty,
-  PurchaseOrderSearch,
+  DeliverySearch,
   getCtrlCode,
   PostReceiptEntry
 } from "./ReceiptEntryEvent";
@@ -230,8 +230,15 @@ class ReceiptEntry extends Component {
                     style={{
                       fontSize: " 1.2rem",
                       marginTop: 26,
-                      paddingBottom: 0
+                      paddingBottom: 0,
+                      pointerEvents:
+                        this.state.dataExitst === true
+                          ? "none"
+                          : this.state.ReqData === true
+                          ? "none"
+                          : ""
                     }}
+                    onClick={DeliverySearch.bind(this, this)}
                   />
                 </div>
               </div>

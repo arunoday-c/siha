@@ -34,7 +34,7 @@ const getCtrlCode = ($this, docNumber) => {
       mappingName: "posentry"
     },
     afterSuccess: data => {
-      debugger;
+      //debugger;
       data.saveEnable = true;
       data.patient_payable_h = data.patient_payable;
       data.case_type = "O";
@@ -211,7 +211,7 @@ const SavePosEnrty = $this => {
     $this.state.posted = "Y";
     $this.state.transaction_type = "POS";
     $this.state.transaction_date = $this.state.pos_date;
-    debugger;
+    //debugger;
     for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
       $this.state.pharmacy_stock_detail[i].location_id =
         $this.state.location_id;
@@ -367,7 +367,7 @@ const getMedicationList = $this => {
       mappingName: "medicationlist"
     },
     afterSuccess: data => {
-      debugger;
+      //debugger;
       AddItems($this, data);
     }
   });

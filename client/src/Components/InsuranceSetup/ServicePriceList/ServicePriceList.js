@@ -74,7 +74,7 @@ class SubInsurance extends PureComponent {
             {/* Services Details */}
 
             <div
-              style={{ paddingBottom: 15, borderBottom: "1px solid #5f5f5f" }}
+              style={{ paddingBottom: 15, borderBottom: "1px solid #d3d3d3" }}
             >
               <div className="row">
                 <div className="col-lg-6">

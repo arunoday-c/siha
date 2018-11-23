@@ -81,7 +81,7 @@ class EmployeeMaster extends Component {
     });
 
     this.props.getUserDetails({
-      uri: "/algaehappuser/selectAppUsers",
+      uri: "/algaehappuser/selectLoginUser",
       method: "GET",
       redux: {
         type: "USER_DETAILS_GET_DATA",
@@ -145,7 +145,9 @@ class EmployeeMaster extends Component {
       newProps.employeeDetailsPop.hims_d_employee_id !== undefined &&
       this.state.full_name !== null
     ) {
+      debugger;
       let IOputs = newProps.employeeDetailsPop;
+      IOputs.Applicable = IOputs.isdoctor === "Y" ? true : false;
       this.setState({ ...this.state, ...IOputs });
     } else {
       let IOputs = EmpMasterIOputs.inputParam();

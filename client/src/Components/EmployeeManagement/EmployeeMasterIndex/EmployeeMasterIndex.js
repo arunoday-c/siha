@@ -262,6 +262,7 @@ class EmployeeMasterIndex extends Component {
                   dataSource={{
                     data: this.state.Employeedetails
                   }}
+                  filter={true}
                   // isEditable={true}
                   paging={{ page: 0, rowsPerPage: 10 }}
                 />

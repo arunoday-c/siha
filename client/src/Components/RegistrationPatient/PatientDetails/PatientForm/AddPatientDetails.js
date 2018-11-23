@@ -16,13 +16,13 @@ const texthandle = ($this, context, e) => {
       context.updateState({ [name]: value });
     }
     clearInterval(texthandlerInterval);
-  }, 1000);
+  }, 500);
 };
 
 const countryStatehandle = ($this, context, e) => {
   let name;
   let value;
-  
+
   if (e.name !== undefined) {
     if (e.name === "country_id") {
       name = e.name;
@@ -78,7 +78,7 @@ const countryStatehandle = ($this, context, e) => {
 //Todo title and gender related chnage need to do
 const titlehandle = ($this, context, e) => {
   let setGender = null;
-  
+
   if (e.value === undefined) {
     $this.setState({
       gender: setGender,
@@ -199,7 +199,6 @@ const nationalityhandle = ($this, context, e) => {
       mappingName: "hospitaldetails"
     },
     afterSuccess: data => {
-      
       let vat_applicable = "Y";
 
       if (
@@ -233,7 +232,7 @@ const nationalityhandle = ($this, context, e) => {
           });
         }
         clearInterval(texthandlerInterval);
-      }, 1000);
+      }, 500);
     }
   });
 };

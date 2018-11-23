@@ -141,7 +141,6 @@ class SearchModule extends Component {
        ends when it continue in typing if not service call in 500 ms
    */
   handleSpotLightContains(e) {
-    
     let contains = e.target.value;
     this.setState({ contains: contains });
 

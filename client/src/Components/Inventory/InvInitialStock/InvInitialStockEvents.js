@@ -173,7 +173,7 @@ const SaveInitialStock = $this => {
     data: $this.state,
     onSuccess: response => {
       if (response.data.success === true) {
-        debugger;
+        //debugger;
         $this.setState({
           document_number: response.data.records.document_number,
           hims_f_inventory_stock_header_id:

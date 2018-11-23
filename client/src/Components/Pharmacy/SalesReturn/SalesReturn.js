@@ -83,7 +83,7 @@ class SalesReturn extends Component {
   componentWillReceiveProps(nextProps) {
     let SalesHeaderOut = {};
 
-    debugger;
+    //debugger;
     if (
       nextProps.salesReturn !== undefined &&
       nextProps.salesReturn.length !== 0

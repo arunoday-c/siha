@@ -19,7 +19,7 @@ const texthandle = ($this, context, ctrl, e) => {
       context.updateState({ [name]: value });
     }
     clearInterval(texthandlerInterval);
-  }, 1000);
+  }, 500);
 };
 
 const calculateRecipt = ($this, context) => {

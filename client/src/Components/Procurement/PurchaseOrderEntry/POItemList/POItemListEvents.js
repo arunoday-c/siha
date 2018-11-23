@@ -20,11 +20,11 @@ const texthandle = ($this, context, e) => {
       context.updateState({ [name]: value });
     }
     clearInterval(texthandlerInterval);
-  }, 1000);
+  }, 500);
 };
 
 const discounthandle = ($this, context, ctrl, e) => {
-  debugger;
+  //debugger;
   if ($this.state.order_quantity <= 0) {
     swalMessage({
       title: "Invalid Input. Please Enter Quantity",
@@ -60,7 +60,7 @@ const discounthandle = ($this, context, ctrl, e) => {
           type: "warning"
         });
       } else {
-        debugger;
+        //debugger;
         extended_cost =
           parseFloat($this.state.extended_price) - sub_discount_amount;
         unit_cost = extended_cost / parseFloat($this.state.order_quantity);
@@ -96,7 +96,7 @@ const discounthandle = ($this, context, ctrl, e) => {
 };
 
 const numberchangeTexts = ($this, context, e) => {
-  debugger;
+  //debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
@@ -106,7 +106,7 @@ const numberchangeTexts = ($this, context, e) => {
       type: "warning"
     });
   } else {
-    debugger;
+    //debugger;
     let extended_price = 0;
     if (parseFloat(value) > 0 && parseFloat($this.state.unit_price) > 0) {
       extended_price = parseFloat(value) * parseFloat($this.state.unit_price);
@@ -138,7 +138,7 @@ const numberchangeTexts = ($this, context, e) => {
         });
       }
       clearInterval(texthandlerInterval);
-    }, 1000);
+    }, 500);
   }
 };
 
@@ -152,7 +152,7 @@ const unitpricenumberchangeTexts = ($this, context, e) => {
       type: "warning"
     });
   } else {
-    debugger;
+    //debugger;
     let extended_price = 0;
     if (parseFloat($this.state.order_quantity) > 0 && parseFloat(value) > 0) {
       extended_price =
@@ -187,12 +187,12 @@ const unitpricenumberchangeTexts = ($this, context, e) => {
         });
       }
       clearInterval(texthandlerInterval);
-    }, 1000);
+    }, 500);
   }
 };
 
 const itemchangeText = ($this, context, e) => {
-  debugger;
+  //debugger;
   let name = e.name || e.target.name;
   if (
     $this.state.pharmcy_location_id !== null ||
@@ -200,7 +200,7 @@ const itemchangeText = ($this, context, e) => {
   ) {
     if ($this.state.vendor_id !== null) {
       let value = e.value || e.target.value;
-      debugger;
+      //debugger;
       if ($this.state.po_from === "PHR") {
         $this.setState({
           [name]: value,
@@ -287,7 +287,7 @@ const itemchangeText = ($this, context, e) => {
 };
 
 const AddItems = ($this, context) => {
-  debugger;
+  //debugger;
   if ($this.state.order_quantity === 0) {
     swalMessage({
       title: "Invalid Input. Please enter Quantity Required .",
@@ -516,7 +516,7 @@ const deletePODetail = ($this, context, row) => {
 };
 
 const updatePODetail = ($this, context, row) => {
-  debugger;
+  //debugger;
   if ($this.state.po_from === "PHR") {
     let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
 
@@ -623,7 +623,7 @@ const dateFormater = ($this, value) => {
 };
 
 const onchangegridcol = ($this, row, e) => {
-  debugger;
+  //debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   if (value > row.total_quantity) {
@@ -640,7 +640,7 @@ const onchangegridcol = ($this, row, e) => {
 };
 
 const onchhangegriddiscount = ($this, row, ctrl, e) => {
-  debugger;
+  //debugger;
 
   e = e || ctrl;
 
@@ -672,7 +672,7 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
         type: "warning"
       });
     } else {
-      debugger;
+      //debugger;
       extended_cost = parseFloat(row.extended_price) - sub_discount_amount;
 
       tax_amount = (extended_cost * parseFloat(row.tax_percentage)) / 100;

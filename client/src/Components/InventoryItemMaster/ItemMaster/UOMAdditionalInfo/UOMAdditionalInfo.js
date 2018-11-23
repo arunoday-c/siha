@@ -114,7 +114,7 @@ class UOMAdditionalInfo extends Component {
                       <a
                         onClick={AddUom.bind(this, this, context)}
                         style={{ marginTop: 23 }}
-                        href="javascript"
+                        // href="javascript"
                         className="btn btn-primary btn-circle active"
                       >
                         <i className="fas fa-plus" />

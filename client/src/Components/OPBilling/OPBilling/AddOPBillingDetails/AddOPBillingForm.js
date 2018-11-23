@@ -20,11 +20,14 @@ import {
   adjustadvance,
   billheaderCalculation,
   onchangegridcol,
-  credittexthandle
+  credittexthandle,
+  credittextCal,
+  EditGrid
 } from "./AddOPBillingHandaler";
 import ReciptForm from "../ReciptDetails/ReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { successfulMessage } from "../../../../utils/GlobalFunctions";
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 
 class AddOPBillingForm extends Component {
@@ -93,6 +96,7 @@ class AddOPBillingForm extends Component {
     let $this = this;
     if (this.state.patient_id !== null && this.state.visit_id !== null) {
       if (this.state.s_service_type !== null && this.state.s_service !== null) {
+        let applydiscount = false;
         let serviceInput = [
           {
             insured: this.state.insured,
@@ -109,57 +113,127 @@ class AddOPBillingForm extends Component {
             secondary_network_office_id: this.state.secondary_network_office_id
           }
         ];
-
-        this.props.generateBill({
+        debugger;
+        algaehApiCall({
           uri: "/billing/getBillDetails",
           method: "POST",
           data: serviceInput,
-          redux: {
-            type: "BILL_GEN_GET_DATA",
-            mappingName: "xxx"
-          },
-          afterSuccess: data => {
-            let applydiscount = false;
-            if (data.billdetails[0].pre_approval === "Y") {
-              successfulMessage({
-                message:
-                  "Invalid Input. Selected Service is Pre-Approval required, you don't have rights to bill.",
-                title: "Warning",
-                icon: "warning"
-              });
-            } else {
-              let existingservices = $this.state.billdetails;
+          onSuccess: response => {
+            if (response.data.success) {
+              debugger;
+              let data = response.data.records;
 
-              if (data.billdetails.length !== 0) {
-                data.billdetails[0].created_date = new Date();
-                existingservices.splice(0, 0, data.billdetails[0]);
-              }
+              if (data.billdetails[0].pre_approval === "Y") {
+                successfulMessage({
+                  message:
+                    "Invalid Input. Selected Service is Pre-Approval required, you don't have rights to bill.",
+                  title: "Warning",
+                  icon: "warning"
+                });
+              } else {
+                let existingservices = $this.state.billdetails;
 
-              if (this.state.mode_of_pay === "Insurance") {
-                applydiscount = true;
-              }
-              if (context != null) {
-                context.updateState({
-                  billdetails: existingservices,
-                  applydiscount: applydiscount,
-                  s_service_type: null,
-                  s_service: null,
-                  saveEnable: false
+                if (data.billdetails.length !== 0) {
+                  data.billdetails[0].created_date = new Date();
+                  existingservices.splice(0, 0, data.billdetails[0]);
+                }
+
+                if (this.state.mode_of_pay === "Insurance") {
+                  applydiscount = true;
+                }
+                if (context != null) {
+                  context.updateState({
+                    billdetails: existingservices,
+                    applydiscount: applydiscount,
+                    s_service_type: null,
+                    s_service: null,
+                    saveEnable: false
+                  });
+                }
+
+                algaehApiCall({
+                  uri: "/billing/billingCalculations",
+                  method: "POST",
+                  data: { billdetails: existingservices },
+                  onSuccess: response => {
+                    debugger;
+                    if (response.data.success) {
+                      if (context != null) {
+                        response.data.records.patient_payable_h =
+                          response.data.records.patient_payable ||
+                          $this.state.patient_payable;
+                        context.updateState({ ...response.data.records });
+                      }
+                    }
+                  },
+                  onFailure: error => {
+                    swalMessage({
+                      title: error.message,
+                      type: "error"
+                    });
+                  }
                 });
               }
-
-              $this.props.billingCalculations({
-                uri: "/billing/billingCalculations",
-                method: "POST",
-                data: { billdetails: existingservices },
-                redux: {
-                  type: "BILL_HEADER_GEN_GET_DATA",
-                  mappingName: "genbill"
-                }
-              });
             }
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
           }
         });
+
+        // this.props.generateBill({
+        //   uri: "/billing/getBillDetails",
+        //   method: "POST",
+        //   data: serviceInput,
+        //   redux: {
+        //     type: "BILL_GEN_GET_DATA",
+        //     mappingName: "xxx"
+        //   },
+        //   afterSuccess: data => {
+        //     let applydiscount = false;
+        //     if (data.billdetails[0].pre_approval === "Y") {
+        //       successfulMessage({
+        //         message:
+        //           "Invalid Input. Selected Service is Pre-Approval required, you don't have rights to bill.",
+        //         title: "Warning",
+        //         icon: "warning"
+        //       });
+        //     } else {
+        //       let existingservices = $this.state.billdetails;
+
+        //       if (data.billdetails.length !== 0) {
+        //         data.billdetails[0].created_date = new Date();
+        //         existingservices.splice(0, 0, data.billdetails[0]);
+        //       }
+
+        //       if (this.state.mode_of_pay === "Insurance") {
+        //         applydiscount = true;
+        //       }
+        //       if (context != null) {
+        //         context.updateState({
+        //           billdetails: existingservices,
+        //           applydiscount: applydiscount,
+        //           s_service_type: null,
+        //           s_service: null,
+        //           saveEnable: false
+        //         });
+        //       }
+
+        //       $this.props.billingCalculations({
+        //         uri: "/billing/billingCalculations",
+        //         method: "POST",
+        //         data: { billdetails: existingservices },
+        //         redux: {
+        //           type: "BILL_HEADER_GEN_GET_DATA",
+        //           mappingName: "genbill"
+        //         }
+        //       });
+        //     }
+        //   }
+        // });
       } else {
         successfulMessage({
           message: "Invalid Input. Please select the Service and Service Type.",
@@ -208,52 +282,120 @@ class AddOPBillingForm extends Component {
         }
       ];
 
-      this.props.billingCalculations({
+      algaehApiCall({
         uri: "/billing/getBillDetails",
         method: "POST",
         data: inputParam,
-        redux: {
-          type: "BILL_GEN_GET_DATA",
-          mappingName: "xxx"
-        },
-        afterSuccess: data => {
-          extend(row, data.billdetails[0]);
-          for (let i = 0; i < billdetails.length; i++) {
-            if (billdetails[i].service_type_id === row.service_type_id) {
-              billdetails[i] = row;
+        onSuccess: response => {
+          if (response.data.success) {
+            let data = response.data.records;
+
+            extend(row, data.billdetails[0]);
+            for (let i = 0; i < billdetails.length; i++) {
+              if (billdetails[i].service_type_id === row.service_type_id) {
+                billdetails[i] = row;
+              }
             }
+            $this.setState({ billdetails: billdetails });
           }
-          $this.setState({ billdetails: billdetails });
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
         }
       });
+
+      // this.props.billingCalculations({
+      //   uri: "/billing/getBillDetails",
+      //   method: "POST",
+      //   data: inputParam,
+      //   redux: {
+      //     type: "BILL_GEN_GET_DATA",
+      //     mappingName: "xxx"
+      //   },
+      //   afterSuccess: data => {
+      //     extend(row, data.billdetails[0]);
+      //     for (let i = 0; i < billdetails.length; i++) {
+      //       if (billdetails[i].service_type_id === row.service_type_id) {
+      //         billdetails[i] = row;
+      //       }
+      //     }
+      //     $this.setState({ billdetails: billdetails });
+      //   }
+      // });
     }
   }
 
-  updateBillDetail(e) {
-    this.props.billingCalculations({
+  updateBillDetail(context, e) {
+    algaehApiCall({
       uri: "/billing/billingCalculations",
       method: "POST",
       data: { billdetails: this.state.billdetails },
-      redux: {
-        type: "BILL_HEADER_GEN_GET_DATA",
-        mappingName: "genbill"
+      onSuccess: response => {
+        if (response.data.success) {
+          response.data.records.patient_payable_h =
+            response.data.records.patient_payable || this.state.patient_payable;
+          response.data.records.saveEnable = false;
+          if (context != null) {
+            context.updateState({ ...response.data.records });
+          }
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
       }
     });
+    // this.props.billingCalculations({
+    //   uri: "/billing/billingCalculations",
+    //   method: "POST",
+    //   data: { billdetails: this.state.billdetails },
+    //   redux: {
+    //     type: "BILL_HEADER_GEN_GET_DATA",
+    //     mappingName: "genbill"
+    //   }
+    // });
   }
 
   deleteBillDetail(context, e, rowId) {
     let serviceDetails = this.state.billdetails;
     serviceDetails.splice(rowId, 1);
 
-    this.props.billingCalculations({
+    algaehApiCall({
       uri: "/billing/billingCalculations",
       method: "POST",
       data: { billdetails: serviceDetails },
-      redux: {
-        type: "BILL_HEADER_GEN_GET_DATA",
-        mappingName: "genbill"
+      onSuccess: response => {
+        if (response.data.success) {
+          response.data.records.patient_payable_h =
+            response.data.records.patient_payable || this.state.patient_payable;
+
+          if (context != null) {
+            context.updateState({ ...response.data.records });
+          }
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
       }
     });
+
+    // this.props.billingCalculations({
+    //   uri: "/billing/billingCalculations",
+    //   method: "POST",
+    //   data: { billdetails: serviceDetails },
+    //   redux: {
+    //     type: "BILL_HEADER_GEN_GET_DATA",
+    //     mappingName: "genbill"
+    //   }
+    // });
 
     if (serviceDetails.length === 0) {
       if (context !== undefined) {
@@ -640,10 +782,12 @@ class AddOPBillingForm extends Component {
                       }}
                       isEditable={!this.state.Billexists}
                       paging={{ page: 0, rowsPerPage: 5 }}
+                      byForceEvents={true}
                       events={{
                         onDelete: this.deleteBillDetail.bind(this, context),
-                        onEdit: row => {},
-                        onDone: this.updateBillDetail.bind(this)
+                        onEdit: EditGrid.bind(this, this, context),
+                        onCancel: EditGrid.bind(this, this, context),
+                        onDone: this.updateBillDetail.bind(this, context)
                       }}
                     />
                   </div>
@@ -891,7 +1035,11 @@ class AddOPBillingForm extends Component {
                             },
                             others: {
                               placeholder: "0.00",
-                              onBlur: billheaderCalculation.bind(this, this),
+                              onBlur: billheaderCalculation.bind(
+                                this,
+                                this,
+                                context
+                              ),
                               onFocus: e => {
                                 e.target.oldvalue = e.target.value;
                               },
@@ -922,7 +1070,11 @@ class AddOPBillingForm extends Component {
                                   ? true
                                   : this.state.applydiscount,
                               placeholder: "0.00",
-                              onBlur: billheaderCalculation.bind(this, this),
+                              onBlur: billheaderCalculation.bind(
+                                this,
+                                this,
+                                context
+                              ),
                               onFocus: e => {
                                 e.target.oldvalue = e.target.value;
                               }
@@ -949,7 +1101,11 @@ class AddOPBillingForm extends Component {
                                   ? true
                                   : this.state.applydiscount,
                               placeholder: "0.00",
-                              onBlur: billheaderCalculation.bind(this, this),
+                              onBlur: billheaderCalculation.bind(
+                                this,
+                                this,
+                                context
+                              ),
                               onFocus: e => {
                                 e.target.oldvalue = e.target.value;
                               }
@@ -1000,7 +1156,7 @@ class AddOPBillingForm extends Component {
                             },
                             others: {
                               placeholder: "0.00",
-                              // onBlur: credittextCal.bind(this, this),
+                              onBlur: credittextCal.bind(this, this),
                               onFocus: e => {
                                 e.target.oldvalue = e.target.value;
                               }
@@ -1042,7 +1198,6 @@ function mapStateToProps(state) {
   return {
     servicetype: state.servicetype,
     opbilservices: state.opbilservices,
-    genbill: state.genbill,
     serviceslist: state.serviceslist
   };
 }
@@ -1051,9 +1206,7 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getServiceTypes: AlgaehActions,
-      getServices: AlgaehActions,
-      generateBill: AlgaehActions,
-      billingCalculations: AlgaehActions
+      getServices: AlgaehActions
     },
     dispatch
   );

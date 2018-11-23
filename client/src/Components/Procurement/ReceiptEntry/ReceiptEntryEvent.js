@@ -137,7 +137,7 @@ const numberchangeTexts = ($this, context, e) => {
         });
       }
       clearInterval(texthandlerInterval);
-    }, 1000);
+    }, 500);
   }
 };
 
@@ -147,7 +147,7 @@ const datehandle = ($this, ctrl, e) => {
   });
 };
 
-const PurchaseOrderSearch = ($this, e) => {
+const DeliverySearch = ($this, e) => {
   debugger;
   if (
     $this.state.pharmcy_location_id === null &&
@@ -169,56 +169,91 @@ const PurchaseOrderSearch = ($this, e) => {
 
     AlgaehSearch({
       searchGrid: {
-        columns: spotlightSearch.Purchase.POEntry
+        columns: spotlightSearch.Delivery.DNEntry
       },
-      searchName: "POEntryGetDN",
+      searchName: "DNEntryInReceipt",
       uri: "/gloabelSearch/get",
       inputs: Inputs,
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
       },
       onRowSelect: row => {
-        $this.props.getPurchaseOrderEntry({
-          uri: "/PurchaseOrderEntry/getPurchaseOrderEntry",
+        algaehApiCall({
+          uri: "/DeliveryNoteEntry/getDeliveryNoteEntry",
           method: "GET",
-          data: {
-            purchase_number: row.purchase_number
-          },
-          redux: {
-            type: "PO_ENTRY_GET_DATA",
-            mappingName: "purchaseorderentry"
-          },
-          afterSuccess: data => {
+          data: { delivery_note_number: row.delivery_note_number },
+          onSuccess: response => {
             debugger;
-            if (data !== null && data !== undefined) {
-              AlgaehLoader({ show: true });
-
-              data.saveEnable = false;
-
-              data.location_type = "MS";
-
-              data.dataExitst = true;
-              data.purchase_order_id = data.hims_f_procurement_po_header_id;
-              for (let i = 0; i < data.po_entry_detail.length; i++) {
-                data.po_entry_detail[i].po_quantity =
-                  data.po_entry_detail[i].authorize_quantity;
-                data.po_entry_detail[i].dn_quantity =
-                  data.po_entry_detail[i].authorize_quantity;
-
-                data.po_entry_detail[i].authorize_quantity = 0;
-
-                data.po_entry_detail[i].discount_percentage =
-                  data.po_entry_detail[i].sub_discount_percentage;
-
-                data.po_entry_detail[i].discount_amount =
-                  data.po_entry_detail[i].sub_discount_amount;
+            if (response.data.success) {
+              let data = response.data.records;
+              if (
+                $this.props.delivery_note_number !== undefined &&
+                $this.props.delivery_note_number.length !== 0
+              ) {
+                data.authorizeEnable = false;
+                data.ItemDisable = true;
+                data.ClearDisable = true;
               }
-              data.dn_entry_detail = data.po_entry_detail;
-              $this.setState(data);
+              data.saveEnable = true;
+              data.dataExitst = true;
+
+              data.addedItem = true;
+              $this.setState(data, () => {
+                getData($this);
+              });
               AlgaehLoader({ show: false });
             }
+          },
+          onFailure: error => {
+            AlgaehLoader({ show: false });
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
           }
         });
+
+        // $this.props.getPurchaseOrderEntry({
+        //   uri: "/PurchaseOrderEntry/getPurchaseOrderEntry",
+        //   method: "GET",
+        //   data: {
+        //     purchase_number: row.purchase_number
+        //   },
+        //   redux: {
+        //     type: "PO_ENTRY_GET_DATA",
+        //     mappingName: "purchaseorderentry"
+        //   },
+        //   afterSuccess: data => {
+        //     debugger;
+        //     if (data !== null && data !== undefined) {
+        //       AlgaehLoader({ show: true });
+
+        //       data.saveEnable = false;
+
+        //       data.location_type = "MS";
+
+        //       data.dataExitst = true;
+        //       data.purchase_order_id = data.hims_f_procurement_po_header_id;
+        //       for (let i = 0; i < data.po_entry_detail.length; i++) {
+        //         data.po_entry_detail[i].po_quantity =
+        //           data.po_entry_detail[i].authorize_quantity;
+        //         data.po_entry_detail[i].dn_quantity =
+        //           data.po_entry_detail[i].authorize_quantity;
+
+        //         data.po_entry_detail[i].authorize_quantity = 0;
+
+        //         data.po_entry_detail[i].discount_percentage =
+        //           data.po_entry_detail[i].sub_discount_percentage;
+
+        //         data.po_entry_detail[i].discount_amount =
+        //           data.po_entry_detail[i].sub_discount_amount;
+        //       }
+        //       data.dn_entry_detail = data.po_entry_detail;
+        //       $this.setState(data);
+        //       AlgaehLoader({ show: false });
+        //     }
+        //   }
+        // });
       }
     });
   }
@@ -390,7 +425,7 @@ export {
   discounthandle,
   numberchangeTexts,
   datehandle,
-  PurchaseOrderSearch,
+  DeliverySearch,
   vendortexthandle,
   ClearData,
   SaveDNEnrty,

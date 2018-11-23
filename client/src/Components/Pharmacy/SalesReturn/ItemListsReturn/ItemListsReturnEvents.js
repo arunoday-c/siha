@@ -64,7 +64,7 @@ const numberchangeTexts = ($this, context, e) => {
       });
     }
     clearInterval(texthandlerInterval);
-  }, 1000);
+  }, 500);
 };
 
 const itemchangeText = ($this, e) => {
@@ -211,7 +211,7 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const deleteSalesReturnDetail = ($this, context, row) => {
-  debugger;
+  //debugger;
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
   pharmacy_stock_detail.splice(row.rowIdx, 1);
 
@@ -278,7 +278,7 @@ const deleteSalesReturnDetail = ($this, context, row) => {
 };
 
 const updateSalesReturnDetail = ($this, context) => {
-  debugger;
+  //debugger;
   if ($this.state.dataChange === true) {
     $this.props.SalesReturnCalculations({
       uri: "/billing/billingCalculations",
@@ -416,7 +416,7 @@ const SalesReturnheaderCalculation = ($this, context) => {
       }
     });
     clearInterval(intervalId);
-  }, 1000);
+  }, 500);
 };
 
 const EditGrid = ($this, context, cancelRow) => {

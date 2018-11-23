@@ -102,13 +102,13 @@ class DeliveryNoteEntry extends Component {
             value: this.state.delivery_note_number,
             selectValue: "delivery_note_number",
             events: {
-              onChange: null //getCtrlCode.bind(this, this)
+              onChange: getCtrlCode.bind(this, this)
             },
             jsonFile: {
               fileName: "spotlightSearch",
-              fieldName: "initialStock.intstock"
+              fieldName: "Delivery.DNEntry"
             },
-            searchName: "initialstock"
+            searchName: "DNEntry"
           }}
           userArea={
             <div className="row">

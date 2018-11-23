@@ -30,7 +30,7 @@ const numberchangeTexts = ($this, context, e) => {
       });
     }
     clearInterval(texthandlerInterval);
-  }, 1000);
+  }, 500);
 };
 
 const itemchangeText = ($this, e) => {
@@ -258,7 +258,7 @@ const deleteTransEntryDetail = ($this, context, e, rowId) => {
 };
 
 const updateTransEntryDetail = ($this, context) => {
-  debugger;
+  //debugger;
   if (context != null) {
     context.updateState({
       saveEnable: false
@@ -329,7 +329,7 @@ const getItemLocationStock = ($this, value) => {
 };
 
 const EditGrid = ($this, context, cancelRow) => {
-  debugger;
+  //debugger;
   if (context != null) {
     let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
     if (cancelRow !== undefined) {

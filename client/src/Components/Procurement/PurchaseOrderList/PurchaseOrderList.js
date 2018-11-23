@@ -38,7 +38,7 @@ class PurchaseOrderList extends Component {
   }
 
   render() {
-    debugger;
+    //debugger;
     const _mainStore = Enumerable.from(this.props.polocations)
       .where(w => w.location_type === "MS")
       .toArray();

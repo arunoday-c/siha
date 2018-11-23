@@ -21,7 +21,7 @@ const DeptselectedHandeler = ($this, context, e) => {
 };
 
 const selectedHandeler = ($this, context, e) => {
-  debugger;
+  //debugger;
   if (
     $this.state.full_name !== "" &&
     $this.state.title_id !== null &&
