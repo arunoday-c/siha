@@ -74,6 +74,7 @@
   "bill_amount": "Bill Amount",
   "net_amount": "Net",
   "credit_amount": "Credit",
+  "balance_due": "Balance Due",
   "receiveable_amount": "Receivable",
   "receipt_number": "Receipt Number",
   "receipt_date": "Receipt Date",

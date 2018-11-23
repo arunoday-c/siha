@@ -34,7 +34,7 @@ export default class BillingDetails extends PureComponent {
   render() {
     return (
       <div className="hptl-phase1-billing-details margin-top-15">
-        <div className="tab-container toggle-section">
+        {/* <div className="tab-container toggle-section">
           <ul className="nav">
             <li
               className={"nav-item tab-button " + "active"}
@@ -49,7 +49,7 @@ export default class BillingDetails extends PureComponent {
               }
             </li>
           </ul>
-        </div>
+        </div> */}
         <div className="billing-section">
           <BillingForm PatRegIOputs={this.props.PatRegIOputs} />
         </div>

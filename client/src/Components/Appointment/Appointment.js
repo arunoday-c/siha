@@ -38,7 +38,8 @@ class Appointment extends Component {
       date_of_birth: null,
       activeDateHeader: moment()._d,
       outerStyles: {},
-      byPassValidation: false
+      byPassValidation: false,
+      width: 0
     };
   }
 
@@ -408,7 +409,8 @@ class Appointment extends Component {
                     slot:
                       this.state.appointmentSchedule !== undefined
                         ? this.state.appointmentSchedule[0].slot
-                        : null
+                        : null,
+                    width: 254 * response.data.records.length
                   });
                 }
               );
@@ -2117,7 +2119,7 @@ class Appointment extends Component {
                 <div className="appointment-outer-cntr">
                   <div
                     className="appointment-inner-cntr"
-                    // style={{ width: { rgdfjg } }}
+                    style={{ width: this.state.width }}
                   >
                     {/* Table Start */}
                     {this.state.appointmentSchedule.length !== 0 ? (

@@ -188,4 +188,5 @@ header {
     padding-left: 10px; }
     .loginProfileInfo span:first-child {
       font-size: 0.9rem;
-      font-weight: 600; }
+      font-weight: 600;
+      text-transform: uppercase; }
