@@ -146,6 +146,45 @@ let selectRoles = (req, res, next) => {
   }
 };
 
+
+//created by irfan: to 
+let createLoginCredentials = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT INTO `hims_d_appointment_room` (description, created_date, created_by, updated_date, updated_by)\
+          VALUE(?,?,?,?,?)",
+        [
+          input.description,
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
 module.exports = {
   selectAppUsers,
   selectLoginUser,
