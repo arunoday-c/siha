@@ -137,7 +137,7 @@ const numberchangeTexts = ($this, context, e) => {
         });
       }
       clearInterval(texthandlerInterval);
-    }, 1000);
+    }, 500);
   }
 };
 
