@@ -5,6 +5,7 @@
     width: 94.8vw;
   }
   .appointment-inner-cntr {
+    min-width: 94vw !important;
     span.noDoctor {
       display: inline-block;
       font-size: 1.4rem;
@@ -356,5 +357,9 @@
         text-align: center;
       }
     }
+  }
+  .highlightGrey {
+    background: #e4e4e4;
+    border: 1px solid #acaaaa;
   }
 }
