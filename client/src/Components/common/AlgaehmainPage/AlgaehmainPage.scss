@@ -3,6 +3,56 @@ header {
   box-shadow: none !important;
   border-bottom: 2px solid rgba(0, 0, 0, 0.1);
 }
+.mainTheme {
+  background: #34b8bc;
+  color: #fff;
+  padding: 0 1rem;
+  border-bottom: 1px solid #008587;
+}
+.mainPageArea {
+  position: fixed;
+  top: 53px;
+  height: 94vh;
+  overflow: auto;
+  overflow-x: hidden;
+}
+.sideMenuBars {
+  border-right: 1px solid #00999c;
+  margin-left: -15px;
+  padding: 15px;
+  cursor: pointer;
+  background: linear-gradient(
+    to right,
+    rgba(228, 171, 89, 0.76) 0%,
+    rgba(0, 186, 190, 0.1) 100%
+  );
+  &:hover {
+    background: #00999c;
+  }
+}
+.topNavbar-title {
+  font-size: 1.2rem;
+  margin: 0;
+  padding: 0;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+}
+.appLogoCntr {
+  width: 115px;
+  border-left: 1px solid #00d1d6;
+  padding-left: 3px;
+  margin-right: 10px;
+
+  .appLogoOnly {
+    background: url(../../../assets/svg/HIMS_LOGO_ONLY.svg) no-repeat center
+      left;
+    background-size: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    height: 40px;
+  }
+}
+
 .btn-userProfile {
   background: none;
   font-size: 1rem;
@@ -41,7 +91,9 @@ header {
   }
 }
 .leftNavCntr {
+  background: #292929;
   margin-top: 0;
+  top: 0;
   z-index: 9999;
   position: fixed;
   height: 100%;
@@ -148,6 +200,11 @@ header {
 //     height: 23px;
 //   }
 // }
+
+/*
+Code snippet by maridlcrmn for Bootsnipp.com
+Follow me on Twitter @maridlcrmn
+*/
 
 /* Dark Side Bar Menu */
 .hptl-phase1-sideMenuBar {
