@@ -154,7 +154,6 @@ class HospitalServiceSetup extends Component {
   }
 
   EditItemMaster(row) {
-    
     if (row.cpt_code !== null) {
       this.props.getCptCodes({
         uri: "/icdcptcodes/selectCptCodes",
@@ -316,7 +315,7 @@ class HospitalServiceSetup extends Component {
             </div>
             <div className="actions">
               <a
-                href="javascript:;"
+                href="javascript"
                 className="btn btn-primary btn-circle active"
                 onClick={this.ShowModel.bind(this)}
               >

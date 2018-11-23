@@ -64,7 +64,8 @@ export default {
       po_outstanding_quantity: null,
       po_completed: null,
       addItemButton: true,
-      dummyField: false
+      dummyField: false,
+      authorizeEnable: false
     };
     return output;
   }

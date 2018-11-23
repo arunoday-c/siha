@@ -9,7 +9,7 @@ export function getCities(dataValue) {
   //     uri: "/masters/get/city",
   //     method: "GET",
   //     onSuccess: response => {
-  //       if (response.data.success == true) {
+  //       if (response.data.success === true) {
   //         dispatch({
   //           type: "CITYGET_DATA",
   //           payload: response.data.records

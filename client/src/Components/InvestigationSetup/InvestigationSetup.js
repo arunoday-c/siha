@@ -3,23 +3,19 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import Enumerable from "linq";
+// import Enumerable from "linq";
 import "./InvestigationSetup.css";
 import "../../styles/site.css";
-import {
-  AlgaehLabel,
-  AlgaehDataGrid,
-  AlagehAutoComplete
-} from "../Wrapper/algaehWrapper";
+import { AlgaehLabel, AlgaehDataGrid } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
 
 import {
-  texthandle,
+  // texthandle,
   getInvestigations,
   EditInvestigationTest
 } from "./InvestigationSetupEvent";
 
-import { FORMAT_LAB_RAD } from "../../utils/GlobalVariables.json";
+// import { FORMAT_LAB_RAD } from "../../utils/GlobalVariables.json";
 import moment from "moment";
 import Options from "../../Options.json";
 import NewInvestigation from "./NewInvestigation/NewInvestigation";
@@ -225,7 +221,7 @@ class InvestigationSetup extends Component {
             </div>
             <div className="actions">
               <a
-                // href="javascript:;"
+                href="javascript"
                 className="btn btn-primary btn-circle active"
                 onClick={this.ShowModel.bind(this)}
               >

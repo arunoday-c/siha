@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import AddOPBillingDetails from "./AddOPBillingDetails/AddOPBillingForm";
-import ReciptForm from "./ReciptDetails/ReciptForm";
+
 import PrimaryInsurance from "../DisplayInsuranceDetails/PrimaryInsurance/PrimaryInsuranceDetails.js";
 import SecondaryInsurance from "../DisplayInsuranceDetails/SecondaryInsurance/SecondaryInsuranceDetails.js";
 import "./OPBillingDetails.css";
@@ -35,7 +35,6 @@ export default class OPBillingDetails extends Component {
           <ul className="nav">
             <li
               algaehtabs={"BillingDetails"}
-              
               className={"nav-item tab-button active"}
               onClick={this.openTab.bind(this)}
             >
@@ -48,7 +47,6 @@ export default class OPBillingDetails extends Component {
               }
             </li>
             <li
-              
               algaehtabs={"PrimaryInsurance"}
               className={"nav-item tab-button"}
               onClick={this.openTab.bind(this)}
@@ -63,7 +61,6 @@ export default class OPBillingDetails extends Component {
             </li>
             <li
               algaehtabs={"SecondaryDetails"}
-              
               className={"nav-item tab-button"}
               onClick={this.openTab.bind(this)}
             >

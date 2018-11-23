@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { AlgaehErrorBoundary } from "./Wrapper/algaehWrapper";
 import "react-table/react-table.css";
-import Enumerable from "linq";
+// import Enumerable from "linq";
 import { algaehApiCall } from "../utils/algaehApiCall";
 import AlgaehReport from "./Wrapper/printReports";
 
@@ -130,16 +130,16 @@ class Experiment extends Component {
   }
 
   render() {
-    const _groupData = Enumerable.from(_data)
-      .groupBy("$.prov_date", null, (k, g) => {
-        const _get = Enumerable.from(g.getSource()).firstOrDefault();
-        return {
-          bill_date: _get.bill_date,
-          provider_name: _get.provider_name,
-          list: g.getSource()
-        };
-      })
-      .toArray();
+    // const _groupData = Enumerable.from(_data)
+    //   .groupBy("$.prov_date", null, (k, g) => {
+    //     const _get = Enumerable.from(g.getSource()).firstOrDefault();
+    //     return {
+    //       bill_date: _get.bill_date,
+    //       provider_name: _get.provider_name,
+    //       list: g.getSource()
+    //     };
+    //   })
+    //   .toArray();
     return (
       <div style={{ textAlign: "center" }}>
         <br />

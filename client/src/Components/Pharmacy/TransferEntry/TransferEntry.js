@@ -8,8 +8,7 @@ import AppBar from "@material-ui/core/AppBar";
 import {
   AlagehFormGroup,
   AlgaehLabel,
-  AlagehAutoComplete,
-  AlgaehDateHandler
+  AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
 import moment from "moment";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
@@ -81,15 +80,12 @@ class TransferEntry extends Component {
           type: "LOCATIOS_GET_DATA",
           mappingName: "userwiselocations"
         },
-        afterSuccess: data => {
-          
-        }
+        afterSuccess: data => {}
       });
     }
   }
 
   render() {
-    
     let display =
       this.props.locations === undefined
         ? []

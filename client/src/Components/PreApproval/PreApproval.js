@@ -2,10 +2,6 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import Edit from "@material-ui/icons/Edit";
-import IconButton from "@material-ui/core/IconButton";
-import Send from "@material-ui/icons/Send";
-import Update from "@material-ui/icons/Update";
 
 import "./PreApproval.css";
 import "../../styles/site.css";

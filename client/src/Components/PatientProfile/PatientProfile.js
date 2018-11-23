@@ -11,7 +11,7 @@ import {
   swalMessage
 } from "../../utils/algaehApiCall";
 import moment from "moment";
-import { setGlobal, displayFileFromServer } from "../../utils/GlobalFunctions";
+import { setGlobal } from "../../utils/GlobalFunctions";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -79,7 +79,7 @@ class PatientProfile extends Component {
       },
       onSuccess: response => {
         if (response.data.success) {
-          const _dataG = response.data.records[0];
+          // const _dataG = response.data.records[0];
           AlgaehReport({
             report: {
               fileName: "ucafReport"

@@ -323,11 +323,11 @@ class AccessionAcknowledgement extends Component {
                           />
                         ),
                         displayTemplate: row => {
-                          return row.sample_status == "N"
+                          return row.sample_status === "N"
                             ? "Not Done"
-                            : row.sample_status == "A"
+                            : row.sample_status === "A"
                             ? "Accepted"
-                            : row.sample_status == "R"
+                            : row.sample_status === "R"
                             ? "Rejected"
                             : null;
                         },
@@ -414,7 +414,7 @@ class AccessionAcknowledgement extends Component {
                           <AlgaehLabel label={{ fieldName: "proiorty" }} />
                         ),
                         displayTemplate: row => {
-                          return row.test_type == "S" ? "Stat" : "Rotuine";
+                          return row.test_type === "S" ? "Stat" : "Rotuine";
                         },
                         disabled: true,
                         others: {
@@ -426,13 +426,13 @@ class AccessionAcknowledgement extends Component {
                         fieldName: "status",
                         label: <AlgaehLabel label={{ fieldName: "status" }} />,
                         displayTemplate: row => {
-                          return row.status == "O"
+                          return row.status === "O"
                             ? "Ordered"
-                            : row.status == "CL"
+                            : row.status === "CL"
                             ? "Collected"
-                            : row.status == "CN"
+                            : row.status === "CN"
                             ? "Cancelled"
-                            : row.status == "CF"
+                            : row.status === "CF"
                             ? "Confirmed"
                             : "Validated";
                         },

@@ -113,7 +113,7 @@ class UOMAdditionalInfo extends Component {
                     <div className="col actions">
                       <a
                         style={{ marginTop: 23 }}
-                        // href="javascript:;"
+                        href="javascript"
                         className="btn btn-primary btn-circle active"
                       >
                         <i

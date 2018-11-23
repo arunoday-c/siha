@@ -1,7 +1,7 @@
 import { swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import Enumerable from "linq";
-import extend from "extend";
+
 import Options from "../../../../Options.json";
 
 let texthandlerInterval = null;
@@ -491,9 +491,9 @@ const deletePODetail = ($this, context, row) => {
     {
       let inventory_stock_detail = $this.state.inventory_stock_detail;
 
-      for (var i = 0; i < inventory_stock_detail.length; i++) {
-        if (inventory_stock_detail[i].inv_item_id === row["inv_item_id"]) {
-          inventory_stock_detail.splice(i, 1);
+      for (var k = 0; k < inventory_stock_detail.length; k++) {
+        if (inventory_stock_detail[k].inv_item_id === row["inv_item_id"]) {
+          inventory_stock_detail.splice(k, 1);
         }
       }
 

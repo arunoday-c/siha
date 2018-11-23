@@ -1,6 +1,5 @@
 import React, { PureComponent } from "react";
 import BillingForm from "./BillingDetails/BillingForm";
-import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import "./BillingDetails.css";
 import "./../../../styles/site.css";
 import AlgaehLabel from "../../Wrapper/label.js";
@@ -28,7 +27,7 @@ export default class BillingDetails extends PureComponent {
     }
   }
   // componentDidMount() {
-  //   
+  //
   //   if (this.props.loader) AlgaehLoader({ show: false });
   // }
 

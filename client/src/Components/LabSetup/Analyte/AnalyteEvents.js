@@ -106,7 +106,7 @@ const insertLabAnalytes = ($this, e) => {
         uri: "/labmasters/insertAnalytes",
         data: $this.state,
         onSuccess: response => {
-          if (response.data.success == true) {
+          if (response.data.success === true) {
             resetState($this);
             //Handle Successful Add here
             $this.props.getLabAnalytes({

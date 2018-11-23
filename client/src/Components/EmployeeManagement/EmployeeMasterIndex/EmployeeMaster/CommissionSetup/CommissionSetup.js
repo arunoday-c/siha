@@ -3,8 +3,6 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import IconButton from "@material-ui/core/IconButton";
-
 import { AlgaehActions } from "../../../../../actions/algaehActions";
 import "./CommissionSetup.css";
 import {
@@ -460,7 +458,7 @@ class CommissionSetup extends Component {
 
                       <div className="col actions" style={{ paddingTop: "4%" }}>
                         <a
-                          href="javascript:;"
+                          href="javascript"
                           className="btn btn-primary btn-circle active"
                         >
                           <i
