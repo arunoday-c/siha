@@ -189,7 +189,11 @@ class AddBillingForm extends Component {
                             },
                             others: {
                               placeholder: "0.00",
-                              onBlur: advanceAdjustCal.bind(this, this),
+                              onBlur: advanceAdjustCal.bind(
+                                this,
+                                this,
+                                context
+                              ),
                               onFocus: e => {
                                 e.target.oldvalue = e.target.value;
                               }
@@ -211,7 +215,7 @@ class AddBillingForm extends Component {
                             },
                             others: {
                               placeholder: "0.00",
-                              onBlur: discountCal.bind(this, this),
+                              onBlur: discountCal.bind(this, this, context),
                               onFocus: e => {
                                 e.target.oldvalue = e.target.value;
                               }
@@ -238,7 +242,7 @@ class AddBillingForm extends Component {
                             },
                             others: {
                               placeholder: "0.00",
-                              onBlur: discountCal.bind(this, this),
+                              onBlur: discountCal.bind(this, this, context),
                               onFocus: e => {
                                 e.target.oldvalue = e.target.value;
                               }
@@ -285,7 +289,7 @@ class AddBillingForm extends Component {
                             },
                             others: {
                               placeholder: "0.00",
-                              onBlur: credittextCal.bind(this, this),
+                              onBlur: credittextCal.bind(this, this, context),
                               onFocus: e => {
                                 e.target.oldvalue = e.target.value;
                               }
@@ -433,7 +437,7 @@ class AddBillingForm extends Component {
                             others: {
                               disabled: !this.state.Cashchecked,
                               placeholder: "0.00",
-                              onBlur: cashtexthCal.bind(this, this),
+                              onBlur: cashtexthCal.bind(this, this, context),
                               onFocus: e => {
                                 e.target.oldvalue = e.target.value;
                               }
@@ -486,7 +490,7 @@ class AddBillingForm extends Component {
                             others: {
                               disabled: !this.state.Cardchecked,
                               placeholder: "0.00",
-                              onBlur: cardtexthCal.bind(this, this),
+                              onBlur: cardtexthCal.bind(this, this, context),
                               onFocus: e => {
                                 e.target.oldvalue = e.target.value;
                               }
@@ -577,7 +581,7 @@ class AddBillingForm extends Component {
                             others: {
                               disabled: !this.state.Checkchecked,
                               placeholder: "0.00",
-                              onBlur: chequetexthCal.bind(this, this),
+                              onBlur: chequetexthCal.bind(this, this, context),
                               onFocus: e => {
                                 e.target.oldvalue = e.target.value;
                               }
@@ -709,7 +713,6 @@ class AddBillingForm extends Component {
 
 function mapStateToProps(state) {
   return {
-    genbill: state.genbill,
     shifts: state.shifts,
     counters: state.counters
   };
@@ -718,8 +721,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      generateBill: AlgaehActions,
-      billingCalculations: AlgaehActions,
       getShifts: AlgaehActions,
       getCounters: AlgaehActions
     },

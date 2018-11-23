@@ -23,15 +23,12 @@ const serviceTypeHandeler = ($this, context, e) => {
 };
 
 const serviceHandeler = ($this, context, e) => {
-  
   $this.setState(
     {
       [e.name]: e.value,
       visittypeselect: false
     },
-    () => {
-      
-    }
+    () => {}
   );
   if (context != null) {
     context.updateState({ [e.name]: e.value });
@@ -120,7 +117,6 @@ const discounthandle = ($this, context, ctrl, e) => {
 };
 
 const billheaderCalculation = ($this, e) => {
-  
   if (e.target.value !== e.target.oldvalue) {
     let serviceInput = {
       isReceipt: false,
@@ -153,6 +149,39 @@ const onchangegridcol = ($this, row, e) => {
   row.update();
 };
 
+const credittexthandle = ($this, context, ctrl, e) => {
+  e = e || ctrl;
+
+  if (e.target.value > $this.state.net_amount) {
+    successfulMessage({
+      message: "Invalid Input. Criedt amount cannot be greater than Net amount",
+      title: "Warning",
+      icon: "warning"
+    });
+  } else {
+    $this.setState(
+      {
+        [e.target.name]: e.target.value
+      },
+      () => {
+        credittextCal($this, e);
+      }
+    );
+
+    if (context != null) {
+      context.updateState({
+        [e.target.name]: e.target.value
+      });
+    }
+  }
+};
+
+const credittextCal = ($this, e) => {
+  if (e.target.value !== e.target.oldvalue) {
+    billheaderCalculation($this);
+  }
+};
+
 export {
   serviceTypeHandeler,
   serviceHandeler,
@@ -160,5 +189,6 @@ export {
   discounthandle,
   adjustadvance,
   billheaderCalculation,
-  onchangegridcol
+  onchangegridcol,
+  credittexthandle
 };
