@@ -1,3 +1,9 @@
 {
-  "login_users": "Login Users"
+  "login_users": "Login Users",
+  "username": "User Name",
+  "password": "Password",
+  "confirm_password": "Confirm Password",
+  "group": "Group",
+  "role": "Role",
+  "add_to_list": "Add To List"
 }
