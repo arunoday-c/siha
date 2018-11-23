@@ -19,7 +19,8 @@ import {
   discounthandle,
   adjustadvance,
   billheaderCalculation,
-  onchangegridcol
+  onchangegridcol,
+  credittexthandle
 } from "./AddOPBillingHandaler";
 import ReciptForm from "../ReciptDetails/ReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -990,11 +991,19 @@ class AddOPBillingForm extends Component {
                             value: this.state.credit_amount,
                             className: "txt-fld",
                             name: "state_credit_amount",
-                            others: {
-                              disabled: this.state.Billexists
-                            },
                             events: {
-                              onChange: null
+                              onChange: credittexthandle.bind(
+                                this,
+                                this,
+                                context
+                              )
+                            },
+                            others: {
+                              placeholder: "0.00",
+                              // onBlur: credittextCal.bind(this, this),
+                              onFocus: e => {
+                                e.target.oldvalue = e.target.value;
+                              }
                             }
                           }}
                         />

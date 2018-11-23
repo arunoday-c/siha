@@ -1,7 +1,7 @@
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import PatRegIOputs from "../../Models/RegistrationPatient";
 import BillingIOputs from "../../Models/Billing";
-import { swalMessage } from "../../utils/algaehApiCall.js";
+import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall.js";
 import extend from "extend";
 
 const emptyObject = extend(
@@ -27,28 +27,72 @@ const generateBillDetails = $this => {
     }
   ];
   AlgaehLoader({ show: true });
-  $this.props.generateBill({
+  // $this.props.generateBill({
+  //   uri: "/billing/getBillDetails",
+  //   method: "POST",
+  //   data: serviceInput,
+  //   redux: {
+  //     type: "BILL_GEN_GET_DATA",
+  //     mappingName: "xxx"
+  //   },
+  //   afterSuccess: data => {
+  //     $this.setState({ ...data });
+
+  //     $this.props.billingCalculations({
+  //       uri: "/billing/billingCalculations",
+  //       method: "POST",
+  //       data: data,
+  //       redux: {
+  //         type: "BILL_HEADER_GEN_GET_DATA",
+  //         mappingName: "genbill"
+  //       },
+  //       afterSuccess: data => {
+  //         AlgaehLoader({ show: false });
+  //       }
+  //     });
+  //   }
+  // });
+
+  algaehApiCall({
     uri: "/billing/getBillDetails",
     method: "POST",
     data: serviceInput,
-    redux: {
-      type: "BILL_GEN_GET_DATA",
-      mappingName: "xxx"
-    },
-    afterSuccess: data => {
-      $this.setState({ ...data });
+    onSuccess: response => {
+      if (response.data.success) {
+        // if (context != null) {
+        //   context.updateState({ ...response.data.records });
+        // }
 
-      $this.props.billingCalculations({
-        uri: "/billing/billingCalculations",
-        method: "POST",
-        data: data,
-        redux: {
-          type: "BILL_HEADER_GEN_GET_DATA",
-          mappingName: "genbill"
-        },
-        afterSuccess: data => {
-          AlgaehLoader({ show: false });
-        }
+        $this.setState({ ...response.data.records });
+
+        algaehApiCall({
+          uri: "/billing/billingCalculations",
+          method: "POST",
+          data: response.data.records,
+          onSuccess: response => {
+            if (response.data.success) {
+              // if (context != null) {
+              //   context.updateState({ ...response.data.records });
+              // }
+              $this.setState({ ...response.data.records });
+            }
+            AlgaehLoader({ show: false });
+          },
+          onFailure: error => {
+            AlgaehLoader({ show: false });
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
+        });
+      }
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
       });
     }
   });
@@ -107,7 +151,6 @@ const getHospitalDetails = $this => {
       mappingName: "hospitaldetails"
     },
     afterSuccess: data => {
-      
       $this.setState({
         vat_applicable: data[0].local_vat_applicable,
         nationality_id: data[0].default_nationality,
