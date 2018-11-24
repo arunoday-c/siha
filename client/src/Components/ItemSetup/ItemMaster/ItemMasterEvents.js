@@ -78,7 +78,6 @@ const InsertUpdateItems = $this => {
         uri: "/pharmacy/addItemMaster",
         data: $this.state,
         onSuccess: response => {
-          debugger;
           if (response.data.success === true) {
             swalMessage({
               type: "success",

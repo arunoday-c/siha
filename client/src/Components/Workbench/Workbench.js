@@ -37,7 +37,6 @@ class Workbench extends Component {
   }
 
   componentList(screen) {
-    debugger;
     switch (screen) {
       case "DoctorsWorkbench":
         return <DoctorsWorkbench />;

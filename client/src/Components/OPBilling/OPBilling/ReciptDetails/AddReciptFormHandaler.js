@@ -40,7 +40,6 @@ const calculateRecipt = ($this, context, e) => {
       method: "POST",
       data: serviceInput,
       onSuccess: response => {
-        debugger;
         if (response.data.success) {
           if (context != null) {
             response.data.records.patient_payable_h =

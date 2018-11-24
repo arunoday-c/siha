@@ -1,6 +1,8 @@
 import moment from "moment";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import { saveImageOnServer } from "../../../../utils/GlobalFunctions";
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+
 let texthandlerInterval = null;
 const texthandle = ($this, context, e) => {
   let name = e.name || e.target.name;
@@ -258,33 +260,78 @@ const generateBillDetails = ($this, context) => {
     }
   ];
   AlgaehLoader({ show: true });
-  $this.props.generateBill({
+
+  algaehApiCall({
     uri: "/billing/getBillDetails",
     method: "POST",
     data: serviceInput,
-    redux: {
-      type: "BILL_GEN_GET_DATA",
-      mappingName: "xxx"
-    },
-    afterSuccess: data => {
-      if (context != null) {
-        context.updateState({ ...data });
-      }
-
-      $this.props.billingCalculations({
-        uri: "/billing/billingCalculations",
-        method: "POST",
-        data: data,
-        redux: {
-          type: "BILL_HEADER_GEN_GET_DATA",
-          mappingName: "genbill"
-        },
-        afterSuccess: data => {
-          AlgaehLoader({ show: false });
+    onSuccess: response => {
+      if (response.data.success) {
+        if (context != null) {
+          context.updateState({ ...response.data.records });
         }
+
+        algaehApiCall({
+          uri: "/billing/billingCalculations",
+          method: "POST",
+          data: response.data.records,
+          onSuccess: response => {
+            if (response.data.success) {
+              if (context != null) {
+                context.updateState({ ...response.data.records });
+              }
+            }
+            AlgaehLoader({ show: false });
+          },
+          onFailure: error => {
+            AlgaehLoader({ show: false });
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
+        });
+      }
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
       });
     }
   });
+
+  // $this.props.generateBill({
+  //   uri: "/billing/getBillDetails",
+  //   method: "POST",
+  //   data: serviceInput,
+  //   redux: {
+  //     type: "BILL_GEN_GET_DATA",
+  //     mappingName: "xxx"
+  //   },
+  //   afterSuccess: data => {
+  //     if (context != null) {
+  //       context.updateState({ ...data });
+  //     }
+
+  //     $this.props.billingCalculations({
+  //       uri: "/billing/billingCalculations",
+  //       method: "POST",
+  //       data: data,
+  //       redux: {
+  //         type: "BILL_HEADER_GEN_GET_DATA",
+  //         mappingName: "genbill"
+  //       },
+  //       afterSuccess: data => {
+  //         if (context != null) {
+  //           context.updateState({ ...data });
+  //         }
+  //         AlgaehLoader({ show: false });
+  //       }
+  //     });
+  //   }
+  // });
 };
 
 export {

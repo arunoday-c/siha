@@ -140,7 +140,6 @@ const AddDeptUser = ($this, context, e) => {
 // getEmpSpeciality
 
 const updateDeptUser = ($this, context, row) => {
-  debugger;
   let deptDetails = $this.state.deptDetails;
   let updatedeptDetails = $this.state.updatedeptDetails;
   let insertdeptDetails = $this.state.insertdeptDetails;
@@ -233,7 +232,6 @@ const deleteDeptUser = ($this, context, row) => {
 };
 
 const colgridtexthandle = ($this, row, e) => {
-  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   row[name] = value;

@@ -1,7 +1,11 @@
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import PatRegIOputs from "../../Models/RegistrationPatient";
 import BillingIOputs from "../../Models/Billing";
-import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall.js";
+import {
+  algaehApiCall,
+  swalMessage,
+  getCookie
+} from "../../utils/algaehApiCall.js";
 import extend from "extend";
 
 const emptyObject = extend(
@@ -27,31 +31,6 @@ const generateBillDetails = $this => {
     }
   ];
   AlgaehLoader({ show: true });
-  // $this.props.generateBill({
-  //   uri: "/billing/getBillDetails",
-  //   method: "POST",
-  //   data: serviceInput,
-  //   redux: {
-  //     type: "BILL_GEN_GET_DATA",
-  //     mappingName: "xxx"
-  //   },
-  //   afterSuccess: data => {
-  //     $this.setState({ ...data });
-
-  //     $this.props.billingCalculations({
-  //       uri: "/billing/billingCalculations",
-  //       method: "POST",
-  //       data: data,
-  //       redux: {
-  //         type: "BILL_HEADER_GEN_GET_DATA",
-  //         mappingName: "genbill"
-  //       },
-  //       afterSuccess: data => {
-  //         AlgaehLoader({ show: false });
-  //       }
-  //     });
-  //   }
-  // });
 
   algaehApiCall({
     uri: "/billing/getBillDetails",
@@ -59,10 +38,6 @@ const generateBillDetails = $this => {
     data: serviceInput,
     onSuccess: response => {
       if (response.data.success) {
-        // if (context != null) {
-        //   context.updateState({ ...response.data.records });
-        // }
-
         $this.setState({ ...response.data.records });
 
         algaehApiCall({
@@ -117,11 +92,37 @@ const ShowRefundScreen = ($this, e) => {
 
 const ClearData = ($this, e) => {
   let IOputs = emptyObject;
+  let counter_id = null;
   IOputs.visittypeselect = true;
   IOputs.age = 0;
   IOputs.AGEMM = 0;
   IOputs.AGEDD = 0;
 
+  let _screenName = getCookie("ScreenName").replace("/", "");
+  algaehApiCall({
+    uri: "/userPreferences/get",
+    data: {
+      screenName: _screenName,
+      identifier: "Counter"
+    },
+    method: "GET",
+    onSuccess: response => {
+      counter_id = response.data.records.selectedValue;
+    }
+  });
+
+  if (
+    $this.props.hospitaldetails !== undefined ||
+    $this.props.hospitaldetails.length !== 0
+  ) {
+    IOputs.vat_applicable = $this.props.hospitaldetails[0].local_vat_applicable;
+    IOputs.nationality_id = $this.props.hospitaldetails[0].default_nationality;
+    IOputs.country_id = $this.props.hospitaldetails[0].default_country;
+  }
+
+  if (counter_id !== null) {
+    IOputs.counter_id = IOputs;
+  }
   $this.setState(IOputs, () => {
     $this.props.setSelectedInsurance({
       redux: {

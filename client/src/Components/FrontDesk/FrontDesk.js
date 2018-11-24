@@ -47,6 +47,7 @@ class FrontDesk extends Component {
             patient_phone: Window.global["appt-pat-ph-no"],
             patient_email: Window.global["appt-pat-email"],
             department_id: Window.global["appt-department-id"],
+            title_id: Window.global["appt-title-id"],
 
             hims_d_services_id: data[0].services_id
           },
@@ -80,7 +81,8 @@ class FrontDesk extends Component {
             patient_age: this.state.patient_age,
             patient_gender: this.state.patient_gender,
             patient_phone: this.state.patient_phone,
-            patient_email: this.state.patient_email
+            patient_email: this.state.patient_email,
+            title_id: this.state.title_id
           }}
           visit_type={10}
           fromAppoinment={true}

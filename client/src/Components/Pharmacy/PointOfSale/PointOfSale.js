@@ -113,7 +113,7 @@ class PointOfSale extends Component {
         nextProps.posheader.copay_amount || this.state.copay_amount;
       nextProps.posheader.sec_copay_amount =
         nextProps.posheader.sec_copay_amount || this.state.sec_copay_amount;
-
+      nextProps.posheader.addItemButton = false;
       nextProps.posheader.saveEnable = false;
       posHeaderOut = nextProps.posheader;
     }

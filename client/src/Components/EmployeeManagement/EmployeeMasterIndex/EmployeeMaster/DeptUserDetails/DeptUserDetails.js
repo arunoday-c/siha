@@ -398,7 +398,6 @@ class DeptUserDetails extends Component {
                         fieldName: "user_id",
                         label: <AlgaehLabel label={{ fieldName: "user_id" }} />,
                         displayTemplate: row => {
-                          debugger;
                           let display =
                             this.props.userdrtails === undefined
                               ? []
