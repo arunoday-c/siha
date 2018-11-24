@@ -15,6 +15,12 @@ class Workbench extends Component {
     this.routeComponents = this.routeComponents.bind(this);
   }
 
+  // componentDidMount() {
+  //   this.setState({
+  //     EHR_Screen: getCookie("ScreenName").replace("/", "")
+  //   });
+  // }
+
   routeComponents() {
     this.setState(
       {
@@ -30,27 +36,38 @@ class Workbench extends Component {
     removeGlobal("EHR-STD");
   }
 
-  componentList() {
-    return {
-      DoctorsWorkbench: <DoctorsWorkbench />,
-      NurseWorkbench: <NurseWorkbench />,
-      PatientProfile: <PatientProfile />
-    };
+  componentList(screen) {
+    debugger;
+    switch (screen) {
+      case "DoctorsWorkbench":
+        return <DoctorsWorkbench />;
+
+      case "NurseWorkbench":
+        return <NurseWorkbench />;
+
+      case "PatientProfile":
+        return <PatientProfile />;
+
+      default:
+        return null;
+    }
   }
 
   changeDisplays() {
-    return this.componentList()[this.state.EHR_Screen];
+    return this.componentList(this.state.EHR_Screen);
   }
 
-  // componentDidMount() {
-  //   this.setState(
-  //     {
-  //       EHR_Screen: getCookie("ScreenName").replace("/", "")
-  //     },
-  //     () => {
-  //       this.changeDisplays(this.state.EHR_Screen);
-  //     }
-  //   );
+  // componentList() {
+  //   return {
+  //     DoctorsWorkbench: <DoctorsWorkbench />,
+  //     NurseWorkbench: <NurseWorkbench />,
+  //     PatientProfile: <PatientProfile />
+  //   };
+  // }
+
+  // changeDisplays() {
+  //   debugger;
+  //   return this.componentList()[this.state.EHR_Screen];
   // }
 
   render() {

@@ -8,6 +8,7 @@ import {
   swalMessage
 } from "../../utils/algaehApiCall.js";
 import { AlagehFormGroup } from "../Wrapper/algaehWrapper";
+import { getTokenDetals } from "../../actions/Login/Loginactions.js";
 
 export default class Login extends Component {
   constructor(props) {
@@ -22,6 +23,10 @@ export default class Login extends Component {
       token: "",
       item_id: ""
     };
+  }
+
+  componentDidMount() {
+    getTokenDetals();
   }
 
   componentWillUnmount() {

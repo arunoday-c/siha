@@ -34,7 +34,6 @@ class AddPatientForm extends PureComponent {
 
     this.state = {
       value: "",
-
       DOBErrorMsg: "",
       DOBError: false,
       DOB: 0,

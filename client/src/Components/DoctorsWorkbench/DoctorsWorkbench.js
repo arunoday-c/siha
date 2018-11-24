@@ -17,7 +17,7 @@ import {
   cancelRequest,
   swalMessage
 } from "../../utils/algaehApiCall";
-import { setGlobal } from "../../utils/GlobalFunctions";
+import { setGlobal, removeGlobal } from "../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import moment from "moment";
 import algaehLoader from "../Wrapper/fullPageLoader";
@@ -129,6 +129,7 @@ class DoctorsWorkbench extends Component {
       }
     });
   }
+
   componentWillUnmount() {
     cancelRequest("getMyDay");
   }
