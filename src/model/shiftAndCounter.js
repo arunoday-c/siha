@@ -251,13 +251,21 @@ let getCashiers = (req, res, next) => {
     }
     let db = req.db;
 
-    
+    // select hims_d_employee_id, employee_code,full_name as cashier_name, is_cashier ,user_id as cashier_id\
+    //     from hims_d_employee E ,hims_m_employee_department_mappings EDM where E.record_status='A' and \
+    //     EDM.record_status='A' and   is_cashier='Y'\
+    //     and E.hims_d_employee_id=EDM.employee_id order by hims_d_employee_id desc;
+
+
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_d_employee_id, employee_code,full_name as cashier_name, is_cashier ,user_id as cashier_id\
-        from hims_d_employee E ,hims_m_employee_department_mappings EDM where E.record_status='A' and \
-        EDM.record_status='A' and   is_cashier='Y'\
-        and E.hims_d_employee_id=EDM.employee_id order by hims_d_employee_id desc;",
+        "select algaeh_d_app_group_id,EDM.user_id as cashier_id,G.group_type,hims_d_employee_id,\
+        employee_code,E.full_name as cashier_name from algaeh_d_app_group G \
+        inner join algaeh_m_group_user_mappings GUP\
+        on G.algaeh_d_app_group_id=GUP.app_group_id \
+        inner join hims_m_employee_department_mappings EDM on GUP.user_id=EDM.user_id\
+        inner join hims_d_employee  E on EDM.employee_id=E.hims_d_employee_id\
+        where group_type in('C','FD') order by cashier_id desc;",
        
         (error, result) => {
           releaseDBConnection(db, connection);

@@ -29,7 +29,7 @@ let selectAppUsers = (req, res, next) => {
         query:
           "SELECT * FROM `algaeh_d_app_user` WHERE `record_status`='A' AND " +
           condition.condition +
-          " " +
+          " order by algaeh_d_app_user_id desc " +
           pagePaging,
         values: condition.values
       },
