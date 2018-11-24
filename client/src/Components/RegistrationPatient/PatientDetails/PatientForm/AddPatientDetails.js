@@ -1,6 +1,6 @@
 import moment from "moment";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
-
+import { saveImageOnServer } from "../../../../utils/GlobalFunctions";
 let texthandlerInterval = null;
 const texthandle = ($this, context, e) => {
   let name = e.name || e.target.name;
@@ -22,7 +22,7 @@ const texthandle = ($this, context, e) => {
 const countryStatehandle = ($this, context, e) => {
   let name;
   let value;
-  
+
   if (e.name !== undefined) {
     if (e.name === "country_id") {
       name = e.name;
@@ -78,7 +78,7 @@ const countryStatehandle = ($this, context, e) => {
 //Todo title and gender related chnage need to do
 const titlehandle = ($this, context, e) => {
   let setGender = null;
-  
+
   if (e.value === undefined) {
     $this.setState({
       gender: setGender,
@@ -180,10 +180,13 @@ const numberSet = ($this, context, cntrl, e) => {
 };
 
 const onDrop = ($this, file, context, fileType) => {
-  $this.setState({ [file]: fileType[0].preview });
-  if (context !== undefined) {
-    context.updateState({ [file]: fileType[0].preview });
-  }
+  // $this.setState({ [file]: fileType[0].preview });
+  // if (context !== undefined) {
+  //   context.updateState({ [file]: fileType[0].preview });
+  // }
+  saveImageOnServer({
+    fileControl: fileType[0].preview
+  });
 };
 
 const nationalityhandle = ($this, context, e) => {
@@ -199,7 +202,6 @@ const nationalityhandle = ($this, context, e) => {
       mappingName: "hospitaldetails"
     },
     afterSuccess: data => {
-      
       let vat_applicable = "Y";
 
       if (
