@@ -4,7 +4,7 @@ import sideMenuAr from "./SideMenuListAr.json";
 import "./AlgaehmainPage.css";
 import { setCookie, getCookie } from "../../../utils/algaehApiCall";
 import directRoutes from "../../../Dynamicroutes";
-import Enumerable from "linq";
+
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 
 class PersistentDrawer extends React.Component {
