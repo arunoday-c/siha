@@ -20,7 +20,12 @@ const numberSet = ($this, context, e) => {
 };
 
 const AddSeviceTypeComm = ($this, context) => {
+  debugger;
   if ($this.state.service_type_typ_id === null) {
+    swalMessage({
+      title: "Invalid Input. Selected the Service Type .",
+      type: "warning"
+    });
   } else {
     let intExists = false;
 
@@ -77,6 +82,7 @@ const AddSeviceTypeComm = ($this, context) => {
 };
 
 const AddServiceComm = ($this, context) => {
+  debugger;
   if ($this.state.service_type_id === null) {
   } else if ($this.state.service_type_id === null) {
   } else {
@@ -246,7 +252,7 @@ const serviceServTypeHandeler = ($this, context, e) => {
         data: { service_type_id: $this.state.service_type_id },
         redux: {
           type: "SERVICES_GET_DATA",
-          mappingName: "services"
+          mappingName: "empservices"
         }
       });
     }

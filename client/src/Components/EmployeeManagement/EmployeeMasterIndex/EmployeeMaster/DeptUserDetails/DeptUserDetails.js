@@ -17,7 +17,9 @@ import {
   deleteDeptUser,
   departmenttexthandle,
   specialitytexthandle,
-  categorytexthandle
+  categorytexthandle,
+  updateDeptUser,
+  colgridtexthandle
 } from "./DeptUserDetailsEvents";
 import Enumerable from "linq";
 // import GlobalVariables from "../../../../../utils/GlobalVariables.json";
@@ -225,29 +227,29 @@ class DeptUserDetails extends Component {
                   <AlgaehDataGrid
                     id="dpet_user_grid"
                     columns={[
-                      {
-                        fieldName: "action",
-                        label: <AlgaehLabel label={{ fieldName: "action" }} />,
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              <i
-                                className="fas fa-trash-alt"
-                                aria-hidden="true"
-                                onClick={deleteDeptUser.bind(
-                                  this,
-                                  this,
-                                  context,
-                                  row
-                                )}
-                              />
-                            </span>
-                          );
-                        },
-                        others: {
-                          maxWidth: 50
-                        }
-                      },
+                      // {
+                      //   fieldName: "action",
+                      //   label: <AlgaehLabel label={{ fieldName: "action" }} />,
+                      //   displayTemplate: row => {
+                      //     return (
+                      //       <span>
+                      //         <i
+                      //           className="fas fa-trash-alt"
+                      //           aria-hidden="true"
+                      //           onClick={deleteDeptUser.bind(
+                      //             this,
+                      //             this,
+                      //             context,
+                      //             row
+                      //           )}
+                      //         />
+                      //       </span>
+                      //     );
+                      //   },
+                      //   others: {
+                      //     maxWidth: 50
+                      //   }
+                      // },
                       {
                         fieldName: "sub_department_id",
                         label: (
@@ -256,6 +258,26 @@ class DeptUserDetails extends Component {
                           />
                         ),
                         displayTemplate: row => {
+                          let display =
+                            this.props.subdepartment === undefined
+                              ? []
+                              : this.props.subdepartment.filter(
+                                  f =>
+                                    f.hims_d_sub_department_id ===
+                                    row.sub_department_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? this.state.selectedLang === "en"
+                                  ? display[0].sub_department_name
+                                  : display[0].arabic_sub_department_name
+                                : ""}
+                            </span>
+                          );
+                        },
+                        editorTemplate: row => {
                           let display =
                             this.props.subdepartment === undefined
                               ? []
@@ -300,6 +322,26 @@ class DeptUserDetails extends Component {
                                 : ""}
                             </span>
                           );
+                        },
+                        editorTemplate: row => {
+                          let display =
+                            this.props.empspeciality === undefined
+                              ? []
+                              : this.props.empspeciality.filter(
+                                  f =>
+                                    f.hims_d_employee_speciality_id ===
+                                    row.speciality_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? this.state.selectedLang === "en"
+                                  ? display[0].speciality_name
+                                  : display[0].arabic_sub_department_name
+                                : ""}
+                            </span>
+                          );
                         }
                       },
                       {
@@ -326,12 +368,33 @@ class DeptUserDetails extends Component {
                                 : ""}
                             </span>
                           );
+                        },
+                        editorTemplate: row => {
+                          let display =
+                            this.props.specimapcategory === undefined
+                              ? []
+                              : this.props.specimapcategory.filter(
+                                  f =>
+                                    f.hims_m_category_speciality_mappings_id ===
+                                    row.category_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? this.state.selectedLang === "en"
+                                  ? display[0].employee_category_name
+                                  : display[0].arabic_sub_department_name
+                                : ""}
+                            </span>
+                          );
                         }
                       },
                       {
                         fieldName: "user_id",
                         label: <AlgaehLabel label={{ fieldName: "user_id" }} />,
                         displayTemplate: row => {
+                          debugger;
                           let display =
                             this.props.userdrtails === undefined
                               ? []
@@ -343,10 +406,47 @@ class DeptUserDetails extends Component {
                             <span>
                               {display !== undefined && display.length !== 0
                                 ? this.state.selectedLang === "en"
-                                  ? display[0].user_displayname
+                                  ? display[0].username
                                   : display[0].arabic_service_type
                                 : ""}
                             </span>
+                          );
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{}}
+                              selector={{
+                                name: "user_id",
+                                className: "select-fld",
+                                value: row.user_id,
+                                dataSource: {
+                                  textField: "username",
+                                  valueField: "algaeh_d_app_user_id",
+                                  data: this.props.userdrtails
+                                },
+                                onChange: colgridtexthandle.bind(
+                                  this,
+                                  this,
+                                  row
+                                )
+                              }}
+                              // selector={{
+                              //   name: "visa_status",
+                              //   className: "select-fld",
+                              //   value: row.visa_status,
+                              //   dataSource: {
+                              //     textField: "name",
+                              //     valueField: "value",
+                              //     data: GlobalVariables.FORMAT_STATUS
+                              //   },
+                              //   onChange: this.onchangegridcol.bind(this, row),
+                              //   others: {
+                              //     errormessage: "Status - cannot be blank",
+                              //     required: true
+                              //   }
+                              // }}
+                            />
                           );
                         }
                       },
@@ -372,6 +472,24 @@ class DeptUserDetails extends Component {
                                 : ""}
                             </span>
                           );
+                        },
+                        editorTemplate: row => {
+                          let display =
+                            this.props.depservices === undefined
+                              ? []
+                              : this.props.depservices.filter(
+                                  f => f.hims_d_services_id === row.services_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? this.state.selectedLang === "en"
+                                  ? display[0].service_name
+                                  : display[0].arabic_service_name
+                                : ""}
+                            </span>
+                          );
                         }
                       }
                     ]}
@@ -380,6 +498,12 @@ class DeptUserDetails extends Component {
                       data: this.state.deptDetails
                     }}
                     paging={{ page: 0, rowsPerPage: 5 }}
+                    isEditable={true}
+                    events={{
+                      onDelete: deleteDeptUser.bind(this, this, context),
+                      onEdit: row => {},
+                      onDone: updateDeptUser.bind(this, this, context)
+                    }}
                   />
                 </div>
               </div>
