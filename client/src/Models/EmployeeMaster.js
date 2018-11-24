@@ -27,6 +27,7 @@ export default {
       city_id: null,
       state_id: null,
       country_id: null,
+      Applicable: false,
 
       primary_contact_no: 0,
       secondary_contact_number: 0,

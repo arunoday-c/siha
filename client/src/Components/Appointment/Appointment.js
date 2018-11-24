@@ -664,19 +664,17 @@ class Appointment extends Component {
           );
 
           if (willUpdate.value) {
-
             if (
               this.state.edit_appointment_status_id === this.state.checkInId &&
               moment(this.state.edit_appt_date).format("YYYYMMDD") !==
                 moment(new Date()).format("YYYYMMDD")
             ) {
               swalMessage({
-                title: "Only Patients with Today's appointments can be Checked In",
+                title:
+                  "Only Patients with Today's appointments can be Checked In",
                 type: "warning"
               });
             } else {
-
-
               let edit_details = {
                 hims_f_patient_appointment_id: this.state.edit_appointment_id,
                 record_status: "A",
@@ -706,7 +704,7 @@ class Appointment extends Component {
                 is_stand_by: this.state.edit_is_stand_by,
                 number_of_slot: this.state.edit_no_of_slots
               };
-  
+
               algaehApiCall({
                 uri: "/appointment/updatePatientAppointment",
                 method: "PUT",
@@ -714,7 +712,8 @@ class Appointment extends Component {
                 onSuccess: response => {
                   if (response.data.success) {
                     if (
-                      edit_details.appointment_status_id === this.state.checkInId
+                      edit_details.appointment_status_id ===
+                      this.state.checkInId
                     ) {
                       setGlobal({
                         "FD-STD": "RegistrationPatient",
@@ -731,7 +730,7 @@ class Appointment extends Component {
                         "appt-department-id": this.state.department_id,
                         "appt-id": this.state.edit_appointment_id
                       });
-  
+
                       document.getElementById("fd-router").click();
                     } else {
                       this.clearSaveState();
@@ -752,8 +751,6 @@ class Appointment extends Component {
                 }
               });
             }
-
-           
           } else {
             swalMessage({
               title: "Not cancelled",
@@ -924,7 +921,8 @@ class Appointment extends Component {
           edit_appt_time: moment(new_from_time, "HH:mm a").format("HH:mm:ss"),
           edit_from_time: moment(new_from_time, "HH:mm a").format("HH:mm:ss"),
           edit_to_time: moment(new_to_time).format("HH:mm:ss"),
-          edit_provider_id: prov_id
+          edit_provider_id: prov_id,
+          edit_appointment_status_id: this.state.RescheduleId
         },
         () => {
           swal({

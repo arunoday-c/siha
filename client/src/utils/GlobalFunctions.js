@@ -73,14 +73,15 @@ export function saveImageOnServer(options) {
     },
     ...options
   };
-  if (settings.saveDirectly) {
-    if (settings.destinationName === "" || settings.fileName === "") {
-      swalMessage({
-        title: "Please provide valid details for destinaion upload",
-        type: "error"
-      });
-    }
-  }
+  // if (settings.saveDirectly) {
+  //   if (settings.destinationName === "" || settings.fileName === "") {
+  //     swalMessage({
+  //       title: "Please provide valid details for destinaion upload",
+  //       type: "error"
+  //     });
+  //   }
+  // }
+  debugger;
   if (settings.fileControl !== undefined) {
     settings.fileControl.map(file => {
       settings.thisState.stateName.setState({

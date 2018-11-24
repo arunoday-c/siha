@@ -64,7 +64,7 @@ const numberchangeTexts = ($this, context, e) => {
       });
     }
     clearInterval(texthandlerInterval);
-  }, 1000);
+  }, 500);
 };
 
 const itemchangeText = ($this, e) => {
@@ -416,7 +416,7 @@ const SalesReturnheaderCalculation = ($this, context) => {
       }
     });
     clearInterval(intervalId);
-  }, 1000);
+  }, 500);
 };
 
 const EditGrid = ($this, context, cancelRow) => {

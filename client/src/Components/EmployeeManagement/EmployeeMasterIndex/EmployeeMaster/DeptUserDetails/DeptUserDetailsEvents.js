@@ -1,5 +1,6 @@
 import { swalMessage } from "../../../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../../../utils/GlobalFunctions";
+import extend from "extend";
 
 const texthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
@@ -138,6 +139,56 @@ const AddDeptUser = ($this, context, e) => {
 
 // getEmpSpeciality
 
+const updateDeptUser = ($this, context, row) => {
+  debugger;
+  let deptDetails = $this.state.deptDetails;
+  let updatedeptDetails = $this.state.updatedeptDetails;
+  let insertdeptDetails = $this.state.insertdeptDetails;
+
+  if (row.hims_d_employee_department_id !== undefined) {
+    let Updateobj = {
+      hims_d_employee_department_id: row.hims_d_employee_department_id,
+      employee_id: row.employee_id,
+      services_id: row.services_id,
+      sub_department_id: row.sub_department_id,
+      category_speciality_id: row.category_speciality_id,
+      user_id: row.user_id,
+      record_status: "A"
+    };
+    updatedeptDetails.push(Updateobj);
+    extend(deptDetails[row.rowIdx], Updateobj);
+
+    // deptDetails[row.rowIdx] = Updateobj;
+  } else {
+    {
+      let Updateobj = {
+        employee_id: row.employee_id,
+        services_id: row.services_id,
+        sub_department_id: row.sub_department_id,
+        category_speciality_id: row.category_speciality_id,
+        user_id: row.user_id,
+        record_status: "A"
+      };
+      insertdeptDetails.push(Updateobj);
+      // deptDetails[row.rowIdx] = Updateobj;
+      extend(deptDetails[row.rowIdx], Updateobj);
+    }
+  }
+
+  $this.setState({
+    deptDetails: deptDetails,
+    updatedeptDetails: updatedeptDetails,
+    insertdeptDetails: insertdeptDetails
+  });
+  if (context !== undefined) {
+    context.updateState({
+      deptDetails: deptDetails,
+      updatedeptDetails: updatedeptDetails,
+      insertdeptDetails: insertdeptDetails
+    });
+  }
+};
+
 const deleteDeptUser = ($this, context, row) => {
   let deptDetails = $this.state.deptDetails;
   let updatedeptDetails = $this.state.updatedeptDetails;
@@ -181,11 +232,21 @@ const deleteDeptUser = ($this, context, row) => {
   }
 };
 
+const colgridtexthandle = ($this, row, e) => {
+  debugger;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  row[name] = value;
+  row.update();
+};
+
 export {
   texthandle,
   AddDeptUser,
   deleteDeptUser,
   departmenttexthandle,
   specialitytexthandle,
-  categorytexthandle
+  categorytexthandle,
+  updateDeptUser,
+  colgridtexthandle
 };

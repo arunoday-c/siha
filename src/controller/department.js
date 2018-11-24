@@ -23,13 +23,12 @@ export default ({ config, db }) => {
     addDepartment,
     (req, res, next) => {
       let resultTables = req.records;
-     
-        res.status(httpStatus.ok).json({
-          success: true,
-          records: resultTables
-        });
-        next();
-      
+
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: resultTables
+      });
+      next();
     },
     releaseConnection
   );
@@ -92,7 +91,6 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-
   api.put(
     "/updateSubDepartment",
     updateSubDepartment,
@@ -107,7 +105,7 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-  //created by:irfan 
+  //created by:irfan
   api.delete(
     "/deleteSubDepartment",
     deleteSubDepartment,
@@ -122,7 +120,7 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-//created by:irfan
+  //created by:irfan
   api.put(
     "/makeSubDepartmentInActive",
     makeSubDepartmentInActive,
@@ -137,7 +135,7 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-//created by:irfan makeDepartmentInActive
+  //created by:irfan makeDepartmentInActive
   api.put(
     "/makeDepartmentInActive",
     makeDepartmentInActive,
@@ -151,8 +149,6 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
-
-
 
   api.delete(
     "/deleteDepartment",

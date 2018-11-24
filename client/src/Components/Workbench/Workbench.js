@@ -11,6 +11,7 @@ class Workbench extends Component {
     this.state = {
       EHR_Screen: getCookie("ScreenName").replace("/", "")
     };
+
     this.routeComponents = this.routeComponents.bind(this);
   }
 
@@ -40,6 +41,17 @@ class Workbench extends Component {
   changeDisplays() {
     return this.componentList()[this.state.EHR_Screen];
   }
+
+  // componentDidMount() {
+  //   this.setState(
+  //     {
+  //       EHR_Screen: getCookie("ScreenName").replace("/", "")
+  //     },
+  //     () => {
+  //       this.changeDisplays(this.state.EHR_Screen);
+  //     }
+  //   );
+  // }
 
   render() {
     return (

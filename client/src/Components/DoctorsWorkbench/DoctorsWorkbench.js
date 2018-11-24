@@ -323,7 +323,7 @@ class DoctorsWorkbench extends Component {
                     ) : (
                       <div className="col noPatientDiv">
                         {/* <h4>Relax</h4> */}
-                        <p>No Out Patients Available</p>
+                        <p>No Patients Available</p>
                       </div>
                     )}
                   </ul>

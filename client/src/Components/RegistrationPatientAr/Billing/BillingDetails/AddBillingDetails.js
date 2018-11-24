@@ -17,7 +17,7 @@ const texthandle = ($this, context, ctrl, e) => {
       context.updateState({ [name]: value });
     }
     clearInterval(texthandlerInterval);
-  }, 1000);
+  }, 500);
 };
 
 const calculateRecipt = ($this, context) => {
@@ -45,7 +45,7 @@ const calculateRecipt = ($this, context) => {
       }
     });
     clearInterval(intervalId);
-  }, 1000);
+  }, 500);
 };
 
 const cashtexthandle = ($this, context, ctrl, e) => {
@@ -195,7 +195,7 @@ const adjustadvance = ($this, context, ctrl, e) => {
 
 const discounthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
-  
+
   let sheet_discount_percentage = 0;
   let sheet_discount_amount = 0;
 
@@ -234,7 +234,7 @@ const discounthandle = ($this, context, ctrl, e) => {
 
 const billheaderCalculation = ($this, context) => {
   var intervalId;
-  
+
   let serviceInput = {
     isReceipt: false,
     intCalculateall: false,
@@ -260,7 +260,7 @@ const billheaderCalculation = ($this, context) => {
       }
     });
     clearInterval(intervalId);
-  }, 1000);
+  }, 500);
 };
 
 const datehandle = ($this, context, ctrl, e) => {
@@ -344,8 +344,6 @@ const ProcessInsurance = ($this, context, ctrl, e) => {
 };
 
 const checkcashhandaler = ($this, context, e) => {
-  
-
   $this.setState(
     {
       Cashchecked: e.target.checked,
@@ -364,12 +362,10 @@ const checkcashhandaler = ($this, context, e) => {
       });
     }
     clearInterval(texthandlerInterval);
-  }, 1000);
+  }, 500);
 };
 
 const checkcardhandaler = ($this, context, e) => {
-  
-
   $this.setState(
     {
       Cardchecked: e.target.checked,
@@ -392,12 +388,10 @@ const checkcardhandaler = ($this, context, e) => {
       });
     }
     clearInterval(texthandlerInterval);
-  }, 1000);
+  }, 500);
 };
 
 const checkcheckhandaler = ($this, context, e) => {
-  
-
   $this.setState(
     {
       Checkchecked: e.target.checked,
@@ -420,7 +414,7 @@ const checkcheckhandaler = ($this, context, e) => {
       });
     }
     clearInterval(texthandlerInterval);
-  }, 1000);
+  }, 500);
 };
 
 const credittexthandle = ($this, context, ctrl, e) => {
@@ -433,7 +427,6 @@ const credittexthandle = ($this, context, ctrl, e) => {
       icon: "warning"
     });
   } else {
-    
     $this.setState(
       {
         [e.target.name]: e.target.value

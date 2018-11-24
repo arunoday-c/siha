@@ -149,7 +149,7 @@ const billheaderCalculation = ($this, context) => {
       }
     });
     clearInterval(intervalId);
-  }, 1000);
+  }, 500);
 };
 
 export {

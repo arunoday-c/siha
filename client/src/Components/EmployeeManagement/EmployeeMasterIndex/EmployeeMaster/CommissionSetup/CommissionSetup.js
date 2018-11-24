@@ -22,8 +22,7 @@ import {
   numberSet,
   deleteServiceComm
 } from "./CommissionSetupEvents";
-// import GlobalVariables from "../../../../../utils/GlobalVariables.json";
-// import AHSnackbar from "../../../../common/Inputs/AHSnackbar";
+import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
 
 class CommissionSetup extends Component {
   constructor(props) {
@@ -50,42 +49,51 @@ class CommissionSetup extends Component {
   }
 
   componentDidMount() {
-    this.props.getDoctorServiceTypeCommission({
-      uri: "/employee/getDoctorServiceTypeCommission",
-      data: { provider_id: this.state.hims_d_employee_id },
-      method: "GET",
-      redux: {
-        type: "EMP_SPECILITY_GET_DATA",
-        mappingName: "servTypeCommission"
-      }
-      // afterSuccess: data => {
-      //   this.setState({
-      //     servTypeCommission: data
-      //   });
-      // }
-    });
+    debugger;
+    if (this.state.servTypeCommission.length === 0) {
+      algaehApiCall({
+        uri: "/employee/getDoctorServiceTypeCommission",
+        method: "GET",
+        data: { provider_id: this.state.hims_d_employee_id },
+        onSuccess: response => {
+          debugger;
+          if (response.data.success) {
+            this.setState({ servTypeCommission: response.data.records });
+          }
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
+      });
+    }
 
-    this.props.getDoctorServiceCommission({
-      uri: "/employee/getDoctorServiceCommission",
-      method: "GET",
-      data: { provider_id: this.state.hims_d_employee_id },
-      redux: {
-        type: "EMP_SPECILITY_GET_DATA",
-        mappingName: "serviceComm"
-      }
-      // afterSuccess: data => {
-      //   this.setState({
-      //     serviceComm: data
-      //   });
-      // }
-    });
+    if (this.state.serviceComm.length === 0) {
+      algaehApiCall({
+        uri: "/employee/getDoctorServiceCommission",
+        method: "GET",
+        data: { provider_id: this.state.hims_d_employee_id },
+        onSuccess: response => {
+          debugger;
+          if (response.data.success) {
+            this.setState({ serviceComm: response.data.records });
+          }
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
+      });
+    }
   }
 
-  // handleClose = () => {
-  //   this.setState({ open: false });
-  // };
-
   render() {
+    const _serviceslist = this.props.empservices;
+    const _servicetypelist = this.props.empservicetype;
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -128,7 +136,7 @@ class CommissionSetup extends Component {
                                 ? "service_type"
                                 : "arabic_service_type",
                             valueField: "hims_d_service_type_id",
-                            data: this.props.servicetype
+                            data: this.props.empservicetype
                           },
                           others: { disabled: this.state.Billexists },
                           onChange: serviceTypeHandeler.bind(
@@ -256,9 +264,9 @@ class CommissionSetup extends Component {
                               ),
                               displayTemplate: row => {
                                 let display =
-                                  this.props.servicetypelist === undefined
+                                  _servicetypelist === undefined
                                     ? []
-                                    : this.props.servicetypelist.filter(
+                                    : _servicetypelist.filter(
                                         f =>
                                           f.hims_d_service_type_id ===
                                           row.service_type_id
@@ -323,9 +331,9 @@ class CommissionSetup extends Component {
                           keyId="service_type_id"
                           dataSource={{
                             data:
-                              this.props.servTypeCommission === undefined
+                              this.state.servTypeCommission === undefined
                                 ? []
-                                : this.props.servTypeCommission
+                                : this.state.servTypeCommission
                           }}
                           paging={{ page: 0, rowsPerPage: 5 }}
                         />
@@ -360,7 +368,7 @@ class CommissionSetup extends Component {
                                 ? "service_type"
                                 : "arabic_service_type",
                             valueField: "hims_d_service_type_id",
-                            data: this.props.servicetype
+                            data: this.props.empservicetype
                           },
 
                           onChange: serviceServTypeHandeler.bind(
@@ -387,7 +395,7 @@ class CommissionSetup extends Component {
                                 ? "service_name"
                                 : "arabic_service_name",
                             valueField: "hims_d_services_id",
-                            data: this.props.services
+                            data: this.props.empservices
                           },
                           onChange: texthandle.bind(this, this, context)
                         }}
@@ -508,9 +516,9 @@ class CommissionSetup extends Component {
                               ),
                               displayTemplate: row => {
                                 let display =
-                                  this.props.servicetypelist === undefined
+                                  _servicetypelist === undefined
                                     ? []
-                                    : this.props.servicetypelist.filter(
+                                    : _servicetypelist.filter(
                                         f =>
                                           f.hims_d_service_type_id ===
                                           row.service_type_id
@@ -538,9 +546,9 @@ class CommissionSetup extends Component {
                               ),
                               displayTemplate: row => {
                                 let display =
-                                  this.props.serviceslist === undefined
+                                  _serviceslist === undefined
                                     ? []
-                                    : this.props.serviceslist.filter(
+                                    : _serviceslist.filter(
                                         f =>
                                           f.hims_d_services_id ===
                                           row.services_id
@@ -604,9 +612,9 @@ class CommissionSetup extends Component {
                           keyId="service_type_id"
                           dataSource={{
                             data:
-                              this.props.serviceComm === undefined
+                              this.state.serviceComm === undefined
                                 ? []
-                                : this.props.serviceComm
+                                : this.state.serviceComm
                           }}
                           paging={{ page: 0, rowsPerPage: 5 }}
                         />
@@ -614,11 +622,6 @@ class CommissionSetup extends Component {
                     </div>
                   </div>
                 </div>
-                {/* <AHSnackbar
-                  open={this.state.open}
-                  handleClose={this.handleClose}
-                  MandatoryMsg={this.state.MandatoryMsg}
-                /> */}
               </div>
             </div>
           )}
@@ -630,11 +633,9 @@ class CommissionSetup extends Component {
 
 function mapStateToProps(state) {
   return {
-    services: state.services,
-    servicetype: state.servicetype,
-    // services: state.services,
-    serviceslist: state.serviceslist,
-    servicetypelist: state.servicetypelist,
+    empservices: state.empservices,
+    empservicetype: state.empservicetype,
+
     servTypeCommission: state.servTypeCommission,
     serviceComm: state.serviceComm
   };
@@ -643,8 +644,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      // getServiceTypes: AlgaehActions,
-      // getServices: AlgaehActions,
+      getServices: AlgaehActions,
       getDoctorServiceTypeCommission: AlgaehActions,
       getDoctorServiceCommission: AlgaehActions
     },
