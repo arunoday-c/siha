@@ -54,7 +54,7 @@ class Vitals extends Component {
       this.props.patient_vitals === undefined ||
       this.props.patient_vitals.length === 0
     )
-      getVitalHistory(this);
+      Window.global === undefined ? null : getVitalHistory(this);
   }
 
   handleClose() {

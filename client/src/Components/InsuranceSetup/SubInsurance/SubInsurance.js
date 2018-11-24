@@ -55,23 +55,9 @@ class SubInsurance extends PureComponent {
   }
 
   componentDidMount() {
+    debugger;
     if (this.state.insurance_provider_id !== null) {
       getSubInsuranceDetails(this, this);
-      // this.props.getSubInsuranceDetails({
-      //   uri: "/insurance/getSubInsurance",
-      //   method: "GET",
-      //   printInput: true,
-      //   data: {
-      //     insurance_provider_id: this.state.insurance_provider_id
-      //   },
-      //   redux: {
-      //     type: "SUB_INSURANCE_GET_DATA",
-      //     mappingName: "subinsuranceprovider"
-      //   },
-      //   afterSuccess: data => {
-      //     this.setState({ sub_insurance: data });
-      //   }
-      // });
     }
   }
   handleClose = () => {
@@ -85,7 +71,6 @@ class SubInsurance extends PureComponent {
   };
 
   render() {
-    // console.log("Sub Data: ", this.state.sub_insurance);
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -262,7 +247,7 @@ class SubInsurance extends PureComponent {
                       name: "effective_start_date",
 
                       events: {
-                        onChange: null
+                        onChange: datehandle.bind(this, this)
                       },
                       others: {
                         "data-subdata": true
@@ -277,7 +262,7 @@ class SubInsurance extends PureComponent {
                       name: "effective_end_date",
 
                       events: {
-                        onChange: null
+                        onChange: datehandle.bind(this, this)
                       },
                       others: {
                         "data-subdata": true

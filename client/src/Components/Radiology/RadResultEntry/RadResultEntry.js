@@ -254,7 +254,7 @@ class RadResultEntry extends Component {
                           className: "select-fld",
                           value: this.state.technician_id,
                           dataSource: {
-                            textField: "user_displayname",
+                            textField: "username",
                             valueField: "algaeh_d_app_user_id",
                             data: this.props.radiologyusers
                           },
@@ -299,7 +299,7 @@ class RadResultEntry extends Component {
                           className: "select-fld",
                           value: this.state.attended_by,
                           dataSource: {
-                            textField: "user_displayname",
+                            textField: "username",
                             valueField: "algaeh_d_app_user_id",
                             data: this.props.radiologyusers
                           },
@@ -319,7 +319,7 @@ class RadResultEntry extends Component {
                           className: "select-fld",
                           value: this.state.validate_by,
                           dataSource: {
-                            textField: "user_displayname",
+                            textField: "username",
                             valueField: "algaeh_d_app_user_id",
                             data: this.props.radiologyusers
                           },

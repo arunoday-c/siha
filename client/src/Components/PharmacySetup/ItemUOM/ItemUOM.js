@@ -44,7 +44,9 @@ class ItemUOM extends Component {
       selectedLang: prevLang
     });
 
-    getItemUOM(this, this);
+    if (this.props.itemuom === undefined || this.props.itemuom.length === 0) {
+      getItemUOM(this, this);
+    }
   }
 
   dateFormater(date) {
@@ -127,7 +129,7 @@ class ItemUOM extends Component {
                       return (
                         <span>
                           {display !== null && display.length !== 0
-                            ? display[0].user_displayname
+                            ? display[0].username
                             : ""}
                         </span>
                       );
@@ -143,7 +145,7 @@ class ItemUOM extends Component {
                       return (
                         <span>
                           {display !== null && display.length !== 0
-                            ? display[0].user_displayname
+                            ? display[0].username
                             : ""}
                         </span>
                       );

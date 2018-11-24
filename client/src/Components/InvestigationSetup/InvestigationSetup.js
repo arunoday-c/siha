@@ -3,19 +3,17 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-// import Enumerable from "linq";
+import Enumerable from "linq";
 import "./InvestigationSetup.css";
 import "../../styles/site.css";
 import { AlgaehLabel, AlgaehDataGrid } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
 
 import {
-  // texthandle,
   getInvestigations,
   EditInvestigationTest
 } from "./InvestigationSetupEvent";
 
-// import { FORMAT_LAB_RAD } from "../../utils/GlobalVariables.json";
 import moment from "moment";
 import Options from "../../Options.json";
 import NewInvestigation from "./NewInvestigation/NewInvestigation";
@@ -25,7 +23,7 @@ class InvestigationSetup extends Component {
     super(props);
     this.state = {
       isOpen: false,
-      Investigations: [],
+      // Investigations: [],
       InvestigationName: [],
       test_id: null,
       investigation_type: null,
@@ -38,34 +36,51 @@ class InvestigationSetup extends Component {
   }
 
   componentDidMount() {
-    this.props.getTestCategory({
-      uri: "/labmasters/selectTestCategory",
-      method: "GET",
-      redux: {
-        type: "TESTCATEGORY_GET_DATA",
-        mappingName: "testcategory"
-      }
-    });
-
-    this.props.getLabSpecimen({
-      uri: "/labmasters/selectSpecimen",
-      method: "GET",
-      redux: {
-        type: "SPECIMEN_GET_DATA",
-        mappingName: "labspecimen"
-      }
-    });
-
-    this.props.getLabsection({
-      uri: "/labmasters/selectSection",
-      method: "GET",
-      redux: {
-        type: "SECTION_GET_DATA",
-        mappingName: "labsection"
-      }
-    });
-
-    getInvestigations(this, this);
+    if (
+      this.props.testcategory === undefined ||
+      this.props.testcategory.length === 0
+    ) {
+      this.props.getTestCategory({
+        uri: "/labmasters/selectTestCategory",
+        method: "GET",
+        redux: {
+          type: "TESTCATEGORY_GET_DATA",
+          mappingName: "testcategory"
+        }
+      });
+    }
+    if (
+      this.props.labspecimen === undefined ||
+      this.props.labspecimen.length === 0
+    ) {
+      this.props.getLabSpecimen({
+        uri: "/labmasters/selectSpecimen",
+        method: "GET",
+        redux: {
+          type: "SPECIMEN_GET_DATA",
+          mappingName: "labspecimen"
+        }
+      });
+    }
+    if (
+      this.props.labsection === undefined ||
+      this.props.labsection.length === 0
+    ) {
+      this.props.getLabsection({
+        uri: "/labmasters/selectSection",
+        method: "GET",
+        redux: {
+          type: "SECTION_GET_DATA",
+          mappingName: "labsection"
+        }
+      });
+    }
+    if (
+      this.props.investigationdetails === undefined ||
+      this.props.investigationdetails.length === 0
+    ) {
+      getInvestigations(this, this);
+    }
   }
 
   ShowModel(e) {
@@ -104,116 +119,39 @@ class InvestigationSetup extends Component {
   }
 
   render() {
+    let _Investigations = Enumerable.from(this.props.investigationdetails)
+      .groupBy("$.hims_d_investigation_test_id", null, (k, g) => {
+        let firstRecordSet = Enumerable.from(g).firstOrDefault();
+        return {
+          available_in_house: firstRecordSet.available_in_house,
+          category_id: firstRecordSet.category_id,
+          cpt_id: firstRecordSet.cpt_id,
+          description: firstRecordSet.description,
+          external_facility_required: firstRecordSet.external_facility_required,
+          facility_description: firstRecordSet.facility_description,
+          film_category: firstRecordSet.film_category,
+          film_used: firstRecordSet.film_used,
+          hims_d_investigation_test_id:
+            firstRecordSet.hims_d_investigation_test_id,
+          investigation_type: firstRecordSet.investigation_type,
+          lab_section_id: firstRecordSet.lab_section_id,
+          priority: firstRecordSet.priority,
+          restrict_by: firstRecordSet.restrict_by,
+          restrict_order: firstRecordSet.restrict_order,
+          screening_test: firstRecordSet.screening_test,
+          send_out_test: firstRecordSet.send_out_test,
+          short_description: firstRecordSet.short_description,
+          specimen_id: firstRecordSet.specimen_id,
+          services_id: firstRecordSet.services_id,
+          hims_m_lab_specimen_id: firstRecordSet.hims_m_lab_specimen_id,
+
+          analytes: g.getSource(),
+          RadTemplate: g.getSource()
+        };
+      })
+      .toArray();
     return (
       <div className="hims_investigationsetup">
-        {/* <div
-          className="row inner-top-search d-none"
-          style={{ paddingBottom: 10 }}
-        >
-          <div className="col-lg-12">
-            <div className="row">
-              <AlagehAutoComplete
-                div={{ className: "col" }}
-                label={{
-                  fieldName: "investigation_type"
-                }}
-                selector={{
-                  name: "investigation_type",
-                  className: "select-fld",
-                  value: this.state.investigation_type,
-                  dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: FORMAT_LAB_RAD
-                  },
-                  onChange: texthandle.bind(this, this)
-                }}
-              />
-
-              <AlagehAutoComplete
-                div={{ className: "col" }}
-                label={{
-                  fieldName: "test_name"
-                }}
-                selector={{
-                  name: "test_id",
-                  className: "select-fld",
-                  value: this.state.test_id,
-                  dataSource: {
-                    textField: "description",
-                    valueField: "hims_d_investigation_test_id",
-                    data: this.state.InvestigationName
-                  },
-                  onChange: texthandle.bind(this, this)
-                }}
-              />
-
-              <AlagehAutoComplete
-                div={{ className: "col" }}
-                label={{
-                  fieldName: "category_id"
-                }}
-                selector={{
-                  name: "category_id",
-                  className: "select-fld",
-                  value: this.state.category_id,
-                  dataSource: {
-                    textField: "category_name",
-                    valueField: "hims_d_test_category_id",
-                    data: this.props.testcategory
-                  },
-                  onChange: texthandle.bind(this, this)
-                }}
-              />
-
-              <AlagehAutoComplete
-                div={{ className: "col" }}
-                label={{
-                  fieldName: "lab_section_id"
-                }}
-                selector={{
-                  name: "lab_section_id",
-                  className: "select-fld",
-                  value: this.state.lab_section_id,
-                  dataSource: {
-                    textField: "description",
-                    valueField: "hims_d_lab_section_id",
-                    data: this.props.labsection
-                  },
-                  onChange: texthandle.bind(this, this)
-                }}
-              />
-
-              <AlagehAutoComplete
-                div={{ className: "col" }}
-                label={{
-                  fieldName: "specimen_id"
-                }}
-                selector={{
-                  name: "specimen_id",
-                  className: "select-fld",
-                  value: this.state.specimen_id,
-                  dataSource: {
-                    textField: "description",
-                    valueField: "hims_d_lab_specimen_id",
-                    data: this.props.labspecimen
-                  },
-                  onChange: texthandle.bind(this, this)
-                }}
-              />
-              <div className="col">
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  onClick={this.clearData.bind(this)}
-                  style={{ marginTop: 21 }}
-                >
-                  Clear
-                </button>
-              </div>
-            </div>
-          </div>
-        </div> */}
         <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15 margin-top-15">
           <div className="portlet-title">
             <div className="caption">
@@ -369,7 +307,7 @@ class InvestigationSetup extends Component {
                   ]}
                   keyId="investigation_code"
                   dataSource={{
-                    data: this.state.Investigations
+                    data: _Investigations
                   }}
                   // isEditable={true}
                   filter={true}

@@ -2647,7 +2647,7 @@ let newReceiptData = (req, res, next) => {
 
 //-------------------------------------
 
-//Created by irfan for synchronus
+//Created by irfan :for synchronus
 let addCashHandover = (req, res, next) => {
   try {
     debugFunction("cash api");
@@ -2675,7 +2675,7 @@ let addCashHandover = (req, res, next) => {
       }
     }
 
-    if (req.userIdentity.group_type == "C") {
+    if (req.userIdentity.group_type == "C"||req.userIdentity.group_type == "FD") {
       let hims_f_cash_handover_detail_id = "";
       db.query(
         "select hims_f_cash_handover_detail_id, cash_handover_header_id, casher_id, shift_status,open_date\

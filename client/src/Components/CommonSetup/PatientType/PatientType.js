@@ -172,7 +172,6 @@ class PatientType extends Component {
         }
       },
       onFailure: error => {
-        
         swalMessage({
           title: error.response.data.message,
           type: "error"
@@ -329,7 +328,7 @@ class PatientType extends Component {
                       return (
                         <span>
                           {display !== null && display.length !== 0
-                            ? display[0].user_displayname
+                            ? display[0].username
                             : ""}
                         </span>
                       );
@@ -345,7 +344,7 @@ class PatientType extends Component {
                       return (
                         <span>
                           {display !== null && display.length !== 0
-                            ? display[0].user_displayname
+                            ? display[0].username
                             : ""}
                         </span>
                       );

@@ -5,15 +5,11 @@ const getItems = $this => {
     redux: {
       type: "ITEMS_GET_DATA",
       mappingName: "itemlist"
-    },
-    afterSuccess: data => {
-      
     }
   });
 };
 
 const EditItemMaster = ($this, row) => {
-  
   row.addNew = false;
   $this.setState({
     isOpen: !$this.state.isOpen,

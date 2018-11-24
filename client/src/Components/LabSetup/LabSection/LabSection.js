@@ -41,14 +41,19 @@ class LabSection extends Component {
     this.setState({
       selectedLang: prevLang
     });
-    this.props.getLabsection({
-      uri: "/labmasters/selectSection",
-      method: "GET",
-      redux: {
-        type: "SECTION_GET_DATA",
-        mappingName: "labsection"
-      }
-    });
+    if (
+      this.props.labsection === undefined ||
+      this.props.labsection.length === 0
+    ) {
+      this.props.getLabsection({
+        uri: "/labmasters/selectSection",
+        method: "GET",
+        redux: {
+          type: "SECTION_GET_DATA",
+          mappingName: "labsection"
+        }
+      });
+    }
   }
 
   dateFormater({ date }) {
@@ -133,7 +138,7 @@ class LabSection extends Component {
                       return (
                         <span>
                           {display !== null && display.length !== 0
-                            ? display[0].user_displayname
+                            ? display[0].username
                             : ""}
                         </span>
                       );
@@ -149,7 +154,7 @@ class LabSection extends Component {
                       return (
                         <span>
                           {display !== null && display.length !== 0
-                            ? display[0].user_displayname
+                            ? display[0].username
                             : ""}
                         </span>
                       );

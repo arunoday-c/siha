@@ -40,7 +40,12 @@ class ItemGeneric extends Component {
     this.setState({
       selectedLang: prevLang
     });
-    getItemGeneric(this, this);
+    if (
+      this.props.itemgeneric === undefined ||
+      this.props.itemgeneric.length === 0
+    ) {
+      getItemGeneric(this, this);
+    }
   }
 
   dateFormater(date) {
@@ -123,7 +128,7 @@ class ItemGeneric extends Component {
                       return (
                         <span>
                           {display !== null && display.length !== 0
-                            ? display[0].user_displayname
+                            ? display[0].username
                             : ""}
                         </span>
                       );
@@ -139,7 +144,7 @@ class ItemGeneric extends Component {
                       return (
                         <span>
                           {display !== null && display.length !== 0
-                            ? display[0].user_displayname
+                            ? display[0].username
                             : ""}
                         </span>
                       );

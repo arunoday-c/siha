@@ -45,25 +45,30 @@ class LabAnalyte extends Component {
     this.setState({
       selectedLang: prevLang
     });
-    this.props.getLabAnalytes({
-      uri: "/labmasters/selectAnalytes",
-      method: "GET",
-      redux: {
-        type: "ANALYTES_GET_DATA",
-        mappingName: "labanalytes"
-      },
-      afterSuccess: data => {
-        if (data.length === 0 || data.length === undefined) {
-          if (data.response.data.success === false) {
-            successfulMessage({
-              message: data.response.data.message,
-              title: "Warning",
-              icon: "warning"
-            });
+    if (
+      this.props.labanalytes === undefined ||
+      this.props.labanalytes.length === 0
+    ) {
+      this.props.getLabAnalytes({
+        uri: "/labmasters/selectAnalytes",
+        method: "GET",
+        redux: {
+          type: "ANALYTES_GET_DATA",
+          mappingName: "labanalytes"
+        },
+        afterSuccess: data => {
+          if (data.length === 0 || data.length === undefined) {
+            if (data.response.data.success === false) {
+              successfulMessage({
+                message: data.response.data.message,
+                title: "Warning",
+                icon: "warning"
+              });
+            }
           }
         }
-      }
-    });
+      });
+    }
   }
 
   dateFormater({ date }) {
@@ -175,8 +180,8 @@ class LabAnalyte extends Component {
                       return row.analyte_type === "QU"
                         ? "Quality"
                         : row.analyte_type === "QN"
-                          ? "Quantity"
-                          : "Text";
+                        ? "Quantity"
+                        : "Text";
                     },
                     editorTemplate: row => {
                       return (
@@ -238,7 +243,7 @@ class LabAnalyte extends Component {
                       return (
                         <span>
                           {display !== null && display.length !== 0
-                            ? display[0].user_displayname
+                            ? display[0].username
                             : ""}
                         </span>
                       );
@@ -255,7 +260,7 @@ class LabAnalyte extends Component {
                       return (
                         <span>
                           {display !== null && display.length !== 0
-                            ? display[0].user_displayname
+                            ? display[0].username
                             : ""}
                         </span>
                       );

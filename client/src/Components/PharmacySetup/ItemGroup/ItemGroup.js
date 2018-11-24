@@ -42,8 +42,19 @@ class ItemGroup extends Component {
     this.setState({
       selectedLang: prevLang
     });
-    getItemGroup(this, this);
-    getItemCategory(this, this);
+
+    if (
+      this.props.itemgroup === undefined ||
+      this.props.itemgroup.length === 0
+    ) {
+      getItemGroup(this, this);
+    }
+    if (
+      this.props.itemcategory === undefined ||
+      this.props.itemcategory.length === 0
+    ) {
+      getItemCategory(this, this);
+    }
   }
 
   dateFormater(date) {
@@ -188,7 +199,7 @@ class ItemGroup extends Component {
                       return (
                         <span>
                           {display !== null && display.length !== 0
-                            ? display[0].user_displayname
+                            ? display[0].username
                             : ""}
                         </span>
                       );
@@ -204,7 +215,7 @@ class ItemGroup extends Component {
                       return (
                         <span>
                           {display !== null && display.length !== 0
-                            ? display[0].user_displayname
+                            ? display[0].username
                             : ""}
                         </span>
                       );

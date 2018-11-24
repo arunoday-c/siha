@@ -42,7 +42,13 @@ class Location extends Component {
     this.setState({
       selectedLang: prevLang
     });
-    getLocation(this, this);
+
+    if (
+      this.props.inventorylocation === undefined ||
+      this.props.inventorylocation.length === 0
+    ) {
+      getLocation(this, this);
+    }
   }
 
   dateFormater(date) {
@@ -180,7 +186,7 @@ class Location extends Component {
                       return (
                         <span>
                           {display !== null && display.length !== 0
-                            ? display[0].user_displayname
+                            ? display[0].username
                             : ""}
                         </span>
                       );
@@ -197,7 +203,7 @@ class Location extends Component {
                       return (
                         <span>
                           {display !== null && display.length !== 0
-                            ? display[0].user_displayname
+                            ? display[0].username
                             : ""}
                         </span>
                       );

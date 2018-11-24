@@ -46,8 +46,12 @@ class LocationPermission extends Component {
       selectedLang: prevLang
     });
 
-    getLocationPermission(this, this);
-
+    if (
+      this.props.locationpermission === undefined ||
+      this.props.locationpermission.length === 0
+    ) {
+      getLocationPermission(this, this);
+    }
     if (
       this.props.locationpermi === undefined ||
       this.props.locationpermi.length === 0
@@ -85,7 +89,7 @@ class LocationPermission extends Component {
                 className: "select-fld",
                 value: this.state.user_id,
                 dataSource: {
-                  textField: "user_displayname",
+                  textField: "username",
                   valueField: "algaeh_d_app_user_id",
                   data: this.props.userdrtails
                 },
@@ -173,7 +177,7 @@ class LocationPermission extends Component {
                       return (
                         <span>
                           {display !== null && display.length !== 0
-                            ? display[0].user_displayname
+                            ? display[0].username
                             : ""}
                         </span>
                       );
@@ -186,7 +190,7 @@ class LocationPermission extends Component {
                             className: "select-fld",
                             value: row.user_id,
                             dataSource: {
-                              textField: "user_displayname",
+                              textField: "username",
                               valueField: "algaeh_d_app_user_id",
                               data: this.props.userdrtails
                             },
@@ -289,7 +293,7 @@ class LocationPermission extends Component {
                       return (
                         <span>
                           {display !== null && display.length !== 0
-                            ? display[0].user_displayname
+                            ? display[0].username
                             : ""}
                         </span>
                       );
@@ -305,7 +309,7 @@ class LocationPermission extends Component {
                       return (
                         <span>
                           {display !== null && display.length !== 0
-                            ? display[0].user_displayname
+                            ? display[0].username
                             : ""}
                         </span>
                       );

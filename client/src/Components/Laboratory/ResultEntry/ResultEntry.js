@@ -222,7 +222,7 @@ class ResultEntry extends Component {
                           className: "select-fld",
                           value: this.state.entered_by,
                           dataSource: {
-                            textField: "user_displayname",
+                            textField: "username",
                             valueField: "algaeh_d_app_user_id",
                             data: this.props.labiologyusers
                           },
@@ -242,7 +242,7 @@ class ResultEntry extends Component {
                           className: "select-fld",
                           value: this.state.confirmed_by,
                           dataSource: {
-                            textField: "user_displayname",
+                            textField: "username",
                             valueField: "algaeh_d_app_user_id",
                             data: this.props.labiologyusers
                           },
@@ -262,7 +262,7 @@ class ResultEntry extends Component {
                           className: "select-fld",
                           value: this.state.validated_by,
                           dataSource: {
-                            textField: "user_displayname",
+                            textField: "username",
                             valueField: "algaeh_d_app_user_id",
                             data: this.props.labiologyusers
                           },

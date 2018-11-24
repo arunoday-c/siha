@@ -41,14 +41,19 @@ class LabSpecimen extends Component {
     this.setState({
       selectedLang: prevLang
     });
-    this.props.getLabSpecimen({
-      uri: "/labmasters/selectSpecimen",
-      method: "GET",
-      redux: {
-        type: "SPECIMEN_GET_DATA",
-        mappingName: "labspecimen"
-      }
-    });
+    if (
+      this.props.labspecimen === undefined ||
+      this.props.labspecimen.length === 0
+    ) {
+      this.props.getLabSpecimen({
+        uri: "/labmasters/selectSpecimen",
+        method: "GET",
+        redux: {
+          type: "SPECIMEN_GET_DATA",
+          mappingName: "labspecimen"
+        }
+      });
+    }
   }
 
   dateFormater({ date }) {
@@ -144,8 +149,8 @@ class LabSpecimen extends Component {
                       return row.storage_type === "N"
                         ? "Normal"
                         : row.storage_type === "F"
-                          ? "Frozen"
-                          : "Refrigerate";
+                        ? "Frozen"
+                        : "Refrigerate";
                     },
                     editorTemplate: row => {
                       return (
@@ -183,7 +188,7 @@ class LabSpecimen extends Component {
                       return (
                         <span>
                           {display !== null && display.length !== 0
-                            ? display[0].user_displayname
+                            ? display[0].username
                             : ""}
                         </span>
                       );
@@ -199,7 +204,7 @@ class LabSpecimen extends Component {
                       return (
                         <span>
                           {display !== null && display.length !== 0
-                            ? display[0].user_displayname
+                            ? display[0].username
                             : ""}
                         </span>
                       );

@@ -76,7 +76,13 @@ class InventoryItemMaster extends Component {
         }
       });
     }
-    getItems(this, this);
+
+    if (
+      this.props.inventoryitemlist === undefined ||
+      this.props.inventoryitemlist.length === 0
+    ) {
+      getItems(this, this);
+    }
   }
 
   ShowModel(e) {

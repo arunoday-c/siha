@@ -35,8 +35,8 @@ class HospitalServiceSetup extends Component {
       hospital_id: null,
       service_type_id: null,
 
-      service_name: null,
-      ServiceNames: []
+      service_name: null
+      // ServiceNames: []
     };
   }
 
@@ -57,20 +57,20 @@ class HospitalServiceSetup extends Component {
         redux: {
           type: "SERVICES_GET_DATA",
           mappingName: "hospitalservices"
-        },
-        afterSuccess: data => {
-          let ServiceNames = Enumerable.from(data)
-            .groupBy("$.hims_d_services_id", null, (k, g) => {
-              let firstRecordSet = Enumerable.from(g).firstOrDefault();
-              return {
-                service_name: firstRecordSet.service_name,
-                hims_d_services_id: firstRecordSet.hims_d_services_id
-              };
-            })
-            .toArray();
-
-          this.setState({ ServiceNames: ServiceNames });
         }
+        // afterSuccess: data => {
+        //   let ServiceNames = Enumerable.from(data)
+        //     .groupBy("$.hims_d_services_id", null, (k, g) => {
+        //       let firstRecordSet = Enumerable.from(g).firstOrDefault();
+        //       return {
+        //         service_name: firstRecordSet.service_name,
+        //         hims_d_services_id: firstRecordSet.hims_d_services_id
+        //       };
+        //     })
+        //     .toArray();
+
+        //   this.setState({ ServiceNames: ServiceNames });
+        // }
       });
     }
     if (
@@ -207,6 +207,15 @@ class HospitalServiceSetup extends Component {
   }
 
   render() {
+    let _ServiceNames = Enumerable.from(this.props.hospitalservices)
+      .groupBy("$.hims_d_services_id", null, (k, g) => {
+        let firstRecordSet = Enumerable.from(g).firstOrDefault();
+        return {
+          service_name: firstRecordSet.service_name,
+          hims_d_services_id: firstRecordSet.hims_d_services_id
+        };
+      })
+      .toArray();
     return (
       <div className="hims_hospitalservices">
         <div
@@ -227,7 +236,7 @@ class HospitalServiceSetup extends Component {
                   dataSource: {
                     textField: "service_name",
                     valueField: "hims_d_services_id",
-                    data: this.state.ServiceNames
+                    data: _ServiceNames
                   },
                   onChange: texthandle.bind(this, this)
                 }}

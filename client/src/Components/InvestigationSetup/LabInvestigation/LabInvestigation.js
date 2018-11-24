@@ -41,41 +41,60 @@ class LabInvestigation extends Component {
     this.setState({ ...this.state, ...InputOutput });
   }
   componentDidMount() {
-    this.props.getLabsection({
-      uri: "/labmasters/selectSection",
-      method: "GET",
-      redux: {
-        type: "SECTION_GET_DATA",
-        mappingName: "labsection"
-      }
-    });
+    if (
+      this.props.labsection === undefined ||
+      this.props.labsection.length === 0
+    ) {
+      this.props.getLabsection({
+        uri: "/labmasters/selectSection",
+        method: "GET",
+        redux: {
+          type: "SECTION_GET_DATA",
+          mappingName: "labsection"
+        }
+      });
+    }
 
-    this.props.getLabSpecimen({
-      uri: "/labmasters/selectSpecimen",
-      method: "GET",
-      redux: {
-        type: "SPECIMEN_GET_DATA",
-        mappingName: "labspecimen"
-      }
-    });
+    if (
+      this.props.labspecimen === undefined ||
+      this.props.labspecimen.length === 0
+    ) {
+      this.props.getLabSpecimen({
+        uri: "/labmasters/selectSpecimen",
+        method: "GET",
+        redux: {
+          type: "SPECIMEN_GET_DATA",
+          mappingName: "labspecimen"
+        }
+      });
+    }
 
-    this.props.getLabAnalytes({
-      uri: "/labmasters/selectAnalytes",
-      method: "GET",
-      redux: {
-        type: "ANALYTES_GET_DATA",
-        mappingName: "labanalytes"
-      }
-    });
-
-    this.props.getLabContainer({
-      uri: "/labmasters/selectContainer",
-      method: "GET",
-      redux: {
-        type: "CONTAINER_GET_DATA",
-        mappingName: "labcontainer"
-      }
-    });
+    if (
+      this.props.labanalytes === undefined ||
+      this.props.labanalytes.length === 0
+    ) {
+      this.props.getLabAnalytes({
+        uri: "/labmasters/selectAnalytes",
+        method: "GET",
+        redux: {
+          type: "ANALYTES_GET_DATA",
+          mappingName: "labanalytes"
+        }
+      });
+    }
+    if (
+      this.props.labcontainer === undefined ||
+      this.props.labcontainer.length === 0
+    ) {
+      this.props.getLabContainer({
+        uri: "/labmasters/selectContainer",
+        method: "GET",
+        redux: {
+          type: "CONTAINER_GET_DATA",
+          mappingName: "labcontainer"
+        }
+      });
+    }
   }
 
   render() {

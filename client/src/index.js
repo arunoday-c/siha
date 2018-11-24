@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 //import { render } from "react-dom";
 import { Provider } from "react-redux";
-import { MuiThemeProvider, createMuiTheme } from "@material-ui/core";
+//import { MuiThemeProvider, createMuiTheme } from "@material-ui/core";
 import { AlagehReducers } from "./reducers/algaehReducers";
 import logger from "redux-logger";
 import routes from "./routes.js";
@@ -11,23 +11,21 @@ import { applyMiddleware, createStore } from "redux";
 import "./index.css";
 import "./styles/site.css";
 
-import { getTokenDetals } from "./actions/Login/Loginactions.js";
-getTokenDetals();
 const middleware =
   process.env.NODE_ENV === "development"
     ? applyMiddleware(thunk, logger)
     : applyMiddleware(thunk);
 
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      light: "#34b8bc",
-      main: "#34b8bc",
-      dark: "#3A95AA",
-      contrastText: "#fff"
-    }
-  }
-});
+// const theme = createMuiTheme({
+//   palette: {
+//     primary: {
+//       light: "#34b8bc",
+//       main: "#34b8bc",
+//       dark: "#3A95AA",
+//       contrastText: "#fff"
+//     }
+//   }
+// });
 
 const store = createStore(AlagehReducers, middleware);
 

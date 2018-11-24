@@ -111,7 +111,9 @@ class ItemSetup extends Component {
       });
     }
 
-    getItems(this, this);
+    if (this.props.itemlist === undefined || this.props.itemlist.length === 0) {
+      getItems(this, this);
+    }
   }
 
   ShowModel(e) {
@@ -169,7 +171,7 @@ class ItemSetup extends Component {
             </div>
             <div className="actions">
               <a
-                href
+                // href
                 className="btn btn-primary btn-circle active"
                 onClick={this.ShowModel.bind(this)}
               >

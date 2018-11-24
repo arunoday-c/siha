@@ -66,7 +66,7 @@ class ChiefComplaints extends Component {
       this.props.patient_chief_complaints === undefined ||
       this.props.patient_chief_complaints.length === 0
     ) {
-      getPatientChiefComplaints(this);
+      Window.global === undefined ? null : getPatientChiefComplaints(this);
     } else {
       const _patient = Enumerable.from(
         this.props.patient_chief_complaints
@@ -338,7 +338,7 @@ class ChiefComplaints extends Component {
             }
           })
           .toArray();
-        
+
         this.setState({
           openHpiModal: true,
           hims_f_episode_chief_complaint_id:
@@ -463,7 +463,7 @@ class ChiefComplaints extends Component {
         if (response.data.success) {
           getPatientChiefComplaints($this);
           swalMessage({
-            title: "Added chief complaint",
+            title: "Chief Complaint Recorded",
             type: "success"
           });
         }
@@ -578,7 +578,9 @@ class ChiefComplaints extends Component {
               });
               //  this.getPatientChiefComplaintsDetails();
               getAllChiefComplaints(this);
-              getPatientChiefComplaints(this);
+              Window.global === undefined
+                ? null
+                : getPatientChiefComplaints(this);
             }
           }
         });
@@ -600,7 +602,6 @@ class ChiefComplaints extends Component {
   }
 
   HPIElementsSaveToPatient(e) {
-    
     let _hpi_details_ids = [];
     Enumerable.from(this.state.location)
       .select(s => {

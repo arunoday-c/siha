@@ -127,14 +127,19 @@ class VisitType extends Component {
     this.setState({
       selectedLang: prevLang
     });
-    this.props.getVisittypes({
-      uri: "/visitType/get",
-      method: "GET",
-      redux: {
-        type: "VISITTYPE_GET_DATA",
-        mappingName: "visittypes"
-      }
-    });
+    if (
+      this.props.visittypes === undefined ||
+      this.props.visittypes.length === 0
+    ) {
+      this.props.getVisittypes({
+        uri: "/visitType/get",
+        method: "GET",
+        redux: {
+          type: "VISITTYPE_GET_DATA",
+          mappingName: "visittypes"
+        }
+      });
+    }
   }
 
   dateFormater({ value }) {
@@ -430,7 +435,7 @@ class VisitType extends Component {
                         return (
                           <span>
                             {display !== null && display.length !== 0
-                              ? display[0].user_displayname
+                              ? display[0].username
                               : ""}
                           </span>
                         );
@@ -446,7 +451,7 @@ class VisitType extends Component {
                         return (
                           <span>
                             {display !== null && display.length !== 0
-                              ? display[0].user_displayname
+                              ? display[0].username
                               : ""}
                           </span>
                         );

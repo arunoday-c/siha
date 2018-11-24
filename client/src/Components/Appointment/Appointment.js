@@ -46,10 +46,11 @@ class Appointment extends Component {
   componentDidMount() {
     this.getDoctorsAndDepts();
     this.getAppointmentStatus();
+    this.getTitles();
 
     let x = JSON.parse(localStorage.getItem("ApptCriteria"));
 
-    console.log("X", x);
+    //console.log("X", x);
 
     x !== undefined && x !== null
       ? this.setState(
@@ -162,7 +163,8 @@ class Appointment extends Component {
           gender: row.gender,
           contact_number: row.contact_number,
           email: row.email,
-          arabic_name: row.arabic_name
+          arabic_name: row.arabic_name,
+          title_id: row.title_id
         });
       }
     });
@@ -272,7 +274,8 @@ class Appointment extends Component {
                   "appt-pat-gender": this.state.gender,
                   "appt-pat-ph-no": this.state.contact_number,
                   "appt-pat-email": this.state.email,
-                  "appt-department-id": this.state.department_id
+                  "appt-department-id": this.state.department_id,
+                  "appt-title-id": this.state.title_id
                 });
 
                 document.getElementById("fd-router").click();
@@ -306,6 +309,26 @@ class Appointment extends Component {
         if (response.data.success) {
           this.setState({
             departments: response.data.records.departmets
+          });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  getTitles() {
+    algaehApiCall({
+      uri: "/masters/get/title",
+      method: "GET",
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({
+            titles: response.data.records
           });
         }
       },
@@ -615,7 +638,6 @@ class Appointment extends Component {
       });
     } else {
       this.setState({ patToEdit: patient, openPatEdit: true }, () => {
-        //debugger;
         let pat_edit = this.state.patToEdit;
 
         this.setState({
@@ -638,7 +660,8 @@ class Appointment extends Component {
           edit_appointment_date: pat_edit.appointment_date,
           patient_code: pat_edit.patient_code,
           edit_no_of_slots: pat_edit.number_of_slot,
-          edit_is_stand_by: pat_edit.is_stand_by
+          edit_is_stand_by: pat_edit.is_stand_by,
+          edit_title_id: pat_edit.title_id
         });
       });
     }
@@ -728,7 +751,8 @@ class Appointment extends Component {
                         "appt-pat-ph-no": this.state.edit_contact_number,
                         "appt-pat-email": this.state.edit_email,
                         "appt-department-id": this.state.department_id,
-                        "appt-id": this.state.edit_appointment_id
+                        "appt-id": this.state.edit_appointment_id,
+                        "appt-title-id": this.state.edit_title_id
                       });
 
                       document.getElementById("fd-router").click();
@@ -1485,6 +1509,27 @@ class Appointment extends Component {
                         </div>
 
                         <div className="row">
+                          <AlagehAutoComplete
+                            div={{
+                              className: "col margin-top-15 mandatory"
+                            }}
+                            label={{
+                              forceLabel: "Title",
+                              isImp: true
+                            }}
+                            selector={{
+                              name: "edit_title_id",
+                              className: "select-fld",
+                              value: this.state.edit_title_id,
+                              dataSource: {
+                                textField: "title",
+                                valueField: "his_d_title_id",
+                                data: this.state.titles
+                              },
+                              onChange: this.dropDownHandle.bind(this)
+                            }}
+                          />
+
                           <AlagehFormGroup
                             div={{
                               className: "col margin-top-15"
@@ -1796,6 +1841,27 @@ class Appointment extends Component {
                         </div>
 
                         <div className="row">
+                          <AlagehAutoComplete
+                            div={{
+                              className: "col margin-top-15 mandatory"
+                            }}
+                            label={{
+                              forceLabel: "Title",
+                              isImp: true
+                            }}
+                            selector={{
+                              name: "title_id",
+                              className: "select-fld",
+                              value: this.state.title_id,
+                              dataSource: {
+                                textField: "title",
+                                valueField: "his_d_title_id",
+                                data: this.state.titles
+                              },
+                              onChange: this.dropDownHandle.bind(this)
+                            }}
+                          />
+
                           <AlagehFormGroup
                             div={{
                               className: "col margin-top-15 mandatory"
