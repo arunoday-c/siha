@@ -180,7 +180,7 @@
           border-radius: 20px;
           background: #3f9c91;
           font-size: 0.7rem;
-          white-space: nowrap; }
+          white-space: normal; }
         .patientProfile .patientTopNav .patient-quick-info li section p {
           background: rgba(0, 0, 0, 0.05);
           border-top: 1px solid #65dace;
