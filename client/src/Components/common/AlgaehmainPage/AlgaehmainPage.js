@@ -314,16 +314,44 @@ class PersistentDrawer extends React.Component {
                   ? getCookie("HospitalName")
                   : ""}
               </span>
-              {/* <span>Apollo Hospitals - Bannerghatta Road</span> */}
             </div>
-            <button
-              className="btn btn-userProfile"
-              // onClick={this.handleOpenClick}
-              onClick={this.logoutLink.bind(this)}
+          </div>
+          <div className="dropdown navTopbar-dropdown">
+            <i className="fas fa-angle-down fa-lg" />
+            <div
+              className="dropdown-menu animated fadeIn faster"
+              aria-labelledby="dropdownMenuButton"
             >
-              {/* <i className="fas fa-user-circle" /> */}
-              <i className="fas fa-power-off" />
-            </button>
+              <a className="dropdown-item">
+                <i className="fas fa-user" /> User Profile
+              </a>
+              <a className="dropdown-item">
+                <i className="fas fa-cog" /> Preference{" "}
+              </a>
+              <div class="dropdown-divider" />
+              <a
+                className="dropdown-item"
+                onClick={this.handleClose.bind(this, "en")}
+              >
+                {/* <i className="fas fa-globe-asia" /> */}
+                {this.state.languageName === "English"
+                  ? this.renderCheck()
+                  : null}
+                &nbsp; English
+              </a>
+              <a
+                className="dropdown-item"
+                onClick={this.handleClose.bind(this, "ar")}
+              >
+                {/* <i className="fas fa-globe-asia" /> */}
+                {this.state.languageName === "عربي" ? this.renderCheck() : null}
+                &nbsp; عربي
+              </a>
+              <div class="dropdown-divider" />
+              <a className="dropdown-item" onClick={this.logoutLink.bind(this)}>
+                <i className="fas fa-sign-out-alt" /> Logout
+              </a>
+            </div>
           </div>
         </nav>
 

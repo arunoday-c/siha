@@ -299,9 +299,9 @@ class AddBillingForm extends Component {
                     </div>
 
                     <AlagehFormGroup
-                      div={{ className: "col highlightGrey" }}
+                      div={{ className: "col" }}
                       label={{
-                        fieldName: "balance_due"
+                        fieldName: "credit_amount"
                       }}
                       textBox={{
                         decimal: { allowNegative: false },
@@ -335,13 +335,13 @@ class AddBillingForm extends Component {
                       />
                       <h4>{getAmountFormart(this.state.receiveable_amount)}</h4>
                     </div>
-                    <div className="col">
+                    <div className="col highlightGrey">
                       <AlgaehLabel
                         label={{
-                          fieldName: "credit_amount"
+                          fieldName: "balance_due"
                         }}
                       />
-                      <h6>NAN</h6>
+                      <h6>0.00</h6>
                     </div>
                   </div>
                   {/* <div className="container-fluid"> */}
@@ -547,7 +547,8 @@ class AddBillingForm extends Component {
                             onChange: texthandle.bind(this, this, context)
                           },
                           others: {
-                            disabled: !this.state.Cardchecked
+                            disabled: !this.state.Cardchecked,
+                            placeholder: "0000-0000-0000-0000"
                           }
                         }}
                       />
@@ -635,7 +636,8 @@ class AddBillingForm extends Component {
                             onChange: texthandle.bind(this, this, context)
                           },
                           others: {
-                            disabled: !this.state.Checkchecked
+                            disabled: !this.state.Checkchecked,
+                            placeholder: "'000000'"
                           }
                         }}
                       />

@@ -58,6 +58,7 @@ import specialityAndCategory from "../controller/specialityAndCategory";
 import vendor from "../controller/vendor";
 import PurchaseOrderEntry from "../Procurement/controller/PurchaseOrderEntry";
 import DeliveryNoteEntry from "../Procurement/controller/DeliveryNoteEntry";
+import nurseWorkBench from "../EHR/controller/nurseWorkBench";
 let router = express();
 
 //connect to DB
@@ -127,6 +128,7 @@ initializedDb(db => {
   router.use("/vendor", vendor({ config, db }));
   router.use("/PurchaseOrderEntry", PurchaseOrderEntry({ config, db }));
   router.use("/DeliveryNoteEntry", DeliveryNoteEntry({ config, db }));
+  router.use("/nurseWorkBench", nurseWorkBench({ config, db }));
 });
 
 export default router;
