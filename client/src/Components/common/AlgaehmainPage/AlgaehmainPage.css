@@ -128,22 +128,20 @@ header {
     line-height: 20px;
     background: #929292;
     color: #ffffff; }
-  .hptl-phase1-sideMenuBar ul.tree-structure-menu i {
-    margin-right: 27px;
-    margin-left: 12px;
-    display: inline-block;
-    vertical-align: initial; }
-  .hptl-phase1-sideMenuBar ul.tree-structure-menu span {
-    display: inline-block;
-    width: 78%; }
-
-.hptl-phase1-sideMenuBar li:hover {
-  background: #fff;
-  color: #00bcb0; }
-
-.hptl-phase1-sideMenuBar li.active {
-  background: #00bcb0;
-  color: #fff; }
+    .hptl-phase1-sideMenuBar ul.tree-structure-menu li i {
+      margin-right: 27px;
+      margin-left: 12px;
+      display: inline-block;
+      vertical-align: initial; }
+    .hptl-phase1-sideMenuBar ul.tree-structure-menu li span {
+      display: inline-block;
+      width: 78%; }
+    .hptl-phase1-sideMenuBar ul.tree-structure-menu li:hover {
+      background: #fff;
+      color: #00bcb0; }
+    .hptl-phase1-sideMenuBar ul.tree-structure-menu li.active {
+      background: #00bcb0;
+      color: #fff; }
 
 .hptl-phase1-sideMenuBar .close-menu {
   padding-top: 5px;
