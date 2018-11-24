@@ -9,6 +9,7 @@ import moment from "moment";
 import Enumerable from "linq";
 import config from "../../../../utils/config.json";
 import { Line } from "react-chartjs-2";
+import { AlgaehDataGrid } from "../../../Wrapper/algaehWrapper";
 
 const TreeTable = treeTableHOC(ReactTable);
 
@@ -257,24 +258,31 @@ class HistoricalData extends Component {
     let _yAxes = [];
     let _plotGraph = [];
 
-    const _vitalsGroup =
-      this.state.patientVitals !== undefined
-        ? Enumerable.from(this.state.patientVitals)
-            .groupBy("$.visit_date", null, (key, g) => {
-              //_chartLabels.push(key);
-              return {
-                dateTime: key,
-                list: g.getSource()
-              };
-            })
-            .orderByDescending(g => g.visit_date)
-            .toArray()
-        : // .sort((a, b) => {
-          //   //debugger;
-          //   b > a;
-          // })
-          [];
+    let _vitalsGroup = [];
 
+    Enumerable.from(
+      this.state.patientVitals !== undefined ? this.state.patientVitals : []
+    )
+      .groupBy("$.visit_date", null, (key, g) => {
+        let obj = {};
+        obj["dateTime"] = key;
+
+        Enumerable.from(g.getSource())
+          .select(s => {
+            obj = {
+              ...obj,
+              ...{
+                [s.vitals_name
+                  .toString()
+                  .toLowerCase()
+                  .replace(/\s/g, "_")]: s.vital_value
+              }
+            };
+          })
+          .toArray();
+        _vitalsGroup.push(obj);
+      })
+      .toArray();
     Enumerable.from(
       this.state.patientVitals !== undefined ? this.state.patientVitals : []
     )
@@ -353,7 +361,7 @@ class HistoricalData extends Component {
     return (
       <div className="historical-data">
         <div className="row">
-          <div className="col-lg-3">
+          <div className="col-lg-6">
             <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
@@ -362,40 +370,88 @@ class HistoricalData extends Component {
               </div>
               <div className="portlet-body">
                 <div className="row">
-                  <div className="col-lg-12">
-                    <div
-                      className="timeline"
-                      style={{
-                        overflowY: "auto",
-                        overflowX: "hidden",
-                        maxHeight: "40vh"
-                      }}
-                    >
-                      {_vitalsGroup.map((data, index) => (
-                        <div key={index} className="timelineContainer right">
-                          <div className="content">
-                            <p className="dateStamp">{data.dateTime}</p>
-                            <div className="vitalsCntr">
-                              <ul className="vitals-box">
-                                {data.list.map((vitals, ind) => (
-                                  <li className="each-vitals-box" key={ind}>
-                                    <p>{vitals.vitals_name}</p>
-                                    <span>{vitals.vital_value}</span>
-                                    <span>{vitals.formula_value}</span>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                  <div className="col-lg-12" id="historicGridDataCntr">
+                    <AlgaehDataGrid
+                      id="historicGridData"
+                      columns={[
+                        {
+                          fieldName: "dateTime",
+                          label: "Date"
+                        },
+                        {
+                          fieldName: "weight",
+                          label: "Weight"
+                        },
+                        {
+                          fieldName: "height",
+                          label: "Height"
+                        },
+                        {
+                          fieldName: "bmi",
+                          label: "BMI"
+                        },
+                        {
+                          fieldName: "temperature",
+                          label: "Temp."
+                        },
+                        {
+                          fieldName: "heart_rate",
+                          label: "Heart Rate"
+                        },
+                        {
+                          fieldName: "respiratory_rate",
+                          label: "Respiratory Rate"
+                        },
+                        {
+                          fieldName: "bp_systolic",
+                          label: "BP (sys)"
+                        },
+                        {
+                          fieldName: "bp_diastolic",
+                          label: "BP (dia)"
+                        },
+                        {
+                          fieldName: "glucose_fbs",
+                          label: "Glucose FBS"
+                        },
+                        {
+                          fieldName: "glucose_rbs",
+                          label: "Glucose RBS"
+                        },
+                        {
+                          fieldName: "glucose_pbs",
+                          label: "Glucose PBS"
+                        },
+                        {
+                          fieldName: "head_ircumference",
+                          label: "Head Circumference"
+                        }
+                      ]}
+                      dataSource={{ data: _vitalsGroup }}
+                      paging={{ page: 0, rowsPerPage: 10 }}
+                    />
+                    {/* <dl>
+                        {_vitalsGroup.map((data, index) => (
+                          <React.Fragment key={index}>
+                            <dt key={index}>On {data.dateTime}</dt>
+                            {data.list.map((vitals, ind) => (
+                              <dd key={ind}>
+                                {vitals.vitals_name} : {vitals.vital_value}
+                                {"  "}
+                                {vitals.formula_value}
+                              </dd>
+                            ))}
+                          </React.Fragment>
+
+                         
+                        ))}
+                      </dl> */}
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <div className="col-lg-9">
+          <div className="col-lg-6">
             <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
@@ -403,7 +459,7 @@ class HistoricalData extends Component {
                 </div>
               </div>
               <div className="portlet-body">
-                <div className="row">
+                <div className="row chartCNtr">
                   <Line
                     options={{
                       scales: {

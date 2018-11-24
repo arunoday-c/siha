@@ -113,14 +113,13 @@ class AddOPBillingForm extends Component {
             secondary_network_office_id: this.state.secondary_network_office_id
           }
         ];
-        debugger;
+
         algaehApiCall({
           uri: "/billing/getBillDetails",
           method: "POST",
           data: serviceInput,
           onSuccess: response => {
             if (response.data.success) {
-              debugger;
               let data = response.data.records;
 
               if (data.billdetails[0].pre_approval === "Y") {
@@ -156,7 +155,6 @@ class AddOPBillingForm extends Component {
                   method: "POST",
                   data: { billdetails: existingservices },
                   onSuccess: response => {
-                    debugger;
                     if (response.data.success) {
                       if (context != null) {
                         response.data.records.patient_payable_h =
@@ -183,57 +181,6 @@ class AddOPBillingForm extends Component {
             });
           }
         });
-
-        // this.props.generateBill({
-        //   uri: "/billing/getBillDetails",
-        //   method: "POST",
-        //   data: serviceInput,
-        //   redux: {
-        //     type: "BILL_GEN_GET_DATA",
-        //     mappingName: "xxx"
-        //   },
-        //   afterSuccess: data => {
-        //     let applydiscount = false;
-        //     if (data.billdetails[0].pre_approval === "Y") {
-        //       successfulMessage({
-        //         message:
-        //           "Invalid Input. Selected Service is Pre-Approval required, you don't have rights to bill.",
-        //         title: "Warning",
-        //         icon: "warning"
-        //       });
-        //     } else {
-        //       let existingservices = $this.state.billdetails;
-
-        //       if (data.billdetails.length !== 0) {
-        //         data.billdetails[0].created_date = new Date();
-        //         existingservices.splice(0, 0, data.billdetails[0]);
-        //       }
-
-        //       if (this.state.mode_of_pay === "Insurance") {
-        //         applydiscount = true;
-        //       }
-        //       if (context != null) {
-        //         context.updateState({
-        //           billdetails: existingservices,
-        //           applydiscount: applydiscount,
-        //           s_service_type: null,
-        //           s_service: null,
-        //           saveEnable: false
-        //         });
-        //       }
-
-        //       $this.props.billingCalculations({
-        //         uri: "/billing/billingCalculations",
-        //         method: "POST",
-        //         data: { billdetails: existingservices },
-        //         redux: {
-        //           type: "BILL_HEADER_GEN_GET_DATA",
-        //           mappingName: "genbill"
-        //         }
-        //       });
-        //     }
-        //   }
-        // });
       } else {
         successfulMessage({
           message: "Invalid Input. Please select the Service and Service Type.",
@@ -306,25 +253,6 @@ class AddOPBillingForm extends Component {
           });
         }
       });
-
-      // this.props.billingCalculations({
-      //   uri: "/billing/getBillDetails",
-      //   method: "POST",
-      //   data: inputParam,
-      //   redux: {
-      //     type: "BILL_GEN_GET_DATA",
-      //     mappingName: "xxx"
-      //   },
-      //   afterSuccess: data => {
-      //     extend(row, data.billdetails[0]);
-      //     for (let i = 0; i < billdetails.length; i++) {
-      //       if (billdetails[i].service_type_id === row.service_type_id) {
-      //         billdetails[i] = row;
-      //       }
-      //     }
-      //     $this.setState({ billdetails: billdetails });
-      //   }
-      // });
     }
   }
 
@@ -338,6 +266,7 @@ class AddOPBillingForm extends Component {
           response.data.records.patient_payable_h =
             response.data.records.patient_payable || this.state.patient_payable;
           response.data.records.saveEnable = false;
+          response.data.records.addNewService = false;
           if (context != null) {
             context.updateState({ ...response.data.records });
           }
@@ -350,15 +279,6 @@ class AddOPBillingForm extends Component {
         });
       }
     });
-    // this.props.billingCalculations({
-    //   uri: "/billing/billingCalculations",
-    //   method: "POST",
-    //   data: { billdetails: this.state.billdetails },
-    //   redux: {
-    //     type: "BILL_HEADER_GEN_GET_DATA",
-    //     mappingName: "genbill"
-    //   }
-    // });
   }
 
   deleteBillDetail(context, e, rowId) {
@@ -509,6 +429,7 @@ class AddOPBillingForm extends Component {
                       className="btn btn-primary"
                       style={{ marginTop: "24px" }}
                       onClick={this.ProcessToBill.bind(this, context)}
+                      disabled={this.state.addNewService}
                     >
                       Add New Service
                     </button>

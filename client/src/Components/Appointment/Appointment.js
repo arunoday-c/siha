@@ -617,7 +617,7 @@ class Appointment extends Component {
     }
 
     if (
-      (moment(patient.appointment_from_time, "HH:mm:ss").format("HHmm") <
+      (moment(patient.appointment_to_time, "HH:mm:ss").format("HHmm") <
         moment(new Date()).format("HHmm") ||
         moment(patient.appointment_date).format("YYYYMMDD") <
           moment(new Date()).format("YYYYMMDD")) &&

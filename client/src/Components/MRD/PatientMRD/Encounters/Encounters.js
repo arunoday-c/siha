@@ -211,7 +211,7 @@ class Encounters extends Component {
                   <h3 className="caption-subject">OP Encounter List</h3>
                 </div>
               </div>
-              <div className="portlet-body">
+              <div className="portlet-body encounterListCntr">
                 <AlgaehDataGrid
                   id="index"
                   columns={[

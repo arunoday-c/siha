@@ -131,44 +131,45 @@ let addFrontDeskBACKUp = (req, res, next) => {
                       resolve({});
                     }
                   }).then(insuredRecords => {
-                    debugLog("Orver all records number gen", output);
-                    let bill = new LINQ(output)
-                      .Where(w => w.module_desc == "PAT_BILL")
+                    let receipt = new LINQ(output)
+                      .Where(w => w.module_desc == "RECEIPT")
                       .FirstOrDefault();
-                    req.bill_number = bill.completeNumber;
-                    req.body.bill_number = bill.completeNumber;
-                    //Bill generation
+                    req.body.receipt_number = receipt.completeNumber;
                     return new Promise((resolve, reject) => {
-                      debugLog("Inside Billing");
+                      debugLog("Inside Receipts");
                       delete req["options"]["onFailure"];
                       delete req["options"]["onSuccess"];
                       req.options.onFailure = error => {
                         reject(error);
                       };
-                      req.options.onSuccess = data => {
-                        resolve(data);
+                      req.options.onSuccess = records => {
+                        resolve(records);
                       };
-
-                      addBillData(req, res, next);
+                      newReceiptData(req, res, next);
                     }).then(billOutput => {
-                      req.query.billing_header_id = billOutput.insertId;
-                      req.body.billing_header_id = billOutput.insertId;
+                      debugLog("Orver all records number gen", output);
 
-                      let receipt = new LINQ(output)
-                        .Where(w => w.module_desc == "RECEIPT")
+                      req.query.receipt_header_id = billOutput.insertId;
+                      req.body.receipt_header_id = billOutput.insertId;
+
+                      let bill = new LINQ(output)
+                        .Where(w => w.module_desc == "PAT_BILL")
                         .FirstOrDefault();
-                      req.body.receipt_number = receipt.completeNumber;
+                      req.bill_number = bill.completeNumber;
+                      req.body.bill_number = bill.completeNumber;
+                      //Bill generation
                       return new Promise((resolve, reject) => {
-                        debugLog("Inside Receipts");
+                        debugLog("Inside Billing");
                         delete req["options"]["onFailure"];
                         delete req["options"]["onSuccess"];
                         req.options.onFailure = error => {
                           reject(error);
                         };
-                        req.options.onSuccess = records => {
-                          resolve(records);
+                        req.options.onSuccess = data => {
+                          resolve(data);
                         };
-                        newReceiptData(req, res, next);
+
+                        addBillData(req, res, next);
                       }).then(records => {
                         return new Promise((resolve, reject) => {
                           debugLog("Inside Episode");
@@ -937,44 +938,85 @@ let updateFrontDesk = (req, res, next) => {
                   resolve({});
                 }
               }).then(insuredRecords => {
-                debugLog("Orver all records number gen", output);
-                let bill = new LINQ(output)
-                  .Where(w => w.module_desc == "PAT_BILL")
+                // debugLog("Orver all records number gen", output);
+                // let bill = new LINQ(output)
+                //   .Where(w => w.module_desc == "PAT_BILL")
+                //   .FirstOrDefault();
+                // req.bill_number = bill.completeNumber;
+                // req.body.bill_number = bill.completeNumber;
+                // //Bill generation
+                // return new Promise((resolve, reject) => {
+                //   debugLog("Inside Billing");
+                //   delete req["options"]["onFailure"];
+                //   delete req["options"]["onSuccess"];
+                //   req.options.onFailure = error => {
+                //     reject(error);
+                //   };
+                //   req.options.onSuccess = data => {
+                //     resolve(data);
+                //   };
+
+                //   addBillData(req, res, next);
+
+                // req.query.billing_header_id = billOutput.insertId;
+                // req.body.billing_header_id = billOutput.insertId;
+
+                let receipt = new LINQ(output)
+                  .Where(w => w.module_desc == "RECEIPT")
                   .FirstOrDefault();
-                req.bill_number = bill.completeNumber;
-                req.body.bill_number = bill.completeNumber;
-                //Bill generation
+                req.body.receipt_number = receipt.completeNumber;
                 return new Promise((resolve, reject) => {
-                  debugLog("Inside Billing");
+                  debugLog("Inside Receipts");
                   delete req["options"]["onFailure"];
                   delete req["options"]["onSuccess"];
                   req.options.onFailure = error => {
                     reject(error);
                   };
-                  req.options.onSuccess = data => {
-                    resolve(data);
+                  req.options.onSuccess = records => {
+                    resolve(records);
                   };
-
-                  addBillData(req, res, next);
+                  newReceiptData(req, res, next);
                 }).then(billOutput => {
-                  req.query.billing_header_id = billOutput.insertId;
-                  req.body.billing_header_id = billOutput.insertId;
+                  // req.query.billing_header_id = billOutput.insertId;
+                  // req.body.billing_header_id = billOutput.insertId;
 
-                  let receipt = new LINQ(output)
-                    .Where(w => w.module_desc == "RECEIPT")
+                  // let receipt = new LINQ(output)
+                  //   .Where(w => w.module_desc == "RECEIPT")
+                  //   .FirstOrDefault();
+                  // req.body.receipt_number = receipt.completeNumber;
+                  // return new Promise((resolve, reject) => {
+                  //   debugLog("Inside Receipts");
+                  //   delete req["options"]["onFailure"];
+                  //   delete req["options"]["onSuccess"];
+                  //   req.options.onFailure = error => {
+                  //     reject(error);
+                  //   };
+                  //   req.options.onSuccess = records => {
+                  //     resolve(records);
+                  //   };
+                  //   newReceiptData(req, res, next);
+
+                  req.query.receipt_header_id = billOutput.insertId;
+                  req.body.receipt_header_id = billOutput.insertId;
+
+                  let bill = new LINQ(output)
+                    .Where(w => w.module_desc == "PAT_BILL")
                     .FirstOrDefault();
-                  req.body.receipt_number = receipt.completeNumber;
+                  req.bill_number = bill.completeNumber;
+                  req.body.bill_number = bill.completeNumber;
+                  //Bill generation
                   return new Promise((resolve, reject) => {
-                    debugLog("Inside Receipts");
+                    debugLog("Inside Billing");
                     delete req["options"]["onFailure"];
                     delete req["options"]["onSuccess"];
                     req.options.onFailure = error => {
                       reject(error);
                     };
-                    req.options.onSuccess = records => {
-                      resolve(records);
+                    req.options.onSuccess = data => {
+                      resolve(data);
                     };
-                    newReceiptData(req, res, next);
+
+                    addBillData(req, res, next);
                   }).then(records => {
                     return new Promise((resolve, reject) => {
                       debugLog("Inside Episode");

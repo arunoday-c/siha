@@ -22,7 +22,8 @@ import {
   SaveOrdersServices,
   calculateAmount,
   updateBillDetail,
-  onchangegridcol
+  onchangegridcol,
+  EditGrid
 } from "./OrderingServicesHandaler";
 import "./OrderingServices.css";
 import "../../../../styles/site.css";
@@ -70,7 +71,8 @@ class OrderingServices extends Component {
       sec_company_paybale: null,
       sub_total_amount: null,
       discount_amount: null,
-      net_total: null
+      net_total: null,
+      addNewService: false
     };
   }
 
@@ -301,6 +303,7 @@ class OrderingServices extends Component {
                       className="btn btn-primary"
                       style={{ marginTop: "24px" }}
                       onClick={ProcessService.bind(this, this)}
+                      disabled={this.state.addNewService}
                     >
                       Add New Service
                     </button>
@@ -634,9 +637,11 @@ class OrderingServices extends Component {
                       }}
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 10 }}
+                      byForceEvents={true}
                       events={{
                         onDelete: deleteServices.bind(this, this),
-                        onEdit: row => {},
+                        onEdit: EditGrid.bind(this, this),
+                        onCancel: EditGrid.bind(this, this),
                         onDone: updateBillDetail.bind(this, this)
                       }}
                     />

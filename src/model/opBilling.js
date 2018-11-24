@@ -1,19 +1,13 @@
 "use strict";
 import extend from "extend";
 import {
- 
   whereCondition,
-  
   runningNumberGen,
   releaseDBConnection
 } from "../utils";
 import httpStatus from "../utils/httpStatus";
-import {  debugFunction, debugLog } from "../utils/logging";
-import {
-  
-  addBillData,
-  newReceiptData
-} from "../model/billing";
+import { debugFunction, debugLog } from "../utils/logging";
+import { addBillData, newReceiptData } from "../model/billing";
 import { LINQ } from "node-linq";
 //import { insertLadOrderedServices } from "../model/laboratory";
 
@@ -57,18 +51,14 @@ let addOpBIlling = (req, res, next) => {
         });
       })
         .then(output => {
-          debugLog("Orver all records number gen", output);
-          debugLog("Data: ", output);
-          let bill = new LINQ(output)
-            .Where(w => w.module_desc == "PAT_BILL")
+          let receipt = new LINQ(output)
+            .Where(w => w.module_desc == "RECEIPT")
             .FirstOrDefault();
+          req.body.receipt_number = receipt.completeNumber;
 
-          debugLog("Data: ", bill);
-          req.bill_number = bill.completeNumber;
-          req.body.bill_number = bill.completeNumber;
-          //Bill generation
           return new Promise((resolve, reject) => {
-            debugLog("Inside Billing");
+            debugLog("Inside Receipts");
+
             req.options = {
               db: connection,
               onFailure: error => {
@@ -79,38 +69,42 @@ let addOpBIlling = (req, res, next) => {
               }
             };
 
-            addBillData(req, res, next);
+            newReceiptData(req, res, next);
           }).then(billOutput => {
-            req.query.billing_header_id = billOutput.insertId;
-            req.body.billing_header_id = billOutput.insertId;
+            debugLog("Orver all records number gen", output);
+            debugLog("Data: ", output);
 
-            let receipt = new LINQ(output)
-              .Where(w => w.module_desc == "RECEIPT")
+            req.query.receipt_header_id = billOutput.insertId;
+            req.body.receipt_header_id = billOutput.insertId;
+
+            let bill = new LINQ(output)
+              .Where(w => w.module_desc == "PAT_BILL")
               .FirstOrDefault();
-            req.body.receipt_number = receipt.completeNumber;
-            return (
-              new Promise((resolve, reject) => {
-                debugLog("Inside Receipts");
-                delete req["options"]["onFailure"];
-                delete req["options"]["onSuccess"];
-                req.options.onFailure = error => {
+
+            debugLog("Data: ", bill);
+            req.bill_number = bill.completeNumber;
+            req.body.bill_number = bill.completeNumber;
+            return new Promise((resolve, reject) => {
+              debugLog("Inside Billing");
+              delete req["options"]["onFailure"];
+              delete req["options"]["onSuccess"];
+              req.options = {
+                db: connection,
+                onFailure: error => {
                   reject(error);
-                };
-                req.options.onSuccess = records => {
-                  resolve(records);
-                };
-                newReceiptData(req, res, next);
-              })
-                // .then(receiptData => {
-                //   insertLadOrderedServices(req,res,next);
-                // })
-                .then(receiptData => {
-                  req.records = receiptData;
-                  if (billingCounter != 0) billingCounter = billingCounter - 1;
-                  releaseDBConnection(db, connection);
-                  next();
-                })
-            );
+                },
+                onSuccess: result => {
+                  resolve(result);
+                }
+              };
+              //Bill generation
+              addBillData(req, res, next);
+            }).then(receiptData => {
+              req.records = receiptData;
+              if (billingCounter != 0) billingCounter = billingCounter - 1;
+              releaseDBConnection(db, connection);
+              next();
+            });
           });
         })
 
@@ -133,38 +127,40 @@ let selectBill = (req, res, next) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
-      // let where = whereCondition(extend(selectWhere, req.query));
-      connection.query(
-        //   "SELECT  `hims_f_billing_header_id`, `patient_id`, `billing_type_id`, `visit_id`, `bill_number`,\
-        //   'incharge_or_provider`,`bill_date`,`advance_amount`,`advance_adjust`,`discount_amount`,`sub_total_amount`,\
-        //   `total_tax`,`net_total`,`billing_status`,`copay_amount`,`deductable_amount`,`sec_copay_amount`,\
-        //   `sec_deductable_amount`,`gross_total`,`sheet_discount_amount`,`sheet_discount_percentage`,`net_amount`,\
-        //   `patient_res`,`company_res`,`sec_company_res`,`patient_payable`,`company_payable`,`sec_company_payable`,\
-        //   `patient_tax`,`company_tax`,`sec_company_tax`,`net_tax`,`credit_amount`,`receiveable_amount' \
-        //   FROM `hims_f_billing_header` \
-        //  WHERE `record_status`='A' AND " +
+    let connection = req.connection;
+    // db.getConnection((error, connection) => {
+    //   if (error) {
+    //     next(error);
+    //   }
+    // let where = whereCondition(extend(selectWhere, req.query));
+    connection.query(
+      //   "SELECT  `hims_f_billing_header_id`, `patient_id`, `billing_type_id`, `visit_id`, `bill_number`,\
+      //   'incharge_or_provider`,`bill_date`,`advance_amount`,`advance_adjust`,`discount_amount`,`sub_total_amount`,\
+      //   `total_tax`,`net_total`,`billing_status`,`copay_amount`,`deductable_amount`,`sec_copay_amount`,\
+      //   `sec_deductable_amount`,`gross_total`,`sheet_discount_amount`,`sheet_discount_percentage`,`net_amount`,\
+      //   `patient_res`,`company_res`,`sec_company_res`,`patient_payable`,`company_payable`,`sec_company_payable`,\
+      //   `patient_tax`,`company_tax`,`sec_company_tax`,`net_tax`,`credit_amount`,`receiveable_amount' \
+      //   FROM `hims_f_billing_header` \
+      //  WHERE `record_status`='A' AND " +
 
-        "SELECT * FROM hims_f_billing_header INNER JOIN hims_f_billing_details ON \
+      "SELECT * FROM hims_f_billing_header INNER JOIN hims_f_billing_details ON \
         hims_f_billing_header.hims_f_billing_header_id=hims_f_billing_details.hims_f_billing_header_id \
         inner join hims_f_patient as PAT on hims_f_billing_header.patient_id = PAT.hims_d_patient_id \
         where hims_f_billing_header.record_status='A' AND hims_f_billing_header.bill_number = '" +
-          req.query.bill_number +
-          "'",
+        req.query.bill_number +
+        "'",
 
-        (error, result) => {
+      (error, result) => {
+        if (error) {
           releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          req.records = result;
-          next();
+          next(error);
         }
-      );
-    });
+        req.records = result;
+        releaseDBConnection(db, connection);
+        next();
+      }
+    );
+    // });
   } catch (e) {
     next(e);
   }
