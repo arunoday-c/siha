@@ -474,7 +474,7 @@ class Vitals extends Component {
                         }}
                       />
                     ) : null}
-                    {item.hims_d_vitals_header_id === 8 ? " / " : null}
+                    {/* {item.hims_d_vitals_header_id === 8 ? " / " : null} */}
                   </React.Fragment>
                 );
               })}

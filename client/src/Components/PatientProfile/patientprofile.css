@@ -68,7 +68,7 @@
         color: #34b8bc; }
   .patientProfile .patientInfo-Top .patientVital {
     font-size: 0.8rem;
-    width: 330px;
+    width: 33%;
     line-height: 1.3rem;
     padding-left: 10px;
     padding-right: 10px;
@@ -100,7 +100,7 @@
   font-size: 1rem;
   text-transform: uppercase;
   position: fixed;
-  top: 126px;
+  top: 123px;
   z-index: 99; }
   .patientProfile .patientTopNav ul {
     position: relative; }
@@ -145,7 +145,7 @@
       list-style: none;
       display: inline-block; }
       .patientProfile .patientTopNav .patient-quick-info li section {
-        width: 300px;
+        width: 30vw;
         height: auto;
         position: absolute;
         right: 0;
@@ -179,7 +179,8 @@
           margin-bottom: 3px;
           border-radius: 20px;
           background: #3f9c91;
-          font-size: 0.7rem; }
+          font-size: 0.7rem;
+          white-space: nowrap; }
         .patientProfile .patientTopNav .patient-quick-info li section p {
           background: rgba(0, 0, 0, 0.05);
           border-top: 1px solid #65dace;

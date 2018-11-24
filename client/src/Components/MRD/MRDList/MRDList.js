@@ -4,7 +4,8 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import {
   AlagehFormGroup,
   AlgaehDateHandler,
-  AlgaehDataGrid
+  AlgaehDataGrid,
+  AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
 import algaehLoader from "../../Wrapper/fullPageLoader";
 import moment from "moment";
@@ -195,7 +196,12 @@ class MRDList extends Component {
                   columns={[
                     {
                       fieldName: "registration_date",
-                      label: "Registration Date",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Registration Date" }}
+                        />
+                      ),
+
                       others: {
                         resizable: false,
                         style: { textAlign: "center" }
@@ -203,7 +209,10 @@ class MRDList extends Component {
                     },
                     {
                       fieldName: "patient_code",
-                      label: "Patient Code",
+                      //label: "Patient Code",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Patient code" }} />
+                      ),
                       displayTemplate: row => {
                         return (
                           <span
@@ -239,12 +248,16 @@ class MRDList extends Component {
                     },
                     {
                       fieldName: "full_name",
-                      label: "Patient Name",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Patient Name" }} />
+                      ),
+
                       others: { resizable: false, style: { textAlign: "left" } }
                     },
                     {
                       fieldName: "gender",
-                      label: "Gender",
+                      label: <AlgaehLabel label={{ forceLabel: "Gender" }} />,
+
                       others: {
                         resizable: false,
                         style: { textAlign: "center" }
@@ -252,7 +265,10 @@ class MRDList extends Component {
                     },
                     {
                       fieldName: "date_of_birth",
-                      label: "Date of Birth",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Date of Birth" }} />
+                      ),
+
                       others: {
                         resizable: false,
                         style: { textAlign: "center" }
@@ -260,7 +276,8 @@ class MRDList extends Component {
                     },
                     {
                       fieldName: "age",
-                      label: "Age",
+                      label: <AlgaehLabel label={{ forceLabel: "Age" }} />,
+
                       others: {
                         resizable: false,
                         style: { textAlign: "center" }
@@ -268,7 +285,10 @@ class MRDList extends Component {
                     },
                     {
                       fieldName: "contact_number",
-                      label: "Phone Number",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Phone Number" }} />
+                      ),
+
                       others: {
                         resizable: false,
                         style: { textAlign: "center" }

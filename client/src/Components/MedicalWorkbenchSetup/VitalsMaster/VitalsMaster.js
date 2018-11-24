@@ -468,9 +468,14 @@ class VitalsMaster extends Component {
   render() {
     return (
       <div className="vitals_master">
-        <div className="col-lg-12">
-          <div className="row">
-            <div className="col-lg-8">
+        <div className="row">
+          <div className="col-lg-8">
+            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Create Vitals</h3>
+                </div>
+              </div>
               <div className="row">
                 <AlagehFormGroup
                   div={{ className: "col" }}
@@ -541,6 +546,7 @@ class VitalsMaster extends Component {
                   </button>
                 </div>
               </div>
+
               <div className="row">
                 <div
                   className="col-lg-12"
@@ -682,14 +688,17 @@ class VitalsMaster extends Component {
                 </div>
               </div>
             </div>
-
-            <div className="col-lg-4">
-              <div className="row" data-validate="deptLit_Vitals">
-                <div className="col">
-                  <h6 style={{ marginTop: 27 }}>Vitals List</h6>
+          </div>
+          <div className="col-lg-4">
+            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Assign Dept.</h3>
                 </div>
+              </div>
+              <div className="row" data-validate="deptLit_Vitals">
                 <AlagehAutoComplete
-                  div={{ className: "col" }}
+                  div={{ className: "col-12" }}
                   label={{
                     fieldName: "select_department",
                     isImp: true
@@ -706,289 +715,316 @@ class VitalsMaster extends Component {
                     onChange: this.dropDownHandler.bind(this)
                   }}
                 />
-              </div>
-              <div>
-                <ul id="deptLit_Vitals">
-                  {this.state.nonGeneralVitals.map((row, index) => (
-                    <li key={index}>
-                      <span>
-                        <input
-                          id={row.hims_d_vitals_header_id}
-                          name="mapped_vital"
-                          value={row.hims_d_vitals_header_id}
-                          type="checkbox"
-                          onChange={this.changeChecks.bind(this)}
-                        />
-                      </span>
-                      <span htmlFor={row.hims_d_sub_department_id}>
-                        {row.vitals_name}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-                <div style={{ margin: "5px" }}>
-                  <button
-                    className="btn btn-primary"
-                    onClick={this.mapDeptandVital.bind(this)}
-                  >
-                    Save
-                  </button>
+                <div className="col-12">
+                  <ul id="deptLit_Vitals">
+                    {this.state.nonGeneralVitals.map((row, index) => (
+                      <li key={index}>
+                        <span>
+                          <input
+                            id={row.hims_d_vitals_header_id}
+                            name="mapped_vital"
+                            value={row.hims_d_vitals_header_id}
+                            type="checkbox"
+                            onChange={this.changeChecks.bind(this)}
+                          />
+                        </span>
+                        <span htmlFor={row.hims_d_sub_department_id}>
+                          {row.vitals_name}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div style={{ marginTop: 5, float: "right" }}>
+                    <button
+                      className="btn btn-primary"
+                      onClick={this.mapDeptandVital.bind(this)}
+                    >
+                      Assign
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-          <hr />
-          <div className="row">
-            <div className="col-lg-12">
-              <div className="row" data-validate="addVitalDtlDiv">
-                <AlagehAutoComplete
-                  div={{ className: "col-lg-2" }}
-                  label={{
-                    fieldName: "vitals_name",
-                    isImp: true
-                  }}
-                  selector={{
-                    name: "vitals_header_id",
-                    className: "select-fld",
-                    value: this.state.vitals_header_id,
-                    dataSource: {
-                      textField: "vitals_name",
-                      valueField: "hims_d_vitals_header_id",
-                      data: this.state.vitalsHeader
-                    },
-                    onChange: this.dropDownHandler.bind(this)
-                  }}
-                />
 
-                <AlagehAutoComplete
-                  div={{ className: "col-lg-2" }}
-                  label={{
-                    fieldName: "gender",
-                    isImp: true
-                  }}
-                  selector={{
-                    name: "gender",
-                    className: "select-fld",
-                    value: this.state.gender,
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: GlobalVariables.FORMAT_GENDER
-                    },
-                    onChange: this.dropDownHandler.bind(this)
-                  }}
-                />
-
-                <AlagehFormGroup
-                  div={{ className: "col-lg-2" }}
-                  label={{
-                    fieldName: "min_age",
-                    isImp: true
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "min_age",
-                    value: this.state.min_age,
-                    events: {
-                      onChange: this.changeTexts.bind(this)
-                    },
-                    others: {
-                      type: "number",
-                      min: 0,
-                      checkvalidation: "$value === '' || $value < 0",
-                      errormessage: "Please enter a proper age value"
-                    }
-                  }}
-                />
-                <AlagehFormGroup
-                  div={{ className: "col-lg-2" }}
-                  label={{
-                    fieldName: "max_age",
-                    isImp: true
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "max_age",
-                    value: this.state.max_age,
-                    events: {
-                      onChange: this.changeTexts.bind(this)
-                    },
-                    others: {
-                      type: "number",
-                      min: 0,
-                      checkvalidation:
-                        "$value === '' || $value < " + this.state.min_age,
-                      errormessage: "Enter proper age range"
-                    }
-                  }}
-                />
-                <AlagehFormGroup
-                  div={{ className: "col-lg-2" }}
-                  label={{
-                    fieldName: "min_value",
-                    isImp: true
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "min_value",
-                    value: this.state.min_value,
-                    events: {
-                      onChange: this.changeTexts.bind(this)
-                    },
-                    others: {
-                      type: "number",
-                      min: 0,
-                      checkvalidation:
-                        "$value === '' || $value > " + this.state.max_value,
-                      errormessage: "Enter proper value range"
-                    }
-                  }}
-                />
-                <AlagehFormGroup
-                  div={{ className: "col-lg-2" }}
-                  label={{
-                    fieldName: "max_value",
-                    isImp: true
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "max_value",
-                    value: this.state.max_value,
-                    events: {
-                      onChange: this.changeTexts.bind(this)
-                    },
-                    others: {
-                      type: "number",
-                      min: 0,
-                      checkvalidation:
-                        "$value === '' || $value < " + this.state.min_value,
-                      errormessage: "Enter proper value range"
-                    }
-                  }}
-                />
-
-                <div className="col-lg-1">
-                  <button
-                    style={{ marginTop: 21 }}
-                    onClick={this.addVitalMasterDetail.bind(this)}
-                    type="button"
-                    className="btn btn-primary"
-                  >
-                    Add to List
-                  </button>
+          <div className="col-lg-12">
+            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Define Vitals</h3>
                 </div>
               </div>
-              <div
-                className="col-lg-12"
-                style={{ marginTop: 10 }}
-                data-validate="vitalsMasterDetailDiv"
-              >
-                <AlgaehDataGrid
-                  datavalidate="data-validate='vitalsMasterDetailDiv'"
-                  id="appt-room-grid"
-                  columns={[
-                    {
-                      fieldName: "vitals_header_id",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "vitals_name" }} />
-                      ),
-                      editorTemplate: row => {
-                        return (
-                          <AlagehAutoComplete
-                            div={{ className: "" }}
-                            selector={{
-                              name: "vitals_header_id",
-                              className: "select-fld",
-                              value: row.vitals_header_id,
-                              dataSource: {
-                                textField: "vitals_name",
-                                valueField: "hims_d_vitals_header_id",
-                                data: this.state.vitalsHeader
-                              },
-                              others: {
-                                required: true
-                              },
-                              onChange: this.changeGridEditors.bind(this)
-                            }}
-                          />
-                        );
-                      },
-                      displayTemplate: row => {
-                        return (
-                          <AlagehAutoComplete
-                            div={{ className: "" }}
-                            selector={{
-                              name: "vitals_header_id",
-                              className: "select-fld",
-                              value: row.vitals_header_id,
-                              dataSource: {
-                                textField: "vitals_name",
-                                valueField: "hims_d_vitals_header_id",
-                                data: this.state.vitalsHeader
-                              },
-                              others: {
-                                required: true,
-                                disabled: true
-                              }
-                            }}
-                          />
-                        );
-                      }
-                    },
-                    {
-                      fieldName: "gender",
-                      label: <AlgaehLabel label={{ fieldName: "gender" }} />,
-                      displayTemplate: row => {
-                        return <span>{row.gender}</span>;
-                      },
-                      editorTemplate: row => {
-                        return (
-                          <AlagehAutoComplete
-                            div={{ className: "" }}
-                            selector={{
-                              name: "gender",
-                              className: "select-fld",
-                              value: row.gender,
-                              dataSource: {
-                                textField: "name",
-                                valueField: "value",
-                                data: GlobalVariables.FORMAT_GENDER
-                              },
-                              onChange: this.changeGridEditors.bind(this, row)
-                            }}
-                          />
-                        );
-                      }
-                    },
-                    {
-                      fieldName: "min_age",
-                      label: <AlgaehLabel label={{ fieldName: "min_age" }} />
-                    },
-                    {
-                      fieldName: "max_age",
-                      label: <AlgaehLabel label={{ fieldName: "max_age" }} />
-                    },
-                    {
-                      fieldName: "min_value",
-                      label: <AlgaehLabel label={{ fieldName: "min_value" }} />
-                    },
-                    {
-                      fieldName: "max_value",
-                      label: <AlgaehLabel label={{ fieldName: "max_value" }} />
-                    }
-                  ]}
-                  keyId="hims_d_vitals_details_id"
-                  dataSource={{
-                    data: this.state.vitalsDetail
-                  }}
-                  isEditable={true}
-                  paging={{ page: 0, rowsPerPage: 10 }}
-                  events={{
-                    onEdit: () => {},
-                    onDelete: this.deleteVtialsDetail.bind(this),
-                    onDone: this.updateVitalsDetail.bind(this)
-                  }}
-                />
+              <div className="row">
+                <div className="col-lg-12">
+                  <div className="row" data-validate="addVitalDtlDiv">
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      label={{
+                        fieldName: "vitals_name",
+                        isImp: true
+                      }}
+                      selector={{
+                        name: "vitals_header_id",
+                        className: "select-fld",
+                        value: this.state.vitals_header_id,
+                        dataSource: {
+                          textField: "vitals_name",
+                          valueField: "hims_d_vitals_header_id",
+                          data: this.state.vitalsHeader
+                        },
+                        onChange: this.dropDownHandler.bind(this)
+                      }}
+                    />
+
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      label={{
+                        fieldName: "gender",
+                        isImp: true
+                      }}
+                      selector={{
+                        name: "gender",
+                        className: "select-fld",
+                        value: this.state.gender,
+                        dataSource: {
+                          textField: "name",
+                          valueField: "value",
+                          data: GlobalVariables.FORMAT_GENDER
+                        },
+                        onChange: this.dropDownHandler.bind(this)
+                      }}
+                    />
+
+                    <AlagehFormGroup
+                      div={{ className: "col" }}
+                      label={{
+                        fieldName: "min_age",
+                        isImp: true
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "min_age",
+                        value: this.state.min_age,
+                        events: {
+                          onChange: this.changeTexts.bind(this)
+                        },
+                        others: {
+                          type: "number",
+                          min: 0,
+                          checkvalidation: "$value === '' || $value < 0",
+                          errormessage: "Please enter a proper age value"
+                        }
+                      }}
+                    />
+                    <AlagehFormGroup
+                      div={{ className: "col" }}
+                      label={{
+                        fieldName: "max_age",
+                        isImp: true
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "max_age",
+                        value: this.state.max_age,
+                        events: {
+                          onChange: this.changeTexts.bind(this)
+                        },
+                        others: {
+                          type: "number",
+                          min: 0,
+                          checkvalidation:
+                            "$value === '' || $value < " + this.state.min_age,
+                          errormessage: "Enter proper age range"
+                        }
+                      }}
+                    />
+                    <AlagehFormGroup
+                      div={{ className: "col" }}
+                      label={{
+                        fieldName: "min_value",
+                        isImp: true
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "min_value",
+                        value: this.state.min_value,
+                        events: {
+                          onChange: this.changeTexts.bind(this)
+                        },
+                        others: {
+                          type: "number",
+                          min: 0,
+                          checkvalidation:
+                            "$value === '' || $value > " + this.state.max_value,
+                          errormessage: "Enter proper value range"
+                        }
+                      }}
+                    />
+                    <AlagehFormGroup
+                      div={{ className: "col" }}
+                      label={{
+                        fieldName: "max_value",
+                        isImp: true
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "max_value",
+                        value: this.state.max_value,
+                        events: {
+                          onChange: this.changeTexts.bind(this)
+                        },
+                        others: {
+                          type: "number",
+                          min: 0,
+                          checkvalidation:
+                            "$value === '' || $value < " + this.state.min_value,
+                          errormessage: "Enter proper value range"
+                        }
+                      }}
+                    />
+
+                    <div className="col">
+                      <button
+                        style={{ marginTop: 21 }}
+                        onClick={this.addVitalMasterDetail.bind(this)}
+                        type="button"
+                        className="btn btn-primary"
+                      >
+                        Create
+                      </button>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div
+                      className="col-lg-12"
+                      style={{ marginTop: 10 }}
+                      data-validate="vitalsMasterDetailDiv"
+                      id="vitalsMasterDetailCntr"
+                    >
+                      <AlgaehDataGrid
+                        datavalidate="data-validate='vitalsMasterDetailDiv'"
+                        id="appt-room-grid"
+                        columns={[
+                          {
+                            fieldName: "vitals_header_id",
+                            label: (
+                              <AlgaehLabel
+                                label={{ fieldName: "vitals_name" }}
+                              />
+                            ),
+                            editorTemplate: row => {
+                              return (
+                                <AlagehAutoComplete
+                                  div={{ className: "" }}
+                                  selector={{
+                                    name: "vitals_header_id",
+                                    className: "select-fld",
+                                    value: row.vitals_header_id,
+                                    dataSource: {
+                                      textField: "vitals_name",
+                                      valueField: "hims_d_vitals_header_id",
+                                      data: this.state.vitalsHeader
+                                    },
+                                    others: {
+                                      required: true
+                                    },
+                                    onChange: this.changeGridEditors.bind(this)
+                                  }}
+                                />
+                              );
+                            },
+                            displayTemplate: row => {
+                              return (
+                                <AlagehAutoComplete
+                                  div={{ className: "" }}
+                                  selector={{
+                                    name: "vitals_header_id",
+                                    className: "select-fld",
+                                    value: row.vitals_header_id,
+                                    dataSource: {
+                                      textField: "vitals_name",
+                                      valueField: "hims_d_vitals_header_id",
+                                      data: this.state.vitalsHeader
+                                    },
+                                    others: {
+                                      required: true,
+                                      disabled: true
+                                    }
+                                  }}
+                                />
+                              );
+                            }
+                          },
+                          {
+                            fieldName: "gender",
+                            label: (
+                              <AlgaehLabel label={{ fieldName: "gender" }} />
+                            ),
+                            displayTemplate: row => {
+                              return <span>{row.gender}</span>;
+                            },
+                            editorTemplate: row => {
+                              return (
+                                <AlagehAutoComplete
+                                  div={{ className: "" }}
+                                  selector={{
+                                    name: "gender",
+                                    className: "select-fld",
+                                    value: row.gender,
+                                    dataSource: {
+                                      textField: "name",
+                                      valueField: "value",
+                                      data: GlobalVariables.FORMAT_GENDER
+                                    },
+                                    onChange: this.changeGridEditors.bind(
+                                      this,
+                                      row
+                                    )
+                                  }}
+                                />
+                              );
+                            }
+                          },
+                          {
+                            fieldName: "min_age",
+                            label: (
+                              <AlgaehLabel label={{ fieldName: "min_age" }} />
+                            )
+                          },
+                          {
+                            fieldName: "max_age",
+                            label: (
+                              <AlgaehLabel label={{ fieldName: "max_age" }} />
+                            )
+                          },
+                          {
+                            fieldName: "min_value",
+                            label: (
+                              <AlgaehLabel label={{ fieldName: "min_value" }} />
+                            )
+                          },
+                          {
+                            fieldName: "max_value",
+                            label: (
+                              <AlgaehLabel label={{ fieldName: "max_value" }} />
+                            )
+                          }
+                        ]}
+                        keyId="hims_d_vitals_details_id"
+                        dataSource={{
+                          data: this.state.vitalsDetail
+                        }}
+                        isEditable={true}
+                        paging={{ page: 0, rowsPerPage: 10 }}
+                        events={{
+                          onEdit: () => {},
+                          onDelete: this.deleteVtialsDetail.bind(this),
+                          onDone: this.updateVitalsDetail.bind(this)
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

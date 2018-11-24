@@ -200,34 +200,36 @@ class PatientMRD extends Component {
               <ul className="float-right patient-quick-info">
                 <li>
                   <i className="fas fa-allergies" />
-                  <p>
-                    <b className="top-nav-sec-hdg">Allergies:</b>
 
-                    {this.state.patientAllergies.map((data, index) => (
-                      <React.Fragment key={index}>
-                        <b>{data.allergy_type_desc}</b>
-                        {data.allergyList.map((allergy, aIndex) => (
-                          <span
-                            key={aIndex}
-                            className={
-                              "listofA-D-D " +
-                              (allergy.allergy_inactive === "Y" ? "red" : "")
-                            }
-                            title={
-                              "Onset Date : " +
-                              allergy.onset_date +
-                              "\n Comment : " +
-                              allergy.comment +
-                              "\n Severity : " +
-                              allergy.severity
-                            }
-                          >
-                            {allergy.allergy_name}
-                          </span>
-                        ))}
-                      </React.Fragment>
-                    ))}
-                  </p>
+                  <section>
+                    <b className="top-nav-sec-hdg">Allergies:</b>
+                    <p>
+                      {this.state.patientAllergies.map((data, index) => (
+                        <React.Fragment key={index}>
+                          <b>{data.allergy_type_desc}</b>
+                          {data.allergyList.map((allergy, aIndex) => (
+                            <span
+                              key={aIndex}
+                              className={
+                                "listofA-D-D " +
+                                (allergy.allergy_inactive === "Y" ? "red" : "")
+                              }
+                              title={
+                                "Onset Date : " +
+                                allergy.onset_date +
+                                "\n Comment : " +
+                                allergy.comment +
+                                "\n Severity : " +
+                                allergy.severity
+                              }
+                            >
+                              {allergy.allergy_name}
+                            </span>
+                          ))}
+                        </React.Fragment>
+                      ))}
+                    </p>
+                  </section>
                 </li>
               </ul>
             </ul>

@@ -31,14 +31,15 @@
 
 .ReactTable .-pagination {
   font-size: 0.8rem !important; }
-
-.ReactTable .-pagination input,
-.ReactTable .-pagination select {
-  border: 1px solid #8c8c8c !important;
-  width: 7vh !important; }
-
-.ReactTable .-pagination input {
-  padding: 2px !important; }
+  .ReactTable .-pagination .-center input,
+  .ReactTable .-pagination .-center select {
+    border: 1px solid #8c8c8c !important;
+    width: 7vh !important; }
+  .ReactTable .-pagination .-center input {
+    padding: 2px !important; }
+  @media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
+    .ReactTable .-pagination .-center {
+      flex: 3 1 !important; } }
 
 .ReactTable i.fa-pen,
 .ReactTable i.fa-trash-alt,

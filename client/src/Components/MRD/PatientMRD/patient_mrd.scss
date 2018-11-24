@@ -118,34 +118,51 @@
         }
       }
     }
+
     .patientTopNav {
       background: white;
       height: 35px;
-      padding: 5px 0 0;
+      padding: 0;
       width: 100%;
       color: #797979;
       font-size: 1rem;
       text-transform: uppercase;
       position: fixed;
-      top: 126px;
+      top: 123px;
       z-index: 99;
       ul {
         position: relative;
         li {
+          &:after {
+            display: block;
+            content: "";
+            border-bottom: solid 3px #00a9ad;
+            transform: scaleX(0);
+            transition: transform 150ms ease-in-out;
+          }
+          &:hover:after {
+            transform: scaleX(1);
+          }
           span {
             font-size: 0.8rem;
             text-transform: uppercase;
-            padding: 5px 15px;
+            padding: 9px 15px 8px;
             color: #858585;
+            cursor: pointer;
           }
           span.active {
-            border-bottom: 3px solid #34b8bc;
-            color: #000;
-          }
-          span:hover {
-            border-bottom: 3px solid #34b8bc;
-            color: #000;
-            cursor: pointer;
+            border-bottom: solid 3px #00a9ad;
+            color: #fff;
+            background: #34b8bc;
+            &:hover {
+              cursor: default;
+              color: #fff;
+            }
+            &:hover:after {
+              display: none !important;
+              border: none !important;
+              cursor: pointer;
+            }
           }
         }
       }
@@ -164,7 +181,7 @@
           margin: 0 10px;
           list-style: none;
           display: inline-block;
-          p {
+          section {
             width: 300px;
             height: auto;
             position: absolute;
@@ -203,7 +220,7 @@
               background: #3f9c91;
               font-size: 0.7rem;
             }
-            section {
+            p {
               background: rgba(0, 0, 0, 0.05);
               border-top: 1px solid #65dace;
               margin: -10px;
@@ -215,7 +232,7 @@
           background: #53bcb1;
           color: #fff;
           padding: 4px 10px;
-          p {
+          section {
             display: block;
           }
         }

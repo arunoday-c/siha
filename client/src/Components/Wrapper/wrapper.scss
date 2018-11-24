@@ -38,14 +38,22 @@
   }
   .-pagination {
     font-size: 0.8rem !important;
-  }
-  .-pagination input,
-  .-pagination select {
-    border: 1px solid #8c8c8c !important;
-    width: 7vh !important;
-  }
-  .-pagination input {
-    padding: 2px !important;
+    .-center {
+      input,
+      select {
+        border: 1px solid #8c8c8c !important;
+        width: 7vh !important;
+      }
+      input {
+        padding: 2px !important;
+      }
+    }
+
+    @media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
+      .-center {
+        flex: 3 1 !important;
+      }
+    }
   }
   i.fa-pen,
   i.fa-trash-alt,

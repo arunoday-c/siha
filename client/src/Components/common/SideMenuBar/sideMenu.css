@@ -17,9 +17,6 @@
   padding-right: 5px;
   cursor: pointer; }
 
-.hptl-phase1-sideMenuBar .tree-structure-menu {
-  padding-left: 30px; }
-
 .hptl-phase1-sideMenuBar .sub-menu-option {
   padding-top: 10px;
   background: #000000; }
@@ -46,13 +43,15 @@
   left: -2.75em;
   border-top: 1px solid #d3d3d3; }
 
-.hptl-phase1-sideMenuBar ul ul:before, .hptl-phase1-sideMenuBar h3:before, .hptl-phase1-sideMenuBar li:after {
-  content: '';
+.hptl-phase1-sideMenuBar ul ul:before,
+.hptl-phase1-sideMenuBar h3:before,
+.hptl-phase1-sideMenuBar li:after {
+  content: "";
   display: block;
   width: 1em;
   height: 1em;
   top: 1em;
-  left: .4em; }
+  left: 0.4em; }
 
 .hptl-phase1-sideMenuBar .close-menu {
   padding-top: 5px;

@@ -415,16 +415,13 @@ class PatientProfile extends Component {
                   <p>
                     {_diagnosis.map((item, index) => (
                       <React.Fragment key={index}>
-                        <span>{item.icd_code}</span>
                         <span key={index} className="listofA-D-D">
-                          {item.icd_description}
-                        </span>
-                        <span>
+                          {item.icd_code} | {item.icd_description} |
                           {item.diagnosis_type === "S"
                             ? "Secondary"
-                            : "Primary"}
+                            : "Primary"}{" "}
+                          | {item.final_daignosis}
                         </span>
-                        <span>{item.final_daignosis}</span>
                       </React.Fragment>
                     ))}
                   </p>

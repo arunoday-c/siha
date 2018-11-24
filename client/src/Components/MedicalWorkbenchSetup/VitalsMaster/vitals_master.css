@@ -1,21 +1,25 @@
 .vitals_master #vitalsMasterDivCntr .ReactTable {
-  max-height: 20vh !important; }
+  max-height: 26vh !important; }
 
 .vitals_master ul#deptLit_Vitals {
   margin: 5px 0 0;
   padding: 0;
   list-style: none;
-  border: 1px solid #000;
+  border: 1px solid #d3d3d3;
   overflow: auto;
-  height: 20vh; }
+  height: 22vh; }
   .vitals_master ul#deptLit_Vitals li {
-    border-bottom: 1px solid #000;
+    border-bottom: 1px solid #d3d3d3;
     padding: 0;
     margin: 0;
-    list-style: none; }
+    list-style: none;
+    font-size: 0.8rem; }
     .vitals_master ul#deptLit_Vitals li span {
       display: inline-block; }
     .vitals_master ul#deptLit_Vitals li span:first-child {
-      border-right: 1px solid #000;
+      border-right: 1px solid #d3d3d3;
       padding: 6px 10px;
       margin-right: 10px; }
+
+.vitals_master #vitalsMasterDetailCntr .ReactTable {
+  max-height: 25vh !important; }
