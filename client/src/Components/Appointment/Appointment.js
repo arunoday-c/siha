@@ -38,7 +38,8 @@ class Appointment extends Component {
       date_of_birth: null,
       activeDateHeader: moment()._d,
       outerStyles: {},
-      byPassValidation: false
+      byPassValidation: false,
+      width: 0
     };
   }
 
@@ -408,7 +409,8 @@ class Appointment extends Component {
                     slot:
                       this.state.appointmentSchedule !== undefined
                         ? this.state.appointmentSchedule[0].slot
-                        : null
+                        : null,
+                    width: 254 * response.data.records.length
                   });
                 }
               );
@@ -574,7 +576,7 @@ class Appointment extends Component {
   openEditModal(patient, e) {
     e.preventDefault();
 
-    debugger;
+    //debugger;
     let maxSlots = 1;
     const _currentRow = e.target.parentElement.parentNode.sectionRowIndex + 1;
     const _allRows =
@@ -613,7 +615,7 @@ class Appointment extends Component {
       });
     } else {
       this.setState({ patToEdit: patient, openPatEdit: true }, () => {
-        debugger;
+        //debugger;
         let pat_edit = this.state.patToEdit;
 
         this.setState({
@@ -662,80 +664,93 @@ class Appointment extends Component {
           );
 
           if (willUpdate.value) {
-            let edit_details = {
-              hims_f_patient_appointment_id: this.state.edit_appointment_id,
-              record_status: "A",
-              appointment_status_id: this.state.edit_appointment_status_id,
-              patient_id: this.state.edit_patient_id,
-              provider_id: this.state.edit_provider_id,
-              sub_department_id: this.state.edit_sub_dep_id,
-              appointment_date: this.state.edit_appt_date,
-              appointment_from_time: this.state.edit_from_time,
-              appointment_to_time: moment(new_to_time).format("HH:mm:ss"),
-              patient_name: this.state.edit_patient_name,
-              arabic_name: this.state.edit_arabic_name,
-              date_of_birth: this.state.edit_date_of_birth,
-              age: this.state.edit_age,
-              contact_number: this.state.edit_contact_number,
-              email: this.state.edit_email,
-              send_to_provider: null,
-              gender: this.state.edit_gender,
-              confirmed: "N",
-              confirmed_by: null,
-              comfirmed_date: null,
-              cancelled: "N",
-              cancelled_by: null,
-              cancelled_date: null,
-              cancel_reason: null,
-              appointment_remarks: this.state.edit_appointment_remarks,
-              is_stand_by: this.state.edit_is_stand_by,
-              number_of_slot: this.state.edit_no_of_slots
-            };
+            if (
+              this.state.edit_appointment_status_id === this.state.checkInId &&
+              moment(this.state.edit_appt_date).format("YYYYMMDD") !==
+                moment(new Date()).format("YYYYMMDD")
+            ) {
+              swalMessage({
+                title:
+                  "Only Patients with Today's appointments can be Checked In",
+                type: "warning"
+              });
+            } else {
+              let edit_details = {
+                hims_f_patient_appointment_id: this.state.edit_appointment_id,
+                record_status: "A",
+                appointment_status_id: this.state.edit_appointment_status_id,
+                patient_id: this.state.edit_patient_id,
+                provider_id: this.state.edit_provider_id,
+                sub_department_id: this.state.edit_sub_dep_id,
+                appointment_date: this.state.edit_appt_date,
+                appointment_from_time: this.state.edit_from_time,
+                appointment_to_time: moment(new_to_time).format("HH:mm:ss"),
+                patient_name: this.state.edit_patient_name,
+                arabic_name: this.state.edit_arabic_name,
+                date_of_birth: this.state.edit_date_of_birth,
+                age: this.state.edit_age,
+                contact_number: this.state.edit_contact_number,
+                email: this.state.edit_email,
+                send_to_provider: null,
+                gender: this.state.edit_gender,
+                confirmed: "N",
+                confirmed_by: null,
+                comfirmed_date: null,
+                cancelled: "N",
+                cancelled_by: null,
+                cancelled_date: null,
+                cancel_reason: null,
+                appointment_remarks: this.state.edit_appointment_remarks,
+                is_stand_by: this.state.edit_is_stand_by,
+                number_of_slot: this.state.edit_no_of_slots
+              };
 
-            algaehApiCall({
-              uri: "/appointment/updatePatientAppointment",
-              method: "PUT",
-              data: edit_details,
-              onSuccess: response => {
-                if (response.data.success) {
-                  if (
-                    edit_details.appointment_status_id === this.state.checkInId
-                  ) {
-                    setGlobal({
-                      "FD-STD": "RegistrationPatient",
-                      "appt-pat-code": this.state.patient_code,
-                      "appt-provider-id": this.state.edit_provider_id,
-                      "appt-dept-id": this.state.edit_sub_dep_id,
-                      "appt-pat-name": this.state.edit_patient_name,
-                      "appt-pat-arabic-name": this.state.edit_arabic_name,
-                      "appt-pat-dob": this.state.edit_date_of_birth,
-                      "appt-pat-age": this.state.edit_age,
-                      "appt-pat-gender": this.state.edit_gender,
-                      "appt-pat-ph-no": this.state.edit_contact_number,
-                      "appt-pat-email": this.state.edit_email,
-                      "appt-department-id": this.state.department_id,
-                      "appt-id": this.state.edit_appointment_id
-                    });
+              algaehApiCall({
+                uri: "/appointment/updatePatientAppointment",
+                method: "PUT",
+                data: edit_details,
+                onSuccess: response => {
+                  if (response.data.success) {
+                    if (
+                      edit_details.appointment_status_id ===
+                      this.state.checkInId
+                    ) {
+                      setGlobal({
+                        "FD-STD": "RegistrationPatient",
+                        "appt-pat-code": this.state.patient_code,
+                        "appt-provider-id": this.state.edit_provider_id,
+                        "appt-dept-id": this.state.edit_sub_dep_id,
+                        "appt-pat-name": this.state.edit_patient_name,
+                        "appt-pat-arabic-name": this.state.edit_arabic_name,
+                        "appt-pat-dob": this.state.edit_date_of_birth,
+                        "appt-pat-age": this.state.edit_age,
+                        "appt-pat-gender": this.state.edit_gender,
+                        "appt-pat-ph-no": this.state.edit_contact_number,
+                        "appt-pat-email": this.state.edit_email,
+                        "appt-department-id": this.state.department_id,
+                        "appt-id": this.state.edit_appointment_id
+                      });
 
-                    document.getElementById("fd-router").click();
-                  } else {
-                    this.clearSaveState();
-                    swalMessage({
-                      title: "Appointment Updated Successfully",
-                      type: "success"
-                    });
-                    this.setState({ openPatEdit: false });
-                    this.getAppointmentSchedule();
+                      document.getElementById("fd-router").click();
+                    } else {
+                      this.clearSaveState();
+                      swalMessage({
+                        title: "Appointment Updated Successfully",
+                        type: "success"
+                      });
+                      this.setState({ openPatEdit: false });
+                      this.getAppointmentSchedule();
+                    }
                   }
+                },
+                onFailure: error => {
+                  swalMessage({
+                    title: error.message,
+                    type: "error"
+                  });
                 }
-              },
-              onFailure: error => {
-                swalMessage({
-                  title: error.message,
-                  type: "error"
-                });
-              }
-            });
+              });
+            }
           } else {
             swalMessage({
               title: "Not cancelled",
@@ -748,7 +763,7 @@ class Appointment extends Component {
   }
 
   showModal(e) {
-    debugger;
+    //debugger;
     let maxSlots = 1;
     const _currentRow = e.target.parentElement.parentNode.sectionRowIndex + 1;
     const _allRows =
@@ -906,7 +921,8 @@ class Appointment extends Component {
           edit_appt_time: moment(new_from_time, "HH:mm a").format("HH:mm:ss"),
           edit_from_time: moment(new_from_time, "HH:mm a").format("HH:mm:ss"),
           edit_to_time: moment(new_to_time).format("HH:mm:ss"),
-          edit_provider_id: prov_id
+          edit_provider_id: prov_id,
+          edit_appointment_status_id: this.state.RescheduleId
         },
         () => {
           swal({
@@ -2117,7 +2133,7 @@ class Appointment extends Component {
                 <div className="appointment-outer-cntr">
                   <div
                     className="appointment-inner-cntr"
-                    // style={{ width: { rgdfjg } }}
+                    style={{ width: this.state.width }}
                   >
                     {/* Table Start */}
                     {this.state.appointmentSchedule.length !== 0 ? (

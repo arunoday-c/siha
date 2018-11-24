@@ -10,7 +10,7 @@ import POEntry from "../../../Models/POEntry";
 let texthandlerInterval = null;
 
 const texthandle = ($this, e) => {
-  debugger;
+  //debugger;
   if (e.value === undefined) {
     $this.setState({ [e]: null });
   } else {
@@ -24,7 +24,7 @@ const texthandle = ($this, e) => {
 };
 
 const loctexthandle = ($this, e) => {
-  debugger;
+  //debugger;
   if (e.value === undefined) {
     $this.setState({ [e]: null });
   } else {
@@ -42,7 +42,7 @@ const loctexthandle = ($this, e) => {
 };
 
 const vendortexthandle = ($this, e) => {
-  debugger;
+  //debugger;
   if (e.value === undefined) {
     $this.setState({ [e]: null, payment_terms: null });
   } else {
@@ -66,7 +66,7 @@ const vendortexthandle = ($this, e) => {
 };
 
 const poforhandle = ($this, e) => {
-  debugger;
+  //debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
@@ -138,7 +138,7 @@ const numberchangeTexts = ($this, context, e) => {
         });
       }
       clearInterval(texthandlerInterval);
-    }, 1000);
+    }, 500);
   }
 };
 
@@ -149,7 +149,7 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const RequisitionSearch = ($this, e) => {
-  debugger;
+  //debugger;
   if (
     $this.state.pharmcy_location_id === null &&
     $this.state.inventory_location_id === null
@@ -159,7 +159,7 @@ const RequisitionSearch = ($this, e) => {
       type: "warning"
     });
   } else {
-    debugger;
+    //debugger;
     let from_location_id =
       $this.state.po_from === "PHR"
         ? $this.state.pharmcy_location_id
@@ -190,7 +190,7 @@ const RequisitionSearch = ($this, e) => {
             mappingName: "porequisitionentry"
           },
           afterSuccess: data => {
-            debugger;
+            //debugger;
             if (data !== null && data !== undefined) {
               AlgaehLoader({ show: true });
 
@@ -358,7 +358,7 @@ const getCtrlCode = ($this, docNumber) => {
       mappingName: "purchaseorderentry"
     },
     afterSuccess: data => {
-      debugger;
+      //debugger;
       if (
         $this.props.purchase_number !== undefined &&
         $this.props.purchase_number.length !== 0
@@ -481,7 +481,7 @@ const getData = $this => {
 };
 
 const AuthorizePOEntry = $this => {
-  debugger;
+  //debugger;
   let stock_detail =
     $this.state.po_from === "PHR"
       ? $this.state.pharmacy_stock_detail

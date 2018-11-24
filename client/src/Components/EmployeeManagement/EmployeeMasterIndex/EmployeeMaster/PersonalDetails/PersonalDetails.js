@@ -32,7 +32,7 @@ class PersonalDetails extends PureComponent {
     super(props);
 
     this.state = {
-      Applicable: false,
+      // Applicable: false,
       percent: 0
     };
   }

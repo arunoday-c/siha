@@ -78,7 +78,7 @@ const doctorselectedHandeler = ($this, context, e) => {
         uri: "/visit/checkVisitExists",
         data: $this.state,
         onSuccess: response => {
-          if (response.data.success == true) {
+          if (response.data.success === true) {
             $this.setState(
               {
                 [e.name]: e.value,

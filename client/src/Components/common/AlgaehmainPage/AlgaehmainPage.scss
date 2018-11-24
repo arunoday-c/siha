@@ -3,11 +3,62 @@ header {
   box-shadow: none !important;
   border-bottom: 2px solid rgba(0, 0, 0, 0.1);
 }
+.mainTheme {
+  background: #34b8bc;
+  color: #fff;
+  padding: 0 1rem;
+  border-bottom: 1px solid #008587;
+}
+.mainPageArea {
+  position: fixed;
+  top: 53px;
+  height: 94vh;
+  overflow: auto;
+  overflow-x: hidden;
+}
+.sideMenuBars {
+  border-right: 1px solid #00999c;
+  margin-left: -15px;
+  padding: 15px;
+  cursor: pointer;
+  background: linear-gradient(
+    to right,
+    rgba(228, 171, 89, 0.76) 0%,
+    rgba(0, 186, 190, 0.1) 100%
+  );
+  &:hover {
+    background: #00999c;
+  }
+}
+.topNavbar-title {
+  font-size: 1.2rem;
+  margin: 0;
+  padding: 0;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+.appLogoCntr {
+  width: 115px;
+  border-left: 1px solid #00d1d6;
+  padding-left: 3px;
+  margin-right: 10px;
+
+  .appLogoOnly {
+    background: url(../../../assets/svg/HIMS_LOGO_ONLY.svg) no-repeat center
+      left;
+    background-size: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    height: 40px;
+  }
+}
+
 .btn-userProfile {
   background: none;
   font-size: 1rem;
   color: #fff;
   border-left: 1px solid #009689;
+  margin-top: -21px;
   i {
     margin: 3px;
   }
@@ -41,7 +92,9 @@ header {
   }
 }
 .leftNavCntr {
+  background: #292929;
   margin-top: 0;
+  top: 0;
   z-index: 9999;
   position: fixed;
   height: 100%;
@@ -52,104 +105,105 @@ header {
 }
 
 /* Light Side Bar Menu */
-// .hptl-phase1-sideMenuBar {
-//   .sideMenu-header {
-//     color: #212529;
-//     background: #f7f7f7;
-//     padding-top: 50px;
-//   }
-//   .side-menu-title {
-//     padding: 5px 0;
-//     line-height: 35px;
-//     border-bottom: 2px solid #d2d2d2;
-//     border-top: 1px solid #fff;
-//     cursor: pointer;
-//     font-size: 0.9rem;
-//     i {
-//       text-shadow: 0px 2px 0px #fff;
-//     }
-//   }
-//   .side-menu-title:hover {
-//     background: rgb(0, 188, 176);
-//     color: #fff;
-//     text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.1);
-//     i {
-//       text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.1);
-//     }
-//   }
-//   .side-menu-arrow {
-//     margin-top: 5px;
-//   }
-//   .side-menu-downIcon {
-//     padding-top: 5px;
-//     padding-right: 5px;
-//     cursor: pointer;
-//   }
-//   ul.tree-structure-menu {
-//     margin: 0;
-//     padding: 0;
-//     width: 100%;
-//     li {
-//       padding: 8px 5px;
-//       margin: 0;
-//       font-size: 0.8rem;
-//       border-bottom: 1px dotted #4e4e4e;
-//       text-transform: uppercase;
-//       cursor: pointer;
-//       line-height: 20px;
-//       background: #7b7b7b;
-//       color: #fff;
-//       i {
-//         margin-right: 27px;
-//         margin-left: 12px;
-//         display: inline-block;
-//         vertical-align: initial;
-//       }
-//       span {
-//         display: inline-block;
-//         width: 78%;
-//       }
-//     }
-//     li:hover {
-//       background: rgb(0, 188, 176);
-//       color: #fff;
-//     }
-//   }
+.hptl-phase1-sideMenuBar {
+  .sideMenu-header {
+    color: #212529;
+    background: #f7f7f7;
+    padding-top: 50px;
+  }
+  .side-menu-title {
+    padding: 5px 0;
+    line-height: 35px;
+    border-bottom: 2px solid #d2d2d2;
+    border-top: 1px solid #fff;
+    cursor: pointer;
+    font-size: 0.9rem;
+    i {
+      text-shadow: 0px 2px 0px #fff;
+    }
+  }
+  .side-menu-title:hover {
+    background: #fff;
+    color: rgb(0, 188, 176);
+  }
+  .side-menu-arrow {
+    margin-top: 5px;
+  }
+  .side-menu-downIcon {
+    padding-top: 5px;
+    padding-right: 5px;
+    cursor: pointer;
+  }
+  ul.tree-structure-menu {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    li {
+      padding: 8px 5px;
+      margin: 0;
+      font-size: 0.8rem;
+      border-bottom: 1px dotted #818588;
+      text-transform: uppercase;
+      cursor: pointer;
+      line-height: 20px;
+      background: #272b2f;
+      color: #fff;
+  }
+      i {
+        margin-right: 27px;
+        margin-left: 12px;
+        display: inline-block;
+        vertical-align: initial;
+      }
+      span {
+        display: inline-block;
+        width: 78%;
+      }
+    }
+    li:hover {
+      background: #fff;
+      color: rgb(0, 188, 176);
+    }
+    li.active {
+      background: rgb(0, 188, 176);
+      color: #fff;
+    }
+  }
 
-//   .close-menu {
-//     padding-top: 5px;
-//     cursor: pointer;
-//     color: #fff;
-//   }
+  .close-menu {
+    padding-top: 5px;
+    cursor: pointer;
+    color: #fff;
+  }
 
-//   .menuBar-title {
-//     display: flex;
-//     padding: 5px;
-//     font-size: 20px;
-//     height: 52px;
-//     background: #000;
-//     position: fixed;
-//     width: 255px;
-//     z-index: 9;
-//     border-bottom: 1px solid #3e3e3e;
-//   }
-//   .sideBarClose {
-//     position: absolute;
-//     right: 19px;
-//     top: 14px;
-//     color: #fff;
-//     font-size: 1.3rem;
-//   }
-//   .sideBarClose:hover {
-//     color: #00bcb0;
-//     cursor: pointer;
-//   }
-//   svg {
-//     height: 23px;
-//   }
-// }
+  .menuBar-title {
+    display: flex;
+    padding: 0 5px;
+    font-size: 20px;
+    height: 52px;
+    background: #000;
+    position: fixed;
+    width: 255px;
+    z-index: 9;
+    border-bottom: 1px solid #3e3e3e;
+  }
+  .sideBarClose {
+    position: absolute;
+    right: 19px;
+    top: 14px;
+    color: #fff;
+    font-size: 1.3rem;
+  }
+  .sideBarClose:hover {
+    color: #00bcb0;
+    cursor: pointer;
+  }
+  svg {
+    height: 23px;
+  }
+}
 
-/* Dark Side Bar Menu */
+/* Dark Side Bar Menu 
 .hptl-phase1-sideMenuBar {
   .sideMenu-header {
     color: white;
@@ -249,7 +303,7 @@ header {
     height: 23px;
   }
 }
-
+*/
 .hptl-phase1-footer {
   .main {
     background-color: #000000 !important;
@@ -307,8 +361,40 @@ header {
   padding: 0px 3px;
   border-radius: 2px;
 }
+.navTopbar-dropdown {
+  padding: 15px;
+  border-left: 1px solid #009c9e;
+  margin: 0;
+  margin-right: -15px;
+  cursor: pointer;
+  .dropdown-menu {
+    left: inherit;
+    right: -1px;
+    display: none;
+    border-radius: 0 0 5px 5px;
+    top: 51px;
+    width: 200px;
+    .dropdown-item {
+      padding: 0.5rem 0.8rem;
+      color: #686868;
+      i {
+        margin-right: 0.5rem;
+      }
+      &:hover {
+        color: #00999c;
+      }
+    }
+  }
+  &:hover {
+    background: #00999c;
+    .dropdown-menu {
+      display: block;
+    }
+  }
+}
 .loginProfileInfo {
   font-size: 0.8rem;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
   span {
     display: block;
     white-space: nowrap;
@@ -318,6 +404,7 @@ header {
     &:first-child {
       font-size: 0.9rem;
       font-weight: 600;
+      text-transform: uppercase;
     }
   }
 }

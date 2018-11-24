@@ -7,7 +7,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../actions/algaehActions";
-import { setCookie } from "../../utils/algaehApiCall.js";
+// import { setCookie } from "../../utils/algaehApiCall.js";
 
 const BarData = {
   labels: [
@@ -114,7 +114,7 @@ class Dashboard extends Component {
   }
 
   render() {
-    let margin = this.state.sidBarOpen ? "" : "";
+    // let margin = this.state.sidBarOpen ? "" : "";
     return (
       <div className="dashboard ">
         <div className="row card-deck">

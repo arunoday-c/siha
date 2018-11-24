@@ -9,7 +9,7 @@ export function getOptions() {
       uri: "/masters/get/autogen",
       method: "GET",
       onSuccess: response => {
-        if (response.data.success == true) {
+        if (response.data.success === true) {
           dispatch({
             type: "OPTGET_DATA",
             payload: response.data.records

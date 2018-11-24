@@ -481,7 +481,11 @@ class AppointmentStatus extends Component {
                         ? "Yes"
                         : row.default_status === "N"
                         ? "No"
-                        : "Create Visit";
+                        : row.default_status === "RS"
+                        ? "Re-Schedule"
+                        : row.default_status === "C"
+                        ? "Create Visit"
+                        : "----------";
                     },
                     editorTemplate: row => {
                       return (

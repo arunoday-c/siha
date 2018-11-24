@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import AddInsuranceForm from "./AddInsuranceForm.js";
-import styles from "./InsuranceForm.css";
 
 export default class InsuranceForm extends Component {
   constructor(props) {

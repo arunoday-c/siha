@@ -238,7 +238,7 @@ export function AlgaehValidation(options) {
     } else {
       _evalConditions = _checkVal;
     }
-
+    debugger;
     if (eval(_evalConditions)) {
       let _title = _Validateerror[i].getAttribute("errormessage");
 

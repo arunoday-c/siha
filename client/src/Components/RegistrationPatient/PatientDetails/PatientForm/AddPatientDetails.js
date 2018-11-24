@@ -16,7 +16,7 @@ const texthandle = ($this, context, e) => {
       context.updateState({ [name]: value });
     }
     clearInterval(texthandlerInterval);
-  }, 1000);
+  }, 500);
 };
 
 const countryStatehandle = ($this, context, e) => {
@@ -235,7 +235,7 @@ const nationalityhandle = ($this, context, e) => {
           });
         }
         clearInterval(texthandlerInterval);
-      }, 1000);
+      }, 500);
     }
   });
 };

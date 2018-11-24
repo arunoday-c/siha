@@ -80,21 +80,20 @@
   top: auto;
   bottom: 100%; }
 
-.myUL li span {
+.myUL li a {
   border: 1px solid #ddd;
   margin-top: -1px;
   background-color: #ffffff;
   padding: 5px 8px;
   text-decoration: none;
   display: block;
-  font-size: 0.8rem; }
-  .myUL li span span {
-    border: none;
-    background-color: transparent !important; }
-    .myUL li span span:before {
-      top: 11px !important; }
-    .myUL li span span:after {
-      top: 6px !important; }
+  font-size: 0.8rem;
+  color: #212529;
+  cursor: pointer; }
+  .myUL li a:before {
+    top: 11px !important; }
+  .myUL li a:after {
+    top: 6px !important; }
 
-.myUL li span:hover:not(.header) {
+.myUL li a:hover:not(.header) {
   background-color: #eee; }

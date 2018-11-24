@@ -14,7 +14,7 @@ import ItemForm from "./ItemForm/ItemForm";
 import ItemStorage from "./ItemStorage/ItemStorage";
 import LocationPermission from "./LocationPermission/LocationPermission";
 
-import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
+// import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
 

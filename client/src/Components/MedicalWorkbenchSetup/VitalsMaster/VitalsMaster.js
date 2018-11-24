@@ -62,7 +62,7 @@ class VitalsMaster extends Component {
       } else {
         dps.push(e.target.value);
       }
-      console.log("Mapped Department:", dps);
+      // console.log("Mapped Department:", dps);
       return;
     }
   }
@@ -98,7 +98,6 @@ class VitalsMaster extends Component {
       // },
       onSuccess: response => {
         if (response.data.success) {
-          
           this.setState({ depts: response.data.records });
         }
       },
@@ -137,7 +136,7 @@ class VitalsMaster extends Component {
         }
 
         send_data.vitals = vitals;
-        console.log("send_Data_for_mapping:", send_data);
+        // console.log("send_Data_for_mapping:", send_data);
 
         if (dps.length === 0) {
           swalMessage({
@@ -179,7 +178,7 @@ class VitalsMaster extends Component {
             mappingData: response.data.records
           });
 
-          console.log("Mapping Data:", response.data.records);
+          // console.log("Mapping Data:", response.data.records);
         }
       },
       onFailure: error => {

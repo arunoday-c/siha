@@ -1,4 +1,5 @@
 import { successfulMessage } from "../../../../utils/GlobalFunctions";
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 
 const serviceTypeHandeler = ($this, context, e) => {
   $this.setState(
@@ -23,15 +24,12 @@ const serviceTypeHandeler = ($this, context, e) => {
 };
 
 const serviceHandeler = ($this, context, e) => {
-  
   $this.setState(
     {
       [e.name]: e.value,
       visittypeselect: false
     },
-    () => {
-      
-    }
+    () => {}
   );
   if (context != null) {
     context.updateState({ [e.name]: e.value });
@@ -119,8 +117,7 @@ const discounthandle = ($this, context, ctrl, e) => {
   }
 };
 
-const billheaderCalculation = ($this, e) => {
-  
+const billheaderCalculation = ($this, context, e) => {
   if (e.target.value !== e.target.oldvalue) {
     let serviceInput = {
       isReceipt: false,
@@ -134,15 +131,38 @@ const billheaderCalculation = ($this, e) => {
       credit_amount: parseFloat($this.state.credit_amount)
     };
 
-    $this.props.billingCalculations({
+    algaehApiCall({
       uri: "/billing/billingCalculations",
       method: "POST",
       data: serviceInput,
-      redux: {
-        type: "BILL_HEADER_GEN_GET_DATA",
-        mappingName: "genbill"
+      onSuccess: response => {
+        debugger;
+        if (response.data.success) {
+          if (context != null) {
+            response.data.records.patient_payable_h =
+              response.data.records.patient_payable ||
+              $this.state.patient_payable;
+            context.updateState({ ...response.data.records });
+          }
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
       }
     });
+
+    // $this.props.billingCalculations({
+    //   uri: "/billing/billingCalculations",
+    //   method: "POST",
+    //   data: serviceInput,
+    //   redux: {
+    //     type: "BILL_HEADER_GEN_GET_DATA",
+    //     mappingName: "genbill"
+    //   }
+    // });
   }
 };
 
@@ -153,6 +173,54 @@ const onchangegridcol = ($this, row, e) => {
   row.update();
 };
 
+const credittexthandle = ($this, context, ctrl, e) => {
+  e = e || ctrl;
+
+  if (e.target.value > $this.state.net_amount) {
+    successfulMessage({
+      message: "Invalid Input. Criedt amount cannot be greater than Net amount",
+      title: "Warning",
+      icon: "warning"
+    });
+  } else {
+    $this.setState(
+      {
+        [e.target.name]: e.target.value
+      },
+      () => {
+        debugger;
+        // credittextCal($this, e);
+      }
+    );
+
+    if (context != null) {
+      context.updateState({
+        [e.target.name]: e.target.value
+      });
+    }
+  }
+};
+
+const credittextCal = ($this, e) => {
+  debugger;
+  if (e.target.value !== e.target.oldvalue) {
+    billheaderCalculation($this);
+  }
+};
+
+const EditGrid = ($this, context, cancelRow) => {
+  if (context != null) {
+    let _billdetails = $this.state.billdetails;
+    if (cancelRow !== undefined) {
+      _billdetails[cancelRow.rowIdx] = cancelRow;
+    }
+    context.updateState({
+      saveEnable: !$this.state.saveEnable,
+      billdetails: _billdetails
+    });
+  }
+};
+
 export {
   serviceTypeHandeler,
   serviceHandeler,
@@ -160,5 +228,8 @@ export {
   discounthandle,
   adjustadvance,
   billheaderCalculation,
-  onchangegridcol
+  onchangegridcol,
+  credittexthandle,
+  credittextCal,
+  EditGrid
 };

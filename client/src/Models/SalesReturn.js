@@ -52,7 +52,7 @@ export default {
 
       case_type: "O",
       mode_of_pay: "1",
-
+      dataChange: false,
       insured: "N",
       sec_insured: "N",
 

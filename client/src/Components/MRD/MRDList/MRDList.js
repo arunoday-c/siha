@@ -181,23 +181,22 @@ class MRDList extends Component {
             </div>
           </form>
         </div> */}
-        <div className="portlet portlet-bordered box-shadow-normal ">
+        <div className="portlet portlet-bordered box-shadow-normal margin-top-15">
           <div className="portlet-title">
             <div className="caption">
               <h3 className="caption-subject">Patient List</h3>
             </div>
           </div>
-          <div className="portlet-body" id="mrdList-Cntr">
+          <div className="portlet-body" id="mrdListCntr">
             <div className="row">
               <div className="col-lg-12">
                 <AlgaehDataGrid
-                  id="index"
+                  id="mrdListGrid"
                   columns={[
                     {
                       fieldName: "registration_date",
                       label: "Registration Date",
                       others: {
-                        maxWidth: 150,
                         resizable: false,
                         style: { textAlign: "center" }
                       }
@@ -231,7 +230,6 @@ class MRDList extends Component {
                         );
                       },
                       others: {
-                        maxWidth: 120,
                         resizable: false,
                         style: { textAlign: "center" }
                       },
@@ -248,7 +246,6 @@ class MRDList extends Component {
                       fieldName: "gender",
                       label: "Gender",
                       others: {
-                        maxWidth: 90,
                         resizable: false,
                         style: { textAlign: "center" }
                       }
@@ -257,7 +254,6 @@ class MRDList extends Component {
                       fieldName: "date_of_birth",
                       label: "Date of Birth",
                       others: {
-                        maxWidth: 120,
                         resizable: false,
                         style: { textAlign: "center" }
                       }
@@ -266,7 +262,6 @@ class MRDList extends Component {
                       fieldName: "age",
                       label: "Age",
                       others: {
-                        maxWidth: 60,
                         resizable: false,
                         style: { textAlign: "center" }
                       }
@@ -275,24 +270,23 @@ class MRDList extends Component {
                       fieldName: "contact_number",
                       label: "Phone Number",
                       others: {
-                        maxWidth: 150,
                         resizable: false,
                         style: { textAlign: "center" }
                       }
                     }
                   ]}
-                  keyId="index"
-                  filter={true}
+                  keyId="mrdListGrid"
                   dataSource={{
                     data: this.state.patientData
                   }}
+                  filter={true}
                   isEditable={false}
-                  paging={{ page: 0, rowsPerPage: 20 }}
-                  events={{
-                    onDelete: row => {},
-                    onEdit: row => {},
-                    onDone: row => {}
-                  }}
+                  paging={{ page: 0, rowsPerPage: 10 }}
+                  // events={{
+                  //   onDelete: row => {},
+                  //   onEdit: row => {},
+                  //   onDone: row => {}
+                  // }}
                 />
               </div>
             </div>

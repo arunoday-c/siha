@@ -7,10 +7,10 @@ import "../../../styles/site.css";
 import { AlgaehLabel, AlgaehDataGrid } from "../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import EmployeeMaster from "./EmployeeMaster/EmployeeMaster";
-import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
+// import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import moment from "moment";
 import Options from "../../../Options.json";
-import AppBar from "@material-ui/core/AppBar";
+// import AppBar from "@material-ui/core/AppBar";
 import { getCookie } from "../../../utils/algaehApiCall";
 import { setGlobal } from "../../../utils/GlobalFunctions";
 import {
@@ -262,6 +262,7 @@ class EmployeeMasterIndex extends Component {
                   dataSource={{
                     data: this.state.Employeedetails
                   }}
+                  filter={true}
                   // isEditable={true}
                   paging={{ page: 0, rowsPerPage: 10 }}
                 />

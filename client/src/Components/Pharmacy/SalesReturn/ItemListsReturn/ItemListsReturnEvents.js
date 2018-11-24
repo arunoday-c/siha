@@ -64,7 +64,7 @@ const numberchangeTexts = ($this, context, e) => {
       });
     }
     clearInterval(texthandlerInterval);
-  }, 1000);
+  }, 500);
 };
 
 const itemchangeText = ($this, e) => {
@@ -210,7 +210,8 @@ const datehandle = ($this, ctrl, e) => {
   });
 };
 
-const deleteSalesReturnDetail = ($this, context, e, row) => {
+const deleteSalesReturnDetail = ($this, context, row) => {
+  //debugger;
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
   pharmacy_stock_detail.splice(row.rowIdx, 1);
 
@@ -276,16 +277,25 @@ const deleteSalesReturnDetail = ($this, context, e, row) => {
   }
 };
 
-const updateSalesReturnDetail = ($this, e) => {
-  $this.props.SalesReturnCalculations({
-    uri: "/billing/billingCalculations",
-    method: "POST",
-    data: { billdetails: $this.state.pharmacy_stock_detail },
-    redux: {
-      type: "RETURN_HEADER_GEN_GET_DATA",
-      mappingName: "salesReturn"
+const updateSalesReturnDetail = ($this, context) => {
+  //debugger;
+  if ($this.state.dataChange === true) {
+    $this.props.SalesReturnCalculations({
+      uri: "/billing/billingCalculations",
+      method: "POST",
+      data: { billdetails: $this.state.pharmacy_stock_detail },
+      redux: {
+        type: "RETURN_HEADER_GEN_GET_DATA",
+        mappingName: "salesReturn"
+      }
+    });
+  } else {
+    if (context != null) {
+      context.updateState({
+        saveEnable: false
+      });
     }
-  });
+  }
 };
 
 //Calculate Row Detail
@@ -331,12 +341,23 @@ const calculateAmount = ($this, row, context, ctrl, e) => {
       data.billdetails[0].quantity = row.quantity;
 
       extend(row, data.billdetails[0]);
-      for (let i = 0; i < pharmacy_stock_detail.length; i++) {
-        if (pharmacy_stock_detail[i].item_id === row.item_id) {
-          pharmacy_stock_detail[i] = row;
-        }
+      // for (let i = 0; i < pharmacy_stock_detail.length; i++) {
+      //   if (pharmacy_stock_detail[i].item_id === row.item_id) {
+      //     pharmacy_stock_detail[i] = row;
+      //   }
+      // }
+      pharmacy_stock_detail[row.rowIdx] = row;
+      $this.setState({
+        pharmacy_stock_detail: pharmacy_stock_detail,
+        dataChange: true
+      });
+
+      if (context !== undefined) {
+        context.updateState({
+          pharmacy_stock_detail: pharmacy_stock_detail,
+          dataChange: true
+        });
       }
-      $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
     }
   });
 };
@@ -395,8 +416,22 @@ const SalesReturnheaderCalculation = ($this, context) => {
       }
     });
     clearInterval(intervalId);
-  }, 1000);
+  }, 500);
 };
+
+const EditGrid = ($this, context, cancelRow) => {
+  if (context != null) {
+    let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+    if (cancelRow !== undefined) {
+      _pharmacy_stock_detail[cancelRow.rowIdx] = cancelRow;
+    }
+    context.updateState({
+      saveEnable: !$this.state.saveEnable,
+      pharmacy_stock_detail: _pharmacy_stock_detail
+    });
+  }
+};
+
 export {
   discounthandle,
   changeTexts,
@@ -407,5 +442,6 @@ export {
   deleteSalesReturnDetail,
   updateSalesReturnDetail,
   calculateAmount,
-  adjustadvance
+  adjustadvance,
+  EditGrid
 };

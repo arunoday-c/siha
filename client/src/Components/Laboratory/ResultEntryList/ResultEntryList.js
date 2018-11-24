@@ -39,8 +39,7 @@ import ResultEntry from "../ResultEntry/ResultEntry";
 class ResultEntryList extends Component {
   constructor(props) {
     super(props);
-    let month = moment().format("MM");
-    let year = moment().format("YYYY");
+
     this.state = {
       to_date: new Date(),
       // from_date: moment("01" + month + year, "DDMMYYYY")._d,
@@ -352,7 +351,7 @@ class ResultEntryList extends Component {
                           <AlgaehLabel label={{ fieldName: "proiorty" }} />
                         ),
                         displayTemplate: row => {
-                          return row.test_type == "S" ? "Stat" : "Rotuine";
+                          return row.test_type === "S" ? "Stat" : "Rotuine";
                         },
                         disabled: true,
                         others: {
@@ -401,11 +400,11 @@ class ResultEntryList extends Component {
                           />
                         ),
                         displayTemplate: row => {
-                          return row.sample_status == "N"
+                          return row.sample_status === "N"
                             ? "Not Done"
-                            : row.sample_status == "A"
+                            : row.sample_status === "A"
                             ? "Accepted"
-                            : row.sample_status == "R"
+                            : row.sample_status === "R"
                             ? "Rejected"
                             : null;
                         },

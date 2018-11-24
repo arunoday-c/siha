@@ -12,7 +12,7 @@ import Location from "./Location/Location";
 
 import LocationPermission from "./LocationPermission/LocationPermission";
 
-import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
+// import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
 

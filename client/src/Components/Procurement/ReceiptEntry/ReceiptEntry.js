@@ -1,9 +1,12 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+
 import "./ReceiptEntry.css";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
-
+import AppBar from "@material-ui/core/AppBar";
 import {
-  AlgaehDataGrid,
   AlgaehLabel,
   AlagehFormGroup,
   AlagehAutoComplete,
@@ -11,6 +14,24 @@ import {
 } from "../../Wrapper/algaehWrapper";
 import Options from "../../../Options.json";
 import moment from "moment";
+import ReceiptItemList from "./ReceiptItemList/ReceiptItemList";
+
+import {
+  vendortexthandle,
+  loctexthandle,
+  texthandle,
+  poforhandle,
+  ClearData,
+  SaveDNEnrty,
+  DeliverySearch,
+  getCtrlCode,
+  PostReceiptEntry
+} from "./ReceiptEntryEvent";
+import GlobalVariables from "../../../utils/GlobalVariables.json";
+import { AlgaehActions } from "../../../actions/algaehActions";
+import Enumerable from "linq";
+import DNEntry from "../../../Models/DNEntry";
+import MyContext from "../../../utils/MyContext";
 
 class ReceiptEntry extends Component {
   constructor(props) {
@@ -18,7 +39,30 @@ class ReceiptEntry extends Component {
     this.state = {};
   }
 
+  componentDidMount() {
+    this.props.getVendorMaster({
+      uri: "/vendor/getVendorMaster",
+      method: "GET",
+      data: { vendor_status: "A" },
+      redux: {
+        type: "VENDORS_GET_DATA",
+        mappingName: "receiptvendors"
+      }
+    });
+
+    if (
+      this.props.delivery_note_number !== undefined &&
+      this.props.delivery_note_number.length !== 0
+    ) {
+      getCtrlCode(this, this.props.delivery_note_number);
+    }
+  }
+
   render() {
+    debugger;
+    const _mainStore = Enumerable.from(this.props.receiptlocations)
+      .where(w => w.location_type === "MS")
+      .toArray();
     return (
       <div>
         <BreadCrumb
@@ -56,7 +100,7 @@ class ReceiptEntry extends Component {
             value: this.state.document_number,
             selectValue: "document_number",
             events: {
-              onChange: null //getCtrlCode.bind(this, this)
+              onChange: getCtrlCode.bind(this, this)
             },
             jsonFile: {
               fileName: "spotlightSearch",
@@ -91,65 +135,81 @@ class ReceiptEntry extends Component {
               <div className="row">
                 <AlagehAutoComplete
                   div={{ className: "col" }}
-                  label={{ forceLabel: "Location Type" }}
+                  label={{ forceLabel: "PO For" }}
                   selector={{
-                    name: "location_id",
+                    name: "po_from",
                     className: "select-fld",
-                    value: this.state.location_id,
+                    value: this.state.po_from,
                     dataSource: {
-                      textField: "location_description",
-                      valueField: "hims_d_pharmacy_location_id",
-                      data: this.props.locations
+                      textField: "name",
+                      valueField: "value",
+                      data: GlobalVariables.PO_FROM
                     },
-
-                    onChange: null,
-                    onClear: null
+                    others: {
+                      disabled: this.state.dataExitst
+                    },
+                    onChange: poforhandle.bind(this, this),
+                    onClear: texthandle.bind(this, this)
                   }}
                 />
                 <AlagehAutoComplete
                   div={{ className: "col" }}
-                  label={{ forceLabel: "Location Code" }}
+                  label={{ forceLabel: "Location" }}
                   selector={{
-                    name: "location_id",
+                    name:
+                      this.state.po_from === "PHR"
+                        ? "pharmcy_location_id"
+                        : "inventory_location_id",
                     className: "select-fld",
-                    value: this.state.location_id,
+                    value:
+                      this.state.po_from === "PHR"
+                        ? this.state.pharmcy_location_id
+                        : this.state.inventory_location_id,
                     dataSource: {
                       textField: "location_description",
-                      valueField: "hims_d_pharmacy_location_id",
-                      data: this.props.locations
+                      valueField:
+                        this.state.po_from === "PHR"
+                          ? "hims_d_pharmacy_location_id"
+                          : "hims_d_inventory_location_id",
+                      data: _mainStore
                     },
-
-                    onChange: null,
-                    onClear: null
+                    others: {
+                      disabled: this.state.dataExitst
+                    },
+                    onChange: loctexthandle.bind(this, this),
+                    onClear: texthandle.bind(this, this)
                   }}
                 />
 
                 <AlagehAutoComplete
                   div={{ className: "col" }}
-                  label={{ forceLabel: "Vendor No." }}
+                  label={{ forceLabel: "Vendor" }}
                   selector={{
-                    name: "item_id",
+                    name: "vendor_id",
                     className: "select-fld",
-                    value: this.state.item_id,
+                    value: this.state.vendor_id,
                     dataSource: {
-                      textField: "item_description",
-                      valueField: "hims_d_item_master_id",
-                      data: this.props.itemlist
+                      textField: "vendor_name",
+                      valueField: "hims_d_vendor_id",
+                      data: this.props.receiptvendors
                     },
-                    onChange: null,
-                    onClear: null
+                    others: {
+                      disabled: this.state.dataExitst
+                    },
+                    onChange: vendortexthandle.bind(this, this),
+                    onClear: vendortexthandle.bind(this, this)
                   }}
                 />
 
                 <AlagehFormGroup
                   div={{ className: "col" }}
                   label={{
-                    forceLabel: "Purchase Order No."
+                    forceLabel: "Delivery Note No."
                   }}
                   textBox={{
-                    value: this.state.patient_code,
+                    value: this.state.delivery_note_number,
                     className: "txt-fld",
-                    name: "patient_code",
+                    name: "delivery_note_number",
 
                     events: {
                       onChange: null
@@ -170,26 +230,36 @@ class ReceiptEntry extends Component {
                     style={{
                       fontSize: " 1.2rem",
                       marginTop: 26,
-                      paddingBottom: 0
+                      paddingBottom: 0,
+                      pointerEvents:
+                        this.state.dataExitst === true
+                          ? "none"
+                          : this.state.ReqData === true
+                          ? "none"
+                          : ""
                     }}
+                    onClick={DeliverySearch.bind(this, this)}
                   />
                 </div>
               </div>
               <div className="row">
                 <AlagehAutoComplete
                   div={{ className: "col" }}
-                  label={{ forceLabel: "Terms Code" }}
+                  label={{ forceLabel: "Payment Terms" }}
                   selector={{
-                    name: "item_id",
+                    name: "payment_terms",
                     className: "select-fld",
-                    value: this.state.item_id,
+                    value: this.state.payment_terms,
                     dataSource: {
-                      textField: "item_description",
-                      valueField: "hims_d_item_master_id",
-                      data: this.props.itemlist
+                      textField: "name",
+                      valueField: "value",
+                      data: GlobalVariables.PAYMENT_TERMS
                     },
-                    onChange: null,
-                    onClear: null
+                    others: {
+                      disabled: this.state.dataExitst
+                    },
+                    onChange: texthandle.bind(this, this),
+                    onClear: texthandle.bind(this, this)
                   }}
                 />
                 <AlgaehDateHandler
@@ -206,7 +276,7 @@ class ReceiptEntry extends Component {
                   }}
                   value={this.state.expiry_date}
                 />
-                <div
+                {/* <div
                   className="customCheckbox col-lg-3"
                   style={{ border: "none", marginTop: "28px" }}
                 >
@@ -220,133 +290,66 @@ class ReceiptEntry extends Component {
 
                     <span style={{ fontSize: "0.8rem" }}>From Multiple PO</span>
                   </label>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
 
-          <div className="row">
-            <div className="col-lg-12">
-              <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
-                <div className="row">
-                  <div className="col-lg-12" id="PointSaleGrid">
-                    <AlgaehDataGrid
-                      id="PO_details"
-                      columns={[
-                        {
-                          fieldName: "item_id",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Item Name" }} />
-                          )
-                        },
+          <MyContext.Provider
+            value={{
+              state: this.state,
+              updateState: obj => {
+                this.setState({ ...obj });
+              }
+            }}
+          >
+            <ReceiptItemList />
+          </MyContext.Provider>
 
-                        {
-                          fieldName: "item_category",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Item Category" }}
-                            />
-                          )
-                        },
-                        {
-                          fieldName: "qtyhand",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Quantity In Hand" }}
-                            />
-                          ),
-                          disabled: true
-                        },
-                        {
-                          fieldName: "expiry_date",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Expiry Date" }}
-                            />
-                          )
-                        },
-                        {
-                          fieldName: "batchno",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Batch No." }} />
-                          ),
-                          disabled: true
-                        },
-                        {
-                          fieldName: "uom_id",
-                          label: <AlgaehLabel label={{ forceLabel: "UOM" }} />
-                        },
-                        {
-                          fieldName: "unit_cost",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Unit Cost" }} />
-                          ),
-                          disabled: true
-                        },
-                        {
-                          fieldName: "quantity",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Quantity" }} />
-                          )
-                        },
-
-                        {
-                          fieldName: "extended_cost",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Extended Cost" }}
-                            />
-                          ),
-                          disabled: true
-                        },
-                        {
-                          fieldName: "discount_percentage",
-                          label: (
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "discount %"
-                              }}
-                            />
-                          )
-                        },
-                        {
-                          fieldName: "discount_amout",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "discount Amount" }}
-                            />
-                          )
-                        },
-
-                        {
-                          fieldName: "net_extended_cost",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Net Extended Cost" }}
-                            />
-                          ),
-                          disabled: true
-                        }
-                      ]}
-                      keyId="service_type_id"
-                      dataSource={{
-                        data: this.state.pharmacy_stock_detail
+          <div className="hptl-phase1-footer">
+            <AppBar position="static" className="main">
+              <div className="row">
+                <div className="col-lg-12">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={SaveDNEnrty.bind(this, this)}
+                    disabled={this.state.saveEnable}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Save",
+                        returnText: true
                       }}
-                      isEditable={true}
-                      paging={{ page: 0, rowsPerPage: 10 }}
-                      // events={{
-                      //   onDelete: deletePosDetail.bind(this, this, context),
-                      //   onEdit: row => {},
-                      //   onDone: updatePosDetail.bind(this, this)
-                      // }}
-                      // onRowSelect={row => {
-                      //   getItemLocationStock(this, row);
-                      // }}
                     />
-                  </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    className="btn btn-default"
+                    disabled={this.state.ClearDisable}
+                    onClick={ClearData.bind(this, this)}
+                  >
+                    <AlgaehLabel
+                      label={{ forceLabel: "Clear", returnText: true }}
+                    />
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-other"
+                    disabled={this.state.authorize1 === "Y" ? true : false}
+                    onClick={PostReceiptEntry.bind(this, this)}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Post",
+                        returnText: true
+                      }}
+                    />
+                  </button>
                 </div>
               </div>
-            </div>
+            </AppBar>
           </div>
         </div>
       </div>
@@ -354,4 +357,37 @@ class ReceiptEntry extends Component {
   }
 }
 
-export default ReceiptEntry;
+function mapStateToProps(state) {
+  return {
+    receiptitemlist: state.receiptitemlist,
+    receiptlocations: state.receiptlocations,
+    receiptitemcategory: state.receiptitemcategory,
+    receiptitemgroup: state.receiptitemgroup,
+    receiptitemuom: state.receiptitemuom,
+    receiptvendors: state.receiptvendors,
+    receiptrequisitionentry: state.receiptrequisitionentry,
+    purchaseorderentry: state.purchaseorderentry
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getItems: AlgaehActions,
+      getLocation: AlgaehActions,
+      getItemCategory: AlgaehActions,
+      getItemGroup: AlgaehActions,
+      getItemUOM: AlgaehActions,
+      getVendorMaster: AlgaehActions,
+      getPurchaseOrderEntry: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(ReceiptEntry)
+);

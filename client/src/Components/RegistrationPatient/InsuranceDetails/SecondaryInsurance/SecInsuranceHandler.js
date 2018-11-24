@@ -27,7 +27,7 @@ const texthandle = ($this, context, e) => {
       context.updateState({ [name]: value });
     }
     clearInterval(texthandlerInterval);
-  }, 1000);
+  }, 500);
 };
 
 const insurancehandle = ($this, context, e) => {
@@ -75,11 +75,10 @@ const datehandle = ($this, context, ctrl, e) => {
       context.updateState({ [e]: moment(ctrl)._d });
     }
     clearInterval(texthandlerInterval);
-  }, 1000);
+  }, 500);
 };
 
 const enddatehandle = ($this, context, ctrl, e) => {
-  
   if (
     Date.parse(moment(ctrl)._d) >
     Date.parse($this.state.sec_insurance_effective_end_date)
@@ -105,7 +104,7 @@ const enddatehandle = ($this, context, ctrl, e) => {
             context.updateState({ [e]: moment(ctrl)._d });
           }
           clearInterval(texthandlerInterval);
-        }, 1000);
+        }, 500);
       }
     });
   } else {
@@ -119,7 +118,7 @@ const enddatehandle = ($this, context, ctrl, e) => {
         context.updateState({ [e]: moment(ctrl)._d });
       }
       clearInterval(texthandlerInterval);
-    }, 1000);
+    }, 500);
   }
 };
 

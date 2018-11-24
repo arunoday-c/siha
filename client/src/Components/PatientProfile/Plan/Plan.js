@@ -43,7 +43,6 @@ class Plan extends Component {
                   <ul className="nav">
                     <li
                       algaehtabs={"OrderMedication"}
-                      
                       className={"nav-item tab-button active"}
                       onClick={this.openTab.bind(this)}
                     >
@@ -56,7 +55,6 @@ class Plan extends Component {
                       }
                     </li>
                     <li
-                      
                       algaehtabs={"ActiveMedication"}
                       className={"nav-item tab-button"}
                       onClick={this.openTab.bind(this)}
@@ -70,7 +68,6 @@ class Plan extends Component {
                       }
                     </li>
                     <li
-                      
                       algaehtabs={"MedicationHistory"}
                       className={"nav-item tab-button"}
                       onClick={this.openTab.bind(this)}
@@ -85,7 +82,6 @@ class Plan extends Component {
                     </li>
                     <li
                       algaehtabs={"OwnMedication"}
-                      
                       className={"nav-item tab-button"}
                       onClick={this.openTab.bind(this)}
                     >
@@ -173,7 +169,7 @@ class Plan extends Component {
                     </div>
                     <div className="actions">
                       <a
-                        href="javascript:;"
+                        // href="javascript"
                         className="btn btn-primary btn-circle active"
                       >
                         <i className="fas fa-plus" />

@@ -11,7 +11,7 @@ import {
   swalMessage
 } from "../../utils/algaehApiCall";
 import moment from "moment";
-import { setGlobal, displayFileFromServer } from "../../utils/GlobalFunctions";
+import { setGlobal } from "../../utils/GlobalFunctions";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -79,7 +79,7 @@ class PatientProfile extends Component {
       },
       onSuccess: response => {
         if (response.data.success) {
-          const _dataG = response.data.records[0];
+          // const _dataG = response.data.records[0];
           AlgaehReport({
             report: {
               fileName: "ucafReport"
@@ -87,7 +87,6 @@ class PatientProfile extends Component {
             data: data
           });
         }
-        console.log("Report ", response);
       }
     });
   }
@@ -121,7 +120,6 @@ class PatientProfile extends Component {
             .firstOrDefault()
         : [];
 
-    console.log("_Vitals", _Vitals);
     //TO DO
     //Display Patient Vitals which are driven from the master
     //To be Done after Noor completes the Vitals Implementation
@@ -182,6 +180,7 @@ class PatientProfile extends Component {
           <div className="patientImg box-shadow">
             {/* <img src="https://x1.xingassets.com/assets/frontend_minified/img/users/nobody_m.original.jpg" /> */}
             <img
+              alt="Algaeh-HIS"
               src={
                 this.state.patImg.length > 0
                   ? this.state.patImg

@@ -48,7 +48,7 @@ const calculateRecipt = ($this, context) => {
       }
     });
     clearInterval(intervalId);
-  }, 1000);
+  }, 500);
 };
 
 const cashtexthandle = ($this, context, ctrl, e) => {
@@ -178,8 +178,6 @@ const datehandle = ($this, context, ctrl, e) => {
 };
 
 const checkcashhandaler = ($this, context, e) => {
-  
-
   $this.setState(
     {
       Cashchecked: e.target.checked,
@@ -198,12 +196,10 @@ const checkcashhandaler = ($this, context, e) => {
       });
     }
     clearInterval(texthandlerInterval);
-  }, 1000);
+  }, 500);
 };
 
 const checkcardhandaler = ($this, context, e) => {
-  
-
   $this.setState(
     {
       Cardchecked: e.target.checked,
@@ -226,12 +222,10 @@ const checkcardhandaler = ($this, context, e) => {
       });
     }
     clearInterval(texthandlerInterval);
-  }, 1000);
+  }, 500);
 };
 
 const checkcheckhandaler = ($this, context, e) => {
-  
-
   $this.setState(
     {
       Checkchecked: e.target.checked,
@@ -254,7 +248,7 @@ const checkcheckhandaler = ($this, context, e) => {
       });
     }
     clearInterval(texthandlerInterval);
-  }, 1000);
+  }, 500);
 };
 
 export {

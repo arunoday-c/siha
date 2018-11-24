@@ -76,15 +76,15 @@ class RegistrationPatient extends PureComponent {
       });
     }
 
-    if (this.props.genbill !== undefined && this.props.genbill.length !== 0) {
-      this.props.initialbillingCalculations({
-        redux: {
-          type: "BILL_HEADER_GEN_GET_DATA",
-          mappingName: "genbill",
-          data: {}
-        }
-      });
-    }
+    // if (this.props.genbill !== undefined && this.props.genbill.length !== 0) {
+    //   this.props.initialbillingCalculations({
+    //     redux: {
+    //       type: "BILL_HEADER_GEN_GET_DATA",
+    //       mappingName: "genbill",
+    //       data: {}
+    //     }
+    //   });
+    // }
 
     if (
       this.props.patient_code !== undefined &&
@@ -308,16 +308,16 @@ class RegistrationPatient extends PureComponent {
     this.setState({ open: false });
   };
 
-  componentWillReceiveProps(nextProps) {
-    if (
-      nextProps.genbill !== undefined &&
-      nextProps.genbill.length !== 0 &&
-      this.state.doctor_id !== null
-    ) {
-      this.setState({ ...this.state, ...nextProps.genbill });
-    }
-    AlgaehLoader({ show: false });
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   if (
+  //     nextProps.genbill !== undefined &&
+  //     nextProps.genbill.length !== 0 &&
+  //     this.state.doctor_id !== null
+  //   ) {
+  //     this.setState({ ...this.state, ...nextProps.genbill });
+  //   }
+  //   AlgaehLoader({ show: false });
+  // }
 
   getCtrlCode(patcode) {
     let $this = this;
@@ -692,7 +692,6 @@ class RegistrationPatient extends PureComponent {
 function mapStateToProps(state) {
   return {
     patients: state.patients,
-    genbill: state.genbill,
     existinsurance: state.existinsurance,
     countries: state.countries,
     primaryinsurance: state.primaryinsurance,
@@ -708,11 +707,8 @@ function mapDispatchToProps(dispatch) {
       getPatientDetails: AlgaehActions,
       initialStatePatientData: AlgaehActions,
       postVisitDetails: postVisitDetails,
-      generateBill: AlgaehActions,
       initialStateBillGen: AlgaehActions,
       getPatientInsurance: AlgaehActions,
-      initialbillingCalculations: AlgaehActions,
-      billingCalculations: AlgaehActions,
       getCountries: AlgaehActions,
       setSelectedInsurance: AlgaehActions,
       getHospitalDetails: AlgaehActions

@@ -223,5 +223,17 @@
         "label": "PO Date"
       }
     ]
+  },
+  "Delivery": {
+    "DNEntry": [
+      {
+        "fieldName": "delivery_note_number",
+        "label": "Delivery Number"
+      },
+      {
+        "fieldName": "dn_date",
+        "label": "Delivery Date"
+      }
+    ]
   }
 }

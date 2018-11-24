@@ -1,74 +1,11 @@
 import React from "react";
-import PropTypes from "prop-types";
-import classNames from "classnames";
-import { withStyles } from "@material-ui/core/styles";
-import MenuItem from "@material-ui/core/MenuItem";
-import MenuIcon from "@material-ui/icons/Menu";
 import sideMenuEn from "./SideMenuList.json";
 import sideMenuAr from "./SideMenuListAr.json";
 import "./AlgaehmainPage.css";
 import { setCookie, getCookie } from "../../../utils/algaehApiCall";
 import directRoutes from "../../../Dynamicroutes";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-
-import Menu from "@material-ui/core/Menu";
+import Enumerable from "linq";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
-const drawerWidth = 230;
-
-const styles = theme => ({
-  root: {
-    flexGrow: 1
-  },
-  appFrame: {
-    zIndex: 1,
-    overflow: "hidden",
-    position: "relative",
-    display: "flex",
-    width: "100%",
-    height: "100%"
-  },
-  appBar: {
-    transition: theme.transitions.create(["margin", "width"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
-    })
-  },
-  appBarShift: {
-    boxShadow: "none",
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(["margin", "width"], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen
-    })
-  },
-  hide: {
-    display: "none"
-  },
-  drawerPaper: {
-    position: "relative",
-    width: drawerWidth
-  },
-  drawerHeader: {
-    display: "flex",
-    justifyContent: "flex-end",
-    padding: "0 7px",
-    minHeight: "20px",
-    background: "#292929"
-  },
-  backgroundflex: {
-    background: "#292929"
-  },
-  content: {
-    flexGrow: 1,
-    // backgroundColor: theme.palette.background.default,
-
-    transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
-    })
-  }
-});
 
 class PersistentDrawer extends React.Component {
   constructor(props) {
@@ -87,7 +24,9 @@ class PersistentDrawer extends React.Component {
       Language: "en",
       arlabl: "",
       enlabl: "",
-      searchModules: ""
+      searchModules: "",
+      activeNode: null,
+      isSelectedByForce: false
     };
   }
 
@@ -173,7 +112,9 @@ class PersistentDrawer extends React.Component {
 
   handleDrawerClose = () => {
     this.setState({
-      class: "slideOutLeft"
+      class: "slideOutLeft",
+      searchModules: "",
+      isSelectedByForce: false
       //sideopen: false
     });
   };
@@ -186,16 +127,17 @@ class PersistentDrawer extends React.Component {
 
   openSubMenuSelection(data) {
     let getMenuSelected = data.name;
-
     if (this.state.menuSelected === getMenuSelected) {
       this.setState({
         menuSelected: "",
-        toggleSubMenu: true
+        toggleSubMenu: true,
+        isSelectedByForce: true
       });
     } else {
       this.setState({
         menuSelected: getMenuSelected,
-        toggleSubMenu: false
+        toggleSubMenu: false,
+        isSelectedByForce: true
       });
     }
   }
@@ -203,17 +145,27 @@ class PersistentDrawer extends React.Component {
   TriggerPath(e) {
     const path = e.currentTarget.getAttribute("path");
     const name = e.currentTarget.getAttribute("name");
+    const _controlDId = e.currentTarget.getAttribute("controlid");
+    const _rootId = e.currentTarget.getAttribute("rootid");
+    const _menuselected = e.currentTarget.getAttribute("menuselected");
     let screenName = name.replace(/\s/g, "");
     setCookie("ScreenName", path, 30);
     AlgaehLoader({ show: true });
     this.setState({
       sideopen: false,
-      toggleSubMenu: true,
+
       title: e.currentTarget.innerText,
       renderComponent: screenName,
       menuSelected: "",
       arlabl: e.currentTarget.getAttribute("arlabel"),
-      enlabl: e.currentTarget.getAttribute("label")
+      enlabl: e.currentTarget.getAttribute("label"),
+      activeNode: {
+        controlid: _controlDId,
+        rootid: _rootId,
+        class: "active",
+        menuselected: _menuselected
+      },
+      isSelectedByForce: false
     });
   }
 
@@ -233,12 +185,18 @@ class PersistentDrawer extends React.Component {
     } else if (this.state.Language === "ar") {
       LangSideMenu = sideMenuAr;
     }
+
     return LangSideMenu.filter(obj => {
       for (let i = 0, length = obj.subMenu.length; i < length; i++) {
         if (
           String(obj.subMenu[i].name)
+            .toString()
             .toLowerCase()
-            .indexOf(String(_menuSearch).toLowerCase()) > -1
+            .indexOf(
+              String(_menuSearch)
+                .toString()
+                .toLowerCase()
+            ) > -1
         ) {
           return true;
         }
@@ -262,18 +220,24 @@ class PersistentDrawer extends React.Component {
       );
     }
 
-    const { classes } = this.props;
-    const { anchor, sideopen } = this.state;
-
+    const { anchor, activeNode, isSelectedByForce } = this.state;
     let LangSideMenu = this.CreateMenuListDropDownFilter();
 
-    // if (this.state.Language === "en") {
-    //   LangSideMenu = sideMenuEn;
-    // } else if (this.state.Language === "ar") {
-    //   LangSideMenu = sideMenuAr;
-    // }
     var MenuListItems = LangSideMenu.map((data, idx) => {
       let icon = data.icon;
+      const _toggle = this.state.searchModules !== "" ? true : false;
+      const _menuSelected = !isSelectedByForce
+        ? activeNode !== undefined && activeNode !== null
+          ? activeNode.menuselected
+          : this.state.menuSelected
+        : this.state.menuSelected;
+      const _toggleSubMenu = !isSelectedByForce
+        ? activeNode !== undefined && activeNode !== null
+          ? activeNode.menuselected === data.name
+            ? false
+            : this.state.toggleSubMenu
+          : this.state.toggleSubMenu
+        : this.state.toggleSubMenu;
       return (
         <div key={"side_menu_index" + idx} className="container-fluid">
           <div
@@ -286,19 +250,19 @@ class PersistentDrawer extends React.Component {
             <div className="col-8 ">{data.label}</div>
 
             <div className="col-2" style={{ marginTop: "2px" }}>
-              {this.state.menuSelected === data.name &&
-              this.state.toggleSubMenu === false ? (
+              {(_menuSelected === data.name && _toggleSubMenu === false) ||
+              _toggle ? (
                 <i className="fas fa-angle-up" />
               ) : (
                 <i className="fas fa-angle-down" />
               )}
             </div>
           </div>
-          {this.state.menuSelected === data.name &&
-          this.state.toggleSubMenu === false ? (
+          {(_menuSelected === data.name && _toggleSubMenu === false) ||
+          _toggle ? (
             <div className="row sub-menu-option">
               <ul className="tree-structure-menu">
-                {data.subMenu.map((title, idx) => {
+                {data.subMenu.map((title, Didx) => {
                   return (
                     <li
                       onClick={this.TriggerPath.bind(this)}
@@ -306,9 +270,20 @@ class PersistentDrawer extends React.Component {
                       name={title.name}
                       arlabel={title.arlabel}
                       label={title.label}
-                      key={idx}
+                      controlid={Didx}
+                      rootid={idx}
+                      menuselected={data.name}
+                      key={Didx}
+                      className={
+                        activeNode !== undefined && activeNode !== null
+                          ? parseInt(activeNode.controlid) === Didx &&
+                            parseInt(activeNode.rootid) === idx
+                            ? activeNode.class
+                            : ""
+                          : ""
+                      }
                     >
-                      <i className="fas fa-check-circle fa-1x" />
+                      <i className="fas fa-check-circle fa-1x " />
                       <span>{title.label}</span>
                     </li>
                   );
@@ -322,131 +297,97 @@ class PersistentDrawer extends React.Component {
 
     return (
       <div className="">
-        <div className={classes.root}>
-          <div className={classNames(classes.appFrame, "sticky-top")}>
-            <AppBar style={{ backgroundColor: "#00babe" }}>
-              <Toolbar
-                disableGutters={!sideopen}
-                style={{
-                  minHeight: "50px",
-                  padding: "0px",
-                  backgroundColor: "#00babe"
-                }}
-              >
-                <div className="screenDisplay">
-                  <div className="appLogoCntr">
-                    <p className="appLogoOnly" />
-                  </div>
-                  <i
-                    className="fas fa-bars"
-                    onClick={this.handleDrawerOpen}
-                    className={classNames(
-                      classes.menuButton,
-                      sideopen && classes.hide + "float - left"
-                    )}
-                  >
-                    <MenuIcon />
-                  </i>
-
-                  <h5>{this.state.title}</h5>
-                </div>
-                {/* <span className="selectedLang">{this.state.languageName}</span> */}
-                <div className="loginProfileInfo">
-                  <span>{getCookie("userName")},</span>
-                  <span>Apollo Hospitals - Bannerghatta Road</span>
-                </div>
-                <button
-                  className="btn btn-userProfile"
-                  onClick={this.handleOpenClick}
-                >
-                  {/* <i className="fas fa-user-circle" /> */}
-                  <i className="fas fa-angle-down" />
-                </button>
-
-                <Menu
-                  id="simple-menu"
-                  anchorEl={this.state.anchorEl}
-                  open={Boolean(this.state.anchorEl)}
-                  onClose={this.handleClose}
-                >
-                  <MenuItem>
-                    <i className="fas fa-user" /> User Profile
-                  </MenuItem>
-                  <MenuItem>
-                    <i className="fas fa-cog" /> Preference
-                  </MenuItem>
-                  <hr />
-                  <MenuItem onClick={this.handleClose.bind(this, "en")}>
-                    <i className="fas fa-globe-asia" />
-                    {this.state.languageName === "English"
-                      ? this.renderCheck()
-                      : null}
-                    &nbsp; English
-                  </MenuItem>
-                  <MenuItem onClick={this.handleClose.bind(this, "ar")}>
-                    <i className="fas fa-globe-asia" />
-                    {this.state.languageName === "عربي"
-                      ? this.renderCheck()
-                      : null}
-                    &nbsp; عربي
-                  </MenuItem>
-                  <hr />
-
-                  <MenuItem onClick={this.logoutLink.bind(this)}>
-                    <i className="fas fa-sign-out-alt" /> Logout
-                  </MenuItem>
-                </Menu>
-              </Toolbar>
-            </AppBar>
-            {/* Side Bar Functionality */}
-            {this.state.sideopen === true ? (
-              <div
-                anchor={anchor}
-                className={"animated leftNavCntr " + this.state.class}
-              >
-                <div className="hptl-phase1-sideMenuBar">
-                  <div className="menuBar-title">
-                    {/* <div className="appLogoOnly" />*/}
-                    <i
-                      onClick={this.handleDrawerClose}
-                      className="fas fa-chevron-circle-left sideBarClose"
-                    />
-                    <input
-                      type="text"
-                      name="searchModules"
-                      className="subMenuSearchFld"
-                      placeholder="Search Modules"
-                      onChange={this.SearchModuleHandler.bind(this)}
-                    />
-                  </div>
-                  <div className="sideMenu-header">{MenuListItems}</div>
-                </div>
-              </div>
-            ) : null}
-            <main className={classNames(classes.content)}>
-              <div
-                className={classes.drawerHeader}
-                style={{ minHeight: "50px" }}
-              />
-              <div style={{ minWidth: "100%" }}>
-                <div className="container-fluid" id="hisapp">
-                  {directRoutes(
-                    this.state.renderComponent,
-                    this.state.selectedLang
-                  )}
-                </div>
-              </div>
-            </main>
+        <nav className="navbar fixed-top navbar-expand-lg navbar-dark mainTheme">
+          <div className="sideMenuBars" onClick={this.handleDrawerOpen}>
+            <i className="fas fa-bars fa-lg" />
           </div>
-        </div>
+          <div className="navbar-brand appLogoCntr">
+            <p className="appLogoOnly" />
+          </div>
+
+          <h5 className="topNavbar-title mr-auto">{this.state.title}</h5>
+          <div className="navTopBarRight">
+            <div className="loginProfileInfo">
+              <span>{getCookie("userName")},</span>
+              <span>
+                {getCookie("HospitalName") !== undefined
+                  ? getCookie("HospitalName")
+                  : ""}
+              </span>
+            </div>
+          </div>
+          <div className="dropdown navTopbar-dropdown">
+            <i className="fas fa-angle-down fa-lg" />
+            <div
+              className="dropdown-menu animated fadeIn faster"
+              aria-labelledby="dropdownMenuButton"
+            >
+              <a className="dropdown-item">
+                <i className="fas fa-user" /> User Profile
+              </a>
+              <a className="dropdown-item">
+                <i className="fas fa-cog" /> Preference{" "}
+              </a>
+              <div class="dropdown-divider" />
+              <a
+                className="dropdown-item"
+                onClick={this.handleClose.bind(this, "en")}
+              >
+                {/* <i className="fas fa-globe-asia" /> */}
+                {this.state.languageName === "English"
+                  ? this.renderCheck()
+                  : null}
+                &nbsp; English
+              </a>
+              <a
+                className="dropdown-item"
+                onClick={this.handleClose.bind(this, "ar")}
+              >
+                {/* <i className="fas fa-globe-asia" /> */}
+                {this.state.languageName === "عربي" ? this.renderCheck() : null}
+                &nbsp; عربي
+              </a>
+              <div class="dropdown-divider" />
+              <a className="dropdown-item" onClick={this.logoutLink.bind(this)}>
+                <i className="fas fa-sign-out-alt" /> Logout
+              </a>
+            </div>
+          </div>
+        </nav>
+
+        {/* Side Bar Functionality */}
+        {this.state.sideopen === true ? (
+          <div
+            anchor={anchor}
+            className={"animated leftNavCntr " + this.state.class}
+          >
+            <div className="hptl-phase1-sideMenuBar">
+              <div className="menuBar-title">
+                {/* <div className="appLogoOnly" />*/}
+
+                <i
+                  onClick={this.handleDrawerClose}
+                  className="fas fa-chevron-circle-left sideBarClose"
+                />
+                <input
+                  type="text"
+                  name="searchModules"
+                  className="subMenuSearchFld"
+                  placeholder="Search Modules"
+                  value={this.state.searchModules}
+                  onChange={this.SearchModuleHandler.bind(this)}
+                />
+              </div>
+              <div className="sideMenu-header">{MenuListItems}</div>
+            </div>
+          </div>
+        ) : null}
+        <main className="mainPageArea container-fluid" id="hisapp">
+          {directRoutes(this.state.renderComponent, this.state.selectedLang)}
+        </main>
       </div>
     );
   }
 }
 
-PersistentDrawer.propTypes = {
-  classes: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired
-};
-
-export default withStyles(styles, { withTheme: true })(PersistentDrawer);
+export default PersistentDrawer;

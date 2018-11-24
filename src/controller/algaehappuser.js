@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { selectAppUsers } from "../model/algaehappuser";
+import { selectAppUsers ,selectLoginUser,selectAppGroup,selectRoles,createUserLogin} from "../model/algaehappuser";
 import { releaseConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
 
@@ -19,6 +19,70 @@ export default ({ config, db }) => {
           records: result
         });
       }
+      next();
+    },
+    releaseConnection
+  );
+
+
+
+   // created by irfan :
+   api.get(
+    "/selectLoginUser",
+    selectLoginUser,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+
+   // created by irfan :
+   api.get(
+    "/selectAppGroup",
+    selectAppGroup,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+
+   // created by irfan :
+   api.get(
+    "/selectRoles",
+    selectRoles,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+   // created by irfan :
+   api.post(
+    "/createUserLogin",
+    createUserLogin,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
       next();
     },
     releaseConnection

@@ -229,7 +229,7 @@ class PhySchSetup extends Component {
       myObj.schedule_detail = provider_array;
 
       this.setState({ send_obj: myObj }, () => {
-        //  console.log("ABC:", JSON.stringify(this.state.send_obj));
+        
 
         algaehApiCall({
           uri: "/appointment/addDoctorsSchedule",

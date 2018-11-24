@@ -68,62 +68,63 @@ class EmployeeMaster extends Component {
     IOputs.selectedLang = prevLang;
     this.setState(IOputs);
 
-    this.props.getSubDepartment({
-      uri: "/department/get/subdepartment",
-      data: {
-        sub_department_status: "A"
-      },
-      method: "GET",
-      redux: {
-        type: "SUB_DEPT_GET_DATA",
-        mappingName: "subdepartment"
-      }
-    });
+    if (
+      this.props.subdepartment === undefined ||
+      this.props.subdepartment.length === 0
+    ) {
+      this.props.getSubDepartment({
+        uri: "/department/get/subdepartment",
+        data: {
+          sub_department_status: "A"
+        },
+        method: "GET",
+        redux: {
+          type: "SUB_DEPT_GET_DATA",
+          mappingName: "subdepartment"
+        }
+      });
+    }
 
-    this.props.getUserDetails({
-      uri: "/algaehappuser/selectAppUsers",
-      method: "GET",
-      redux: {
-        type: "USER_DETAILS_GET_DATA",
-        mappingName: "userdrtails"
-      }
-    });
-
-    this.props.getServiceTypes({
-      uri: "/serviceType",
-      method: "GET",
-      redux: {
-        type: "SERVIES_TYPES_GET_DATA",
-        mappingName: "servicetype"
-      }
-    });
-
-    this.props.getServiceTypes({
-      uri: "/serviceType",
-      method: "GET",
-      redux: {
-        type: "SERVIES_TYPES_GET_DATA",
-        mappingName: "servicetypelist"
-      }
-    });
-
-    this.props.getServices({
-      uri: "/serviceType/getService",
-      method: "GET",
-      redux: {
-        type: "SERVICES_GET_DATA",
-        mappingName: "services"
-      }
-    });
-
-    this.props.getServices({
-      uri: "/serviceType/getService",
-      method: "GET",
-      redux: {
-        type: "SERVICES_GET_DATA",
-        mappingName: "serviceslist"
-      }
-    });
+    debugger;
+    if (
+      this.props.userdrtails === undefined ||
+      this.props.userdrtails.length === 0
+    ) {
+      this.props.getUserDetails({
+        uri: "/algaehappuser/selectLoginUser",
+        method: "GET",
+        redux: {
+          type: "USER_DETAILS_GET_DATA",
+          mappingName: "userdrtails"
+        }
+      });
+    }
+    if (
+      this.props.empservicetype === undefined ||
+      this.props.empservicetype.length === 0
+    ) {
+      this.props.getServiceTypes({
+        uri: "/serviceType",
+        method: "GET",
+        redux: {
+          type: "SERVIES_TYPES_GET_DATA",
+          mappingName: "empservicetype"
+        }
+      });
+    }
+    if (
+      this.props.empservices === undefined ||
+      this.props.empservices.length === 0
+    ) {
+      this.props.getServices({
+        uri: "/serviceType/getService",
+        method: "GET",
+        redux: {
+          type: "SERVICES_GET_DATA",
+          mappingName: "empservices"
+        }
+      });
+    }
 
     if (
       this.props.countries === undefined ||
@@ -145,7 +146,9 @@ class EmployeeMaster extends Component {
       newProps.employeeDetailsPop.hims_d_employee_id !== undefined &&
       this.state.full_name !== null
     ) {
+      debugger;
       let IOputs = newProps.employeeDetailsPop;
+      IOputs.Applicable = IOputs.isdoctor === "Y" ? true : false;
       this.setState({ ...this.state, ...IOputs });
     } else {
       let IOputs = EmpMasterIOputs.inputParam();
@@ -275,9 +278,8 @@ class EmployeeMaster extends Component {
 function mapStateToProps(state) {
   return {
     userdrtails: state.userdrtails,
-    servicetype: state.servicetype,
-    services: state.services,
-    serviceslist: state.serviceslist,
+    empservicetype: state.empservicetype,
+    empservices: state.empservices,
     servicetypelist: state.servicetypelist,
     subdepartment: state.subdepartment,
     servTypeCommission: state.servTypeCommission,
@@ -296,8 +298,6 @@ function mapDispatchToProps(dispatch) {
       getDoctorServiceTypeCommission: AlgaehActions,
       getDoctorServiceCommission: AlgaehActions,
       getCountries: AlgaehActions
-
-      // /get/subdepartment
     },
     dispatch
   );

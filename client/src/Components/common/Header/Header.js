@@ -37,7 +37,7 @@ class Header extends PureComponent {
   componentWillMount() {
     let lang = getCookie("Language");
     if (lang != null) {
-      this.setState({ languageName: lang == "ar" ? "عربي" : "English" });
+      this.setState({ languageName: lang === "ar" ? "عربي" : "English" });
     }
   }
   Languaue(secLang, e) {
@@ -106,13 +106,13 @@ class Header extends PureComponent {
                 onClose={this.handleClose}
               >
                 <MenuItem onClick={this.handleClose.bind(this, "en")}>
-                  {this.state.languageName == "English"
+                  {this.state.languageName === "English"
                     ? this.renderCheck()
                     : null}
                   &nbsp; English
                 </MenuItem>
                 <MenuItem onClick={this.handleClose.bind(this, "ar")}>
-                  {this.state.languageName == "عربي"
+                  {this.state.languageName === "عربي"
                     ? this.renderCheck()
                     : null}
                   &nbsp; عربي

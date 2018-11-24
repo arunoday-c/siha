@@ -6,7 +6,6 @@ import Options from "../../../../Options.json";
 let texthandlerInterval = null;
 
 const UomchangeTexts = ($this, ctrl, e) => {
-  
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -19,8 +18,6 @@ const UomchangeTexts = ($this, ctrl, e) => {
 };
 
 const numberchangeTexts = ($this, context, e) => {
-  
-
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   $this.setState({ [name]: value });
@@ -33,11 +30,10 @@ const numberchangeTexts = ($this, context, e) => {
       });
     }
     clearInterval(texthandlerInterval);
-  }, 1000);
+  }, 500);
 };
 
 const itemchangeText = ($this, e) => {
-  
   let name = e.name || e.target.name;
   if (
     $this.state.from_location_id !== null &&
@@ -57,7 +53,6 @@ const itemchangeText = ($this, e) => {
         mappingName: "invitemdetaillist"
       },
       afterSuccess: data => {
-        
         if (data.locationResult.length > 0) {
           $this.setState({
             [name]: value,
@@ -104,7 +99,6 @@ const AddItems = ($this, context) => {
       type: "warning"
     });
   } else {
-    
     let ItemInput = [
       {
         item_id: $this.state.item_id,
@@ -129,7 +123,6 @@ const AddItems = ($this, context) => {
         mappingName: "xxx"
       },
       afterSuccess: data => {
-        
         if (data.billdetails[0].pre_approval === "Y") {
           swalMessage({
             title:
@@ -277,7 +270,6 @@ const updateTransEntryDetail = ($this, e) => {
 };
 
 const onchangegridcol = ($this, context, row, e) => {
-  
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   if (value > row.quantity_authorized) {
@@ -313,7 +305,6 @@ const dateFormater = ($this, value) => {
 };
 
 const getItemLocationStock = ($this, value) => {
-  
   $this.props.getItemLocationStock({
     uri: "/inventoryGlobal/getItemLocationStock",
     method: "GET",

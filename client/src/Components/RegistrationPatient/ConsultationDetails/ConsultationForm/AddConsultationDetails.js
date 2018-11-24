@@ -21,7 +21,7 @@ const DeptselectedHandeler = ($this, context, e) => {
 };
 
 const selectedHandeler = ($this, context, e) => {
-  debugger;
+  //debugger;
   if (
     $this.state.full_name !== "" &&
     $this.state.title_id !== null &&
@@ -207,33 +207,78 @@ const generateBillDetails = ($this, context) => {
     }
   ];
   AlgaehLoader({ show: true });
-  $this.props.generateBill({
+
+  debugger;
+  algaehApiCall({
     uri: "/billing/getBillDetails",
     method: "POST",
     data: serviceInput,
-    redux: {
-      type: "BILL_GEN_GET_DATA",
-      mappingName: "xxx"
-    },
-    afterSuccess: data => {
-      if (context != null) {
-        context.updateState({ ...data });
-      }
-
-      $this.props.billingCalculations({
-        uri: "/billing/billingCalculations",
-        method: "POST",
-        data: data,
-        redux: {
-          type: "BILL_HEADER_GEN_GET_DATA",
-          mappingName: "genbill"
-        },
-        afterSuccess: data => {
-          AlgaehLoader({ show: false });
+    onSuccess: response => {
+      if (response.data.success) {
+        if (context != null) {
+          context.updateState({ ...response.data.records });
         }
+
+        algaehApiCall({
+          uri: "/billing/billingCalculations",
+          method: "POST",
+          data: response.data.records,
+          onSuccess: response => {
+            if (response.data.success) {
+              if (context != null) {
+                context.updateState({ ...response.data.records });
+              }
+            }
+            AlgaehLoader({ show: false });
+          },
+          onFailure: error => {
+            AlgaehLoader({ show: false });
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
+        });
+      }
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
       });
     }
   });
+  // $this.props.generateBill({
+  //   uri: "/billing/getBillDetails",
+  //   method: "POST",
+  //   data: serviceInput,
+  //   redux: {
+  //     type: "BILL_GEN_GET_DATA",
+  //     mappingName: "xxx"
+  //   },
+  //   afterSuccess: data => {
+  //     if (context != null) {
+  //       context.updateState({ ...data });
+  //     }
+
+  //     $this.props.billingCalculations({
+  //       uri: "/billing/billingCalculations",
+  //       method: "POST",
+  //       data: data,
+  //       redux: {
+  //         type: "BILL_HEADER_GEN_GET_DATA",
+  //         mappingName: "genbill"
+  //       },
+  //       afterSuccess: data => {
+  //         if (context != null) {
+  //           context.updateState({ ...data });
+  //         }
+  //         AlgaehLoader({ show: false });
+  //       }
+  //     });
+  //   }
+  // });
 };
 
 export {

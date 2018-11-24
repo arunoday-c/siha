@@ -156,9 +156,9 @@ class VisaType extends Component {
   // changeStatus(row, status) {
   //   this.setState({ visa_status: status.value });
 
-  //   if (status.value == "A")
+  //   if (status.value === "A")
   //     this.setState({ effective_end_date: "9999-12-31" });
-  //   else if (status.value == "I") {
+  //   else if (status.value === "I") {
   //     this.setState({
   //       effective_end_date: moment(String(new Date())).format("YYYY-MM-DD")
   //     });
@@ -392,7 +392,6 @@ class VisaType extends Component {
                       );
                     },
                     editorTemplate: row => {
-                      
                       let display =
                         this.props.userdrtails === undefined
                           ? []
@@ -428,7 +427,6 @@ class VisaType extends Component {
                       return row.visa_status === "A" ? "Active" : "Inactive";
                     },
                     editorTemplate: row => {
-                      
                       return (
                         <AlagehAutoComplete
                           div={{}}

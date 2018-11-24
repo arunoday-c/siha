@@ -86,91 +86,91 @@ class Referal extends Component {
             </div>
           </div>
         </div>
-          <div className="row" style={{ paddingBottom: "10px" }}>
-            <AlagehAutoComplete
-              div={{ className: "col-lg-5" }}
-              label={{
-                forceLabel: "Department"
-              }}
-              selector={{
-                name: "sub_department_id",
-                className: "select-fld",
-                value: this.state.sub_department_id,
-                dataSource: {
-                  textField: "sub_department_name",
-                  valueField: "sub_department_id",
-                  data: this.state.departments
-                },
+        <div className="row" style={{ paddingBottom: "10px" }}>
+          <AlagehAutoComplete
+            div={{ className: "col-lg-5" }}
+            label={{
+              forceLabel: "Department"
+            }}
+            selector={{
+              name: "sub_department_id",
+              className: "select-fld",
+              value: this.state.sub_department_id,
+              dataSource: {
+                textField: "sub_department_name",
+                valueField: "sub_department_id",
+                data: this.state.departments
+              },
 
-                onChange: DeptselectedHandeler.bind(this, this)
-              }}
-            />
+              onChange: DeptselectedHandeler.bind(this, this)
+            }}
+          />
 
-            <AlagehAutoComplete
-              div={{ className: "col-lg-5" }}
-              label={{
-                forceLabel: "Doctor"
-              }}
-              selector={{
-                name: "doctor_id",
-                className: "select-fld",
-                value: this.state.doctor_id,
-                dataSource: {
-                  textField: "full_name",
-                  valueField: "employee_id",
-                  data: this.state.doctors
-                },
-                others: {
-                  disabled: this.state.radioExternal
-                },
+          <AlagehAutoComplete
+            div={{ className: "col-lg-5" }}
+            label={{
+              forceLabel: "Doctor"
+            }}
+            selector={{
+              name: "doctor_id",
+              className: "select-fld",
+              value: this.state.doctor_id,
+              dataSource: {
+                textField: "full_name",
+                valueField: "employee_id",
+                data: this.state.doctors
+              },
+              others: {
+                disabled: this.state.radioExternal
+              },
 
-                onChange: doctorselectedHandeler.bind(this, this)
-              }}
-            />
+              onChange: doctorselectedHandeler.bind(this, this)
+            }}
+          />
 
-            <div className="actions" style={{ paddingTop: "3.5vh" }}>
-              <a
-                href="javascript:;"
-                className="btn btn-primary btn-circle active"
-              >
-                <i
-                  className="fas fa-plus"
-                  onClick={addReferal.bind(this, this)}
-                />
-              </a>
-            </div>
+          <div className="actions" style={{ paddingTop: "3.5vh" }}>
+            <a
+              // href="javascript"
+              className="btn btn-primary btn-circle active"
+            >
+              <i
+                className="fas fa-plus"
+                onClick={addReferal.bind(this, this)}
+              />
+            </a>
           </div>
+        </div>
 
-          <div className="row">
-            <AlagehFormGroup
-              div={{ className: "col" }}
-              label={{
-                forceLabel: "Hospital Name"
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "hospital_name",
-                value: this.state.hospital_name,
-                events: {
-                  onChange: texthandle.bind(this, this)
-                }
-              }}
-            />
-            <AlagehFormGroup
-              div={{ className: "col" }}
-              label={{
-                forceLabel: "Reason"
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "reason",
-                value: this.state.reason,
-                events: {
-                  onChange: texthandle.bind(this, this)
-                }
-              }}
-            />
-          </div>
+        <div className="row">
+          <AlagehFormGroup
+            div={{ className: "col" }}
+            label={{
+              forceLabel: "Hospital Name"
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "hospital_name",
+              value: this.state.hospital_name,
+              events: {
+                onChange: texthandle.bind(this, this)
+              }
+            }}
+          />
+          <AlagehFormGroup
+            div={{ className: "col" }}
+            label={{
+              forceLabel: "Reason"
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "reason",
+              value: this.state.reason,
+              events: {
+                onChange: texthandle.bind(this, this)
+              }
+            }}
+          />
+        </div>
       </div>
     );
   }

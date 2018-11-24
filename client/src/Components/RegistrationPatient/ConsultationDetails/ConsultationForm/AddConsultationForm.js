@@ -58,19 +58,24 @@ class AddConsultationForm extends Component {
       });
     }
 
-    this.props.getProviderDetails({
-      uri: "/employee/get",
-      method: "GET",
-      redux: {
-        type: "DOCTOR_GET_DATA",
-        mappingName: "frontproviders"
-      },
-      afterSuccess: data => {
-        this.setState({
-          doctors: data
-        });
-      }
-    });
+    if (
+      this.props.frontproviders === undefined ||
+      this.props.frontproviders.length === 0
+    ) {
+      this.props.getProviderDetails({
+        uri: "/employee/get",
+        method: "GET",
+        redux: {
+          type: "DOCTOR_GET_DATA",
+          mappingName: "frontproviders"
+        },
+        afterSuccess: data => {
+          this.setState({
+            doctors: data
+          });
+        }
+      });
+    }
 
     if (
       this.props.viewsubdept === undefined ||
@@ -400,8 +405,6 @@ function mapDispatchToProps(dispatch) {
       getVisittypes: AlgaehActions,
       getProviderDetails: AlgaehActions,
       getDepartmentsandDoctors: AlgaehActions,
-      generateBill: AlgaehActions,
-      billingCalculations: AlgaehActions,
       getSubDepartment: AlgaehActions
     },
     dispatch

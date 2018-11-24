@@ -464,7 +464,7 @@ class AddPatientForm extends PureComponent {
                           value: this.state.title_id,
                           dataSource: {
                             textField:
-                              this.state.selectedLang == "en"
+                              this.state.selectedLang === "en"
                                 ? "title"
                                 : "arabic_title",
                             valueField: "his_d_title_id",

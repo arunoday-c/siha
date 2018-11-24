@@ -50,7 +50,7 @@ class Encounters extends Component {
       },
       cancelRequestId: "getPatientVitals",
       onSuccess: response => {
-        debugger;
+        //debugger;
         algaehLoader({ show: false });
         if (response.data.success && response.data.records.length !== 0) {
           const _Vitals =
@@ -88,7 +88,6 @@ class Encounters extends Component {
       onSuccess: response => {
         algaehLoader({ show: false });
         if (response.data.success) {
-          console.log("ChiefComplaints:", response.data.records);
           this.setState({ patientComplaints: response.data.records });
         }
       },
@@ -113,7 +112,6 @@ class Encounters extends Component {
         algaehLoader({ show: false });
         if (response.data.success) {
           this.setState({ patientDiagnosis: response.data.records });
-          console.log("Diagnosis:", response.data.records);
         }
       },
       onFailure: error => {
@@ -138,7 +136,6 @@ class Encounters extends Component {
         algaehLoader({ show: false });
         if (response.data.success) {
           this.setState({ patientMedications: response.data.records });
-          console.log("Medications:", response.data.records);
         }
       },
       onFailure: error => {
@@ -162,7 +159,6 @@ class Encounters extends Component {
         algaehLoader({ show: false });
         if (response.data.success) {
           this.setState({ patientInvestigations: response.data.records });
-          console.log("Investigations:", response.data.records);
         }
       },
       onFailure: error => {

@@ -204,7 +204,7 @@ const dateFormater = value => {
 const deleteItems = $this => {};
 
 const calcuateDispense = ($this, e) => {
-  debugger;
+  //debugger;
 
   // if (e.target === null || e.target.value !== e.target.oldvalue) {
   let frequency = 0;

@@ -152,8 +152,6 @@ class ReviewofSystems extends Component {
   }
 
   deleteROS(row) {
-    // console.log("delete Allergy row:", row);
-
     swal({
       title:
         "Delete Review of System for " +

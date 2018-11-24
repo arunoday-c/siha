@@ -39,7 +39,7 @@ class ResultEntry extends Component {
   }
 
   showReport() {
-    console.log("test_analytes:", this.state.test_analytes);
+    // console.log("test_analytes:", this.state.test_analytes);
 
     AlgaehReport({
       report: {

@@ -135,7 +135,7 @@ class InventoryItemMaster extends Component {
             </div>
             <div className="actions">
               <a
-                href="javascript:;"
+                // href="javascript"
                 className="btn btn-primary btn-circle active"
                 onClick={this.ShowModel.bind(this)}
               >

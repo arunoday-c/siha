@@ -186,7 +186,7 @@ class Vitals extends Component {
           let _gId = Enumerable.from(gg.getSource())
             .where(w => w.vital_id === k)
             .firstOrDefault();
-          let _names = String(_gId.vital_short_name).replace(/\" "/g, "_");
+          let _names = String(_gId.vital_short_name).replace(/" "/g, "_");
 
           let row = Enumerable.from(_yAxes)
             .where(w => w.id === _names)
@@ -230,6 +230,9 @@ class Vitals extends Component {
               _bground = config.colors.bp.dia.backgroundColor;
               _borderColor = config.colors.bp.dia.borderColor;
               break;
+            default:
+              _bground = "";
+              _borderColor = "";
           }
 
           _plotGraph.push({
@@ -369,7 +372,7 @@ class Vitals extends Component {
                     ? "col-6 vitalTopFld20"
                     : "col-6";
                 const _name = String(item.vitals_name)
-                  .replace(/\" "/g, "_")
+                  .replace(/" "/g, "_")
                   .toLowerCase();
                 const _disable = _name === "bmi" ? true : false;
                 const _dependent =

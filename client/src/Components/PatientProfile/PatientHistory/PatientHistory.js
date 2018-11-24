@@ -8,17 +8,24 @@ class PatientHistory extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      patHistory: []
+      patHistory: [],
+      social_history: "",
+      surgical_history: "",
+      medical_history: ""
     };
     this.getPatientHistory();
   }
 
-  componentWillUnmount() {
+  saveHistory() {
     this.state.social_history.length === 0 &&
     this.state.surgical_history.length === 0 &&
     this.state.social_history.length === 0
       ? null
       : this.savePatientHistory();
+  }
+
+  componentWillUnmount() {
+    this.saveHistory();
   }
 
   savePatientHistory() {
@@ -65,7 +72,6 @@ class PatientHistory extends Component {
       },
       onSuccess: response => {
         if (response.data.success) {
-          console.log("History:", response.data.records);
           this.setState(
             {
               patHistory: response.data.records

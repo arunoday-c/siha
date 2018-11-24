@@ -73,7 +73,7 @@ const UomchangeTexts = ($this, context, ctrl, e) => {
         });
       }
       clearInterval(texthandlerInterval);
-    }, 1000);
+    }, 500);
   }
 };
 
@@ -102,7 +102,7 @@ const numberchangeTexts = ($this, context, e) => {
         });
       }
       clearInterval(texthandlerInterval);
-    }, 1000);
+    }, 500);
   }
 };
 
@@ -224,7 +224,7 @@ const getUnitCost = ($this, context, serviceid) => {
       },
       afterSuccess: data => {
         let servdata = Enumerable.from(data)
-          .where(w => w.hims_d_services_id === parseInt(serviceid))
+          .where(w => w.hims_d_services_id === parseInt(serviceid, 10))
           .firstOrDefault();
         if (servdata !== undefined || servdata !== null) {
           $this.setState({
@@ -483,7 +483,7 @@ const deletePosDetail = ($this, context, row) => {
 };
 
 const updatePosDetail = $this => {
-  debugger;
+  //debugger;
 
   $this.props.PosHeaderCalculations({
     uri: "/billing/billingCalculations",
@@ -498,7 +498,7 @@ const updatePosDetail = $this => {
 
 //Calculate Row Detail
 const calculateAmount = ($this, row, ctrl, e) => {
-  debugger;
+  //debugger;
   e = e || ctrl;
   if (e.target.value !== e.target.oldvalue) {
     let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
@@ -538,7 +538,7 @@ const calculateAmount = ($this, row, ctrl, e) => {
         mappingName: "xxx"
       },
       afterSuccess: data => {
-        debugger;
+        //debugger;
         data.billdetails[0].extended_cost = data.billdetails[0].gross_amount;
         data.billdetails[0].net_extended_cost = data.billdetails[0].net_amout;
 
@@ -682,7 +682,7 @@ const ViewInsurance = ($this, e) => {
 };
 
 const EditGrid = ($this, context, cancelRow) => {
-  debugger;
+  //debugger;
   if (context != null) {
     let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
     if (cancelRow !== undefined) {

@@ -115,7 +115,7 @@ class AddReciptForm extends Component {
                       value: this.state.counter_id,
                       dataSource: {
                         textField:
-                          this.state.selectedLang == "en"
+                          this.state.selectedLang === "en"
                             ? "counter_description"
                             : "arabic_name",
                         valueField: "hims_d_counter_id",
@@ -140,7 +140,7 @@ class AddReciptForm extends Component {
                       value: this.state.shift_id,
                       dataSource: {
                         textField:
-                          this.state.selectedLang == "en"
+                          this.state.selectedLang === "en"
                             ? "shift_description"
                             : "arabic_name",
                         valueField: "hims_d_shift_id",
@@ -196,7 +196,7 @@ class AddReciptForm extends Component {
                             ? true
                             : !this.state.Cashchecked,
                         placeholder: "0.00",
-                        onBlur: calculateRecipt.bind(this, this),
+                        onBlur: calculateRecipt.bind(this, this, context),
                         onFocus: e => {
                           e.target.oldvalue = e.target.value;
                         }
@@ -241,7 +241,7 @@ class AddReciptForm extends Component {
                       others: {
                         disabled: !this.state.Cardchecked,
                         placeholder: "0.00",
-                        onBlur: calculateRecipt.bind(this, this),
+                        onBlur: calculateRecipt.bind(this, this, context),
                         onFocus: e => {
                           e.target.oldvalue = e.target.value;
                         }
@@ -321,7 +321,7 @@ class AddReciptForm extends Component {
                         "data-receipt": "true",
                         disabled: !this.state.Checkchecked,
                         placeholder: "0.00",
-                        onBlur: calculateRecipt.bind(this, this),
+                        onBlur: calculateRecipt.bind(this, this, context),
                         onFocus: e => {
                           e.target.oldvalue = e.target.value;
                         }
@@ -389,7 +389,6 @@ class AddReciptForm extends Component {
 
 function mapStateToProps(state) {
   return {
-    genbill: state.genbill,
     shifts: state.shifts,
     counters: state.counters
   };
@@ -398,7 +397,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      billingCalculations: AlgaehActions,
       getShifts: AlgaehActions,
       getCounters: AlgaehActions
     },

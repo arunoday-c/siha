@@ -1,5 +1,7 @@
 import moment from "moment";
-import { successfulMessage } from "../../../../utils/GlobalFunctions";
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+import AlgaehLoader from "../../../Wrapper/fullPageLoader";
+
 let texthandlerInterval = null;
 
 const texthandle = ($this, context, ctrl, e) => {
@@ -17,10 +19,10 @@ const texthandle = ($this, context, ctrl, e) => {
       context.updateState({ [name]: value });
     }
     clearInterval(texthandlerInterval);
-  }, 1000);
+  }, 500);
 };
 
-const calculateRecipt = $this => {
+const calculateRecipt = ($this, context) => {
   let serviceInput = {
     isReceipt: true,
     intCalculateall: false,
@@ -31,15 +33,35 @@ const calculateRecipt = $this => {
     receiveable_amount: parseFloat($this.state.receiveable_amount)
   };
 
-  $this.props.billingCalculations({
+  algaehApiCall({
     uri: "/billing/billingCalculations",
     method: "POST",
     data: serviceInput,
-    redux: {
-      type: "BILL_HEADER_GEN_GET_DATA",
-      mappingName: "genbill"
+    onSuccess: response => {
+      if (response.data.success) {
+        if (context != null) {
+          context.updateState({ ...response.data.records });
+        }
+      }
+      AlgaehLoader({ show: false });
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
+  // $this.props.billingCalculations({
+  //   uri: "/billing/billingCalculations",
+  //   method: "POST",
+  //   data: serviceInput,
+  //   redux: {
+  //     type: "BILL_HEADER_GEN_GET_DATA",
+  //     mappingName: "genbill"
+  //   }
+  // });
 };
 
 const cashtexthandle = ($this, context, ctrl, e) => {
@@ -51,10 +73,9 @@ const cashtexthandle = ($this, context, ctrl, e) => {
   let receiveable_amount = parseFloat($this.state.receiveable_amount);
 
   if (cash_amount + card_amount + cheque_amount > receiveable_amount) {
-    successfulMessage({
-      message: "Invalid Input. Sum of all amount to be equal to Receivable.",
-      title: "Warning",
-      icon: "warning"
+    swalMessage({
+      title: "Invalid Input. Sum of all amount to be equal to Receivable.",
+      type: "warning"
     });
 
     $this.setState(
@@ -85,10 +106,9 @@ const cardtexthandle = ($this, context, ctrl, e) => {
   let receiveable_amount = parseFloat($this.state.receiveable_amount);
 
   if (cash_amount + card_amount + cheque_amount > receiveable_amount) {
-    successfulMessage({
-      message: "Invalid Input. Sum of all amount to be equal to Receivable.",
-      title: "Warning",
-      icon: "warning"
+    swalMessage({
+      title: "Invalid Input. Sum of all amount to be equal to Receivable.",
+      type: "warning"
     });
     $this.setState(
       {
@@ -119,10 +139,9 @@ const chequetexthandle = ($this, context, ctrl, e) => {
   let receiveable_amount = parseFloat($this.state.receiveable_amount);
 
   if (cash_amount + card_amount + cheque_amount > receiveable_amount) {
-    successfulMessage({
-      message: "Invalid Input. Sum of all amount to be equal to Receivable.",
-      title: "Warning",
-      icon: "warning"
+    swalMessage({
+      title: "Invalid Input. Sum of all amount to be equal to Receivable.",
+      type: "warning"
     });
     $this.setState(
       {
@@ -148,11 +167,10 @@ const adjustadvance = ($this, context, ctrl, e) => {
   e = e || ctrl;
 
   if (e.target.value > $this.state.advance_amount) {
-    successfulMessage({
-      message:
+    swalMessage({
+      title:
         "Invalid Input. Adjusted amount cannot be greater than Advance amount",
-      title: "Warning",
-      icon: "warning"
+      type: "warning"
     });
   } else {
     $this.setState({
@@ -181,10 +199,9 @@ const discounthandle = ($this, context, ctrl, e) => {
     sheet_discount_percentage = 0;
   }
   if (sheet_discount_percentage > 100) {
-    successfulMessage({
-      message: "Invalid Input. Discount % cannot be greater than 100.",
-      title: "Warning",
-      icon: "warning"
+    swalMessage({
+      title: "Invalid Input. Discount % cannot be greater than 100.",
+      type: "Warning"
     });
   } else {
     $this.setState({
@@ -201,7 +218,7 @@ const discounthandle = ($this, context, ctrl, e) => {
   }
 };
 
-const billheaderCalculation = $this => {
+const billheaderCalculation = ($this, context) => {
   let serviceInput = {
     isReceipt: false,
     intCalculateall: false,
@@ -214,15 +231,35 @@ const billheaderCalculation = $this => {
     credit_amount: parseFloat($this.state.credit_amount)
   };
 
-  $this.props.billingCalculations({
+  algaehApiCall({
     uri: "/billing/billingCalculations",
     method: "POST",
     data: serviceInput,
-    redux: {
-      type: "BILL_HEADER_GEN_GET_DATA",
-      mappingName: "genbill"
+    onSuccess: response => {
+      if (response.data.success) {
+        if (context != null) {
+          context.updateState({ ...response.data.records });
+        }
+      }
+      AlgaehLoader({ show: false });
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
+  // $this.props.billingCalculations({
+  //   uri: "/billing/billingCalculations",
+  //   method: "POST",
+  //   data: serviceInput,
+  //   redux: {
+  //     type: "BILL_HEADER_GEN_GET_DATA",
+  //     mappingName: "genbill"
+  //   }
+  // });
 };
 
 const datehandle = ($this, context, ctrl, e) => {
@@ -236,18 +273,16 @@ const datehandle = ($this, context, ctrl, e) => {
 };
 
 const ProcessInsurance = ($this, context, ctrl, e) => {
-  
   if (
     $this.state.insured === "Y" &&
     ($this.state.primary_insurance_provider_id == null ||
       $this.state.primary_network_office_id == null ||
       $this.state.primary_network_id == null)
   ) {
-    successfulMessage({
-      message:
+    swalMessage({
+      title:
         "Invalid Input. Please select the primary insurance details properly.",
-      title: "Error",
-      icon: "error"
+      type: "error"
     });
   } else if (
     $this.state.sec_insured === "Y" &&
@@ -255,11 +290,10 @@ const ProcessInsurance = ($this, context, ctrl, e) => {
       $this.state.secondary_network_office_id == null ||
       $this.state.secondary_network_id == null)
   ) {
-    successfulMessage({
-      message:
+    swalMessage({
+      title:
         "Invalid Input. Please select the secondary insurance details properly.",
-      title: "Error",
-      icon: "error"
+      type: "error"
     });
   } else {
     let serviceInput = [
@@ -278,40 +312,80 @@ const ProcessInsurance = ($this, context, ctrl, e) => {
         secondary_network_office_id: $this.state.secondary_network_office_id
       }
     ];
-    $this.props.generateBill({
+
+    algaehApiCall({
       uri: "/billing/getBillDetails",
       method: "POST",
       data: serviceInput,
-      redux: {
-        type: "BILL_GEN_GET_DATA",
-        mappingName: "xxx"
-      },
-      afterSuccess: data => {
-        data.saveEnable = false;
-        data.hideInsurance = true;
-        data.hideSecInsurance = true;
-        data.ProcessInsure = true;
-
-        if (context != null) {
-          context.updateState({ ...data });
-        }
-
-        $this.props.billingCalculations({
-          uri: "/billing/billingCalculations",
-          method: "POST",
-          data: data,
-          redux: {
-            type: "BILL_HEADER_GEN_GET_DATA",
-            mappingName: "genbill"
+      onSuccess: response => {
+        if (response.data.success) {
+          if (context != null) {
+            context.updateState({ ...response.data.records });
           }
+
+          algaehApiCall({
+            uri: "/billing/billingCalculations",
+            method: "POST",
+            data: response.data.records,
+            onSuccess: response => {
+              if (response.data.success) {
+                if (context != null) {
+                  context.updateState({ ...response.data.records });
+                }
+              }
+              AlgaehLoader({ show: false });
+            },
+            onFailure: error => {
+              AlgaehLoader({ show: false });
+              swalMessage({
+                title: error.message,
+                type: "error"
+              });
+            }
+          });
+        }
+      },
+      onFailure: error => {
+        AlgaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error"
         });
       }
     });
+    // $this.props.generateBill({
+    //   uri: "/billing/getBillDetails",
+    //   method: "POST",
+    //   data: serviceInput,
+    //   redux: {
+    //     type: "BILL_GEN_GET_DATA",
+    //     mappingName: "xxx"
+    //   },
+    //   afterSuccess: data => {
+    //     data.saveEnable = false;
+    //     data.hideInsurance = true;
+    //     data.hideSecInsurance = true;
+    //     data.ProcessInsure = true;
+
+    //     if (context != null) {
+    //       context.updateState({ ...data });
+    //     }
+
+    //     $this.props.billingCalculations({
+    //       uri: "/billing/billingCalculations",
+    //       method: "POST",
+    //       data: data,
+    //       redux: {
+    //         type: "BILL_HEADER_GEN_GET_DATA",
+    //         mappingName: "genbill"
+    //       }
+    //     });
+    //   }
+    // });
   }
 };
 
 const checkcashhandaler = ($this, context, e) => {
-  
   let Cashchecked = e.target.checked;
   $this.setState(
     {
@@ -381,10 +455,9 @@ const credittexthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
 
   if (e.target.value > $this.state.net_amount) {
-    successfulMessage({
-      message: "Invalid Input. Criedt amount cannot be greater than Net amount",
-      title: "Warning",
-      icon: "warning"
+    swalMessage({
+      title: "Invalid Input. Criedt amount cannot be greater than Net amount",
+      type: "warning"
     });
   } else {
     $this.setState({
@@ -399,40 +472,39 @@ const credittexthandle = ($this, context, ctrl, e) => {
   }
 };
 
-const advanceAdjustCal = ($this, e) => {
+const advanceAdjustCal = ($this, context, e) => {
   if (e.target.value !== e.target.oldvalue) {
-    billheaderCalculation($this);
+    billheaderCalculation($this, context);
   }
 };
 
-const discountCal = ($this, e) => {
+const discountCal = ($this, context, e) => {
   if (e.target.value !== e.target.oldvalue) {
-    billheaderCalculation($this);
+    billheaderCalculation($this, context);
   }
 };
 
-const credittextCal = ($this, e) => {
+const credittextCal = ($this, context, e) => {
   if (e.target.value !== e.target.oldvalue) {
-    billheaderCalculation($this);
+    billheaderCalculation($this, context);
   }
 };
 
-const cashtexthCal = ($this, e) => {
-  
+const cashtexthCal = ($this, context, e) => {
   if (e.target.value !== e.target.oldvalue) {
-    calculateRecipt($this);
+    calculateRecipt($this, context);
   }
 };
 
-const cardtexthCal = ($this, e) => {
+const cardtexthCal = ($this, context, e) => {
   if (e.target.value !== e.target.oldvalue) {
-    calculateRecipt($this);
+    calculateRecipt($this, context);
   }
 };
 
-const chequetexthCal = ($this, e) => {
+const chequetexthCal = ($this, context, e) => {
   if (e.target.value !== e.target.oldvalue) {
-    calculateRecipt($this);
+    calculateRecipt($this, context);
   }
 };
 

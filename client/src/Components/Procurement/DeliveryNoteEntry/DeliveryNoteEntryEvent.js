@@ -1,6 +1,5 @@
 import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import moment from "moment";
-import Enumerable from "linq";
 
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
@@ -10,7 +9,7 @@ import DNEntry from "../../../Models/DNEntry";
 let texthandlerInterval = null;
 
 const texthandle = ($this, e) => {
-  debugger;
+  //debugger;
   if (e.value === undefined) {
     $this.setState({ [e]: null });
   } else {
@@ -24,7 +23,7 @@ const texthandle = ($this, e) => {
 };
 
 const loctexthandle = ($this, e) => {
-  debugger;
+  //debugger;
   if (e.value === undefined) {
     $this.setState({ [e]: null });
   } else {
@@ -42,7 +41,7 @@ const loctexthandle = ($this, e) => {
 };
 
 const vendortexthandle = ($this, e) => {
-  debugger;
+  //debugger;
   if (e.value === undefined) {
     $this.setState({ [e]: null, payment_terms: null });
   } else {
@@ -66,7 +65,7 @@ const vendortexthandle = ($this, e) => {
 };
 
 const poforhandle = ($this, e) => {
-  debugger;
+  //debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
@@ -138,7 +137,7 @@ const numberchangeTexts = ($this, context, e) => {
         });
       }
       clearInterval(texthandlerInterval);
-    }, 1000);
+    }, 500);
   }
 };
 
@@ -149,7 +148,7 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const PurchaseOrderSearch = ($this, e) => {
-  debugger;
+  //debugger;
   if (
     $this.state.pharmcy_location_id === null &&
     $this.state.inventory_location_id === null
@@ -159,7 +158,7 @@ const PurchaseOrderSearch = ($this, e) => {
       type: "warning"
     });
   } else {
-    debugger;
+    //debugger;
     let Inputs = "";
 
     if ($this.state.dn_from === "PHR") {
@@ -190,7 +189,7 @@ const PurchaseOrderSearch = ($this, e) => {
             mappingName: "purchaseorderentry"
           },
           afterSuccess: data => {
-            debugger;
+            //debugger;
             if (data !== null && data !== undefined) {
               AlgaehLoader({ show: true });
 
@@ -233,7 +232,7 @@ const ClearData = ($this, e) => {
 };
 
 const SaveDNEnrty = $this => {
-  debugger;
+  //debugger;
   algaehApiCall({
     uri: "/DeliveryNoteEntry/addDeliveryNoteEntry",
     data: $this.state,
@@ -257,33 +256,39 @@ const SaveDNEnrty = $this => {
 
 const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
-  $this.props.getPurchaseOrderEntry({
-    uri: "/PurchaseOrderEntry/getPurchaseOrderEntry",
+  debugger;
+  algaehApiCall({
+    uri: "/DeliveryNoteEntry/getDeliveryNoteEntry",
     method: "GET",
-    printInput: true,
     data: { delivery_note_number: docNumber },
-    redux: {
-      type: "PO_ENTRY_GET_DATA",
-      mappingName: "purchaseorderentry"
-    },
-    afterSuccess: data => {
+    onSuccess: response => {
       debugger;
-      if (
-        $this.props.delivery_note_number !== undefined &&
-        $this.props.delivery_note_number.length !== 0
-      ) {
-        data.authorizeEnable = false;
-        data.ItemDisable = true;
-        data.ClearDisable = true;
-      }
-      data.saveEnable = true;
-      data.dataExitst = true;
+      if (response.data.success) {
+        let data = response.data.records;
+        if (
+          $this.props.delivery_note_number !== undefined &&
+          $this.props.delivery_note_number.length !== 0
+        ) {
+          data.authorizeEnable = false;
+          data.ItemDisable = true;
+          data.ClearDisable = true;
+        }
+        data.saveEnable = true;
+        data.dataExitst = true;
 
-      data.addedItem = true;
-      $this.setState(data, () => {
-        getData($this);
-      });
+        data.addedItem = true;
+        $this.setState(data, () => {
+          getData($this);
+        });
+        AlgaehLoader({ show: false });
+      }
+    },
+    onFailure: error => {
       AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
 };
