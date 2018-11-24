@@ -15,7 +15,7 @@ class PersistentDrawer extends React.Component {
       class: "",
       anchor: "left",
       toggleSubMenu: false,
-      menuSelected: "",
+      menuSelected: "General",
       renderComponent: "Dashboard",
       title: "Dashboard",
       selectedLang: "lang_en",
@@ -25,7 +25,13 @@ class PersistentDrawer extends React.Component {
       arlabl: "",
       enlabl: "",
       searchModules: "",
-      activeNode: null,
+      activeNode: {
+        controlid: 0,
+        rootid: 0,
+        class: "active",
+        menuselected: "General",
+        subMenuItem: "Dashboard"
+      },
       isSelectedByForce: false
     };
   }
