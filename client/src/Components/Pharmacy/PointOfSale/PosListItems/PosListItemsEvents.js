@@ -81,7 +81,7 @@ const numberchangeTexts = ($this, context, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
-  if (value <= 0) {
+  if (value < 0) {
     swalMessage({
       title: "Invalid Input. Quantity cannot be less than or equal to Zero",
       type: "warning"
@@ -282,9 +282,18 @@ const getUnitCost = ($this, context, serviceid) => {
   }
 };
 const AddItems = ($this, context) => {
+  debugger;
   if ($this.state.item_id === null) {
     swalMessage({
       title: "Invalid Input. Please Select Item.",
+      type: "warning"
+    });
+  } else if (
+    parseFloat($this.state.quantity) === 0 ||
+    $this.state.quantity === ""
+  ) {
+    swalMessage({
+      title: "Invalid Input. Enter the Quantity.",
       type: "warning"
     });
   } else {
@@ -590,28 +599,28 @@ const adjustadvance = ($this, context, ctrl, e) => {
 };
 
 const PosheaderCalculation = ($this, e) => {
-  if (e.target.value !== e.target.oldvalue) {
-    let ItemInput = {
-      isReceipt: false,
-      intCalculateall: false,
-      sheet_discount_percentage: parseFloat(
-        $this.state.sheet_discount_percentage
-      ),
-      sheet_discount_amount: parseFloat($this.state.sheet_discount_amount),
-      advance_adjust: parseFloat($this.state.advance_adjust),
-      gross_total: parseFloat($this.state.gross_total)
-    };
+  // if (e.target.value !== e.target.oldvalue) {
+  let ItemInput = {
+    isReceipt: false,
+    intCalculateall: false,
+    sheet_discount_percentage: parseFloat(
+      $this.state.sheet_discount_percentage
+    ),
+    sheet_discount_amount: parseFloat($this.state.sheet_discount_amount),
+    advance_adjust: parseFloat($this.state.advance_adjust),
+    gross_total: parseFloat($this.state.gross_total)
+  };
 
-    $this.props.PosHeaderCalculations({
-      uri: "/billing/billingCalculations",
-      method: "POST",
-      data: ItemInput,
-      redux: {
-        type: "POS_HEADER_GEN_GET_DATA",
-        mappingName: "posheader"
-      }
-    });
-  }
+  $this.props.PosHeaderCalculations({
+    uri: "/billing/billingCalculations",
+    method: "POST",
+    data: ItemInput,
+    redux: {
+      type: "POS_HEADER_GEN_GET_DATA",
+      mappingName: "posheader"
+    }
+  });
+  // }
 };
 
 const dateFormater = ($this, value) => {
@@ -690,6 +699,7 @@ const EditGrid = ($this, context, cancelRow) => {
     }
     context.updateState({
       saveEnable: !$this.state.saveEnable,
+      addItemButton: !$this.state.addItemButton,
       pharmacy_stock_detail: _pharmacy_stock_detail
     });
   }
