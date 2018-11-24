@@ -39,14 +39,19 @@ class RadInvestigation extends Component {
     this.setState({ ...this.state, ...InputOutput });
   }
   componentDidMount() {
-    this.props.getTestCategory({
-      uri: "/labmasters/selectTestCategory",
-      method: "GET",
-      redux: {
-        type: "TESTCATEGORY_GET_DATA",
-        mappingName: "testcategory"
-      }
-    });
+    if (
+      this.props.testcategory === undefined ||
+      this.props.testcategory.length === 0
+    ) {
+      this.props.getTestCategory({
+        uri: "/labmasters/selectTestCategory",
+        method: "GET",
+        redux: {
+          type: "TESTCATEGORY_GET_DATA",
+          mappingName: "testcategory"
+        }
+      });
+    }
   }
 
   render() {

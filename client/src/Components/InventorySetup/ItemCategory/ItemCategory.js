@@ -44,7 +44,13 @@ class ItemCategory extends Component {
     this.setState({
       selectedLang: prevLang
     });
-    getItemCategory(this, this);
+
+    if (
+      this.props.invitemcategory === undefined ||
+      this.props.invitemcategory.length === 0
+    ) {
+      getItemCategory(this, this);
+    }
   }
 
   dateFormater(date) {
@@ -127,7 +133,7 @@ class ItemCategory extends Component {
                       return (
                         <span>
                           {display !== null && display.length !== 0
-                            ? display[0].user_displayname
+                            ? display[0].username
                             : ""}
                         </span>
                       );
@@ -143,7 +149,7 @@ class ItemCategory extends Component {
                       return (
                         <span>
                           {display !== null && display.length !== 0
-                            ? display[0].user_displayname
+                            ? display[0].username
                             : ""}
                         </span>
                       );

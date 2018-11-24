@@ -41,14 +41,19 @@ class LabContainer extends Component {
     this.setState({
       selectedLang: prevLang
     });
-    this.props.getLabContainer({
-      uri: "/labmasters/selectContainer",
-      method: "GET",
-      redux: {
-        type: "CONTAINER_GET_DATA",
-        mappingName: "labcontainer"
-      }
-    });
+    if (
+      this.props.labcontainer === undefined ||
+      this.props.labcontainer.length === 0
+    ) {
+      this.props.getLabContainer({
+        uri: "/labmasters/selectContainer",
+        method: "GET",
+        redux: {
+          type: "CONTAINER_GET_DATA",
+          mappingName: "labcontainer"
+        }
+      });
+    }
   }
 
   dateFormater({ date }) {
@@ -171,7 +176,7 @@ class LabContainer extends Component {
                       return (
                         <span>
                           {display !== null && display.length !== 0
-                            ? display[0].user_displayname
+                            ? display[0].username
                             : ""}
                         </span>
                       );
@@ -187,7 +192,7 @@ class LabContainer extends Component {
                       return (
                         <span>
                           {display !== null && display.length !== 0
-                            ? display[0].user_displayname
+                            ? display[0].username
                             : ""}
                         </span>
                       );

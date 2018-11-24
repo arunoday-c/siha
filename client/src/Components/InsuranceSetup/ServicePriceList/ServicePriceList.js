@@ -56,14 +56,19 @@ class SubInsurance extends PureComponent {
       });
     }
 
-    this.props.getServiceTypes({
-      uri: "/serviceType",
-      method: "GET",
-      redux: {
-        type: "SERVIES_TYPES_GET_DATA",
-        mappingName: "servicetype"
-      }
-    });
+    if (
+      this.props.insservicetype === undefined ||
+      this.props.insservicetype.length === 0
+    ) {
+      this.props.getServiceTypes({
+        uri: "/serviceType",
+        method: "GET",
+        redux: {
+          type: "SERVIES_TYPES_GET_DATA",
+          mappingName: "insservicetype"
+        }
+      });
+    }
   }
 
   render() {
@@ -104,7 +109,7 @@ class SubInsurance extends PureComponent {
                           ? "service_type"
                           : "arabic_service_type",
                       valueField: "hims_d_service_type_id",
-                      data: this.props.servicetype
+                      data: this.props.insservicetype
                     },
                     onChange: serviceTypeHandeler.bind(this, this)
                   }}
@@ -444,7 +449,7 @@ class SubInsurance extends PureComponent {
 function mapStateToProps(state) {
   return {
     pricelist: state.pricelist,
-    servicetype: state.servicetype
+    insservicetype: state.insservicetype
   };
 }
 

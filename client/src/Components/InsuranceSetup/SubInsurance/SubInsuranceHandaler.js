@@ -20,7 +20,6 @@ const texthandle = ($this, context, e) => {
 };
 
 const saveSubInsurance = ($this, context) => {
-  
   let updatedata = [];
   const err = Validations($this);
   if (!err) {
@@ -114,7 +113,6 @@ const showconfirmDialog = ($this, id) => {
         method: "DELETE",
         onSuccess: response => {
           if (response.data.success) {
-            
             getSubInsuranceDetails($this);
             swalMessage({
               type: "success",
@@ -143,31 +141,34 @@ const deleteSubInsurance = ($this, row) => {
 };
 
 const getSubInsuranceDetails = $this => {
-  $this.props.getSubInsuranceDetails({
+  algaehApiCall({
     uri: "/insurance/getSubInsurance",
     method: "GET",
-    // printInput: true,
     data: {
       insurance_provider_id: $this.state.insurance_provider_id
     },
-    redux: {
-      type: "SUB_INSURANCE_GET_DATA",
-      mappingName: "subinsuranceprovider"
+    onSuccess: response => {
+      if (response.data.success) {
+        if (response.data.records.length > 0) {
+          $this.setState({ sub_insurance: response.data.records });
+        }
+      }
     },
-    afterSuccess: data => {
-      $this.setState({ sub_insurance: data });
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
 };
 const updateSubInsurance = ($this, data) => {
-  
   algaehApiCall({
     uri: "/insurance/updateSubInsuranceProvider",
     data: data,
     method: "PUT",
     onSuccess: response => {
       if (response.data.success) {
-        
         getSubInsuranceDetails($this);
         swalMessage({
           type: "success",

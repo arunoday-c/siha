@@ -39,14 +39,19 @@ class TestCategory extends Component {
     this.setState({
       selectedLang: prevLang
     });
-    this.props.getTestCategory({
-      uri: "/labmasters/selectTestCategory",
-      method: "GET",
-      redux: {
-        type: "TESTCATEGORY_GET_DATA",
-        mappingName: "testcategory"
-      }
-    });
+    if (
+      this.props.testcategory === undefined ||
+      this.props.testcategory.length === 0
+    ) {
+      this.props.getTestCategory({
+        uri: "/labmasters/selectTestCategory",
+        method: "GET",
+        redux: {
+          type: "TESTCATEGORY_GET_DATA",
+          mappingName: "testcategory"
+        }
+      });
+    }
   }
 
   dateFormater({ date }) {
@@ -131,7 +136,7 @@ class TestCategory extends Component {
                       return (
                         <span>
                           {display !== null && display.length !== 0
-                            ? display[0].user_displayname
+                            ? display[0].username
                             : ""}
                         </span>
                       );
@@ -147,7 +152,7 @@ class TestCategory extends Component {
                       return (
                         <span>
                           {display !== null && display.length !== 0
-                            ? display[0].user_displayname
+                            ? display[0].username
                             : ""}
                         </span>
                       );

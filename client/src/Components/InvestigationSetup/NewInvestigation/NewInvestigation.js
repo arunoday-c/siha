@@ -37,23 +37,29 @@ class NewInvestigation extends PureComponent {
   }
 
   componentDidMount() {
-    this.props.getServices({
-      uri: "/serviceType/getService",
-      method: "GET",
-      redux: {
-        type: "SERVICES_GET_DATA",
-        mappingName: "services"
-      }
-    });
-
-    this.props.getCptcodes({
-      uri: "/icdcptcodes/selectIcdcptCodes",
-      method: "GET",
-      redux: {
-        type: "CPTCODES_GET_DATA",
-        mappingName: "cptcodes"
-      }
-    });
+    if (
+      this.props.ingservices === undefined ||
+      this.props.ingservices.length === 0
+    ) {
+      this.props.getServices({
+        uri: "/serviceType/getService",
+        method: "GET",
+        redux: {
+          type: "SERVICES_GET_DATA",
+          mappingName: "ingservices"
+        }
+      });
+    }
+    if (this.props.cptcodes === undefined || this.props.cptcodes.length === 0) {
+      this.props.getCptcodes({
+        uri: "/icdcptcodes/selectIcdcptCodes",
+        method: "GET",
+        redux: {
+          type: "CPTCODES_GET_DATA",
+          mappingName: "cptcodes"
+        }
+      });
+    }
   }
 
   componentWillReceiveProps(newProps) {
@@ -160,7 +166,7 @@ class NewInvestigation extends PureComponent {
                               ? "service_name"
                               : "arabic_service_name",
                           valueField: "hims_d_services_id",
-                          data: this.props.services
+                          data: this.props.ingservices
                         },
                         onChange: texthandle.bind(this, this)
                       }}
@@ -286,7 +292,7 @@ class NewInvestigation extends PureComponent {
 
 function mapStateToProps(state) {
   return {
-    services: state.services,
+    ingservices: state.ingservices,
     cptcodes: state.cptcodes
   };
 }

@@ -342,7 +342,7 @@ class SampleCollectionPatient extends PureComponent {
                                   return (
                                     <span>
                                       {display !== null && display.length !== 0
-                                        ? display[0].user_displayname
+                                        ? display[0].username
                                         : ""}
                                     </span>
                                   );

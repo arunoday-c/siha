@@ -43,7 +43,10 @@ class ItemForm extends Component {
     this.setState({
       selectedLang: prevLang
     });
-    getItemForm(this, this);
+
+    if (this.props.itemform === undefined || this.props.itemform.length === 0) {
+      getItemForm(this, this);
+    }
   }
 
   dateFormater(date) {
@@ -128,7 +131,7 @@ class ItemForm extends Component {
                       return (
                         <span>
                           {display !== null && display.length !== 0
-                            ? display[0].user_displayname
+                            ? display[0].username
                             : ""}
                         </span>
                       );
@@ -144,7 +147,7 @@ class ItemForm extends Component {
                       return (
                         <span>
                           {display !== null && display.length !== 0
-                            ? display[0].user_displayname
+                            ? display[0].username
                             : ""}
                         </span>
                       );

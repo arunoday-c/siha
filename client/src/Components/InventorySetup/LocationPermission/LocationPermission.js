@@ -46,18 +46,22 @@ class LocationPermission extends Component {
       selectedLang: prevLang
     });
 
-    getLocationPermission(this, this);
-
     if (
-      this.props.locationpermi === undefined ||
-      this.props.locationpermi.length === 0
+      this.props.invlocationpermission === undefined ||
+      this.props.invlocationpermission.length === 0
+    ) {
+      getLocationPermission(this, this);
+    }
+    if (
+      this.props.invlocationpermi === undefined ||
+      this.props.invlocationpermi.length === 0
     ) {
       this.props.getLocation({
         uri: "/inventory/getInventoryLocation",
         method: "GET",
         redux: {
           type: "ANALYTES_GET_DATA",
-          mappingName: "locationpermi"
+          mappingName: "invlocationpermi"
         }
       });
     }
@@ -85,7 +89,7 @@ class LocationPermission extends Component {
                 className: "select-fld",
                 value: this.state.user_id,
                 dataSource: {
-                  textField: "user_displayname",
+                  textField: "username",
                   valueField: "algaeh_d_app_user_id",
                   data: this.props.userdrtails
                 },
@@ -105,7 +109,7 @@ class LocationPermission extends Component {
                 dataSource: {
                   textField: "location_description",
                   valueField: "hims_d_inventory_location_id",
-                  data: this.props.locationpermi
+                  data: this.props.invlocationpermi
                 },
                 onChange: changeTexts.bind(this, this)
               }}
@@ -156,7 +160,7 @@ class LocationPermission extends Component {
                       return (
                         <span>
                           {display !== null && display.length !== 0
-                            ? display[0].user_displayname
+                            ? display[0].username
                             : ""}
                         </span>
                       );
@@ -169,7 +173,7 @@ class LocationPermission extends Component {
                             className: "select-fld",
                             value: row.user_id,
                             dataSource: {
-                              textField: "user_displayname",
+                              textField: "username",
                               valueField: "algaeh_d_app_user_id",
                               data: this.props.userdrtails
                             },
@@ -190,9 +194,9 @@ class LocationPermission extends Component {
                     ),
                     displayTemplate: row => {
                       let display =
-                        this.props.locationpermi === undefined
+                        this.props.invlocationpermi === undefined
                           ? []
-                          : this.props.locationpermi.filter(
+                          : this.props.invlocationpermi.filter(
                               f =>
                                 f.hims_d_inventory_location_id ===
                                 row.location_id
@@ -216,7 +220,7 @@ class LocationPermission extends Component {
                             dataSource: {
                               textField: "location_description",
                               valueField: "hims_d_inventory_location_id",
-                              data: this.props.locationpermi
+                              data: this.props.invlocationpermi
                             },
                             onChange: onchangegridcol.bind(this, this, row),
                             others: {
@@ -272,7 +276,7 @@ class LocationPermission extends Component {
                       return (
                         <span>
                           {display !== null && display.length !== 0
-                            ? display[0].user_displayname
+                            ? display[0].username
                             : ""}
                         </span>
                       );
@@ -288,7 +292,7 @@ class LocationPermission extends Component {
                       return (
                         <span>
                           {display !== null && display.length !== 0
-                            ? display[0].user_displayname
+                            ? display[0].username
                             : ""}
                         </span>
                       );
@@ -335,7 +339,7 @@ function mapStateToProps(state) {
   return {
     invlocationpermission: state.invlocationpermission,
     userdrtails: state.userdrtails,
-    locationpermi: state.locationpermi
+    invlocationpermi: state.invlocationpermi
   };
 }
 

@@ -41,7 +41,13 @@ class ItemStorage extends Component {
     this.setState({
       selectedLang: prevLang
     });
-    getItemStorage(this, this);
+
+    if (
+      this.props.itemstorage === undefined ||
+      this.props.itemstorage.length === 0
+    ) {
+      getItemStorage(this, this);
+    }
   }
 
   dateFormater(date) {
@@ -125,7 +131,7 @@ class ItemStorage extends Component {
                       return (
                         <span>
                           {display !== null && display.length !== 0
-                            ? display[0].user_displayname
+                            ? display[0].username
                             : ""}
                         </span>
                       );
@@ -141,7 +147,7 @@ class ItemStorage extends Component {
                       return (
                         <span>
                           {display !== null && display.length !== 0
-                            ? display[0].user_displayname
+                            ? display[0].username
                             : ""}
                         </span>
                       );

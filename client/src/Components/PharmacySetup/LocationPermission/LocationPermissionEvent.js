@@ -41,8 +41,7 @@ const getLocationPermission = $this => {
     redux: {
       type: "LOCATION_PERMISSION_GET_DATA",
       mappingName: "locationpermission"
-    },
-    afterSuccess: data => {}
+    }
   });
 };
 
