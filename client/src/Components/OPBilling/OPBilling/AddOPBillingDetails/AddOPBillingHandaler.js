@@ -136,7 +136,6 @@ const billheaderCalculation = ($this, context, e) => {
       method: "POST",
       data: serviceInput,
       onSuccess: response => {
-        debugger;
         if (response.data.success) {
           if (context != null) {
             response.data.records.patient_payable_h =
@@ -188,7 +187,6 @@ const credittexthandle = ($this, context, ctrl, e) => {
         [e.target.name]: e.target.value
       },
       () => {
-        debugger;
         // credittextCal($this, e);
       }
     );
@@ -202,7 +200,6 @@ const credittexthandle = ($this, context, ctrl, e) => {
 };
 
 const credittextCal = ($this, e) => {
-  debugger;
   if (e.target.value !== e.target.oldvalue) {
     billheaderCalculation($this);
   }
@@ -216,6 +213,7 @@ const EditGrid = ($this, context, cancelRow) => {
     }
     context.updateState({
       saveEnable: !$this.state.saveEnable,
+      addNewService: !$this.state.addNewService,
       billdetails: _billdetails
     });
   }

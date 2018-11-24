@@ -1,5 +1,9 @@
 import moment from "moment";
-import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+import {
+  algaehApiCall,
+  swalMessage,
+  getCookie
+} from "../../../../utils/algaehApiCall";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 
 let texthandlerInterval = null;
@@ -53,15 +57,6 @@ const calculateRecipt = ($this, context) => {
       });
     }
   });
-  // $this.props.billingCalculations({
-  //   uri: "/billing/billingCalculations",
-  //   method: "POST",
-  //   data: serviceInput,
-  //   redux: {
-  //     type: "BILL_HEADER_GEN_GET_DATA",
-  //     mappingName: "genbill"
-  //   }
-  // });
 };
 
 const cashtexthandle = ($this, context, ctrl, e) => {
@@ -353,35 +348,6 @@ const ProcessInsurance = ($this, context, ctrl, e) => {
         });
       }
     });
-    // $this.props.generateBill({
-    //   uri: "/billing/getBillDetails",
-    //   method: "POST",
-    //   data: serviceInput,
-    //   redux: {
-    //     type: "BILL_GEN_GET_DATA",
-    //     mappingName: "xxx"
-    //   },
-    //   afterSuccess: data => {
-    //     data.saveEnable = false;
-    //     data.hideInsurance = true;
-    //     data.hideSecInsurance = true;
-    //     data.ProcessInsure = true;
-
-    //     if (context != null) {
-    //       context.updateState({ ...data });
-    //     }
-
-    //     $this.props.billingCalculations({
-    //       uri: "/billing/billingCalculations",
-    //       method: "POST",
-    //       data: data,
-    //       redux: {
-    //         type: "BILL_HEADER_GEN_GET_DATA",
-    //         mappingName: "genbill"
-    //       }
-    //     });
-    //   }
-    // });
   }
 };
 
@@ -508,6 +474,38 @@ const chequetexthCal = ($this, context, e) => {
   }
 };
 
+const countertexthandle = ($this, context, ctrl, e) => {
+  e = e || ctrl;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  $this.setState(
+    {
+      [name]: value
+    },
+    () => {
+      let _screenName = getCookie("ScreenName").replace("/", "");
+      algaehApiCall({
+        uri: "/userPreferences/save",
+        data: {
+          screenName: _screenName,
+          identifier: "Counter",
+          value: value
+        },
+        method: "POST"
+      });
+    }
+  );
+
+  clearInterval(texthandlerInterval);
+  texthandlerInterval = setInterval(() => {
+    if (context !== undefined) {
+      context.updateState({ [name]: value });
+    }
+    clearInterval(texthandlerInterval);
+  }, 500);
+};
+
 export {
   texthandle,
   datehandle,
@@ -526,5 +524,6 @@ export {
   credittextCal,
   cashtexthCal,
   cardtexthCal,
-  chequetexthCal
+  chequetexthCal,
+  countertexthandle
 };

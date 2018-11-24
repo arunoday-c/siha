@@ -256,13 +256,12 @@ const SaveDNEnrty = $this => {
 
 const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
-  debugger;
+
   algaehApiCall({
     uri: "/DeliveryNoteEntry/getDeliveryNoteEntry",
     method: "GET",
     data: { delivery_note_number: docNumber },
     onSuccess: response => {
-      debugger;
       if (response.data.success) {
         let data = response.data.records;
         if (

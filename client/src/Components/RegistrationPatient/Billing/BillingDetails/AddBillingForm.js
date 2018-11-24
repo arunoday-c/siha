@@ -27,8 +27,10 @@ import {
   credittextCal,
   cashtexthCal,
   cardtexthCal,
-  chequetexthCal
+  chequetexthCal,
+  countertexthandle
 } from "./AddBillingDetails";
+
 import MyContext from "../../../../utils/MyContext.js";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
@@ -398,7 +400,7 @@ class AddBillingForm extends Component {
                             valueField: "hims_d_counter_id",
                             data: this.props.counters
                           },
-                          onChange: texthandle.bind(this, this, context)
+                          onChange: countertexthandle.bind(this, this, context)
                         }}
                       />
 

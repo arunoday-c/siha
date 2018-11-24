@@ -85,7 +85,6 @@ class EmployeeMaster extends Component {
       });
     }
 
-    debugger;
     if (
       this.props.userdrtails === undefined ||
       this.props.userdrtails.length === 0
@@ -146,7 +145,6 @@ class EmployeeMaster extends Component {
       newProps.employeeDetailsPop.hims_d_employee_id !== undefined &&
       this.state.full_name !== null
     ) {
-      debugger;
       let IOputs = newProps.employeeDetailsPop;
       IOputs.Applicable = IOputs.isdoctor === "Y" ? true : false;
       this.setState({ ...this.state, ...IOputs });

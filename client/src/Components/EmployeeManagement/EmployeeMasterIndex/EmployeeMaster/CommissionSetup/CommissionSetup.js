@@ -49,14 +49,12 @@ class CommissionSetup extends Component {
   }
 
   componentDidMount() {
-    debugger;
     if (this.state.servTypeCommission.length === 0) {
       algaehApiCall({
         uri: "/employee/getDoctorServiceTypeCommission",
         method: "GET",
         data: { provider_id: this.state.hims_d_employee_id },
         onSuccess: response => {
-          debugger;
           if (response.data.success) {
             this.setState({ servTypeCommission: response.data.records });
           }
@@ -76,7 +74,6 @@ class CommissionSetup extends Component {
         method: "GET",
         data: { provider_id: this.state.hims_d_employee_id },
         onSuccess: response => {
-          debugger;
           if (response.data.success) {
             this.setState({ serviceComm: response.data.records });
           }

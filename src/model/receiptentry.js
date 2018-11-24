@@ -18,10 +18,14 @@ let getReceiptEntry = (req, res, next) => {
     debugLog("Records: ", req.records);
 
     let connection = req.connection;
+    let hims_f_receipt_header_id =
+      req.records.hims_f_receipt_header_id || req.records[0].receipt_header_id;
+
+    debugLog("hims_f_receipt_header_id: ", hims_f_receipt_header_id);
     // PH.recieve_amount
     connection.query(
       "select * from hims_f_receipt_header where hims_f_receipt_header_id=? and record_status='A'",
-      req.records.hims_f_receipt_header_id,
+      hims_f_receipt_header_id,
       (error, headerResult) => {
         if (error) {
           releaseDBConnection(db, connection);

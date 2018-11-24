@@ -55,7 +55,6 @@ class SubInsurance extends PureComponent {
   }
 
   componentDidMount() {
-    debugger;
     if (this.state.insurance_provider_id !== null) {
       getSubInsuranceDetails(this, this);
     }

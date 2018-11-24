@@ -23,6 +23,7 @@ let addBillData = (req, res, next) => {
         hims_f_billing_header_id: null,
         patient_id: null,
         billing_type_id: null,
+        receipt_header_id: null,
         visit_id: null,
         bill_number: null,
         incharge_or_provider: null,
@@ -98,17 +99,18 @@ let addBillData = (req, res, next) => {
     inputParam.patient_id = req.patient_id || req.body.patient_id;
     inputParam.visit_id = req.body.visit_id;
     db.query(
-      "INSERT INTO hims_f_billing_header ( patient_id, visit_id, bill_number,\
+      "INSERT INTO hims_f_billing_header ( patient_id, visit_id, bill_number,receipt_header_id,\
             incharge_or_provider, bill_date, advance_amount,advance_adjust, discount_amount, sub_total_amount \
             , total_tax,  billing_status, sheet_discount_amount, sheet_discount_percentage, net_amount, net_total \
             , company_res, sec_company_res, patient_res, patient_payable, company_payable, sec_company_payable \
             , patient_tax, company_tax, sec_company_tax, net_tax, credit_amount, receiveable_amount \
             , created_by, created_date, updated_by, updated_date, copay_amount, deductable_amount) VALUES (?,?,?,?\
-              ,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              ,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         inputParam.patient_id,
         inputParam.visit_id,
         inputParam.bill_number,
+        inputParam.receipt_header_id,
         inputParam.incharge_or_provider,
         inputParam.bill_date != null
           ? new Date(inputParam.bill_date)
@@ -612,13 +614,13 @@ let newReceipt = (dataBase, req, res, callBack, next) => {
       debugLog("bil hdr id:", inputParam.billing_header_id);
 
       dataBase.query(
-        "INSERT INTO hims_f_receipt_header (receipt_number, receipt_date, billing_header_id, total_amount,\
+        "INSERT INTO hims_f_receipt_header (receipt_number, receipt_date, total_amount,\
              created_by, created_date, updated_by, updated_date,  counter_id, shift_id) VALUES (?,?,?\
-          ,?,?,?,?,?,?,?)",
+          ,?,?,?,?,?,?)",
         [
           inputParam.receipt_number,
           new Date(),
-          inputParam.billing_header_id,
+
           inputParam.total_amount,
           inputParam.created_by,
           new Date(),
@@ -2675,7 +2677,10 @@ let addCashHandover = (req, res, next) => {
       }
     }
 
-    if (req.userIdentity.group_type == "C"||req.userIdentity.group_type == "FD") {
+    if (
+      req.userIdentity.group_type == "C" ||
+      req.userIdentity.group_type == "FD"
+    ) {
       let hims_f_cash_handover_detail_id = "";
       db.query(
         "select hims_f_cash_handover_detail_id, cash_handover_header_id, casher_id, shift_status,open_date\

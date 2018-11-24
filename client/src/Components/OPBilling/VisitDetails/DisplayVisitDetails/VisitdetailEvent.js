@@ -57,8 +57,6 @@ const handleChange = ($this, row, context, e) => {
         });
       }
 
-      debugger;
-
       algaehApiCall({
         uri: "/orderAndPreApproval/selectOrderServices",
         method: "GET",
@@ -180,7 +178,8 @@ const handleChange = ($this, row, context, e) => {
       insured: row.insured,
       sec_insured: row.sec_insured,
       mode_of_pay: mode_of_pay,
-      doctor_name: doctor_name
+      doctor_name: doctor_name,
+      addNewService: false
     });
   }
 };

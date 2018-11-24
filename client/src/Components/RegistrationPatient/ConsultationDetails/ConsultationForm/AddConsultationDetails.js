@@ -208,7 +208,6 @@ const generateBillDetails = ($this, context) => {
   ];
   AlgaehLoader({ show: true });
 
-  debugger;
   algaehApiCall({
     uri: "/billing/getBillDetails",
     method: "POST",

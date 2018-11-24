@@ -20,7 +20,6 @@ const numberSet = ($this, context, e) => {
 };
 
 const AddSeviceTypeComm = ($this, context) => {
-  debugger;
   if ($this.state.service_type_typ_id === null) {
     swalMessage({
       title: "Invalid Input. Selected the Service Type .",
@@ -82,7 +81,6 @@ const AddSeviceTypeComm = ($this, context) => {
 };
 
 const AddServiceComm = ($this, context) => {
-  debugger;
   if ($this.state.service_type_id === null) {
   } else if ($this.state.service_type_id === null) {
   } else {

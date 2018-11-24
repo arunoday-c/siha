@@ -26,7 +26,6 @@ class ReceiptItemList extends Component {
   }
 
   componentWillMount() {
-    debugger;
     let InputOutput = this.props.DNEntry;
     this.setState({ ...this.state, ...InputOutput });
   }
@@ -36,7 +35,6 @@ class ReceiptItemList extends Component {
   }
 
   render() {
-    debugger;
     return (
       <React.Fragment>
         <MyContext.Consumer>

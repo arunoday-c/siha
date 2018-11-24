@@ -9,7 +9,6 @@ import DNEntry from "../../../Models/DNEntry";
 let texthandlerInterval = null;
 
 const texthandle = ($this, e) => {
-  debugger;
   if (e.value === undefined) {
     $this.setState({ [e]: null });
   } else {
@@ -23,7 +22,6 @@ const texthandle = ($this, e) => {
 };
 
 const loctexthandle = ($this, e) => {
-  debugger;
   if (e.value === undefined) {
     $this.setState({ [e]: null });
   } else {
@@ -41,7 +39,6 @@ const loctexthandle = ($this, e) => {
 };
 
 const vendortexthandle = ($this, e) => {
-  debugger;
   if (e.value === undefined) {
     $this.setState({ [e]: null, payment_terms: null });
   } else {
@@ -65,7 +62,6 @@ const vendortexthandle = ($this, e) => {
 };
 
 const poforhandle = ($this, e) => {
-  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
@@ -148,7 +144,6 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const DeliverySearch = ($this, e) => {
-  debugger;
   if (
     $this.state.pharmcy_location_id === null &&
     $this.state.inventory_location_id === null
@@ -158,7 +153,6 @@ const DeliverySearch = ($this, e) => {
       type: "warning"
     });
   } else {
-    debugger;
     let Inputs = "";
 
     if ($this.state.dn_from === "PHR") {
@@ -183,7 +177,6 @@ const DeliverySearch = ($this, e) => {
           method: "GET",
           data: { delivery_note_number: row.delivery_note_number },
           onSuccess: response => {
-            debugger;
             if (response.data.success) {
               let data = response.data.records;
               if (
@@ -224,7 +217,7 @@ const DeliverySearch = ($this, e) => {
         //     mappingName: "purchaseorderentry"
         //   },
         //   afterSuccess: data => {
-        //     debugger;
+        //
         //     if (data !== null && data !== undefined) {
         //       AlgaehLoader({ show: true });
 
@@ -267,7 +260,6 @@ const ClearData = ($this, e) => {
 };
 
 const SaveDNEnrty = $this => {
-  debugger;
   algaehApiCall({
     uri: "/DeliveryNoteEntry/addDeliveryNoteEntry",
     data: $this.state,
@@ -301,7 +293,6 @@ const getCtrlCode = ($this, docNumber) => {
       mappingName: "purchaseorderentry"
     },
     afterSuccess: data => {
-      debugger;
       if (
         $this.props.delivery_note_number !== undefined &&
         $this.props.delivery_note_number.length !== 0
