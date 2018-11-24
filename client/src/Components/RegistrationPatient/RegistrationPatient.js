@@ -76,16 +76,6 @@ class RegistrationPatient extends PureComponent {
       });
     }
 
-    // if (this.props.genbill !== undefined && this.props.genbill.length !== 0) {
-    //   this.props.initialbillingCalculations({
-    //     redux: {
-    //       type: "BILL_HEADER_GEN_GET_DATA",
-    //       mappingName: "genbill",
-    //       data: {}
-    //     }
-    //   });
-    // }
-
     if (
       this.props.patient_code !== undefined &&
       this.props.patient_code.length !== 0
@@ -101,6 +91,7 @@ class RegistrationPatient extends PureComponent {
           gender: this.props.patient_details.patient_gender,
           contact_number: this.props.patient_details.patient_phone,
           email: this.props.patient_details.patient_email,
+          title_id: this.props.patient_details.title_id,
           sub_department_id: this.props.sub_department_id,
           department_id: this.props.department_id,
           provider_id: this.props.provider_id,
@@ -333,6 +324,9 @@ class RegistrationPatient extends PureComponent {
     let department_id = this.props.department_id || null;
     let hims_f_patient_appointment_id =
       this.props.hims_f_patient_appointment_id || null;
+    let title_id = this.props.title_id || null;
+
+    
     AlgaehLoader({ show: true });
     this.props.getPatientDetails({
       uri: "/frontDesk/get",
@@ -366,6 +360,8 @@ class RegistrationPatient extends PureComponent {
             data.patientRegistration.consultation = "Y";
             data.patientRegistration.appointment_patient = "Y";
             data.patientRegistration.hims_f_patient_appointment_id = hims_f_patient_appointment_id;
+
+            data.patientRegistration.title_id = title_id;
           }
           //Appoinment End
           data.patientRegistration.filePreview =
@@ -407,6 +403,7 @@ class RegistrationPatient extends PureComponent {
               data.patientRegistration.consultation = "Y";
               data.patientRegistration.appointment_patient = "Y";
               data.patientRegistration.hims_f_patient_appointment_id = hims_f_patient_appointment_id;
+              data.patientRegistration.title_id = title_id;
             }
             //Appoinment End
             data.patientRegistration.filePreview =

@@ -27,31 +27,6 @@ const generateBillDetails = $this => {
     }
   ];
   AlgaehLoader({ show: true });
-  // $this.props.generateBill({
-  //   uri: "/billing/getBillDetails",
-  //   method: "POST",
-  //   data: serviceInput,
-  //   redux: {
-  //     type: "BILL_GEN_GET_DATA",
-  //     mappingName: "xxx"
-  //   },
-  //   afterSuccess: data => {
-  //     $this.setState({ ...data });
-
-  //     $this.props.billingCalculations({
-  //       uri: "/billing/billingCalculations",
-  //       method: "POST",
-  //       data: data,
-  //       redux: {
-  //         type: "BILL_HEADER_GEN_GET_DATA",
-  //         mappingName: "genbill"
-  //       },
-  //       afterSuccess: data => {
-  //         AlgaehLoader({ show: false });
-  //       }
-  //     });
-  //   }
-  // });
 
   algaehApiCall({
     uri: "/billing/getBillDetails",
@@ -59,10 +34,6 @@ const generateBillDetails = $this => {
     data: serviceInput,
     onSuccess: response => {
       if (response.data.success) {
-        // if (context != null) {
-        //   context.updateState({ ...response.data.records });
-        // }
-
         $this.setState({ ...response.data.records });
 
         algaehApiCall({

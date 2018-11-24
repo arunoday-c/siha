@@ -32,7 +32,8 @@ class AddConsultationForm extends Component {
     super(props);
 
     this.state = {
-      value: ""
+      value: "",
+      doctors: []
     };
   }
 
@@ -119,7 +120,8 @@ class AddConsultationForm extends Component {
   render() {
     const vstDeatils =
       this.state.visitDetails === null ? [{}] : this.state.visitDetails;
-
+    const doctors =
+      this.props.frontproviders === undefined ? [] : this.props.frontproviders;
     const departments =
       this.props.deptanddoctors === undefined
         ? []
@@ -203,7 +205,10 @@ class AddConsultationForm extends Component {
                               ? "full_name"
                               : "arabic_name",
                           valueField: "employee_id",
-                          data: this.state.doctors
+                          data:
+                            this.state.appointment_patient === "Y"
+                              ? doctors
+                              : this.state.doctors
                         },
                         others: {
                           disabled: this.state.visittypeselect

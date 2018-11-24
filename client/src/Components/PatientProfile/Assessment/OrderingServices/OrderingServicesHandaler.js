@@ -323,7 +323,6 @@ const VisitSearch = ($this, e) => {
 
 //if services got delete and if pre apprival limit exceed
 const deleteServices = ($this, row, rowId) => {
-  
   let orderservicesdata = $this.state.orderservicesdata;
   let preserviceInput = $this.state.preserviceInput;
   let saved = false;
@@ -424,7 +423,6 @@ const SaveOrdersServices = ($this, e) => {
       }
     },
     onFailure: error => {
-      
       swalMessage({
         title: error.response.data.message,
         type: "error"
@@ -435,7 +433,7 @@ const SaveOrdersServices = ($this, e) => {
 
 const calculateAmount = ($this, row, ctrl, e) => {
   e = e || ctrl;
-  
+
   if (e.target.value !== e.target.oldvalue) {
     let orderservicesdata = $this.state.orderservicesdata;
 
@@ -506,7 +504,9 @@ const updateBillDetail = ($this, e) => {
         copay_amount: data.copay_amount,
         sec_copay_amount: data.sec_copay_amount,
         deductable_amount: data.deductable_amount,
-        sec_deductable_amount: data.sec_deductable_amount
+        sec_deductable_amount: data.sec_deductable_amount,
+        addNewService: !$this.state.addNewService,
+        saved: !$this.state.saved
       });
     }
   });
@@ -519,6 +519,20 @@ const onchangegridcol = ($this, row, e) => {
   row.update();
 };
 
+const EditGrid = ($this, cancelRow) => {
+  let _orderservicesdata = $this.state.orderservicesdata;
+
+  if (cancelRow !== undefined) {
+    _orderservicesdata[cancelRow.rowIdx] = cancelRow;
+  }
+
+  $this.setState({
+    saved: !$this.state.saved,
+    addNewService: !$this.state.addNewService,
+    orderservicesdata: _orderservicesdata
+  });
+};
+
 export {
   serviceTypeHandeler,
   serviceHandeler,
@@ -529,5 +543,6 @@ export {
   SaveOrdersServices,
   calculateAmount,
   updateBillDetail,
-  onchangegridcol
+  onchangegridcol,
+  EditGrid
 };

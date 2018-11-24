@@ -17,7 +17,7 @@ import { getCookie } from "../../utils/algaehApiCall";
 import { ClearData, Validations } from "./OPBillingEvents";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { successfulMessage } from "../../utils/GlobalFunctions";
-import { algaehApiCall } from "../../utils/algaehApiCall.js";
+import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall.js";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import Enumerable from "linq";
 import AlgaehReport from "../Wrapper/printReports";
@@ -70,16 +70,6 @@ class PatientDisplayDetails extends Component {
       selectedLang: prevLang
     });
 
-    // if (this.props.genbill !== undefined && this.props.genbill.length !== 0) {
-    //   this.props.initialbillingCalculations({
-    //     redux: {
-    //       type: "BILL_HEADER_GEN_GET_DATA",
-    //       mappingName: "genbill",
-    //       data: {}
-    //     }
-    //   });
-    // }
-
     if (
       this.props.patienttype === undefined ||
       this.props.patienttype.length === 0
@@ -97,7 +87,6 @@ class PatientDisplayDetails extends Component {
 
   componentWillReceiveProps(nextProps) {
     let output = {};
-    // let billOut = {};
 
     if (
       nextProps.existinsurance !== undefined &&
@@ -105,16 +94,6 @@ class PatientDisplayDetails extends Component {
     ) {
       output = nextProps.existinsurance[0];
     }
-    // if (
-    //   nextProps.genbill !== undefined &&
-    //   nextProps.genbill.length !== 0 &&
-    //   this.state.billdetails.length !== 0
-    // ) {
-    //   nextProps.genbill.patient_payable_h =
-    //     nextProps.genbill.patient_payable || this.state.patient_payable;
-    //   // nextProps.genbill.saveEnable = false;
-    //   billOut = nextProps.genbill;
-    // }
 
     this.setState({ ...this.state, ...output });
   }
@@ -201,19 +180,44 @@ class PatientDisplayDetails extends Component {
     let $this = this;
 
     AlgaehLoader({ show: true });
-    this.props.getBIllDetails({
+
+    algaehApiCall({
       uri: "/opBilling/get",
       method: "GET",
-      printInput: true,
       data: { bill_number: billcode },
-      redux: {
-        type: "BILLS_GET_DATA",
-        mappingName: "bills"
+      onSuccess: response => {
+        if (response.data.success) {
+          
+          let data = response.data.records;
+          if (data.receiptdetails.length !== 0) {
+            for (let i = 0; i < data.receiptdetails.length; i++) {
+              if (data.receiptdetails[i].pay_type === "CA") {
+                data.Cashchecked = true;
+                data.cash_amount = data.receiptdetails[i].amount;
+              }
+
+              if (data.receiptdetails[i].pay_type === "CD") {
+                data.Cardchecked = true;
+                data.card_amount = data.receiptdetails[i].amount;
+              }
+
+              if (data.receiptdetails[i].pay_type === "CH") {
+                data.Checkchecked = true;
+                data.cheque_amount = data.receiptdetails[i].amount;
+              }
+            }
+          }
+
+          $this.setState(data, () => {
+            this.getPatientDetails(this, data);
+          });
+        }
       },
-      afterSuccess: data => {
-        data.saveEnable = true;
-        $this.setState(data, () => {
-          this.getPatientDetails(this, data);
+      onFailure: error => {
+        AlgaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error"
         });
       }
     });

@@ -59,7 +59,6 @@ class ReceiptEntry extends Component {
   }
 
   render() {
-    debugger;
     const _mainStore = Enumerable.from(this.props.receiptlocations)
       .where(w => w.location_type === "MS")
       .toArray();
