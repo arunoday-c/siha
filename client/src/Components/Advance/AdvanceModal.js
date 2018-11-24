@@ -301,7 +301,8 @@ class AddAdvanceModal extends PureComponent {
                         onChange: texthandle.bind(this, this)
                       },
                       others: {
-                        disabled: !this.state.Cardchecked
+                        disabled: !this.state.Cardchecked,
+                        placeholder: "0000-0000-0000-0000"
                       }
                     }}
                   />
@@ -376,7 +377,8 @@ class AddAdvanceModal extends PureComponent {
                         onChange: texthandle.bind(this, this)
                       },
                       others: {
-                        disabled: !this.state.Checkchecked
+                        disabled: !this.state.Checkchecked,
+                        placeholder: "'000000'"
                       }
                     }}
                   />
