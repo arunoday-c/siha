@@ -1,2 +1,6 @@
-.encounters {
+.encounterListCntr {
+  min-height: 66vh;
+  .ReactTable {
+    max-height: 70vh !important;
+  }
 }
