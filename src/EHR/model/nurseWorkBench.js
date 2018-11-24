@@ -136,7 +136,7 @@ let deletePatientNurseChiefComplaints = (req, res, next) => {
 //created by irfan:
 let updatePatientNurseChiefComplaints = (req, res, next) => {
   try {
-    debugFunction("updatePatientChiefComplaints");
+    debugFunction("updatePatientNurseChiefComplaints");
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
