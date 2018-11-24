@@ -148,12 +148,13 @@ class PersistentDrawer extends React.Component {
     const _controlDId = e.currentTarget.getAttribute("controlid");
     const _rootId = e.currentTarget.getAttribute("rootid");
     const _menuselected = e.currentTarget.getAttribute("menuselected");
+    const _submenuselected = e.currentTarget.getAttribute("submenuselected");
     let screenName = name.replace(/\s/g, "");
     setCookie("ScreenName", path, 30);
     AlgaehLoader({ show: true });
     this.setState({
       sideopen: false,
-
+      searchModules: "",
       title: e.currentTarget.innerText,
       renderComponent: screenName,
       menuSelected: "",
@@ -163,7 +164,8 @@ class PersistentDrawer extends React.Component {
         controlid: _controlDId,
         rootid: _rootId,
         class: "active",
-        menuselected: _menuselected
+        menuselected: _menuselected,
+        subMenuItem: _submenuselected
       },
       isSelectedByForce: false
     });
@@ -185,30 +187,39 @@ class PersistentDrawer extends React.Component {
     } else if (this.state.Language === "ar") {
       LangSideMenu = sideMenuAr;
     }
+    if (createMenu === "") {
+      return LangSideMenu;
+    }
+    let createMenu = [];
 
-    return LangSideMenu.filter(obj => {
-      for (let i = 0, length = obj.subMenu.length; i < length; i++) {
+    LangSideMenu.filter(obj => {
+      let submenu = [];
+      obj.subMenu.filter(item => {
         if (
-          String(obj.subMenu[i].name)
+          item.name
             .toString()
             .toLowerCase()
-            .indexOf(
-              String(_menuSearch)
-                .toString()
-                .toLowerCase()
-            ) > -1
+            .indexOf(_menuSearch.toString().toLowerCase()) > -1
         ) {
-          return true;
+          submenu.push(item);
         }
+      });
+      if (submenu.length > 0) {
+        createMenu.push({
+          icon: obj.icon,
+          label: obj.label,
+          name: obj.name,
+          subMenu: submenu
+        });
       }
-      return false;
     });
+
+    return createMenu;
   }
 
   render() {
     const authToken = getCookie("authToken");
     // const keyResources = getCookie("keyResources");
-
     if (authToken === "" || authToken === undefined) {
       return (
         <b>
@@ -273,11 +284,11 @@ class PersistentDrawer extends React.Component {
                       controlid={Didx}
                       rootid={idx}
                       menuselected={data.name}
+                      submenuselected={title.label}
                       key={Didx}
                       className={
                         activeNode !== undefined && activeNode !== null
-                          ? parseInt(activeNode.controlid) === Didx &&
-                            parseInt(activeNode.rootid) === idx
+                          ? activeNode.subMenuItem === title.label
                             ? activeNode.class
                             : ""
                           : ""
@@ -328,7 +339,7 @@ class PersistentDrawer extends React.Component {
               <a className="dropdown-item">
                 <i className="fas fa-cog" /> Preference{" "}
               </a>
-              <div class="dropdown-divider" />
+              <div className="dropdown-divider" />
               <a
                 className="dropdown-item"
                 onClick={this.handleClose.bind(this, "en")}
@@ -347,7 +358,7 @@ class PersistentDrawer extends React.Component {
                 {this.state.languageName === "عربي" ? this.renderCheck() : null}
                 &nbsp; عربي
               </a>
-              <div class="dropdown-divider" />
+              <div className="dropdown-divider" />
               <a className="dropdown-item" onClick={this.logoutLink.bind(this)}>
                 <i className="fas fa-sign-out-alt" /> Logout
               </a>
@@ -375,6 +386,8 @@ class PersistentDrawer extends React.Component {
                   className="subMenuSearchFld"
                   placeholder="Search Modules"
                   value={this.state.searchModules}
+                  autoFocus={true}
+                  ref={c => (this.searchModules = c)}
                   onChange={this.SearchModuleHandler.bind(this)}
                 />
               </div>
