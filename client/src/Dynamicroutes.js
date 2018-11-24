@@ -83,8 +83,12 @@ const componts = (selectedLang, breadStyle) => {
     BillDetails: <BillDetails SelectLanguage={selectedLang} />,
     InsuranceSetup: <InsuranceSetup SelectLanguage={selectedLang} />,
     SampleCollection: <SampleCollection SelectLanguage={selectedLang} />,
-    DoctorsWorkbench: <Workbench SelectLanguage={selectedLang} />,
-    NurseWorkbench: <Workbench SelectLanguage={selectedLang} />,
+    DoctorsWorkbench: (
+      <Workbench SelectLanguage={selectedLang} type="DoctorsWorkbench" />
+    ),
+    NurseWorkbench: (
+      <Workbench SelectLanguage={selectedLang} type="NurseWorkbench" />
+    ),
     OrderingServices: <OrderingServices SelectLanguage={selectedLang} />,
 
     MedicalWorkbenchSetup: (

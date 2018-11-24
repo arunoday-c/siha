@@ -37,7 +37,8 @@ class Workbench extends Component {
   }
 
   componentList(screen) {
-    switch (screen) {
+    const _type = this.props.type;
+    switch (_type) {
       case "DoctorsWorkbench":
         return <DoctorsWorkbench />;
 
