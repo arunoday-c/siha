@@ -84,6 +84,10 @@ class DeptUserDetails extends Component {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState(nextProps.EmpMasterIOputs);
+  }
+
   render() {
     const _depservices = Enumerable.from(this.props.depservices)
       .where(w => w.service_type_id === 1)
@@ -431,21 +435,6 @@ class DeptUserDetails extends Component {
                                   row
                                 )
                               }}
-                              // selector={{
-                              //   name: "visa_status",
-                              //   className: "select-fld",
-                              //   value: row.visa_status,
-                              //   dataSource: {
-                              //     textField: "name",
-                              //     valueField: "value",
-                              //     data: GlobalVariables.FORMAT_STATUS
-                              //   },
-                              //   onChange: this.onchangegridcol.bind(this, row),
-                              //   others: {
-                              //     errormessage: "Status - cannot be blank",
-                              //     required: true
-                              //   }
-                              // }}
                             />
                           );
                         }
