@@ -21,8 +21,12 @@ import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import MyContext from "../../utils/MyContext.js";
 import { Validations } from "./FrontdeskValidation.js";
 import AlgaehLabel from "../Wrapper/label.js";
-import { getCookie } from "../../utils/algaehApiCall";
-import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall.js";
+
+import {
+  algaehApiCall,
+  swalMessage,
+  getCookie
+} from "../../utils/algaehApiCall.js";
 import AddAdvanceModal from "../Advance/AdvanceModal";
 import { imageToByteArray } from "../../utils/GlobalFunctions";
 import { setGlobal } from "../../utils/GlobalFunctions";
@@ -147,6 +151,21 @@ class RegistrationPatient extends PureComponent {
         });
       }
     }
+
+    let _screenName = getCookie("ScreenName").replace("/", "");
+    algaehApiCall({
+      uri: "/userPreferences/get",
+      data: {
+        screenName: _screenName,
+        identifier: "Counter"
+      },
+      method: "GET",
+      onSuccess: response => {
+        this.setState({
+          counter_id: response.data.records.selectedValue
+        });
+      }
+    });
   }
 
   GenerateReciept(callback) {
@@ -326,7 +345,6 @@ class RegistrationPatient extends PureComponent {
       this.props.hims_f_patient_appointment_id || null;
     let title_id = this.props.title_id || null;
 
-    
     AlgaehLoader({ show: true });
     this.props.getPatientDetails({
       uri: "/frontDesk/get",
