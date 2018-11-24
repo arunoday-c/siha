@@ -146,30 +146,28 @@ header {
       text-transform: uppercase;
       cursor: pointer;
       line-height: 20px;
-      background: #dedede;
-      color: #1f2428;
-  }
-      i {
-        margin-right: 27px;
-        margin-left: 12px;
-        display: inline-block;
-        vertical-align: initial;
-      }
-      span {
-        display: inline-block;
-        width: 78%;
-      }
+      background: #929292;
+      color: #ffffff;
     }
-    li:hover {
-      background: #fff;
-      color: rgb(0, 188, 176);
+    i {
+      margin-right: 27px;
+      margin-left: 12px;
+      display: inline-block;
+      vertical-align: initial;
     }
-    li.active {
-      background: rgb(0, 188, 176);
-      color: #fff;
+    span {
+      display: inline-block;
+      width: 78%;
     }
   }
-
+  li:hover {
+    background: #fff;
+    color: rgb(0, 188, 176);
+  }
+  li.active {
+    background: rgb(0, 188, 176);
+    color: #fff;
+  }
   .close-menu {
     padding-top: 5px;
     cursor: pointer;
