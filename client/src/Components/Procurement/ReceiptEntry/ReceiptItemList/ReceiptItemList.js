@@ -8,14 +8,19 @@ import "../ReceiptEntry.css";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehFormGroup
+  AlagehFormGroup,
+  AlgaehDateHandler
 } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import MyContext from "../../../../utils/MyContext";
 import {
   deleteDNDetail,
   updateDNDetail,
-  onchhangegriddiscount
+  onchhangegriddiscount,
+  onchangegridcol,
+  EditGrid,
+  onchangegridcoldatehandle,
+  changeDateFormat
 } from "./ReceiptItemListEvent";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 
@@ -26,12 +31,12 @@ class ReceiptItemList extends Component {
   }
 
   componentWillMount() {
-    let InputOutput = this.props.DNEntry;
+    let InputOutput = this.props.ReceiptEntryInp;
     this.setState({ ...this.state, ...InputOutput });
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState(nextProps.DNEntry);
+    this.setState(nextProps.ReceiptEntryInp);
   }
 
   render() {
@@ -50,7 +55,7 @@ class ReceiptItemList extends Component {
                           columns={[
                             {
                               fieldName:
-                                this.state.po_from === "PHR"
+                                this.state.grn_for === "PHR"
                                   ? "phar_item_id"
                                   : "inv_item_id",
                               label: (
@@ -61,7 +66,7 @@ class ReceiptItemList extends Component {
                               displayTemplate: row => {
                                 let display;
 
-                                this.state.po_from === "PHR"
+                                this.state.grn_for === "PHR"
                                   ? (display =
                                       this.props.receiptitemlist === undefined
                                         ? []
@@ -91,7 +96,7 @@ class ReceiptItemList extends Component {
                               editorTemplate: row => {
                                 let display;
 
-                                this.state.po_from === "PHR"
+                                this.state.grn_for === "PHR"
                                   ? (display =
                                       this.props.receiptitemlist === undefined
                                         ? []
@@ -122,7 +127,7 @@ class ReceiptItemList extends Component {
 
                             {
                               fieldName:
-                                this.state.po_from === "PHR"
+                                this.state.grn_for === "PHR"
                                   ? "phar_item_category"
                                   : "inv_item_category_id",
                               label: (
@@ -133,7 +138,7 @@ class ReceiptItemList extends Component {
                               displayTemplate: row => {
                                 let display;
 
-                                this.state.po_from === "PHR"
+                                this.state.grn_for === "PHR"
                                   ? (display =
                                       this.props.receiptitemcategory ===
                                       undefined
@@ -165,7 +170,7 @@ class ReceiptItemList extends Component {
                               editorTemplate: row => {
                                 let display;
 
-                                this.state.po_from === "PHR"
+                                this.state.grn_for === "PHR"
                                   ? (display =
                                       this.props.receiptitemcategory ===
                                       undefined
@@ -197,7 +202,7 @@ class ReceiptItemList extends Component {
                             },
                             {
                               fieldName:
-                                this.state.po_from === "PHR"
+                                this.state.grn_for === "PHR"
                                   ? "phar_item_group"
                                   : "inv_item_group_id",
                               label: (
@@ -208,7 +213,7 @@ class ReceiptItemList extends Component {
                               displayTemplate: row => {
                                 let display;
 
-                                this.state.po_from === "PHR"
+                                this.state.grn_for === "PHR"
                                   ? (display =
                                       this.props.receiptitemgroup === undefined
                                         ? []
@@ -238,7 +243,7 @@ class ReceiptItemList extends Component {
                               editorTemplate: row => {
                                 let display;
 
-                                this.state.po_from === "PHR"
+                                this.state.grn_for === "PHR"
                                   ? (display =
                                       this.props.receiptitemgroup === undefined
                                         ? []
@@ -274,7 +279,34 @@ class ReceiptItemList extends Component {
                                   label={{ forceLabel: "Batch  No." }}
                                 />
                               ),
-                              disabled: true
+                              editorTemplate: row => {
+                                return (
+                                  <AlagehFormGroup
+                                    div={{}}
+                                    textBox={{
+                                      value: row.batchno,
+                                      className: "txt-fld",
+                                      name: "batchno",
+                                      events: {
+                                        onChange: onchangegridcol.bind(
+                                          this,
+                                          this,
+                                          row
+                                        )
+                                      }
+                                      // others: {
+                                      //   errormessage:
+                                      //     "Description - cannot be blank",
+                                      //   required: true
+                                      // }
+                                    }}
+                                  />
+                                );
+                              },
+                              others: {
+                                minWidth: 150,
+                                resizable: false
+                              }
                             },
                             {
                               fieldName: "expiry_date",
@@ -283,7 +315,37 @@ class ReceiptItemList extends Component {
                                   label={{ forceLabel: "Expiry Date" }}
                                 />
                               ),
-                              disabled: true
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    {changeDateFormat(this, row.expiry_date)}
+                                  </span>
+                                );
+                              },
+                              editorTemplate: row => {
+                                return (
+                                  <AlgaehDateHandler
+                                    div={{}}
+                                    textBox={{
+                                      className: "txt-fld hidden",
+                                      name: "expiry_date"
+                                    }}
+                                    minDate={new Date()}
+                                    events={{
+                                      onChange: onchangegridcoldatehandle.bind(
+                                        this,
+                                        this,
+                                        row
+                                      )
+                                    }}
+                                    value={row.expiry_date}
+                                  />
+                                );
+                              },
+                              others: {
+                                minWidth: 150,
+                                resizable: false
+                              }
                             },
 
                             {
@@ -312,24 +374,30 @@ class ReceiptItemList extends Component {
                                   label={{ forceLabel: "DN Quantity" }}
                                 />
                               ),
+                              disabled: true
+                            },
+                            {
+                              fieldName: "recieved_quantity",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Received Quantity" }}
+                                />
+                              ),
                               editorTemplate: row => {
                                 return (
                                   <AlagehFormGroup
                                     div={{}}
                                     textBox={{
                                       decimal: { allowNegative: false },
-                                      value: row.dn_quantity,
+                                      value: row.recieved_quantity,
                                       className: "txt-fld",
-                                      name: "dn_quantity",
+                                      name: "recieved_quantity",
                                       events: {
-                                        onChange: onchhangegriddiscount.bind(
+                                        onChange: onchangegridcol.bind(
                                           this,
                                           this,
                                           row
                                         )
-                                      },
-                                      others: {
-                                        disabled: !this.state.authorizeEnable
                                       }
                                     }}
                                   />
@@ -393,7 +461,8 @@ class ReceiptItemList extends Component {
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{
                             onDelete: deleteDNDetail.bind(this, this, context),
-                            onEdit: row => {},
+                            onEdit: EditGrid.bind(this, this, context),
+                            onCancel: EditGrid.bind(this, this, context),
                             onDone: updateDNDetail.bind(this, this, context)
                           }}
                         />

@@ -43,28 +43,25 @@ const specialitytexthandle = ($this, ctrl, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
-  $this.setState(
-    {
-      [name]: value
+  $this.props.getEmployeeCategory({
+    uri: "/specialityAndCategory/getCategorySpecialityMap",
+    method: "GET",
+    data: {
+      category_speciality_status: "A",
+      speciality_status: "A",
+      employee_category_status: "A",
+      hims_d_employee_speciality_id: value
     },
-    () => {
-      $this.props.getEmployeeCategory({
-        uri: "/specialityAndCategory/getCategorySpecialityMap",
-        method: "GET",
-        //data: { speciality_id: $this.state.speciality_id },
-        data: {
-          category_speciality_status: "A",
-          speciality_status: "A",
-          employee_category_status: "A",
-          hims_d_employee_speciality_id: $this.state.speciality_id
-        },
-        redux: {
-          type: "EMP_SPEC_CATEGORY_GET_DATA",
-          mappingName: "specimapcategory"
-        }
+    redux: {
+      type: "EMP_SPEC_CATEGORY_GET_DATA",
+      mappingName: "specimapcategory"
+    },
+    afterSuccess: data => {
+      $this.setState({
+        speciality_id: value
       });
     }
-  );
+  });
 };
 
 const categorytexthandle = ($this, ctrl, e) => {

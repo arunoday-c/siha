@@ -77,63 +77,69 @@ const assignDataandclear = ($this, context, stock_detail, assignData) => {
 };
 
 const deleteDNDetail = ($this, context, row) => {
-  let dn_entry_detail = $this.state.dn_entry_detail;
+  let receipt_entry_detail = $this.state.receipt_entry_detail;
 
-  for (var i = 0; i < dn_entry_detail.length; i++) {
-    if (dn_entry_detail[i].phar_item_id === row["phar_item_id"]) {
-      dn_entry_detail.splice(i, 1);
+  for (var i = 0; i < receipt_entry_detail.length; i++) {
+    if (receipt_entry_detail[i].phar_item_id === row["phar_item_id"]) {
+      receipt_entry_detail.splice(i, 1);
     }
   }
 
-  if (dn_entry_detail.length === 0) {
-    assignDataandclear($this, context, dn_entry_detail, "dn_entry_detail");
+  if (receipt_entry_detail.length === 0) {
+    assignDataandclear(
+      $this,
+      context,
+      receipt_entry_detail,
+      "receipt_entry_detail"
+    );
   } else {
     if (context !== undefined) {
       context.updateState({
-        dn_entry_detail: dn_entry_detail
+        receipt_entry_detail: receipt_entry_detail
       });
     }
   }
 };
 
 const updateDNDetail = ($this, context, row) => {
-  let dn_entry_detail = $this.state.dn_entry_detail;
-  if ($this.state.dn_from === "PHR") {
-    for (var i = 0; i < dn_entry_detail.length; i++) {
-      if (dn_entry_detail[i].phar_item_id === row["phar_item_id"]) {
-        dn_entry_detail[i] = row;
+  debugger;
+  let receipt_entry_detail = $this.state.receipt_entry_detail;
+  if ($this.state.grn_for === "PHR") {
+    for (var i = 0; i < receipt_entry_detail.length; i++) {
+      if (receipt_entry_detail[i].phar_item_id === row["phar_item_id"]) {
+        receipt_entry_detail[i] = row;
       }
     }
   } else {
-    for (var k = 0; k < dn_entry_detail.length; k++) {
-      if (dn_entry_detail[k].inv_item_id === row["inv_item_id"]) {
-        dn_entry_detail[k] = row;
+    for (var k = 0; k < receipt_entry_detail.length; k++) {
+      if (receipt_entry_detail[k].inv_item_id === row["inv_item_id"]) {
+        receipt_entry_detail[k] = row;
       }
     }
   }
 
-  let sub_total = Enumerable.from(dn_entry_detail).sum(s =>
+  let sub_total = Enumerable.from(receipt_entry_detail).sum(s =>
     parseFloat(s.extended_price)
   );
 
-  let net_total = Enumerable.from(dn_entry_detail).sum(s =>
+  let net_total = Enumerable.from(receipt_entry_detail).sum(s =>
     parseFloat(s.net_extended_cost)
   );
 
-  let net_payable = Enumerable.from(dn_entry_detail).sum(s =>
+  let net_payable = Enumerable.from(receipt_entry_detail).sum(s =>
     parseFloat(s.total_amount)
   );
 
-  let total_tax = Enumerable.from(dn_entry_detail).sum(s =>
+  let total_tax = Enumerable.from(receipt_entry_detail).sum(s =>
     parseFloat(s.tax_amount)
   );
 
-  let detail_discount = Enumerable.from(dn_entry_detail).sum(s =>
+  let detail_discount = Enumerable.from(receipt_entry_detail).sum(s =>
     parseFloat(s.discount_amount)
   );
 
   $this.setState({
-    dn_entry_detail: dn_entry_detail,
+    receipt_entry_detail: receipt_entry_detail,
     sub_total: sub_total,
     net_total: net_total,
     net_payable: net_payable,
@@ -143,7 +149,7 @@ const updateDNDetail = ($this, context, row) => {
 
   if (context !== undefined) {
     context.updateState({
-      dn_entry_detail: dn_entry_detail,
+      receipt_entry_detail: receipt_entry_detail,
       sub_total: sub_total,
       net_total: net_total,
       net_payable: net_payable,
@@ -228,11 +234,40 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
   }
 };
 
+const EditGrid = ($this, context, cancelRow) => {
+  //debugger;
+  if (context != null) {
+    let _receipt_entry_detail = $this.state.receipt_entry_detail;
+    if (cancelRow !== undefined) {
+      _receipt_entry_detail[cancelRow.rowIdx] = cancelRow;
+    }
+    context.updateState({
+      saveEnable: !$this.state.saveEnable,
+      addItemButton: !$this.state.addItemButton,
+      receipt_entry_detail: _receipt_entry_detail
+    });
+  }
+};
+
+const onchangegridcoldatehandle = ($this, row, ctrl, e) => {
+  row[e] = moment(ctrl)._d;
+  $this.setState({ append: !$this.state.append });
+};
+
+const changeDateFormat = date => {
+  if (date != null) {
+    return moment(date).format(Options.dateFormat);
+  }
+};
+
 export {
   deleteDNDetail,
   updateDNDetail,
   dateFormater,
   onchangegridcol,
   assignDataandclear,
-  onchhangegriddiscount
+  onchhangegriddiscount,
+  onchangegridcoldatehandle,
+  EditGrid,
+  changeDateFormat
 };

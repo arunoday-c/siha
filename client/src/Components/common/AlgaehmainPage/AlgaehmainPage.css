@@ -137,8 +137,7 @@ header {
       display: inline-block;
       width: 78%; }
     .hptl-phase1-sideMenuBar ul.tree-structure-menu li:hover {
-      background: #fff;
-      color: #00bcb0; }
+      background: #afafaf; }
     .hptl-phase1-sideMenuBar ul.tree-structure-menu li.active {
       background: #00bcb0;
       color: #fff; }

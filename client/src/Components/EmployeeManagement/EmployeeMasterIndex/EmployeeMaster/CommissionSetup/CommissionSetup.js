@@ -209,15 +209,11 @@ class CommissionSetup extends Component {
                       />
 
                       <div className="col actions" style={{ paddingTop: "4%" }}>
-                        <a className="btn btn-primary btn-circle active">
-                          <i
-                            className="fas fa-plus"
-                            onClick={AddSeviceTypeComm.bind(
-                              this,
-                              this,
-                              context
-                            )}
-                          />
+                        <a
+                          className="btn btn-primary btn-circle active"
+                          onClick={AddSeviceTypeComm.bind(this, this, context)}
+                        >
+                          <i className="fas fa-plus" />
                         </a>
                       </div>
                     </div>
@@ -465,11 +461,9 @@ class CommissionSetup extends Component {
                         <a
                           // href="javascript"
                           className="btn btn-primary btn-circle active"
+                          onClick={AddServiceComm.bind(this, this, context)}
                         >
-                          <i
-                            className="fas fa-plus"
-                            onClick={AddServiceComm.bind(this, this, context)}
-                          />
+                          <i className="fas fa-plus" />
                         </a>
                       </div>
                     </div>
