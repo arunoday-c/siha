@@ -235,5 +235,17 @@
         "label": "Delivery Date"
       }
     ]
+  },
+  "Receipt": {
+    "ReceiptEntry": [
+      {
+        "fieldName": "grn_number",
+        "label": "Receipt Number"
+      },
+      {
+        "fieldName": "grn_date",
+        "label": "Receipt Date"
+      }
+    ]
   }
 }

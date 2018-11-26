@@ -26,11 +26,13 @@ export default class Login extends Component {
   }
 
   componentDidMount() {
+    debugger;
     getTokenDetals();
   }
 
   componentWillUnmount() {
-    window.sessionStorage.removeItem("hospitalList");
+    //Commented by nowshad need to recheck with noor
+    // window.sessionStorage.removeItem("hospitalList");
   }
   componentWillMount() {
     this.deleteAllPreviousCookies();
@@ -135,6 +137,7 @@ export default class Login extends Component {
     this.setState({ item_id: null });
   }
   render() {
+    debugger;
     const _hospitalList =
       window.sessionStorage.getItem("hospitalList") === null ||
       window.sessionStorage.getItem("hospitalList") === "undefined"
