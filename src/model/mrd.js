@@ -327,6 +327,7 @@ let getPatientPaymentDetails = (req, res, next) => {
                     next(error);
                   }
                   debugLog("inside billHeadResult:", billHeadResult);
+                  debugLog("zzzzz:", outputArray);
                   if (billHeadResult.length > 0) {
                     for (let k = 0; k < billHeadResult.length; k++) {
                       new Promise((resolve, reject) => {
@@ -353,12 +354,6 @@ let getPatientPaymentDetails = (req, res, next) => {
                           reject(e);
                         }
                       }).then(resultRCPT => {
-                        // if (i == results.length - 1) {
-                        //   req.records = result;
-                        //   releaseDBConnection(db, connection);
-                        //   next();
-                        // }
-                        // patient insurance
                         connection.query(
                           "select BH.hims_f_billing_header_id,company_payable as pri_company_payble, sec_company_payable,\
                           hims_f_patient_insurance_mapping_id,IM.patient_id,primary_insurance_provider_id,IP.insurance_provider_name as pri_insurance_provider_name,\
