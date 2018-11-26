@@ -511,11 +511,11 @@ class Examination extends Component {
               <h3 className="caption-subject">Physical Examination</h3>
             </div>
             <div className="actions">
-              <a className="btn btn-primary btn-circle active">
-                <i
-                  onClick={this.openExaminationModal.bind(this)}
-                  className="fas fa-edit"
-                />
+              <a
+                className="btn btn-primary btn-circle active"
+                onClick={this.openExaminationModal.bind(this)}
+              >
+                <i className="fas fa-edit" />
               </a>
             </div>
           </div>

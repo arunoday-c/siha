@@ -86,8 +86,9 @@ class DietAdvice extends Component {
             <a
               // href="javascript"
               className="btn btn-primary btn-circle active"
+              onClick={addDiet.bind(this, this)}
             >
-              <i className="fas fa-plus" onClick={addDiet.bind(this, this)} />
+              <i className="fas fa-plus" />
             </a>
           </div>
         </div>
