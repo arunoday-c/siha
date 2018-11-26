@@ -182,7 +182,7 @@ let addReceiptEntry = (req, res, next) => {
 //created by Nowshad: to get ReceiptEntry
 let getReceiptEntry = (req, res, next) => {
   let selectWhere = {
-    delivery_note_number: "ALL"
+    grn_number: "ALL"
   };
   try {
     if (req.db == null) {
@@ -195,7 +195,7 @@ let getReceiptEntry = (req, res, next) => {
     debugLog("where", where);
     db.getConnection((error, connection) => {
       connection.query(
-        "SELECT * from  hims_f_procurement_dn_header\
+        "SELECT * from  hims_f_procurement_grn_header\
           where " +
           where.condition,
         where.values,
@@ -208,20 +208,20 @@ let getReceiptEntry = (req, res, next) => {
           debugLog("result: ", headerResult);
           if (headerResult.length != 0) {
             debugLog(
-              "hims_f_procurement_dn_header_id: ",
-              headerResult[0].hims_f_procurement_dn_header_id
+              "hims_f_procurement_grn_header_id: ",
+              headerResult[0].hims_f_procurement_grn_header_id
             );
             connection.query(
-              "select * from hims_f_procurement_dn_detail where hims_f_procurement_dn_header_id=?",
-              headerResult[0].hims_f_procurement_dn_header_id,
-              (error, dn_entry_detail) => {
+              "select * from hims_f_procurement_grn_detail where grn_header_id=?",
+              headerResult[0].hims_f_procurement_grn_header_id,
+              (error, receipt_entry_detail) => {
                 if (error) {
                   releaseDBConnection(db, connection);
                   next(error);
                 }
                 req.records = {
                   ...headerResult[0],
-                  ...{ dn_entry_detail }
+                  ...{ receipt_entry_detail }
                 };
                 releaseDBConnection(db, connection);
                 next();

@@ -108,9 +108,9 @@ class ReceiptEntry extends Component {
             },
             jsonFile: {
               fileName: "spotlightSearch",
-              fieldName: "initialStock.intstock"
+              fieldName: "Receipt.ReceiptEntry"
             },
-            searchName: "initialstock"
+            searchName: "ReceiptEntry"
           }}
           userArea={
             <div className="row">
@@ -367,8 +367,8 @@ function mapStateToProps(state) {
     receiptitemgroup: state.receiptitemgroup,
     receiptitemuom: state.receiptitemuom,
     receiptvendors: state.receiptvendors,
-    receiptrequisitionentry: state.receiptrequisitionentry,
-    purchaseorderentry: state.purchaseorderentry
+    receiptrequisitionentry: state.receiptrequisitionentry
+    // receiptentry: state.receiptentry
   };
 }
 
@@ -380,8 +380,8 @@ function mapDispatchToProps(dispatch) {
       getItemCategory: AlgaehActions,
       getItemGroup: AlgaehActions,
       getItemUOM: AlgaehActions,
-      getVendorMaster: AlgaehActions,
-      getPurchaseOrderEntry: AlgaehActions
+      getVendorMaster: AlgaehActions
+      // getReceiptEntry: AlgaehActions
     },
     dispatch
   );
