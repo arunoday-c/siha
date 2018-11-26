@@ -763,37 +763,42 @@ class POItemList extends Component {
                   </div>
                 </div>
                 <div className="col-lg-12">
-                  <div className="row">
-                    <div className="col" />
+                  <div
+                    className="portlet portlet-bordered box-shadow-normal margin-bottom-15"
+                    style={{ height: 80, marginBottom: 73 }}
+                  >
+                    <div className="row">
+                      <div className="col" />
 
-                    <div className="col-lg-5" style={{ textAlign: "right" }}>
-                      <div className="row">
-                        <div className="col-lg-4">
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Sub Total"
-                            }}
-                          />
-                          <h6>{getAmountFormart(this.state.sub_total)}</h6>
-                        </div>
-                        <div className="col-lg-4">
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Discount Amount"
-                            }}
-                          />
-                          <h6>
-                            {getAmountFormart(this.state.detail_discount)}
-                          </h6>
-                        </div>
+                      <div className="col-lg-5" style={{ textAlign: "right" }}>
+                        <div className="row">
+                          <div className="col-lg-4">
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Sub Total"
+                              }}
+                            />
+                            <h6>{getAmountFormart(this.state.sub_total)}</h6>
+                          </div>
+                          <div className="col-lg-4">
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Discount Amount"
+                              }}
+                            />
+                            <h6>
+                              {getAmountFormart(this.state.detail_discount)}
+                            </h6>
+                          </div>
 
-                        <div className="col-lg-4">
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Net Payable"
-                            }}
-                          />
-                          <h6>{getAmountFormart(this.state.net_payable)}</h6>
+                          <div className="col-lg-4">
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Net Payable"
+                              }}
+                            />
+                            <h6>{getAmountFormart(this.state.net_payable)}</h6>
+                          </div>
                         </div>
                       </div>
                     </div>

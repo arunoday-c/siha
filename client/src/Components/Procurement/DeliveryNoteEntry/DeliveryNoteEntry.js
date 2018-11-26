@@ -137,7 +137,7 @@ class DeliveryNoteEntry extends Component {
               <div className="row">
                 <AlagehAutoComplete
                   div={{ className: "col" }}
-                  label={{ forceLabel: "PO For" }}
+                  label={{ forceLabel: "DN For" }}
                   selector={{
                     name: "dn_from",
                     className: "select-fld",
@@ -309,35 +309,34 @@ class DeliveryNoteEntry extends Component {
           </MyContext.Provider>
 
           <div className="hptl-phase1-footer">
-            
-              <div className="row">
-                <div className="col-lg-12">
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={SaveDNEnrty.bind(this, this)}
-                    disabled={this.state.saveEnable}
-                  >
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Save",
-                        returnText: true
-                      }}
-                    />
-                  </button>
+            <div className="row">
+              <div className="col-lg-12">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={SaveDNEnrty.bind(this, this)}
+                  disabled={this.state.saveEnable}
+                >
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Save",
+                      returnText: true
+                    }}
+                  />
+                </button>
 
-                  <button
-                    type="button"
-                    className="btn btn-default"
-                    disabled={this.state.ClearDisable}
-                    onClick={ClearData.bind(this, this)}
-                  >
-                    <AlgaehLabel
-                      label={{ forceLabel: "Clear", returnText: true }}
-                    />
-                  </button>
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  disabled={this.state.ClearDisable}
+                  onClick={ClearData.bind(this, this)}
+                >
+                  <AlgaehLabel
+                    label={{ forceLabel: "Clear", returnText: true }}
+                  />
+                </button>
 
-                  {/* {this.props.purchase_auth === true ? (
+                {/* {this.props.purchase_auth === true ? (
                     <button
                       type="button"
                       className="btn btn-other"
@@ -352,9 +351,8 @@ class DeliveryNoteEntry extends Component {
                       />
                     </button>
                   ) : null} */}
-                </div>
               </div>
-            
+            </div>
           </div>
         </div>
       </div>

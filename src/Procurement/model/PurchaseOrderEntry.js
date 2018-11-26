@@ -57,9 +57,9 @@ let addPurchaseOrderEntry = (req, res, next) => {
           "INSERT INTO `hims_f_procurement_po_header` (purchase_number,po_date,po_type,po_from, pharmcy_location_id,\
               inventory_location_id,location_type,vendor_id,expected_date,on_hold, phar_requisition_id,inv_requisition_id, \
               from_multiple_requisition, payment_terms, comment, sub_total, detail_discount, extended_total,sheet_level_discount_percent, \
-              sheet_level_discount_amount,description,net_total,total_tax, created_by,created_date, \
+              sheet_level_discount_amount,description,net_total,total_tax, net_payable,created_by,created_date, \
               updated_by,updated_date) \
-            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           [
             documentCode,
             today,
@@ -85,6 +85,7 @@ let addPurchaseOrderEntry = (req, res, next) => {
 
             input.net_total,
             input.total_tax,
+            input.net_payable,
 
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),

@@ -12,8 +12,8 @@ import moment, { now } from "moment";
 
 import Promise from "bluebird";
 
-//created by Nowshad: to save Delivery Note Entry
-let addDeliveryNoteEntry = (req, res, next) => {
+//created by Nowshad: to save Receipt Entry
+let addReceiptEntry = (req, res, next) => {
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -21,7 +21,7 @@ let addDeliveryNoteEntry = (req, res, next) => {
     let db = req.db;
     let input = extend({}, req.body);
 
-    debugLog("DeliveryNoteEntry: ", "Delivery Note Entry");
+    debugLog("ReceiptEntry: ", "Delivery Note Entry");
     let connection = req.connection;
 
     connection.beginTransaction(error => {
@@ -37,7 +37,7 @@ let addDeliveryNoteEntry = (req, res, next) => {
         runningNumberGen({
           db: connection,
           counter: requestCounter,
-          module_desc: ["DN_NUM"],
+          module_desc: ["RE_NUM"],
           onFailure: error => {
             reject(error);
           },
@@ -53,36 +53,46 @@ let addDeliveryNoteEntry = (req, res, next) => {
         let today = moment().format("YYYY-MM-DD");
         debugLog("today:", today);
 
+        let year = moment().format("YYYY");
+        debugLog("onlyyear:", year);
+
+        let period = moment().format("MM");
+        debugLog("period:", period);
+
         connection.query(
-          "INSERT INTO `hims_f_procurement_dn_header` (delivery_note_number,dn_date,dn_type,dn_from, pharmcy_location_id,\
-              inventory_location_id,location_type,vendor_id, purchase_order_id, from_multiple_purchase_orders, \
-              payment_terms, comment, sub_total, detail_discount, extended_total,sheet_level_discount_percent, \
-              sheet_level_discount_amount,description,net_total,total_tax, net_payable, created_by,created_date, \
+          "INSERT INTO `hims_f_procurement_grn_header` (grn_number,grn_date, grn_for, `year`, period, pharmcy_location_id,\
+              inventory_location_id,location_type,vendor_id, po_id, dn_id, payment_terms, comment, description, sub_total, \
+              detail_discount, extended_total,sheet_level_discount_percent, sheet_level_discount_amount,\
+              net_total,total_tax, net_payable, additional_cost,reciept_total, created_by,created_date, \
               updated_by,updated_date) \
-            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           [
             documentCode,
             today,
-            input.dn_type,
-            input.dn_from,
+            input.grn_for,
+            year,
+            period,
             input.pharmcy_location_id,
             input.inventory_location_id,
             input.location_type,
             input.vendor_id,
-            input.purchase_order_id,
-            input.from_multiple_purchase_orders,
+            input.po_id,
+            input.dn_id,
+
             input.payment_terms,
             input.comment,
+            input.description,
             input.sub_total,
             input.detail_discount,
             input.extended_total,
             input.sheet_level_discount_percent,
             input.sheet_level_discount_amount,
-            input.description,
 
             input.net_total,
             input.total_tax,
             input.net_payable,
+            input.additional_cost,
+            input.reciept_total,
 
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
@@ -110,6 +120,7 @@ let addDeliveryNoteEntry = (req, res, next) => {
                 "inv_item_id",
                 "po_quantity",
                 "dn_quantity",
+                "recieved_quantity",
                 "pharmacy_uom_id",
                 "inventory_uom_id",
                 "unit_cost",
@@ -120,16 +131,15 @@ let addDeliveryNoteEntry = (req, res, next) => {
                 "tax_percentage",
                 "tax_amount",
                 "total_amount",
-                "item_type",
                 "batchno_expiry_required",
                 "batchno",
                 "expiry_date"
               ];
 
               connection.query(
-                "INSERT INTO hims_f_procurement_dn_detail(" +
+                "INSERT INTO hims_f_procurement_grn_detail(" +
                   insurtColumns.join(",") +
-                  ",hims_f_procurement_dn_header_id) VALUES ?",
+                  ",grn_header_id) VALUES ?",
                 [
                   jsonArrayToObject({
                     sampleInputObject: insurtColumns,
@@ -143,14 +153,13 @@ let addDeliveryNoteEntry = (req, res, next) => {
                     debugLog("Error: ", error);
 
                     connection.rollback(() => {
-                      debugLog("Roll Back: ", error);
                       releaseDBConnection(db, connection);
                       next(error);
                     });
                   }
 
                   req.records = {
-                    delivery_note_number: documentCode
+                    grn_number: documentCode
                   };
                   next();
                 }
@@ -170,8 +179,8 @@ let addDeliveryNoteEntry = (req, res, next) => {
   }
 };
 
-//created by Nowshad: to get DeliveryNoteEntry
-let getDeliveryNoteEntry = (req, res, next) => {
+//created by Nowshad: to get ReceiptEntry
+let getReceiptEntry = (req, res, next) => {
   let selectWhere = {
     delivery_note_number: "ALL"
   };
@@ -231,7 +240,7 @@ let getDeliveryNoteEntry = (req, res, next) => {
   }
 };
 
-let updateDeliveryNoteEntry = (req, res, next) => {
+let updateReceiptEntry = (req, res, next) => {
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -421,9 +430,9 @@ let updatePOEntry = (req, res, next) => {
 };
 
 module.exports = {
-  addDeliveryNoteEntry,
-  getDeliveryNoteEntry,
-  updateDeliveryNoteEntry,
+  addReceiptEntry,
+  getReceiptEntry,
+  updateReceiptEntry,
   getAuthPurchaseList,
   updatePOEntry
 };
