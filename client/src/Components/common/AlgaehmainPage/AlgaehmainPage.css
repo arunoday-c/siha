@@ -114,33 +114,36 @@ header {
   padding-right: 5px;
   cursor: pointer; }
 
-.hptl-phase1-sideMenuBar ul.tree-structure-menu {
-  margin: 0;
-  padding: 0;
-  width: 100%; }
-  .hptl-phase1-sideMenuBar ul.tree-structure-menu li {
-    padding: 8px 5px;
+.hptl-phase1-sideMenuBar .sub-menu-option {
+  border-top: 2px solid #f7f7f7; }
+  .hptl-phase1-sideMenuBar .sub-menu-option ul.tree-structure-menu {
     margin: 0;
-    font-size: 0.8rem;
-    border-bottom: 1px dotted #818588;
-    text-transform: uppercase;
-    cursor: pointer;
-    line-height: 20px;
-    background: #929292;
-    color: #ffffff; }
-    .hptl-phase1-sideMenuBar ul.tree-structure-menu li i {
-      margin-right: 27px;
-      margin-left: 12px;
-      display: inline-block;
-      vertical-align: initial; }
-    .hptl-phase1-sideMenuBar ul.tree-structure-menu li span {
-      display: inline-block;
-      width: 78%; }
-    .hptl-phase1-sideMenuBar ul.tree-structure-menu li:hover {
-      background: #afafaf; }
-    .hptl-phase1-sideMenuBar ul.tree-structure-menu li.active {
-      background: #00bcb0;
-      color: #fff; }
+    padding: 0;
+    width: 100%; }
+    .hptl-phase1-sideMenuBar .sub-menu-option ul.tree-structure-menu li {
+      margin: 0;
+      font-size: 0.8rem;
+      border-bottom: 1px dotted #818588;
+      text-transform: uppercase;
+      cursor: pointer;
+      line-height: 20px;
+      background: #929292;
+      color: #ffffff; }
+      .hptl-phase1-sideMenuBar .sub-menu-option ul.tree-structure-menu li i {
+        margin-right: 14px;
+        margin-left: 15px;
+        display: inline-block;
+        vertical-align: initial; }
+      .hptl-phase1-sideMenuBar .sub-menu-option ul.tree-structure-menu li span {
+        padding: 8px 5px 8px 13px;
+        display: inline-block;
+        width: 78%;
+        border-left: 1px solid #f7f7f7; }
+      .hptl-phase1-sideMenuBar .sub-menu-option ul.tree-structure-menu li:hover {
+        background: #afafaf; }
+      .hptl-phase1-sideMenuBar .sub-menu-option ul.tree-structure-menu li.active {
+        background: #00bcb0;
+        color: #fff; }
 
 .hptl-phase1-sideMenuBar .close-menu {
   padding-top: 5px;

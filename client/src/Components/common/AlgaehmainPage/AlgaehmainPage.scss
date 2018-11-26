@@ -134,37 +134,41 @@ header {
     padding-right: 5px;
     cursor: pointer;
   }
-  ul.tree-structure-menu {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    li {
-      padding: 8px 5px;
+  .sub-menu-option {
+    border-top: 2px solid #f7f7f7;
+    ul.tree-structure-menu {
       margin: 0;
-      font-size: 0.8rem;
-      border-bottom: 1px dotted #818588;
-      text-transform: uppercase;
-      cursor: pointer;
-      line-height: 20px;
-      background: #929292;
-      color: #ffffff;
+      padding: 0;
+      width: 100%;
+      li {
+        margin: 0;
+        font-size: 0.8rem;
+        border-bottom: 1px dotted #818588;
+        text-transform: uppercase;
+        cursor: pointer;
+        line-height: 20px;
+        background: #929292;
+        color: #ffffff;
 
-      i {
-        margin-right: 27px;
-        margin-left: 12px;
-        display: inline-block;
-        vertical-align: initial;
-      }
-      span {
-        display: inline-block;
-        width: 78%;
-      }
-      &:hover {
-        background: #afafaf;
-      }
-      &.active {
-        background: rgb(0, 188, 176);
-        color: #fff;
+        i {
+          margin-right: 14px;
+          margin-left: 15px;
+          display: inline-block;
+          vertical-align: initial;
+        }
+        span {
+          padding: 8px 5px 8px 13px;
+          display: inline-block;
+          width: 78%;
+          border-left: 1px solid #f7f7f7;
+        }
+        &:hover {
+          background: #afafaf;
+        }
+        &.active {
+          background: rgb(0, 188, 176);
+          color: #fff;
+        }
       }
     }
   }
