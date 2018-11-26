@@ -250,34 +250,76 @@ const SaveReceiptEnrty = $this => {
 
 const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
-  $this.props.getReceiptEntry({
+
+  algaehApiCall({
     uri: "/ReceiptEntry/getReceiptEntry",
     method: "GET",
-    printInput: true,
     data: { grn_number: docNumber },
-    redux: {
-      type: "PO_ENTRY_GET_DATA",
-      mappingName: "receiptentry"
-    },
-    afterSuccess: data => {
-      if (
-        $this.props.grn_number !== undefined &&
-        $this.props.grn_number.length !== 0
-      ) {
-        data.authorizeEnable = false;
-        data.ItemDisable = true;
-        data.ClearDisable = true;
-      }
-      data.saveEnable = true;
-      data.dataExitst = true;
+    onSuccess: response => {
+      if (response.data.success) {
+        let data = response.data.records;
+        if (
+          $this.props.grn_number !== undefined &&
+          $this.props.grn_number.length !== 0
+        ) {
+          data.authorizeEnable = false;
+          data.ItemDisable = true;
+          data.ClearDisable = true;
+        }
+        data.saveEnable = true;
+        data.dataExitst = true;
 
-      data.addedItem = true;
-      $this.setState(data, () => {
-        getData($this);
-      });
+        data.addedItem = true;
+        data.postEnable = false;
+        $this.setState(data, () => {
+          getData($this);
+        });
+        AlgaehLoader({ show: false });
+
+        // if (context != null) {
+        //   context.updateState({ ...response.data.records });
+        // }
+        $this.setState({ ...response.data.records });
+      }
       AlgaehLoader({ show: false });
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
+
+  // $this.props.getReceiptEntry({
+  //   uri: "/ReceiptEntry/getReceiptEntry",
+  //   method: "GET",
+  //   printInput: true,
+  //   data: { grn_number: docNumber },
+  //   redux: {
+  //     type: "PO_ENTRY_GET_DATA",
+  //     mappingName: "receiptentry"
+  //   },
+  //   afterSuccess: data => {
+  //     if (
+  //       $this.props.grn_number !== undefined &&
+  //       $this.props.grn_number.length !== 0
+  //     ) {
+  //       data.authorizeEnable = false;
+  //       data.ItemDisable = true;
+  //       data.ClearDisable = true;
+  //     }
+  //     data.saveEnable = true;
+  //     data.dataExitst = true;
+
+  //     data.addedItem = true;
+  //     $this.setState(data, () => {
+  //       getData($this);
+  //     });
+  //     AlgaehLoader({ show: false });
+  //   }
+  // });
 };
 
 const getData = $this => {

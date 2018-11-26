@@ -185,6 +185,12 @@ let algaehSearchConfig = searchName => {
         searchQuery:
           "select SQL_CALC_FOUND_ROWS * from hims_f_procurement_dn_header where cancelled='N'",
         orderBy: "hims_f_procurement_dn_header_id desc"
+      },
+      {
+        searchName: "ReceiptEntry",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS * from hims_f_procurement_grn_header",
+        orderBy: "hims_f_procurement_grn_header_id desc"
       }
 
       // visit
