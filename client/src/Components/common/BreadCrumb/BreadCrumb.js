@@ -94,15 +94,23 @@ class BreadCrumb extends PureComponent {
                 />
 
                 {this.props.printArea.menuitems !== undefined ? (
-                  <ul className="printActionMenu">
+                  <div
+                    className="dropdown-menu animated fadeIn faster"
+                    aria-labelledby="dropdownMenuButton"
+                  >
+                    {/* <ul className="printActionMenu"> */}
                     {this.props.printArea.menuitems.map((menu, index) => {
                       return (
-                        <li key={index} {...menu.events}>
+                        <a
+                          className="dropdown-item"
+                          key={index}
+                          {...menu.events}
+                        >
                           <span>{menu.label}</span>
-                        </li>
+                        </a>
                       );
                     })}
-                  </ul>
+                  </div>
                 ) : (
                   <React.Fragment />
                 )}
