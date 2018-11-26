@@ -94,7 +94,7 @@ export default class Header extends Component{
 						             <ChevronLeftIcon color={'#fff'} hoverColor={green500}   />
 						       		</div>
 						        </IconButton>
-							    </AppBar>
+							    
 							    <SideMenuBar />
 							</Paper>
 						</div> : 

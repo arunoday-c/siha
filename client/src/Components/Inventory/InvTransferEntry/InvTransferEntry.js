@@ -278,7 +278,7 @@ class InvTransferEntry extends Component {
             </MyContext.Provider>
 
             <div className="hptl-phase1-footer">
-              <AppBar position="static" className="main">
+              
                 <div className="row">
                   <div className="col-lg-12">
                     <button
@@ -322,7 +322,7 @@ class InvTransferEntry extends Component {
                     </button>
                   </div>
                 </div>
-              </AppBar>
+              
             </div>
           </div>
         </div>

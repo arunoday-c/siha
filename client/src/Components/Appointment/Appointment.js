@@ -1187,7 +1187,14 @@ class Appointment extends Component {
 
   generateChilderns(data) {
     const colspan = data.mark_as_break
-      ? { colSpan: 2, style: { width: "240px" } }
+      ? {
+          colSpan: 2,
+          style: {
+            width: "240px",
+            background: "rgb(255, 238, 214)",
+            textTransform: "uppercase"
+          }
+        }
       : {};
     const _patientList = this.plotPatients({
       time: data.time,
@@ -1209,15 +1216,15 @@ class Appointment extends Component {
         : undefined;
 
     let brk_bg_color = data.mark_as_break
-      ? "#f2f2f2"
+      ? "1"
       : (moment(data.time, "HH:mm a").format("HHmm") <
           moment(new Date()).format("HHmm") &&
           moment(this.state.activeDateHeader).format("YYYYMMDD") <=
             moment(new Date()).format("YYYYMMDD")) ||
         moment(this.state.activeDateHeader).format("YYYYMMDD") <
           moment(new Date()).format("YYYYMMDD")
-      ? "#fbfbfb"
-      : "#ffffff";
+      ? "0.4"
+      : "1";
 
     let bg_color =
       patient !== null && patient !== undefined
@@ -1233,7 +1240,7 @@ class Appointment extends Component {
 
     return (
       <tr
-        style={{ background: brk_bg_color, cursor: "pointer" }}
+        style={{ opacity: brk_bg_color, cursor: "pointer" }}
         key={data.counter}
       >
         <td
@@ -2195,7 +2202,7 @@ class Appointment extends Component {
               </div>
               {/* Portlet Top Bar End */}
 
-              <div className="portlet-body" style={{ maxHeight: "55vh" }}>
+              <div className="portlet-body">
                 <div className="appointment-outer-cntr">
                   <div
                     className="appointment-inner-cntr"

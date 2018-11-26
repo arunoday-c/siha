@@ -470,17 +470,24 @@ body {
     transform: rotate(-405deg);
     -webkit-transform: rotate(-405deg); } }
 
-:global .hptl-phase1-footer .main {
-  background-color: #000000 !important;
-  padding: 7px 0px;
-  height: 40px;
-  width: 100%;
+:global .hptl-phase1-footer {
+  background: #000;
   position: fixed;
+  bottom: 0;
   left: 0;
-  bottom: 0; }
-
-:global .hptl-phase1-footer .app_bar {
-  background: #000000; }
+  width: 100vw;
+  padding: 10px 15px; }
+  :global .hptl-phase1-footer button {
+    float: right;
+    margin-left: 10px;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    min-width: 70px; }
+  :global .hptl-phase1-footer .btn-other {
+    background: none;
+    color: #fff;
+    border: 1px solid #efefef; }
 
 :global .hptl-phase1-master-footer .main {
   background-color: #fff !important;
@@ -1076,4 +1083,5 @@ th {
     min-height: 137px;
     position: relative; }
   .tab-container .tab-button label {
-    cursor: pointer; }
+    cursor: pointer;
+    font-size: 0.8rem; }

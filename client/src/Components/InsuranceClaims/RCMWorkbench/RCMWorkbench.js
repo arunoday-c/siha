@@ -284,7 +284,7 @@ class RCMWorkbench extends Component {
           </div>
         </div>
         <div className="hptl-phase1-footer">
-          <AppBar position="static" className="main">
+          
             <div className="row">
               <div className="col-lg-12">
                 <button type="button" className="btn btn-primary">
@@ -324,7 +324,7 @@ class RCMWorkbench extends Component {
                 </button>
               </div>
             </div>
-          </AppBar>
+          
         </div>
       </div>
     );

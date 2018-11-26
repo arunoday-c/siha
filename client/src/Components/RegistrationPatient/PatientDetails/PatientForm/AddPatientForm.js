@@ -627,7 +627,7 @@ class AddPatientForm extends PureComponent {
                   <div className="col-lg-4 secondary-details">
                     <div className="row secondary-box-container">
                       <AlagehAutoComplete
-                        div={{ className: "col-lg-6 mandatory" }}
+                        div={{ className: "col-lg-5 mandatory" }}
                         label={{
                           fieldName: "primary_identity_id",
                           isImp: true
@@ -653,7 +653,7 @@ class AddPatientForm extends PureComponent {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col-lg-6 mandatory" }}
+                        div={{ className: "col-lg-7 mandatory" }}
                         label={{
                           fieldName: "primary_id_no",
                           isImp: true
@@ -749,7 +749,7 @@ class AddPatientForm extends PureComponent {
                     >
                       <AlagehAutoComplete
                         div={{
-                          className: "col-lg-6"
+                          className: "col-lg-5"
                         }}
                         label={{
                           fieldName: "marital_status",
@@ -775,7 +775,7 @@ class AddPatientForm extends PureComponent {
                       />
 
                       <AlagehAutoComplete
-                        div={{ className: "col-lg-6" }}
+                        div={{ className: "col-lg-7" }}
                         label={{
                           fieldName: "religion_id",
                           isImp: false
