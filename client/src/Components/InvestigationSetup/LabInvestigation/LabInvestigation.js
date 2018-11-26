@@ -377,27 +377,43 @@ class LabInvestigation extends Component {
                               );
                             },
                             editorTemplate: row => {
+                              let display =
+                                this.props.labanalytes === undefined
+                                  ? []
+                                  : this.props.labanalytes.filter(
+                                      f =>
+                                        f.hims_d_lab_analytes_id ===
+                                        row.analyte_id
+                                    );
+
                               return (
-                                <AlagehAutoComplete
-                                  div={{}}
-                                  selector={{
-                                    name: "visit_status",
-                                    className: "select-fld",
-                                    value: row.analyte_id,
-                                    dataSource: {
-                                      textField: "description",
-                                      valueField: "hims_d_lab_analytes_id",
-                                      data: this.props.labanalytes
-                                    },
-                                    others: {
-                                      disabled: true
-                                    },
-                                    onChange: null
-                                  }}
-                                />
+                                <span>
+                                  {display !== null && display.length !== 0
+                                    ? display[0].description
+                                    : ""}
+                                </span>
                               );
-                            },
-                            disabled: true
+                              // return (
+                              //   <AlagehAutoComplete
+                              //     div={{}}
+                              //     selector={{
+                              //       name: "visit_status",
+                              //       className: "select-fld",
+                              //       value: row.analyte_id,
+                              //       dataSource: {
+                              //         textField: "description",
+                              //         valueField: "hims_d_lab_analytes_id",
+                              //         data: this.props.labanalytes
+                              //       },
+                              //       others: {
+                              //         disabled: true
+                              //       },
+                              //       onChange: null
+                              //     }}
+                              //   />
+                              // );
+                            }
+                            // disabled: true
                           },
                           {
                             fieldName: "normal_low",

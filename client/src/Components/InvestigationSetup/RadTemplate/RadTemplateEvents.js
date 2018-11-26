@@ -19,6 +19,7 @@ const texthandle = ($this, context, ctrl, e) => {
 };
 
 const rtehandle = ($this, context, template_html) => {
+  debugger;
   $this.setState({ template_html });
 
   if (context !== undefined) {

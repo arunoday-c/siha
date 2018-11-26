@@ -187,7 +187,6 @@ class PatientDisplayDetails extends Component {
       data: { bill_number: billcode },
       onSuccess: response => {
         if (response.data.success) {
-          
           let data = response.data.records;
           if (data.receiptdetails.length !== 0) {
             for (let i = 0; i < data.receiptdetails.length; i++) {
@@ -312,9 +311,10 @@ class PatientDisplayDetails extends Component {
               }
             },
             onFailure: error => {
+              debugger;
               AlgaehLoader({ show: false });
               successfulMessage({
-                message: error.message,
+                message: error.response.data.message || error.message,
                 title: "Error",
                 icon: "error"
               });
@@ -437,7 +437,7 @@ class PatientDisplayDetails extends Component {
         </div>
 
         <div className="hptl-phase1-footer">
-          <AppBar position="static" className="main">
+          
             <div className="row">
               <div className="col-lg-12">
                 <button
@@ -470,7 +470,7 @@ class PatientDisplayDetails extends Component {
                 </button>
               </div>
             </div>
-          </AppBar>
+          
         </div>
       </div>
     );

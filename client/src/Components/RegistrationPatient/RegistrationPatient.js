@@ -596,106 +596,104 @@ class RegistrationPatient extends PureComponent {
             <InsuranceDetails PatRegIOputs={this.state} />
             <Billing PatRegIOputs={this.state} loader={true} />
             <div className="hptl-phase1-footer">
-              <AppBar position="static" className="main">
-                <div className="row">
-                  <div className="col-lg-12">
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      onClick={this.SavePatientDetails.bind(this)}
-                      disabled={this.state.saveEnable}
-                    >
-                      <AlgaehLabel
-                        label={{ fieldName: "btn_save", returnText: true }}
-                      />
-                    </button>
+              <div className="row">
+                <div className="col-lg-12">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={this.SavePatientDetails.bind(this)}
+                    disabled={this.state.saveEnable}
+                  >
+                    <AlgaehLabel
+                      label={{ fieldName: "btn_save", returnText: true }}
+                    />
+                  </button>
 
-                    <button
-                      type="button"
-                      className="btn btn-default"
-                      onClick={ClearData.bind(this, this)}
-                      disabled={this.state.clearEnable}
-                    >
-                      <AlgaehLabel
-                        label={{ fieldName: "btn_clear", returnText: true }}
-                      />
-                    </button>
+                  <button
+                    type="button"
+                    className="btn btn-default"
+                    onClick={ClearData.bind(this, this)}
+                    disabled={this.state.clearEnable}
+                  >
+                    <AlgaehLabel
+                      label={{ fieldName: "btn_clear", returnText: true }}
+                    />
+                  </button>
 
-                    <button
-                      type="button"
-                      className="btn btn-other"
-                      onClick={ShowRefundScreen.bind(this, this)}
-                    >
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "btn_refund",
-                          returnText: true
-                        }}
-                      />
-                    </button>
-
-                    <AddAdvanceModal
-                      show={this.state.RefundOpen}
-                      onClose={ShowRefundScreen.bind(this, this)}
-                      selectedLang={this.state.selectedLang}
-                      HeaderCaption={
-                        <AlgaehLabel
-                          label={{
-                            fieldName: "refund_caption",
-                            align: "ltr"
-                          }}
-                        />
-                      }
-                      NumberLabel="payment_number"
-                      DateLabel="payment_date"
-                      inputsparameters={{
-                        patient_code: this.state.patient_code,
-                        full_name: this.state.full_name,
-                        hims_f_patient_id: this.state.hims_d_patient_id,
-                        transaction_type: "RF",
-                        pay_type: "P",
-                        advance_amount: this.state.advance_amount
+                  <button
+                    type="button"
+                    className="btn btn-other"
+                    onClick={ShowRefundScreen.bind(this, this)}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "btn_refund",
+                        returnText: true
                       }}
                     />
-                    <button
-                      type="button"
-                      className="btn btn-other"
-                      onClick={ShowAdvanceScreen.bind(this, this)}
-                    >
+                  </button>
+
+                  <AddAdvanceModal
+                    show={this.state.RefundOpen}
+                    onClose={ShowRefundScreen.bind(this, this)}
+                    selectedLang={this.state.selectedLang}
+                    HeaderCaption={
                       <AlgaehLabel
                         label={{
-                          fieldName: "btn_advance",
-                          returnText: true
+                          fieldName: "refund_caption",
+                          align: "ltr"
                         }}
                       />
-                    </button>
-
-                    <AddAdvanceModal
-                      show={this.state.AdvanceOpen}
-                      onClose={ShowAdvanceScreen.bind(this, this)}
-                      selectedLang={this.state.selectedLang}
-                      HeaderCaption={
-                        <AlgaehLabel
-                          label={{
-                            fieldName: "advance_caption",
-                            align: "ltr"
-                          }}
-                        />
-                      }
-                      NumberLabel="receipt_number"
-                      DateLabel="receipt_date"
-                      inputsparameters={{
-                        patient_code: this.state.patient_code,
-                        full_name: this.state.full_name,
-                        hims_f_patient_id: this.state.hims_d_patient_id,
-                        transaction_type: "AD",
-                        pay_type: "R",
-                        advance_amount: this.state.advance_amount
+                    }
+                    NumberLabel="payment_number"
+                    DateLabel="payment_date"
+                    inputsparameters={{
+                      patient_code: this.state.patient_code,
+                      full_name: this.state.full_name,
+                      hims_f_patient_id: this.state.hims_d_patient_id,
+                      transaction_type: "RF",
+                      pay_type: "P",
+                      advance_amount: this.state.advance_amount
+                    }}
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-other"
+                    onClick={ShowAdvanceScreen.bind(this, this)}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "btn_advance",
+                        returnText: true
                       }}
                     />
-                  </div>
+                  </button>
+
+                  <AddAdvanceModal
+                    show={this.state.AdvanceOpen}
+                    onClose={ShowAdvanceScreen.bind(this, this)}
+                    selectedLang={this.state.selectedLang}
+                    HeaderCaption={
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "advance_caption",
+                          align: "ltr"
+                        }}
+                      />
+                    }
+                    NumberLabel="receipt_number"
+                    DateLabel="receipt_date"
+                    inputsparameters={{
+                      patient_code: this.state.patient_code,
+                      full_name: this.state.full_name,
+                      hims_f_patient_id: this.state.hims_d_patient_id,
+                      transaction_type: "AD",
+                      pay_type: "R",
+                      advance_amount: this.state.advance_amount
+                    }}
+                  />
                 </div>
-              </AppBar>
+              </div>
             </div>
           </MyContext.Provider>
         </div>

@@ -565,51 +565,49 @@ class DoctorCommission extends Component {
             </div>
 
             <div className="hptl-phase1-footer">
-              <AppBar position="static" className="main">
-                <div className="row">
-                  <div className="col-lg-12">
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      //   onClick={SaveDoctorCommission.bind(this, this)}
-                      disabled={this.state.saveEnable}
-                    >
-                      <AlgaehLabel
-                        label={{ forceLabel: "Save", returnText: true }}
-                      />
-                    </button>
-
-                    <AHSnackbar
-                      open={this.state.SnackbarOpen}
-                      handleClose={this.handleClose}
-                      MandatoryMsg={this.state.MandatoryMsg}
+              <div className="row">
+                <div className="col-lg-12">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    //   onClick={SaveDoctorCommission.bind(this, this)}
+                    disabled={this.state.saveEnable}
+                  >
+                    <AlgaehLabel
+                      label={{ forceLabel: "Save", returnText: true }}
                     />
-                    <button
-                      type="button"
-                      className="btn btn-default"
-                      onClick={ClearData.bind(this, this)}
-                    >
-                      <AlgaehLabel
-                        label={{ forceLabel: "Clear", returnText: true }}
-                      />
-                    </button>
+                  </button>
 
-                    <button
-                      type="button"
-                      className="btn btn-other"
-                      //   onClick={PostDoctorCommission.bind(this, this)}
-                      disabled={this.state.postEnable}
-                    >
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Generate Payment",
-                          returnText: true
-                        }}
-                      />
-                    </button>
-                  </div>
+                  <AHSnackbar
+                    open={this.state.SnackbarOpen}
+                    handleClose={this.handleClose}
+                    MandatoryMsg={this.state.MandatoryMsg}
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-default"
+                    onClick={ClearData.bind(this, this)}
+                  >
+                    <AlgaehLabel
+                      label={{ forceLabel: "Clear", returnText: true }}
+                    />
+                  </button>
+
+                  <button
+                    type="button"
+                    className="btn btn-other"
+                    //   onClick={PostDoctorCommission.bind(this, this)}
+                    disabled={this.state.postEnable}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Generate Payment",
+                        returnText: true
+                      }}
+                    />
+                  </button>
                 </div>
-              </AppBar>
+              </div>
             </div>
           </div>
         </div>

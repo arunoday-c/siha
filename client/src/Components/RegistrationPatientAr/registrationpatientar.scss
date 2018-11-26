@@ -27,38 +27,6 @@
     width: 250px;
   }
 }
-.hptl-phase1-footer {
-  button {
-    float: right;
-    margin-left: 10px;
-    padding: 5px 10px;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    min-width: 70px;
-  }
-  .btn-primary {
-    background: #34b8bc;
-    color: #fff;
-    border: 1px solid #34b8bc;
-  }
-  .btn-default {
-    background: #efefef;
-    color: #797979;
-    border: 1px solid #efefef;
-  }
-  .btn-other {
-    background: none;
-    color: #fff;
-    border: 1px solid #efefef;
-  }
-  .btn-primary:hover,
-  .btn-default:hover,
-  .btn-other:hover {
-    background: #239296;
-    color: #fff;
-    border: 1px solid #239296;
-  }
-}
 .algaeh_Arabic_Version {
   text-align: right;
   input.autoselect-input {
@@ -72,38 +40,5 @@
   .algaeh-datePicker input[type="date"]:disabled {
     text-align: right;
     direction: rtl;
-  }
-  .hptl-phase1-footer {
-    button {
-      float: left;
-      margin-right: 10px;
-      margin-left: 0;
-      padding: 5px 10px;
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      min-width: 70px;
-    }
-    .btn-primary {
-      background: #34b8bc;
-      color: #fff;
-      border: 1px solid #34b8bc;
-    }
-    .btn-default {
-      background: #efefef;
-      color: #797979;
-      border: 1px solid #efefef;
-    }
-    .btn-other {
-      background: none;
-      color: #fff;
-      border: 1px solid #efefef;
-    }
-    .btn-primary:hover,
-    .btn-default:hover,
-    .btn-other:hover {
-      background: #239296;
-      color: #fff;
-      border: 1px solid #239296;
-    }
   }
 }

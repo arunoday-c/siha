@@ -50,91 +50,114 @@ export default class RadTemplate extends PureComponent {
   render() {
     return (
       <React.Fragment>
-        <Modal
-          style={{
-            margin: "0 auto",
-            width: "100vh"
-          }}
-          open={this.props.openTemplate}
-        >
-          <MyContext.Consumer>
-            {context => (
-              <div className="hptl-phase1-add-rad-tamplate-form">
-                <div className="container-fluid">
-                  <div className="row form-details">
-                    <AlagehFormGroup
-                      div={{ className: "col-lg-6" }}
-                      label={{
-                        fieldName: "template_name",
-                        isImp: true
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "template_name",
-                        value: this.state.template_name,
-                        events: {
-                          onChange: texthandle.bind(this, this, context)
-                        }
-                      }}
-                    />
-                  </div>
-                  <div className="row form-details">
-                    <div className="col-lg-12 editor">
-                      <RichTextEditor
-                        value={this.state.template_html}
-                        onChange={rtehandle.bind(this, this, context)}
-                        modules={{
-                          toolbar: [
-                            [{ header: [1, 2, false] }],
-                            [
-                              "bold",
-                              "italic",
-                              "underline",
-                              "strike",
-                              "blockquote",
-                              { list: "ordered" },
-                              { list: "bullet" },
-                              { indent: "-1" },
-                              { indent: "+1" },
-                              "image",
-                              { color: [] },
-                              { background: [] }
-                            ]
-                          ]
-                        }}
-                        style={{ minHeight: "40vh" }}
-                      />
+        <Modal open={this.props.openTemplate}>
+          <div className="algaeh-modal">
+            <div className="popupHeader">
+              <div className="row">
+                <div className="col-lg-8">
+                  <h4> Radiology Template Editor</h4>
+                </div>
+                <div className="col-lg-4">
+                  <button
+                    type="button"
+                    className=""
+                    onClick={e => {
+                      this.onClose(e);
+                    }}
+                  >
+                    <i className="fas fa-times-circle" />
+                  </button>
+                </div>
+              </div>
+            </div>
+            {/* <div className="popupInner">
+              <div className="col-12 popRightDiv"> */}
+            <MyContext.Consumer>
+              {context => (
+                <div className="hptl-phase1-add-rad-tamplate-form">
+                  <div className="popupInner">
+                    <div className="col-12 popRightDiv">
+                      <div className="container-fluid">
+                        <div className="row form-details">
+                          <AlagehFormGroup
+                            div={{ className: "col-lg-6" }}
+                            label={{
+                              fieldName: "template_name",
+                              isImp: true
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "template_name",
+                              value: this.state.template_name,
+                              events: {
+                                onChange: texthandle.bind(this, this, context)
+                              }
+                            }}
+                          />
+                        </div>
+                        <div className="row form-details">
+                          <div className="col-lg-12 editor">
+                            <RichTextEditor
+                              value={this.state.template_html}
+                              onChange={rtehandle.bind(this, this, context)}
+                              modules={{
+                                toolbar: [
+                                  [{ header: [1, 2, false] }],
+                                  [
+                                    "bold",
+                                    "italic",
+                                    "underline",
+                                    "strike",
+                                    "blockquote",
+                                    { list: "ordered" },
+                                    { list: "bullet" },
+                                    { indent: "-1" },
+                                    { indent: "+1" },
+                                    "image",
+                                    { color: [] },
+                                    { background: [] }
+                                  ]
+                                ]
+                              }}
+                              style={{ minHeight: "40vh" }}
+                            />
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="row form-details" position="fixed">
+                  <div className="popupFooter">
                     <div className="col-lg-12">
-                      <span className="float-left">
-                        <button
-                          className="htpl1-phase1-btn-secondary"
-                          onClick={e => {
-                            this.onClose(e);
-                          }}
-                        >
-                          Close
-                        </button>
-                      </span>
+                      <div className="row">
+                        <div className="col-lg-2">
+                          <button
+                            className="btn btn-default"
+                            onClick={e => {
+                              this.onClose(e);
+                            }}
+                          >
+                            Close
+                          </button>
+                        </div>
+                        <div className="col-lg-8"> &nbsp;</div>
 
-                      <span className="float-right">
-                        <button
-                          className="htpl1-phase1-btn-primary"
-                          style={{ float: "right" }}
-                          onClick={saveTemplate.bind(this, this, context)}
-                        >
-                          Save
-                        </button>
-                      </span>
+                        <div className="col-lg-2">
+                          <button
+                            className="btn btn-primary"
+                            style={{ float: "right" }}
+                            onClick={saveTemplate.bind(this, this, context)}
+                          >
+                            Save
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
-          </MyContext.Consumer>
+              )}
+            </MyContext.Consumer>
+          </div>
         </Modal>
       </React.Fragment>
     );

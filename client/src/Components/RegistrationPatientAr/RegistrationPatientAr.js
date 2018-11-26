@@ -488,7 +488,7 @@ class RegistrationPatientAr extends Component {
             <InsuranceDetails PatRegIOputs={this.state} />
             <Billing PatRegIOputs={this.state} loader={true} />
             <div className="hptl-phase1-footer">
-              <AppBar position="static" className="main">
+              
                 <div className="row">
                   <div className="col-lg-12">
                     <button
@@ -591,7 +591,7 @@ class RegistrationPatientAr extends Component {
                     />
                   </div>
                 </div>
-              </AppBar>
+              
             </div>
           </MyContext.Provider>
         </div>

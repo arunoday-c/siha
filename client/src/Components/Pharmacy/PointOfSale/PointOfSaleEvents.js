@@ -312,6 +312,7 @@ const VisitSearch = ($this, e) => {
         callBack(text);
       },
       onRowSelect: row => {
+        debugger;
         $this.setState(
           {
             visit_code: row.visit_code,
@@ -367,7 +368,7 @@ const getMedicationList = $this => {
       mappingName: "medicationlist"
     },
     afterSuccess: data => {
-      //debugger;
+      debugger;
       AddItems($this, data);
     }
   });

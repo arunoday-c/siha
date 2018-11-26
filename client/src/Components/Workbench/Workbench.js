@@ -4,12 +4,13 @@ import DoctorsWorkbench from "../DoctorsWorkbench/DoctorsWorkbench";
 import NurseWorkbench from "../NurseWorkbench/NurseWorkbench";
 import PatientProfile from "../PatientProfile/PatientProfile";
 import { removeGlobal } from "../../utils/GlobalFunctions";
-
+import { setCookie } from "../../utils/algaehApiCall";
 class Workbench extends Component {
   constructor(props) {
     super(props);
+    setCookie("ScreenName", props.type);
     this.state = {
-      EHR_Screen: getCookie("ScreenName").replace("/", "")
+      EHR_Screen: props.type
     };
 
     this.routeComponents = this.routeComponents.bind(this);
@@ -22,6 +23,7 @@ class Workbench extends Component {
   // }
 
   routeComponents() {
+    setCookie("ScreenName", Window.global["EHR-STD"]);
     this.setState(
       {
         EHR_Screen: Window.global["EHR-STD"]
@@ -37,7 +39,8 @@ class Workbench extends Component {
   }
 
   componentList(screen) {
-    switch (screen) {
+    const _type = getCookie("ScreenName").replace("/", "");
+    switch (_type) {
       case "DoctorsWorkbench":
         return <DoctorsWorkbench />;
 

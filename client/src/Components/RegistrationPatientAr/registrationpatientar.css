@@ -20,36 +20,6 @@
     left: 0px;
     width: 250px; }
 
-.hptl-phase1-footer button {
-  float: right;
-  margin-left: 10px;
-  padding: 5px 10px;
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  min-width: 70px; }
-
-.hptl-phase1-footer .btn-primary {
-  background: #34b8bc;
-  color: #fff;
-  border: 1px solid #34b8bc; }
-
-.hptl-phase1-footer .btn-default {
-  background: #efefef;
-  color: #797979;
-  border: 1px solid #efefef; }
-
-.hptl-phase1-footer .btn-other {
-  background: none;
-  color: #fff;
-  border: 1px solid #efefef; }
-
-.hptl-phase1-footer .btn-primary:hover,
-.hptl-phase1-footer .btn-default:hover,
-.hptl-phase1-footer .btn-other:hover {
-  background: #239296;
-  color: #fff;
-  border: 1px solid #239296; }
-
 .algaeh_Arabic_Version {
   text-align: right; }
   .algaeh_Arabic_Version input.autoselect-input {
@@ -61,29 +31,3 @@
   .algaeh_Arabic_Version .algaeh-datePicker input[type="date"]:disabled {
     text-align: right;
     direction: rtl; }
-  .algaeh_Arabic_Version .hptl-phase1-footer button {
-    float: left;
-    margin-right: 10px;
-    margin-left: 0;
-    padding: 5px 10px;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    min-width: 70px; }
-  .algaeh_Arabic_Version .hptl-phase1-footer .btn-primary {
-    background: #34b8bc;
-    color: #fff;
-    border: 1px solid #34b8bc; }
-  .algaeh_Arabic_Version .hptl-phase1-footer .btn-default {
-    background: #efefef;
-    color: #797979;
-    border: 1px solid #efefef; }
-  .algaeh_Arabic_Version .hptl-phase1-footer .btn-other {
-    background: none;
-    color: #fff;
-    border: 1px solid #efefef; }
-  .algaeh_Arabic_Version .hptl-phase1-footer .btn-primary:hover,
-  .algaeh_Arabic_Version .hptl-phase1-footer .btn-default:hover,
-  .algaeh_Arabic_Version .hptl-phase1-footer .btn-other:hover {
-    background: #239296;
-    color: #fff;
-    border: 1px solid #239296; }

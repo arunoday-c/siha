@@ -582,18 +582,25 @@ body {
   }
 
   .hptl-phase1-footer {
-    .main {
-      background-color: #000000 !important;
-      padding: 7px 0px;
-      height: 40px;
-      width: 100%;
-      position: fixed;
-      left: 0;
-      bottom: 0;
+    background: #000;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    padding: 5px 15px;
+    z-index: 1080;
+    button {
+      float: right;
+      margin-left: 10px;
+      padding: 5px 10px;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      min-width: 70px;
     }
-
-    .app_bar {
-      background: #000000;
+    .btn-other {
+      background: none;
+      color: #fff;
+      border: 1px solid #efefef;
     }
   }
 
@@ -1388,6 +1395,7 @@ th {
     }
     label {
       cursor: pointer;
+      font-size: 0.8rem;
     }
   }
 }

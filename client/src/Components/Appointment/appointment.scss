@@ -2,7 +2,7 @@
   .appointment-outer-cntr {
     overflow-x: auto;
     overflow-y: hidden;
-    width: 94.8vw;
+    width: 94vw;
   }
   .appointment-inner-cntr {
     min-width: 94vw !important;
@@ -131,6 +131,9 @@
     display: inline-block;
     margin-right: 5px;
     vertical-align: top;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    margin-bottom: 10px;
+    border-bottom: 1px solid #d3d3d3;
 
     thead {
       tr {
