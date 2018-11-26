@@ -155,6 +155,7 @@ header {
           margin-left: 15px;
           display: inline-block;
           vertical-align: initial;
+          color: #c1c1c1;
         }
         span {
           padding: 8px 5px 8px 13px;
@@ -164,10 +165,16 @@ header {
         }
         &:hover {
           background: #afafaf;
+          i {
+            color: #fff;
+          }
         }
         &.active {
           background: rgb(0, 188, 176);
           color: #fff;
+          i {
+            color: #fff;
+          }
         }
       }
     }
