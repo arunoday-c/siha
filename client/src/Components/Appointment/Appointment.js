@@ -667,7 +667,11 @@ class Appointment extends Component {
     }
   }
 
-  updatePatientAppointment() {
+  updatePatientAppointment(data) {
+    debugger;
+    if (data !== null) {
+      this.state.edit_appointment_status_id = data.hims_d_appointment_status_id;
+    }
     AlgaehValidation({
       querySelector: "data-validate='editApptDiv'",
       alertTypeIcon: "warning",
@@ -1280,6 +1284,30 @@ class Appointment extends Component {
                     className="fas fa-times"
                     onClick={this.cancelAppt.bind(this, patient)}
                   />
+                  <div className="appStatusListCntr">
+                    <i className="fas fa-clock" />
+                    <ul className="appStatusList">
+                      {this.state.appointmentStatus !== undefined
+                        ? this.state.appointmentStatus.map((data, index) => (
+                            <li
+                              key={index}
+                              onClick={this.updatePatientAppointment.bind(
+                                this,
+                                data
+                              )}
+                            >
+                              <span
+                                style={{
+                                  backgroundColor: data.color_code
+                                }}
+                              >
+                                {data.description}
+                              </span>
+                            </li>
+                          ))
+                        : null}
+                    </ul>
+                  </div>
                 </div>
               ) : null}
             </React.Fragment>
@@ -1518,7 +1546,7 @@ class Appointment extends Component {
                         <div className="row">
                           <AlagehAutoComplete
                             div={{
-                              className: "col margin-top-15 mandatory"
+                              className: "col-2 margin-top-15 mandatory"
                             }}
                             label={{
                               forceLabel: "Title",
@@ -1674,6 +1702,7 @@ class Appointment extends Component {
                               name: "edit_contact_number",
                               others: {
                                 type: "number",
+                                maxlength: "15",
                                 disabled: true
                               },
                               value: this.state.edit_contact_number,
@@ -1732,7 +1761,7 @@ class Appointment extends Component {
                 <div className="popupFooter">
                   <div className="col-lg-12">
                     <button
-                      onClick={this.updatePatientAppointment.bind(this)}
+                      onClick={this.updatePatientAppointment.bind(this, null)}
                       type="button"
                       className="btn btn-primary"
                     >

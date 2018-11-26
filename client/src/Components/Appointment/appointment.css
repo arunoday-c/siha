@@ -164,7 +164,32 @@
         display: inline-block;
         left: 0;
         top: 0; }
-    .appointment .tg tbody .dynPatient:hover span {
+      .appointment .tg tbody .dynPatient .appStatusListCntr:hover .appStatusList {
+        display: block; }
+      .appointment .tg tbody .dynPatient .appStatusListCntr ul.appStatusList {
+        display: none;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        color: #000;
+        background: #fff;
+        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+        z-index: 9999;
+        position: absolute;
+        width: 100%;
+        left: 0;
+        top: 37px; }
+        .appointment .tg tbody .dynPatient .appStatusListCntr ul.appStatusList li {
+          margin: 0;
+          padding: 0;
+          list-style: none;
+          border-top: 1px solid #fff;
+          display: block; }
+          .appointment .tg tbody .dynPatient .appStatusListCntr ul.appStatusList li span {
+            padding: 3px 5px;
+            display: block;
+            font-size: 0.7rem; }
+    .appointment .tg tbody .dynPatient span:hover {
       text-decoration: underline; }
     .appointment .tg tbody .patientStdbyCount {
       display: block;
@@ -224,7 +249,7 @@
       font-size: 0.7rem;
       color: #7d7d7d; }
     .appointment .tg tbody i.fa-plus {
-      visibility: hidden;
+      display: none;
       position: absolute;
       top: -1px;
       right: -1px;
@@ -233,24 +258,43 @@
       width: 20px;
       color: #009e94;
       cursor: pointer; }
-    .appointment .tg tbody i.fa-pen {
-      color: blue !important; }
-    .appointment .tg tbody i.fa-times {
-      visibility: hidden;
-      color: black !important; }
-    .appointment .tg tbody .dynPatient:hover i.fa-times {
-      visibility: visible;
+    .appointment .tg tbody i.fa-clock {
+      color: blue !important;
+      display: none;
       position: absolute;
-      top: 0px !important;
+      top: 20px !important;
       right: 0px;
       border-left: 1px solid rgba(0, 0, 0, 0.1);
       border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-      padding: 5px 5px 3px 3px; }
+      width: 20px;
+      height: 20px;
+      text-align: center;
+      line-height: 20px;
+      font-size: 0.7rem; }
+    .appointment .tg tbody i.fa-times {
+      display: none;
+      display: none;
+      position: absolute;
+      top: 0 !important;
+      right: 0px;
+      border-left: 1px solid rgba(0, 0, 0, 0.1);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      width: 20px;
+      height: 20px;
+      text-align: center;
+      line-height: 20px;
+      font-size: 0.7rem; }
+    .appointment .tg tbody .dynPatient:hover i.fa-times,
+    .appointment .tg tbody .dynPatient:hover i.fa-clock {
+      display: block; }
     .appointment .tg tbody i.fa-times:hover {
       color: red !important;
       background: rgba(255, 255, 255, 0.7) !important; }
+    .appointment .tg tbody i.fa-clock:hover {
+      color: green !important;
+      background: rgba(255, 255, 255, 0.7) !important; }
     .appointment .tg tbody td.tg-baqh:hover i.fa-plus {
-      visibility: visible; }
+      display: block; }
     .appointment .tg tbody td.tg-baqh:nth-child(odd) {
       border-right: 1px dashed lightgrey !important; }
     .appointment .tg tbody td.tg-baqh:nth-child(even) {
