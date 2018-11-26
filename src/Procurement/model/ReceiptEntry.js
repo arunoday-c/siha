@@ -262,13 +262,13 @@ let updateReceiptEntry = (req, res, next) => {
         debugLog("req.body: ", req.body);
 
         connection.query(
-          "UPDATE `hims_f_procurement_po_header` SET `authorize1`=?, `authorize_by_date`=?, `authorize_by_1`=? \
-      WHERE `hims_f_procurement_po_header_id`=?",
+          "UPDATE `hims_f_procurement_grn_header` SET `authorize1`=?, `authorize_by_date`=?, `authorize_by_1`=? \
+      WHERE `hims_f_procurement_grn_header_id`=?",
           [
             inputParam.authorize1,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            inputParam.hims_f_procurement_po_header_id
+            inputParam.hims_f_procurement_grn_header_id
           ],
           (error, result) => {
             if (error) {
@@ -285,7 +285,7 @@ let updateReceiptEntry = (req, res, next) => {
 
               for (let i = 0; i < details.length; i++) {
                 qry +=
-                  " UPDATE `hims_f_procurement_po_detail` SET authorize_quantity='" +
+                  " UPDATE `hims_f_procurement_grn_detail` SET authorize_quantity='" +
                   details[i].authorize_quantity +
                   "',rejected_quantity='" +
                   details[i].rejected_quantity +
@@ -293,8 +293,8 @@ let updateReceiptEntry = (req, res, next) => {
                   (details[i].quantity_recieved || 0) +
                   "',quantity_outstanding='" +
                   (details[i].quantity_outstanding || 0) +
-                  "' WHERE hims_f_procurement_po_detail_id='" +
-                  details[i].hims_f_procurement_po_detail_id +
+                  "' WHERE hims_f_procurement_grn_detail_id='" +
+                  details[i].hims_f_procurement_grn_detail_id +
                   "';";
               }
 

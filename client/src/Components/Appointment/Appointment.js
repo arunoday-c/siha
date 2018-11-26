@@ -596,7 +596,8 @@ class Appointment extends Component {
     );
   }
 
-  openEditModal(patient, e) {
+  openEditModal(patient, data, e) {
+    debugger;
     e.preventDefault();
 
     //debugger;
@@ -637,32 +638,43 @@ class Appointment extends Component {
         type: "warning"
       });
     } else {
-      this.setState({ patToEdit: patient, openPatEdit: true }, () => {
+      let openPatEdit = false;
+      if (data === null) {
+        openPatEdit = true;
+      }
+      this.setState({ patToEdit: patient, openPatEdit: openPatEdit }, () => {
         let pat_edit = this.state.patToEdit;
 
-        this.setState({
-          edit_appointment_status_id: pat_edit.appointment_status_id,
-          edit_appt_date: pat_edit.appointment_date,
-          edit_appt_time: pat_edit.appointment_from_time,
-          edit_contact_number: pat_edit.contact_number,
-          edit_patient_name: pat_edit.patient_name,
-          edit_arabic_name: pat_edit.arabic_name,
-          edit_date_of_birth: pat_edit.date_of_birth,
-          edit_age: pat_edit.age,
-          edit_gender: pat_edit.gender,
-          edit_email: pat_edit.email,
-          edit_appointment_remarks: pat_edit.appointment_remarks,
-          edit_appointment_id: pat_edit.hims_f_patient_appointment_id,
-          edit_provider_id: pat_edit.provider_id,
-          edit_patient_id: pat_edit.patient_id,
-          edit_from_time: pat_edit.appointment_from_time,
-          edit_sub_dep_id: pat_edit.sub_department_id,
-          edit_appointment_date: pat_edit.appointment_date,
-          patient_code: pat_edit.patient_code,
-          edit_no_of_slots: pat_edit.number_of_slot,
-          edit_is_stand_by: pat_edit.is_stand_by,
-          edit_title_id: pat_edit.title_id
-        });
+        this.setState(
+          {
+            edit_appointment_status_id: pat_edit.appointment_status_id,
+            edit_appt_date: pat_edit.appointment_date,
+            edit_appt_time: pat_edit.appointment_from_time,
+            edit_contact_number: pat_edit.contact_number,
+            edit_patient_name: pat_edit.patient_name,
+            edit_arabic_name: pat_edit.arabic_name,
+            edit_date_of_birth: pat_edit.date_of_birth,
+            edit_age: pat_edit.age,
+            edit_gender: pat_edit.gender,
+            edit_email: pat_edit.email,
+            edit_appointment_remarks: pat_edit.appointment_remarks,
+            edit_appointment_id: pat_edit.hims_f_patient_appointment_id,
+            edit_provider_id: pat_edit.provider_id,
+            edit_patient_id: pat_edit.patient_id,
+            edit_from_time: pat_edit.appointment_from_time,
+            edit_sub_dep_id: pat_edit.sub_department_id,
+            edit_appointment_date: pat_edit.appointment_date,
+            patient_code: pat_edit.patient_code,
+            edit_no_of_slots: pat_edit.number_of_slot,
+            edit_is_stand_by: pat_edit.is_stand_by,
+            edit_title_id: pat_edit.title_id
+          },
+          () => {
+            if (data !== null) {
+              this.updatePatientAppointment(data);
+            }
+          }
+        );
       });
     }
   }
@@ -1169,7 +1181,9 @@ class Appointment extends Component {
               className="dynPatient"
               style={{ background: "#f2f2f2" }}
             >
-              <span onClick={this.openEditModal.bind(this, _firstPatient)}>
+              <span
+                onClick={this.openEditModal.bind(this, _firstPatient, null)}
+              >
                 {_firstPatient.patient_name}
                 <br />
                 {_firstPatient.contact_number}
@@ -1274,7 +1288,7 @@ class Appointment extends Component {
                   draggable={true}
                   onDragStart={this.drag.bind(this)}
                 >
-                  <span onClick={this.openEditModal.bind(this, patient)}>
+                  <span onClick={this.openEditModal.bind(this, patient, null)}>
                     {patient.patient_name}
                     <br />
                     {patient.contact_number}
@@ -1291,10 +1305,7 @@ class Appointment extends Component {
                         ? this.state.appointmentStatus.map((data, index) => (
                             <li
                               key={index}
-                              onClick={this.updatePatientAppointment.bind(
-                                this,
-                                data
-                              )}
+                              onClick={this.openEditModal.bind(this, patient, data)}
                             >
                               <span
                                 style={{
