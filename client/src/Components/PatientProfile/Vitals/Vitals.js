@@ -350,11 +350,11 @@ class Vitals extends Component {
             </div>
 
             <div className="actions">
-              <a className="btn btn-primary btn-circle active">
-                <i
-                  onClick={this.addVitals.bind(this)}
-                  className="fas fa-history"
-                />
+              <a
+                className="btn btn-primary btn-circle active"
+                onClick={this.addVitals.bind(this)}
+              >
+                <i className="fas fa-history" />
               </a>
             </div>
           </div>

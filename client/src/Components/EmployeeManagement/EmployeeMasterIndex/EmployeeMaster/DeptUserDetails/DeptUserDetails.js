@@ -215,11 +215,9 @@ class DeptUserDetails extends Component {
                   <a
                     // href="javascript"
                     className="btn btn-primary btn-circle active"
+                    onClick={AddDeptUser.bind(this, this, context)}
                   >
-                    <i
-                      className="fas fa-plus"
-                      onClick={AddDeptUser.bind(this, this, context)}
-                    />
+                    <i className="fas fa-plus" />
                   </a>
                 </div>
               </div>

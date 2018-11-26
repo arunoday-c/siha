@@ -132,11 +132,9 @@ class Referal extends Component {
             <a
               // href="javascript"
               className="btn btn-primary btn-circle active"
+              onClick={addReferal.bind(this, this)}
             >
-              <i
-                className="fas fa-plus"
-                onClick={addReferal.bind(this, this)}
-              />
+              <i className="fas fa-plus" />
             </a>
           </div>
         </div>

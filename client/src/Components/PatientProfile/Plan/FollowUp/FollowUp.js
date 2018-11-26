@@ -61,60 +61,59 @@ class FollowUp extends Component {
               </label>
             </div>
           </div>
-
         </div>
-          <div className="row" style={{ paddingBottom: "10px" }}>
-            <AlagehFormGroup
-              div={{ className: "col-lg-12" }}
-              label={{
-                forceLabel: "Reason"
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "followup_comments",
-                value: this.state.followup_comments,
-                events: {
-                  onChange: texthandle.bind(this, this)
-                }
-              }}
-            />
-          </div>
+        <div className="row" style={{ paddingBottom: "10px" }}>
+          <AlagehFormGroup
+            div={{ className: "col-lg-12" }}
+            label={{
+              forceLabel: "Reason"
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "followup_comments",
+              value: this.state.followup_comments,
+              events: {
+                onChange: texthandle.bind(this, this)
+              }
+            }}
+          />
+        </div>
 
-          <div className="row">
-            <AlagehFormGroup
-              div={{ className: "col-lg-4" }}
-              label={{
-                forceLabel: "Next Visit After"
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "followup_days",
-                value: this.state.followup_days,
-                events: {
-                  onChange: texthandle.bind(this, this)
-                }
-              }}
-            />
-            <span style={{ paddingTop: "4vh" }}>Days</span>
-            <AlgaehDateHandler
-              div={{ className: "col-lg-5" }}
-              label={{ forceLabel: "New Visit Date" }}
-              textBox={{ className: "txt-fld", name: "followup_date" }}
-              minDate={new Date()}
-              events={{
-                onChange: datehandle.bind(this, this)
-              }}
-              value={this.state.followup_date}
-            />
-            <div className="actions" style={{ paddingTop: "3.5vh" }}>
-              <a className="btn btn-primary btn-circle active">
-                <i
-                  className="fas fa-plus"
-                  onClick={addFollowUp.bind(this, this)}
-                />
-              </a>
-            </div>
+        <div className="row">
+          <AlagehFormGroup
+            div={{ className: "col-lg-4" }}
+            label={{
+              forceLabel: "Next Visit After"
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "followup_days",
+              value: this.state.followup_days,
+              events: {
+                onChange: texthandle.bind(this, this)
+              }
+            }}
+          />
+          <span style={{ paddingTop: "4vh" }}>Days</span>
+          <AlgaehDateHandler
+            div={{ className: "col-lg-5" }}
+            label={{ forceLabel: "New Visit Date" }}
+            textBox={{ className: "txt-fld", name: "followup_date" }}
+            minDate={new Date()}
+            events={{
+              onChange: datehandle.bind(this, this)
+            }}
+            value={this.state.followup_date}
+          />
+          <div className="actions" style={{ paddingTop: "3.5vh" }}>
+            <a
+              className="btn btn-primary btn-circle active"
+              onClick={addFollowUp.bind(this, this)}
+            >
+              <i className="fas fa-plus" />
+            </a>
           </div>
+        </div>
       </div>
     );
   }
