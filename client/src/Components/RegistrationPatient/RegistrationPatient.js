@@ -379,7 +379,7 @@ class RegistrationPatient extends PureComponent {
             data.patientRegistration.appointment_patient = "Y";
             data.patientRegistration.hims_f_patient_appointment_id = hims_f_patient_appointment_id;
 
-            data.patientRegistration.title_id = title_id;
+            // data.patientRegistration.title_id = title_id;
           }
           //Appoinment End
           data.patientRegistration.filePreview =

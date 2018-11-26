@@ -252,9 +252,11 @@ class Appointment extends Component {
           number_of_slot: this.state.no_of_slots,
           confirmed: "N",
           cancelled: "N",
-          is_stand_by: this.state.is_stand_by
+          is_stand_by: this.state.is_stand_by,
+          title_id: this.state.title_id
         };
 
+        debugger;
         algaehApiCall({
           uri: "/appointment/addPatientAppointment",
           method: "POST",
@@ -600,7 +602,6 @@ class Appointment extends Component {
     debugger;
     e.preventDefault();
 
-    //debugger;
     let maxSlots = 1;
     const _currentRow = e.target.parentElement.parentNode.sectionRowIndex + 1;
     const _allRows =
@@ -643,6 +644,7 @@ class Appointment extends Component {
         openPatEdit = true;
       }
       this.setState({ patToEdit: patient, openPatEdit: openPatEdit }, () => {
+        debugger;
         let pat_edit = this.state.patToEdit;
 
         this.setState(
@@ -680,7 +682,6 @@ class Appointment extends Component {
   }
 
   updatePatientAppointment(data) {
-    debugger;
     if (data !== null) {
       this.state.edit_appointment_status_id = data.hims_d_appointment_status_id;
     }
@@ -741,9 +742,11 @@ class Appointment extends Component {
                 cancel_reason: null,
                 appointment_remarks: this.state.edit_appointment_remarks,
                 is_stand_by: this.state.edit_is_stand_by,
-                number_of_slot: this.state.edit_no_of_slots
+                number_of_slot: this.state.edit_no_of_slots,
+                title_id: this.state.edit_title_id
               };
 
+              debugger;
               algaehApiCall({
                 uri: "/appointment/updatePatientAppointment",
                 method: "PUT",
@@ -803,7 +806,6 @@ class Appointment extends Component {
   }
 
   showModal(e) {
-    //debugger;
     let maxSlots = 1;
     const _currentRow = e.target.parentElement.parentNode.sectionRowIndex + 1;
     const _allRows =
@@ -1068,6 +1070,7 @@ class Appointment extends Component {
     }
   }
   plotAddIcon(patient, data) {
+    debugger;
     const _isstandby =
       patient === null || patient === undefined
         ? "N"
@@ -1204,6 +1207,7 @@ class Appointment extends Component {
   }
 
   generateChilderns(data) {
+    debugger;
     const colspan = data.mark_as_break
       ? {
           colSpan: 2,
@@ -1305,7 +1309,11 @@ class Appointment extends Component {
                         ? this.state.appointmentStatus.map((data, index) => (
                             <li
                               key={index}
-                              onClick={this.openEditModal.bind(this, patient, data)}
+                              onClick={this.openEditModal.bind(
+                                this,
+                                patient,
+                                data
+                              )}
                             >
                               <span
                                 style={{
@@ -1349,6 +1357,7 @@ class Appointment extends Component {
   }
 
   generateTimeslots(data) {
+    debugger;
     const clinic_id = data.clinic_id;
     const provider_id = data.provider_id;
     const sch_header_id = data.hims_d_appointment_schedule_header_id;
@@ -1572,7 +1581,10 @@ class Appointment extends Component {
                                 valueField: "his_d_title_id",
                                 data: this.state.titles
                               },
-                              onChange: this.dropDownHandle.bind(this)
+                              onChange: this.dropDownHandle.bind(this),
+                              others: {
+                                disabled: true
+                              }
                             }}
                           />
 
