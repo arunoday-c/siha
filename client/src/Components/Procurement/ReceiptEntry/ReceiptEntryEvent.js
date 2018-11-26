@@ -4,7 +4,7 @@ import moment from "moment";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
-import DNEntry from "../../../Models/DNEntry";
+import ReceiptEntryInv from "../../../Models/ReceiptEntry";
 
 let texthandlerInterval = null;
 
@@ -155,7 +155,7 @@ const DeliverySearch = ($this, e) => {
   } else {
     let Inputs = "";
 
-    if ($this.state.dn_from === "PHR") {
+    if ($this.state.grn_for === "PHR") {
       Inputs = "pharmcy_location_id = " + $this.state.pharmcy_location_id;
     } else {
       Inputs = "inventory_location_id = " + $this.state.inventory_location_id;
@@ -178,6 +178,7 @@ const DeliverySearch = ($this, e) => {
           data: { delivery_note_number: row.delivery_note_number },
           onSuccess: response => {
             if (response.data.success) {
+              debugger;
               let data = response.data.records;
               if (
                 $this.props.delivery_note_number !== undefined &&
@@ -187,8 +188,16 @@ const DeliverySearch = ($this, e) => {
                 data.ItemDisable = true;
                 data.ClearDisable = true;
               }
-              data.saveEnable = true;
+
+              for (let i = 0; i < data.dn_entry_detail.length; i++) {
+                data.dn_entry_detail[i].recieved_quantity =
+                  data.dn_entry_detail[i].dn_quantity;
+              }
+              data.receipt_entry_detail = data.dn_entry_detail;
+              data.saveEnable = false;
               data.dataExitst = true;
+              data.po_id = data.purchase_order_id;
+              data.dn_id = data.hims_f_procurement_dn_header_id;
 
               data.addedItem = true;
               $this.setState(data, () => {
@@ -205,70 +214,28 @@ const DeliverySearch = ($this, e) => {
             });
           }
         });
-
-        // $this.props.getPurchaseOrderEntry({
-        //   uri: "/PurchaseOrderEntry/getPurchaseOrderEntry",
-        //   method: "GET",
-        //   data: {
-        //     purchase_number: row.purchase_number
-        //   },
-        //   redux: {
-        //     type: "PO_ENTRY_GET_DATA",
-        //     mappingName: "purchaseorderentry"
-        //   },
-        //   afterSuccess: data => {
-        //
-        //     if (data !== null && data !== undefined) {
-        //       AlgaehLoader({ show: true });
-
-        //       data.saveEnable = false;
-
-        //       data.location_type = "MS";
-
-        //       data.dataExitst = true;
-        //       data.purchase_order_id = data.hims_f_procurement_po_header_id;
-        //       for (let i = 0; i < data.po_entry_detail.length; i++) {
-        //         data.po_entry_detail[i].po_quantity =
-        //           data.po_entry_detail[i].authorize_quantity;
-        //         data.po_entry_detail[i].dn_quantity =
-        //           data.po_entry_detail[i].authorize_quantity;
-
-        //         data.po_entry_detail[i].authorize_quantity = 0;
-
-        //         data.po_entry_detail[i].discount_percentage =
-        //           data.po_entry_detail[i].sub_discount_percentage;
-
-        //         data.po_entry_detail[i].discount_amount =
-        //           data.po_entry_detail[i].sub_discount_amount;
-        //       }
-        //       data.dn_entry_detail = data.po_entry_detail;
-        //       $this.setState(data);
-        //       AlgaehLoader({ show: false });
-        //     }
-        //   }
-        // });
       }
     });
   }
 };
 
 const ClearData = ($this, e) => {
-  let IOputs = DNEntry.inputParam();
+  let IOputs = ReceiptEntryInv.inputParam();
 
   IOputs.dataExitst = false;
   $this.setState(IOputs);
 };
 
-const SaveDNEnrty = $this => {
+const SaveReceiptEnrty = $this => {
   algaehApiCall({
-    uri: "/DeliveryNoteEntry/addDeliveryNoteEntry",
+    uri: "/ReceiptEntry/addReceiptEntry",
     data: $this.state,
     onSuccess: response => {
       if (response.data.success === true) {
         $this.setState({
-          delivery_note_number: response.data.records.delivery_note_number,
-          hims_f_procurement_dn_header_id:
-            response.data.records.hims_f_procurement_dn_header_id,
+          grn_number: response.data.records.grn_number,
+          hims_f_procurement_grn_header_id:
+            response.data.records.hims_f_procurement_grn_header_id,
           saveEnable: true
         });
 
@@ -283,19 +250,19 @@ const SaveDNEnrty = $this => {
 
 const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
-  $this.props.getPurchaseOrderEntry({
-    uri: "/PurchaseOrderEntry/getPurchaseOrderEntry",
+  $this.props.getReceiptEntry({
+    uri: "/ReceiptEntry/getReceiptEntry",
     method: "GET",
     printInput: true,
-    data: { delivery_note_number: docNumber },
+    data: { grn_number: docNumber },
     redux: {
       type: "PO_ENTRY_GET_DATA",
-      mappingName: "purchaseorderentry"
+      mappingName: "receiptentry"
     },
     afterSuccess: data => {
       if (
-        $this.props.delivery_note_number !== undefined &&
-        $this.props.delivery_note_number.length !== 0
+        $this.props.grn_number !== undefined &&
+        $this.props.grn_number.length !== 0
       ) {
         data.authorizeEnable = false;
         data.ItemDisable = true;
@@ -314,7 +281,7 @@ const getCtrlCode = ($this, docNumber) => {
 };
 
 const getData = $this => {
-  if ($this.state.po_from === "PHR") {
+  if ($this.state.grn_for === "PHR") {
     $this.props.getItems({
       uri: "/pharmacy/getItemMaster",
       method: "GET",
@@ -359,7 +326,7 @@ const getData = $this => {
         mappingName: "receiptitemuom"
       }
     });
-  } else if ($this.state.po_from === "INV") {
+  } else if ($this.state.grn_for === "INV") {
     $this.props.getItems({
       uri: "/inventory/getItemMaster",
       method: "GET",
@@ -419,7 +386,7 @@ export {
   DeliverySearch,
   vendortexthandle,
   ClearData,
-  SaveDNEnrty,
+  SaveReceiptEnrty,
   getCtrlCode,
   loctexthandle,
   PostReceiptEntry

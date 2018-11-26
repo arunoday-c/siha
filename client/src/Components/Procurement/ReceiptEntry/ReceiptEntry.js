@@ -22,7 +22,7 @@ import {
   texthandle,
   poforhandle,
   ClearData,
-  SaveDNEnrty,
+  SaveReceiptEnrty,
   DeliverySearch,
   getCtrlCode,
   PostReceiptEntry
@@ -30,13 +30,18 @@ import {
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import Enumerable from "linq";
-import DNEntry from "../../../Models/DNEntry";
+import ReceiptEntryInp from "../../../Models/ReceiptEntry";
 import MyContext from "../../../utils/MyContext";
 
 class ReceiptEntry extends Component {
   constructor(props) {
     super(props);
     this.state = {};
+  }
+
+  componentWillMount() {
+    let IOputs = ReceiptEntryInp.inputParam();
+    this.setState(IOputs);
   }
 
   componentDidMount() {
@@ -96,8 +101,8 @@ class ReceiptEntry extends Component {
                 label={{ forceLabel: "Receipt Number", returnText: true }}
               />
             ),
-            value: this.state.document_number,
-            selectValue: "document_number",
+            value: this.state.grn_number,
+            selectValue: "grn_number",
             events: {
               onChange: getCtrlCode.bind(this, this)
             },
@@ -116,8 +121,8 @@ class ReceiptEntry extends Component {
                   }}
                 />
                 <h6>
-                  {this.state.docdate
-                    ? moment(this.state.docdate).format(Options.dateFormat)
+                  {this.state.grn_date
+                    ? moment(this.state.grn_date).format(Options.dateFormat)
                     : Options.dateFormat}
                 </h6>
               </div>
@@ -136,9 +141,9 @@ class ReceiptEntry extends Component {
                   div={{ className: "col" }}
                   label={{ forceLabel: "PO For" }}
                   selector={{
-                    name: "po_from",
+                    name: "grn_for",
                     className: "select-fld",
-                    value: this.state.po_from,
+                    value: this.state.grn_for,
                     dataSource: {
                       textField: "name",
                       valueField: "value",
@@ -156,18 +161,18 @@ class ReceiptEntry extends Component {
                   label={{ forceLabel: "Location" }}
                   selector={{
                     name:
-                      this.state.po_from === "PHR"
+                      this.state.grn_for === "PHR"
                         ? "pharmcy_location_id"
                         : "inventory_location_id",
                     className: "select-fld",
                     value:
-                      this.state.po_from === "PHR"
+                      this.state.grn_for === "PHR"
                         ? this.state.pharmcy_location_id
                         : this.state.inventory_location_id,
                     dataSource: {
                       textField: "location_description",
                       valueField:
-                        this.state.po_from === "PHR"
+                        this.state.grn_for === "PHR"
                           ? "hims_d_pharmacy_location_id"
                           : "hims_d_inventory_location_id",
                       data: _mainStore
@@ -302,53 +307,51 @@ class ReceiptEntry extends Component {
               }
             }}
           >
-            <ReceiptItemList />
+            <ReceiptItemList ReceiptEntryInp={this.state} />
           </MyContext.Provider>
 
           <div className="hptl-phase1-footer">
-            
-              <div className="row">
-                <div className="col-lg-12">
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={SaveDNEnrty.bind(this, this)}
-                    disabled={this.state.saveEnable}
-                  >
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Save",
-                        returnText: true
-                      }}
-                    />
-                  </button>
+            <div className="row">
+              <div className="col-lg-12">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={SaveReceiptEnrty.bind(this, this)}
+                  disabled={this.state.saveEnable}
+                >
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Save",
+                      returnText: true
+                    }}
+                  />
+                </button>
 
-                  <button
-                    type="button"
-                    className="btn btn-default"
-                    disabled={this.state.ClearDisable}
-                    onClick={ClearData.bind(this, this)}
-                  >
-                    <AlgaehLabel
-                      label={{ forceLabel: "Clear", returnText: true }}
-                    />
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-other"
-                    disabled={this.state.authorize1 === "Y" ? true : false}
-                    onClick={PostReceiptEntry.bind(this, this)}
-                  >
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Post",
-                        returnText: true
-                      }}
-                    />
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  disabled={this.state.ClearDisable}
+                  onClick={ClearData.bind(this, this)}
+                >
+                  <AlgaehLabel
+                    label={{ forceLabel: "Clear", returnText: true }}
+                  />
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-other"
+                  disabled={this.state.postEnable}
+                  onClick={PostReceiptEntry.bind(this, this)}
+                >
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Post",
+                      returnText: true
+                    }}
+                  />
+                </button>
               </div>
-            
+            </div>
           </div>
         </div>
       </div>
