@@ -4,8 +4,7 @@ import httpStatus from "../../utils/httpStatus";
 import {
   addReceiptEntry,
   getReceiptEntry,
-  updateReceiptEntry,
-  getAuthPurchaseList
+  updateReceiptEntry
 } from "../model/ReceiptEntry";
 import { debugFunction, debugLog } from "../../utils/logging";
 export default ({ config, db }) => {
@@ -42,21 +41,6 @@ export default ({ config, db }) => {
   api.get(
     "/getReceiptEntry",
     getReceiptEntry,
-    (req, res, next) => {
-      let result = req.records;
-      res.status(httpStatus.ok).json({
-        success: true,
-        records: result
-      });
-      next();
-    },
-    releaseConnection
-  );
-
-  // created by Nowshad :to getAuthrequisitionList
-  api.get(
-    "/getAuthPurchaseList",
-    getAuthPurchaseList,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

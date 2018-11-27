@@ -5,7 +5,7 @@ import axios from "axios";
 import { setToken, getLocalIP } from "../../utils/algaehApiCall";
 import config from "../../utils/config.json";
 import { successfulMessage } from "../../utils/GlobalFunctions";
-export function getTokenDetals() {
+export function getTokenDetals(that) {
   var auth_url = "/api/v1/apiAuth";
   var username = config.apiAuth.user;
   var password = config.apiAuth.password;
@@ -28,10 +28,9 @@ export function getTokenDetals() {
     })
       .then(response => {
         setToken(response.data.token, response.data.days);
-        window.sessionStorage.setItem(
-          "hospitalList",
-          JSON.stringify(response.data.hospitalList)
-        );
+        that.setState({
+          hospitalList: response.data.hospitalList
+        });
       })
       .catch(err => {
         console.error("Error : ", err.message);

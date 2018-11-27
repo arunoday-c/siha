@@ -1,5 +1,6 @@
 import { swalMessage } from "../../../../utils/algaehApiCall";
 import Enumerable from "linq";
+import { SetBulkState } from "../../../../utils/GlobalFunctions";
 
 const texthandle = ($this, ctrl, e) => {
   e = e || ctrl;
@@ -36,12 +37,6 @@ const uomtexthandle = ($this, context, ctrl, e) => {
     [name]: value,
     uom_description: e.selected.uom_description
   });
-
-  if (context !== undefined) {
-    context.updateState({
-      uom_description: e.selected.uom_description
-    });
-  }
 };
 
 const stockingtexthandle = ($this, ctrl, e) => {
@@ -63,7 +58,6 @@ const stockingtexthandle = ($this, ctrl, e) => {
 };
 
 const AddUom = ($this, context) => {
-  
   let isError = false;
 
   let stocking_uom_id = null;
@@ -89,7 +83,7 @@ const AddUom = ($this, context) => {
 
     swalMessage({
       type: "warning",
-      title: "Invalid Input. Select Stocking Uom."
+      title: "Invalid Input. Enter Stocking Uom."
     });
 
     return isError;
@@ -114,50 +108,59 @@ const AddUom = ($this, context) => {
         StockingExit.length === 0 ||
         (StockingExit.length !== 0 && $this.state.stocking_uom === "N")
       ) {
-        if ($this.state.stocking_uom === "Y") {
-          stocking_uom_id = $this.state.uom_id;
-        } else {
-          stocking_uom_id = $this.state.stocking_uom_id;
-        }
-        if ($this.state.hims_d_item_master_id !== null) {
-          let Insertobj = {
-            item_master_id: $this.state.hims_d_item_master_id,
-            uom_id: $this.state.uom_id,
-            stocking_uom: $this.state.stocking_uom,
-            conversion_factor: $this.state.conversion_factor,
-            uom_description: $this.state.uom_description,
-            uom_status: "A"
-          };
-          insertItemUomMap.push(Insertobj);
-        }
+        SetBulkState({
+          state: $this,
+          callback: () => {
+            debugger;
+            if ($this.state.stocking_uom === "Y") {
+              stocking_uom_id = $this.state.uom_id;
+            } else {
+              stocking_uom_id = $this.state.stocking_uom_id;
+            }
+            if ($this.state.hims_d_item_master_id !== null) {
+              let Insertobj = {
+                item_master_id: $this.state.hims_d_item_master_id,
+                uom_id: $this.state.uom_id,
+                stocking_uom: $this.state.stocking_uom,
+                conversion_factor: $this.state.conversion_factor,
+                uom_description: $this.state.uom_description,
+                uom_status: "A"
+              };
+              insertItemUomMap.push(Insertobj);
+            }
 
-        let uomObj = {
-          uom_id: $this.state.uom_id,
-          conversion_factor: $this.state.conversion_factor,
-          stocking_uom: $this.state.stocking_uom,
-          uom_description: $this.state.uom_description
-        };
-        detail_item_uom.push(uomObj);
-        $this.setState({
-          detail_item_uom: detail_item_uom,
-          insertItemUomMap: insertItemUomMap,
-          uom_id: null,
-          stocking_uom: null,
-          conversion_factor: null,
-          stocking_uom_id: stocking_uom_id,
-          convertEnable: false
+            let uomObj = {
+              uom_id: $this.state.uom_id,
+              conversion_factor: $this.state.conversion_factor,
+              stocking_uom: $this.state.stocking_uom,
+              uom_description: $this.state.uom_description
+            };
+            detail_item_uom.push(uomObj);
+            $this.setState({
+              detail_item_uom: detail_item_uom,
+              insertItemUomMap: insertItemUomMap,
+              uom_id: null,
+              stocking_uom: null,
+              conversion_factor: null,
+              stocking_uom_id: stocking_uom_id,
+              convertEnable: false
+            });
+            debugger;
+            $this.state.stocking_uom_id = stocking_uom_id;
+            if (context !== undefined) {
+              context.updateState({
+                detail_item_uom: detail_item_uom,
+                uom_description: $this.state.uom_description,
+                insertItemUomMap: insertItemUomMap,
+                stocking_uom_id: stocking_uom_id,
+                uom_id: null,
+                stocking_uom: null,
+                conversion_factor: null,
+                ...$this.state
+              });
+            }
+          }
         });
-
-        if (context !== undefined) {
-          context.updateState({
-            detail_item_uom: detail_item_uom,
-            insertItemUomMap: insertItemUomMap,
-            stocking_uom_id: stocking_uom_id,
-            uom_id: null,
-            stocking_uom: null,
-            conversion_factor: null
-          });
-        }
       } else {
         isError = true;
         swalMessage({
@@ -234,7 +237,6 @@ const updateUOM = ($this, context, row) => {
 };
 
 const deleteUOM = ($this, context, row, rowId) => {
-  
   if (row.hims_m_item_uom_id !== undefined) {
     let detail_item_uom = $this.state.detail_item_uom;
     let updateUomMapResult = $this.state.updateUomMapResult;

@@ -10,7 +10,6 @@ import extend from "extend";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import AppBar from "@material-ui/core/AppBar";
 
 import {
   postPatientDetails,
@@ -40,7 +39,8 @@ import {
   ShowRefundScreen,
   ClearData,
   ShowAdvanceScreen,
-  getHospitalDetails
+  getHospitalDetails,
+  getCashiersAndShiftMAP
 } from "./RegistrationPatientEvent";
 const emptyObject = extend(
   PatRegIOputs.inputParam(),
@@ -147,10 +147,13 @@ class RegistrationPatient extends PureComponent {
         this.setState({
           vat_applicable: this.props.hospitaldetails[0].local_vat_applicable,
           nationality_id: this.props.hospitaldetails[0].default_nationality,
-          country_id: this.props.hospitaldetails[0].default_country
+          country_id: this.props.hospitaldetails[0].default_country,
+          patient_type: this.props.hospitaldetails[0].default_patient_type
         });
       }
     }
+
+    getCashiersAndShiftMAP(this, this);
 
     let _screenName = getCookie("ScreenName").replace("/", "");
     algaehApiCall({

@@ -16,6 +16,7 @@ import {
   BatchExpRequired,
   CptCodesSearch,
   VatAppilicable
+  // onBlurFunction
 } from "./ItemDetailsEvents";
 
 class ItemDetails extends Component {
@@ -51,6 +52,7 @@ class ItemDetails extends Component {
   }
 
   render() {
+    debugger;
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -63,7 +65,6 @@ class ItemDetails extends Component {
                 <div className="row">
                   {/* Patient code */}
 
-                  {/* created by Adnan */}
                   <AlagehFormGroup
                     div={{ className: "col-lg-3" }}
                     label={{
@@ -73,13 +74,9 @@ class ItemDetails extends Component {
                     textBox={{
                       className: "txt-fld",
                       name: "item_code",
-                      value: this.state.item_code,
-                      events: {
-                        onChange: texthandle.bind(this, this, context)
-                      }
+                      value: this.state.item_code
                     }}
                   />
-                  {/* created by Adnan */}
 
                   <AlagehFormGroup
                     div={{ className: "col-lg-3" }}
@@ -90,10 +87,7 @@ class ItemDetails extends Component {
                     textBox={{
                       className: "txt-fld",
                       name: "item_description",
-                      value: this.state.item_description,
-                      events: {
-                        onChange: texthandle.bind(this, this, context)
-                      }
+                      value: this.state.item_description
                     }}
                   />
                   <AlagehAutoComplete
@@ -110,8 +104,7 @@ class ItemDetails extends Component {
                         textField: "generic_name",
                         valueField: "hims_d_item_generic_id",
                         data: this.props.itemgeneric
-                      },
-                      onChange: texthandle.bind(this, this, context)
+                      }
                     }}
                   />
                   <AlagehAutoComplete
@@ -128,8 +121,7 @@ class ItemDetails extends Component {
                         textField: "category_desc",
                         valueField: "hims_d_item_category_id",
                         data: this.props.itemcategory
-                      },
-                      onChange: texthandle.bind(this, this, context)
+                      }
                     }}
                   />
                 </div>
@@ -150,8 +142,7 @@ class ItemDetails extends Component {
                         textField: "group_description",
                         valueField: "hims_d_item_group_id",
                         data: this.props.itemgroup
-                      },
-                      onChange: texthandle.bind(this, this, context)
+                      }
                     }}
                   />
 
@@ -169,8 +160,7 @@ class ItemDetails extends Component {
                         textField: "uom_description",
                         valueField: "uom_id",
                         data: this.state.detail_item_uom
-                      },
-                      onChange: texthandle.bind(this, this, context)
+                      }
                     }}
                   />
                   <AlagehAutoComplete
@@ -187,8 +177,7 @@ class ItemDetails extends Component {
                         textField: "uom_description",
                         valueField: "uom_id",
                         data: this.state.detail_item_uom
-                      },
-                      onChange: texthandle.bind(this, this, context)
+                      }
                     }}
                   />
                   <AlagehAutoComplete
@@ -208,8 +197,7 @@ class ItemDetails extends Component {
                       },
                       others: {
                         disabled: true
-                      },
-                      onChange: texthandle.bind(this, this, context)
+                      }
                     }}
                   />
                 </div>
@@ -228,8 +216,7 @@ class ItemDetails extends Component {
                         textField: "uom_description",
                         valueField: "uom_id",
                         data: this.state.detail_item_uom
-                      },
-                      onChange: texthandle.bind(this, this, context)
+                      }
                     }}
                   />
 
@@ -246,8 +233,7 @@ class ItemDetails extends Component {
                         textField: "form_description",
                         valueField: "hims_d_item_form_id",
                         data: this.props.itemform
-                      },
-                      onChange: texthandle.bind(this, this, context)
+                      }
                     }}
                   />
 
@@ -264,8 +250,7 @@ class ItemDetails extends Component {
                         textField: "storage_description",
                         valueField: "hims_d_item_storage_id",
                         data: this.props.itemstorage
-                      },
-                      onChange: texthandle.bind(this, this, context)
+                      }
                     }}
                   />
                   <AlagehAutoComplete
@@ -284,8 +269,7 @@ class ItemDetails extends Component {
                         //   : "arabic_service_name",
                         valueField: "hims_d_services_id",
                         data: this.props.itemservices
-                      },
-                      onChange: texthandle.bind(this, this, context)
+                      }
                     }}
                   />
 
@@ -352,10 +336,7 @@ class ItemDetails extends Component {
                         decimal: { allowNegative: false },
                         className: "txt-fld",
                         name: "standard_fee",
-                        value: this.state.standard_fee,
-                        events: {
-                          onChange: texthandle.bind(this, this, context)
-                        }
+                        value: this.state.standard_fee
                       }}
                     />
 
@@ -393,9 +374,7 @@ class ItemDetails extends Component {
                             className: "txt-fld",
                             name: "vat_percent",
                             value: this.state.vat_percent,
-                            events: {
-                              onChange: texthandle.bind(this, this, context)
-                            },
+
                             others: {
                               disabled:
                                 this.state.Applicable === true ? false : true
@@ -414,9 +393,6 @@ class ItemDetails extends Component {
                         className: "txt-fld",
                         name: "cpt_code",
                         value: this.state.cpt_code_data,
-                        events: {
-                          onChange: null
-                        },
                         others: {
                           disabled: true
                         }

@@ -68,6 +68,9 @@ const InsertServices = $this => {
         onSuccess: response => {
           if (response.data.success === true) {
             clearData($this);
+            $this.setState({
+              changesDone: true
+            });
             swalMessage({
               title: "Saved successfully . .",
               type: "success"
@@ -82,6 +85,9 @@ const InsertServices = $this => {
         method: "PUT",
         onSuccess: response => {
           if (response.data.success === true) {
+            $this.setState({
+              changesDone: true
+            });
             swalMessage({
               title: "Updated successfully . .",
               type: "success"

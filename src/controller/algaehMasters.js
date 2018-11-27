@@ -2,15 +2,15 @@ import { Router } from "express";
 import { releaseConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
 
-import { addEmployeeSpecialityMaster } from "../model/algaehMasters";
+import { addAlgaehGroupMAster } from "../model/algaehMasters";
 
 export default ({ config, db }) => {
   let api = Router();
 
   // created by irfan :to add
   api.post(
-    "/addEmployeeSpecialityMaster",
-    addEmployeeSpecialityMaster,
+    "/addAlgaehGroupMAster",
+    addAlgaehGroupMAster,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

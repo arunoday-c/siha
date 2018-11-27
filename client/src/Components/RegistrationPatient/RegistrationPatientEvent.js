@@ -7,6 +7,7 @@ import {
   getCookie
 } from "../../utils/algaehApiCall.js";
 import extend from "extend";
+import moment from "moment";
 
 const emptyObject = extend(
   PatRegIOputs.inputParam(),
@@ -108,37 +109,41 @@ const ClearData = ($this, e) => {
     method: "GET",
     onSuccess: response => {
       counter_id = response.data.records.selectedValue;
+
+      if (
+        $this.props.hospitaldetails !== undefined ||
+        $this.props.hospitaldetails.length !== 0
+      ) {
+        IOputs.vat_applicable =
+          $this.props.hospitaldetails[0].local_vat_applicable;
+        IOputs.nationality_id =
+          $this.props.hospitaldetails[0].default_nationality;
+        IOputs.country_id = $this.props.hospitaldetails[0].default_country;
+        IOputs.patient_type =
+          $this.props.hospitaldetails[0].default_patient_type;
+      }
+
+      if (counter_id !== null) {
+        IOputs.counter_id = counter_id;
+      }
+      $this.setState(IOputs, () => {
+        $this.props.setSelectedInsurance({
+          redux: {
+            type: "PRIMARY_INSURANCE_DATA",
+            mappingName: "primaryinsurance",
+            data: []
+          }
+        });
+
+        $this.props.setSelectedInsurance({
+          redux: {
+            type: "SECONDARY_INSURANCE_DATA",
+            mappingName: "secondaryinsurance",
+            data: []
+          }
+        });
+      });
     }
-  });
-
-  if (
-    $this.props.hospitaldetails !== undefined ||
-    $this.props.hospitaldetails.length !== 0
-  ) {
-    IOputs.vat_applicable = $this.props.hospitaldetails[0].local_vat_applicable;
-    IOputs.nationality_id = $this.props.hospitaldetails[0].default_nationality;
-    IOputs.country_id = $this.props.hospitaldetails[0].default_country;
-  }
-
-  if (counter_id !== null) {
-    IOputs.counter_id = IOputs;
-  }
-  $this.setState(IOputs, () => {
-    $this.props.setSelectedInsurance({
-      redux: {
-        type: "PRIMARY_INSURANCE_DATA",
-        mappingName: "primaryinsurance",
-        data: []
-      }
-    });
-
-    $this.props.setSelectedInsurance({
-      redux: {
-        type: "SECONDARY_INSURANCE_DATA",
-        mappingName: "secondaryinsurance",
-        data: []
-      }
-    });
   });
 };
 
@@ -155,7 +160,36 @@ const getHospitalDetails = $this => {
       $this.setState({
         vat_applicable: data[0].local_vat_applicable,
         nationality_id: data[0].default_nationality,
-        country_id: data[0].default_country
+        country_id: data[0].default_country,
+        patient_type: data[0].default_patient_type
+      });
+    }
+  });
+};
+
+const getCashiersAndShiftMAP = $this => {
+  debugger;
+  let year = moment().format("YYYY");
+  let month = moment().format("MM");
+
+  algaehApiCall({
+    uri: "/shiftAndCounter/getCashiersAndShiftMAP",
+    method: "GET",
+    data: { year: year, month: month, for: "T" },
+    onSuccess: response => {
+      debugger;
+      if (response.data.success) {
+        if (response.data.records.length > 0) {
+          $this.setState({ shift_id: response.data.records[0].shift_id });
+        }
+      }
+      AlgaehLoader({ show: false });
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
       });
     }
   });
@@ -182,5 +216,6 @@ export {
   ShowRefundScreen,
   ClearData,
   ShowAdvanceScreen,
-  getHospitalDetails
+  getHospitalDetails,
+  getCashiersAndShiftMAP
 };

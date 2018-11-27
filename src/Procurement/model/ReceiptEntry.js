@@ -262,7 +262,7 @@ let updateReceiptEntry = (req, res, next) => {
         debugLog("req.body: ", req.body);
 
         connection.query(
-          "UPDATE `hims_f_procurement_grn_header` SET `authorize1`=?, `authorize_by_date`=?, `authorize_by_1`=? \
+          "UPDATE `hims_f_procurement_grn_header` SET `posted`=?, `posted_date`=?, `posted_by`=? \
       WHERE `hims_f_procurement_grn_header_id`=?",
           [
             inputParam.authorize1,
@@ -340,65 +340,6 @@ let updateReceiptEntry = (req, res, next) => {
   }
 };
 
-//created by Nowshad: to get Pharmacy Requisition Entry
-let getAuthPurchaseList = (req, res, next) => {
-  let selectWhere = {
-    pharmcy_location_id: null,
-    inventory_location_id: null
-  };
-  try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-
-    let inputParam = extend(selectWhere, req.query);
-
-    let strQuery =
-      "SELECT * from  hims_f_procurement_po_header\
-    where cancelled='N' ";
-
-    if (inputParam.pharmcy_location_id !== null) {
-      strQuery =
-        strQuery +
-        " and pharmcy_location_id = " +
-        inputParam.pharmcy_location_id;
-    }
-    if (inputParam.inventory_location_id !== null) {
-      strQuery =
-        strQuery +
-        " and inventory_location_id = " +
-        inputParam.inventory_location_id;
-    }
-    // if (inputParam.authorize1 !== null) {
-    //   strQuery = strQuery + " and authorize1 = '" + inputParam.authorize1 + "'";
-    // }
-    // if (inputParam.authorie2 !== null) {
-    //   strQuery = strQuery + " and authorie2 = '" + inputParam.authorie2 + "'";
-    // }
-
-    debugLog("strQuery", strQuery);
-    db.getConnection((error, connection) => {
-      connection.query(
-        strQuery,
-
-        (error, headerResult) => {
-          if (error) {
-            releaseDBConnection(db, connection);
-            next(error);
-          }
-
-          debugLog("result: ", headerResult);
-          req.records = headerResult;
-          next();
-        }
-      );
-    });
-  } catch (e) {
-    next(e);
-  }
-};
-
 //created by Nowshad: to Update PO Entry
 let updatePOEntry = (req, res, next) => {
   if (req.db == null) {
@@ -433,6 +374,5 @@ module.exports = {
   addReceiptEntry,
   getReceiptEntry,
   updateReceiptEntry,
-  getAuthPurchaseList,
   updatePOEntry
 };
