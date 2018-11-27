@@ -21,18 +21,17 @@ export default class Login extends Component {
       username: "",
       password: "",
       token: "",
-      item_id: ""
+      item_id: "",
+      hospitalList: []
     };
   }
 
   componentDidMount() {
-    debugger;
-    getTokenDetals();
+    getTokenDetals(this);
   }
 
   componentWillUnmount() {
-    //Commented by nowshad need to recheck with noor
-    // window.sessionStorage.removeItem("hospitalList");
+    window.sessionStorage.removeItem("hospitalList");
   }
   componentWillMount() {
     this.deleteAllPreviousCookies();
@@ -137,12 +136,6 @@ export default class Login extends Component {
     this.setState({ item_id: null });
   }
   render() {
-    debugger;
-    const _hospitalList =
-      window.sessionStorage.getItem("hospitalList") === null ||
-      window.sessionStorage.getItem("hospitalList") === "undefined"
-        ? []
-        : JSON.parse(window.sessionStorage.getItem("hospitalList"));
     return (
       <div className="login bg">
         <div className="container margintop15">
@@ -237,7 +230,7 @@ export default class Login extends Component {
                           dataSource: {
                             textField: "hospital_name",
                             valueField: "hims_d_hospital_id",
-                            data: _hospitalList
+                            data: this.state.hospitalList
                           },
                           onChange: this.onHospitalChange.bind(this),
                           onClear: this.onHospitalClear.bind(this)
