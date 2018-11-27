@@ -11,6 +11,8 @@
   "patient_name": "Patient Name",
   "date": "Date",
   "time": "Time",
+  "department_name": "Department Name",
+  "doctor_name": "Doctor Name",
   "case_type": "Case Type",
   "transfer_status": "Transfer Status",
   "policy_group_description": "Policy Group Description",

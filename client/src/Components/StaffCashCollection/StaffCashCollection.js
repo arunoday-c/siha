@@ -19,7 +19,7 @@ import moment from "moment";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import Enumerable from "linq";
 
-class InvestigationSetup extends Component {
+class StaffCashCollection extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -27,7 +27,10 @@ class InvestigationSetup extends Component {
       shift_open_date: "DD-MM-YYYY",
       shift_open_time: "--:-- --",
       shift_close_date: "DD-MM-YYYY",
-      shift_close_time: "--:-- --"
+      shift_close_time: "--:-- --",
+      difference_cash: 0,
+      difference_card: 0,
+      difference_cheque: 0
     };
     this.getShifts();
   }
@@ -41,9 +44,9 @@ class InvestigationSetup extends Component {
       expected_cash: "",
       expected_card: "",
       expected_cheque: "",
-      difference_cash: "",
-      difference_card: "",
-      difference_cheque: "",
+      difference_cash: 0,
+      difference_card: 0,
+      difference_cheque: 0,
       cash_status: "",
       card_status: "",
       cheque_status: "",
@@ -831,5 +834,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(InvestigationSetup)
+  )(StaffCashCollection)
 );

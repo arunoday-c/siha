@@ -18,9 +18,11 @@ import { AlgaehActions } from "../../actions/algaehActions";
 import GlobalVariables from "../../utils/GlobalVariables.json";
 import {
   getAllChiefComplaints,
-  getPatientChiefComplaints
+  getPatientChiefComplaints,
+  getDepartmentVitals,
+  temperatureConvertion,
+  getFormula
 } from "./NurseWorkbenchEvents";
-import { setGlobal } from "../../utils/GlobalFunctions";
 
 class NurseWorkbench extends Component {
   constructor(props) {
@@ -44,6 +46,55 @@ class NurseWorkbench extends Component {
     ) {
       getAllChiefComplaints(this);
     }
+    getDepartmentVitals(this);
+    this.getDoctorsAndDepts();
+  }
+
+  deptDropDownHandler(value) {
+    this.setState({ [value.name]: value.value }, () => {
+      let dept = Enumerable.from(this.state.departments)
+        .where(w => w.sub_dept_id === this.state.sub_department_id)
+        .firstOrDefault();
+      this.setState(
+        {
+          doctors: dept.doctors
+        },
+        () => {
+          this.loadListofData();
+        }
+      );
+    });
+  }
+
+  dropDownHandle(value) {
+    this.setState(
+      { [value.name]: value.value },
+
+      () => {
+        this.loadListofData();
+      }
+    );
+  }
+
+  getDoctorsAndDepts() {
+    algaehApiCall({
+      uri: "/department/selectDoctorsAndClinic",
+      method: "GET",
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({
+            departments: response.data.records.departmets
+          });
+          //console.log("All Doctors:", response.data.records);
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   componentDidMount() {
@@ -58,15 +109,15 @@ class NurseWorkbench extends Component {
       chief_complaint_name: list.selected.hpi_description,
       hpi_description: list.selected.hpi_description,
       Encounter_Date: new Date(),
-      comment: "",
+      nurse_notes: "",
       duration: 0,
-      episode_id: Window.global["episode_id"],
+      episode_id: this.state.episode_id,
       interval: "D",
       onset_date: new Date(),
       pain: "NH",
       score: 0,
       severity: "MI",
-      patient_id: Window.global["current_patient"],
+      patient_id: this.state.patient_id,
       recordState: "insert",
       chronic: "N",
       complaint_inactive: "N"
@@ -85,6 +136,37 @@ class NurseWorkbench extends Component {
         }
       }
     });
+  }
+
+  gridLevelUpdate(row, e) {
+    e = e.name === undefined ? e.currentTarget : e;
+    row[e.name] = e.value;
+    if (e.name === "onset_date") {
+      const _durat_interval = this.dateDurationAndInterval(e.value);
+      row["duration"] = _durat_interval.duration;
+      row["interval"] = _durat_interval.interval;
+    } else if (e.name === "duration") {
+      const _duration_Date_Interval = this.durationToDateAndInterval(
+        e.value,
+        row["interval"]
+      );
+      row["onset_date"] = _duration_Date_Interval.onset_date;
+      row["interval"] = _duration_Date_Interval.interval;
+    } else if (e.name === "interval") {
+      const _dur_date_inter = this.durationToDateAndInterval(
+        row["duration"],
+        e.value
+      );
+      row["onset_date"] = _dur_date_inter.onset_date;
+    } else if (e.name === "chronic") {
+      row[e.name] = e.checked ? "Y" : "N";
+    } else if (e.name === "complaint_inactive") {
+      row[e.name] = e.checked ? "Y" : "N";
+      if (e.checked) row["complaint_inactive_date"] = moment()._d;
+      else row["complaint_inactive_date"] = null;
+    }
+
+    row.update();
   }
 
   onChiefComplaintRowDone(row) {
@@ -160,11 +242,11 @@ class NurseWorkbench extends Component {
     this.setState({ selectedHDate: dt, activeDateHeader: dt });
   }
 
-  textHandle(e) {
-    this.setState({
-      [e.target.name]: e.target.value
-    });
-  }
+  // textHandle(e) {
+  //   this.setState({
+  //     [e.target.name]: e.target.value
+  //   });
+  // }
 
   liGenerate() {
     let momDate = moment(this.state.selectedHDate);
@@ -215,15 +297,14 @@ class NurseWorkbench extends Component {
     );
   }
 
-  moveToStation(e) {
-    const patient_encounter_id = e.currentTarget.getAttribute(
-      "data-encounterid"
-    );
-    const patient_id = e.currentTarget.getAttribute("data-patientid");
-
-    setGlobal({
-      current_patient: patient_id,
-      episode_id: patient_encounter_id
+  moveToStation(data, e) {
+    debugger;
+    this.setState({
+      patient_name: data.full_name,
+      current_patient: data.patient_id,
+      episode_id: data.episode_id,
+      encounter_id: data.hims_f_patient_encounter_id,
+      patient_id: data.patient_id
     });
   }
 
@@ -276,13 +357,15 @@ class NurseWorkbench extends Component {
           };
 
     algaehApiCall({
-      uri: "/doctorsWorkBench/getMyDay",
+      uri: "/nurseWorkBench/getNurseMyDay",
       data: {
         fromDate: dateRange.fromDate,
-        toDate: dateRange.toDate
+        toDate: dateRange.toDate,
+        sub_department_id: this.state.sub_department_id,
+        provider_id: this.state.provider_id
       },
       method: "GET",
-      cancelRequestId: "getMyDay",
+      cancelRequestId: "getNurseMyDay",
       onSuccess: response => {
         if (response.data.success) {
           const _selecDate = new Date(dateRange.activeDateHeader).setDate(1);
@@ -329,6 +412,35 @@ class NurseWorkbench extends Component {
     return allChiefComp;
   }
 
+  texthandle(e) {
+    if (e.target.name === "weight") {
+      //TODO  now hardCoded options need to pull from Db
+      getFormula({
+        WEIGHTAS: "KG",
+        HEIGHTAS: "CM",
+        WEIGHT: e.target.value,
+        HEIGHT: this.state.height,
+        onSuccess: bmi => {
+          this.setState({ bmi: bmi });
+        }
+      });
+    } else if (e.target.name === "height") {
+      //TODO  now hardCoded options need to pull from Db
+      getFormula({
+        WEIGHTAS: "KG",
+        HEIGHTAS: "CM",
+        WEIGHT: this.state.weight,
+        HEIGHT: e.target.value,
+        onSuccess: bmi => {
+          this.setState({ bmi: bmi });
+        }
+      });
+    }
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  }
+
   render() {
     const patChiefComplain =
       this.props.patient_chief_complaints !== undefined
@@ -347,6 +459,12 @@ class NurseWorkbench extends Component {
             patChiefComplain,
             this.props.allchiefcomplaints
           );
+
+    const _department_viatals =
+      this.props.department_vitals === undefined ||
+      this.props.department_vitals.length === 0
+        ? []
+        : this.props.department_vitals;
 
     return (
       <div className="nurse_workbench">
@@ -387,10 +505,70 @@ class NurseWorkbench extends Component {
                       Enumerable.from(this.state.data)
                         .where(w => w.status === "V")
                         .toArray().length
-
-                      // this.state.data.length
                     }
                   </span>
+                </div>
+              </div>
+
+              <div className="row">
+                <div className="col">
+                  <AlagehAutoComplete
+                    div={{ className: "col mandatory" }}
+                    label={{
+                      fieldName: "department_name",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "sub_department_id",
+                      className: "select-fld",
+                      value: this.state.sub_department_id,
+                      dataSource: {
+                        textField: "sub_department_name",
+                        valueField: "sub_dept_id",
+                        data: this.state.departments
+                      },
+                      onChange: this.deptDropDownHandler.bind(this),
+                      onClear: () => {
+                        this.setState(
+                          {
+                            sub_department_id: null
+                          },
+                          () => {
+                            this.loadListofData();
+                          }
+                        );
+                      }
+                    }}
+                  />
+                </div>
+                <div className="col">
+                  <AlagehAutoComplete
+                    div={{ className: "col" }}
+                    label={{
+                      fieldName: "doctor_name"
+                    }}
+                    selector={{
+                      name: "provider_id",
+                      className: "select-fld",
+                      value: this.state.provider_id,
+                      dataSource: {
+                        textField: "full_name",
+                        valueField: "provider_id",
+                        data: this.state.doctors
+                      },
+                      onChange: this.dropDownHandle.bind(this),
+                      onClear: () => {
+                        this.setState(
+                          {
+                            provider_id: null
+                          },
+                          () => {
+                            this.loadListofData();
+                          }
+                        );
+                      }
+                    }}
+                  />
                 </div>
               </div>
 
@@ -398,22 +576,17 @@ class NurseWorkbench extends Component {
                 <div className="opPatientList">
                   <ul className="opList">
                     {Enumerable.from(this.state.data)
-                      .where(w => w.status === "V")
+                      .where(w => w.status === "V" && w.nurse_examine === "N")
                       .toArray().length !== 0 ? (
                       Enumerable.from(this.state.data)
-                        .where(w => w.status === "V")
+                        .where(w => w.status === "V" && w.nurse_examine === "N")
                         .toArray()
                         .map((data, index) => (
                           <li
                             key={index}
-                            data-encounterid={String(
-                              data.hims_f_patient_encounter_id
-                            )}
-                            data-patientid={String(data.patient_id)}
-                            onClick={this.moveToStation.bind(this)}
+                            onClick={this.moveToStation.bind(this, data)}
                           >
                             <span className="op-sec-1">
-                              {/* <i className="appointment-icon" /> */}
                               <i
                                 className={
                                   data.appointment_patient === "Y"
@@ -460,18 +633,181 @@ class NurseWorkbench extends Component {
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">
-                    <AlgaehLabel
+                    {/* <AlgaehLabel
                       label={{
-                        fieldName: "encounter_list",
+                        forceLabel: this.state.patient_name,
                         returnText: "true"
                       }}
-                    />
+                    /> */}
+                    <span>Patient Name : {this.state.patient_name}</span>
                   </h3>
                 </div>
-                <div className="actions rightLabelCount">Station</div>
+                {/* <div className="actions rightLabelCount">Station</div> */}
               </div>
 
               <div className="portlet-body">
+                {/* Vitals Start */}
+                <div className="row margin-bottom-15">
+                  {_department_viatals.map((item, index) => {
+                    const _className =
+                      item.hims_d_vitals_header_id === 1
+                        ? "col-6"
+                        : item.hims_d_vitals_header_id >= 3
+                        ? "col-6 vitalTopFld15"
+                        : item.hims_d_vitals_header_id === 5 ||
+                          item.hims_d_vitals_header_id === 6
+                        ? "col-6 vitalTopFld20"
+                        : "col-6";
+                    const _name = String(item.vitals_name)
+                      .replace(/" "/g, "_")
+                      .toLowerCase();
+                    const _disable = _name === "bmi" ? true : false;
+                    const _dependent =
+                      item.hims_d_vitals_header_id === 8 ||
+                      item.hims_d_vitals_header_id === 9
+                        ? { dependent: "bp_position" }
+                        : item.hims_d_vitals_header_id === 4
+                        ? { dependent: "temperature_from" }
+                        : {};
+                    return (
+                      <React.Fragment key={index}>
+                        {item.hims_d_vitals_header_id === 4 ? (
+                          <React.Fragment>
+                            <AlagehAutoComplete
+                              div={{ className: "col-6" }}
+                              label={{
+                                forceLabel: "Temp. From"
+                              }}
+                              selector={{
+                                name: "temperature_from",
+                                className: "select-fld",
+                                value: this.state.temperature_from,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: GlobalVariables.TEMP_FROM
+                                },
+
+                                onChange: this.dropDownHandle.bind(this)
+                              }}
+                            />
+                          </React.Fragment>
+                        ) : item.hims_d_vitals_header_id === 8 ? (
+                          <AlagehAutoComplete
+                            div={{ className: "col-6" }}
+                            label={{
+                              forceLabel: "BP (mmHg)",
+                              fieldName: "BP_type"
+                            }}
+                            selector={{
+                              name: "bp_position",
+                              className: "select-fld",
+                              value: this.state.bp_position,
+                              dataSource: {
+                                textField: "name",
+                                valueField: "value",
+                                data: GlobalVariables.BP_POSITION
+                              },
+                              onChange: this.dropDownHandle.bind(this)
+                            }}
+                          />
+                        ) : null}
+
+                        <AlagehFormGroup
+                          div={{
+                            className: _className,
+                            others: { key: index }
+                          }}
+                          label={{
+                            forceLabel:
+                              item.uom === "C"
+                                ? "°C"
+                                : item.uom === "F"
+                                ? "°F"
+                                : item.vital_short_name +
+                                  " (" +
+                                  String(item.uom).trim() +
+                                  ")",
+                            isImp: item.mandatory === 0 ? false : true
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: _name,
+                            others: {
+                              type: "number",
+                              min: 0,
+                              disabled: _disable,
+                              vitalid: item.hims_d_vitals_header_id,
+                              formula_value: String(item.uom).trim(),
+                              ..._dependent
+                            },
+                            value: this.state[_name],
+                            events: {
+                              onChange: this.texthandle.bind(this)
+                            }
+                          }}
+                        />
+
+                        {item.hims_d_vitals_header_id === 4 ? (
+                          <AlagehFormGroup
+                            div={{ className: "col-6" }}
+                            label={{
+                              forceLabel: item.uom === "C" ? "°F" : "°C"
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              disabled: true,
+                              value: temperatureConvertion(
+                                this.state[_name],
+                                item.uom
+                              )
+                            }}
+                          />
+                        ) : null}
+                        {/* {item.hims_d_vitals_header_id === 8 ? " / " : null} */}
+                      </React.Fragment>
+                    );
+                  })}
+
+                  <AlgaehDateHandler
+                    div={{ className: "col-6" }}
+                    label={{ forceLabel: "Recorded Date", isImp: true }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "recorded_date"
+                    }}
+                    maxDate={new Date()}
+                    events={{
+                      onChange: selectedDate => {
+                        this.setState({ recorded_date: selectedDate });
+                      }
+                    }}
+                    value={this.state.recorded_date}
+                  />
+
+                  <AlagehFormGroup
+                    div={{ className: "col-6" }}
+                    label={{
+                      isImp: true,
+                      forceLabel: "Recorded Time"
+                    }}
+                    textBox={{
+                      others: {
+                        type: "time"
+                      },
+                      className: "txt-fld",
+                      name: "recorded_time",
+                      value: this.state.recorded_time,
+                      events: {
+                        onChange: this.texthandle.bind(this)
+                      }
+                    }}
+                  />
+                </div>
+
+                {/* <Vitals /> */}
+                {/* Vitals End */}
+
                 {/* ChiefComplaints Start */}
 
                 <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
@@ -749,10 +1085,6 @@ class NurseWorkbench extends Component {
 
                 {/* Chief Complaint End */}
 
-                {/* Vitals Start */}
-                <Vitals />
-                {/* Vitals End */}
-
                 {/* Notes Start */}
                 <div className="portlet portlet-bordered box-shadow-normal margin-top-15">
                   <div className="portlet-title">
@@ -778,7 +1110,7 @@ class NurseWorkbench extends Component {
                             rows: "6"
                           },
                           events: {
-                            onChange: this.textHandle.bind(this)
+                            onChange: this.texthandle.bind(this)
                           }
                         }}
                       />
@@ -802,7 +1134,8 @@ class NurseWorkbench extends Component {
 function mapStateToProps(state) {
   return {
     allchiefcomplaints: state.allchiefcomplaints,
-    patient_chief_complaints: state.patient_chief_complaints
+    patient_chief_complaints: state.patient_chief_complaints,
+    department_vitals: state.department_vitals
   };
 }
 
@@ -810,7 +1143,8 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getAllChiefComplaints: AlgaehActions,
-      getPatientChiefComplaints: AlgaehActions
+      getPatientChiefComplaints: AlgaehActions,
+      getDepartmentVitals: AlgaehActions
     },
     dispatch
   );

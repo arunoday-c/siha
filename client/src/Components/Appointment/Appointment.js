@@ -325,7 +325,7 @@ class Appointment extends PureComponent {
           this.setState({
             departments: response.data.records.departmets
           });
-          console.log("All Doctors:", response.data.records);
+          //console.log("All Doctors:", response.data.records);
         }
       },
       onFailure: error => {
