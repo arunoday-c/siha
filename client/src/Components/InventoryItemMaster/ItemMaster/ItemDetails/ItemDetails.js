@@ -71,10 +71,7 @@ class ItemDetails extends Component {
                     textBox={{
                       className: "txt-fld",
                       name: "item_code",
-                      value: this.state.item_code,
-                      events: {
-                        onChange: texthandle.bind(this, this, context)
-                      }
+                      value: this.state.item_code
                     }}
                   />
 
@@ -87,10 +84,7 @@ class ItemDetails extends Component {
                     textBox={{
                       className: "txt-fld",
                       name: "item_description",
-                      value: this.state.item_description,
-                      events: {
-                        onChange: texthandle.bind(this, this, context)
-                      }
+                      value: this.state.item_description
                     }}
                   />
 
@@ -108,8 +102,7 @@ class ItemDetails extends Component {
                         textField: "name",
                         valueField: "value",
                         data: GlobalVariables.ITEM_TYPE
-                      },
-                      onChange: texthandle.bind(this, this, context)
+                      }
                     }}
                   />
 
@@ -127,8 +120,7 @@ class ItemDetails extends Component {
                         textField: "category_desc",
                         valueField: "hims_d_inventory_tem_category_id",
                         data: this.props.inventoryitemcategory
-                      },
-                      onChange: texthandle.bind(this, this, context)
+                      }
                     }}
                   />
 
@@ -146,8 +138,7 @@ class ItemDetails extends Component {
                         textField: "group_description",
                         valueField: "hims_d_inventory_item_group_id",
                         data: this.props.inventoryitemgroup
-                      },
-                      onChange: texthandle.bind(this, this, context)
+                      }
                     }}
                   />
                 </div>
@@ -167,8 +158,7 @@ class ItemDetails extends Component {
                         textField: "uom_description",
                         valueField: "uom_id",
                         data: this.state.detail_item_uom
-                      },
-                      onChange: texthandle.bind(this, this, context)
+                      }
                     }}
                   />
                   <AlagehAutoComplete
@@ -185,8 +175,7 @@ class ItemDetails extends Component {
                         textField: "uom_description",
                         valueField: "uom_id",
                         data: this.state.detail_item_uom
-                      },
-                      onChange: texthandle.bind(this, this, context)
+                      }
                     }}
                   />
                   <AlagehAutoComplete
@@ -206,8 +195,7 @@ class ItemDetails extends Component {
                       },
                       others: {
                         disabled: true
-                      },
-                      onChange: texthandle.bind(this, this, context)
+                      }
                     }}
                   />
                   <AlagehAutoComplete
@@ -223,8 +211,7 @@ class ItemDetails extends Component {
                         textField: "uom_description",
                         valueField: "uom_id",
                         data: this.state.detail_item_uom
-                      },
-                      onChange: texthandle.bind(this, this, context)
+                      }
                     }}
                   />
                 </div>
@@ -246,8 +233,7 @@ class ItemDetails extends Component {
                         //   : "arabic_service_name",
                         valueField: "hims_d_services_id",
                         data: this.props.inventoryitemservices
-                      },
-                      onChange: texthandle.bind(this, this, context)
+                      }
                     }}
                   />
 
@@ -314,10 +300,7 @@ class ItemDetails extends Component {
                         decimal: { allowNegative: false },
                         className: "txt-fld",
                         name: "standard_fee",
-                        value: this.state.standard_fee,
-                        events: {
-                          onChange: texthandle.bind(this, this, context)
-                        }
+                        value: this.state.standard_fee
                       }}
                     />
 
@@ -355,9 +338,7 @@ class ItemDetails extends Component {
                             className: "txt-fld",
                             name: "vat_percent",
                             value: this.state.vat_percent,
-                            events: {
-                              onChange: texthandle.bind(this, this, context)
-                            },
+
                             others: {
                               disabled:
                                 this.state.Applicable === true ? false : true
@@ -376,9 +357,7 @@ class ItemDetails extends Component {
                         className: "txt-fld",
                         name: "cpt_code",
                         value: this.state.cpt_code_data,
-                        events: {
-                          onChange: null
-                        },
+
                         others: {
                           disabled: true
                         }

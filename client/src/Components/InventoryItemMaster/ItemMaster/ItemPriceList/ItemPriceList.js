@@ -43,8 +43,7 @@ class ItemPriceList extends Component {
                       textField: "name",
                       valueField: "value",
                       data: GlobalVariables.DECIMALS
-                    },
-                    onChange: texthandle.bind(this, this, context)
+                    }
                   }}
                 />
 
@@ -58,9 +57,6 @@ class ItemPriceList extends Component {
                     className: "txt-fld",
                     name: "purchase_cost",
                     value: this.state.purchase_cost,
-                    events: {
-                      onChange: texthandle.bind(this, this, context)
-                    },
                     others: {
                       min: 0,
                       type: "number"
@@ -78,9 +74,6 @@ class ItemPriceList extends Component {
                     className: "txt-fld",
                     name: "markup_percent",
                     value: this.state.markup_percent,
-                    events: {
-                      onChange: texthandle.bind(this, this, context)
-                    },
                     others: {
                       min: 0,
                       type: "number"
@@ -97,9 +90,6 @@ class ItemPriceList extends Component {
                     className: "txt-fld",
                     name: "sales_price",
                     value: this.state.sales_price,
-                    events: {
-                      onChange: texthandle.bind(this, this, context)
-                    },
                     others: {
                       min: 0,
                       type: "number"
