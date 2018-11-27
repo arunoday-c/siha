@@ -17,7 +17,11 @@ import HospitalServices from "./HospitalServices/HospitalServices";
 import moment from "moment";
 import Options from "../../Options.json";
 
-import { getCookie } from "../../utils/algaehApiCall";
+import {
+  getCookie,
+  algaehApiCall,
+  swalMessage
+} from "../../utils/algaehApiCall";
 import { setGlobal } from "../../utils/GlobalFunctions";
 import { texthandle, getHospotalServices } from "./HospitalServiceSetupEvents";
 
@@ -58,19 +62,6 @@ class HospitalServiceSetup extends Component {
           type: "SERVICES_GET_DATA",
           mappingName: "hospitalservices"
         }
-        // afterSuccess: data => {
-        //   let ServiceNames = Enumerable.from(data)
-        //     .groupBy("$.hims_d_services_id", null, (k, g) => {
-        //       let firstRecordSet = Enumerable.from(g).firstOrDefault();
-        //       return {
-        //         service_name: firstRecordSet.service_name,
-        //         hims_d_services_id: firstRecordSet.hims_d_services_id
-        //       };
-        //     })
-        //     .toArray();
-
-        //   this.setState({ ServiceNames: ServiceNames });
-        // }
       });
     }
     if (
@@ -131,7 +122,6 @@ class HospitalServiceSetup extends Component {
         isOpen: !this.state.isOpen
       },
       () => {
-        debugger;
         if (e === true) {
           this.props.getServices({
             uri: "/serviceType/getService",
@@ -160,33 +150,66 @@ class HospitalServiceSetup extends Component {
 
   EditItemMaster(row) {
     if (row.cpt_code !== null) {
-      this.props.getCptCodes({
+      algaehApiCall({
         uri: "/icdcptcodes/selectCptCodes",
         method: "GET",
         data: { hims_d_cpt_code_id: row.cpt_code },
-        redux: {
-          type: "HOSPITAL_DETAILS_GET_DATA",
-          mappingName: "cptcodes"
-        },
-        afterSuccess: data => {
-          if (data.length !== undefined && data.length !== 0) {
-            row.addNew = false;
-            row.cpt_code_data = data[0].cpt_code;
-            this.setState({
-              isOpen: !this.state.isOpen,
-              servicePop: row,
-              addNew: false
-            });
-          } else {
-            row.addNew = false;
-            this.setState({
-              isOpen: !this.state.isOpen,
-              servicePop: row,
-              addNew: false
-            });
+        onSuccess: response => {
+          if (response.data.success) {
+            let data = response.data.records;
+            if (data.length !== undefined && data.length !== 0) {
+              row.addNew = false;
+              row.cpt_code_data = data[0].cpt_code;
+              this.setState({
+                isOpen: !this.state.isOpen,
+                servicePop: row,
+                addNew: false
+              });
+            } else {
+              row.addNew = false;
+              this.setState({
+                isOpen: !this.state.isOpen,
+                servicePop: row,
+                addNew: false
+              });
+            }
           }
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
         }
       });
+
+      // this.props.getCptCodes({
+      //   uri: "/icdcptcodes/selectCptCodes",
+      //   method: "GET",
+      //   data: { hims_d_cpt_code_id: row.cpt_code },
+      //   redux: {
+      //     type: "HOSPITAL_DETAILS_GET_DATA",
+      //     mappingName: "cptcodes"
+      //   },
+      //   afterSuccess: data => {
+      //     if (data.length !== undefined && data.length !== 0) {
+      //       row.addNew = false;
+      //       row.cpt_code_data = data[0].cpt_code;
+      //       this.setState({
+      //         isOpen: !this.state.isOpen,
+      //         servicePop: row,
+      //         addNew: false
+      //       });
+      //     } else {
+      //       row.addNew = false;
+      //       this.setState({
+      //         isOpen: !this.state.isOpen,
+      //         servicePop: row,
+      //         addNew: false
+      //       });
+      //     }
+      //   }
+      // });
     } else {
       row.addNew = false;
       this.setState({
@@ -334,7 +357,7 @@ class HospitalServiceSetup extends Component {
                 onClick={this.ShowModel.bind(this)}
               >
                 <i className="fas fa-plus" />
-              </a>{" "}
+              </a>
               <HospitalServices
                 HeaderCaption={
                   <AlgaehLabel
