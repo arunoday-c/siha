@@ -313,7 +313,7 @@ let addCashierToShift = (req, res, next) => {
 let getCashiersAndShiftMAP = (req, res, next) => {
   let selectWhere = {
     hims_m_cashier_shift_id: "ALL",
-    cashier_id: req.body.created_by,
+    cashier_id: "ALL",
     month: "ALL",
     year: "ALL"
   };
@@ -323,6 +323,15 @@ let getCashiersAndShiftMAP = (req, res, next) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
+    if (req.query.for == "T") {
+      extend(selectWhere, {
+        cashier_id: req.body.created_by
+      });
+      delete req.query.for;
+    } else {
+      delete req.query.for;
+    }
+
     let where = whereCondition(extend(selectWhere, req.query));
     db.getConnection((error, connection) => {
       connection.query(

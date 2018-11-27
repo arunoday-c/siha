@@ -114,7 +114,8 @@ let deletePatientNurseChiefComplaints = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "update hims_f_nurse_episode_chief_complaint set record_status='I',updated_date=?,updated_by=? where `record_status`='A' and hims_f_nurse_episode_chief_complaint_id=?",
+        "update hims_f_nurse_episode_chief_complaint set record_status='I',updated_date=?,\
+        updated_by=? where `record_status`='A' and hims_f_nurse_episode_chief_complaint_id=?",
         [
           new Date(),
           req.body.updated_by,
