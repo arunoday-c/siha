@@ -10,6 +10,7 @@ export default {
     connectionLimit: 20,
     // host: "166.62.10.184",
     host: "49.206.18.38",
+    // host: "localhost",
     port: 3306,
     user: "algaeh_root",
     password: "medteam2013",
