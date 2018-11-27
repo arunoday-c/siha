@@ -70,7 +70,10 @@ class UOMAdditionalInfo extends Component {
                           valueField: "hims_d_inventory_uom_id",
                           data: this.props.inventoryitemuom
                         },
-                        onChange: uomtexthandle.bind(this, this, context)
+                        onChange: uomtexthandle.bind(this, this, context),
+                        others: {
+                          exclude: "true"
+                        }
                       }}
                     />
 
@@ -88,7 +91,10 @@ class UOMAdditionalInfo extends Component {
                           valueField: "value",
                           data: GlobalVariables.FORMAT_YESNO
                         },
-                        onChange: stockingtexthandle.bind(this, this)
+                        onChange: stockingtexthandle.bind(this, this),
+                        others: {
+                          exclude: "true"
+                        }
                       }}
                     />
 
@@ -105,7 +111,8 @@ class UOMAdditionalInfo extends Component {
                           onChange: texthandle.bind(this, this)
                         },
                         others: {
-                          disabled: this.state.convertEnable
+                          disabled: this.state.convertEnable,
+                          exclude: "true"
                         }
                       }}
                     />
@@ -314,8 +321,8 @@ class UOMAdditionalInfo extends Component {
                         }}
                         textBox={{
                           className: "txt-fld",
-                          name: "assesments_notes",
-                          value: this.state.assesments_notes,
+                          name: "addl_information",
+                          value: this.state.addl_information,
                           others: {
                             multiline: true,
                             rows: "4",
@@ -324,11 +331,7 @@ class UOMAdditionalInfo extends Component {
                             }
                           },
                           events: {
-                            onChange: texthandlecontext.bind(
-                              this,
-                              this,
-                              context
-                            )
+                            onChange: texthandle.bind(this, this)
                           }
                         }}
                       />
