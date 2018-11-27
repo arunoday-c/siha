@@ -100,7 +100,7 @@ const Validations = $this => {
     isError = true;
     swalMessage({
       type: "warning",
-      title: "Invalid Input. Atleast one department to attach."
+      title: "Add atleast one department to the list"
     });
     return isError;
   }
