@@ -64,7 +64,6 @@ class VendorSetup extends Component {
       onSuccess: response => {
         if (response.data.success) {
           this.setState({ countries: response.data.records });
-          
         }
       },
       onFailure: error => {
@@ -276,6 +275,8 @@ class VendorSetup extends Component {
             <div className="popupInner">
               <div className="col-lg-12" style={{ minHeight: "60vh" }}>
                 <div className="margin-top-15" data-validate="VendorDiv">
+                  <h6>Business Details</h6>
+                  <hr style={{ margin: 0 }} />
                   <div className="row">
                     <AlagehFormGroup
                       div={{ className: "col" }}
@@ -296,9 +297,8 @@ class VendorSetup extends Component {
                         }
                       }}
                     />
-
                     <AlagehFormGroup
-                      div={{ className: "col" }}
+                      div={{ className: "col-3" }}
                       label={{
                         fieldName: "vendor_name",
                         isImp: true
@@ -314,7 +314,7 @@ class VendorSetup extends Component {
                     />
 
                     <AlagehFormGroup
-                      div={{ className: "col" }}
+                      div={{ className: "col-2" }}
                       label={{
                         fieldName: "business_registration_no",
                         isImp: true
@@ -328,9 +328,8 @@ class VendorSetup extends Component {
                         }
                       }}
                     />
-
                     <AlagehFormGroup
-                      div={{ className: "col" }}
+                      div={{ className: "col-2" }}
                       label={{
                         fieldName: "contact_number",
                         isImp: true
@@ -348,9 +347,8 @@ class VendorSetup extends Component {
                         }
                       }}
                     />
-
                     <AlagehFormGroup
-                      div={{ className: "col" }}
+                      div={{ className: "col-3" }}
                       label={{
                         fieldName: "email_id_1",
                         isImp: true
@@ -364,9 +362,8 @@ class VendorSetup extends Component {
                         }
                       }}
                     />
-
                     <AlagehFormGroup
-                      div={{ className: "col" }}
+                      div={{ className: "col-3" }}
                       label={{
                         fieldName: "email_id_2",
                         isImp: false
@@ -380,9 +377,8 @@ class VendorSetup extends Component {
                         }
                       }}
                     />
-
                     <AlagehFormGroup
-                      div={{ className: "col" }}
+                      div={{ className: "col-3" }}
                       label={{
                         fieldName: "website",
                         isImp: false
@@ -396,11 +392,8 @@ class VendorSetup extends Component {
                         }
                       }}
                     />
-                  </div>
-
-                  <div className="row">
                     <AlagehFormGroup
-                      div={{ className: "col-lg-5" }}
+                      div={{ className: "col-3" }}
                       label={{
                         fieldName: "address",
                         isImp: true
@@ -414,9 +407,8 @@ class VendorSetup extends Component {
                         }
                       }}
                     />
-
                     <AlagehAutoComplete
-                      div={{ className: "col" }}
+                      div={{ className: "col-3" }}
                       label={{
                         fieldName: "country",
                         isImp: true
@@ -433,9 +425,8 @@ class VendorSetup extends Component {
                         onChange: this.dropDownHandle.bind(this)
                       }}
                     />
-
                     <AlagehAutoComplete
-                      div={{ className: "col" }}
+                      div={{ className: "col-3" }}
                       label={{
                         fieldName: "state",
                         isImp: true
@@ -452,9 +443,8 @@ class VendorSetup extends Component {
                         onChange: this.dropDownHandle.bind(this)
                       }}
                     />
-
                     <AlagehAutoComplete
-                      div={{ className: "col" }}
+                      div={{ className: "col-3" }}
                       label={{
                         fieldName: "city"
                       }}
@@ -470,9 +460,8 @@ class VendorSetup extends Component {
                         onChange: this.dropDownHandle.bind(this)
                       }}
                     />
-
                     <AlagehFormGroup
-                      div={{ className: "col" }}
+                      div={{ className: "col-2" }}
                       label={{
                         fieldName: "postal_code",
                         isImp: false
@@ -487,9 +476,11 @@ class VendorSetup extends Component {
                       }}
                     />
                   </div>
+                  <h6 style={{ marginTop: 30 }}>Payment Details</h6>
+                  <hr style={{ margin: 0 }} />
                   <div className="row">
                     <AlagehAutoComplete
-                      div={{ className: "col" }}
+                      div={{ className: "col-2" }}
                       label={{
                         fieldName: "payment_terms",
                         isImp: true
@@ -508,7 +499,7 @@ class VendorSetup extends Component {
                     />
 
                     <AlagehAutoComplete
-                      div={{ className: "col" }}
+                      div={{ className: "col-3" }}
                       label={{
                         fieldName: "payment_mode",
                         isImp: true
@@ -527,7 +518,7 @@ class VendorSetup extends Component {
                     />
 
                     <AlagehFormGroup
-                      div={{ className: "col" }}
+                      div={{ className: "col-3" }}
                       label={{
                         fieldName: "bank_name",
                         isImp: true
@@ -541,9 +532,7 @@ class VendorSetup extends Component {
                         }
                       }}
                     />
-                  </div>
-                  <div className="row">
-                    <div className="col-lg-2" style={{ marginTop: 21 }}>
+                    <div className="col-2" style={{ marginTop: 21 }}>
                       <input
                         name="vat_applicable"
                         checked={this.state.vat_applicable}
@@ -555,7 +544,7 @@ class VendorSetup extends Component {
                     </div>
 
                     <AlagehFormGroup
-                      div={{ className: "col-lg-2" }}
+                      div={{ className: "col-2" }}
                       label={{
                         fieldName: "vat_percentage",
                         isImp: this.state.vat_applicable

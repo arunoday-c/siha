@@ -33,9 +33,16 @@ class LoginUsers extends Component {
     });
   }
 
+  changeGridEditors(row, e) {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    row[name] = value;
+    row.update();
+  }
+
   getLoginUsers() {
     algaehApiCall({
-      uri: "/algaehappuser/selectAppUsers",
+      uri: "/algaehappuser/getLoginUserMaster",
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
@@ -165,6 +172,9 @@ class LoginUsers extends Component {
                 value: this.state.password,
                 events: {
                   onChange: this.changeTexts.bind(this)
+                },
+                others: {
+                  type: "password"
                 }
               }}
             />
@@ -183,7 +193,8 @@ class LoginUsers extends Component {
                 },
                 others: {
                   checkvalidation: "'$value' !=='" + this.state.password + "'",
-                  errormessage: "Passwords doesn't match"
+                  errormessage: "Passwords doesn't match",
+                  type: "Password"
                 }
               }}
             />
@@ -298,66 +309,57 @@ class LoginUsers extends Component {
                 label: <AlgaehLabel label={{ fieldName: "display_name" }} />
               },
               {
-                fieldName: "password",
-                label: <AlgaehLabel label={{ fieldName: "password" }} />
+                fieldName: "app_group_name",
+                label: <AlgaehLabel label={{ fieldName: "group" }} />,
+                editorTemplate: row => {
+                  return (
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      selector={{
+                        name: "app_group_id",
+                        className: "select-fld",
+                        value: row.app_group_id,
+                        dataSource: {
+                          textField: "app_group_name",
+                          valueField: "algaeh_d_app_group_id",
+                          data: this.state.groups
+                        },
+                        others: {
+                          errormessage: "Groups cannot be blank",
+                          required: true
+                        },
+                        onChange: this.changeGridEditors.bind(this, row)
+                      }}
+                    />
+                  );
+                }
               },
               {
-                fieldName: "app_group_id",
-                label: <AlgaehLabel label={{ fieldName: "group" }} />
-                // displayTemplate: row => {
-                //   return this.getDoctorName(row.provider_id);
-                // },
-                // editorTemplate: row => {
-                //   return (
-                //     <AlagehAutoComplete
-                //       div={{ className: "col" }}
-                //       selector={{
-                //         name: "provider_id",
-                //         className: "select-fld",
-                //         value: row.provider_id,
-                //         dataSource: {
-                //           textField: "full_name",
-                //           valueField: "employee_id",
-                //           data: this.state.all_docs
-                //         },
-                //         others: {
-                //           errormessage: "Doctor - cannot be blank",
-                //           required: true
-                //         },
-                //         onChange: this.changeGridEditors.bind(this, row)
-                //       }}
-                //     />
-                //   );
-                // }
-              },
-              {
-                fieldName: "role_id",
-                label: <AlgaehLabel label={{ fieldName: "role" }} />
-                //   displayTemplate: row => {
-                //     return this.getRoomName(row.room_id);
-                //   },
-                //   editorTemplate: row => {
-                //     return (
-                //       <AlagehAutoComplete
-                //         div={{ className: "col" }}
-                //         selector={{
-                //           name: "room_id",
-                //           className: "select-fld",
-                //           value: row.room_id,
-                //           dataSource: {
-                //             textField: "description",
-                //             valueField: "hims_d_appointment_room_id",
-                //             data: this.state.appointmentRooms
-                //           },
-                //           others: {
-                //             errormessage: "Room - cannot be blank",
-                //             required: true
-                //           },
-                //           onChange: this.changeGridEditors.bind(this, row)
-                //         }}
-                //       />
-                //     );
-                //   }
+                fieldName: "role_name",
+                label: <AlgaehLabel label={{ fieldName: "role" }} />,
+
+                editorTemplate: row => {
+                  return (
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      selector={{
+                        name: "role_id",
+                        className: "select-fld",
+                        value: row.role_id,
+                        dataSource: {
+                          textField: "role_name",
+                          valueField: "app_d_app_roles_id",
+                          data: this.state.roles
+                        },
+                        others: {
+                          errormessage: "Role cannot be blank",
+                          required: true
+                        },
+                        onChange: this.changeGridEditors.bind(this, row)
+                      }}
+                    />
+                  );
+                }
               }
             ]}
             keyId="hims_d_login_user_id"

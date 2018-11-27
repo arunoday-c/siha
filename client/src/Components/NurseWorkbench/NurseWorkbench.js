@@ -5,7 +5,6 @@ import { AlgaehLabel, AlagehFormGroup } from "../Wrapper/algaehWrapper";
 import Enumerable from "linq";
 import algaehLoader from "../Wrapper/fullPageLoader";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
-//import ChiefComplaints from "./NurseChiefComplaint/NurseChiefComplaint";
 import Vitals from "../PatientProfile/Vitals/Vitals";
 import {
   AlagehAutoComplete,
@@ -386,7 +385,7 @@ class NurseWorkbench extends Component {
                   <span className="countNo">
                     {
                       Enumerable.from(this.state.data)
-                        .where(w => w.status !== "V")
+                        .where(w => w.status === "V")
                         .toArray().length
 
                       // this.state.data.length
