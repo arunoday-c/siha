@@ -124,10 +124,10 @@ class InvestigationSetup extends Component {
                 this.state.difference_cash < 0
                   ? "E"
                   : this.state.difference_cash > 0
-                  ? "S"
-                  : this.state.difference_cash === 0
-                  ? "T"
-                  : null
+                    ? "S"
+                    : this.state.difference_cash === 0
+                      ? "T"
+                      : null
             });
           }
         );
@@ -145,10 +145,10 @@ class InvestigationSetup extends Component {
                 this.state.difference_card < 0
                   ? "E"
                   : this.state.difference_card > 0
-                  ? "S"
-                  : this.state.difference_card === 0
-                  ? "T"
-                  : null
+                    ? "S"
+                    : this.state.difference_card === 0
+                      ? "T"
+                      : null
             });
           }
         );
@@ -165,10 +165,10 @@ class InvestigationSetup extends Component {
                 this.state.difference_cheque < 0
                   ? "E"
                   : this.state.difference_cheque > 0
-                  ? "S"
-                  : this.state.difference_cheque === 0
-                  ? "T"
-                  : null
+                    ? "S"
+                    : this.state.difference_cheque === 0
+                      ? "T"
+                      : null
             });
           }
         );
@@ -273,6 +273,7 @@ class InvestigationSetup extends Component {
   }
 
   render() {
+    const _cash = typeof this.state.difference_cash === "number" ? parseFloat(this.state.difference_cash) : 0;
     return (
       <div className="staffCashCollection">
         <BreadCrumb
@@ -454,8 +455,8 @@ class InvestigationSetup extends Component {
                         ) : row.cash_status === "S" ? (
                           <span className="badge badge-danger">Shortage</span>
                         ) : (
-                          "------"
-                        );
+                                "------"
+                              );
                       },
                       others: {
                         resizable: false,
@@ -499,8 +500,8 @@ class InvestigationSetup extends Component {
                         ) : row.card_status === "S" ? (
                           <span className="badge badge-danger">Shortage</span>
                         ) : (
-                          "------"
-                        );
+                                "------"
+                              );
                       },
                       others: {
                         resizable: false,
@@ -551,8 +552,8 @@ class InvestigationSetup extends Component {
                         ) : row.cheque_status === "S" ? (
                           <span className="badge badge-danger">Shortage</span>
                         ) : (
-                          "------"
-                        );
+                                "------"
+                              );
                       },
                       others: {
                         resizable: false,
@@ -738,7 +739,7 @@ class InvestigationSetup extends Component {
                     </tr>
                     <tr>
                       <td>Difference</td>
-                      <td>{Math.abs(this.state.difference_cash)}</td>
+                      <td>{Math.abs(_cash)}</td>
                       <td>{Math.abs(this.state.difference_card)}</td>
                       <td>{Math.abs(this.state.difference_cheque)}</td>
                     </tr>
@@ -752,8 +753,8 @@ class InvestigationSetup extends Component {
                         ) : this.state.cash_status === "S" ? (
                           <span className="badge badge-danger">Shortage</span>
                         ) : (
-                          "------"
-                        )}
+                                "------"
+                              )}
                       </td>
                       <td>
                         {this.state.card_status === "T" ? (
@@ -763,8 +764,8 @@ class InvestigationSetup extends Component {
                         ) : this.state.card_status === "S" ? (
                           <span className="badge badge-danger">Shortage</span>
                         ) : (
-                          "------"
-                        )}
+                                "------"
+                              )}
                       </td>
                       <td>
                         {this.state.cheque_status === "T" ? (
@@ -774,8 +775,8 @@ class InvestigationSetup extends Component {
                         ) : this.state.cheque_status === "S" ? (
                           <span className="badge badge-danger">Shortage</span>
                         ) : (
-                          "------"
-                        )}
+                                "------"
+                              )}
                       </td>
                     </tr>
                     {/* <tr>
