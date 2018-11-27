@@ -202,7 +202,7 @@ class PersistentDrawer extends React.Component {
       let submenu = [];
       obj.subMenu.filter(item => {
         if (
-          item.name
+          item.label
             .toString()
             .toLowerCase()
             .indexOf(_menuSearch.toString().toLowerCase()) > -1
@@ -214,7 +214,7 @@ class PersistentDrawer extends React.Component {
         createMenu.push({
           icon: obj.icon,
           label: obj.label,
-          name: obj.name,
+          name: obj.label,
           subMenu: submenu
         });
       }
