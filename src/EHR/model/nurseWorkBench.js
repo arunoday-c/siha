@@ -45,7 +45,7 @@ let addPatientNurseChiefComplaints = (req, res, next) => {
           "severity",
           "score",
           "pain",
-          "nurse_notes",
+          "comment",
           "created_by",
           "updated_by"
         ];
@@ -70,7 +70,7 @@ let addPatientNurseChiefComplaints = (req, res, next) => {
               });
             }
 
-            if (Result.insertId != null) {
+            if (Result.insertId != null && Result.insertId != undefined) {
               const insurtColumns = [
                 "patient_id",
                 "visit_id",
@@ -107,17 +107,46 @@ let addPatientNurseChiefComplaints = (req, res, next) => {
                     });
                   }
 
-                  connection.commit(error => {
-                    if (error) {
-                      connection.rollback(() => {
-                        releaseDBConnection(db, connection);
-                        next(error);
-                      });
-                    }
-                    releaseDBConnection(db, connection);
-                    req.records = results;
-                    next();
-                  });
+                  if (
+                    results.insertId != null &&
+                    results.insertId != undefined
+                  ) {
+                    connection.query(
+                      "UPDATE `hims_f_patient_encounter` SET nurse_examine='Y', nurse_notes=?,\
+                     updated_date=?, updated_by=? WHERE  `record_status`='A' and `hims_f_patient_encounter_id`=?;",
+                      [
+                        req.body.nurse_notes,
+                        new Date(),
+                        req.body.updated_by,
+                        req.body.hims_f_patient_encounter_id
+                      ],
+                      (error, updateResult) => {
+                        if (error) {
+                          connection.rollback(() => {
+                            releaseDBConnection(db, connection);
+                            next(error);
+                          });
+                        }
+
+                        connection.commit(error => {
+                          if (error) {
+                            connection.rollback(() => {
+                              releaseDBConnection(db, connection);
+                              next(error);
+                            });
+                          }
+                          releaseDBConnection(db, connection);
+                          req.records = updateResult;
+                          next();
+                        });
+                      }
+                    );
+                  } else {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
                 }
               );
             } else {
@@ -148,7 +177,7 @@ let getPatientNurseChiefComplaints = (req, res, next) => {
       connection.query(
         "select hh.hims_d_hpi_header_id,hh.hpi_description as chief_complaint_name,PE.hims_f_patient_encounter_id,PE.patient_id,\
         max(PE.updated_date) as Encounter_Date , NC.hims_f_nurse_episode_chief_complaint_id,NC.episode_id,NC.chief_complaint_id,\
-        NC.onset_date,NC.`interval`,NC.duration,NC.severity,NC.score,NC.pain,NC.`nurse_notes`\
+        NC.onset_date,NC.`interval`,NC.duration,NC.severity,NC.score,NC.pain,NC.`comment`\
         from ( (hims_f_nurse_episode_chief_complaint NC inner join hims_d_hpi_header hh on hh.hims_d_hpi_header_id=NC.chief_complaint_id ) \
            inner join hims_f_patient_encounter PE on PE.episode_id=NC.episode_id)\
         where NC.record_status='A'and NC.episode_id=? group by chief_complaint_id ",
