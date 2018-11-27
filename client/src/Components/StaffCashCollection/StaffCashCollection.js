@@ -273,7 +273,10 @@ class InvestigationSetup extends Component {
   }
 
   render() {
-    const _cash = typeof this.state.difference_cash === "number" ? parseFloat(this.state.difference_cash) : 0;
+    const _cash = this.state.difference_cash !== undefined && this.state.difference_cash !== "" ? parseFloat(this.state.difference_cash) : 0;
+    const _card = this.state.difference_card !== undefined && this.state.difference_card !== "" ? parseFloat(this.state.difference_card) : 0;
+    const _cheque = this.state.difference_cheque !== undefined && this.state.difference_cheque !== "" ? parseFloat(this.state.difference_cheque) : 0;
+
     return (
       <div className="staffCashCollection">
         <BreadCrumb
@@ -740,8 +743,9 @@ class InvestigationSetup extends Component {
                     <tr>
                       <td>Difference</td>
                       <td>{Math.abs(_cash)}</td>
-                      <td>{Math.abs(this.state.difference_card)}</td>
-                      <td>{Math.abs(this.state.difference_cheque)}</td>
+                      <td>{Math.abs(_card)}</td>
+                      <td>{Math.abs(_cheque)}</td>
+
                     </tr>
                     <tr>
                       <td> Status</td>
