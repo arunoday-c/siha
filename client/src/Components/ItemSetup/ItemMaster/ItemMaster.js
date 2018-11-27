@@ -19,9 +19,8 @@ export default class PatientDetails extends Component {
 
   onClose = e => {
     let IOputs = ItemSetup.inputParam();
-    this.setState({ ...this.state, ...IOputs }, () => {
-      this.props.onClose && this.props.onClose(this.state.changesDone);
-    });
+    this.setState({ ...this.state, ...IOputs });
+    this.props.onClose && this.props.onClose(this.state.changesDone);
   };
 
   componentWillMount() {

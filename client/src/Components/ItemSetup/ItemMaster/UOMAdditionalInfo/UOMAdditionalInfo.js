@@ -321,8 +321,8 @@ class UOMAdditionalInfo extends Component {
                         }}
                         textBox={{
                           className: "txt-fld",
-                          name: "assesments_notes",
-                          value: this.state.assesments_notes,
+                          name: "addl_information",
+                          value: this.state.addl_information,
                           others: {
                             multiline: true,
                             rows: "4",
@@ -331,11 +331,7 @@ class UOMAdditionalInfo extends Component {
                             }
                           },
                           events: {
-                            onChange: texthandlecontext.bind(
-                              this,
-                              this,
-                              context
-                            )
+                            onChange: texthandle.bind(this, this)
                           }
                         }}
                       />

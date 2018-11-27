@@ -385,7 +385,6 @@ function mapStateToProps(state) {
     servicetype: state.servicetype,
     subdepartments: state.subdepartments,
     hospitaldetails: state.hospitaldetails
-    // cptcodes: state.cptcodes
   };
 }
 
@@ -395,7 +394,6 @@ function mapDispatchToProps(dispatch) {
       getServiceTypes: AlgaehActions,
       getSubDepatments: AlgaehActions,
       getHospitalDetails: AlgaehActions
-      // getCptCodes: AlgaehActions
     },
     dispatch
   );
