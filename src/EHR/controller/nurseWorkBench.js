@@ -5,7 +5,8 @@ import {
   addPatientNurseChiefComplaints,
   getPatientNurseChiefComplaints,
   deletePatientNurseChiefComplaints,
-  updatePatientNurseChiefComplaints
+  updatePatientNurseChiefComplaints,
+  getNurseMyDay
 } from "../model/nurseWorkBench";
 export default ({ config, db }) => {
   let api = Router();
@@ -55,6 +56,19 @@ export default ({ config, db }) => {
   api.put(
     "/updatePatientNurseChiefComplaints",
     updatePatientNurseChiefComplaints,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+  api.get(
+    "/getNurseMyDay",
+    getNurseMyDay,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

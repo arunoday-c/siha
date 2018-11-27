@@ -681,7 +681,8 @@ let getEncounterReview = (req, res, next) => {
 //created by irfan: get MYDAY in doctors work bench , to show list of todays patients
 let getMyDay = (req, res, next) => {
   let getMydayWhere = {
-    provider_id: req.userIdentity.employee_id
+    provider_id: req.userIdentity.employee_id,
+    sub_department_id: req.userIdentity.sub_department_id
   };
 
   try {
@@ -713,17 +714,15 @@ let getMyDay = (req, res, next) => {
       delete req.query.status;
     }
 
-    debugLog("req query:", req.query);
     let where = whereCondition(extend(getMydayWhere, req.query));
 
-    debugLog("where conditn:", where);
     db.getConnection((error, connection) => {
       if (error) {
         next(error);
       }
       db.query(
         "select  E.hims_f_patient_encounter_id,P.patient_code,P.full_name,E.patient_id ,V.appointment_patient,E.provider_id,E.`status`,E.nurse_examine,E.checked_in,\
-         E.payment_type,E.episode_id,E.encounter_id,E.`source`,E.updated_date as encountered_date,E.visit_id from hims_f_patient_encounter E\
+         E.payment_type,E.episode_id,E.encounter_id,E.`source`,E.updated_date as encountered_date,E.visit_id ,sub_department_id from hims_f_patient_encounter E\
          INNER JOIN hims_f_patient P ON E.patient_id=P.hims_d_patient_id \
             inner join hims_f_patient_visit V on E.visit_id=V.hims_f_patient_visit_id  where E.record_status='A' AND  V.record_status='A' AND " +
           statusFlag +
@@ -731,7 +730,7 @@ let getMyDay = (req, res, next) => {
           dateDiff +
           " AND " +
           where.condition +
-          "order by E.updated_date desc",
+          " order by E.updated_date desc",
         where.values,
 
         (error, result) => {

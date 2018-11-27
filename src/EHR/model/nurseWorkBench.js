@@ -8,6 +8,8 @@ import {
 } from "../../utils";
 import httpStatus from "../../utils/httpStatus";
 import { debugFunction, debugLog } from "../../utils/logging";
+import moment from "moment";
+import formater from "../../keys/keys";
 
 // created by : irfan to
 let addPatientNurseChiefComplaints = (req, res, next) => {
@@ -219,9 +221,83 @@ let updatePatientNurseChiefComplaints = (req, res, next) => {
     next(e);
   }
 };
+
+//created by irfan: to getNursesMyDay in nurse work bench , to show list of todays patients
+let getNurseMyDay = (req, res, next) => {
+  let getMydayWhere = {
+    provider_id: "ALL",
+    sub_department_id: "ALL"
+  };
+
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let dateDiff = "";
+    if (req.query.fromDate != null && req.query.toDate != null) {
+      dateDiff +=
+        " date(E.created_date) BETWEEN date('" +
+        moment(req.query.fromDate).format(formater.dbFormat.date) +
+        "') AND date('" +
+        moment(req.query.toDate).format(formater.dbFormat.date) +
+        "')";
+      delete req.query.fromDate;
+      delete req.query.toDate;
+    } else if (req.query.toDate != null) {
+      dateDiff = " date(E.created_date) = date('" + req.query.toDate + "')";
+      delete req.query.toDate;
+    }
+
+    let statusFlag = "";
+    if (req.query.status == "A") {
+      statusFlag = " E.status <> 'V' AND";
+      delete req.query.status;
+    } else if (req.query.status == "V") {
+      statusFlag = " E.status='V' AND";
+      delete req.query.status;
+    }
+
+    debugLog("req query:", req.query);
+    let where = whereCondition(extend(getMydayWhere, req.query));
+
+    debugLog("where conditn:", where);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      db.query(
+        "select  E.hims_f_patient_encounter_id,P.patient_code,P.full_name,E.patient_id ,V.appointment_patient,E.provider_id,E.`status`,E.nurse_examine,E.checked_in,\
+         E.payment_type,E.episode_id,E.encounter_id,E.`source`,E.updated_date as encountered_date,E.visit_id ,sub_department_id from hims_f_patient_encounter E\
+         INNER JOIN hims_f_patient P ON E.patient_id=P.hims_d_patient_id \
+            inner join hims_f_patient_visit V on E.visit_id=V.hims_f_patient_visit_id  where E.record_status='A' AND  V.record_status='A' AND " +
+          statusFlag +
+          "" +
+          dateDiff +
+          " AND " +
+          where.condition +
+          " order by E.updated_date desc",
+        where.values,
+
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
 module.exports = {
   addPatientNurseChiefComplaints,
   getPatientNurseChiefComplaints,
   deletePatientNurseChiefComplaints,
-  updatePatientNurseChiefComplaints
+  updatePatientNurseChiefComplaints,
+  getNurseMyDay
 };
