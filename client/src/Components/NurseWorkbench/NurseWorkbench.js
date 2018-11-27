@@ -16,6 +16,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../actions/algaehActions";
 import GlobalVariables from "../../utils/GlobalVariables.json";
+import config from "../../utils/config.json";
 import {
   getAllChiefComplaints,
   getPatientChiefComplaints,
@@ -32,10 +33,13 @@ class NurseWorkbench extends Component {
       my_daylist: [],
       selectedLang: "en",
       data: [],
+      patChiefComp: [],
       selectedHDate: moment(dateToday, "YYYYMMDD")._d,
       fromDate: moment()._d,
       toDate: moment()._d,
-      activeDateHeader: moment()._d
+      activeDateHeader: moment()._d,
+      recorded_date: new Date(),
+      recorded_time: moment().format(config.formators.time)
     };
 
     this.loadListofData = this.loadListofData.bind(this);
@@ -48,6 +52,10 @@ class NurseWorkbench extends Component {
     }
     getDepartmentVitals(this);
     this.getDoctorsAndDepts();
+  }
+
+  savePatientExamn() {
+    console.log("Save State:", this.state);
   }
 
   deptDropDownHandler(value) {
@@ -103,39 +111,40 @@ class NurseWorkbench extends Component {
 
   addChiefComplainToPatient(list) {
     const $this = this;
-    let patChiefComp = [];
-    patChiefComp.push({
-      chief_complaint_id: list.selected.hims_d_hpi_header_id,
-      chief_complaint_name: list.selected.hpi_description,
-      hpi_description: list.selected.hpi_description,
-      Encounter_Date: new Date(),
-      nurse_notes: "",
-      duration: 0,
+
+    this.state.patChiefComp.push({
       episode_id: this.state.episode_id,
-      interval: "D",
-      onset_date: new Date(),
-      pain: "NH",
-      score: 0,
-      severity: "MI",
       patient_id: this.state.patient_id,
-      recordState: "insert",
-      chronic: "N",
-      complaint_inactive: "N"
+      chief_complaint_id: list.selected.hims_d_hpi_header_id,
+      onset_date: new Date(),
+      duration: 0,
+      interval: "D",
+      severity: "MI",
+      score: 0,
+      pain: "NH",
+      comment: this.state.nurse_notes
+
+      // chief_complaint_name: list.selected.hpi_description,
+      // hpi_description: list.selected.hpi_description,
+      // Encounter_Date: new Date(),
+      // recordState: "insert",
+      // chronic: "N",
+      // complaint_inactive: "N"
     });
 
-    algaehApiCall({
-      uri: "/nurseWorkBench/addPatientNurseChiefComplaints",
-      data: patChiefComp,
-      onSuccess: response => {
-        if (response.data.success) {
-          getPatientChiefComplaints($this);
-          swalMessage({
-            title: "Chief Complaint Recorded",
-            type: "success"
-          });
-        }
-      }
-    });
+    // algaehApiCall({
+    //   uri: "/nurseWorkBench/addPatientNurseChiefComplaints",
+    //   data: patChiefComp,
+    //   onSuccess: response => {
+    //     if (response.data.success) {
+    //       getPatientChiefComplaints($this);
+    //       swalMessage({
+    //         title: "Chief Complaint Recorded",
+    //         type: "success"
+    //       });
+    //     }
+    //   }
+    // });
   }
 
   gridLevelUpdate(row, e) {
@@ -1069,7 +1078,7 @@ class NurseWorkbench extends Component {
                         noDataText="No More Chief Complaints"
                         keyId="patient_id"
                         dataSource={{
-                          data: this.props.patient_chief_complaints
+                          data: this.state.patChiefComp
                         }}
                         isEditable={true}
                         paging={{ page: 0, rowsPerPage: 10 }}
@@ -1120,7 +1129,12 @@ class NurseWorkbench extends Component {
                 {/* Notes End */}
 
                 <div style={{ float: "right" }}>
-                  <button className="btn btn-primary">SAVE</button>
+                  <button
+                    onClick={this.savePatientExamn.bind(this)}
+                    className="btn btn-primary"
+                  >
+                    SAVE
+                  </button>
                 </div>
               </div>
             </div>
