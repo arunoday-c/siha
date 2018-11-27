@@ -125,20 +125,25 @@ class HospitalServiceSetup extends Component {
   }
 
   CloseModel(e) {
-    this.props.getServices({
-      uri: "/serviceType/getService",
-      method: "GET",
-      redux: {
-        type: "SERVICES_GET_DATA",
-        mappingName: "hospitalservices"
+    this.setState(
+      {
+        ...this.state,
+        isOpen: !this.state.isOpen
       },
-      afterSuccess: data => {
-        this.setState({
-          ...this.state,
-          isOpen: !this.state.isOpen
-        });
+      () => {
+        debugger;
+        if (e === true) {
+          this.props.getServices({
+            uri: "/serviceType/getService",
+            method: "GET",
+            redux: {
+              type: "SERVICES_GET_DATA",
+              mappingName: "hospitalservices"
+            }
+          });
+        }
       }
-    });
+    );
   }
 
   changeDateFormat = date => {

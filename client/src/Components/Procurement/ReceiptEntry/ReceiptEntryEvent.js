@@ -5,6 +5,7 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import ReceiptEntryInv from "../../../Models/ReceiptEntry";
+import Enumerable from "linq";
 
 let texthandlerInterval = null;
 
@@ -193,9 +194,11 @@ const DeliverySearch = ($this, e) => {
                 data.dn_entry_detail[i].recieved_quantity =
                   data.dn_entry_detail[i].dn_quantity;
               }
+
               data.receipt_entry_detail = data.dn_entry_detail;
               data.saveEnable = false;
               data.dataExitst = true;
+              data.postEnable = true;
               data.po_id = data.purchase_order_id;
               data.dn_id = data.hims_f_procurement_dn_header_id;
 
@@ -227,25 +230,37 @@ const ClearData = ($this, e) => {
 };
 
 const SaveReceiptEnrty = $this => {
-  algaehApiCall({
-    uri: "/ReceiptEntry/addReceiptEntry",
-    data: $this.state,
-    onSuccess: response => {
-      if (response.data.success === true) {
-        $this.setState({
-          grn_number: response.data.records.grn_number,
-          hims_f_procurement_grn_header_id:
-            response.data.records.hims_f_procurement_grn_header_id,
-          saveEnable: true
-        });
+  debugger;
+  const batchExpiryDate = Enumerable.from($this.state.receipt_entry_detail)
+    .where(w => w.batchno === null || w.expiry_date === null)
+    .toArray();
 
-        swalMessage({
-          type: "success",
-          title: "Saved successfully . ."
-        });
+  if (batchExpiryDate.length === 0) {
+    algaehApiCall({
+      uri: "/ReceiptEntry/addReceiptEntry",
+      data: $this.state,
+      onSuccess: response => {
+        if (response.data.success === true) {
+          $this.setState({
+            grn_number: response.data.records.grn_number,
+            hims_f_procurement_grn_header_id:
+              response.data.records.hims_f_procurement_grn_header_id,
+            saveEnable: true,
+            postEnable: false
+          });
+          swalMessage({
+            type: "success",
+            title: "Saved successfully . ."
+          });
+        }
       }
-    }
-  });
+    });
+  } else {
+    swalMessage({
+      title: "Invalid Input. Please enter Batch No. and Expiry Date.",
+      type: "warning"
+    });
+  }
 };
 
 const getCtrlCode = ($this, docNumber) => {
@@ -270,15 +285,16 @@ const getCtrlCode = ($this, docNumber) => {
         data.dataExitst = true;
 
         data.addedItem = true;
-        data.postEnable = false;
+        if (data.posted === "Y") {
+          data.postEnable = true;
+        } else {
+          data.postEnable = false;
+        }
         $this.setState(data, () => {
           getData($this);
         });
         AlgaehLoader({ show: false });
 
-        // if (context != null) {
-        //   context.updateState({ ...response.data.records });
-        // }
         $this.setState({ ...response.data.records });
       }
       AlgaehLoader({ show: false });
@@ -291,35 +307,6 @@ const getCtrlCode = ($this, docNumber) => {
       });
     }
   });
-
-  // $this.props.getReceiptEntry({
-  //   uri: "/ReceiptEntry/getReceiptEntry",
-  //   method: "GET",
-  //   printInput: true,
-  //   data: { grn_number: docNumber },
-  //   redux: {
-  //     type: "PO_ENTRY_GET_DATA",
-  //     mappingName: "receiptentry"
-  //   },
-  //   afterSuccess: data => {
-  //     if (
-  //       $this.props.grn_number !== undefined &&
-  //       $this.props.grn_number.length !== 0
-  //     ) {
-  //       data.authorizeEnable = false;
-  //       data.ItemDisable = true;
-  //       data.ClearDisable = true;
-  //     }
-  //     data.saveEnable = true;
-  //     data.dataExitst = true;
-
-  //     data.addedItem = true;
-  //     $this.setState(data, () => {
-  //       getData($this);
-  //     });
-  //     AlgaehLoader({ show: false });
-  //   }
-  // });
 };
 
 const getData = $this => {
@@ -417,7 +404,76 @@ const getData = $this => {
   }
 };
 
-const PostReceiptEntry = $this => {};
+const PostReceiptEntry = $this => {
+  $this.state.posted = "Y";
+  $this.state.transaction_type = "REC";
+  $this.state.transaction_id = $this.state.hims_f_procurement_grn_header_id;
+  $this.state.transaction_date = $this.state.grn_date;
+
+  if ($this.state.grn_for === "PHR") {
+    $this.state.pharmacy_stock_detail = $this.state.receipt_entry_detail;
+
+    for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
+      $this.state.pharmacy_stock_detail[i].location_id =
+        $this.state.pharmcy_location_id;
+      $this.state.pharmacy_stock_detail[i].location_type =
+        $this.state.location_type;
+
+      $this.state.pharmacy_stock_detail[i].sales_uom =
+        $this.state.pharmacy_stock_detail[i].uom_id;
+      $this.state.pharmacy_stock_detail[i].item_code_id =
+        $this.state.pharmacy_stock_detail[i].phar_item_id;
+      $this.state.pharmacy_stock_detail[i].grn_number = $this.state.grn_number;
+      $this.state.pharmacy_stock_detail[i].item_category_id =
+        $this.state.pharmacy_stock_detail[i].phar_item_category;
+      $this.state.pharmacy_stock_detail[i].net_total =
+        $this.state.pharmacy_stock_detail[i].net_extended_cost;
+    }
+  } else if ($this.state.grn_for === "INV") {
+    $this.state.inventory_stock_detail = $this.state.receipt_entry_detail;
+
+    for (let i = 0; i < $this.state.inventory_stock_detail.length; i++) {
+      $this.state.inventory_stock_detail[i].location_id =
+        $this.state.inventory_location_id;
+      $this.state.inventory_stock_detail[i].location_type =
+        $this.state.location_type;
+
+      $this.state.inventory_stock_detail[i].sales_uom =
+        $this.state.inventory_stock_detail[i].uom_id;
+      $this.state.inventory_stock_detail[i].item_code_id =
+        $this.state.inventory_stock_detail[i].inv_item_id;
+      $this.state.inventory_stock_detail[i].grn_number = $this.state.grn_number;
+      $this.state.inventory_stock_detail[i].item_category_id =
+        $this.state.inventory_stock_detail[i].inv_item_category_id;
+      $this.state.inventory_stock_detail[i].net_total =
+        $this.state.inventory_stock_detail[i].net_extended_cost;
+    }
+  }
+
+  algaehApiCall({
+    uri: "/ReceiptEntry/updateReceiptEntry",
+    data: $this.state,
+    method: "PUT",
+    onSuccess: response => {
+      if (response.data.success === true) {
+        $this.setState({
+          postEnable: true
+        });
+        swalMessage({
+          title: "Posted successfully . .",
+          type: "success"
+        });
+      }
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+};
 
 export {
   texthandle,

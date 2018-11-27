@@ -14,7 +14,11 @@ import AlgaehLabel from "../Wrapper/label.js";
 import BillingIOputs from "../../Models/Billing";
 import PatRegIOputs from "../../Models/RegistrationPatient";
 import { getCookie } from "../../utils/algaehApiCall";
-import { ClearData, Validations } from "./OPBillingEvents";
+import {
+  ClearData,
+  Validations,
+  getCashiersAndShiftMAP
+} from "./OPBillingEvents";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { successfulMessage } from "../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall.js";
@@ -83,6 +87,22 @@ class PatientDisplayDetails extends Component {
         }
       });
     }
+
+    let _screenName = getCookie("ScreenName").replace("/", "");
+    algaehApiCall({
+      uri: "/userPreferences/get",
+      data: {
+        screenName: _screenName,
+        identifier: "Counter"
+      },
+      method: "GET",
+      onSuccess: response => {
+        this.setState({
+          counter_id: response.data.records.selectedValue
+        });
+      }
+    });
+    getCashiersAndShiftMAP(this, this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -437,40 +457,38 @@ class PatientDisplayDetails extends Component {
         </div>
 
         <div className="hptl-phase1-footer">
-          
-            <div className="row">
-              <div className="col-lg-12">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={this.SaveBill.bind(this)}
-                  disabled={this.state.saveEnable}
-                >
-                  <AlgaehLabel
-                    label={{ fieldName: "btn_save", returnText: true }}
-                  />
-                  {/* Save */}
-                </button>
-
-                <AHSnackbar
-                  open={this.state.open}
-                  handleClose={this.handleClose}
-                  MandatoryMsg={this.state.MandatoryMsg}
+          <div className="row">
+            <div className="col-lg-12">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={this.SaveBill.bind(this)}
+                disabled={this.state.saveEnable}
+              >
+                <AlgaehLabel
+                  label={{ fieldName: "btn_save", returnText: true }}
                 />
+                {/* Save */}
+              </button>
 
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  onClick={ClearData.bind(this, this)}
-                >
-                  <AlgaehLabel
-                    label={{ fieldName: "btn_clear", returnText: true }}
-                  />
-                  {/* Clear */}
-                </button>
-              </div>
+              <AHSnackbar
+                open={this.state.open}
+                handleClose={this.handleClose}
+                MandatoryMsg={this.state.MandatoryMsg}
+              />
+
+              <button
+                type="button"
+                className="btn btn-default"
+                onClick={ClearData.bind(this, this)}
+              >
+                <AlgaehLabel
+                  label={{ fieldName: "btn_clear", returnText: true }}
+                />
+                {/* Clear */}
+              </button>
             </div>
-          
+          </div>
         </div>
       </div>
     );

@@ -569,9 +569,8 @@ let updateOrderedServicesBilled = (req, res, next) => {
       qry +=
         " UPDATE `hims_f_ordered_services` SET billed='" +
         OrderServices[i].billed +
-        "',updated_date='" +
-        new Date().toLocaleString() +
-        "',updated_by='" +
+        "'" +
+        ",updated_by='" +
         OrderServices[i].updated_by +
         "' WHERE hims_f_ordered_services_id='" +
         OrderServices[i].hims_f_ordered_services_id +
