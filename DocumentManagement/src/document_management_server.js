@@ -3,6 +3,7 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import exxpress from "express";
 import keys from "../../keys/keys";
+import routes from "./Routers";
 const app = exxpress();
 const portNumber = keys.port;
 app.server = http.createServer(app);
@@ -15,7 +16,7 @@ app.use(
 );
 
 //api routeres v1
-//app.use("/api/v1", routes);
+app.use("/api/v1", routes);
 process.on("warning", warning => {
   logger.log("warn", warning);
 });
