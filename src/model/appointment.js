@@ -1,17 +1,15 @@
 "use strict";
 import extend from "extend";
 import {
- 
   whereCondition,
   deleteRecord,
-
   releaseDBConnection,
   jsonArrayToObject
 } from "../utils";
 import moment from "moment";
 import httpStatus from "../utils/httpStatus";
 import { LINQ } from "node-linq";
-import {  debugLog } from "../utils/logging";
+import { debugLog } from "../utils/logging";
 
 //created by irfan: to add appointment_status
 let addAppointmentStatus = (req, res, next) => {
@@ -25,113 +23,106 @@ let addAppointmentStatus = (req, res, next) => {
     db.getConnection((error, connection) => {
       if (error) {
         next(error);
-      }    
-       connection.beginTransaction(error => {
+      }
+      connection.beginTransaction(error => {
         if (error) {
           connection.rollback(() => {
             releaseDBConnection(db, connection);
             next(error);
           });
         }
-      connection.query(
-        "INSERT INTO `hims_d_appointment_status` (color_code, description, default_status,steps, created_date, created_by, updated_date, updated_by)\
+        connection.query(
+          "INSERT INTO `hims_d_appointment_status` (color_code, description, default_status,steps, created_date, created_by, updated_date, updated_by)\
           VALUE(?,?,?,?,?,?,?,?)",
-        [
-          input.color_code,
-          input.description,
-          input.default_status,
-          input.steps,
+          [
+            input.color_code,
+            input.description,
+            input.default_status,
+            input.steps,
 
-          new Date(),
-          input.created_by,
-          new Date(),
-          input.updated_by
-        ],
-        (error,result) => {
-         
-          if (error) {
-            connection.rollback(() => {
-              releaseDBConnection(db, connection);
-              next(error);
-            });
-          }
+            new Date(),
+            input.created_by,
+            new Date(),
+            input.updated_by
+          ],
+          (error, result) => {
+            if (error) {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
 
-          //update hims_d_appointment_status  set steps=1 where hims_d_appointment_status_id=? and record_status='A';
-          if (input.default_status == "Y") {
-            connection.query(
-              "UPDATE `hims_d_appointment_status` SET  default_status='N'   WHERE default_status='Y' and record_status='A' and  hims_d_appointment_status_id <> ?;\
+            //update hims_d_appointment_status  set steps=1 where hims_d_appointment_status_id=? and record_status='A';
+            if (input.default_status == "Y") {
+              connection.query(
+                "UPDATE `hims_d_appointment_status` SET  default_status='N'   WHERE default_status='Y' and record_status='A' and  hims_d_appointment_status_id <> ?;\
                 ",
-              [result.insertId,result.insertId],
-              (error, defStatusRsult) => {
-                if (error) {
-                  connection.rollback(() => {
-                    releaseDBConnection(db, connection);
-                    next(error);
-                  });
-                }
-
-                connection.commit(error => {
+                [result.insertId, result.insertId],
+                (error, defStatusRsult) => {
                   if (error) {
                     connection.rollback(() => {
                       releaseDBConnection(db, connection);
                       next(error);
                     });
                   }
-                  releaseDBConnection(db, connection);
-                  req.records = result;
-                  next();
-                });
-              }
-            );
-          }         
-          
-          else if(input.default_status == "C"){
-            connection.query(
-              "update hims_d_appointment_status set default_status='N' where default_status='C' and record_status='A' and hims_d_appointment_status_id <>? ",
-              [result.insertId],
-              (error, crtRsult) => {
-                if (error) {
-                  connection.rollback(() => {
+
+                  connection.commit(error => {
+                    if (error) {
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      });
+                    }
                     releaseDBConnection(db, connection);
-                    next(error);
+                    req.records = result;
+                    next();
                   });
                 }
-
-                connection.commit(error => {
+              );
+            } else if (input.default_status == "C") {
+              connection.query(
+                "update hims_d_appointment_status set default_status='N' where default_status='C' and record_status='A' and hims_d_appointment_status_id <>? ",
+                [result.insertId],
+                (error, crtRsult) => {
                   if (error) {
                     connection.rollback(() => {
                       releaseDBConnection(db, connection);
                       next(error);
                     });
                   }
-                  releaseDBConnection(db, connection);
-                  req.records = crtRsult;
-                  next();
-                });
-              }
-            );
 
-            
-          }else {
-            connection.commit(error => {
-              if (error) {
-                connection.rollback(() => {
-                  releaseDBConnection(db, connection);
-                  next(error);
-                });
-              }
-              releaseDBConnection(db, connection);
-              req.records = result;
-              next();
-            });
+                  connection.commit(error => {
+                    if (error) {
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      });
+                    }
+                    releaseDBConnection(db, connection);
+                    req.records = crtRsult;
+                    next();
+                  });
+                }
+              );
+            } else {
+              connection.commit(error => {
+                if (error) {
+                  connection.rollback(() => {
+                    releaseDBConnection(db, connection);
+                    next(error);
+                  });
+                }
+                releaseDBConnection(db, connection);
+                req.records = result;
+                next();
+              });
+            }
           }
-
-
-        });
-          // req.records = result;
-          // next();
-        }
-      );
+        );
+        // req.records = result;
+        // next();
+      });
     });
   } catch (e) {
     next(e);
@@ -221,12 +212,11 @@ let addAppointmentClinic = (req, res, next) => {
 
 //created by irfan: to get Appointment Status
 let getAppointmentStatus = (req, res, next) => {
- 
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
-    let db = req.db; 
+    let db = req.db;
     db.getConnection((error, connection) => {
       connection.query(
         "select hims_d_appointment_status_id, color_code, description, default_status,steps,authorized FROM hims_d_appointment_status where record_status='A'  order by steps ",
@@ -261,7 +251,8 @@ let getAppointmentRoom = (req, res, next) => {
     db.getConnection((error, connection) => {
       connection.query(
         "select * FROM hims_d_appointment_room where record_status='A' AND" +
-          where.condition+" order by hims_d_appointment_room_id desc",
+          where.condition +
+          " order by hims_d_appointment_room_id desc",
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -294,7 +285,8 @@ let getAppointmentClinic = (req, res, next) => {
     db.getConnection((error, connection) => {
       connection.query(
         "select hims_d_appointment_clinic_id,description, sub_department_id, provider_id, room_id FROM hims_d_appointment_clinic where record_status='A' AND" +
-          where.condition+" order by hims_d_appointment_clinic_id desc",
+          where.condition +
+          " order by hims_d_appointment_clinic_id desc",
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -352,13 +344,16 @@ let updateAppointmentStatus = (req, res, next) => {
               });
             }
 
-            if (input.default_status == "Y"&& input.record_status=="A") {
+            if (input.default_status == "Y" && input.record_status == "A") {
               connection.query(
                 "UPDATE `hims_d_appointment_status` SET  default_status='N'\
             WHERE  record_status='A' and default_status!='C' and  hims_d_appointment_status_id <> ?; \
             update hims_d_appointment_status  set steps=null where hims_d_appointment_status_id>0;\
             update hims_d_appointment_status  set steps=1 where hims_d_appointment_status_id=? and record_status='A';",
-                [input.hims_d_appointment_status_id,input.hims_d_appointment_status_id,],
+                [
+                  input.hims_d_appointment_status_id,
+                  input.hims_d_appointment_status_id
+                ],
                 (error, defStatusRsult) => {
                   if (error) {
                     connection.rollback(() => {
@@ -380,8 +375,10 @@ let updateAppointmentStatus = (req, res, next) => {
                   });
                 }
               );
-            }
-            else if(input.default_status == "C"&& input.record_status=="A"){
+            } else if (
+              input.default_status == "C" &&
+              input.record_status == "A"
+            ) {
               connection.query(
                 "update hims_d_appointment_status set default_status='N' where default_status='C' and record_status='A' and hims_d_appointment_status_id <>? ",
                 [input.hims_d_appointment_status_id],
@@ -392,7 +389,7 @@ let updateAppointmentStatus = (req, res, next) => {
                       next(error);
                     });
                   }
-  
+
                   connection.commit(error => {
                     if (error) {
                       connection.rollback(() => {
@@ -400,17 +397,16 @@ let updateAppointmentStatus = (req, res, next) => {
                         next(error);
                       });
                     }
-  
+
                     req.records = crtRsult;
                     next();
                   });
                 }
               );
-            }
-            else if(input.record_status=="I"){
+            } else if (input.record_status == "I") {
               connection.query(
-                "update hims_d_appointment_status  set steps=null where hims_d_appointment_status_id=?;\ ",
-                [input.hims_d_appointment_status_id,],
+                "update hims_d_appointment_status  set steps=null where hims_d_appointment_status_id=?; ",
+                [input.hims_d_appointment_status_id],
                 (error, deleteRsult) => {
                   if (error) {
                     connection.rollback(() => {
@@ -432,8 +428,7 @@ let updateAppointmentStatus = (req, res, next) => {
                   });
                 }
               );
-            }
-            else {
+            } else {
               connection.commit(error => {
                 if (error) {
                   connection.rollback(() => {
@@ -466,22 +461,19 @@ let appointmentStatusAuthorized = (req, res, next) => {
       if (error) {
         next(error);
       }
-    
-        connection.query(
-          "update hims_d_appointment_status  set authorized='Y',updated_date=?, updated_by=? where record_status='A' and hims_d_appointment_status_id>0 ;",
-           [
-            new Date(),
-            input.updated_by              
-          ],
-          (error, result) => {
-            releaseDBConnection(db, connection);
-            if (error) {
-              next(error);
-            }
-            req.records = result;
-            next();            
-       
-      });
+
+      connection.query(
+        "update hims_d_appointment_status  set authorized='Y',updated_date=?, updated_by=? where record_status='A' and hims_d_appointment_status_id>0 ;",
+        [new Date(), input.updated_by],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
     });
   } catch (e) {
     next(e);
@@ -508,7 +500,7 @@ let updateAppointmentRoom = (req, res, next) => {
           input.description,
           input.room_active,
           new Date(),
-          input.updated_by,      
+          input.updated_by,
           input.hims_d_appointment_room_id
         ],
         (error, result) => {
@@ -526,8 +518,6 @@ let updateAppointmentRoom = (req, res, next) => {
   }
 };
 
-
-
 //created by irfan: to delete Appointment Room
 let deleteAppointmentRoom = (req, res, next) => {
   try {
@@ -535,7 +525,7 @@ let deleteAppointmentRoom = (req, res, next) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
 
-    debugLog("delete rom")
+    debugLog("delete rom");
     deleteRecord(
       {
         db: req.db,
@@ -558,8 +548,6 @@ let deleteAppointmentRoom = (req, res, next) => {
     next(e);
   }
 };
-
-
 
 //created by irfan: to  update Appointment Clinic
 let updateAppointmentClinic = (req, res, next) => {
@@ -1308,7 +1296,6 @@ let getDoctorScheduleDateWise = (req, res, next) => {
   let selectWhere = {
     sub_dept_id: "ALL",
     schedule_date: "ALL"
- 
   };
   try {
     if (req.db == null) {
@@ -1316,19 +1303,16 @@ let getDoctorScheduleDateWise = (req, res, next) => {
     }
     let db = req.db;
     let selectDoctor = "";
-   // let provider_id = "";
+    // let provider_id = "";
     if (req.query.provider_id != "null" && req.query.provider_id != null) {
       selectDoctor = `ASD.provider_id=${req.query.provider_id} and `;
       //provider_id = req.query.provider_id;
     }
     delete req.query.provider_id;
 
-    
-
     let where = whereCondition(extend(selectWhere, req.query));
 
-   
-debugLog("where:",where);
+    debugLog("where:", where);
     db.getConnection((error, connection) => {
       connection.query(
         "select hims_d_appointment_schedule_header_id, sub_dept_id,SD.sub_department_name, SH.schedule_status as schedule_status, schedule_description, month, year,\
@@ -1353,17 +1337,13 @@ debugLog("where:",where);
             next(error);
           }
 
-
-
           if (result.length > 0) {
-          new Promise((resolve, reject) => {
-            try{
-
-              for(let j = 0; j < result.length; j++){
-                 if(result[j]["modified"]=="M") {                       
-                  
-              connection.query(
-                "select hims_d_appointment_schedule_modify_id, appointment_schedule_detail_id, ASM.to_date as schedule_date, ASM.slot, ASM.from_work_hr,\
+            new Promise((resolve, reject) => {
+              try {
+                for (let j = 0; j < result.length; j++) {
+                  if (result[j]["modified"] == "M") {
+                    connection.query(
+                      "select hims_d_appointment_schedule_modify_id, appointment_schedule_detail_id, ASM.to_date as schedule_date, ASM.slot, ASM.from_work_hr,\
                 ASM.to_work_hr, ASM.work_break1, ASM.from_break_hr1,ASM.to_break_hr1, ASM.work_break2, ASM.from_break_hr2, ASM.to_break_hr2  \
                 hims_d_appointment_schedule_header_id, sub_dept_id,SD.sub_department_name, SH.schedule_status, schedule_description, month, year,  \
                monday, tuesday, wednesday, thursday, friday, saturday, sunday, ASD.provider_id,E.full_name as doctor_name,clinic_id,C.description as clinic_name,R.description as  room_name,\
@@ -1373,81 +1353,69 @@ debugLog("where:",where);
                and ASD.record_status='A' and C.record_status='A' and SD.record_status='A' and R.record_status='A'and ASD.provider_id=E.hims_d_employee_id and  SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id  \
                and ASM.appointment_schedule_detail_id=ASD.hims_d_appointment_schedule_detail_id and ASM.record_status='A'\
                and ASD.clinic_id=C.hims_d_appointment_clinic_id and C.room_id=R.hims_d_appointment_room_id and C.sub_department_id=SD.hims_d_sub_department_id and appointment_schedule_detail_id=?",
-                [result[j]["hims_d_appointment_schedule_detail_id"]],
-                (error, modifyResult) => {
-                  if (error) {
-                    releaseDBConnection(db, connection);
-                    next(error);
+                      [result[j]["hims_d_appointment_schedule_detail_id"]],
+                      (error, modifyResult) => {
+                        if (error) {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        }
+
+                        result[j] = modifyResult[0];
+                      }
+                    );
                   }
-                
-
-                result[j]=modifyResult[0];               
-               
-                 });
-          }
-          if(j == result.length - 1){
-            resolve({});
-
-          }
-        }
-         
-
-          } catch (e) {
-            reject(e);
-          }
-        }).then(modifyRes=>{
-          let outputArray = [];
-          if (result.length > 0) {
-            for (let i = 0; i < result.length; i++) {
-             
-              connection.query(
-                "select hims_f_patient_appointment_id, patient_id,patient_code, provider_id, sub_department_id,number_of_slot, appointment_date, appointment_from_time,\
+                  if (j == result.length - 1) {
+                    resolve({});
+                  }
+                }
+              } catch (e) {
+                reject(e);
+              }
+            }).then(modifyRes => {
+              let outputArray = [];
+              if (result.length > 0) {
+                for (let i = 0; i < result.length; i++) {
+                  connection.query(
+                    "select hims_f_patient_appointment_id, patient_id, title_id, patient_code, provider_id, sub_department_id,number_of_slot, appointment_date, appointment_from_time,\
     appointment_to_time, appointment_status_id, patient_name, arabic_name, date_of_birth, age, contact_number, email, send_to_provider,\
     gender, confirmed, confirmed_by,comfirmed_date, cancelled, cancelled_by, cancelled_date, cancel_reason,\
     appointment_remarks, visit_created,is_stand_by  from hims_f_patient_appointment where record_status='A' and   cancelled<>'Y' and sub_department_id=?\
     and appointment_date=? and provider_id=? ",
-                [
-                  result[i].sub_dept_id,
-                  result[i].schedule_date,
-                  result[i].provider_id
-                ],
-                (error, appResult) => {
-                  if (error) {
-                    releaseDBConnection(db, connection);
-                    next(error);
-                  }
-                  const obj = {
-                    ...result[i],
-                    ...{ patientList: appResult }
-                  };
-                
-                  outputArray.push(obj);
-                  if (i == result.length - 1) {
-                    req.records = outputArray;
-                    releaseDBConnection(db, connection);
-                    next();
-                  }
+                    [
+                      result[i].sub_dept_id,
+                      result[i].schedule_date,
+                      result[i].provider_id
+                    ],
+                    (error, appResult) => {
+                      if (error) {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      }
+                      const obj = {
+                        ...result[i],
+                        ...{ patientList: appResult }
+                      };
+
+                      outputArray.push(obj);
+                      if (i == result.length - 1) {
+                        req.records = outputArray;
+                        releaseDBConnection(db, connection);
+                        next();
+                      }
+                    }
+                  );
                 }
-              );
-              
-            }
+              } else {
+                releaseDBConnection(db, connection);
+                req.records = result;
+                next();
+              }
+            });
           } else {
             releaseDBConnection(db, connection);
             req.records = result;
             next();
           }
-        })
-      }else {
-        releaseDBConnection(db, connection);
-        req.records = result;
-        next();
-      }   
-
-
-
-
-         
-         
         }
       );
     });
@@ -1461,7 +1429,6 @@ let getDoctorScheduleDateWiseBACKup3_nov = (req, res, next) => {
   let selectWhere = {
     sub_dept_id: "ALL",
     schedule_date: "ALL"
- 
   };
   try {
     if (req.db == null) {
@@ -1469,18 +1436,14 @@ let getDoctorScheduleDateWiseBACKup3_nov = (req, res, next) => {
     }
     let db = req.db;
     let selectDoctor = "";
-   // let provider_id = "";
+    // let provider_id = "";
     if (req.query.provider_id != "null" && req.query.provider_id != null) {
       selectDoctor = `ASD.provider_id=${req.query.provider_id} and `;
       //provider_id = req.query.provider_id;
     }
     delete req.query.provider_id;
 
-   
-
     let where = whereCondition(extend(selectWhere, req.query));
-
-
 
     // select hims_d_appointment_schedule_header_id, sub_dept_id, SH.schedule_status as schedule_status, schedule_description, month, year,\
     // from_date,to_date,from_work_hr, to_work_hr, work_break1, from_break_hr1, to_break_hr1, work_break2, from_break_hr2,\
@@ -1512,31 +1475,26 @@ let getDoctorScheduleDateWiseBACKup3_nov = (req, res, next) => {
             next(error);
           }
 
-
-          debugLog("result:",result);
+          debugLog("result:", result);
 
           if (result.length > 0) {
-          new Promise((resolve, reject) => {
-            try{
+            new Promise((resolve, reject) => {
+              try {
+                for (let j = 0; j < result.length; j++) {
+                  if (result[j]["modified"] == "M") {
+                    //     select hims_d_appointment_schedule_modify_id, appointment_schedule_detail_id, ASM.to_date as schedule_date, ASM.slot, ASM.from_work_hr,\
+                    //   ASM.to_work_hr, ASM.work_break1, ASM.from_break_hr1,ASM.to_break_hr1, ASM.work_break2, ASM.from_break_hr2, ASM.to_break_hr2  \
+                    //   hims_d_appointment_schedule_header_id, sub_dept_id, SH.schedule_status, schedule_description, month, year,  \
+                    //  monday, tuesday, wednesday, thursday, friday, saturday, sunday, provider_id,E.first_name,E.last_name,clinic_id,\
+                    //   ASD.schedule_status as todays_schedule_status, modified  \
+                    //  from hims_d_appointment_schedule_header SH,hims_d_appointment_schedule_modify ASM , hims_d_appointment_schedule_detail ASD,hims_d_employee E\
+                    //    where SH.record_status='A' and E.record_status='A'\
+                    //  and ASD.record_status='A' and ASD.provider_id=E.hims_d_employee_id and  SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id  \
+                    //  and ASM.appointment_schedule_detail_id=ASD.hims_d_appointment_schedule_detail_id and ASM.record_status='A'\
+                    //   and appointment_schedule_detail_id=?
 
-              for(let j = 0; j < result.length; j++){
-                 if(result[j]["modified"]=="M") {      
-                   
-                  
-
-              //     select hims_d_appointment_schedule_modify_id, appointment_schedule_detail_id, ASM.to_date as schedule_date, ASM.slot, ASM.from_work_hr,\
-              //   ASM.to_work_hr, ASM.work_break1, ASM.from_break_hr1,ASM.to_break_hr1, ASM.work_break2, ASM.from_break_hr2, ASM.to_break_hr2  \
-              //   hims_d_appointment_schedule_header_id, sub_dept_id, SH.schedule_status, schedule_description, month, year,  \
-              //  monday, tuesday, wednesday, thursday, friday, saturday, sunday, provider_id,E.first_name,E.last_name,clinic_id,\
-              //   ASD.schedule_status as todays_schedule_status, modified  \
-              //  from hims_d_appointment_schedule_header SH,hims_d_appointment_schedule_modify ASM , hims_d_appointment_schedule_detail ASD,hims_d_employee E\
-              //    where SH.record_status='A' and E.record_status='A'\
-              //  and ASD.record_status='A' and ASD.provider_id=E.hims_d_employee_id and  SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id  \
-              //  and ASM.appointment_schedule_detail_id=ASD.hims_d_appointment_schedule_detail_id and ASM.record_status='A'\
-              //   and appointment_schedule_detail_id=?
-
-              connection.query(
-                "select hims_d_appointment_schedule_modify_id, appointment_schedule_detail_id, ASM.to_date as schedule_date, ASM.slot, ASM.from_work_hr,\
+                    connection.query(
+                      "select hims_d_appointment_schedule_modify_id, appointment_schedule_detail_id, ASM.to_date as schedule_date, ASM.slot, ASM.from_work_hr,\
                 ASM.to_work_hr, ASM.work_break1, ASM.from_break_hr1,ASM.to_break_hr1, ASM.work_break2, ASM.from_break_hr2, ASM.to_break_hr2  \
                 hims_d_appointment_schedule_header_id, sub_dept_id, SH.schedule_status, schedule_description, month, year,  \
                monday, tuesday, wednesday, thursday, friday, saturday, sunday, ASD.provider_id,E.first_name,E.last_name,clinic_id,C.description as clinic_name,R.description as  room_name,\
@@ -1546,81 +1504,70 @@ let getDoctorScheduleDateWiseBACKup3_nov = (req, res, next) => {
                and ASD.record_status='A' and C.record_status='A' and R.record_status='A'and ASD.provider_id=E.hims_d_employee_id and  SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id  \
                and ASM.appointment_schedule_detail_id=ASD.hims_d_appointment_schedule_detail_id and ASM.record_status='A'\
                and ASD.clinic_id=C.hims_d_appointment_clinic_id and C.room_id=R.hims_d_appointment_room_id and appointment_schedule_detail_id=?",
-                [result[j]["hims_d_appointment_schedule_detail_id"]],
-                (error, modifyResult) => {
-                  if (error) {
-                    releaseDBConnection(db, connection);
-                    next(error);
+                      [result[j]["hims_d_appointment_schedule_detail_id"]],
+                      (error, modifyResult) => {
+                        if (error) {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        }
+                        debugLog("modifyResult:", modifyResult);
+
+                        result[j] = modifyResult[0];
+                        resolve(modifyResult);
+                      }
+                    );
+                  } else {
+                    resolve({});
                   }
-                  debugLog("modifyResult:",modifyResult);
-
-                result[j]=modifyResult[0];               
-                  resolve(modifyResult);
-                 });
-          }else {
-
-            
-            resolve({});
-          }
-        }
-         
-
-          } catch (e) {
-            reject(e);
-          }
-        }).then(modifyRes=>{
-          let outputArray = [];
-          if (result.length > 0) {
-            for (let i = 0; i < result.length; i++) {
-             
-              connection.query(
-                "select hims_f_patient_appointment_id, patient_id,patient_code, provider_id, sub_department_id,number_of_slot, appointment_date, appointment_from_time,\
+                }
+              } catch (e) {
+                reject(e);
+              }
+            }).then(modifyRes => {
+              let outputArray = [];
+              if (result.length > 0) {
+                for (let i = 0; i < result.length; i++) {
+                  connection.query(
+                    "select hims_f_patient_appointment_id, patient_id,title_id,patient_code, provider_id, sub_department_id,number_of_slot, appointment_date, appointment_from_time,\
     appointment_to_time, appointment_status_id, patient_name, arabic_name, date_of_birth, age, contact_number, email, send_to_provider,\
     gender, confirmed, confirmed_by,comfirmed_date, cancelled, cancelled_by, cancelled_date, cancel_reason,\
     appointment_remarks, is_stand_by  from hims_f_patient_appointment where record_status='A' and sub_department_id=?\
     and appointment_date=? and provider_id=? ",
-                [
-                  result[i].sub_dept_id,
-                  result[i].schedule_date,
-                  result[i].provider_id
-                ],
-                (error, appResult) => {
-                  if (error) {
-                    releaseDBConnection(db, connection);
-                    next(error);
-                  }
-                  const obj = {
-                    ...result[i],
-                    ...{ patientList: appResult }
-                  };
-                 debugLog("appResult:",appResult);
-                  outputArray.push(obj);
-                  if (i == result.length - 1) {
-                    req.records = outputArray;
-                    releaseDBConnection(db, connection);
-                    next();
-                  }
+                    [
+                      result[i].sub_dept_id,
+                      result[i].schedule_date,
+                      result[i].provider_id
+                    ],
+                    (error, appResult) => {
+                      if (error) {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      }
+                      const obj = {
+                        ...result[i],
+                        ...{ patientList: appResult }
+                      };
+                      debugLog("appResult:", appResult);
+                      outputArray.push(obj);
+                      if (i == result.length - 1) {
+                        req.records = outputArray;
+                        releaseDBConnection(db, connection);
+                        next();
+                      }
+                    }
+                  );
                 }
-              );
-              
-            }
+              } else {
+                releaseDBConnection(db, connection);
+                req.records = result;
+                next();
+              }
+            });
           } else {
             releaseDBConnection(db, connection);
             req.records = result;
             next();
           }
-        })
-      }else {
-        releaseDBConnection(db, connection);
-        req.records = result;
-        next();
-      }   
-
-
-
-
-         
-         
         }
       );
     });
@@ -1628,7 +1575,6 @@ let getDoctorScheduleDateWiseBACKup3_nov = (req, res, next) => {
     next(e);
   }
 };
-
 
 //created by irfan: to get Doctor Schedule to Modify
 let getDoctorScheduleToModify = (req, res, next) => {
@@ -1947,8 +1893,6 @@ let deleteDoctorFromScheduleBACkUP03_nov = (req, res, next) => {
     next(e);
   }
 };
-
-
 
 //created by irfan: to update Schedule
 let updateSchedule = (req, res, next) => {
@@ -2484,11 +2428,12 @@ let addPatientAppointmentBACKUP_20_nov = (req, res, next) => {
       }
 
       connection.query(
-        "INSERT INTO `hims_f_patient_appointment` (patient_id,patient_code,provider_id,sub_department_id,number_of_slot,appointment_date,appointment_from_time,appointment_to_time,\
+        "INSERT INTO `hims_f_patient_appointment` (title_id,patient_id,patient_code,provider_id,sub_department_id,number_of_slot,appointment_date,appointment_from_time,appointment_to_time,\
           appointment_status_id,patient_name,arabic_name,date_of_birth,age,contact_number,email,send_to_provider,gender,appointment_remarks,is_stand_by,\
           created_date, created_by, updated_date, updated_by)\
-          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
+          input.title_id,
           input.patient_id,
           input.patient_code,
           input.provider_id,
@@ -2528,8 +2473,6 @@ let addPatientAppointmentBACKUP_20_nov = (req, res, next) => {
   }
 };
 
-
-
 //created by irfan: to add patient appointment
 let addPatientAppointment = (req, res, next) => {
   try {
@@ -2544,20 +2487,18 @@ let addPatientAppointment = (req, res, next) => {
         next(error);
       }
 
+      //       select hims_f_patient_appointment_id,provider_id,patient_name,appointment_date,appointment_from_time,
+      // appointment_to_time from hims_f_patient_appointment where record_status='A'
+      // and date(appointment_date)=date('2018-11-21') and provider_id=2 and cancelled='N' and
+      // (('08:20:00'>=appointment_from_time and '08:20:00'<appointment_to_time)
+      // or('08:30:00'>appointment_from_time and '08:30:00'<=appointment_to_time))
 
-//       select hims_f_patient_appointment_id,provider_id,patient_name,appointment_date,appointment_from_time,
-// appointment_to_time from hims_f_patient_appointment where record_status='A'
-// and date(appointment_date)=date('2018-11-21') and provider_id=2 and cancelled='N' and
-// (('08:20:00'>=appointment_from_time and '08:20:00'<appointment_to_time)
-// or('08:30:00'>appointment_from_time and '08:30:00'<=appointment_to_time))
-
-
-// SELECT hims_f_patient_appointment_id,patient_id,sub_department_id FROM hims_f_patient_appointment
-// where record_status='A' and cancelled='N' and is_stand_by='N' and contact_number='9901968745'
-// and sub_department_id=39 and provider_id=2 and appointment_date
+      // SELECT hims_f_patient_appointment_id,patient_id,sub_department_id FROM hims_f_patient_appointment
+      // where record_status='A' and cancelled='N' and is_stand_by='N' and contact_number='9901968745'
+      // and sub_department_id=39 and provider_id=2 and appointment_date
 
       connection.query(
-        "select hims_f_patient_appointment_id,provider_id,patient_name,appointment_date,appointment_from_time,\
+        "select hims_f_patient_appointment_id,provider_id,title_id,patient_name,appointment_date,appointment_from_time,\
         appointment_to_time from hims_f_patient_appointment where record_status='A'\
         and date(appointment_date)=date(?) and provider_id=? and cancelled='N' and is_stand_by='N' and sub_department_id=? and\
         ((?>=appointment_from_time and ?<appointment_to_time)\
@@ -2577,7 +2518,6 @@ let addPatientAppointment = (req, res, next) => {
           input.sub_department_id,
           input.provider_id,
           input.appointment_date
-
         ],
         (error, slotResult) => {
           if (error) {
@@ -2587,68 +2527,60 @@ let addPatientAppointment = (req, res, next) => {
             });
           }
 
-
-          debugLog("slotResult:",slotResult);
-          debugLog("slotResult len:",slotResult[1].length);
-    if (slotResult[0].length>0 &&input.is_stand_by!='Y'){
-      releaseDBConnection(db, connection);
-      req.records = {slotExist:true};
-      next();
-    }
-    else if(slotResult[1].length>=2 && input.is_stand_by!='Y'){
-      releaseDBConnection(db, connection);
-      req.records = {bookedtwice:true};
-      next();
-
-
-    }else{
-      
-
-      connection.query(
-        "INSERT INTO `hims_f_patient_appointment` (patient_id,patient_code,provider_id,sub_department_id,number_of_slot,appointment_date,appointment_from_time,appointment_to_time,\
+          debugLog("slotResult:", slotResult);
+          debugLog("slotResult len:", slotResult[1].length);
+          if (slotResult[0].length > 0 && input.is_stand_by != "Y") {
+            releaseDBConnection(db, connection);
+            req.records = { slotExist: true };
+            next();
+          } else if (slotResult[1].length >= 2 && input.is_stand_by != "Y") {
+            releaseDBConnection(db, connection);
+            req.records = { bookedtwice: true };
+            next();
+          } else {
+            connection.query(
+              "INSERT INTO `hims_f_patient_appointment` (patient_id,title_id,patient_code,provider_id,sub_department_id,number_of_slot,appointment_date,appointment_from_time,appointment_to_time,\
           appointment_status_id,patient_name,arabic_name,date_of_birth,age,contact_number,email,send_to_provider,gender,appointment_remarks,is_stand_by,\
           created_date, created_by, updated_date, updated_by)\
-          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-        [
-          input.patient_id,
-          input.patient_code,
-          input.provider_id,
-          input.sub_department_id,
-          input.number_of_slot,
-          input.appointment_date,
-          input.appointment_from_time,
-          input.appointment_to_time,
-          input.appointment_status_id,
-          input.patient_name,
-          input.arabic_name,
-          input.date_of_birth,
-          input.age,
-          input.contact_number,
-          input.email,
-          input.send_to_provider,
-          input.gender,
-          input.appointment_remarks,
-          input.is_stand_by,
-          new Date(),
-          input.created_by,
-          new Date(),
-          input.updated_by
-        ],
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
+          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              [
+                input.patient_id,
+                input.title_id,
+                input.patient_code,
+                input.provider_id,
+                input.sub_department_id,
+                input.number_of_slot,
+                input.appointment_date,
+                input.appointment_from_time,
+                input.appointment_to_time,
+                input.appointment_status_id,
+                input.patient_name,
+                input.arabic_name,
+                input.date_of_birth,
+                input.age,
+                input.contact_number,
+                input.email,
+                input.send_to_provider,
+                input.gender,
+                input.appointment_remarks,
+                input.is_stand_by,
+                new Date(),
+                input.created_by,
+                new Date(),
+                input.updated_by
+              ],
+              (error, result) => {
+                releaseDBConnection(db, connection);
+                if (error) {
+                  next(error);
+                }
+                req.records = result;
+                next();
+              }
+            );
           }
-          req.records = result;
-          next();
         }
       );
-      }
-
-      }
-      );
-
-
     });
   } catch (e) {
     next(e);
@@ -2663,18 +2595,20 @@ let updatePatientAppointmentBACKUP_20_nov = (req, res, next) => {
     }
     let db = req.db;
     let input = extend({}, req.body);
+    debugLog("input: ", input);
     db.getConnection((error, connection) => {
       if (error) {
         next(error);
       }
       connection.query(
-        "UPDATE `hims_f_patient_appointment` SET patient_id=?,provider_id=?,sub_department_id=?,number_of_slot=?,appointment_date=?,appointment_from_time=?,appointment_to_time=?,\
+        "UPDATE `hims_f_patient_appointment` SET patient_id=?, title_id=?,provider_id=?,sub_department_id=?,number_of_slot=?,appointment_date=?,appointment_from_time=?,appointment_to_time=?,\
         appointment_status_id=?,patient_name=?,arabic_name=?,date_of_birth=?,age=?,contact_number=?,email=?,\
         send_to_provider=?,gender=?,confirmed=?,confirmed_by=?,comfirmed_date=?,cancelled=?,cancelled_by=?,\
         cancelled_date=?,cancel_reason=?,appointment_remarks=?,is_stand_by=?,\
            updated_date=?, updated_by=? ,`record_status`=? WHERE  `record_status`='A' and `hims_f_patient_appointment_id`=?;",
         [
           input.patient_id,
+          input.title_id,
           input.provider_id,
           input.sub_department_id,
           input.number_of_slot,
@@ -2697,7 +2631,7 @@ let updatePatientAppointmentBACKUP_20_nov = (req, res, next) => {
           input.cancelled_by,
           input.cancelled_date,
           input.cancel_reason,
-          input.appointment_remarks,         
+          input.appointment_remarks,
           input.is_stand_by,
           new Date(),
           input.updated_by,
@@ -2732,7 +2666,7 @@ let updatePatientAppointment = (req, res, next) => {
       }
 
       connection.query(
-        "select hims_f_patient_appointment_id,provider_id,patient_name,appointment_date,appointment_from_time,\
+        "select hims_f_patient_appointment_id,provider_id,title_id,patient_name,appointment_date,appointment_from_time,\
         appointment_to_time from hims_f_patient_appointment where record_status='A'\
         and date(appointment_date)=date(?) and provider_id=? and cancelled='N' and is_stand_by='N' and sub_department_id=? and\
         ((?>=appointment_from_time and ?<appointment_to_time)\
@@ -2745,7 +2679,7 @@ let updatePatientAppointment = (req, res, next) => {
           input.appointment_from_time,
           input.appointment_to_time,
           input.appointment_to_time,
-          input.hims_f_patient_appointment_id,
+          input.hims_f_patient_appointment_id
         ],
         (error, slotResult) => {
           if (error) {
@@ -2755,69 +2689,66 @@ let updatePatientAppointment = (req, res, next) => {
             });
           }
 
-    if (slotResult.length>0&&input.is_stand_by!='Y'){
-      releaseDBConnection(db, connection);
-      req.records = {slotExist:true};
-      next();
-    }else{
-
-      connection.query(
-        "UPDATE `hims_f_patient_appointment` SET patient_id=?,provider_id=?,sub_department_id=?,number_of_slot=?,appointment_date=?,appointment_from_time=?,appointment_to_time=?,\
+          if (slotResult.length > 0 && input.is_stand_by != "Y") {
+            releaseDBConnection(db, connection);
+            req.records = { slotExist: true };
+            next();
+          } else {
+            connection.query(
+              "UPDATE `hims_f_patient_appointment` SET patient_id=?, title_id=? ,provider_id=?,sub_department_id=?,number_of_slot=?,appointment_date=?,appointment_from_time=?,appointment_to_time=?,\
         appointment_status_id=?,patient_name=?,arabic_name=?,date_of_birth=?,age=?,contact_number=?,email=?,\
         send_to_provider=?,gender=?,confirmed=?,confirmed_by=?,comfirmed_date=?,cancelled=?,cancelled_by=?,\
         cancelled_date=?,cancel_reason=?,appointment_remarks=?,is_stand_by=?,\
            updated_date=?, updated_by=? ,`record_status`=? WHERE  `record_status`='A' and  cancelled<>'Y' and `hims_f_patient_appointment_id`=?;",
-        [
-          input.patient_id,
-          input.provider_id,
-          input.sub_department_id,
-          input.number_of_slot,
-          input.appointment_date,
-          input.appointment_from_time,
-          input.appointment_to_time,
-          input.appointment_status_id,
-          input.patient_name,
-          input.arabic_name,
-          input.date_of_birth,
-          input.age,
-          input.contact_number,
-          input.email,
-          input.send_to_provider,
-          input.gender,
-          input.confirmed,
-          input.confirmed_by,
-          input.comfirmed_date,
-          input.cancelled,
-          input.cancelled_by,
-          input.cancelled_date,
-          input.cancel_reason,
-          input.appointment_remarks,         
-          input.is_stand_by,
-          new Date(),
-          input.updated_by,
-          input.record_status,
-          input.hims_f_patient_appointment_id
-        ],
-        (error, results) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
+              [
+                input.patient_id,
+                input.title_id,
+                input.provider_id,
+                input.sub_department_id,
+                input.number_of_slot,
+                input.appointment_date,
+                input.appointment_from_time,
+                input.appointment_to_time,
+                input.appointment_status_id,
+                input.patient_name,
+                input.arabic_name,
+                input.date_of_birth,
+                input.age,
+                input.contact_number,
+                input.email,
+                input.send_to_provider,
+                input.gender,
+                input.confirmed,
+                input.confirmed_by,
+                input.comfirmed_date,
+                input.cancelled,
+                input.cancelled_by,
+                input.cancelled_date,
+                input.cancel_reason,
+                input.appointment_remarks,
+                input.is_stand_by,
+                new Date(),
+                input.updated_by,
+                input.record_status,
+                input.hims_f_patient_appointment_id
+              ],
+              (error, results) => {
+                releaseDBConnection(db, connection);
+                if (error) {
+                  next(error);
+                }
+                req.records = results;
+                next();
+              }
+            );
           }
-          req.records = results;
-          next();
         }
       );
-      }
-      });
-
-
-
     });
   } catch (e) {
     next(e);
   }
 };
-
 
 //created by irfan: to get Patient Appointment
 let getPatientAppointment = (req, res, next) => {
@@ -2841,7 +2772,7 @@ let getPatientAppointment = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_f_patient_appointment_id,patient_id,patient_code,provider_id,sub_department_id,number_of_slot,appointment_date,\
+        "select hims_f_patient_appointment_id,patient_id,title_id,patient_code,provider_id,sub_department_id,number_of_slot,appointment_date,\
             appointment_from_time,appointment_to_time,appointment_status_id,patient_name,arabic_name,date_of_birth,age,\
         contact_number,email,send_to_provider,gender,confirmed,visit_created,\
         confirmed_by,comfirmed_date,cancelled,cancelled_by,cancelled_date,appointment_remarks,cancel_reason,is_stand_by\
@@ -2921,8 +2852,8 @@ let cancelPatientAppointment = (req, res, next) => {
           input.updated_by,
           new Date(),
           input.cancel_reason,
-          input.updated_by, 
-          new Date(),               
+          input.updated_by,
+          new Date(),
           input.hims_f_patient_appointment_id
         ],
         (error, result) => {
@@ -2939,7 +2870,6 @@ let cancelPatientAppointment = (req, res, next) => {
     next(e);
   }
 };
-
 
 module.exports = {
   addAppointmentStatus,

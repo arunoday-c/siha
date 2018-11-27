@@ -252,9 +252,11 @@ class Appointment extends Component {
           number_of_slot: this.state.no_of_slots,
           confirmed: "N",
           cancelled: "N",
-          is_stand_by: this.state.is_stand_by
+          is_stand_by: this.state.is_stand_by,
+          title_id: this.state.title_id
         };
 
+        debugger;
         algaehApiCall({
           uri: "/appointment/addPatientAppointment",
           method: "POST",
@@ -596,10 +598,10 @@ class Appointment extends Component {
     );
   }
 
-  openEditModal(patient, e) {
+  openEditModal(patient, data, e) {
+    debugger;
     e.preventDefault();
 
-    //debugger;
     let maxSlots = 1;
     const _currentRow = e.target.parentElement.parentNode.sectionRowIndex + 1;
     const _allRows =
@@ -637,38 +639,49 @@ class Appointment extends Component {
         type: "warning"
       });
     } else {
-      this.setState({ patToEdit: patient, openPatEdit: true }, () => {
+      let openPatEdit = false;
+      if (data === null) {
+        openPatEdit = true;
+      }
+      this.setState({ patToEdit: patient, openPatEdit: openPatEdit }, () => {
+        debugger;
         let pat_edit = this.state.patToEdit;
 
-        this.setState({
-          edit_appointment_status_id: pat_edit.appointment_status_id,
-          edit_appt_date: pat_edit.appointment_date,
-          edit_appt_time: pat_edit.appointment_from_time,
-          edit_contact_number: pat_edit.contact_number,
-          edit_patient_name: pat_edit.patient_name,
-          edit_arabic_name: pat_edit.arabic_name,
-          edit_date_of_birth: pat_edit.date_of_birth,
-          edit_age: pat_edit.age,
-          edit_gender: pat_edit.gender,
-          edit_email: pat_edit.email,
-          edit_appointment_remarks: pat_edit.appointment_remarks,
-          edit_appointment_id: pat_edit.hims_f_patient_appointment_id,
-          edit_provider_id: pat_edit.provider_id,
-          edit_patient_id: pat_edit.patient_id,
-          edit_from_time: pat_edit.appointment_from_time,
-          edit_sub_dep_id: pat_edit.sub_department_id,
-          edit_appointment_date: pat_edit.appointment_date,
-          patient_code: pat_edit.patient_code,
-          edit_no_of_slots: pat_edit.number_of_slot,
-          edit_is_stand_by: pat_edit.is_stand_by,
-          edit_title_id: pat_edit.title_id
-        });
+        this.setState(
+          {
+            edit_appointment_status_id: pat_edit.appointment_status_id,
+            edit_appt_date: pat_edit.appointment_date,
+            edit_appt_time: pat_edit.appointment_from_time,
+            edit_contact_number: pat_edit.contact_number,
+            edit_patient_name: pat_edit.patient_name,
+            edit_arabic_name: pat_edit.arabic_name,
+            edit_date_of_birth: pat_edit.date_of_birth,
+            edit_age: pat_edit.age,
+            edit_gender: pat_edit.gender,
+            edit_email: pat_edit.email,
+            edit_appointment_remarks: pat_edit.appointment_remarks,
+            edit_appointment_id: pat_edit.hims_f_patient_appointment_id,
+            edit_provider_id: pat_edit.provider_id,
+            edit_patient_id: pat_edit.patient_id,
+            edit_from_time: pat_edit.appointment_from_time,
+            edit_sub_dep_id: pat_edit.sub_department_id,
+            edit_appointment_date: pat_edit.appointment_date,
+            patient_code: pat_edit.patient_code,
+            edit_no_of_slots: pat_edit.number_of_slot,
+            edit_is_stand_by: pat_edit.is_stand_by,
+            edit_title_id: pat_edit.title_id
+          },
+          () => {
+            if (data !== null) {
+              this.updatePatientAppointment(data);
+            }
+          }
+        );
       });
     }
   }
 
   updatePatientAppointment(data) {
-    debugger;
     if (data !== null) {
       this.state.edit_appointment_status_id = data.hims_d_appointment_status_id;
     }
@@ -729,9 +742,11 @@ class Appointment extends Component {
                 cancel_reason: null,
                 appointment_remarks: this.state.edit_appointment_remarks,
                 is_stand_by: this.state.edit_is_stand_by,
-                number_of_slot: this.state.edit_no_of_slots
+                number_of_slot: this.state.edit_no_of_slots,
+                title_id: this.state.edit_title_id
               };
 
+              debugger;
               algaehApiCall({
                 uri: "/appointment/updatePatientAppointment",
                 method: "PUT",
@@ -791,7 +806,6 @@ class Appointment extends Component {
   }
 
   showModal(e) {
-    //debugger;
     let maxSlots = 1;
     const _currentRow = e.target.parentElement.parentNode.sectionRowIndex + 1;
     const _allRows =
@@ -1056,6 +1070,7 @@ class Appointment extends Component {
     }
   }
   plotAddIcon(patient, data) {
+    debugger;
     const _isstandby =
       patient === null || patient === undefined
         ? "N"
@@ -1169,7 +1184,9 @@ class Appointment extends Component {
               className="dynPatient"
               style={{ background: "#f2f2f2" }}
             >
-              <span onClick={this.openEditModal.bind(this, _firstPatient)}>
+              <span
+                onClick={this.openEditModal.bind(this, _firstPatient, null)}
+              >
                 {_firstPatient.patient_name}
                 <br />
                 {_firstPatient.contact_number}
@@ -1190,6 +1207,7 @@ class Appointment extends Component {
   }
 
   generateChilderns(data) {
+    debugger;
     const colspan = data.mark_as_break
       ? {
           colSpan: 2,
@@ -1274,7 +1292,7 @@ class Appointment extends Component {
                   draggable={true}
                   onDragStart={this.drag.bind(this)}
                 >
-                  <span onClick={this.openEditModal.bind(this, patient)}>
+                  <span onClick={this.openEditModal.bind(this, patient, null)}>
                     {patient.patient_name}
                     <br />
                     {patient.contact_number}
@@ -1291,8 +1309,9 @@ class Appointment extends Component {
                         ? this.state.appointmentStatus.map((data, index) => (
                             <li
                               key={index}
-                              onClick={this.updatePatientAppointment.bind(
+                              onClick={this.openEditModal.bind(
                                 this,
+                                patient,
                                 data
                               )}
                             >
@@ -1338,6 +1357,7 @@ class Appointment extends Component {
   }
 
   generateTimeslots(data) {
+    debugger;
     const clinic_id = data.clinic_id;
     const provider_id = data.provider_id;
     const sch_header_id = data.hims_d_appointment_schedule_header_id;
@@ -1561,7 +1581,10 @@ class Appointment extends Component {
                                 valueField: "his_d_title_id",
                                 data: this.state.titles
                               },
-                              onChange: this.dropDownHandle.bind(this)
+                              onChange: this.dropDownHandle.bind(this),
+                              others: {
+                                disabled: true
+                              }
                             }}
                           />
 

@@ -300,7 +300,7 @@ class PersistentDrawer extends React.Component {
                           : ""
                       }
                     >
-                      <i className="fas fa-check-circle fa-1x " />
+                      <i className="fas fa-arrow-circle-right fa-1x " />
                       <span>{title.label}</span>
                     </li>
                   );
