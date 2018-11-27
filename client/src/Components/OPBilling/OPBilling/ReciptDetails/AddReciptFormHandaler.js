@@ -1,6 +1,10 @@
 import moment from "moment";
 import { successfulMessage } from "../../../../utils/GlobalFunctions";
-import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+import {
+  algaehApiCall,
+  swalMessage,
+  getCookie
+} from "../../../../utils/algaehApiCall";
 
 const texthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
@@ -254,6 +258,33 @@ const checkcheckhandaler = ($this, context, e) => {
   }
 };
 
+const countertexthandle = ($this, context, ctrl, e) => {
+  e = e || ctrl;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  $this.setState(
+    {
+      [name]: value
+    },
+    () => {
+      let _screenName = getCookie("ScreenName").replace("/", "");
+      algaehApiCall({
+        uri: "/userPreferences/save",
+        data: {
+          screenName: _screenName,
+          identifier: "Counter",
+          value: value
+        },
+        method: "POST"
+      });
+    }
+  );
+  if (context !== undefined) {
+    context.updateState({ [name]: value });
+  }
+};
+
 export {
   texthandle,
   cashtexthandle,
@@ -263,5 +294,6 @@ export {
   checkcashhandaler,
   checkcardhandaler,
   checkcheckhandaler,
-  calculateRecipt
+  calculateRecipt,
+  countertexthandle
 };

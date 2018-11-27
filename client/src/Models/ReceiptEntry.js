@@ -43,7 +43,7 @@ export default {
       invoice_date: new Date(),
 
       dataExitst: false,
-      addItemButton: true,
+
       ReqData: true,
       ClearDisable: false,
       saveEnable: true,

@@ -286,11 +286,12 @@ class AutoComplete extends PureComponent {
           arrowIcon: "fa-angle-down"
         },
         () => {
-          this.props.selector.onChange({
-            selected: item,
-            value: _value,
-            name: this.props.selector.name
-          });
+          if (this.props.selector.onChange !== undefined)
+            this.props.selector.onChange({
+              selected: item,
+              value: _value,
+              name: this.props.selector.name
+            });
         }
       );
     } else {
@@ -322,10 +323,11 @@ class AutoComplete extends PureComponent {
           multiselect: _multiselect
         },
         () => {
-          this.props.selector.onChange({
-            arrayList: this.state.multiselect,
-            name: this.props.selector.name
-          });
+          if (this.props.selector.onChange !== undefined)
+            this.props.selector.onChange({
+              arrayList: this.state.multiselect,
+              name: this.props.selector.name
+            });
         }
       );
     }
@@ -377,6 +379,7 @@ class AutoComplete extends PureComponent {
             {...this.props.selector.others}
             autoComplete="off"
             {..._required}
+            data_role="dropdownlist"
           />
           {!isDisable ? (
             <React.Fragment>

@@ -550,7 +550,7 @@ class PersonalDetails extends PureComponent {
                       />
                       <AlgaehDateHandler
                         div={{ className: "col-lg-6" }}
-                        label={{ fieldName: "date_of_leaving", isImp: true }}
+                        label={{ fieldName: "date_of_leaving" }}
                         textBox={{
                           className: "txt-fld",
                           name: "date_of_leaving"

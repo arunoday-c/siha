@@ -76,7 +76,7 @@ const assignDataandclear = ($this, context, stock_detail, assignData) => {
   }
 };
 
-const deleteDNDetail = ($this, context, row) => {
+const deleteReceiptDetail = ($this, context, row) => {
   let receipt_entry_detail = $this.state.receipt_entry_detail;
 
   for (var i = 0; i < receipt_entry_detail.length; i++) {
@@ -101,7 +101,7 @@ const deleteDNDetail = ($this, context, row) => {
   }
 };
 
-const updateDNDetail = ($this, context, row) => {
+const updateReceiptDetail = ($this, context, row) => {
   debugger;
   let receipt_entry_detail = $this.state.receipt_entry_detail;
   if ($this.state.grn_for === "PHR") {
@@ -138,6 +138,25 @@ const updateDNDetail = ($this, context, row) => {
     parseFloat(s.discount_amount)
   );
 
+  let saveBtn = false;
+  let postBtn = false;
+  if ($this.state.hims_f_procurement_grn_header_id === null) {
+    saveBtn = false;
+    postBtn = true;
+  } else if (
+    $this.state.hims_f_procurement_grn_header_id !== null &&
+    $this.state.posted === "N"
+  ) {
+    saveBtn = true;
+    postBtn = false;
+  } else if (
+    $this.state.hims_f_procurement_grn_header_id !== null &&
+    $this.state.posted === "Y"
+  ) {
+    saveBtn = true;
+    postBtn = true;
+  }
+
   $this.setState({
     receipt_entry_detail: receipt_entry_detail,
     sub_total: sub_total,
@@ -149,6 +168,8 @@ const updateDNDetail = ($this, context, row) => {
 
   if (context !== undefined) {
     context.updateState({
+      saveEnable: saveBtn,
+      postEnable: postBtn,
       receipt_entry_detail: receipt_entry_detail,
       sub_total: sub_total,
       net_total: net_total,
@@ -235,14 +256,52 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
 };
 
 const EditGrid = ($this, context, cancelRow) => {
-  //debugger;
+  debugger;
   if (context != null) {
+    let saveBtn = true;
+    let postBtn = true;
+
     let _receipt_entry_detail = $this.state.receipt_entry_detail;
     if (cancelRow !== undefined) {
       _receipt_entry_detail[cancelRow.rowIdx] = cancelRow;
     }
     context.updateState({
-      saveEnable: !$this.state.saveEnable,
+      saveEnable: saveBtn,
+      postEnable: postBtn,
+      receipt_entry_detail: _receipt_entry_detail
+    });
+  }
+};
+
+const CancelGrid = ($this, context, cancelRow) => {
+  debugger;
+  if (context != null) {
+    let saveBtn = false;
+    let postBtn = false;
+    if ($this.state.hims_f_procurement_grn_header_id === null) {
+      saveBtn = false;
+      postBtn = true;
+    } else if (
+      $this.state.hims_f_procurement_grn_header_id !== null &&
+      $this.state.posted === "N"
+    ) {
+      saveBtn = true;
+      postBtn = false;
+    } else if (
+      $this.state.hims_f_procurement_grn_header_id !== null &&
+      $this.state.posted === "Y"
+    ) {
+      saveBtn = true;
+      postBtn = true;
+    }
+
+    let _receipt_entry_detail = $this.state.receipt_entry_detail;
+    if (cancelRow !== undefined) {
+      _receipt_entry_detail[cancelRow.rowIdx] = cancelRow;
+    }
+    context.updateState({
+      saveEnable: saveBtn,
+      postEnable: postBtn,
       addItemButton: !$this.state.addItemButton,
       receipt_entry_detail: _receipt_entry_detail
     });
@@ -261,13 +320,14 @@ const changeDateFormat = date => {
 };
 
 export {
-  deleteDNDetail,
-  updateDNDetail,
+  deleteReceiptDetail,
+  updateReceiptDetail,
   dateFormater,
   onchangegridcol,
   assignDataandclear,
   onchhangegriddiscount,
   onchangegridcoldatehandle,
   EditGrid,
+  CancelGrid,
   changeDateFormat
 };

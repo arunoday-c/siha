@@ -53,7 +53,9 @@ export default class FormGroup extends PureComponent {
       });
     }
   }
-
+  internalStateSetting(e) {
+    this.setState({ value: e.currentTarget.value });
+  }
   errorInvoid(e) {
     if (typeof this.props.textBox.helperText === "function") {
       e.currentTarget.setCustomValidity(
@@ -94,7 +96,7 @@ export default class FormGroup extends PureComponent {
       const _onChange =
         this.props.textBox.events !== undefined
           ? { onChange: this.props.textBox.events.onChange }
-          : {};
+          : { onChange: this.internalStateSetting.bind(this) };
       if (this.props.textBox.decimal !== undefined) {
         return (
           <input

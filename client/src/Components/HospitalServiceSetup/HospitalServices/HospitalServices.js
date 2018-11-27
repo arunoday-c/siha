@@ -46,7 +46,8 @@ class HospitalServices extends PureComponent {
       vat_applicable: "N",
       vat_percent: 0,
       cpt_code_data: null,
-      sub_department_id: null
+      sub_department_id: null,
+      changesDone: false
     };
   }
 
@@ -72,7 +73,7 @@ class HospitalServices extends PureComponent {
     }
   }
   onClose = e => {
-    this.props.onClose && this.props.onClose(e);
+    this.props.onClose && this.props.onClose(this.state.changesDone);
   };
 
   handleClose = () => {

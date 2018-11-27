@@ -14,11 +14,12 @@ import {
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import MyContext from "../../../../utils/MyContext";
 import {
-  deleteDNDetail,
-  updateDNDetail,
+  deleteReceiptDetail,
+  updateReceiptDetail,
   onchhangegriddiscount,
   onchangegridcol,
   EditGrid,
+  CancelGrid,
   onchangegridcoldatehandle,
   changeDateFormat
 } from "./ReceiptItemListEvent";
@@ -318,7 +319,7 @@ class ReceiptItemList extends Component {
                               displayTemplate: row => {
                                 return (
                                   <span>
-                                    {changeDateFormat(this, row.expiry_date)}
+                                    {changeDateFormat(row.expiry_date)}
                                   </span>
                                 );
                               },
@@ -460,10 +461,18 @@ class ReceiptItemList extends Component {
                           isEditable={true}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{
-                            onDelete: deleteDNDetail.bind(this, this, context),
+                            onDelete: deleteReceiptDetail.bind(
+                              this,
+                              this,
+                              context
+                            ),
                             onEdit: EditGrid.bind(this, this, context),
-                            onCancel: EditGrid.bind(this, this, context),
-                            onDone: updateDNDetail.bind(this, this, context)
+                            onCancel: CancelGrid.bind(this, this, context),
+                            onDone: updateReceiptDetail.bind(
+                              this,
+                              this,
+                              context
+                            )
                           }}
                         />
                       </div>
