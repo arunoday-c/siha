@@ -156,7 +156,7 @@ export function displayFileFromServer(options) {
         }
       }
     },
-    onFailure: () => {}
+    onFailure: () => { }
   });
 }
 
@@ -187,7 +187,7 @@ const loadJSON = (file, callback) => {
   var xobj = new XMLHttpRequest();
   xobj.overrideMimeType("application/json");
   xobj.open("GET", file, true);
-  xobj.onreadystatechange = function() {
+  xobj.onreadystatechange = function () {
     if (xobj.readyState === 4 && xobj.status === 200) {
       callback(JSON.parse(xobj.responseText));
     }
@@ -213,6 +213,7 @@ export function AlgaehValidation(options) {
     return;
   }
   let _rootValidationElement = null;
+  // debugger;
   if (settings.querySelector !== undefined && settings.querySelector !== "")
     _rootValidationElement = document.querySelector(
       "[" + settings.querySelector + "]"
@@ -251,19 +252,27 @@ export function AlgaehValidation(options) {
             _lable = _Validateerror[i].previousSibling;
           }
         } else {
-          _lable =
-            _Validateerror[i].parentElement.parentElement
-              .previousElementSibling;
+          if (_Validateerror[i].parentElement
+            .previousElementSibling.tagName === "LABEL") {
+            _lable =
+              _Validateerror[i].parentElement
+                .previousElementSibling;
+          } else {
+            _lable =
+              _Validateerror[i].parentElement.parentElement
+                .previousElementSibling;
+          }
+
         }
 
         _title =
           _langua === "en"
             ? _lable.innerText
-                .replace("*", "")
-                .toLowerCase()
-                .replace(/^\w/, c => {
-                  return c.toUpperCase();
-                }) + "-cannot be blank"
+              .replace("*", "")
+              .toLowerCase()
+              .replace(/^\w/, c => {
+                return c.toUpperCase();
+              }) + "-cannot be blank"
             : _lable.innerText.replace("*", "") + "- لا يمكن أن يكون فارغا";
       }
       swalMessage({

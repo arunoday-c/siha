@@ -28,7 +28,12 @@ export default {
       cpt_code_data: null,
       vat_percent: 0,
       Applicable: false,
-      standard_fee: 0
+      standard_fee: 0,
+      decimals: null,
+      purchase_cost: 0,
+      markup_percent: 0,
+      sales_price: 0,
+      assesments_notes: null
     };
     return output;
   }

@@ -1,4 +1,5 @@
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import { SetBulkState } from "../../../utils/GlobalFunctions";
 
 const Validations = $this => {
   let isError = false;
@@ -59,44 +60,48 @@ const Validations = $this => {
 };
 
 const InsertUpdateItems = $this => {
-  const err = Validations($this);
+  SetBulkState({
+    state: $this,
+    callback: () => {
+      const err = Validations($this);
 
-  if (!err) {
-    
-    if ($this.state.hims_d_inventory_item_master_id === null) {
-      $this.state.service_code = $this.state.item_code;
-      $this.state.service_type_id = "4";
-      $this.state.service_name = $this.state.item_description;
+      if (!err) {
+        if ($this.state.hims_d_inventory_item_master_id === null) {
+          $this.state.service_code = $this.state.item_code;
+          $this.state.service_type_id = "4";
+          $this.state.service_name = $this.state.item_description;
 
-      algaehApiCall({
-        uri: "/inventory/addItemMaster",
-        data: $this.state,
-        onSuccess: response => {
-          if (response.data.success === true) {
-            swalMessage({
-              type: "success",
-              title: "Saved successfully . ."
-            });
-          }
+          algaehApiCall({
+            uri: "/inventory/addItemMaster",
+            data: $this.state,
+            onSuccess: response => {
+              if (response.data.success === true) {
+                swalMessage({
+                  type: "success",
+                  title: "Saved successfully . ."
+                });
+              }
+            }
+          });
+        } else {
+          $this.state.record_status = "A";
+          algaehApiCall({
+            uri: "/inventory/updateItemMasterAndUom",
+            data: $this.state,
+            method: "PUT",
+            onSuccess: response => {
+              if (response.data.success === true) {
+                swalMessage({
+                  type: "success",
+                  title: "Updated successfully . ."
+                });
+              }
+            }
+          });
         }
-      });
-    } else {
-      $this.state.record_status = "A";
-      algaehApiCall({
-        uri: "/inventory/updateItemMasterAndUom",
-        data: $this.state,
-        method: "PUT",
-        onSuccess: response => {
-          if (response.data.success === true) {
-            swalMessage({
-              type: "success",
-              title: "Updated successfully . ."
-            });
-          }
-        }
-      });
+      }
     }
-  }
+  });
 };
 
 export { InsertUpdateItems };
