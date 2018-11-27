@@ -70,7 +70,10 @@ class UOMAdditionalInfo extends Component {
                           valueField: "hims_d_pharmacy_uom_id",
                           data: this.props.itemuom
                         },
-                        onChange: uomtexthandle.bind(this, this, context)
+                        onChange: uomtexthandle.bind(this, this, context),
+                        others: {
+                          exclude: "true"
+                        }
                       }}
                     />
 
@@ -88,7 +91,10 @@ class UOMAdditionalInfo extends Component {
                           valueField: "value",
                           data: GlobalVariables.FORMAT_YESNO
                         },
-                        onChange: stockingtexthandle.bind(this, this)
+                        onChange: stockingtexthandle.bind(this, this),
+                        others: {
+                          exclude: "true"
+                        }
                       }}
                     />
 
@@ -105,7 +111,8 @@ class UOMAdditionalInfo extends Component {
                           onChange: texthandle.bind(this, this)
                         },
                         others: {
-                          disabled: this.state.convertEnable
+                          disabled: this.state.convertEnable,
+                          exclude: "true"
                         }
                       }}
                     />

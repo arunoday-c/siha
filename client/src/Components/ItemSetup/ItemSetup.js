@@ -125,6 +125,7 @@ class ItemSetup extends Component {
   }
 
   CloseModel(e) {
+    debugger;
     this.setState(
       {
         ...this.state,
@@ -132,7 +133,9 @@ class ItemSetup extends Component {
         itemPop: {}
       },
       () => {
-        getItems(this, this);
+        if (e === true) {
+          getItems(this, this);
+        }
       }
     );
   }

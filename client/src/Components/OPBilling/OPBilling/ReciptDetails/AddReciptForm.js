@@ -12,7 +12,8 @@ import {
   checkcashhandaler,
   checkcardhandaler,
   checkcheckhandaler,
-  calculateRecipt
+  calculateRecipt,
+  countertexthandle
 } from "./AddReciptFormHandaler";
 import {
   AlgaehDateHandler,
@@ -124,7 +125,7 @@ class AddReciptForm extends Component {
                       others: {
                         disabled: this.state.Billexists
                       },
-                      onChange: texthandle.bind(this, this, context)
+                      onChange: countertexthandle.bind(this, this, context)
                     }}
                   />
 

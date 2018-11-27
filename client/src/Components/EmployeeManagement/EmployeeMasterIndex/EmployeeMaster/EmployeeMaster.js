@@ -48,17 +48,13 @@ class EmployeeMaster extends Component {
   }
 
   onClose = e => {
+    this.props.onClose && this.props.onClose(e);
     let IOputs = EmpMasterIOputs.inputParam();
     // this.setState(IOputs);
-    this.setState(
-      {
-        pageDisplay: "PersonalDetails",
-        ...IOputs
-      },
-      () => {
-        this.props.onClose && this.props.onClose(e);
-      }
-    );
+    this.setState({
+      pageDisplay: "PersonalDetails",
+      ...IOputs
+    });
   };
 
   componentDidMount() {
@@ -85,19 +81,19 @@ class EmployeeMaster extends Component {
       });
     }
 
-    if (
-      this.props.userdrtails === undefined ||
-      this.props.userdrtails.length === 0
-    ) {
-      this.props.getUserDetails({
-        uri: "/algaehappuser/selectLoginUser",
-        method: "GET",
-        redux: {
-          type: "USER_DETAILS_GET_DATA",
-          mappingName: "userdrtails"
-        }
-      });
-    }
+    // if (
+    //   this.props.userdrtails === undefined ||
+    //   this.props.userdrtails.length === 0
+    // ) {
+    this.props.getUserDetails({
+      uri: "/algaehappuser/selectLoginUser",
+      method: "GET",
+      redux: {
+        type: "USER_DETAILS_GET_DATA",
+        mappingName: "userdrtails"
+      }
+    });
+    // }
     if (
       this.props.empservicetype === undefined ||
       this.props.empservicetype.length === 0

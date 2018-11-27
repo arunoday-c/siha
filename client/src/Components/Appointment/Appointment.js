@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import "./appointment.css";
 import moment from "moment";
 import {
@@ -17,7 +17,7 @@ import FrontDesk from "../../Search/FrontDesk.json";
 import AlgaehSearch from "../Wrapper/globalSearch";
 import swal from "sweetalert2";
 
-class Appointment extends Component {
+class Appointment extends PureComponent {
   constructor(props) {
     super(props);
     let dateToday = moment().format("YYYY") + moment().format("MM") + "01";
@@ -50,14 +50,13 @@ class Appointment extends Component {
 
     let x = JSON.parse(localStorage.getItem("ApptCriteria"));
 
-    //console.log("X", x);
-
     x !== undefined && x !== null
       ? this.setState(
           {
             sub_department_id: x.sub_dept_id,
             provider_id: x.provider_id,
             activeDateHeader: x.schedule_date,
+            doctors: x.doctors,
             byPassValidation: true
           },
           () => {
@@ -68,42 +67,56 @@ class Appointment extends Component {
   }
 
   cancelAppt(row) {
-    swal({
-      title: "Cancel Appointment for " + row.patient_name + "?",
-      type: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes!",
-      confirmButtonColor: "#44b8bd",
-      cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
-      if (willDelete.value) {
-        let data = {
-          cancel_reason: "Cancelled",
-          hims_f_patient_appointment_id: row.hims_f_patient_appointment_id
-        };
-        algaehApiCall({
-          uri: "/appointment/cancelPatientAppointment",
-          data: data,
-          method: "PUT",
-          onSuccess: response => {
-            if (response.data.success) {
-              swalMessage({
-                title: "Record cancelled successfully . .",
-                type: "success"
-              });
-            }
-            this.getAppointmentSchedule();
-          },
-          onFailure: error => {}
-        });
-      } else {
-        swalMessage({
-          title: "Not cancelled",
-          type: "error"
-        });
-      }
-    });
+    let _date = moment(row.appointment_date).format("YYYYMMDD");
+    let _time = moment(row.appointment_from_time, "HH:mm:ss").format("HHmm");
+
+    if (
+      _date < moment(new Date()).format("YYYYMMDD") ||
+      (_date === moment(new Date()).format("YYYYMMDD") &&
+        _time < moment(new Date()).format("HHmm"))
+    ) {
+      swalMessage({
+        title: "Cannot cancel previous appointments",
+        type: "error"
+      });
+    } else {
+      swal({
+        title: "Cancel Appointment for " + row.patient_name + "?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes!",
+        confirmButtonColor: "#44b8bd",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "No"
+      }).then(willDelete => {
+        if (willDelete.value) {
+          let data = {
+            cancel_reason: "Cancelled",
+            hims_f_patient_appointment_id: row.hims_f_patient_appointment_id
+          };
+          algaehApiCall({
+            uri: "/appointment/cancelPatientAppointment",
+            data: data,
+            method: "PUT",
+            onSuccess: response => {
+              if (response.data.success) {
+                swalMessage({
+                  title: "Record cancelled successfully . .",
+                  type: "success"
+                });
+              }
+              this.getAppointmentSchedule();
+            },
+            onFailure: error => {}
+          });
+        } else {
+          swalMessage({
+            title: "Not cancelled",
+            type: "error"
+          });
+        }
+      });
+    }
   }
 
   componentDidCatch(error, info) {
@@ -256,7 +269,7 @@ class Appointment extends Component {
           title_id: this.state.title_id
         };
 
-        debugger;
+        //debugger;
         algaehApiCall({
           uri: "/appointment/addPatientAppointment",
           method: "POST",
@@ -312,6 +325,7 @@ class Appointment extends Component {
           this.setState({
             departments: response.data.records.departmets
           });
+          console.log("All Doctors:", response.data.records);
         }
       },
       onFailure: error => {
@@ -379,7 +393,7 @@ class Appointment extends Component {
             });
           });
 
-          console.log("Reschedule Status:", this.state.RescheduleId);
+          //console.log("Reschedule Status:", this.state.RescheduleId);
         }
       },
       onFailure: error => {
@@ -414,7 +428,8 @@ class Appointment extends Component {
             schedule_date: moment(this.state.activeDateHeader).format(
               "YYYY-MM-DD"
             ),
-            provider_id: this.state.provider_id
+            provider_id: this.state.provider_id,
+            doctors: this.state.doctors
           })
         );
 
@@ -430,12 +445,16 @@ class Appointment extends Component {
               this.setState(
                 { appointmentSchedule: response.data.records },
                 () => {
+                  //debugger;
                   this.setState({
                     slot:
                       this.state.appointmentSchedule !== undefined
                         ? this.state.appointmentSchedule[0].slot
                         : null,
-                    width: 254 * response.data.records.length
+                    width:
+                      response.data.records !== undefined
+                        ? 254 * response.data.records.length
+                        : 0
                   });
                 }
               );
@@ -512,21 +531,21 @@ class Appointment extends Component {
     this.clearSaveState();
   }
 
-  texthandle(e) {
-    if (e.target.name === "age") {
-      var age_value = e.target.value;
-      var current_date = new Date();
-      var birth_date = new Date(
-        current_date.getFullYear() - age_value,
-        current_date.getMonth(),
-        current_date.getDate() + 1
-      );
-      this.setState({
-        [e.target.name]: e.target.value,
-        date_of_birth: birth_date
-      });
-    }
+  ageHandler(e) {
+    var age_value = e.target.value;
+    var current_date = new Date();
+    var birth_date = new Date(
+      current_date.getFullYear() - age_value,
+      current_date.getMonth(),
+      current_date.getDate() + 1
+    );
+    this.setState({
+      [e.target.name]: e.target.value,
+      date_of_birth: birth_date
+    });
+  }
 
+  texthandle(e) {
     this.setState({ [e.target.name]: e.target.value });
   }
 
@@ -599,7 +618,6 @@ class Appointment extends Component {
   }
 
   openEditModal(patient, data, e) {
-    debugger;
     e.preventDefault();
 
     let maxSlots = 1;
@@ -644,7 +662,7 @@ class Appointment extends Component {
         openPatEdit = true;
       }
       this.setState({ patToEdit: patient, openPatEdit: openPatEdit }, () => {
-        debugger;
+        //debugger;
         let pat_edit = this.state.patToEdit;
 
         this.setState(
@@ -746,7 +764,7 @@ class Appointment extends Component {
                 title_id: this.state.edit_title_id
               };
 
-              debugger;
+              // debugger;
               algaehApiCall({
                 uri: "/appointment/updatePatientAppointment",
                 method: "PUT",
@@ -1070,7 +1088,7 @@ class Appointment extends Component {
     }
   }
   plotAddIcon(patient, data) {
-    debugger;
+    //debugger;
     const _isstandby =
       patient === null || patient === undefined
         ? "N"
@@ -1207,7 +1225,6 @@ class Appointment extends Component {
   }
 
   generateChilderns(data) {
-    debugger;
     const colspan = data.mark_as_break
       ? {
           colSpan: 2,
@@ -1229,6 +1246,30 @@ class Appointment extends Component {
             .where(w => w.is_stand_by === "N" && w.cancelled === "N")
             .firstOrDefault()
         : undefined;
+
+    const sel_stat_id =
+      patient !== undefined ? patient.appointment_status_id : 0;
+
+    const sel_stat = Enumerable.from(
+      this.state.appointmentStatus !== undefined
+        ? this.state.appointmentStatus
+        : []
+    )
+      .where(w => w.hims_d_appointment_status_id === sel_stat_id)
+      .firstOrDefault();
+
+    let sel_steps = sel_stat !== undefined ? sel_stat.steps : 0;
+
+    const status =
+      sel_stat_id !== null
+        ? Enumerable.from(
+            this.state.appointmentStatus !== undefined
+              ? this.state.appointmentStatus
+              : []
+          )
+            .where(w => w.steps > sel_steps)
+            .toArray()
+        : [];
 
     const _standByPatients =
       _patientList !== null
@@ -1305,8 +1346,8 @@ class Appointment extends Component {
                   <div className="appStatusListCntr">
                     <i className="fas fa-clock" />
                     <ul className="appStatusList">
-                      {this.state.appointmentStatus !== undefined
-                        ? this.state.appointmentStatus.map((data, index) => (
+                      {status !== undefined
+                        ? status.map((data, index) => (
                             <li
                               key={index}
                               onClick={this.openEditModal.bind(
@@ -1357,7 +1398,7 @@ class Appointment extends Component {
   }
 
   generateTimeslots(data) {
-    debugger;
+    //debugger;
     const clinic_id = data.clinic_id;
     const provider_id = data.provider_id;
     const sch_header_id = data.hims_d_appointment_schedule_header_id;
@@ -1725,7 +1766,6 @@ class Appointment extends Component {
                               name: "edit_contact_number",
                               others: {
                                 type: "number",
-                                maxlength: "15",
                                 disabled: true
                               },
                               value: this.state.edit_contact_number,
@@ -2005,7 +2045,7 @@ class Appointment extends Component {
                               },
                               value: this.state.age,
                               events: {
-                                onChange: this.texthandle.bind(this)
+                                onChange: this.ageHandler.bind(this)
                               }
                             }}
                           />
