@@ -27,42 +27,108 @@ let addPatientNurseChiefComplaints = (req, res, next) => {
         next(error);
       }
 
-      const insurtColumns = [
-        "episode_id",
-        "patient_id",
-        "chief_complaint_id",
-        "onset_date",
-        "duration",
-        "interval",
-        "severity",
-        "score",
-        "pain",
-        "comment",
-        "created_by",
-        "updated_by"
-      ];
-
-      connection.query(
-        "INSERT INTO hims_f_nurse_episode_chief_complaint(`" +
-          insurtColumns.join("`,`") +
-          "`,created_date,updated_date) VALUES ?",
-        [
-          jsonArrayToObject({
-            sampleInputObject: insurtColumns,
-            arrayObj: req.body,
-            newFieldToInsert: [new Date(), new Date()],
-            req: req
-          })
-        ],
-        (error, Result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
             next(error);
-          }
-          req.records = Result;
-          next();
+          });
         }
-      );
+
+        const insurtColumns = [
+          "episode_id",
+          "patient_id",
+          "chief_complaint_id",
+          "onset_date",
+          "duration",
+          "interval",
+          "severity",
+          "score",
+          "pain",
+          "nurse_notes",
+          "created_by",
+          "updated_by"
+        ];
+
+        connection.query(
+          "INSERT INTO hims_f_nurse_episode_chief_complaint(`" +
+            insurtColumns.join("`,`") +
+            "`,created_date,updated_date) VALUES ?",
+          [
+            jsonArrayToObject({
+              sampleInputObject: insurtColumns,
+              arrayObj: req.body.chief_complaints,
+              newFieldToInsert: [new Date(), new Date()],
+              req: req
+            })
+          ],
+          (error, Result) => {
+            if (error) {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
+
+            if (Result.insertId != null) {
+              const insurtColumns = [
+                "patient_id",
+                "visit_id",
+                "visit_date",
+                "visit_time",
+                "case_type",
+                "vital_id",
+                "vital_value",
+                "vital_value_one",
+                "vital_value_two",
+                "formula_value",
+                "created_by",
+                "updated_by"
+              ];
+
+              connection.query(
+                "INSERT INTO hims_f_patient_vitals(" +
+                  insurtColumns.join(",") +
+                  ",created_date,updated_date) VALUES ?",
+                [
+                  jsonArrayToObject({
+                    sampleInputObject: insurtColumns,
+                    arrayObj: req.body.patient_vitals,
+                    newFieldToInsert: [new Date(), new Date()],
+                    req: req
+                  })
+                ],
+
+                (error, results) => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+
+                  connection.commit(error => {
+                    if (error) {
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      });
+                    }
+                    releaseDBConnection(db, connection);
+                    req.records = results;
+                    next();
+                  });
+                }
+              );
+            } else {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
+          }
+        );
+      });
     });
   } catch (e) {
     next(e);
@@ -82,7 +148,7 @@ let getPatientNurseChiefComplaints = (req, res, next) => {
       connection.query(
         "select hh.hims_d_hpi_header_id,hh.hpi_description as chief_complaint_name,PE.hims_f_patient_encounter_id,PE.patient_id,\
         max(PE.updated_date) as Encounter_Date , NC.hims_f_nurse_episode_chief_complaint_id,NC.episode_id,NC.chief_complaint_id,\
-        NC.onset_date,NC.`interval`,NC.duration,NC.severity,NC.score,NC.pain,NC.`comment`\
+        NC.onset_date,NC.`interval`,NC.duration,NC.severity,NC.score,NC.pain,NC.`nurse_notes`\
         from ( (hims_f_nurse_episode_chief_complaint NC inner join hims_d_hpi_header hh on hh.hims_d_hpi_header_id=NC.chief_complaint_id ) \
            inner join hims_f_patient_encounter PE on PE.episode_id=NC.episode_id)\
         where NC.record_status='A'and NC.episode_id=? group by chief_complaint_id ",
@@ -184,8 +250,8 @@ let updatePatientNurseChiefComplaints = (req, res, next) => {
             "', pain='" +
             inputParam[i].pain +
             "\
-            , comment='" +
-            inputParam[i].comment +
+            , nurse_notes='" +
+            inputParam[i].nurse_notes +
             "', updated_date='" +
             new Date().toLocaleString() +
             "',updated_by=\
