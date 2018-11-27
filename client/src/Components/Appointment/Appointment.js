@@ -1766,7 +1766,6 @@ class Appointment extends PureComponent {
                               name: "edit_contact_number",
                               others: {
                                 type: "number",
-                                maxlength: "15",
                                 disabled: true
                               },
                               value: this.state.edit_contact_number,

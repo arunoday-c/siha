@@ -4,7 +4,7 @@
 
 .stepper-set div {
   padding: 5px;
-  padding-top: 10px; }
+  padding-bottom: 10px; }
   .stepper-set div div span span:last-child {
     padding: 0px;
     line-height: 1px; }
