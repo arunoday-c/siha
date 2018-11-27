@@ -313,10 +313,11 @@ let addCashierToShift = (req, res, next) => {
 let getCashiersAndShiftMAP = (req, res, next) => {
   let selectWhere = {
     hims_m_cashier_shift_id: "ALL",
-    cashier_id: "ALL",
+    cashier_id: req.body.created_by,
     month: "ALL",
     year: "ALL"
   };
+
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
