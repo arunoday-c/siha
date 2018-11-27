@@ -202,14 +202,10 @@ class OrderingServices extends Component {
   playclick() {}
 
   onClose = e => {
-    this.setState(
-      {
-        addNew: true
-      },
-      () => {
-        this.props.onClose && this.props.onClose(e);
-      }
-    );
+    this.props.onClose && this.props.onClose(e);
+    this.setState({
+      addNew: true
+    });
   };
   render() {
     return (
