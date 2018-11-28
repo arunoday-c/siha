@@ -91,9 +91,12 @@ const titlehandle = ($this, context, e) => {
       context.updateState({ gender: setGender, [e]: null });
     }
   } else {
-    if (e.value === 1) {
+    debugger;
+    if (e.selected.title === "Mr") {
       setGender = "Male";
-    } else if (e.value === 2) {
+    } else if (e.selected.title === "Mrs") {
+      setGender = "Female";
+    } else if (e.selected.title === "Ms") {
       setGender = "Female";
     }
     $this.setState({

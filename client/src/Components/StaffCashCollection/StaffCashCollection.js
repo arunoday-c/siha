@@ -1,7 +1,4 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 import "./StaffCashCollection.css";
 import "../../styles/site.css";
@@ -12,7 +9,6 @@ import {
   AlagehFormGroup,
   AlgaehDateHandler
 } from "../Wrapper/algaehWrapper";
-import { AlgaehActions } from "../../actions/algaehActions";
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb";
 import { AlgaehValidation } from "../../utils/GlobalFunctions";
 import moment from "moment";
@@ -127,10 +123,10 @@ class StaffCashCollection extends Component {
                 this.state.difference_cash < 0
                   ? "E"
                   : this.state.difference_cash > 0
-                    ? "S"
-                    : this.state.difference_cash === 0
-                      ? "T"
-                      : null
+                  ? "S"
+                  : this.state.difference_cash === 0
+                  ? "T"
+                  : null
             });
           }
         );
@@ -148,10 +144,10 @@ class StaffCashCollection extends Component {
                 this.state.difference_card < 0
                   ? "E"
                   : this.state.difference_card > 0
-                    ? "S"
-                    : this.state.difference_card === 0
-                      ? "T"
-                      : null
+                  ? "S"
+                  : this.state.difference_card === 0
+                  ? "T"
+                  : null
             });
           }
         );
@@ -168,10 +164,10 @@ class StaffCashCollection extends Component {
                 this.state.difference_cheque < 0
                   ? "E"
                   : this.state.difference_cheque > 0
-                    ? "S"
-                    : this.state.difference_cheque === 0
-                      ? "T"
-                      : null
+                  ? "S"
+                  : this.state.difference_cheque === 0
+                  ? "T"
+                  : null
             });
           }
         );
@@ -276,9 +272,21 @@ class StaffCashCollection extends Component {
   }
 
   render() {
-    const _cash = this.state.difference_cash !== undefined && this.state.difference_cash !== "" ? parseFloat(this.state.difference_cash) : 0;
-    const _card = this.state.difference_card !== undefined && this.state.difference_card !== "" ? parseFloat(this.state.difference_card) : 0;
-    const _cheque = this.state.difference_cheque !== undefined && this.state.difference_cheque !== "" ? parseFloat(this.state.difference_cheque) : 0;
+    const _cash =
+      this.state.difference_cash !== undefined &&
+      this.state.difference_cash !== ""
+        ? parseFloat(this.state.difference_cash)
+        : 0;
+    const _card =
+      this.state.difference_card !== undefined &&
+      this.state.difference_card !== ""
+        ? parseFloat(this.state.difference_card)
+        : 0;
+    const _cheque =
+      this.state.difference_cheque !== undefined &&
+      this.state.difference_cheque !== ""
+        ? parseFloat(this.state.difference_cheque)
+        : 0;
 
     return (
       <div className="staffCashCollection">
@@ -461,8 +469,8 @@ class StaffCashCollection extends Component {
                         ) : row.cash_status === "S" ? (
                           <span className="badge badge-danger">Shortage</span>
                         ) : (
-                                "------"
-                              );
+                          "------"
+                        );
                       },
                       others: {
                         resizable: false,
@@ -506,8 +514,8 @@ class StaffCashCollection extends Component {
                         ) : row.card_status === "S" ? (
                           <span className="badge badge-danger">Shortage</span>
                         ) : (
-                                "------"
-                              );
+                          "------"
+                        );
                       },
                       others: {
                         resizable: false,
@@ -558,8 +566,8 @@ class StaffCashCollection extends Component {
                         ) : row.cheque_status === "S" ? (
                           <span className="badge badge-danger">Shortage</span>
                         ) : (
-                                "------"
-                              );
+                          "------"
+                        );
                       },
                       others: {
                         resizable: false,
@@ -748,7 +756,6 @@ class StaffCashCollection extends Component {
                       <td>{Math.abs(_cash)}</td>
                       <td>{Math.abs(_card)}</td>
                       <td>{Math.abs(_cheque)}</td>
-
                     </tr>
                     <tr>
                       <td> Status</td>
@@ -760,8 +767,8 @@ class StaffCashCollection extends Component {
                         ) : this.state.cash_status === "S" ? (
                           <span className="badge badge-danger">Shortage</span>
                         ) : (
-                                "------"
-                              )}
+                          "------"
+                        )}
                       </td>
                       <td>
                         {this.state.card_status === "T" ? (
@@ -771,8 +778,8 @@ class StaffCashCollection extends Component {
                         ) : this.state.card_status === "S" ? (
                           <span className="badge badge-danger">Shortage</span>
                         ) : (
-                                "------"
-                              )}
+                          "------"
+                        )}
                       </td>
                       <td>
                         {this.state.cheque_status === "T" ? (
@@ -782,8 +789,8 @@ class StaffCashCollection extends Component {
                         ) : this.state.cheque_status === "S" ? (
                           <span className="badge badge-danger">Shortage</span>
                         ) : (
-                                "------"
-                              )}
+                          "------"
+                        )}
                       </td>
                     </tr>
                     {/* <tr>
@@ -814,30 +821,4 @@ class StaffCashCollection extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    investigationdetails: state.investigationdetails,
-    testcategory: state.testcategory,
-    labspecimen: state.labspecimen,
-    labsection: state.labsection
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    {
-      getInvestigationDetails: AlgaehActions,
-      getTestCategory: AlgaehActions,
-      getLabSpecimen: AlgaehActions,
-      getLabsection: AlgaehActions
-    },
-    dispatch
-  );
-}
-
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(StaffCashCollection)
-);
+export default StaffCashCollection;
