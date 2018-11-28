@@ -333,7 +333,7 @@ class AddPatientForm extends PureComponent {
                       />
                       <AlagehFormGroup
                         div={{
-                          className: "col mandatory",
+                          className: "col mandatory ageYear",
                           others: {
                             style: { paddingRight: 0 }
                           }
@@ -362,14 +362,14 @@ class AddPatientForm extends PureComponent {
 
                       <AlagehFormGroup
                         div={{
-                          className: "col mandatory",
+                          className: "col mandatory  ageMonth",
                           others: {
                             style: { paddingLeft: 5, paddingRight: 5 }
                           }
                         }}
                         label={{
                           fieldName: "AGEMM",
-                          forceLabel: "&nbsp;",
+                          forceLabel: "",
                           isImp: false
                         }}
                         textBox={{
@@ -392,14 +392,14 @@ class AddPatientForm extends PureComponent {
 
                       <AlagehFormGroup
                         div={{
-                          className: "col mandatory",
+                          className: "col mandatory   ageDay",
                           others: {
                             style: { paddingLeft: 0 }
                           }
                         }}
                         label={{
                           fieldName: "AGEDD",
-                          forceLabel: "&nbsp;",
+                          forceLabel: "",
                           isImp: false
                         }}
                         textBox={{
