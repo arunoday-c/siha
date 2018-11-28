@@ -85,63 +85,68 @@ class NurseWorkbench extends Component {
   }
 
   savePatientExamn() {
-    AlgaehValidation({
-      alertTypeIcon: "warning",
-      onSuccess: () => {
-        let send_data = {};
+    if (
+      this.state.patient_name === undefined ||
+      this.state.patient_name === null ||
+      this.state.patient_name.length < 0
+    ) {
+      swalMessage({
+        title: "Please Select a patient",
+        type: "warning"
+      });
+      return;
+    } else {
+      let send_data = {};
+      let bodyArray = [];
+      const _elements = document.querySelectorAll("[vitalid]");
 
-        let bodyArray = [];
-        const _elements = document.querySelectorAll("[vitalid]");
-
-        for (let i = 0; i < _elements.length; i++) {
-          if (_elements[i].value !== "") {
-            const _isDepended = _elements[i].getAttribute("dependent");
-            bodyArray.push({
-              patient_id: this.state.patient_id,
-              visit_id: this.state.visit_id,
-              visit_date: this.state.recorded_date,
-              visit_time: this.state.recorded_time,
-              case_type: this.state.case_type,
-              vital_id: _elements[i].getAttribute("vitalid"),
-              vital_value: _elements[i].value,
-              vital_value_one:
-                _isDepended !== null
-                  ? document.getElementsByName(_isDepended)[0].value
-                  : null,
-              formula_value: _elements[i].getAttribute("formula_value")
-            });
-          }
+      for (let i = 0; i < _elements.length; i++) {
+        if (_elements[i].value !== "") {
+          const _isDepended = _elements[i].getAttribute("dependent");
+          bodyArray.push({
+            patient_id: this.state.patient_id,
+            visit_id: this.state.visit_id,
+            visit_date: this.state.recorded_date,
+            visit_time: this.state.recorded_time,
+            case_type: this.state.case_type,
+            vital_id: _elements[i].getAttribute("vitalid"),
+            vital_value: _elements[i].value,
+            vital_value_one:
+              _isDepended !== null
+                ? document.getElementsByName(_isDepended)[0].value
+                : null,
+            formula_value: _elements[i].getAttribute("formula_value")
+          });
         }
-
-        send_data.nurse_notes = this.state.nurse_notes;
-        send_data.chief_complaints = this.state.patChiefComp;
-        send_data.patient_vitals = bodyArray;
-        send_data.hims_f_patient_encounter_id = this.state.encounter_id;
-
-        algaehApiCall({
-          uri: "/nurseWorkBench/addPatientNurseChiefComplaints",
-          method: "POST",
-          data: send_data,
-          onSuccess: response => {
-            if (response.data.success) {
-              swalMessage({
-                title: "Recorded Successfully",
-                type: "success"
-              });
-              var element = document.querySelectorAll("[nursing_pat]");
-              for (var i = 0; i < element.length; i++) {
-                element[i].classList.remove("active");
-              }
-              this.resetSaveState();
-              this.loadListofData();
-            }
-          },
-          onError: error => {}
-        });
-
-        //console.log("Send Data:", send_data);
       }
-    });
+      send_data.nurse_notes = this.state.nurse_notes;
+      send_data.chief_complaints = this.state.patChiefComp;
+      send_data.patient_vitals = bodyArray;
+      send_data.hims_f_patient_encounter_id = this.state.encounter_id;
+
+      algaehApiCall({
+        uri: "/nurseWorkBench/addPatientNurseChiefComplaints",
+        method: "POST",
+        data: send_data,
+        onSuccess: response => {
+          if (response.data.success) {
+            swalMessage({
+              title: "Recorded Successfully",
+              type: "success"
+            });
+            // var element = document.querySelectorAll("[nursing_pat]");
+            // for (var i = 0; i < element.length; i++) {
+            //   element[i].classList.remove("active");
+            // }
+            this.resetSaveState();
+            this.loadListofData();
+          }
+        },
+        onError: error => {}
+      });
+    }
+
+    //console.log("Send Data:", send_data);
   }
 
   deptDropDownHandler(value) {
@@ -179,47 +184,63 @@ class NurseWorkbench extends Component {
       duration: duration,
       interval: interval
     });
-    //return { duration, interval };
+  }
+
+  durationToDateAndInterval(duration, interval) {
+    const _interval = Enumerable.from(GlobalVariables.PAIN_DURATION)
+      .where(w => w.value === interval)
+      .firstOrDefault().name;
+    const _date = moment().add(-duration, _interval.toLowerCase());
+    return { interval, onset_date: _date._d };
   }
 
   dropDownHandle(value) {
-    if (
-      this.state.patient_name === undefined ||
-      this.state.patient_name === null
-    ) {
-      swalMessage({
-        title: "Please Select a patient",
-        type: "error"
-      });
-      return;
-    } else {
-      switch (value.name) {
-        case "provider_id":
-          this.setState(
-            { [value.name]: value.value },
+    switch (value.name) {
+      case "provider_id":
+        this.setState(
+          { [value.name]: value.value },
 
-            () => {
-              this.loadListofData();
-            }
-          );
+          () => {
+            this.loadListofData();
+          }
+        );
 
-          break;
+        break;
 
-        case "chief_complaint_id":
+      case "chief_complaint_id":
+        if (
+          this.state.patient_name === undefined ||
+          this.state.patient_name === null
+        ) {
+          swalMessage({
+            title: "Please Select a patient",
+            type: "warning"
+          });
+        } else {
           this.setState({
             [value.name]: value.value,
             chief_complaint_name: value.selected.hpi_description
           });
+        }
 
-          break;
+        break;
 
-        default:
+      default:
+        if (
+          this.state.patient_name === undefined ||
+          this.state.patient_name === null
+        ) {
+          swalMessage({
+            title: "Please Select a patient",
+            type: "error"
+          });
+        } else {
           this.setState({
             [value.name]: value.value
           });
+        }
 
-          break;
-      }
+        break;
     }
   }
 
@@ -248,32 +269,43 @@ class NurseWorkbench extends Component {
     this.loadListofData();
   }
 
-  addChiefComplainToPatient(list) {
-    this.state.patChiefComp.push({
-      episode_id: this.state.episode_id,
-      patient_id: this.state.patient_id,
-      chief_complaint_id: this.state.chief_complaint_id,
-      onset_date: this.state.onset_date,
-      duration: this.state.duration,
-      interval: this.state.interval,
-      severity: this.state.severity,
-      score: this.state.score,
-      pain: this.state.pain,
-      comment: this.state.comment,
-      chief_complaint_name: this.state.chief_complaint_name
-    });
+  addChiefComplainToPatient() {
+    if (
+      this.state.chief_complaint_id === null ||
+      this.state.chief_complaint_id === undefined ||
+      this.state.chief_complaint_id.length < 0
+    ) {
+      swalMessage({
+        title: "Please select a chief complaint",
+        type: "warning"
+      });
+    } else {
+      this.state.patChiefComp.push({
+        episode_id: this.state.episode_id,
+        patient_id: this.state.patient_id,
+        chief_complaint_id: this.state.chief_complaint_id,
+        onset_date: this.state.onset_date,
+        duration: this.state.duration,
+        interval: this.state.interval,
+        severity: this.state.severity,
+        score: this.state.score,
+        pain: this.state.pain,
+        comment: this.state.comment,
+        chief_complaint_name: this.state.chief_complaint_name
+      });
 
-    this.setState({
-      chief_complaint_id: null,
-      onset_date: null,
-      duration: null,
-      interval: null,
-      severity: null,
-      score: null,
-      pain: null,
-      comment: null,
-      chief_complaint_name: null
-    });
+      this.setState({
+        chief_complaint_id: null,
+        onset_date: null,
+        duration: null,
+        interval: "D",
+        severity: null,
+        score: null,
+        pain: null,
+        comment: null,
+        chief_complaint_name: null
+      });
+    }
   }
 
   gridLevelUpdate(row, e) {
@@ -557,7 +589,6 @@ class NurseWorkbench extends Component {
     const patChiefComplain =
       this.state.patChiefComp !== undefined
         ? this.state.patChiefComp.sort((a, b) => {
-            debugger;
             return (
               b.hims_f_episode_chief_complaint_id -
               a.hims_f_episode_chief_complaint_id
@@ -921,7 +952,10 @@ class NurseWorkbench extends Component {
                 {/* Vitals End */}
 
                 {/* ChiefComplaints Start */}
-                <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+                <div
+                  className="portlet portlet-bordered box-shadow-normal margin-bottom-15"
+                  data-validate="chf_cmpl_div"
+                >
                   <div className="portlet-title">
                     {/* <div className="caption">
                       <h3 className="caption-subject">Chief Complaint</h3>
@@ -931,7 +965,7 @@ class NurseWorkbench extends Component {
                         div={{ className: "col" }}
                         label={{
                           forceLabel: "Chief Complaint",
-                          isImp: true
+                          isImp: false
                         }}
                         selector={{
                           name: "chief_complaint_id",
@@ -950,7 +984,7 @@ class NurseWorkbench extends Component {
                         div={{ className: "col" }}
                         label={{
                           forceLabel: "Pain",
-                          isImp: true
+                          isImp: false
                         }}
                         selector={{
                           name: "pain",
@@ -968,7 +1002,7 @@ class NurseWorkbench extends Component {
                         div={{ className: "col" }}
                         label={{
                           forceLabel: "Severity",
-                          isImp: true
+                          isImp: false
                         }}
                         selector={{
                           name: "severity",
@@ -985,7 +1019,7 @@ class NurseWorkbench extends Component {
 
                       <AlgaehDateHandler
                         div={{ className: "col" }}
-                        label={{ forceLabel: "Onset Date", isImp: true }}
+                        label={{ forceLabel: "Onset Date", isImp: false }}
                         textBox={{
                           className: "txt-fld",
                           name: "onset_date"
@@ -1001,7 +1035,7 @@ class NurseWorkbench extends Component {
                       <AlagehFormGroup
                         div={{ className: "col" }}
                         label={{
-                          isImp: true,
+                          isImp: false,
                           forceLabel: "Duration"
                         }}
                         textBox={{
@@ -1022,7 +1056,7 @@ class NurseWorkbench extends Component {
                         div={{ className: "col" }}
                         label={{
                           forceLabel: "Interval",
-                          isImp: true
+                          isImp: false
                         }}
                         selector={{
                           name: "interval",
@@ -1040,7 +1074,7 @@ class NurseWorkbench extends Component {
                       <AlagehFormGroup
                         div={{ className: "col" }}
                         label={{
-                          isImp: true,
+                          isImp: false,
                           forceLabel: "Comment"
                         }}
                         textBox={{

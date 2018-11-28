@@ -7,7 +7,11 @@ import {
   AlgaehLabel,
   AlgaehDateHandler
 } from "../Wrapper/algaehWrapper";
-import { setGlobal, AlgaehValidation } from "../../utils/GlobalFunctions";
+import {
+  setGlobal,
+  AlgaehValidation,
+  SetBulkState
+} from "../../utils/GlobalFunctions";
 import Modal from "@material-ui/core/Modal";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 import Enumerable from "linq";
@@ -230,85 +234,90 @@ class Appointment extends PureComponent {
       querySelector: "data-validate='addApptDiv'",
       alertTypeIcon: "warning",
       onSuccess: () => {
-        let from_time = this.state.apptFromTime;
-        let duration_minutes = this.state.apptSlot * this.state.no_of_slots;
-        let to_time = moment(from_time, "hh:mm a")
-          .add(duration_minutes, "minutes")
-          .format("HH:mm:ss");
+        SetBulkState({
+          state: this,
+          callback: () => {
+            let from_time = this.state.apptFromTime;
+            let duration_minutes = this.state.apptSlot * this.state.no_of_slots;
+            let to_time = moment(from_time, "hh:mm a")
+              .add(duration_minutes, "minutes")
+              .format("HH:mm:ss");
 
-        let appt_date =
-          this.state.activeDateHeader !== undefined
-            ? this.state.activeDateHeader
-            : new Date();
+            let appt_date =
+              this.state.activeDateHeader !== undefined
+                ? this.state.activeDateHeader
+                : new Date();
 
-        const send_data = {
-          patient_id: this.state.patient_id,
-          patient_code: this.state.patient_code,
-          provider_id: this.state.apptProvider,
-          sub_department_id: this.state.apptSubDept,
-          appointment_date: moment(appt_date).format("YYYY-MM-DD"),
-          appointment_from_time: moment(
-            this.state.apptFromTime,
-            "hh:mm a"
-          ).format("HH:mm:ss"),
-          appointment_to_time: to_time,
-          appointment_status_id: this.state.appointment_status_id,
-          patient_name: this.state.patient_name,
-          arabic_name: this.state.arabic_name,
-          date_of_birth: this.state.date_of_birth,
-          age: this.state.age,
-          contact_number: this.state.contact_number,
-          email: this.state.email,
-          send_to_provider: "N",
-          gender: this.state.gender,
-          appointment_remarks: this.state.appointment_remarks,
-          number_of_slot: this.state.no_of_slots,
-          confirmed: "N",
-          cancelled: "N",
-          is_stand_by: this.state.is_stand_by,
-          title_id: this.state.title_id
-        };
+            const send_data = {
+              patient_id: this.state.patient_id,
+              patient_code: this.state.patient_code,
+              provider_id: this.state.apptProvider,
+              sub_department_id: this.state.apptSubDept,
+              appointment_date: moment(appt_date).format("YYYY-MM-DD"),
+              appointment_from_time: moment(
+                this.state.apptFromTime,
+                "hh:mm a"
+              ).format("HH:mm:ss"),
+              appointment_to_time: to_time,
+              appointment_status_id: this.state.appointment_status_id,
+              patient_name: this.state.patient_name,
+              arabic_name: this.state.arabic_name,
+              date_of_birth: this.state.date_of_birth,
+              age: this.state.age,
+              contact_number: this.state.contact_number,
+              email: this.state.email,
+              send_to_provider: "N",
+              gender: this.state.gender,
+              appointment_remarks: this.state.appointment_remarks,
+              number_of_slot: this.state.no_of_slots,
+              confirmed: "N",
+              cancelled: "N",
+              is_stand_by: this.state.is_stand_by,
+              title_id: this.state.title_id
+            };
+            algaehApiCall({
+              uri: "/appointment/addPatientAppointment",
+              method: "POST",
+              data: send_data,
+              onSuccess: response => {
+                if (response.data.success) {
+                  if (
+                    send_data.appointment_status_id === this.state.checkInId
+                  ) {
+                    setGlobal({
+                      "FD-STD": "RegistrationPatient",
+                      "appt-pat-code": this.state.patient_code,
+                      "appt-provider-id": this.state.apptProvider,
+                      "appt-dept-id": this.state.apptSubDept,
+                      "appt-pat-name": this.state.patient_name,
+                      "appt-pat-arabic-name": this.state.arabic_name,
+                      "appt-pat-dob": this.state.date_of_birth,
+                      "appt-pat-age": this.state.age,
+                      "appt-pat-gender": this.state.gender,
+                      "appt-pat-ph-no": this.state.contact_number,
+                      "appt-pat-email": this.state.email,
+                      "appt-department-id": this.state.department_id,
+                      "appt-title-id": this.state.title_id
+                    });
 
-        //debugger;
-        algaehApiCall({
-          uri: "/appointment/addPatientAppointment",
-          method: "POST",
-          data: send_data,
-          onSuccess: response => {
-            if (response.data.success) {
-              if (send_data.appointment_status_id === this.state.checkInId) {
-                setGlobal({
-                  "FD-STD": "RegistrationPatient",
-                  "appt-pat-code": this.state.patient_code,
-                  "appt-provider-id": this.state.apptProvider,
-                  "appt-dept-id": this.state.apptSubDept,
-                  "appt-pat-name": this.state.patient_name,
-                  "appt-pat-arabic-name": this.state.arabic_name,
-                  "appt-pat-dob": this.state.date_of_birth,
-                  "appt-pat-age": this.state.age,
-                  "appt-pat-gender": this.state.gender,
-                  "appt-pat-ph-no": this.state.contact_number,
-                  "appt-pat-email": this.state.email,
-                  "appt-department-id": this.state.department_id,
-                  "appt-title-id": this.state.title_id
-                });
-
-                document.getElementById("fd-router").click();
-              } else {
-                this.clearSaveState();
+                    document.getElementById("fd-router").click();
+                  } else {
+                    this.clearSaveState();
+                    swalMessage({
+                      title: "Appointment Created Successfully",
+                      type: "success"
+                    });
+                    this.setState({ showApt: false });
+                    this.getAppointmentSchedule();
+                  }
+                }
+              },
+              onFailure: error => {
                 swalMessage({
-                  title: "Appointment Created Successfully",
-                  type: "success"
+                  title: error.message,
+                  type: "error"
                 });
-                this.setState({ showApt: false });
-                this.getAppointmentSchedule();
               }
-            }
-          },
-          onFailure: error => {
-            swalMessage({
-              title: error.message,
-              type: "error"
             });
           }
         });
@@ -539,9 +548,14 @@ class Appointment extends PureComponent {
       current_date.getMonth(),
       current_date.getDate() + 1
     );
-    this.setState({
-      [e.target.name]: e.target.value,
-      date_of_birth: birth_date
+
+    SetBulkState({
+      state: this,
+      callback: () => {
+        this.setState({
+          date_of_birth: birth_date
+        });
+      }
     });
   }
 
@@ -1485,7 +1499,7 @@ class Appointment extends PureComponent {
     }
     return null;
   }
-  componentDidUpdate(props, prevState, snapshot) {}
+  //componentDidUpdate(props, prevState, snapshot) {}
 
   render() {
     return (
@@ -1893,7 +1907,7 @@ class Appointment extends PureComponent {
                               },
                               value: this.state.patient_code,
                               events: {
-                                onChange: this.texthandle.bind(this)
+                                // onChange: this.texthandle.bind(this)
                               }
                             }}
                           />
@@ -1956,8 +1970,8 @@ class Appointment extends PureComponent {
                                 textField: "title",
                                 valueField: "his_d_title_id",
                                 data: this.state.titles
-                              },
-                              onChange: this.dropDownHandle.bind(this)
+                              }
+                              //onChange: this.dropDownHandle.bind(this)
                             }}
                           />
 
@@ -1972,10 +1986,10 @@ class Appointment extends PureComponent {
                             textBox={{
                               className: "txt-fld",
                               name: "patient_name",
-                              value: this.state.patient_name,
-                              events: {
-                                onChange: this.texthandle.bind(this)
-                              }
+                              value: this.state.patient_name
+                              // events: {
+                              //   //onChange: this.texthandle.bind(this)
+                              // }
                             }}
                           />
                           <AlagehFormGroup
@@ -1990,10 +2004,10 @@ class Appointment extends PureComponent {
                             textBox={{
                               className: "txt-fld",
                               name: "arabic_name",
-                              value: this.state.arabic_name,
-                              events: {
-                                onChange: this.texthandle.bind(this)
-                              }
+                              value: this.state.arabic_name
+                              // events: {
+                              //   //onChange: this.texthandle.bind(this)
+                              // }
                             }}
                           />
                         </div>
@@ -2013,9 +2027,9 @@ class Appointment extends PureComponent {
                             }}
                             events={{
                               onChange: selectedDate => {
-                                this.setState(
-                                  { date_of_birth: selectedDate },
-                                  () => {
+                                SetBulkState({
+                                  state: this,
+                                  callback: () => {
                                     this.setState({
                                       age: moment().diff(
                                         this.state.date_of_birth,
@@ -2023,7 +2037,7 @@ class Appointment extends PureComponent {
                                       )
                                     });
                                   }
-                                );
+                                });
                               }
                             }}
                             value={this.state.date_of_birth}
@@ -2066,8 +2080,8 @@ class Appointment extends PureComponent {
                                 textField: "name",
                                 valueField: "value",
                                 data: GlobalVariables.FORMAT_GENDER
-                              },
-                              onChange: this.dropDownHandle.bind(this)
+                              }
+                              // onChange: this.dropDownHandle.bind(this)
                             }}
                           />
 
@@ -2087,8 +2101,8 @@ class Appointment extends PureComponent {
                                 textField: "description",
                                 valueField: "hims_d_appointment_status_id",
                                 data: this.state.appointmentStatus
-                              },
-                              onChange: this.dropDownHandle.bind(this)
+                              }
+                              // onChange: this.dropDownHandle.bind(this)
                             }}
                           />
                         </div>
@@ -2108,10 +2122,10 @@ class Appointment extends PureComponent {
                               others: {
                                 type: "number"
                               },
-                              value: this.state.contact_number,
-                              events: {
-                                onChange: this.texthandle.bind(this)
-                              }
+                              value: this.state.contact_number
+                              // events: {
+                              //   //onChange: this.texthandle.bind(this)
+                              // }
                             }}
                           />
 
@@ -2126,10 +2140,10 @@ class Appointment extends PureComponent {
                             textBox={{
                               className: "txt-fld",
                               name: "email",
-                              value: this.state.email,
-                              events: {
-                                onChange: this.texthandle.bind(this)
-                              }
+                              value: this.state.email
+                              // events: {
+                              //   //onChange: this.texthandle.bind(this)
+                              // }
                             }}
                           />
                         </div>
@@ -2144,10 +2158,10 @@ class Appointment extends PureComponent {
                             textBox={{
                               className: "txt-fld",
                               name: "appointment_remarks",
-                              value: this.state.appointment_remarks,
-                              events: {
-                                onChange: this.texthandle.bind(this)
-                              }
+                              value: this.state.appointment_remarks
+                              // events: {
+                              //   // onChange: this.texthandle.bind(this)
+                              // }
                             }}
                           />
                         </div>
