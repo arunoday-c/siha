@@ -10,7 +10,7 @@ import httpStatus from "../../utils/httpStatus";
 import { debugLog } from "../../utils/logging";
 import moment from "moment";
 // import { getBillDetailsFunctionality } from "../../model/billing";
-import { updateIntoItemLocation } from "./commonFunction";
+import { updateIntoInvItemLocation } from "./commonFunction";
 import Promise from "bluebird";
 
 //created by Nowshad: to Insert Requisition Entry
@@ -303,7 +303,7 @@ let updatetransferEntry = (req, res, next) => {
             };
             //Update From Location
             debugLog("From", "Data");
-            updateIntoItemLocation(req, res, next);
+            updateIntoInvItemLocation(req, res, next);
           });
         })
         .then(output => {
@@ -332,7 +332,7 @@ let updatetransferEntry = (req, res, next) => {
             }
 
             debugLog("To ", "Data");
-            updateIntoItemLocation(req, res, next);
+            updateIntoInvItemLocation(req, res, next);
           })
 
             .then(records => {

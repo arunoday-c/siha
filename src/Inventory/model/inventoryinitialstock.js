@@ -10,7 +10,7 @@ import httpStatus from "../../utils/httpStatus";
 import { debugLog } from "../../utils/logging";
 import moment from "moment";
 
-import { updateIntoItemLocation } from "./commonFunction";
+import { updateIntoInvItemLocation } from "./commonFunction";
 import Promise from "bluebird";
 
 //created by Nowshad: to Inventory_intial_stock
@@ -293,7 +293,7 @@ let updateInventoryInitialStock = (req, res, next) => {
                   }
                 };
 
-                updateIntoItemLocation(req, res, next);
+                updateIntoInvItemLocation(req, res, next);
               })
                 // .then(itemoutput => {
                 //   return new Promise((resolve, reject) => {
