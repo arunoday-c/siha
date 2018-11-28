@@ -14,6 +14,7 @@ import { AlgaehValidation } from "../../utils/GlobalFunctions";
 import moment from "moment";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import Enumerable from "linq";
+import GlobalVariables from "../../utils/GlobalVariables.json";
 
 class StaffCashCollection extends Component {
   constructor(props) {
@@ -58,14 +59,16 @@ class StaffCashCollection extends Component {
     this.setState({ [value.name]: value.value });
   }
 
-  authAndCloseShift(e) {
+  authAndCloseShift(status, e) {
+    debugger;
+
     AlgaehValidation({
       alertTypeIcon: "warning",
       onSuccess: () => {
         AlgaehLoader({ show: true });
 
         let send_data = {
-          shift_status: "A",
+          shift_status: status,
           close_date: new Date(),
           close_by: 1,
           actual_cash: this.state.actual_cash,
@@ -182,43 +185,35 @@ class StaffCashCollection extends Component {
   }
 
   selectCashier(data, e) {
-    debugger;
-
-    if (data.shift_status === "A" || data.shift_status === "C") {
-      swalMessage({
-        title: "Shift already closed",
-        type: "warning"
-      });
-    } else {
-      this.setState({
-        hims_f_cash_handover_detail_id: data.hims_f_cash_handover_detail_id,
-        actual_cash: data.actual_cash,
-        actual_card: data.actual_card,
-        actual_cheque: data.actual_cheque,
-        expected_cash: data.expected_cash,
-        expected_card: data.expected_card,
-        expected_cheque: data.expected_cheque,
-        difference_cash: data.difference_cash,
-        difference_card: data.difference_card,
-        difference_cheque: data.difference_cheque,
-        cash_status: data.cash_status,
-        card_status: data.card_status,
-        cheque_status: data.cheque_status,
-        shift_open_date: moment(data.open_date).isValid()
-          ? moment(data.open_date).format("DD-MM-YYYY")
-          : "DD-MM-YYYY",
-        shift_open_time: moment(data.open_date).isValid()
-          ? moment(data.open_date).format("hh:mm A")
-          : "--:-- --",
-        shift_close_date: moment(data.close_date).isValid()
-          ? moment(data.close_date).format("DD-MM-YYYY")
-          : "DD-MM-YYYY",
-        shift_close_time: moment(data.close_date).isValid()
-          ? moment(data.close_date).format("hh:mm A")
-          : "--:-- --",
-        remarks: data.remarks
-      });
-    }
+    this.setState({
+      hims_f_cash_handover_detail_id: data.hims_f_cash_handover_detail_id,
+      actual_cash: data.actual_cash,
+      actual_card: data.actual_card,
+      actual_cheque: data.actual_cheque,
+      expected_cash: data.expected_cash,
+      expected_card: data.expected_card,
+      expected_cheque: data.expected_cheque,
+      difference_cash: data.difference_cash,
+      difference_card: data.difference_card,
+      difference_cheque: data.difference_cheque,
+      cash_status: data.cash_status,
+      card_status: data.card_status,
+      cheque_status: data.cheque_status,
+      shift_status: data.shift_status,
+      shift_open_date: moment(data.open_date).isValid()
+        ? moment(data.open_date).format("DD-MM-YYYY")
+        : "DD-MM-YYYY",
+      shift_open_time: moment(data.open_date).isValid()
+        ? moment(data.open_date).format("hh:mm A")
+        : "--:-- --",
+      shift_close_date: moment(data.close_date).isValid()
+        ? moment(data.close_date).format("DD-MM-YYYY")
+        : "DD-MM-YYYY",
+      shift_close_time: moment(data.close_date).isValid()
+        ? moment(data.close_date).format("hh:mm A")
+        : "--:-- --",
+      remarks: data.remarks
+    });
   }
 
   getCashHandoverDetails(e) {
@@ -232,7 +227,8 @@ class StaffCashCollection extends Component {
           method: "GET",
           data: {
             shift_id: this.state.hims_d_shift_id,
-            daily_handover_date: this.state.daily_handover_date
+            daily_handover_date: this.state.daily_handover_date,
+            shift_status: this.state.status
           },
           onSuccess: response => {
             AlgaehLoader({ show: false });
@@ -348,7 +344,12 @@ class StaffCashCollection extends Component {
                     valueField: "hims_d_shift_id",
                     data: this.state.shifts
                   },
-                  onChange: this.dropDownHandle.bind(this)
+                  onChange: this.dropDownHandle.bind(this),
+                  onClear: () => {
+                    this.setState({
+                      hims_d_shift_id: null
+                    });
+                  }
                 }}
               />
               <AlgaehDateHandler
@@ -371,6 +372,31 @@ class StaffCashCollection extends Component {
                 }}
                 value={this.state.daily_handover_date}
               />
+
+              <AlagehAutoComplete
+                div={{ className: "col-lg-3" }}
+                label={{
+                  forceLabel: "Shift Status",
+                  isImp: false
+                }}
+                selector={{
+                  name: "status",
+                  className: "select-fld",
+                  value: this.state.status,
+                  dataSource: {
+                    textField: "name",
+                    valueField: "value",
+                    data: GlobalVariables.SHIFT_STATUS
+                  },
+                  onChange: this.dropDownHandle.bind(this),
+                  onClear: () => {
+                    this.setState({
+                      status: null
+                    });
+                  }
+                }}
+              />
+
               <div className="col-lg-3">
                 <button
                   onClick={this.getCashHandoverDetails.bind(this)}
@@ -665,6 +691,7 @@ class StaffCashCollection extends Component {
                       className: "txt-fld",
                       name: "remarks",
                       value: this.state.remarks,
+                      disabled: this.state.shift_status === "A",
                       others: {
                         multiline: true,
                         rows: "3"
@@ -701,13 +728,14 @@ class StaffCashCollection extends Component {
                           <AlagehFormGroup
                             div={{ className: "col" }}
                             label={{
-                              fieldName: "asdfasdf",
+                              fieldName: "&nbsp;",
                               isImp: false
                             }}
                             textBox={{
                               className: "txt-fld",
                               name: "actual_cash",
                               value: this.state.actual_cash,
+                              disabled: this.state.shift_status === "A",
                               events: {
                                 onChange: this.changeTexts.bind(this)
                               },
@@ -724,13 +752,14 @@ class StaffCashCollection extends Component {
                           <AlagehFormGroup
                             div={{ className: "col" }}
                             label={{
-                              fieldName: "asdfasdf",
+                              fieldName: "&nbsp;",
                               isImp: false
                             }}
                             textBox={{
                               className: "txt-fld",
                               name: "actual_card",
                               value: this.state.actual_card,
+                              disabled: this.state.shift_status === "A",
                               events: {
                                 onChange: this.changeTexts.bind(this)
                               },
@@ -754,6 +783,7 @@ class StaffCashCollection extends Component {
                               className: "txt-fld",
                               name: "actual_cheque",
                               value: this.state.actual_cheque,
+                              disabled: this.state.shift_status === "A",
                               events: {
                                 onChange: this.changeTexts.bind(this)
                               }
@@ -815,11 +845,23 @@ class StaffCashCollection extends Component {
                 <div className="col-lg-12">
                   <div className="row">
                     <button
-                      onClick={this.authAndCloseShift.bind(this)}
+                      disabled={
+                        this.state.shift_status === "C" ||
+                        this.state.shift_status === "A"
+                      }
+                      onClick={this.authAndCloseShift.bind(this, "C")}
                       className="btn btn-primary"
                       style={{ marginLeft: 10, float: "right" }}
                     >
-                      Authorize and Close Shift
+                      Close Shift
+                    </button>
+                    <button
+                      disabled={this.state.shift_status === "A"}
+                      onClick={this.authAndCloseShift.bind(this, "A")}
+                      className="btn btn-primary"
+                      style={{ marginLeft: 10, float: "right" }}
+                    >
+                      Authorize Shift
                     </button>
                   </div>
                 </div>

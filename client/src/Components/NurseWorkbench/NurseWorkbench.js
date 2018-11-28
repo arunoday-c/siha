@@ -433,7 +433,8 @@ class NurseWorkbench extends Component {
       current_patient: data.patient_id,
       episode_id: data.episode_id,
       encounter_id: data.hims_f_patient_encounter_id,
-      patient_id: data.patient_id
+      patient_id: data.patient_id,
+      visit_id: data.visit_id
     });
 
     var element = document.querySelectorAll("[nursing_pat]");
