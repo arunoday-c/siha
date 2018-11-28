@@ -246,95 +246,102 @@ let updateReceiptEntry = (req, res, next) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    db.getConnection((error, connection) => {
+    // db.getConnection((error, connection) => {
+    //   if (error) {
+    //     next(error);
+    //   }
+    let connection = req.connection;
+    connection.beginTransaction(error => {
       if (error) {
-        next(error);
+        connection.rollback(() => {
+          releaseDBConnection(db, connection);
+          next(error);
+        });
       }
+      let inputParam = extend({}, req.body);
+      debugLog("req.body: ", req.body);
 
-      connection.beginTransaction(error => {
-        if (error) {
-          connection.rollback(() => {
-            releaseDBConnection(db, connection);
-            next(error);
-          });
-        }
-        let inputParam = extend({}, req.body);
-        debugLog("req.body: ", req.body);
-
-        connection.query(
-          "UPDATE `hims_f_procurement_grn_header` SET `posted`=?, `posted_date`=?, `posted_by`=? \
+      connection.query(
+        "UPDATE `hims_f_procurement_grn_header` SET `posted`=?, `posted_date`=?, `posted_by`=? \
       WHERE `hims_f_procurement_grn_header_id`=?",
-          [
-            inputParam.authorize1,
-            new Date(),
-            req.userIdentity.algaeh_d_app_user_id,
-            inputParam.hims_f_procurement_grn_header_id
-          ],
-          (error, result) => {
-            if (error) {
-              connection.rollback(() => {
-                releaseDBConnection(db, connection);
-                next(error);
-              });
-            }
+        [
+          inputParam.posted,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          inputParam.hims_f_procurement_grn_header_id
+        ],
+        (error, result) => {
+          debugLog("result: ", result);
+          if (error) {
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(error);
+            });
+          }
 
-            if (result !== "" && result != null) {
-              let details = inputParam.dn_entry_detail;
+          if (result !== "" && result != null) {
+            let details = inputParam.receipt_entry_detail;
 
-              let qry = "";
+            let qry = "";
 
-              for (let i = 0; i < details.length; i++) {
-                qry +=
-                  " UPDATE `hims_f_procurement_grn_detail` SET authorize_quantity='" +
-                  details[i].authorize_quantity +
-                  "',rejected_quantity='" +
-                  details[i].rejected_quantity +
-                  "',quantity_recieved='" +
-                  (details[i].quantity_recieved || 0) +
-                  "',quantity_outstanding='" +
-                  (details[i].quantity_outstanding || 0) +
-                  "' WHERE hims_f_procurement_grn_detail_id='" +
-                  details[i].hims_f_procurement_grn_detail_id +
-                  "';";
+            for (let i = 0; i < details.length; i++) {
+              qry +=
+                " UPDATE `hims_f_procurement_grn_detail` SET recieved_quantity='" +
+                details[i].recieved_quantity +
+                "',batchno='" +
+                details[i].batchno +
+                "',rejected_quantity='" +
+                (details[i].rejected_quantity || 0) +
+                "',outstanding_quantity='" +
+                (details[i].outstanding_quantity || 0);
+
+              if (details[i].expiry_date != null) {
+                qry += "',expiry_date='" + (details[i].expiry_date || null);
               }
+              qry +=
+                "' WHERE hims_f_procurement_grn_detail_id='" +
+                details[i].hims_f_procurement_grn_detail_id +
+                "';";
+            }
+            debugLog("qry: ", qry);
 
-              if (qry != "") {
-                connection.query(qry, (error, detailResult) => {
+            if (qry != "") {
+              connection.query(qry, (error, detailResult) => {
+                if (error) {
+                  connection.rollback(() => {
+                    releaseDBConnection(db, connection);
+                    next(error);
+                  });
+                }
+
+                connection.commit(error => {
                   if (error) {
                     connection.rollback(() => {
                       releaseDBConnection(db, connection);
                       next(error);
                     });
                   }
-
-                  connection.commit(error => {
-                    if (error) {
-                      connection.rollback(() => {
-                        releaseDBConnection(db, connection);
-                        next(error);
-                      });
-                    }
-                    releaseDBConnection(db, connection);
-                    req.records = detailResult;
-                    next();
-                  });
+                  releaseDBConnection(db, connection);
+                  req.records = detailResult;
+                  next();
                 });
-              } else {
-                releaseDBConnection(db, connection);
-                req.records = {};
-                next();
-              }
-            } else {
-              connection.rollback(() => {
-                releaseDBConnection(db, connection);
-                req.records = {};
-                next();
               });
+            } else {
+              releaseDBConnection(db, connection);
+              req.records = {};
+              next();
             }
+          } else {
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              req.records = {};
+              next();
+            });
           }
-        );
-      });
+        }
+      );
     });
+    // });
   } catch (e) {
     next(e);
   }

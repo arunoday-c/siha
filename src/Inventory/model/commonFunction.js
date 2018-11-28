@@ -17,7 +17,7 @@ const createXmlString = Jobject => {
   }
 };
 
-let updateIntoItemLocation = (req, res, next) => {
+let updateIntoInvItemLocation = (req, res, next) => {
   // let db = req.options == null ? req.db : req.options.db;
 
   if (req.db == null) {
@@ -117,5 +117,5 @@ let updateIntoItemLocation = (req, res, next) => {
 };
 
 module.exports = {
-  updateIntoItemLocation
+  updateIntoInvItemLocation
 };

@@ -10,7 +10,6 @@ import httpStatus from "../../utils/httpStatus";
 import { debugLog } from "../../utils/logging";
 import moment from "moment";
 // import { getBillDetailsFunctionality } from "../../model/billing";
-// import { updateIntoItemLocation } from "./commonFunction";
 import Promise from "bluebird";
 
 //created by Nowshad: to Insert Requisition Entry
