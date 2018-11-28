@@ -182,34 +182,43 @@ class StaffCashCollection extends Component {
   }
 
   selectCashier(data, e) {
-    this.setState({
-      hims_f_cash_handover_detail_id: data.hims_f_cash_handover_detail_id,
-      actual_cash: data.actual_cash,
-      actual_card: data.actual_card,
-      actual_cheque: data.actual_cheque,
-      expected_cash: data.expected_cash,
-      expected_card: data.expected_card,
-      expected_cheque: data.expected_cheque,
-      difference_cash: data.difference_cash,
-      difference_card: data.difference_card,
-      difference_cheque: data.difference_cheque,
-      cash_status: data.cash_status,
-      card_status: data.card_status,
-      cheque_status: data.cheque_status,
-      shift_open_date: moment(data.open_date).isValid()
-        ? moment(data.open_date).format("DD-MM-YYYY")
-        : "DD-MM-YYYY",
-      shift_open_time: moment(data.open_date).isValid()
-        ? moment(data.open_date).format("hh:mm A")
-        : "--:-- --",
-      shift_close_date: moment(data.close_date).isValid()
-        ? moment(data.close_date).format("DD-MM-YYYY")
-        : "DD-MM-YYYY",
-      shift_close_time: moment(data.close_date).isValid()
-        ? moment(data.close_date).format("hh:mm A")
-        : "--:-- --",
-      remarks: data.remarks
-    });
+    debugger;
+
+    if (data.shift_status === "A" || data.shift_status === "C") {
+      swalMessage({
+        title: "Shift already closed",
+        type: "warning"
+      });
+    } else {
+      this.setState({
+        hims_f_cash_handover_detail_id: data.hims_f_cash_handover_detail_id,
+        actual_cash: data.actual_cash,
+        actual_card: data.actual_card,
+        actual_cheque: data.actual_cheque,
+        expected_cash: data.expected_cash,
+        expected_card: data.expected_card,
+        expected_cheque: data.expected_cheque,
+        difference_cash: data.difference_cash,
+        difference_card: data.difference_card,
+        difference_cheque: data.difference_cheque,
+        cash_status: data.cash_status,
+        card_status: data.card_status,
+        cheque_status: data.cheque_status,
+        shift_open_date: moment(data.open_date).isValid()
+          ? moment(data.open_date).format("DD-MM-YYYY")
+          : "DD-MM-YYYY",
+        shift_open_time: moment(data.open_date).isValid()
+          ? moment(data.open_date).format("hh:mm A")
+          : "--:-- --",
+        shift_close_date: moment(data.close_date).isValid()
+          ? moment(data.close_date).format("DD-MM-YYYY")
+          : "DD-MM-YYYY",
+        shift_close_time: moment(data.close_date).isValid()
+          ? moment(data.close_date).format("hh:mm A")
+          : "--:-- --",
+        remarks: data.remarks
+      });
+    }
   }
 
   getCashHandoverDetails(e) {
@@ -505,7 +514,9 @@ class StaffCashCollection extends Component {
                     },
                     {
                       fieldName: "card_status",
-                      label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Card Status" }} />
+                      ),
                       displayTemplate: row => {
                         return row.card_status === "T" ? (
                           <span className="badge badge-success">Tallied</span>
