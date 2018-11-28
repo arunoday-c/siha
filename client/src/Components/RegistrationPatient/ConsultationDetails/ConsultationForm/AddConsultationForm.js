@@ -252,7 +252,7 @@ class AddConsultationForm extends Component {
                               <input
                                 type="radio"
                                 id={"mat_pat_" + idx}
-                                name="MATERNITY_PATIENT"
+                                name="maternity_patient"
                                 className="htpl-phase1-radio-btn"
                                 value={data.value}
                                 defaultChecked={
