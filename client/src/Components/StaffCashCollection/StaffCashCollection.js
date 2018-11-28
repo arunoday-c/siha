@@ -1,7 +1,4 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 import "./StaffCashCollection.css";
 import "../../styles/site.css";
@@ -12,14 +9,13 @@ import {
   AlagehFormGroup,
   AlgaehDateHandler
 } from "../Wrapper/algaehWrapper";
-import { AlgaehActions } from "../../actions/algaehActions";
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb";
 import { AlgaehValidation } from "../../utils/GlobalFunctions";
 import moment from "moment";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import Enumerable from "linq";
 
-class InvestigationSetup extends Component {
+class StaffCashCollection extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -811,30 +807,4 @@ class InvestigationSetup extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    investigationdetails: state.investigationdetails,
-    testcategory: state.testcategory,
-    labspecimen: state.labspecimen,
-    labsection: state.labsection
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    {
-      getInvestigationDetails: AlgaehActions,
-      getTestCategory: AlgaehActions,
-      getLabSpecimen: AlgaehActions,
-      getLabsection: AlgaehActions
-    },
-    dispatch
-  );
-}
-
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(InvestigationSetup)
-);
+export default StaffCashCollection
