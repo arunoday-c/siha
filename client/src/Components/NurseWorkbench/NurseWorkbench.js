@@ -797,13 +797,13 @@ class NurseWorkbench extends Component {
                   {_department_viatals.map((item, index) => {
                     const _className =
                       item.hims_d_vitals_header_id === 1
-                        ? "col-6"
+                        ? "col-3"
                         : item.hims_d_vitals_header_id >= 3
-                        ? "col-6 vitalTopFld15"
+                        ? "col-3 vitalTopFld15"
                         : item.hims_d_vitals_header_id === 5 ||
                           item.hims_d_vitals_header_id === 6
-                        ? "col-6 vitalTopFld20"
-                        : "col-6";
+                        ? "col-3 vitalTopFld20"
+                        : "col-3";
                     const _name = String(item.vitals_name)
                       .replace(/" "/g, "_")
                       .toLowerCase();
@@ -820,7 +820,7 @@ class NurseWorkbench extends Component {
                         {item.hims_d_vitals_header_id === 4 ? (
                           <React.Fragment>
                             <AlagehAutoComplete
-                              div={{ className: "col-6" }}
+                              div={{ className: "col-3" }}
                               label={{
                                 forceLabel: "Temp. From"
                               }}
@@ -840,7 +840,7 @@ class NurseWorkbench extends Component {
                           </React.Fragment>
                         ) : item.hims_d_vitals_header_id === 8 ? (
                           <AlagehAutoComplete
-                            div={{ className: "col-6" }}
+                            div={{ className: "col-3" }}
                             label={{
                               forceLabel: "BP (mmHg)",
                               fieldName: "BP_type"
@@ -896,7 +896,7 @@ class NurseWorkbench extends Component {
 
                         {item.hims_d_vitals_header_id === 4 ? (
                           <AlagehFormGroup
-                            div={{ className: "col-6" }}
+                            div={{ className: "col-3" }}
                             label={{
                               forceLabel: item.uom === "C" ? "°F" : "°C"
                             }}
@@ -916,7 +916,7 @@ class NurseWorkbench extends Component {
                   })}
 
                   <AlgaehDateHandler
-                    div={{ className: "col-6" }}
+                    div={{ className: "col-3" }}
                     label={{ forceLabel: "Recorded Date", isImp: true }}
                     textBox={{
                       className: "txt-fld",
@@ -932,7 +932,7 @@ class NurseWorkbench extends Component {
                   />
 
                   <AlagehFormGroup
-                    div={{ className: "col-6" }}
+                    div={{ className: "col-3" }}
                     label={{
                       isImp: true,
                       forceLabel: "Recorded Time"
@@ -950,20 +950,13 @@ class NurseWorkbench extends Component {
                     }}
                   />
                 </div>
-                {/* Vitals End */}
-
-                {/* ChiefComplaints Start */}
-                <div
-                  className="portlet portlet-bordered box-shadow-normal margin-bottom-15"
-                  data-validate="chf_cmpl_div"
-                >
-                  <div className="portlet-title">
-                    {/* <div className="caption">
-                      <h3 className="caption-subject">Chief Complaint</h3>
-                    </div> */}
+                <hr />
+                <h6>Enter Chief Complaints</h6>
+                <div className="row">
+                  <div className="col-8">
                     <div className="row">
                       <AlagehAutoComplete
-                        div={{ className: "col" }}
+                        div={{ className: "col-8" }}
                         label={{
                           forceLabel: "Chief Complaint",
                           isImp: false
@@ -982,7 +975,7 @@ class NurseWorkbench extends Component {
                       />
 
                       <AlagehAutoComplete
-                        div={{ className: "col" }}
+                        div={{ className: "col-4" }}
                         label={{
                           forceLabel: "Pain",
                           isImp: false
@@ -1000,7 +993,7 @@ class NurseWorkbench extends Component {
                         }}
                       />
                       <AlagehAutoComplete
-                        div={{ className: "col" }}
+                        div={{ className: "col-4" }}
                         label={{
                           forceLabel: "Severity",
                           isImp: false
@@ -1019,7 +1012,7 @@ class NurseWorkbench extends Component {
                       />
 
                       <AlgaehDateHandler
-                        div={{ className: "col" }}
+                        div={{ className: "col-4" }}
                         label={{ forceLabel: "Onset Date", isImp: false }}
                         textBox={{
                           className: "txt-fld",
@@ -1031,10 +1024,8 @@ class NurseWorkbench extends Component {
                         }}
                         value={this.state.onset_date}
                       />
-                    </div>
-                    <div className="row">
                       <AlagehFormGroup
-                        div={{ className: "col" }}
+                        div={{ className: "col-4" }}
                         label={{
                           isImp: false,
                           forceLabel: "Duration"
@@ -1054,7 +1045,7 @@ class NurseWorkbench extends Component {
                       />
 
                       <AlagehAutoComplete
-                        div={{ className: "col" }}
+                        div={{ className: "col-4" }}
                         label={{
                           forceLabel: "Interval",
                           isImp: false
@@ -1071,9 +1062,12 @@ class NurseWorkbench extends Component {
                           onChange: this.dropDownHandle.bind(this)
                         }}
                       />
-
+                    </div>
+                  </div>
+                  <div className="col-4">
+                    <div className="row">
                       <AlagehFormGroup
-                        div={{ className: "col" }}
+                        div={{ className: "col-12" }}
                         label={{
                           isImp: false,
                           forceLabel: "Comment"
@@ -1091,7 +1085,7 @@ class NurseWorkbench extends Component {
                           }
                         }}
                       />
-                      <div className="col margin-top-15">
+                      <div className="col-12 margin-top-15">
                         <button
                           className="btn btn-primary"
                           onClick={this.addChiefComplainToPatient.bind(this)}
@@ -1101,286 +1095,268 @@ class NurseWorkbench extends Component {
                       </div>
                     </div>
                   </div>
-                  <div className="portlet-body">
-                    <div id="hpi-grid-cntr">
-                      <AlgaehDataGrid
-                        id="complaint-grid"
-                        columns={[
-                          {
-                            fieldName: "chief_complaint_name",
-                            label: (
-                              <AlgaehLabel
-                                label={{ fieldName: "complaint_name" }}
-                              />
-                            ),
-                            disabled: true,
-                            others: {
-                              style: { textAlign: "center" },
-                              fixed: "left"
-                            }
-                          },
-                          {
-                            fieldName: "pain",
-                            label: (
-                              <AlgaehLabel label={{ fieldName: "pain" }} />
-                            ),
-                            displayTemplate: data => {
-                              return (
-                                <span>
-                                  {data.pain === "NH" ? (
-                                    <span>No Hurt</span>
-                                  ) : data.severity === "HLB" ? (
-                                    <span>Hurts Little Bit</span>
-                                  ) : data.severity === "HLM" ? (
-                                    <span>Hurts Little More</span>
-                                  ) : data.severity === "HEM" ? (
-                                    <span>Hurts Even More</span>
-                                  ) : data.severity === "HWL" ? (
-                                    <span>Hurts Whole Lot</span>
-                                  ) : (
-                                    <span>Hurts Worst</span>
-                                  )}
-                                </span>
-                              );
-                            },
-                            editorTemplate: row => {
-                              return (
-                                <AlagehAutoComplete
-                                  selector={{
-                                    name: "pain",
-                                    className: "select-fld",
-                                    value: row.pain,
-                                    dataSource: {
-                                      textField: "name",
-                                      valueField: "value",
-                                      data: GlobalVariables.PAIN_SCALE
-                                    },
-                                    onChange: this.gridLevelUpdate.bind(
-                                      this,
-                                      row
-                                    )
-                                  }}
-                                />
-                              );
-                            }
-                          },
-                          {
-                            fieldName: "severity",
-                            label: (
-                              <AlgaehLabel label={{ fieldName: "severity" }} />
-                            ),
-                            displayTemplate: data => {
-                              const _serv = Enumerable.from(
-                                GlobalVariables.PAIN_SEVERITY
-                              )
-                                .where(w => w.value === data.severity)
-                                .firstOrDefault().name;
-                              return (
-                                <span>{_serv !== undefined ? _serv : ""}</span>
-                              );
-                            },
-                            editorTemplate: row => {
-                              return (
-                                <AlagehAutoComplete
-                                  selector={{
-                                    name: "severity",
-                                    className: "select-fld",
-                                    value: row.severity,
-                                    dataSource: {
-                                      textField: "name",
-                                      valueField: "value",
-                                      data: GlobalVariables.PAIN_SEVERITY
-                                    },
-                                    onChange: this.gridLevelUpdate.bind(
-                                      this,
-                                      row
-                                    )
-                                  }}
-                                />
-                              );
-                            }
-                          },
-                          {
-                            fieldName: "onset_date",
-                            label: (
-                              <AlgaehLabel
-                                label={{ fieldName: "onset_date" }}
-                              />
-                            ),
-                            displayTemplate: data => {
-                              return new Date(
-                                data.onset_date
-                              ).toLocaleDateString();
-                            },
-                            editorTemplate: row => {
-                              return (
-                                <AlgaehDateHandler
-                                  textBox={{
-                                    className: "txt-fld",
-                                    name: "onset_date"
-                                  }}
-                                  maxDate={new Date()}
-                                  events={{
-                                    onChange: this.gridLevelUpdate.bind(
-                                      this,
-                                      row
-                                    )
-                                  }}
-                                  singleOutput={true}
-                                  value={row.onset_date}
-                                />
-                              );
-                            }
-                          },
-                          {
-                            fieldName: "duration",
-                            label: (
-                              <AlgaehLabel label={{ fieldName: "duration" }} />
-                            ),
-                            editorTemplate: row => {
-                              return (
-                                <AlagehFormGroup
-                                  textBox={{
-                                    className: "txt-fld",
-                                    name: "duration",
-                                    number: true,
-                                    value: row.duration,
-                                    events: {
-                                      onChange: this.gridLevelUpdate.bind(
-                                        this,
-                                        row
-                                      )
-                                    },
-                                    others: {
-                                      min: 0
-                                    }
-                                  }}
-                                />
-                              );
-                            }
-                          },
-                          {
-                            fieldName: "interval",
-                            label: (
-                              <AlgaehLabel label={{ fieldName: "interval" }} />
-                            ),
-                            displayTemplate: data => {
-                              return Enumerable.from(
-                                GlobalVariables.PAIN_DURATION
-                              )
-                                .where(w => w.value === data.interval)
-                                .firstOrDefault().name;
-                            },
+                </div>
+                {/* Vitals End */}
+                <hr />
 
-                            editorTemplate: row => {
-                              return (
-                                <AlagehAutoComplete
-                                  selector={{
-                                    name: "interval",
-                                    className: "select-fld",
-                                    value: row.interval,
-                                    dataSource: {
-                                      textField: "name",
-                                      valueField: "value",
-                                      data: GlobalVariables.PAIN_DURATION
-                                    },
+                {/* Chief Complaint First*/}
+                <div className="row">
+                  <div className="col-12" id="hpi-grid-cntr">
+                    <AlgaehDataGrid
+                      id="complaint-grid"
+                      columns={[
+                        {
+                          fieldName: "chief_complaint_name",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "complaint_name" }}
+                            />
+                          ),
+                          disabled: true,
+                          others: {
+                            style: { textAlign: "center" },
+                            fixed: "left"
+                          }
+                        },
+                        {
+                          fieldName: "pain",
+                          label: <AlgaehLabel label={{ fieldName: "pain" }} />,
+                          displayTemplate: data => {
+                            return (
+                              <span>
+                                {data.pain === "NH" ? (
+                                  <span>No Hurt</span>
+                                ) : data.severity === "HLB" ? (
+                                  <span>Hurts Little Bit</span>
+                                ) : data.severity === "HLM" ? (
+                                  <span>Hurts Little More</span>
+                                ) : data.severity === "HEM" ? (
+                                  <span>Hurts Even More</span>
+                                ) : data.severity === "HWL" ? (
+                                  <span>Hurts Whole Lot</span>
+                                ) : (
+                                  <span>Hurts Worst</span>
+                                )}
+                              </span>
+                            );
+                          },
+                          editorTemplate: row => {
+                            return (
+                              <AlagehAutoComplete
+                                selector={{
+                                  name: "pain",
+                                  className: "select-fld",
+                                  value: row.pain,
+                                  dataSource: {
+                                    textField: "name",
+                                    valueField: "value",
+                                    data: GlobalVariables.PAIN_SCALE
+                                  },
+                                  onChange: this.gridLevelUpdate.bind(this, row)
+                                }}
+                              />
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "severity",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "severity" }} />
+                          ),
+                          displayTemplate: data => {
+                            const _serv = Enumerable.from(
+                              GlobalVariables.PAIN_SEVERITY
+                            )
+                              .where(w => w.value === data.severity)
+                              .firstOrDefault().name;
+                            return (
+                              <span>{_serv !== undefined ? _serv : ""}</span>
+                            );
+                          },
+                          editorTemplate: row => {
+                            return (
+                              <AlagehAutoComplete
+                                selector={{
+                                  name: "severity",
+                                  className: "select-fld",
+                                  value: row.severity,
+                                  dataSource: {
+                                    textField: "name",
+                                    valueField: "value",
+                                    data: GlobalVariables.PAIN_SEVERITY
+                                  },
+                                  onChange: this.gridLevelUpdate.bind(this, row)
+                                }}
+                              />
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "onset_date",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "onset_date" }} />
+                          ),
+                          displayTemplate: data => {
+                            return new Date(
+                              data.onset_date
+                            ).toLocaleDateString();
+                          },
+                          editorTemplate: row => {
+                            return (
+                              <AlgaehDateHandler
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "onset_date"
+                                }}
+                                maxDate={new Date()}
+                                events={{
+                                  onChange: this.gridLevelUpdate.bind(this, row)
+                                }}
+                                singleOutput={true}
+                                value={row.onset_date}
+                              />
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "duration",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "duration" }} />
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "duration",
+                                  number: true,
+                                  value: row.duration,
+                                  events: {
                                     onChange: this.gridLevelUpdate.bind(
                                       this,
                                       row
                                     )
-                                  }}
-                                />
-                              );
-                            }
-                          },
-                          {
-                            fieldName: "comment",
-                            label: "Comments",
-                            displayTemplate: row => {
-                              return <span>{row.comment}</span>;
-                            },
-                            editorTemplate: row => {
-                              return (
-                                <AlagehFormGroup
-                                  textBox={{
-                                    name: "comment",
-                                    others: {
-                                      multiline: true,
-                                      rows: "4"
-                                    },
-                                    value: row.comment,
-                                    events: {
-                                      onChange: this.gridLevelUpdate.bind(
-                                        this,
-                                        row
-                                      )
-                                    }
-                                  }}
-                                />
-                              );
-                            }
+                                  },
+                                  others: {
+                                    min: 0
+                                  }
+                                }}
+                              />
+                            );
                           }
-                        ]}
-                        noDataText="No Chief Complaints Recorded"
-                        keyId="patient_id"
-                        dataSource={{
-                          data: this.state.patChiefComp
-                        }}
-                        isEditable={true}
-                        paging={{ page: 0, rowsPerPage: 10 }}
-                        events={{
-                          onEdit: () => {},
-                          onDelete: this.onChiefComplaintRowDelete.bind(this),
-                          onDone: this.onChiefComplaintRowDone.bind(this)
-                        }}
-                      />
-                    </div>
+                        },
+                        {
+                          fieldName: "interval",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "interval" }} />
+                          ),
+                          displayTemplate: data => {
+                            return Enumerable.from(
+                              GlobalVariables.PAIN_DURATION
+                            )
+                              .where(w => w.value === data.interval)
+                              .firstOrDefault().name;
+                          },
+
+                          editorTemplate: row => {
+                            return (
+                              <AlagehAutoComplete
+                                selector={{
+                                  name: "interval",
+                                  className: "select-fld",
+                                  value: row.interval,
+                                  dataSource: {
+                                    textField: "name",
+                                    valueField: "value",
+                                    data: GlobalVariables.PAIN_DURATION
+                                  },
+                                  onChange: this.gridLevelUpdate.bind(this, row)
+                                }}
+                              />
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "comment",
+                          label: "Comments",
+                          displayTemplate: row => {
+                            return <span>{row.comment}</span>;
+                          },
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                textBox={{
+                                  name: "comment",
+                                  others: {
+                                    multiline: true,
+                                    rows: "4"
+                                  },
+                                  value: row.comment,
+                                  events: {
+                                    onChange: this.gridLevelUpdate.bind(
+                                      this,
+                                      row
+                                    )
+                                  }
+                                }}
+                              />
+                            );
+                          }
+                        }
+                      ]}
+                      noDataText="No Chief Complaints Recorded"
+                      keyId="patient_id"
+                      dataSource={{
+                        data: this.state.patChiefComp
+                      }}
+                      isEditable={true}
+                      paging={{ page: 0, rowsPerPage: 10 }}
+                      events={{
+                        onEdit: () => {},
+                        onDelete: this.onChiefComplaintRowDelete.bind(this),
+                        onDone: this.onChiefComplaintRowDone.bind(this)
+                      }}
+                    />
                   </div>
                 </div>
-
                 {/* Chief Complaint End */}
 
                 {/* Notes Start */}
-                <div className="portlet portlet-bordered box-shadow-normal margin-top-15">
-                  <div className="portlet-title">
-                    <div className="caption">
-                      <h3 className="caption-subject">Nurse Notes</h3>
-                    </div>
-                  </div>
-
-                  <div className="portlet-body">
-                    <div className="row">
-                      <AlagehFormGroup
-                        div={{ className: "col-lg-12" }}
-                        label={{
-                          forceLabel: "",
-                          isImp: false
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "nurse_notes",
-                          value: this.state.nurse_notes,
-                          others: {
-                            multiline: true,
-                            rows: "6"
-                          },
-                          events: {
-                            onChange: this.texthandle.bind(this)
-                          }
-                        }}
-                      />
-                    </div>
-                  </div>
+                <hr />
+                <h6>Enter Nurse Notes</h6>
+                <div className="row">
+                  <AlagehFormGroup
+                    div={{ className: "col-lg-12" }}
+                    label={{
+                      forceLabel: "",
+                      isImp: false
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "nurse_notes",
+                      value: this.state.nurse_notes,
+                      others: {
+                        multiline: true,
+                        rows: "6"
+                      },
+                      events: {
+                        onChange: this.texthandle.bind(this)
+                      }
+                    }}
+                  />
                 </div>
                 {/* Notes End */}
 
-                <div style={{ float: "right" }}>
-                  <button
-                    onClick={this.savePatientExamn.bind(this)}
-                    className="btn btn-primary"
-                  >
-                    SAVE
-                  </button>
+                <div className="row">
+                  <div className="col-12">
+                    <button
+                      style={{ float: "right" }}
+                      onClick={this.savePatientExamn.bind(this)}
+                      className="btn btn-primary"
+                    >
+                      SAVE
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
