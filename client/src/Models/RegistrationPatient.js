@@ -1,7 +1,7 @@
 export default {
   inputParam: function(param) {
     var output;
-    var CurrentDate = new Date();
+    const CurrentDate = new Date();
     output = {
       hims_d_patient_id: null,
       patient_code: "",

@@ -1,83 +1,96 @@
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import Enumerable from "linq";
+import { SetBulkState } from "../../../../utils/GlobalFunctions";
 
 const DeptselectedHandeler = ($this, context, e) => {
+  debugger;
   let dept = Enumerable.from($this.props.deptanddoctors.departmets)
     .where(w => w.sub_department_id === e.value)
     .firstOrDefault();
 
-  $this.setState({
-    [e.name]: e.value,
-    department_id: e.selected.department_id,
-    doctors: dept.doctors
-  });
+  $this.setState(
+    {
+      [e.name]: e.value,
+      department_id: e.selected.department_id,
+      doctors: dept.doctors
+    },
+    () => {
+      debugger;
+    }
+  );
   if (context != null) {
     context.updateState({
       [e.name]: e.value,
-      department_id: e.selected.department_id
+      department_id: e.selected.department_id,
+      doctors: dept.doctors
     });
   }
 };
 
 const selectedHandeler = ($this, context, e) => {
   //debugger;
-  if (
-    $this.state.full_name !== "" &&
-    $this.state.title_id !== null &&
-    $this.state.arabic_name !== "" &&
-    $this.state.gender !== null &&
-    $this.state.date_of_birth !== null &&
-    $this.state.age !== 0 &&
-    ($this.state.contact_number !== null ||
-      $this.state.contact_number !== "") &&
-    $this.state.patient_type !== null &&
-    $this.state.nationality_id !== null &&
-    $this.state.country_id !== null &&
-    $this.state.primary_identity_id !== null &&
-    $this.state.primary_id_no !== ""
-  ) {
-    $this.props.getDepartmentsandDoctors({
-      uri: "/department/get/get_All_Doctors_DepartmentWise",
-      method: "GET",
-      redux: {
-        type: "DEPT_DOCTOR_GET_DATA",
-        mappingName: "deptanddoctors"
-      },
-      afterSuccess: data => {
-        $this.setState({
-          [e.name]: e.value,
-          visittypeselect: false
-        });
-
-        if (context != null) {
-          context.updateState({
+  SetBulkState({
+    state: $this,
+    callback: () => {
+      debugger;
+      if (
+        $this.state.full_name !== "" &&
+        ($this.state.title_id !== null && $this.state.title_id !== "") &&
+        $this.state.arabic_name !== "" &&
+        ($this.state.gender !== null && $this.state.gender !== "") &&
+        ($this.state.date_of_birth !== null &&
+          $this.state.date_of_birth !== "") &&
+        $this.state.age !== 0 &&
+        ($this.state.contact_number !== null &&
+          $this.state.contact_number !== "") &&
+        ($this.state.patient_type !== null &&
+          $this.state.patient_type !== "") &&
+        ($this.state.nationality_id !== null &&
+          $this.state.nationality_id !== "") &&
+        ($this.state.country_id !== null && $this.state.country_id !== "") &&
+        ($this.state.primary_identity_id !== null &&
+          $this.state.primary_identity_id !== "") &&
+        ($this.state.primary_id_no !== "" && $this.state.primary_id_no !== null)
+      ) {
+        $this.setState(
+          {
             [e.name]: e.value,
-            consultation: e.selected.consultation,
-            visittypeselect: false
-          });
-        }
-      }
-    });
-  } else {
-    $this.setState({
-      [e.name]: null
-    });
-    swalMessage({
-      title: "Invalid Input. Please fill Patient demographic details",
-      type: "warning"
-    });
-  }
-};
+            visittypeselect: false,
+            consultation: e.selected.consultation
+          },
+          () => {
+            if (context != null) {
+              context.updateState({
+                ...$this.state
+              });
+            }
 
-const unsuccessfulSignIn = (message, title) => {
-  swalMessage({
-    title: message,
-    type: "error"
+            $this.props.getDepartmentsandDoctors({
+              uri: "/department/get/get_All_Doctors_DepartmentWise",
+              method: "GET",
+              redux: {
+                type: "DEPT_DOCTOR_GET_DATA",
+                mappingName: "deptanddoctors"
+              }
+            });
+          }
+        );
+      } else {
+        $this.setState({
+          [e.name]: null
+        });
+        swalMessage({
+          title: "Invalid Input. Please fill Patient demographic details",
+          type: "warning"
+        });
+      }
+    }
   });
 };
 
 const doctorselectedHandeler = ($this, context, e) => {
+  debugger;
   if ($this.state.sub_department_id !== null) {
     let employee_list = Enumerable.from($this.props.providers)
       .where(w => w.hims_d_employee_id === e.value)
@@ -125,7 +138,10 @@ const doctorselectedHandeler = ($this, context, e) => {
                   [e.name]: null
                 },
                 () => {
-                  unsuccessfulSignIn(response.data.message, "Warning");
+                  swalMessage({
+                    title: response.data.message,
+                    type: "warning"
+                  });
                 }
               );
             }
@@ -208,6 +224,7 @@ const generateBillDetails = ($this, context) => {
   ];
   AlgaehLoader({ show: true });
 
+  debugger;
   algaehApiCall({
     uri: "/billing/getBillDetails",
     method: "POST",
@@ -248,41 +265,6 @@ const generateBillDetails = ($this, context) => {
       });
     }
   });
-  // $this.props.generateBill({
-  //   uri: "/billing/getBillDetails",
-  //   method: "POST",
-  //   data: serviceInput,
-  //   redux: {
-  //     type: "BILL_GEN_GET_DATA",
-  //     mappingName: "xxx"
-  //   },
-  //   afterSuccess: data => {
-  //     if (context != null) {
-  //       context.updateState({ ...data });
-  //     }
-
-  //     $this.props.billingCalculations({
-  //       uri: "/billing/billingCalculations",
-  //       method: "POST",
-  //       data: data,
-  //       redux: {
-  //         type: "BILL_HEADER_GEN_GET_DATA",
-  //         mappingName: "genbill"
-  //       },
-  //       afterSuccess: data => {
-  //         if (context != null) {
-  //           context.updateState({ ...data });
-  //         }
-  //         AlgaehLoader({ show: false });
-  //       }
-  //     });
-  //   }
-  // });
 };
 
-export {
-  DeptselectedHandeler,
-  selectedHandeler,
-  doctorselectedHandeler,
-  unsuccessfulSignIn
-};
+export { DeptselectedHandeler, selectedHandeler, doctorselectedHandeler };

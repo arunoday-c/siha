@@ -15,16 +15,16 @@ const getPatientProfile = $this => {
       mappingName: "patient_profile"
     },
     afterSuccess: data => {
-      displayFileFromServer({
-        uri: "/masters/getFile",
-        fileType: data[0].patient_code,
-        destinationName: data[0].patient_code,
-        fileName: data[0].patient_code,
-        resize: { width: 100, height: 100 },
-        onFileSuccess: data => {
-          $this.setState({ patImg: data });
-        }
-      });
+      // displayFileFromServer({
+      //   uri: "/masters/getFile",
+      //   fileType: data[0].patient_code,
+      //   destinationName: data[0].patient_code,
+      //   fileName: data[0].patient_code,
+      //   resize: { width: 100, height: 100 },
+      //   onFileSuccess: data => {
+      //     $this.setState({ patImg: data });
+      //   }
+      // });
     }
   });
 };
@@ -112,7 +112,6 @@ const getPatientDiagnosis = ($this, isProcess) => {
       mappingName: "patient_diagnosis"
     },
     afterSuccess: data => {
-      
       if (isProcess) {
         // let finalICDS = Enumerable.from(data)
         // .where(w => w.final_daignosis === "Y")

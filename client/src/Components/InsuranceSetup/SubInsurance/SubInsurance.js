@@ -105,7 +105,7 @@ class SubInsurance extends PureComponent {
                       className: "txt-fld",
                       name: "insurance_sub_code",
                       events: {
-                        onChange: texthandle.bind(this, this, context)
+                        onChange: texthandle.bind(this, this)
                       },
                       others: {
                         "data-subdata": true
@@ -125,7 +125,7 @@ class SubInsurance extends PureComponent {
                       name: "insurance_sub_name",
 
                       events: {
-                        onChange: texthandle.bind(this, this, context)
+                        onChange: texthandle.bind(this, this)
                       },
                       others: {
                         "data-subdata": true
@@ -145,7 +145,7 @@ class SubInsurance extends PureComponent {
                       name: "arabic_sub_name",
 
                       events: {
-                        onChange: texthandle.bind(this, this, context)
+                        onChange: texthandle.bind(this, this)
                       }
                     }}
                   />
@@ -162,7 +162,7 @@ class SubInsurance extends PureComponent {
                       name: "transaction_number",
 
                       events: {
-                        onChange: texthandle.bind(this, this, context)
+                        onChange: texthandle.bind(this, this)
                       },
                       others: {
                         "data-subdata": true
@@ -182,7 +182,7 @@ class SubInsurance extends PureComponent {
                       name: "card_format",
 
                       events: {
-                        onChange: texthandle.bind(this, this, context)
+                        onChange: texthandle.bind(this, this)
                       },
                       others: {
                         "data-subdata": true
@@ -233,7 +233,7 @@ class SubInsurance extends PureComponent {
                     <button
                       className="btn btn-primary"
                       style={{ marginTop: 21 }}
-                      onClick={saveSubInsurance.bind(this, this, context)}
+                      onClick={saveSubInsurance.bind(this, this)}
                     >
                       Add
                     </button>

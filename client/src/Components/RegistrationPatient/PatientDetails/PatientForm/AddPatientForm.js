@@ -146,39 +146,29 @@ class AddPatientForm extends PureComponent {
 
   componentWillReceiveProps(nextProps) {
     this.setState(nextProps.PatRegIOputs, () => {
+      debugger;
       if (this.state.country_id === null) return;
       if (this.state.country_id !== nextProps.country_id) {
         let country = Enumerable.from(this.props.countries)
           .where(w => w.hims_d_country_id === this.state.country_id)
           .firstOrDefault();
         let states = country !== undefined ? country.states : [];
-
-        if (this.props.countries !== undefined) {
+        if (this.props.countries !== undefined && states.length !== 0) {
           if (nextProps.state_id !== this.state.state_id) {
             let cities = Enumerable.from(states)
               .where(w => w.hims_d_state_id === this.state.state_id)
               .firstOrDefault();
-
-            this.props.getStates({
-              redux: {
-                data: states,
-                type: "STATE_GET_DATA",
-                mappingName: "countrystates"
-              },
-              afterSuccess: callback => {
-                this.setState({
-                  state_id: this.state.state_id
-                });
-              }
-            });
-
             if (cities !== undefined) {
-              this.props.getCities({
-                redux: {
-                  data: cities.cities,
-                  type: "CITY_GET_DATA",
-                  mappingName: "cities"
-                }
+              this.setState({
+                countrystates: states,
+                cities: cities.cities,
+                state_id: this.state.state_id,
+                city_id: this.state.city_id
+              });
+            } else {
+              this.setState({
+                countrystates: states,
+                state_id: this.state.state_id
               });
             }
           }
@@ -226,8 +216,8 @@ class AddPatientForm extends PureComponent {
                             valueField: "his_d_title_id",
                             data: this.props.titles
                           },
-                          onChange: titlehandle.bind(this, this, context),
-                          onClear: titlehandle.bind(this, this, context),
+                          onChange: titlehandle.bind(this, this),
+                          onClear: titlehandle.bind(this, this),
                           others: {
                             disabled: this.state.existingPatient,
                             tabIndex: "1"
@@ -245,11 +235,12 @@ class AddPatientForm extends PureComponent {
                           className: "txt-fld",
                           name: "full_name",
                           value: this.state.full_name,
-                          events: {
-                            onChange: texthandle.bind(this, this, context)
-                          },
+                          // events: {
+                          //   onChange: texthandle.bind(this, this, context)
+                          // },
                           others: {
                             disabled: this.state.existingPatient,
+                            onBlur: texthandle.bind(this, this),
                             tabIndex: "2",
                             placeholder: "Enter Full Name"
                           }
@@ -268,11 +259,12 @@ class AddPatientForm extends PureComponent {
                           className: "txt-fld",
                           name: "arabic_name",
                           value: this.state.arabic_name,
-                          events: {
-                            onChange: texthandle.bind(this, this, context)
-                          },
+                          // events: {
+                          //   onChange: texthandle.bind(this, this, context)
+                          // },
                           others: {
                             disabled: this.state.existingPatient,
+                            onBlur: texthandle.bind(this, this),
                             tabIndex: "3",
                             placeholder: "أدخل الاسم العربي"
                           }
@@ -297,9 +289,10 @@ class AddPatientForm extends PureComponent {
                             valueField: "value",
                             data: variableJson.FORMAT_GENDER
                           },
-                          onChange: texthandle.bind(this, this, context),
+                          onChange: texthandle.bind(this, this),
                           others: {
                             disabled: this.state.existingPatient,
+
                             tabIndex: "4"
                           }
                         }}
@@ -309,10 +302,13 @@ class AddPatientForm extends PureComponent {
                       <AlgaehDateHandler
                         div={{ className: "col-lg-3 mandatory", tabIndex: "5" }}
                         label={{ fieldName: "date_of_birth", isImp: true }}
-                        textBox={{ className: "txt-fld" }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "date_of_birth"
+                        }}
                         maxDate={new Date()}
                         events={{
-                          onChange: calculateAge.bind(this, this, context)
+                          onChange: calculateAge.bind(this, this)
                         }}
                         disabled={this.state.existingPatient}
                         value={
@@ -350,7 +346,7 @@ class AddPatientForm extends PureComponent {
                             thousandSeparator: ","
                           },
                           events: {
-                            onChange: setAge.bind(this, this, context)
+                            onChange: setAge.bind(this, this)
                           },
                           others: {
                             disabled: this.state.existingPatient,
@@ -380,7 +376,7 @@ class AddPatientForm extends PureComponent {
                             thousandSeparator: ","
                           },
                           events: {
-                            onChange: setAge.bind(this, this, context)
+                            onChange: setAge.bind(this, this)
                           },
                           others: {
                             disabled: this.state.existingPatient,
@@ -410,7 +406,7 @@ class AddPatientForm extends PureComponent {
                             thousandSeparator: ","
                           },
                           events: {
-                            onChange: setAge.bind(this, this, context)
+                            onChange: setAge.bind(this, this)
                           },
                           others: {
                             disabled: this.state.existingPatient,
@@ -431,11 +427,12 @@ class AddPatientForm extends PureComponent {
                           className: "txt-fld",
                           name: "contact_number",
 
-                          events: {
-                            onChange: texthandle.bind(this, this, context)
-                          },
+                          // events: {
+                          //   onChange: texthandle.bind(this, this, context)
+                          // },
                           others: {
                             disabled: this.state.existingPatient,
+                            onBlur: texthandle.bind(this, this),
                             tabIndex: "11",
                             placeholder: "(+01)123-456-7890",
                             type: "number"
@@ -463,7 +460,7 @@ class AddPatientForm extends PureComponent {
                             valueField: "hims_d_patient_type_id",
                             data: this.props.patienttype
                           },
-                          onChange: texthandle.bind(this, this, context),
+                          onChange: texthandle.bind(this, this),
                           others: {
                             disabled: this.state.existingPatient,
                             tabIndex: "12"
@@ -514,11 +511,7 @@ class AddPatientForm extends PureComponent {
                             valueField: "hims_d_country_id",
                             data: this.props.countries
                           },
-                          onChange: countryStatehandle.bind(
-                            this,
-                            this,
-                            context
-                          ),
+                          onChange: countryStatehandle.bind(this, this),
                           others: {
                             disabled: this.state.existingPatient,
                             tabIndex: "14"
@@ -541,13 +534,9 @@ class AddPatientForm extends PureComponent {
                                 ? "state_name"
                                 : "arabic_state_name",
                             valueField: "hims_d_state_id",
-                            data: this.props.countrystates
+                            data: this.state.countrystates
                           },
-                          onChange: countryStatehandle.bind(
-                            this,
-                            this,
-                            context
-                          ),
+                          onChange: countryStatehandle.bind(this, this),
                           others: {
                             disabled: this.state.existingPatient
                           }
@@ -572,9 +561,9 @@ class AddPatientForm extends PureComponent {
                                 ? "city_name"
                                 : "city_arabic_name",
                             valueField: "hims_d_city_id",
-                            data: this.props.cities
+                            data: this.state.cities
                           },
-                          onChange: texthandle.bind(this, this, context),
+                          onChange: texthandle.bind(this, this),
                           others: {
                             disabled: this.state.existingPatient
                           }
@@ -589,11 +578,12 @@ class AddPatientForm extends PureComponent {
                           className: "txt-fld",
                           name: "address1",
                           value: this.state.address1,
-                          events: {
-                            onChange: texthandle.bind(this, this, context)
-                          },
+                          // events: {
+                          //   onChange: texthandle.bind(this, this, context)
+                          // },
                           others: {
                             disabled: this.state.existingPatient,
+                            onBlur: texthandle.bind(this, this),
                             placeholder: "Enter Full Address 1"
                           }
                         }}
@@ -616,7 +606,7 @@ class AddPatientForm extends PureComponent {
                             valueField: "hims_d_visa_type_id",
                             data: this.props.visatypes
                           },
-                          onChange: texthandle.bind(this, this, context),
+                          onChange: texthandle.bind(this, this),
                           others: {
                             disabled: this.state.existingPatient
                           }
@@ -644,7 +634,7 @@ class AddPatientForm extends PureComponent {
                             valueField: "hims_d_identity_document_id",
                             data: this.props.idtypes
                           },
-                          onChange: texthandle.bind(this, this, context),
+                          onChange: texthandle.bind(this, this),
                           others: {
                             disabled: this.state.existingPatient,
                             tabIndex: "14"
@@ -662,11 +652,12 @@ class AddPatientForm extends PureComponent {
                           className: "txt-fld",
                           name: "primary_id_no",
                           value: this.state.primary_id_no,
-                          events: {
-                            onChange: texthandle.bind(this, this, context)
-                          },
+                          // events: {
+                          //   onChange: texthandle.bind(this, this, context)
+                          // },
                           others: {
                             disabled: this.state.existingPatient,
+                            onBlur: texthandle.bind(this, this),
                             tabIndex: "15",
                             placeholder: "Enter ID Number"
                           }
@@ -680,12 +671,7 @@ class AddPatientForm extends PureComponent {
                       <div className="col-lg-5">
                         <div className="image-drop-area">
                           <Dropzone
-                            onDrop={onDrop.bind(
-                              this,
-                              this,
-                              "filePreview",
-                              context
-                            )}
+                            onDrop={onDrop.bind(this, this, "filePreview")}
                             id="attach-width"
                             className="dropzone"
                             accept="image/*"
@@ -767,7 +753,7 @@ class AddPatientForm extends PureComponent {
                             valueField: "value",
                             data: variableJson.FORMAT_MARTIALSTS
                           },
-                          onChange: texthandle.bind(this, this, context),
+                          onChange: texthandle.bind(this, this),
                           others: {
                             disabled: this.state.existingPatient
                           }
@@ -792,7 +778,7 @@ class AddPatientForm extends PureComponent {
                             valueField: "hims_d_religion_id",
                             data: this.props.relegions
                           },
-                          onChange: texthandle.bind(this, this, context),
+                          onChange: texthandle.bind(this, this),
                           others: {
                             disabled: this.state.existingPatient
                           }

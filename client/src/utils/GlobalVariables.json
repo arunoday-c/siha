@@ -484,5 +484,10 @@
     { "name": "Stock Item", "value": "STK" },
     { "name": "Non Stock Item", "value": "NSK" },
     { "name": "Asset Item", "value": "AST" }
+  ],
+  "SHIFT_STATUS": [
+    { "name": "Open", "value": "O" },
+    { "name": "Closed", "value": "C" },
+    { "name": "Authorized", "value": "A" }
   ]
 }

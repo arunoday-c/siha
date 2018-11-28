@@ -156,7 +156,7 @@ export function displayFileFromServer(options) {
         }
       }
     },
-    onFailure: () => { }
+    onFailure: () => {}
   });
 }
 
@@ -187,7 +187,7 @@ const loadJSON = (file, callback) => {
   var xobj = new XMLHttpRequest();
   xobj.overrideMimeType("application/json");
   xobj.open("GET", file, true);
-  xobj.onreadystatechange = function () {
+  xobj.onreadystatechange = function() {
     if (xobj.readyState === 4 && xobj.status === 200) {
       callback(JSON.parse(xobj.responseText));
     }
@@ -252,27 +252,26 @@ export function AlgaehValidation(options) {
             _lable = _Validateerror[i].previousSibling;
           }
         } else {
-          if (_Validateerror[i].parentElement
-            .previousElementSibling.tagName === "LABEL") {
-            _lable =
-              _Validateerror[i].parentElement
-                .previousElementSibling;
+          if (
+            _Validateerror[i].parentElement.previousElementSibling.tagName ===
+            "LABEL"
+          ) {
+            _lable = _Validateerror[i].parentElement.previousElementSibling;
           } else {
             _lable =
               _Validateerror[i].parentElement.parentElement
                 .previousElementSibling;
           }
-
         }
 
         _title =
           _langua === "en"
             ? _lable.innerText
-              .replace("*", "")
-              .toLowerCase()
-              .replace(/^\w/, c => {
-                return c.toUpperCase();
-              }) + "-cannot be blank"
+                .replace("*", "")
+                .toLowerCase()
+                .replace(/^\w/, c => {
+                  return c.toUpperCase();
+                }) + "-cannot be blank"
             : _lable.innerText.replace("*", "") + "- لا يمكن أن يكون فارغا";
       }
       swalMessage({
@@ -346,8 +345,13 @@ export function SetBulkState(options) {
 
         if (_name !== null) {
           const _type = _allControls[i].getAttribute("type");
-          if (_type === "checkbox" || _type === "radio") {
+          if (_type === "checkbox") {
             _objectCreation[_name] = _allControls[i].checked ? "Y" : "N";
+          } else if (_type === "checkbox" || _type === "radio") {
+            debugger;
+            _objectCreation[_name] = _allControls[i].checked
+              ? _allControls[i].value
+              : "N";
           } else {
             _objectCreation[_name] =
               _dataRole !== null
@@ -357,17 +361,18 @@ export function SetBulkState(options) {
         }
       }
     }
-    debugger;
+
     if (options.state !== undefined) {
       const _object = { ...options.state.state, ..._objectCreation };
       options.state.setState(_object, () => {
-        debugger;
         if (
           options.callback !== undefined &&
           typeof options.callback === "function"
         )
           options.callback();
       });
+    } else {
+      return _objectCreation;
     }
   }
 }
