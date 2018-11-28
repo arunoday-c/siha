@@ -5,7 +5,6 @@ import { AlgaehLabel, AlagehFormGroup } from "../Wrapper/algaehWrapper";
 import Enumerable from "linq";
 import algaehLoader from "../Wrapper/fullPageLoader";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
-import Vitals from "../PatientProfile/Vitals/Vitals";
 import {
   AlagehAutoComplete,
   AlgaehDataGrid,
@@ -16,14 +15,15 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../actions/algaehActions";
 import GlobalVariables from "../../utils/GlobalVariables.json";
+import { AlgaehValidation } from "../../utils/GlobalFunctions";
 import config from "../../utils/config.json";
 import {
   getAllChiefComplaints,
-  getPatientChiefComplaints,
   getDepartmentVitals,
   temperatureConvertion,
   getFormula
 } from "./NurseWorkbenchEvents";
+import swal from "sweetalert2";
 
 class NurseWorkbench extends Component {
   constructor(props) {
@@ -42,6 +42,8 @@ class NurseWorkbench extends Component {
       recorded_time: moment().format(config.formators.time)
     };
 
+    this.baseState = this.state;
+
     this.loadListofData = this.loadListofData.bind(this);
 
     if (
@@ -54,8 +56,92 @@ class NurseWorkbench extends Component {
     this.getDoctorsAndDepts();
   }
 
+  resetSaveState() {
+    this.setState({
+      patChiefComp: [],
+      nurse_notes: null,
+      episode_id: null,
+      patient_id: null,
+      patient_name: null,
+      hims_d_hpi_header_id: null,
+      onset_date: null,
+      duration: null,
+      interval: null,
+      severity: null,
+      score: null,
+      pain: null,
+      comment: null,
+      chief_complaint_name: null
+    });
+
+    const _resetElements = document.getElementById("vitals_recording");
+    const _childs = _resetElements.querySelectorAll("[type='number']");
+    for (let i = 0; i < _childs.length; i++) {
+      let _name = _childs[i].name;
+      this.setState({
+        [_name]: ""
+      });
+    }
+  }
+
   savePatientExamn() {
-    console.log("Save State:", this.state);
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      onSuccess: () => {
+        let send_data = {};
+
+        let bodyArray = [];
+        const _elements = document.querySelectorAll("[vitalid]");
+
+        for (let i = 0; i < _elements.length; i++) {
+          if (_elements[i].value !== "") {
+            const _isDepended = _elements[i].getAttribute("dependent");
+            bodyArray.push({
+              patient_id: this.state.patient_id,
+              visit_id: this.state.visit_id,
+              visit_date: this.state.recorded_date,
+              visit_time: this.state.recorded_time,
+              case_type: this.state.case_type,
+              vital_id: _elements[i].getAttribute("vitalid"),
+              vital_value: _elements[i].value,
+              vital_value_one:
+                _isDepended !== null
+                  ? document.getElementsByName(_isDepended)[0].value
+                  : null,
+              formula_value: _elements[i].getAttribute("formula_value")
+            });
+          }
+        }
+
+        send_data.nurse_notes = this.state.nurse_notes;
+        send_data.chief_complaints = this.state.patChiefComp;
+        send_data.patient_vitals = bodyArray;
+        send_data.hims_f_patient_encounter_id = this.state.encounter_id;
+
+        algaehApiCall({
+          uri: "/nurseWorkBench/addPatientNurseChiefComplaints",
+          method: "POST",
+          data: send_data,
+          onSuccess: response => {
+            if (response.data.success) {
+              swalMessage({
+                title: "Recorded Successfully",
+                type: "success"
+              });
+              var element = document.querySelectorAll("[nursing_pat]");
+              for (var i = 0; i < element.length; i++) {
+                element[i].classList.remove("active");
+              }
+              this.resetSaveState();
+              this.loadListofData();
+            }
+          },
+          onError: error => {}
+        });
+
+        //console.log("Send Data:", send_data);
+      }
+    });
   }
 
   deptDropDownHandler(value) {
@@ -74,14 +160,67 @@ class NurseWorkbench extends Component {
     });
   }
 
-  dropDownHandle(value) {
-    this.setState(
-      { [value.name]: value.value },
+  dateDurationAndInterval(selectedDate) {
+    let duration = 0;
+    let interval = "D";
+    if (moment().diff(selectedDate, "days") < 31) {
+      duration = moment().diff(selectedDate, "days");
+      interval = "D";
+    } else if (moment().diff(selectedDate, "months") < 12) {
+      duration = moment().diff(selectedDate, "months");
+      interval = "M";
+    } else if (moment().diff(selectedDate, "years")) {
+      duration = moment().diff(selectedDate, "years");
+      interval = "Y";
+    }
 
-      () => {
-        this.loadListofData();
+    this.setState({
+      onset_date: selectedDate,
+      duration: duration,
+      interval: interval
+    });
+    //return { duration, interval };
+  }
+
+  dropDownHandle(value) {
+    if (
+      this.state.patient_name === undefined ||
+      this.state.patient_name === null
+    ) {
+      swalMessage({
+        title: "Please Select a patient",
+        type: "error"
+      });
+      return;
+    } else {
+      switch (value.name) {
+        case "provider_id":
+          this.setState(
+            { [value.name]: value.value },
+
+            () => {
+              this.loadListofData();
+            }
+          );
+
+          break;
+
+        case "chief_complaint_id":
+          this.setState({
+            [value.name]: value.value,
+            chief_complaint_name: value.selected.hpi_description
+          });
+
+          break;
+
+        default:
+          this.setState({
+            [value.name]: value.value
+          });
+
+          break;
       }
-    );
+    }
   }
 
   getDoctorsAndDepts() {
@@ -110,41 +249,31 @@ class NurseWorkbench extends Component {
   }
 
   addChiefComplainToPatient(list) {
-    const $this = this;
-
     this.state.patChiefComp.push({
       episode_id: this.state.episode_id,
       patient_id: this.state.patient_id,
-      chief_complaint_id: list.selected.hims_d_hpi_header_id,
-      onset_date: new Date(),
-      duration: 0,
-      interval: "D",
-      severity: "MI",
-      score: 0,
-      pain: "NH",
-      comment: this.state.nurse_notes
-
-      // chief_complaint_name: list.selected.hpi_description,
-      // hpi_description: list.selected.hpi_description,
-      // Encounter_Date: new Date(),
-      // recordState: "insert",
-      // chronic: "N",
-      // complaint_inactive: "N"
+      chief_complaint_id: this.state.chief_complaint_id,
+      onset_date: this.state.onset_date,
+      duration: this.state.duration,
+      interval: this.state.interval,
+      severity: this.state.severity,
+      score: this.state.score,
+      pain: this.state.pain,
+      comment: this.state.comment,
+      chief_complaint_name: this.state.chief_complaint_name
     });
 
-    // algaehApiCall({
-    //   uri: "/nurseWorkBench/addPatientNurseChiefComplaints",
-    //   data: patChiefComp,
-    //   onSuccess: response => {
-    //     if (response.data.success) {
-    //       getPatientChiefComplaints($this);
-    //       swalMessage({
-    //         title: "Chief Complaint Recorded",
-    //         type: "success"
-    //       });
-    //     }
-    //   }
-    // });
+    this.setState({
+      chief_complaint_id: null,
+      onset_date: null,
+      duration: null,
+      interval: null,
+      severity: null,
+      score: null,
+      pain: null,
+      comment: null,
+      chief_complaint_name: null
+    });
   }
 
   gridLevelUpdate(row, e) {
@@ -174,88 +303,46 @@ class NurseWorkbench extends Component {
       if (e.checked) row["complaint_inactive_date"] = moment()._d;
       else row["complaint_inactive_date"] = null;
     }
-
     row.update();
   }
 
   onChiefComplaintRowDone(row) {
-    const _row = row;
-
-    // algaehApiCall({
-    //   uri: "/doctorsWorkBench/updatePatientChiefComplaints",
-    //   method: "PUT",
-    //   data: { chief_complaints: [_row] },
-    //   onSuccess: response => {
-    //     if (response.data.success) {
-    //       swalMessage({
-    //         title:
-    //           "Complaint '" +
-    //           _row.chief_complaint_name +
-    //           "' updated successfuly",
-    //         type: "success"
-    //       });
-    //     }
-    //   },
-    //   onFailure: error => {
-    //     swalMessage({
-    //       title: error.message,
-    //       type: "error"
-    //     });
-    //   }
-    // });
+    this.state.patChiefComp[row.rowIdx] = row;
   }
+
   onChiefComplaintRowDelete(row) {
-    // swal({
-    //   title: "Delete Complaint " + row.chief_complaint_name + "?",
-    //   type: "warning",
-    //   showCancelButton: true,
-    //   confirmButtonText: "Yes!",
-    //   confirmButtonColor: "#44b8bd",
-    //   cancelButtonColor: "#d33",
-    //   cancelButtonText: "No"
-    // }).then(willDelete => {
-    //   if (willDelete.value) {
-    //     let data = {
-    //       hims_f_episode_chief_complaint_id:
-    //         row.hims_f_episode_chief_complaint_id
-    //     };
-    //     algaehApiCall({
-    //       uri: "/doctorsWorkBench/deletePatientChiefComplaints",
-    //       data: data,
-    //       method: "DELETE",
-    //       onSuccess: response => {
-    //         if (response.data.success) {
-    //           swalMessage({
-    //             title: "Record deleted successfully . .",
-    //             type: "success"
-    //           });
-    //           //  this.getPatientChiefComplaintsDetails();
-    //           getAllChiefComplaints(this);
-    //           Window.global === undefined
-    //             ? null
-    //             : getPatientChiefComplaints(this);
-    //         }
-    //       }
-    //     });
-    //   } else {
-    //     swalMessage({
-    //       title: "Delete request cancelled",
-    //       type: "error"
-    //     });
-    //   }
-    // });
+    swal({
+      title: "Delete Complaint " + row.chief_complaint_name + "?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        this.state.patChiefComp.pop(row);
+
+        this.setState({
+          patChiefComp: this.state.patChiefComp
+        });
+      } else {
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "error"
+        });
+      }
+    });
   }
 
   monthChangeHandler(e) {
     let dt = moment(e.target.value + "-01", "YYYY-MM-DD")._d;
-    this.setState({ selectedHDate: dt, activeDateHeader: dt });
+    this.setState({
+      selectedHDate: dt,
+      activeDateHeader: dt,
+      patient_name: null
+    });
   }
-
-  // textHandle(e) {
-  //   this.setState({
-  //     [e.target.name]: e.target.value
-  //   });
-  // }
 
   liGenerate() {
     let momDate = moment(this.state.selectedHDate);
@@ -290,7 +377,8 @@ class NurseWorkbench extends Component {
       {
         activeDateHeader: e.currentTarget.getAttribute("date"),
         fromDate: e.currentTarget.getAttribute("date"),
-        toDate: e.currentTarget.getAttribute("date")
+        toDate: e.currentTarget.getAttribute("date"),
+        patient_name: null
       },
       () => {
         localStorage.setItem(
@@ -315,6 +403,12 @@ class NurseWorkbench extends Component {
       encounter_id: data.hims_f_patient_encounter_id,
       patient_id: data.patient_id
     });
+
+    var element = document.querySelectorAll("[nursing_pat]");
+    for (var i = 0; i < element.length; i++) {
+      element[i].classList.remove("active");
+    }
+    e.currentTarget.classList.add("active");
   }
 
   generateHorizontalDateBlocks() {
@@ -422,7 +516,16 @@ class NurseWorkbench extends Component {
   }
 
   texthandle(e) {
-    if (e.target.name === "weight") {
+    if (
+      this.state.patient_name === undefined ||
+      this.state.patient_name === null
+    ) {
+      swalMessage({
+        title: "Please Select a patient",
+        type: "error"
+      });
+      return;
+    } else if (e.target.name === "weight") {
       //TODO  now hardCoded options need to pull from Db
       getFormula({
         WEIGHTAS: "KG",
@@ -452,8 +555,9 @@ class NurseWorkbench extends Component {
 
   render() {
     const patChiefComplain =
-      this.props.patient_chief_complaints !== undefined
-        ? this.props.patient_chief_complaints.sort((a, b) => {
+      this.state.patChiefComp !== undefined
+        ? this.state.patChiefComp.sort((a, b) => {
+            debugger;
             return (
               b.hims_f_episode_chief_complaint_id -
               a.hims_f_episode_chief_complaint_id
@@ -512,7 +616,7 @@ class NurseWorkbench extends Component {
                   <span className="countNo">
                     {
                       Enumerable.from(this.state.data)
-                        .where(w => w.status === "V")
+                        .where(w => w.status === "V" && w.nurse_examine === "N")
                         .toArray().length
                     }
                   </span>
@@ -522,10 +626,10 @@ class NurseWorkbench extends Component {
               <div className="row">
                 <div className="col">
                   <AlagehAutoComplete
-                    div={{ className: "col mandatory" }}
+                    div={{ className: "col" }}
                     label={{
                       fieldName: "department_name",
-                      isImp: true
+                      isImp: false
                     }}
                     selector={{
                       name: "sub_department_id",
@@ -592,6 +696,7 @@ class NurseWorkbench extends Component {
                         .toArray()
                         .map((data, index) => (
                           <li
+                            nursing_pat={index}
                             key={index}
                             onClick={this.moveToStation.bind(this, data)}
                           >
@@ -654,7 +759,7 @@ class NurseWorkbench extends Component {
                 {/* <div className="actions rightLabelCount">Station</div> */}
               </div>
 
-              <div className="portlet-body">
+              <div className="portlet-body" id="vitals_recording">
                 {/* Vitals Start */}
                 <div className="row margin-bottom-15">
                   {_department_viatals.map((item, index) => {
@@ -813,33 +918,151 @@ class NurseWorkbench extends Component {
                     }}
                   />
                 </div>
-
-                {/* <Vitals /> */}
                 {/* Vitals End */}
 
                 {/* ChiefComplaints Start */}
-
                 <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
                   <div className="portlet-title">
-                    <div className="caption">
+                    {/* <div className="caption">
                       <h3 className="caption-subject">Chief Complaint</h3>
+                    </div> */}
+                    <div className="row">
+                      <AlagehAutoComplete
+                        div={{ className: "col" }}
+                        label={{
+                          forceLabel: "Chief Complaint",
+                          isImp: true
+                        }}
+                        selector={{
+                          name: "chief_complaint_id",
+                          className: "col select-fld",
+                          value: this.state.chief_complaint_id,
+                          dataSource: {
+                            textField: "hpi_description",
+                            valueField: "hims_d_hpi_header_id",
+                            data: _allUnselectedChiefComp
+                          },
+                          onChange: this.dropDownHandle.bind(this)
+                        }}
+                      />
+
+                      <AlagehAutoComplete
+                        div={{ className: "col" }}
+                        label={{
+                          forceLabel: "Pain",
+                          isImp: true
+                        }}
+                        selector={{
+                          name: "pain",
+                          className: "col select-fld",
+                          value: this.state.pain,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: GlobalVariables.PAIN_SCALE
+                          },
+                          onChange: this.dropDownHandle.bind(this)
+                        }}
+                      />
+                      <AlagehAutoComplete
+                        div={{ className: "col" }}
+                        label={{
+                          forceLabel: "Severity",
+                          isImp: true
+                        }}
+                        selector={{
+                          name: "severity",
+                          className: "col select-fld",
+                          value: this.state.severity,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: GlobalVariables.PAIN_SEVERITY
+                          },
+                          onChange: this.dropDownHandle.bind(this)
+                        }}
+                      />
+
+                      <AlgaehDateHandler
+                        div={{ className: "col" }}
+                        label={{ forceLabel: "Onset Date", isImp: true }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "onset_date"
+                        }}
+                        maxDate={new Date()}
+                        events={{
+                          onChange: this.dateDurationAndInterval.bind(this)
+                        }}
+                        value={this.state.onset_date}
+                      />
                     </div>
                     <div className="row">
-                      <div className="col-lg-6">
-                        <AlagehAutoComplete
-                          selector={{
-                            name: "chief_complaint_id",
-                            className: "select-fld",
-                            value: this.state.chief_complaint_id,
-                            dataSource: {
-                              textField: "hpi_description",
-                              valueField: "hims_d_hpi_header_id",
-                              data: _allUnselectedChiefComp
-                              //               data: this.props.allchiefcomplaints
-                            },
-                            onChange: this.addChiefComplainToPatient.bind(this)
-                          }}
-                        />
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        label={{
+                          isImp: true,
+                          forceLabel: "Duration"
+                        }}
+                        textBox={{
+                          className: "col txt-fld",
+                          name: "duration",
+                          number: true,
+                          value: this.state.duration,
+                          events: {
+                            onChange: this.texthandle.bind(this)
+                          },
+                          others: {
+                            min: 0
+                          }
+                        }}
+                      />
+
+                      <AlagehAutoComplete
+                        div={{ className: "col" }}
+                        label={{
+                          forceLabel: "Interval",
+                          isImp: true
+                        }}
+                        selector={{
+                          name: "interval",
+                          className: "select-fld",
+                          value: this.state.interval,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: GlobalVariables.PAIN_DURATION
+                          },
+                          onChange: this.dropDownHandle.bind(this)
+                        }}
+                      />
+
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        label={{
+                          isImp: true,
+                          forceLabel: "Comment"
+                        }}
+                        textBox={{
+                          others: {
+                            multiline: true,
+                            rows: "2"
+                          },
+                          className: "txt-fld",
+                          name: "comment",
+                          value: this.state.comment,
+                          events: {
+                            onChange: this.texthandle.bind(this)
+                          }
+                        }}
+                      />
+                      <div className="col margin-top-15">
+                        <button
+                          className="btn btn-primary"
+                          onClick={this.addChiefComplainToPatient.bind(this)}
+                        >
+                          ADD
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -848,23 +1071,6 @@ class NurseWorkbench extends Component {
                       <AlgaehDataGrid
                         id="complaint-grid"
                         columns={[
-                          // {
-                          //   fieldName: "hpi_view",
-                          //   label: "HPI",
-                          //   displayTemplate: row => {
-                          //     return (
-                          //       <i
-                          //         className="fas fa-file-prescription"
-                          //         onClick={this.openHPIAddModal.bind(this, row)}
-                          //       />
-                          //     );
-                          //   },
-                          //   disabled: true,
-                          //   others: {
-                          //     fixed: "left",
-                          //     resizable: false
-                          //   }
-                          // },
                           {
                             fieldName: "chief_complaint_name",
                             label: (
@@ -934,7 +1140,9 @@ class NurseWorkbench extends Component {
                               )
                                 .where(w => w.value === data.severity)
                                 .firstOrDefault().name;
-                              return <span>{_serv}</span>;
+                              return (
+                                <span>{_serv !== undefined ? _serv : ""}</span>
+                              );
                             },
                             editorTemplate: row => {
                               return (
@@ -1049,33 +1257,36 @@ class NurseWorkbench extends Component {
                                 />
                               );
                             }
+                          },
+                          {
+                            fieldName: "comment",
+                            label: "Comments",
+                            displayTemplate: row => {
+                              return <span>{row.comment}</span>;
+                            },
+                            editorTemplate: row => {
+                              return (
+                                <AlagehFormGroup
+                                  textBox={{
+                                    name: "comment",
+                                    others: {
+                                      multiline: true,
+                                      rows: "4"
+                                    },
+                                    value: row.comment,
+                                    events: {
+                                      onChange: this.gridLevelUpdate.bind(
+                                        this,
+                                        row
+                                      )
+                                    }
+                                  }}
+                                />
+                              );
+                            }
                           }
-                          // {
-                          //   fieldName: "comment",
-                          //   label: "Comments",
-                          //   displayTemplate: row => {
-                          //     return <span>{row.comment}</span>;
-                          //   },
-                          //   editorTemplate: row => {
-                          //     return (
-                          //       <AlagehFormGroup
-                          //         textBox={{
-                          //           name: "comment",
-                          //           others: {
-                          //             multiline: true,
-                          //             rows: "4"
-                          //           },
-                          //           value: row.comment,
-                          //           events: {
-                          //             onChange: this.gridLevelUpdate.bind(this, row)
-                          //           }
-                          //         }}
-                          //       />
-                          //     );
-                          //   }
-                          // }
                         ]}
-                        noDataText="No More Chief Complaints"
+                        noDataText="No Chief Complaints Recorded"
                         keyId="patient_id"
                         dataSource={{
                           data: this.state.patChiefComp

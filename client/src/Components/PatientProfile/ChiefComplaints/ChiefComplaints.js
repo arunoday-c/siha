@@ -484,6 +484,7 @@ class ChiefComplaints extends Component {
       duration = moment().diff(selectedDate, "years");
       interval = "Y";
     }
+
     return { duration, interval };
   }
   durationToDateAndInterval(duration, interval) {
