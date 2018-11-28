@@ -69,7 +69,7 @@ class InitialStock extends Component {
       method: "GET",
       redux: {
         type: "ITEM_GET_DATA",
-        mappingName: "itemlist"
+        mappingName: "intitemlist"
       }
     });
 
@@ -78,7 +78,7 @@ class InitialStock extends Component {
       method: "GET",
       redux: {
         type: "LOCATIONS_GET_DATA",
-        mappingName: "locations"
+        mappingName: "intlocations"
       }
     });
 
@@ -87,7 +87,7 @@ class InitialStock extends Component {
       method: "GET",
       redux: {
         type: "ITEM_CATEGORY_GET_DATA",
-        mappingName: "itemcategory"
+        mappingName: "intitemcategory"
       }
     });
 
@@ -96,7 +96,7 @@ class InitialStock extends Component {
       method: "GET",
       redux: {
         type: "ITEM_GROUP_GET_DATA",
-        mappingName: "itemgroup"
+        mappingName: "intitemgroup"
       }
     });
 
@@ -105,7 +105,7 @@ class InitialStock extends Component {
       method: "GET",
       redux: {
         type: "ITEM_UOM_GET_DATA",
-        mappingName: "itemuom"
+        mappingName: "intitemuom"
       }
     });
   }
@@ -221,7 +221,7 @@ class InitialStock extends Component {
                       dataSource: {
                         textField: "location_description",
                         valueField: "hims_d_pharmacy_location_id",
-                        data: this.props.locations
+                        data: this.props.intlocations
                       },
 
                       onChange: LocationchangeTexts.bind(this, this)
@@ -238,7 +238,7 @@ class InitialStock extends Component {
                       dataSource: {
                         textField: "item_description",
                         valueField: "hims_d_item_master_id",
-                        data: this.props.itemlist
+                        data: this.props.intitemlist
                       },
                       onChange: itemchangeText.bind(this, this)
                     }}
@@ -255,7 +255,7 @@ class InitialStock extends Component {
                       dataSource: {
                         textField: "category_desc",
                         valueField: "hims_d_item_category_id",
-                        data: this.props.itemcategory
+                        data: this.props.intitemcategory
                       },
                       others: {
                         disabled: true
@@ -274,7 +274,7 @@ class InitialStock extends Component {
                       dataSource: {
                         textField: "group_description",
                         valueField: "hims_d_item_group_id",
-                        data: this.props.itemgroup
+                        data: this.props.intitemgroup
                       },
                       others: {
                         disabled: true
@@ -293,7 +293,7 @@ class InitialStock extends Component {
                       dataSource: {
                         textField: "uom_description",
                         valueField: "hims_d_pharmacy_uom_id",
-                        data: this.props.itemuom
+                        data: this.props.intitemuom
                       },
                       others: {
                         disabled: true
@@ -423,9 +423,9 @@ class InitialStock extends Component {
                       label: <AlgaehLabel label={{ forceLabel: "Location" }} />,
                       displayTemplate: row => {
                         let display =
-                          this.props.locations === undefined
+                          this.props.intlocations === undefined
                             ? []
-                            : this.props.locations.filter(
+                            : this.props.intlocations.filter(
                                 f =>
                                   f.hims_d_pharmacy_location_id ===
                                   row.location_id
@@ -449,9 +449,9 @@ class InitialStock extends Component {
                       ),
                       displayTemplate: row => {
                         let display =
-                          this.props.itemcategory === undefined
+                          this.props.intitemcategory === undefined
                             ? []
-                            : this.props.itemcategory.filter(
+                            : this.props.intitemcategory.filter(
                                 f =>
                                   f.hims_d_item_category_id ===
                                   row.item_category_id
@@ -475,9 +475,9 @@ class InitialStock extends Component {
                       ),
                       displayTemplate: row => {
                         let display =
-                          this.props.itemgroup === undefined
+                          this.props.intitemgroup === undefined
                             ? []
-                            : this.props.itemgroup.filter(
+                            : this.props.intitemgroup.filter(
                                 f =>
                                   f.hims_d_item_group_id === row.item_group_id
                               );
@@ -500,9 +500,9 @@ class InitialStock extends Component {
                       ),
                       displayTemplate: row => {
                         let display =
-                          this.props.itemlist === undefined
+                          this.props.intitemlist === undefined
                             ? []
-                            : this.props.itemlist.filter(
+                            : this.props.intitemlist.filter(
                                 f => f.hims_d_item_master_id === row.item_id
                               );
 
@@ -568,51 +568,49 @@ class InitialStock extends Component {
             </div>
 
             <div className="hptl-phase1-footer">
-              
-                <div className="row">
-                  <div className="col-lg-12">
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      onClick={SaveInitialStock.bind(this, this)}
-                      disabled={this.state.saveEnable}
-                    >
-                      <AlgaehLabel
-                        label={{ forceLabel: "Save", returnText: true }}
-                      />
-                    </button>
-
-                    <AHSnackbar
-                      open={this.state.SnackbarOpen}
-                      handleClose={this.handleClose}
-                      MandatoryMsg={this.state.MandatoryMsg}
+              <div className="row">
+                <div className="col-lg-12">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={SaveInitialStock.bind(this, this)}
+                    disabled={this.state.saveEnable}
+                  >
+                    <AlgaehLabel
+                      label={{ forceLabel: "Save", returnText: true }}
                     />
-                    <button
-                      type="button"
-                      className="btn btn-default"
-                      onClick={ClearData.bind(this, this)}
-                    >
-                      <AlgaehLabel
-                        label={{ forceLabel: "Clear", returnText: true }}
-                      />
-                    </button>
+                  </button>
 
-                    <button
-                      type="button"
-                      className="btn btn-other"
-                      onClick={PostInitialStock.bind(this, this)}
-                      disabled={this.state.postEnable}
-                    >
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Post",
-                          returnText: true
-                        }}
-                      />
-                    </button>
-                  </div>
+                  <AHSnackbar
+                    open={this.state.SnackbarOpen}
+                    handleClose={this.handleClose}
+                    MandatoryMsg={this.state.MandatoryMsg}
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-default"
+                    onClick={ClearData.bind(this, this)}
+                  >
+                    <AlgaehLabel
+                      label={{ forceLabel: "Clear", returnText: true }}
+                    />
+                  </button>
+
+                  <button
+                    type="button"
+                    className="btn btn-other"
+                    onClick={PostInitialStock.bind(this, this)}
+                    disabled={this.state.postEnable}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Post",
+                        returnText: true
+                      }}
+                    />
+                  </button>
                 </div>
-              
+              </div>
             </div>
           </div>
         </div>
@@ -623,12 +621,11 @@ class InitialStock extends Component {
 
 function mapStateToProps(state) {
   return {
-    itemlist: state.itemlist,
-    locations: state.locations,
-    itemcategory: state.itemcategory,
-    itemgroup: state.itemgroup,
-    itemuom: state.itemuom,
-    itemuomlist: state.itemuomlist,
+    intitemlist: state.intitemlist,
+    intlocations: state.intlocations,
+    intitemcategory: state.intitemcategory,
+    intitemgroup: state.intitemgroup,
+    intitemuom: state.intitemuom,
     initialstock: state.initialstock
   };
 }
@@ -641,7 +638,6 @@ function mapDispatchToProps(dispatch) {
       getItemCategory: AlgaehActions,
       getItemGroup: AlgaehActions,
       getItemUOM: AlgaehActions,
-      getItemMasterAndItemUom: AlgaehActions,
       getInitialStock: AlgaehActions
     },
     dispatch

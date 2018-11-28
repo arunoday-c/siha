@@ -1,7 +1,7 @@
 import extend from "extend";
 import httpStatus from "../utils/httpStatus";
 import { debugLog, debugFunction, logger } from "../utils/logging";
-import {  runningNumber, releaseDBConnection } from "../utils";
+import { runningNumber, releaseDBConnection } from "../utils";
 import moment from "moment";
 
 //Added by noor for code optimization aug-20-1018
@@ -68,7 +68,12 @@ let insertPatientVisitData = (req, res, next) => {
         inputParam.age_in_days = days;
       }
       debugFunction("2");
-      if (existingExparyDate != null || existingExparyDate != undefined) {
+      if (
+        (existingExparyDate != null || existingExparyDate != undefined) &&
+        moment(existingExparyDate).format("YYYYMMDD") >
+          moment(new Date()).format("YYYYMMDD")
+      ) {
+        debugFunction("2");
         inputParam.visit_expiery_date = existingExparyDate;
         inputParam.episode_id = currentPatientEpisodeNo;
       }
@@ -160,8 +165,8 @@ VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?);",
     if (inputParam.consultation == "Y") {
       debugLog("In consultation == Y ");
       db.query(
-        " select max(visit_expiery_date) as visit_expiery_date,episode_id from hims_f_patient_visit where\
-         patient_id=? and doctor_id=? and record_status='A' group by patient_id, doctor_id;",
+        " select max(visit_expiery_date) as visit_expiery_date,max(episode_id) as episode_id from hims_f_patient_visit where\
+         patient_id=? and doctor_id=? and record_status='A';",
         [inputParam.patient_id, inputParam.doctor_id],
         (error, expResult) => {
           debugLog("In consultation Query", expResult);

@@ -36,31 +36,58 @@ const numberchangeTexts = ($this, e) => {
 };
 
 const getItemUom = $this => {
-  $this.props.getItemMasterAndItemUom({
+  algaehApiCall({
     uri: "/pharmacy/getItemMasterAndItemUom",
     method: "GET",
-    redux: {
-      type: "ITEMS_GET_DATA",
-      mappingName: "itemuomlist"
-    },
-    afterSuccess: data => {
-      let itemuomlist = Enumerable.from(data)
-        .where(
-          w => w.hims_d_item_master_id === $this.state.item_id,
-          w => w.uom_id === $this.state.uom_id
-        )
-        .firstOrDefault();
 
-      $this.setState({ conversion_factor: itemuomlist.conversion_factor });
+    onSuccess: response => {
+      if (response.data.success) {
+        debugger;
+        if (response.data.records.length > 0) {
+          let itemuomlist = Enumerable.from(response.data.records)
+            .where(
+              w => w.hims_d_item_master_id === $this.state.item_id,
+              w => w.uom_id === $this.state.uom_id
+            )
+            .firstOrDefault();
+
+          $this.setState({ conversion_factor: itemuomlist.conversion_factor });
+        }
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
+
+  // $this.props.getItemMasterAndItemUom({
+  //   uri: "/pharmacy/getItemMasterAndItemUom",
+  //   method: "GET",
+  //   redux: {
+  //     type: "ITEMS_GET_DATA",
+  //     mappingName: "itemuomlist"
+  //   },
+  //   afterSuccess: data => {
+  //     let itemuomlist = Enumerable.from(data)
+  //       .where(
+  //         w => w.hims_d_item_master_id === $this.state.item_id,
+  //         w => w.uom_id === $this.state.uom_id
+  //       )
+  //       .firstOrDefault();
+
+  //     $this.setState({ conversion_factor: itemuomlist.conversion_factor });
+  //   }
+  // });
 };
 
 const itemchangeText = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   getItemUom($this);
-
+  debugger;
   $this.setState({
     [name]: value,
     item_category_id: e.selected.category_id,
@@ -108,7 +135,6 @@ const AddItems = $this => {
       MandatoryMsg: "Invalid Input. Recipt Number(GRN) cannot be blank."
     });
   } else {
-    
     let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
     let itemObj = {
       location_id: $this.state.location_id,
@@ -150,9 +176,7 @@ const AddItems = $this => {
         grn_number: null,
         sales_uom: null
       },
-      () => {
-        
-      }
+      () => {}
     );
   }
 };
@@ -206,7 +230,6 @@ const SaveInitialStock = $this => {
     data: $this.state,
     onSuccess: response => {
       if (response.data.success === true) {
-        
         $this.setState({
           document_number: response.data.records.document_number,
           hims_f_pharmacy_stock_header_id:
@@ -261,7 +284,6 @@ const ClearData = $this => {
 };
 
 const PostInitialStock = $this => {
-  
   $this.state.posted = "Y";
   $this.state.transaction_type = "INT";
   $this.state.transaction_id = $this.state.hims_f_pharmacy_stock_header_id;
