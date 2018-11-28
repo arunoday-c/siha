@@ -179,21 +179,28 @@ VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?);",
               req.options.onFailure(error);
             }
           } else {
+            debugLog("Else ", expResult);
             //fetching expiry date and episode id for existing patient
-            if (expResult[0] != null || expResult.length != 0) {
+            if (
+              expResult[0].visit_expiery_date != null &&
+              expResult[0].episode_id != null
+            ) {
               existingExparyDate = moment(
                 expResult[0]["visit_expiery_date"]
               ).format("YYYY-MM-DD");
               currentPatientEpisodeNo = expResult[0]["episode_id"];
+              debugLog("expResult Inside ", existingExparyDate);
             }
             // req.body.episode_id = expResult[0]["episode_id"];
             let currentEpisodeNo = null;
             //checking expiry if expired or not_there create new expiry date
+            debugLog("existingExparyDate ", existingExparyDate);
             if (
               existingExparyDate == null ||
               existingExparyDate == undefined ||
               existingExparyDate < today
             ) {
+              debugLog("existingExparyDate ", existingExparyDate);
               //create new expiry date
               db.query(
                 "SELECT param_value,episode_id from algaeh_d_app_config WHERE algaeh_d_app_config_id=11 \
