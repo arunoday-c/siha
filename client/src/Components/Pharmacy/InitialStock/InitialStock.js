@@ -64,50 +64,71 @@ class InitialStock extends Component {
   }
 
   componentDidMount() {
-    this.props.getItems({
-      uri: "/pharmacy/getItemMaster",
-      method: "GET",
-      redux: {
-        type: "ITEM_GET_DATA",
-        mappingName: "intitemlist"
-      }
-    });
-
-    this.props.getLocation({
-      uri: "/pharmacy/getPharmacyLocation",
-      method: "GET",
-      redux: {
-        type: "LOCATIONS_GET_DATA",
-        mappingName: "intlocations"
-      }
-    });
-
-    this.props.getItemCategory({
-      uri: "/pharmacy/getItemCategory",
-      method: "GET",
-      redux: {
-        type: "ITEM_CATEGORY_GET_DATA",
-        mappingName: "intitemcategory"
-      }
-    });
-
-    this.props.getItemGroup({
-      uri: "/pharmacy/getItemGroup",
-      method: "GET",
-      redux: {
-        type: "ITEM_GROUP_GET_DATA",
-        mappingName: "intitemgroup"
-      }
-    });
-
-    this.props.getItemUOM({
-      uri: "/pharmacy/getPharmacyUom",
-      method: "GET",
-      redux: {
-        type: "ITEM_UOM_GET_DATA",
-        mappingName: "intitemuom"
-      }
-    });
+    if (
+      this.props.intitemlist === undefined ||
+      this.props.intitemlist.length === 0
+    ) {
+      this.props.getItems({
+        uri: "/pharmacy/getItemMaster",
+        method: "GET",
+        redux: {
+          type: "ITEM_GET_DATA",
+          mappingName: "intitemlist"
+        }
+      });
+    }
+    if (
+      this.props.intlocations === undefined ||
+      this.props.intlocations.length === 0
+    ) {
+      this.props.getLocation({
+        uri: "/pharmacy/getPharmacyLocation",
+        method: "GET",
+        redux: {
+          type: "LOCATIONS_GET_DATA",
+          mappingName: "intlocations"
+        }
+      });
+    }
+    if (
+      this.props.intitemcategory === undefined ||
+      this.props.intitemcategory.length === 0
+    ) {
+      this.props.getItemCategory({
+        uri: "/pharmacy/getItemCategory",
+        method: "GET",
+        redux: {
+          type: "ITEM_CATEGORY_GET_DATA",
+          mappingName: "intitemcategory"
+        }
+      });
+    }
+    if (
+      this.props.intitemgroup === undefined ||
+      this.props.intitemgroup.length === 0
+    ) {
+      this.props.getItemGroup({
+        uri: "/pharmacy/getItemGroup",
+        method: "GET",
+        redux: {
+          type: "ITEM_GROUP_GET_DATA",
+          mappingName: "intitemgroup"
+        }
+      });
+    }
+    if (
+      this.props.intitemuom === undefined ||
+      this.props.intitemuom.length === 0
+    ) {
+      this.props.getItemUOM({
+        uri: "/pharmacy/getPharmacyUom",
+        method: "GET",
+        redux: {
+          type: "ITEM_UOM_GET_DATA",
+          mappingName: "intitemuom"
+        }
+      });
+    }
   }
 
   handleClose = () => {

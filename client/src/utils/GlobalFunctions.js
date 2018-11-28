@@ -345,8 +345,13 @@ export function SetBulkState(options) {
 
         if (_name !== null) {
           const _type = _allControls[i].getAttribute("type");
-          if (_type === "checkbox" || _type === "radio") {
+          if (_type === "checkbox") {
             _objectCreation[_name] = _allControls[i].checked ? "Y" : "N";
+          } else if (_type === "checkbox" || _type === "radio") {
+            debugger;
+            _objectCreation[_name] = _allControls[i].checked
+              ? _allControls[i].value
+              : "N";
           } else {
             _objectCreation[_name] =
               _dataRole !== null

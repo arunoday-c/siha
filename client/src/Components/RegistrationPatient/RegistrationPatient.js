@@ -15,7 +15,7 @@ import {
   postPatientDetails,
   postVisitDetails
 } from "../../actions/RegistrationPatient/Registrationactions";
-
+import Enumerable from "linq";
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import MyContext from "../../utils/MyContext.js";
 import { Validations } from "./FrontdeskValidation.js";
@@ -322,14 +322,36 @@ class RegistrationPatient extends PureComponent {
   };
 
   // componentWillReceiveProps(nextProps) {
-  //   if (
-  //     nextProps.genbill !== undefined &&
-  //     nextProps.genbill.length !== 0 &&
-  //     this.state.doctor_id !== null
-  //   ) {
-  //     this.setState({ ...this.state, ...nextProps.genbill });
+  //   debugger;
+  //   if (this.state.country_id === null) return;
+  //   if (this.state.country_id !== nextProps.country_id) {
+  //     let country = Enumerable.from(this.props.countries)
+  //       .where(w => w.hims_d_country_id === this.state.country_id)
+  //       .firstOrDefault();
+  //     let states = country !== undefined ? country.states : [];
+
+  //     if (this.props.countries !== undefined) {
+  //       if (nextProps.state_id !== this.state.state_id) {
+  //         let cities = Enumerable.from(states)
+  //           .where(w => w.hims_d_state_id === this.state.state_id)
+  //           .firstOrDefault();
+
+  //         if (cities !== undefined) {
+  //           this.setState({
+  //             countrystates: states,
+  //             cities: cities.cities,
+  //             state_id: this.state.state_id,
+  //             city_id: this.state.city_id
+  //           });
+  //         } else {
+  //           this.setState({
+  //             countrystates: states,
+  //             state_id: this.state.state_id
+  //           });
+  //         }
+  //       }
+  //     }
   //   }
-  //   AlgaehLoader({ show: false });
   // }
 
   getCtrlCode(patcode) {
