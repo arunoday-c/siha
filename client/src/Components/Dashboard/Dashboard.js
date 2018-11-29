@@ -186,6 +186,75 @@ const AvgWaitingTimeDep = {
   ]
 };
 
+const RevenuebyDepartment = {
+  labels: [
+    "Surgery",
+    "Gynaecology",
+    "Dermatology",
+    "Neurology",
+    "Oncology",
+    "Orthopedics",
+    "Cardiology"
+  ],
+  datasets: [
+    {
+      data: [95, 80, 73, 64, 56, 50, 48],
+      label: "Revenue",
+      backgroundColor: "rgba(255,99,132,0.2)",
+      borderColor: "rgba(255,99,132,1)",
+      borderWidth: 1,
+      hoverBackgroundColor: "rgba(255,99,132,0.4)",
+      hoverBorderColor: "rgba(255,99,132,1)"
+    }
+  ]
+};
+
+const RevenuebyDoctor = {
+  labels: [
+    "Dr. Suhail",
+    "Dr. Fathima",
+    "Dr. Khalid",
+    "Dr. Tony",
+    "Dr. Ridhwan",
+    "Dr. Joseph",
+    "Dr. Aysha"
+  ],
+  datasets: [
+    {
+      data: [81, 80, 65, 59, 56, 55, 45],
+      label: "Revenue",
+      backgroundColor: "rgba(255,99,132,0.2)",
+      borderColor: "rgba(255,99,132,1)",
+      borderWidth: 1,
+      hoverBackgroundColor: "rgba(255,99,132,0.4)",
+      hoverBorderColor: "rgba(255,99,132,1)"
+    }
+  ]
+};
+
+const RevenuebyService = {
+  labels: [
+    "Pharmacy",
+    "Radiology",
+    "OT",
+    "Bed",
+    "Anesthesia",
+    "Nursing Care",
+    "Lab"
+  ],
+  datasets: [
+    {
+      data: [81, 80, 65, 59, 56, 55, 45],
+      label: "Revenue",
+      backgroundColor: "rgba(255,99,132,0.2)",
+      borderColor: "rgba(255,99,132,1)",
+      borderWidth: 1,
+      hoverBackgroundColor: "rgba(255,99,132,0.4)",
+      hoverBorderColor: "rgba(255,99,132,1)"
+    }
+  ]
+};
+
 const DoctorExplained = {
   labels: [
     "Fully Agree",
@@ -331,8 +400,15 @@ class Dashboard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      sidBarOpen: true
+      sidBarOpen: true,
+      showDetails: "d-none"
     };
+  }
+
+  showDetailHandler(event) {
+    this.setState({
+      showDetails: this.state.showDetails === "d-block" ? "d-none" : "d-block"
+    });
   }
 
   componentDidMount() {
@@ -411,6 +487,11 @@ class Dashboard extends Component {
                 <hr />
                 <div className="stats">
                   Avg. Revenue per day- <span>SR 1357</span>
+                  <b onClick={this.showDetailHandler.bind(this)}>
+                    {this.state.showDetails === "d-block"
+                      ? "Hide"
+                      : "Show Details"}
+                  </b>
                 </div>
               </div>
             </div>
@@ -438,6 +519,7 @@ class Dashboard extends Component {
               </div>
             </div>
           </div> */}
+
           <div className="card animated fadeInUp faster">
             <div className="content">
               <div className="row">
@@ -487,6 +569,30 @@ class Dashboard extends Component {
         </div>
 
         <div className="row">
+          <div className={"col-4 " + this.state.showDetails}>
+            <div className="card animated fadeInUp faster">
+              <h6>Top 10 Department - Revenue</h6>
+              <div className="dashboardChartsCntr">
+                <HorizontalBar data={RevenuebyDepartment} />
+              </div>
+            </div>
+          </div>{" "}
+          <div className={"col-4 " + this.state.showDetails}>
+            <div className="card animated fadeInUp faster">
+              <h6>Top 10 Doctor - Revenue</h6>
+              <div className="dashboardChartsCntr">
+                <HorizontalBar data={RevenuebyDoctor} />
+              </div>
+            </div>
+          </div>{" "}
+          <div className={"col-4 " + this.state.showDetails}>
+            <div className="card animated fadeInUp faster">
+              <h6>Top 10 Service - Revenue</h6>
+              <div className="dashboardChartsCntr">
+                <HorizontalBar data={RevenuebyService} />
+              </div>
+            </div>
+          </div>
           <div className="col-4">
             <div className="row">
               <div className="col-12">

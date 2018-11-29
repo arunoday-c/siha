@@ -16,10 +16,17 @@
         line-height: 30px; }
         .dashboard .card .content .footer .stats {
           display: inline-block;
-          color: #808080; }
+          color: #808080;
+          width: 100%; }
           .dashboard .card .content .footer .stats span {
             font-weight: 600;
             color: #000; }
+          .dashboard .card .content .footer .stats b {
+            text-align: right;
+            color: blue;
+            text-decoration: underline;
+            cursor: pointer;
+            float: right; }
     .dashboard .card .numbers {
       font-size: 1.5rem;
       text-align: right;

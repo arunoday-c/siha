@@ -17,9 +17,17 @@
         .stats {
           display: inline-block;
           color: #808080;
+          width: 100%;
           span {
             font-weight: 600;
             color: #000;
+          }
+          b {
+            text-align: right;
+            color: blue;
+            text-decoration: underline;
+            cursor: pointer;
+            float: right;
           }
         }
       }
