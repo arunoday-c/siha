@@ -1,7 +1,8 @@
 import { Router } from "express";
-
-export default () => {
+import { saveDocument } from "../Model/documents";
+export default db => {
   const api = Router();
-  api.get("/save");
+
+  api.post("/save", saveDocument);
   return api;
 };

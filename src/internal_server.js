@@ -14,6 +14,7 @@ import httpStatus from "./utils/httpStatus";
 import { logger, requestTracking } from "./utils/logging";
 import jwtDecode from "jwt-decode";
 import { decryption } from "./utils/cryptography";
+
 let app = express();
 const _port = keys.port;
 if (process.env.NODE_ENV == "production") {
@@ -113,7 +114,6 @@ var accessLogStream = rfs("access.log", {
 
 app.use(morgan("combined", { streamexceptionHandlers: accessLogStream }));
 app.set("trust proxy", true);
-
 //api routeres v1
 app.use("/api/v1", routes);
 

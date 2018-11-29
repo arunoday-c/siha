@@ -1,6 +1,11 @@
 import extend from "extend";
-import { swalMessage, algaehApiCall, getCookie } from "../utils/algaehApiCall";
-
+import {
+  swalMessage,
+  algaehApiCall,
+  getCookie,
+  getToken
+} from "../utils/algaehApiCall";
+import axios from "axios";
 export function successfulMessage(options) {
   options.icon = options.icon || "error";
 
@@ -91,8 +96,9 @@ export function saveImageOnServer(options) {
         settings.fileName = getCookie("ScreenName").replace("/", "");
       }
       const formData = new FormData();
+      debugger;
+      formData.append("image", file);
 
-      formData.append("file", file);
       algaehApiCall({
         uri: "/masters/imageSave",
         data: formData,
@@ -156,7 +162,7 @@ export function displayFileFromServer(options) {
         }
       }
     },
-    onFailure: () => { }
+    onFailure: () => {}
   });
 }
 
@@ -187,7 +193,7 @@ const loadJSON = (file, callback) => {
   var xobj = new XMLHttpRequest();
   xobj.overrideMimeType("application/json");
   xobj.open("GET", file, true);
-  xobj.onreadystatechange = function () {
+  xobj.onreadystatechange = function() {
     if (xobj.readyState === 4 && xobj.status === 200) {
       callback(JSON.parse(xobj.responseText));
     }
@@ -252,27 +258,26 @@ export function AlgaehValidation(options) {
             _lable = _Validateerror[i].previousSibling;
           }
         } else {
-          if (_Validateerror[i].parentElement
-            .previousElementSibling.tagName === "LABEL") {
-            _lable =
-              _Validateerror[i].parentElement
-                .previousElementSibling;
+          if (
+            _Validateerror[i].parentElement.previousElementSibling.tagName ===
+            "LABEL"
+          ) {
+            _lable = _Validateerror[i].parentElement.previousElementSibling;
           } else {
             _lable =
               _Validateerror[i].parentElement.parentElement
                 .previousElementSibling;
           }
-
         }
 
         _title =
           _langua === "en"
             ? _lable.innerText
-              .replace("*", "")
-              .toLowerCase()
-              .replace(/^\w/, c => {
-                return c.toUpperCase();
-              }) + "-cannot be blank"
+                .replace("*", "")
+                .toLowerCase()
+                .replace(/^\w/, c => {
+                  return c.toUpperCase();
+                }) + "-cannot be blank"
             : _lable.innerText.replace("*", "") + "- لا يمكن أن يكون فارغا";
       }
       swalMessage({

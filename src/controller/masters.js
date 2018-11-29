@@ -20,6 +20,7 @@ import fs from "fs";
 import { getCacheData, setCacheData } from "../utils/caching";
 import { saveImageInTemp, showFile } from "../utils/images";
 import { getFormula } from "../model/algaeh_formulas";
+import request from "request";
 export default () => {
   let api = Router();
 
@@ -31,7 +32,26 @@ export default () => {
     });
   });
 
-  api.post("/imageSave", saveImageInTemp);
+  // api.post("/imageSave", saveImageInTemp);
+  api.post("/imageSave", (req, res, next) => {
+    console.log("req File", req.image);
+    request(
+      {
+        headers: req.headers,
+        method: "POST",
+        uri: "http://localhost:3010/api/v1/Document/save"
+      },
+      (err, resp, body) => {
+        if (err) {
+          next(err);
+        }
+        res.status(200).json({
+          message: "Success",
+          status: true
+        });
+      }
+    );
+  });
   api.get("/getFile", showFile);
   api.get(
     "/subDeptClinicalNonClinicalAll",
