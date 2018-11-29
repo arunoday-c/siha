@@ -1235,6 +1235,15 @@ let getCashHandoverDetails = (req, res, next) => {
     let db = req.db;
 
     // let where = whereCondition(extend(selectWhere, req.query));
+    let shift_status = "";
+
+    if (
+      req.query.shift_status != "null" &&
+      req.query.shift_status != null &&
+      req.query.shift_status != undefined
+    ) {
+      shift_status = `and shift_status='${req.query.shift_status}'`;
+    }
 
     db.getConnection((error, connection) => {
       connection.query(
@@ -1242,12 +1251,13 @@ let getCashHandoverDetails = (req, res, next) => {
         hims_f_cash_handover_detail_id, cash_handover_header_id, casher_id, shift_status, open_date,\
         close_date, close_by, expected_cash, actual_cash, difference_cash, cash_status, expected_card,\
         actual_card, difference_card, card_status, expected_cheque, actual_cheque, difference_cheque, \
-        cheque_status, remarks, no_of_cheques,EDM.user_id,E.full_name as employee_name,E.arabic_name as employee_arabic_name \
+       cheque_status, remarks, no_of_cheques,EDM.user_id,E.full_name as employee_name,E.arabic_name as employee_arabic_name \
         from hims_f_cash_handover_header CH, hims_f_cash_handover_detail CD ,hims_m_employee_department_mappings EDM,\
         hims_d_employee E where CH.record_status='A' and EDM.record_status='A' and \
         E.record_status='A' and  CH.hims_f_cash_handover_header_id=CD.cash_handover_header_id and \
          EDM.user_id=CD.casher_id and  EDM.employee_id=E.hims_d_employee_id and shift_id=? and \
-        date(daily_handover_date)=date(?)",
+        date(daily_handover_date)=date(?) " +
+          shift_status,
         [req.query.shift_id, req.query.daily_handover_date],
         (error, result) => {
           releaseDBConnection(db, connection);

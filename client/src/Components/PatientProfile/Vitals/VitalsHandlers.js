@@ -21,6 +21,7 @@ const getVitalHistory = ($this, callBack) => {
     }
   });
 };
+
 const getDepartmentVitals = $this => {
   $this.props.getDepartmentVitals({
     uri: "/doctorsWorkBench/getVitalsHeaderMaster",

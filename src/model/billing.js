@@ -705,9 +705,9 @@ let newReceipt = (dataBase, req, res, callBack, next) => {
 let billingCalculations = (req, res, next) => {
   try {
     let hasCalculateall =
-      req.body.intCalculateall === undefined ? true : req.body.intCalculateall;
+      req.body.intCalculateall == undefined ? true : req.body.intCalculateall;
     let inputParam =
-      req.body.intCalculateall === undefined ? req.body.billdetails : req.body;
+      req.body.intCalculateall == undefined ? req.body.billdetails : req.body;
     if (inputParam.length == 0) {
       next(
         httpStatus.generateError(
@@ -1003,7 +1003,7 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
 
             //Calculation Declarations
             let unit_cost =
-              servicesDetails.unit_cost === undefined
+              servicesDetails.unit_cost == undefined
                 ? 0
                 : servicesDetails.unit_cost;
 
@@ -1036,55 +1036,55 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
             let sec_deductable_percentage = 0,
               sec_deductable_amount = 0;
             let conversion_factor =
-              servicesDetails.conversion_factor === undefined
+              servicesDetails.conversion_factor == undefined
                 ? 0
                 : servicesDetails.conversion_factor;
             let quantity =
-              servicesDetails.quantity === undefined
+              servicesDetails.quantity == undefined
                 ? 1
                 : servicesDetails.quantity;
 
             let discount_amout =
-              servicesDetails.discount_amout === undefined
+              servicesDetails.discount_amout == undefined
                 ? 0
                 : servicesDetails.discount_amout;
 
             let discount_percentage =
-              servicesDetails.discount_percentage === undefined
+              servicesDetails.discount_percentage == undefined
                 ? 0
                 : servicesDetails.discount_percentage;
 
             let insured =
-              servicesDetails.insured === undefined
+              servicesDetails.insured == undefined
                 ? "N"
                 : servicesDetails.insured;
 
             let sec_insured =
-              servicesDetails.sec_insured === undefined
+              servicesDetails.sec_insured == undefined
                 ? "N"
                 : servicesDetails.sec_insured;
 
             let approval_amt =
-              servicesDetails.approval_amt === undefined
+              servicesDetails.approval_amt == undefined
                 ? 0
                 : servicesDetails.approval_amt;
             let approval_limit_yesno =
-              servicesDetails.approval_limit_yesno === undefined
+              servicesDetails.approval_limit_yesno == undefined
                 ? "N"
                 : servicesDetails.approval_limit_yesno;
 
             let apprv_status =
-              servicesDetails.apprv_status === undefined
+              servicesDetails.apprv_status == undefined
                 ? "NR"
                 : servicesDetails.apprv_status;
 
             let approved_amount =
-              servicesDetails.approved_amount === undefined
+              servicesDetails.approved_amount == undefined
                 ? 0
                 : servicesDetails.approved_amount;
             debugLog("Pre app", servicesDetails.pre_approval);
             let pre_approval =
-              servicesDetails.pre_approval === undefined
+              servicesDetails.pre_approval == undefined
                 ? "N"
                 : servicesDetails.pre_approval;
 
@@ -1095,12 +1095,12 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
             let icd_code = "";
             let covered = "Y";
             let preapp_limit_amount =
-              servicesDetails.preapp_limit_amount === undefined
+              servicesDetails.preapp_limit_amount == undefined
                 ? 0
                 : servicesDetails.preapp_limit_amount;
             new Promise((resolve, reject) => {
               try {
-                if (insured === "Y") {
+                if (insured == "Y") {
                   // let callInsurance =
                   debugLog("Data: ", req.body[m]);
                   req.body[m].insurance_id =
@@ -1117,7 +1117,7 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                     resolve
                   );
                   //if (callInsurance != null) resolve(callInsurance);
-                } else if (sec_insured === "Y") {
+                } else if (sec_insured == "Y") {
                   req.body[m].insurance_id =
                     req.body[m].secondary_insurance_provider_id;
                   req.body[m].hims_d_insurance_network_office_id =
@@ -1140,17 +1140,17 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
             })
               .then(policydtls => {
                 if (
-                  covered === "N" ||
-                  (pre_approval === "Y" && apprv_status === "RJ")
+                  covered == "N" ||
+                  (pre_approval == "Y" && apprv_status == "RJ")
                 ) {
                   insured = "N";
                 }
 
-                if (approval_limit_yesno === "Y") {
+                if (approval_limit_yesno == "Y") {
                   pre_approval = "Y";
                 }
 
-                if (pre_approval === "N") {
+                if (pre_approval == "N") {
                   pre_approval =
                     policydtls !== null ? policydtls.pre_approval : "N";
                 }
@@ -1162,7 +1162,7 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                     ? policydtls.cpt_code
                     : records.cpt_code;
 
-                if (insured === "Y" && policydtls.covered === "Y") {
+                if (insured == "Y" && policydtls.covered == "Y") {
                   ser_net_amount = policydtls.net_amount;
                   ser_gross_amt = policydtls.gross_amt;
 
@@ -1188,7 +1188,7 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                   net_amout = gross_amount - discount_amout;
 
                   //Patient And Company
-                  if (policydtls.copay_status === "Y") {
+                  if (policydtls.copay_status == "Y") {
                     copay_amount = policydtls.copay_amt;
                     copay_percentage = (copay_amount / net_amout) * 100;
                   } else {
@@ -1335,7 +1335,7 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                   }
 
                   //If primary and secondary exists
-                  if (sec_insured === "Y") {
+                  if (sec_insured == "Y") {
                     req.body[m].insurance_id =
                       req.body[m].secondary_insurance_provider_id;
                     req.body[m].hims_d_insurance_network_office_id =
@@ -1389,27 +1389,35 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
 
               .then(secpolicydtls => {
                 if (secpolicydtls != null) {
+                  debugFunction("secpolicydtls");
                   //secondary Insurance
                   sec_unit_cost = patient_resp;
 
                   //Patient And Company
-                  if (secpolicydtls.copay_status === "Y") {
+                  if (secpolicydtls.copay_status == "Y") {
+                    debugFunction("secpolicydtls Y");
                     sec_copay_amount = secpolicydtls.copay_amt;
                     sec_copay_percntage =
                       (sec_copay_amount / sec_unit_cost) * 100;
                   } else {
+                    debugFunction("secpolicydtls N");
                     if (
                       appsettings.hims_d_service_type.service_type_id
                         .Consultation == records.service_type_id
                     ) {
                       sec_copay_percntage = secpolicydtls.copay_consultation;
-                      sec_deductable_percentage = policydtls.deductible;
+                      sec_deductable_percentage = secpolicydtls.deductible;
+                      debugLog("sec_copay_percntage", sec_copay_percntage);
+                      debugLog(
+                        "sec_deductable_percentage",
+                        sec_deductable_percentage
+                      );
                     } else if (
                       appsettings.hims_d_service_type.service_type_id
                         .Procedure == records.service_type_id
                     ) {
                       sec_copay_percntage = secpolicydtls.copay_percent_trt;
-                      sec_deductable_percentage = policydtls.deductible_trt;
+                      sec_deductable_percentage = secpolicydtls.deductible_trt;
                     } else if (
                       appsettings.hims_d_service_type.service_type_id
                         .Provider == records.service_type_id
@@ -1426,7 +1434,7 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                       records.service_type_id
                     ) {
                       sec_copay_percntage = secpolicydtls.copay_percent;
-                      sec_deductable_percentage = policydtls.deductible_lab;
+                      sec_deductable_percentage = secpolicydtls.deductible_lab;
                     } else if (
                       appsettings.hims_d_service_type.service_type_id
                         .NursingCare == records.service_type_id
@@ -1462,14 +1470,14 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                         .Radiology == records.service_type_id
                     ) {
                       sec_copay_percntage = secpolicydtls.copay_percent_rad;
-                      sec_deductable_percentage = policydtls.deductible_rad;
+                      sec_deductable_percentage = secpolicydtls.deductible_rad;
                     } else if (
                       appsettings.hims_d_service_type.service_type_id
                         .Pharmacy == records.service_type_id
                     ) {
                       sec_copay_percntage = secpolicydtls.copay_medicine;
                       sec_deductable_percentage =
-                        policydtls.deductible_medicine;
+                        secpolicydtls.deductible_medicine;
                     } else if (
                       appsettings.hims_d_service_type.service_type_id
                         .NonService == records.service_type_id

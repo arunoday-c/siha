@@ -419,15 +419,27 @@ const PostReceiptEntry = $this => {
       $this.state.pharmacy_stock_detail[i].location_type =
         $this.state.location_type;
 
+      $this.state.pharmacy_stock_detail[i].quantity =
+        $this.state.pharmacy_stock_detail[i].recieved_quantity;
+
+      $this.state.pharmacy_stock_detail[i].uom_id =
+        $this.state.pharmacy_stock_detail[i].pharmacy_uom_id;
+
       $this.state.pharmacy_stock_detail[i].sales_uom =
-        $this.state.pharmacy_stock_detail[i].uom_id;
+        $this.state.pharmacy_stock_detail[i].pharmacy_uom_id;
+      $this.state.pharmacy_stock_detail[i].item_id =
+        $this.state.pharmacy_stock_detail[i].phar_item_id;
       $this.state.pharmacy_stock_detail[i].item_code_id =
         $this.state.pharmacy_stock_detail[i].phar_item_id;
       $this.state.pharmacy_stock_detail[i].grn_number = $this.state.grn_number;
       $this.state.pharmacy_stock_detail[i].item_category_id =
         $this.state.pharmacy_stock_detail[i].phar_item_category;
+      $this.state.pharmacy_stock_detail[i].item_group_id =
+        $this.state.pharmacy_stock_detail[i].phar_item_group;
+
       $this.state.pharmacy_stock_detail[i].net_total =
         $this.state.pharmacy_stock_detail[i].net_extended_cost;
+      $this.state.pharmacy_stock_detail[i].operation = "+";
     }
   } else if ($this.state.grn_for === "INV") {
     $this.state.inventory_stock_detail = $this.state.receipt_entry_detail;
@@ -438,15 +450,26 @@ const PostReceiptEntry = $this => {
       $this.state.inventory_stock_detail[i].location_type =
         $this.state.location_type;
 
+      $this.state.inventory_stock_detail[i].quantity =
+        $this.state.inventory_stock_detail[i].recieved_quantity;
+
+      $this.state.pharmacy_stock_detail[i].uom_id =
+        $this.state.pharmacy_stock_detail[i].inventory_uom_id;
       $this.state.inventory_stock_detail[i].sales_uom =
-        $this.state.inventory_stock_detail[i].uom_id;
+        $this.state.inventory_stock_detail[i].inventory_uom_id;
+      $this.state.pharmacy_stock_detail[i].item_id =
+        $this.state.pharmacy_stock_detail[i].inv_item_id;
       $this.state.inventory_stock_detail[i].item_code_id =
         $this.state.inventory_stock_detail[i].inv_item_id;
       $this.state.inventory_stock_detail[i].grn_number = $this.state.grn_number;
       $this.state.inventory_stock_detail[i].item_category_id =
         $this.state.inventory_stock_detail[i].inv_item_category_id;
+      $this.state.pharmacy_stock_detail[i].item_group_id =
+        $this.state.pharmacy_stock_detail[i].inv_item_group_id;
+
       $this.state.inventory_stock_detail[i].net_total =
         $this.state.inventory_stock_detail[i].net_extended_cost;
+      $this.state.pharmacy_stock_detail[i].operation = "+";
     }
   }
 

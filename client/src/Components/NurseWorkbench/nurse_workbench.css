@@ -148,3 +148,5 @@
   .nurse_workbench .opPatientList .opList li:hover {
     background: #ebfeff;
     cursor: pointer; }
+  .nurse_workbench .opPatientList .opList .active {
+    background: blanchedalmond; }

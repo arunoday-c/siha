@@ -268,6 +268,7 @@ const datehandle = ($this, context, ctrl, e) => {
 };
 
 const ProcessInsurance = ($this, context, ctrl, e) => {
+  debugger;
   if (
     $this.state.insured === "Y" &&
     ($this.state.primary_insurance_provider_id == null ||
@@ -324,6 +325,8 @@ const ProcessInsurance = ($this, context, ctrl, e) => {
             data: response.data.records,
             onSuccess: response => {
               if (response.data.success) {
+                response.data.records.saveEnable = false;
+                response.data.records.ProcessInsure = true;
                 if (context != null) {
                   context.updateState({ ...response.data.records });
                 }

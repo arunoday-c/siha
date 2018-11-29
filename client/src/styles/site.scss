@@ -636,6 +636,7 @@ input[type="text"],
 input[type="number"],
 input[type="tel"],
 input[type="email"],
+input[type="password"],
 input[type="time"] {
   font-size: $textFontSize;
   padding: 4px 6px 4px;
@@ -766,12 +767,20 @@ textarea {
     }
   }
 }
+.ageMonth,
+.ageDay {
+  input {
+    margin-top: 23px;
+  }
+}
+
 //mandatort fields styles
 .mandatory {
   input[type="text"],
   input[type="number"],
   input[type="tel"],
   input[type="email"],
+  input[type="password"],
   input.autoselect-input,
   .algaeh-datePicker input[type="date"] {
     background-color: none;
@@ -784,7 +793,8 @@ input[type="text"]:disabled,
 input[type="number"]:disabled,
 input[type="tel"]:disabled,
 input[type="email"]:disabled,
-input[type="time"]:disabled {
+input[type="time"]:disabled,
+input[type="password"]:disabled {
   background: #fffdfa;
   border: 1px dashed #d3d3d3;
   color: #000;

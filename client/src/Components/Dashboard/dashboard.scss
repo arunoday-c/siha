@@ -1,64 +1,83 @@
 .dashboard {
-  font-weight: normal;
-  text-align: center;
-  margin: 15px 0;
-
-  .paper {
-    margin: 10;
-    text-align: center;
-  }
-
-  .imp {
-    color: #ff063e;
-  }
-
-  .txt-fld {
-    background-color: #fbfbfb;
-    width: 100%;
-  }
-
-  .select-fld {
-    padding-left: 8px;
-    background-color: #fbfbfb;
-    width: 100%;
-  }
-
-  .table-details {
-    text-align: center;
-  }
-
-  .table-hover tbody tr:hover {
-    td,
-    th {
-      background-color: #fcffde;
+  margin-top: 15px;
+  .card {
+    border-radius: 6px;
+    box-shadow: 0 2px 2px rgba(204, 197, 185, 0.5);
+    background-color: #ffffff;
+    color: #252422;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+    .content {
+      padding: 15px 15px 10px 15px;
+      .footer {
+        padding: 0;
+        font-size: 0.8rem;
+        line-height: 30px;
+        .stats {
+          display: inline-block;
+          color: #808080;
+          span {
+            font-weight: 600;
+            color: #000;
+          }
+        }
+        hr {
+          margin: 0;
+        }
+      }
     }
-  }
-
-  .form-details {
-    margin-top: 20px;
-    margin-left: "auto";
-    margin-right: "auto";
-  }
-
-  th,
-  td {
-    border-right: 1px solid #ffffff;
-  }
-
-  .radio [type="radio"]:checked + label:after {
-    border-color: #00bcb0;
-    background-color: #00bcb0;
-  }
-
-  /*Gap*/
-
-  .radio-gap [type="radio"] {
-    &.with-gap:checked + label:before {
-      border-color: #00bcb0;
+    .numbers {
+      font-size: 1.5rem;
+      text-align: right;
+      font-weight: 600;
+      p {
+        font-size: 1rem;
+        font-weight: normal;
+        margin: 0;
+      }
     }
-    &:checked + label:after {
-      border-color: #00bcb0;
-      background-color: #00bcb0;
+    .icon-big {
+      i {
+        font-size: 3rem;
+        min-height: 3.5rem;
+      }
+      .fa-users {
+        &:before {
+          color: #c655cc;
+        }
+      }
+      .fa-hospital {
+        &:before {
+          color: #7455cc;
+        }
+      }
+      .fa-user-md {
+        &:before {
+          color: #3c67dd;
+        }
+      }
+      .fa-walking {
+        &:before {
+          color: #9d3cdd;
+        }
+      }
+    }
+    h6 {
+      padding: 0 15px;
+      min-height: 35px;
+      border-bottom: 1px dashed #eee;
+      color: #666;
+      font-size: 1rem;
+      font-weight: normal;
+      line-height: 26px;
+      margin: 10px 0;
+    }
+    .dashboardChartsCntr {
+      margin: 10px;
+      width: 95%;
+      height: auto;
+      position: relative;
     }
   }
 }
