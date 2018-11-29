@@ -3,7 +3,7 @@ import { Validations } from "./SubInsuranceValidation";
 import swal from "sweetalert2";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
-const texthandle = ($this, context, e) => {
+const texthandle = ($this, e) => {
   let name;
   let value;
   if (e.name != null) {

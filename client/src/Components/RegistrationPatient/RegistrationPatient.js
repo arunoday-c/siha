@@ -15,7 +15,7 @@ import {
   postPatientDetails,
   postVisitDetails
 } from "../../actions/RegistrationPatient/Registrationactions";
-
+import Enumerable from "linq";
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import MyContext from "../../utils/MyContext.js";
 import { Validations } from "./FrontdeskValidation.js";
@@ -70,15 +70,7 @@ class RegistrationPatient extends PureComponent {
     let IOputs = emptyObject;
     IOputs.selectedLang = prevLang;
     this.setState(IOputs);
-    if (this.state.saveEnable === "clear") {
-      this.props.initialStatePatientData({
-        redux: {
-          type: "PAT_INIT_DATA",
-          mappingName: "patients",
-          data: {}
-        }
-      });
-    }
+    
 
     if (
       this.props.patient_code !== undefined &&
@@ -322,14 +314,36 @@ class RegistrationPatient extends PureComponent {
   };
 
   // componentWillReceiveProps(nextProps) {
-  //   if (
-  //     nextProps.genbill !== undefined &&
-  //     nextProps.genbill.length !== 0 &&
-  //     this.state.doctor_id !== null
-  //   ) {
-  //     this.setState({ ...this.state, ...nextProps.genbill });
+  //   debugger;
+  //   if (this.state.country_id === null) return;
+  //   if (this.state.country_id !== nextProps.country_id) {
+  //     let country = Enumerable.from(this.props.countries)
+  //       .where(w => w.hims_d_country_id === this.state.country_id)
+  //       .firstOrDefault();
+  //     let states = country !== undefined ? country.states : [];
+
+  //     if (this.props.countries !== undefined) {
+  //       if (nextProps.state_id !== this.state.state_id) {
+  //         let cities = Enumerable.from(states)
+  //           .where(w => w.hims_d_state_id === this.state.state_id)
+  //           .firstOrDefault();
+
+  //         if (cities !== undefined) {
+  //           this.setState({
+  //             countrystates: states,
+  //             cities: cities.cities,
+  //             state_id: this.state.state_id,
+  //             city_id: this.state.city_id
+  //           });
+  //         } else {
+  //           this.setState({
+  //             countrystates: states,
+  //             state_id: this.state.state_id
+  //           });
+  //         }
+  //       }
+  //     }
   //   }
-  //   AlgaehLoader({ show: false });
   // }
 
   getCtrlCode(patcode) {
@@ -349,24 +363,21 @@ class RegistrationPatient extends PureComponent {
     let title_id = this.props.title_id || null;
 
     AlgaehLoader({ show: true });
-    this.props.getPatientDetails({
+
+    algaehApiCall({
       uri: "/frontDesk/get",
       method: "GET",
-      printInput: true,
       data: { patient_code: patcode },
-      redux: {
-        type: "PAT_GET_DATA",
-        mappingName: "patients"
-      },
-      afterSuccess: data => {
-        if (data.response === undefined) {
+      onSuccess: response => {
+        if (response.data.success) {
+          let data = response.data.records;
+
           data.patientRegistration.visitDetails = data.visitDetails;
           data.patientRegistration.patient_id =
             data.patientRegistration.hims_d_patient_id;
           data.patientRegistration.existingPatient = true;
 
           //Appoinment Start
-
           if (fromAppoinment === true) {
             data.patientRegistration.provider_id = provider_id;
             data.patientRegistration.doctor_id = provider_id;
@@ -381,12 +392,12 @@ class RegistrationPatient extends PureComponent {
             data.patientRegistration.consultation = "Y";
             data.patientRegistration.appointment_patient = "Y";
             data.patientRegistration.hims_f_patient_appointment_id = hims_f_patient_appointment_id;
-
-            // data.patientRegistration.title_id = title_id;
+            data.patientRegistration.title_id = title_id;
           }
           //Appoinment End
           data.patientRegistration.filePreview =
             "data:image/png;base64, " + data.patient_Image;
+          data.patientRegistration.arabic_name = "No Name";
           $this.setState(data.patientRegistration, () => {
             if (fromAppoinment === true) {
               generateBillDetails(this, this);
@@ -396,70 +407,136 @@ class RegistrationPatient extends PureComponent {
           $this.props.getPatientInsurance({
             uri: "/insurance/getPatientInsurance",
             method: "GET",
-            data: { patient_id: data.patientRegistration.hims_d_patient_id },
+            data: {
+              patient_id: data.patientRegistration.hims_d_patient_id
+            },
             redux: {
               type: "EXIT_INSURANCE_GET_DATA",
               mappingName: "existinsurance"
             }
           });
-        } else {
-          if (data.response.data.success === true) {
-            data.patientRegistration.visitDetails = data.visitDetails;
-            data.patientRegistration.patient_id =
-              data.patientRegistration.hims_d_patient_id;
-            data.patientRegistration.existingPatient = true;
-
-            //Appoinment Start
-            if (fromAppoinment === true) {
-              data.patientRegistration.provider_id = provider_id;
-              data.patientRegistration.doctor_id = provider_id;
-              data.patientRegistration.sub_department_id = sub_department_id;
-
-              data.patientRegistration.visit_type = visit_type;
-              data.patientRegistration.saveEnable = false;
-              data.patientRegistration.clearEnable = true;
-              data.patientRegistration.hims_d_services_id = hims_d_services_id;
-              data.patientRegistration.department_id = department_id;
-              data.patientRegistration.billdetail = false;
-              data.patientRegistration.consultation = "Y";
-              data.patientRegistration.appointment_patient = "Y";
-              data.patientRegistration.hims_f_patient_appointment_id = hims_f_patient_appointment_id;
-              data.patientRegistration.title_id = title_id;
-            }
-            //Appoinment End
-            data.patientRegistration.filePreview =
-              "data:image/png;base64, " + data.patient_Image;
-            data.patientRegistration.arabic_name = "No Name";
-            $this.setState(data.patientRegistration, () => {
-              if (fromAppoinment === true) {
-                generateBillDetails(this, this);
-              }
-            });
-
-            $this.props.getPatientInsurance({
-              uri: "/insurance/getPatientInsurance",
-              method: "GET",
-              data: {
-                patient_id: data.patientRegistration.hims_d_patient_id
-              },
-              redux: {
-                type: "EXIT_INSURANCE_GET_DATA",
-                mappingName: "existinsurance"
-              }
-            });
-          } else {
-            swalMessage({
-              title: data.response.data.message,
-              type: "error"
-            });
-
-            let IOputs = emptyObject;
-            this.setState(IOputs);
-          }
         }
         AlgaehLoader({ show: false });
+      },
+      onFailure: error => {
+        AlgaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
       }
     });
+    // this.props.getPatientDetails({
+    //   uri: "/frontDesk/get",
+    //   method: "GET",
+    //   printInput: true,
+    //   data: { patient_code: patcode },
+    //   redux: {
+    //     type: "PAT_GET_DATA",
+    //     mappingName: "patients"
+    //   },
+    //   afterSuccess: data => {
+    //     if (data.response === undefined) {
+    //       data.patientRegistration.visitDetails = data.visitDetails;
+    //       data.patientRegistration.patient_id =
+    //         data.patientRegistration.hims_d_patient_id;
+    //       data.patientRegistration.existingPatient = true;
+
+    //       //Appoinment Start
+
+    //       if (fromAppoinment === true) {
+    //         data.patientRegistration.provider_id = provider_id;
+    //         data.patientRegistration.doctor_id = provider_id;
+    //         data.patientRegistration.sub_department_id = sub_department_id;
+
+    //         data.patientRegistration.visit_type = visit_type;
+    //         data.patientRegistration.saveEnable = false;
+    //         data.patientRegistration.clearEnable = true;
+    //         data.patientRegistration.hims_d_services_id = hims_d_services_id;
+    //         data.patientRegistration.department_id = department_id;
+    //         data.patientRegistration.billdetail = false;
+    //         data.patientRegistration.consultation = "Y";
+    //         data.patientRegistration.appointment_patient = "Y";
+    //         data.patientRegistration.hims_f_patient_appointment_id = hims_f_patient_appointment_id;
+
+    //         // data.patientRegistration.title_id = title_id;
+    //       }
+    //       //Appoinment End
+    //       data.patientRegistration.filePreview =
+    //         "data:image/png;base64, " + data.patient_Image;
+    //       $this.setState(data.patientRegistration, () => {
+    //         if (fromAppoinment === true) {
+    //           generateBillDetails(this, this);
+    //         }
+    //       });
+
+    //       $this.props.getPatientInsurance({
+    //         uri: "/insurance/getPatientInsurance",
+    //         method: "GET",
+    //         data: { patient_id: data.patientRegistration.hims_d_patient_id },
+    //         redux: {
+    //           type: "EXIT_INSURANCE_GET_DATA",
+    //           mappingName: "existinsurance"
+    //         }
+    //       });
+    //     } else {
+    //       if (data.response.data.success === true) {
+    //         data.patientRegistration.visitDetails = data.visitDetails;
+    //         data.patientRegistration.patient_id =
+    //           data.patientRegistration.hims_d_patient_id;
+    //         data.patientRegistration.existingPatient = true;
+
+    //         //Appoinment Start
+    //         if (fromAppoinment === true) {
+    //           data.patientRegistration.provider_id = provider_id;
+    //           data.patientRegistration.doctor_id = provider_id;
+    //           data.patientRegistration.sub_department_id = sub_department_id;
+
+    //           data.patientRegistration.visit_type = visit_type;
+    //           data.patientRegistration.saveEnable = false;
+    //           data.patientRegistration.clearEnable = true;
+    //           data.patientRegistration.hims_d_services_id = hims_d_services_id;
+    //           data.patientRegistration.department_id = department_id;
+    //           data.patientRegistration.billdetail = false;
+    //           data.patientRegistration.consultation = "Y";
+    //           data.patientRegistration.appointment_patient = "Y";
+    //           data.patientRegistration.hims_f_patient_appointment_id = hims_f_patient_appointment_id;
+    //           data.patientRegistration.title_id = title_id;
+    //         }
+    //         //Appoinment End
+    //         data.patientRegistration.filePreview =
+    //           "data:image/png;base64, " + data.patient_Image;
+    //         data.patientRegistration.arabic_name = "No Name";
+    //         $this.setState(data.patientRegistration, () => {
+    //           if (fromAppoinment === true) {
+    //             generateBillDetails(this, this);
+    //           }
+    //         });
+
+    //         $this.props.getPatientInsurance({
+    //           uri: "/insurance/getPatientInsurance",
+    //           method: "GET",
+    //           data: {
+    //             patient_id: data.patientRegistration.hims_d_patient_id
+    //           },
+    //           redux: {
+    //             type: "EXIT_INSURANCE_GET_DATA",
+    //             mappingName: "existinsurance"
+    //           }
+    //         });
+    //       } else {
+    //         swalMessage({
+    //           title: data.response.data.message,
+    //           type: "error"
+    //         });
+
+    //         let IOputs = emptyObject;
+    //         this.setState(IOputs);
+    //       }
+    //     }
+    //     AlgaehLoader({ show: false });
+    //   }
+    // });
   }
 
   //Render Page Start Here

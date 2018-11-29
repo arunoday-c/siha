@@ -183,7 +183,7 @@ let algaehSearchConfig = searchName => {
       {
         searchName: "DNEntryInReceipt",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS * from hims_f_procurement_dn_header where cancelled='N'",
+          "select SQL_CALC_FOUND_ROWS * from hims_f_procurement_dn_header where cancelled='N'  and is_completed='N'",
         orderBy: "hims_f_procurement_dn_header_id desc"
       },
       {

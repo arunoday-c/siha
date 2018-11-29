@@ -2,7 +2,12 @@ import { Router } from "express";
 import { releaseConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
 
-import { addAlgaehGroupMAster } from "../model/algaehMasters";
+import {
+  addAlgaehGroupMAster,
+  addAlgaehModule,
+  getRoleBaseActiveModules,
+  getRoleBaseInActiveComponents
+} from "../model/algaehMasters";
 
 export default ({ config, db }) => {
   let api = Router();
@@ -11,6 +16,50 @@ export default ({ config, db }) => {
   api.post(
     "/addAlgaehGroupMAster",
     addAlgaehGroupMAster,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+  // created by irfan :to add
+  api.post(
+    "/addAlgaehModule",
+    addAlgaehModule,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :to
+  api.get(
+    "/getRoleBaseActiveModules",
+    getRoleBaseActiveModules,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :to add
+  api.get(
+    "/getRoleBaseInActiveComponents",
+    getRoleBaseInActiveComponents,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

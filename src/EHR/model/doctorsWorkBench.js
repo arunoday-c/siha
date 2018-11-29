@@ -8,7 +8,7 @@ import {
   jsonArrayToObject
 } from "../../utils";
 import httpStatus from "../../utils/httpStatus";
-//import { LINQ } from "node-linq";
+import { LINQ } from "node-linq";
 import moment from "moment";
 import { debugFunction, debugLog } from "../../utils/logging";
 import formater from "../../keys/keys";
@@ -2527,7 +2527,7 @@ let addPatientHistory = (req, res, next) => {
 };
 
 //created by irfan: to getPatientHistory
-let getPatientHistory = (req, res, next) => {
+let getPatientHistoryBACKUP = (req, res, next) => {
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -2544,6 +2544,109 @@ let getPatientHistory = (req, res, next) => {
             next(error);
           }
           req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+//created by irfan: to getPatientHistory
+let getPatientHistory = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_f_patient_history_id,history_type, provider_id,E.full_name as provider_name, patient_id, remarks from hims_f_patient_history PH,\
+        hims_d_employee E where  PH.provider_id= E.hims_d_employee_id and PH.record_status='A' and E.record_status='A' and  \
+         patient_id=? ",
+        [req.query.patient_id],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+
+          let social = new LINQ(result)
+            .Where(w => w.history_type == "SOH")
+            .Select(s => {
+              return {
+                hims_f_patient_history_id: s.hims_f_patient_history_id,
+                history_type: s.history_type,
+                provider_id: s.provider_id,
+                provider_name: s.provider_name,
+                patient_id: s.patient_id,
+                remarks: s.remarks
+              };
+            })
+            .ToArray();
+          debugLog("social:", social);
+
+          let medical = new LINQ(result)
+            .Where(w => w.history_type == "MEH")
+            .Select(s => {
+              return {
+                hims_f_patient_history_id: s.hims_f_patient_history_id,
+                history_type: s.history_type,
+                provider_id: s.provider_id,
+                provider_name: s.provider_name,
+                patient_id: s.patient_id,
+                remarks: s.remarks
+              };
+            })
+            .ToArray();
+          debugLog("medical:", medical);
+
+          let surgical = new LINQ(result)
+            .Where(w => w.history_type == "SGH")
+            .Select(s => {
+              return {
+                hims_f_patient_history_id: s.hims_f_patient_history_id,
+                history_type: s.history_type,
+                provider_id: s.provider_id,
+                provider_name: s.provider_name,
+                patient_id: s.patient_id,
+                remarks: s.remarks
+              };
+            })
+            .ToArray();
+          debugLog("surgical:", surgical);
+
+          let family = new LINQ(result)
+            .Where(w => w.history_type == "FMH")
+            .Select(s => {
+              return {
+                hims_f_patient_history_id: s.hims_f_patient_history_id,
+                history_type: s.history_type,
+                provider_id: s.provider_id,
+                provider_name: s.provider_name,
+                patient_id: s.patient_id,
+                remarks: s.remarks
+              };
+            })
+            .ToArray();
+          debugLog("family:", family);
+
+          let birth = new LINQ(result)
+            .Where(w => w.history_type == "BRH")
+            .Select(s => {
+              return {
+                hims_f_patient_history_id: s.hims_f_patient_history_id,
+                history_type: s.history_type,
+                provider_id: s.provider_id,
+                provider_name: s.provider_name,
+                patient_id: s.patient_id,
+                remarks: s.remarks
+              };
+            })
+            .ToArray();
+          debugLog("birth:", birth);
+
+          req.records = { social, medical, surgical, family, birth };
           next();
         }
       );

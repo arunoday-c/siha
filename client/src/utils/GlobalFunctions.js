@@ -335,44 +335,47 @@ export function getAmountFormart(value) {
 }
 
 export function SetBulkState(options) {
-  if (options.state !== undefined) {
-    if (options.querySelector === undefined) options.querySelector = "input";
+  if (options.querySelector === undefined) options.querySelector = "input";
 
-    const _allControls = document.querySelectorAll(options.querySelector);
-    let _objectCreation = {};
-    for (let i = 0; i < _allControls.length; i++) {
-      const _isExclude =
-        _allControls[i].getAttribute("exclude") !== null
-          ? _allControls[i].getAttribute("exclude")
-          : "false";
-      if (_isExclude === "false") {
-        const _name = _allControls[i].getAttribute("name");
-        const _dataRole = _allControls[i].getAttribute("data_role");
+  const _allControls = document.querySelectorAll(options.querySelector);
+  let _objectCreation = {};
+  for (let i = 0; i < _allControls.length; i++) {
+    const _isExclude =
+      _allControls[i].getAttribute("exclude") !== null
+        ? _allControls[i].getAttribute("exclude")
+        : "false";
+    if (_isExclude === "false") {
+      const _name = _allControls[i].getAttribute("name");
+      const _dataRole = _allControls[i].getAttribute("data_role");
 
-        if (_name !== null) {
-          const _type = _allControls[i].getAttribute("type");
-          if (_type === "checkbox" || _type === "radio") {
-            _objectCreation[_name] = _allControls[i].checked ? "Y" : "N";
-          } else {
-            _objectCreation[_name] =
-              _dataRole !== null
-                ? _allControls[i].getAttribute("referencevalue")
-                : _allControls[i].value;
-          }
+      if (_name !== null) {
+        const _type = _allControls[i].getAttribute("type");
+        if (_type === "checkbox") {
+          _objectCreation[_name] = _allControls[i].checked ? "Y" : "N";
+        } else if (_type === "radio") {
+          _objectCreation[_name] = _allControls[i].checked
+            ? _allControls[i].value
+            : "N";
+        } else {
+          _objectCreation[_name] =
+            _dataRole !== null
+              ? _allControls[i].getAttribute("referencevalue")
+              : _allControls[i].value;
         }
       }
     }
-    debugger;
-    if (options.state !== undefined) {
-      const _object = { ...options.state.state, ..._objectCreation };
-      options.state.setState(_object, () => {
-        debugger;
-        if (
-          options.callback !== undefined &&
-          typeof options.callback === "function"
-        )
-          options.callback();
-      });
-    }
+  }
+
+  if (options.state !== undefined) {
+    const _object = { ...options.state.state, ..._objectCreation };
+    options.state.setState(_object, () => {
+      if (
+        options.callback !== undefined &&
+        typeof options.callback === "function"
+      )
+        options.callback();
+    });
+  } else {
+    return _objectCreation;
   }
 }

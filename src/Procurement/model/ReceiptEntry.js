@@ -24,156 +24,150 @@ let addReceiptEntry = (req, res, next) => {
     debugLog("ReceiptEntry: ", "Delivery Note Entry");
     let connection = req.connection;
 
-    connection.beginTransaction(error => {
-      if (error) {
-        connection.rollback(() => {
-          releaseDBConnection(db, connection);
-          next(error);
-        });
-      }
-      let requestCounter = 1;
+    let requestCounter = 1;
 
-      return new Promise((resolve, reject) => {
-        runningNumberGen({
-          db: connection,
-          counter: requestCounter,
-          module_desc: ["RE_NUM"],
-          onFailure: error => {
-            reject(error);
-          },
-          onSuccess: result => {
-            resolve(result);
-          }
-        });
-      }).then(result => {
-        let documentCode = result[0].completeNumber;
+    return new Promise((resolve, reject) => {
+      runningNumberGen({
+        db: connection,
+        counter: requestCounter,
+        module_desc: ["RE_NUM"],
+        onFailure: error => {
+          reject(error);
+        },
+        onSuccess: result => {
+          resolve(result);
+        }
+      });
+    }).then(result => {
+      let documentCode = result[0].completeNumber;
 
-        debugLog("documentCode:", documentCode);
+      debugLog("documentCode:", documentCode);
 
-        let today = moment().format("YYYY-MM-DD");
-        debugLog("today:", today);
+      let today = moment().format("YYYY-MM-DD");
+      debugLog("today:", today);
 
-        let year = moment().format("YYYY");
-        debugLog("onlyyear:", year);
+      let year = moment().format("YYYY");
+      debugLog("onlyyear:", year);
 
-        let period = moment().format("MM");
-        debugLog("period:", period);
+      let period = moment().format("MM");
+      debugLog("period:", period);
 
-        connection.query(
-          "INSERT INTO `hims_f_procurement_grn_header` (grn_number,grn_date, grn_for, `year`, period, pharmcy_location_id,\
+      connection.query(
+        "INSERT INTO `hims_f_procurement_grn_header` (grn_number,grn_date, grn_for, `year`, period, pharmcy_location_id,\
               inventory_location_id,location_type,vendor_id, po_id, dn_id, payment_terms, comment, description, sub_total, \
               detail_discount, extended_total,sheet_level_discount_percent, sheet_level_discount_amount,\
               net_total,total_tax, net_payable, additional_cost,reciept_total, created_by,created_date, \
               updated_by,updated_date) \
             VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-          [
-            documentCode,
-            today,
-            input.grn_for,
-            year,
-            period,
-            input.pharmcy_location_id,
-            input.inventory_location_id,
-            input.location_type,
-            input.vendor_id,
-            input.po_id,
-            input.dn_id,
+        [
+          documentCode,
+          today,
+          input.grn_for,
+          year,
+          period,
+          input.pharmcy_location_id,
+          input.inventory_location_id,
+          input.location_type,
+          input.vendor_id,
+          input.po_id,
+          input.dn_id,
 
-            input.payment_terms,
-            input.comment,
-            input.description,
-            input.sub_total,
-            input.detail_discount,
-            input.extended_total,
-            input.sheet_level_discount_percent,
-            input.sheet_level_discount_amount,
+          input.payment_terms,
+          input.comment,
+          input.description,
+          input.sub_total,
+          input.detail_discount,
+          input.extended_total,
+          input.sheet_level_discount_percent,
+          input.sheet_level_discount_amount,
 
-            input.net_total,
-            input.total_tax,
-            input.net_payable,
-            input.additional_cost,
-            input.reciept_total,
+          input.net_total,
+          input.total_tax,
+          input.net_payable,
+          input.additional_cost,
+          input.reciept_total,
 
-            req.userIdentity.algaeh_d_app_user_id,
-            new Date(),
-            req.userIdentity.algaeh_d_app_user_id,
-            new Date()
-          ],
-          (error, headerResult) => {
-            if (error) {
-              debugLog("error: ", "Check");
-              connection.rollback(() => {
-                releaseDBConnection(db, connection);
-                next(error);
-              });
-            }
-
-            debugLog(" pos header id :", headerResult);
-
-            if (headerResult.insertId != null) {
-              const insurtColumns = [
-                "phar_item_category",
-                "phar_item_group",
-                "phar_item_id",
-                "inv_item_category_id",
-                "inv_item_group_id",
-                "inv_item_id",
-                "po_quantity",
-                "dn_quantity",
-                "recieved_quantity",
-                "pharmacy_uom_id",
-                "inventory_uom_id",
-                "unit_cost",
-                "extended_cost",
-                "discount_percentage",
-                "discount_amount",
-                "net_extended_cost",
-                "tax_percentage",
-                "tax_amount",
-                "total_amount",
-                "batchno_expiry_required",
-                "batchno",
-                "expiry_date"
-              ];
-
-              connection.query(
-                "INSERT INTO hims_f_procurement_grn_detail(" +
-                  insurtColumns.join(",") +
-                  ",grn_header_id) VALUES ?",
-                [
-                  jsonArrayToObject({
-                    sampleInputObject: insurtColumns,
-                    arrayObj: req.body.dn_entry_detail,
-                    newFieldToInsert: [headerResult.insertId],
-                    req: req
-                  })
-                ],
-                (error, detailResult) => {
-                  if (error) {
-                    debugLog("Error: ", error);
-
-                    connection.rollback(() => {
-                      releaseDBConnection(db, connection);
-                      next(error);
-                    });
-                  }
-
-                  req.records = {
-                    grn_number: documentCode
-                  };
-                  next();
-                }
-              );
-            } else {
-              connection.rollback(() => {
-                releaseDBConnection(db, connection);
-                next(error);
-              });
-            }
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date()
+        ],
+        (error, headerResult) => {
+          if (error) {
+            debugLog("error: ", "Check");
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(error);
+            });
           }
-        );
-      });
+
+          debugLog(" pos header id :", headerResult);
+
+          if (headerResult.insertId != null) {
+            const insurtColumns = [
+              "phar_item_category",
+              "phar_item_group",
+              "phar_item_id",
+              "inv_item_category_id",
+              "inv_item_group_id",
+              "inv_item_id",
+              "po_quantity",
+              "dn_quantity",
+              "recieved_quantity",
+              "pharmacy_uom_id",
+              "inventory_uom_id",
+              "unit_cost",
+              "extended_cost",
+              "discount_percentage",
+              "discount_amount",
+              "net_extended_cost",
+              "tax_percentage",
+              "tax_amount",
+              "total_amount",
+              "batchno_expiry_required",
+              "batchno",
+              "expiry_date"
+            ];
+
+            connection.query(
+              "INSERT INTO hims_f_procurement_grn_detail(" +
+                insurtColumns.join(",") +
+                ",grn_header_id) VALUES ?",
+              [
+                jsonArrayToObject({
+                  sampleInputObject: insurtColumns,
+                  arrayObj: req.body.dn_entry_detail,
+                  newFieldToInsert: [headerResult.insertId],
+                  req: req
+                })
+              ],
+              (error, detailResult) => {
+                if (error) {
+                  debugLog("Error: ", error);
+
+                  connection.rollback(() => {
+                    releaseDBConnection(db, connection);
+                    next(error);
+                  });
+                }
+
+                req.records = {
+                  grn_number: documentCode,
+                  hims_f_procurement_grn_header_id: headerResult.insertId
+                };
+                next();
+              }
+            );
+          } else {
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(error);
+            });
+          }
+        }
+      );
     });
+    // });
   } catch (e) {
     next(e);
   }
@@ -246,102 +240,110 @@ let updateReceiptEntry = (req, res, next) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    db.getConnection((error, connection) => {
+    // db.getConnection((error, connection) => {
+    //   if (error) {
+    //     next(error);
+    //   }
+    let connection = req.connection;
+    connection.beginTransaction(error => {
       if (error) {
-        next(error);
+        connection.rollback(() => {
+          releaseDBConnection(db, connection);
+          next(error);
+        });
       }
+      let inputParam = extend({}, req.body);
+      debugLog("req.body: ", req.body);
 
-      connection.beginTransaction(error => {
-        if (error) {
-          connection.rollback(() => {
-            releaseDBConnection(db, connection);
-            next(error);
-          });
-        }
-        let inputParam = extend({}, req.body);
-        debugLog("req.body: ", req.body);
-
-        connection.query(
-          "UPDATE `hims_f_procurement_grn_header` SET `posted`=?, `posted_date`=?, `posted_by`=? \
+      connection.query(
+        "UPDATE `hims_f_procurement_grn_header` SET `posted`=?, `posted_date`=?, `posted_by`=? \
       WHERE `hims_f_procurement_grn_header_id`=?",
-          [
-            inputParam.authorize1,
-            new Date(),
-            req.userIdentity.algaeh_d_app_user_id,
-            inputParam.hims_f_procurement_grn_header_id
-          ],
-          (error, result) => {
-            if (error) {
-              connection.rollback(() => {
-                releaseDBConnection(db, connection);
-                next(error);
-              });
-            }
-
-            if (result !== "" && result != null) {
-              let details = inputParam.dn_entry_detail;
-
-              let qry = "";
-
-              for (let i = 0; i < details.length; i++) {
-                qry +=
-                  " UPDATE `hims_f_procurement_grn_detail` SET authorize_quantity='" +
-                  details[i].authorize_quantity +
-                  "',rejected_quantity='" +
-                  details[i].rejected_quantity +
-                  "',quantity_recieved='" +
-                  (details[i].quantity_recieved || 0) +
-                  "',quantity_outstanding='" +
-                  (details[i].quantity_outstanding || 0) +
-                  "' WHERE hims_f_procurement_grn_detail_id='" +
-                  details[i].hims_f_procurement_grn_detail_id +
-                  "';";
-              }
-
-              if (qry != "") {
-                connection.query(qry, (error, detailResult) => {
-                  if (error) {
-                    connection.rollback(() => {
-                      releaseDBConnection(db, connection);
-                      next(error);
-                    });
-                  }
-
-                  connection.commit(error => {
-                    if (error) {
-                      connection.rollback(() => {
-                        releaseDBConnection(db, connection);
-                        next(error);
-                      });
-                    }
-                    releaseDBConnection(db, connection);
-                    req.records = detailResult;
-                    next();
-                  });
-                });
-              } else {
-                releaseDBConnection(db, connection);
-                req.records = {};
-                next();
-              }
-            } else {
-              connection.rollback(() => {
-                releaseDBConnection(db, connection);
-                req.records = {};
-                next();
-              });
-            }
+        [
+          inputParam.posted,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          inputParam.hims_f_procurement_grn_header_id
+        ],
+        (error, result) => {
+          debugLog("result: ", result);
+          if (error) {
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(error);
+            });
           }
-        );
-      });
+
+          if (result !== "" && result != null) {
+            let details = inputParam.receipt_entry_detail;
+
+            let qry = "";
+
+            for (let i = 0; i < details.length; i++) {
+              qry +=
+                " UPDATE `hims_f_procurement_grn_detail` SET recieved_quantity='" +
+                details[i].recieved_quantity +
+                "',batchno='" +
+                details[i].batchno +
+                "',rejected_quantity='" +
+                (details[i].rejected_quantity || 0) +
+                "',outstanding_quantity='" +
+                (details[i].outstanding_quantity || 0);
+
+              if (details[i].expiry_date != null) {
+                qry += "',expiry_date='" + (details[i].expiry_date || null);
+              }
+              qry +=
+                "' WHERE hims_f_procurement_grn_detail_id='" +
+                details[i].hims_f_procurement_grn_detail_id +
+                "';";
+            }
+            debugLog("qry: ", qry);
+
+            if (qry != "") {
+              connection.query(qry, (error, detailResult) => {
+                if (error) {
+                  connection.rollback(() => {
+                    releaseDBConnection(db, connection);
+                    next(error);
+                  });
+                }
+                req.records = detailResult;
+                next();
+                // connection.commit(error => {
+                //   if (error) {
+                //     connection.rollback(() => {
+                //       releaseDBConnection(db, connection);
+                //       next(error);
+                //     });
+                //   }
+                //   releaseDBConnection(db, connection);
+                //   req.records = detailResult;
+                //   next();
+                // });
+              });
+            } else {
+              releaseDBConnection(db, connection);
+              req.records = {};
+              next();
+            }
+          } else {
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              req.records = {};
+              next();
+            });
+          }
+        }
+      );
     });
+    // });
   } catch (e) {
     next(e);
   }
 };
 
 //created by Nowshad: to Update PO Entry
-let updatePOEntry = (req, res, next) => {
+let updateDNEntry = (req, res, next) => {
   if (req.db == null) {
     next(httpStatus.dataBaseNotInitilizedError());
   }
@@ -349,15 +351,16 @@ let updatePOEntry = (req, res, next) => {
   let connection = req.connection;
   let inputParam = extend({}, req.body);
 
+  debugLog("inputParam.dn_id: ", inputParam.dn_id);
   connection.query(
-    "UPDATE `hims_f_procurement_po_header` SET `is_completed`=?, `completed_date`=?, `updated_by` = ?,`updated_date` = ? \
-      WHERE `hims_f_procurement_po_header_id`=?",
+    "UPDATE `hims_f_procurement_dn_header` SET `is_completed`=?, `completed_date`=?, `updated_by` = ?,`updated_date` = ? \
+      WHERE `hims_f_procurement_dn_header_id`=?",
     [
       "Y",
       new Date(),
       req.userIdentity.algaeh_d_app_user_id,
       new Date(),
-      inputParam.purchase_order_id
+      inputParam.dn_id
     ],
     (error, result) => {
       if (error) {
@@ -374,5 +377,5 @@ module.exports = {
   addReceiptEntry,
   getReceiptEntry,
   updateReceiptEntry,
-  updatePOEntry
+  updateDNEntry
 };

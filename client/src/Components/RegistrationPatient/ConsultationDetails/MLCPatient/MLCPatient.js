@@ -18,12 +18,6 @@ export default class MLCPatient extends Component {
     this.setState({ ...this.state, ...InputOutput });
   }
 
-  componentWillReceiveProps(nextProps) {
-    // if (nextProps.patients.length > 0) {
-    //   this.setState(PatRegIOputs.inputParam(nextProps.patients[0]));
-    // }
-  }
-
   CheckboxhandleChange(context, e) {
     if (e.target.checked === true) {
       this.setState(

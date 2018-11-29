@@ -3,7 +3,6 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 const handleNext = ($this, setp, e) => {
-  
   const err = Validations($this);
   if (!err) {
     if ($this.state.screenName === "InsuranceProvider") {
@@ -36,41 +35,14 @@ const handleNext = ($this, setp, e) => {
       } else if (setp === "Next") {
         setComponent($this, {});
       }
-      // if ($this.state.insurance_sub_saved === false) {
-      //   algaehApiCall({
-      //     uri: "/insurance/addSubInsuranceProvider",
-      //     data: $this.state.sub_insurance,
-      //     onSuccess: response => {
-      //       if (response.data.success === true) {
-      //         setComponent($this, response.data.records);
-      //       }
-      //     }
-      //   });
-      // } else {
-      //   setComponent($this, {});
-      // }
     } else if ($this.state.screenName === "NetworkPlan") {
       //Save Network and Plan
-      
+
       if (setp === "Close") {
         $this.onClose(e);
       } else if (setp === "Next") {
         setComponent($this, {});
       }
-
-      // if ($this.state.insurance_plan_saved === false) {
-      //   algaehApiCall({
-      //     uri: "/insurance/addPlanAndPolicy",
-      //     data: $this.state.network_plan,
-      //     onSuccess: response => {
-      //       if (response.data.success === true) {
-      //         setComponent($this, response.data.records);
-      //       }
-      //     }
-      //   });
-      // } else {
-      //   setComponent($this, {});
-      // }
     } else if ($this.state.screenName === "Services") {
       //Save Services
 

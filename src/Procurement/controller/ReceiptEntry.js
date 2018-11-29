@@ -4,9 +4,13 @@ import httpStatus from "../../utils/httpStatus";
 import {
   addReceiptEntry,
   getReceiptEntry,
-  updateReceiptEntry
+  updateReceiptEntry,
+  updateDNEntry
 } from "../model/ReceiptEntry";
 import { debugFunction, debugLog } from "../../utils/logging";
+import { updateIntoItemLocation } from "../../Pharmacy/model/commonFunction";
+import { updateIntoInvItemLocation } from "../../Inventory/model/commonFunction";
+
 export default ({ config, db }) => {
   let api = Router();
 
@@ -15,6 +19,7 @@ export default ({ config, db }) => {
     "/addReceiptEntry",
     generateDbConnection,
     addReceiptEntry,
+    updateDNEntry,
     (req, res, next) => {
       let connection = req.connection;
       connection.commit(error => {
@@ -55,14 +60,50 @@ export default ({ config, db }) => {
   // created by Nowshad :update Item Storage
   api.put(
     "/updateReceiptEntry",
+    generateDbConnection,
     updateReceiptEntry,
     (req, res, next) => {
-      let results = req.records;
-      res.status(httpStatus.ok).json({
-        success: true,
-        records: results
+      debugLog("phr.req.body", req.body);
+      if (req.body.grn_for == "PHR") {
+        updateIntoItemLocation(req, res, next);
+      } else {
+        next();
+      }
+    },
+    (req, res, next) => {
+      debugLog("inv.req.body", req.body);
+      if (req.body.grn_for == "INV") {
+        debugLog("Data Exist: ", "Yes");
+        updateIntoInvItemLocation(req, res, next);
+      } else {
+        next();
+      }
+    },
+
+    (req, res, next) => {
+      let connection = req.connection;
+      connection.commit(error => {
+        if (error) {
+          debugLog("Contorller: ", error);
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        } else {
+          let result = req.records;
+          res.status(httpStatus.ok).json({
+            success: true,
+            records: result
+          });
+          next();
+        }
       });
-      next();
+      // let results = req.records;
+      // res.status(httpStatus.ok).json({
+      //   success: true,
+      //   records: results
+      // });
+      // next();
     },
     releaseConnection
   );

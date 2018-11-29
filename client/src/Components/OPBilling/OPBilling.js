@@ -122,32 +122,19 @@ class PatientDisplayDetails extends Component {
     this.setState({ open: false });
   };
 
-  getPatientDetails($this, output) {
-    clearInterval(intervalId);
-    // let patient_type = "";
-    intervalId = setInterval(() => {
-      AlgaehLoader({ show: true });
-      this.props.getPatientDetails({
-        uri: "/frontDesk/get",
-        method: "GET",
-        printInput: true,
-        data: { patient_code: this.state.patient_code || output.patient_code },
-        redux: {
-          type: "PAT_GET_DATA",
-          mappingName: "patients"
-        },
-        afterSuccess: data => {
-          if ($this.state.visit_id !== null) {
-            for (let i = 0; i < data.visitDetails.length; i++) {
-              if (
-                data.visitDetails[i].hims_f_patient_visit_id ===
-                $this.state.visit_id
-              ) {
-                data.visitDetails[i].radioselect = 1;
-              }
-            }
-            AlgaehLoader({ show: false });
-          }
+  getPatientDetails($this) {
+    // clearInterval(intervalId);
+    // // let patient_type = "";
+    // intervalId = setInterval(() => {
+    AlgaehLoader({ show: true });
+
+    algaehApiCall({
+      uri: "/frontDesk/get",
+      method: "GET",
+      data: { patient_code: this.state.patient_code },
+      onSuccess: response => {
+        if (response.data.success) {
+          let data = response.data.records;
 
           let x = Enumerable.from($this.props.patienttype)
             .where(
@@ -163,12 +150,6 @@ class PatientDisplayDetails extends Component {
             data.patientRegistration.patient_type = "Not Selected";
           }
 
-          if (
-            output.patient_code !== undefined &&
-            output.patient_code !== null
-          ) {
-            data.patientRegistration.Billexists = true;
-          }
           data.patientRegistration.visitDetails = data.visitDetails;
           data.patientRegistration.patient_id =
             data.patientRegistration.hims_d_patient_id;
@@ -189,11 +170,67 @@ class PatientDisplayDetails extends Component {
           data.patientRegistration.secondary_effective_end_date = null;
 
           this.setState(data.patientRegistration);
-          AlgaehLoader({ show: false });
         }
-      });
-      clearInterval(intervalId);
-    }, 500);
+        AlgaehLoader({ show: false });
+      },
+      onFailure: error => {
+        AlgaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+
+    // this.props.getPatientDetails({
+    //   uri: "/frontDesk/get",
+    //   method: "GET",
+    //   printInput: true,
+    //   data: { patient_code: this.state.patient_code },
+    //   redux: {
+    //     type: "PAT_GET_DATA",
+    //     mappingName: "patients"
+    //   },
+    //   afterSuccess: data => {
+    //     let x = Enumerable.from($this.props.patienttype)
+    //       .where(
+    //         w =>
+    //           w.hims_d_patient_type_id ===
+    //           data.patientRegistration.patient_type
+    //       )
+    //       .toArray();
+
+    //     if (x !== undefined && x.length > 0) {
+    //       data.patientRegistration.patient_type = x[0].patitent_type_desc;
+    //     } else {
+    //       data.patientRegistration.patient_type = "Not Selected";
+    //     }
+
+    //     data.patientRegistration.visitDetails = data.visitDetails;
+    //     data.patientRegistration.patient_id =
+    //       data.patientRegistration.hims_d_patient_id;
+    //     data.patientRegistration.mode_of_pay = "None";
+    //     //Insurance
+    //     data.patientRegistration.insurance_provider_name = null;
+    //     data.patientRegistration.sub_insurance_provider_name = null;
+    //     data.patientRegistration.network_type = null;
+    //     data.patientRegistration.policy_number = null;
+    //     data.patientRegistration.card_number = null;
+    //     data.patientRegistration.effective_end_date = null;
+    //     //Sec
+    //     data.patientRegistration.secondary_insurance_provider_name = null;
+    //     data.patientRegistration.secondary_sub_insurance_provider_name = null;
+    //     data.patientRegistration.secondary_network_type = null;
+    //     data.patientRegistration.secondary_policy_number = null;
+    //     data.patientRegistration.card_number = null;
+    //     data.patientRegistration.secondary_effective_end_date = null;
+
+    //     this.setState(data.patientRegistration);
+    //     AlgaehLoader({ show: false });
+    //   }
+    // });
+    //   clearInterval(intervalId);
+    // }, 500);
   }
 
   getCtrlCode(billcode) {
@@ -207,7 +244,27 @@ class PatientDisplayDetails extends Component {
       data: { bill_number: billcode },
       onSuccess: response => {
         if (response.data.success) {
+          debugger;
+
           let data = response.data.records;
+          debugger;
+          let x = Enumerable.from($this.props.patienttype)
+            .where(w => w.hims_d_patient_type_id === data.patient_type)
+            .toArray();
+
+          if (x !== undefined && x.length > 0) {
+            data.patient_type = x[0].patitent_type_desc;
+          } else {
+            data.patient_type = "Not Selected";
+          }
+
+          let visitDetails = Enumerable.from(data.billdetails).firstOrDefault();
+          debugger;
+          visitDetails.radioselect = 1;
+          data.visitDetails = [visitDetails];
+          // data.visitDetails[0].radioselect = 1;
+          data.Billexists = true;
+
           if (data.receiptdetails.length !== 0) {
             for (let i = 0; i < data.receiptdetails.length; i++) {
               if (data.receiptdetails[i].pay_type === "CA") {
@@ -227,9 +284,8 @@ class PatientDisplayDetails extends Component {
             }
           }
 
-          $this.setState(data, () => {
-            this.getPatientDetails(this, data);
-          });
+          $this.setState(data);
+          AlgaehLoader({ show: false });
         }
       },
       onFailure: error => {
@@ -442,7 +498,7 @@ class PatientDisplayDetails extends Component {
                 this.setState({ ...this.state, ...obj }, () => {
                   Object.keys(obj).map(key => {
                     if (key === "patient_code") {
-                      this.getPatientDetails(this, {});
+                      this.getPatientDetails(this);
                     }
                   });
                 });
