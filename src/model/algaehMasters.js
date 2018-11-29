@@ -8,7 +8,7 @@ import {
 } from "../utils";
 //import moment from "moment";
 import httpStatus from "../utils/httpStatus";
-//import { LINQ } from "node-linq";
+import { LINQ } from "node-linq";
 import { debugLog } from "../utils/logging";
 
 //created by irfan: to add AlgaehGroupMAster
@@ -151,7 +151,7 @@ let getAlgaehModuleBACKUP = (req, res, next) => {
   }
 };
 //created by irfan: to get
-let getAlgaehModule = (req, res, next) => {
+let getRoleBaseActiveModules = (req, res, next) => {
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -162,7 +162,7 @@ let getAlgaehModule = (req, res, next) => {
         " select algaeh_m_module_role_privilage_mapping_id, module_id,module_name, role_id, view_privilege\
         from algaeh_m_module_role_privilage_mapping MRP\
         inner join algaeh_d_app_module M on MRP.module_id=M.algaeh_d_module_id\
-        where MRP.record_status='A' and M.record_status=md5('A') and MRP.role_id=?",
+        where MRP.record_status='A' and M.record_status=md5('A') and MRP.role_id=7",
         [req.userIdentity.role_id],
         (error, result) => {
           if (error) {
@@ -214,4 +214,48 @@ let getAlgaehModule = (req, res, next) => {
   }
 };
 
-module.exports = { addAlgaehGroupMAster, addAlgaehModule, getAlgaehModule };
+//created by irfan: to get
+let getRoleBaseInActiveComponents = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    db.getConnection((error, connection) => {
+      connection.query(
+        " select algaeh_m_scrn_elmnt_role_privilage_mapping_id, screen_element_id, role_id, view_privilege,\
+        screen_element_name,component_id,component_name\
+        from algaeh_m_scrn_elmnt_role_privilage_mapping SERM\
+        inner join algaeh_d_app_scrn_elements  S on SERM.screen_element_id=S.algaeh_d_app_scrn_elements_id\
+        inner join algaeh_d_app_component C on S.component_id=C.algaeh_d_app_component_id\
+        where SERM.record_status='A' and role_id=7",
+        [req.userIdentity.role_id],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+
+          let component_id = new LINQ(result)
+            .Select(s => s.component_id)
+            .Distinct();
+
+          debugLog("componnent ids:", component_id);
+
+          // releaseDBConnection(db, connection);
+          // req.records = result;
+          // next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports = {
+  addAlgaehGroupMAster,
+  addAlgaehModule,
+  getRoleBaseActiveModules,
+  getRoleBaseInActiveComponents
+};

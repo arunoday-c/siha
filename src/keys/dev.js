@@ -14,6 +14,7 @@ export default {
     port: 3306,
     user: "algaeh_root",
     password: "medteam2013",
+    //database: "security_algaeh_hims_db",
     database: "algaeh_hims_db",
     multipleStatements: true,
     acquireTimeout: 20000,

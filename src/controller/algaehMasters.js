@@ -5,7 +5,8 @@ import httpStatus from "../utils/httpStatus";
 import {
   addAlgaehGroupMAster,
   addAlgaehModule,
-  getAlgaehModule
+  getRoleBaseActiveModules,
+  getRoleBaseInActiveComponents
 } from "../model/algaehMasters";
 
 export default ({ config, db }) => {
@@ -40,10 +41,25 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
+  // created by irfan :to
+  api.get(
+    "/getRoleBaseActiveModules",
+    getRoleBaseActiveModules,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
   // created by irfan :to add
   api.get(
-    "/getAlgaehModule",
-    getAlgaehModule,
+    "/getRoleBaseInActiveComponents",
+    getRoleBaseInActiveComponents,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

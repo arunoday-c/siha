@@ -2561,8 +2561,9 @@ let getPatientHistory = (req, res, next) => {
     let db = req.db;
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_f_patient_history_id,history_type, provider_id, patient_id, remarks from hims_f_patient_history\
-        where record_status='A' and patient_id=? ",
+        "select hims_f_patient_history_id,history_type, provider_id,E.full_name as provider_name, patient_id, remarks from hims_f_patient_history PH,\
+        hims_d_employee E where  PH.provider_id= E.hims_d_employee_id and PH.record_status='A' and E.record_status='A' and  \
+         patient_id=? ",
         [req.query.patient_id],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -2577,6 +2578,7 @@ let getPatientHistory = (req, res, next) => {
                 hims_f_patient_history_id: s.hims_f_patient_history_id,
                 history_type: s.history_type,
                 provider_id: s.provider_id,
+                provider_name: s.provider_name,
                 patient_id: s.patient_id,
                 remarks: s.remarks
               };
@@ -2591,6 +2593,7 @@ let getPatientHistory = (req, res, next) => {
                 hims_f_patient_history_id: s.hims_f_patient_history_id,
                 history_type: s.history_type,
                 provider_id: s.provider_id,
+                provider_name: s.provider_name,
                 patient_id: s.patient_id,
                 remarks: s.remarks
               };
@@ -2605,6 +2608,7 @@ let getPatientHistory = (req, res, next) => {
                 hims_f_patient_history_id: s.hims_f_patient_history_id,
                 history_type: s.history_type,
                 provider_id: s.provider_id,
+                provider_name: s.provider_name,
                 patient_id: s.patient_id,
                 remarks: s.remarks
               };
@@ -2619,6 +2623,7 @@ let getPatientHistory = (req, res, next) => {
                 hims_f_patient_history_id: s.hims_f_patient_history_id,
                 history_type: s.history_type,
                 provider_id: s.provider_id,
+                provider_name: s.provider_name,
                 patient_id: s.patient_id,
                 remarks: s.remarks
               };
@@ -2633,6 +2638,7 @@ let getPatientHistory = (req, res, next) => {
                 hims_f_patient_history_id: s.hims_f_patient_history_id,
                 history_type: s.history_type,
                 provider_id: s.provider_id,
+                provider_name: s.provider_name,
                 patient_id: s.patient_id,
                 remarks: s.remarks
               };
