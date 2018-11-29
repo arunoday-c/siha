@@ -3,7 +3,8 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import exxpress from "express";
 import keys from "../../keys/keys";
-import routes from "./Routers";
+import router from "./routes";
+import { logger } from "./utils/logging";
 const app = exxpress();
 const portNumber = keys.port;
 app.server = http.createServer(app);
@@ -16,7 +17,7 @@ app.use(
 );
 
 //api routeres v1
-app.use("/api/v1", routes);
+app.use("/api/v1", router);
 process.on("warning", warning => {
   logger.log("warn", warning);
 });
@@ -85,7 +86,7 @@ app.use((error, req, res, next) => {
   logger.log("error", "%j", _error);
 });
 app.server.listen(portNumber);
-console.log(`Document management server started on port ${portNumber}`);
+console.log(`Document management server started on port ${portNumber} *`);
 
 export default app;
 module.exports = app;

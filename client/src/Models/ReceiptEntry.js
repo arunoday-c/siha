@@ -17,6 +17,7 @@ export default {
       vendor_id: null,
       po_id: null,
       dn_id: null,
+      delivery_note_number: null,
 
       purchase_order_id: null,
       receipt_entry_detail: [],

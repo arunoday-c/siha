@@ -73,12 +73,12 @@
   z-index: 100; }
 
 .dropUp {
-  top: 100%;
-  bottom: auto; }
-
-.dropDown {
   top: auto;
   bottom: 100%; }
+
+.dropDown {
+  top: 100%;
+  bottom: auto; }
 
 .myUL li a {
   border: 1px solid #ddd;

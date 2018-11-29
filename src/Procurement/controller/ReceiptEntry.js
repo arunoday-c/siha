@@ -4,7 +4,8 @@ import httpStatus from "../../utils/httpStatus";
 import {
   addReceiptEntry,
   getReceiptEntry,
-  updateReceiptEntry
+  updateReceiptEntry,
+  updateDNEntry
 } from "../model/ReceiptEntry";
 import { debugFunction, debugLog } from "../../utils/logging";
 import { updateIntoItemLocation } from "../../Pharmacy/model/commonFunction";
@@ -18,6 +19,7 @@ export default ({ config, db }) => {
     "/addReceiptEntry",
     generateDbConnection,
     addReceiptEntry,
+    updateDNEntry,
     (req, res, next) => {
       let connection = req.connection;
       connection.commit(error => {

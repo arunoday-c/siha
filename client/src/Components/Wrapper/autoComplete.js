@@ -12,7 +12,7 @@ class AutoComplete extends PureComponent {
       disabled: false,
       listState: "d-none",
       arrowIcon: "fa-angle-down",
-      directonClass: "‘dropdown’",
+      directonClass: "",
       _sortData: [],
       multiselect: []
     };
@@ -47,6 +47,7 @@ class AutoComplete extends PureComponent {
     if (this.state.listState === "d-block") {
       this.setState({
         listState: "d-none",
+        directonClass: "",
         arrowIcon: "fa-angle-down",
         ...data
       });
@@ -80,7 +81,7 @@ class AutoComplete extends PureComponent {
 
   setDropDirection() {
     const canDropDown = this.menuHeight() < this.distanceFromBottom();
-    const _directonClass = !canDropDown ? "dropup" : "dropdown";
+    const _directonClass = !canDropDown ? " dropUp" : " dropDown";
     this.setState({ directonClass: _directonClass });
     //console.log("direction class", _directonClass);
   }
@@ -88,26 +89,26 @@ class AutoComplete extends PureComponent {
   menuHeight() {
     if (this.props.selector.dataSource.data !== undefined) {
       const _height = this.props.selector.dataSource.data.length * 30;
-      // console.log("Menu height", _height);
       return _height;
     }
     return 0;
   }
 
   distanceFromBottom() {
+    debugger;
     const _element = this.autoComp;
-    const _parent = this.autoComp.parentElement.parentNode.classList;
+    //const _parent = this.autoComp.parentElement.parentNode.classList;
     let windowHeight = window.innerHeight;
     let distanceFromWindowTop = _element.getBoundingClientRect().top;
-    const _ifGrid = this.autoComp.parentElement.offsetParent;
-    if (_parent.length > 0) {
-      if (_parent[0] === "rt-td") {
-        windowHeight = _ifGrid.clientHeight;
-        distanceFromWindowTop = _ifGrid
-          .querySelector("div[id='internal_" + this.props.selector.name + "']")
-          .getBoundingClientRect().top;
-      }
-    }
+    //const _ifGrid = _element.offsetParent;
+    // if (_parent.length > 0) {
+    //   if (_parent[0] === "rt-td") {
+    //     windowHeight = _ifGrid.clientHeight;
+    //     distanceFromWindowTop = _ifGrid
+    //       .querySelector("div[id='internal_" + this.props.selector.name + "']")
+    //       .getBoundingClientRect().top;
+    //   }
+    // }
 
     const elementHeight = _element.clientHeight;
     const _inHeight = windowHeight - distanceFromWindowTop - elementHeight;
@@ -199,6 +200,7 @@ class AutoComplete extends PureComponent {
     if (!this.autoComp.contains(event.target)) {
       this.setState({
         listState: "d-none",
+        directonClass: "",
         arrowIcon: "fa-angle-down"
       });
     }
@@ -281,6 +283,7 @@ class AutoComplete extends PureComponent {
       this.setState(
         {
           listState: "d-none",
+          directonClass: "",
           displayValue: _value,
           displayText: _text,
           arrowIcon: "fa-angle-down"
@@ -396,7 +399,11 @@ class AutoComplete extends PureComponent {
               >
                 <i className={"fas " + this.state.arrowIcon} />
               </span>
-              <ol className={"myUL " + this.state.listState}>
+              <ol
+                className={
+                  "myUL " + this.state.listState + this.state.directonClass
+                }
+              >
                 {this.state._sortData.map((item, index) => (
                   <li
                     onClick={this.onListSelected.bind(this, item)}

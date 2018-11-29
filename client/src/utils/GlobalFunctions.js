@@ -1,6 +1,11 @@
 import extend from "extend";
-import { swalMessage, algaehApiCall, getCookie } from "../utils/algaehApiCall";
-
+import {
+  swalMessage,
+  algaehApiCall,
+  getCookie,
+  getToken
+} from "../utils/algaehApiCall";
+import axios from "axios";
 export function successfulMessage(options) {
   options.icon = options.icon || "error";
 
@@ -91,8 +96,9 @@ export function saveImageOnServer(options) {
         settings.fileName = getCookie("ScreenName").replace("/", "");
       }
       const formData = new FormData();
+      debugger;
+      formData.append("image", file);
 
-      formData.append("file", file);
       algaehApiCall({
         uri: "/masters/imageSave",
         data: formData,
