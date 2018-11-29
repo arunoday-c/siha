@@ -22,9 +22,6 @@
             color: #000;
           }
         }
-        hr {
-          margin: 0;
-        }
       }
     }
     .numbers {
@@ -42,7 +39,7 @@
         font-size: 3rem;
         min-height: 3.5rem;
       }
-      .fa-users {
+      .fa-hand-holding-usd {
         &:before {
           color: #c655cc;
         }
@@ -78,6 +75,12 @@
       width: 95%;
       height: auto;
       position: relative;
+      h6 {
+        text-align: center;
+      }
     }
+  }
+  hr {
+    margin: 0 !important;
   }
 }

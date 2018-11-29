@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import "./dashboard.css";
 import { Bar } from "react-chartjs-2";
+import { HorizontalBar } from "react-chartjs-2";
+import { Doughnut } from "react-chartjs-2";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -161,6 +163,82 @@ const OutpatientsInpatientsDataOptions = {
   }
 };
 
+const AvgWaitingTimeDep = {
+  labels: [
+    "Surgery",
+    "Gynaecology",
+    "Dermatology",
+    "Neurology",
+    "Oncology",
+    "Orthopedics",
+    "Cardiology"
+  ],
+  datasets: [
+    {
+      data: [65, 59, 80, 81, 56, 55, 45],
+      label: "Waiting Time",
+      backgroundColor: "rgba(255,99,132,0.2)",
+      borderColor: "rgba(255,99,132,1)",
+      borderWidth: 1,
+      hoverBackgroundColor: "rgba(255,99,132,0.4)",
+      hoverBorderColor: "rgba(255,99,132,1)"
+    }
+  ]
+};
+
+const DoctorExplained = {
+  labels: [
+    "Fully Agree",
+    "Rather Agree",
+    "Rather Disagree",
+    "Fully Disagree",
+    "Don't Know"
+  ],
+  datasets: [
+    {
+      data: [65, 59, 80, 81, 56, 55, 45],
+      backgroundColor: "rgba(255,99,132,0.2)",
+      borderColor: "rgba(255,99,132,1)",
+      borderWidth: 1,
+      hoverBackgroundColor: "rgba(255,99,132,0.4)",
+      hoverBorderColor: "rgba(255,99,132,1)"
+    }
+  ]
+};
+
+const DoctorExplainedDataOptions = {
+  responsive: true,
+  legend: {
+    display: false
+  }
+};
+
+const TreatingPhysician = {
+  labels: [
+    "Fully Agree",
+    "Rather Agree",
+    "Rather Disagree",
+    "Fully Disagree",
+    "Don't Know"
+  ],
+  datasets: [
+    {
+      data: [65, 59, 80, 81, 56, 55, 45],
+      backgroundColor: "rgba(255,99,132,0.2)",
+      borderColor: "rgba(255,99,132,1)",
+      borderWidth: 1,
+      hoverBackgroundColor: "rgba(255,99,132,0.4)",
+      hoverBorderColor: "rgba(255,99,132,1)"
+    }
+  ]
+};
+
+const TreatingPhysicianDataOptions = {
+  responsive: true,
+  legend: {
+    display: false
+  }
+};
 // const plugins = [
 //   {
 //     afterDraw: (chartInstance, easing) => {
@@ -171,14 +249,59 @@ const OutpatientsInpatientsDataOptions = {
 // ];
 
 const PieData = {
-  labels: ["Cash Patient", "Insurance Patient"],
+  labels: ["Excellent", "Good", "Neutral/Negative"],
   datasets: [
     {
-      data: [50, 300],
-      backgroundColor: ["#34b8bc", "#DCAC66"],
-      hoverBackgroundColor: ["#34b8bc", "#DCAC66"]
+      data: [24, 40, 35],
+      backgroundColor: ["#34b8bc", "#DCAC66", "#EC932F"],
+      hoverBackgroundColor: ["#34b8bc", "#DCAC66", "#EC932F"]
     }
   ]
+};
+
+const CostPayerTypeData = {
+  labels: ["Medicare", "Medicaid", "Private Insurance", "Uninsured"],
+  datasets: [
+    {
+      data: [65, 69, 90, 61],
+      backgroundColor: ["#34b8bc", "#34b8bc", "#34b8bc", "#34b8bc"],
+      label: "Surgical Stays"
+    },
+    {
+      data: [315, 89, 101, 81],
+      backgroundColor: ["#EC932F", "#EC932F", "#EC932F", "#EC932F"],
+      label: "Medical Stays"
+    },
+    {
+      data: [415, 109, 131, 101],
+      backgroundColor: ["#DCAC66", "#DCAC66", "#DCAC66", "#DCAC66"],
+      label: "Maternal and Neonatal Stays"
+    }
+  ]
+};
+
+const CostPayerTypeDataOption = {
+  tooltips: {
+    mode: "point",
+    intersect: false
+  },
+
+  responsive: true,
+  scales: {
+    xAxes: [
+      {
+        stacked: true
+      }
+    ],
+    yAxes: [
+      {
+        ticks: {
+          beginAtZero: true
+        },
+        stacked: false
+      }
+    ]
+  }
 };
 
 const AreaData = {
@@ -251,29 +374,6 @@ class Dashboard extends Component {
               <div className="row">
                 <div className="col-4">
                   <div className="icon-big text-center">
-                    <i className="fas fa-users" />
-                  </div>
-                </div>
-                <div className="col-8">
-                  <div className="numbers">
-                    <p>Total Patients</p>
-                    61,938
-                  </div>
-                </div>
-              </div>
-              <div className="footer">
-                <hr />
-                <div className="stats">
-                  Patients Admitted - <span>31,374</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="card">
-            <div className="content">
-              <div className="row">
-                <div className="col-4">
-                  <div className="icon-big text-center">
                     <i className="fas fa-hospital" />
                   </div>
                 </div>
@@ -292,6 +392,52 @@ class Dashboard extends Component {
               </div>
             </div>
           </div>
+          <div className="card">
+            <div className="content">
+              <div className="row">
+                <div className="col-4">
+                  <div className="icon-big text-center">
+                    <i className="fas fa-hand-holding-usd" />
+                  </div>
+                </div>
+                <div className="col-8">
+                  <div className="numbers">
+                    <p>Revenue by MTD</p>
+                    SR 61,938
+                  </div>
+                </div>
+              </div>
+              <div className="footer">
+                <hr />
+                <div className="stats">
+                  Avg. Revenue per day- <span>SR 1357</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* <div className="card">
+            <div className="content">
+              <div className="row">
+                <div className="col-4">
+                  <div className="icon-big text-center">
+                    <i className="fas fa-users" />
+                  </div>
+                </div>
+                <div className="col-8">
+                  <div className="numbers">
+                    <p>Total Patients</p>
+                    61,938
+                  </div>
+                </div>
+              </div>
+              <div className="footer">
+                <hr />
+                <div className="stats">
+                  Patients Admitted - <span>31,374</span>
+                </div>
+              </div>
+            </div>
+          </div> */}
           <div className="card">
             <div className="content">
               <div className="row">
@@ -341,7 +487,7 @@ class Dashboard extends Component {
         </div>
 
         <div className="row">
-          <div className="col-5">
+          <div className="col-4">
             <div className="row">
               <div className="col-12">
                 <div className="card">
@@ -359,13 +505,34 @@ class Dashboard extends Component {
               <div className="col-12">
                 <div className="card">
                   <h6>Overall Patient Satisfacation</h6>
-                  <p>The doctor explained the treatment understandably.</p>
-                  <p>I had confidence and trust in the treating physician.</p>
+                  <div className="dashboardChartsCntr">
+                    <Doughnut
+                      data={PieData}
+                      //options={AdmissionsReadmissionDataOptions}
+                    />
+                  </div>
+                  <hr />
+                  <div className="dashboardChartsCntr">
+                    <p>The doctor explained the treatment understandably.</p>
+                    <HorizontalBar
+                      data={DoctorExplained}
+                      options={DoctorExplainedDataOptions}
+                    />
+                  </div>
+                  <hr />
+
+                  <div className="dashboardChartsCntr">
+                    <p>I had confidence and trust in the treating physician.</p>
+                    <HorizontalBar
+                      data={TreatingPhysician}
+                      options={TreatingPhysicianDataOptions}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-          <div className="col-7">
+          <div className="col-8">
             <div className="row">
               <div className="col-12">
                 <div className="card">
@@ -381,12 +548,146 @@ class Dashboard extends Component {
               <div className="col-6">
                 <div className="card">
                   <h6>Patients By Department</h6>
+                  <div className="dashboardChartsCntr">
+                    <table className="table  table-bordered table-sm table-striped">
+                      <thead>
+                        <tr>
+                          <th>Department</th>
+                          <th>In Patients</th>
+                          <th>Out Patients</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>Surgery</td>
+                          <td>
+                            <i className="fas fa-long-arrow-alt-up" /> 9,471
+                          </td>
+                          <td>17,642</td>
+                        </tr>
+                        <tr>
+                          <td>Gynaecology</td>
+                          <td>
+                            <i className="fas fa-long-arrow-alt-up" /> 9,471
+                          </td>
+                          <td>17,642</td>
+                        </tr>
+                        <tr>
+                          <td>Dermatology</td>
+                          <td>
+                            <i className="fas fa-long-arrow-alt-up" /> 9,471
+                          </td>
+                          <td>17,642</td>
+                        </tr>
+                        <tr>
+                          <td>Neurology</td>
+                          <td>
+                            <i className="fas fa-long-arrow-alt-up" /> 9,471
+                          </td>
+                          <td>17,642</td>
+                        </tr>
+                        <tr>
+                          <td>Oncology</td>
+                          <td>
+                            <i className="fas fa-long-arrow-alt-up" /> 9,471
+                          </td>
+                          <td>17,642</td>
+                        </tr>
+                        <tr>
+                          <td>Orthopedics</td>
+                          <td>
+                            <i className="fas fa-long-arrow-alt-up" /> 9,471
+                          </td>
+                          <td>17,642</td>
+                        </tr>
+                        <tr>
+                          <td>Cardiology</td>
+                          <td>
+                            <i className="fas fa-long-arrow-alt-up" /> 9,471
+                          </td>
+                          <td>17,642</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
               <div className="col-6">
                 <div className="card">
                   {" "}
                   <h6>Avg Waiting Time By Department</h6>
+                  <div className="dashboardChartsCntr">
+                    <HorizontalBar data={AvgWaitingTimeDep} />
+                  </div>
+                </div>
+              </div>
+              <div className="col-6">
+                <div className="card">
+                  <h6>Lab Test Turnaround (in Hr)</h6>
+                  <div className="dashboardChartsCntr">
+                    <table className="table  table-bordered table-sm table-striped table-responsive">
+                      <thead>
+                        <tr>
+                          <th>Test</th>
+                          <th>Average (Hr)</th>
+                          <th>Target (Hr)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>Amylase</td>
+                          <td className="text-danger text-center">31</td>
+                          <td className="text-center">24</td>
+                        </tr>
+                        <tr>
+                          <td>ANA</td>
+                          <td className="text-danger text-center">180</td>
+                          <td className="text-center">168</td>
+                        </tr>
+                        <tr>
+                          <td>aPIT</td>
+                          <td className="text-danger text-center">78</td>
+                          <td className="text-center">72</td>
+                        </tr>
+                        <tr>
+                          <td>Basic Metabolic Panel</td>
+                          <td className="text-danger text-center">26</td>
+                          <td className="text-center">24</td>
+                        </tr>
+                        <tr>
+                          <td>Complete Blood Count</td>
+                          <td className="text-danger text-center">28</td>
+                          <td className="text-center">24</td>
+                        </tr>
+                        <tr>
+                          <td>Comprehensiv Metabolic Panel</td>
+                          <td className="text-danger text-center">52</td>
+                          <td className="text-center">48</td>
+                        </tr>
+                        <tr>
+                          <td>Electrolyte Panel</td>
+                          <td className="text-success text-center">23</td>
+                          <td className="text-center">24</td>
+                        </tr>
+                        <tr>
+                          <td>Sedimentation Rate</td>
+                          <td className="text-success text-center">94</td>
+                          <td className="text-center">96</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div className="col-6">
+                <div className="card">
+                  <h6>Cost by Payer & Type of Stay</h6>
+                  <div className="dashboardChartsCntr">
+                    <HorizontalBar
+                      data={CostPayerTypeData}
+                      options={CostPayerTypeDataOption}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
