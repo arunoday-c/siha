@@ -206,19 +206,44 @@ const credittextCal = ($this, e) => {
 };
 
 const EditGrid = ($this, context, cancelRow) => {
+  let saveEnable = true;
+  let addNewService = true;
+  if ($this.state.hims_f_billing_header_id !== null) {
+    saveEnable = true;
+    addNewService = true;
+  }
   if (context != null) {
     let _billdetails = $this.state.billdetails;
     if (cancelRow !== undefined) {
       _billdetails[cancelRow.rowIdx] = cancelRow;
     }
     context.updateState({
-      saveEnable: !$this.state.saveEnable,
-      addNewService: !$this.state.addNewService,
+      saveEnable: saveEnable,
+      addNewService: addNewService,
       billdetails: _billdetails
     });
   }
 };
 
+const CancelGrid = ($this, context, cancelRow) => {
+  let saveEnable = false;
+  let addNewService = false;
+  if ($this.state.hims_f_billing_header_id !== null) {
+    saveEnable = true;
+    addNewService = true;
+  }
+  if (context != null) {
+    let _billdetails = $this.state.billdetails;
+    if (cancelRow !== undefined) {
+      _billdetails[cancelRow.rowIdx] = cancelRow;
+    }
+    context.updateState({
+      saveEnable: saveEnable,
+      addNewService: addNewService,
+      billdetails: _billdetails
+    });
+  }
+};
 export {
   serviceTypeHandeler,
   serviceHandeler,
@@ -229,5 +254,6 @@ export {
   onchangegridcol,
   credittexthandle,
   credittextCal,
-  EditGrid
+  EditGrid,
+  CancelGrid
 };

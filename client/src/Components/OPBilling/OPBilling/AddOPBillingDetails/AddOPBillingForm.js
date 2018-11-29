@@ -22,7 +22,8 @@ import {
   onchangegridcol,
   credittexthandle,
   credittextCal,
-  EditGrid
+  EditGrid,
+  CancelGrid
 } from "./AddOPBillingHandaler";
 import ReciptForm from "../ReciptDetails/ReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -691,7 +692,7 @@ class AddOPBillingForm extends Component {
                       events={{
                         onDelete: this.deleteBillDetail.bind(this, context),
                         onEdit: EditGrid.bind(this, this, context),
-                        onCancel: EditGrid.bind(this, this, context),
+                        onCancel: CancelGrid.bind(this, this, context),
                         onDone: this.updateBillDetail.bind(this, context)
                       }}
                     />
