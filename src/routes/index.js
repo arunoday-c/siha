@@ -61,6 +61,7 @@ import DeliveryNoteEntry from "../Procurement/controller/DeliveryNoteEntry";
 import nurseWorkBench from "../EHR/controller/nurseWorkBench";
 import ReceiptEntry from "../Procurement/controller/ReceiptEntry";
 
+import algaehMasters from "../controller/algaehMasters";
 let router = express();
 
 //connect to DB
@@ -132,6 +133,7 @@ initializedDb(db => {
   router.use("/DeliveryNoteEntry", DeliveryNoteEntry({ config, db }));
   router.use("/nurseWorkBench", nurseWorkBench({ config, db }));
   router.use("/ReceiptEntry", ReceiptEntry({ config, db }));
+  router.use("/algaehMasters", algaehMasters({ config, db }));
 });
 
 export default router;

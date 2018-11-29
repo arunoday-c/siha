@@ -1253,7 +1253,7 @@ let getCashHandoverDetails = (req, res, next) => {
         actual_card, difference_card, card_status, expected_cheque, actual_cheque, difference_cheque, \
        cheque_status, remarks, no_of_cheques,EDM.user_id,E.full_name as employee_name,E.arabic_name as employee_arabic_name \
         from hims_f_cash_handover_header CH, hims_f_cash_handover_detail CD ,hims_m_employee_department_mappings EDM,\
-        hims_d_employee E where CH.record_status='A' and CH.record_status='A' and EDM.record_status='A' and \
+        hims_d_employee E where CH.record_status='A' and EDM.record_status='A' and \
         E.record_status='A' and  CH.hims_f_cash_handover_header_id=CD.cash_handover_header_id and \
          EDM.user_id=CD.casher_id and  EDM.employee_id=E.hims_d_employee_id and shift_id=? and \
         date(daily_handover_date)=date(?) " +

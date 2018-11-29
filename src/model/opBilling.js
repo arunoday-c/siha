@@ -143,10 +143,17 @@ let selectBill = (req, res, next) => {
       //   FROM `hims_f_billing_header` \
       //  WHERE `record_status`='A' AND " +
 
-      "SELECT * FROM hims_f_billing_header INNER JOIN hims_f_billing_details ON \
-        hims_f_billing_header.hims_f_billing_header_id=hims_f_billing_details.hims_f_billing_header_id \
-        inner join hims_f_patient as PAT on hims_f_billing_header.patient_id = PAT.hims_d_patient_id \
-        where hims_f_billing_header.record_status='A' AND hims_f_billing_header.bill_number = '" +
+      //===========
+      // SELECT * FROM hims_f_billing_header INNER JOIN hims_f_billing_details ON \
+      //         hims_f_billing_header.hims_f_billing_header_id=hims_f_billing_details.hims_f_billing_header_id \
+      //         inner join hims_f_patient as PAT on hims_f_billing_header.patient_id = PAT.hims_d_patient_id \
+      //         where hims_f_billing_header.record_status='A' AND hims_f_billing_header.bill_number
+
+      "SELECT * FROM hims_f_billing_header bh INNER JOIN hims_f_billing_details bd  ON\
+      bh.hims_f_billing_header_id=bd.hims_f_billing_header_id\
+      inner join hims_f_patient as PAT on bh.patient_id = PAT.hims_d_patient_id\
+      inner join hims_f_patient_visit as vst on bh.visit_id = vst.hims_f_patient_visit_id\
+      where bh.record_status='A' AND bh.bill_number='" +
         req.query.bill_number +
         "'",
 
