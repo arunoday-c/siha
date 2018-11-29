@@ -369,7 +369,7 @@ class Dashboard extends Component {
     return (
       <div className="dashboard ">
         <div className="row card-deck">
-          <div className="card">
+          <div className="card animated fadeInUp faster">
             <div className="content">
               <div className="row">
                 <div className="col-4">
@@ -392,7 +392,7 @@ class Dashboard extends Component {
               </div>
             </div>
           </div>
-          <div className="card">
+          <div className="card animated fadeInUp faster">
             <div className="content">
               <div className="row">
                 <div className="col-4">
@@ -415,7 +415,7 @@ class Dashboard extends Component {
               </div>
             </div>
           </div>
-          {/* <div className="card">
+          {/* <div className="card animated fadeInUp faster">
             <div className="content">
               <div className="row">
                 <div className="col-4">
@@ -438,7 +438,7 @@ class Dashboard extends Component {
               </div>
             </div>
           </div> */}
-          <div className="card">
+          <div className="card animated fadeInUp faster">
             <div className="content">
               <div className="row">
                 <div className="col-4">
@@ -461,7 +461,7 @@ class Dashboard extends Component {
               </div>
             </div>
           </div>
-          <div className="card">
+          <div className="card animated fadeInUp faster">
             <div className="content">
               <div className="row">
                 <div className="col-4">
@@ -490,7 +490,7 @@ class Dashboard extends Component {
           <div className="col-4">
             <div className="row">
               <div className="col-12">
-                <div className="card">
+                <div className="card animated fadeInUp faster">
                   <h6>Admissions & 30-Day Readmission Rate</h6>
                   <div className="dashboardChartsCntr">
                     <Bar
@@ -503,7 +503,7 @@ class Dashboard extends Component {
             </div>
             <div className="row">
               <div className="col-12">
-                <div className="card">
+                <div className="card animated fadeInUp faster">
                   <h6>Overall Patient Satisfacation</h6>
                   <div className="dashboardChartsCntr">
                     <Doughnut
@@ -535,7 +535,7 @@ class Dashboard extends Component {
           <div className="col-8">
             <div className="row">
               <div className="col-12">
-                <div className="card">
+                <div className="card animated fadeInUp faster">
                   <h6>Outpatients vs. Inpatients Trend</h6>
                   <div className="dashboardChartsCntr">
                     <Bar
@@ -546,7 +546,27 @@ class Dashboard extends Component {
                 </div>
               </div>
               <div className="col-6">
-                <div className="card">
+                <div className="card animated fadeInUp faster">
+                  {" "}
+                  <h6>Avg Waiting Time By Department</h6>
+                  <div className="dashboardChartsCntr">
+                    <HorizontalBar data={AvgWaitingTimeDep} />
+                  </div>
+                </div>
+              </div>
+              <div className="col-6">
+                <div className="card animated fadeInUp faster">
+                  <h6>Cost by Payer & Type of Stay</h6>
+                  <div className="dashboardChartsCntr">
+                    <HorizontalBar
+                      data={CostPayerTypeData}
+                      options={CostPayerTypeDataOption}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="col-6">
+                <div className="card animated fadeInUp faster">
                   <h6>Patients By Department</h6>
                   <div className="dashboardChartsCntr">
                     <table className="table  table-bordered table-sm table-striped">
@@ -613,16 +633,7 @@ class Dashboard extends Component {
                 </div>
               </div>
               <div className="col-6">
-                <div className="card">
-                  {" "}
-                  <h6>Avg Waiting Time By Department</h6>
-                  <div className="dashboardChartsCntr">
-                    <HorizontalBar data={AvgWaitingTimeDep} />
-                  </div>
-                </div>
-              </div>
-              <div className="col-6">
-                <div className="card">
+                <div className="card animated fadeInUp faster">
                   <h6>Lab Test Turnaround (in Hr)</h6>
                   <div className="dashboardChartsCntr">
                     <table className="table  table-bordered table-sm table-striped table-responsive">
@@ -676,17 +687,6 @@ class Dashboard extends Component {
                         </tr>
                       </tbody>
                     </table>
-                  </div>
-                </div>
-              </div>
-              <div className="col-6">
-                <div className="card">
-                  <h6>Cost by Payer & Type of Stay</h6>
-                  <div className="dashboardChartsCntr">
-                    <HorizontalBar
-                      data={CostPayerTypeData}
-                      options={CostPayerTypeDataOption}
-                    />
                   </div>
                 </div>
               </div>
