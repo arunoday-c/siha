@@ -44,10 +44,6 @@ class AddPatientForm extends PureComponent {
     this.innerContext = {};
   }
 
-  // componentWillUpdate(nextProps, nextState) {
-  //   var width = document.getElementById("attach-width").offsetWidth;
-  //   this.widthImg = width + 1;
-  // }
   componentWillMount() {
     let InputOutput = this.props.PatRegIOputs;
     this.setState({ ...this.state, ...InputOutput });
@@ -142,11 +138,12 @@ class AddPatientForm extends PureComponent {
         }
       });
     }
+
+    this.getStateCity(this);
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState(nextProps.PatRegIOputs, () => {
-      debugger;
       if (this.state.country_id === null) return;
       if (this.state.country_id !== nextProps.country_id) {
         let country = Enumerable.from(this.props.countries)
@@ -177,13 +174,29 @@ class AddPatientForm extends PureComponent {
     });
   }
 
-  numInput(e) {
-    var inputKeyCode = e.keyCode ? e.keyCode : e.which;
+  getStateCity(e) {
+    if (this.state.country_id === null) return;
 
-    if (inputKeyCode !== undefined) {
-      if (inputKeyCode >= 48 && inputKeyCode <= 57) {
+    let country = Enumerable.from(this.props.countries)
+      .where(w => w.hims_d_country_id === parseInt(this.state.country_id))
+      .firstOrDefault();
+    let states = country !== undefined ? country.states : [];
+    if (this.props.countries !== undefined && states.length !== 0) {
+      let cities = Enumerable.from(states)
+        .where(w => w.hims_d_state_id === parseInt(this.state.state_id))
+        .firstOrDefault();
+      if (cities !== undefined) {
+        this.setState({
+          countrystates: states,
+          cities: cities.cities,
+          state_id: this.state.state_id,
+          city_id: this.state.city_id
+        });
       } else {
-        e.preventDefault();
+        this.setState({
+          countrystates: states,
+          state_id: this.state.state_id
+        });
       }
     }
   }
