@@ -159,10 +159,10 @@ let getRoleBaseActiveModules = (req, res, next) => {
     let db = req.db;
     db.getConnection((error, connection) => {
       connection.query(
-        " select algaeh_m_module_role_privilage_mapping_id, module_id,module_name, role_id, view_privilege\
+        " select algaeh_m_module_role_privilage_mapping_id, module_id,module_name, icons,module_code,role_id, view_privilege\
         from algaeh_m_module_role_privilage_mapping MRP\
         inner join algaeh_d_app_module M on MRP.module_id=M.algaeh_d_module_id\
-        where MRP.record_status='A' and M.record_status=md5('A') and MRP.role_id=7",
+        where MRP.record_status='A' and M.record_status=md5('A') and MRP.role_id=?",
         [req.userIdentity.role_id],
         (error, result) => {
           if (error) {
@@ -176,8 +176,8 @@ let getRoleBaseActiveModules = (req, res, next) => {
             for (let i = 0; i < result.length; i++) {
               connection.query(
                 "SELECT algaeh_m_screen_role_privilage_mapping_id, privilege_code, privilege_type,\
-                module_role_map_id, screen_id,screen_name, role_id, delete_privilege, add_privilege, view_privilege, \
-                update_privilege, print_privilege, access_email, privilege_status from \
+                module_role_map_id, screen_id,screen_code,screen_name, role_id, delete_privilege, add_privilege, view_privilege, \
+                update_privilege, print_privilege, access_email from \
                 algaeh_m_screen_role_privilage_mapping SRM inner join algaeh_d_app_screens S \
                 on SRM.screen_id=S.algaeh_app_screens_id\
                 where SRM.record_status='A' and S.record_status='A' and module_role_map_id=?",
@@ -223,12 +223,12 @@ let getRoleBaseInActiveComponents = (req, res, next) => {
     let db = req.db;
     db.getConnection((error, connection) => {
       connection.query(
-        " select algaeh_m_scrn_elmnt_role_privilage_mapping_id, screen_element_id, role_id, view_privilege,\
-        screen_element_name,component_id,component_name\
+        " select algaeh_m_scrn_elmnt_role_privilage_mapping_id, screen_element_id, screen_element_code,screen_element_name, role_id, view_privilege,\
+        component_id,component_code,component_name\
         from algaeh_m_scrn_elmnt_role_privilage_mapping SERM\
-        inner join algaeh_d_app_scrn_elements  S on SERM.screen_element_id=S.algaeh_d_app_scrn_elements_id\
-        inner join algaeh_d_app_component C on S.component_id=C.algaeh_d_app_component_id\
-        where SERM.record_status='A' and role_id=7",
+        inner join algaeh_d_app_scrn_elements  SE on SERM.screen_element_id=SE.algaeh_d_app_scrn_elements_id\
+        inner join algaeh_d_app_component C on SE.component_id=C.algaeh_d_app_component_id\
+        where SERM.record_status='A' and role_id=?",
         [req.userIdentity.role_id],
         (error, result) => {
           if (error) {
@@ -236,15 +236,36 @@ let getRoleBaseInActiveComponents = (req, res, next) => {
             next(error);
           }
 
-          let component_id = new LINQ(result)
-            .Select(s => s.component_id)
-            .Distinct();
+          let screenElementsToHide = new LINQ(result).GroupBy(
+            g => g.component_code
+          );
 
-          debugLog("componnent ids:", component_id);
+          debugLog(screenElementsToHide);
 
-          // releaseDBConnection(db, connection);
-          // req.records = result;
-          // next();
+          connection.query(
+            " select algaeh_m_component_role_privilage_mapping_id, component_id,  component_code,role_id, view_privilege\
+                from algaeh_m_component_role_privilage_mapping CM,algaeh_d_app_component C\
+                where  CM.component_id=C.algaeh_d_app_component_id    and                   \
+                CM.record_status='A' and  C.record_status='A' and role_id=?",
+            [req.userIdentity.role_id],
+            (error, resultss) => {
+              if (error) {
+                releaseDBConnection(db, connection);
+                next(error);
+              }
+              debugLog("resultss:", resultss);
+
+              let compnentsToHide = new LINQ(resultss)
+                .Select(s => s.component_code)
+                .ToArray();
+              releaseDBConnection(db, connection);
+              req.records = {
+                listOfComponentsToHide: compnentsToHide,
+                screenElementsToHide: screenElementsToHide
+              };
+              next();
+            }
+          );
         }
       );
     });
