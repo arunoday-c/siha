@@ -117,6 +117,9 @@ export default ({ config, db }) => {
                   {
                     hims_f_billing_header_id: s.hims_f_billing_header_id,
                     patient_id: s.patient_id,
+                    full_name: s.full_name,
+                    patient_type: s.patient_type,
+                    mode_of_pay: s.insured == "Y" ? "Insured" : "Self",
                     billing_type_id: s.billing_type_id,
                     visit_id: s.visit_id,
                     bill_number: s.bill_number,
@@ -151,8 +154,6 @@ export default ({ config, db }) => {
                     credit_amount: s.credit_amount,
                     receiveable_amount: s.receiveable_amount,
                     patient_code: s.patient_code,
-                    // cancel_remarks: s.cancel_remarks,
-                    // cancel_by: s.cancel_by,
                     bill_comments: s.bill_comments
                   },
                   dtl

@@ -294,12 +294,13 @@ class ReceiptItemList extends Component {
                                           this,
                                           row
                                         )
+                                      },
+                                      others: {
+                                        disabled:
+                                          this.state.posted === "Y"
+                                            ? true
+                                            : false
                                       }
-                                      // others: {
-                                      //   errormessage:
-                                      //     "Description - cannot be blank",
-                                      //   required: true
-                                      // }
                                     }}
                                   />
                                 );
@@ -332,6 +333,9 @@ class ReceiptItemList extends Component {
                                       name: "expiry_date"
                                     }}
                                     minDate={new Date()}
+                                    disabled={
+                                      this.state.posted === "Y" ? true : false
+                                    }
                                     events={{
                                       onChange: onchangegridcoldatehandle.bind(
                                         this,
@@ -399,6 +403,12 @@ class ReceiptItemList extends Component {
                                           this,
                                           row
                                         )
+                                      },
+                                      others: {
+                                        disabled:
+                                          this.state.posted === "Y"
+                                            ? true
+                                            : false
                                       }
                                     }}
                                   />

@@ -63,53 +63,72 @@ class InvInitialStock extends Component {
   }
 
   componentDidMount() {
-    this.props.getItems({
-      uri: "/inventory/getItemMaster",
-      method: "GET",
-      redux: {
-        type: "ITEM_GET_DATA",
-        mappingName: "inventoryitemlist"
-      }
-    });
-
-    this.props.getLocation({
-      uri: "/inventory/getInventoryLocation",
-      method: "GET",
-      redux: {
-        type: "LOCATIONS_GET_DATA",
-        mappingName: "inventorylocations"
-      }
-    });
-
-    this.props.getItemCategory({
-      uri: "/inventory/getItemCategory",
-      method: "GET",
-      redux: {
-        type: "ITEM_CATEGORY_GET_DATA",
-        mappingName: "inventoryitemcategory"
-      },
-      afterSuccess: data => {
-        
-      }
-    });
-
-    this.props.getItemGroup({
-      uri: "/inventory/getItemGroup",
-      method: "GET",
-      redux: {
-        type: "ITEM_GROUP_GET_DATA",
-        mappingName: "inventoryitemgroup"
-      }
-    });
-
-    this.props.getItemUOM({
-      uri: "/inventory/getInventoryUom",
-      method: "GET",
-      redux: {
-        type: "ITEM_UOM_GET_DATA",
-        mappingName: "inventoryitemuom"
-      }
-    });
+    if (
+      this.props.inventoryitemlist === undefined ||
+      this.props.inventoryitemlist.length === 0
+    ) {
+      this.props.getItems({
+        uri: "/inventory/getItemMaster",
+        method: "GET",
+        redux: {
+          type: "ITEM_GET_DATA",
+          mappingName: "inventoryitemlist"
+        }
+      });
+    }
+    if (
+      this.props.inventorylocations === undefined ||
+      this.props.inventorylocations.length === 0
+    ) {
+      this.props.getLocation({
+        uri: "/inventory/getInventoryLocation",
+        method: "GET",
+        redux: {
+          type: "LOCATIONS_GET_DATA",
+          mappingName: "inventorylocations"
+        }
+      });
+    }
+    if (
+      this.props.inventoryitemcategory === undefined ||
+      this.props.inventoryitemcategory.length === 0
+    ) {
+      this.props.getItemCategory({
+        uri: "/inventory/getItemCategory",
+        method: "GET",
+        redux: {
+          type: "ITEM_CATEGORY_GET_DATA",
+          mappingName: "inventoryitemcategory"
+        },
+        afterSuccess: data => {}
+      });
+    }
+    if (
+      this.props.inventoryitemgroup === undefined ||
+      this.props.inventoryitemgroup.length === 0
+    ) {
+      this.props.getItemGroup({
+        uri: "/inventory/getItemGroup",
+        method: "GET",
+        redux: {
+          type: "ITEM_GROUP_GET_DATA",
+          mappingName: "inventoryitemgroup"
+        }
+      });
+    }
+    if (
+      this.props.inventoryitemuom === undefined ||
+      this.props.inventoryitemuom.length === 0
+    ) {
+      this.props.getItemUOM({
+        uri: "/inventory/getInventoryUom",
+        method: "GET",
+        redux: {
+          type: "ITEM_UOM_GET_DATA",
+          mappingName: "inventoryitemuom"
+        }
+      });
+    }
   }
 
   render() {
@@ -555,46 +574,44 @@ class InvInitialStock extends Component {
             </div>
 
             <div className="hptl-phase1-footer">
-              
-                <div className="row">
-                  <div className="col-lg-12">
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      onClick={SaveInitialStock.bind(this, this)}
-                      disabled={this.state.saveEnable}
-                    >
-                      <AlgaehLabel
-                        label={{ forceLabel: "Save", returnText: true }}
-                      />
-                    </button>
+              <div className="row">
+                <div className="col-lg-12">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={SaveInitialStock.bind(this, this)}
+                    disabled={this.state.saveEnable}
+                  >
+                    <AlgaehLabel
+                      label={{ forceLabel: "Save", returnText: true }}
+                    />
+                  </button>
 
-                    <button
-                      type="button"
-                      className="btn btn-default"
-                      onClick={ClearData.bind(this, this)}
-                    >
-                      <AlgaehLabel
-                        label={{ forceLabel: "Clear", returnText: true }}
-                      />
-                    </button>
+                  <button
+                    type="button"
+                    className="btn btn-default"
+                    onClick={ClearData.bind(this, this)}
+                  >
+                    <AlgaehLabel
+                      label={{ forceLabel: "Clear", returnText: true }}
+                    />
+                  </button>
 
-                    <button
-                      type="button"
-                      className="btn btn-other"
-                      onClick={PostInitialStock.bind(this, this)}
-                      disabled={this.state.postEnable}
-                    >
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Post",
-                          returnText: true
-                        }}
-                      />
-                    </button>
-                  </div>
+                  <button
+                    type="button"
+                    className="btn btn-other"
+                    onClick={PostInitialStock.bind(this, this)}
+                    disabled={this.state.postEnable}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Post",
+                        returnText: true
+                      }}
+                    />
+                  </button>
                 </div>
-              
+              </div>
             </div>
           </div>
         </div>

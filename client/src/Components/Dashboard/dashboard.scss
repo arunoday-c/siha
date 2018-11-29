@@ -17,13 +17,18 @@
         .stats {
           display: inline-block;
           color: #808080;
+          width: 100%;
           span {
             font-weight: 600;
             color: #000;
           }
-        }
-        hr {
-          margin: 0;
+          b {
+            text-align: right;
+            color: blue;
+            text-decoration: underline;
+            cursor: pointer;
+            float: right;
+          }
         }
       }
     }
@@ -42,7 +47,7 @@
         font-size: 3rem;
         min-height: 3.5rem;
       }
-      .fa-users {
+      .fa-hand-holding-usd {
         &:before {
           color: #c655cc;
         }
@@ -78,6 +83,12 @@
       width: 95%;
       height: auto;
       position: relative;
+      h6 {
+        text-align: center;
+      }
     }
+  }
+  hr {
+    margin: 0 !important;
   }
 }
