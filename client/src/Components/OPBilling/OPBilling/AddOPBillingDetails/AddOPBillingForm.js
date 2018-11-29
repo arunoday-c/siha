@@ -71,7 +71,8 @@ class AddOPBillingForm extends Component {
         method: "GET",
         redux: {
           type: "SERVICES_GET_DATA",
-          mappingName: "opbilservices"
+          mappingName: "opbilservices",
+          mappingName: "opserviceslist"
         }
       });
     }
@@ -299,16 +300,6 @@ class AddOPBillingForm extends Component {
       }
     });
 
-    // this.props.billingCalculations({
-    //   uri: "/billing/billingCalculations",
-    //   method: "POST",
-    //   data: { billdetails: serviceDetails },
-    //   redux: {
-    //     type: "BILL_HEADER_GEN_GET_DATA",
-    //     mappingName: "genbill"
-    //   }
-    // });
-
     if (serviceDetails.length === 0) {
       if (context !== undefined) {
         context.updateState({
@@ -363,8 +354,8 @@ class AddOPBillingForm extends Component {
   }
 
   render() {
-    const opbilservices =
-      this.props.opbilservices === undefined ? [] : this.props.opbilservices;
+    debugger;
+
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -514,10 +505,11 @@ class AddOPBillingForm extends Component {
                             <AlgaehLabel label={{ fieldName: "services_id" }} />
                           ),
                           displayTemplate: row => {
+                            debugger;
                             let display =
-                              opbilservices === undefined
+                              this.props.opserviceslist === undefined
                                 ? []
-                                : opbilservices.filter(
+                                : this.props.opserviceslist.filter(
                                     f =>
                                       f.hims_d_services_id === row.services_id
                                   );
@@ -534,9 +526,9 @@ class AddOPBillingForm extends Component {
                           },
                           editorTemplate: row => {
                             let display =
-                              opbilservices === undefined
+                              this.props.opserviceslist === undefined
                                 ? []
-                                : opbilservices.filter(
+                                : this.props.opserviceslist.filter(
                                     f =>
                                       f.hims_d_services_id === row.services_id
                                   );
@@ -1110,7 +1102,8 @@ class AddOPBillingForm extends Component {
 function mapStateToProps(state) {
   return {
     servicetype: state.servicetype,
-    opbilservices: state.opbilservices
+    opbilservices: state.opbilservices,
+    opserviceslist: state.opserviceslist
   };
 }
 
