@@ -124,6 +124,7 @@ export default ({ config, db }) => {
                     visit_id: s.visit_id,
                     bill_number: s.bill_number,
                     incharge_or_provider: s.incharge_or_provider,
+                    visit_code: s.visit_code,
                     bill_date: s.bill_date,
                     advance_amount: s.advance_amount,
                     advance_adjust: s.advance_adjust,

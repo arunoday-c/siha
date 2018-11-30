@@ -179,11 +179,18 @@
         "path": "/OPBilling",
         "language": "True"
       },
+
       {
         "name": "OP Bill Pending List",
         "label": "OP-Bill Pending List",
         "arlabel": "الفواتير قيد الانتظار قائمة OP",
         "path": "/OPBillPendingList"
+      },
+      {
+        "name": "OP Bill Cancellation",
+        "label": "OP Bill Cancellation",
+        "arlabel": "الفواتير قيد الانتظار قائمة OP",
+        "path": "/OPBillCancellation"
       }
     ]
   },

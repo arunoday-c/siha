@@ -3,8 +3,8 @@ import {
   algaehApiCall,
   swalMessage,
   getCookie
-} from "../../../../utils/algaehApiCall";
-import AlgaehLoader from "../../../Wrapper/fullPageLoader";
+} from "../../../utils/algaehApiCall";
+import AlgaehLoader from "../../Wrapper/fullPageLoader";
 
 let texthandlerInterval = null;
 

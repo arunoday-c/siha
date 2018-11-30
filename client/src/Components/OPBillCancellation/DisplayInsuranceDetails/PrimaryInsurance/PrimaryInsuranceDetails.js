@@ -132,7 +132,6 @@ export default class AddInsuranceForm extends Component {
                   <AlgaehLabel
                     label={{
                       fieldName: "consultation"
-                      // forceLabel: "Consultation"
                     }}
                   />
                 </div>
