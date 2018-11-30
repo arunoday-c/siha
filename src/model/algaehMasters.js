@@ -9,7 +9,7 @@ import {
 //import moment from "moment";
 import httpStatus from "../utils/httpStatus";
 import { LINQ } from "node-linq";
-import { debugLog } from "../utils/logging";
+import { debugLog, debugFunction } from "../utils/logging";
 
 //created by irfan: to add AlgaehGroupMAster
 let addAlgaehGroupMAster = (req, res, next) => {
@@ -233,6 +233,9 @@ let getRoleBaseActiveModules = (req, res, next) => {
             req.userIdentity.role_type == "SU" ||
             req.userIdentity.role_type == "AD"
           ) {
+            debugLog("ADMIN  if concondition");
+            debugLog("role type:", req.userIdentity);
+
             connection.query(
               "select algaeh_d_module_id, module_name, licence_key  from algaeh_d_app_module\
               where  record_status=md5('A') " +
@@ -282,6 +285,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
           reject(e);
         }
       }).then(modifyRes => {
+        debugLog("genreal  if concondition");
         connection.query(
           " select algaeh_m_module_role_privilage_mapping_id, module_id,module_name, icons,module_code,role_id, view_privilege\
         from algaeh_m_module_role_privilage_mapping MRP\
@@ -295,13 +299,13 @@ let getRoleBaseActiveModules = (req, res, next) => {
             }
             let outputArray = [];
 
-            debugLog("roolo:", req.userIdentity.role_id);
+            debugLog("roolo:", req.userIdentity);
             if (result.length > 0) {
               for (let i = 0; i < result.length; i++) {
                 connection.query(
                   "SELECT algaeh_m_screen_role_privilage_mapping_id, privilege_code, privilege_type,\
-                module_role_map_id, screen_id,screen_code,screen_name, role_id, delete_privilege, add_privilege, view_privilege, \
-                update_privilege, print_privilege, access_email from \
+                module_role_map_id, screen_id,screen_code,screen_name, role_id, view_privilege \
+                  from \
                 algaeh_m_screen_role_privilage_mapping SRM inner join algaeh_d_app_screens S \
                 on SRM.screen_id=S.algaeh_app_screens_id\
                 where SRM.record_status='A' and S.record_status='A' and module_role_map_id=?",
