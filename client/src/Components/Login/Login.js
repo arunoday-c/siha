@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./Login.css";
-import { AlgaehLabel, AlagehAutoComplete } from "../Wrapper/algaehWrapper";
-import { setSecure } from "../../utils/indexer";
+import { AlagehAutoComplete } from "../Wrapper/algaehWrapper";
+// import { setSecure } from "../../utils/indexer";
 import {
   algaehApiCall,
   setCookie,
@@ -30,9 +30,9 @@ export default class Login extends Component {
     getTokenDetals(this);
   }
 
-  componentWillUnmount() {
-    window.sessionStorage.removeItem("hospitalList");
-  }
+  // componentWillUnmount() {
+  //   window.sessionStorage.removeItem("hospitalList");
+  // }
   componentWillMount() {
     this.deleteAllPreviousCookies();
     this.deleteAllPreviousLocalStorage();
@@ -66,14 +66,12 @@ export default class Login extends Component {
         if (response.data.success === true) {
           setCookie("userName", response.data.records.username);
           setCookie("keyResources", response.data.records.keyResources, 30);
-          setSecure(response.data.records.secureModels);
-
+          // setSecure(response.data.records.secureModels);
           window.location.hash = "/Home";
           window.history.pushState(null, null, window.location.href);
           window.onpopstate = function(event) {
             window.history.go(1);
           };
-        } else {
         }
       },
       onFailure: error => {

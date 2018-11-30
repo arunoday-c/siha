@@ -1,11 +1,6 @@
 import extend from "extend";
-import {
-  swalMessage,
-  algaehApiCall,
-  getCookie,
-  getToken
-} from "../utils/algaehApiCall";
-import axios from "axios";
+import { swalMessage, algaehApiCall, getCookie } from "../utils/algaehApiCall";
+import crypto from "crypto";
 export function successfulMessage(options) {
   options.icon = options.icon || "error";
 
@@ -378,4 +373,19 @@ export function SetBulkState(options) {
   } else {
     return _objectCreation;
   }
+}
+const algorithm = "aes-256-ctr";
+const containerId = "algaeh_hims_erp_container_1.0.0";
+export function AlgaehCloseContainer(string) {
+  let cipher = crypto.createCipher(algorithm, containerId);
+  let crypted = cipher.update(string, "utf8", "hex");
+  crypted += cipher.final("hex");
+  return crypted;
+}
+export function AlgaehOpenContainer(string) {
+  var decipher = crypto.createDecipher(algorithm, containerId);
+  var dec = decipher.update(string, "hex", "utf8");
+  dec += decipher.final("utf8");
+  console.log("decipher", dec);
+  return dec;
 }

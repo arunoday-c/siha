@@ -95,7 +95,6 @@ class AutoComplete extends PureComponent {
   }
 
   distanceFromBottom() {
-    debugger;
     const _element = this.autoComp;
     //const _parent = this.autoComp.parentElement.parentNode.classList;
     let windowHeight = window.innerHeight;

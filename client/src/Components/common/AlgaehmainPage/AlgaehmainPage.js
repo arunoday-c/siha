@@ -1,12 +1,13 @@
 import React from "react";
-import sideMenuEn from "./SideMenuList.json";
-import sideMenuAr from "./SideMenuListAr.json";
 import "./AlgaehmainPage.css";
-import { setCookie, getCookie } from "../../../utils/algaehApiCall";
+import {
+  algaehApiCall,
+  setCookie,
+  getCookie
+} from "../../../utils/algaehApiCall";
 import directRoutes from "../../../Dynamicroutes";
-
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
-
+import { AlgaehCloseContainer } from "../../../utils/GlobalFunctions";
 class PersistentDrawer extends React.Component {
   constructor(props) {
     super(props);
@@ -15,7 +16,6 @@ class PersistentDrawer extends React.Component {
       class: "",
       anchor: "left",
       toggleSubMenu: false,
-      menuSelected: "General",
       renderComponent: "Dashboard",
       title: "Dashboard",
       selectedLang: "lang_en",
@@ -32,8 +32,21 @@ class PersistentDrawer extends React.Component {
         menuselected: "General",
         subMenuItem: "Dashboard"
       },
-      isSelectedByForce: false
+      isSelectedByForce: false,
+      menuList: []
     };
+    const that = this;
+    algaehApiCall({
+      uri: "/algaehMasters/getRoleBaseActiveModules",
+      method: "GET",
+      onSuccess: dataResponse => {
+        if (dataResponse.data.success) {
+          that.setState({
+            menuList: dataResponse.data.records
+          });
+        }
+      }
+    });
   }
 
   componentDidMount() {
@@ -132,7 +145,7 @@ class PersistentDrawer extends React.Component {
   };
 
   openSubMenuSelection(data) {
-    let getMenuSelected = data.name;
+    let getMenuSelected = data.module_code;
     if (this.state.menuSelected === getMenuSelected) {
       this.setState({
         menuSelected: "",
@@ -148,15 +161,18 @@ class PersistentDrawer extends React.Component {
     }
   }
 
-  TriggerPath(e) {
-    const path = e.currentTarget.getAttribute("path");
-    const name = e.currentTarget.getAttribute("name");
-    const _controlDId = e.currentTarget.getAttribute("controlid");
-    const _rootId = e.currentTarget.getAttribute("rootid");
-    const _menuselected = e.currentTarget.getAttribute("menuselected");
-    const _submenuselected = e.currentTarget.getAttribute("submenuselected");
+  TriggerPath(submenu, e) {
+    debugger;
+    const name = submenu.screen_name; // e.currentTarget.getAttribute("name");
     let screenName = name.replace(/\s/g, "");
-    setCookie("ScreenName", path, 30);
+    const _menuselected = e.currentTarget.getAttribute("menuselected");
+    const _submenuselected = submenu.screen_code; //e.currentTarget.getAttribute("submenuselected");
+    setCookie("ScreenName", screenName, 30);
+    sessionStorage.removeItem("AlgaehScreener");
+    sessionStorage.setItem(
+      "AlgaehScreener",
+      AlgaehCloseContainer(JSON.stringify(submenu))
+    );
     AlgaehLoader({ show: true });
     this.setState({
       sideopen: false,
@@ -164,11 +180,9 @@ class PersistentDrawer extends React.Component {
       title: e.currentTarget.innerText,
       renderComponent: screenName,
       menuSelected: "",
-      arlabl: e.currentTarget.getAttribute("arlabel"),
-      enlabl: e.currentTarget.getAttribute("label"),
+      arlabl: submenu.other_language,
+      enlabl: submenu.screen_name,
       activeNode: {
-        controlid: _controlDId,
-        rootid: _rootId,
         class: "active",
         menuselected: _menuselected,
         subMenuItem: _submenuselected
@@ -185,42 +199,124 @@ class PersistentDrawer extends React.Component {
     this.setState({ searchModules: e.target.value });
   }
 
-  CreateMenuListDropDownFilter() {
-    let LangSideMenu = [];
-    const _menuSearch = this.state.searchModules;
-    if (this.state.Language === "en") {
-      LangSideMenu = sideMenuEn;
-    } else if (this.state.Language === "ar") {
-      LangSideMenu = sideMenuAr;
-    }
-    if (createMenu === "") {
-      return LangSideMenu;
-    }
-    let createMenu = [];
+  // CreateMenuListDropDownFilter() {
+  //   let LangSideMenu = [];
+  //   const _menuSearch = this.state.searchModules;
+  //   if (this.state.Language === "en") {
+  //     LangSideMenu = sideMenuEn;
+  //   } else if (this.state.Language === "ar") {
+  //     LangSideMenu = sideMenuAr;
+  //   }
+  //   if (createMenu === "") {
+  //     return LangSideMenu;
+  //   }
+  //   let createMenu = [];
 
-    LangSideMenu.filter(obj => {
-      let submenu = [];
-      obj.subMenu.filter(item => {
-        if (
-          item.label
-            .toString()
-            .toLowerCase()
-            .indexOf(_menuSearch.toString().toLowerCase()) > -1
-        ) {
-          submenu.push(item);
-        }
-      });
-      if (submenu.length > 0) {
-        createMenu.push({
-          icon: obj.icon,
-          label: obj.label,
-          name: obj.label,
-          subMenu: submenu
-        });
-      }
+  //   LangSideMenu.filter(obj => {
+  //     let submenu = [];
+  //     obj.subMenu.filter(item => {
+  //       if (
+  //         item.label
+  //           .toString()
+  //           .toLowerCase()
+  //           .indexOf(_menuSearch.toString().toLowerCase()) > -1
+  //       ) {
+  //         submenu.push(item);
+  //       }
+  //     });
+  //     if (submenu.length > 0) {
+  //       createMenu.push({
+  //         icon: obj.icon,
+  //         label: obj.label,
+  //         name: obj.label,
+  //         subMenu: submenu
+  //       });
+  //     }
+  //   });
+
+  //   return createMenu;
+  // }
+
+  createSideMenuItemList() {
+    console.log("Ploting Menu");
+    const {
+      isSelectedByForce,
+      activeNode,
+      searchModules,
+      menuList
+    } = this.state;
+    console.log("Ploting Menu", menuList);
+    const _isEnglish = this.state.Language !== "en" ? false : true;
+    let menuArray = [];
+    menuList.map((menu, index) => {
+      let icon = menu.icons;
+      const _toggle = searchModules !== "" ? true : false;
+      const _menuSelected = !isSelectedByForce
+        ? activeNode !== undefined && activeNode !== null
+          ? activeNode.menuselected
+          : this.state.menuSelected
+        : this.state.menuSelected;
+      const _toggleSubMenu = !isSelectedByForce
+        ? activeNode !== undefined && activeNode !== null
+          ? activeNode.menuselected === menu.module_code
+            ? false
+            : this.state.toggleSubMenu
+          : this.state.toggleSubMenu
+        : this.state.toggleSubMenu;
+      menuArray.push(
+        <div key={"side_menu_index" + index} className="container-fluid">
+          <div
+            className="row clearfix side-menu-title"
+            onClick={this.openSubMenuSelection.bind(this, menu)}
+          >
+            <div className="col-2" style={{ marginTop: "2px" }}>
+              <i className={icon} />
+            </div>
+            <div className="col-8 ">{menu.module_name}</div>
+            <div className="col-2" style={{ marginTop: "2px" }}>
+              {(_menuSelected === menu.module_code &&
+                _toggleSubMenu === false) ||
+              _toggle ? (
+                <i className="fas fa-angle-up" />
+              ) : (
+                <i className="fas fa-angle-down" />
+              )}
+            </div>
+          </div>
+          {(_menuSelected === menu.module_code && _toggleSubMenu === false) ||
+          _toggle ? (
+            <div className="row sub-menu-option">
+              <ul className="tree-structure-menu">
+                {menu.ScreenList.map((submenu, indexSub) => (
+                  <li
+                    onClick={this.TriggerPath.bind(this, submenu)}
+                    // path={submenu.path}
+                    // name={submenu.screen_name}
+                    // arlabel={submenu.other_language}
+                    // label={submenu.screen_name}
+                    // rootid={index}
+                    menuselected={menu.module_code}
+                    // submenuselected={submenu.screen_code}
+                    key={indexSub}
+                    className={
+                      activeNode !== undefined && activeNode !== null
+                        ? activeNode.subMenuItem === submenu.screen_code
+                          ? activeNode.class
+                          : ""
+                        : ""
+                    }
+                  >
+                    <i className="fas fa-arrow-circle-right fa-1x " />
+                    <span>{submenu.screen_name}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+        </div>
+      );
     });
-
-    return createMenu;
+    return menuArray;
   }
 
   render() {
@@ -238,79 +334,80 @@ class PersistentDrawer extends React.Component {
     }
 
     const { anchor, activeNode, isSelectedByForce } = this.state;
-    let LangSideMenu = this.CreateMenuListDropDownFilter();
 
-    var MenuListItems = LangSideMenu.map((data, idx) => {
-      let icon = data.icon;
-      const _toggle = this.state.searchModules !== "" ? true : false;
-      const _menuSelected = !isSelectedByForce
-        ? activeNode !== undefined && activeNode !== null
-          ? activeNode.menuselected
-          : this.state.menuSelected
-        : this.state.menuSelected;
-      const _toggleSubMenu = !isSelectedByForce
-        ? activeNode !== undefined && activeNode !== null
-          ? activeNode.menuselected === data.name
-            ? false
-            : this.state.toggleSubMenu
-          : this.state.toggleSubMenu
-        : this.state.toggleSubMenu;
-      return (
-        <div key={"side_menu_index" + idx} className="container-fluid">
-          <div
-            className="row clearfix side-menu-title"
-            onClick={this.openSubMenuSelection.bind(this, data)}
-          >
-            <div className="col-2" style={{ marginTop: "2px" }}>
-              <i className={icon} />
-            </div>
-            <div className="col-8 ">{data.label}</div>
+    // let LangSideMenu = this.CreateMenuListDropDownFilter();
 
-            <div className="col-2" style={{ marginTop: "2px" }}>
-              {(_menuSelected === data.name && _toggleSubMenu === false) ||
-              _toggle ? (
-                <i className="fas fa-angle-up" />
-              ) : (
-                <i className="fas fa-angle-down" />
-              )}
-            </div>
-          </div>
-          {(_menuSelected === data.name && _toggleSubMenu === false) ||
-          _toggle ? (
-            <div className="row sub-menu-option">
-              <ul className="tree-structure-menu">
-                {data.subMenu.map((title, Didx) => {
-                  return (
-                    <li
-                      onClick={this.TriggerPath.bind(this)}
-                      path={title.path}
-                      name={title.name}
-                      arlabel={title.arlabel}
-                      label={title.label}
-                      controlid={Didx}
-                      rootid={idx}
-                      menuselected={data.name}
-                      submenuselected={title.label}
-                      key={Didx}
-                      className={
-                        activeNode !== undefined && activeNode !== null
-                          ? activeNode.subMenuItem === title.label
-                            ? activeNode.class
-                            : ""
-                          : ""
-                      }
-                    >
-                      <i className="fas fa-arrow-circle-right fa-1x " />
-                      <span>{title.label}</span>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          ) : null}
-        </div>
-      );
-    });
+    // var MenuListItems = LangSideMenu.map((data, idx) => {
+    //   let icon = data.icon;
+    //   const _toggle = this.state.searchModules !== "" ? true : false;
+    //   const _menuSelected = !isSelectedByForce
+    //     ? activeNode !== undefined && activeNode !== null
+    //       ? activeNode.menuselected
+    //       : this.state.menuSelected
+    //     : this.state.menuSelected;
+    //   const _toggleSubMenu = !isSelectedByForce
+    //     ? activeNode !== undefined && activeNode !== null
+    //       ? activeNode.menuselected === data.name
+    //         ? false
+    //         : this.state.toggleSubMenu
+    //       : this.state.toggleSubMenu
+    //     : this.state.toggleSubMenu;
+    //   return (
+    //     <div key={"side_menu_index" + idx} className="container-fluid">
+    //       <div
+    //         className="row clearfix side-menu-title"
+    //         onClick={this.openSubMenuSelection.bind(this, data)}
+    //       >
+    //         <div className="col-2" style={{ marginTop: "2px" }}>
+    //           <i className={icon} />
+    //         </div>
+    //         <div className="col-8 ">{data.label}</div>
+
+    //         <div className="col-2" style={{ marginTop: "2px" }}>
+    //           {(_menuSelected === data.name && _toggleSubMenu === false) ||
+    //           _toggle ? (
+    //             <i className="fas fa-angle-up" />
+    //           ) : (
+    //             <i className="fas fa-angle-down" />
+    //           )}
+    //         </div>
+    //       </div>
+    //       {(_menuSelected === data.name && _toggleSubMenu === false) ||
+    //       _toggle ? (
+    //         <div className="row sub-menu-option">
+    //           <ul className="tree-structure-menu">
+    //             {data.subMenu.map((title, Didx) => {
+    //               return (
+    //                 <li
+    //                   onClick={this.TriggerPath.bind(this)}
+    //                   path={title.path}
+    //                   name={title.name}
+    //                   arlabel={title.arlabel}
+    //                   label={title.label}
+    //                   controlid={Didx}
+    //                   rootid={idx}
+    //                   menuselected={data.name}
+    //                   submenuselected={title.label}
+    //                   key={Didx}
+    //                   className={
+    //                     activeNode !== undefined && activeNode !== null
+    //                       ? activeNode.subMenuItem === title.label
+    //                         ? activeNode.class
+    //                         : ""
+    //                       : ""
+    //                   }
+    //                 >
+    //                   <i className="fas fa-arrow-circle-right fa-1x " />
+    //                   <span>{title.label}</span>
+    //                 </li>
+    //               );
+    //             })}
+    //           </ul>
+    //         </div>
+    //       ) : null}
+    //     </div>
+    //   );
+    // });
 
     return (
       <div className="">
@@ -397,7 +494,9 @@ class PersistentDrawer extends React.Component {
                   onChange={this.SearchModuleHandler.bind(this)}
                 />
               </div>
-              <div className="sideMenu-header">{MenuListItems}</div>
+              <div className="sideMenu-header">
+                {this.createSideMenuItemList()}
+              </div>
             </div>
           </div>
         ) : null}
