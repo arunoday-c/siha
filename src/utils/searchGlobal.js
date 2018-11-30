@@ -17,14 +17,14 @@ let algaehSearchConfig = searchName => {
       {
         searchName: "bills",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS hims_f_billing_header_id, patient_id, visit_id, bill_number,\
+          "select SQL_CALC_FOUND_ROWS hims_f_billing_header_id, BH.patient_id, visit_id, bill_number,\
           incharge_or_provider, bill_date, BH.advance_amount, advance_adjust, discount_amount, sub_total_amount, total_tax, \
           net_total, billing_status, copay_amount, deductable_amount, sec_copay_amount, sec_deductable_amount, gross_total, \
           sheet_discount_amount, sheet_discount_percentage, net_amount, patient_res, company_res, sec_company_res, \
           patient_payable, company_payable, sec_company_payable, patient_tax, company_tax, sec_company_tax, net_tax, \
           credit_amount, receiveable_amount, BH.created_by, BH.created_date, BH.updated_by, BH.updated_date, BH.record_status, \
-          cancel_remarks,cancel_by, bill_comments, PAT.patient_code from hims_f_billing_header BH inner join hims_f_patient as PAT on  \
-          BH.patient_id = PAT.hims_d_patient_id where BH.record_status ='A'",
+          cancel_remarks,cancel_by, bill_comments, PAT.patient_code, PATV.visit_code from hims_f_billing_header BH inner join hims_f_patient as PAT on  \
+          BH.patient_id = PAT.hims_d_patient_id inner join hims_f_patient_visit as PATV on BH.visit_id = PATV.hims_f_patient_visit_id where BH.record_status ='A'",
         orderBy: "hims_f_billing_header_id desc"
       },
       {

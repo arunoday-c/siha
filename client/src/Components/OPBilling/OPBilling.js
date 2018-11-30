@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import AppBar from "@material-ui/core/AppBar";
 import extend from "extend";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
@@ -29,9 +28,8 @@ import AHSnackbar from "../common/Inputs/AHSnackbar.js";
 
 import moment from "moment";
 import Options from "../../Options.json";
-var intervalId;
 
-class PatientDisplayDetails extends Component {
+class OPBilling extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -454,7 +452,7 @@ class PatientDisplayDetails extends Component {
                   }}
                 />
                 <h6>
-                  {this.state.registration_date
+                  {this.state.bill_date
                     ? moment(this.state.bill_date).format("DD-MM-YYYY")
                     : "DD/MM/YYYY"}
                 </h6>
@@ -574,5 +572,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(PatientDisplayDetails)
+  )(OPBilling)
 );

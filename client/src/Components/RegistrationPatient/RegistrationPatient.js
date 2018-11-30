@@ -2,7 +2,7 @@ import React, { PureComponent } from "react";
 import PatientDetails from "./PatientDetails/PatientDetails.js";
 import ConsultationDetails from "./ConsultationDetails/ConsultationDetails.js";
 import InsuranceDetails from "./InsuranceDetails/InsuranceDetails.js";
-import Billing from "./Billing/BillingDetails";
+import Billing from "./Billing/AddBillingForm";
 import "./registration.css";
 import PatRegIOputs from "../../Models/RegistrationPatient";
 import BillingIOputs from "../../Models/Billing";
@@ -70,7 +70,6 @@ class RegistrationPatient extends PureComponent {
     let IOputs = emptyObject;
     IOputs.selectedLang = prevLang;
     this.setState(IOputs);
-    
 
     if (
       this.props.patient_code !== undefined &&

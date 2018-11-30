@@ -71,6 +71,7 @@ import DepreciationReversal from "./Components/AssetManagement/DepreciationRever
 import Disposal from "./Components/AssetManagement/Disposal/Disposal";
 import PurchaseOrderList from "./Components/Procurement/PurchaseOrderList/PurchaseSwitch";
 import DayEndProcess from "./Components/Finance/DayEndProcess/DayEndProcess";
+import OPBillCancellation from "./Components/OPBillCancellation/OPBillCancellation";
 
 const componts = (selectedLang, breadStyle) => {
   return {
@@ -160,7 +161,8 @@ const componts = (selectedLang, breadStyle) => {
     Disposal: <Disposal SelectLanguage={selectedLang} />,
     PurchaseOrderList: <PurchaseOrderList SelectLanguage={selectedLang} />,
     PatientRecall: <PatientRecall SelectLanguage={selectedLang} />,
-    AdministrationSetup: <AdministrationSetup SelectLanguage={selectedLang} />
+    AdministrationSetup: <AdministrationSetup SelectLanguage={selectedLang} />,
+    OPBillCancellation: <OPBillCancellation SelectLanguage={selectedLang} />
   };
 };
 

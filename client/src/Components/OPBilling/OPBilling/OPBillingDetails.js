@@ -1,10 +1,8 @@
 import React, { Component } from "react";
 import AddOPBillingDetails from "./AddOPBillingDetails/AddOPBillingForm";
 
-import PrimaryInsurance from "../DisplayInsuranceDetails/PrimaryInsurance/PrimaryInsuranceDetails.js";
-import SecondaryInsurance from "../DisplayInsuranceDetails/SecondaryInsurance/SecondaryInsuranceDetails.js";
+import DisplayInsuranceDetails from "../DisplayInsuranceDetails/DisplayInsuranceDetails.js";
 import "./OPBillingDetails.css";
-import "../DisplayInsuranceDetails/DisplayInsuranceDetails.css";
 import "./../../../styles/site.css";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 
@@ -47,27 +45,14 @@ export default class OPBillingDetails extends Component {
               }
             </li>
             <li
-              algaehtabs={"PrimaryInsurance"}
+              algaehtabs={"DisplayInsuranceDetails"}
               className={"nav-item tab-button"}
               onClick={this.openTab.bind(this)}
             >
               {
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Primary Insurance"
-                  }}
-                />
-              }
-            </li>
-            <li
-              algaehtabs={"SecondaryDetails"}
-              className={"nav-item tab-button"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Secondary Details"
+                    forceLabel: "Insurance Details"
                   }}
                 />
               }
@@ -80,10 +65,8 @@ export default class OPBillingDetails extends Component {
 
           {this.state.pageDisplay === "BillingDetails" ? (
             <AddOPBillingDetails BillingIOputs={this.props.BillingIOputs} />
-          ) : this.state.pageDisplay === "PrimaryInsurance" ? (
-            <PrimaryInsurance BillingIOputs={this.props.BillingIOputs} />
-          ) : this.state.pageDisplay === "SecondaryDetails" ? (
-            <SecondaryInsurance BillingIOputs={this.props.BillingIOputs} />
+          ) : this.state.pageDisplay === "DisplayInsuranceDetails" ? (
+            <DisplayInsuranceDetails BillingIOputs={this.props.BillingIOputs} />
           ) : null}
         </div>
       </div>

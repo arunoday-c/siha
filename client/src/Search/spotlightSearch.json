@@ -35,6 +35,10 @@
         "label": "Patient Code"
       },
       {
+        "fieldName": "visit_code",
+        "label": "Visit Code"
+      },
+      {
         "fieldName": "bill_date",
         "label": "Bill Date"
       }
