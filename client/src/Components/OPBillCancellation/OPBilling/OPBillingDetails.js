@@ -28,7 +28,7 @@ export default class OPBillingDetails extends Component {
 
   render() {
     return (
-      <div className="hptl-phase1-opbilling-details margin-top-15 margin-bottom-15 ">
+      <div className="hptl-phase1-opbilling-cancel-details margin-top-15 margin-bottom-15 ">
         <div className="tab-container toggle-section">
           <ul className="nav">
             <li
@@ -45,7 +45,7 @@ export default class OPBillingDetails extends Component {
               }
             </li>
             <li
-              algaehtabs={"DisplayInsuranceDetails"}
+              algaehtabs={"PrimaryInsurance"}
               className={"nav-item tab-button"}
               onClick={this.openTab.bind(this)}
             >
@@ -65,7 +65,7 @@ export default class OPBillingDetails extends Component {
 
           {this.state.pageDisplay === "BillingDetails" ? (
             <AddOPBillingDetails BillingIOputs={this.props.BillingIOputs} />
-          ) : this.state.pageDisplay === "DisplayInsuranceDetails" ? (
+          ) : this.state.pageDisplay === "PrimaryInsurance" ? (
             <DisplayInsuranceDetails BillingIOputs={this.props.BillingIOputs} />
           ) : null}
         </div>

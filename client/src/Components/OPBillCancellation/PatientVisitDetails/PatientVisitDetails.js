@@ -3,14 +3,14 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import { AlgaehActions } from "../../../../actions/algaehActions";
-import "./PatientDisplayForm.css";
-import { AlgaehLabel } from "../../../Wrapper/algaehWrapper";
-import MyContext from "../../../../utils/MyContext.js";
-import { PatientSearch } from "./DisPatientHandlers";
-// import variableJson from "../../../../utils/GlobalVariables.json";
-
-class DisPatientForm extends Component {
+import { AlgaehActions } from "../../../actions/algaehActions";
+import "./PatientVisitDetails.css";
+import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
+import MyContext from "../../../utils/MyContext.js";
+import { BillSearch } from "./PatientVisitDetailsEvent";
+import moment from "moment";
+import Enumerable from "linq";
+class PatientVisitDetails extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -20,7 +20,7 @@ class DisPatientForm extends Component {
     let InputOutput = this.props.BillingIOputs;
     this.setState({ ...this.state, ...InputOutput });
   }
-  // PAT-A-0000365
+
   componentDidMount() {
     if (
       this.props.patienttype === undefined ||
@@ -35,6 +35,25 @@ class DisPatientForm extends Component {
         }
       });
     }
+
+    if (
+      this.props.opcacelproviders === undefined ||
+      this.props.opcacelproviders.length === 0
+    ) {
+      this.props.getProviderDetails({
+        uri: "/employee/get",
+        method: "GET",
+        redux: {
+          type: "DOCTOR_GET_DATA",
+          mappingName: "opcacelproviders"
+        },
+        afterSuccess: data => {
+          this.setState({
+            doctors: data
+          });
+        }
+      });
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -42,6 +61,14 @@ class DisPatientForm extends Component {
   }
 
   render() {
+    let provider_name = null;
+    if (this.state.incharge_or_provider !== null) {
+      provider_name = Enumerable.from(this.props.opcacelproviders)
+        .where(w => w.hims_d_employee_id === this.state.incharge_or_provider)
+        .select(s => s.full_name)
+        .firstOrDefault();
+    }
+
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -62,10 +89,10 @@ class DisPatientForm extends Component {
                     }}
                   >
                     <div className="col">
-                      <AlgaehLabel label={{ fieldName: "patient_code" }} />
+                      <AlgaehLabel label={{ fieldName: "bill_number" }} />
                       <h6>
-                        {this.state.patient_code
-                          ? this.state.patient_code
+                        {this.state.bill_number
+                          ? this.state.bill_number
                           : "*** New ***"}
                       </h6>
                     </div>
@@ -86,14 +113,48 @@ class DisPatientForm extends Component {
                               ? "none"
                               : ""
                         }}
-                        onClick={PatientSearch.bind(this, this, context)}
+                        onClick={BillSearch.bind(this, this, context)}
                       />
                     </div>
                   </div>
                 </div>
                 <div className="col-lg-9">
                   <div className="row">
-                    <div className="col-lg-3">
+                    <div className="col">
+                      <AlgaehLabel label={{ fieldName: "bill_date" }} />
+                      <h6>
+                        {this.state.bill_date
+                          ? moment(this.state.bill_date).format("DD-MM-YYYY")
+                          : "--------"}
+                      </h6>
+                    </div>
+
+                    <div className="col">
+                      <AlgaehLabel label={{ fieldName: "visit_code" }} />
+                      <h6>
+                        {this.state.visit_code
+                          ? this.state.visit_code
+                          : "--------"}
+                      </h6>
+                    </div>
+
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{ fieldName: "incharge_or_provider" }}
+                      />
+                      <h6>{provider_name ? provider_name : "--------"}</h6>
+                    </div>
+
+                    <div className="col">
+                      <AlgaehLabel label={{ fieldName: "patient_code" }} />
+                      <h6>
+                        {this.state.patient_code
+                          ? this.state.patient_code
+                          : "--------"}
+                      </h6>
+                    </div>
+
+                    <div className="col">
                       <AlgaehLabel
                         label={{
                           fieldName: "full_name"
@@ -106,7 +167,7 @@ class DisPatientForm extends Component {
                       </h6>
                     </div>
 
-                    <div className="col-lg-3">
+                    <div className="col">
                       <AlgaehLabel
                         label={{
                           fieldName: "patient_type"
@@ -119,7 +180,7 @@ class DisPatientForm extends Component {
                       </h6>
                     </div>
 
-                    <div className="col-lg-3">
+                    <div className="col">
                       <AlgaehLabel
                         label={{
                           fieldName: "mode_of_pay"
@@ -144,14 +205,16 @@ class DisPatientForm extends Component {
 
 function mapStateToProps(state) {
   return {
-    patienttype: state.patienttype
+    patienttype: state.patienttype,
+    opcacelproviders: state.opcacelproviders
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getPatientType: AlgaehActions
+      getPatientType: AlgaehActions,
+      getProviderDetails: AlgaehActions
     },
     dispatch
   );
@@ -161,5 +224,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(DisPatientForm)
+  )(PatientVisitDetails)
 );

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import AddBillingForm from "./AddBillingForm.js";
+import AddOPBillingForm from "./AddOPBillingForm.js";
+import "./AddOPBillingForm.css";
 
 export default class BillingForm extends Component {
   constructor(props) {
@@ -9,8 +10,8 @@ export default class BillingForm extends Component {
 
   render() {
     return (
-      <div className="hptl-phase1-billing-form">
-        <AddBillingForm PatRegIOputs={this.props.PatRegIOputs} />
+      <div className="hptl-op-phase1-billing-form">
+        <AddOPBillingForm />
       </div>
     );
   }
