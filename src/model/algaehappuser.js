@@ -130,11 +130,19 @@ let selectAppGroup = (req, res, next) => {
 
     let where = whereCondition(extend(selectWhere, req.query));
 
+    let adminUSer = "";
+
+    if (req.userIdentity.role_type == "AD") {
+      adminUSer = " and   group_type <> 'AD'";
+    }
+
     db.getConnection((error, connection) => {
       connection.query(
         "select algaeh_d_app_group_id, app_group_code, app_group_name, app_group_desc,\
         group_type, app_group_status  from algaeh_d_app_group where record_status='A'\
-        and group_type <>'SU'   AND" +
+        and group_type <>'SU'  " +
+          adminUSer +
+          " AND" +
           where.condition +
           " order by algaeh_d_app_group_id desc",
         where.values,
@@ -161,19 +169,35 @@ let selectRoles = (req, res, next) => {
     }
     let db = req.db;
 
+    let adminUSer = "";
+
+    if (req.userIdentity.role_type == "AD") {
+      adminUSer = " and   role_type <> 'AD'";
+    }
+    debugLog("dd:", req.userIdentity);
     db.getConnection((error, connection) => {
-      connection.query(
-        "select app_d_app_roles_id, role_code, role_name, role_discreption, super_user\
-        from algaeh_d_app_roles where record_status='A' order by app_d_app_roles_id desc",
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
+      if (req.userIdentity.role_type != "GN") {
+        connection.query(
+          "select app_d_app_roles_id, role_code, role_name, role_discreption, role_type\
+        from algaeh_d_app_roles where record_status='A' and  role_type <>'SU' " +
+            adminUSer +
+            " order by app_d_app_roles_id desc",
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+            req.records = result;
+            next();
           }
-          req.records = result;
-          next();
-        }
-      );
+        );
+      } else {
+        req.records = {
+          validUser: false,
+          message: "you dont have admin privilege"
+        };
+        next();
+      }
     });
   } catch (e) {
     next(e);

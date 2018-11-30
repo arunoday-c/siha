@@ -237,7 +237,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
             debugLog("role type:", req.userIdentity);
 
             connection.query(
-              "select algaeh_d_module_id, module_name, licence_key  from algaeh_d_app_module\
+              "select algaeh_d_module_id, module_name,module_code, licence_key  from algaeh_d_app_module\
               where  record_status=md5('A') " +
                 superUser,
               (error, result) => {
@@ -287,7 +287,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
       }).then(modifyRes => {
         debugLog("genreal  if concondition");
         connection.query(
-          " select algaeh_m_module_role_privilage_mapping_id, module_id,module_name, icons,module_code,role_id, view_privilege\
+          " select algaeh_m_module_role_privilage_mapping_id, module_id,module_code,module_name, icons,module_code,role_id, view_privilege\
         from algaeh_m_module_role_privilage_mapping MRP\
         inner join algaeh_d_app_module M on MRP.module_id=M.algaeh_d_module_id\
         where MRP.record_status='A' and M.record_status=md5('A') and MRP.role_id=?",
