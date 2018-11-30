@@ -237,7 +237,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
             debugLog("role type:", req.userIdentity);
 
             connection.query(
-              "select algaeh_d_module_id, module_name,module_code, licence_key  from algaeh_d_app_module\
+              "select algaeh_d_module_id, module_name,module_code, icons  from algaeh_d_app_module\
               where  record_status=md5('A') " +
                 superUser,
               (error, result) => {

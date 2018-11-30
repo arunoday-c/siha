@@ -137,24 +137,32 @@ let selectAppGroup = (req, res, next) => {
     }
 
     db.getConnection((error, connection) => {
-      connection.query(
-        "select algaeh_d_app_group_id, app_group_code, app_group_name, app_group_desc,\
+      if (req.userIdentity.role_type != "GN") {
+        connection.query(
+          "select algaeh_d_app_group_id, app_group_code, app_group_name, app_group_desc,\
         group_type, app_group_status  from algaeh_d_app_group where record_status='A'\
         and group_type <>'SU'  " +
-          adminUSer +
-          " AND" +
-          where.condition +
-          " order by algaeh_d_app_group_id desc",
-        where.values,
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
+            adminUSer +
+            " AND" +
+            where.condition +
+            " order by algaeh_d_app_group_id desc",
+          where.values,
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+            req.records = result;
+            next();
           }
-          req.records = result;
-          next();
-        }
-      );
+        );
+      } else {
+        req.records = {
+          validUser: false,
+          message: "you dont have admin privilege"
+        };
+        next();
+      }
     });
   } catch (e) {
     next(e);
