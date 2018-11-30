@@ -349,48 +349,64 @@ let getRoleBaseInActiveComponents = (req, res, next) => {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
+
+    // SELECT algaeh_m_scrn_elmnt_role_privilage_mapping_id, SERM.role_id, SERM.view_privilege,\
+    // screen_element_id,screen_element_code,screen_element_name,component_id,component_code,\
+    // screen_id,screen_code, module_id,module_code from algaeh_m_scrn_elmnt_role_privilage_mapping SERM\
+    // inner join algaeh_d_app_scrn_elements  SE on SERM.screen_element_id=SE.algaeh_d_app_scrn_elements_id\
+    // inner join algaeh_d_app_component C on SE.component_id=C.algaeh_d_app_component_id  \
+    // inner join algaeh_d_app_screens S on C.screen_id=S.algaeh_app_screens_id\
+    // inner join  algaeh_d_app_module M on S.module_id=M.algaeh_d_module_id\
+    //  where SERM.record_status='A' and SE.record_status='A' and  C.record_status='A'\
+    //  and  S.record_status='A' and M.record_status=md5('A') and role_id=?
+
     let db = req.db;
     db.getConnection((error, connection) => {
       connection.query(
-        " select algaeh_m_scrn_elmnt_role_privilage_mapping_id, screen_element_id, screen_element_code,screen_element_name, role_id, view_privilege,\
-        component_id,component_code,component_name\
-        from algaeh_m_scrn_elmnt_role_privilage_mapping SERM\
+        "SELECT  SERM.view_privilege, screen_element_id,screen_element_code,screen_element_name,component_code,\
+        screen_code, module_code from algaeh_m_scrn_elmnt_role_privilage_mapping SERM\
         inner join algaeh_d_app_scrn_elements  SE on SERM.screen_element_id=SE.algaeh_d_app_scrn_elements_id\
-        inner join algaeh_d_app_component C on SE.component_id=C.algaeh_d_app_component_id\
-        where SERM.record_status='A' and role_id=?",
+        inner join algaeh_d_app_component C on SE.component_id=C.algaeh_d_app_component_id  \
+        inner join algaeh_d_app_screens S on C.screen_id=S.algaeh_app_screens_id\
+        inner join  algaeh_d_app_module M on S.module_id=M.algaeh_d_module_id\
+         where SERM.record_status='A' and SE.record_status='A' and  C.record_status='A'\
+         and  S.record_status='A' and M.record_status=md5('A') and role_id=?",
         [req.userIdentity.role_id],
-        (error, result) => {
+        (error, elementsHide) => {
           if (error) {
             releaseDBConnection(db, connection);
             next(error);
           }
 
-          let screenElementsToHide = new LINQ(result).GroupBy(
-            g => g.component_code
-          );
-
-          debugLog(screenElementsToHide);
+          // SELECT algaeh_m_component_role_privilage_mapping_id, component_id, role_id,module_code,\
+          // component_code,screen_code from \
+          // algaeh_m_component_role_privilage_mapping CRM inner join algaeh_d_app_component C\
+          //  on CRM.component_id=C.algaeh_d_app_component_id\
+          //  inner join algaeh_d_app_screens S on C.screen_id=S.algaeh_app_screens_id\
+          //  inner join algaeh_d_app_module M on S.module_id=M.algaeh_d_module_id\
+          //  where  CRM.record_status='A' and C.record_status='A' and  M.record_status= md5('A') and \
+          //  S.record_status='A'  and role_id=?
 
           connection.query(
-            " select algaeh_m_component_role_privilage_mapping_id, component_id,  component_code,role_id, view_privilege\
-                from algaeh_m_component_role_privilage_mapping CM,algaeh_d_app_component C\
-                where  CM.component_id=C.algaeh_d_app_component_id    and                   \
-                CM.record_status='A' and  C.record_status='A' and role_id=?",
+            "SELECT module_code,\
+            component_code,screen_code from \
+            algaeh_m_component_role_privilage_mapping CRM inner join algaeh_d_app_component C\
+             on CRM.component_id=C.algaeh_d_app_component_id\
+             inner join algaeh_d_app_screens S on C.screen_id=S.algaeh_app_screens_id\
+             inner join algaeh_d_app_module M on S.module_id=M.algaeh_d_module_id\
+             where  CRM.record_status='A' and C.record_status='A' and  M.record_status= md5('A') and \
+             S.record_status='A'  and role_id=?",
             [req.userIdentity.role_id],
-            (error, resultss) => {
+            (error, componentHide) => {
               if (error) {
                 releaseDBConnection(db, connection);
                 next(error);
               }
-              debugLog("resultss:", resultss);
 
-              let compnentsToHide = new LINQ(resultss)
-                .Select(s => s.component_code)
-                .ToArray();
               releaseDBConnection(db, connection);
               req.records = {
-                listOfComponentsToHide: compnentsToHide,
-                screenElementsToHide: screenElementsToHide
+                listOfComponentsToHide: componentHide,
+                screenElementsToHide: elementsHide
               };
               next();
             }
