@@ -8,9 +8,12 @@ let encryption = data => {
       algaeh_d_app_user_id: data["algaeh_d_app_user_id"],
       employee_id: data["employee_id"],
       sub_department_id: data["sub_department_id"],
-      role_id: data["role_id"],
+      role_id: data["app_d_app_roles_id"],
+      role_type: data["role_type"],
       app_group_id: data["app_group_id"],
-      group_type: data["group_type"]
+      group_type: data["group_type"],
+
+      username: data["username"]
     }
   });
   return new cryptr(keys.SECRETKey).encrypt(stringData);
