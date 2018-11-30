@@ -116,7 +116,7 @@ let getAlgaehModuleBACKUP = (req, res, next) => {
           if (result.length > 0) {
             for (let i = 0; i < result.length; i++) {
               connection.query(
-                "select algaeh_app_screens_id, screen_code, screen_name, screen_desc, module_id\
+                "select algaeh_app_screens_id, screen_code, screen_name, page_to_redirect, module_id\
                 from algaeh_d_app_screens where record_status='A' and  module_id=?",
                 [result[i].algaeh_d_module_id],
                 (error, screenResult) => {
@@ -249,7 +249,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
                 if (result.length > 0) {
                   for (let i = 0; i < result.length; i++) {
                     connection.query(
-                      "select algaeh_app_screens_id, screen_code, screen_name, screen_desc,other_language, module_id\
+                      "select algaeh_app_screens_id, screen_code, screen_name, page_to_redirect,other_language, module_id\
                       from algaeh_d_app_screens where record_status='A' and  module_id=?",
                       [result[i].algaeh_d_module_id],
                       (error, screenResult) => {
@@ -303,8 +303,8 @@ let getRoleBaseActiveModules = (req, res, next) => {
             if (result.length > 0) {
               for (let i = 0; i < result.length; i++) {
                 connection.query(
-                  "SELECT algaeh_m_screen_role_privilage_mapping_id, privilege_code, privilege_type,\
-                module_role_map_id, screen_id,screen_code,screen_name,other_language, role_id, view_privilege \
+                  "SELECT algaeh_m_screen_role_privilage_mapping_id, \
+                module_role_map_id, screen_id,screen_code,screen_name,page_to_redirect,other_language, role_id, view_privilege \
                   from \
                 algaeh_m_screen_role_privilage_mapping SRM inner join algaeh_d_app_screens S \
                 on SRM.screen_id=S.algaeh_app_screens_id\
