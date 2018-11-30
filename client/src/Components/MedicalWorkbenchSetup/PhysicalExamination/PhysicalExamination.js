@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import "./physical_examination.css";
-import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import {
   AlgaehOptions,
   AlagehFormGroup,
-  AlgaehDataGrid
+  AlgaehDataGrid,
+  AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
 
 class PhysicalExamination extends Component {
@@ -46,279 +46,360 @@ class PhysicalExamination extends Component {
 
   render() {
     return (
-      <div className="physical_examination" style={{ overflow: "scroll" }}>
-        <Paper className="container-fluid">
-          <div
-            className="row"
-            style={{
-              marginLeft: "auto",
-              marginRight: "auto"
-            }}
-          >
-            {/* <AlgaehOptions
-              div={{ className: "col" }}
-              optionsType="radio"
-              group={{
-                name: "pe_type",
-                value: this.state.pe_type,
-                controls: [
-                  { label: "Speciality Specific Examination", value: "A" },
-                  { label: "General Systematic Examination", value: "I" }
-                ]
-                //events: { onChange: this.changeStatus.bind(this) }
-              }}
-            /> */}
-          </div>
-
-          {/* Header Grid Start */}
+      <div className="physical_examination">
+        <div className="container-fluid">
           <div className="row">
-            <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
-              label={{
-                fieldName: "code",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "code",
-                value: this.state.code,
-                events: {
-                  onChange: this.texthandle.bind(this)
-                },
-                error: this.state.codeError,
-                helperText: this.state.codeErrorText
-              }}
-            />
+            <div className="col-lg-4 row-card">
+              <h6>Examination Type</h6>
+              <div className="row">
+                <div className="col-lg-12">
+                  <div className="row">
+                    <AlagehFormGroup
+                      div={{ className: "col-4" }}
+                      label={{
+                        fieldName: "code",
+                        isImp: true
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "code",
+                        value: this.state.code,
+                        events: {
+                          onChange: this.texthandle.bind(this)
+                        },
+                        error: this.state.codeError,
+                        helperText: this.state.codeErrorText
+                      }}
+                    />
 
-            <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
-              label={{
-                fieldName: "name",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "name",
-                value: this.state.name,
-                events: {
-                  onChange: this.texthandle.bind(this)
-                },
-                error: this.state.nameError,
-                helperText: this.state.nameErrorText
-              }}
-            />
-            <div className="col-lg-3">
-              <br />
-              <Button
-                variant="raised"
-                color="primary"
-                onClick={this.add.bind(this)}
-              >
-                Add
-              </Button>
+                    <AlagehFormGroup
+                      div={{ className: "col-8" }}
+                      label={{
+                        fieldName: "name",
+                        isImp: true
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "name",
+                        value: this.state.name,
+                        events: {
+                          onChange: this.texthandle.bind(this)
+                        },
+                        error: this.state.nameError,
+                        helperText: this.state.nameErrorText
+                      }}
+                    />
+                    <div
+                      className="col-9 customRadio"
+                      style={{ paddingTop: 22 }}
+                    >
+                      <label className="radio inline">
+                        <input
+                          type="radio"
+                          name="insured"
+                          value="1"
+                          checked={this.state.radioYes}
+                          //onChange="null"
+                        />
+                        <span>General</span>
+                      </label>
+                      <label className="radio inline">
+                        <input
+                          type="radio"
+                          name="insured"
+                          value="2"
+                          checked={this.state.radioNo}
+                          //onChange={radioChange.bind(this, this)}
+                        />
+                        <span>Specific</span>
+                      </label>
+                    </div>
+
+                    <div className="col">
+                      <button
+                        className="btn btn-primary"
+                        onClick={this.add.bind(this)}
+                      >
+                        Add
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-lg-12" id="examinationTypeGridCntr">
+                  <AlgaehDataGrid
+                    id="examinationTypeGrid"
+                    columns={[
+                      {
+                        fieldName: "code",
+                        label: "Code",
+                        disabled: true,
+                        others: {
+                          maxWidth: 120
+                        }
+                      },
+                      {
+                        fieldName: "name",
+                        label: "Name"
+                      },
+                      {
+                        fieldName: "examinationType",
+                        label: "Type"
+                      }
+                    ]}
+                    keyId="code"
+                    dataSource={{
+                      data:
+                        this.props.visatypes === undefined
+                          ? []
+                          : this.props.visatypes
+                    }}
+                    isEditable={false}
+                    paging={{ page: 0, rowsPerPage: 10 }}
+                    events={
+                      {
+                        // onDelete: this.deleteVisaType.bind(this),
+                        // onEdit: row => {},
+                        // onDone: row => {
+                        //   alert(JSON.stringify(row));
+                        // }
+                        // onDone: this.updateVisaTypes.bind(this)
+                      }
+                    }
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="col-lg-4 row-card">
+              <h6>Examination Description</h6>
+              <div className="row">
+                <div className="col-lg-12">
+                  <div className="row">
+                    <AlagehFormGroup
+                      div={{ className: "col-4" }}
+                      label={{
+                        fieldName: "code",
+                        isImp: true
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "code",
+                        value: this.state.code,
+                        events: {
+                          onChange: this.texthandle.bind(this)
+                        },
+                        error: this.state.codeError,
+                        helperText: this.state.codeErrorText
+                      }}
+                    />
+
+                    <AlagehFormGroup
+                      div={{ className: "col-8" }}
+                      label={{
+                        fieldName: "name",
+                        isImp: true
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "name",
+                        value: this.state.name,
+                        events: {
+                          onChange: this.texthandle.bind(this)
+                        },
+                        error: this.state.nameError,
+                        helperText: this.state.nameErrorText
+                      }}
+                    />
+
+                    <AlagehAutoComplete
+                      div={{ className: "col-9" }}
+                      label={{
+                        forceLabel: "Select Examination Type",
+                        isImp: true
+                      }}
+                      selector={{
+                        name: "hims_d_sub_department_id",
+                        className: "select-fld",
+                        value: "",
+                        dataSource: {
+                          textField: "sub_department_name",
+                          valueField: "hims_d_sub_department_id",
+                          data: this.state.depts
+                        },
+                        onChange: null
+                      }}
+                    />
+
+                    <div className="col">
+                      <button
+                        className="btn btn-primary"
+                        onClick={this.add.bind(this)}
+                      >
+                        Add
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-lg-12" id="examinationDescGridCntr">
+                  <AlgaehDataGrid
+                    id="examinationDescGrid"
+                    columns={[
+                      {
+                        fieldName: "code",
+                        label: "Code",
+                        disabled: true,
+                        others: {
+                          maxWidth: 120
+                        }
+                      },
+                      {
+                        fieldName: "name",
+                        label: "Name"
+                      },
+                      {
+                        fieldName: "examinationDescType",
+                        label: "Type"
+                      }
+                    ]}
+                    keyId="code"
+                    dataSource={{
+                      data:
+                        this.props.visatypes === undefined
+                          ? []
+                          : this.props.visatypes
+                    }}
+                    isEditable={false}
+                    paging={{ page: 0, rowsPerPage: 10 }}
+                    events={
+                      {
+                        // onDelete: this.deleteVisaType.bind(this),
+                        // onEdit: row => {},
+                        // onDone: row => {
+                        //   alert(JSON.stringify(row));
+                        // }
+                        // onDone: this.updateVisaTypes.bind(this)
+                      }
+                    }
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="col-lg-4 row-card">
+              <h6>Examination Categories</h6>
+              <div className="row">
+                <div className="col-lg-12">
+                  <div className="row">
+                    <AlagehFormGroup
+                      div={{ className: "col" }}
+                      label={{
+                        fieldName: "code",
+                        isImp: true
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "code",
+                        value: this.state.code,
+                        events: {
+                          onChange: this.texthandle.bind(this)
+                        },
+                        error: this.state.codeError,
+                        helperText: this.state.codeErrorText
+                      }}
+                    />
+
+                    <AlagehFormGroup
+                      div={{ className: "col-7" }}
+                      label={{
+                        fieldName: "name",
+                        isImp: true
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "name",
+                        value: this.state.name,
+                        events: {
+                          onChange: this.texthandle.bind(this)
+                        },
+                        error: this.state.nameError,
+                        helperText: this.state.nameErrorText
+                      }}
+                    />
+
+                    <AlagehAutoComplete
+                      div={{ className: "col-9" }}
+                      label={{
+                        forceLabel: "Select Examination Desc.",
+                        isImp: true
+                      }}
+                      selector={{
+                        name: "hims_d_sub_department_id",
+                        className: "select-fld",
+                        value: "",
+                        dataSource: {
+                          textField: "sub_department_name",
+                          valueField: "hims_d_sub_department_id",
+                          data: this.state.depts
+                        },
+                        onChange: null
+                      }}
+                    />
+                    <div className="col">
+                      <button
+                        className="btn btn-primary"
+                        onClick={this.add.bind(this)}
+                      >
+                        Add
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-lg-12" id="examinationCategoriesGridCntr">
+                  <AlgaehDataGrid
+                    id="examinationCategoriesGrid"
+                    columns={[
+                      {
+                        fieldName: "code",
+                        label: "Code",
+                        disabled: true,
+                        others: {
+                          maxWidth: 120
+                        }
+                      },
+                      {
+                        fieldName: "examinationDesc",
+                        label: "Name"
+                      },
+                      {
+                        fieldName: "examinationCategoriesType",
+                        label: "Description"
+                      }
+                    ]}
+                    keyId="code"
+                    dataSource={{
+                      data:
+                        this.props.visatypes === undefined
+                          ? []
+                          : this.props.visatypes
+                    }}
+                    isEditable={false}
+                    paging={{ page: 0, rowsPerPage: 10 }}
+                    events={
+                      {
+                        // onDelete: this.deleteVisaType.bind(this),
+                        // onEdit: row => {},
+                        // onDone: row => {
+                        //   alert(JSON.stringify(row));
+                        // }
+                        // onDone: this.updateVisaTypes.bind(this)
+                      }
+                    }
+                  />
+                  {/* Detail Grid2 End */}
+                </div>
+              </div>
             </div>
           </div>
-          <div style={{ paddingTop: "10px" }}>
-            <AlgaehDataGrid
-              id="speciality_grd"
-              columns={[
-                {
-                  fieldName: "code",
-                  label: "Code",
-                  disabled: true
-                },
-                {
-                  fieldName: "name",
-                  label: "Name"
-                }
-              ]}
-              keyId="code"
-              dataSource={{
-                data:
-                  this.props.visatypes === undefined ? [] : this.props.visatypes
-              }}
-              isEditable={false}
-              paging={{ page: 0, rowsPerPage: 3 }}
-              events={
-                {
-                  // onDelete: this.deleteVisaType.bind(this),
-                  // onEdit: row => {},
-                  // onDone: row => {
-                  //   alert(JSON.stringify(row));
-                  // }
-                  // onDone: this.updateVisaTypes.bind(this)
-                }
-              }
-            />
-          </div>
-          {/* Header Grid End */}
-
-          {/* Detail Grid Add */}
-          <div className="row">
-            <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
-              label={{
-                fieldName: "code",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "code",
-                value: this.state.code,
-                events: {
-                  onChange: this.texthandle.bind(this)
-                },
-                error: this.state.codeError,
-                helperText: this.state.codeErrorText
-              }}
-            />
-
-            <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
-              label={{
-                fieldName: "name",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "name",
-                value: this.state.name,
-                events: {
-                  onChange: this.texthandle.bind(this)
-                },
-                error: this.state.nameError,
-                helperText: this.state.nameErrorText
-              }}
-            />
-            <div className="col-lg-3">
-              <br />
-              <Button
-                variant="raised"
-                color="primary"
-                onClick={this.add.bind(this)}
-              >
-                Add
-              </Button>
-            </div>
-          </div>
-          <div style={{ paddingTop: "10px" }}>
-            <AlgaehDataGrid
-              id="speciality_grd"
-              columns={[
-                {
-                  fieldName: "code",
-                  label: "Code",
-                  disabled: true
-                },
-                {
-                  fieldName: "name",
-                  label: "Name"
-                }
-              ]}
-              keyId="code"
-              dataSource={{
-                data:
-                  this.props.visatypes === undefined ? [] : this.props.visatypes
-              }}
-              isEditable={false}
-              paging={{ page: 0, rowsPerPage: 3 }}
-              events={
-                {
-                  // onDelete: this.deleteVisaType.bind(this),
-                  // onEdit: row => {},
-                  // onDone: row => {
-                  //   alert(JSON.stringify(row));
-                  // }
-                  // onDone: this.updateVisaTypes.bind(this)
-                }
-              }
-            />
-          </div>
-
-          {/* Detail Grid End */}
-          {/* Detail Grid2 Start  */}
-          <div className="row">
-            <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
-              label={{
-                fieldName: "code",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "code",
-                value: this.state.code,
-                events: {
-                  onChange: this.texthandle.bind(this)
-                },
-                error: this.state.codeError,
-                helperText: this.state.codeErrorText
-              }}
-            />
-
-            <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
-              label={{
-                fieldName: "name",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "name",
-                value: this.state.name,
-                events: {
-                  onChange: this.texthandle.bind(this)
-                },
-                error: this.state.nameError,
-                helperText: this.state.nameErrorText
-              }}
-            />
-            <div className="col-lg-3">
-              <br />
-              <Button
-                variant="raised"
-                color="primary"
-                onClick={this.add.bind(this)}
-              >
-                Add
-              </Button>
-            </div>
-          </div>
-          <div style={{ paddingTop: "10px" }}>
-            <AlgaehDataGrid
-              id="speciality_grd"
-              columns={[
-                {
-                  fieldName: "code",
-                  label: "Code",
-                  disabled: true
-                },
-                {
-                  fieldName: "name",
-                  label: "Name"
-                }
-              ]}
-              keyId="code"
-              dataSource={{
-                data:
-                  this.props.visatypes === undefined ? [] : this.props.visatypes
-              }}
-              isEditable={false}
-              paging={{ page: 0, rowsPerPage: 3 }}
-              events={
-                {
-                  // onDelete: this.deleteVisaType.bind(this),
-                  // onEdit: row => {},
-                  // onDone: row => {
-                  //   alert(JSON.stringify(row));
-                  // }
-                  // onDone: this.updateVisaTypes.bind(this)
-                }
-              }
-            />
-          </div>
-          {/* Detail Grid2 End */}
-        </Paper>
+        </div>
       </div>
     );
   }
