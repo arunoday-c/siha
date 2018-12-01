@@ -671,6 +671,7 @@ class RegistrationPatient extends PureComponent {
               PatRegIOputs={this.state}
               clearData={this.state.clearData}
             />
+
             <ConsultationDetails PatRegIOputs={this.state} />
             <InsuranceDetails PatRegIOputs={this.state} />
             <Billing PatRegIOputs={this.state} loader={true} />

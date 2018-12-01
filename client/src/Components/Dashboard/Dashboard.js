@@ -479,14 +479,14 @@ class Dashboard extends Component {
                 <div className="col-8">
                   <div className="numbers">
                     <p>Revenue by MTD</p>
-                    SR 61,938
+                    SR XXXXXXXX
                   </div>
                 </div>
               </div>
               <div className="footer">
                 <hr />
                 <div className="stats">
-                  Avg. Revenue per day- <span>SR 1357</span>
+                  Avg. Revenue per day- <span>SR XXXX</span>
                   <b onClick={this.showDetailHandler.bind(this)}>
                     {this.state.showDetails === "d-block"
                       ? "Hide"

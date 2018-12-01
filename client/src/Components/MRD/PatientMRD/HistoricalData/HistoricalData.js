@@ -41,7 +41,6 @@ class HistoricalData extends Component {
       },
       cancelRequestId: "getPatientVitals1",
       onSuccess: response => {
-        //debugger;
         algaehLoader({ show: false });
         if (response.data.success) {
           this.setState({ patientVitals: response.data.records });

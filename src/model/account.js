@@ -162,7 +162,7 @@ let authUser = (req, res, next) => {
 };
 
 //api user authentication
-let authUserNEW = (req, res, next) => {
+let authUserNew = (req, res, next) => {
   let authModel = {
     username: "",
     password: ""

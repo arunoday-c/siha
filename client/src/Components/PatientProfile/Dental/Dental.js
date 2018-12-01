@@ -5,13 +5,9 @@ import { bindActionCreators } from "redux";
 import "./Dental.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import {
-  AlgaehDataGrid,
-  AlgaehDateHandler,
   AlagehAutoComplete,
-  AlagehFormGroup,
-  AlgaehLabel
+  AlagehFormGroup
 } from "../../Wrapper/algaehWrapper";
-import Button from "@material-ui/core/Button";
 class Dental extends Component {
   constructor(props) {
     super(props);
@@ -211,12 +207,6 @@ class Dental extends Component {
     return (
       <div id="dentalTreatment">
         <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
-          {/* <div className="portlet-title">
-            <div className="caption">
-              <h3 className="caption-subject">Dental Chart</h3>
-            </div>
-            <div className="actions"> </div>
-          </div> */}
           <div className="portlet-body">
             <div className="row">
               <AlagehFormGroup
