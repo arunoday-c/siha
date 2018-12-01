@@ -45,7 +45,7 @@ let selectAppUsers = (req, res, next) => {
 //created by irfan: to
 let getLoginUserMaster = (req, res, next) => {
   let selectWhere = {
-    algaeh_m_group_user_mappings_id: "ALL"
+    algaeh_m_role_user_mappings_id: "ALL"
   };
   try {
     if (req.db == null) {
@@ -62,16 +62,23 @@ let getLoginUserMaster = (req, res, next) => {
     // and GUM.role_id=R.app_d_app_roles_id and  GUM.record_status='A' and U.record_status='A' \
     // and G.record_status='A' and R.record_status='A'
 
+    let adminUSer = "";
+    if (req.userIdentity.role_type == "AD") {
+      adminUSer = " and   group_type <> 'SU' and role_type <>'SU' ";
+    }
+
     db.getConnection((error, connection) => {
       connection.query(
-        "SELECT algaeh_m_group_user_mappings_id, app_group_id,app_group_name, user_id, username,\
-        user_display_name, effective_start_date, role_id,role_name\
-        from algaeh_m_group_user_mappings GUM ,algaeh_d_app_user U,algaeh_d_app_group G,algaeh_d_app_roles R\
-        where GUM.user_id=U.algaeh_d_app_user_id and GUM.app_group_id=G.algaeh_d_app_group_id\
-        and GUM.role_id=R.app_d_app_roles_id and  GUM.record_status='A' and U.record_status='A' \
-        and G.record_status='A' and R.record_status='A' and " +
+        "SELECT algaeh_m_role_user_mappings_id, user_id,username, user_display_name,\
+        effective_start_date, role_id, role_code, role_name, role_discreption,  \
+       app_group_id, app_group_code, app_group_name, app_group_desc\
+       from algaeh_m_role_user_mappings RU ,algaeh_d_app_user U,algaeh_d_app_group G,\
+       algaeh_d_app_roles R WHERE  RU.role_id=R.app_d_app_roles_id \
+       AND R.app_group_id=G.algaeh_d_app_group_id AND RU.user_id=U.algaeh_d_app_user_id " +
+          adminUSer +
+          "and " +
           where.condition +
-          " order by algaeh_m_group_user_mappings_id desc",
+          " order by algaeh_m_role_user_mappings_id desc",
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -140,7 +147,7 @@ let selectAppGroup = (req, res, next) => {
     let adminUSer = "";
 
     if (req.userIdentity.role_type == "AD") {
-      adminUSer = " and   group_type <> 'AD'";
+      adminUSer = " and   group_type <> 'AD'  and group_type <>'SU' ";
     }
 
     db.getConnection((error, connection) => {
@@ -148,7 +155,7 @@ let selectAppGroup = (req, res, next) => {
         connection.query(
           "select algaeh_d_app_group_id, app_group_code, app_group_name, app_group_desc,\
         group_type, app_group_status  from algaeh_d_app_group where record_status='A'\
-        and group_type <>'SU'  " +
+          " +
             adminUSer +
             " AND" +
             where.condition +
@@ -187,14 +194,14 @@ let selectRoles = (req, res, next) => {
     let adminUSer = "";
 
     if (req.userIdentity.role_type == "AD") {
-      adminUSer = " and   role_type <> 'AD'";
+      adminUSer = " and   role_type <> 'AD' and  role_type <>'SU' ";
     }
     debugLog("dd:", req.userIdentity);
     db.getConnection((error, connection) => {
       if (req.userIdentity.role_type != "GN") {
         connection.query(
           "select app_d_app_roles_id, role_code, role_name, role_discreption, role_type\
-        from algaeh_d_app_roles where record_status='A' and  role_type <>'SU' " +
+        from algaeh_d_app_roles where record_status='A'  " +
             adminUSer +
             " order by app_d_app_roles_id desc",
           (error, result) => {
