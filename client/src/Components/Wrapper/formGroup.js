@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-
+import { checkSecurity } from "../../utils/GlobalFunctions";
 import "./wrapper.css";
 import Label from "../Wrapper/label";
 export default class FormGroup extends PureComponent {
@@ -11,7 +11,8 @@ export default class FormGroup extends PureComponent {
       value: null,
       error: false,
       helperText: "",
-      disabled: false
+      disabled: false,
+      hasSecurity: false
     };
   }
 
@@ -27,8 +28,31 @@ export default class FormGroup extends PureComponent {
     if (this.props.label !== undefined)
       return <Label label={this.props.label} />;
   };
+  getSecurityCheck() {
+    let hasSecurity = false;
+    if (this.props.textBox.security !== undefined) {
+      const _security = this.props.textBox.security;
 
-  componentWillMount() {
+      checkSecurity({
+        securityType: "element",
+        component_code: _security.component_code,
+        module_code: _security.module_code,
+        screen_code: _security.screen_code,
+        screen_element_code: _security.screen_element_code,
+        hasSecurity: () => {
+          hasSecurity = true;
+        }
+      });
+    }
+    return hasSecurity;
+  }
+
+  componentDidMount() {
+    const _hasSecurity = this.getSecurityCheck();
+    if (_hasSecurity) {
+      this.setState({ hasSecurity: true });
+      return;
+    }
     this.setState({
       value: this.props.textBox.value,
       disabled:
@@ -38,6 +62,7 @@ export default class FormGroup extends PureComponent {
     });
   }
   componentWillReceiveProps(props) {
+    if (this.state.hasSecurity) return;
     if (
       props.textBox.value !== this.state.value ||
       props.textBox.error !== this.state.error ||
@@ -191,16 +216,18 @@ export default class FormGroup extends PureComponent {
   };
 
   render() {
-    return (
-      <div
-        className={
-          this.props.div !== undefined ? this.props.div.className : null
-        }
-        {...this.renderOthers()}
-      >
-        {this.labelRender()}
-        {this.textBoxRender()}
-      </div>
-    );
+    if (this.state.hasSecurity) return null;
+    else
+      return (
+        <div
+          className={
+            this.props.div !== undefined ? this.props.div.className : null
+          }
+          {...this.renderOthers()}
+        >
+          {this.labelRender()}
+          {this.textBoxRender()}
+        </div>
+      );
   }
 }

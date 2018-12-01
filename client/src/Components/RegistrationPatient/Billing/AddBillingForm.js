@@ -311,7 +311,6 @@ class AddBillingForm extends Component {
                           value: this.state.credit_amount,
                           className: "txt-fld",
                           name: "credit_amount",
-
                           events: {
                             onChange: credittexthandle.bind(this, this, context)
                           },
@@ -321,6 +320,12 @@ class AddBillingForm extends Component {
                             onFocus: e => {
                               e.target.oldvalue = e.target.value;
                             }
+                          },
+                          security: {
+                            component_code: "FD_PR_BIL",
+                            module_code: "FTDSK",
+                            screen_code: "FD0002",
+                            screen_element_code: "CA"
                           }
                         }}
                       />

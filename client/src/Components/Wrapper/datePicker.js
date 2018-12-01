@@ -4,7 +4,7 @@ import "../Wrapper/wrapper.css";
 import { getCookie } from "../../utils/algaehApiCall.js";
 import moment from "moment";
 import config from "../../utils/config.json";
-
+import { checkSecurity } from "../../utils/GlobalFunctions";
 // import "../../../node_modules/hijri-date-picker/build/css/index.css";
 export default class DateHandler extends PureComponent {
   generateLabel = () => {
@@ -18,17 +18,46 @@ export default class DateHandler extends PureComponent {
     let momentDate = props.value ? moment(props.value) : null;
     this.state = {
       language: "en",
-      value: momentDate
+      value: momentDate,
+      hasSecurity: false
     };
   }
 
   componentWillReceiveProps(nextProps) {
+    if (this.state.hasSecurity) return;
     let momentDate = nextProps.value ? moment(nextProps.value) : null;
     let lang = getCookie("Language");
     this.setState({
       language: lang === null ? lang : "en",
       value: momentDate ? (momentDate.isValid() ? momentDate._d : null) : null
     });
+  }
+
+  componentDidMount() {
+    const _hasSecurity = this.getSecurityCheck();
+    if (_hasSecurity) {
+      this.setState({ hasSecurity: true });
+      return;
+    }
+  }
+
+  getSecurityCheck() {
+    let hasSecurity = false;
+    if (this.props.textBox.security !== undefined) {
+      const _security = this.props.textBox.security;
+
+      checkSecurity({
+        securityType: "element",
+        component_code: _security.component_code,
+        module_code: _security.module_code,
+        screen_code: _security.screen_code,
+        screen_element_code: _security.screen_element_code,
+        hasSecurity: () => {
+          hasSecurity = true;
+        }
+      });
+    }
+    return hasSecurity;
   }
 
   onDayChange = e => {
@@ -97,20 +126,23 @@ export default class DateHandler extends PureComponent {
   };
 
   render() {
-    if (this.props.div != null) {
-      return (
-        <div className={this.props.div.className} {...this.props.div.others}>
-          {this.generateLabel()}
-          {this.renderDatePicker()}
-        </div>
-      );
-    } else {
-      return (
-        <React.Fragment>
-          {this.generateLabel()}
-          {this.renderDatePicker()}
-        </React.Fragment>
-      );
+    if (this.state.hasSecurity) return null;
+    else {
+      if (this.props.div != null) {
+        return (
+          <div className={this.props.div.className} {...this.props.div.others}>
+            {this.generateLabel()}
+            {this.renderDatePicker()}
+          </div>
+        );
+      } else {
+        return (
+          <React.Fragment>
+            {this.generateLabel()}
+            {this.renderDatePicker()}
+          </React.Fragment>
+        );
+      }
     }
   }
 }

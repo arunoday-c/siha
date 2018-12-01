@@ -2,7 +2,7 @@ import React, { PureComponent } from "react";
 import Label from "../Wrapper/label";
 import "../Wrapper/autoComplete.css";
 import Enumarable from "linq";
-
+import { checkSecurity } from "../../utils/GlobalFunctions";
 class AutoComplete extends PureComponent {
   constructor(props) {
     super(props);
@@ -14,13 +14,15 @@ class AutoComplete extends PureComponent {
       arrowIcon: "fa-angle-down",
       directonClass: "",
       _sortData: [],
-      multiselect: []
+      multiselect: [],
+      hasSecurity: false
     };
     this.handleClickOutside = this.handleClickOutside.bind(this);
     // this.handleKeyUpNavigation = this.handleKeyUpNavigation.bind(this);
   }
 
   componentWillReceiveProps(props) {
+    if (this.state.hasSecurity) return;
     const _text = this.getTextByValue(
       props.selector.value,
       props.selector.dataSource.data
@@ -168,8 +170,30 @@ class AutoComplete extends PureComponent {
       return _values;
     }
   }
+  getSecurityCheck() {
+    let hasSecurity = false;
+    if (this.props.selector.security !== undefined) {
+      const _security = this.props.selector.security;
 
+      checkSecurity({
+        securityType: "element",
+        component_code: _security.component_code,
+        module_code: _security.module_code,
+        screen_code: _security.screen_code,
+        screen_element_code: _security.screen_element_code,
+        hasSecurity: () => {
+          hasSecurity = true;
+        }
+      });
+    }
+    return hasSecurity;
+  }
   componentDidMount() {
+    const _hasSecurity = this.getSecurityCheck();
+    if (_hasSecurity) {
+      this.setState({ hasSecurity: true });
+      return;
+    }
     document.addEventListener("mousedown", this.handleClickOutside, false);
     // document.addEventListener("keypress", this.handleKeyUpNavigation, false);
     const _required =
@@ -455,15 +479,17 @@ class AutoComplete extends PureComponent {
     }
   };
   render() {
-    return (
-      <div
-        className={this.props.div != null ? this.props.div.className : null}
-        {...this.renderOthers()}
-      >
-        {this.renderLabel()}
-        {this.renderAutoComplete()}
-      </div>
-    );
+    if (this.state.hasSecurity) return null;
+    else
+      return (
+        <div
+          className={this.props.div != null ? this.props.div.className : null}
+          {...this.renderOthers()}
+        >
+          {this.renderLabel()}
+          {this.renderAutoComplete()}
+        </div>
+      );
   }
 }
 export default AutoComplete;

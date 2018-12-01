@@ -24,6 +24,7 @@ export default class Login extends Component {
       item_id: "",
       hospitalList: []
     };
+    sessionStorage.clear();
   }
 
   componentDidMount() {
