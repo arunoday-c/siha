@@ -1,5 +1,18 @@
 [
   {
+    "name": "Algaeh",
+    "label": "Algaeh",
+    "icon": "fas fa-tachometer-alt",
+    "subMenu": [
+      {
+        "name": "AlgaehModules",
+        "label": "Algaeh Modules",
+        "arlabel": "ألغاه",
+        "path": "/AlgaehModules"
+      }
+    ]
+  },
+  {
     "name": "General",
     "label": "General",
     "icon": "fas fa-tachometer-alt",

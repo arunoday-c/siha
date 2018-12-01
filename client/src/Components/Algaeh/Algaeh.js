@@ -1,0 +1,104 @@
+import React, { Component } from "react";
+import Modules from "./Modules/Modules";
+import Components from "./Components/Components";
+import Screens from "./Screens/Screens";
+import ScreenElements from "./ScreenElements/ScreenElements";
+import { AlgaehLabel } from "../Wrapper/algaehWrapper";
+import "./algaeh.css";
+
+class Algaeh extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { pageDisplay: "Modules" };
+  }
+
+  openTab(e) {
+    var element = document.querySelectorAll("[algaehtabs]");
+    for (var i = 0; i < element.length; i++) {
+      element[i].classList.remove("active");
+    }
+    e.currentTarget.classList.add("active");
+    var specified = e.currentTarget.getAttribute("algaehtabs");
+    this.setState({
+      pageDisplay: specified
+    });
+  }
+
+  render() {
+    return (
+      <div className="algaeh">
+        <div className="row">
+          <div className="tabMaster toggle-section">
+            <ul className="nav">
+              <li
+                algaehtabs={"Modules"}
+                className={"nav-item tab-button active"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Modules"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"Screens"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Screens"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"Components"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Components"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"ScreenElements"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Screen Elements"
+                    }}
+                  />
+                }
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div className="algaeh-section">
+          {this.state.pageDisplay === "Modules" ? (
+            <Modules />
+          ) : this.state.pageDisplay === "Screens" ? (
+            <Screens />
+          ) : this.state.pageDisplay === "Components" ? (
+            <Components />
+          ) : this.state.pageDisplay === "ScreenElements" ? (
+            <ScreenElements />
+          ) : null}
+        </div>
+      </div>
+    );
+  }
+}
+
+export default Algaeh;

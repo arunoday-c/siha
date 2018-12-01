@@ -992,7 +992,7 @@ class ChiefComplaints extends Component {
                           {
                             fieldName: "element_type",
                             label: (
-                              <AlgaehLabel label={{ forceLabel: "HIP Type" }} />
+                              <AlgaehLabel label={{ forceLabel: "HPI Type" }} />
                             ),
                             displayTemplate: row => (
                               <span>

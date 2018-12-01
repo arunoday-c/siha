@@ -3,8 +3,8 @@
   "username": "User Name",
   "password": "Password",
   "confirm_password": "Confirm Password",
-  "group": "Group",
-  "role": "Role",
+  "group": "Groups",
+  "role": "Roles",
   "add_to_list": "Add To List",
   "display_name": "Display Name",
   "effective_start_date": "Effective Start Date"
