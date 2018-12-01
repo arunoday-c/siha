@@ -1,12 +1,14 @@
 import React, { Component } from "react";
 import "./admin_setup.css";
 import LoginUsers from "./LoginUsers/LoginUsers";
+import Roles from "./Roles/Roles";
+import Groups from "./Groups/Groups";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 
 class AdminSetup extends Component {
   constructor(props) {
     super(props);
-    this.state = { pageDisplay: "LoginUsers" };
+    this.state = { pageDisplay: "Groups" };
   }
 
   openTab(e) {
@@ -28,8 +30,34 @@ class AdminSetup extends Component {
           <div className="tabMaster toggle-section">
             <ul className="nav">
               <li
-                algaehtabs={"LoginUsers"}
+                algaehtabs={"Groups"}
                 className={"nav-item tab-button active"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "group"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"Roles"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "role"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"LoginUsers"}
+                className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
               >
                 {
@@ -41,32 +69,6 @@ class AdminSetup extends Component {
                 }
               </li>
               {/* <li
-                algaehtabs={"Speciality"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "speciality"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"Category"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "category"
-                    }}
-                  />
-                }
-              </li>
-              <li
                 algaehtabs={"CategorySpeciality"}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
@@ -136,7 +138,13 @@ class AdminSetup extends Component {
           </div>
         </div>
         <div className="admin-section">
-          {this.state.pageDisplay === "LoginUsers" ? <LoginUsers /> : null}
+          {this.state.pageDisplay === "LoginUsers" ? (
+            <LoginUsers />
+          ) : this.state.pageDisplay === "Groups" ? (
+            <Groups />
+          ) : this.state.pageDisplay === "Roles" ? (
+            <Roles />
+          ) : null}
         </div>
       </div>
     );

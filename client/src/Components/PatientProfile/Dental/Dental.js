@@ -14,16 +14,7 @@ class Dental extends Component {
     this.state = {};
   }
 
-  componentDidMount() {
-    // this.props.getPatientSummary({
-    //   uri: "/masters/get/title",
-    //   method: "GET",
-    //   redux: {
-    //     type: "PATIENT_SUMMARY_GET_DATA",
-    //     mappingName: "patient_summary"
-    //   }
-    // });
-  }
+  componentDidMount() {}
 
   generateToothUpperLeftSet() {
     let plot = [];
