@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { AlgaehErrorBoundary } from "./Wrapper/algaehWrapper";
+import { AlgaehErrorBoundary, AlgaehModalPopUp } from "./Wrapper/algaehWrapper";
 import "react-table/react-table.css";
 import { algaehApiCall } from "../utils/algaehApiCall";
 import AlgaehReport from "./Wrapper/printReports";
@@ -14,7 +14,8 @@ class Experiment extends Component {
     super(props);
 
     this.state = {
-      patImg: ""
+      patImg: "",
+      openModal: false
     };
 
     // displayFileFromServer({
@@ -42,6 +43,9 @@ class Experiment extends Component {
     //   .toArray();
     return (
       <div style={{ textAlign: "center" }}>
+        <AlgaehModalPopUp title="Test" openPopup={this.state.openModal}>
+          <div>Hello I'm Modal</div>
+        </AlgaehModalPopUp>
         <br />
         <br />
         <br />
@@ -115,6 +119,19 @@ class Experiment extends Component {
         <div>
           The Above component has a bug so this is how our wrapper handles We
           can still use the other elements apart from the crashed element
+        </div>
+        <div>
+          <button
+            className="btn btn-primary"
+            onClick={() => {
+              debugger;
+              this.setState({
+                openModal: true
+              });
+            }}
+          >
+            Open Modal
+          </button>
         </div>
       </div>
     );
