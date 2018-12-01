@@ -180,7 +180,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
     db.getConnection((error, connection) => {
       let superUser = "";
       //for admin login
-      if (req.userIdentity.role_type == "SU") {
+      if (req.userIdentity.role_type == "AD") {
         superUser = " and   access_by <> 'SU'";
       }
 
