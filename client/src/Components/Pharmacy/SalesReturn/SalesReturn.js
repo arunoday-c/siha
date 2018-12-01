@@ -310,39 +310,38 @@ class SalesReturn extends Component {
             </MyContext.Provider>
 
             <div className="hptl-phase1-footer">
-              
-                <div className="row">
-                  <div className="col-lg-12">
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      onClick={SaveSalesReturn.bind(this, this)}
-                      disabled={this.state.saveEnable}
-                    >
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Return & Print",
-                          returnText: true
-                        }}
-                      />
-                    </button>
-
-                    <AHSnackbar
-                      open={this.state.open}
-                      handleClose={this.handleClose}
-                      MandatoryMsg={this.state.MandatoryMsg}
+              <div className="row">
+                <div className="col-lg-12">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={SaveSalesReturn.bind(this, this)}
+                    disabled={this.state.saveEnable}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Return & Print",
+                        returnText: true
+                      }}
                     />
-                    <button
-                      type="button"
-                      className="btn btn-default"
-                      onClick={ClearData.bind(this, this)}
-                    >
-                      <AlgaehLabel
-                        label={{ forceLabel: "Clear", returnText: true }}
-                      />
-                    </button>
+                  </button>
 
-                    {/* <button
+                  <AHSnackbar
+                    open={this.state.open}
+                    handleClose={this.handleClose}
+                    MandatoryMsg={this.state.MandatoryMsg}
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-default"
+                    onClick={ClearData.bind(this, this)}
+                  >
+                    <AlgaehLabel
+                      label={{ forceLabel: "Clear", returnText: true }}
+                    />
+                  </button>
+
+                  {/* <button
                       type="button"
                       className="btn btn-other"
                       onClick={PostSalesReturn.bind(this, this)}
@@ -355,9 +354,8 @@ class SalesReturn extends Component {
                         }}
                       />
                     </button> */}
-                  </div>
                 </div>
-              
+              </div>
             </div>
           </div>
         </div>
@@ -371,8 +369,7 @@ function mapStateToProps(state) {
     salesitemlist: state.salesitemlist,
     locations: state.locations,
     salesReturn: state.salesReturn,
-    existinsurance: state.existinsurance,
-    salesReturnEntry: state.salesReturnEntry
+    existinsurance: state.existinsurance
   };
 }
 
@@ -381,8 +378,7 @@ function mapDispatchToProps(dispatch) {
     {
       getItems: AlgaehActions,
       getLocation: AlgaehActions,
-      getPOSEntry: AlgaehActions,
-      getSalesReturn: AlgaehActions
+      getPOSEntry: AlgaehActions
     },
     dispatch
   );

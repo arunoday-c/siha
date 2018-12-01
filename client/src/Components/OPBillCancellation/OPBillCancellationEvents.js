@@ -7,6 +7,8 @@ import {
   getCookie
 } from "../../utils/algaehApiCall";
 import moment from "moment";
+import AlgaehLoader from "../Wrapper/fullPageLoader";
+import Enumerable from "linq";
 
 const ClearData = ($this, e) => {
   let _screenName = getCookie("ScreenName").replace("/", "");
@@ -111,8 +113,6 @@ const Validations = $this => {
 };
 
 const getCashiersAndShiftMAP = $this => {
-  debugger;
-
   let year = moment().format("YYYY");
 
   let month = moment().format("MM");
@@ -122,7 +122,6 @@ const getCashiersAndShiftMAP = $this => {
     method: "GET",
     data: { year: year, month: month, for: "T" },
     onSuccess: response => {
-      debugger;
       if (response.data.success) {
         if (response.data.records.length > 0) {
           $this.setState({ shift_id: response.data.records[0].shift_id });
@@ -138,4 +137,102 @@ const getCashiersAndShiftMAP = $this => {
   });
 };
 
-export { ClearData, Validations, getCashiersAndShiftMAP };
+const getBillDetails = $this => {
+  AlgaehLoader({ show: true });
+  algaehApiCall({
+    uri: "/opBilling/get",
+    method: "GET",
+    data: { bill_number: $this.state.bill_number },
+    onSuccess: response => {
+      if (response.data.success) {
+        debugger;
+
+        let data = response.data.records;
+
+        let x = Enumerable.from($this.props.patienttype)
+          .where(w => w.hims_d_patient_type_id === data.patient_type)
+          .toArray();
+
+        if (x !== undefined && x.length > 0) {
+          data.patient_type = x[0].patitent_type_desc;
+        } else {
+          data.patient_type = "Not Selected";
+        }
+
+        data.receipt_number = null;
+        data.receipt_date = new Date();
+        data.cash_amount = data.receiveable_amount;
+        data.from_bill_id = data.hims_f_billing_header_id;
+        data.counter_id = $this.state.counter_id || null;
+        data.shift_id = $this.state.shift_id || null;
+        data.mode_of_pay = data.insured === "Y" ? "Insured" : "Self";
+        data.saveEnable = false;
+        $this.setState(data);
+        AlgaehLoader({ show: false });
+      }
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+};
+
+const getCtrlCode = ($this, billcode) => {
+  AlgaehLoader({ show: true });
+
+  algaehApiCall({
+    uri: "/opBillCancellation/getBillCancellation",
+    method: "GET",
+    data: { bill_cancel_number: billcode },
+    onSuccess: response => {
+      if (response.data.success) {
+        debugger;
+
+        let data = response.data.records;
+        debugger;
+        let x = Enumerable.from($this.props.patienttype)
+          .where(w => w.hims_d_patient_type_id === data.patient_type)
+          .toArray();
+
+        if (x !== undefined && x.length > 0) {
+          data.patient_type = x[0].patitent_type_desc;
+        } else {
+          data.patient_type = "Not Selected";
+        }
+
+        data.Billexists = true;
+
+        if (data.receiptdetails.length !== 0) {
+          for (let i = 0; i < data.receiptdetails.length; i++) {
+            if (data.receiptdetails[i].pay_type === "CA") {
+              data.Cashchecked = true;
+              data.cash_amount = data.receiptdetails[i].amount;
+            }
+          }
+        }
+
+        $this.setState(data);
+        AlgaehLoader({ show: false });
+      }
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+};
+
+export {
+  ClearData,
+  Validations,
+  getCashiersAndShiftMAP,
+  getBillDetails,
+  getCtrlCode
+};
