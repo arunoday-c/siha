@@ -1,23 +1,12 @@
 import React, { Component } from "react";
 import "./doctor_workbench.css";
-import {
-  AlgaehDataGrid,
-  AlgaehLabel,
-  Tooltip,
-  AlagehAutoComplete,
-  AlgaehDateHandler,
-  AlagehFormGroup
-} from "../Wrapper/algaehWrapper";
-import IconButton from "@material-ui/core/IconButton";
-import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
-import Search from "@material-ui/icons/Search";
-import GlobalVariables from "../../utils/GlobalVariables.json";
+import { AlgaehDataGrid, AlgaehLabel } from "../Wrapper/algaehWrapper";
 import {
   algaehApiCall,
   cancelRequest,
   swalMessage
 } from "../../utils/algaehApiCall";
-import { setGlobal, removeGlobal } from "../../utils/GlobalFunctions";
+import { setGlobal } from "../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import moment from "moment";
 import algaehLoader from "../Wrapper/fullPageLoader";
@@ -268,7 +257,14 @@ class DoctorsWorkbench extends Component {
                     />
                   </h3>
                 </div>
-                <div className="actions" />
+                <div className="actions">
+                  <a
+                    className="btn btn-primary btn-circle active"
+                    onClick={this.loadListofData}
+                  >
+                    <i className="fas fa-sync-alt" />
+                  </a>
+                </div>
               </div>
 
               <div className="portlet-body">
@@ -361,89 +357,6 @@ class DoctorsWorkbench extends Component {
                 </div>
               </div>
               <div className="portlet-body">
-                <div className="row" hidden={true} style={{ margin: "auto" }}>
-                  <AlagehAutoComplete
-                    div={{ className: "col" }}
-                    label={{
-                      fieldName: "status"
-                    }}
-                    selector={{
-                      name: "status",
-                      className: "select-fld",
-                      //value: this.state.consultation,
-                      dataSource: {
-                        textField: "name",
-                        valueField: "value",
-                        data: GlobalVariables.DOC_WRK_BNCH_FILTER_CONDITIONS
-                      },
-                      //onChange: this.changeTexts.bind(this)
-                      onChange: () => {}
-                    }}
-                  />
-                  <AlgaehDateHandler
-                    div={{ className: "col" }}
-                    label={{ fieldName: "from_date", isImp: true }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "from_date"
-                    }}
-                    maxDate={moment()._d}
-                    events={{
-                      //onChange: datehandle.bind(this, this)
-                      onChange: () => {}
-                    }}
-                    value={moment()._d}
-                  />
-
-                  <AlgaehDateHandler
-                    div={{ className: "col" }}
-                    label={{ fieldName: "to_date", isImp: true }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "to_date"
-                    }}
-                    maxDate={moment()._d}
-                    events={{
-                      //onChange: datehandle.bind(this, this)
-                      onChange: () => {}
-                    }}
-                    value={moment()._d}
-                  />
-
-                  <AlagehFormGroup
-                    div={{ className: "col" }}
-                    label={{
-                      fieldName: "patient_code",
-                      isImp: true
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "patient_code",
-                      // value: this.state.visit_type_code,
-                      //error: this.state.visit_type_code_error,
-                      //helperText: this.state.visit_type_code_error_txt,
-                      events: {
-                        //onChange: this.changeTexts.bind(this)
-                        onChange: () => {}
-                      }
-                    }}
-                  />
-                  <div className="col-lg-1">
-                    <Tooltip id="tooltip-icon" title="Search">
-                      <IconButton className="go-button">
-                        <Search onClick={() => {}} />
-                      </IconButton>
-                    </Tooltip>
-                  </div>
-
-                  <div className="col-lg-1">
-                    <Tooltip id="tooltip-icon" title="Go">
-                      <IconButton className="go-button" color="primary">
-                        <PlayCircleFilled onClick={() => {}} />
-                      </IconButton>
-                    </Tooltip>
-                  </div>
-                </div>
                 <div className="row">
                   <div className="col-lg-12" id="encounter_table">
                     <AlgaehDataGrid
@@ -479,7 +392,6 @@ class DoctorsWorkbench extends Component {
                               <span
                                 className="pat-code"
                                 onClick={() => {
-                                  debugger;
                                   setGlobal({
                                     "EHR-STD": "PatientProfile",
                                     current_patient: data.patient_id,

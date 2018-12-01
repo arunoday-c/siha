@@ -5,19 +5,20 @@ export default class AlgaehModalPopUp extends PureComponent {
     this.state = {
       openPopup: false
     };
-    debugger;
     // this.setState({ openPopup: this.props.openPopup });
     this.handleClose = this.handleClose.bind(this);
   }
   handleClose(e) {
-    this.setState({ openPopup: false });
+    this.setState({ openPopup: false }, () => {
+      if (this.props.events !== undefined)
+        if (typeof this.props.events.onClose === "function")
+          this.props.events.onClose();
+    });
   }
   componentWillReceiveProps(newProps) {
-    debugger;
     this.setState({ openPopup: newProps.openPopup });
   }
   render() {
-    debugger;
     const { openPopup } = this.state;
     if (openPopup) {
       return (
@@ -26,7 +27,7 @@ export default class AlgaehModalPopUp extends PureComponent {
             <div className="popupHeader">
               <div className="row">
                 <div className="col-lg-8">
-                  <h4>Print Preview</h4>
+                  <h4>{this.props.title ? this.props.title : "Algaeh HIMS"}</h4>
                 </div>
                 <div className="col-lg-4">
                   <button type="button" className="" onClick={this.handleClose}>
@@ -35,7 +36,9 @@ export default class AlgaehModalPopUp extends PureComponent {
                 </div>
               </div>
             </div>
-            {this.props.children}
+            <div className="popupInner">
+              <div className="col-lg-12">{this.props.children}</div>
+            </div>
           </div>
         </div>
       );

@@ -65,6 +65,10 @@ class Encounters extends Component {
               : [];
 
           this.setState({ patientVital: _Vitals });
+        } else if (response.data.records.length === 0) {
+          this.setState({
+            patientVital: []
+          });
         }
       },
       onFailure: error => {
@@ -129,7 +133,6 @@ class Encounters extends Component {
       method: "GET",
       data: {
         encounter_id: enc_id
-        //encounter_id: 54
       },
       cancelRequestId: "getPatientMedication",
       onSuccess: response => {
@@ -376,126 +379,32 @@ class Encounters extends Component {
                   </div>
                 </div>
 
+                {/* VITALS START */}
                 <div className="row vitals">
                   <div className="col-lg-12">
                     <h6 className="smallh6">Vitals</h6>
                     <div className="row">
-                      {this.state.patientVital.map((row, index) => (
-                        <div key={index} className="col borderVitals">
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: row.vitals_name
-                            }}
-                          />
-                          <h6>
-                            {row.vital_value}
-                            <span>{row.uom}</span>
-                          </h6>
-                        </div>
-                      ))}
-
-                      {/* <div className="col borderVitals">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Height"
-                          }}
-                        />
-                        <h6>
-                          {this.state.patientVital.height !== undefined
-                            ? this.state.patientVital.height
-                            : 0}
-                          <span>
-                            {" "}
-                            {this.state.patientVital.height_uom !== undefined
-                              ? this.state.patientVital.height_uom
-                              : ""}
-                          </span>
-                        </h6>
-                      </div>
-
-                      <div className="col borderVitals">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Blood Pressure"
-                          }}
-                        />
-                        <h6>
-                          {this.state.patientVital.systolic !== undefined
-                            ? this.state.patientVital.systolic
-                            : 0}{" "}
-                          /{" "}
-                          {this.state.patientVital.diastolic !== undefined
-                            ? this.state.patientVital.diastolic
-                            : 0}
-                          <span />
-                        </h6>
-                      </div>
-
-                      <div className="col borderVitals">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Temperature"
-                          }}
-                        />
-                        <h6>
-                          {this.state.patientVital.temperature_celsisus !==
-                          undefined
-                            ? this.state.patientVital.temperature_celsisus
-                            : 0}{" "}
-                          ({" "}
-                          {this.state.patientVital.temperature_from !==
-                          undefined
-                            ? this.state.patientVital.temperature_from
-                            : "O"}
-                          )<span>&deg;C</span>
-                        </h6>
-                      </div>
-
-                      <div className="col borderVitals">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Heart Rate"
-                          }}
-                        />
-                        <h6>
-                          {this.state.patientVital.heart_rate !== undefined
-                            ? this.state.patientVital.heart_rate
-                            : 0}
-                          <span>kg</span>
-                        </h6>
-                      </div>
-
-                      <div className="col borderVitals">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Respiratory Rate"
-                          }}
-                        />
-                        <h6>
-                          {this.state.patientVital.respiratory_rate !==
-                          undefined
-                            ? this.state.patientVital.respiratory_rate
-                            : 0}
-                          <span>kg</span>
-                        </h6>
-                      </div>
-
-                      <div className="col borderVitals">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "O2 Stat"
-                          }}
-                        />
-                        <h6>
-                          {this.state.patientVital.oxysat !== undefined
-                            ? this.state.patientVital.oxysat
-                            : 0}
-                          <span>kg</span>
-                        </h6>
-                      </div> */}
+                      {this.state.patientVital.length > 0 ? (
+                        this.state.patientVital.map((row, index) => (
+                          <div key={index} className="col borderVitals">
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: row.vitals_name
+                              }}
+                            />
+                            <h6>
+                              {row.vital_value}
+                              <span>{row.uom}</span>
+                            </h6>
+                          </div>
+                        ))
+                      ) : (
+                        <span className="col">----------</span>
+                      )}
                     </div>
                   </div>
                 </div>
+                {/* VITALS END */}
 
                 <div className="row diagnosis">
                   <div className="col-lg-12">
@@ -508,9 +417,6 @@ class Encounters extends Component {
                               ? "Primary: " + data.daignosis_description
                               : null
                           )}
-
-                          {/* Primary: History of Convlusion with fever (Febrile
-                          Convlusion) */}
                         </h6>
                       </div>
 
@@ -521,8 +427,6 @@ class Encounters extends Component {
                               ? "Secondary: " + data.daignosis_description
                               : null
                           )}
-                          {/* Secondary: History of Convlusion with fever (Febrile
-                          Convlusion) */}
                         </h6>
                       </div>
                     </div>
