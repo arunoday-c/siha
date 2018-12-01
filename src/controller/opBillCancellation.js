@@ -2,42 +2,25 @@ import { Router } from "express";
 import { releaseConnection, generateDbConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
 import { LINQ } from "node-linq";
-import { addOpBIlling, selectBill, getPednigBills } from "../model/opBilling";
-import { updateOrderedServicesBilled } from "../model/orderAndPreApproval";
+import {
+  addOpBillCancellation,
+  getBillCancellation,
+  updateOPBilling
+} from "../model/opBillCancellation";
+
 import { debugFunction, debugLog } from "../utils/logging";
-import { updateRadOrderedBilled } from "../model/radiology";
-import { updateLabOrderedBilled } from "../model/laboratory";
-import { insertRadOrderedServices } from "../model/radiology";
-import { insertLadOrderedServices } from "../model/laboratory";
-import { getReceiptEntry } from "../model/receiptentry";
+import { getReceiptEntry, ReceiptPaymentInsert } from "../model/receiptentry";
 import extend from "extend";
 export default ({ config, db }) => {
   let api = Router();
 
-  // created by irfan : to save opBilling
-  //TODO change middle ware to promisify function --added by noor
+  // created by Nowshad : to save opBilling
   api.post(
-    "/addOpBIlling",
+    "/addOpBillCancellation",
     generateDbConnection,
-    addOpBIlling,
-    updateOrderedServicesBilled,
-    updateLabOrderedBilled,
-    (req, res, next) => {
-      if (req.records.LAB != null && req.records.LAB == true) {
-        insertLadOrderedServices(req, res, next);
-      } else {
-        next();
-      }
-    },
-    updateRadOrderedBilled,
-    (req, res, next) => {
-      if (req.records.RAD != null && req.records.RAD == true) {
-        insertRadOrderedServices(req, res, next);
-      } else {
-        next();
-      }
-    },
-
+    ReceiptPaymentInsert,
+    addOpBillCancellation,
+    updateOPBilling,
     (req, res, next) => {
       let connection = req.connection;
       connection.commit(error => {
@@ -58,25 +41,10 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-  // created by Nowshad: to  getPednigBills
   api.get(
-    "/getPednigBills",
-    getPednigBills,
-    (req, res, next) => {
-      let result = req.records;
-      res.status(httpStatus.ok).json({
-        success: true,
-        records: result
-      });
-      next();
-    },
-    releaseConnection
-  );
-
-  api.get(
-    "/get",
+    "/getBillCancellation",
     generateDbConnection,
-    selectBill,
+    getBillCancellation,
     getReceiptEntry,
     (req, res, next) => {
       debugLog("test: ", "test");
@@ -88,6 +56,7 @@ export default ({ config, db }) => {
             next(error);
           });
         } else {
+          debugLog("result:", req.records);
           let _receptEntry = req.receptEntry;
           let _billing = req.records;
 
@@ -106,5 +75,6 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
+  /////
   return api;
 };

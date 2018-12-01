@@ -3,10 +3,10 @@ import PatientForm from "./PatientForm/PatientForm.js";
 import OtherInfo from "./OtherInfo/OtherInfo.js";
 import AlgaehLabel from "../../Wrapper/label.js";
 import "./PatientDetails.css";
-import { SetBulkState } from "../../../utils/GlobalFunctions";
+import { SetBulkState, checkSecurity } from "../../../utils/GlobalFunctions";
 import MyContext from "../../../utils/MyContext.js";
-import Enumerable from "linq";
 
+import AlgaehSecurity from "../../Wrapper/algehSecurity";
 export default class PatientDetails extends PureComponent {
   constructor(props) {
     super(props);
@@ -35,7 +35,19 @@ export default class PatientDetails extends PureComponent {
       });
     }
   }
-
+  // componentDidUpdate() {
+  //   debugger;
+  //   checkSecurity({
+  //     securityType: "componet",
+  //     component_code: "FD_PR_PAT_DETAIL",
+  //     module_code: "FTDSK",
+  //     screen_code: "FD0002",
+  //     hasSecurity: () => {
+  //       this.patientForm.classList.add("d-none");
+  //       this.setState({ actionPatientDesign: false });
+  //     }
+  //   });
+  // }
   render() {
     let patientSelect = this.state.actionPatientDesign ? "active" : "";
     let informationSelect = this.state.actionInformationDesign ? "" : "active";
@@ -54,6 +66,9 @@ export default class PatientDetails extends PureComponent {
                       "patient-details",
                       context
                     )}
+                    ref={patientForm => {
+                      this.patientForm = patientForm;
+                    }}
                   >
                     {
                       <AlgaehLabel
@@ -71,6 +86,9 @@ export default class PatientDetails extends PureComponent {
                       "other-information",
                       context
                     )}
+                    ref={otherInFormation => {
+                      this.otherInFormation = otherInFormation;
+                    }}
                   >
                     {
                       <AlgaehLabel
@@ -84,10 +102,33 @@ export default class PatientDetails extends PureComponent {
               </div>
               <div className="patient-section">
                 {this.state.actionPatientDesign ? (
-                  <PatientForm
-                    PatRegIOputs={this.props.PatRegIOputs}
-                    clearData={this.props.clearData}
-                  />
+                  <AlgaehSecurity
+                    component_code="FD_PR_PAT_DETAIL"
+                    module_code="FTDSK"
+                    screen_code="FD0002"
+                    elementLink={{
+                      that: this,
+                      elements: [
+                        {
+                          ref: "patientForm",
+                          event: () => {
+                            this.setState(
+                              { actionPatientDesign: false },
+                              () => {
+                                this.otherInFormation.click();
+                                this.patientForm.classList.add("d-none");
+                              }
+                            );
+                          }
+                        }
+                      ]
+                    }}
+                  >
+                    <PatientForm
+                      PatRegIOputs={this.props.PatRegIOputs}
+                      clearData={this.props.clearData}
+                    />
+                  </AlgaehSecurity>
                 ) : null}
                 {this.state.actionInformationDesign ? null : (
                   <OtherInfo PatRegIOputs={this.props.PatRegIOputs} />

@@ -5,6 +5,7 @@ import NurseWorkbench from "../NurseWorkbench/NurseWorkbench";
 import PatientProfile from "../PatientProfile/PatientProfile";
 import { removeGlobal } from "../../utils/GlobalFunctions";
 import { setCookie } from "../../utils/algaehApiCall";
+
 class Workbench extends Component {
   constructor(props) {
     super(props);
@@ -15,12 +16,6 @@ class Workbench extends Component {
 
     this.routeComponents = this.routeComponents.bind(this);
   }
-
-  // componentDidMount() {
-  //   this.setState({
-  //     EHR_Screen: getCookie("ScreenName").replace("/", "")
-  //   });
-  // }
 
   routeComponents() {
     setCookie("ScreenName", Window.global["EHR-STD"]);
@@ -38,8 +33,9 @@ class Workbench extends Component {
     removeGlobal("EHR-STD");
   }
 
-  componentList(screen) {
+  componentList() {
     const _type = getCookie("ScreenName").replace("/", "");
+
     switch (_type) {
       case "DoctorsWorkbench":
         return <DoctorsWorkbench />;
@@ -48,7 +44,8 @@ class Workbench extends Component {
         return <NurseWorkbench />;
 
       case "PatientProfile":
-        return <PatientProfile />;
+        // localStorage.setItem("workbenchFirstLaunch", true);
+        return <PatientProfile open_allergy_popup={true} />;
 
       default:
         return null;
@@ -58,19 +55,6 @@ class Workbench extends Component {
   changeDisplays() {
     return this.componentList(this.state.EHR_Screen);
   }
-
-  // componentList() {
-  //   return {
-  //     DoctorsWorkbench: <DoctorsWorkbench />,
-  //     NurseWorkbench: <NurseWorkbench />,
-  //     PatientProfile: <PatientProfile />
-  //   };
-  // }
-
-  // changeDisplays() {
-  //   debugger;
-  //   return this.componentList()[this.state.EHR_Screen];
-  // }
 
   render() {
     return (

@@ -6,7 +6,7 @@ const BillSearch = ($this, context, e) => {
     searchGrid: {
       columns: spotlightSearch.billing.opBilling
     },
-    searchName: "bills",
+    searchName: "billsforCanel",
     uri: "/gloabelSearch/get",
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);

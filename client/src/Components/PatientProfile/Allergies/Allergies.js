@@ -40,37 +40,38 @@ class Allergies extends Component {
     this.handleClose = this.handleClose.bind(this);
     this.baseState = this.state;
   }
-  componentDidMount() {
-    if (
-      this.props.patient_allergies === undefined ||
-      this.props.patient_allergies.length === 0
-    )
-      getPatientAllergies(this);
-    else {
-      let _allergies = Enumerable.from(this.props.patient_allergies)
-        .groupBy("$.allergy_type", null, (k, g) => {
-          return {
-            allergy_type: k,
-            allergy_type_desc:
-              k === "F"
-                ? "Food"
-                : k === "A"
-                ? "Airborne"
-                : k === "AI"
-                ? "Animal  &  Insect"
-                : k === "C"
-                ? "Chemical & Others"
-                : "",
-            allergyList: g.getSource()
-          };
-        })
-        .toArray();
 
-      this.setState({
-        patientAllergies: _allergies,
-        allPatientAllergies: this.props.patient_allergies
-      });
-    }
+  componentDidMount() {
+    // if (
+    //   this.props.patient_allergies === undefined ||
+    //   this.props.patient_allergies.length === 0
+    // )
+    getPatientAllergies(this);
+    // else {
+    let _allergies = Enumerable.from(this.props.patient_allergies)
+      .groupBy("$.allergy_type", null, (k, g) => {
+        return {
+          allergy_type: k,
+          allergy_type_desc:
+            k === "F"
+              ? "Food"
+              : k === "A"
+              ? "Airborne"
+              : k === "AI"
+              ? "Animal  &  Insect"
+              : k === "C"
+              ? "Chemical & Others"
+              : "",
+          allergyList: g.getSource()
+        };
+      })
+      .toArray();
+
+    this.setState({
+      patientAllergies: _allergies,
+      allPatientAllergies: this.props.patient_allergies
+    });
+    // }
   }
 
   handleClose() {

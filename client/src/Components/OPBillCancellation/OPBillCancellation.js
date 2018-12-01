@@ -16,7 +16,9 @@ import { getCookie } from "../../utils/algaehApiCall";
 import {
   ClearData,
   Validations,
-  getCashiersAndShiftMAP
+  getCashiersAndShiftMAP,
+  getBillDetails,
+  getCtrlCode
 } from "./OPBillCancellationEvents";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { successfulMessage } from "../../utils/GlobalFunctions";
@@ -104,114 +106,6 @@ class OPBillCancellation extends Component {
     this.setState({ ...this.state, ...output });
   }
 
-  getBillDetails($this) {
-    AlgaehLoader({ show: true });
-    algaehApiCall({
-      uri: "/opBilling/get",
-      method: "GET",
-      data: { bill_number: this.state.bill_number },
-      onSuccess: response => {
-        if (response.data.success) {
-          debugger;
-
-          let data = response.data.records;
-
-          let x = Enumerable.from($this.props.patienttype)
-            .where(w => w.hims_d_patient_type_id === data.patient_type)
-            .toArray();
-
-          if (x !== undefined && x.length > 0) {
-            data.patient_type = x[0].patitent_type_desc;
-          } else {
-            data.patient_type = "Not Selected";
-          }
-
-          data.receipt_number = null;
-          data.receipt_date = new Date();
-          data.cash_amount = data.receiveable_amount;
-
-          data.counter_id = this.state.counter_id || null;
-          data.shift_id = this.state.shift_id || null;
-
-          $this.setState(data);
-          AlgaehLoader({ show: false });
-        }
-      },
-      onFailure: error => {
-        AlgaehLoader({ show: false });
-        swalMessage({
-          title: error.message,
-          type: "error"
-        });
-      }
-    });
-  }
-
-  getCtrlCode(billcode) {
-    let $this = this;
-
-    AlgaehLoader({ show: true });
-
-    algaehApiCall({
-      uri: "/opBilling/get",
-      method: "GET",
-      data: { bill_number: billcode },
-      onSuccess: response => {
-        if (response.data.success) {
-          debugger;
-
-          let data = response.data.records;
-          debugger;
-          let x = Enumerable.from($this.props.patienttype)
-            .where(w => w.hims_d_patient_type_id === data.patient_type)
-            .toArray();
-
-          if (x !== undefined && x.length > 0) {
-            data.patient_type = x[0].patitent_type_desc;
-          } else {
-            data.patient_type = "Not Selected";
-          }
-
-          let visitDetails = Enumerable.from(data.billdetails).firstOrDefault();
-          debugger;
-          visitDetails.radioselect = 1;
-          data.visitDetails = [visitDetails];
-          // data.visitDetails[0].radioselect = 1;
-          data.Billexists = true;
-
-          if (data.receiptdetails.length !== 0) {
-            for (let i = 0; i < data.receiptdetails.length; i++) {
-              if (data.receiptdetails[i].pay_type === "CA") {
-                data.Cashchecked = true;
-                data.cash_amount = data.receiptdetails[i].amount;
-              }
-
-              if (data.receiptdetails[i].pay_type === "CD") {
-                data.Cardchecked = true;
-                data.card_amount = data.receiptdetails[i].amount;
-              }
-
-              if (data.receiptdetails[i].pay_type === "CH") {
-                data.Checkchecked = true;
-                data.cheque_amount = data.receiptdetails[i].amount;
-              }
-            }
-          }
-
-          $this.setState(data);
-          AlgaehLoader({ show: false });
-        }
-      },
-      onFailure: error => {
-        AlgaehLoader({ show: false });
-        swalMessage({
-          title: error.message,
-          type: "error"
-        });
-      }
-    });
-  }
-
   GenerateReciept(callback) {
     let obj = [];
 
@@ -272,52 +166,50 @@ class OPBillCancellation extends Component {
     }
   }
 
-  SaveBill(e) {
+  CancelOPBill(e) {
+    debugger;
     const err = Validations(this);
     if (!err) {
-      if (this.state.unbalanced_amount === 0) {
-        this.GenerateReciept($this => {
-          let Inputobj = $this.state;
+      this.GenerateReciept($this => {
+        debugger;
+        let Inputobj = $this.state;
 
-          Inputobj.patient_payable = $this.state.patient_payable_h;
-          AlgaehLoader({ show: true });
-          algaehApiCall({
-            uri: "/opBilling/addOpBIlling",
-            data: Inputobj,
-            method: "POST",
-            onSuccess: response => {
-              AlgaehLoader({ show: false });
-              if (response.data.success) {
-                $this.setState({
-                  bill_number: response.data.records.bill_number,
-                  receipt_number: response.data.records.receipt_number,
-                  saveEnable: true
-                });
-                successfulMessage({
-                  message: "Done Successfully",
-                  title: "Success",
-                  icon: "success"
-                });
-              }
-            },
-            onFailure: error => {
-              debugger;
-              AlgaehLoader({ show: false });
+        Inputobj.patient_payable = $this.state.patient_payable_h;
+        Inputobj.pay_type = "P";
+        AlgaehLoader({ show: true });
+        algaehApiCall({
+          uri: "/opBillCancellation/addOpBillCancellation",
+          data: Inputobj,
+          method: "POST",
+          onSuccess: response => {
+            AlgaehLoader({ show: false });
+            debugger;
+            if (response.data.success) {
+              $this.setState({
+                bill_cancel_number: response.data.records.bill_number,
+                receipt_number: response.data.records.receipt_number,
+                hims_f_bill_cancel_header_id:
+                  response.data.hims_f_bill_cancel_header_id,
+                saveEnable: true
+              });
               successfulMessage({
-                message: error.response.data.message || error.message,
-                title: "Error",
-                icon: "error"
+                message: "Done Successfully",
+                title: "Success",
+                icon: "success"
               });
             }
-          });
+          },
+          onFailure: error => {
+            debugger;
+            AlgaehLoader({ show: false });
+            successfulMessage({
+              message: error.response.data.message || error.message,
+              title: "Error",
+              icon: "error"
+            });
+          }
         });
-      } else {
-        successfulMessage({
-          message: "Invalid Input. Please recive the amount.",
-          title: "Error",
-          icon: "error"
-        });
-      }
+      });
     }
   }
 
@@ -350,13 +242,13 @@ class OPBillCancellation extends Component {
             ),
             value: this.state.bill_cancel_number,
             events: {
-              onChange: this.getCtrlCode.bind(this)
+              onChange: getCtrlCode.bind(this, this)
             },
             selectValue: "bill_cancel_number",
-            searchName: "bills",
+            searchName: "cancelbills",
             jsonFile: {
               fileName: "spotlightSearch",
-              fieldName: "billing.opBilling"
+              fieldName: "cancelbills.opBillCancel"
             }
           }}
           userArea={
@@ -412,7 +304,7 @@ class OPBillCancellation extends Component {
                 this.setState({ ...this.state, ...obj }, () => {
                   Object.keys(obj).map(key => {
                     if (key === "bill_number") {
-                      this.getBillDetails(this);
+                      getBillDetails(this, this);
                     }
                   });
                 });
@@ -430,13 +322,12 @@ class OPBillCancellation extends Component {
               <button
                 type="button"
                 className="btn btn-primary"
-                onClick={this.SaveBill.bind(this)}
+                onClick={this.CancelOPBill.bind(this)}
                 disabled={this.state.saveEnable}
               >
                 <AlgaehLabel
                   label={{ fieldName: "btn_cancel", returnText: true }}
                 />
-                {/* Save */}
               </button>
 
               <button
@@ -447,7 +338,6 @@ class OPBillCancellation extends Component {
                 <AlgaehLabel
                   label={{ fieldName: "btn_clear", returnText: true }}
                 />
-                {/* Clear */}
               </button>
             </div>
           </div>

@@ -44,6 +44,30 @@
       }
     ]
   },
+  "cancelbills": {
+    "opBillCancel": [
+      {
+        "fieldName": "bill_cancel_number",
+        "label": "Cancellation Number"
+      },
+      {
+        "fieldName": "bill_number",
+        "label": "From Bill"
+      },
+      {
+        "fieldName": "patient_code",
+        "label": "Patient Code"
+      },
+      {
+        "fieldName": "visit_code",
+        "label": "Visit Code"
+      },
+      {
+        "fieldName": "bill_cancel_date",
+        "label": "Cancellation Date"
+      }
+    ]
+  },
   "DoctorCommission": {
     "doccpmmission": [
       {
