@@ -55,6 +55,13 @@ let getLoginUserMaster = (req, res, next) => {
 
     let where = whereCondition(extend(selectWhere, req.query));
 
+    // SELECT algaeh_m_group_user_mappings_id, app_group_id,app_group_name, user_id, username,\
+    // user_display_name, effective_start_date, role_id,role_name\
+    // from algaeh_m_group_user_mappings GUM ,algaeh_d_app_user U,algaeh_d_app_group G,algaeh_d_app_roles R\
+    // where GUM.user_id=U.algaeh_d_app_user_id and GUM.app_group_id=G.algaeh_d_app_group_id\
+    // and GUM.role_id=R.app_d_app_roles_id and  GUM.record_status='A' and U.record_status='A' \
+    // and G.record_status='A' and R.record_status='A'
+
     db.getConnection((error, connection) => {
       connection.query(
         "SELECT algaeh_m_group_user_mappings_id, app_group_id,app_group_name, user_id, username,\

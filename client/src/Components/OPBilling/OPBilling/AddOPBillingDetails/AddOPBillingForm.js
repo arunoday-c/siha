@@ -1025,7 +1025,7 @@ class AddOPBillingForm extends Component {
                         className="row secondary-box-container"
                         style={{ marginBottom: "10px" }}
                       >
-                        <div className="col-3">
+                        <div className="col">
                           <AlgaehLabel
                             label={{
                               fieldName: "advance_amount"
@@ -1034,7 +1034,7 @@ class AddOPBillingForm extends Component {
                           <h6>{getAmountFormart(this.state.advance_amount)}</h6>
                         </div>
 
-                        <div className="col-3">
+                        <div className="col">
                           <AlgaehLabel
                             label={{
                               fieldName: "net_amount"
@@ -1044,9 +1044,9 @@ class AddOPBillingForm extends Component {
                         </div>
 
                         <AlagehFormGroup
-                          div={{ className: "col-lg-3 highlightGrey" }}
+                          div={{ className: "col" }}
                           label={{
-                            fieldName: "balance_due"
+                            fieldName: "credit_amount"
                           }}
                           textBox={{
                             decimal: { allowNegative: false },
@@ -1071,7 +1071,7 @@ class AddOPBillingForm extends Component {
                         />
 
                         <div
-                          className="col-3"
+                          className="col"
                           style={{
                             background: " #44b8bd",
                             color: " #fff"
@@ -1085,6 +1085,14 @@ class AddOPBillingForm extends Component {
                           <h4>
                             {getAmountFormart(this.state.receiveable_amount)}
                           </h4>
+                        </div>
+                        <div className="col highlightGrey">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "balance_due"
+                            }}
+                          />
+                          <h6>0.00</h6>
                         </div>
                       </div>
                       <ReciptForm BillingIOputs={this.props.BillingIOputs} />

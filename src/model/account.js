@@ -97,7 +97,7 @@ let apiAuth = (req, res, next) => {
 };
 
 //api user authentication
-let authUser = (req, res, next) => {
+let authUserOLD = (req, res, next) => {
   let authModel = {
     username: "",
     password: ""
@@ -162,7 +162,7 @@ let authUser = (req, res, next) => {
 };
 
 //api user authentication
-let authUserNew = (req, res, next) => {
+let authUser = (req, res, next) => {
   let authModel = {
     username: "",
     password: ""
@@ -174,21 +174,33 @@ let authUserNew = (req, res, next) => {
     let db = req.db;
     let inputData = extend(authModel, req.body);
 
+    //   SELECT algaeh_d_app_user_id, username, user_display_name,  locked, login_attempts,\
+    //   password_expiry_rule, algaeh_m_group_user_mappings_id,algaeh_d_app_group_id,\
+    //   app_group_name,group_type,app_d_app_roles_id,role_name,role_type,\
+    //   hims_d_employee_department_id, employee_id, services_id, sub_department_id \
+    //   FROM algaeh_d_app_user U inner join algaeh_m_group_user_mappings GUP \
+    //   on GUP.user_id=U.algaeh_d_app_user_id\
+    //   inner join algaeh_d_app_group G on GUP.app_group_id= G.algaeh_d_app_group_id \
+    //   inner join algaeh_d_app_roles R on GUP.role_id=R.app_d_app_roles_id\
+    //   inner join hims_m_employee_department_mappings EDM on  GUP.user_id=EDM.user_id\
+    //   inner join  algaeh_d_app_password P on U.algaeh_d_app_user_id=P.userid\
+    //  WHERE P.password=md5(?) AND U.username=? AND U.record_status='A' \
+    //   AND P.record_status='A' AND G.record_status='A' AND R.record_status='A'
+
     db.getConnection((error, connection) => {
       let query =
         "SELECT algaeh_d_app_user_id, username, user_display_name,  locked, login_attempts,\
-        password_expiry_rule, algaeh_m_group_user_mappings_id,algaeh_d_app_group_id,\
-        app_group_name,group_type,app_d_app_roles_id,role_name,role_type,\
+        password_expiry_rule, algaeh_m_role_user_mappings_id,app_d_app_roles_id,app_group_id,\
+        role_code, role_name, role_discreption, role_type,\
+        algaeh_d_app_group_id, app_group_code, app_group_name, app_group_desc, group_type, \
         hims_d_employee_department_id, employee_id, services_id, sub_department_id \
-        FROM algaeh_d_app_user U inner join algaeh_m_group_user_mappings GUP \
-        on GUP.user_id=U.algaeh_d_app_user_id\
-        inner join algaeh_d_app_group G on GUP.app_group_id= G.algaeh_d_app_group_id \
-        inner join algaeh_d_app_roles R on GUP.role_id=R.app_d_app_roles_id\
-        inner join hims_m_employee_department_mappings EDM on  GUP.user_id=EDM.user_id\
+        FROM  algaeh_d_app_user U inner join algaeh_m_role_user_mappings RU on RU.user_id=U.algaeh_d_app_user_id\
+        inner join algaeh_d_app_roles R on RU.role_id=R.app_d_app_roles_id\
+        inner join algaeh_d_app_group G on R.app_group_id=G.algaeh_d_app_group_id\
+        inner join hims_m_employee_department_mappings EDM on  RU.user_id=EDM.user_id\
         inner join  algaeh_d_app_password P on U.algaeh_d_app_user_id=P.userid\
-       WHERE P.password=md5(?) AND U.username=? AND U.record_status='A' \
-        AND P.record_status='A' AND G.record_status='A' AND R.record_status='A'   ";
-
+        WHERE P.password=md5(?) AND U.username=? AND U.record_status='A' \
+        AND P.record_status='A' AND G.record_status='A' AND R.record_status='A'  ";
       connection.query(
         query,
         [inputData.password, inputData.username],
@@ -197,27 +209,7 @@ let authUserNew = (req, res, next) => {
             connection.release();
             next(error);
           }
-          // if (result != null && result.length != 0) {
-          //   connection.query(
-          //     "select module_name,module_desc from algaeh_d_app_privilege,algaeh_d_app_screens where role_id =? and  \
-          //   algaeh_d_app_privilege.screen_id = algaeh_d_app_screens.algaeh_app_screens_id",
-          //     [result[0].role_id],
-          //     (error, rec) => {
-          //       connection.release();
-          //       if (error) {
-          //         connection.release();
-          //         next(error);
-          //       }
-          //       req.records = result;
-          //       req.secureModels = rec;
-          //       next();
-          //     }
-          //   );
-          // } else {
-          //   req.records = result;
-          //   req.activeModels = [];
-          //   next();
-          // }
+
           req.records = result;
           next();
         }

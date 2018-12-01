@@ -149,22 +149,51 @@ let selectBill = (req, res, next) => {
       //         inner join hims_f_patient as PAT on hims_f_billing_header.patient_id = PAT.hims_d_patient_id \
       //         where hims_f_billing_header.record_status='A' AND hims_f_billing_header.bill_number
 
-      "SELECT * FROM hims_f_billing_header bh INNER JOIN hims_f_billing_details bd  ON\
-      bh.hims_f_billing_header_id=bd.hims_f_billing_header_id\
+      // INNER JOIN hims_f_billing_details bd  ON\
+      // bh.hims_f_billing_header_id=bd.hims_f_billing_header_id\
+      "SELECT * FROM hims_f_billing_header bh \
       inner join hims_f_patient as PAT on bh.patient_id = PAT.hims_d_patient_id\
       inner join hims_f_patient_visit as vst on bh.visit_id = vst.hims_f_patient_visit_id\
       where bh.record_status='A' AND bh.bill_number='" +
         req.query.bill_number +
         "'",
 
-      (error, result) => {
+      (error, headerResult) => {
         if (error) {
           releaseDBConnection(db, connection);
           next(error);
         }
-        req.records = result;
-        releaseDBConnection(db, connection);
-        next();
+        debugLog("result: ", headerResult);
+        if (headerResult.length != 0) {
+          debugLog(
+            "hims_f_billing_header_id: ",
+            headerResult[0].hims_f_billing_header_id
+          );
+          connection.query(
+            "select * from hims_f_billing_details where hims_f_billing_header_id=? and record_status='A'",
+            headerResult[0].hims_f_billing_header_id,
+            (error, billdetails) => {
+              if (error) {
+                releaseDBConnection(db, connection);
+                next(error);
+              }
+              req.records = {
+                ...headerResult[0],
+                ...{ billdetails },
+                ...{
+                  hims_f_receipt_header_id: headerResult[0].receipt_header_id
+                }
+              };
+              releaseDBConnection(db, connection);
+              next();
+              debugLog("Billing Result: ", req.records);
+            }
+          );
+        } else {
+          req.records = headerResult;
+          releaseDBConnection(db, connection);
+          next();
+        }
       }
     );
     // });

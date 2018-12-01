@@ -1,38 +1,170 @@
 import React, { Component } from "react";
-import PatientDisplayForm from "./PatientDisplayForm/PatientDisplayForm.js";
-import "./../../../styles/site.css";
-import "./PatientDetails.css";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 
-export default class PatientDetails extends Component {
+import { AlgaehActions } from "../../../actions/algaehActions";
+import "./PatientDetails.css";
+import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
+import MyContext from "../../../utils/MyContext.js";
+import { PatientSearch } from "./DisPatientHandlers";
+
+class DisPatientForm extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      actionPatientDesign: true,
-      actionInformationDesign: true
-    };
+    this.state = {};
   }
 
-  openTab(dataValue) {
-    if (dataValue === "patient-details") {
-      this.setState({
-        actionPatientDesign: true,
-        actionInformationDesign: true
-      });
-    } else if (dataValue === "other-information") {
-      this.setState({
-        actionInformationDesign: false,
-        actionPatientDesign: false
+  componentWillMount() {
+    let InputOutput = this.props.BillingIOputs;
+    this.setState({ ...this.state, ...InputOutput });
+  }
+
+  componentDidMount() {
+    if (
+      this.props.patienttype === undefined ||
+      this.props.patienttype.length === 0
+    ) {
+      this.props.getPatientType({
+        uri: "/patientType/getPatientType",
+        method: "GET",
+        redux: {
+          type: "PATIENT_TYPE_GET_DATA",
+          mappingName: "patienttype"
+        }
       });
     }
   }
 
-  render() {
-    let patientSelect = this.state.actionPatientDesign ? "active" : "";
+  componentWillReceiveProps(nextProps) {
+    this.setState(nextProps.BillingIOputs);
+  }
 
+  render() {
     return (
-      <div className="hptl-phase1-Display-patient-details">
-        <PatientDisplayForm BillingIOputs={this.props.BillingIOputs} />
-      </div>
+      <React.Fragment>
+        <MyContext.Consumer>
+          {context => (
+            <div className="hptl-phase1-display-patient-form">
+              <div
+                className="row inner-top-search"
+                style={{ paddingTop: 10, paddingBottom: 10 }}
+              >
+                {/* Patient code */}
+                <div className="col-lg-3">
+                  <div
+                    className="row"
+                    style={{
+                      border: " 1px solid #ced4d9",
+                      borderRadius: 5,
+                      marginLeft: 0
+                    }}
+                  >
+                    <div className="col">
+                      <AlgaehLabel label={{ fieldName: "patient_code" }} />
+                      <h6>
+                        {this.state.patient_code
+                          ? this.state.patient_code
+                          : "*** New ***"}
+                      </h6>
+                    </div>
+                    <div
+                      className="col-lg-3"
+                      style={{ borderLeft: "1px solid #ced4d8" }}
+                    >
+                      <i
+                        className="fas fa-search fa-lg"
+                        style={{
+                          paddingTop: 17,
+                          paddingLeft: 3,
+                          cursor: "pointer",
+                          pointerEvents:
+                            this.state.Billexists === true
+                              ? "none"
+                              : this.state.patient_code
+                              ? "none"
+                              : ""
+                        }}
+                        onClick={PatientSearch.bind(this, this, context)}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="col-lg-9">
+                  <div className="row">
+                    <div className="col-lg-3">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "full_name"
+                        }}
+                      />
+                      <h6>
+                        {this.state.full_name
+                          ? this.state.full_name
+                          : "--------"}
+                      </h6>
+                    </div>
+
+                    <div className="col-lg-3">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "patient_type"
+                        }}
+                      />
+                      <h6>
+                        {this.state.patient_type
+                          ? this.state.patient_type
+                          : "--------"}
+                      </h6>
+                    </div>
+
+                    <div className="col-lg-3">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "mode_of_pay"
+                        }}
+                      />
+                      <h6>
+                        {this.state.mode_of_pay
+                          ? this.state.mode_of_pay
+                          : "--------"}
+                      </h6>
+                    </div>
+
+                    {this.state.cancelled === "Y" ? (
+                      <div className="col-lg-3">
+                        <h5 style={{ color: "red" }}> Cancelled </h5>
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </MyContext.Consumer>
+      </React.Fragment>
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    patienttype: state.patienttype
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getPatientType: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(DisPatientForm)
+);

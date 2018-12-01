@@ -14,36 +14,43 @@ const changeTexts = ($this, ctrl, e) => {
 
 const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
-  $this.props.getSalesReturn({
+  debugger;
+  algaehApiCall({
     uri: "/salesReturn/getsalesReturn",
     method: "GET",
-    printInput: true,
     data: { sales_return_number: docNumber },
-    redux: {
-      type: "RETURN_ENTRY_GET_DATA",
-      mappingName: "salesReturnEntry"
-    },
-    afterSuccess: data => {
-      data.saveEnable = true;
-      data.patient_payable_h = data.patient_payable;
+    onSuccess: response => {
+      if (response.data.success) {
+        debugger;
+        let data = response.data.records;
+        data.saveEnable = true;
+        data.patient_payable_h = data.patient_payable;
 
-      if (data.posted === "Y") {
-        data.postEnable = true;
-      } else {
-        data.postEnable = false;
-      }
+        if (data.posted === "Y") {
+          data.postEnable = true;
+        } else {
+          data.postEnable = false;
+        }
 
-      if (data.receiptdetails.length !== 0) {
-        for (let i = 0; i < data.receiptdetails.length; i++) {
-          if (data.receiptdetails[i].pay_type === "CA") {
-            data.Cashchecked = true;
-            data.cash_amount = data.receiptdetails[i].amount;
+        if (data.receiptdetails.length !== 0) {
+          for (let i = 0; i < data.receiptdetails.length; i++) {
+            if (data.receiptdetails[i].pay_type === "CA") {
+              data.Cashchecked = true;
+              data.cash_amount = data.receiptdetails[i].amount;
+            }
           }
         }
-      }
 
-      $this.setState(data);
+        $this.setState(data);
+      }
       AlgaehLoader({ show: false });
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
 };
@@ -127,48 +134,49 @@ const GenerateReciept = ($this, callBack) => {
 
 const SaveSalesReturn = $this => {
   GenerateReciept($this, that => {
-    $this.state.posted = "Y";
-    $this.state.transaction_type = "SRT";
-    $this.state.transaction_date = $this.state.sales_return_date;
-    for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
-      $this.state.pharmacy_stock_detail[i].location_id =
-        $this.state.location_id;
-      $this.state.pharmacy_stock_detail[i].location_type =
+    let inputObj = $this.state;
+    inputObj.posted = "Y";
+    inputObj.transaction_type = "SRT";
+    inputObj.pay_type = "P";
+    inputObj.transaction_date = $this.state.sales_return_date;
+    for (let i = 0; i < inputObj.pharmacy_stock_detail.length; i++) {
+      inputObj.pharmacy_stock_detail[i].location_id = $this.state.location_id;
+      inputObj.pharmacy_stock_detail[i].location_type =
         $this.state.location_type;
 
-      $this.state.pharmacy_stock_detail[i].sales_uom =
+      inputObj.pharmacy_stock_detail[i].sales_uom =
         $this.state.pharmacy_stock_detail[i].uom_id;
-      $this.state.pharmacy_stock_detail[i].item_code_id = $this.state.item_id;
-      $this.state.pharmacy_stock_detail[i].grn_number =
+      inputObj.pharmacy_stock_detail[i].item_code_id = $this.state.item_id;
+      inputObj.pharmacy_stock_detail[i].grn_number =
         $this.state.pharmacy_stock_detail[i].grn_no;
 
-      $this.state.pharmacy_stock_detail[i].item_category_id =
+      inputObj.pharmacy_stock_detail[i].item_category_id =
         $this.state.pharmacy_stock_detail[i].item_category;
 
-      $this.state.pharmacy_stock_detail[i].net_total =
+      inputObj.pharmacy_stock_detail[i].net_total =
         $this.state.pharmacy_stock_detail[i].net_extended_cost;
 
-      $this.state.pharmacy_stock_detail[i].quantity =
+      inputObj.pharmacy_stock_detail[i].quantity =
         $this.state.pharmacy_stock_detail[i].return_quantity;
 
-      $this.state.pharmacy_stock_detail[i].return_extended_cost =
+      inputObj.pharmacy_stock_detail[i].return_extended_cost =
         $this.state.pharmacy_stock_detail[i].extended_cost || 0;
-      $this.state.pharmacy_stock_detail[i].return_discount_amt =
+      inputObj.pharmacy_stock_detail[i].return_discount_amt =
         $this.state.pharmacy_stock_detail[i].discount_amount || 0;
-      $this.state.pharmacy_stock_detail[i].return_net_extended_cost =
+      inputObj.pharmacy_stock_detail[i].return_net_extended_cost =
         $this.state.pharmacy_stock_detail[i].net_extended_cost || 0;
-      $this.state.pharmacy_stock_detail[i].return_pat_responsibility =
+      inputObj.pharmacy_stock_detail[i].return_pat_responsibility =
         $this.state.pharmacy_stock_detail[i].patient_responsibility || 0;
-      $this.state.pharmacy_stock_detail[i].return_company_responsibility =
+      inputObj.pharmacy_stock_detail[i].return_company_responsibility =
         $this.state.pharmacy_stock_detail[i].company_responsibility || 0;
-      $this.state.pharmacy_stock_detail[i].return_sec_company_responsibility =
+      inputObj.pharmacy_stock_detail[i].return_sec_company_responsibility =
         $this.state.pharmacy_stock_detail[i].sec_company_responsibility || 0;
 
-      $this.state.pharmacy_stock_detail[i].operation = "+";
+      inputObj.pharmacy_stock_detail[i].operation = "+";
     }
     algaehApiCall({
       uri: "/salesReturn/addsalesReturn",
-      data: $this.state,
+      data: inputObj,
       onSuccess: response => {
         if (response.data.success === true) {
           $this.setState({
@@ -190,68 +198,6 @@ const SaveSalesReturn = $this => {
     });
   });
 };
-
-// const PostSalesReturn = $this => {
-
-//   $this.state.posted = "Y";
-//   $this.state.transaction_type = "SRT";
-//   $this.state.transaction_id =
-//     $this.state.hims_f_pharmcy_sales_return_header_id;
-//   $this.state.transaction_date = $this.state.sales_return_date;
-//   for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
-//     $this.state.pharmacy_stock_detail[i].location_id = $this.state.location_id;
-//     $this.state.pharmacy_stock_detail[i].location_type =
-//       $this.state.location_type;
-
-//     $this.state.pharmacy_stock_detail[i].sales_uom =
-//       $this.state.pharmacy_stock_detail[i].uom_id;
-//     $this.state.pharmacy_stock_detail[i].item_code_id = $this.state.item_id;
-//     $this.state.pharmacy_stock_detail[i].grn_number =
-//       $this.state.pharmacy_stock_detail[i].grn_no;
-
-//     $this.state.pharmacy_stock_detail[i].item_category_id =
-//       $this.state.pharmacy_stock_detail[i].item_category;
-
-//     $this.state.pharmacy_stock_detail[i].net_total =
-//       $this.state.pharmacy_stock_detail[i].net_extended_cost;
-
-//     $this.state.pharmacy_stock_detail[i].quantity =
-//       $this.state.pharmacy_stock_detail[i].return_quantity;
-
-//     $this.state.pharmacy_stock_detail[i].return_extended_cost =
-//       $this.state.pharmacy_stock_detail[i].extended_cost || 0;
-//     $this.state.pharmacy_stock_detail[i].return_discount_amt =
-//       $this.state.pharmacy_stock_detail[i].discount_amount || 0;
-//     $this.state.pharmacy_stock_detail[i].return_net_extended_cost =
-//       $this.state.pharmacy_stock_detail[i].net_extended_cost || 0;
-//     $this.state.pharmacy_stock_detail[i].return_pat_responsibility =
-//       $this.state.pharmacy_stock_detail[i].patient_responsibility || 0;
-//     $this.state.pharmacy_stock_detail[i].return_company_responsibility =
-//       $this.state.pharmacy_stock_detail[i].company_responsibility || 0;
-//     $this.state.pharmacy_stock_detail[i].return_sec_company_responsibility =
-//       $this.state.pharmacy_stock_detail[i].sec_company_responsibility || 0;
-
-//     $this.state.pharmacy_stock_detail[i].operation = "+";
-//   }
-
-//   algaehApiCall({
-//     uri: "/salesReturn/updatesalesReturn",
-//     data: $this.state,
-//     method: "PUT",
-//     onSuccess: response => {
-
-//       if (response.data.success === true) {
-//         $this.setState({
-//           postEnable: true
-//         });
-//         swalMessage({
-//           title: "Posted successfully . .",
-//           type: "success"
-//         });
-//       }
-//     }
-//   });
-// };
 
 const POSSearch = ($this, e) => {
   AlgaehSearch({
@@ -280,28 +226,53 @@ const POSSearch = ($this, e) => {
 };
 
 const getPOSEntry = $this => {
-  $this.props.getPOSEntry({
+  algaehApiCall({
     uri: "/posEntry/getPosEntry",
     method: "GET",
-    printInput: true,
     data: { pos_number: $this.state.pos_number },
-    redux: {
-      type: "POS_ENTRY_GET_DATA",
-      mappingName: "posentry"
-    },
-    afterSuccess: data => {
-      data.patient_payable_h = data.patient_payable;
-      data.cash_amount = data.receiveable_amount;
-      data.payable_amount = data.receiveable_amount;
+    onSuccess: response => {
+      if (response.data.success) {
+        debugger;
+        let data = response.data.records;
+        data.patient_payable_h = data.patient_payable;
 
-      for (let i = 0; i < data.pharmacy_stock_detail.length; i++) {
-        data.pharmacy_stock_detail[i].return_quantity =
-          data.pharmacy_stock_detail[i].quantity;
+        data.payable_amount = data.receiveable_amount;
+
+        data.receipt_number = null;
+        data.receipt_date = new Date();
+        data.cash_amount = data.receiveable_amount;
+        data.from_bill_id = data.hims_f_billing_header_id;
+        data.counter_id = $this.state.counter_id || null;
+        data.shift_id = $this.state.shift_id || null;
+
+        for (let i = 0; i < data.pharmacy_stock_detail.length; i++) {
+          data.pharmacy_stock_detail[i].return_quantity =
+            data.pharmacy_stock_detail[i].quantity;
+        }
+        $this.setState(data);
       }
-      $this.setState(data);
       AlgaehLoader({ show: false });
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
+
+  // $this.props.getPOSEntry({
+  //   uri: "",
+  //   method: "GET",
+  //   printInput: true,
+  //   data: { pos_number: $this.state.pos_number },
+  //   redux: {
+  //     type: "POS_ENTRY_GET_DATA",
+  //     mappingName: "posentry"
+  //   },
+  //   afterSuccess: data => {}
+  // });
 };
 
 export {

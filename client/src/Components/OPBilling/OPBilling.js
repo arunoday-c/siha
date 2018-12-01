@@ -179,56 +179,6 @@ class OPBilling extends Component {
         });
       }
     });
-
-    // this.props.getPatientDetails({
-    //   uri: "/frontDesk/get",
-    //   method: "GET",
-    //   printInput: true,
-    //   data: { patient_code: this.state.patient_code },
-    //   redux: {
-    //     type: "PAT_GET_DATA",
-    //     mappingName: "patients"
-    //   },
-    //   afterSuccess: data => {
-    //     let x = Enumerable.from($this.props.patienttype)
-    //       .where(
-    //         w =>
-    //           w.hims_d_patient_type_id ===
-    //           data.patientRegistration.patient_type
-    //       )
-    //       .toArray();
-
-    //     if (x !== undefined && x.length > 0) {
-    //       data.patientRegistration.patient_type = x[0].patitent_type_desc;
-    //     } else {
-    //       data.patientRegistration.patient_type = "Not Selected";
-    //     }
-
-    //     data.patientRegistration.visitDetails = data.visitDetails;
-    //     data.patientRegistration.patient_id =
-    //       data.patientRegistration.hims_d_patient_id;
-    //     data.patientRegistration.mode_of_pay = "None";
-    //     //Insurance
-    //     data.patientRegistration.insurance_provider_name = null;
-    //     data.patientRegistration.sub_insurance_provider_name = null;
-    //     data.patientRegistration.network_type = null;
-    //     data.patientRegistration.policy_number = null;
-    //     data.patientRegistration.card_number = null;
-    //     data.patientRegistration.effective_end_date = null;
-    //     //Sec
-    //     data.patientRegistration.secondary_insurance_provider_name = null;
-    //     data.patientRegistration.secondary_sub_insurance_provider_name = null;
-    //     data.patientRegistration.secondary_network_type = null;
-    //     data.patientRegistration.secondary_policy_number = null;
-    //     data.patientRegistration.card_number = null;
-    //     data.patientRegistration.secondary_effective_end_date = null;
-
-    //     this.setState(data.patientRegistration);
-    //     AlgaehLoader({ show: false });
-    //   }
-    // });
-    //   clearInterval(intervalId);
-    // }, 500);
   }
 
   getCtrlCode(billcode) {
@@ -256,11 +206,11 @@ class OPBilling extends Component {
             data.patient_type = "Not Selected";
           }
 
-          let visitDetails = Enumerable.from(data.billdetails).firstOrDefault();
-          debugger;
+          let visitDetails = data;
+
           visitDetails.radioselect = 1;
           data.visitDetails = [visitDetails];
-          // data.visitDetails[0].radioselect = 1;
+          data.mode_of_pay = data.insured === "Y" ? "Insured" : "Self";
           data.Billexists = true;
 
           if (data.receiptdetails.length !== 0) {
