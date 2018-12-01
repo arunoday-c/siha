@@ -116,7 +116,7 @@ let getAlgaehModuleBACKUP = (req, res, next) => {
           if (result.length > 0) {
             for (let i = 0; i < result.length; i++) {
               connection.query(
-                "select algaeh_app_screens_id, screen_code, screen_name, screen_desc, module_id\
+                "select algaeh_app_screens_id, screen_code, screen_name, page_to_redirect, module_id\
                 from algaeh_d_app_screens where record_status='A' and  module_id=?",
                 [result[i].algaeh_d_module_id],
                 (error, screenResult) => {
@@ -237,7 +237,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
             debugLog("role type:", req.userIdentity);
 
             connection.query(
-              "select algaeh_d_module_id, module_name, licence_key  from algaeh_d_app_module\
+              "select algaeh_d_module_id, module_name,module_code, icons,other_language  from algaeh_d_app_module\
               where  record_status=md5('A') " +
                 superUser,
               (error, result) => {
@@ -249,7 +249,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
                 if (result.length > 0) {
                   for (let i = 0; i < result.length; i++) {
                     connection.query(
-                      "select algaeh_app_screens_id, screen_code, screen_name, screen_desc, module_id\
+                      "select algaeh_app_screens_id, screen_code, screen_name, page_to_redirect,other_language, module_id\
                       from algaeh_d_app_screens where record_status='A' and  module_id=?",
                       [result[i].algaeh_d_module_id],
                       (error, screenResult) => {
@@ -287,7 +287,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
       }).then(modifyRes => {
         debugLog("genreal  if concondition");
         connection.query(
-          " select algaeh_m_module_role_privilage_mapping_id, module_id,module_name, icons,module_code,role_id, view_privilege\
+          " select algaeh_m_module_role_privilage_mapping_id, module_id,module_code,module_name, icons,module_code,other_language,role_id, view_privilege\
         from algaeh_m_module_role_privilage_mapping MRP\
         inner join algaeh_d_app_module M on MRP.module_id=M.algaeh_d_module_id\
         where MRP.record_status='A' and M.record_status=md5('A') and MRP.role_id=?",
@@ -303,8 +303,8 @@ let getRoleBaseActiveModules = (req, res, next) => {
             if (result.length > 0) {
               for (let i = 0; i < result.length; i++) {
                 connection.query(
-                  "SELECT algaeh_m_screen_role_privilage_mapping_id, privilege_code, privilege_type,\
-                module_role_map_id, screen_id,screen_code,screen_name, role_id, view_privilege \
+                  "SELECT algaeh_m_screen_role_privilage_mapping_id, \
+                module_role_map_id, screen_id,screen_code,screen_name,page_to_redirect,other_language, role_id, view_privilege \
                   from \
                 algaeh_m_screen_role_privilage_mapping SRM inner join algaeh_d_app_screens S \
                 on SRM.screen_id=S.algaeh_app_screens_id\
@@ -349,48 +349,64 @@ let getRoleBaseInActiveComponents = (req, res, next) => {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
+
+    // SELECT algaeh_m_scrn_elmnt_role_privilage_mapping_id, SERM.role_id, SERM.view_privilege,\
+    // screen_element_id,screen_element_code,screen_element_name,component_id,component_code,\
+    // screen_id,screen_code, module_id,module_code from algaeh_m_scrn_elmnt_role_privilage_mapping SERM\
+    // inner join algaeh_d_app_scrn_elements  SE on SERM.screen_element_id=SE.algaeh_d_app_scrn_elements_id\
+    // inner join algaeh_d_app_component C on SE.component_id=C.algaeh_d_app_component_id  \
+    // inner join algaeh_d_app_screens S on C.screen_id=S.algaeh_app_screens_id\
+    // inner join  algaeh_d_app_module M on S.module_id=M.algaeh_d_module_id\
+    //  where SERM.record_status='A' and SE.record_status='A' and  C.record_status='A'\
+    //  and  S.record_status='A' and M.record_status=md5('A') and role_id=?
+
     let db = req.db;
     db.getConnection((error, connection) => {
       connection.query(
-        " select algaeh_m_scrn_elmnt_role_privilage_mapping_id, screen_element_id, screen_element_code,screen_element_name, role_id, view_privilege,\
-        component_id,component_code,component_name\
-        from algaeh_m_scrn_elmnt_role_privilage_mapping SERM\
+        "SELECT  SERM.view_privilege, screen_element_id,screen_element_code,screen_element_name,component_code,\
+        screen_code, module_code from algaeh_m_scrn_elmnt_role_privilage_mapping SERM\
         inner join algaeh_d_app_scrn_elements  SE on SERM.screen_element_id=SE.algaeh_d_app_scrn_elements_id\
-        inner join algaeh_d_app_component C on SE.component_id=C.algaeh_d_app_component_id\
-        where SERM.record_status='A' and role_id=?",
+        inner join algaeh_d_app_component C on SE.component_id=C.algaeh_d_app_component_id  \
+        inner join algaeh_d_app_screens S on C.screen_id=S.algaeh_app_screens_id\
+        inner join  algaeh_d_app_module M on S.module_id=M.algaeh_d_module_id\
+         where SERM.record_status='A' and SE.record_status='A' and  C.record_status='A'\
+         and  S.record_status='A' and M.record_status=md5('A') and role_id=?",
         [req.userIdentity.role_id],
-        (error, result) => {
+        (error, elementsHide) => {
           if (error) {
             releaseDBConnection(db, connection);
             next(error);
           }
 
-          let screenElementsToHide = new LINQ(result).GroupBy(
-            g => g.component_code
-          );
-
-          debugLog(screenElementsToHide);
+          // SELECT algaeh_m_component_role_privilage_mapping_id, component_id, role_id,module_code,\
+          // component_code,screen_code from \
+          // algaeh_m_component_role_privilage_mapping CRM inner join algaeh_d_app_component C\
+          //  on CRM.component_id=C.algaeh_d_app_component_id\
+          //  inner join algaeh_d_app_screens S on C.screen_id=S.algaeh_app_screens_id\
+          //  inner join algaeh_d_app_module M on S.module_id=M.algaeh_d_module_id\
+          //  where  CRM.record_status='A' and C.record_status='A' and  M.record_status= md5('A') and \
+          //  S.record_status='A'  and role_id=?
 
           connection.query(
-            " select algaeh_m_component_role_privilage_mapping_id, component_id,  component_code,role_id, view_privilege\
-                from algaeh_m_component_role_privilage_mapping CM,algaeh_d_app_component C\
-                where  CM.component_id=C.algaeh_d_app_component_id    and                   \
-                CM.record_status='A' and  C.record_status='A' and role_id=?",
+            "SELECT module_code,\
+            component_code,screen_code from \
+            algaeh_m_component_role_privilage_mapping CRM inner join algaeh_d_app_component C\
+             on CRM.component_id=C.algaeh_d_app_component_id\
+             inner join algaeh_d_app_screens S on C.screen_id=S.algaeh_app_screens_id\
+             inner join algaeh_d_app_module M on S.module_id=M.algaeh_d_module_id\
+             where  CRM.record_status='A' and C.record_status='A' and  M.record_status= md5('A') and \
+             S.record_status='A'  and role_id=?",
             [req.userIdentity.role_id],
-            (error, resultss) => {
+            (error, componentHide) => {
               if (error) {
                 releaseDBConnection(db, connection);
                 next(error);
               }
-              debugLog("resultss:", resultss);
 
-              let compnentsToHide = new LINQ(resultss)
-                .Select(s => s.component_code)
-                .ToArray();
               releaseDBConnection(db, connection);
               req.records = {
-                listOfComponentsToHide: compnentsToHide,
-                screenElementsToHide: screenElementsToHide
+                listOfComponentsToHide: componentHide,
+                screenElementsToHide: elementsHide
               };
               next();
             }
