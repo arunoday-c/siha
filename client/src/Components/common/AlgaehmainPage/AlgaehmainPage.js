@@ -47,10 +47,6 @@ class PersistentDrawer extends React.Component {
             onSuccess: internalComponents => {
               debugger;
               if (internalComponents.data.success) {
-                console.log(
-                  "screenComponents",
-                  internalComponents.data.records
-                );
                 sessionStorage.removeItem("AlgaehScreener");
                 sessionStorage.setItem(
                   "AlgaehScreener",
