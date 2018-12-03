@@ -1,10 +1,13 @@
 import React, { PureComponent } from "react";
+import ReactDOM from "react-dom";
+const modalRoot = document.getElementById("algaeh_model_Popup");
 export default class AlgaehModalPopUp extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       openPopup: false
     };
+    this.el = document.createElement("div");
     // this.setState({ openPopup: this.props.openPopup });
     this.handleClose = this.handleClose.bind(this);
   }
@@ -15,13 +18,19 @@ export default class AlgaehModalPopUp extends PureComponent {
           this.props.events.onClose();
     });
   }
+  componentDidMount() {
+    modalRoot.appendChild(this.el);
+  }
+  componentWillUnmount() {
+    modalRoot.removeChild(this.el);
+  }
   componentWillReceiveProps(newProps) {
     this.setState({ openPopup: newProps.openPopup });
   }
   render() {
     const { openPopup } = this.state;
     if (openPopup) {
-      return (
+      return ReactDOM.createPortal(
         <div className="algaehModalWrapper">
           <div className="algaeh-modal">
             <div className="popupHeader">
@@ -40,7 +49,8 @@ export default class AlgaehModalPopUp extends PureComponent {
               <div className="col-lg-12">{this.props.children}</div>
             </div>
           </div>
-        </div>
+        </div>,
+        this.el
       );
     } else return null;
   }

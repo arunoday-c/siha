@@ -2696,6 +2696,41 @@ let getFollowUp = (req, res, next) => {
   }
 };
 
+//created by irfan: to get
+let getPatientEpisodeSummary = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    db.getConnection((error, connection) => {
+      connection.query(
+        "SELECT hims_f_episode_chief_complaint_id, ECC.episode_id, ECC.patient_id, chief_complaint_id, \
+        onset_date, `interval`, duration, severity, score, pain, chronic, complaint_inactive ,\
+        hpi_description as chief_complaint,full_name as patient_name,arabic_name,gender,age\
+        ,hims_f_patient_visit_id,visit_date ,sub_department_name from\
+        hims_f_episode_chief_complaint  ECC\
+        inner join hims_d_hpi_header HH on ECC.chief_complaint_id =HH.hims_d_hpi_header_id \
+        inner join hims_f_patient P on ECC.patient_id=P.hims_d_patient_id \
+        inner join hims_f_patient_visit V on ECC.episode_id=V.episode_id\
+        inner join hims_d_sub_department SD on V.sub_department_id=SD.hims_d_sub_department_id\
+        where ECC.episode_id=?    group by  ECC.chief_complaint_id ",
+        [req.query.episode_id],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   physicalExaminationHeader,
   physicalExaminationDetails,
@@ -2748,5 +2783,6 @@ module.exports = {
   getAllPhysicalExamination,
   getVitalsHeaderMaster,
   addPatientHistory,
-  getPatientHistory
+  getPatientHistory,
+  getPatientEpisodeSummary
 };

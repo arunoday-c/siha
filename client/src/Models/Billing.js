@@ -30,6 +30,7 @@ export default {
       company_res: 0,
       billed: "Y",
       addNewService: true,
+      cancelled: "N",
 
       sec_company_res: 0,
       patient_payable: 0,

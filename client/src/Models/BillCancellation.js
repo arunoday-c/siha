@@ -33,6 +33,7 @@ export default {
       company_res: 0,
       billed: "Y",
       addNewService: true,
+      pay_type: "P",
 
       sec_company_res: 0,
       patient_payable: 0,
@@ -93,7 +94,8 @@ export default {
       Checkchecked: false,
       billdetail: true,
       ProcessInsure: true,
-      applydiscount: true
+      applydiscount: true,
+      cancel_remarks: null
     };
     return output;
   }

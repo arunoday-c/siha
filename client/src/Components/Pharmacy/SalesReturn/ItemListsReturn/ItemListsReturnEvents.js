@@ -290,9 +290,13 @@ const updateSalesReturnDetail = ($this, context) => {
       }
     });
   } else {
+    let saveEnable = false;
+    if ($this.state.hims_f_pharmcy_sales_return_header_id !== null) {
+      saveEnable = true;
+    }
     if (context != null) {
       context.updateState({
-        saveEnable: false
+        saveEnable: saveEnable
       });
     }
   }
@@ -420,18 +424,38 @@ const SalesReturnheaderCalculation = ($this, context) => {
 };
 
 const EditGrid = ($this, context, cancelRow) => {
+  let saveEnable = true;
+
   if (context != null) {
     let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
     if (cancelRow !== undefined) {
       _pharmacy_stock_detail[cancelRow.rowIdx] = cancelRow;
     }
     context.updateState({
-      saveEnable: !$this.state.saveEnable,
+      saveEnable: saveEnable,
       pharmacy_stock_detail: _pharmacy_stock_detail
     });
   }
 };
 
+const CancelGrid = ($this, context, cancelRow) => {
+  let saveEnable = false;
+
+  if ($this.state.hims_f_pharmcy_sales_return_header_id !== null) {
+    saveEnable = true;
+  }
+
+  if (context != null) {
+    let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+    if (cancelRow !== undefined) {
+      _pharmacy_stock_detail[cancelRow.rowIdx] = cancelRow;
+    }
+    context.updateState({
+      saveEnable: saveEnable,
+      pharmacy_stock_detail: _pharmacy_stock_detail
+    });
+  }
+};
 export {
   discounthandle,
   changeTexts,
@@ -443,5 +467,6 @@ export {
   updateSalesReturnDetail,
   calculateAmount,
   adjustadvance,
-  EditGrid
+  EditGrid,
+  CancelGrid
 };

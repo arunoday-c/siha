@@ -3,22 +3,21 @@ import { releaseConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
 
 import {
-    addShiftMaster,
-    addCounterMaster,
-    getCounterMaster,
-    getShiftMaster,
-    updateShiftMaster,
-    updateCounterMaster,
-    getCashiers,
-    addCashierToShift,
-    getCashiersAndShiftMAP,
-    updateCashiersAndShiftMAP,
-    deleteCashiersAndShiftMAP
+  addShiftMaster,
+  addCounterMaster,
+  getCounterMaster,
+  getShiftMaster,
+  updateShiftMaster,
+  updateCounterMaster,
+  getCashiers,
+  addCashierToShift,
+  getCashiersAndShiftMAP,
+  updateCashiersAndShiftMAP,
+  deleteCashiersAndShiftMAP
 } from "../model/shiftAndCounter";
 
 export default ({ config, db }) => {
   let api = Router();
-
 
   // created by irfan :to  addShiftMaster
   api.post(
@@ -34,7 +33,7 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
-  
+
   // created by irfan :to  addCounterMaster
   api.post(
     "/addCounterMaster",
@@ -50,9 +49,7 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-
-    
-    // created by irfan :to  getCounterMaster
+  // created by irfan :to  getCounterMaster
   api.get(
     "/getCounterMaster",
     getCounterMaster,
@@ -81,7 +78,6 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-
   // created by irfan :to  updateCounterMaster
   api.put(
     "/updateCounterMaster",
@@ -96,7 +92,6 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
-
 
   // created by irfan :to  updateShiftMaster
   api.put(
@@ -113,23 +108,27 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-
   // created by irfan :to  getCashiers
   api.get(
     "/getCashiers",
     getCashiers,
     (req, res, next) => {
       let result = req.records;
-      res.status(httpStatus.ok).json({
-        success: true,
-        records: result
-      });
+      if (result.validUser == false) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
       next();
     },
     releaseConnection
   );
-
-  
 
   // created by irfan :to  getCashiers
   api.post(
@@ -146,9 +145,7 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-  
-
-  // created by irfan :to 
+  // created by irfan :to
   api.get(
     "/getCashiersAndShiftMAP",
     getCashiersAndShiftMAP,
@@ -162,7 +159,7 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
-  // created by irfan :to 
+  // created by irfan :to
   api.put(
     "/updateCashiersAndShiftMAP",
     updateCashiersAndShiftMAP,
@@ -177,7 +174,6 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-  
   api.delete(
     "/deleteCashiersAndShiftMAP",
     deleteCashiersAndShiftMAP,
@@ -191,9 +187,6 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
-
-  
-  
 
   return api;
 };

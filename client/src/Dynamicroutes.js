@@ -73,6 +73,8 @@ import PurchaseOrderList from "./Components/Procurement/PurchaseOrderList/Purcha
 import DayEndProcess from "./Components/Finance/DayEndProcess/DayEndProcess";
 import OPBillCancellation from "./Components/OPBillCancellation/OPBillCancellation";
 
+import Algaeh from "./Components/Algaeh/Algaeh";
+
 const componts = (selectedLang, breadStyle) => {
   return {
     Dashboard: <Dashboard SelectLanguage={selectedLang} />,
@@ -162,7 +164,8 @@ const componts = (selectedLang, breadStyle) => {
     PurchaseOrderList: <PurchaseOrderList SelectLanguage={selectedLang} />,
     PatientRecall: <PatientRecall SelectLanguage={selectedLang} />,
     AdministrationSetup: <AdministrationSetup SelectLanguage={selectedLang} />,
-    OPBillCancellation: <OPBillCancellation SelectLanguage={selectedLang} />
+    OPBillCancellation: <OPBillCancellation SelectLanguage={selectedLang} />,
+    AlgaehModules: <Algaeh />
   };
 };
 

@@ -15,14 +15,15 @@ import {
   deleteSalesReturnDetail,
   updateSalesReturnDetail,
   calculateAmount,
-  EditGrid
+  EditGrid,
+  CancelGrid
 } from "./ItemListsReturnEvents";
 
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import Options from "../../../../Options.json";
 import moment from "moment";
 import ReciptForm from "./ReciptDetails/AddReciptForm";
-import { getCookie } from "../../../../utils/algaehApiCall";
+
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 
 class ItemListsReturn extends Component {
@@ -264,6 +265,14 @@ class ItemListsReturn extends Component {
                                     row,
                                     context
                                   )
+                                },
+                                others: {
+                                  disabled:
+                                    this.state
+                                      .hims_f_pharmcy_sales_return_header_id !==
+                                    null
+                                      ? true
+                                      : false
                                 }
                               }}
                             />
@@ -325,7 +334,7 @@ class ItemListsReturn extends Component {
                         context
                       ),
                       onEdit: EditGrid.bind(this, this, context),
-                      onCancel: EditGrid.bind(this, this, context),
+                      onCancel: CancelGrid.bind(this, this, context),
                       onDone: updateSalesReturnDetail.bind(this, this, context)
                     }}
                   />

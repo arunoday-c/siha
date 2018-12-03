@@ -56,6 +56,10 @@
     overflow: hidden;
     transform: rotate(45deg);
     box-shadow: 0 0 1px #000;
+
+    .mark-active {
+      background: #ffe79b;
+    }
   }
 
   .surface-Marking div {
@@ -238,7 +242,7 @@
   }
 
   .incisors-down-10 {
-    background-image: url(../../../assets/images/incisors-up.png);
+    background-image: url(../../../assets/images/incisors-down.png);
   }
 
   div.tooltip {

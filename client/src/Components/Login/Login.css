@@ -25,6 +25,9 @@
     cursor: pointer;
     margin: 2px;
     height: 32px; }
+  .login .clearall {
+    top: 4px;
+    right: 31px; }
   .login .margintop15 {
     margin-top: 9%; }
   .login .row-eq-height {

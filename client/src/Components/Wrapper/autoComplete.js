@@ -2,7 +2,7 @@ import React, { PureComponent } from "react";
 import Label from "../Wrapper/label";
 import "../Wrapper/autoComplete.css";
 import Enumarable from "linq";
-
+import { checkSecurity } from "../../utils/GlobalFunctions";
 class AutoComplete extends PureComponent {
   constructor(props) {
     super(props);
@@ -14,13 +14,15 @@ class AutoComplete extends PureComponent {
       arrowIcon: "fa-angle-down",
       directonClass: "",
       _sortData: [],
-      multiselect: []
+      multiselect: [],
+      hasSecurity: false,
+      listSelectedLi: undefined
     };
     this.handleClickOutside = this.handleClickOutside.bind(this);
-    // this.handleKeyUpNavigation = this.handleKeyUpNavigation.bind(this);
   }
 
   componentWillReceiveProps(props) {
+    if (this.state.hasSecurity) return;
     const _text = this.getTextByValue(
       props.selector.value,
       props.selector.dataSource.data
@@ -35,6 +37,7 @@ class AutoComplete extends PureComponent {
   }
 
   onClickArrowIcon() {
+    this.setDropDirection();
     let data = {};
     if (
       this.state._sortData !== this.props.selector.dataSource.data ||
@@ -80,40 +83,41 @@ class AutoComplete extends PureComponent {
   }
 
   setDropDirection() {
-    const canDropDown = this.menuHeight() < this.distanceFromBottom();
-    const _directonClass = !canDropDown ? " dropUp" : " dropDown";
-    this.setState({ directonClass: _directonClass });
-    //console.log("direction class", _directonClass);
-  }
+    const _elementPositionFromTop = this.positionFromTop();
+    const _distanceFromBottom = this.distanceFromBottom();
+    const _menuHeight = this.menuHeight();
 
-  menuHeight() {
-    if (this.props.selector.dataSource.data !== undefined) {
-      const _height = this.props.selector.dataSource.data.length * 30;
-      return _height;
+    if (_elementPositionFromTop > _distanceFromBottom) {
+      if (_menuHeight < _distanceFromBottom) {
+        this.setState({ directonClass: " dropDown" });
+        return;
+      }
+      this.setState({ directonClass: " dropUp" });
+    } else {
+      this.setState({ directonClass: " dropDown" });
     }
-    return 0;
+  }
+  positionFromTop() {
+    const _element = this.autoComp;
+    return _element.getBoundingClientRect().top;
+  }
+  menuHeight() {
+    const _element = this.autoComp;
+    return _element.querySelector(".myUL").childElementCount * 35;
   }
 
   distanceFromBottom() {
-    debugger;
     const _element = this.autoComp;
-    //const _parent = this.autoComp.parentElement.parentNode.classList;
-    let windowHeight = window.innerHeight;
-    let distanceFromWindowTop = _element.getBoundingClientRect().top;
-    //const _ifGrid = _element.offsetParent;
-    // if (_parent.length > 0) {
-    //   if (_parent[0] === "rt-td") {
-    //     windowHeight = _ifGrid.clientHeight;
-    //     distanceFromWindowTop = _ifGrid
-    //       .querySelector("div[id='internal_" + this.props.selector.name + "']")
-    //       .getBoundingClientRect().top;
-    //   }
-    // }
-
-    const elementHeight = _element.clientHeight;
-    const _inHeight = windowHeight - distanceFromWindowTop - elementHeight;
-    //console.log("Distance", _inHeight);
-    return _inHeight;
+    const _isGrid = this.autoComp.parentElement.parentNode.getAttribute(
+      "data_role"
+    );
+    let windowHeight = window.innerHeight - 32;
+    if (_isGrid === "grid") {
+      windowHeight = this.autoComp.offsetParent.clientHeight;
+    }
+    let elementOffset = _element.getBoundingClientRect().top,
+      distance = windowHeight - elementOffset;
+    return distance;
   }
 
   checkValueExistsInMultiSelect(item) {
@@ -169,10 +173,31 @@ class AutoComplete extends PureComponent {
       return _values;
     }
   }
+  getSecurityCheck() {
+    let hasSecurity = false;
+    if (this.props.selector.security !== undefined) {
+      const _security = this.props.selector.security;
 
+      checkSecurity({
+        securityType: "element",
+        component_code: _security.component_code,
+        module_code: _security.module_code,
+        screen_code: _security.screen_code,
+        screen_element_code: _security.screen_element_code,
+        hasSecurity: () => {
+          hasSecurity = true;
+        }
+      });
+    }
+    return hasSecurity;
+  }
   componentDidMount() {
+    const _hasSecurity = this.getSecurityCheck();
+    if (_hasSecurity) {
+      this.setState({ hasSecurity: true });
+      return;
+    }
     document.addEventListener("mousedown", this.handleClickOutside, false);
-    // document.addEventListener("keypress", this.handleKeyUpNavigation, false);
     const _required =
       this.props.label !== undefined
         ? this.props.label.isImp !== undefined
@@ -193,7 +218,6 @@ class AutoComplete extends PureComponent {
     }
   }
   componentWillUnmount() {
-    // document.removeEventListener("keypress", this.handleKeyUpNavigation, false);
     document.removeEventListener("mousedown", this.handleClickOutside, false);
   }
   handleClickOutside(event) {
@@ -201,18 +225,50 @@ class AutoComplete extends PureComponent {
       this.setState({
         listState: "d-none",
         directonClass: "",
-        arrowIcon: "fa-angle-down"
+        arrowIcon: "fa-angle-down",
+        listSelectedLi: undefined
       });
     }
   }
 
-  handleKeyUpNavigation(e) {
-    const prent =
-      e.currentTarget.nextElementSibling.nextElementSibling.children;
-    //debugger;
-    if (prent.length > 0) {
+  handleKeyDownNavigation(e) {
+    const prent = e.currentTarget.offsetParent.querySelector("ol");
+    if (prent.childElementCount > 0) {
+      const { listSelectedLi } = this.state;
+      let selected = prent.children[0];
       if (e.keyCode === 40) {
-        if (prent[0].children.length > 0) prent[0].children[0].focus();
+        if (listSelectedLi !== undefined) {
+          listSelectedLi.children[0].focus();
+          selected = listSelectedLi;
+        } else {
+          prent.children[0].children[0].focus();
+        }
+        this.setState({ listSelectedLi: selected });
+      }
+    }
+  }
+
+  handleKeyDownListItems(e) {
+    e.preventDefault();
+    const { listSelectedLi } = this.state;
+    if (listSelectedLi !== undefined) {
+      if (e.keyCode === 40) {
+        const next = listSelectedLi.nextSibling;
+        if (next !== null) {
+          this.setState({ listSelectedLi: next });
+
+          next.children[0].focus();
+        }
+      } else if (e.keyCode === 38) {
+        const prev = listSelectedLi.previousSibling;
+        if (prev !== null) {
+          this.setState({ listSelectedLi: prev });
+
+          prev.children[0].focus();
+        }
+      } else if (e.keyCode === 13) {
+        if (e.currentTarget.children.length > 0)
+          e.currentTarget.children[0].click();
       }
     }
   }
@@ -286,7 +342,8 @@ class AutoComplete extends PureComponent {
           directonClass: "",
           displayValue: _value,
           displayText: _text,
-          arrowIcon: "fa-angle-down"
+          arrowIcon: "fa-angle-down",
+          listSelectedLi: undefined
         },
         () => {
           if (this.props.selector.onChange !== undefined)
@@ -337,6 +394,10 @@ class AutoComplete extends PureComponent {
   }
 
   renderAutoComplete = () => {
+    let _liIndex = undefined;
+    if (this.state.listSelectedLi !== undefined) {
+      _liIndex = this.state.listSelectedLi.getAttribute("li_key");
+    }
     const _required =
       this.props.label !== undefined
         ? this.props.label.isImp !== undefined
@@ -377,7 +438,7 @@ class AutoComplete extends PureComponent {
             value={this.state.displayText}
             disabled={isDisable}
             onChange={this.onAutoCompleteTextHandler.bind(this)}
-            onKeyDown={this.handleKeyUpNavigation.bind(this)}
+            onKeyDown={this.handleKeyDownNavigation.bind(this)}
             onBlur={this.bluringEvent.bind(this)}
             {...this.props.selector.others}
             autoComplete="off"
@@ -406,22 +467,33 @@ class AutoComplete extends PureComponent {
               >
                 {this.state._sortData.map((item, index) => (
                   <li
+                    className={
+                      _liIndex !== undefined && index.toString() === _liIndex
+                        ? "onselectedByNav"
+                        : ""
+                    }
+                    li_key={index}
                     onClick={this.onListSelected.bind(this, item)}
                     key={index}
+                    onKeyDown={this.handleKeyDownListItems.bind(this)}
                   >
                     {!_enableMultiselect ? (
                       <a
-                        tabIndex="1"
+                        tabIndex={index + 1}
                         value={item[this.props.selector.dataSource.valueField]}
                       >
                         {this.props.selector.displayTemplate !== undefined
                           ? this.renderTemplate.bind(this, item, index)
-                          : item[this.props.selector.dataSource.textField]}
+                          : String(
+                              item[this.props.selector.dataSource.textField]
+                            )
+                              .toString()
+                              .trim()}
                       </a>
                     ) : (
                       <a className="customCheckbox">
                         <label
-                          tabIndex="1"
+                          tabIndex={index + 1}
                           className="checkbox"
                           style={{ color: "rgb(33, 37, 41)" }}
                         >
@@ -430,7 +502,11 @@ class AutoComplete extends PureComponent {
                             checked={this.checkValueExistsInMultiSelect(item)}
                           />
                           <span style={{ fontSize: " 0.8rem" }}>
-                            {item[this.props.selector.dataSource.textField]}
+                            {String(
+                              item[this.props.selector.dataSource.textField]
+                            )
+                              .toString()
+                              .trim()}
                           </span>
                         </label>
                       </a>
@@ -456,15 +532,17 @@ class AutoComplete extends PureComponent {
     }
   };
   render() {
-    return (
-      <div
-        className={this.props.div != null ? this.props.div.className : null}
-        {...this.renderOthers()}
-      >
-        {this.renderLabel()}
-        {this.renderAutoComplete()}
-      </div>
-    );
+    if (this.state.hasSecurity) return null;
+    else
+      return (
+        <div
+          className={this.props.div != null ? this.props.div.className : null}
+          {...this.renderOthers()}
+        >
+          {this.renderLabel()}
+          {this.renderAutoComplete()}
+        </div>
+      );
   }
 }
 export default AutoComplete;

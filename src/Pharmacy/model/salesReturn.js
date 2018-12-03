@@ -246,9 +246,11 @@ let getsalesReturn = (req, res, next) => {
     let where = whereCondition(extend(selectWhere, req.query));
 
     let connection = req.connection;
+
+    debugLog("where: ", where);
     connection.query(
       "SELECT hims_f_pharmcy_sales_return_header_id, reciept_id, PH.from_pos_id, PH.sales_return_number,PH.patient_id,P.patient_code,\
-      P.full_name as full_name,PH.visit_id,V.visit_code,PH.ip_id,PH.sales_return_date,PH.year,\
+      P.full_name as full_name,PH.visit_id,V.visit_code,PH.ip_id,PH.sales_return_date,PH.`year`,\
       PH.period,PH.location_id,L.location_description,PH.location_type,PH.sub_total,PH.discount_percentage,PH.discount_amount,PH.net_total,\
       PH.copay_amount,PH.patient_responsibility,PH.patient_tax,PH.patient_payable,PH.company_responsibility,PH.company_tax,\
       PH.company_payable,PH.comments,PH.sec_company_responsibility,PH.sec_company_tax,PH.sec_company_payable,\
@@ -271,7 +273,7 @@ let getsalesReturn = (req, res, next) => {
           next(error);
         }
 
-        debugLog("result: ", headerResult);
+        debugLog("result header: ", headerResult);
         if (headerResult.length != 0) {
           debugLog(
             "hims_f_pharmcy_sales_return_header_id: ",

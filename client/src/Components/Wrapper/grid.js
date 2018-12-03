@@ -92,7 +92,7 @@ class DataGrid extends PureComponent {
       cellInfo.column.disabled !== undefined ? cellInfo.column.disabled : false;
     if (editable === undefined || editable === false) {
       if (templates.displayTemp !== undefined) {
-        return templates.displayTemp(rowDetail);
+        return <div data_role="grid">{templates.displayTemp(rowDetail)}</div>;
       } else {
         const _value = rowDetail[cellInfo.column.id];
         //const _width = this.getTextWidth(_value);
@@ -109,7 +109,7 @@ class DataGrid extends PureComponent {
           rowDetail["update"] = () => {
             this.updateStateVariables();
           };
-          return templates.editorTemp(rowDetail);
+          return <div data_role="grid">{templates.editorTemp(rowDetail)}</div>;
         } else {
           const _value = rowDetail[cellInfo.column.id];
           const _date = moment(_value).isValid();
@@ -229,7 +229,6 @@ class DataGrid extends PureComponent {
     return row;
   };
   toggleRowDelete = index => {
-    //debugger;
     if (
       this.props.events !== undefined &&
       this.props.events.onDelete !== undefined

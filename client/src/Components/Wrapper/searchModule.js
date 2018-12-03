@@ -5,7 +5,7 @@ import { algaehApiCall, getCookie } from "../../utils/algaehApiCall";
 import IconButton from "@material-ui/core/IconButton";
 import MicOff from "@material-ui/icons/MicOff";
 import Mic from "@material-ui/icons/Mic";
-
+import ReactDOM from "react-dom";
 var intervalId;
 window.SpeechRecognition =
   window.SpeechRecognition || window.webkitSpeechRecognition || null;
@@ -30,9 +30,7 @@ class SearchModule extends Component {
   };
 
   handleClose = () => {
-    this.setState({
-      open: false
-    });
+    ReactDOM.unmountComponentAtNode(document.getElementById("searchWindow"));
   };
   handleKeyUp(event) {
     if (!this.spotlight.contains(event.target)) {
@@ -46,11 +44,6 @@ class SearchModule extends Component {
   }
   componentDidMount() {
     document.addEventListener("keyup", this.handleKeyUp, false);
-    // document.addEventListener("keyup", function(e) {
-    //   if (e.keyCode === 27) {
-    //     document.getElementById("closeSearch").click();
-    //   }
-    // });
 
     this.getUserSelectedValue(
       { searchName: this.props.searchName },
@@ -61,21 +54,21 @@ class SearchModule extends Component {
             _searchBy = response.data.records.selectedValue;
           }
         }
+        this.handleOnchnageSearchBy({
+          target: {
+            value: _searchBy
+          }
+        });
         this.setState({
           open: this.props.model.open,
           searchName: this.props.searchName,
           searchBy: _searchBy,
           isSpeakEnable: false,
           stop: false,
-          contains: ""
+          contains: " "
         });
       }
     );
-    this.handleSpotLightContains.bind({
-      target: {
-        value: " "
-      }
-    });
   }
   /*
     to get the previously stored value into UserPreferences
@@ -194,7 +187,8 @@ class SearchModule extends Component {
           algaehSearch={true}
           onRowSelect={row => {
             this.props.onRowSelect(row);
-            this.setState({ open: false });
+            //   this.setState({ open: false });
+            this.handleClose();
           }}
         />
       </div>

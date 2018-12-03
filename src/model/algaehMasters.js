@@ -53,49 +53,6 @@ let addAlgaehGroupMAster = (req, res, next) => {
   }
 };
 
-//created by irfan: to add
-let addAlgaehModule = (req, res, next) => {
-  try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    let input = extend({}, req.body);
-
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
-
-      connection.query(
-        "INSERT INTO `algaeh_d_app_module` (algaeh_d_module_id,module_name, licence_key, created_date, created_by, updated_date, updated_by, record_status)\
-            VALUE(?,?,?,?,?,?,?,md5(?))",
-        [
-          input.algaeh_d_module_id,
-          input.module_name,
-          input.licence_key,
-
-          new Date(),
-          input.created_by,
-          new Date(),
-          input.updated_by,
-          "A"
-        ],
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          req.records = result;
-          next();
-        }
-      );
-    });
-  } catch (e) {
-    next(e);
-  }
-};
-
 //created by irfan: to get master complete modules
 let getAlgaehModuleBACKUP = (req, res, next) => {
   try {
@@ -223,7 +180,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
     db.getConnection((error, connection) => {
       let superUser = "";
       //for admin login
-      if (req.userIdentity.role_type == "SU") {
+      if (req.userIdentity.role_type == "AD") {
         superUser = " and   access_by <> 'SU'";
       }
 
@@ -350,16 +307,6 @@ let getRoleBaseInActiveComponents = (req, res, next) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
 
-    // SELECT algaeh_m_scrn_elmnt_role_privilage_mapping_id, SERM.role_id, SERM.view_privilege,\
-    // screen_element_id,screen_element_code,screen_element_name,component_id,component_code,\
-    // screen_id,screen_code, module_id,module_code from algaeh_m_scrn_elmnt_role_privilage_mapping SERM\
-    // inner join algaeh_d_app_scrn_elements  SE on SERM.screen_element_id=SE.algaeh_d_app_scrn_elements_id\
-    // inner join algaeh_d_app_component C on SE.component_id=C.algaeh_d_app_component_id  \
-    // inner join algaeh_d_app_screens S on C.screen_id=S.algaeh_app_screens_id\
-    // inner join  algaeh_d_app_module M on S.module_id=M.algaeh_d_module_id\
-    //  where SERM.record_status='A' and SE.record_status='A' and  C.record_status='A'\
-    //  and  S.record_status='A' and M.record_status=md5('A') and role_id=?
-
     let db = req.db;
     db.getConnection((error, connection) => {
       connection.query(
@@ -377,15 +324,6 @@ let getRoleBaseInActiveComponents = (req, res, next) => {
             releaseDBConnection(db, connection);
             next(error);
           }
-
-          // SELECT algaeh_m_component_role_privilage_mapping_id, component_id, role_id,module_code,\
-          // component_code,screen_code from \
-          // algaeh_m_component_role_privilage_mapping CRM inner join algaeh_d_app_component C\
-          //  on CRM.component_id=C.algaeh_d_app_component_id\
-          //  inner join algaeh_d_app_screens S on C.screen_id=S.algaeh_app_screens_id\
-          //  inner join algaeh_d_app_module M on S.module_id=M.algaeh_d_module_id\
-          //  where  CRM.record_status='A' and C.record_status='A' and  M.record_status= md5('A') and \
-          //  S.record_status='A'  and role_id=?
 
           connection.query(
             "SELECT module_code,\
@@ -411,6 +349,51 @@ let getRoleBaseInActiveComponents = (req, res, next) => {
               next();
             }
           );
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to add
+let addAlgaehModule = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT INTO `algaeh_d_app_module` (module_code, module_name, licence_key, access_by, icons, other_language,  created_date, created_by, updated_date, updated_by, record_status)\
+            VALUE(?,?,?,?,?,?, ?,?,?,?,md5(?))",
+        [
+          input.module_code,
+          input.module_name,
+          input.licence_key,
+          input.access_by,
+          input.icons,
+          input.other_language,
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by,
+          "A"
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
         }
       );
     });

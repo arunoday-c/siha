@@ -1,11 +1,7 @@
 import extend from "extend";
-import {
-  swalMessage,
-  algaehApiCall,
-  getCookie,
-  getToken
-} from "../utils/algaehApiCall";
-import axios from "axios";
+import { swalMessage, algaehApiCall, getCookie } from "../utils/algaehApiCall";
+import crypto from "crypto";
+import Enumerable from "linq";
 export function successfulMessage(options) {
   options.icon = options.icon || "error";
 
@@ -377,5 +373,90 @@ export function SetBulkState(options) {
     });
   } else {
     return _objectCreation;
+  }
+}
+const algorithm = "aes-256-ctr";
+const containerId = "algaeh_hims_erp_container_1.0.0";
+export function AlgaehCloseContainer(string) {
+  let cipher = crypto.createCipher(algorithm, containerId);
+  let crypted = cipher.update(string, "utf8", "hex");
+  crypted += cipher.final("hex");
+  return crypted;
+}
+export function AlgaehOpenContainer(string) {
+  var decipher = crypto.createDecipher(algorithm, containerId);
+  var dec = decipher.update(string, "hex", "utf8");
+  dec += decipher.final("utf8");
+
+  return dec;
+}
+export function checkSecurity(options) {
+  let currentSecurity =
+    sessionStorage.getItem("AlgaehScreener") !== null
+      ? JSON.parse(
+          AlgaehOpenContainer(sessionStorage.getItem("AlgaehScreener"))
+        )
+      : undefined;
+  if (currentSecurity !== undefined) {
+    if (options.securityType === "componet") {
+      const _hasComponets = Enumerable.from(
+        currentSecurity.listOfComponentsToHide
+      )
+        .where(
+          w =>
+            w.component_code === options.component_code &&
+            w.module_code === options.module_code &&
+            w.screen_code === options.screen_code
+        )
+        .firstOrDefault();
+
+      if (_hasComponets !== undefined) {
+        if (
+          options.hasSecurity !== undefined &&
+          typeof options.hasSecurity === "function"
+        ) {
+          options.hasSecurity();
+        }
+      } else {
+        if (
+          options.hasNoSecurity !== undefined &&
+          typeof options.hasNoSecurity === "function"
+        ) {
+          options.hasNoSecurity();
+        }
+      }
+    } else if (options.securityType === "element") {
+      const _hasElement = Enumerable.from(currentSecurity.screenElementsToHide)
+        .where(
+          w =>
+            w.component_code === options.component_code &&
+            w.module_code === options.module_code &&
+            w.screen_code === options.screen_code &&
+            w.screen_element_code === options.screen_element_code
+        )
+        .firstOrDefault();
+      if (_hasElement !== undefined) {
+        if (
+          options.hasSecurity !== undefined &&
+          typeof options.hasSecurity === "function"
+        ) {
+          options.hasSecurity(_hasElement);
+        }
+      } else {
+        if (
+          options.hasNoSecurity !== undefined &&
+          typeof options.hasNoSecurity === "function"
+        ) {
+          options.hasNoSecurity();
+        }
+      }
+    }
+  } else {
+    if (
+      options.hasNoSecurity !== undefined &&
+      typeof options.hasNoSecurity === "function"
+    ) {
+      options.hasNoSecurity();
+    }
   }
 }
