@@ -6,15 +6,99 @@ import "./Dental.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import {
   AlagehAutoComplete,
-  AlagehFormGroup
+  AlagehFormGroup,
+  AlgaehDataGrid,
+  AlgaehModalPopUp
 } from "../../Wrapper/algaehWrapper";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import Enumerable from "linq";
+
+let teeth = [];
+
 class Dental extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      openDentalModal: false,
+      procedures: [],
+      treatements: [
+        {
+          date: "01-12-2018"
+        }
+      ]
+    };
+    this.getProcedures();
+  }
+
+  getProcedures() {
+    algaehApiCall({
+      uri: "/serviceType/getService",
+      data: {
+        procedure_type: "DN"
+      },
+      method: "GET",
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({
+            procedures: response.data.records
+          });
+        }
+      },
+      onError: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  dropDownHandler(value) {
+    this.setState({
+      [value.name]: value.value
+    });
+  }
+
+  textHandle(e) {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
   }
 
   componentDidMount() {}
+
+  markTeethSurface(e) {
+    e.currentTarget.classList.contains("mark-active")
+      ? e.currentTarget.classList.remove("mark-active")
+      : e.currentTarget.classList.add("mark-active");
+
+    let my_obj = {
+      tooth_number: parseInt(
+        e.currentTarget.parentElement.previousElementSibling.innerText,
+        10
+      ),
+      surface: e.currentTarget.innerText.toString()
+    };
+
+    debugger;
+
+    let my_item = Enumerable.from(teeth)
+      .where(
+        w =>
+          w.tooth_number === my_obj.tooth_number && w.surface === my_obj.surface
+      )
+      .firstOrDefault();
+
+    if (my_item !== undefined) {
+      teeth.splice(teeth.indexOf(my_item), 1);
+      console.log("Teeth Selected", teeth);
+    } else {
+      teeth.push(my_obj);
+      console.log("Teeth Selected", teeth);
+    }
+
+    //   teeth.includes(my_obj) ? teeth.pop(my_obj) : teeth.push(my_obj);
+  }
 
   generateToothUpperLeftSet() {
     let plot = [];
@@ -36,20 +120,35 @@ class Dental extends Component {
         >
           <span>{i}</span>
           <div className="surface-Marking">
-            <div className="top-surface">
+            <div
+              onClick={this.markTeethSurface.bind(this)}
+              className="top-surface"
+            >
               <span>D</span>
             </div>
-            <div className="right-surface">
+            <div
+              onClick={this.markTeethSurface.bind(this)}
+              className="right-surface"
+            >
               <span>L</span>
             </div>
-            <div className="bottom-surface">
+            <div
+              onClick={this.markTeethSurface.bind(this)}
+              className="bottom-surface"
+            >
               <span>I</span>
             </div>
-            <div className="left-surface">
+            <div
+              onClick={this.markTeethSurface.bind(this)}
+              className="left-surface"
+            >
               <span>P</span>
             </div>
             {i >= 6 ? null : (
-              <div className="middle-surface">
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className="middle-surface"
+              >
                 <span>M</span>
               </div>
             )}
@@ -79,20 +178,35 @@ class Dental extends Component {
         >
           <span>{i}</span>
           <div className="surface-Marking">
-            <div className="top-surface">
+            <div
+              onClick={this.markTeethSurface.bind(this)}
+              className="top-surface"
+            >
               <span>D</span>
             </div>
-            <div className="right-surface">
+            <div
+              onClick={this.markTeethSurface.bind(this)}
+              className="right-surface"
+            >
               <span>L</span>
             </div>
-            <div className="bottom-surface">
+            <div
+              onClick={this.markTeethSurface.bind(this)}
+              className="bottom-surface"
+            >
               <span>I</span>
             </div>
-            <div className="left-surface">
+            <div
+              onClick={this.markTeethSurface.bind(this)}
+              className="left-surface"
+            >
               <span>P</span>
             </div>
             {i >= 12 ? (
-              <div className="middle-surface">
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className="middle-surface"
+              >
                 <span>M</span>
               </div>
             ) : null}
@@ -123,22 +237,37 @@ class Dental extends Component {
             counter
           }
         >
-          <span>{counter}</span>
+          <span>{i}</span>
           <div className="surface-Marking">
-            <div className="top-surface">
+            <div
+              onClick={this.markTeethSurface.bind(this)}
+              className="top-surface"
+            >
               <span>D</span>
             </div>
-            <div className="right-surface">
+            <div
+              onClick={this.markTeethSurface.bind(this)}
+              className="right-surface"
+            >
               <span>L</span>
             </div>
-            <div className="bottom-surface">
+            <div
+              onClick={this.markTeethSurface.bind(this)}
+              className="bottom-surface"
+            >
               <span>I</span>
             </div>
-            <div className="left-surface">
+            <div
+              onClick={this.markTeethSurface.bind(this)}
+              className="left-surface"
+            >
               <span>P</span>
             </div>
-            {i >= 27 ? null : (
-              <div className="middle-surface">
+            {counter >= 6 ? null : (
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className="middle-surface"
+              >
                 <span>M</span>
               </div>
             )}
@@ -152,44 +281,62 @@ class Dental extends Component {
 
   generateToothLowerRightSet() {
     let plot = [];
-    for (let i = 32; i < 26; i--) {
+    let counter = 1;
+
+    for (let i = 24; i < 18; i--) {
       plot.push(
         <div
           key={i}
           className={
-            "col tooth-sec up-side " +
-            (i <= 10
-              ? "incisors-up-up-"
-              : i === 11
-              ? "canine-up-"
-              : i <= 13
-              ? "premolar-up-"
-              : "i molar-up-") +
+            "col tooth-sec down-side " +
+            (counter <= 3
+              ? "incisors-down-"
+              : counter === 5
+              ? "canine-down-"
+              : counter <= 6
+              ? "premolar-down-"
+              : "i molar-down-") +
             i
           }
         >
           <span>{i}</span>
           <div className="surface-Marking">
-            <div className="top-surface">
+            <div
+              onClick={this.markTeethSurface.bind(this)}
+              className="top-surface"
+            >
               <span>D</span>
             </div>
-            <div className="right-surface">
+            <div
+              onClick={this.markTeethSurface.bind(this)}
+              className="right-surface"
+            >
               <span>L</span>
             </div>
-            <div className="bottom-surface">
+            <div
+              onClick={this.markTeethSurface.bind(this)}
+              className="bottom-surface"
+            >
               <span>I</span>
             </div>
-            <div className="left-surface">
+            <div
+              onClick={this.markTeethSurface.bind(this)}
+              className="left-surface"
+            >
               <span>P</span>
             </div>
-            {i >= 12 ? (
-              <div className="middle-surface">
+            {i >= 20 ? (
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className="middle-surface"
+              >
                 <span>M</span>
               </div>
             ) : null}
           </div>
         </div>
       );
+      counter++;
     }
     return plot;
   }
@@ -197,8 +344,20 @@ class Dental extends Component {
   render() {
     return (
       <div id="dentalTreatment">
-        <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
-          <div className="portlet-body">
+        <AlgaehModalPopUp
+          events={{
+            onClose: () => {
+              teeth = [];
+              this.setState({
+                openDentalModal: false,
+                hims_d_services_id: null
+              });
+            }
+          }}
+          openPopup={this.state.openDentalModal}
+          title="Dental Plan"
+        >
+          <div className="col-lg-12 margin-bottom-15">
             <div className="row">
               <AlagehFormGroup
                 div={{ className: "col-lg-4" }}
@@ -208,12 +367,13 @@ class Dental extends Component {
                 }}
                 textBox={{
                   className: "txt-fld",
-                  name: "",
-                  value: "",
+                  name: "treatement_plan",
+                  value: this.state.treatement_plan,
                   events: {
-                    onChange: null
+                    onChange: this.textHandle.bind(this)
                   },
                   others: {
+                    disabled: true,
                     placeholder: "Enter Treatment Name"
                   }
                 }}
@@ -226,508 +386,42 @@ class Dental extends Component {
                   isImp: true
                 }}
                 selector={{
-                  name: "dentalProcedure",
+                  name: "hims_d_services_id",
                   className: "select-fld",
-                  value: "",
+                  value: this.state.hims_d_services_id,
                   dataSource: {
-                    data: []
+                    textField: "service_name",
+                    valueField: "hims_d_services_id",
+                    data: this.state.procedures
                   },
-                  onChange: null,
-                  others: {}
+                  onChange: this.dropDownHandler.bind(this)
                 }}
               />
             </div>
           </div>
-        </div>
 
-        <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
-          <div className="portlet-title">
-            <div className="caption">
-              <h3 className="caption-subject">Dental Chart</h3>
-            </div>
-            <div className="actions"> </div>
-          </div>
-          <div className="portlet-body">
+          <div className="col-lg-12">
             <div className="row top-teeth-sec">
               <div className="col-lg-6 teeth-sec">
                 <h6>Upper Left</h6>
                 <div className="row">{this.generateToothUpperLeftSet()}</div>
-                {/* <div className="row">
-                  <div className="col tooth-sec up-side molar-up-1">
-                    <span>1</span>
-                    <div className="surface-Marking">
-                      <div className="top-surface">
-                        <span>D</span>
-                      </div>
-                      <div className="right-surface">
-                        <span>L</span>
-                      </div>
-                      <div className="bottom-surface">
-                        <span>I</span>
-                      </div>
-                      <div className="left-surface">
-                        <span>P</span>
-                      </div>
-                      <div className="middle-surface">
-                        <span>M</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col tooth-sec up-side molar-up-2">
-                    <span>2</span>
-                    <div className="surface-Marking">
-                      <div className="top-surface">
-                        <span>D</span>
-                      </div>
-                      <div className="right-surface">
-                        <span>L</span>
-                      </div>
-                      <div className="bottom-surface">
-                        <span>I</span>
-                      </div>
-                      <div className="left-surface">
-                        <span>P</span>
-                      </div>
-                      <div className="middle-surface">
-                        <span>M</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col tooth-sec up-side molar-up-3">
-                    <span>3</span>
-                    <div className="surface-Marking">
-                      <div className="top-surface">
-                        <span>D</span>
-                      </div>
-                      <div className="right-surface">
-                        <span>L</span>
-                      </div>
-                      <div className="bottom-surface">
-                        <span>I</span>
-                      </div>
-                      <div className="left-surface">
-                        <span>P</span>
-                      </div>
-                      <div className="middle-surface">
-                        <span>M</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col tooth-sec up-side premolar-up-4">
-                    <span>4</span>
-                    <div className="surface-Marking">
-                      <div className="top-surface">
-                        <span>D</span>
-                      </div>
-                      <div className="right-surface">
-                        <span>L</span>
-                      </div>
-                      <div className="bottom-surface">
-                        <span>I</span>
-                      </div>
-                      <div className="left-surface">
-                        <span>P</span>
-                      </div>
-                      <div className="middle-surface">
-                        <span>M</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col tooth-sec up-side premolar-up-5">
-                    <span>5</span>
-                    <div className="surface-Marking">
-                      <div className="top-surface">
-                        <span>D</span>
-                      </div>
-                      <div className="right-surface">
-                        <span>L</span>
-                      </div>
-                      <div className="bottom-surface">
-                        <span>I</span>
-                      </div>
-                      <div className="left-surface">
-                        <span>P</span>
-                      </div>
-                      <div className="middle-surface">
-                        <span>M</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col tooth-sec up-side canine-up-6">
-                    <span>6</span>
-                    <div className="surface-Marking">
-                      <div className="top-surface">
-                        <span>D</span>
-                      </div>
-                      <div className="right-surface">
-                        <span>L</span>
-                      </div>
-                      <div className="bottom-surface">
-                        <span>I</span>
-                      </div>
-                      <div className="left-surface">
-                        <span>P</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col tooth-sec up-side incisors-up-up-7">
-                    <span>7</span>
-                    <div className="surface-Marking">
-                      <div className="top-surface">
-                        <span>D</span>
-                      </div>
-                      <div className="right-surface">
-                        <span>L</span>
-                      </div>
-                      <div className="bottom-surface">
-                        <span>I</span>
-                      </div>
-                      <div className="left-surface">
-                        <span>P</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col tooth-sec up-side incisors-up-up-8">
-                    <span>8</span>
-                    <div className="surface-Marking">
-                      <div className="top-surface">
-                        <span>D</span>
-                      </div>
-                      <div className="right-surface">
-                        <span>L</span>
-                      </div>
-                      <div className="bottom-surface">
-                        <span>I</span>
-                      </div>
-                      <div className="left-surface">
-                        <span>P</span>
-                      </div>
-                    </div>
-                  </div>
-                </div> */}
               </div>
               <div className="col-lg-6 teeth-sec">
                 <h6>Upper Right</h6>
                 <div className="row">{this.generateToothUpperRightSet()}</div>
-                {/* <div className="row">
-                  <div className="col tooth-sec up-side incisors-up-up-9">
-                    <span>9</span>
-                    <div className="surface-Marking">
-                      <div className="top-surface">
-                        <span>D</span>
-                      </div>
-                      <div className="right-surface">
-                        <span>L</span>
-                      </div>
-                      <div className="bottom-surface">
-                        <span>I</span>
-                      </div>
-                      <div className="left-surface">
-                        <span>P</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col tooth-sec up-side incisors-up-up-10">
-                    <span>10</span>
-                    <div className="surface-Marking">
-                      <div className="top-surface">
-                        <span>D</span>
-                      </div>
-                      <div className="right-surface">
-                        <span>L</span>
-                      </div>
-                      <div className="bottom-surface">
-                        <span>I</span>
-                      </div>
-                      <div className="left-surface">
-                        <span>P</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col tooth-sec up-side canine-up-11">
-                    <span>11</span>
-                    <div className="surface-Marking">
-                      <div className="top-surface">
-                        <span>D</span>
-                      </div>
-                      <div className="right-surface">
-                        <span>L</span>
-                      </div>
-                      <div className="bottom-surface">
-                        <span>I</span>
-                      </div>
-                      <div className="left-surface">
-                        <span>P</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col tooth-sec up-side premolar-up-12">
-                    <span>12</span>
-                    <div className="surface-Marking">
-                      <div className="top-surface">
-                        <span>D</span>
-                      </div>
-                      <div className="right-surface">
-                        <span>L</span>
-                      </div>
-                      <div className="bottom-surface">
-                        <span>I</span>
-                      </div>
-                      <div className="left-surface">
-                        <span>P</span>
-                      </div>
-                      <div className="middle-surface">
-                        <span>M</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col tooth-sec up-side premolar-up-13">
-                    <span>13</span>
-                    <div className="surface-Marking">
-                      <div className="top-surface">
-                        <span>D</span>
-                      </div>
-                      <div className="right-surface">
-                        <span>L</span>
-                      </div>
-                      <div className="bottom-surface">
-                        <span>I</span>
-                      </div>
-                      <div className="left-surface">
-                        <span>P</span>
-                      </div>
-                      <div className="middle-surface">
-                        <span>M</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col tooth-sec up-side molar-up-14">
-                    <span>14</span>
-                    <div className="surface-Marking">
-                      <div className="top-surface">
-                        <span>D</span>
-                      </div>
-                      <div className="right-surface">
-                        <span>L</span>
-                      </div>
-                      <div className="bottom-surface">
-                        <span>I</span>
-                      </div>
-                      <div className="left-surface">
-                        <span>P</span>
-                      </div>
-                      <div className="middle-surface">
-                        <span>M</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col tooth-sec up-side molar-up-15">
-                    <span>15</span>
-                    <div className="surface-Marking">
-                      <div className="top-surface">
-                        <span>D</span>
-                      </div>
-                      <div className="right-surface">
-                        <span>L</span>
-                      </div>
-                      <div className="bottom-surface">
-                        <span>I</span>
-                      </div>
-                      <div className="left-surface">
-                        <span>P</span>
-                      </div>
-                      <div className="middle-surface">
-                        <span>M</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col tooth-sec up-side molar-up-16">
-                    <span>16</span>
-                    <div className="surface-Marking">
-                      <div className="top-surface">
-                        <span>D</span>
-                      </div>
-                      <div className="right-surface">
-                        <span>L</span>
-                      </div>
-                      <div className="bottom-surface">
-                        <span>I</span>
-                      </div>
-                      <div className="left-surface">
-                        <span>P</span>
-                      </div>
-                      <div className="middle-surface">
-                        <span>M</span>
-                      </div>
-                    </div>
-                  </div>
-                </div> */}
               </div>
             </div>
 
             <div className="row bottom-teeth-sec">
               <div className="col-lg-6 teeth-sec">
                 <div className="row">{this.generateToothLowerLeftSet()}</div>
-                {/* <div className="row">
-                  <div className="col tooth-sec down-side molar-down-1">
-                    <span>1</span>
-                    <div className="surface-Marking">
-                      <div className="top-surface">
-                        <span>D</span>
-                      </div>
-                      <div className="right-surface">
-                        <span>L</span>
-                      </div>
-                      <div className="bottom-surface">
-                        <span>I</span>
-                      </div>
-                      <div className="left-surface">
-                        <span>P</span>
-                      </div>
-                      <div className="middle-surface">
-                        <span>M</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col tooth-sec down-side molar-down-2">
-                    <span>2</span>
-                    <div className="surface-Marking">
-                      <div className="top-surface">
-                        <span>D</span>
-                      </div>
-                      <div className="right-surface">
-                        <span>L</span>
-                      </div>
-                      <div className="bottom-surface">
-                        <span>I</span>
-                      </div>
-                      <div className="left-surface">
-                        <span>P</span>
-                      </div>
-                      <div className="middle-surface">
-                        <span>M</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col tooth-sec down-side molar-down-3">
-                    <span>3</span>
-                    <div className="surface-Marking">
-                      <div className="top-surface">
-                        <span>D</span>
-                      </div>
-                      <div className="right-surface">
-                        <span>L</span>
-                      </div>
-                      <div className="bottom-surface">
-                        <span>I</span>
-                      </div>
-                      <div className="left-surface">
-                        <span>P</span>
-                      </div>
-                      <div className="middle-surface">
-                        <span>M</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col tooth-sec down-side premolar-down-4">
-                    <span>4</span>
-                    <div className="surface-Marking">
-                      <div className="top-surface">
-                        <span>D</span>
-                      </div>
-                      <div className="right-surface">
-                        <span>L</span>
-                      </div>
-                      <div className="bottom-surface">
-                        <span>I</span>
-                      </div>
-                      <div className="left-surface">
-                        <span>P</span>
-                      </div>
-                      <div className="middle-surface">
-                        <span>M</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col tooth-sec down-side premolar-down-5">
-                    <span>5</span>
-                    <div className="surface-Marking">
-                      <div className="top-surface">
-                        <span>D</span>
-                      </div>
-                      <div className="right-surface">
-                        <span>L</span>
-                      </div>
-                      <div className="bottom-surface">
-                        <span>I</span>
-                      </div>
-                      <div className="left-surface">
-                        <span>P</span>
-                      </div>
-                      <div className="middle-surface">
-                        <span>M</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col tooth-sec down-side canine-down-6">
-                    <span>6</span>
-                    <div className="surface-Marking">
-                      <div className="top-surface">
-                        <span>D</span>
-                      </div>
-                      <div className="right-surface">
-                        <span>L</span>
-                      </div>
-                      <div className="bottom-surface">
-                        <span>I</span>
-                      </div>
-                      <div className="left-surface">
-                        <span>P</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col tooth-sec down-side incisors-down-7">
-                    <span>7</span>
-                    <div className="surface-Marking">
-                      <div className="top-surface">
-                        <span>D</span>
-                      </div>
-                      <div className="right-surface">
-                        <span>L</span>
-                      </div>
-                      <div className="bottom-surface">
-                        <span>I</span>
-                      </div>
-                      <div className="left-surface">
-                        <span>P</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col tooth-sec down-side incisors-down-8">
-                    <span>8</span>
-                    <div className="surface-Marking">
-                      <div className="top-surface">
-                        <span>D</span>
-                      </div>
-                      <div className="right-surface">
-                        <span>L</span>
-                      </div>
-                      <div className="bottom-surface">
-                        <span>I</span>
-                      </div>
-                      <div className="left-surface">
-                        <span>P</span>
-                      </div>
-                    </div>
-                  </div>
-                </div> */}
-
                 <h6>Lower Left</h6>
               </div>
               <div className="col-lg-6 teeth-sec">
                 <div className="row">
+                  {/* {this.generateToothLowerRightSet()} */}
                   <div className="col tooth-sec down-side incisors-down-9">
-                    <span>17</span>
+                    <span>24</span>
                     <div className="surface-Marking">
                       <div className="top-surface">
                         <span>D</span>
@@ -744,7 +438,7 @@ class Dental extends Component {
                     </div>
                   </div>
                   <div className="col tooth-sec down-side incisors-down-10">
-                    <span>18</span>
+                    <span>23</span>
                     <div className="surface-Marking">
                       <div className="top-surface">
                         <span>D</span>
@@ -761,7 +455,7 @@ class Dental extends Component {
                     </div>
                   </div>
                   <div className="col tooth-sec down-side canine-down-11">
-                    <span>16</span>
+                    <span>22</span>
                     <div className="surface-Marking">
                       <div className="top-surface">
                         <span>D</span>
@@ -778,7 +472,7 @@ class Dental extends Component {
                     </div>
                   </div>
                   <div className="col tooth-sec down-side premolar-down-12">
-                    <span>12</span>
+                    <span>21</span>
                     <div className="surface-Marking">
                       <div className="top-surface">
                         <span>D</span>
@@ -798,7 +492,7 @@ class Dental extends Component {
                     </div>
                   </div>
                   <div className="col tooth-sec down-side premolar-down-13">
-                    <span>15</span>
+                    <span>20</span>
                     <div className="surface-Marking">
                       <div className="top-surface">
                         <span>D</span>
@@ -818,7 +512,7 @@ class Dental extends Component {
                     </div>
                   </div>
                   <div className="col tooth-sec down-side molar-down-14">
-                    <span>9</span>
+                    <span>19</span>
                     <div className="surface-Marking">
                       <div className="top-surface">
                         <span>D</span>
@@ -838,7 +532,7 @@ class Dental extends Component {
                     </div>
                   </div>
                   <div className="col tooth-sec down-side molar-down-15">
-                    <span>10</span>
+                    <span>18</span>
                     <div className="surface-Marking">
                       <div className="top-surface">
                         <span>D</span>
@@ -858,7 +552,7 @@ class Dental extends Component {
                     </div>
                   </div>
                   <div className="col tooth-sec down-side molar-down-16">
-                    <span>11</span>
+                    <span>17</span>
                     <div className="surface-Marking">
                       <div className="top-surface">
                         <span>D</span>
@@ -882,23 +576,143 @@ class Dental extends Component {
               </div>
             </div>
           </div>
-        </div>
-        <div className="row">
-          <div className="col-lg-12 margin-bottom-15">
-            <button className="btn btn-primary" style={{ float: "right" }}>
-              Add to List
-            </button>
+          <div className="row">
+            <div className="col-lg-12 margin-bottom-15">
+              <button className="btn btn-primary" style={{ float: "right" }}>
+                Add to List
+              </button>
+            </div>
           </div>
-        </div>
+        </AlgaehModalPopUp>
 
         <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
           <div className="portlet-title">
-            <div className="caption">
-              <h3 className="caption-subject">Procedure List</h3>
+            {/* <div className="caption">
+              <h3 className="caption-subject">Treatement List</h3>
             </div>
-            <div className="actions"> </div>
+            <div className="actions">
+              <a
+                onClick={() => {
+                  this.setState({
+                    openDentalModal: true
+                  });
+                }}
+                className="btn btn-primary btn-circle active"
+              >
+                <i className="fas fa-plus" />
+              </a>
+            </div> */}
+            <div className="col-lg-12 margin-bottom-15">
+              <div className="row">
+                <AlagehFormGroup
+                  div={{ className: "col-lg-4" }}
+                  label={{
+                    forceLabel: "Treatment Plan",
+                    isImp: true
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "treatement_plan",
+                    value: this.state.treatement_plan,
+                    events: {
+                      onChange: this.textHandle.bind(this)
+                    },
+                    others: {
+                      placeholder: "Enter Treatment Name"
+                    }
+                  }}
+                />
+
+                <AlagehFormGroup
+                  div={{ className: "col-lg-4" }}
+                  label={{
+                    forceLabel: "Remarks",
+                    isImp: true
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "remarks",
+                    value: this.state.remarks,
+                    events: {
+                      onChange: this.textHandle.bind(this)
+                    },
+                    others: {
+                      placeholder: "Enter Remarks"
+                    }
+                  }}
+                />
+
+                <div className="col-lg-4 margin-top-15">
+                  <button className="btn btn-primary">Add to List</button>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="portlet-body">GRID COMES HERE</div>
+          <div className="portlet-body">
+            <AlgaehDataGrid
+              id="shift-grid"
+              datavalidate="data-validate='shiftDiv'"
+              columns={[
+                {
+                  fieldName: "actions",
+                  label: "Actions",
+                  displayTemplate: row => {
+                    return (
+                      <span
+                        onClick={() => {
+                          this.setState({
+                            openDentalModal: true
+                          });
+                        }}
+                      >
+                        <i className="fas fa-file-alt" />
+                      </span>
+                    );
+                  }
+                },
+                {
+                  fieldName: "date",
+                  label: "Date"
+                },
+                {
+                  fieldName: "tooth",
+                  label: "Tooth",
+                  disabled: true
+                },
+                {
+                  fieldName: "surface",
+                  label: "Surface"
+                },
+                {
+                  fieldName: "code",
+                  label: "Code",
+                  disabled: true
+                },
+
+                {
+                  fieldName: "code",
+                  label: "Description",
+                  disabled: true
+                },
+                {
+                  fieldName: "code",
+                  label: "Status",
+                  disabled: true
+                }
+              ]}
+              keyId="algaeh_app_screens_id"
+              dataSource={{
+                data: this.state.treatements
+              }}
+              filter={true}
+              paging={{ page: 0, rowsPerPage: 10 }}
+              events={{
+                onEdit: () => {},
+                onDelete: () => {},
+                onDone: () => {}
+              }}
+            />
+          </div>
         </div>
       </div>
     );
