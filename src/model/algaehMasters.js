@@ -196,7 +196,8 @@ let getRoleBaseActiveModules = (req, res, next) => {
             connection.query(
               "select algaeh_d_module_id, module_name,module_code, icons,other_language  from algaeh_d_app_module\
               where  record_status=md5('A') " +
-                superUser,
+                superUser +
+                " order by algaeh_d_module_id ",
               (error, result) => {
                 if (error) {
                   releaseDBConnection(db, connection);
