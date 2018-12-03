@@ -1,52 +1,39 @@
 import React, { Component } from "react";
 import "./PatientHistory.css";
-import { AlagehFormGroup } from "../../Wrapper/algaehWrapper";
+import { AlagehFormGroup, AlgaehModalPopUp } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import Enumerable from "linq";
+import { getPatientHistory } from "../PatientProfileHandlers";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { AlgaehActions } from "../../../actions/algaehActions";
 
 class PatientHistory extends Component {
   constructor(props) {
     super(props);
     this.state = {
       patHistory: [],
-      social_history: "",
-      surgical_history: "",
-      medical_history: ""
+      social_history: [],
+      surgical_history: [],
+      medical_history: [],
+      openAddModal: false,
+      history: ""
     };
-    this.getPatientHistory();
-  }
-
-  saveHistory() {
-    this.state.social_history.length === 0 &&
-    this.state.surgical_history.length === 0 &&
-    this.state.social_history.length === 0
-      ? null
-      : this.savePatientHistory();
-  }
-
-  componentWillUnmount() {
-    this.saveHistory();
+    getPatientHistory(this);
   }
 
   savePatientHistory() {
     let his_array = [];
 
-    this.state.social_history.length !== 0
+    this.state.history.length !== 0
       ? his_array.push({
-          history_type: "SOH",
-          remarks: this.state.social_history
+          history_type: this.state.type,
+          remarks: this.state.history
         })
-      : this.state.surgical_history.length !== 0
-      ? his_array.push({
-          history_type: "SGH",
-          remarks: this.state.surgical_history
-        })
-      : this.state.medical_history.length !== 0
-      ? his_array.push({
-          history_type: "MEH",
-          remarks: this.state.medical_history
-        })
-      : null;
+      : swalMessage({
+          title: "Please Enter History to save",
+          type: "warning"
+        });
 
     let send_obj = {
       patient_id: Window.global["current_patient"],
@@ -58,42 +45,18 @@ class PatientHistory extends Component {
       uri: "/doctorsWorkBench/addPatientHistory",
       method: "POST",
       data: send_obj,
-      onSuccess: response => {},
-      onFailure: error => {}
-    });
-  }
-
-  getPatientHistory() {
-    algaehApiCall({
-      uri: "/doctorsWorkBench/getPatientHistory",
-      method: "GET",
-      data: {
-        patient_id: Window.global["current_patient"]
-      },
       onSuccess: response => {
         if (response.data.success) {
-          this.setState(
-            {
-              patHistory: response.data.records
-            },
-            () => {
-              let soh = Enumerable.from(response.data.records)
-                .where(w => w.history_type === "SOH")
-                .firstOrDefault();
-              let meh = Enumerable.from(response.data.records)
-                .where(w => w.history_type === "MEH")
-                .firstOrDefault();
-              let sgh = Enumerable.from(response.data.records)
-                .where(w => w.history_type === "SGH")
-                .firstOrDefault();
+          swalMessage({
+            title: "Record added successfully",
+            type: "success"
+          });
 
-              this.setState({
-                social_history: soh !== undefined ? soh.remarks : "",
-                medical_history: meh !== undefined ? meh.remarks : "",
-                surgical_history: sgh !== undefined ? sgh.remarks : ""
-              });
-            }
-          );
+          this.setState({
+            openAddModal: false,
+            history: ""
+          });
+          getPatientHistory(this);
         }
       },
       onFailure: error => {
@@ -129,90 +92,256 @@ class PatientHistory extends Component {
     }
   }
 
+  addHistory(type) {
+    this.setState({
+      type: type,
+      openAddModal: true
+    });
+  }
+
   render() {
+    let _pat_socialHistory =
+      this.props.patient_history !== undefined
+        ? this.props.patient_history.social
+        : [];
+
+    let _pat_medicalHistory =
+      this.props.patient_history !== undefined
+        ? this.props.patient_history.medical
+        : [];
+
+    let _pat_surgicalHistory =
+      this.props.patient_history !== undefined
+        ? this.props.patient_history.surgical
+        : [];
+
+    let _pat_familyHistory =
+      this.props.patient_history !== undefined
+        ? this.props.patient_history.family
+        : [];
+
+    let _pat_birthHistory =
+      this.props.patient_history !== undefined
+        ? this.props.patient_history.birth
+        : [];
+
     return (
-      <React.Fragment>
-        <div
-          className="portlet portlet-bordered box-shadow-normal margin-top-15"
-          style={{ padding: "0 15px" }}
+      <div
+        className="portlet portlet-bordered box-shadow-normal margin-top-15"
+        style={{ padding: "0 15px" }}
+      >
+        <AlgaehModalPopUp
+          openPopup={this.state.openAddModal}
+          title={"Add History"}
         >
-          <div id="subjectAccordian" className="row">
-            <button className="accordion-btn">Social History</button>
-            <div className="panel">
-              <AlagehFormGroup
-                div={{ className: "" }}
-                label={{
-                  forceLabel: "",
-                  isImp: false
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "social_history",
-                  value: this.state.social_history,
-                  others: {
-                    multiline: true,
-                    rows: "6",
-                    placeholder: "Enter Social History, If any"
-                  },
-                  events: {
-                    onChange: this.textHandle.bind(this)
-                  }
-                }}
-              />
-            </div>
-
-            <button className="accordion-btn">Medical History</button>
-            <div className="panel">
-              <AlagehFormGroup
-                div={{ className: "" }}
-                label={{
-                  forceLabel: "",
-                  isImp: false
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "medical_history",
-                  value: this.state.medical_history,
-                  others: {
-                    multiline: true,
-                    rows: "6",
-                    placeholder: "Enter Medical History, If any"
-                  },
-                  events: {
-                    onChange: this.textHandle.bind(this)
-                  }
-                }}
-              />
-            </div>
-
-            <button className="accordion-btn">Surgical History</button>
-            <div className="panel">
-              <AlagehFormGroup
-                div={{ className: "" }}
-                label={{
-                  forceLabel: "",
-                  isImp: false
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "surgical_history",
-                  value: this.state.surgical_history,
-                  others: {
-                    multiline: true,
-                    rows: "6",
-                    placeholder: "Enter Surgical History, If any"
-                  },
-                  events: {
-                    onChange: this.textHandle.bind(this)
-                  }
-                }}
-              />
+          <div className="col-lg-12">
+            <AlagehFormGroup
+              label={{
+                isImp: false
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "history",
+                value: this.state.history,
+                others: {
+                  multiline: true,
+                  rows: "6",
+                  placeholder: "Enter History, If any"
+                },
+                events: {
+                  onChange: this.textHandle.bind(this)
+                }
+              }}
+            />
+            <div style={{ textAlign: "center" }}>
+              <button
+                onClick={this.savePatientHistory.bind(this)}
+                className="btn btn-primary"
+              >
+                SAVE
+              </button>
             </div>
           </div>
+        </AlgaehModalPopUp>
+
+        <div id="subjectAccordian" className="row">
+          <div className="actions">
+            <a
+              onClick={this.addHistory.bind(this, "SOH")}
+              className="btn btn-primary btn-circle"
+            >
+              <i className="fas fa-pen" />
+            </a>
+          </div>
+          <div className="accordion-btn">Social History</div>
+          <div className="panel">
+            <table
+              className="table table-sm table-bordered customTable"
+              style={{ marginTop: 10 }}
+            >
+              <thead className="table-primary">
+                <tr>
+                  <th>History</th>
+                  <th>Recorded By</th>
+                </tr>
+              </thead>
+              <tbody>
+                {_pat_socialHistory.map((data, index) => (
+                  <tr key={index}>
+                    <td>{data.remarks}</td>
+                    <td>{"Dr. " + data.provider_name}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="actions">
+            <a
+              onClick={this.addHistory.bind(this, "MEH")}
+              className="btn btn-primary btn-circle"
+            >
+              <i className="fas fa-pen" />
+            </a>
+          </div>
+          <div className="accordion-btn">Medical History</div>
+          <div className="panel">
+            <table
+              className="table table-sm table-bordered customTable"
+              style={{ marginTop: 10 }}
+            >
+              <thead className="table-primary">
+                <tr>
+                  <th>History</th>
+                  <th>Recorded By</th>
+                </tr>
+              </thead>
+              <tbody>
+                {_pat_medicalHistory.map((data, index) => (
+                  <tr key={index}>
+                    <td>{data.remarks}</td>
+                    <td>{"Dr. " + data.provider_name}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="actions">
+            <a
+              onClick={this.addHistory.bind(this, "SGH")}
+              className="btn btn-primary btn-circle"
+            >
+              <i className="fas fa-pen" />
+            </a>
+          </div>
+          <div className="accordion-btn">Surgical History</div>
+          <div className="panel">
+            <table
+              className="table table-sm table-bordered customTable"
+              style={{ marginTop: 10 }}
+            >
+              <thead className="table-primary">
+                <tr>
+                  <th>History</th>
+                  <th>Recorded By</th>
+                </tr>
+              </thead>
+              <tbody>
+                {_pat_surgicalHistory.map((data, index) => (
+                  <tr key={index}>
+                    <td>{data.remarks}</td>
+                    <td>{"Dr " + data.provider_name}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="actions">
+            <a
+              onClick={this.addHistory.bind(this, "FMH")}
+              className="btn btn-primary btn-circle"
+            >
+              <i className="fas fa-pen" />
+            </a>
+          </div>
+          <div className="accordion-btn">Family History</div>
+          <div className="panel">
+            <table
+              className="table table-sm table-bordered customTable"
+              style={{ marginTop: 10 }}
+            >
+              <thead className="table-primary">
+                <tr>
+                  <th>History</th>
+                  <th>Recorded By</th>
+                </tr>
+              </thead>
+              <tbody>
+                {_pat_familyHistory.map((data, index) => (
+                  <tr key={index}>
+                    <td>{data.remarks}</td>
+                    <td>{"Dr. " + data.provider_name}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="actions">
+            <a
+              onClick={this.addHistory.bind(this, "BRH")}
+              className="btn btn-primary btn-circle"
+            >
+              <i className="fas fa-pen" />
+            </a>
+          </div>
+          <div className="accordion-btn">Birth History</div>
+
+          <div className="panel">
+            <table
+              className="table table-sm table-bordered customTable"
+              style={{ marginTop: 10 }}
+            >
+              <thead className="table-primary">
+                <tr>
+                  <th>History</th>
+                  <th>Recorded By</th>
+                </tr>
+              </thead>
+              <tbody>
+                {_pat_birthHistory.map((data, index) => (
+                  <tr key={index}>
+                    <td>{data.remarks}</td>
+                    <td>{"Dr. " + data.provider_name}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </React.Fragment>
+      </div>
     );
   }
 }
 
-export default PatientHistory;
+function mapStateToProps(state) {
+  return {
+    patient_history: state.patient_history
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getPatientHistory: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(PatientHistory)
+);

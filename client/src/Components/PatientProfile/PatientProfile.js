@@ -5,17 +5,15 @@ import Subjective from "./Subjective/Subjective";
 import PhysicalExamination from "./PhysicalExamination/PhysicalExamination";
 import Assesment from "./Assessment/Assessment";
 import Plan from "./Plan/Plan";
-import {
-  algaehApiCall,
-  cancelRequest,
-  swalMessage
-} from "../../utils/algaehApiCall";
+import { AlgaehModalPopUp } from "../Wrapper/algaehWrapper";
+import { algaehApiCall, cancelRequest } from "../../utils/algaehApiCall";
 import moment from "moment";
 import { setGlobal } from "../../utils/GlobalFunctions";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../actions/algaehActions";
+import GlobalVariables from "../../utils/GlobalVariables.json";
 import {
   getPatientProfile,
   getPatientVitals,
@@ -27,11 +25,11 @@ import AlgaehReport from "../Wrapper/printReports";
 import Enumerable from "linq";
 import Summary from "./Summary/Summary";
 import Dental from "./Dental/Dental";
-
+let allergyPopUp;
 class PatientProfile extends Component {
   constructor(props) {
     super(props);
-
+    allergyPopUp = props.open_allergy_popup;
     this.state = {
       pageDisplay: "subjective",
       patientDiet: [],
@@ -44,7 +42,7 @@ class PatientProfile extends Component {
     };
     getPatientProfile(this);
     getPatientVitals(this);
-    getPatientAllergies(this, true);
+    getPatientAllergies(this);
     getPatientDiet(this);
     getPatientDiagnosis(this);
     this.changeTabs = this.changeTabs.bind(this);
@@ -69,6 +67,13 @@ class PatientProfile extends Component {
     cancelRequest("getPatientDiagnosis");
   }
 
+  componentDidMount() {
+    this.setState({
+      firstLaunch:
+        this.state.firstLaunch === undefined ? this.props.firstLaunch : false
+    });
+  }
+
   openUCAFReport(data, e) {
     algaehApiCall({
       uri: "/ucaf/getPatientUCAF",
@@ -90,16 +95,67 @@ class PatientProfile extends Component {
       }
     });
   }
+
+  showAllergyAlert(_patient_allergies) {
+    if (allergyPopUp && _patient_allergies.length > 0) {
+      return (
+        <AlgaehModalPopUp
+          openPopup={true}
+          events={{
+            onClose: (that = this) => {
+              debugger;
+              allergyPopUp = false;
+              // that.handleClose.bind(this);
+            }
+          }}
+          title="Alert"
+        >
+          <div>
+            <span>Patient is Allergic</span>
+            <span>Listed below are the following allergies</span>
+            <br />
+
+            {_patient_allergies.map((tables, index) => (
+              <table
+                key={index}
+                className="table table-sm table-bordered customTable"
+              >
+                <thead className="table-primary">
+                  <tr>
+                    <th> {tables.allergy_type_desc} </th>
+                    <th>Onset</th>
+                    <th>Comment</th>
+                    <th>Inactive</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {tables.allergyList.map((rows, rIndex) => (
+                    <tr key={rIndex}>
+                      <td> {rows.allergy_name} </td>
+                      <td>
+                        {
+                          Enumerable.from(GlobalVariables.ALLERGY_ONSET)
+                            .where(w => w.value === rows.onset)
+                            .firstOrDefault().name
+                        }
+                      </td>
+                      <td>{rows.comment}</td>
+                      <td>{rows.allergy_inactive === "Y" ? "Yes" : "No"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ))}
+          </div>
+        </AlgaehModalPopUp>
+      );
+    }
+    return null;
+  }
+
   renderBackButton(e) {
     setGlobal({ "EHR-STD": "DoctorsWorkbench" });
     document.getElementById("ehr-router").click();
-  }
-
-  showAllergyAlert(data, e) {
-    swalMessage({
-      title: "Allergic",
-      type: "warning"
-    });
   }
 
   render() {
@@ -119,16 +175,6 @@ class PatientProfile extends Component {
             .orderBy(g => g.visit_date)
             .firstOrDefault()
         : [];
-
-    //TO DO
-    //Display Patient Vitals which are driven from the master
-    //To be Done after Noor completes the Vitals Implementation
-
-    // const _pat_vitals =
-    //   this.props.patient_vitals !== undefined &&
-    //   this.props.patient_vitals.length > 0
-    //     ? this.props.patient_vitals[0]
-    //     : {};
 
     const _patient_allergies =
       this.props.patient_allergies === undefined
@@ -161,6 +207,52 @@ class PatientProfile extends Component {
 
     return (
       <div className="row patientProfile">
+        {this.showAllergyAlert(_patient_allergies)}
+
+        {/* <AlgaehModalPopUp
+          openPopup={this.showAllergyAlert.bind(this, _patient_allergies)}
+          onClose={this.handleClose.bind(this)}
+          title="Alert"
+        >
+          <div>
+            <span>Patient is Allergic</span>
+            <span>Listed below are the following allergies</span>
+            <br />
+
+            {_patient_allergies.map((tables, index) => (
+              <table
+                key={index}
+                className="table table-sm table-bordered customTable"
+              >
+                <thead className="table-primary">
+                  <tr>
+                    <th> {tables.allergy_type_desc} </th>
+                    <th>Onset</th>
+                    <th>Comment</th>
+                    <th>Inactive</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {tables.allergyList.map((rows, rIndex) => (
+                    <tr key={rIndex}>
+                      <td> {rows.allergy_name} </td>
+                      <td>
+                        {
+                          Enumerable.from(GlobalVariables.ALLERGY_ONSET)
+                            .where(w => w.value === rows.onset)
+                            .firstOrDefault().name
+                        }
+                      </td>
+                      <td>{rows.comment}</td>
+                      <td>{rows.allergy_inactive === "Y" ? "Yes" : "No"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ))}
+          </div>
+        </AlgaehModalPopUp> */}
+
         <div className="patientInfo-Top box-shadow-normal">
           <div className="backBtn">
             <button
@@ -178,7 +270,6 @@ class PatientProfile extends Component {
             </button>
           </div>
           <div className="patientImg box-shadow">
-            {/* <img src="https://x1.xingassets.com/assets/frontend_minified/img/users/nobody_m.original.jpg" /> */}
             <img
               alt="Algaeh-HIS"
               src={
@@ -189,81 +280,27 @@ class PatientProfile extends Component {
             />
           </div>
           <div className="patientName">
-            <h6>
-              {/* {this.props.patient_profile !== undefined &&
-              this.props.patient_profile.length > 0
-                ? this.props.patient_profile[0].full_name
-                : ""} */}
-
-              {_pat_profile.full_name}
-            </h6>
+            <h6>{_pat_profile.full_name}</h6>
             <p>
-              {/* {this.props.patient_profile !== undefined &&
-              this.props.patient_profile.length > 0
-                ? this.props.patient_profile[0].gender
-                : ""} */}
-              {_pat_profile.gender} ,
-              {/* {this.props.patient_profile !== undefined &&
-              this.props.patient_profile.length > 0
-                ? this.props.patient_profile[0].age_in_years
-                : 0} */}
-              {_pat_profile.age_in_years}Y{" "}
-              {/* {this.props.patient_profile !== undefined &&
-              this.props.patient_profile.length > 0
-                ? this.props.patient_profile[0].age_in_months
-                : 0} */}
-              {_pat_profile.age_in_months}M{" "}
-              {/* {this.props.patient_profile !== undefined &&
-              this.props.patient_profile.length > 0
-                ? this.props.patient_profile[0].age_in_days
-                : 0} */}
-              {_pat_profile.age_in_days}D
+              {_pat_profile.gender} ,{_pat_profile.age_in_years}Y{" "}
+              {_pat_profile.age_in_months}M {_pat_profile.age_in_days}D
             </p>
           </div>
           <div className="patientDemographic">
             <span>
               DOB:
-              <b>
-                {/* {moment(
-                  this.props.patient_profile !== undefined &&
-                    this.props.patient_profile.length > 0
-                    ? this.props.patient_profile[0].date_of_birth
-                    : ""
-                ).format("DD-MM-YYYY")} */}
-                {moment(_pat_profile.date_of_birth).format("DD-MM-YYYY")}
-              </b>
+              <b>{moment(_pat_profile.date_of_birth).format("DD-MM-YYYY")}</b>
             </span>
             <span>
-              Mobile:{" "}
-              <b>
-                {/* {this.props.patient_profile !== undefined &&
-                this.props.patient_profile.length > 0
-                  ? this.props.patient_profile[0].contact_number
-                  : ""} */}
-                {_pat_profile.contact_number}
-              </b>
+              Mobile: <b>{_pat_profile.contact_number}</b>
             </span>
             <span>
-              Nationality:{" "}
-              <b>
-                {/* {this.props.patient_profile !== undefined &&
-                this.props.patient_profile.length > 0
-                  ? this.props.patient_profile[0].nationality
-                  : ""} */}
-                {_pat_profile.nationality}
-              </b>
+              Nationality: <b>{_pat_profile.nationality}</b>
             </span>
           </div>
           <div className="patientHospitalDetail">
             <span>
-              MRN:{" "}
-              <b>
-                {/* {this.props.patient_profile !== undefined &&
-                this.props.patient_profile.length > 0
-                  ? this.props.patient_profile[0].patient_code
-                  : ""} */}
-                {_pat_profile.patient_code}
-              </b>
+              MRN: <b>{_pat_profile.patient_code}</b>
             </span>
             <span>
               Encounter:{" "}
@@ -271,12 +308,6 @@ class PatientProfile extends Component {
                 {moment(_pat_profile.Encounter_Date).format(
                   "DD-MM-YYYY hh:mm a"
                 )}
-                {/* {moment(
-                  this.props.patient_profile !== undefined &&
-                    this.props.patient_profile.length > 0
-                    ? this.props.patient_profile[0].Encounter_Date
-                    : ""
-                ).format("DD-MM-YYYY HH:MM:SS A")} */}
               </b>
             </span>
             <span>
@@ -287,12 +318,6 @@ class PatientProfile extends Component {
                   : _pat_profile.payment_type === "S"
                   ? "Self"
                   : ""}
-                {/* {this.props.patient_profile !== undefined &&
-                this.props.patient_profile.length > 0
-                  ? this.props.patient_profile[0].payment_type === "I"
-                    ? "Insurance"
-                    : "Self"
-                  : ""} */}
               </b>
             </span>
           </div>
@@ -485,8 +510,6 @@ function mapDispatchToProps(dispatch) {
       getPatientVitals: AlgaehActions,
       getPatientDiet: AlgaehActions,
       getPatientDiagnosis: AlgaehActions
-
-      // getPatientChiefComplaints: AlgaehActions
     },
     dispatch
   );

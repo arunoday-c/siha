@@ -2,15 +2,22 @@
   .accordion-btn {
     color: #444;
     cursor: inherit;
-    width: 100%;
+    width: 90%;
     padding: 7px;
     text-align: left;
     outline: none;
     font-size: 15px;
     transition: 0.4s;
-    background-color: #ffffff;
     border: none;
+    border-bottom: 1px solid #efefef;
   }
+
+  @media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
+    .accordion-btn {
+      width: 86.5%;
+    }
+  }
+
   textarea {
     border-radius: 0 !important;
     border-color: #d3d3d3 !important;
@@ -20,21 +27,62 @@
   }
 
   .accordion-btn:after {
-    //content: "\002B";
+    content: "\21E9";
     color: #777;
     font-weight: bold;
     float: right;
     margin-left: 5px;
   }
 
+  .accordion-btn:hover {
+    cursor: pointer;
+  }
+
   .active:after {
-    //content: "\2212";
+    content: "\21E7";
   }
 
   .panel {
     width: 100%;
-    background-color: white;
+    background-color: #efefef;
+
     overflow: hidden;
+    max-height: 0;
     transition: max-height 0.2s ease-out;
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+
+  .customTable {
+    th {
+      background: #8c8c8c;
+      text-transform: uppercase;
+      font-size: 0.7rem !important;
+      min-width: auto !important;
+      color: #fff;
+      font-weight: normal;
+    }
+    td {
+      min-width: auto !important;
+      font-size: 0.8rem !important;
+    }
+  }
+
+  .actions {
+    float: left;
+    display: inline-block;
+    margin-top: 0px;
+    margin-left: 4px;
+    border-bottom: 1px solid #efefef;
+    padding-top: 3px;
+    padding-right: 5px;
+    .btn.btn-circle {
+      width: 28px;
+      height: 28px;
+      padding: 3px 7px;
+      color: #fff;
+      text-align: center;
+      border: none;
+    }
   }
 }

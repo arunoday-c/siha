@@ -1,5 +1,4 @@
 import Enumerable from "linq";
-import { displayFileFromServer } from "../../utils/GlobalFunctions";
 
 const getPatientProfile = $this => {
   $this.props.getPatientProfile({
@@ -128,11 +127,26 @@ const getPatientDiagnosis = ($this, isProcess) => {
   });
 };
 
+const getPatientHistory = $this => {
+  $this.props.getPatientHistory({
+    uri: "/doctorsWorkBench/getPatientHistory",
+    method: "GET",
+    cancelRequestId: "getPatientHistory",
+    data: {
+      patient_id: Window.global["current_patient"]
+    },
+    redux: {
+      type: "PATIENT_HISTORY",
+      mappingName: "patient_history"
+    }
+  });
+};
+
 export {
   getPatientVitals,
   getPatientProfile,
   getPatientAllergies,
   getPatientDiet,
-  getPatientDiagnosis
-  // getPatientChiefComplaints
+  getPatientDiagnosis,
+  getPatientHistory
 };

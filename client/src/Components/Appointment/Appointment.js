@@ -1488,17 +1488,17 @@ class Appointment extends PureComponent {
     }
     return <React.Fragment>{tds}</React.Fragment>;
   }
-  getSnapshotBeforeUpdate() {
-    const doctorCntr = document.getElementsByClassName("tg");
-    if (doctorCntr !== undefined && doctorCntr.length > 0) {
-      const _completeWidth = doctorCntr[0].width * doctorCntr.length;
-      return { width: _completeWidth };
-      // this.setState({ outerStyles: { width: _completeWidth } }, () => {
-      //
-      // });
-    }
-    return null;
-  }
+  // getSnapshotBeforeUpdate() {
+  //   const doctorCntr = document.getElementsByClassName("tg");
+  //   if (doctorCntr !== undefined && doctorCntr.length > 0) {
+  //     const _completeWidth = doctorCntr[0].width * doctorCntr.length;
+  //     return { width: _completeWidth };
+  //     // this.setState({ outerStyles: { width: _completeWidth } }, () => {
+  //     //
+  //     // });
+  //   }
+  //   return null;
+  // }
   //componentDidUpdate(props, prevState, snapshot) {}
 
   render() {

@@ -97,7 +97,7 @@ let apiAuth = (req, res, next) => {
 };
 
 //api user authentication
-let authUserOLD = (req, res, next) => {
+let authUser = (req, res, next) => {
   let authModel = {
     username: "",
     password: ""
@@ -162,7 +162,7 @@ let authUserOLD = (req, res, next) => {
 };
 
 //api user authentication
-let authUser = (req, res, next) => {
+let authUserNew = (req, res, next) => {
   let authModel = {
     username: "",
     password: ""

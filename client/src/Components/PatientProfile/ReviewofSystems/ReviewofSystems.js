@@ -32,11 +32,11 @@ class ReviewofSystems extends Component {
     this.handleClose = this.handleClose.bind(this);
   }
   componentDidMount() {
-    if (
-      this.props.patientros === undefined ||
-      this.props.patientros.length === 0
-    )
-      getPatientROS(this);
+    // if (
+    //   this.props.patientros === undefined ||
+    //   this.props.patientros.length === 0
+    // )
+    getPatientROS(this);
   }
 
   componentWillUnmount() {

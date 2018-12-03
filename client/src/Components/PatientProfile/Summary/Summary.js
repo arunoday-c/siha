@@ -4,27 +4,49 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import "./summary.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
+import Enumerable from "linq";
+import { getPatientHistory } from "../PatientProfileHandlers";
+import { algaehApiCall } from "../../../utils/algaehApiCall";
 
 class Summary extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      patientMedications: []
+    };
+
+    this.props.patient_history === undefined ||
+    this.props.patient_history.length === 0
+      ? getPatientHistory(this)
+      : null;
+
+    this.getPatientMedication();
   }
 
-  // componentDidMount() {
-  //   this.props.getPatientSummary({
-  //     uri: "/masters/get/title",
-  //     method: "GET",
-  //     redux: {
-  //       type: "PATIENT_SUMMARY_GET_DATA",
-  //       mappingName: "patient_summary"
-  //     }
-  //   });
-  // }
+  getPatientMedication() {
+    algaehApiCall({
+      uri: "/mrd/getPatientMedication",
+      method: "GET",
+      data: {
+        episode_id: Window.global["episode_id"]
+      },
+      cancelRequestId: "getPatientMedication1",
+      onSuccess: response => {
+        debugger;
+        if (response.data.success) {
+          this.setState({ patientMedications: response.data.records });
+        }
+      },
+      onFailure: error => {
+        // swalMessage({
+        //   title: error.message,
+        //   type: "error"
+        // });
+      }
+    });
+  }
 
   render() {
-    
-
     const _pat_profile =
       this.props.patient_profile !== undefined &&
       this.props.patient_profile.length > 0
@@ -43,6 +65,46 @@ class Summary extends Component {
         ? this.props.patient_diet
         : [];
 
+    const _pat_vitals =
+      this.props.patient_vitals !== undefined &&
+      this.props.patient_vitals.length > 0
+        ? Enumerable.from(this.props.patient_vitals)
+            .groupBy("$.visit_date", null, (k, g) => {
+              return g.getSource();
+            })
+            .orderBy(g => g.visit_date)
+            .lastOrDefault()
+        : [];
+
+    let _pat_socialHistory =
+      this.props.patient_history !== undefined
+        ? this.props.patient_history.social
+        : [];
+
+    let _pat_medicalHistory =
+      this.props.patient_history !== undefined
+        ? this.props.patient_history.medical
+        : [];
+
+    let _pat_surgicalHistory =
+      this.props.patient_history !== undefined
+        ? this.props.patient_history.surgical
+        : [];
+
+    let _pat_familyHistory =
+      this.props.patient_history !== undefined
+        ? this.props.patient_history.family
+        : [];
+
+    let _pat_birthHistory =
+      this.props.patient_history !== undefined
+        ? this.props.patient_history.birth
+        : [];
+
+    let _pat_patientDiagnosis =
+      this.props.patient_diagnosis !== undefined
+        ? this.props.patient_diagnosis
+        : [];
     return (
       <div id="patientSummary">
         <div className="row">
@@ -55,116 +117,137 @@ class Summary extends Component {
                 for Chest Pain, duration 1 month.
               </p>
             </div>
+
             <div className="bd-callout bd-callout-theme">
               <h6>Vitals</h6>
-
               <div className="col-md-12 col-lg-12">
                 <div className="row text-center">
-                  <div className="col vitals-sec">
-                    <div className="counter">
-                      <h4 className="timer count-title count-number">22</h4>
-                      <p className="count-text ">Weight</p>
-                    </div>
-                  </div>
-                  <div className="col vitals-sec">
-                    <div className="counter">
-                      <h4 className="timer count-title count-number">22</h4>
-                      <p className="count-text ">Height</p>
-                    </div>
-                  </div>
-                  <div className="col vitals-sec">
-                    <div className="counter">
-                      <h4 className="timer count-title count-number">22</h4>
-                      <p className="count-text ">Blood Pressure</p>
-                    </div>
-                  </div>
-                  <div className="col vitals-sec">
-                    <div className="counter">
-                      <h4 className="timer count-title count-number">22</h4>
-                      <p className="count-text ">Temprature</p>
-                    </div>
-                  </div>
-
-                  <div className="col vitals-sec">
-                    <div className="counter">
-                      <h4 className="timer count-title count-number">22</h4>
-                      <p className="count-text ">Heart Rate</p>
-                    </div>
-                  </div>
-
-                  <div className="col vitals-sec">
-                    <div className="counter">
-                      <h4 className="timer count-title count-number">22</h4>
-                      <p className="count-text ">Respiratory Rate</p>
-                    </div>
-                  </div>
-
-                  <div className="col vitals-sec">
-                    <div className="counter">
-                      <h4 className="timer count-title count-number">0kg</h4>
-                      <p className="count-text ">O2 Stat</p>
-                    </div>
-                  </div>
+                  {_pat_vitals.length > 0 ? (
+                    _pat_vitals.map((row, index) => (
+                      <div key={index} className="col vitals-sec">
+                        <div className="counter">
+                          <h4 className="timer count-title count-number">
+                            {" "}
+                            {row.vital_value}
+                          </h4>
+                          <p className="count-text ">{row.vitals_name}</p>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <span className="col">Not Recorded</span>
+                  )}
                 </div>
               </div>
             </div>
+
             <div className="bd-callout bd-callout-theme">
               <h6>Family History</h6>
-
-              <p>
-                Visited Cardiology on 08/11/2018 for Chest Pain, duration 1
-                month.
-              </p>
+              <ul>
+                {_pat_familyHistory.map((data, index) => (
+                  <li key={index}>{data.remarks}</li>
+                ))}
+              </ul>
             </div>
+
             <div className="bd-callout bd-callout-theme">
               <h6>Social Hitory</h6>
-
-              <p>
-                Visited Cardiology on 08/11/2018 for Chest Pain, duration 1
-                month.
-              </p>
+              <ul>
+                {_pat_socialHistory.map((data, index) => (
+                  <li key={index}>
+                    {data.remarks + " (Dr. " + data.provider_name + ")"}
+                  </li>
+                ))}
+              </ul>
             </div>
             <div className="bd-callout bd-callout-theme">
               <h6>Medical History</h6>
 
-              <p>
-                Visited Cardiology on 08/11/2018 for Chest Pain, duration 1
-                month.
-              </p>
+              <ul>
+                {_pat_medicalHistory.map((data, index) => (
+                  <li key={index}>
+                    {data.remarks + " (Dr. " + data.provider_name + ")"}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="bd-callout bd-callout-theme">
+              <h6>Surgical History</h6>
+
+              <ul>
+                {_pat_surgicalHistory.map((data, index) => (
+                  <li key={index}>
+                    {data.remarks + " (Dr. " + data.provider_name + ")"}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="bd-callout bd-callout-theme">
+              <h6>Birth History</h6>
+
+              <ul>
+                {_pat_birthHistory.map((data, index) => (
+                  <li key={index}>
+                    {data.remarks + " (Dr. " + data.provider_name + ")"}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="bd-callout bd-callout-theme">
+              <h6>Medication</h6>
+              <table className="table table-sm table-bordered customTable">
+                <thead className="table-primary">
+                  <tr>
+                    <th>Sl. No.</th>
+                    <th>Generic Name</th>
+                    <th>Dosage</th>
+                    <th>Frequency</th>
+                    <th>Duration(days)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {this.state.patientMedications.length > 0
+                    ? this.state.patientMedications.map((data, index) => (
+                        <tr key={index}>
+                          <td>{index + 1}</td>
+                          <td>{data.generic_name}</td>
+                          <td>{data.dosage}</td>
+                          <td>{data.frequency_type}</td>
+                          <td>{data.no_of_days}</td>
+                        </tr>
+                      ))
+                    : null}
+                </tbody>
+              </table>
             </div>
 
             <div className="bd-callout bd-callout-theme">
               <h6>Diagnosis</h6>
+              <div className="row">
+                <div className="col">
+                  <h6 className="danger">
+                    {_pat_patientDiagnosis.length > 0
+                      ? _pat_patientDiagnosis.map((data, index) =>
+                          data.diagnosis_type === "P"
+                            ? "Primary: " + data.icd_description
+                            : null
+                        )
+                      : "No Diagnosis added"}
+                  </h6>
+                </div>
 
-              <p>
-                Visited Cardiology on 08/11/2018 for Chest Pain, duration 1
-                month.
-              </p>
-            </div>
-
-            <div className="bd-callout bd-callout-theme">
-              <h6>Treatment</h6>
-
-              <p>
-                Visited Cardiology on 08/11/2018 for Chest Pain, duration 1
-                month.
-              </p>
-            </div>
-            <div className="bd-callout bd-callout-theme">
-              <h6>Medication</h6>
-
-              <p>
-                Visited Cardiology on 08/11/2018 for Chest Pain, duration 1
-                month.
-              </p>
-            </div>
-
-            <div className="bd-callout bd-callout-theme">
-              <h6>Result</h6>
-              <p>
-                Visited Cardiology on 08/11/2018 for Chest Pain, duration 1
-                month.
-              </p>
+                <div className="col">
+                  <h6 className="">
+                    {_pat_patientDiagnosis.map((data, index) =>
+                      data.diagnosis_type === "S"
+                        ? "Secondary: " + data.icd_description
+                        : null
+                    )}
+                  </h6>
+                </div>
+              </div>
             </div>
           </div>
           <div className="col-md-3 col-lg-3">
@@ -176,10 +259,6 @@ class Summary extends Component {
                     {data.allergy_name}
                   </li>
                 ))}
-
-                {/* <li className="list-group-item">Cras justo odio</li>
-                <li className="list-group-item">Dapibus ac facilisis in</li>
-                <li className="list-group-item">Vestibulum at eros</li> */}
               </ul>
             </div>
             <div className="card">
@@ -190,9 +269,6 @@ class Summary extends Component {
                     {data.hims_d_diet_description}
                   </li>
                 ))}
-                {/* <li className="list-group-item">Cras justo odio</li>
-                <li className="list-group-item">Dapibus ac facilisis in</li>
-                <li className="list-group-item">Vestibulum at eros</li> */}
               </ul>
             </div>
           </div>
@@ -207,14 +283,19 @@ function mapStateToProps(state) {
     patient_summary: state.patient_summary,
     patient_profile: state.patient_profile,
     patient_allergies: state.patient_allergies,
-    patient_diet: state.patient_diet
+    patient_diet: state.patient_diet,
+    patient_vitals: state.patient_vitals,
+    patient_history: state.patient_history,
+    patient_diagnosis: state.patient_diagnosis
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getPatientSummary: AlgaehActions
+      getPatientSummary: AlgaehActions,
+      getVitalHistory: AlgaehActions,
+      getPatientHistory: AlgaehActions
     },
     dispatch
   );
