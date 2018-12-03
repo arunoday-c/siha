@@ -1,6 +1,7 @@
 import React from "react";
 import "./AlgaehmainPage.css";
 import {
+  swalMessage,
   algaehApiCall,
   setCookie,
   getCookie
@@ -35,6 +36,15 @@ class PersistentDrawer extends React.Component {
       menuList: [],
       scrollPosition: 0
     };
+    const _userName = getCookie("userName");
+    const _keyResources = getCookie("keyResources");
+    if (_userName === null || _userName === "") {
+      window.location.hash = "";
+    }
+    if (_keyResources === null || _keyResources === "") {
+      window.location.hash = "";
+    }
+
     const that = this;
     algaehApiCall({
       uri: "/algaehMasters/getRoleBaseActiveModules",
@@ -45,7 +55,6 @@ class PersistentDrawer extends React.Component {
             uri: "/algaehMasters/getRoleBaseInActiveComponents",
             method: "GET",
             onSuccess: internalComponents => {
-              debugger;
               if (internalComponents.data.success) {
                 sessionStorage.removeItem("AlgaehScreener");
                 sessionStorage.setItem(
@@ -61,6 +70,12 @@ class PersistentDrawer extends React.Component {
             menuList: dataResponse.data.records
           });
         }
+      },
+      onFailure: error => {
+        swalMessage({
+          text: error.response.data.message,
+          type: "error"
+        });
       }
     });
   }
@@ -199,7 +214,8 @@ class PersistentDrawer extends React.Component {
     const _offSet =
       document.querySelector("[menuselected]") === null
         ? 0
-        : document.querySelector("[menuselected]").offsetTop;
+        : document.querySelector("[menuselected]").getBoundingClientRect().top;
+
     if (this.scrollLeftPanel !== undefined && this.scrollLeftPanel !== null)
       this.scrollLeftPanel.scrollTop = _offSet;
   }

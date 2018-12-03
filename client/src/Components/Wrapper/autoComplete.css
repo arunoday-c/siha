@@ -97,3 +97,6 @@
 
 .myUL li a:hover:not(.header) {
   background-color: #eee; }
+
+.onselectedByNav a {
+  background-color: #cef4ff !important; }
