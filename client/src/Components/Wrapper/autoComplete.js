@@ -231,7 +231,7 @@ class AutoComplete extends PureComponent {
   }
 
   handleKeyDownNavigation(e) {
-    const prent = e.currentTarget.nextElementSibling.nextElementSibling;
+    const prent = e.currentTarget.offsetParent.querySelector("ol");
     if (prent.childElementCount > 0) {
       const { listSelectedLi } = this.state;
       let selected = prent.children[0];
@@ -242,7 +242,6 @@ class AutoComplete extends PureComponent {
         } else {
           prent.children[0].children[0].focus();
         }
-        //
         selected.classList.add("onselectedByNav");
         this.setState({ listSelectedLi: selected });
       }
