@@ -225,7 +225,8 @@ class AutoComplete extends PureComponent {
       this.setState({
         listState: "d-none",
         directonClass: "",
-        arrowIcon: "fa-angle-down"
+        arrowIcon: "fa-angle-down",
+        listSelectedLi: undefined
       });
     }
   }
@@ -242,7 +243,6 @@ class AutoComplete extends PureComponent {
         } else {
           prent.children[0].children[0].focus();
         }
-        selected.classList.add("onselectedByNav");
         this.setState({ listSelectedLi: selected });
       }
     }
@@ -253,19 +253,17 @@ class AutoComplete extends PureComponent {
     const { listSelectedLi } = this.state;
     if (listSelectedLi !== undefined) {
       if (e.keyCode === 40) {
-        listSelectedLi.classList.remove("onselectedByNav");
         const next = listSelectedLi.nextSibling;
         if (next !== null) {
           this.setState({ listSelectedLi: next });
-          next.classList.add("onselectedByNav");
+
           next.children[0].focus();
         }
       } else if (e.keyCode === 38) {
-        listSelectedLi.classList.remove("onselectedByNav");
         const prev = listSelectedLi.previousSibling;
         if (prev !== null) {
           this.setState({ listSelectedLi: prev });
-          prev.classList.add("onselectedByNav");
+
           prev.children[0].focus();
         }
       } else if (e.keyCode === 13) {
@@ -344,7 +342,8 @@ class AutoComplete extends PureComponent {
           directonClass: "",
           displayValue: _value,
           displayText: _text,
-          arrowIcon: "fa-angle-down"
+          arrowIcon: "fa-angle-down",
+          listSelectedLi: undefined
         },
         () => {
           if (this.props.selector.onChange !== undefined)
@@ -395,6 +394,10 @@ class AutoComplete extends PureComponent {
   }
 
   renderAutoComplete = () => {
+    let _liIndex = undefined;
+    if (this.state.listSelectedLi !== undefined) {
+      _liIndex = this.state.listSelectedLi.getAttribute("li_key");
+    }
     const _required =
       this.props.label !== undefined
         ? this.props.label.isImp !== undefined
@@ -464,6 +467,12 @@ class AutoComplete extends PureComponent {
               >
                 {this.state._sortData.map((item, index) => (
                   <li
+                    className={
+                      _liIndex !== undefined && index.toString() === _liIndex
+                        ? "onselectedByNav"
+                        : ""
+                    }
+                    li_key={index}
                     onClick={this.onListSelected.bind(this, item)}
                     key={index}
                     onKeyDown={this.handleKeyDownListItems.bind(this)}
