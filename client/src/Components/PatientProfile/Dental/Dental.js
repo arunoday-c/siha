@@ -23,7 +23,12 @@ class Dental extends Component {
       procedures: [],
       treatements: [
         {
-          date: "01-12-2018"
+          date: "01-12-2018",
+          tooth: 1,
+          surface: "D, L",
+          code: "PROC00989",
+          description: "ROOT CANAL",
+          status: "Completed"
         }
       ]
     };
@@ -80,8 +85,6 @@ class Dental extends Component {
       surface: e.currentTarget.innerText.toString()
     };
 
-    debugger;
-
     let my_item = Enumerable.from(teeth)
       .where(
         w =>
@@ -91,13 +94,11 @@ class Dental extends Component {
 
     if (my_item !== undefined) {
       teeth.splice(teeth.indexOf(my_item), 1);
-      console.log("Teeth Selected", teeth);
+      //console.log("Teeth Selected", teeth);
     } else {
       teeth.push(my_obj);
-      console.log("Teeth Selected", teeth);
+      //console.log("Teeth Selected", teeth);
     }
-
-    //   teeth.includes(my_obj) ? teeth.pop(my_obj) : teeth.push(my_obj);
   }
 
   generateToothUpperLeftSet() {
@@ -400,7 +401,7 @@ class Dental extends Component {
             </div>
           </div>
 
-          <div className="col-lg-12">
+          <div className="col-lg-12" id="dentalTreatment">
             <div className="row top-teeth-sec">
               <div className="col-lg-6 teeth-sec">
                 <h6>Upper Left</h6>
@@ -690,12 +691,12 @@ class Dental extends Component {
                 },
 
                 {
-                  fieldName: "code",
+                  fieldName: "description",
                   label: "Description",
                   disabled: true
                 },
                 {
-                  fieldName: "code",
+                  fieldName: "status",
                   label: "Status",
                   disabled: true
                 }
