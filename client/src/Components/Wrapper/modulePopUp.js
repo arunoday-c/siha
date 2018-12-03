@@ -7,8 +7,12 @@ export default class AlgaehModalPopUp extends PureComponent {
     this.state = {
       openPopup: false
     };
+<<<<<<< HEAD
     this.el = document.createElement("div");
     // this.setState({ openPopup: this.props.openPopup });
+=======
+    //this.setState({ openPopup: this.props.openPopup });
+>>>>>>> d872e6e35e5102dd7b0a33c8d432f9f37c429519
     this.handleClose = this.handleClose.bind(this);
   }
   handleClose(e) {
@@ -28,9 +32,15 @@ export default class AlgaehModalPopUp extends PureComponent {
     this.setState({ openPopup: newProps.openPopup });
   }
   render() {
+<<<<<<< HEAD
     const { openPopup } = this.state;
     if (openPopup) {
       return ReactDOM.createPortal(
+=======
+    const { openPopup } = this.state.openPopup;
+    if (this.state.openPopup === true) {
+      return (
+>>>>>>> d872e6e35e5102dd7b0a33c8d432f9f37c429519
         <div className="algaehModalWrapper">
           <div className="algaeh-modal">
             <div className="popupHeader">

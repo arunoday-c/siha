@@ -50,6 +50,8 @@
     overflow: hidden;
     transform: rotate(45deg);
     box-shadow: 0 0 1px #000; }
+    #dentalTreatment .surface-Marking .mark-active {
+      background: #ffe79b; }
   #dentalTreatment .surface-Marking div {
     width: 25px;
     height: 25px;
@@ -142,7 +144,7 @@
   #dentalTreatment .incisors-down-9 {
     background-image: url(../../../assets/images/incisors-down.png); }
   #dentalTreatment .incisors-down-10 {
-    background-image: url(../../../assets/images/incisors-up.png); }
+    background-image: url(../../../assets/images/incisors-down.png); }
   #dentalTreatment div.tooltip {
     padding: 0px 5px;
     background: #ffbb99;
