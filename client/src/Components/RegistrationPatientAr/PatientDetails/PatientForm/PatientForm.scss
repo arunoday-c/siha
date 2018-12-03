@@ -1,13 +1,9 @@
-.hptl-phase1-patient-ar-form {
+.hptl-phase1-add-patient-form {
   background: #ffff;
   border-radius: 5px;
-}
-
-.hptl-phase1-add-patient-ar-form {
   .primary-details {
+    border-right: 1px dashed #d3d3d3;
     padding-top: 8px;
-    border-left: 1px dashed #d3d3d3;
-    border-right: none;
   }
   mark {
     background: none;
@@ -22,6 +18,9 @@
     width: 100% !important;
     background-color: #fbfbfb;
     margin-right: 5px;
+  }
+  .paddin-bottom-5 {
+    padding-bottom: 4px;
   }
 
   .secondary-details {

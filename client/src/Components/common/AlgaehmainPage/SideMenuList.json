@@ -204,6 +204,12 @@
         "label": "OP Bill Cancellation",
         "arlabel": "الفواتير قيد الانتظار قائمة OP",
         "path": "/OPBillCancellation"
+      },
+      {
+        "name": "OP Credit Settlement",
+        "label": "OP Credit Settlement",
+        "arlabel": "الفواتير قيد الانتظار قائمة OP",
+        "path": "/OPCreditSettlement"
       }
     ]
   },

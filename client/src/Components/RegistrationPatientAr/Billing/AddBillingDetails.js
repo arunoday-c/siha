@@ -1,5 +1,11 @@
 import moment from "moment";
-import { successfulMessage } from "../../../../utils/GlobalFunctions";
+import {
+  algaehApiCall,
+  swalMessage,
+  getCookie
+} from "../../../utils/algaehApiCall";
+import AlgaehLoader from "../../Wrapper/fullPageLoader";
+
 let texthandlerInterval = null;
 
 const texthandle = ($this, context, ctrl, e) => {
@@ -21,8 +27,6 @@ const texthandle = ($this, context, ctrl, e) => {
 };
 
 const calculateRecipt = ($this, context) => {
-  var intervalId;
-
   let serviceInput = {
     isReceipt: true,
     intCalculateall: false,
@@ -33,19 +37,26 @@ const calculateRecipt = ($this, context) => {
     receiveable_amount: parseFloat($this.state.receiveable_amount)
   };
 
-  clearInterval(intervalId);
-  intervalId = setInterval(() => {
-    $this.props.billingCalculations({
-      uri: "/billing/billingCalculations",
-      method: "POST",
-      data: serviceInput,
-      redux: {
-        type: "BILL_HEADER_GEN_GET_DATA",
-        mappingName: "genbill"
+  algaehApiCall({
+    uri: "/billing/billingCalculations",
+    method: "POST",
+    data: serviceInput,
+    onSuccess: response => {
+      if (response.data.success) {
+        if (context != null) {
+          context.updateState({ ...response.data.records });
+        }
       }
-    });
-    clearInterval(intervalId);
-  }, 500);
+      AlgaehLoader({ show: false });
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
 };
 
 const cashtexthandle = ($this, context, ctrl, e) => {
@@ -57,10 +68,9 @@ const cashtexthandle = ($this, context, ctrl, e) => {
   let receiveable_amount = parseFloat($this.state.receiveable_amount);
 
   if (cash_amount + card_amount + cheque_amount > receiveable_amount) {
-    successfulMessage({
-      message: "Invalid Input. Sum of all amount to be equal to Receivable.",
-      title: "Warning",
-      icon: "warning"
+    swalMessage({
+      title: "Invalid Input. Sum of all amount to be equal to Receivable.",
+      type: "warning"
     });
 
     $this.setState(
@@ -73,14 +83,9 @@ const cashtexthandle = ($this, context, ctrl, e) => {
       }
     );
   } else {
-    $this.setState(
-      {
-        [e.target.name]: e.target.value
-      },
-      () => {
-        calculateRecipt($this, context);
-      }
-    );
+    $this.setState({
+      [e.target.name]: e.target.value
+    });
 
     if (context != null) {
       context.updateState({ [e.target.name]: e.target.value });
@@ -96,10 +101,9 @@ const cardtexthandle = ($this, context, ctrl, e) => {
   let receiveable_amount = parseFloat($this.state.receiveable_amount);
 
   if (cash_amount + card_amount + cheque_amount > receiveable_amount) {
-    successfulMessage({
-      message: "Invalid Input. Sum of all amount to be equal to Receivable.",
-      title: "Warning",
-      icon: "warning"
+    swalMessage({
+      title: "Invalid Input. Sum of all amount to be equal to Receivable.",
+      type: "warning"
     });
     $this.setState(
       {
@@ -111,14 +115,9 @@ const cardtexthandle = ($this, context, ctrl, e) => {
       }
     );
   } else {
-    $this.setState(
-      {
-        [e.target.name]: e.target.value
-      },
-      () => {
-        calculateRecipt($this, context);
-      }
-    );
+    $this.setState({
+      [e.target.name]: e.target.value
+    });
 
     if (context != null) {
       context.updateState({ [e.target.name]: e.target.value });
@@ -135,10 +134,9 @@ const chequetexthandle = ($this, context, ctrl, e) => {
   let receiveable_amount = parseFloat($this.state.receiveable_amount);
 
   if (cash_amount + card_amount + cheque_amount > receiveable_amount) {
-    successfulMessage({
-      message: "Invalid Input. Sum of all amount to be equal to Receivable.",
-      title: "Warning",
-      icon: "warning"
+    swalMessage({
+      title: "Invalid Input. Sum of all amount to be equal to Receivable.",
+      type: "warning"
     });
     $this.setState(
       {
@@ -150,14 +148,9 @@ const chequetexthandle = ($this, context, ctrl, e) => {
       }
     );
   } else {
-    $this.setState(
-      {
-        [e.target.name]: e.target.value
-      },
-      () => {
-        calculateRecipt($this, context);
-      }
-    );
+    $this.setState({
+      [e.target.name]: e.target.value
+    });
 
     if (context != null) {
       context.updateState({ [e.target.name]: e.target.value });
@@ -169,21 +162,15 @@ const adjustadvance = ($this, context, ctrl, e) => {
   e = e || ctrl;
 
   if (e.target.value > $this.state.advance_amount) {
-    successfulMessage({
-      message:
+    swalMessage({
+      title:
         "Invalid Input. Adjusted amount cannot be greater than Advance amount",
-      title: "Warning",
-      icon: "warning"
+      type: "warning"
     });
   } else {
-    $this.setState(
-      {
-        [e.target.name]: e.target.value
-      },
-      () => {
-        billheaderCalculation($this, context);
-      }
-    );
+    $this.setState({
+      [e.target.name]: e.target.value
+    });
 
     if (context != null) {
       context.updateState({
@@ -207,21 +194,15 @@ const discounthandle = ($this, context, ctrl, e) => {
     sheet_discount_percentage = 0;
   }
   if (sheet_discount_percentage > 100) {
-    successfulMessage({
-      message: "Invalid Input. Discount % cannot be greater than 100.",
-      title: "Warning",
-      icon: "warning"
+    swalMessage({
+      title: "Invalid Input. Discount % cannot be greater than 100.",
+      type: "Warning"
     });
   } else {
-    $this.setState(
-      {
-        sheet_discount_percentage: sheet_discount_percentage,
-        sheet_discount_amount: sheet_discount_amount
-      },
-      () => {
-        billheaderCalculation($this, context);
-      }
-    );
+    $this.setState({
+      sheet_discount_percentage: sheet_discount_percentage,
+      sheet_discount_amount: sheet_discount_amount
+    });
 
     if (context != null) {
       context.updateState({
@@ -233,8 +214,6 @@ const discounthandle = ($this, context, ctrl, e) => {
 };
 
 const billheaderCalculation = ($this, context) => {
-  var intervalId;
-
   let serviceInput = {
     isReceipt: false,
     intCalculateall: false,
@@ -247,20 +226,35 @@ const billheaderCalculation = ($this, context) => {
     credit_amount: parseFloat($this.state.credit_amount)
   };
 
-  clearInterval(intervalId);
-
-  intervalId = setInterval(() => {
-    $this.props.billingCalculations({
-      uri: "/billing/billingCalculations",
-      method: "POST",
-      data: serviceInput,
-      redux: {
-        type: "BILL_HEADER_GEN_GET_DATA",
-        mappingName: "genbill"
+  algaehApiCall({
+    uri: "/billing/billingCalculations",
+    method: "POST",
+    data: serviceInput,
+    onSuccess: response => {
+      if (response.data.success) {
+        if (context != null) {
+          context.updateState({ ...response.data.records });
+        }
       }
-    });
-    clearInterval(intervalId);
-  }, 500);
+      AlgaehLoader({ show: false });
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+  // $this.props.billingCalculations({
+  //   uri: "/billing/billingCalculations",
+  //   method: "POST",
+  //   data: serviceInput,
+  //   redux: {
+  //     type: "BILL_HEADER_GEN_GET_DATA",
+  //     mappingName: "genbill"
+  //   }
+  // });
 };
 
 const datehandle = ($this, context, ctrl, e) => {
@@ -274,17 +268,17 @@ const datehandle = ($this, context, ctrl, e) => {
 };
 
 const ProcessInsurance = ($this, context, ctrl, e) => {
+  debugger;
   if (
     $this.state.insured === "Y" &&
     ($this.state.primary_insurance_provider_id == null ||
       $this.state.primary_network_office_id == null ||
       $this.state.primary_network_id == null)
   ) {
-    successfulMessage({
-      message:
+    swalMessage({
+      title:
         "Invalid Input. Please select the primary insurance details properly.",
-      title: "Error",
-      icon: "error"
+      type: "error"
     });
   } else if (
     $this.state.sec_insured === "Y" &&
@@ -292,11 +286,10 @@ const ProcessInsurance = ($this, context, ctrl, e) => {
       $this.state.secondary_network_office_id == null ||
       $this.state.secondary_network_id == null)
   ) {
-    successfulMessage({
-      message:
+    swalMessage({
+      title:
         "Invalid Input. Please select the secondary insurance details properly.",
-      title: "Error",
-      icon: "error"
+      type: "error"
     });
   } else {
     let serviceInput = [
@@ -315,28 +308,46 @@ const ProcessInsurance = ($this, context, ctrl, e) => {
         secondary_network_office_id: $this.state.secondary_network_office_id
       }
     ];
-    $this.props.generateBill({
+
+    algaehApiCall({
       uri: "/billing/getBillDetails",
       method: "POST",
       data: serviceInput,
-      redux: {
-        type: "BILL_GEN_GET_DATA",
-        mappingName: "xxx"
-      },
-      afterSuccess: data => {
-        data.saveEnable = false;
-        if (context != null) {
-          context.updateState({ ...data });
-        }
-
-        $this.props.billingCalculations({
-          uri: "/billing/billingCalculations",
-          method: "POST",
-          data: data,
-          redux: {
-            type: "BILL_HEADER_GEN_GET_DATA",
-            mappingName: "genbill"
+      onSuccess: response => {
+        if (response.data.success) {
+          if (context != null) {
+            context.updateState({ ...response.data.records });
           }
+
+          algaehApiCall({
+            uri: "/billing/billingCalculations",
+            method: "POST",
+            data: response.data.records,
+            onSuccess: response => {
+              if (response.data.success) {
+                response.data.records.saveEnable = false;
+                response.data.records.ProcessInsure = true;
+                if (context != null) {
+                  context.updateState({ ...response.data.records });
+                }
+              }
+              AlgaehLoader({ show: false });
+            },
+            onFailure: error => {
+              AlgaehLoader({ show: false });
+              swalMessage({
+                title: error.message,
+                type: "error"
+              });
+            }
+          });
+        }
+      },
+      onFailure: error => {
+        AlgaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error"
         });
       }
     });
@@ -344,9 +355,10 @@ const ProcessInsurance = ($this, context, ctrl, e) => {
 };
 
 const checkcashhandaler = ($this, context, e) => {
+  let Cashchecked = e.target.checked;
   $this.setState(
     {
-      Cashchecked: e.target.checked,
+      Cashchecked: Cashchecked,
       cash_amount: 0
     },
     () => {
@@ -354,47 +366,42 @@ const checkcashhandaler = ($this, context, e) => {
     }
   );
 
-  clearInterval(texthandlerInterval);
-  texthandlerInterval = setInterval(() => {
-    if (context !== undefined) {
-      context.updateState({
-        cash_amount: 0
-      });
-    }
-    clearInterval(texthandlerInterval);
-  }, 500);
+  if (context !== undefined) {
+    context.updateState({
+      cash_amount: 0,
+      Cashchecked: Cashchecked
+    });
+  }
 };
 
 const checkcardhandaler = ($this, context, e) => {
+  let Cardchecked = e.target.checked;
   $this.setState(
     {
-      Cardchecked: e.target.checked,
+      Cardchecked: Cardchecked,
       card_amount: 0,
-      card_number: null,
+      card_check_number: null,
       expiry_date: null
     },
     () => {
       calculateRecipt($this, context);
     }
   );
-
-  clearInterval(texthandlerInterval);
-  texthandlerInterval = setInterval(() => {
-    if (context !== undefined) {
-      context.updateState({
-        card_amount: 0,
-        card_number: null,
-        expiry_date: null
-      });
-    }
-    clearInterval(texthandlerInterval);
-  }, 500);
+  if (context !== undefined) {
+    context.updateState({
+      card_amount: 0,
+      card_check_number: null,
+      expiry_date: null,
+      Cardchecked: Cardchecked
+    });
+  }
 };
 
 const checkcheckhandaler = ($this, context, e) => {
+  let Checkchecked = e.target.checked;
   $this.setState(
     {
-      Checkchecked: e.target.checked,
+      Checkchecked: Checkchecked,
       cheque_amount: 0,
       cheque_number: null,
       cheque_date: null
@@ -403,38 +410,28 @@ const checkcheckhandaler = ($this, context, e) => {
       calculateRecipt($this, context);
     }
   );
-
-  clearInterval(texthandlerInterval);
-  texthandlerInterval = setInterval(() => {
-    if (context !== undefined) {
-      context.updateState({
-        cheque_amount: 0,
-        cheque_number: null,
-        cheque_date: null
-      });
-    }
-    clearInterval(texthandlerInterval);
-  }, 500);
+  if (context !== undefined) {
+    context.updateState({
+      cheque_amount: 0,
+      cheque_number: null,
+      cheque_date: null,
+      Checkchecked: Checkchecked
+    });
+  }
 };
 
 const credittexthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
 
   if (e.target.value > $this.state.net_amount) {
-    successfulMessage({
-      message: "Invalid Input. Criedt amount cannot be greater than Net amount",
-      title: "Warning",
-      icon: "warning"
+    swalMessage({
+      title: "Invalid Input. Criedt amount cannot be greater than Net amount",
+      type: "warning"
     });
   } else {
-    $this.setState(
-      {
-        [e.target.name]: e.target.value
-      },
-      () => {
-        billheaderCalculation($this, context);
-      }
-    );
+    $this.setState({
+      [e.target.name]: e.target.value
+    });
 
     if (context != null) {
       context.updateState({
@@ -442,6 +439,74 @@ const credittexthandle = ($this, context, ctrl, e) => {
       });
     }
   }
+};
+
+const advanceAdjustCal = ($this, context, e) => {
+  if (e.target.value !== e.target.oldvalue) {
+    billheaderCalculation($this, context);
+  }
+};
+
+const discountCal = ($this, context, e) => {
+  if (e.target.value !== e.target.oldvalue) {
+    billheaderCalculation($this, context);
+  }
+};
+
+const credittextCal = ($this, context, e) => {
+  if (e.target.value !== e.target.oldvalue) {
+    billheaderCalculation($this, context);
+  }
+};
+
+const cashtexthCal = ($this, context, e) => {
+  if (e.target.value !== e.target.oldvalue) {
+    calculateRecipt($this, context);
+  }
+};
+
+const cardtexthCal = ($this, context, e) => {
+  if (e.target.value !== e.target.oldvalue) {
+    calculateRecipt($this, context);
+  }
+};
+
+const chequetexthCal = ($this, context, e) => {
+  if (e.target.value !== e.target.oldvalue) {
+    calculateRecipt($this, context);
+  }
+};
+
+const countertexthandle = ($this, context, ctrl, e) => {
+  e = e || ctrl;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  $this.setState(
+    {
+      [name]: value
+    },
+    () => {
+      let _screenName = getCookie("ScreenName").replace("/", "");
+      algaehApiCall({
+        uri: "/userPreferences/save",
+        data: {
+          screenName: _screenName,
+          identifier: "Counter",
+          value: value
+        },
+        method: "POST"
+      });
+    }
+  );
+
+  clearInterval(texthandlerInterval);
+  texthandlerInterval = setInterval(() => {
+    if (context !== undefined) {
+      context.updateState({ [name]: value });
+    }
+    clearInterval(texthandlerInterval);
+  }, 500);
 };
 
 export {
@@ -456,5 +521,12 @@ export {
   checkcashhandaler,
   checkcardhandaler,
   checkcheckhandaler,
-  credittexthandle
+  credittexthandle,
+  advanceAdjustCal,
+  discountCal,
+  credittextCal,
+  cashtexthCal,
+  cardtexthCal,
+  chequetexthCal,
+  countertexthandle
 };

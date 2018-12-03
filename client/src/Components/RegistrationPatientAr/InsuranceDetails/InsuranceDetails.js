@@ -46,11 +46,6 @@ export default class InsuranceDetails extends PureComponent {
                   }}
                 />
               }
-
-              {/* <AddCircle style={{ padding: "2px", marginBottom: "-10px" }} /> */}
-              {/* <IconButton className="newadd-button" color="primary">
-                <AddCircle />
-              </IconButton> */}
             </li>
             <li
               className={"nav-item tab-button " + secondaryInsurance}

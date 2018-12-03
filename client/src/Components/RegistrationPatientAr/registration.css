@@ -19,15 +19,3 @@
     background-color: #292929 !important;
     left: 0px;
     width: 250px; }
-
-.algaeh_Arabic_Version {
-  text-align: right; }
-  .algaeh_Arabic_Version input.autoselect-input {
-    text-align: right;
-    direction: rtl; }
-  .algaeh_Arabic_Version input.autoselect-input:disabled {
-    text-align: right;
-    direction: rtl; }
-  .algaeh_Arabic_Version .algaeh-datePicker input[type="date"]:disabled {
-    text-align: right;
-    direction: rtl; }

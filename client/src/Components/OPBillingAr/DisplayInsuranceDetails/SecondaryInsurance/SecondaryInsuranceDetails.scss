@@ -5,19 +5,19 @@
 }
 .htpl-phase1-primary-secinsurancedis-form {
   .primary-details {
-    //  padding: 5px;
+    padding: 15px;
     border-right: 1px solid #000;
-    // .primary-box-container {
-    //   padding: 5px;
-    // }
+    .primary-box-container {
+      padding: 5px;
+    }
   }
 
-  // .secondary-details {
-  //   padding: 5px;
-  //   .secondary-box-container {
-  //     padding: 5px;
-  //   }
-  // }
+  .secondary-details {
+    padding: 15px;
+    .secondary-box-container {
+      padding: 5px;
+    }
+  }
 
   label {
     font-weight: 400;

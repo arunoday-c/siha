@@ -118,51 +118,51 @@ const discounthandle = ($this, context, ctrl, e) => {
 };
 
 const billheaderCalculation = ($this, context, e) => {
-  if (e.target.value !== e.target.oldvalue) {
-    let serviceInput = {
-      isReceipt: false,
-      intCalculateall: false,
-      sheet_discount_percentage: parseFloat(
-        $this.state.sheet_discount_percentage
-      ),
-      sheet_discount_amount: parseFloat($this.state.sheet_discount_amount),
-      advance_adjust: parseFloat($this.state.advance_adjust),
-      gross_total: parseFloat($this.state.gross_total),
-      credit_amount: parseFloat($this.state.credit_amount)
-    };
+  // if (e.target.value !== e.target.oldvalue) {
+  let serviceInput = {
+    isReceipt: false,
+    intCalculateall: false,
+    sheet_discount_percentage: parseFloat(
+      $this.state.sheet_discount_percentage
+    ),
+    sheet_discount_amount: parseFloat($this.state.sheet_discount_amount),
+    advance_adjust: parseFloat($this.state.advance_adjust),
+    gross_total: parseFloat($this.state.gross_total),
+    credit_amount: parseFloat($this.state.credit_amount)
+  };
 
-    algaehApiCall({
-      uri: "/billing/billingCalculations",
-      method: "POST",
-      data: serviceInput,
-      onSuccess: response => {
-        if (response.data.success) {
-          if (context != null) {
-            response.data.records.patient_payable_h =
-              response.data.records.patient_payable ||
-              $this.state.patient_payable;
-            context.updateState({ ...response.data.records });
-          }
+  algaehApiCall({
+    uri: "/billing/billingCalculations",
+    method: "POST",
+    data: serviceInput,
+    onSuccess: response => {
+      if (response.data.success) {
+        if (context != null) {
+          response.data.records.patient_payable_h =
+            response.data.records.patient_payable ||
+            $this.state.patient_payable;
+          context.updateState({ ...response.data.records });
         }
-      },
-      onFailure: error => {
-        swalMessage({
-          title: error.message,
-          type: "error"
-        });
       }
-    });
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
 
-    // $this.props.billingCalculations({
-    //   uri: "/billing/billingCalculations",
-    //   method: "POST",
-    //   data: serviceInput,
-    //   redux: {
-    //     type: "BILL_HEADER_GEN_GET_DATA",
-    //     mappingName: "genbill"
-    //   }
-    // });
-  }
+  // $this.props.billingCalculations({
+  //   uri: "/billing/billingCalculations",
+  //   method: "POST",
+  //   data: serviceInput,
+  //   redux: {
+  //     type: "BILL_HEADER_GEN_GET_DATA",
+  //     mappingName: "genbill"
+  //   }
+  // });
+  // }
 };
 
 const onchangegridcol = ($this, row, e) => {
@@ -200,9 +200,9 @@ const credittexthandle = ($this, context, ctrl, e) => {
 };
 
 const credittextCal = ($this, e) => {
-  if (e.target.value !== e.target.oldvalue) {
-    billheaderCalculation($this);
-  }
+  // if (e.target.value !== e.target.oldvalue) {
+  billheaderCalculation($this);
+  // }
 };
 
 const EditGrid = ($this, context, cancelRow) => {

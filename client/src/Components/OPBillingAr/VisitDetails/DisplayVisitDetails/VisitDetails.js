@@ -7,11 +7,11 @@ import Radio from "@material-ui/core/Radio";
 import { AlgaehDataGrid, AlgaehLabel } from "../../../Wrapper/algaehWrapper";
 import "./DisplayVisitDetails.css";
 import "./../../../../styles/site.css";
-import Enumerable from "linq";
+
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import MyContext from "../../../../utils/MyContext.js";
-import { successfulMessage } from "../../../../utils/GlobalFunctions";
 
+import { handleChange } from "./VisitdetailEvent";
 class DisplayVisitDetails extends Component {
   constructor(props) {
     super(props);
@@ -59,116 +59,6 @@ class DisplayVisitDetails extends Component {
     this.setState(nextProps.BillingIOputs);
   }
 
-  handleChange(row, context, e) {
-    let $this = this;
-    let mode_of_pay = "Self";
-    let x = Enumerable.from(this.state.visitDetails)
-      .where(w => w.radioselect == 1)
-      .toArray();
-    var index;
-
-    let doctor_name = "";
-
-    let employee_list = Enumerable.from(this.props.deptanddoctors.doctors)
-      .where(w => w.employee_id == row.doctor_id)
-      .toArray();
-    if (employee_list !== null && employee_list.length > 0) {
-      doctor_name = employee_list[0].full_name;
-    }
-
-    if (x != null && x.length > 0) {
-      index = this.state.visitDetails.indexOf(x[0]);
-      if (index > -1) {
-        this.state.visitDetails[index]["radioselect"] = 0;
-      }
-    }
-    index = this.state.visitDetails.indexOf(row);
-    this.state.visitDetails[index]["radioselect"] = 1;
-    if (row.insured === "Y") {
-      mode_of_pay = "Insurance";
-    }
-    this.setState(
-      {
-        incharge_or_provider: row.doctor_id,
-        visit_id: row.hims_f_patient_visit_id,
-        insured: row.insured,
-        sec_insured: row.sec_insured,
-        mode_of_pay: mode_of_pay,
-        doctor_name: doctor_name
-      },
-      () => {
-        if (this.state.insured === "Y") {
-          this.props.getPatientInsurance({
-            uri: "/insurance/getPatientInsurance",
-            method: "GET",
-            data: {
-              patient_id: this.state.hims_d_patient_id,
-              patient_visit_id: this.state.visit_id
-            },
-            redux: {
-              type: "EXIT_INSURANCE_GET_DATA",
-              mappingName: "existinsurance"
-            }
-          });
-        }
-
-        this.props.getOrderList({
-          uri: "/orderAndPreApproval/selectOrderServices",
-          method: "GET",
-          data: {
-            visit_id: this.state.visit_id
-          },
-          redux: {
-            type: "ORDER_SERVICES_GET_DATA",
-            mappingName: "orderlist"
-          },
-          afterSuccess: data => {
-            let pre_approval_Required = Enumerable.from(data)
-              .where(w => w.pre_approval === "Y" && w.apprv_status === "NR")
-              .toArray();
-            for (let i = 0; i < data.length; i++) {
-              data[i].ordered_date = data[i].created_date;
-            }
-
-            if (pre_approval_Required.length > 0) {
-              successfulMessage({
-                message:
-                  "Invalid Input. Some of the service is Pre-Approval required, Please wait for Approval.",
-                title: "Warning",
-                icon: "warning"
-              });
-            } else {
-              if (context != null) {
-                context.updateState({ billdetails: data });
-              }
-
-              $this.props.billingCalculations({
-                uri: "/billing/billingCalculations",
-                method: "POST",
-                data: { billdetails: data },
-                redux: {
-                  type: "BILL_HEADER_GEN_GET_DATA",
-                  mappingName: "genbill"
-                }
-              });
-            }
-          }
-        });
-      }
-    );
-
-    if (context != null) {
-      context.updateState({
-        incharge_or_provider: row.doctor_id,
-        visit_id: row.hims_f_patient_visit_id,
-        insured: row.insured,
-        sec_insured: row.sec_insured,
-        mode_of_pay: mode_of_pay,
-        doctor_name: doctor_name
-      });
-    }
-  }
-
   render() {
     return (
       <React.Fragment>
@@ -188,15 +78,21 @@ class DisplayVisitDetails extends Component {
                                 style={{ maxHeight: "10px", maxWidth: "30px" }}
                                 name="select"
                                 color="primary"
-                                onChange={this.handleChange.bind(
+                                onChange={handleChange.bind(
+                                  this,
                                   this,
                                   row,
                                   context
                                 )}
-                                checked={row.radioselect == 1 ? true : false}
+                                checked={row.radioselect === 1 ? true : false}
                                 disabled={this.state.Billexists}
                               />
                             );
+                          },
+                          others: {
+                            maxWidth: 50,
+                            resizable: false,
+                            style: { textAlign: "center" }
                           }
                         },
                         {
@@ -224,12 +120,12 @@ class DisplayVisitDetails extends Component {
                                 ? []
                                 : this.props.visittypes.filter(
                                     f =>
-                                      f.hims_d_visit_type_id == row.visit_type
+                                      f.hims_d_visit_type_id === row.visit_type
                                   );
 
                             return (
                               <span>
-                                {display != null && display.length != 0
+                                {display !== null && display.length !== 0
                                   ? this.state.selectedLang === "en"
                                     ? display[0].visit_type_desc
                                     : display[0].arabic_visit_type_desc
@@ -248,20 +144,20 @@ class DisplayVisitDetails extends Component {
                           ),
                           displayTemplate: row => {
                             let display = [];
-                            this.props.deptanddoctors != 0
+                            this.props.deptanddoctors !== 0
                               ? (display =
                                   this.props.deptanddoctors === undefined
                                     ? []
                                     : this.props.deptanddoctors.departmets.filter(
                                         f =>
-                                          f.sub_department_id ==
+                                          f.sub_department_id ===
                                           row.sub_department_id
                                       ))
                               : [];
 
                             return (
                               <span>
-                                {display != null && display.length != 0
+                                {display !== null && display.length !== 0
                                   ? this.state.selectedLang === "en"
                                     ? display[0].sub_department_name
                                     : display[0].arabic_sub_department_name
@@ -280,18 +176,18 @@ class DisplayVisitDetails extends Component {
                           ),
                           displayTemplate: row => {
                             let display;
-                            this.props.deptanddoctors != 0
+                            this.props.deptanddoctors !== 0
                               ? (display =
                                   this.props.deptanddoctors === undefined
                                     ? []
                                     : this.props.deptanddoctors.doctors.filter(
-                                        f => f.employee_id == row.doctor_id
+                                        f => f.employee_id === row.doctor_id
                                       ))
                               : [];
 
                             return (
                               <span>
-                                {display != null && display.length != 0
+                                {display !== null && display.length !== 0
                                   ? this.state.selectedLang === "en"
                                     ? display[0].full_name
                                     : display[0].arabic_name
@@ -330,7 +226,6 @@ function mapStateToProps(state) {
     visittypes: state.visittypes,
     deptanddoctors: state.deptanddoctors,
     existinsurance: state.existinsurance,
-    genbill: state.genbill,
     orderlist: state.orderlist
   };
 }
@@ -341,7 +236,6 @@ function mapDispatchToProps(dispatch) {
       getVisittypes: AlgaehActions,
       getDepartmentsandDoctors: AlgaehActions,
       getPatientInsurance: AlgaehActions,
-      billingCalculations: AlgaehActions,
       getOrderList: AlgaehActions
     },
     dispatch

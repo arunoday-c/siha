@@ -27,18 +27,7 @@
     width: 250px;
   }
 }
-.algaeh_Arabic_Version {
-  text-align: right;
-  input.autoselect-input {
-    text-align: right;
-    direction: rtl;
-  }
-  input.autoselect-input:disabled {
-    text-align: right;
-    direction: rtl;
-  }
-  .algaeh-datePicker input[type="date"]:disabled {
-    text-align: right;
-    direction: rtl;
-  }
+
+.spacing-push {
+  // margin-top: 6em;
 }
