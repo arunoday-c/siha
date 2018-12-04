@@ -4,11 +4,13 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import "./Dental.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import {
   AlagehAutoComplete,
   AlagehFormGroup,
   AlgaehDataGrid,
-  AlgaehModalPopUp
+  AlgaehModalPopUp,
+  AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import Enumerable from "linq";
@@ -20,19 +22,22 @@ class Dental extends Component {
     super(props);
     this.state = {
       openDentalModal: false,
+      standard_fee: 0,
       procedures: [],
-      treatements: [
-        {
-          date: "01-12-2018",
-          tooth: 1,
-          surface: "D, L",
-          code: "PROC00989",
-          description: "ROOT CANAL",
-          status: "Completed"
-        }
-      ]
+      consult_date: new Date(),
+      treatements: [],
+      dentalTreatments: []
     };
     this.getProcedures();
+    this.getTreatementPlans();
+  }
+
+  clearSaveState() {
+    this.setState({
+      plan_name: "",
+      remarks: "",
+      consult_date: new Date()
+    });
   }
 
   getProcedures() {
@@ -60,19 +65,58 @@ class Dental extends Component {
 
   dropDownHandler(value) {
     this.setState({
-      [value.name]: value.value
+      [value.name]: value.value,
+      standard_fee: value.selected.standard_fee
     });
   }
 
   textHandle(e) {
-    this.setState({
-      [e.target.name]: e.target.value
+    switch (e.target.name) {
+      case "quantity":
+        this.setState({
+          [e.target.name]: e.target.value,
+          total_price: e.target.value * this.state.standard_fee
+        });
+
+        break;
+
+      default:
+        this.setState({
+          [e.target.name]: e.target.value
+        });
+        break;
+    }
+  }
+
+  markAllSurface(e) {
+    debugger;
+  }
+
+  getTreatementPlans() {
+    algaehApiCall({
+      uri: "/dental/getTreatmentPlan",
+      method: "GET",
+      data: {
+        episode_id: Window.global["episode_id"]
+      },
+      onSuccess: response => {
+        if (response.data.records) {
+          this.setState({
+            treatements: response.data.records
+          });
+        }
+      },
+      onError: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
     });
   }
 
-  componentDidMount() {}
-
   markTeethSurface(e) {
+    debugger;
     e.currentTarget.classList.contains("mark-active")
       ? e.currentTarget.classList.remove("mark-active")
       : e.currentTarget.classList.add("mark-active");
@@ -85,6 +129,31 @@ class Dental extends Component {
       surface: e.currentTarget.innerText.toString()
     };
 
+    let my_obj1 = {
+      patient_id: Window.global["current_patient"],
+      episode_id: Window.global["episode_id"],
+      treatment_plan_id: this.state.hims_f_treatment_plan_id,
+      service_id: this.state.hims_d_services_id,
+      teeth_number: parseInt(
+        e.currentTarget.parentElement.previousElementSibling.innerText,
+        10
+      ),
+      scheduled_date: this.state.scheduled_date,
+      distal: "Y",
+      incisal: "Y",
+      occlusal: "Y",
+      mesial: "Y",
+      buccal: "Y",
+      labial: "Y",
+      cervical: "Y",
+      palatal: "Y",
+      lingual: "Y",
+      billed: "Y",
+      treatment_status: "PL"
+    };
+
+    debugger;
+
     let my_item = Enumerable.from(teeth)
       .where(
         w =>
@@ -94,11 +163,85 @@ class Dental extends Component {
 
     if (my_item !== undefined) {
       teeth.splice(teeth.indexOf(my_item), 1);
-      //console.log("Teeth Selected", teeth);
+      console.log("Teeth Selected", teeth);
     } else {
       teeth.push(my_obj);
-      //console.log("Teeth Selected", teeth);
+      console.log("Teeth Selected", teeth);
     }
+
+    let send_teeth = Enumerable.from(teeth)
+      .groupBy("$.tooth_number", null, (k, g) => {
+        debugger;
+        let teeth = Enumerable.from(g.getSource()).firstOrDefault()
+          .tooth_number;
+        return {
+          teeth_number: teeth,
+          source: g.getSource()
+        };
+      })
+      .toArray();
+
+    console.log("Send Teeth", send_teeth);
+
+    this.setState(
+      {
+        quantity: send_teeth.length
+      },
+      () => {
+        this.setState({
+          total_price: this.state.quantity * this.state.standard_fee
+        });
+      }
+    );
+  }
+
+  addDentalPlan() {
+    AlgaehValidation({
+      querySelector: "data-validate='addDentalPlanDiv'",
+      alertTypeIcon: "warning",
+      onSuccess: () => {
+        swalMessage({
+          title: "Added Successfully",
+          type: "success"
+        });
+      }
+    });
+  }
+
+  addTreatementPlan() {
+    AlgaehValidation({
+      querySelector: "data-validate='addTreatementDiv'",
+      alertTypeIcon: "warning",
+      onSuccess: () => {
+        algaehApiCall({
+          uri: "/dental/addTreatmentPlan",
+          method: "POST",
+          data: {
+            plan_name: this.state.plan_name,
+            patient_id: Window.global["current_patient"],
+            episode_id: Window.global["episode_id"],
+            visit_id: Window.global["visit_id"],
+            remarks: this.state.remarks,
+            consult_date: this.state.consult_date
+          },
+          onSuccess: response => {
+            if (response.data.success) {
+              swalMessage({
+                title: "Added Successfully",
+                type: "success"
+              });
+              this.getTreatementPlans();
+            }
+          },
+          onError: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
+        });
+      }
+    });
   }
 
   generateToothUpperLeftSet() {
@@ -225,6 +368,7 @@ class Dental extends Component {
     for (let i = 32; i >= 25; i--) {
       plot.push(
         <div
+          onClick={this.markAllSurface.bind(this)}
           key={i}
           className={
             "col tooth-sec down-side " +
@@ -280,24 +424,123 @@ class Dental extends Component {
     return plot;
   }
 
+  getTreatementsGrid(data) {
+    debugger;
+
+    algaehApiCall({
+      uri: "/dental/getDentalTreatment",
+      data: {
+        treatment_plan_id: data.hims_f_treatment_plan_id
+      },
+      method: "GET",
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({
+            dentalTreatments: response.data.records
+          });
+        }
+      },
+      onError: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+
+    return (
+      <div className="col-lg-12">
+        <AlgaehDataGrid
+          id="shift-grid"
+          datavalidate="data-validate='shiftDiv'"
+          columns={[
+            {
+              fieldName: "actions",
+              label: "Actions",
+              displayTemplate: row => {
+                return (
+                  <span
+                    onClick={() => {
+                      this.setState({
+                        openDentalModal: true
+                      });
+                    }}
+                  >
+                    <i className="fas fa-trash" />
+                  </span>
+                );
+              }
+            },
+            {
+              fieldName: "teeth_number",
+              label: "Tooth",
+              disabled: true
+            },
+            {
+              fieldName: "distal",
+              label: "Surfaces",
+              displayTemplate: row => {
+                return (
+                  <span>
+                    {row.distal === "Y"
+                      ? "D "
+                      : row.incisal === "Y"
+                      ? "I "
+                      : row.mesial === "Y"
+                      ? "M "
+                      : row.palatal === "Y"
+                      ? "P "
+                      : row.labial === "Y"
+                      ? "L "
+                      : null}
+                  </span>
+                );
+              }
+            },
+            {
+              fieldName: "scheduled_date",
+              label: "Date",
+              disabled: true
+            },
+            {
+              fieldName: "treatment_status",
+              label: "Status",
+              disabled: true
+            }
+          ]}
+          keyId="algaeh_app_screens_id"
+          dataSource={{
+            data: this.state.dentalTreatments
+          }}
+          paging={{ page: 0, rowsPerPage: 5 }}
+          events={{
+            onEdit: () => {},
+            onDelete: () => {},
+            onDone: () => {}
+          }}
+        />
+      </div>
+    );
+  }
+
   generateToothLowerRightSet() {
     let plot = [];
-    let counter = 1;
+    let counter = 9;
 
-    for (let i = 24; i < 18; i--) {
+    for (let i = 24; i >= 17; i--) {
       plot.push(
         <div
           key={i}
           className={
             "col tooth-sec down-side " +
-            (counter <= 3
+            (counter <= 10
               ? "incisors-down-"
-              : counter === 5
+              : counter === 11
               ? "canine-down-"
-              : counter <= 6
+              : counter < 14
               ? "premolar-down-"
               : "i molar-down-") +
-            i
+            counter
           }
         >
           <span>{i}</span>
@@ -326,7 +569,7 @@ class Dental extends Component {
             >
               <span>P</span>
             </div>
-            {i >= 20 ? (
+            {counter >= 21 ? (
               <div
                 onClick={this.markTeethSurface.bind(this)}
                 className="middle-surface"
@@ -342,6 +585,14 @@ class Dental extends Component {
     return plot;
   }
 
+  openAddModal(data) {
+    this.setState({
+      openDentalModal: true,
+      selected_treatement_plan: data.plan_name,
+      hims_f_treatment_plan_id: data.hims_f_treatment_plan_id
+    });
+  }
+
   render() {
     return (
       <div id="dentalTreatment">
@@ -351,14 +602,21 @@ class Dental extends Component {
               teeth = [];
               this.setState({
                 openDentalModal: false,
-                hims_d_services_id: null
+                hims_d_services_id: null,
+                quantity: 0,
+                standard_fee: 0,
+                total_price: 0,
+                hims_f_treatment_plan_id: null
               });
             }
           }}
           openPopup={this.state.openDentalModal}
           title="Dental Plan"
         >
-          <div className="col-lg-12 margin-bottom-15">
+          <div
+            className="col-lg-12 margin-bottom-15"
+            data-validate="addDentalPlanDiv"
+          >
             <div className="row">
               <AlagehFormGroup
                 div={{ className: "col-lg-4" }}
@@ -369,7 +627,7 @@ class Dental extends Component {
                 textBox={{
                   className: "txt-fld",
                   name: "treatement_plan",
-                  value: this.state.treatement_plan,
+                  value: this.state.selected_treatement_plan,
                   events: {
                     onChange: this.textHandle.bind(this)
                   },
@@ -398,6 +656,85 @@ class Dental extends Component {
                   onChange: this.dropDownHandler.bind(this)
                 }}
               />
+
+              <AlagehFormGroup
+                div={{ className: "col-lg-1" }}
+                label={{
+                  forceLabel: "Unit Price",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "standard_fee",
+                  value: this.state.standard_fee,
+                  events: {
+                    onChange: this.textHandle.bind(this)
+                  },
+                  others: {
+                    disabled: true,
+                    min: 0,
+                    type: "number"
+                  }
+                }}
+              />
+
+              <AlagehFormGroup
+                div={{ className: "col-lg-1" }}
+                label={{
+                  forceLabel: "Quantity",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "quantity",
+                  value: this.state.quantity,
+                  events: {
+                    onChange: this.textHandle.bind(this)
+                  },
+                  others: {
+                    min: 0,
+                    type: "number"
+                  }
+                }}
+              />
+              <AlagehFormGroup
+                div={{ className: "col-lg-1" }}
+                label={{
+                  forceLabel: "Total Price",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "total_price",
+                  value: this.state.total_price,
+                  events: {
+                    onChange: this.textHandle.bind(this)
+                  },
+                  others: {
+                    disabled: true,
+                    min: 0,
+                    type: "number"
+                  }
+                }}
+              />
+
+              <AlgaehDateHandler
+                div={{ className: "col-lg-2" }}
+                label={{ forceLabel: "Scheduled Date", isImp: false }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "scheduled_date"
+                }}
+                minDate={new Date()}
+                events={{
+                  onChange: selectedDate => {
+                    this.setState({
+                      scheduled_date: selectedDate
+                    });
+                  }
+                }}
+                value={this.state.scheduled_date}
+              />
             </div>
           </div>
 
@@ -419,167 +756,18 @@ class Dental extends Component {
                 <h6>Lower Left</h6>
               </div>
               <div className="col-lg-6 teeth-sec">
-                <div className="row">
-                  {/* {this.generateToothLowerRightSet()} */}
-                  <div className="col tooth-sec down-side incisors-down-9">
-                    <span>24</span>
-                    <div className="surface-Marking">
-                      <div className="top-surface">
-                        <span>D</span>
-                      </div>
-                      <div className="right-surface">
-                        <span>L</span>
-                      </div>
-                      <div className="bottom-surface">
-                        <span>I</span>
-                      </div>
-                      <div className="left-surface">
-                        <span>P</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col tooth-sec down-side incisors-down-10">
-                    <span>23</span>
-                    <div className="surface-Marking">
-                      <div className="top-surface">
-                        <span>D</span>
-                      </div>
-                      <div className="right-surface">
-                        <span>L</span>
-                      </div>
-                      <div className="bottom-surface">
-                        <span>I</span>
-                      </div>
-                      <div className="left-surface">
-                        <span>P</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col tooth-sec down-side canine-down-11">
-                    <span>22</span>
-                    <div className="surface-Marking">
-                      <div className="top-surface">
-                        <span>D</span>
-                      </div>
-                      <div className="right-surface">
-                        <span>L</span>
-                      </div>
-                      <div className="bottom-surface">
-                        <span>I</span>
-                      </div>
-                      <div className="left-surface">
-                        <span>P</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col tooth-sec down-side premolar-down-12">
-                    <span>21</span>
-                    <div className="surface-Marking">
-                      <div className="top-surface">
-                        <span>D</span>
-                      </div>
-                      <div className="right-surface">
-                        <span>L</span>
-                      </div>
-                      <div className="bottom-surface">
-                        <span>I</span>
-                      </div>
-                      <div className="left-surface">
-                        <span>P</span>
-                      </div>
-                      <div className="middle-surface">
-                        <span>M</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col tooth-sec down-side premolar-down-13">
-                    <span>20</span>
-                    <div className="surface-Marking">
-                      <div className="top-surface">
-                        <span>D</span>
-                      </div>
-                      <div className="right-surface">
-                        <span>L</span>
-                      </div>
-                      <div className="bottom-surface">
-                        <span>I</span>
-                      </div>
-                      <div className="left-surface">
-                        <span>P</span>
-                      </div>
-                      <div className="middle-surface">
-                        <span>M</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col tooth-sec down-side molar-down-14">
-                    <span>19</span>
-                    <div className="surface-Marking">
-                      <div className="top-surface">
-                        <span>D</span>
-                      </div>
-                      <div className="right-surface">
-                        <span>L</span>
-                      </div>
-                      <div className="bottom-surface">
-                        <span>I</span>
-                      </div>
-                      <div className="left-surface">
-                        <span>P</span>
-                      </div>
-                      <div className="middle-surface">
-                        <span>M</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col tooth-sec down-side molar-down-15">
-                    <span>18</span>
-                    <div className="surface-Marking">
-                      <div className="top-surface">
-                        <span>D</span>
-                      </div>
-                      <div className="right-surface">
-                        <span>L</span>
-                      </div>
-                      <div className="bottom-surface">
-                        <span>I</span>
-                      </div>
-                      <div className="left-surface">
-                        <span>P</span>
-                      </div>
-                      <div className="middle-surface">
-                        <span>M</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col tooth-sec down-side molar-down-16">
-                    <span>17</span>
-                    <div className="surface-Marking">
-                      <div className="top-surface">
-                        <span>D</span>
-                      </div>
-                      <div className="right-surface">
-                        <span>L</span>
-                      </div>
-                      <div className="bottom-surface">
-                        <span>I</span>
-                      </div>
-                      <div className="left-surface">
-                        <span>P</span>
-                      </div>
-                      <div className="middle-surface">
-                        <span>M</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <div className="row">{this.generateToothLowerRightSet()}</div>
                 <h6>Lower Right</h6>
               </div>
             </div>
           </div>
           <div className="row">
             <div className="col-lg-12 margin-bottom-15">
-              <button className="btn btn-primary" style={{ float: "right" }}>
+              <button
+                onClick={this.addDentalPlan.bind(this)}
+                className="btn btn-primary"
+                style={{ float: "right" }}
+              >
                 Add to List
               </button>
             </div>
@@ -587,34 +775,19 @@ class Dental extends Component {
         </AlgaehModalPopUp>
 
         <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
-          <div className="portlet-title">
-            {/* <div className="caption">
-              <h3 className="caption-subject">Treatement List</h3>
-            </div>
-            <div className="actions">
-              <a
-                onClick={() => {
-                  this.setState({
-                    openDentalModal: true
-                  });
-                }}
-                className="btn btn-primary btn-circle active"
-              >
-                <i className="fas fa-plus" />
-              </a>
-            </div> */}
+          <div className="portlet-title" data-validate="addTreatementDiv">
             <div className="col-lg-12 margin-bottom-15">
               <div className="row">
                 <AlagehFormGroup
-                  div={{ className: "col-lg-4" }}
+                  div={{ className: "col-lg-3" }}
                   label={{
                     forceLabel: "Treatment Plan",
                     isImp: true
                   }}
                   textBox={{
                     className: "txt-fld",
-                    name: "treatement_plan",
-                    value: this.state.treatement_plan,
+                    name: "plan_name",
+                    value: this.state.plan_name,
                     events: {
                       onChange: this.textHandle.bind(this)
                     },
@@ -643,8 +816,31 @@ class Dental extends Component {
                   }}
                 />
 
-                <div className="col-lg-4 margin-top-15">
-                  <button className="btn btn-primary">Add to List</button>
+                <AlgaehDateHandler
+                  div={{ className: "col-lg-2" }}
+                  label={{ forceLabel: "Consult Date", isImp: false }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "consult_date"
+                  }}
+                  minDate={new Date()}
+                  events={{
+                    onChange: selectedDate => {
+                      this.setState({
+                        consult_date: selectedDate
+                      });
+                    }
+                  }}
+                  value={this.state.consult_date}
+                />
+
+                <div className="col-lg-2 margin-top-15">
+                  <button
+                    onClick={this.addTreatementPlan.bind(this)}
+                    className="btn btn-primary"
+                  >
+                    Add Plan
+                  </button>
                 </div>
               </div>
             </div>
@@ -659,46 +855,62 @@ class Dental extends Component {
                   label: "Actions",
                   displayTemplate: row => {
                     return (
-                      <span
-                        onClick={() => {
-                          this.setState({
-                            openDentalModal: true
-                          });
-                        }}
-                      >
-                        <i className="fas fa-file-alt" />
-                      </span>
+                      <div className="row">
+                        <span className="col">
+                          <i
+                            className="fas fa-check"
+                            style={{
+                              pointerEvents:
+                                row.approved_status === "Y" ? " none" : null,
+                              opacity:
+                                row.approved_status === "Y" ? "0.1" : null
+                            }}
+                          />
+
+                          <i
+                            style={{
+                              pointerEvents:
+                                row.approved_status === "Y" ? " none" : null,
+                              opacity:
+                                row.approved_status === "Y" ? "0.1" : null
+                            }}
+                            className="fas fa-times"
+                          />
+
+                          <i
+                            onClick={this.openAddModal.bind(this, row)}
+                            className="fas fa-plus"
+                          />
+                        </span>
+                      </div>
                     );
                   }
                 },
                 {
-                  fieldName: "date",
+                  fieldName: "consult_date",
                   label: "Date"
                 },
                 {
-                  fieldName: "tooth",
-                  label: "Tooth",
+                  fieldName: "plan_name",
+                  label: "Treatement Plan"
+                },
+                {
+                  fieldName: "remarks",
+                  label: "Remarks",
                   disabled: true
                 },
                 {
-                  fieldName: "surface",
-                  label: "Surface"
-                },
-                {
-                  fieldName: "code",
-                  label: "Code",
-                  disabled: true
-                },
-
-                {
-                  fieldName: "description",
-                  label: "Description",
-                  disabled: true
-                },
-                {
-                  fieldName: "status",
+                  fieldName: "approved_status",
                   label: "Status",
-                  disabled: true
+                  displayTemplate: row => {
+                    return (
+                      <span>
+                        {row.approved_status === "Y"
+                          ? "Plan Approved"
+                          : "Plan Not Approved"}
+                      </span>
+                    );
+                  }
                 }
               ]}
               keyId="algaeh_app_screens_id"
@@ -707,6 +919,11 @@ class Dental extends Component {
               }}
               filter={true}
               paging={{ page: 0, rowsPerPage: 10 }}
+              expanded={{
+                detailTemplate: row => {
+                  return <div>{this.getTreatementsGrid(row)}</div>;
+                }
+              }}
               events={{
                 onEdit: () => {},
                 onDelete: () => {},
