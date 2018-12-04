@@ -138,7 +138,7 @@ class AddOPBillingForm extends Component {
                   context.updateState({
                     billdetails: existingservices,
                     applydiscount: applydiscount,
-                    s_service_type: null,
+                    // s_service_type: null,
                     s_service: null,
                     saveEnable: false
                   });
@@ -232,11 +232,7 @@ class AddOPBillingForm extends Component {
             let data = response.data.records;
 
             extend(row, data.billdetails[0]);
-            for (let i = 0; i < billdetails.length; i++) {
-              if (billdetails[i].service_type_id === row.service_type_id) {
-                billdetails[i] = row;
-              }
-            }
+            billdetails[row.rowIdx] = row;
             $this.setState({ billdetails: billdetails });
           }
         },
@@ -383,7 +379,8 @@ class AddOPBillingForm extends Component {
                         data: this.props.servicetype
                       },
                       others: { disabled: this.state.Billexists },
-                      onChange: serviceTypeHandeler.bind(this, this, context)
+                      onChange: serviceTypeHandeler.bind(this, this, context),
+                      onClear: serviceTypeHandeler.bind(this, this, context)
                     }}
                   />
 
@@ -405,7 +402,8 @@ class AddOPBillingForm extends Component {
                         data: this.props.opbilservices
                       },
                       others: { disabled: this.state.Billexists },
-                      onChange: serviceHandeler.bind(this, this, context)
+                      onChange: serviceHandeler.bind(this, this, context),
+                      onClear: serviceHandeler.bind(this, this, context)
                     }}
                   />
 
