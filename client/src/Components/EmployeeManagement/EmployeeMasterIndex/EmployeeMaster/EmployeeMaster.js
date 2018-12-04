@@ -192,19 +192,21 @@ class EmployeeMaster extends Component {
                         />
                       }
                     </li>
-                    <li
-                      algaehtabs={"CommissionSetup"}
-                      className={"nav-item tab-button"}
-                      onClick={this.openTab.bind(this)}
-                    >
-                      {
-                        <AlgaehLabel
-                          label={{
-                            fieldName: "commission_setup"
-                          }}
-                        />
-                      }
-                    </li>
+                    {this.state.isdoctor === "Y" ? (
+                      <li
+                        algaehtabs={"CommissionSetup"}
+                        className={"nav-item tab-button"}
+                        onClick={this.openTab.bind(this)}
+                      >
+                        {
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "commission_setup"
+                            }}
+                          />
+                        }
+                      </li>
+                    ) : null}
                   </ul>
                 </div>
                 <MyContext.Provider
@@ -219,9 +221,7 @@ class EmployeeMaster extends Component {
                     {this.state.pageDisplay === "PersonalDetails" ? (
                       <PersonalDetails EmpMasterIOputs={this.state} />
                     ) : this.state.pageDisplay === "CommissionSetup" ? (
-                      this.state.isdoctor === "Y" ? (
-                        <CommissionSetup EmpMasterIOputs={this.state} />
-                      ) : null
+                      <CommissionSetup EmpMasterIOputs={this.state} />
                     ) : null}
                   </div>
                 </MyContext.Provider>

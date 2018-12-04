@@ -199,6 +199,7 @@ class ItemUOM extends Component {
                     this.props.itemuom === undefined ? [] : this.props.itemuom
                 }}
                 isEditable={true}
+                filter={true}
                 paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
                   onDelete: deleteItemUOM.bind(this, this),
