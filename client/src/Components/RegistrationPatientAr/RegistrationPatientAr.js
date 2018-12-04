@@ -41,13 +41,13 @@ import {
   ShowAdvanceScreen,
   getHospitalDetails,
   getCashiersAndShiftMAP
-} from "./RegistrationPatientEvent";
+} from "./RegistrationPatientArEvent";
 const emptyObject = extend(
   PatRegIOputs.inputParam(),
   BillingIOputs.inputParam()
 );
 
-class RegistrationPatient extends PureComponent {
+class RegistrationPatientAr extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -814,5 +814,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(RegistrationPatient)
+  )(RegistrationPatientAr)
 );

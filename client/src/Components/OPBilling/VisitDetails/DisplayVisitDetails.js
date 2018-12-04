@@ -61,7 +61,7 @@ class DisplayVisitDetails extends Component {
 
   render() {
     return (
-      <div className="hptl-display-active-visit-form">
+      <div className="hptl-display-visit-details">
         <React.Fragment>
           <MyContext.Consumer>
             {context => (

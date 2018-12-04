@@ -25,7 +25,7 @@ import {
   EditGrid,
   CancelGrid
 } from "./AddOPBillingHandaler";
-import ReciptForm from "../ReciptDetails/ReciptForm";
+import ReciptForm from "../ReciptDetails/AddReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { successfulMessage } from "../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
@@ -275,31 +275,9 @@ class AddOPBillingForm extends Component {
     });
   }
 
-  deleteBillDetail(context, e, rowId) {
+  deleteBillDetail(context, row) {
     let serviceDetails = this.state.billdetails;
-    serviceDetails.splice(rowId, 1);
-
-    algaehApiCall({
-      uri: "/billing/billingCalculations",
-      method: "POST",
-      data: { billdetails: serviceDetails },
-      onSuccess: response => {
-        if (response.data.success) {
-          response.data.records.patient_payable_h =
-            response.data.records.patient_payable || this.state.patient_payable;
-
-          if (context != null) {
-            context.updateState({ ...response.data.records });
-          }
-        }
-      },
-      onFailure: error => {
-        swalMessage({
-          title: error.message,
-          type: "error"
-        });
-      }
-    });
+    serviceDetails.splice(row.rowIdx, 1);
 
     if (serviceDetails.length === 0) {
       if (context !== undefined) {
@@ -346,6 +324,29 @@ class AddOPBillingForm extends Component {
         });
       }
     } else {
+      algaehApiCall({
+        uri: "/billing/billingCalculations",
+        method: "POST",
+        data: { billdetails: serviceDetails },
+        onSuccess: response => {
+          if (response.data.success) {
+            response.data.records.patient_payable_h =
+              response.data.records.patient_payable ||
+              this.state.patient_payable;
+
+            if (context != null) {
+              context.updateState({ ...response.data.records });
+            }
+          }
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
+      });
+
       if (context !== undefined) {
         context.updateState({
           billdetails: serviceDetails

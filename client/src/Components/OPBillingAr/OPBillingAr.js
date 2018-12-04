@@ -7,7 +7,7 @@ import PatientDetails from "./PatientDisDetails/PatientDetails.js";
 import DisplayVisitDetails from "./VisitDetails/DisplayVisitDetails.js";
 import OPBillingDetails from "./OPBilling/OPBillingDetails";
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
-import "./OPBilling.css";
+import "./OPBillingAr.css";
 import MyContext from "../../utils/MyContext.js";
 import AlgaehLabel from "../Wrapper/label.js";
 import BillingIOputs from "../../Models/Billing";
@@ -17,7 +17,7 @@ import {
   ClearData,
   Validations,
   getCashiersAndShiftMAP
-} from "./OPBillingEvents";
+} from "./OPBillingArEvents";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { successfulMessage } from "../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall.js";
@@ -29,7 +29,7 @@ import AHSnackbar from "../common/Inputs/AHSnackbar.js";
 import moment from "moment";
 import Options from "../../Options.json";
 
-class OPBilling extends Component {
+class OPBillingAr extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -512,5 +512,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(OPBilling)
+  )(OPBillingAr)
 );

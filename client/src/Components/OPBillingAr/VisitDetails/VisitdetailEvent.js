@@ -1,6 +1,6 @@
 import Enumerable from "linq";
-import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall.js";
-import AlgaehLoader from "../../../Wrapper/fullPageLoader";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall.js";
+import AlgaehLoader from "../../Wrapper/fullPageLoader";
 
 const handleChange = ($this, row, context, e) => {
   //   let $this = this;
