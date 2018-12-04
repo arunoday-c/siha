@@ -32,6 +32,11 @@
   "credit_amount": "ائتمان",
   "balance_due": "الرصيد المستحق",
   "receiveable_amount": "ذمم مدينة",
+  "sub_total_amount": "المجموع الفرعي",
+  "discount_amount": "خصم",
+  "net_total": "صافي المجموع",
+
+  "sheet_discount_percentage": "مستوى الورقة٪",
 
   "service_type_id": "نوع الخدمة",
   "services_id": "الخدمات",
@@ -110,6 +115,8 @@
   "consultation": "تشاور",
 
   "bill_details": "تفاصيل الفاتورة",
+  "insurance_details": "تفاصيل التأمين",
+
   "services": "خدمات",
   "percentage": "النسبة المئوية",
   "max_limit": "ماكس الحد",
@@ -118,5 +125,14 @@
   "procedure": "إجراء",
   "dental": "الأسنان",
   "medicine": "دواء",
-  "co_insurance": "شركة التأمين"
+  "co_insurance": "شركة التأمين",
+
+  "btn_save": "حفظ",
+  "btn_clear": "واضح",
+
+  "payby_cash": "الدفع نقدا",
+  "payby_card": "الدفع عن طريق البطاقة",
+  "payby_check": "الدفع عن طريق شيك",
+  "NotGenerated": "غير منشأ",
+  "add_new_service": "أضف خدمات جديدة"
 }

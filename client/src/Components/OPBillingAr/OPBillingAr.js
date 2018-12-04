@@ -347,7 +347,11 @@ class OPBillingAr extends Component {
 
   render() {
     return (
-      <div className="" style={{ marginBottom: "50px" }}>
+      <div
+        className=""
+        style={{ marginBottom: "50px" }}
+        className="arabicVersionOPbilling"
+      >
         <BreadCrumb
           //   width={this.state.breadCrumbWidth}
           title={

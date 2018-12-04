@@ -6,13 +6,14 @@ import MyContext from "../../../../utils/MyContext";
 import "./AddOPBillingForm.css";
 import "./../../../../styles/site.css";
 import extend from "extend";
+import { getLabelFromLanguage } from "../../../../utils/GlobalFunctions";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehFormGroup,
   AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
-import DisplayOPBilling from "../../../BillDetails/BillDetails";
+import DisplayOPBilling from "../../../BillDetailsAr/BillDetailsAr";
 import {
   serviceTypeHandeler,
   serviceHandeler,
@@ -416,7 +417,7 @@ class AddOPBillingForm extends Component {
                       onClick={this.ProcessToBill.bind(this, context)}
                       disabled={this.state.addNewService}
                     >
-                      Add New Service
+                      {getLabelFromLanguage({ fieldName: "add_new_service" })}
                     </button>
                   </div>
 
@@ -426,7 +427,7 @@ class AddOPBillingForm extends Component {
                       style={{ marginTop: "24px" }}
                       onClick={this.ShowBillDetails.bind(this)}
                     >
-                      View Bill Details
+                      {getLabelFromLanguage({ fieldName: "bill_details" })}
                     </button>
 
                     <DisplayOPBilling

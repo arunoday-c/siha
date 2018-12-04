@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PrimaryInsurance from "./PrimaryInsurance/PrimaryInsuranceDetails.js";
 import SecondaryInsurance from "./SecondaryInsurance/SecondaryInsuranceDetails.js";
+import { getLabelFromLanguage } from "../../../utils/GlobalFunctions";
 import "./DisplayInsuranceDetails.css";
 import "./../../../styles/site.css";
 
@@ -21,7 +22,7 @@ export default class DisplayInsuranceDetails extends Component {
             paddingTop: "10px"
           }}
         >
-          Primary Insurance
+          {getLabelFromLanguage({ fieldName: "prim-insurance" })}
         </h6>
         <PrimaryInsurance BillingIOputs={this.props.BillingIOputs} />
         <h6
@@ -31,7 +32,7 @@ export default class DisplayInsuranceDetails extends Component {
             paddingBottom: 5
           }}
         >
-          Secondary Insurance
+          {getLabelFromLanguage({ fieldName: "sec_company" })}
         </h6>
         <SecondaryInsurance BillingIOputs={this.props.BillingIOputs} />
       </div>
