@@ -94,8 +94,7 @@ export default {
       Checkchecked: false,
       billdetail: true,
       ProcessInsure: true,
-      applydiscount: true,
-      cancel_remarks: null
+      applydiscount: true
     };
     return output;
   }

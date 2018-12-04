@@ -396,7 +396,8 @@ class RegistrationPatient extends PureComponent {
           //Appoinment End
           data.patientRegistration.filePreview =
             "data:image/png;base64, " + data.patient_Image;
-          data.patientRegistration.arabic_name = "No Name";
+          data.patientRegistration.arabic_name =
+            data.patientRegistration.arabic_name || "No Name";
           $this.setState(data.patientRegistration, () => {
             if (fromAppoinment === true) {
               generateBillDetails(this, this);

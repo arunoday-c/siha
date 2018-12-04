@@ -17,7 +17,8 @@ import {
   CancelGrid,
   deleteCridetSettlement,
   updateCridetSettlement,
-  includeHandler
+  includeHandler,
+  onchangegridcol
 } from "./CreditDetailsEvent";
 import { getAmountFormart } from "../../../utils/GlobalFunctions";
 
@@ -64,11 +65,38 @@ class CreditDetails extends Component {
                                 context,
                                 row
                               )}
+                              checked={row.include === "Y" ? true : false}
+                              disabled={
+                                this.state.hims_f_credit_header_id !== null
+                                  ? true
+                                  : false
+                              }
                             />
                           </label>
                         );
                       },
-                      disabled: true
+                      editorTemplate: row => {
+                        return (
+                          <label className="checkbox inline">
+                            <input
+                              type="checkbox"
+                              value="Front Desk"
+                              onChange={includeHandler.bind(
+                                this,
+                                this,
+                                context,
+                                row
+                              )}
+                              checked={row.include === "Y" ? true : false}
+                              disabled={
+                                this.state.hims_f_credit_header_id !== null
+                                  ? true
+                                  : false
+                              }
+                            />
+                          </label>
+                        );
+                      }
                     },
 
                     {
@@ -106,7 +134,25 @@ class CreditDetails extends Component {
                       fieldName: "receipt_amount",
                       label: (
                         <AlgaehLabel label={{ fieldName: "receipt_amount" }} />
-                      )
+                      ),
+                      editorTemplate: row => {
+                        return (
+                          <AlagehFormGroup
+                            div={{}}
+                            textBox={{
+                              value: row.receipt_amount,
+                              className: "txt-fld",
+                              name: "receipt_amount",
+                              events: {
+                                onChange: onchangegridcol.bind(this, this, row)
+                              },
+                              others: {
+                                placeholder: "0.00"
+                              }
+                            }}
+                          />
+                        );
+                      }
                     },
                     {
                       fieldName: "balance_amount",
@@ -140,8 +186,10 @@ class CreditDetails extends Component {
                     textBox={{
                       className: "txt-fld",
                       name: "remarks",
-
-                      value: this.state.remarks
+                      value: this.state.remarks,
+                      others: {
+                        disabled: this.state.Billexists
+                      }
                     }}
                   />
 
@@ -170,6 +218,9 @@ class CreditDetails extends Component {
                       value: this.state.write_off_amount,
                       events: {
                         onChange: writeOffhandle.bind(this, this, context)
+                      },
+                      others: {
+                        disabled: this.state.Billexists
                       }
                     }}
                   />

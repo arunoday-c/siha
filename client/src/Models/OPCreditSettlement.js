@@ -46,7 +46,8 @@ export default {
       card_date: null,
       card_check_number: null,
       cheque_number: null,
-      cheque_date: null
+      cheque_date: null,
+      Billexists: false
     };
     return output;
   }
