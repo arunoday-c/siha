@@ -17,9 +17,11 @@
     right: auto; }
   .arabicVersionOPbilling .print-area div {
     float: left;
-    height: 75px;
+    height: auto;
     border-right: 1px solid #adaaaa;
     border-left: 0; }
+  .arabicVersionOPbilling .print-area .dropdown-menu {
+    left: 0; }
   .arabicVersionOPbilling .htpl-phase1-radio-btn {
     margin-left: 5px; }
   .arabicVersionOPbilling .customRadio .inline + .inline {
