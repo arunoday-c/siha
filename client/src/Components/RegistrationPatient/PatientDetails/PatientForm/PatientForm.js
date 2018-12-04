@@ -263,7 +263,9 @@ class AddPatientForm extends PureComponent {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col-lg-4 mandatory arabic-txt-fld" }}
+                        div={{
+                          className: "col-lg-4 mandatory arabic-txt-fld"
+                        }}
                         label={{
                           fieldName: "arabic_name",
                           isImp: true
@@ -279,7 +281,8 @@ class AddPatientForm extends PureComponent {
                             disabled: this.state.existingPatient,
                             onBlur: texthandle.bind(this, this),
                             tabIndex: "3",
-                            placeholder: "أدخل الاسم العربي"
+                            placeholder: "أدخل الاسم العربي",
+                            id: "arabicName"
                           }
                         }}
                       />

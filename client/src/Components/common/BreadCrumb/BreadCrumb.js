@@ -41,14 +41,7 @@ class BreadCrumb extends PureComponent {
     if (this.props.soptlightSearch !== undefined) {
       return (
         <div className="col  margin-top-15">
-          <div
-            className="row"
-            style={{
-              border: " 1px solid #ced4d9",
-              borderRadius: 5,
-              marginLeft: 0
-            }}
-          >
+          <div className="row spotlightSearchBox">
             <div className="col-lg-9">
               {" "}
               <AlgaehLabel
@@ -56,7 +49,7 @@ class BreadCrumb extends PureComponent {
               />
               <h6>{this.state.value ? this.state.value : "*** New ***"}</h6>
             </div>
-            <div className="col" style={{ borderLeft: "1px solid #ced4d8" }}>
+            <div className="col spotlightSearchIconBox">
               <i
                 className="fas fa-search fa-lg"
                 style={{ paddingTop: 17, paddingLeft: 3, cursor: "pointer" }}

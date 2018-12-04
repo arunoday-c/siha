@@ -56,17 +56,16 @@
         window.history.go(1);
       };
     </script>
-    <script
-      type="text/javascript"
-      src="https://api.yamli.com/js/yamli_api.js"
-    ></script>
-    <script type="text/javascript">
-      if (
-        typeof Yamli == "object" &&
-        Yamli.init({ uiLanguage: "ar", startMode: "onOrUserDefault" })
-      ) {
-        Yamli.yamlifyClass("myIput", { settingsPlacement: "inside" });
-      }
-    </script>
+    <!--
+      <script
+        type="text/javascript"
+        src="https://api.yamli.com/js/yamli_api.js"
+      ></script>
+      <script type="text/javascript">
+        if (typeof Yamli == "object" && Yamli.init()) {
+          Yamli.yamlify("arabicName");
+        }
+      </script>
+    -->
   </body>
 </html>

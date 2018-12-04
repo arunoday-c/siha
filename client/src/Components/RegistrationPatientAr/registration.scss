@@ -24,9 +24,34 @@
     right: auto;
   }
   .print-area div {
-    float: right;
+    float: left;
     height: 75px;
     border-right: 1px solid #adaaaa;
+    border-left: 0;
+  }
+  .htpl-phase1-radio-btn {
+    margin-left: 5px;
+  }
+  .customRadio .inline + .inline {
+    margin-right: 10px;
+    margin-left: 0px;
+  }
+
+  .breadCrumb-Data {
+    .hdg_bredcrump {
+      background: url("./../../assets/images/breadcrump_border_Ar.png")
+        no-repeat top left #fff;
+    }
+
+    .spotlightSearchBox {
+      margin-right: 0;
+    }
+
+    .spotlightSearchIconBox {
+      border-right: 1px solid rgb(206, 212, 216);
+      border-left: none;
+      padding-right: 13px;
+    }
   }
 }
 .hptl-phase1-patientreg-details {
