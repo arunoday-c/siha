@@ -371,32 +371,85 @@ let addAlgaehModule = (req, res, next) => {
       if (error) {
         next(error);
       }
-
-      connection.query(
-        "INSERT INTO `algaeh_d_app_module` (module_code, module_name, licence_key, access_by, icons, other_language,  created_date, created_by, updated_date, updated_by, record_status)\
+      if (
+        req.userIdentity.role_type == "SU" &&
+        req.userIdentity.group_type == "SU"
+      ) {
+        connection.query(
+          "INSERT INTO `algaeh_d_app_module` (module_code, module_name, licence_key, access_by, icons, other_language,  created_date, created_by, updated_date, updated_by, record_status)\
             VALUE(?,?,?,?,?,?, ?,?,?,?,md5(?))",
-        [
-          input.module_code,
-          input.module_name,
-          input.licence_key,
-          input.access_by,
-          input.icons,
-          input.other_language,
-          new Date(),
-          input.created_by,
-          new Date(),
-          input.updated_by,
-          "A"
-        ],
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
+          [
+            input.module_code,
+            input.module_name,
+            input.licence_key,
+            input.access_by,
+            input.icons,
+            input.other_language,
+            new Date(),
+            input.created_by,
+            new Date(),
+            input.updated_by,
+            "A"
+          ],
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+            req.records = result;
+            next();
           }
-          req.records = result;
-          next();
-        }
-      );
+        );
+      } else {
+        req.records = {
+          validUser: false,
+          message: "you dont have admin privilege"
+        };
+        next();
+      }
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to
+let getAlgaehModules = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let superUser = "";
+    //for admin login
+    if (req.userIdentity.role_type == "AD") {
+      superUser = " and   access_by <> 'SU'";
+    }
+    debugLog("req.userIdentity:", req.userIdentity);
+    db.getConnection((error, connection) => {
+      if (req.userIdentity.role_type != "GN") {
+        connection.query(
+          "select algaeh_d_module_id, module_name,module_code, icons,other_language  from algaeh_d_app_module\
+              where  record_status=md5('A') " +
+            superUser +
+            " order by algaeh_d_module_id ",
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+            req.records = result;
+            next();
+          }
+        );
+      } else {
+        req.records = {
+          validUser: false,
+          message: "you dont have admin privilege"
+        };
+        next();
+      }
     });
   } catch (e) {
     next(e);
@@ -407,5 +460,6 @@ module.exports = {
   addAlgaehGroupMAster,
   addAlgaehModule,
   getRoleBaseActiveModules,
-  getRoleBaseInActiveComponents
+  getRoleBaseInActiveComponents,
+  getAlgaehModules
 };

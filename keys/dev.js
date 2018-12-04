@@ -3,14 +3,14 @@ export default {
   SECRETKey: "ALGAEH Technologies PVT Ltd HIMSv1",
   TOKENTIME: 2592000, // 60 * 60 * 30 ,
   // Server port and request body limit
-  port: 3000,
+  port: 3006,
   bodyLimit: "900kb",
 
   mysqlDb: {
     connectionLimit: 20,
     // host: "166.62.10.184",
     host: "49.206.18.38",
-    port: 3302,
+    port: 3306,
     user: "algaeh_root",
     password: "medteam2013",
     database: "algaeh_hims_db",
