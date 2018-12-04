@@ -1,12 +1,14 @@
 {
   "patient_code": "رمز المريض",
   "registration_date": "تاريخ التسجيل",
+  "registered_date": "تاريخ التسجيل",
   "title_id": "العنوان",
   "first_name": "الاسم الاول",
   "middle_name": "الاسم الأوسط",
   "last_name": "اسم العائلة",
   "full_name": "اسم",
-  "arabic_name": "الاسم باللغة العربية",
+  "enter_eng_fullName": "أدخل الاسم باللغة الإنجليزية",
+  "arabic_name": "أدخل الاسم باللغة العربية",
   "gender": "الجنس",
   "religion_id": "ريليج",
   "date_of_birth": "تاريخ الميلاد",
@@ -156,10 +158,13 @@
   "card_number": "رقم البطاقة",
 
   "bill_details": "تفاصيل الفاتورة",
+  "process_insurance": "التأمين على العمليات",
 
   "patient_type": "نوع المريض",
 
-  "payby_cash": "Pay By Cash",
-  "payby_card": "Pay By Card",
-  "payby_check": "Pay By Cheque"
+  "payby_cash": "الدفع نقدا",
+  "payby_card": "الدفع عن طريق البطاقة",
+  "payby_check": "الدفع عن طريق شيك",
+  "NotGenerated": "غير منشأ",
+  "PastVisit": "الزيارة السابقة"
 }

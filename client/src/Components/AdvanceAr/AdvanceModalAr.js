@@ -241,7 +241,13 @@ class AddAdvanceModalAr extends PureComponent {
                         onChange={checkcashhandaler.bind(this, this)}
                       />
 
-                      <span style={{ fontSize: "0.8rem" }}>Pay by Cash</span>
+                      <span style={{ fontSize: "0.8rem" }}>
+                        <AlgaehLabel
+                          label={{
+                            fieldName: "payby_cash"
+                          }}
+                        />
+                      </span>
                     </label>
                   </div>
 
@@ -281,7 +287,13 @@ class AddAdvanceModalAr extends PureComponent {
                         checked={this.state.Cardchecked}
                         onChange={checkcardhandaler.bind(this, this)}
                       />
-                      <span style={{ fontSize: "0.8rem" }}>Pay by Card</span>
+                      <span style={{ fontSize: "0.8rem" }}>
+                        <AlgaehLabel
+                          label={{
+                            fieldName: "payby_card"
+                          }}
+                        />
+                      </span>
                     </label>
                   </div>
 
@@ -356,7 +368,13 @@ class AddAdvanceModalAr extends PureComponent {
                         checked={this.state.Checkchecked}
                         onChange={checkcheckhandaler.bind(this, this)}
                       />
-                      <span style={{ fontSize: "0.8rem" }}>Pay by Cheque</span>
+                      <span style={{ fontSize: "0.8rem" }}>
+                        <AlgaehLabel
+                          label={{
+                            fieldName: "payby_check"
+                          }}
+                        />
+                      </span>
                     </label>
                   </div>
                   <AlagehFormGroup
@@ -454,7 +472,7 @@ class AddAdvanceModalAr extends PureComponent {
                     <h6>
                       {this.state.receipt_number
                         ? this.state.receipt_number
-                        : "Not Generated"}
+                        : "غير منشأ"}
                     </h6>
                   </div>
                   <div className="col-lg-3">

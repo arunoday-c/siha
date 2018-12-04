@@ -50,7 +50,7 @@ class DataGrid extends PureComponent {
     this.setState({ data });
   }
   filterCaseInsensitive = (filter, row) => {
-    //debugger;
+    //
     const id = filter.pivotId || filter.id;
     if (id === undefined || id === null) return false;
     if (row[id] === undefined || row[id] === null) return false;
@@ -87,7 +87,7 @@ class DataGrid extends PureComponent {
   renderEditable = (templates, cellInfo) => {
     const editable = this.state.editableRows[cellInfo.index];
     const rowDetail = this.state.data[cellInfo.index];
-    
+
     const _fullNonEditor =
       this.state.isEditable !== undefined ? this.state.isEditable : false;
     const _disabled =
@@ -399,7 +399,6 @@ class DataGrid extends PureComponent {
             ? this.props.actions.allowDelete
             : true;
 
-        debugger;
         if (
           this.props.isEditable !== undefined &&
           this.props.isEditable === true
@@ -508,7 +507,6 @@ class DataGrid extends PureComponent {
   }
 
   componentWillReceiveProps(props) {
-    debugger;
     if (props.isEditable !== this.state.isEditable) {
       this.setState({
         isEditable: props.isEditable

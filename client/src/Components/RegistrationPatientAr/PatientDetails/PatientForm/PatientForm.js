@@ -241,7 +241,7 @@ class AddPatientForm extends PureComponent {
                       <AlagehFormGroup
                         div={{ className: "col-lg-4 mandatory" }}
                         label={{
-                          fieldName: "full_name",
+                          fieldName: "enter_eng_fullName",
                           isImp: true
                         }}
                         textBox={{
@@ -254,8 +254,7 @@ class AddPatientForm extends PureComponent {
                           others: {
                             disabled: this.state.existingPatient,
                             onBlur: texthandle.bind(this, this),
-                            tabIndex: "2",
-                            placeholder: "Enter Full Name"
+                            tabIndex: "2"
                           }
                           // error: this.state.open
                           // helperText: this.state.MandatoryMsg
@@ -278,8 +277,7 @@ class AddPatientForm extends PureComponent {
                           others: {
                             disabled: this.state.existingPatient,
                             onBlur: texthandle.bind(this, this),
-                            tabIndex: "3",
-                            placeholder: "أدخل الاسم العربي"
+                            tabIndex: "3"
                           }
                         }}
                       />
@@ -597,7 +595,7 @@ class AddPatientForm extends PureComponent {
                           others: {
                             disabled: this.state.existingPatient,
                             onBlur: texthandle.bind(this, this),
-                            placeholder: "Enter Full Address 1"
+                            placeholder: "أدخل العنوان الكامل"
                           }
                         }}
                       />
@@ -672,7 +670,7 @@ class AddPatientForm extends PureComponent {
                             disabled: this.state.existingPatient,
                             onBlur: texthandle.bind(this, this),
                             tabIndex: "15",
-                            placeholder: "Enter ID Number"
+                            placeholder: "أدخل رقم الهوية"
                           }
                         }}
                       />

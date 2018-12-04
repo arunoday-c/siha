@@ -1,3 +1,39 @@
+.arabicVersionFrontDesk {
+  direction: rtl;
+  text-align: right; }
+  .arabicVersionFrontDesk .primary-details {
+    border-right: none;
+    border-left: 1px dashed #d3d3d3; }
+  .arabicVersionFrontDesk label {
+    font-size: 0.8rem; }
+  .arabicVersionFrontDesk .toggle-section .nav {
+    padding: 0;
+    right: auto; }
+  .arabicVersionFrontDesk .showall {
+    left: 0;
+    right: auto; }
+  .arabicVersionFrontDesk .clearall {
+    left: 20px;
+    right: auto; }
+  .arabicVersionFrontDesk .print-area div {
+    float: left;
+    height: 75px;
+    border-right: 1px solid #adaaaa;
+    border-left: 0; }
+  .arabicVersionFrontDesk .htpl-phase1-radio-btn {
+    margin-left: 5px; }
+  .arabicVersionFrontDesk .customRadio .inline + .inline {
+    margin-right: 10px;
+    margin-left: 0px; }
+  .arabicVersionFrontDesk .breadCrumb-Data .hdg_bredcrump {
+    background: url("./../../assets/images/breadcrump_border_Ar.png") no-repeat top left #fff; }
+  .arabicVersionFrontDesk .breadCrumb-Data .spotlightSearchBox {
+    margin-right: 0; }
+  .arabicVersionFrontDesk .breadCrumb-Data .spotlightSearchIconBox {
+    border-right: 1px solid #ced4d8;
+    border-left: none;
+    padding-right: 13px; }
+
 .hptl-phase1-patientreg-details {
   background: #ffff; }
   .hptl-phase1-patientreg-details .patient-section {
