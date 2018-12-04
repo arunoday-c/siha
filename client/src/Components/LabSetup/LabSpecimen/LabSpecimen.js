@@ -56,7 +56,7 @@ class LabSpecimen extends Component {
     }
   }
 
-  dateFormater({ date }) {
+  dateFormater(date) {
     if (date !== null) {
       return moment(date).format(Options.dateFormat);
     }

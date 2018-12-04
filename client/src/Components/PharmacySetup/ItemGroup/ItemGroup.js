@@ -270,6 +270,7 @@ class ItemGroup extends Component {
                       : this.props.itemgroup
                 }}
                 isEditable={true}
+                filter={true}
                 paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
                   onDelete: deleteItemGroup.bind(this, this),

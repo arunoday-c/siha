@@ -1,38 +1,39 @@
 import React, { Component } from "react";
-import AppBar from "@material-ui/core/AppBar";
 import extend from "extend";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-
 import PatientDetails from "./PatientDisDetails/PatientDetails.js";
 import DisplayVisitDetails from "./VisitDetails/DisplayVisitDetails.js";
 import OPBillingDetails from "./OPBilling/OPBillingDetails";
-import BreadCrumb from "../common/BreadCrumb/BreadCrumbAr.js";
+import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import "./OPBillingAr.css";
 import MyContext from "../../utils/MyContext.js";
 import AlgaehLabel from "../Wrapper/label.js";
 import BillingIOputs from "../../Models/Billing";
 import PatRegIOputs from "../../Models/RegistrationPatient";
 import { getCookie } from "../../utils/algaehApiCall";
-import { ClearData } from "./OPBillingEvents";
+import {
+  ClearData,
+  Validations,
+  getCashiersAndShiftMAP
+} from "./OPBillingArEvents";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { successfulMessage } from "../../utils/GlobalFunctions";
-import { AlgaehDateHandler } from "../Wrapper/algaehWrapper";
-import { algaehApiCall } from "../../utils/algaehApiCall.js";
+import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall.js";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import Enumerable from "linq";
 import AlgaehReport from "../Wrapper/printReports";
+import AHSnackbar from "../common/Inputs/AHSnackbar.js";
 
 import moment from "moment";
 import Options from "../../Options.json";
-var intervalId;
 
 class OPBillingAr extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedLang: "en",
+      selectedLang: "ar",
       s_service_type: null,
       s_service: null,
       mode_of_pay: "None",
@@ -61,16 +62,6 @@ class OPBillingAr extends Component {
       selectedLang: prevLang
     });
 
-    if (this.props.genbill !== undefined && this.props.genbill.length !== 0) {
-      this.props.initialbillingCalculations({
-        redux: {
-          type: "BILL_HEADER_GEN_GET_DATA",
-          mappingName: "genbill",
-          data: {}
-        }
-      });
-    }
-
     if (
       this.props.patienttype === undefined ||
       this.props.patienttype.length === 0
@@ -84,53 +75,54 @@ class OPBillingAr extends Component {
         }
       });
     }
+
+    let _screenName = getCookie("ScreenName").replace("/", "");
+    algaehApiCall({
+      uri: "/userPreferences/get",
+      data: {
+        screenName: _screenName,
+        identifier: "Counter"
+      },
+      method: "GET",
+      onSuccess: response => {
+        this.setState({
+          counter_id: response.data.records.selectedValue
+        });
+      }
+    });
+    getCashiersAndShiftMAP(this, this);
   }
 
   componentWillReceiveProps(nextProps) {
-    
     let output = {};
-    let billOut = {};
+
     if (
       nextProps.existinsurance !== undefined &&
       nextProps.existinsurance.length !== 0
     ) {
       output = nextProps.existinsurance[0];
     }
-    if (nextProps.genbill !== undefined && nextProps.genbill.length !== 0) {
-      nextProps.genbill.patient_payable_h = nextProps.genbill.patient_payable;
-      billOut = nextProps.genbill;
-    }
 
-    this.setState({ ...this.state, ...billOut, ...output });
+    this.setState({ ...this.state, ...output });
   }
 
-  getPatientDetails($this, output) {
-    
-    clearInterval(intervalId);
-    // let patient_type = "";
-    intervalId = setInterval(() => {
-      AlgaehLoader({ show: true });
-      this.props.getPatientDetails({
-        uri: "/frontDesk/get",
-        method: "GET",
-        printInput: true,
-        data: { patient_code: this.state.patient_code || output.patient_code },
-        redux: {
-          type: "PAT_GET_DATA",
-          mappingName: "patients"
-        },
-        afterSuccess: data => {
-          if ($this.state.visit_id !== null) {
-            for (let i = 0; i < data.visitDetails.length; i++) {
-              if (
-                data.visitDetails[i].hims_f_patient_visit_id ===
-                $this.state.visit_id
-              ) {
-                data.visitDetails[i].radioselect = 1;
-              }
-            }
-            AlgaehLoader({ show: false });
-          }
+  handleClose = () => {
+    this.setState({ open: false });
+  };
+
+  getPatientDetails($this) {
+    // clearInterval(intervalId);
+    // // let patient_type = "";
+    // intervalId = setInterval(() => {
+    AlgaehLoader({ show: true });
+
+    algaehApiCall({
+      uri: "/frontDesk/get",
+      method: "GET",
+      data: { patient_code: this.state.patient_code },
+      onSuccess: response => {
+        if (response.data.success) {
+          let data = response.data.records;
 
           let x = Enumerable.from($this.props.patienttype)
             .where(
@@ -140,7 +132,7 @@ class OPBillingAr extends Component {
             )
             .toArray();
 
-          if (x != null && x.length > 0) {
+          if (x !== undefined && x.length > 0) {
             data.patientRegistration.patient_type = x[0].patitent_type_desc;
           } else {
             data.patientRegistration.patient_type = "Not Selected";
@@ -166,41 +158,99 @@ class OPBillingAr extends Component {
           data.patientRegistration.secondary_effective_end_date = null;
 
           this.setState(data.patientRegistration);
-          AlgaehLoader({ show: false });
         }
-      });
-      clearInterval(intervalId);
-    }, 500);
+        AlgaehLoader({ show: false });
+      },
+      onFailure: error => {
+        AlgaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   getCtrlCode(billcode) {
     let $this = this;
 
     AlgaehLoader({ show: true });
-    this.props.getBIllDetails({
+
+    algaehApiCall({
       uri: "/opBilling/get",
       method: "GET",
-      printInput: true,
       data: { bill_number: billcode },
-      redux: {
-        type: "BILLS_GET_DATA",
-        mappingName: "bills"
+      onSuccess: response => {
+        if (response.data.success) {
+          debugger;
+
+          let data = response.data.records;
+          debugger;
+          let x = Enumerable.from($this.props.patienttype)
+            .where(w => w.hims_d_patient_type_id === data.patient_type)
+            .toArray();
+
+          if (x !== undefined && x.length > 0) {
+            data.patient_type = x[0].patitent_type_desc;
+          } else {
+            data.patient_type = "Not Selected";
+          }
+
+          let visitDetails = data;
+
+          visitDetails.radioselect = 1;
+          data.visitDetails = [visitDetails];
+          data.mode_of_pay = data.insured === "Y" ? "Insured" : "Self";
+          data.Billexists = true;
+
+          if (data.receiptdetails.length !== 0) {
+            for (let i = 0; i < data.receiptdetails.length; i++) {
+              if (data.receiptdetails[i].pay_type === "CA") {
+                data.Cashchecked = true;
+                data.cash_amount = data.receiptdetails[i].amount;
+              }
+
+              if (data.receiptdetails[i].pay_type === "CD") {
+                data.Cardchecked = true;
+                data.card_amount = data.receiptdetails[i].amount;
+              }
+
+              if (data.receiptdetails[i].pay_type === "CH") {
+                data.Checkchecked = true;
+                data.cheque_amount = data.receiptdetails[i].amount;
+              }
+            }
+          }
+
+          $this.setState(data);
+          AlgaehLoader({ show: false });
+        }
       },
-      afterSuccess: data => {
-        
-        data.Billexists = true;
-        $this.setState(data, () => {
-          this.getPatientDetails(this, data);
+      onFailure: error => {
+        AlgaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error"
         });
       }
     });
   }
 
   GenerateReciept(callback) {
-    if (this.state.total_amount > 0) {
-      let obj = [];
+    let obj = [];
 
-      if (this.state.cash_amount > 0) {
+    if (
+      this.state.Cashchecked === false &&
+      this.state.Cardchecked === false &&
+      this.state.Checkchecked === false
+    ) {
+      successfulMessage({
+        message: "Invalid Input. Please select receipt type.",
+        title: "Error",
+        icon: "error"
+      });
+    } else {
+      if (this.state.cash_amount > 0 || this.state.Cashchecked === true) {
         obj.push({
           hims_f_receipt_header_id: null,
           card_check_number: null,
@@ -211,7 +261,8 @@ class OPBillingAr extends Component {
           card_type: null
         });
       }
-      if (this.state.card_amount > 0) {
+
+      if (this.state.card_amount > 0 || this.state.Cardchecked === true) {
         obj.push({
           hims_f_receipt_header_id: null,
           card_check_number: this.state.card_check_number,
@@ -222,7 +273,7 @@ class OPBillingAr extends Component {
           card_type: null
         });
       }
-      if (this.state.cheque_amount > 0) {
+      if (this.state.cheque_amount > 0 || this.state.Checkchecked === true) {
         obj.push({
           hims_f_receipt_header_id: null,
           card_check_number: this.state.cheque_number,
@@ -246,45 +297,61 @@ class OPBillingAr extends Component {
   }
 
   SaveBill(e) {
-    this.GenerateReciept($this => {
-      let Inputobj = $this.state;
-      
-      Inputobj.patient_payable = $this.state.patient_payable_h;
-      AlgaehLoader({ show: true });
-      algaehApiCall({
-        uri: "/opBilling/addOpBIlling",
-        data: Inputobj,
-        method: "POST",
-        onSuccess: response => {
-          AlgaehLoader({ show: false });
-          if (response.data.success) {
-            $this.setState({
-              bill_number: response.data.records.bill_number,
-              receipt_number: response.data.records.receipt_number,
-              saveEnable: true
-            });
-            successfulMessage({
-              message: "Done Successfully",
-              title: "Success",
-              icon: "success"
-            });
-          }
-        },
-        onFailure: error => {
-          AlgaehLoader({ show: false });
-          successfulMessage({
-            message: error.message,
-            title: "Error",
-            icon: "error"
+    const err = Validations(this);
+    if (!err) {
+      if (this.state.unbalanced_amount === 0) {
+        this.GenerateReciept($this => {
+          let Inputobj = $this.state;
+
+          Inputobj.patient_payable = $this.state.patient_payable_h;
+          AlgaehLoader({ show: true });
+          algaehApiCall({
+            uri: "/opBilling/addOpBIlling",
+            data: Inputobj,
+            method: "POST",
+            onSuccess: response => {
+              AlgaehLoader({ show: false });
+              if (response.data.success) {
+                $this.setState({
+                  bill_number: response.data.records.bill_number,
+                  receipt_number: response.data.records.receipt_number,
+                  saveEnable: true
+                });
+                successfulMessage({
+                  message: "Done Successfully",
+                  title: "Success",
+                  icon: "success"
+                });
+              }
+            },
+            onFailure: error => {
+              debugger;
+              AlgaehLoader({ show: false });
+              successfulMessage({
+                message: error.response.data.message || error.message,
+                title: "Error",
+                icon: "error"
+              });
+            }
           });
-        }
-      });
-    });
+        });
+      } else {
+        successfulMessage({
+          message: "Invalid Input. Please recive the amount.",
+          title: "Error",
+          icon: "error"
+        });
+      }
+    }
   }
 
   render() {
     return (
-      <div className="" style={{ marginBottom: "50px" }}>
+      <div
+        className=""
+        style={{ marginBottom: "50px" }}
+        className="arabicVersionOPbilling"
+      >
         <BreadCrumb
           //   width={this.state.breadCrumbWidth}
           title={
@@ -321,22 +388,20 @@ class OPBillingAr extends Component {
             }
           }}
           userArea={
-            <AlgaehDateHandler
-              div={{ className: "col" }}
-              label={{
-                forceLabel: <AlgaehLabel label={{ fieldName: "bill_date" }} />,
-                className: "internal-label"
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "bread_bill_date"
-              }}
-              disabled={true}
-              events={{
-                onChange: null
-              }}
-              value={this.state.bill_date}
-            />
+            <div className="row">
+              <div className="col">
+                <AlgaehLabel
+                  label={{
+                    fieldName: "bill_date"
+                  }}
+                />
+                <h6>
+                  {this.state.bill_date
+                    ? moment(this.state.bill_date).format("DD-MM-YYYY")
+                    : "DD/MM/YYYY"}
+                </h6>
+              </div>
+            </div>
           }
           printArea={{
             menuitems: [
@@ -344,7 +409,6 @@ class OPBillingAr extends Component {
                 label: "Print Receipt",
                 events: {
                   onClick: () => {
-                    
                     AlgaehReport({
                       report: {
                         fileName: "printreceipt"
@@ -368,7 +432,7 @@ class OPBillingAr extends Component {
           }}
           selectedLang={this.state.selectedLang}
         />
-        <div className="spacing-push algaeh_Arabic_Version">
+        <div style={{ marginTop: 75 }}>
           <MyContext.Provider
             value={{
               state: this.state,
@@ -376,7 +440,7 @@ class OPBillingAr extends Component {
                 this.setState({ ...this.state, ...obj }, () => {
                   Object.keys(obj).map(key => {
                     if (key === "patient_code") {
-                      this.getPatientDetails(this, {});
+                      this.getPatientDetails(this);
                     }
                   });
                 });
@@ -385,39 +449,44 @@ class OPBillingAr extends Component {
           >
             <PatientDetails BillingIOputs={this.state} />
             <DisplayVisitDetails BillingIOputs={this.state} />
+            {/* <DisplayInsuranceDetails BillingIOputs={this.state} /> */}
             <OPBillingDetails BillingIOputs={this.state} />
           </MyContext.Provider>
         </div>
 
         <div className="hptl-phase1-footer">
-          
-            <div className="row">
-              <div className="col-lg-12">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={this.SaveBill.bind(this)}
-                  disabled={this.state.Billexists}
-                >
-                  {/* <AlgaehLabel
-                    label={{ fieldName: "btn_save", returnText: true }}
-                  /> */}
-                  Save
-                </button>
+          <div className="row">
+            <div className="col-lg-12">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={this.SaveBill.bind(this)}
+                disabled={this.state.saveEnable}
+              >
+                <AlgaehLabel
+                  label={{ fieldName: "btn_save", returnText: true }}
+                />
+                {/* Save */}
+              </button>
 
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  onClick={ClearData.bind(this, this)}
-                >
-                  {/* <AlgaehLabel
-                    label={{ fieldName: "btn_clear", returnText: true }}
-                  /> */}
-                  Clear
-                </button>
-              </div>
+              <AHSnackbar
+                open={this.state.open}
+                handleClose={this.handleClose}
+                MandatoryMsg={this.state.MandatoryMsg}
+              />
+
+              <button
+                type="button"
+                className="btn btn-default"
+                onClick={ClearData.bind(this, this)}
+              >
+                <AlgaehLabel
+                  label={{ fieldName: "btn_clear", returnText: true }}
+                />
+                {/* Clear */}
+              </button>
             </div>
-          
+          </div>
         </div>
       </div>
     );
@@ -426,7 +495,6 @@ class OPBillingAr extends Component {
 
 function mapStateToProps(state) {
   return {
-    genbill: state.genbill,
     patients: state.patients,
     existinsurance: state.existinsurance,
     patienttype: state.patienttype
@@ -438,7 +506,6 @@ function mapDispatchToProps(dispatch) {
     {
       getPatientDetails: AlgaehActions,
       getBIllDetails: AlgaehActions,
-      initialbillingCalculations: AlgaehActions,
       getPatientType: AlgaehActions
     },
     dispatch

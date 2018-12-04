@@ -114,6 +114,7 @@
   "consultation": "Consultation",
 
   "bill_details": "Bill Details",
+  "insurance_details": "Insurance Details",
 
   "services": "Services",
   "percentage": "Percentage",
@@ -126,5 +127,11 @@
   "co_insurance": "Co_Insurance",
 
   "btn_save": "Save",
-  "btn_clear": "Clear"
+  "btn_clear": "Clear",
+
+  "payby_cash": "Pay by Cash",
+  "payby_card": "Pay by Card",
+  "payby_check": "Pay by Cheque",
+  "NotGenerated": "Not Generated",
+  "add_new_service": "Add New Services"
 }

@@ -1,14 +1,9 @@
-.hptl-phase1-insurance-form {
+.htpl-phase1-primary-insurance-form {
   background: #ffff;
   border-radius: 5px;
-}
-
-.htpl-phase1-primary-insurance-form-Ar {
   .primary-details {
     padding-top: 8px;
-    border-left: 1px dashed #d3d3d3;
-    border-right: none;
-    padding-bottom: 22px;
+    border-right: 1px dashed #d3d3d3;
   }
 
   mark {
@@ -43,8 +38,9 @@
   }
   .radio-design {
     position: absolute;
-    top: 4px;
-    left: 7px;
+    top: 5px;
+    left: 36px;
+    // font-size: 12px;
   }
   .refactor-design {
     min-height: 28px;

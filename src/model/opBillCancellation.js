@@ -8,9 +8,6 @@ import {
 } from "../utils";
 import httpStatus from "../utils/httpStatus";
 import { debugFunction, debugLog } from "../utils/logging";
-import { addBillData, newReceiptData } from "../model/billing";
-import { LINQ } from "node-linq";
-//import { insertLadOrderedServices } from "../model/laboratory";
 
 let billingCounter = 0;
 //created by Nowshad :to save Op Bill Cancellation data

@@ -1,17 +1,11 @@
-.hptl-phase1-consultation-ar-details {
-  //background: #f2f2f2;
-  .consultation-section {
-    border: 1px solid #d3d3d3;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-    border-top-right-radius: 5px;
-  }
-}
-.hptl-phase1-add-consultation-ar-form {
+.hptl-phase1-add-consultation-form {
+  background: #ffff;
+  border-radius: 5px;
+
   .primary-details {
-    border-left: 1px dashed #d3d3d3;
-    border-right: none;
+    border-right: 1px dashed #d3d3d3;
     padding-top: 8px;
+    padding-bottom: 8px;
 
     .primary-box-container {
       .radio-design {

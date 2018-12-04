@@ -18,12 +18,6 @@ export default class MLCPatient extends Component {
     this.setState({ ...this.state, ...InputOutput });
   }
 
-  componentWillReceiveProps(nextProps) {
-    // if (nextProps.patients.length > 0) {
-    //   this.setState(PatRegIOputs.inputParam(nextProps.patients[0]));
-    // }
-  }
-
   CheckboxhandleChange(context, e) {
     if (e.target.checked === true) {
       this.setState(
@@ -59,6 +53,17 @@ export default class MLCPatient extends Component {
           <div className="hptl-phase1-add-mlcpatient-form">
             <div className="col-lg-12">
               <div className="row">
+                <div className="col">
+                  <Checkbox
+                    onChange={this.CheckboxhandleChange.bind(this, context)}
+                  />
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "is_mlc"
+                    }}
+                  />
+                </div>
+
                 <AlagehFormGroup
                   div={{ className: "col mandatory" }}
                   label={{
@@ -117,17 +122,6 @@ export default class MLCPatient extends Component {
                     disabled: this.state.MLCPATIENT
                   }}
                 />
-                <div className="col arabic-checkbox-label">
-                  <Checkbox
-                    onChange={this.CheckboxhandleChange.bind(this, context)}
-                    className="arabic-checkbox-input"
-                  />
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "is_mlc"
-                    }}
-                  />
-                </div>
               </div>
               <br />
             </div>

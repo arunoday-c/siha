@@ -1,63 +1,40 @@
 import React, { Component } from "react";
 import PrimaryInsurance from "./PrimaryInsurance/PrimaryInsuranceDetails.js";
 import SecondaryInsurance from "./SecondaryInsurance/SecondaryInsuranceDetails.js";
+import { getLabelFromLanguage } from "../../../utils/GlobalFunctions";
 import "./DisplayInsuranceDetails.css";
 import "./../../../styles/site.css";
 
 export default class DisplayInsuranceDetails extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      actionPrimaryDesign: true,
-      actionSecondaryDesign: true
-    };
-  }
-
-  openTab(dataValue) {
-    if (dataValue === "primary-insurance") {
-      this.setState({
-        actionPrimaryDesign: true,
-        actionSecondaryDesign: true
-      });
-    } else if (dataValue === "secondary-insurance") {
-      this.setState({
-        actionSecondaryDesign: false,
-        actionPrimaryDesign: false
-      });
-    }
+    this.state = {};
   }
 
   render() {
-    let primaryInsurance = this.state.actionPrimaryDesign ? "active" : "";
-    let secondaryInsurance = this.state.actionSecondaryDesign ? "" : "active";
     return (
-      <div className="hptl-phase1-insuranceDis-details margin-top-15">
-        <div className="tab-container toggle-section">
-          <ul className="nav">
-            <li
-              className={"nav-item tab-button " + primaryInsurance}
-              id="PrimaryInsurance"
-              onClick={this.openTab.bind(this, "primary-insurance")}
-            >
-              <label className="style_Label ">Primary Insurance</label>
-            </li>
-            <li
-              className={"nav-item tab-button " + secondaryInsurance}
-              id="SecondaryInsurance"
-              onClick={this.openTab.bind(this, "secondary-insurance")}
-            >
-              <label className="style_Label ">Secondary Insurance</label>
-            </li>
-          </ul>
-        </div>
-        <div className="display-insurance-section">
-          {this.state.actionPrimaryDesign ? (
-            <PrimaryInsurance BillingIOputs={this.props.BillingIOputs} />
-          ) : null}
-          {this.state.actionSecondaryDesign ? null : (
-            <SecondaryInsurance BillingIOputs={this.props.BillingIOputs} />
-          )}
-        </div>
+      <div className="col-12 popRightDiv">
+        <h6
+          style={{
+            borderBottom: " 1px solid #d0d0d0",
+            fontSize: "0.9rem",
+            paddingBottom: 5,
+            paddingTop: "10px"
+          }}
+        >
+          {getLabelFromLanguage({ fieldName: "prim-insurance" })}
+        </h6>
+        <PrimaryInsurance BillingIOputs={this.props.BillingIOputs} />
+        <h6
+          style={{
+            borderBottom: " 1px solid #d0d0d0",
+            fontSize: "0.9rem",
+            paddingBottom: 5
+          }}
+        >
+          {getLabelFromLanguage({ fieldName: "sec_company" })}
+        </h6>
+        <SecondaryInsurance BillingIOputs={this.props.BillingIOputs} />
       </div>
     );
   }

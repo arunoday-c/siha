@@ -1,120 +1,161 @@
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import Enumerable from "linq";
+import { SetBulkState } from "../../../../utils/GlobalFunctions";
 
 const DeptselectedHandeler = ($this, context, e) => {
-  let dept = Enumerable.from($this.state.departments)
+  debugger;
+  let dept = Enumerable.from($this.props.deptanddoctors.departmets)
     .where(w => w.sub_department_id === e.value)
     .firstOrDefault();
 
-  $this.setState({
-    [e.name]: e.value,
-    department_id: e.selected.department_id,
-    doctors: dept.doctors
-  });
+  $this.setState(
+    {
+      [e.name]: e.value,
+      department_id: e.selected.department_id,
+      doctors: dept.doctors
+    },
+    () => {
+      debugger;
+    }
+  );
   if (context != null) {
     context.updateState({
       [e.name]: e.value,
-      department_id: e.selected.department_id
+      department_id: e.selected.department_id,
+      doctors: dept.doctors
     });
   }
 };
 
 const selectedHandeler = ($this, context, e) => {
-  if ($this.state.full_name !== "") {
-    $this.props.getDepartmentsandDoctors({
-      uri: "/department/get/get_All_Doctors_DepartmentWise",
-      method: "GET",
-      redux: {
-        type: "DEPT_DOCTOR_GET_DATA",
-        mappingName: "deptanddoctors"
-      },
-      afterSuccess: data => {
-        $this.setState({
-          departments: data.departmets,
-          doctors: data.doctors,
-          [e.name]: e.value,
-          visittypeselect: false
-        });
-
-        if (context != null) {
-          context.updateState({
+  //debugger;
+  SetBulkState({
+    state: $this,
+    callback: () => {
+      debugger;
+      if (
+        $this.state.full_name !== "" &&
+        ($this.state.title_id !== null && $this.state.title_id !== "") &&
+        $this.state.arabic_name !== "" &&
+        ($this.state.gender !== null && $this.state.gender !== "") &&
+        ($this.state.date_of_birth !== null &&
+          $this.state.date_of_birth !== "") &&
+        $this.state.age !== 0 &&
+        ($this.state.contact_number !== null &&
+          $this.state.contact_number !== "") &&
+        ($this.state.patient_type !== null &&
+          $this.state.patient_type !== "") &&
+        ($this.state.nationality_id !== null &&
+          $this.state.nationality_id !== "") &&
+        ($this.state.country_id !== null && $this.state.country_id !== "") &&
+        ($this.state.primary_identity_id !== null &&
+          $this.state.primary_identity_id !== "") &&
+        ($this.state.primary_id_no !== "" && $this.state.primary_id_no !== null)
+      ) {
+        $this.setState(
+          {
             [e.name]: e.value,
-            consultation: e.selected.consultation,
-            visittypeselect: false
-          });
-        }
-      }
-    });
-  } else {
-    $this.setState({
-      [e.name]: null
-    });
-    swalMessage({
-      title: "غير صالحة. يرجى ملء التفاصيل الديموغرافية للمريض",
-      type: "warning"
-    });
-  }
-};
+            visittypeselect: false,
+            consultation: e.selected.consultation
+          },
+          () => {
+            if (context != null) {
+              context.updateState({
+                ...$this.state
+              });
+            }
 
-const unsuccessfulSignIn = (message, title) => {
-  swalMessage({
-    title: message,
-    type: "error"
+            $this.props.getDepartmentsandDoctors({
+              uri: "/department/get/get_All_Doctors_DepartmentWise",
+              method: "GET",
+              redux: {
+                type: "DEPT_DOCTOR_GET_DATA",
+                mappingName: "deptanddoctors"
+              }
+            });
+          }
+        );
+      } else {
+        $this.setState({
+          [e.name]: null
+        });
+        swalMessage({
+          title: "Invalid Input. Please fill Patient demographic details",
+          type: "warning"
+        });
+      }
+    }
   });
 };
 
 const doctorselectedHandeler = ($this, context, e) => {
+  debugger;
   if ($this.state.sub_department_id !== null) {
     let employee_list = Enumerable.from($this.props.providers)
-      .where(w => w.hims_d_employee_id == e.value)
+      .where(w => w.hims_d_employee_id === e.value)
       .toArray();
     let doctor_name = "";
     if (employee_list !== null && employee_list.length > 0) {
       doctor_name = employee_list[0].full_name;
     }
     if ($this.state.hims_d_patient_id != null) {
-      algaehApiCall({
-        uri: "/visit/checkVisitExists",
-        data: $this.state,
-        onSuccess: response => {
-          if (response.data.success === true) {
-            $this.setState(
-              {
-                [e.name]: e.value,
-                visittypeselect: false,
-                hims_d_services_id: e.selected.services_id,
-                incharge_or_provider: e.value,
-                provider_id: e.value,
-                doctor_name: doctor_name,
-                saveEnable: false
-              },
-              () => {
-                generateBillDetails($this, context);
+      if (e.selected.services_id !== null) {
+        algaehApiCall({
+          uri: "/visit/checkVisitExists",
+          data: $this.state,
+          onSuccess: response => {
+            if (response.data.success === true) {
+              $this.setState(
+                {
+                  [e.name]: e.value,
+                  visittypeselect: false,
+                  hims_d_services_id: e.selected.services_id,
+                  incharge_or_provider: e.value,
+                  provider_id: e.value,
+                  doctor_name: doctor_name,
+                  saveEnable: false,
+                  billdetail: false
+                },
+                () => {
+                  generateBillDetails($this, context);
+                }
+              );
+              if (context != null) {
+                context.updateState({
+                  [e.name]: e.value,
+                  hims_d_services_id: e.selected.services_id,
+                  incharge_or_provider: e.value,
+                  provider_id: e.value,
+                  doctor_name: doctor_name,
+                  saveEnable: false,
+                  billdetail: false
+                });
               }
-            );
-            if (context != null) {
-              context.updateState({
-                [e.name]: e.value,
-                hims_d_services_id: e.selected.services_id,
-                incharge_or_provider: e.value,
-                provider_id: e.value,
-                doctor_name: doctor_name,
-                saveEnable: false
-              });
+            } else {
+              $this.setState(
+                {
+                  [e.name]: null
+                },
+                () => {
+                  swalMessage({
+                    title: response.data.message,
+                    type: "warning"
+                  });
+                }
+              );
             }
-          } else {
-            $this.setState(
-              {
-                [e.name]: null
-              },
-              () => {
-                unsuccessfulSignIn(response.data.message, "Warning");
-              }
-            );
           }
-        }
-      });
+        });
+      } else {
+        $this.setState({
+          [e.name]: null
+        });
+        swalMessage({
+          title: "Invalid Input. No Service defined for the selected doctor.",
+          type: "warning"
+        });
+      }
     } else {
       if (e.selected.services_id !== null) {
         $this.setState(
@@ -125,7 +166,8 @@ const doctorselectedHandeler = ($this, context, e) => {
             incharge_or_provider: e.value,
             provider_id: e.value,
             doctor_name: doctor_name,
-            saveEnable: false
+            saveEnable: false,
+            billdetail: false
           },
           () => {
             generateBillDetails($this, context);
@@ -138,16 +180,16 @@ const doctorselectedHandeler = ($this, context, e) => {
             incharge_or_provider: e.value,
             provider_id: e.value,
             doctor_name: doctor_name,
-            saveEnable: false
+            saveEnable: false,
+            billdetail: false
           });
         }
       } else {
         $this.setState({
           [e.name]: null
         });
-
         swalMessage({
-          title: "غير صالحة. لا توجد خدمة محددة  للطبيب المختار.",
+          title: "Invalid Input. No Service defined for the selected doctor.",
           type: "warning"
         });
       }
@@ -157,8 +199,8 @@ const doctorselectedHandeler = ($this, context, e) => {
       [e.name]: null
     });
     swalMessage({
-      title: "غير صالحة. يرجى اختيار القسم",
-      type: "success"
+      title: "Invalid Input. Please select department.",
+      type: "warning"
     });
   }
 };
@@ -181,38 +223,48 @@ const generateBillDetails = ($this, context) => {
     }
   ];
   AlgaehLoader({ show: true });
-  $this.props.generateBill({
+
+  debugger;
+  algaehApiCall({
     uri: "/billing/getBillDetails",
     method: "POST",
     data: serviceInput,
-    redux: {
-      type: "BILL_GEN_GET_DATA",
-      mappingName: "xxx"
-    },
-    afterSuccess: data => {
-      if (context != null) {
-        context.updateState({ ...data });
-      }
-
-      $this.props.billingCalculations({
-        uri: "/billing/billingCalculations",
-        method: "POST",
-        data: data,
-        redux: {
-          type: "BILL_HEADER_GEN_GET_DATA",
-          mappingName: "genbill"
-        },
-        afterSuccess: data => {
-          AlgaehLoader({ show: false });
+    onSuccess: response => {
+      if (response.data.success) {
+        if (context != null) {
+          context.updateState({ ...response.data.records });
         }
+
+        algaehApiCall({
+          uri: "/billing/billingCalculations",
+          method: "POST",
+          data: response.data.records,
+          onSuccess: response => {
+            if (response.data.success) {
+              if (context != null) {
+                context.updateState({ ...response.data.records });
+              }
+            }
+            AlgaehLoader({ show: false });
+          },
+          onFailure: error => {
+            AlgaehLoader({ show: false });
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
+        });
+      }
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
       });
     }
   });
 };
 
-export {
-  DeptselectedHandeler,
-  selectedHandeler,
-  doctorselectedHandeler,
-  unsuccessfulSignIn
-};
+export { DeptselectedHandeler, selectedHandeler, doctorselectedHandeler };

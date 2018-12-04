@@ -729,9 +729,6 @@ class NetworkPlan extends PureComponent {
                         className: "txt-fld d-none",
                         name: "insurance_sub_id",
 
-                        events: {
-                          onChange: null
-                        },
                         others: {
                           "data-netdata": true
                         }
@@ -744,9 +741,6 @@ class NetworkPlan extends PureComponent {
                         className: "txt-fld d-none",
                         name: "effective_start_date",
 
-                        events: {
-                          onChange: null
-                        },
                         others: {
                           "data-netdata": true
                         }
@@ -759,9 +753,6 @@ class NetworkPlan extends PureComponent {
                         className: "txt-fld d-none",
                         name: "effective_end_date",
 
-                        events: {
-                          onChange: null
-                        },
                         others: {
                           "data-netdata": true
                         }
@@ -775,9 +766,6 @@ class NetworkPlan extends PureComponent {
                         className: "txt-fld d-none",
                         name: "insurance_sub_id",
 
-                        events: {
-                          onChange: null
-                        },
                         others: {
                           "data-netdata": true
                         }
@@ -791,9 +779,6 @@ class NetworkPlan extends PureComponent {
                         className: "txt-fld d-none",
                         name: "price_from",
 
-                        events: {
-                          onChange: null
-                        },
                         others: {
                           "data-netdata": true
                         }

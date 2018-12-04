@@ -21,12 +21,18 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
-  api.get("/getService", getServices, (req, res, next) => {
-    res.status(httpStatus.ok).json({
-      success: true,
-      records: req.records
-    });
-  });
+
+  api.get(
+    "/getService",
+    getServices,
+
+    (req, res, next) => {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
 
   api.post(
     "/addServices",

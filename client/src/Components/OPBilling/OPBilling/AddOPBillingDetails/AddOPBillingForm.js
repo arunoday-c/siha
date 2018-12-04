@@ -25,7 +25,7 @@ import {
   EditGrid,
   CancelGrid
 } from "./AddOPBillingHandaler";
-import ReciptForm from "../ReciptDetails/ReciptForm";
+import ReciptForm from "../ReciptDetails/AddReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { successfulMessage } from "../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
@@ -138,7 +138,7 @@ class AddOPBillingForm extends Component {
                   context.updateState({
                     billdetails: existingservices,
                     applydiscount: applydiscount,
-                    s_service_type: null,
+                    // s_service_type: null,
                     s_service: null,
                     saveEnable: false
                   });
@@ -154,6 +154,8 @@ class AddOPBillingForm extends Component {
                         response.data.records.patient_payable_h =
                           response.data.records.patient_payable ||
                           $this.state.patient_payable;
+
+                        response.data.records.billDetails = false;
                         context.updateState({ ...response.data.records });
                       }
                     }
@@ -232,11 +234,7 @@ class AddOPBillingForm extends Component {
             let data = response.data.records;
 
             extend(row, data.billdetails[0]);
-            for (let i = 0; i < billdetails.length; i++) {
-              if (billdetails[i].service_type_id === row.service_type_id) {
-                billdetails[i] = row;
-              }
-            }
+            billdetails[row.rowIdx] = row;
             $this.setState({ billdetails: billdetails });
           }
         },
@@ -275,31 +273,9 @@ class AddOPBillingForm extends Component {
     });
   }
 
-  deleteBillDetail(context, e, rowId) {
+  deleteBillDetail(context, row) {
     let serviceDetails = this.state.billdetails;
-    serviceDetails.splice(rowId, 1);
-
-    algaehApiCall({
-      uri: "/billing/billingCalculations",
-      method: "POST",
-      data: { billdetails: serviceDetails },
-      onSuccess: response => {
-        if (response.data.success) {
-          response.data.records.patient_payable_h =
-            response.data.records.patient_payable || this.state.patient_payable;
-
-          if (context != null) {
-            context.updateState({ ...response.data.records });
-          }
-        }
-      },
-      onFailure: error => {
-        swalMessage({
-          title: error.message,
-          type: "error"
-        });
-      }
-    });
+    serviceDetails.splice(row.rowIdx, 1);
 
     if (serviceDetails.length === 0) {
       if (context !== undefined) {
@@ -342,10 +318,34 @@ class AddOPBillingForm extends Component {
           total_amount: 0,
           unbalanced_amount: 0,
           saveEnable: true,
+          billDetails: true,
           applydiscount: true
         });
       }
     } else {
+      algaehApiCall({
+        uri: "/billing/billingCalculations",
+        method: "POST",
+        data: { billdetails: serviceDetails },
+        onSuccess: response => {
+          if (response.data.success) {
+            response.data.records.patient_payable_h =
+              response.data.records.patient_payable ||
+              this.state.patient_payable;
+
+            if (context != null) {
+              context.updateState({ ...response.data.records });
+            }
+          }
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
+      });
+
       if (context !== undefined) {
         context.updateState({
           billdetails: serviceDetails
@@ -382,7 +382,8 @@ class AddOPBillingForm extends Component {
                         data: this.props.servicetype
                       },
                       others: { disabled: this.state.Billexists },
-                      onChange: serviceTypeHandeler.bind(this, this, context)
+                      onChange: serviceTypeHandeler.bind(this, this, context),
+                      onClear: serviceTypeHandeler.bind(this, this, context)
                     }}
                   />
 
@@ -404,7 +405,8 @@ class AddOPBillingForm extends Component {
                         data: this.props.opbilservices
                       },
                       others: { disabled: this.state.Billexists },
-                      onChange: serviceHandeler.bind(this, this, context)
+                      onChange: serviceHandeler.bind(this, this, context),
+                      onClear: serviceHandeler.bind(this, this, context)
                     }}
                   />
 
@@ -424,6 +426,7 @@ class AddOPBillingForm extends Component {
                       className="btn btn-default"
                       style={{ marginTop: "24px" }}
                       onClick={this.ShowBillDetails.bind(this)}
+                      disabled={this.state.billDetails}
                     >
                       View Bill Details
                     </button>
@@ -687,6 +690,10 @@ class AddOPBillingForm extends Component {
                         data: this.state.billdetails
                       }}
                       isEditable={!this.state.Billexists}
+                      actions={{
+                        allowEdit: !this.state.Billexists,
+                        allowDelete: !this.state.Billexists
+                      }}
                       paging={{ page: 0, rowsPerPage: 5 }}
                       byForceEvents={true}
                       events={{

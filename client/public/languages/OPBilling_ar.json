@@ -16,7 +16,12 @@
   "patient_type": "نوع المريض",
   "full_name": "اسم المريض",
 
+  "responsibility": "المسئولية",
+  "tax_details": "ضريبة",
+  "payable": "تدفع",
+
   "select_service": "اختر الخدمة",
+  "select_service_type": "اختر نوع الخدمة",
 
   "gross_total": "المجموع الكلي",
   "advance_adjust": "يعدل",
@@ -27,6 +32,11 @@
   "credit_amount": "ائتمان",
   "balance_due": "الرصيد المستحق",
   "receiveable_amount": "ذمم مدينة",
+  "sub_total_amount": "المجموع الفرعي",
+  "discount_amount": "خصم",
+  "net_total": "صافي المجموع",
+
+  "sheet_discount_percentage": "مستوى الورقة٪",
 
   "service_type_id": "نوع الخدمة",
   "services_id": "الخدمات",
@@ -87,9 +97,9 @@
   "amount": "كمية",
   "unbalanced_amount": "المبلغ غير المتوازن",
 
-  "responsibility": "المسئولية",
-  "tax_details": "ضريبة",
-  "payable": "تدفع",
+  "responsibility_lbl": "المسئولية",
+  "tax_lbl": "ضريبة",
+  "payable_lbl": "تدفع",
 
   "patient_lbl": "صبور",
   "company_lbl": "الشركة الرئيسية",
@@ -102,5 +112,27 @@
   "card_no": "رقم البطاقة",
   "ins_expiry_date": "تاريخ الانتهاء",
 
-  "bill_details": "تفاصيل الفاتورة"
+  "consultation": "تشاور",
+
+  "bill_details": "تفاصيل الفاتورة",
+  "insurance_details": "تفاصيل التأمين",
+
+  "services": "خدمات",
+  "percentage": "النسبة المئوية",
+  "max_limit": "ماكس الحد",
+  "laboratory": "مختبر",
+  "radiology": "طب إشعاعي",
+  "procedure": "إجراء",
+  "dental": "الأسنان",
+  "medicine": "دواء",
+  "co_insurance": "شركة التأمين",
+
+  "btn_save": "حفظ",
+  "btn_clear": "واضح",
+
+  "payby_cash": "الدفع نقدا",
+  "payby_card": "الدفع عن طريق البطاقة",
+  "payby_check": "الدفع عن طريق شيك",
+  "NotGenerated": "غير منشأ",
+  "add_new_service": "أضف خدمات جديدة"
 }

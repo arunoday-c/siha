@@ -1,0 +1,200 @@
+import extend from "extend";
+import SettlementIOputs from "../../Models/OPCreditSettlement";
+import {
+  algaehApiCall,
+  swalMessage,
+  getCookie
+} from "../../utils/algaehApiCall";
+import moment from "moment";
+import AlgaehSearch from "../Wrapper/globalSearch";
+import FrontDesk from "../../Search/FrontDesk.json";
+import AlgaehLoader from "../Wrapper/fullPageLoader";
+
+const PatientSearch = ($this, e) => {
+  AlgaehSearch({
+    searchGrid: {
+      columns: FrontDesk
+    },
+    searchName: "patients",
+    uri: "/gloabelSearch/get",
+    onContainsChange: (text, serchBy, callBack) => {
+      callBack(text);
+    },
+
+    onRowSelect: row => {
+      debugger;
+      $this.setState(
+        {
+          patient_code: row.patient_code,
+          patient_id: row.hims_d_patient_id,
+          full_name: row.full_name
+        },
+        () => {
+          getPatientDetails($this);
+        }
+      );
+    }
+  });
+};
+
+const getPatientDetails = $this => {
+  AlgaehLoader({ show: true });
+
+  algaehApiCall({
+    uri: "/opCreditSettlement/getPatientwiseBill",
+    method: "GET",
+    data: { patient_id: $this.state.patient_id },
+    onSuccess: response => {
+      if (response.data.success) {
+        debugger;
+        let data = response.data.records;
+        if (data.length > 0) {
+          for (let i = 0; i < data.length; i++) {
+            data[i].bill_header_id = data[i].hims_f_billing_header_id;
+            data[i].receipt_amount = 0;
+            data[i].balance_amount = data[i].balance_credit;
+            data[i].previous_balance = data[i].balance_credit;
+            data[i].bill_amount = data[i].receiveable_amount;
+          }
+
+          $this.setState({ criedtdetails: data });
+        }
+      }
+      AlgaehLoader({ show: false });
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+};
+
+const ClearData = ($this, e) => {
+  let _screenName = getCookie("ScreenName").replace("/", "");
+  let counter_id = 0;
+  algaehApiCall({
+    uri: "/userPreferences/get",
+    data: {
+      screenName: _screenName,
+      identifier: "Counter"
+    },
+    method: "GET",
+    onSuccess: response => {
+      counter_id = response.data.records.selectedValue;
+
+      let IOputs = extend(SettlementIOputs.inputParam());
+
+      IOputs.counter_id = counter_id;
+      $this.setState({ ...$this.state, ...IOputs });
+    }
+  });
+};
+
+const Validations = $this => {
+  let isError = false;
+
+  if ($this.state.card_amount > 0) {
+    if ($this.state.card_number === null || $this.state.card_number === "") {
+      isError = true;
+      swalMessage({
+        type: "warning",
+        title: "Invalid. Card Number cannot be blank."
+      });
+
+      document.querySelector("[name='card_check_number']").focus();
+      return isError;
+    }
+
+    if ($this.state.card_date === null || $this.state.card_date === "") {
+      isError = true;
+      swalMessage({
+        type: "warning",
+        title: "Invalid. Card Date Cannot be blank."
+      });
+
+      document.querySelector("[name='card_date']").focus();
+      return isError;
+    }
+  } else if ($this.state.cheque_amount > 0) {
+    if (
+      $this.state.cheque_number === null ||
+      $this.state.cheque_number === ""
+    ) {
+      isError = true;
+      swalMessage({
+        type: "warning",
+        title: "Invalid Input. Check Number cannot be blank."
+      });
+
+      document.querySelector("[name='cheque_number']").focus();
+      return isError;
+    }
+
+    if ($this.state.cheque_date === null || $this.state.cheque_date === "") {
+      isError = true;
+      swalMessage({
+        type: "warning",
+        title: "Invalid Input. Cheque Date Cannot be blank."
+      });
+
+      document.querySelector("[name='cheque_date']").focus();
+      return isError;
+    }
+  } else if ($this.state.unbalanced_amount > 0) {
+    isError = true;
+    swalMessage({
+      type: "warning",
+      title:
+        "Invalid Input. Total receipt amount should be equal to reciveable amount."
+    });
+
+    return isError;
+  } else if ($this.state.shift_id === null) {
+    isError = true;
+    swalMessage({
+      type: "warning",
+      title: "Invalid Input. Shift is Mandatory."
+    });
+
+    return isError;
+  } else if ($this.state.counter_id === null) {
+    isError = true;
+    swalMessage({
+      type: "warning",
+      title: "Invalid Input. Counter is Mandatory."
+    });
+
+    return isError;
+  }
+};
+
+const getCashiersAndShiftMAP = $this => {
+  let year = moment().format("YYYY");
+
+  let month = moment().format("MM");
+
+  algaehApiCall({
+    uri: "/shiftAndCounter/getCashiersAndShiftMAP",
+    method: "GET",
+    data: { year: year, month: month, for: "T" },
+    onSuccess: response => {
+      debugger;
+      if (response.data.success) {
+        if (response.data.records.length > 0) {
+          $this.setState({ shift_id: response.data.records[0].shift_id });
+        }
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+};
+
+export { ClearData, Validations, getCashiersAndShiftMAP, PatientSearch };

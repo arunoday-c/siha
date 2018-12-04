@@ -200,10 +200,11 @@ let selectRoles = (req, res, next) => {
     db.getConnection((error, connection) => {
       if (req.userIdentity.role_type != "GN") {
         connection.query(
-          "select app_d_app_roles_id, role_code, role_name, role_discreption, role_type\
-        from algaeh_d_app_roles where record_status='A'  " +
+          "select app_d_app_roles_id,app_group_id, role_code, role_name, role_discreption, role_type\
+        from algaeh_d_app_roles where record_status='A'  and app_group_id=? " +
             adminUSer +
             " order by app_d_app_roles_id desc",
+          [req.query.algaeh_d_app_group_id],
           (error, result) => {
             releaseDBConnection(db, connection);
             if (error) {

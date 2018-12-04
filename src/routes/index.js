@@ -61,7 +61,9 @@ import DeliveryNoteEntry from "../Procurement/controller/DeliveryNoteEntry";
 import nurseWorkBench from "../EHR/controller/nurseWorkBench";
 import ReceiptEntry from "../Procurement/controller/ReceiptEntry";
 import opBillCancellation from "../controller/opBillCancellation";
+import opCreditSettlement from "../controller/opCreditSettlement";
 import algaehMasters from "../controller/algaehMasters";
+import dental from "../controller/dental";
 let router = express();
 
 //connect to DB
@@ -135,6 +137,8 @@ initializedDb(db => {
   router.use("/ReceiptEntry", ReceiptEntry({ config, db }));
   router.use("/algaehMasters", algaehMasters({ config, db }));
   router.use("/opBillCancellation", opBillCancellation({ config, db }));
+  router.use("/dental", dental({ config, db }));
+  router.use("/opCreditSettlement", opCreditSettlement({ config, db }));
 });
 
 export default router;
