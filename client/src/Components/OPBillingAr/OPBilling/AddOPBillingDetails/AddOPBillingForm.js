@@ -17,13 +17,19 @@ import {
   serviceTypeHandeler,
   serviceHandeler,
   discounthandle,
-  adjustadvance
+  adjustadvance,
+  billheaderCalculation,
+  onchangegridcol,
+  credittexthandle,
+  credittextCal,
+  EditGrid,
+  CancelGrid
 } from "./AddOPBillingHandaler";
-import ReciptForm from "../ReciptDetails/ReciptForm";
-
+import ReciptForm from "../ReciptDetails/AddReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
-import Paper from "@material-ui/core/Paper";
 import { successfulMessage } from "../../../../utils/GlobalFunctions";
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 
 class AddOPBillingForm extends Component {
   constructor(props) {
@@ -57,24 +63,20 @@ class AddOPBillingForm extends Component {
       });
     }
 
-    if (this.props.services === undefined || this.props.services.length === 0) {
+    if (
+      this.props.opbilservices === undefined ||
+      this.props.opbilservices.length === 0
+    ) {
       this.props.getServices({
         uri: "/serviceType/getService",
         method: "GET",
         redux: {
           type: "SERVICES_GET_DATA",
-          mappingName: "services"
+          mappingName: "opbilservices",
+          mappingName: "opserviceslist"
         }
       });
     }
-    this.props.getServices({
-      uri: "/serviceType/getService",
-      method: "GET",
-      redux: {
-        type: "SERVICES_GET_DATA",
-        mappingName: "serviceslist"
-      }
-    });
   }
 
   ShowBillDetails(e) {
@@ -86,140 +88,196 @@ class AddOPBillingForm extends Component {
 
   ProcessToBill(context, e) {
     let $this = this;
-
-    let serviceInput = [
-      {
-        insured: this.state.insured,
-        vat_applicable: this.state.vat_applicable,
-        hims_d_services_id: this.state.s_service,
-        primary_insurance_provider_id: this.state.insurance_provider_id,
-        primary_network_office_id: this.state
-          .hims_d_insurance_network_office_id,
-        primary_network_id: this.state.network_id,
-        sec_insured: this.state.sec_insured,
-        secondary_insurance_provider_id: this.state
-          .secondary_insurance_provider_id,
-        secondary_network_id: this.state.secondary_network_id,
-        secondary_network_office_id: this.state.secondary_network_office_id
-      }
-    ];
-
-    this.props.generateBill({
-      uri: "/billing/getBillDetails",
-      method: "POST",
-      data: serviceInput,
-      redux: {
-        type: "BILL_GEN_GET_DATA",
-        mappingName: "xxx"
-      },
-      afterSuccess: data => {
-        if (data.billdetails[0].pre_approval === "Y") {
-          successfulMessage({
-            message:
-              "Invalid Input. Selected Service is Pre-Approval required, you don't have rights to bill.",
-            title: "Warning",
-            icon: "warning"
-          });
-        } else {
-          let existingservices = $this.state.billdetails;
-
-          if (data.billdetails.length !== 0) {
-            data.billdetails[0].ordered_date = new Date();
-            existingservices.splice(0, 0, data.billdetails[0]);
+    if (this.state.patient_id !== null && this.state.visit_id !== null) {
+      if (this.state.s_service_type !== null && this.state.s_service !== null) {
+        let applydiscount = false;
+        let serviceInput = [
+          {
+            insured: this.state.insured,
+            vat_applicable: this.state.vat_applicable,
+            hims_d_services_id: this.state.s_service,
+            primary_insurance_provider_id: this.state.insurance_provider_id,
+            primary_network_office_id: this.state
+              .hims_d_insurance_network_office_id,
+            primary_network_id: this.state.network_id,
+            sec_insured: this.state.sec_insured,
+            secondary_insurance_provider_id: this.state
+              .secondary_insurance_provider_id,
+            secondary_network_id: this.state.secondary_network_id,
+            secondary_network_office_id: this.state.secondary_network_office_id
           }
+        ];
 
-          if (context != null) {
-            context.updateState({ billdetails: existingservices });
-          }
+        algaehApiCall({
+          uri: "/billing/getBillDetails",
+          method: "POST",
+          data: serviceInput,
+          onSuccess: response => {
+            if (response.data.success) {
+              let data = response.data.records;
 
-          $this.props.billingCalculations({
-            uri: "/billing/billingCalculations",
-            method: "POST",
-            data: { billdetails: existingservices },
-            redux: {
-              type: "BILL_HEADER_GEN_GET_DATA",
-              mappingName: "genbill"
+              if (data.billdetails[0].pre_approval === "Y") {
+                successfulMessage({
+                  message:
+                    "Invalid Input. Selected Service is Pre-Approval required, you don't have rights to bill.",
+                  title: "Warning",
+                  icon: "warning"
+                });
+              } else {
+                let existingservices = $this.state.billdetails;
+
+                if (data.billdetails.length !== 0) {
+                  data.billdetails[0].created_date = new Date();
+                  existingservices.splice(0, 0, data.billdetails[0]);
+                }
+
+                if (this.state.mode_of_pay === "Insurance") {
+                  applydiscount = true;
+                }
+                if (context != null) {
+                  context.updateState({
+                    billdetails: existingservices,
+                    applydiscount: applydiscount,
+                    s_service_type: null,
+                    s_service: null,
+                    saveEnable: false
+                  });
+                }
+
+                algaehApiCall({
+                  uri: "/billing/billingCalculations",
+                  method: "POST",
+                  data: { billdetails: existingservices },
+                  onSuccess: response => {
+                    if (response.data.success) {
+                      if (context != null) {
+                        response.data.records.patient_payable_h =
+                          response.data.records.patient_payable ||
+                          $this.state.patient_payable;
+                        context.updateState({ ...response.data.records });
+                      }
+                    }
+                  },
+                  onFailure: error => {
+                    swalMessage({
+                      title: error.message,
+                      type: "error"
+                    });
+                  }
+                });
+              }
             }
-          });
-        }
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
+        });
+      } else {
+        successfulMessage({
+          message: "Invalid Input. Please select the Service and Service Type.",
+          title: "Warning",
+          icon: "warning"
+        });
       }
-    });
+    } else {
+      successfulMessage({
+        message: "Invalid Input. Please select the patient and visit.",
+        title: "Warning",
+        icon: "warning"
+      });
+    }
   }
   //Calculate Row Detail
-  calculateAmount(row, context, ctrl, e) {
+  calculateAmount(row, ctrl, e) {
     e = e || ctrl;
-    let $this = this;
-    let billdetails = this.state.billdetails;
+    if (e.target.value !== e.target.oldvalue) {
+      let $this = this;
+      let billdetails = this.state.billdetails;
 
-    row[e.target.name] = parseFloat(e.target.value);
-    let inputParam = [
-      {
-        hims_d_services_id: row.services_id,
-        vat_applicable: this.state.vat_applicable,
-        quantity: row.quantity,
-        discount_amout:
-          e.target.name === "discount_percentage" ? 0 : row.discount_amout,
-        discount_percentage:
-          e.target.name === "discount_amout" ? 0 : row.discount_percentage,
+      row[e.target.name] = parseFloat(
+        e.target.value === "" ? 0 : e.target.value
+      );
+      let inputParam = [
+        {
+          hims_d_services_id: row.services_id,
+          vat_applicable: this.state.vat_applicable,
+          quantity: row.quantity,
+          discount_amout:
+            e.target.name === "discount_percentage" ? 0 : row.discount_amout,
+          discount_percentage:
+            e.target.name === "discount_amout" ? 0 : row.discount_percentage,
 
-        insured: this.state.insured,
-        primary_insurance_provider_id: this.state.insurance_provider_id,
-        primary_network_office_id: this.state
-          .hims_d_insurance_network_office_id,
-        primary_network_id: this.state.network_id,
-        sec_insured: this.state.sec_insured,
-        secondary_insurance_provider_id: this.state
-          .secondary_insurance_provider_id,
-        secondary_network_id: this.state.secondary_network_id,
-        secondary_network_office_id: this.state.secondary_network_office_id
-      }
-    ];
-
-    this.props.billingCalculations({
-      uri: "/billing/getBillDetails",
-      method: "POST",
-      data: inputParam,
-      redux: {
-        type: "BILL_GEN_GET_DATA",
-        mappingName: "xxx"
-      },
-      afterSuccess: data => {
-        extend(row, data.billdetails[0]);
-        for (let i = 0; i < billdetails.length; i++) {
-          if (billdetails[i].service_type_id === row.service_type_id) {
-            billdetails[i] = row;
-          }
+          insured: this.state.insured,
+          primary_insurance_provider_id: this.state.insurance_provider_id,
+          primary_network_office_id: this.state
+            .hims_d_insurance_network_office_id,
+          primary_network_id: this.state.network_id,
+          sec_insured: this.state.sec_insured,
+          secondary_insurance_provider_id: this.state
+            .secondary_insurance_provider_id,
+          secondary_network_id: this.state.secondary_network_id,
+          secondary_network_office_id: this.state.secondary_network_office_id
         }
-        $this.setState({ billdetails: billdetails });
-      }
-    });
+      ];
+
+      algaehApiCall({
+        uri: "/billing/getBillDetails",
+        method: "POST",
+        data: inputParam,
+        onSuccess: response => {
+          if (response.data.success) {
+            let data = response.data.records;
+
+            extend(row, data.billdetails[0]);
+            for (let i = 0; i < billdetails.length; i++) {
+              if (billdetails[i].service_type_id === row.service_type_id) {
+                billdetails[i] = row;
+              }
+            }
+            $this.setState({ billdetails: billdetails });
+          }
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
+      });
+    }
   }
 
-  updateBillDetail(e) {
-    this.props.billingCalculations({
+  updateBillDetail(context, e) {
+    algaehApiCall({
       uri: "/billing/billingCalculations",
       method: "POST",
       data: { billdetails: this.state.billdetails },
-      redux: {
-        type: "BILL_HEADER_GEN_GET_DATA",
-        mappingName: "genbill"
+      onSuccess: response => {
+        if (response.data.success) {
+          response.data.records.patient_payable_h =
+            response.data.records.patient_payable || this.state.patient_payable;
+          response.data.records.saveEnable = false;
+          response.data.records.addNewService = false;
+          if (context != null) {
+            context.updateState({ ...response.data.records });
+          }
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
       }
     });
   }
 
-  deleteBillDetail(context, e, rowId) {
+  deleteBillDetail(context, row) {
     let serviceDetails = this.state.billdetails;
-    serviceDetails.splice(rowId, 1);
-
-    this.props.billingCalculations({
-      uri: "/billing/billingCalculations",
-      method: "POST",
-      data: { billdetails: serviceDetails },
-      redux: {
-        type: "BILL_HEADER_GEN_GET_DATA",
-        mappingName: "genbill"
-      }
-    });
+    serviceDetails.splice(row.rowIdx, 1);
 
     if (serviceDetails.length === 0) {
       if (context !== undefined) {
@@ -242,6 +300,7 @@ class AddOPBillingForm extends Component {
           company_res: 0,
           sec_company_res: 0,
           patient_payable: 0,
+          patient_payable_h: 0,
           company_payable: 0,
           sec_company_payable: 0,
           patient_tax: 0,
@@ -259,10 +318,35 @@ class AddOPBillingForm extends Component {
           cheque_date: null,
           cheque_amount: 0,
           total_amount: 0,
-          unbalanced_amount: 0
+          unbalanced_amount: 0,
+          saveEnable: true,
+          applydiscount: true
         });
       }
     } else {
+      algaehApiCall({
+        uri: "/billing/billingCalculations",
+        method: "POST",
+        data: { billdetails: serviceDetails },
+        onSuccess: response => {
+          if (response.data.success) {
+            response.data.records.patient_payable_h =
+              response.data.records.patient_payable ||
+              this.state.patient_payable;
+
+            if (context != null) {
+              context.updateState({ ...response.data.records });
+            }
+          }
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
+      });
+
       if (context !== undefined) {
         context.updateState({
           billdetails: serviceDetails
@@ -272,27 +356,19 @@ class AddOPBillingForm extends Component {
   }
 
   render() {
+    debugger;
+
     return (
       <React.Fragment>
         <MyContext.Consumer>
           {context => (
-            <div
-              className="hptl-phase1-op-add-billing-form"
-              style={{ direction: "rtl" }}
-            >
+            <div className="hptl-phase1-op-add-billing-form">
               <div className="container-fluid">
                 <div className="row margin-top-15">
-                  {/* <div className="col-lg-1">
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "select_service"
-                      }}
-                    />
-                  </div> */}
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
                     label={{
-                      fieldName: "select_service"
+                      fieldName: "select_service_type"
                     }}
                     selector={{
                       name: "s_service_type",
@@ -314,7 +390,7 @@ class AddOPBillingForm extends Component {
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
                     label={{
-                      forceLabel: "Select Service Type"
+                      fieldName: "select_service"
                     }}
                     selector={{
                       name: "s_service",
@@ -326,7 +402,7 @@ class AddOPBillingForm extends Component {
                             ? "service_name"
                             : "arabic_service_name",
                         valueField: "hims_d_services_id",
-                        data: this.props.services
+                        data: this.props.opbilservices
                       },
                       others: { disabled: this.state.Billexists },
                       onChange: serviceHandeler.bind(this, this, context)
@@ -338,6 +414,7 @@ class AddOPBillingForm extends Component {
                       className="btn btn-primary"
                       style={{ marginTop: "24px" }}
                       onClick={this.ProcessToBill.bind(this, context)}
+                      disabled={this.state.addNewService}
                     >
                       Add New Service
                     </button>
@@ -403,27 +480,25 @@ class AddOPBillingForm extends Component {
                             );
                           },
                           editorTemplate: row => {
+                            let display =
+                              this.props.servicetype === undefined
+                                ? []
+                                : this.props.servicetype.filter(
+                                    f =>
+                                      f.hims_d_service_type_id ===
+                                      row.service_type_id
+                                  );
+
                             return (
-                              <AlagehAutoComplete
-                                div={{}}
-                                selector={{
-                                  name: "service_type_id",
-                                  className: "select-fld",
-                                  value: row.service_type_id,
-                                  dataSource: {
-                                    textField: "service_type",
-                                    valueField: "hims_d_service_type_id",
-                                    data: this.props.servicetype
-                                  },
-                                  others: {
-                                    disabled: true
-                                  },
-                                  onChange: null
-                                }}
-                              />
+                              <span>
+                                {display !== undefined && display.length !== 0
+                                  ? this.state.selectedLang === "en"
+                                    ? display[0].service_type
+                                    : display[0].arabic_service_type
+                                  : ""}
+                              </span>
                             );
-                          },
-                          disabled: true
+                          }
                         },
 
                         {
@@ -432,10 +507,11 @@ class AddOPBillingForm extends Component {
                             <AlgaehLabel label={{ fieldName: "services_id" }} />
                           ),
                           displayTemplate: row => {
+                            debugger;
                             let display =
-                              this.props.services === undefined
+                              this.props.opserviceslist === undefined
                                 ? []
-                                : this.props.services.filter(
+                                : this.props.opserviceslist.filter(
                                     f =>
                                       f.hims_d_services_id === row.services_id
                                   );
@@ -451,27 +527,24 @@ class AddOPBillingForm extends Component {
                             );
                           },
                           editorTemplate: row => {
+                            let display =
+                              this.props.opserviceslist === undefined
+                                ? []
+                                : this.props.opserviceslist.filter(
+                                    f =>
+                                      f.hims_d_services_id === row.services_id
+                                  );
+
                             return (
-                              <AlagehAutoComplete
-                                div={{}}
-                                selector={{
-                                  name: "services_id",
-                                  className: "select-fld",
-                                  value: row.services_id,
-                                  dataSource: {
-                                    textField: "service_name",
-                                    valueField: "hims_d_services_id",
-                                    data: this.props.services
-                                  },
-                                  others: {
-                                    disabled: true
-                                  },
-                                  onChange: null
-                                }}
-                              />
+                              <span>
+                                {display !== null && display.length !== 0
+                                  ? this.state.selectedLang === "en"
+                                    ? display[0].service_name
+                                    : display[0].arabic_service_name
+                                  : ""}
+                              </span>
                             );
-                          },
-                          disabled: true
+                          }
                         },
                         {
                           fieldName: "unit_cost",
@@ -494,11 +567,21 @@ class AddOPBillingForm extends Component {
                                   className: "txt-fld",
                                   name: "quantity",
                                   events: {
-                                    onChange: this.calculateAmount.bind(
+                                    onChange: onchangegridcol.bind(
                                       this,
-                                      row,
-                                      context
+                                      this,
+                                      row
                                     )
+                                  },
+                                  others: {
+                                    placeholder: "0.00",
+                                    onBlur: this.calculateAmount.bind(
+                                      this,
+                                      row
+                                    ),
+                                    onFocus: e => {
+                                      e.target.oldvalue = e.target.value;
+                                    }
                                   }
                                 }}
                               />
@@ -532,11 +615,21 @@ class AddOPBillingForm extends Component {
                                   className: "txt-fld",
                                   name: "discount_percentage",
                                   events: {
-                                    onChange: this.calculateAmount.bind(
+                                    onChange: onchangegridcol.bind(
                                       this,
-                                      row,
-                                      context
+                                      this,
+                                      row
                                     )
+                                  },
+                                  others: {
+                                    placeholder: "0.00",
+                                    onBlur: this.calculateAmount.bind(
+                                      this,
+                                      row
+                                    ),
+                                    onFocus: e => {
+                                      e.target.oldvalue = e.target.value;
+                                    }
                                   }
                                 }}
                               />
@@ -560,11 +653,21 @@ class AddOPBillingForm extends Component {
                                   className: "txt-fld",
                                   name: "discount_amout",
                                   events: {
-                                    onChange: this.calculateAmount.bind(
+                                    onChange: onchangegridcol.bind(
                                       this,
-                                      row,
-                                      context
+                                      this,
+                                      row
                                     )
+                                  },
+                                  others: {
+                                    placeholder: "0.00",
+                                    onBlur: this.calculateAmount.bind(
+                                      this,
+                                      row
+                                    ),
+                                    onFocus: e => {
+                                      e.target.oldvalue = e.target.value;
+                                    }
                                   }
                                 }}
                               />
@@ -584,12 +687,14 @@ class AddOPBillingForm extends Component {
                       dataSource={{
                         data: this.state.billdetails
                       }}
-                      isEditable={true}
+                      isEditable={!this.state.Billexists}
                       paging={{ page: 0, rowsPerPage: 5 }}
+                      byForceEvents={true}
                       events={{
                         onDelete: this.deleteBillDetail.bind(this, context),
-                        onEdit: row => {},
-                        onDone: this.updateBillDetail.bind(this)
+                        onEdit: EditGrid.bind(this, this, context),
+                        onCancel: CancelGrid.bind(this, this, context),
+                        onDone: this.updateBillDetail.bind(this, context)
                       }}
                     />
                   </div>
@@ -605,11 +710,7 @@ class AddOPBillingForm extends Component {
                             fieldName: "sub_total_amount"
                           }}
                         />
-                        <h6>
-                          {this.state.sub_total_amount
-                            ? "₹" + this.state.sub_total_amount
-                            : "₹0.00"}
-                        </h6>
+                        <h6>{getAmountFormart(this.state.sub_total_amount)}</h6>
                       </div>
                       <div className="col-lg-4">
                         <AlgaehLabel
@@ -617,11 +718,7 @@ class AddOPBillingForm extends Component {
                             fieldName: "discount_amount"
                           }}
                         />
-                        <h6>
-                          {this.state.discount_amount
-                            ? "₹" + this.state.discount_amount
-                            : "₹0.00"}
-                        </h6>
+                        <h6>{getAmountFormart(this.state.discount_amount)}</h6>
                       </div>
 
                       <div className="col-lg-4">
@@ -630,11 +727,7 @@ class AddOPBillingForm extends Component {
                             fieldName: "net_total"
                           }}
                         />
-                        <h6>
-                          {this.state.net_total
-                            ? "₹" + this.state.net_total
-                            : "₹0.00"}
-                        </h6>
+                        <h6>{getAmountFormart(this.state.net_total)}</h6>
                       </div>
                     </div>
                   </div>
@@ -642,7 +735,14 @@ class AddOPBillingForm extends Component {
 
                 <div className="row">
                   <div className="col-lg-4">
-                    <Paper className="Paper">
+                    <div
+                      style={{
+                        margin: "15px 0",
+                        border: "1px solid #acaaaa",
+                        padding: 15,
+                        borderRadius: 10
+                      }}
+                    >
                       <div className="row">
                         <div className="col-lg-6">
                           <AlgaehLabel
@@ -650,11 +750,7 @@ class AddOPBillingForm extends Component {
                               fieldName: "copay_amount"
                             }}
                           />
-                          <h6>
-                            {this.state.copay_amount
-                              ? "₹" + this.state.copay_amount
-                              : "₹0.00"}
-                          </h6>
+                          <h6>{getAmountFormart(this.state.copay_amount)}</h6>
                         </div>
                         <div className="col-lg-6">
                           <AlgaehLabel
@@ -663,9 +759,7 @@ class AddOPBillingForm extends Component {
                             }}
                           />
                           <h6>
-                            {this.state.deductable_amount
-                              ? "₹" + this.state.deductable_amount
-                              : "₹0.00"}
+                            {getAmountFormart(this.state.deductable_amount)}
                           </h6>
                         </div>
                         <div className="col-lg-6">
@@ -675,9 +769,7 @@ class AddOPBillingForm extends Component {
                             }}
                           />
                           <h6>
-                            {this.state.sec_copay_amount
-                              ? "₹" + this.state.sec_copay_amount
-                              : "₹0.00"}
+                            {getAmountFormart(this.state.sec_copay_amount)}
                           </h6>
                         </div>
                         <div className="col-lg-6">
@@ -687,9 +779,7 @@ class AddOPBillingForm extends Component {
                             }}
                           />
                           <h6>
-                            {this.state.sec_deductable_amount
-                              ? "₹" + this.state.sec_deductable_amount
-                              : "₹0.00"}
+                            {getAmountFormart(this.state.sec_deductable_amount)}
                           </h6>
                         </div>
                       </div>
@@ -708,9 +798,7 @@ class AddOPBillingForm extends Component {
                                 }}
                               />
                               <h6>
-                                {this.state.patient_res
-                                  ? "₹" + this.state.patient_res
-                                  : "₹0.00"}
+                                {getAmountFormart(this.state.patient_res)}
                               </h6>
                             </div>
 
@@ -721,9 +809,7 @@ class AddOPBillingForm extends Component {
                                 }}
                               />
                               <h6>
-                                {this.state.patient_tax
-                                  ? "₹" + this.state.patient_tax
-                                  : "₹0.00"}
+                                {getAmountFormart(this.state.patient_tax)}
                               </h6>
                             </div>
 
@@ -734,9 +820,7 @@ class AddOPBillingForm extends Component {
                                 }}
                               />
                               <h6>
-                                {this.state.patient_payable_h
-                                  ? "₹" + this.state.patient_payable_h
-                                  : "₹0.00"}
+                                {getAmountFormart(this.state.patient_payable_h)}
                               </h6>
                             </div>
                           </div>
@@ -757,9 +841,7 @@ class AddOPBillingForm extends Component {
                                 }}
                               />
                               <h6>
-                                {this.state.company_res
-                                  ? "₹" + this.state.company_res
-                                  : "₹0.00"}
+                                {getAmountFormart(this.state.company_res)}
                               </h6>
                             </div>
 
@@ -770,9 +852,7 @@ class AddOPBillingForm extends Component {
                                 }}
                               />
                               <h6>
-                                {this.state.company_tax
-                                  ? "₹" + this.state.company_tax
-                                  : "₹0.00"}
+                                {getAmountFormart(this.state.company_tax)}
                               </h6>
                             </div>
 
@@ -783,9 +863,7 @@ class AddOPBillingForm extends Component {
                                 }}
                               />
                               <h6>
-                                {this.state.company_payble
-                                  ? "₹" + this.state.company_payble
-                                  : "₹0.00"}
+                                {getAmountFormart(this.state.company_payble)}
                               </h6>
                             </div>
                           </div>
@@ -805,9 +883,7 @@ class AddOPBillingForm extends Component {
                                 }}
                               />
                               <h6>
-                                {this.state.sec_company_res
-                                  ? "₹" + this.state.sec_company_res
-                                  : "₹0.00"}
+                                {getAmountFormart(this.state.sec_company_res)}
                               </h6>
                             </div>
 
@@ -818,9 +894,7 @@ class AddOPBillingForm extends Component {
                                 }}
                               />
                               <h6>
-                                {this.state.sec_company_tax
-                                  ? "₹" + this.state.sec_company_tax
-                                  : "₹0.00"}
+                                {getAmountFormart(this.state.sec_company_tax)}
                               </h6>
                             </div>
 
@@ -831,19 +905,26 @@ class AddOPBillingForm extends Component {
                                 }}
                               />
                               <h6>
-                                {this.state.sec_company_paybale
-                                  ? "₹" + this.state.sec_company_paybale
-                                  : "₹0.00"}
+                                {getAmountFormart(
+                                  this.state.sec_company_paybale
+                                )}
                               </h6>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </Paper>
+                    </div>
                   </div>
 
                   <div className="col-lg-8">
-                    <Paper className="Paper">
+                    <div
+                      style={{
+                        margin: "15px 0",
+                        border: "1px solid #acaaaa",
+                        padding: 15,
+                        borderRadius: 10
+                      }}
+                    >
                       <div className="row secondary-box-container">
                         <AlagehFormGroup
                           div={{ className: "col-lg-4" }}
@@ -858,6 +939,21 @@ class AddOPBillingForm extends Component {
 
                             events: {
                               onChange: adjustadvance.bind(this, this, context)
+                            },
+                            others: {
+                              placeholder: "0.00",
+                              onBlur: billheaderCalculation.bind(
+                                this,
+                                this,
+                                context
+                              ),
+                              onFocus: e => {
+                                e.target.oldvalue = e.target.value;
+                              },
+                              disabled:
+                                this.state.advance_amount === 0
+                                  ? true
+                                  : this.state.Billexists
                             }
                           }}
                         />
@@ -874,6 +970,21 @@ class AddOPBillingForm extends Component {
 
                             events: {
                               onChange: discounthandle.bind(this, this, context)
+                            },
+                            others: {
+                              disabled:
+                                this.state.Billexists === true
+                                  ? true
+                                  : this.state.applydiscount,
+                              placeholder: "0.00",
+                              onBlur: billheaderCalculation.bind(
+                                this,
+                                this,
+                                context
+                              ),
+                              onFocus: e => {
+                                e.target.oldvalue = e.target.value;
+                              }
                             }
                           }}
                         />
@@ -888,9 +999,23 @@ class AddOPBillingForm extends Component {
                             value: this.state.sheet_discount_amount,
                             className: "txt-fld",
                             name: "sheet_discount_amount",
-
                             events: {
                               onChange: discounthandle.bind(this, this, context)
+                            },
+                            others: {
+                              disabled:
+                                this.state.Billexists === true
+                                  ? true
+                                  : this.state.applydiscount,
+                              placeholder: "0.00",
+                              onBlur: billheaderCalculation.bind(
+                                this,
+                                this,
+                                context
+                              ),
+                              onFocus: e => {
+                                e.target.oldvalue = e.target.value;
+                              }
                             }
                           }}
                         />
@@ -901,34 +1026,26 @@ class AddOPBillingForm extends Component {
                         className="row secondary-box-container"
                         style={{ marginBottom: "10px" }}
                       >
-                        <div className="col-3">
+                        <div className="col">
                           <AlgaehLabel
                             label={{
                               fieldName: "advance_amount"
                             }}
                           />
-                          <h6>
-                            {this.state.company_payble
-                              ? "₹" + this.state.advance_amount
-                              : "₹0.00"}
-                          </h6>
+                          <h6>{getAmountFormart(this.state.advance_amount)}</h6>
                         </div>
 
-                        <div className="col-3">
+                        <div className="col">
                           <AlgaehLabel
                             label={{
                               fieldName: "net_amount"
                             }}
                           />
-                          <h6>
-                            {this.state.net_amount
-                              ? "₹" + this.state.net_amount
-                              : "₹0.00"}
-                          </h6>
+                          <h6>{getAmountFormart(this.state.net_amount)}</h6>
                         </div>
 
                         <AlagehFormGroup
-                          div={{ className: "col-lg-3" }}
+                          div={{ className: "col" }}
                           label={{
                             fieldName: "credit_amount"
                           }}
@@ -937,15 +1054,25 @@ class AddOPBillingForm extends Component {
                             value: this.state.credit_amount,
                             className: "txt-fld",
                             name: "state_credit_amount",
-
                             events: {
-                              onChange: null
+                              onChange: credittexthandle.bind(
+                                this,
+                                this,
+                                context
+                              )
+                            },
+                            others: {
+                              placeholder: "0.00",
+                              onBlur: credittextCal.bind(this, this),
+                              onFocus: e => {
+                                e.target.oldvalue = e.target.value;
+                              }
                             }
                           }}
                         />
 
                         <div
-                          className="col-3"
+                          className="col"
                           style={{
                             background: " #44b8bd",
                             color: " #fff"
@@ -957,14 +1084,20 @@ class AddOPBillingForm extends Component {
                             }}
                           />
                           <h4>
-                            {this.state.receiveable_amount
-                              ? "₹" + this.state.receiveable_amount
-                              : "₹0.00"}
+                            {getAmountFormart(this.state.receiveable_amount)}
                           </h4>
+                        </div>
+                        <div className="col highlightGrey">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "balance_due"
+                            }}
+                          />
+                          <h6>0.00</h6>
                         </div>
                       </div>
                       <ReciptForm BillingIOputs={this.props.BillingIOputs} />
-                    </Paper>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -979,8 +1112,8 @@ class AddOPBillingForm extends Component {
 function mapStateToProps(state) {
   return {
     servicetype: state.servicetype,
-    services: state.services,
-    genbill: state.genbill
+    opbilservices: state.opbilservices,
+    opserviceslist: state.opserviceslist
   };
 }
 
@@ -988,9 +1121,7 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getServiceTypes: AlgaehActions,
-      getServices: AlgaehActions,
-      generateBill: AlgaehActions,
-      billingCalculations: AlgaehActions
+      getServices: AlgaehActions
     },
     dispatch
   );

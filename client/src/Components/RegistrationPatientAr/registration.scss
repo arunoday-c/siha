@@ -1,0 +1,33 @@
+.hptl-phase1-patientreg-details {
+  background: #ffff;
+  .patient-section {
+    border: 1px solid #d3d3d3;
+    margin: 10px;
+    margin-top: 0px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
+  }
+  .toggle-section {
+    margin: 10px;
+    margin-bottom: 0px;
+    background-color: #ffff;
+  }
+
+  .text_field {
+    width: 100% !important;
+    background-color: #fbfbfb;
+    //font-size: $fontSize;
+    margin-right: "5px";
+  }
+
+  .paper {
+    background-color: #292929 !important;
+    left: 0px;
+    width: 250px;
+  }
+}
+
+.spacing-push {
+  // margin-top: 6em;
+}

@@ -72,7 +72,7 @@ import Disposal from "./Components/AssetManagement/Disposal/Disposal";
 import PurchaseOrderList from "./Components/Procurement/PurchaseOrderList/PurchaseSwitch";
 import DayEndProcess from "./Components/Finance/DayEndProcess/DayEndProcess";
 import OPBillCancellation from "./Components/OPBillCancellation/OPBillCancellation";
-
+import OPCreditSettlement from "./Components/OPCreditSettlement/OPCreditSettlement";
 import Algaeh from "./Components/Algaeh/Algaeh";
 
 const componts = (selectedLang, breadStyle) => {
@@ -165,6 +165,7 @@ const componts = (selectedLang, breadStyle) => {
     PatientRecall: <PatientRecall SelectLanguage={selectedLang} />,
     AdministrationSetup: <AdministrationSetup SelectLanguage={selectedLang} />,
     OPBillCancellation: <OPBillCancellation SelectLanguage={selectedLang} />,
+    OPCreditSettlement: <OPCreditSettlement SelectLanguage={selectedLang} />,
     AlgaehModules: <Algaeh />
   };
 };

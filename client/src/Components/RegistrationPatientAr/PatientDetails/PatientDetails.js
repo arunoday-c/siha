@@ -3,8 +3,10 @@ import PatientForm from "./PatientForm/PatientForm.js";
 import OtherInfo from "./OtherInfo/OtherInfo.js";
 import AlgaehLabel from "../../Wrapper/label.js";
 import "./PatientDetails.css";
-var intervalId;
+import { SetBulkState, checkSecurity } from "../../../utils/GlobalFunctions";
+import MyContext from "../../../utils/MyContext.js";
 
+import AlgaehSecurity from "../../Wrapper/algehSecurity";
 export default class PatientDetails extends PureComponent {
   constructor(props) {
     super(props);
@@ -15,7 +17,12 @@ export default class PatientDetails extends PureComponent {
     };
   }
 
-  openTab(dataValue) {
+  openTab(dataValue, context) {
+    const data = SetBulkState({ state: undefined });
+
+    if (context !== undefined) {
+      context.updateState({ ...data });
+    }
     if (dataValue === "patient-details") {
       this.setState({
         actionPatientDesign: true,
@@ -28,74 +35,109 @@ export default class PatientDetails extends PureComponent {
       });
     }
   }
-  texthandle(e) {
-    this.setState({
-      [e.target.name]: e.target.value
-    });
-  }
-
-  patcodehandle(e) {
-    this.setState(
-      {
-        patient_code: e.target.value
-      },
-      () => {
-        clearInterval(intervalId);
-        intervalId = setInterval(() => {
-          this.getSinglePatientDetails(e);
-          clearInterval(intervalId);
-        }, 500);
-      }
-    );
-  }
-
+  // componentDidUpdate() {
+  //   debugger;
+  //   checkSecurity({
+  //     securityType: "componet",
+  //     component_code: "FD_PR_PAT_DETAIL",
+  //     module_code: "FTDSK",
+  //     screen_code: "FD0002",
+  //     hasSecurity: () => {
+  //       this.patientForm.classList.add("d-none");
+  //       this.setState({ actionPatientDesign: false });
+  //     }
+  //   });
+  // }
   render() {
     let patientSelect = this.state.actionPatientDesign ? "active" : "";
     let informationSelect = this.state.actionInformationDesign ? "" : "active";
     return (
-      <div className="hptl-phase1-patient-ar-details margin-bottom-15">
-        <div className="tab-container toggle-section">
-          <ul className="nav">
-            <li
-              className={"nav-item tab-button " + patientSelect}
-              id="PatientForm"
-              onClick={this.openTab.bind(this, "patient-details")}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "tab_patdtls"
-                  }}
-                />
-              }
-            </li>
-            <li
-              className={"nav-item tab-button " + informationSelect}
-              id="OtherInfo"
-              onClick={this.openTab.bind(this, "other-information")}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "tab_othinf"
-                  }}
-                />
-              }
-            </li>
-          </ul>
-        </div>
-        <div className="patient-section">
-          {this.state.actionPatientDesign ? (
-            <PatientForm
-              PatRegIOputs={this.props.PatRegIOputs}
-              clearData={this.props.clearData}
-            />
-          ) : null}
-          {this.state.actionInformationDesign ? null : (
-            <OtherInfo PatRegIOputs={this.props.PatRegIOputs} />
+      <React.Fragment>
+        <MyContext.Consumer>
+          {context => (
+            <div className="hptl-phase1-patient-details margin-bottom-15">
+              <div className="tab-container toggle-section">
+                <ul className="nav">
+                  <li
+                    className={"nav-item tab-button " + patientSelect}
+                    id="PatientForm"
+                    onClick={this.openTab.bind(
+                      this,
+                      "patient-details",
+                      context
+                    )}
+                    ref={patientForm => {
+                      this.patientForm = patientForm;
+                    }}
+                  >
+                    {
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "tab_patdtls"
+                        }}
+                      />
+                    }
+                  </li>
+                  <li
+                    className={"nav-item tab-button " + informationSelect}
+                    id="OtherInfo"
+                    onClick={this.openTab.bind(
+                      this,
+                      "other-information",
+                      context
+                    )}
+                    ref={otherInFormation => {
+                      this.otherInFormation = otherInFormation;
+                    }}
+                  >
+                    {
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "tab_othinf"
+                        }}
+                      />
+                    }
+                  </li>
+                </ul>
+              </div>
+              <div className="patient-section">
+                {this.state.actionPatientDesign ? (
+                  <AlgaehSecurity
+                    component_code="FD_PR_PAT_DETAIL"
+                    module_code="FTDSK"
+                    screen_code="FD0002"
+                    elementLink={{
+                      that: this,
+                      elements: [
+                        {
+                          ref: "patientForm",
+                          event: () => {
+                            this.setState(
+                              { actionPatientDesign: false },
+                              () => {
+                                this.otherInFormation.click();
+                                this.patientForm.classList.add("d-none");
+                              }
+                            );
+                          }
+                        }
+                      ]
+                    }}
+                  >
+                    <PatientForm
+                      PatRegIOputs={this.props.PatRegIOputs}
+                      clearData={this.props.clearData}
+                    />
+                  </AlgaehSecurity>
+                ) : null}
+                {this.state.actionInformationDesign ? null : (
+                  <OtherInfo PatRegIOputs={this.props.PatRegIOputs} />
+                )}
+              </div>
+            </div>
           )}
-        </div>
-      </div>
+        </MyContext.Consumer>
+      </React.Fragment>
     );
   }
 }

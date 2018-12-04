@@ -1,50 +1,61 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import PatientDetails from "./PatientDetails/PatientDetails.js";
 import ConsultationDetails from "./ConsultationDetails/ConsultationDetails.js";
 import InsuranceDetails from "./InsuranceDetails/InsuranceDetails.js";
-import Billing from "./Billing/BillingDetails";
-import "./registrationpatientar.css";
+import Billing from "./Billing/AddBillingForm";
+import "./registration.css";
 import PatRegIOputs from "../../Models/RegistrationPatient";
 import BillingIOputs from "../../Models/Billing";
 import extend from "extend";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import AppBar from "@material-ui/core/AppBar";
-import AHSnackbar from "../common/Inputs/AHSnackbar.js";
+
 import {
   postPatientDetails,
   postVisitDetails
 } from "../../actions/RegistrationPatient/Registrationactions";
-
-import BreadCrumb from "../common/BreadCrumb/BreadCrumbAr.js";
+import Enumerable from "linq";
+import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import MyContext from "../../utils/MyContext.js";
 import { Validations } from "./FrontdeskValidation.js";
 import AlgaehLabel from "../Wrapper/label.js";
-import { getCookie } from "../../utils/algaehApiCall";
-import { algaehApiCall } from "../../utils/algaehApiCall.js";
-import AddAdvanceModalAr from "../AdvanceAr/AdvanceModalAr";
+
 import {
-  successfulMessage,
-  imageToByteArray
-} from "../../utils/GlobalFunctions";
+  algaehApiCall,
+  swalMessage,
+  getCookie
+} from "../../utils/algaehApiCall.js";
+import AddAdvanceModal from "../Advance/AdvanceModal";
+import { imageToByteArray } from "../../utils/GlobalFunctions";
 import { setGlobal } from "../../utils/GlobalFunctions";
 import { AlgaehActions } from "../../actions/algaehActions";
-import { AlgaehDateHandler } from "../Wrapper/algaehWrapper";
 import AlgaehReport from "../Wrapper/printReports";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import moment from "moment";
 import Options from "../../Options.json";
-
+import {
+  generateBillDetails,
+  ShowRefundScreen,
+  ClearData,
+  ShowAdvanceScreen,
+  getHospitalDetails,
+  getCashiersAndShiftMAP
+} from "./RegistrationPatientArEvent";
 const emptyObject = extend(
   PatRegIOputs.inputParam(),
   BillingIOputs.inputParam()
 );
-var intervalId;
-class RegistrationPatientAr extends Component {
+
+class RegistrationPatientAr extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = { AdvanceOpen: false, RefundOpen: false };
+    this.state = {
+      AdvanceOpen: false,
+      RefundOpen: false,
+      visittypeselect: true,
+      clearEnable: false
+    };
   }
 
   componentWillMount() {
@@ -53,48 +64,118 @@ class RegistrationPatientAr extends Component {
     setGlobal({ selectedLang: "en" });
   }
   componentDidMount() {
-    
-
     let prevLang = getCookie("Language");
     setGlobal({ selectedLang: prevLang });
 
     let IOputs = emptyObject;
     IOputs.selectedLang = prevLang;
     this.setState(IOputs);
-    if (this.state.saveEnable === "clear") {
-      this.props.initialStatePatientData({
-        redux: {
-          type: "PAT_INIT_DATA",
-          mappingName: "patients",
-          data: {}
+
+    if (
+      this.props.patient_code !== undefined &&
+      this.props.patient_code.length !== 0
+    ) {
+      this.getCtrlCode(this.props.patient_code);
+    } else if (this.props.patient_details !== undefined) {
+      this.setState(
+        {
+          full_name: this.props.patient_details.patient_name,
+          arabic_name: this.props.patient_details.arabic_patient_name,
+          date_of_birth: this.props.patient_details.date_of_birth,
+          age: this.props.patient_details.patient_age,
+          gender: this.props.patient_details.patient_gender,
+          contact_number: this.props.patient_details.patient_phone,
+          email: this.props.patient_details.patient_email,
+          title_id: this.props.patient_details.title_id,
+          sub_department_id: this.props.sub_department_id,
+          department_id: this.props.department_id,
+          provider_id: this.props.provider_id,
+          doctor_id: this.props.provider_id,
+          visit_type: this.props.visit_type,
+          hims_d_services_id: this.props.hims_d_services_id,
+          saveEnable: false,
+          clearEnable: true,
+          consultation: "Y",
+          appointment_patient: "Y",
+          billdetail: false,
+          hims_f_patient_appointment_id: this.state
+            .hims_f_patient_appointment_id
+        },
+        () => {
+          if (this.props.fromAppoinment === true) {
+            generateBillDetails(this, this);
+          }
         }
-      });
+      );
     }
 
-    if (this.props.genbill !== undefined && this.props.genbill.length !== 0) {
-      this.props.initialbillingCalculations({
-        redux: {
-          type: "BILL_HEADER_GEN_GET_DATA",
-          mappingName: "genbill",
-          data: {}
-        }
-      });
+    this.props.setSelectedInsurance({
+      redux: {
+        type: "PRIMARY_INSURANCE_DATA",
+        mappingName: "primaryinsurance",
+        data: []
+      }
+    });
+
+    this.props.setSelectedInsurance({
+      redux: {
+        type: "SECONDARY_INSURANCE_DATA",
+        mappingName: "secondaryinsurance",
+        data: []
+      }
+    });
+
+    if (
+      this.props.hospitaldetails === undefined ||
+      this.props.hospitaldetails.length === 0
+    ) {
+      getHospitalDetails(this, this);
+    } else {
+      if (
+        this.props.hospitaldetails !== undefined ||
+        this.props.hospitaldetails.length !== 0
+      ) {
+        this.setState({
+          vat_applicable: this.props.hospitaldetails[0].local_vat_applicable,
+          nationality_id: this.props.hospitaldetails[0].default_nationality,
+          country_id: this.props.hospitaldetails[0].default_country,
+          patient_type: this.props.hospitaldetails[0].default_patient_type
+        });
+      }
     }
-  }
 
-  ClearData(e) {
-    let IOputs = emptyObject;
+    getCashiersAndShiftMAP(this, this);
 
-    this.setState(IOputs, () => {
-      
+    let _screenName = getCookie("ScreenName").replace("/", "");
+    algaehApiCall({
+      uri: "/userPreferences/get",
+      data: {
+        screenName: _screenName,
+        identifier: "Counter"
+      },
+      method: "GET",
+      onSuccess: response => {
+        this.setState({
+          counter_id: response.data.records.selectedValue
+        });
+      }
     });
   }
 
   GenerateReciept(callback) {
-    if (this.state.total_amount > 0) {
-      let obj = [];
+    let obj = [];
 
-      if (this.state.cash_amount > 0) {
+    if (
+      this.state.Cashchecked === false &&
+      this.state.Cardchecked === false &&
+      this.state.Checkchecked === false
+    ) {
+      swalMessage({
+        title: "Invalid Input. Please select receipt type.",
+        type: "error"
+      });
+    } else {
+      if (this.state.cash_amount > 0 || this.state.Cashchecked === true) {
         obj.push({
           hims_f_receipt_header_id: null,
           card_check_number: null,
@@ -105,10 +186,11 @@ class RegistrationPatientAr extends Component {
           card_type: null
         });
       }
-      if (this.state.card_amount > 0) {
+
+      if (this.state.card_amount > 0 || this.state.Cardchecked === true) {
         obj.push({
           hims_f_receipt_header_id: null,
-          card_check_number: this.state.card_number,
+          card_check_number: this.state.card_check_number,
           expiry_date: this.state.card_date,
           pay_type: this.state.pay_card,
           amount: this.state.card_amount,
@@ -116,7 +198,7 @@ class RegistrationPatientAr extends Component {
           card_type: null
         });
       }
-      if (this.state.cheque_amount > 0) {
+      if (this.state.cheque_amount > 0 || this.state.Checkchecked === true) {
         obj.push({
           hims_f_receipt_header_id: null,
           card_check_number: this.state.cheque_number,
@@ -138,84 +220,91 @@ class RegistrationPatientAr extends Component {
       );
     }
   }
+
   SavePatientDetails(e) {
-    
     const err = Validations(this);
 
     if (!err) {
-      this.GenerateReciept($this => {
-        AlgaehLoader({ show: true });
-        if ($this.state.hims_d_patient_id === null) {
-          let patientdata = {};
+      if (this.state.unbalanced_amount === 0) {
+        this.GenerateReciept($this => {
+          AlgaehLoader({ show: true });
 
-          if ($this.state.filePreview !== null) {
-            patientdata = {
-              ...$this.state,
-              patient_Image: imageToByteArray(this.state.filePreview)
-            };
+          if ($this.state.hims_d_patient_id === null) {
+            let patientdata = {};
+
+            if ($this.state.filePreview !== null) {
+              patientdata = {
+                ...$this.state,
+                patient_Image: imageToByteArray(this.state.filePreview)
+              };
+            } else {
+              patientdata = $this.state;
+            }
+            algaehApiCall({
+              uri: "/frontDesk/add",
+              data: patientdata,
+              method: "POST",
+              onSuccess: response => {
+                AlgaehLoader({ show: false });
+                if (response.data.success) {
+                  $this.setState({
+                    patient_code: response.data.records.patient_code,
+                    bill_number: response.data.records.bill_number,
+                    receipt_number: response.data.records.receipt_number,
+                    saveEnable: true,
+                    insuranceYes: true,
+                    sec_insuranceYes: true,
+                    ProcessInsure: true
+                  });
+                  swalMessage({
+                    title: "Done Successfully",
+                    type: "success"
+                  });
+                }
+              },
+              onFailure: error => {
+                AlgaehLoader({ show: false });
+                swalMessage({
+                  title: error.message,
+                  type: "error"
+                });
+              }
+            });
           } else {
-            patientdata = $this.state;
+            algaehApiCall({
+              uri: "/frontDesk/update",
+              data: $this.state,
+              method: "POST",
+              onSuccess: response => {
+                AlgaehLoader({ show: false });
+                if (response.data.success) {
+                  $this.setState({
+                    bill_number: response.data.records.bill_number,
+                    receipt_number: response.data.records.receipt_number,
+                    saveEnable: true
+                  });
+                  swalMessage({
+                    title: "Done Successfully",
+                    type: "success"
+                  });
+                }
+              },
+              onFailure: error => {
+                AlgaehLoader({ show: false });
+                swalMessage({
+                  title: error.message,
+                  type: "error"
+                });
+              }
+            });
           }
-          algaehApiCall({
-            uri: "/frontDesk/add",
-            data: patientdata,
-            method: "POST",
-            onSuccess: response => {
-              AlgaehLoader({ show: false });
-              if (response.data.success) {
-                $this.setState({
-                  patient_code: response.data.records.patient_code,
-                  bill_number: response.data.records.bill_number,
-                  receipt_number: response.data.records.receipt_number,
-                  saveEnable: true
-                });
-                successfulMessage({
-                  message: "Done Successfully",
-                  title: "Success",
-                  icon: "success"
-                });
-              }
-            },
-            onFailure: error => {
-              AlgaehLoader({ show: false });
-              successfulMessage({
-                message: error.message,
-                title: "Error",
-                icon: "error"
-              });
-            }
-          });
-        } else {
-          algaehApiCall({
-            uri: "/frontDesk/update",
-            data: $this.state,
-            method: "POST",
-            onSuccess: response => {
-              AlgaehLoader({ show: false });
-              if (response.data.success) {
-                $this.setState({
-                  bill_number: response.data.records.bill_number,
-                  receipt_number: response.data.records.receipt_number,
-                  saveEnable: true
-                });
-                successfulMessage({
-                  message: "Done Successfully",
-                  title: "Success",
-                  icon: "success"
-                });
-              }
-            },
-            onFailure: error => {
-              AlgaehLoader({ show: false });
-              successfulMessage({
-                message: error.message,
-                title: "Error",
-                icon: "error"
-              });
-            }
-          });
-        }
-      });
+        });
+      } else {
+        swalMessage({
+          title: "Invalid Input. Please recive the amount.",
+          type: "error"
+        });
+      }
     }
   }
 
@@ -223,136 +312,237 @@ class RegistrationPatientAr extends Component {
     this.setState({ open: false });
   };
 
-  ShowAdvanceScreen(e) {
-    if (
-      this.state.patient_code !== undefined &&
-      this.state.patient_code !== ""
-    ) {
-      this.setState({
-        ...this.state,
-        AdvanceOpen: !this.state.AdvanceOpen
-      });
-    } else {
-      successfulMessage({
-        message: "Select Patient",
-        title: "Error",
-        icon: "error"
-      });
-    }
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   debugger;
+  //   if (this.state.country_id === null) return;
+  //   if (this.state.country_id !== nextProps.country_id) {
+  //     let country = Enumerable.from(this.props.countries)
+  //       .where(w => w.hims_d_country_id === this.state.country_id)
+  //       .firstOrDefault();
+  //     let states = country !== undefined ? country.states : [];
 
-  ShowRefundScreen(e) {
-    if (
-      this.state.patient_code !== undefined &&
-      this.state.patient_code !== ""
-    ) {
-      this.setState({
-        ...this.state,
-        RefundOpen: !this.state.RefundOpen
-      });
-    } else {
-      successfulMessage({
-        message: "Select Patient",
-        title: "Warning",
-        icon: "error"
-      });
-    }
-  }
+  //     if (this.props.countries !== undefined) {
+  //       if (nextProps.state_id !== this.state.state_id) {
+  //         let cities = Enumerable.from(states)
+  //           .where(w => w.hims_d_state_id === this.state.state_id)
+  //           .firstOrDefault();
 
-  SideMenuBarOpen(sidOpen) {
-    this.setState({
-      sidBarOpen: sidOpen,
-      breadCrumbWidth: sidOpen === true ? null : "98%"
-    });
-  }
+  //         if (cities !== undefined) {
+  //           this.setState({
+  //             countrystates: states,
+  //             cities: cities.cities,
+  //             state_id: this.state.state_id,
+  //             city_id: this.state.city_id
+  //           });
+  //         } else {
+  //           this.setState({
+  //             countrystates: states,
+  //             state_id: this.state.state_id
+  //           });
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.genbill !== undefined && nextProps.genbill.length !== 0) {
-      this.setState({ ...this.state, ...nextProps.genbill });
-    }
-    AlgaehLoader({ show: false });
-  }
   getCtrlCode(patcode) {
     let $this = this;
+    let provider_id = this.props.provider_id || null;
+    let sub_department_id = this.props.sub_department_id || null;
+    let visit_type = this.props.visit_type || null;
+    let hims_d_services_id = this.props.hims_d_services_id || null;
+    let fromAppoinment =
+      this.props.fromAppoinment === undefined
+        ? false
+        : this.props.fromAppoinment;
+
+    let department_id = this.props.department_id || null;
+    let hims_f_patient_appointment_id =
+      this.props.hims_f_patient_appointment_id || null;
+    let title_id = this.props.title_id || null;
 
     AlgaehLoader({ show: true });
-    this.props.getPatientDetails({
+
+    algaehApiCall({
       uri: "/frontDesk/get",
       method: "GET",
-      printInput: true,
       data: { patient_code: patcode },
-      redux: {
-        type: "PAT_GET_DATA",
-        mappingName: "patients"
-      },
-      afterSuccess: data => {
-        
-        if (data.response === undefined) {
+      onSuccess: response => {
+        if (response.data.success) {
+          let data = response.data.records;
+
           data.patientRegistration.visitDetails = data.visitDetails;
           data.patientRegistration.patient_id =
             data.patientRegistration.hims_d_patient_id;
           data.patientRegistration.existingPatient = true;
 
-          
+          //Appoinment Start
+          if (fromAppoinment === true) {
+            data.patientRegistration.provider_id = provider_id;
+            data.patientRegistration.doctor_id = provider_id;
+            data.patientRegistration.sub_department_id = sub_department_id;
+
+            data.patientRegistration.visit_type = visit_type;
+            data.patientRegistration.saveEnable = false;
+            data.patientRegistration.clearEnable = true;
+            data.patientRegistration.hims_d_services_id = hims_d_services_id;
+            data.patientRegistration.department_id = department_id;
+            data.patientRegistration.billdetail = false;
+            data.patientRegistration.consultation = "Y";
+            data.patientRegistration.appointment_patient = "Y";
+            data.patientRegistration.hims_f_patient_appointment_id = hims_f_patient_appointment_id;
+            data.patientRegistration.title_id = title_id;
+          }
+          //Appoinment End
           data.patientRegistration.filePreview =
             "data:image/png;base64, " + data.patient_Image;
-          $this.setState(data.patientRegistration);
+          data.patientRegistration.arabic_name = "No Name";
+          $this.setState(data.patientRegistration, () => {
+            if (fromAppoinment === true) {
+              generateBillDetails(this, this);
+            }
+          });
 
           $this.props.getPatientInsurance({
             uri: "/insurance/getPatientInsurance",
             method: "GET",
-            data: { patient_id: data.patientRegistration.hims_d_patient_id },
+            data: {
+              patient_id: data.patientRegistration.hims_d_patient_id
+            },
             redux: {
               type: "EXIT_INSURANCE_GET_DATA",
               mappingName: "existinsurance"
             }
           });
-        } else {
-          if (data.response.data.success === true) {
-            data.patientRegistration.visitDetails = data.visitDetails;
-            data.patientRegistration.patient_id =
-              data.patientRegistration.hims_d_patient_id;
-            data.patientRegistration.existingPatient = true;
-            
-            data.patientRegistration.filePreview =
-              "data:image/png;base64, " + data.patient_Image;
-            data.patientRegistration.arabic_name = "No Name";
-            $this.setState(data.patientRegistration);
-
-            $this.props.getPatientInsurance({
-              uri: "/insurance/getPatientInsurance",
-              method: "GET",
-              data: {
-                patient_id: data.patientRegistration.hims_d_patient_id
-              },
-              redux: {
-                type: "EXIT_INSURANCE_GET_DATA",
-                mappingName: "existinsurance"
-              }
-            });
-          } else {
-            successfulMessage({
-              message: data.response.data.message,
-              title: "Error",
-              icon: "error"
-            });
-            
-            let IOputs = emptyObject;
-            this.setState(IOputs);
-          }
         }
-        AlgaehLoader({ show: true });
+        AlgaehLoader({ show: false });
+      },
+      onFailure: error => {
+        AlgaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
       }
     });
+    // this.props.getPatientDetails({
+    //   uri: "/frontDesk/get",
+    //   method: "GET",
+    //   printInput: true,
+    //   data: { patient_code: patcode },
+    //   redux: {
+    //     type: "PAT_GET_DATA",
+    //     mappingName: "patients"
+    //   },
+    //   afterSuccess: data => {
+    //     if (data.response === undefined) {
+    //       data.patientRegistration.visitDetails = data.visitDetails;
+    //       data.patientRegistration.patient_id =
+    //         data.patientRegistration.hims_d_patient_id;
+    //       data.patientRegistration.existingPatient = true;
+
+    //       //Appoinment Start
+
+    //       if (fromAppoinment === true) {
+    //         data.patientRegistration.provider_id = provider_id;
+    //         data.patientRegistration.doctor_id = provider_id;
+    //         data.patientRegistration.sub_department_id = sub_department_id;
+
+    //         data.patientRegistration.visit_type = visit_type;
+    //         data.patientRegistration.saveEnable = false;
+    //         data.patientRegistration.clearEnable = true;
+    //         data.patientRegistration.hims_d_services_id = hims_d_services_id;
+    //         data.patientRegistration.department_id = department_id;
+    //         data.patientRegistration.billdetail = false;
+    //         data.patientRegistration.consultation = "Y";
+    //         data.patientRegistration.appointment_patient = "Y";
+    //         data.patientRegistration.hims_f_patient_appointment_id = hims_f_patient_appointment_id;
+
+    //         // data.patientRegistration.title_id = title_id;
+    //       }
+    //       //Appoinment End
+    //       data.patientRegistration.filePreview =
+    //         "data:image/png;base64, " + data.patient_Image;
+    //       $this.setState(data.patientRegistration, () => {
+    //         if (fromAppoinment === true) {
+    //           generateBillDetails(this, this);
+    //         }
+    //       });
+
+    //       $this.props.getPatientInsurance({
+    //         uri: "/insurance/getPatientInsurance",
+    //         method: "GET",
+    //         data: { patient_id: data.patientRegistration.hims_d_patient_id },
+    //         redux: {
+    //           type: "EXIT_INSURANCE_GET_DATA",
+    //           mappingName: "existinsurance"
+    //         }
+    //       });
+    //     } else {
+    //       if (data.response.data.success === true) {
+    //         data.patientRegistration.visitDetails = data.visitDetails;
+    //         data.patientRegistration.patient_id =
+    //           data.patientRegistration.hims_d_patient_id;
+    //         data.patientRegistration.existingPatient = true;
+
+    //         //Appoinment Start
+    //         if (fromAppoinment === true) {
+    //           data.patientRegistration.provider_id = provider_id;
+    //           data.patientRegistration.doctor_id = provider_id;
+    //           data.patientRegistration.sub_department_id = sub_department_id;
+
+    //           data.patientRegistration.visit_type = visit_type;
+    //           data.patientRegistration.saveEnable = false;
+    //           data.patientRegistration.clearEnable = true;
+    //           data.patientRegistration.hims_d_services_id = hims_d_services_id;
+    //           data.patientRegistration.department_id = department_id;
+    //           data.patientRegistration.billdetail = false;
+    //           data.patientRegistration.consultation = "Y";
+    //           data.patientRegistration.appointment_patient = "Y";
+    //           data.patientRegistration.hims_f_patient_appointment_id = hims_f_patient_appointment_id;
+    //           data.patientRegistration.title_id = title_id;
+    //         }
+    //         //Appoinment End
+    //         data.patientRegistration.filePreview =
+    //           "data:image/png;base64, " + data.patient_Image;
+    //         data.patientRegistration.arabic_name = "No Name";
+    //         $this.setState(data.patientRegistration, () => {
+    //           if (fromAppoinment === true) {
+    //             generateBillDetails(this, this);
+    //           }
+    //         });
+
+    //         $this.props.getPatientInsurance({
+    //           uri: "/insurance/getPatientInsurance",
+    //           method: "GET",
+    //           data: {
+    //             patient_id: data.patientRegistration.hims_d_patient_id
+    //           },
+    //           redux: {
+    //             type: "EXIT_INSURANCE_GET_DATA",
+    //             mappingName: "existinsurance"
+    //           }
+    //         });
+    //       } else {
+    //         swalMessage({
+    //           title: data.response.data.message,
+    //           type: "error"
+    //         });
+
+    //         let IOputs = emptyObject;
+    //         this.setState(IOputs);
+    //       }
+    //     }
+    //     AlgaehLoader({ show: false });
+    //   }
+    // });
   }
+
+  //Render Page Start Here
 
   render() {
     return (
-      <div
-        id="attach"
-        className="algaeh_Arabic_Version"
-        style={{ marginBottom: "50px" }}
-      >
+      <div id="attach" style={{ marginBottom: "50px" }}>
         {/* <Barcode value='PAT-A-000017'/> */}
         <BreadCrumb
           title={
@@ -397,24 +587,22 @@ class RegistrationPatientAr extends Component {
             searchName: "patients"
           }}
           userArea={
-            <AlgaehDateHandler
-              div={{ className: "col" }}
-              label={{
-                forceLabel: (
-                  <AlgaehLabel label={{ fieldName: "registration_date" }} />
-                ),
-                className: "internal-label"
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "bread_registration_date"
-              }}
-              disabled={true}
-              events={{
-                onChange: null
-              }}
-              value={this.state.registration_date}
-            />
+            <div className="row">
+              <div className="col">
+                <AlgaehLabel
+                  label={{
+                    fieldName: "registered_date"
+                  }}
+                />
+                <h6>
+                  {this.state.registration_date
+                    ? moment(this.state.registration_date).format(
+                        Options.dateFormat
+                      )
+                    : Options.dateFormat}
+                </h6>
+              </div>
+            </div>
           }
           printArea={{
             menuitems: [
@@ -446,7 +634,6 @@ class RegistrationPatientAr extends Component {
                 label: "Print Receipt",
                 events: {
                   onClick: () => {
-                    
                     AlgaehReport({
                       report: {
                         fileName: "printreceipt"
@@ -459,7 +646,8 @@ class RegistrationPatientAr extends Component {
                           Options.dateFormat
                         ),
                         receipt_number: this.state.receipt_number,
-                        doctor_name: this.state.doctor_name,
+                        doctor_name: document.getElementsByName("doctor_id")[0]
+                          .value,
                         bill_details: this.state.billdetails
                       }
                     });
@@ -475,7 +663,6 @@ class RegistrationPatientAr extends Component {
             value={{
               state: this.state,
               updateState: obj => {
-                
                 this.setState({ ...obj });
               }
             }}
@@ -484,114 +671,109 @@ class RegistrationPatientAr extends Component {
               PatRegIOputs={this.state}
               clearData={this.state.clearData}
             />
+
             <ConsultationDetails PatRegIOputs={this.state} />
             <InsuranceDetails PatRegIOputs={this.state} />
             <Billing PatRegIOputs={this.state} loader={true} />
             <div className="hptl-phase1-footer">
-              
-                <div className="row">
-                  <div className="col-lg-12">
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      onClick={this.SavePatientDetails.bind(this)}
-                      disabled={this.state.saveEnable}
-                    >
-                      <AlgaehLabel
-                        label={{ fieldName: "btn_save", returnText: true }}
-                      />
-                    </button>
-
-                    <AHSnackbar
-                      open={this.state.open}
-                      handleClose={this.handleClose}
-                      MandatoryMsg={this.state.MandatoryMsg}
+              <div className="row">
+                <div className="col-lg-12">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={this.SavePatientDetails.bind(this)}
+                    disabled={this.state.saveEnable}
+                  >
+                    <AlgaehLabel
+                      label={{ fieldName: "btn_save", returnText: true }}
                     />
-                    <button
-                      type="button"
-                      className="btn btn-default"
-                      onClick={this.ClearData.bind(this)}
-                    >
-                      <AlgaehLabel
-                        label={{ fieldName: "btn_clear", returnText: true }}
-                      />
-                    </button>
+                  </button>
 
-                    <button
-                      type="button"
-                      className="btn btn-other"
-                      onClick={this.ShowRefundScreen.bind(this)}
-                    >
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "btn_refund",
-                          returnText: true
-                        }}
-                      />
-                    </button>
+                  <button
+                    type="button"
+                    className="btn btn-default"
+                    onClick={ClearData.bind(this, this)}
+                    disabled={this.state.clearEnable}
+                  >
+                    <AlgaehLabel
+                      label={{ fieldName: "btn_clear", returnText: true }}
+                    />
+                  </button>
 
-                    <AddAdvanceModalAr
-                      show={this.state.RefundOpen}
-                      onClose={this.ShowRefundScreen.bind(this)}
-                      selectedLang={this.state.selectedLang}
-                      HeaderCaption={
-                        <AlgaehLabel
-                          label={{
-                            fieldName: "refund_caption",
-                            align: "ltr"
-                          }}
-                        />
-                      }
-                      NumberLabel="payment_number"
-                      DateLabel="payment_date"
-                      inputsparameters={{
-                        patient_code: this.state.patient_code,
-                        full_name: this.state.full_name,
-                        hims_f_patient_id: this.state.hims_d_patient_id,
-                        transaction_type: "RF",
-                        pay_type: "P",
-                        advance_amount: this.state.advance_amount
+                  <button
+                    type="button"
+                    className="btn btn-other"
+                    onClick={ShowRefundScreen.bind(this, this)}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "btn_refund",
+                        returnText: true
                       }}
                     />
-                    <button
-                      type="button"
-                      className="btn btn-other"
-                      onClick={this.ShowAdvanceScreen.bind(this)}
-                    >
+                  </button>
+
+                  <AddAdvanceModal
+                    show={this.state.RefundOpen}
+                    onClose={ShowRefundScreen.bind(this, this)}
+                    selectedLang={this.state.selectedLang}
+                    HeaderCaption={
                       <AlgaehLabel
                         label={{
-                          fieldName: "btn_advance",
-                          returnText: true
+                          fieldName: "refund_caption",
+                          align: "ltr"
                         }}
                       />
-                    </button>
-
-                    <AddAdvanceModalAr
-                      show={this.state.AdvanceOpen}
-                      onClose={this.ShowAdvanceScreen.bind(this)}
-                      selectedLang={this.state.selectedLang}
-                      HeaderCaption={
-                        <AlgaehLabel
-                          label={{
-                            fieldName: "advance_caption",
-                            align: "ltr"
-                          }}
-                        />
-                      }
-                      NumberLabel="receipt_number"
-                      DateLabel="receipt_date"
-                      inputsparameters={{
-                        patient_code: this.state.patient_code,
-                        full_name: this.state.full_name,
-                        hims_f_patient_id: this.state.hims_d_patient_id,
-                        transaction_type: "AD",
-                        pay_type: "R",
-                        advance_amount: this.state.advance_amount
+                    }
+                    NumberLabel="payment_number"
+                    DateLabel="payment_date"
+                    inputsparameters={{
+                      patient_code: this.state.patient_code,
+                      full_name: this.state.full_name,
+                      hims_f_patient_id: this.state.hims_d_patient_id,
+                      transaction_type: "RF",
+                      pay_type: "P",
+                      advance_amount: this.state.advance_amount
+                    }}
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-other"
+                    onClick={ShowAdvanceScreen.bind(this, this)}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "btn_advance",
+                        returnText: true
                       }}
                     />
-                  </div>
+                  </button>
+
+                  <AddAdvanceModal
+                    show={this.state.AdvanceOpen}
+                    onClose={ShowAdvanceScreen.bind(this, this)}
+                    selectedLang={this.state.selectedLang}
+                    HeaderCaption={
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "advance_caption",
+                          align: "ltr"
+                        }}
+                      />
+                    }
+                    NumberLabel="receipt_number"
+                    DateLabel="receipt_date"
+                    inputsparameters={{
+                      patient_code: this.state.patient_code,
+                      full_name: this.state.full_name,
+                      hims_f_patient_id: this.state.hims_d_patient_id,
+                      transaction_type: "AD",
+                      pay_type: "R",
+                      advance_amount: this.state.advance_amount
+                    }}
+                  />
                 </div>
-              
+              </div>
             </div>
           </MyContext.Provider>
         </div>
@@ -603,8 +785,11 @@ class RegistrationPatientAr extends Component {
 function mapStateToProps(state) {
   return {
     patients: state.patients,
-    genbill: state.genbill,
-    existinsurance: state.existinsurance
+    existinsurance: state.existinsurance,
+    countries: state.countries,
+    primaryinsurance: state.primaryinsurance,
+    secondaryinsurance: state.secondaryinsurance,
+    hospitaldetails: state.hospitaldetails
   };
 }
 
@@ -615,10 +800,11 @@ function mapDispatchToProps(dispatch) {
       getPatientDetails: AlgaehActions,
       initialStatePatientData: AlgaehActions,
       postVisitDetails: postVisitDetails,
-      generateBill: AlgaehActions,
       initialStateBillGen: AlgaehActions,
       getPatientInsurance: AlgaehActions,
-      initialbillingCalculations: AlgaehActions
+      getCountries: AlgaehActions,
+      setSelectedInsurance: AlgaehActions,
+      getHospitalDetails: AlgaehActions
     },
     dispatch
   );

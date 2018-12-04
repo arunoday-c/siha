@@ -107,6 +107,25 @@ class InsuranceAdd extends PureComponent {
     ) {
       this.setState({ sub_insurance: nextProps.subinsuranceprovider });
     }
+
+    let insurance_provider_id = null;
+    let insurance_provider_name = null;
+    if (nextProps.buttonenable === true) {
+      insurance_provider_id =
+        nextProps.insurance_provider_id !== null
+          ? nextProps.insurance_provider_id
+          : null;
+
+      insurance_provider_name =
+        nextProps.insurance_provider_name !== null
+          ? nextProps.insurance_provider_name
+          : null;
+    }
+    this.setState({
+      buttonenable: nextProps.buttonenable,
+      insurance_provider_id: insurance_provider_id,
+      insurance_provider_name: insurance_provider_name
+    });
   }
 
   handleClose = () => {
@@ -145,25 +164,6 @@ class InsuranceAdd extends PureComponent {
     const steps = getSteps();
     const { activeStep } = this.state;
 
-    // this.state.buttonenable = this.props.buttonenable;
-    let insurance_provider_id = null;
-    let insurance_provider_name = null;
-    if (this.props.buttonenable === true) {
-      insurance_provider_id =
-        this.props.insurance_provider_id !== null
-          ? this.props.insurance_provider_id
-          : null;
-
-      insurance_provider_name =
-        this.props.insurance_provider_name !== null
-          ? this.props.insurance_provider_name
-          : null;
-    }
-    this.setState({
-      buttonenable: this.props.buttonenable,
-      insurance_provider_id: insurance_provider_id,
-      insurance_provider_name: insurance_provider_name
-    });
     return (
       <React.Fragment>
         <div className="hptl-phase1-add-insurance-form">
