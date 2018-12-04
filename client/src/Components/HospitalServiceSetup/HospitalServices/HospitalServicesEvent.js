@@ -75,6 +75,7 @@ const InsertServices = $this => {
               title: "Saved successfully . .",
               type: "success"
             });
+            $this.props.onClose && $this.props.onClose($this.state.changesDone);
           }
         }
       });
@@ -92,6 +93,7 @@ const InsertServices = $this => {
               title: "Updated successfully . .",
               type: "success"
             });
+            $this.props.onClose && $this.props.onClose($this.state.changesDone);
           }
         }
       });

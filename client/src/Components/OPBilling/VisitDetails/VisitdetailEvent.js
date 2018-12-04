@@ -103,6 +103,7 @@ const handleChange = ($this, row, context, e) => {
                         $this.state.patient_payable;
 
                       response.data.records.saveEnable = false;
+                      response.data.records.billDetails = false;
                       if (context != null) {
                         context.updateState({ ...response.data.records });
                       }
@@ -154,7 +155,8 @@ const handleChange = ($this, row, context, e) => {
                   sub_total_amount: null,
                   total_amount: null,
                   total_tax: null,
-                  unbalanced_amount: null
+                  unbalanced_amount: null,
+                  billDetails: true
                 });
               }
             }
