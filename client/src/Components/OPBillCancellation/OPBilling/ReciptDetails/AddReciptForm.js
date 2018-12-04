@@ -3,18 +3,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import moment from "moment";
-import {
-  texthandle,
-  datehandle,
-  cashtexthandle,
-  cardtexthandle,
-  chequetexthandle,
-  checkcashhandaler,
-  checkcardhandaler,
-  checkcheckhandaler,
-  calculateRecipt,
-  countertexthandle
-} from "./AddReciptFormHandaler";
+import { texthandle, countertexthandle } from "./AddReciptFormHandaler";
 import {
   AlgaehDateHandler,
   AlgaehLabel,
@@ -27,7 +16,7 @@ import "./AddReciptForm.css";
 import "./../../../../styles/site.css";
 
 import { AlgaehActions } from "../../../../actions/algaehActions";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+// import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 
 class AddReciptForm extends Component {
   constructor(props) {
@@ -168,7 +157,7 @@ class AddReciptForm extends Component {
                         type="checkbox"
                         name="Pay by Cash"
                         checked={this.state.Cashchecked}
-                        onChange={checkcashhandaler.bind(this, this, context)}
+                        // onChange={checkcashhandaler.bind(this, this, context)}
                         disabled={true}
                       />
 

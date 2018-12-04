@@ -6,7 +6,8 @@ import {
   addAlgaehGroupMAster,
   addAlgaehModule,
   getRoleBaseActiveModules,
-  getRoleBaseInActiveComponents
+  getRoleBaseInActiveComponents,
+  getAlgaehModules
 } from "../model/algaehMasters";
 
 export default ({ config, db }) => {
@@ -32,10 +33,17 @@ export default ({ config, db }) => {
     addAlgaehModule,
     (req, res, next) => {
       let result = req.records;
-      res.status(httpStatus.ok).json({
-        success: true,
-        records: result
-      });
+      if (result.validUser == false) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
       next();
     },
     releaseConnection
@@ -66,6 +74,29 @@ export default ({ config, db }) => {
         success: true,
         records: result
       });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :
+  api.get(
+    "/getAlgaehModules",
+    getAlgaehModules,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.validUser == false) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+
       next();
     },
     releaseConnection

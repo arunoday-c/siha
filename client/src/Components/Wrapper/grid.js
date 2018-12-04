@@ -25,7 +25,8 @@ class DataGrid extends PureComponent {
       rowsPerPage: 10,
       selectionChanged: false,
       recordsTotal: 0,
-      inputParam: {}
+      inputParam: {},
+      isEditable: false
     };
 
     this.tmp = new Set();
@@ -86,8 +87,9 @@ class DataGrid extends PureComponent {
   renderEditable = (templates, cellInfo) => {
     const editable = this.state.editableRows[cellInfo.index];
     const rowDetail = this.state.data[cellInfo.index];
+    
     const _fullNonEditor =
-      this.props.isEditable !== undefined ? this.props.isEditable : false;
+      this.state.isEditable !== undefined ? this.state.isEditable : false;
     const _disabled =
       cellInfo.column.disabled !== undefined ? cellInfo.column.disabled : false;
     if (editable === undefined || editable === false) {
@@ -351,6 +353,9 @@ class DataGrid extends PureComponent {
   }
 
   componentDidMount() {
+    this.setState({
+      isEditable: this.props.isEditable
+    });
     if (this.state.columns.length == 0) {
       if (this.props.columns !== undefined && this.props.columns.length !== 0) {
         let _columns = Enumerable.from(this.props.columns)
@@ -393,6 +398,8 @@ class DataGrid extends PureComponent {
             : this.props.actions.allowDelete !== undefined
             ? this.props.actions.allowDelete
             : true;
+
+        debugger;
         if (
           this.props.isEditable !== undefined &&
           this.props.isEditable === true
@@ -501,6 +508,12 @@ class DataGrid extends PureComponent {
   }
 
   componentWillReceiveProps(props) {
+    debugger;
+    if (props.isEditable !== this.state.isEditable) {
+      this.setState({
+        isEditable: props.isEditable
+      });
+    }
     if (props.algaehSearch !== undefined) {
       if (props.columns !== undefined && props.columns.length !== 0) {
         let _columns = Enumerable.from(props.columns)

@@ -686,6 +686,10 @@ class AddOPBillingForm extends Component {
                         data: this.state.billdetails
                       }}
                       isEditable={!this.state.Billexists}
+                      actions={{
+                        allowEdit: !this.state.Billexists,
+                        allowDelete: !this.state.Billexists
+                      }}
                       paging={{ page: 0, rowsPerPage: 5 }}
                       byForceEvents={true}
                       events={{
