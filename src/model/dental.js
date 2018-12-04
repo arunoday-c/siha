@@ -154,4 +154,47 @@ let getTreatmentPlan = (req, res, next) => {
     next(e);
   }
 };
-module.exports = { addTreatmentPlan, addDentalTreatment, getTreatmentPlan };
+
+//created by irfan: to
+let getDentalTreatment = (req, res, next) => {
+  let selectWhere = {
+    patient_id: "ALL",
+    episode_id: "ALL",
+    treatment_plan_id: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let where = whereCondition(extend(selectWhere, req.query));
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_f_dental_treatment_id, patient_id, episode_id, treatment_plan_id, service_id, teeth_number\
+        , scheduled_date, distal, incisal, occlusal, mesial, buccal, labial, cervical, palatal, lingual,\
+         billed, treatment_status from hims_f_dental_treatment  where record_status='A' and " +
+          where.condition,
+        where.values,
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports = {
+  addTreatmentPlan,
+  addDentalTreatment,
+  getTreatmentPlan,
+  getDentalTreatment
+};

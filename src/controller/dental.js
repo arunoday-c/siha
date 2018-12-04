@@ -4,7 +4,8 @@ import httpStatus from "../utils/httpStatus";
 import {
   addTreatmentPlan,
   addDentalTreatment,
-  getTreatmentPlan
+  getTreatmentPlan,
+  getDentalTreatment
 } from "../model/dental";
 
 export default ({ config, db }) => {
@@ -44,6 +45,21 @@ export default ({ config, db }) => {
   api.get(
     "/getTreatmentPlan",
     getTreatmentPlan,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :to
+  api.get(
+    "/getDentalTreatment",
+    getDentalTreatment,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
