@@ -247,9 +247,7 @@ class AddBillingForm extends Component {
                         }}
                         textBox={{
                           decimal: {
-                            allowNegative: false,
-                            thousandSeparator: ",",
-                            customInput: "0.00"
+                            allowNegative: false
                           },
                           value: this.state.sheet_discount_amount,
                           className: "txt-fld",
@@ -553,6 +551,7 @@ class AddBillingForm extends Component {
                             fieldName: "card_check_number"
                           }}
                           textBox={{
+                            card: { creditCard: true },
                             disabled: !this.state.Cardchecked,
                             className: "txt-fld",
                             name: "card_number",
