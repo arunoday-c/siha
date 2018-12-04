@@ -137,6 +137,7 @@ class EmployeeMaster extends Component {
   }
 
   componentWillReceiveProps(newProps) {
+    debugger;
     if (
       newProps.employeeDetailsPop.hims_d_employee_id !== undefined &&
       this.state.full_name !== null
@@ -218,7 +219,9 @@ class EmployeeMaster extends Component {
                     {this.state.pageDisplay === "PersonalDetails" ? (
                       <PersonalDetails EmpMasterIOputs={this.state} />
                     ) : this.state.pageDisplay === "CommissionSetup" ? (
-                      <CommissionSetup EmpMasterIOputs={this.state} />
+                      this.state.isdoctor === "Y" ? (
+                        <CommissionSetup EmpMasterIOputs={this.state} />
+                      ) : null
                     ) : null}
                   </div>
                 </MyContext.Provider>
