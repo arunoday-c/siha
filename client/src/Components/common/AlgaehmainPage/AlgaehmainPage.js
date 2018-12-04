@@ -221,12 +221,15 @@ class PersistentDrawer extends React.Component {
   }
 
   TriggerPath(submenu, e) {
+    debugger;
     const name = submenu.page_to_redirect.replace(/\s/g, ""); // e.currentTarget.getAttribute("name");
     let screenName =
       submenu.page_to_redirect.replace(/\s/g, "") +
       (this.state.Language !== "en"
-        ? this.state.Language.charAt(0).toUpperCase() +
-          this.state.Language.slice(1)
+        ? this.state.Language.charAt(0).toUpperCase() + submenu.screen_name ===
+            "Front Desk" || submenu.screen_name === "Op Billing"
+          ? this.state.Language.slice(1)
+          : ""
         : "");
     const _menuselected = e.currentTarget.getAttribute("menuselected");
     const _submenuselected = submenu.screen_code; //e.currentTarget.getAttribute("submenuselected");
