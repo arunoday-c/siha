@@ -1,3 +1,25 @@
+.arabicVersionFrontDesk {
+  direction: rtl;
+  text-align: right; }
+  .arabicVersionFrontDesk .primary-details {
+    border-right: none;
+    border-left: 1px dashed #d3d3d3; }
+  .arabicVersionFrontDesk label {
+    font-size: 0.8rem; }
+  .arabicVersionFrontDesk .toggle-section .nav {
+    padding: 0;
+    right: auto; }
+  .arabicVersionFrontDesk .showall {
+    left: 0;
+    right: auto; }
+  .arabicVersionFrontDesk .clearall {
+    left: 20px;
+    right: auto; }
+  .arabicVersionFrontDesk .print-area div {
+    float: right;
+    height: 75px;
+    border-right: 1px solid #adaaaa; }
+
 .hptl-phase1-patientreg-details {
   background: #ffff; }
   .hptl-phase1-patientreg-details .patient-section {

@@ -542,7 +542,11 @@ class RegistrationPatientAr extends PureComponent {
 
   render() {
     return (
-      <div id="attach" style={{ marginBottom: "50px" }}>
+      <div
+        id="attach"
+        style={{ marginBottom: "50px" }}
+        className="arabicVersionFrontDesk"
+      >
         {/* <Barcode value='PAT-A-000017'/> */}
         <BreadCrumb
           title={
