@@ -144,6 +144,7 @@
       {
         "name": "Patient Recall",
         "label": "Patient Recall",
+        "arlabel": "تذكر المريض",
         "path": "/PatientRecall"
       },
       {
@@ -208,7 +209,7 @@
       {
         "name": "OP Credit Settlement",
         "label": "OP Credit Settlement",
-        "arlabel": "الفواتير قيد الانتظار قائمة OP",
+        "arlabel": "التسوية الائتمانية OP",
         "path": "/OPCreditSettlement"
       }
     ]
@@ -469,7 +470,7 @@
       {
         "name": "Acquisition Entry",
         "label": "Acquisition Entry",
-        "arlabel": "عملية نهاية اليوم",
+        "arlabel": "الاكتساب دخول",
         "path": "/AcquisitionEntry"
       },
       {
