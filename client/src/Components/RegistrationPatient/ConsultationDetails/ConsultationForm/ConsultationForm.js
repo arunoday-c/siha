@@ -10,6 +10,7 @@ import MyContext from "../../../../utils/MyContext";
 import moment from "moment";
 import Options from "../../../../Options.json";
 import { AlgaehActions } from "../../../../actions/algaehActions";
+import { getLabelFromLanguage } from "../../../../utils/GlobalFunctions";
 import {
   AlgaehLabel,
   AlagehAutoComplete,
@@ -274,7 +275,7 @@ class AddConsultationForm extends Component {
                 </div>
 
                 <div className="col-lg-8 secondary-details">
-                  <h6>Past Visit</h6>
+                  <h6>{getLabelFromLanguage({ fieldName: "PastVisit" })}</h6>
                   <AlgaehDataGrid
                     columns={[
                       {

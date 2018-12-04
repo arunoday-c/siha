@@ -14,6 +14,7 @@ import {
   Modal
 } from "../Wrapper/algaehWrapper";
 import variableJson from "../../utils/GlobalVariables.json";
+import { getLabelFromLanguage } from "../../utils/GlobalFunctions";
 
 import {
   texthandle,
@@ -221,7 +222,9 @@ class AddAdvanceModal extends PureComponent {
                         onChange={checkcashhandaler.bind(this, this)}
                       />
 
-                      <span style={{ fontSize: "0.8rem" }}>Pay by Cash</span>
+                      <span style={{ fontSize: "0.8rem" }}>
+                        {getLabelFromLanguage({ fieldName: "payby_cash" })}
+                      </span>
                     </label>
                   </div>
 
@@ -261,7 +264,9 @@ class AddAdvanceModal extends PureComponent {
                         checked={this.state.Cardchecked}
                         onChange={checkcardhandaler.bind(this, this)}
                       />
-                      <span style={{ fontSize: "0.8rem" }}>Pay by Card</span>
+                      <span style={{ fontSize: "0.8rem" }}>
+                        {getLabelFromLanguage({ fieldName: "payby_card" })}
+                      </span>
                     </label>
                   </div>
 
@@ -337,7 +342,9 @@ class AddAdvanceModal extends PureComponent {
                         checked={this.state.Checkchecked}
                         onChange={checkcheckhandaler.bind(this, this)}
                       />
-                      <span style={{ fontSize: "0.8rem" }}>Pay by Cheque</span>
+                      <span style={{ fontSize: "0.8rem" }}>
+                        {getLabelFromLanguage({ fieldName: "payby_check" })}
+                      </span>
                     </label>
                   </div>
                   <AlagehFormGroup

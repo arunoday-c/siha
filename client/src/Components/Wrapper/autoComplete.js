@@ -430,7 +430,6 @@ class AutoComplete extends PureComponent {
           <input
             type="text"
             className="myInput"
-            id="myInput"
             name={this.props.selector.name}
             placeholder={_placeHolder}
             title={_placeHolder}

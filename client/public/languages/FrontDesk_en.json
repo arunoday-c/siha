@@ -7,7 +7,8 @@
   "middle_name": "Middle Name",
   "last_name": "Last Name",
   "full_name": "Name",
-  "arabic_name": "Name in Arabic",
+  "enter_eng_fullName": "Full Name in English",
+  "arabic_name": "Full Name in Arabic",
   "gender": "Gender",
   "religion_id": "Religion",
   "date_of_birth": "Date Of Birth",
@@ -146,8 +147,11 @@
   "card_number": "Card Number",
   "bill_date": "Bill Date",
   "bill_details": "Bill Details",
+  "process_insurance": "Process Insurance",
   "patient_type": "Patient Type",
   "payby_cash": "Pay By Cash",
   "payby_card": "Pay By Card",
-  "payby_check": "Pay By Cheque"
+  "payby_check": "Pay By Cheque",
+  "NotGenerated": "Not Generated",
+  "PastVisit": "Past Visit"
 }

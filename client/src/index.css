@@ -741,9 +741,7 @@
     :global .algaeh-modal-Ar .popupInner {
       overflow-y: auto;
       overflow-x: hidden;
-      border-bottom: 1px dashed #e5e5e5;
-      padding: 10px 0;
-      /* text-transform: uppercase; */ }
+      border-bottom: 1px dashed #e5e5e5; }
       :global .algaeh-modal-Ar .popupInner .popSubHdg {
         font-size: 0.9rem;
         font-weight: bold;
@@ -762,6 +760,17 @@
         max-height: 70vh;
         overflow: auto;
         padding: 15px; }
+      :global .algaeh-modal-Ar .popupInner label {
+        font-size: 0.8rem; }
+      :global .algaeh-modal-Ar .popupInner .toggle-section .nav {
+        padding: 0;
+        right: auto; }
+      :global .algaeh-modal-Ar .popupInner .showall {
+        left: 0;
+        right: auto; }
+      :global .algaeh-modal-Ar .popupInner .clearall {
+        left: 20px;
+        right: auto; }
     :global .algaeh-modal-Ar .popupFooter {
       border-top: 1px dashed #e0e0e0;
       padding-top: 4px;

@@ -26,7 +26,7 @@ import {
   swalMessage,
   getCookie
 } from "../../utils/algaehApiCall.js";
-import AddAdvanceModal from "../Advance/AdvanceModal";
+import AddAdvanceModal from "../AdvanceAr/AdvanceModalAr";
 import { imageToByteArray } from "../../utils/GlobalFunctions";
 import { setGlobal } from "../../utils/GlobalFunctions";
 import { AlgaehActions } from "../../actions/algaehActions";

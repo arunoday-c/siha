@@ -1079,8 +1079,6 @@ $forntSize: 0.7rem;
       overflow-x: hidden;
 
       border-bottom: 1px dashed #e5e5e5;
-      padding: 10px 0;
-      /* text-transform: uppercase; */
       .popSubHdg {
         font-size: 0.9rem;
         font-weight: bold;
@@ -1103,6 +1101,23 @@ $forntSize: 0.7rem;
         max-height: 70vh;
         overflow: auto;
         padding: 15px;
+      }
+      label {
+        font-size: 0.8rem;
+      }
+      .toggle-section {
+        .nav {
+          padding: 0;
+          right: auto;
+        }
+      }
+      .showall {
+        left: 0;
+        right: auto;
+      }
+      .clearall {
+        left: 20px;
+        right: auto;
       }
     }
 
