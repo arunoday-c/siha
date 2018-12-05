@@ -3,7 +3,7 @@ import axios from "axios";
 import extend from "extend";
 import moment from "moment";
 import swal from "sweetalert2";
-
+import Agent from "agentkeepalive";
 import config from "../utils/config.json";
 import axiosCancel from "axios-cancel";
 import AlgaehLoader from "../Components/Wrapper/fullPageLoader.js";
@@ -109,6 +109,12 @@ export function algaehApiCall(options) {
             "x-client-ip": myIP,
             ..._contentType
           },
+
+          httpAgent: new Agent({
+            maxSockets: 100,
+            timeout: 60000, // active socket keepalive for 60 seconds
+            freeSocketTimeout: 30000 // free socket keepalive for 30 seconds
+          }), //new http.Agent({ keepAlive: true }),
           ...settings.others,
           body: JSON.stringify(settings.data),
           ...cancelRequest
@@ -145,6 +151,11 @@ export function algaehApiCall(options) {
           "x-client-ip": myIP,
           ..._contentType
         },
+        httpAgent: new Agent({
+          maxSockets: 100,
+          timeout: 60000, // active socket keepalive for 60 seconds
+          freeSocketTimeout: 30000 // free socket keepalive for 30 seconds
+        }), //new http.Agent({ keepAlive: true }),
         ...settings.others,
         data: settings.data,
         ...timmer,
