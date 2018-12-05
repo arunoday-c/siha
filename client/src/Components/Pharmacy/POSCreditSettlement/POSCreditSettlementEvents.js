@@ -1,15 +1,14 @@
 import extend from "extend";
-import SettlementIOputs from "../../Models/OPCreditSettlement";
+import SettlementIOputs from "../../../Models/POSCreditSettlement";
 import {
   algaehApiCall,
   swalMessage,
   getCookie
-} from "../../utils/algaehApiCall";
+} from "../../../utils/algaehApiCall";
 import moment from "moment";
-import AlgaehSearch from "../Wrapper/globalSearch";
-import FrontDesk from "../../Search/FrontDesk.json";
-import AlgaehLoader from "../Wrapper/fullPageLoader";
-import Enumerable from "linq";
+import AlgaehSearch from "../../Wrapper/globalSearch";
+import FrontDesk from "../../../Search/FrontDesk.json";
+import AlgaehLoader from "../../Wrapper/fullPageLoader";
 
 const PatientSearch = ($this, e) => {
   AlgaehSearch({
@@ -40,9 +39,9 @@ const PatientSearch = ($this, e) => {
 
 const getPatientDetails = $this => {
   AlgaehLoader({ show: true });
-
+  debugger;
   algaehApiCall({
-    uri: "/opCreditSettlement/getPatientwiseBill",
+    uri: "/POSCreditSettlement/getPatientPOSCriedt",
     method: "GET",
     data: { patient_id: $this.state.patient_id },
     onSuccess: response => {
@@ -51,7 +50,7 @@ const getPatientDetails = $this => {
         let data = response.data.records;
         if (data.length > 0) {
           for (let i = 0; i < data.length; i++) {
-            data[i].bill_header_id = data[i].hims_f_billing_header_id;
+            data[i].pos_header_id = data[i].hims_f_pharmacy_pos_header_id;
             data[i].receipt_amount = 0;
             data[i].balance_amount = data[i].balance_credit;
             data[i].previous_balance = data[i].balance_credit;
@@ -66,7 +65,7 @@ const getPatientDetails = $this => {
     onFailure: error => {
       AlgaehLoader({ show: false });
       swalMessage({
-        title: error.message,
+        title: error.response.data.message || error.message,
         type: "error"
       });
     }
@@ -202,9 +201,9 @@ const getCtrlCode = ($this, billcode) => {
   AlgaehLoader({ show: true });
 
   algaehApiCall({
-    uri: "/opCreditSettlement/getCreidtSettlement",
+    uri: "/POSCreditSettlement/getPOSCreidtSettlement",
     method: "GET",
-    data: { credit_number: billcode },
+    data: { pos_credit_number: billcode },
     onSuccess: response => {
       if (response.data.success) {
         debugger;
@@ -247,124 +246,10 @@ const getCtrlCode = ($this, billcode) => {
   });
 };
 
-const GenerateReciept = ($this, callback) => {
-  let obj = [];
-
-  if (
-    $this.state.Cashchecked === false &&
-    $this.state.Cardchecked === false &&
-    $this.state.Checkchecked === false
-  ) {
-    swalMessage({
-      title: "Invalid Input. Please select receipt type.",
-
-      type: "error"
-    });
-  } else {
-    if ($this.state.cash_amount > 0 || $this.state.Cashchecked === true) {
-      obj.push({
-        hims_f_receipt_header_id: null,
-        card_check_number: null,
-        expiry_date: null,
-        pay_type: $this.state.pay_cash,
-        amount: $this.state.cash_amount,
-        updated_date: null,
-        card_type: null
-      });
-    }
-
-    if ($this.state.card_amount > 0 || $this.state.Cardchecked === true) {
-      obj.push({
-        hims_f_receipt_header_id: null,
-        card_check_number: $this.state.card_check_number,
-        expiry_date: $this.state.card_date,
-        pay_type: $this.state.pay_card,
-        amount: $this.state.card_amount,
-        updated_date: null,
-        card_type: null
-      });
-    }
-    if ($this.state.cheque_amount > 0 || $this.state.Checkchecked === true) {
-      obj.push({
-        hims_f_receipt_header_id: null,
-        card_check_number: $this.state.cheque_number,
-        expiry_date: $this.state.cheque_date,
-        pay_type: $this.state.pay_cheque,
-        amount: $this.state.cheque_amount,
-        updated_date: null,
-        card_type: null
-      });
-    }
-
-    $this.setState(
-      {
-        receiptdetails: obj
-      },
-      () => {
-        callback($this);
-      }
-    );
-  }
-};
-
-const SaveOPCreidt = $this => {
-  debugger;
-  const err = Validations($this);
-  if (!err) {
-    if ($this.state.unbalanced_amount === 0) {
-      GenerateReciept($this, that => {
-        let Inputobj = $this.state;
-
-        let listOfinclude = Enumerable.from(Inputobj.criedtdetails)
-          .where(w => w.include === "Y")
-          .toArray();
-
-        Inputobj.criedtdetails = listOfinclude;
-        AlgaehLoader({ show: true });
-        algaehApiCall({
-          uri: "/opCreditSettlement/addCreidtSettlement",
-          data: Inputobj,
-          method: "POST",
-          onSuccess: response => {
-            AlgaehLoader({ show: false });
-            if (response.data.success) {
-              $this.setState({
-                credit_number: response.data.records.credit_number,
-                receipt_number: response.data.records.receipt_number,
-                hims_f_credit_header_id:
-                  response.data.records.hims_f_credit_header_id,
-                saveEnable: true
-              });
-              swalMessage({
-                title: "Done Successfully",
-                type: "success"
-              });
-            }
-          },
-          onFailure: error => {
-            debugger;
-            AlgaehLoader({ show: false });
-            swalMessage({
-              title: error.response.data.message || error.message,
-              type: "error"
-            });
-          }
-        });
-      });
-    } else {
-      swalMessage({
-        title: "Invalid Input. Please recive the amount.",
-        type: "error"
-      });
-    }
-  }
-};
-
 export {
   ClearData,
   Validations,
   getCashiersAndShiftMAP,
   PatientSearch,
-  getCtrlCode,
-  SaveOPCreidt
+  getCtrlCode
 };

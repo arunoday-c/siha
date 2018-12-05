@@ -54,6 +54,8 @@ import inventoryinitialstock from "../Inventory/controller/inventoryinitialstock
 import inventoryGlobal from "../Inventory/controller/inventoryGlobal";
 import inventoryrequisitionEntry from "../Inventory/controller/inventoryrequisitionEntry";
 import inventorytransferEntry from "../Inventory/controller/inventorytransferEntry";
+import POSCreditSettlement from "../Pharmacy/controller/POSCreditSettlement";
+
 import specialityAndCategory from "../controller/specialityAndCategory";
 import vendor from "../controller/vendor";
 import PurchaseOrderEntry from "../Procurement/controller/PurchaseOrderEntry";
@@ -139,6 +141,7 @@ initializedDb(db => {
   router.use("/opBillCancellation", opBillCancellation({ config, db }));
   router.use("/dental", dental({ config, db }));
   router.use("/opCreditSettlement", opCreditSettlement({ config, db }));
+  router.use("/POSCreditSettlement", POSCreditSettlement({ config, db }));
 });
 
 export default router;

@@ -73,6 +73,7 @@ import PurchaseOrderList from "./Components/Procurement/PurchaseOrderList/Purcha
 import DayEndProcess from "./Components/Finance/DayEndProcess/DayEndProcess";
 import OPBillCancellation from "./Components/OPBillCancellation/OPBillCancellation";
 import OPCreditSettlement from "./Components/OPCreditSettlement/OPCreditSettlement";
+import POSCreditSettlement from "./Components/Pharmacy/POSCreditSettlement/POSCreditSettlement";
 import Algaeh from "./Components/Algaeh/Algaeh";
 
 const componts = (selectedLang, breadStyle) => {
@@ -166,6 +167,7 @@ const componts = (selectedLang, breadStyle) => {
     AdministrationSetup: <AdministrationSetup SelectLanguage={selectedLang} />,
     OPBillCancellation: <OPBillCancellation SelectLanguage={selectedLang} />,
     OPCreditSettlement: <OPCreditSettlement SelectLanguage={selectedLang} />,
+    POSCreditSettlement: <POSCreditSettlement SelectLanguage={selectedLang} />,
     AlgaehModules: <Algaeh />
   };
 };

@@ -87,39 +87,39 @@ class PointOfSale extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    let posHeaderOut = {};
+  // componentWillReceiveProps(nextProps) {
+  //   let posHeaderOut = {};
 
-    if (nextProps.posheader !== undefined && nextProps.posheader.length !== 0) {
-      nextProps.posheader.patient_payable_h =
-        nextProps.posheader.patient_payable || this.state.patient_payable;
-      nextProps.posheader.sub_total =
-        nextProps.posheader.sub_total_amount || this.state.sub_total;
-      nextProps.posheader.patient_responsibility =
-        nextProps.posheader.patient_res || this.state.patient_responsibility;
-      nextProps.posheader.company_responsibility =
-        nextProps.posheader.company_res || this.state.company_responsibility;
+  //   if (nextProps.posheader !== undefined && nextProps.posheader.length !== 0) {
+  //     nextProps.posheader.patient_payable_h =
+  //       nextProps.posheader.patient_payable || this.state.patient_payable;
+  //     nextProps.posheader.sub_total =
+  //       nextProps.posheader.sub_total_amount || this.state.sub_total;
+  //     nextProps.posheader.patient_responsibility =
+  //       nextProps.posheader.patient_res || this.state.patient_responsibility;
+  //     nextProps.posheader.company_responsibility =
+  //       nextProps.posheader.company_res || this.state.company_responsibility;
 
-      nextProps.posheader.company_payable =
-        nextProps.posheader.company_payble || this.state.company_payable;
-      nextProps.posheader.sec_company_responsibility =
-        nextProps.posheader.sec_company_res ||
-        this.state.sec_company_responsibility;
-      nextProps.posheader.sec_company_payable =
-        nextProps.posheader.sec_company_paybale ||
-        this.state.sec_company_payable;
+  //     nextProps.posheader.company_payable =
+  //       nextProps.posheader.company_payble || this.state.company_payable;
+  //     nextProps.posheader.sec_company_responsibility =
+  //       nextProps.posheader.sec_company_res ||
+  //       this.state.sec_company_responsibility;
+  //     nextProps.posheader.sec_company_payable =
+  //       nextProps.posheader.sec_company_paybale ||
+  //       this.state.sec_company_payable;
 
-      nextProps.posheader.copay_amount =
-        nextProps.posheader.copay_amount || this.state.copay_amount;
-      nextProps.posheader.sec_copay_amount =
-        nextProps.posheader.sec_copay_amount || this.state.sec_copay_amount;
-      nextProps.posheader.addItemButton = false;
-      nextProps.posheader.saveEnable = false;
-      posHeaderOut = nextProps.posheader;
-    }
+  //     nextProps.posheader.copay_amount =
+  //       nextProps.posheader.copay_amount || this.state.copay_amount;
+  //     nextProps.posheader.sec_copay_amount =
+  //       nextProps.posheader.sec_copay_amount || this.state.sec_copay_amount;
+  //     nextProps.posheader.addItemButton = false;
+  //     nextProps.posheader.saveEnable = false;
+  //     posHeaderOut = nextProps.posheader;
+  //   }
 
-    this.setState({ ...this.state, ...posHeaderOut });
-  }
+  //   this.setState({ ...this.state, ...posHeaderOut });
+  // }
 
   render() {
     const _posLocation = Enumerable.from(this.props.poslocations)
@@ -348,6 +348,7 @@ class PointOfSale extends Component {
                 value={{
                   state: this.state,
                   updateState: obj => {
+                    debugger;
                     this.setState({ ...obj });
                   }
                 }}
@@ -357,39 +358,38 @@ class PointOfSale extends Component {
             </div>
           </div>
           <div className="hptl-phase1-footer">
-            
-              <div className="row">
-                <div className="col-lg-12">
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={SavePosEnrty.bind(this, this)}
-                    disabled={this.state.saveEnable}
-                  >
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Collect & Print",
-                        returnText: true
-                      }}
-                    />
-                  </button>
-
-                  <AHSnackbar
-                    open={this.state.open}
-                    handleClose={this.handleClose}
-                    MandatoryMsg={this.state.MandatoryMsg}
+            <div className="row">
+              <div className="col-lg-12">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={SavePosEnrty.bind(this, this)}
+                  disabled={this.state.saveEnable}
+                >
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Collect & Print",
+                      returnText: true
+                    }}
                   />
-                  <button
-                    type="button"
-                    className="btn btn-default"
-                    onClick={ClearData.bind(this, this)}
-                  >
-                    <AlgaehLabel
-                      label={{ forceLabel: "Clear", returnText: true }}
-                    />
-                  </button>
+                </button>
 
-                  {/* <button
+                <AHSnackbar
+                  open={this.state.open}
+                  handleClose={this.handleClose}
+                  MandatoryMsg={this.state.MandatoryMsg}
+                />
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  onClick={ClearData.bind(this, this)}
+                >
+                  <AlgaehLabel
+                    label={{ forceLabel: "Clear", returnText: true }}
+                  />
+                </button>
+
+                {/* <button
                     type="button"
                     className="btn btn-other"
                     onClick={PostPosEntry.bind(this, this)}
@@ -402,9 +402,8 @@ class PointOfSale extends Component {
                       }}
                     />
                   </button> */}
-                </div>
               </div>
-            
+            </div>
           </div>
         </div>
       </React.Fragment>

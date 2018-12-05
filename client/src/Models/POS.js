@@ -43,6 +43,7 @@ export default {
       credit_amount: 0,
       receiveable_amount: 0,
       posDetail: [],
+      balance_credit: 0,
       //   selectedLang: "en",
       pharmacy_stock_detail: [],
       advance_adjust: 0,
