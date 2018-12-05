@@ -313,11 +313,11 @@ class AddBillingForm extends Component {
                             onChange: credittexthandle.bind(this, this, context)
                           },
                           others: {
-                            placeholder: "0.00",
-                            onBlur: credittextCal.bind(this, this, context),
-                            onFocus: e => {
-                              e.target.oldvalue = e.target.value;
-                            }
+                            placeholder: "0.00"
+                            // onBlur: credittextCal.bind(this, this, context),
+                            // onFocus: e => {
+                            //   e.target.oldvalue = e.target.value;
+                            // }
                           },
                           security: {
                             component_code: "FD_PR_BIL",
@@ -349,7 +349,7 @@ class AddBillingForm extends Component {
                             fieldName: "balance_due"
                           }}
                         />
-                        <h6>0.00</h6>
+                        <h6>{getAmountFormart(this.state.balance_credit)}</h6>
                       </div>
                     </div>
                     {/* <div className="container-fluid"> */}

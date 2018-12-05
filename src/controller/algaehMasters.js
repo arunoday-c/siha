@@ -4,10 +4,17 @@ import httpStatus from "../utils/httpStatus";
 
 import {
   addAlgaehGroupMAster,
+  addAlgaehRoleMAster,
   addAlgaehModule,
   getRoleBaseActiveModules,
   getRoleBaseInActiveComponents,
-  getAlgaehModules
+  getAlgaehModules,
+  getAlgaehScreens,
+  addAlgaehScreen,
+  addAlgaehComponent,
+  getAlgaehComponents,
+  addAlgaehScreenElement,
+  getAlgaehScreenElement
 } from "../model/algaehMasters";
 
 export default ({ config, db }) => {
@@ -19,14 +26,43 @@ export default ({ config, db }) => {
     addAlgaehGroupMAster,
     (req, res, next) => {
       let result = req.records;
-      res.status(httpStatus.ok).json({
-        success: true,
-        records: result
-      });
+      if (result.validUser == false) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
       next();
     },
     releaseConnection
   );
+  // created by irfan :to add
+  api.post(
+    "/addAlgaehRoleMAster",
+    addAlgaehRoleMAster,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.validUser == false) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    },
+    releaseConnection
+  );
+
   // created by irfan :to add
   api.post(
     "/addAlgaehModule",
@@ -83,6 +119,140 @@ export default ({ config, db }) => {
   api.get(
     "/getAlgaehModules",
     getAlgaehModules,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.validUser == false) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :
+  api.get(
+    "/getAlgaehScreens",
+    getAlgaehScreens,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.validUser == false) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+
+      next();
+    },
+    releaseConnection
+  );
+  // created by irfan :
+  api.get(
+    "/addAlgaehScreen",
+    addAlgaehScreen,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.validUser == false) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :
+  api.post(
+    "/addAlgaehComponent",
+    addAlgaehComponent,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.validUser == false) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+
+      next();
+    },
+    releaseConnection
+  );
+  // created by irfan :
+  api.get(
+    "/getAlgaehComponents",
+    getAlgaehComponents,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.validUser == false) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+
+      next();
+    },
+    releaseConnection
+  );
+  // created by irfan :
+  api.post(
+    "/addAlgaehScreenElement",
+    addAlgaehScreenElement,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.validUser == false) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+
+      next();
+    },
+    releaseConnection
+  );
+  // created by irfan :
+  api.get(
+    "/getAlgaehScreenElement",
+    getAlgaehScreenElement,
     (req, res, next) => {
       let result = req.records;
       if (result.validUser == false) {
