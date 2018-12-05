@@ -161,7 +161,7 @@ export default ({ config, db }) => {
     releaseConnection
   );
   // created by irfan :
-  api.get(
+  api.post(
     "/addAlgaehScreen",
     addAlgaehScreen,
     (req, res, next) => {
