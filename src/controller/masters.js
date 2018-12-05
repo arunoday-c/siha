@@ -21,6 +21,8 @@ import { getCacheData, setCacheData } from "../utils/caching";
 import { saveImageInTemp, showFile } from "../utils/images";
 import { getFormula } from "../model/algaeh_formulas";
 import request from "request";
+import querystring from "querystring";
+import http from "http";
 export default () => {
   let api = Router();
 
@@ -35,22 +37,46 @@ export default () => {
   // api.post("/imageSave", saveImageInTemp);
   api.post("/imageSave", (req, res, next) => {
     console.log("req File", req.image);
-    request(
-      {
-        headers: req.headers,
-        method: "POST",
-        uri: "http://localhost:3010/api/v1/Document/save"
-      },
-      (err, resp, body) => {
-        if (err) {
-          next(err);
-        }
-        res.status(200).json({
-          message: "Success",
-          status: true
-        });
+    let post_data = querystring.stringify(req.body);
+    var post_options = {
+      host: "localhost",
+      port: "3010",
+      path: "/api/v1/Document/save",
+      method: "POST",
+      headers: {
+        "Content-Type": "multipart/form-data",
+        "Content-Length": Buffer.byteLength(post_data),
+        ...req.headers
       }
-    );
+    };
+    // Set up the request
+    var post_req = http.request(post_options, function(res) {
+      res.setEncoding("utf8");
+      res.on("data", function(chunk) {
+        console.log("Response: " + chunk);
+      });
+    });
+
+    // post the data
+    post_req.write(post_data);
+    post_req.end();
+
+    // request(
+    //   {
+    //     headers: req.headers,
+    //     method: "POST",
+    //     uri: "http://localhost:3010/api/v1/Document/save"
+    //   },
+    //   (err, resp, body) => {
+    //     if (err) {
+    //       next(err);
+    //     }
+    //     res.status(200).json({
+    //       message: "Success",
+    //       status: true
+    //     });
+    //   }
+    // );
   });
   api.get("/getFile", showFile);
   api.get(
