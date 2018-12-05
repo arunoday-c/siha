@@ -520,7 +520,7 @@ let updateOrderedServices = (req, res, next) => {
             inputParam.sec_copay_percntage,
             inputParam.sec_copay_amount,
             new Date(),
-            input.updated_by,
+            req.userIdentity.algaeh_d_app_user_id,
             input.hims_f_ordered_services_id
           ],
           (error, result) => {

@@ -1034,7 +1034,9 @@ class PosListItems extends Component {
                               )
                             },
                             others: {
-                              placeholder: "0.00"
+                              placeholder: "0.00",
+                              disabled:
+                                this.state.case_type === "O" ? true : false
                             }
                           }}
                         />
