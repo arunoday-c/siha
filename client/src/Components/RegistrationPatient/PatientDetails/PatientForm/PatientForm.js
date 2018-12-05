@@ -178,12 +178,12 @@ class AddPatientForm extends PureComponent {
     if (this.state.country_id === null) return;
 
     let country = Enumerable.from(this.props.countries)
-      .where(w => w.hims_d_country_id === parseInt(this.state.country_id))
+      .where(w => w.hims_d_country_id === parseInt(this.state.country_id, 10))
       .firstOrDefault();
     let states = country !== undefined ? country.states : [];
     if (this.props.countries !== undefined && states.length !== 0) {
       let cities = Enumerable.from(states)
-        .where(w => w.hims_d_state_id === parseInt(this.state.state_id))
+        .where(w => w.hims_d_state_id === parseInt(this.state.state_id, 10))
         .firstOrDefault();
       if (cities !== undefined) {
         this.setState({
@@ -695,6 +695,7 @@ class AddPatientForm extends PureComponent {
                             name="image"
                           >
                             <img
+                              alt="Algaeh"
                               // className="preview-image"
                               src={this.state.filePreview}
                             />
@@ -728,6 +729,7 @@ class AddPatientForm extends PureComponent {
                             name="image"
                           >
                             <img
+                              alt="Algaeh"
                               //className="preview-image"
                               src={this.state.filePrimaryPreview}
                             />

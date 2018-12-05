@@ -40,7 +40,6 @@ export default {
       addedItem: false,
       transaction_type: "MR",
       saveEnable: true,
-      authorizeEnable: true,
       ItemDisable: false,
       ClearDisable: false,
 

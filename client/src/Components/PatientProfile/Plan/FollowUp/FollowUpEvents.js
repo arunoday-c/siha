@@ -6,7 +6,9 @@ const texthandle = ($this, e) => {
   let value = e.value || e.target.value;
 
   if (name === "followup_days") {
-    var newdate = new Date().setDate(new Date().getDate() + parseInt(value));
+    var newdate = new Date().setDate(
+      new Date().getDate() + parseInt(value, 10)
+    );
 
     $this.setState({
       [name]: value,

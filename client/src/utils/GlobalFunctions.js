@@ -364,6 +364,8 @@ export function numberFormater(value, options) {
       case "AS":
         currency = result + " " + settings.currency_symbol;
         break;
+      default:
+        return;
     }
   }
 

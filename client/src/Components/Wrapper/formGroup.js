@@ -81,7 +81,7 @@ export default class FormGroup extends PureComponent {
         options: {
           thousandSeparator: settings.thousand_separator,
           decimalSeparator: settings.decimal_separator,
-          decimalScale: parseInt(settings.decimal_places),
+          decimalScale: parseInt(settings.decimal_places, 10),
           allowNegative: true,
           ...this.props.textBox.decimal
         }

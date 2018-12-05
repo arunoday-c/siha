@@ -5,6 +5,7 @@ import {
   AlgaehDataGrid,
   AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 class Screens extends Component {
   constructor(props) {
@@ -13,6 +14,8 @@ class Screens extends Component {
       screens: [],
       modules: []
     };
+    this.getModules();
+    this.getScreens();
   }
 
   clearState() {
@@ -22,6 +25,76 @@ class Screens extends Component {
       page_to_redirect: "",
       module_id: null,
       other_language: ""
+    });
+  }
+
+  getModules() {
+    algaehApiCall({
+      uri: "/algaehMasters/getAlgaehModules",
+      method: "GET",
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({
+            modules: response.data.records
+          });
+        }
+      },
+      onError: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  getScreens() {
+    algaehApiCall({
+      uri: "/algaehMasters/getAlgaehScreens",
+      method: "GET",
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({
+            screens: response.data.records
+          });
+        }
+      },
+      onError: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  addScreens() {
+    algaehApiCall({
+      uri: "/algaehMasters/addAlgaehScreen",
+      method: "POST",
+      data: {
+        screen_code: this.state.screen_code,
+        screen_name: this.state.screen_name,
+        page_to_redirect: this.state.page_to_redirect,
+        module_id: this.state.module_id,
+        other_language: this.state.other_language
+      },
+      onSuccess: response => {
+        if (response.data.success) {
+          this.getScreens();
+          this.clearState();
+          swalMessage({
+            title: "Added Successfully",
+            type: "success"
+          });
+        }
+      },
+      onError: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
     });
   }
 
@@ -40,7 +113,6 @@ class Screens extends Component {
     row.update();
   }
 
-  addScreens() {}
   deleteScreens() {}
   updateScreens() {}
 
@@ -59,8 +131,8 @@ class Screens extends Component {
                 className: "select-fld",
                 value: this.state.module_id,
                 dataSource: {
-                  textField: "name",
-                  valueField: "value",
+                  textField: "module_name",
+                  valueField: "algaeh_d_module_id",
                   data: this.state.modules
                 },
                 onChange: this.dropDownHandle.bind(this)

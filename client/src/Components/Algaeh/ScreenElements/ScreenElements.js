@@ -5,6 +5,7 @@ import {
   AlgaehDataGrid,
   AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 class ScreenElements extends Component {
   constructor(props) {
@@ -13,13 +14,83 @@ class ScreenElements extends Component {
       components: [],
       screen_elements: []
     };
+    this.getComponents();
+    this.getScreenElements();
+  }
+
+  getScreenElements() {
+    algaehApiCall({
+      uri: "/algaehMasters/getAlgaehScreenElement",
+      method: "GET",
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({
+            screen_elements: response.data.records
+          });
+        }
+      },
+      onError: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  getComponents() {
+    algaehApiCall({
+      uri: "/algaehMasters/getAlgaehComponents",
+      method: "GET",
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({
+            components: response.data.records
+          });
+        }
+      },
+      onError: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  addScreenElements() {
+    algaehApiCall({
+      uri: "/algaehMasters/addAlgaehScreenElement",
+      method: "POST",
+      data: {
+        screen_element_code: this.state.screen_element_code,
+        screen_element_name: this.state.screen_element_name,
+        component_id: this.state.component_id
+      },
+      onSuccess: response => {
+        if (response.data.success) {
+          this.getScreenElements();
+          this.clearState();
+          swalMessage({
+            title: "Records Added Successfully",
+            type: "success"
+          });
+        }
+      },
+      onError: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   clearState() {
     this.setState({
       screen_element_code: "",
       screen_element_name: "",
-      screen_element_name: null
+      component_id: null
     });
   }
 
@@ -38,7 +109,6 @@ class ScreenElements extends Component {
     row.update();
   }
 
-  addScreenElements() {}
   deleteScreenElements() {}
   updateScreenElements() {}
 
@@ -88,8 +158,8 @@ class ScreenElements extends Component {
                 className: "select-fld",
                 value: this.state.component_id,
                 dataSource: {
-                  textField: "name",
-                  valueField: "value",
+                  textField: "component_name",
+                  valueField: "algaeh_d_app_component_id",
                   data: this.state.components
                 },
                 onChange: this.dropDownHandle.bind(this)
@@ -108,10 +178,10 @@ class ScreenElements extends Component {
             </div>
           </div>
 
-          <div data-validate="shiftDiv" id="algaehGrid_Cntr">
+          <div data-validate="screenElementDiv" id="algaehGrid_Cntr">
             <AlgaehDataGrid
               id="shift-grid"
-              datavalidate="data-validate='shiftDiv'"
+              datavalidate="data-validate='screenElementDiv'"
               columns={[
                 {
                   fieldName: "screen_element_code",
