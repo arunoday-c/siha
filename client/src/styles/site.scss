@@ -620,6 +620,24 @@ body {
       background: #000000;
     }
   }
+  .no-padding-left-right {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .no-padding-left {
+    padding-left: 0;
+  }
+  .no-padding-right {
+    padding-left: 0;
+  }
+  .creditCardIcon {
+    position: absolute;
+    background: #000;
+    height: 20px;
+    width: 30px;
+    right: 5px;
+    bottom: 8px;
+  }
 }
 
 label {

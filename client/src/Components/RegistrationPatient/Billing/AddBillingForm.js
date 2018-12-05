@@ -442,7 +442,7 @@ class AddBillingForm extends Component {
                       {/* Cash */}
                       <div className="row secondary-box-container">
                         <div
-                          className="customCheckbox col-lg-3"
+                          className="customCheckbox col-lg-2"
                           style={{ border: "none", marginTop: "28px" }}
                         >
                           <label
@@ -496,7 +496,7 @@ class AddBillingForm extends Component {
                       {/* Card */}
                       <div className="row secondary-box-container">
                         <div
-                          className="customCheckbox col-lg-3"
+                          className="customCheckbox col-lg-2"
                           style={{ border: "none", marginTop: "28px" }}
                         >
                           <label
@@ -546,7 +546,7 @@ class AddBillingForm extends Component {
                           }}
                         />
                         <AlagehFormGroup
-                          div={{ className: "col" }}
+                          div={{ className: "col no-padding-left-right" }}
                           label={{
                             fieldName: "card_check_number"
                           }}
@@ -586,7 +586,7 @@ class AddBillingForm extends Component {
                       {/* Check */}
                       <div className="row secondary-box-container">
                         <div
-                          className="customCheckbox col-lg-3"
+                          className="customCheckbox col-lg-2"
                           style={{ border: "none", marginTop: "28px" }}
                         >
                           <label
@@ -640,7 +640,7 @@ class AddBillingForm extends Component {
                         />
 
                         <AlagehFormGroup
-                          div={{ className: "col" }}
+                          div={{ className: "col no-padding-left-right" }}
                           label={{
                             fieldName: "card_check_number"
                           }}

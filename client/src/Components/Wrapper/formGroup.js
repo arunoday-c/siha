@@ -216,16 +216,19 @@ export default class FormGroup extends PureComponent {
           ...this.props.textBox.card
         };
         return (
-          <Cleave
-            options={_options}
-            name={this.props.textBox.name}
-            value={_value}
-            {..._onChange}
-            {..._required}
-            {..._disabled}
-            {...this.props.textBox.others}
-            {..._class}
-          />
+          <React.Fragment>
+            <Cleave
+              options={_options}
+              name={this.props.textBox.name}
+              value={_value}
+              {..._onChange}
+              {..._required}
+              {..._disabled}
+              {...this.props.textBox.others}
+              {..._class}
+            />
+            <span className="creditCardIcon" />
+          </React.Fragment>
         );
       } else {
         const _isMultiline =
