@@ -81,12 +81,12 @@ class AppointmentAr extends PureComponent {
         _time < moment(new Date()).format("HHmm"))
     ) {
       swalMessage({
-        title: "Cannot cancel previous appointments",
+        title: "لا يمكن إلغاء المواعيد السابقة",
         type: "error"
       });
     } else {
       swal({
-        title: "Cancel Appointment for " + row.patient_name + "?",
+        title: "إلغاء الموعد" + row.patient_name + "?",
         type: "warning",
         showCancelButton: true,
         confirmButtonText: "Yes!",
@@ -106,7 +106,7 @@ class AppointmentAr extends PureComponent {
             onSuccess: response => {
               if (response.data.success) {
                 swalMessage({
-                  title: "Record cancelled successfully . .",
+                  title: "سجل ملغى بنجاح",
                   type: "success"
                 });
               }
@@ -116,7 +116,7 @@ class AppointmentAr extends PureComponent {
           });
         } else {
           swalMessage({
-            title: "Not cancelled",
+            title: "غير ملغى",
             type: "error"
           });
         }
@@ -128,7 +128,7 @@ class AppointmentAr extends PureComponent {
     // Display fallback UI
     this.setState({ hasError: true });
     // You can also log the error to an error reporting service
-    console.error("Appointment :", error.toString());
+    // console.error("Appointment :", error.toString());
     //logErrorToMyService(error, info);
   }
 
@@ -305,7 +305,7 @@ class AppointmentAr extends PureComponent {
                   } else {
                     this.clearSaveState();
                     swalMessage({
-                      title: "Appointment Created Successfully",
+                      title: "موعد إنشاء بنجاح",
                       type: "success"
                     });
                     this.setState({ showApt: false });
@@ -474,7 +474,7 @@ class AppointmentAr extends PureComponent {
               });
 
               swalMessage({
-                title: "No Schecule Available",
+                title: "لا يوجد جدول متاح",
                 type: "warning"
               });
             }
@@ -660,7 +660,7 @@ class AppointmentAr extends PureComponent {
         moment(new Date()).format("YYYYMMDD")
     ) {
       swalMessage({
-        title: "Can't edit past appointments",
+        title: "لا يمكن تعديل المواعيد الماضية",
         type: "error"
       });
     } else if (
@@ -668,7 +668,7 @@ class AppointmentAr extends PureComponent {
       patient.visit_created === "Y"
     ) {
       swalMessage({
-        title: "Visit already created, cannot edit the appointment",
+        title: "الزيارة التي تم إنشاؤها بالفعل ، لا يمكن تحرير الموعد",
         type: "warning"
       });
     } else {
@@ -723,7 +723,7 @@ class AppointmentAr extends PureComponent {
       alertTypeIcon: "warning",
       onSuccess: () => {
         swal({
-          title: "Are you Sure you want to Update Appointment?",
+          title: "هل أنت متأكد من أنك تريد تحديث موعد؟",
           type: "warning",
           showCancelButton: true,
           confirmButtonText: "Yes!",
@@ -743,8 +743,7 @@ class AppointmentAr extends PureComponent {
                 moment(new Date()).format("YYYYMMDD")
             ) {
               swalMessage({
-                title:
-                  "Only Patients with Today's appointments can be Checked In",
+                title: "يمكن فقط فحص المرضى الذين لديهم مواعيد اليوم",
                 type: "warning"
               });
             } else {
@@ -811,7 +810,7 @@ class AppointmentAr extends PureComponent {
                     } else {
                       this.clearSaveState();
                       swalMessage({
-                        title: "Appointment Updated Successfully",
+                        title: "تم تحديث الموعد بنجاح",
                         type: "success"
                       });
                       this.setState({ openPatEdit: false });
@@ -829,7 +828,7 @@ class AppointmentAr extends PureComponent {
             }
           } else {
             swalMessage({
-              title: "Not cancelled",
+              title: "غير ملغى",
               type: "error"
             });
           }
@@ -865,7 +864,7 @@ class AppointmentAr extends PureComponent {
         moment(new Date()).format("YYYYMMDD")
     ) {
       swalMessage({
-        title: "Can't create appointment for past time",
+        title: "لا يمكن إنشاء موعد للوقت الماضي",
         type: "error"
       });
       this.setState({
@@ -931,7 +930,7 @@ class AppointmentAr extends PureComponent {
         moment(new Date()).format("YYYYMMDD")
     ) {
       swalMessage({
-        title: "Cannot re-schedule past appointments",
+        title: "لا يمكن إعادة جدولة المواعيد الماضية",
         type: "error"
       });
       ev.preventDefault();
@@ -979,7 +978,7 @@ class AppointmentAr extends PureComponent {
         moment(new Date()).format("YYYYMMDD")
     ) {
       swalMessage({
-        title: "Cannot create schedule for past time",
+        title: "لا يمكن إنشاء جدول زمني للوقت الماضي",
         type: "error"
       });
     } else {
@@ -1001,7 +1000,7 @@ class AppointmentAr extends PureComponent {
         },
         () => {
           swal({
-            title: "Are you sure you want to Re-Schedule the appointment?",
+            title: "هل أنت متأكد من أنك تريد إعادة جدولة الموعد؟",
             type: "warning",
             showCancelButton: true,
             confirmButtonText: "Yes!",
@@ -1048,7 +1047,7 @@ class AppointmentAr extends PureComponent {
                   if (response.data.success) {
                     this.clearSaveState();
                     swalMessage({
-                      title: "Appointment Updated Successfully",
+                      title: "تم تحديث الموعد بنجاح",
                       type: "success"
                     });
                     this.setState({ openPatEdit: false });
@@ -1058,14 +1057,14 @@ class AppointmentAr extends PureComponent {
                 onFailure: error => {
                   swalMessage({
                     title:
-                      "Appointment already present for the selected time cannot re-schedule",
+                      "المواعيد الموجودة بالفعل للوقت المحدد لا يمكن إعادة جدولة",
                     type: "error"
                   });
                 }
               });
             } else {
               swalMessage({
-                title: "Re-Schedule Cancelled",
+                title: "إعادة جدولة ملغاة",
                 type: "error"
               });
             }
@@ -1506,7 +1505,7 @@ class AppointmentAr extends PureComponent {
     return (
       <div className="appointment doctorApp-Ar">
         {this.state.hasError ? (
-          "OOPS Something went wrong , please refresh the page"
+          "حدث خطأ. يرجى تحديث الصفحة"
         ) : (
           <div id="appointment-module">
             {/* Edit Pop up Start */}
@@ -1517,7 +1516,11 @@ class AppointmentAr extends PureComponent {
                 data-validate="editApptDiv"
               >
                 <div className="popupHeader">
-                  <h4>Edit Appointment</h4>
+                  <h4>
+                    {getLabelFromLanguage({
+                      fieldName: "editAppo"
+                    })}
+                  </h4>
                 </div>
                 <div className="popupInner">
                   <div className="col-lg-12">
@@ -1527,7 +1530,7 @@ class AppointmentAr extends PureComponent {
                           <AlagehAutoComplete
                             div={{ className: "col" }}
                             label={{
-                              forceLabel: "Select Status",
+                              fieldName: "selectStatus",
                               isImp: true
                             }}
                             selector={{
@@ -1545,7 +1548,7 @@ class AppointmentAr extends PureComponent {
                           <AlgaehDateHandler
                             div={{ className: "col" }}
                             label={{
-                              forceLabel: "Appointment Date",
+                              fieldName: "appDate",
                               isImp: true
                             }}
                             textBox={{
@@ -1576,7 +1579,7 @@ class AppointmentAr extends PureComponent {
                           <AlagehFormGroup
                             div={{ className: "col" }}
                             label={{
-                              forceLabel: "Appointment Time"
+                              fieldName: "appTime"
                             }}
                             textBox={{
                               className: "txt-fld",
@@ -1594,7 +1597,7 @@ class AppointmentAr extends PureComponent {
                           <AlagehAutoComplete
                             div={{ className: "col" }}
                             label={{
-                              forceLabel: "Select Slots",
+                              fieldName: "selectSlot",
                               isImp: true
                             }}
                             selector={{
@@ -1625,7 +1628,7 @@ class AppointmentAr extends PureComponent {
                               className: "col-2 margin-top-15 mandatory"
                             }}
                             label={{
-                              forceLabel: "Title",
+                              fieldName: "title_id",
                               isImp: true
                             }}
                             selector={{
@@ -1649,7 +1652,7 @@ class AppointmentAr extends PureComponent {
                               className: "col margin-top-15"
                             }}
                             label={{
-                              forceLabel: "Patient Name",
+                              fieldName: "full_name",
                               isImp: true
                             }}
                             textBox={{
@@ -1669,7 +1672,7 @@ class AppointmentAr extends PureComponent {
                               className: "col margin-top-15 arabic-txt-fld"
                             }}
                             label={{
-                              forceLabel: "Patient Name Arabic",
+                              fieldName: "arabic_name",
                               isImp: true
                             }}
                             textBox={{
@@ -1692,7 +1695,7 @@ class AppointmentAr extends PureComponent {
                               className: "col margin-top-15"
                             }}
                             label={{
-                              forceLabel: "Date of Birth",
+                              fieldName: "date_of_birth",
                               isImp: true
                             }}
                             textBox={{
@@ -1725,7 +1728,7 @@ class AppointmentAr extends PureComponent {
                               className: "col margin-top-15"
                             }}
                             label={{
-                              forceLabel: "Age",
+                              fieldName: "age",
                               isImp: true
                             }}
                             textBox={{
@@ -1747,7 +1750,7 @@ class AppointmentAr extends PureComponent {
                               className: "col margin-top-15"
                             }}
                             label={{
-                              forceLabel: "Gender",
+                              fieldName: "gender",
                               isImp: true
                             }}
                             selector={{
@@ -1773,7 +1776,7 @@ class AppointmentAr extends PureComponent {
                               className: "col margin-top-15"
                             }}
                             label={{
-                              forceLabel: "Mobile No.",
+                              fieldName: "contact_number",
                               isImp: true
                             }}
                             textBox={{
@@ -1795,7 +1798,7 @@ class AppointmentAr extends PureComponent {
                               className: "col margin-top-15"
                             }}
                             label={{
-                              forceLabel: "Email Address",
+                              fieldName: "email",
                               isImp: false
                             }}
                             textBox={{
@@ -1816,7 +1819,7 @@ class AppointmentAr extends PureComponent {
                           <AlagehFormGroup
                             div={{ className: "col margin-top-15" }}
                             label={{
-                              forceLabel: "Remarks",
+                              fieldName: "remarks",
                               isImp: false
                             }}
                             textBox={{
@@ -1843,14 +1846,18 @@ class AppointmentAr extends PureComponent {
                       type="button"
                       className="btn btn-primary"
                     >
-                      Update
+                      {getLabelFromLanguage({
+                        fieldName: "btn-update"
+                      })}
                     </button>
                     <button
                       onClick={this.handleClose.bind(this)}
                       type="button"
                       className="btn btn-other"
                     >
-                      Close
+                      {getLabelFromLanguage({
+                        fieldName: "btn-close"
+                      })}
                     </button>
                   </div>
                 </div>
@@ -1866,7 +1873,11 @@ class AppointmentAr extends PureComponent {
                 data-validate="addApptDiv"
               >
                 <div className="popupHeader">
-                  <h4>Book an Appointment</h4>
+                  <h4>
+                    {getLabelFromLanguage({
+                      fieldName: "bookAppo"
+                    })}
+                  </h4>
                 </div>
                 <div className="popupInner">
                   <div className="col-lg-12">
@@ -1876,7 +1887,7 @@ class AppointmentAr extends PureComponent {
                           <div className="col margin-top-15">
                             <AlgaehLabel
                               label={{
-                                forceLabel: "Appo. Date"
+                                fieldName: "appoDate"
                               }}
                             />
                             <h6>
@@ -1889,7 +1900,7 @@ class AppointmentAr extends PureComponent {
                           <div className="col margin-top-15">
                             <AlgaehLabel
                               label={{
-                                forceLabel: "Appo. Time"
+                                fieldName: "appoTime"
                               }}
                             />
                             <h6>{this.state.apptFromTime}</h6>
@@ -1897,7 +1908,7 @@ class AppointmentAr extends PureComponent {
                           <AlagehFormGroup
                             div={{ className: "col  margin-top-15 " }}
                             label={{
-                              forceLabel: "Patient Code",
+                              fieldName: "patient_code",
                               isImp: false
                             }}
                             textBox={{
@@ -1929,7 +1940,7 @@ class AppointmentAr extends PureComponent {
                               className: "col margin-top-15 mandatory"
                             }}
                             label={{
-                              forceLabel: "Select Slots",
+                              fieldName: "selectSlot",
                               isImp: true
                             }}
                             selector={{
@@ -1960,7 +1971,7 @@ class AppointmentAr extends PureComponent {
                               className: "col margin-top-15 mandatory"
                             }}
                             label={{
-                              forceLabel: "Title",
+                              fieldName: "title_id",
                               isImp: true
                             }}
                             selector={{
@@ -1981,7 +1992,7 @@ class AppointmentAr extends PureComponent {
                               className: "col margin-top-15 mandatory"
                             }}
                             label={{
-                              forceLabel: "Patient Name",
+                              fieldName: "full_name",
                               isImp: true
                             }}
                             textBox={{
@@ -1999,7 +2010,7 @@ class AppointmentAr extends PureComponent {
                                 "col margin-top-15 mandatory arabic-txt-fld"
                             }}
                             label={{
-                              forceLabel: "Patient Name Arabic",
+                              fieldName: "arabic_name",
                               isImp: true
                             }}
                             textBox={{
@@ -2019,7 +2030,7 @@ class AppointmentAr extends PureComponent {
                               className: "col margin-top-15 mandatory"
                             }}
                             label={{
-                              forceLabel: "Date of Birth",
+                              fieldName: "date_of_birth",
                               isImp: true
                             }}
                             textBox={{
@@ -2049,7 +2060,7 @@ class AppointmentAr extends PureComponent {
                               className: "col margin-top-15 mandatory"
                             }}
                             label={{
-                              forceLabel: "Age",
+                              fieldName: "age",
                               isImp: true
                             }}
                             textBox={{
@@ -2070,7 +2081,7 @@ class AppointmentAr extends PureComponent {
                               className: "col margin-top-15 mandatory"
                             }}
                             label={{
-                              forceLabel: "Gender",
+                              fieldName: "gender",
                               isImp: true
                             }}
                             selector={{
@@ -2091,7 +2102,7 @@ class AppointmentAr extends PureComponent {
                               className: "col margin-top-15 mandatory"
                             }}
                             label={{
-                              forceLabel: "Select Status",
+                              fieldName: "selectStatus",
                               isImp: true
                             }}
                             selector={{
@@ -2114,7 +2125,7 @@ class AppointmentAr extends PureComponent {
                               className: "col margin-top-15 mandatory"
                             }}
                             label={{
-                              forceLabel: "Mobile No.",
+                              fieldName: "contact_number",
                               isImp: true
                             }}
                             textBox={{
@@ -2135,7 +2146,7 @@ class AppointmentAr extends PureComponent {
                               className: "col margin-top-15"
                             }}
                             label={{
-                              forceLabel: "Email Address",
+                              fieldName: "email",
                               isImp: false
                             }}
                             textBox={{
@@ -2153,7 +2164,7 @@ class AppointmentAr extends PureComponent {
                           <AlagehFormGroup
                             div={{ className: "col margin-top-15" }}
                             label={{
-                              forceLabel: "Remarks",
+                              fieldName: "remarks",
                               isImp: false
                             }}
                             textBox={{
@@ -2177,14 +2188,18 @@ class AppointmentAr extends PureComponent {
                       type="button"
                       className="btn btn-primary"
                     >
-                      Save
+                      {getLabelFromLanguage({
+                        fieldName: "btn_save"
+                      })}
                     </button>
                     <button
                       onClick={this.handleClose.bind(this)}
                       type="button"
                       className="btn btn-other"
                     >
-                      Close
+                      {getLabelFromLanguage({
+                        fieldName: "btn_close"
+                      })}
                     </button>
                   </div>
                 </div>
@@ -2210,7 +2225,9 @@ class AppointmentAr extends PureComponent {
                       }}
                       className="btn btn-default btn-sm  todayBtn"
                     >
-                      Today
+                      {getLabelFromLanguage({
+                        fieldName: "today"
+                      })}
                     </button>
                   </div>
                 </div>
@@ -2344,7 +2361,7 @@ class AppointmentAr extends PureComponent {
                                 {getLabelFromLanguage({ fieldName: "booked" })}
                               </th>
                               <th className="tbl-subHdg">
-                                {getLabelFromLanguage({ fieldName: "standby" })}
+                                {getLabelFromLanguage({ fieldName: "standBy" })}
                               </th>
                             </tr>
                           </thead>

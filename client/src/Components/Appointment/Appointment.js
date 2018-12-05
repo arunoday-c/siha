@@ -10,7 +10,8 @@ import {
 import {
   setGlobal,
   AlgaehValidation,
-  SetBulkState
+  SetBulkState,
+  getLabelFromLanguage
 } from "../../utils/GlobalFunctions";
 import Modal from "@material-ui/core/Modal";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
@@ -473,7 +474,7 @@ class Appointment extends PureComponent {
               });
 
               swalMessage({
-                title: "No Schecule Available",
+                title: "No Schedule Available",
                 type: "warning"
               });
             }
@@ -1511,12 +1512,16 @@ class Appointment extends PureComponent {
             {/* Edit Pop up Start */}
             <Modal open={this.state.openPatEdit}>
               <div
-                className="algaeh-modal"
+                className="algaeh-modal-Ar"
                 style={{ width: "55vw" }}
                 data-validate="editApptDiv"
               >
                 <div className="popupHeader">
-                  <h4>Edit Appointment</h4>
+                  <h4>
+                    {getLabelFromLanguage({
+                      fieldName: "editAppo"
+                    })}
+                  </h4>
                 </div>
                 <div className="popupInner">
                   <div className="col-lg-12">
@@ -1526,7 +1531,7 @@ class Appointment extends PureComponent {
                           <AlagehAutoComplete
                             div={{ className: "col" }}
                             label={{
-                              forceLabel: "Select Status",
+                              fieldName: "selectStatus",
                               isImp: true
                             }}
                             selector={{
@@ -1544,7 +1549,7 @@ class Appointment extends PureComponent {
                           <AlgaehDateHandler
                             div={{ className: "col" }}
                             label={{
-                              forceLabel: "Appointment Date",
+                              fieldName: "appDate",
                               isImp: true
                             }}
                             textBox={{
@@ -1575,7 +1580,7 @@ class Appointment extends PureComponent {
                           <AlagehFormGroup
                             div={{ className: "col" }}
                             label={{
-                              forceLabel: "Appointment Time"
+                              fieldName: "appTime"
                             }}
                             textBox={{
                               className: "txt-fld",
@@ -1593,7 +1598,7 @@ class Appointment extends PureComponent {
                           <AlagehAutoComplete
                             div={{ className: "col" }}
                             label={{
-                              forceLabel: "Select Slots",
+                              fieldName: "selectSlot",
                               isImp: true
                             }}
                             selector={{
@@ -1624,7 +1629,7 @@ class Appointment extends PureComponent {
                               className: "col-2 margin-top-15 mandatory"
                             }}
                             label={{
-                              forceLabel: "Title",
+                              fieldName: "title_id",
                               isImp: true
                             }}
                             selector={{
@@ -1648,7 +1653,7 @@ class Appointment extends PureComponent {
                               className: "col margin-top-15"
                             }}
                             label={{
-                              forceLabel: "Patient Name",
+                              fieldName: "full_name",
                               isImp: true
                             }}
                             textBox={{
@@ -1668,7 +1673,7 @@ class Appointment extends PureComponent {
                               className: "col margin-top-15 arabic-txt-fld"
                             }}
                             label={{
-                              forceLabel: "Patient Name Arabic",
+                              fieldName: "arabic_name",
                               isImp: true
                             }}
                             textBox={{
@@ -1691,7 +1696,7 @@ class Appointment extends PureComponent {
                               className: "col margin-top-15"
                             }}
                             label={{
-                              forceLabel: "Date of Birth",
+                              fieldName: "date_of_birth",
                               isImp: true
                             }}
                             textBox={{
@@ -1724,7 +1729,7 @@ class Appointment extends PureComponent {
                               className: "col margin-top-15"
                             }}
                             label={{
-                              forceLabel: "Age",
+                              fieldName: "age",
                               isImp: true
                             }}
                             textBox={{
@@ -1746,7 +1751,7 @@ class Appointment extends PureComponent {
                               className: "col margin-top-15"
                             }}
                             label={{
-                              forceLabel: "Gender",
+                              fieldName: "gender",
                               isImp: true
                             }}
                             selector={{
@@ -1772,7 +1777,7 @@ class Appointment extends PureComponent {
                               className: "col margin-top-15"
                             }}
                             label={{
-                              forceLabel: "Mobile No.",
+                              fieldName: "contact_number",
                               isImp: true
                             }}
                             textBox={{
@@ -1794,7 +1799,7 @@ class Appointment extends PureComponent {
                               className: "col margin-top-15"
                             }}
                             label={{
-                              forceLabel: "Email Address",
+                              fieldName: "email",
                               isImp: false
                             }}
                             textBox={{
@@ -1815,7 +1820,7 @@ class Appointment extends PureComponent {
                           <AlagehFormGroup
                             div={{ className: "col margin-top-15" }}
                             label={{
-                              forceLabel: "Remarks",
+                              fieldName: "remarks",
                               isImp: false
                             }}
                             textBox={{
@@ -1842,14 +1847,18 @@ class Appointment extends PureComponent {
                       type="button"
                       className="btn btn-primary"
                     >
-                      Update
+                      {getLabelFromLanguage({
+                        fieldName: "btn-update"
+                      })}
                     </button>
                     <button
                       onClick={this.handleClose.bind(this)}
                       type="button"
                       className="btn btn-other"
                     >
-                      Close
+                      {getLabelFromLanguage({
+                        fieldName: "btn-close"
+                      })}
                     </button>
                   </div>
                 </div>
@@ -1860,12 +1869,16 @@ class Appointment extends PureComponent {
             {/* Add Pop up start */}
             <Modal open={this.state.showApt}>
               <div
-                className="algaeh-modal"
+                className="algaeh-modal-Ar"
                 style={{ width: "55vw" }}
                 data-validate="addApptDiv"
               >
                 <div className="popupHeader">
-                  <h4>Book an Appointment</h4>
+                  <h4>
+                    {getLabelFromLanguage({
+                      fieldName: "bookAppo"
+                    })}
+                  </h4>
                 </div>
                 <div className="popupInner">
                   <div className="col-lg-12">
@@ -1875,7 +1888,7 @@ class Appointment extends PureComponent {
                           <div className="col margin-top-15">
                             <AlgaehLabel
                               label={{
-                                forceLabel: "Appo. Date"
+                                fieldName: "appoDate"
                               }}
                             />
                             <h6>
@@ -1888,7 +1901,7 @@ class Appointment extends PureComponent {
                           <div className="col margin-top-15">
                             <AlgaehLabel
                               label={{
-                                forceLabel: "Appo. Time"
+                                fieldName: "appoTime"
                               }}
                             />
                             <h6>{this.state.apptFromTime}</h6>
@@ -1896,7 +1909,7 @@ class Appointment extends PureComponent {
                           <AlagehFormGroup
                             div={{ className: "col  margin-top-15 " }}
                             label={{
-                              forceLabel: "Patient Code",
+                              fieldName: "patient_code",
                               isImp: false
                             }}
                             textBox={{
@@ -1928,7 +1941,7 @@ class Appointment extends PureComponent {
                               className: "col margin-top-15 mandatory"
                             }}
                             label={{
-                              forceLabel: "Select Slots",
+                              fieldName: "selectSlot",
                               isImp: true
                             }}
                             selector={{
@@ -1959,7 +1972,7 @@ class Appointment extends PureComponent {
                               className: "col margin-top-15 mandatory"
                             }}
                             label={{
-                              forceLabel: "Title",
+                              fieldName: "title_id",
                               isImp: true
                             }}
                             selector={{
@@ -1980,7 +1993,7 @@ class Appointment extends PureComponent {
                               className: "col margin-top-15 mandatory"
                             }}
                             label={{
-                              forceLabel: "Patient Name",
+                              fieldName: "full_name",
                               isImp: true
                             }}
                             textBox={{
@@ -1998,7 +2011,7 @@ class Appointment extends PureComponent {
                                 "col margin-top-15 mandatory arabic-txt-fld"
                             }}
                             label={{
-                              forceLabel: "Patient Name Arabic",
+                              fieldName: "arabic_name",
                               isImp: true
                             }}
                             textBox={{
@@ -2018,7 +2031,7 @@ class Appointment extends PureComponent {
                               className: "col margin-top-15 mandatory"
                             }}
                             label={{
-                              forceLabel: "Date of Birth",
+                              fieldName: "date_of_birth",
                               isImp: true
                             }}
                             textBox={{
@@ -2048,7 +2061,7 @@ class Appointment extends PureComponent {
                               className: "col margin-top-15 mandatory"
                             }}
                             label={{
-                              forceLabel: "Age",
+                              fieldName: "age",
                               isImp: true
                             }}
                             textBox={{
@@ -2069,7 +2082,7 @@ class Appointment extends PureComponent {
                               className: "col margin-top-15 mandatory"
                             }}
                             label={{
-                              forceLabel: "Gender",
+                              fieldName: "gender",
                               isImp: true
                             }}
                             selector={{
@@ -2090,7 +2103,7 @@ class Appointment extends PureComponent {
                               className: "col margin-top-15 mandatory"
                             }}
                             label={{
-                              forceLabel: "Select Status",
+                              fieldName: "selectStatus",
                               isImp: true
                             }}
                             selector={{
@@ -2113,7 +2126,7 @@ class Appointment extends PureComponent {
                               className: "col margin-top-15 mandatory"
                             }}
                             label={{
-                              forceLabel: "Mobile No.",
+                              fieldName: "contact_number",
                               isImp: true
                             }}
                             textBox={{
@@ -2134,7 +2147,7 @@ class Appointment extends PureComponent {
                               className: "col margin-top-15"
                             }}
                             label={{
-                              forceLabel: "Email Address",
+                              fieldName: "email",
                               isImp: false
                             }}
                             textBox={{
@@ -2152,7 +2165,7 @@ class Appointment extends PureComponent {
                           <AlagehFormGroup
                             div={{ className: "col margin-top-15" }}
                             label={{
-                              forceLabel: "Remarks",
+                              fieldName: "remarks",
                               isImp: false
                             }}
                             textBox={{
@@ -2176,14 +2189,18 @@ class Appointment extends PureComponent {
                       type="button"
                       className="btn btn-primary"
                     >
-                      Save
+                      {getLabelFromLanguage({
+                        fieldName: "btn_save"
+                      })}
                     </button>
                     <button
                       onClick={this.handleClose.bind(this)}
                       type="button"
                       className="btn btn-other"
                     >
-                      Close
+                      {getLabelFromLanguage({
+                        fieldName: "btn_close"
+                      })}
                     </button>
                   </div>
                 </div>
@@ -2209,7 +2226,9 @@ class Appointment extends PureComponent {
                       }}
                       className="btn btn-default btn-sm  todayBtn"
                     >
-                      Today
+                      {getLabelFromLanguage({
+                        fieldName: "today"
+                      })}
                     </button>
                   </div>
                 </div>
@@ -2249,7 +2268,7 @@ class Appointment extends PureComponent {
               <AlagehAutoComplete
                 div={{ className: "col-lg-3" }}
                 label={{
-                  forceLabel: "Filter by Doctor"
+                  fieldName: "filterbyDoctor"
                 }}
                 selector={{
                   name: "provider_id",
@@ -2276,7 +2295,7 @@ class Appointment extends PureComponent {
                   onClick={this.getAppointmentSchedule.bind(this)}
                   className="btn btn-primary"
                 >
-                  Load
+                  {getLabelFromLanguage({ fieldName: "loadData" })}
                 </button>
               </div>
             </div>
@@ -2287,7 +2306,9 @@ class Appointment extends PureComponent {
               {/* Portlet Top Bar Start */}
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">Doctors Availability</h3>
+                  <h3 className="caption-subject">
+                    {getLabelFromLanguage({ fieldName: "doctorsAvailability" })}
+                  </h3>
                 </div>
                 <div className="actions">
                   <ul className="ul-legend">
@@ -2326,14 +2347,23 @@ class Appointment extends PureComponent {
                                 <p>
                                   <span>{data.sub_department_name}</span>
                                   <span>{data.clinic_name}</span>
-                                  <span>Room No: {data.room_name}</span>
+                                  <span>
+                                    {getLabelFromLanguage({
+                                      fieldName: "roomNo"
+                                    })}
+                                    : {data.room_name}
+                                  </span>
                                 </p>
                               </th>
                             </tr>
                             <tr>
                               {/* <td className="tg-baqh"><span class="dynSlot">09:00 AM</span><i onClick={this.showModal.bind(this)} className="fas fa-plus"/></td> */}
-                              <th className="tbl-subHdg">BOOKED</th>
-                              <th className="tbl-subHdg">STANDBY</th>
+                              <th className="tbl-subHdg">
+                                {getLabelFromLanguage({ fieldName: "booked" })}
+                              </th>
+                              <th className="tbl-subHdg">
+                                {getLabelFromLanguage({ fieldName: "standby" })}
+                              </th>
                             </tr>
                           </thead>
                           {data.modified === "L" ? (
@@ -2341,7 +2371,9 @@ class Appointment extends PureComponent {
                               <tr>
                                 <td>
                                   <span className="doctorLeaveCntr">
-                                    Doctor On Leave
+                                    {getLabelFromLanguage({
+                                      fieldName: "doctorLeave"
+                                    })}
                                   </span>
                                 </td>
                               </tr>
@@ -2353,7 +2385,7 @@ class Appointment extends PureComponent {
                       ))
                     ) : (
                       <span className="noDoctor">
-                        No Doctors available for the selected criteria
+                        {getLabelFromLanguage({ fieldName: "noDoctorAvail" })}
                       </span>
                     )}
                   </div>
