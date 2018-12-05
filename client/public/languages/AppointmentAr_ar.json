@@ -1,3 +1,11 @@
 {
-  "department_name": "اسم القسم"
+  "department_name": "اسم القسم",
+  "filterbyDoctor": "تصفية حسب الطبيب",
+  "loadData": "تحميل البيانات",
+  "doctorsAvailability": "توافر الأطباء",
+  "roomNo": "رقم الغرفة",
+  "booked": "حجز",
+  "StandBy": "تعليق",
+  "doctorLeave": "طبيب في إجازة",
+  "noDoctorAvail": "لا يوجد أطباء متاحون للمعايير المختارة"
 }

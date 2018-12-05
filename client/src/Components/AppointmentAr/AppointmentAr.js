@@ -10,7 +10,8 @@ import {
 import {
   setGlobal,
   AlgaehValidation,
-  SetBulkState
+  SetBulkState,
+  getLabelFromLanguage
 } from "../../utils/GlobalFunctions";
 import Modal from "@material-ui/core/Modal";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
@@ -1503,7 +1504,7 @@ class AppointmentAr extends PureComponent {
 
   render() {
     return (
-      <div className="appointment">
+      <div className="appointment doctorApp-Ar">
         {this.state.hasError ? (
           "OOPS Something went wrong , please refresh the page"
         ) : (
@@ -1511,7 +1512,7 @@ class AppointmentAr extends PureComponent {
             {/* Edit Pop up Start */}
             <Modal open={this.state.openPatEdit}>
               <div
-                className="algaeh-modal"
+                className="algaeh-modal-Ar"
                 style={{ width: "55vw" }}
                 data-validate="editApptDiv"
               >
@@ -1860,7 +1861,7 @@ class AppointmentAr extends PureComponent {
             {/* Add Pop up start */}
             <Modal open={this.state.showApt}>
               <div
-                className="algaeh-modal"
+                className="algaeh-modal-Ar"
                 style={{ width: "55vw" }}
                 data-validate="addApptDiv"
               >
@@ -2249,7 +2250,7 @@ class AppointmentAr extends PureComponent {
               <AlagehAutoComplete
                 div={{ className: "col-lg-3" }}
                 label={{
-                  forceLabel: "Filter by Doctor"
+                  fieldName: "filterbyDoctor"
                 }}
                 selector={{
                   name: "provider_id",
@@ -2276,7 +2277,7 @@ class AppointmentAr extends PureComponent {
                   onClick={this.getAppointmentSchedule.bind(this)}
                   className="btn btn-primary"
                 >
-                  Load
+                  {getLabelFromLanguage({ fieldName: "loadData" })}
                 </button>
               </div>
             </div>
@@ -2287,7 +2288,9 @@ class AppointmentAr extends PureComponent {
               {/* Portlet Top Bar Start */}
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">Doctors Availability</h3>
+                  <h3 className="caption-subject">
+                    {getLabelFromLanguage({ fieldName: "doctorsAvailability" })}
+                  </h3>
                 </div>
                 <div className="actions">
                   <ul className="ul-legend">
@@ -2326,14 +2329,23 @@ class AppointmentAr extends PureComponent {
                                 <p>
                                   <span>{data.sub_department_name}</span>
                                   <span>{data.clinic_name}</span>
-                                  <span>Room No: {data.room_name}</span>
+                                  <span>
+                                    {getLabelFromLanguage({
+                                      fieldName: "roomNo"
+                                    })}
+                                    : {data.room_name}
+                                  </span>
                                 </p>
                               </th>
                             </tr>
                             <tr>
                               {/* <td className="tg-baqh"><span class="dynSlot">09:00 AM</span><i onClick={this.showModal.bind(this)} className="fas fa-plus"/></td> */}
-                              <th className="tbl-subHdg">BOOKED</th>
-                              <th className="tbl-subHdg">STANDBY</th>
+                              <th className="tbl-subHdg">
+                                {getLabelFromLanguage({ fieldName: "booked" })}
+                              </th>
+                              <th className="tbl-subHdg">
+                                {getLabelFromLanguage({ fieldName: "standby" })}
+                              </th>
                             </tr>
                           </thead>
                           {data.modified === "L" ? (
@@ -2341,7 +2353,9 @@ class AppointmentAr extends PureComponent {
                               <tr>
                                 <td>
                                   <span className="doctorLeaveCntr">
-                                    Doctor On Leave
+                                    {getLabelFromLanguage({
+                                      fieldName: "doctorLeave"
+                                    })}
                                   </span>
                                 </td>
                               </tr>
@@ -2353,7 +2367,7 @@ class AppointmentAr extends PureComponent {
                       ))
                     ) : (
                       <span className="noDoctor">
-                        No Doctors available for the selected criteria
+                        {getLabelFromLanguage({ fieldName: "noDoctorAvail" })}
                       </span>
                     )}
                   </div>

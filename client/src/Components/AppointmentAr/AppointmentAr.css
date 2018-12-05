@@ -1,3 +1,41 @@
+.doctorApp-Ar {
+  direction: rtl;
+  text-align: right; }
+  .doctorApp-Ar .primary-details {
+    border-right: none;
+    border-left: 1px dashed #d3d3d3; }
+  .doctorApp-Ar label {
+    font-size: 0.8rem; }
+  .doctorApp-Ar .toggle-section .nav {
+    padding: 0;
+    right: auto; }
+  .doctorApp-Ar .showall {
+    left: 0;
+    right: auto; }
+  .doctorApp-Ar .clearall {
+    left: 20px;
+    right: auto; }
+  .doctorApp-Ar .print-area div {
+    float: left;
+    height: auto;
+    border-right: 1px solid #adaaaa;
+    border-left: 0; }
+  .doctorApp-Ar .print-area .dropdown-menu {
+    left: 0; }
+  .doctorApp-Ar .htpl-phase1-radio-btn {
+    margin-left: 5px; }
+  .doctorApp-Ar .customRadio .inline + .inline {
+    margin-right: 10px;
+    margin-left: 0px; }
+  .doctorApp-Ar .breadCrumb-Data .hdg_bredcrump {
+    background: url("./../../assets/images/breadcrump_border_Ar.png") no-repeat top left #fff; }
+  .doctorApp-Ar .breadCrumb-Data .spotlightSearchBox {
+    margin-right: 0; }
+  .doctorApp-Ar .breadCrumb-Data .spotlightSearchIconBox {
+    border-right: 1px solid #ced4d8;
+    border-left: none;
+    padding-right: 13px; }
+
 .appointment .appointment-outer-cntr {
   overflow-x: auto;
   overflow-y: hidden;
@@ -50,11 +88,13 @@
       .appointment .my-calendar .myDay_date button svg {
         height: 16px; }
     .appointment .my-calendar .myDay_date .todayBtn {
-      margin-left: 10px;
+      margin-right: 10px !important;
+      margin-left: 0;
       padding: 3px 10px;
       border: 1px solid white;
       background: none;
-      color: #fff; }
+      color: #fff;
+      margin-bottom: 2px; }
     .appointment .my-calendar .myDay_date .todayBtn:hover {
       background: #fff;
       color: #34b8bc; }
@@ -89,6 +129,14 @@
     background: #3aa4a9; }
   .appointment .my-calendar .CurrentDate {
     border-top: 2px solid yellow !important; }
+
+.appointment .portlet-title .caption {
+  float: none;
+  width: 25%; }
+
+.appointment .portlet-title .actions {
+  float: none;
+  width: 75%; }
 
 .appointment .tg {
   display: inline-block;
@@ -247,7 +295,8 @@
       top: 2px;
       left: 8px;
       font-size: 0.7rem;
-      color: #7d7d7d; }
+      color: #7d7d7d;
+      direction: ltr; }
     .appointment .tg tbody i.fa-plus {
       display: none;
       position: absolute;

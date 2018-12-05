@@ -1,3 +1,66 @@
+.doctorApp-Ar {
+  direction: rtl;
+  text-align: right;
+
+  .primary-details {
+    border-right: none;
+    border-left: 1px dashed #d3d3d3;
+  }
+  label {
+    font-size: 0.8rem;
+  }
+  .toggle-section {
+    .nav {
+      padding: 0;
+      right: auto;
+    }
+  }
+  .showall {
+    left: 0;
+    right: auto;
+  }
+  .clearall {
+    left: 20px;
+    right: auto;
+  }
+  .print-area div {
+    float: left;
+    height: auto;
+    border-right: 1px solid #adaaaa;
+    border-left: 0;
+  }
+  .print-area {
+    .dropdown-menu {
+      left: 0;
+    }
+  }
+
+  .htpl-phase1-radio-btn {
+    margin-left: 5px;
+  }
+  .customRadio .inline + .inline {
+    margin-right: 10px;
+    margin-left: 0px;
+  }
+
+  .breadCrumb-Data {
+    .hdg_bredcrump {
+      background: url("./../../assets/images/breadcrump_border_Ar.png")
+        no-repeat top left #fff;
+    }
+
+    .spotlightSearchBox {
+      margin-right: 0;
+    }
+
+    .spotlightSearchIconBox {
+      border-right: 1px solid rgb(206, 212, 216);
+      border-left: none;
+      padding-right: 13px;
+    }
+  }
+}
+
 .appointment {
   .appointment-outer-cntr {
     overflow-x: auto;
@@ -61,11 +124,13 @@
         }
       }
       .todayBtn {
-        margin-left: 10px;
+        margin-right: 10px !important;
+        margin-left: 0;
         padding: 3px 10px;
         border: 1px solid white;
         background: none;
         color: #fff;
+        margin-bottom: 2px;
       }
       .todayBtn:hover {
         background: #fff;
@@ -126,7 +191,16 @@
       border-top: 2px solid yellow !important;
     }
   }
-
+  .portlet-title {
+    .caption {
+      float: none;
+      width: 25%;
+    }
+    .actions {
+      float: none;
+      width: 75%;
+    }
+  }
   .tg {
     display: inline-block;
     margin-right: 5px;
@@ -322,6 +396,7 @@
         left: 8px;
         font-size: 0.7rem;
         color: #7d7d7d;
+        direction: ltr;
       }
       i.fa-plus {
         display: none;

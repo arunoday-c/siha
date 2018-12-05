@@ -140,5 +140,13 @@
   "card_number": "Card Number",
   "bill_date": "Bill Date",
   "bill_details": "Bill Details",
-  "patient_type": "Patient Type"
+  "patient_type": "Patient Type",
+  "filterbyDoctor": "Filter by Doctor",
+  "loadData": "Load",
+  "DoctorsAvailability": "Doctor Availability",
+  "RoomNo": "Room No.",
+  "booked": "Booked",
+  "StandBy": "Stand by",
+  "doctorLeave": "Doctor on Leave ",
+  "noDoctorAvail": "No Doctors available for the selected criteria"
 }
