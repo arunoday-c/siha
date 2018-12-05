@@ -14,6 +14,7 @@ import {
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import Enumerable from "linq";
+import moment from "moment";
 
 let teeth = [];
 let my_send_obj = {};
@@ -128,15 +129,6 @@ class Dental extends Component {
         10
       ),
       surface: e.currentTarget.innerText.toString()
-      // distal: e.currentTarget.innerText.toString() === "D" ? "Y" : "N",
-      // incisal: e.currentTarget.innerText.toString() === "I" ? "Y" : "N",
-      // occlusal: e.currentTarget.innerText.toString() === "O" ? "Y" : "N",
-      // mesial: e.currentTarget.innerText.toString() === "M" ? "Y" : "N",
-      // buccal: e.currentTarget.innerText.toString() === "B" ? "Y" : "N",
-      // labial: e.currentTarget.innerText.toString() === "L" ? "Y" : "N",
-      // cervical: e.currentTarget.innerText.toString() === "C" ? "Y" : "N",
-      // palatal: e.currentTarget.innerText.toString() === "P" ? "Y" : "N",
-      // lingual: e.currentTarget.innerText.toString() === "L" ? "Y" : "N"
     };
 
     let my_item = Enumerable.from(teeth)
@@ -175,7 +167,7 @@ class Dental extends Component {
     };
 
     my_send_obj.send_teeth = send_teeth;
-    console.log("Send Teeth", JSON.stringify(my_send_obj));
+    //console.log("Send Teeth", JSON.stringify(my_send_obj));
 
     this.setState(
       {
@@ -493,17 +485,11 @@ class Dental extends Component {
               displayTemplate: row => {
                 return (
                   <span>
-                    {row.distal === "Y"
-                      ? "D "
-                      : row.incisal === "Y"
-                      ? "I "
-                      : row.mesial === "Y"
-                      ? "M "
-                      : row.palatal === "Y"
-                      ? "P "
-                      : row.labial === "Y"
-                      ? "L "
-                      : null}
+                    {row.distal === "Y" ? "D " : ""}
+                    {row.incisal === "Y" ? "I " : ""}
+                    {row.mesial === "Y" ? "M " : ""}
+                    {row.palatal === "Y" ? "P " : ""}
+                    {row.labial === "Y" ? "L " : ""}
                   </span>
                 );
               }
@@ -511,12 +497,28 @@ class Dental extends Component {
             {
               fieldName: "scheduled_date",
               label: "Date",
-              disabled: true
+              displayTemplate: row => {
+                return (
+                  <span>{moment(row.scheduled_date).format("DD-MM-YYYY")}</span>
+                );
+              }
             },
             {
               fieldName: "treatment_status",
               label: "Status",
-              disabled: true
+              displayTemplate: row => {
+                return (
+                  <span>
+                    {row.treatment_status === "PL"
+                      ? "Planned"
+                      : row.treatment_status === "WIP"
+                      ? "Work in Progress"
+                      : row.treatment_status === "CP"
+                      ? "Completed"
+                      : null}
+                  </span>
+                );
+              }
             }
           ]}
           keyId="algaeh_app_screens_id"

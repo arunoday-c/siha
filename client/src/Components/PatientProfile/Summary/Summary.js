@@ -130,6 +130,7 @@ class Summary extends Component {
         ? this.props.patient_diagnosis
         : [];
 
+    debugger;
     let _pat_episode =
       Enumerable.from(this.state.patientEpisode).firstOrDefault() !== undefined
         ? Enumerable.from(this.state.patientEpisode).firstOrDefault()
@@ -141,13 +142,18 @@ class Summary extends Component {
           <div className="col-md-9 col-lg-9">
             <div className="bd-callout bd-callout-theme">
               <h6>Chief Complaints</h6>
-              <p>
-                Patient {_pat_episode.patient_name} {_pat_episode.gender} aged{" "}
-                {_pat_episode.age} Yrs Visited{" "}
-                {_pat_episode.sub_department_name} Department on{" "}
-                {_pat_episode.visit_date} for the following chief complaints {},
-                from {_pat_episode.onset_date}.
-              </p>
+              {_pat_episode.patient_name === undefined ? (
+                <p>Not recorded</p>
+              ) : (
+                <p>
+                  Patient {_pat_episode.patient_name} ,{_pat_episode.gender}{" "}
+                  aged {_pat_episode.age} Yrs Visited{" "}
+                  {_pat_episode.sub_department_name} Department on{" "}
+                  {_pat_episode.visit_date} for the chief complaint of{" "}
+                  {_pat_episode.chief_complaint}, from {_pat_episode.onset_date}
+                  .
+                </p>
+              )}
             </div>
 
             <div className="bd-callout bd-callout-theme">
