@@ -5,6 +5,7 @@ import {
   AlgaehDataGrid,
   AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 class Components extends Component {
   constructor(props) {
@@ -12,6 +13,75 @@ class Components extends Component {
     this.state = {
       screens: []
     };
+    this.getComponents();
+    this.getScreens();
+  }
+
+  getScreens() {
+    algaehApiCall({
+      uri: "/algaehMasters/getAlgaehScreens",
+      method: "GET",
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({
+            screens: response.data.records
+          });
+        }
+      },
+      onError: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
+  getComponents() {
+    algaehApiCall({
+      uri: "/algaehMasters/getAlgaehComponents",
+      method: "GET",
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({
+            components: response.data.records
+          });
+        }
+      },
+      onError: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  addComponents() {
+    algaehApiCall({
+      uri: "/algaehMasters/addAlgaehComponent",
+      method: "POST",
+      data: {
+        screen_id: this.state.screen_id,
+        component_code: this.state.component_code,
+        component_name: this.state.component_name
+      },
+      onSuccess: response => {
+        if (response.data.success) {
+          this.getComponents();
+          this.clearState();
+          swalMessage({
+            title: "Records Added Successfully",
+            type: "success"
+          });
+        }
+      },
+      onError: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   clearState() {
@@ -37,7 +107,6 @@ class Components extends Component {
     row.update();
   }
 
-  addComponents() {}
   deleteComponents() {}
   updateComponents() {}
 
@@ -54,11 +123,11 @@ class Components extends Component {
               selector={{
                 name: "screen_id",
                 className: "select-fld",
-                value: this.state.module_id,
+                value: this.state.screen_id,
                 dataSource: {
-                  textField: "name",
-                  valueField: "value",
-                  data: this.state.modules
+                  textField: "screen_name",
+                  valueField: "algaeh_app_screens_id",
+                  data: this.state.screens
                 },
                 onChange: this.dropDownHandle.bind(this)
               }}
@@ -73,7 +142,7 @@ class Components extends Component {
               textBox={{
                 className: "txt-fld",
                 name: "component_code",
-                value: this.state.screen_code,
+                value: this.state.component_code,
                 events: {
                   onChange: this.changeTexts.bind(this)
                 }
@@ -88,7 +157,7 @@ class Components extends Component {
               textBox={{
                 className: "txt-fld",
                 name: "component_name",
-                value: this.state.screen_name,
+                value: this.state.component_name,
                 events: {
                   onChange: this.changeTexts.bind(this)
                 }
@@ -113,8 +182,8 @@ class Components extends Component {
               datavalidate="data-validate='shiftDiv'"
               columns={[
                 {
-                  fieldName: "module_id",
-                  label: "Module",
+                  fieldName: "screen_id",
+                  label: "Screen",
                   disabled: true
                 },
                 {
@@ -129,7 +198,7 @@ class Components extends Component {
               ]}
               keyId="algaeh_d_module_id"
               dataSource={{
-                data: this.state.modules
+                data: this.state.components
               }}
               isEditable={true}
               paging={{ page: 0, rowsPerPage: 10 }}

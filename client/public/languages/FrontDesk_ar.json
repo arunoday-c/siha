@@ -166,5 +166,13 @@
   "payby_card": "الدفع عن طريق البطاقة",
   "payby_check": "الدفع عن طريق شيك",
   "NotGenerated": "غير منشأ",
-  "PastVisit": "الزيارة السابقة"
+  "PastVisit": "الزيارة السابقة",
+  "filterbyDoctor": "تصفية حسب الطبيب",
+  "loadData": "تحميل البيانات",
+  "doctorsAvailability": "توافر الأطباء",
+  "roomNo": "رقم الغرفة",
+  "booked": "حجز",
+  "StandBy": "تعليق",
+  "doctorLeave": "طبيب في إجازة",
+  "noDoctorAvail": "لا يوجد أطباء متاحون للمعايير المختارة"
 }

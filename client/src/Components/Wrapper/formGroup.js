@@ -20,7 +20,8 @@ export default class FormGroup extends PureComponent {
         decimalSeparator: ".",
         decimalScale: 2,
         allowNegative: true
-      }
+      },
+      cardIcon: "fas fa-credit-card"
     };
   }
 
@@ -80,7 +81,7 @@ export default class FormGroup extends PureComponent {
         options: {
           thousandSeparator: settings.thousand_separator,
           decimalSeparator: settings.decimal_separator,
-          decimalScale: parseInt(settings.decimal_places),
+          decimalScale: parseInt(settings.decimal_places, 10),
           allowNegative: true,
           ...this.props.textBox.decimal
         }
@@ -130,6 +131,36 @@ export default class FormGroup extends PureComponent {
       );
     } else {
       e.currentTarget.setCustomValidity(this.props.textBox.helperText);
+    }
+  }
+
+  cardTypeChangeHandler(type) {
+    switch (type) {
+      case "mastercard":
+        this.setState({ cardIcon: "fab fa-cc-mastercard animated fadeIn" });
+        break;
+      case "visa":
+        this.setState({ cardIcon: "fab fa-cc-visa animated fadeIn" });
+        break;
+      case "amex":
+        this.setState({ cardIcon: " fab fa-cc-amex animated fadeIn" });
+        break;
+      case "diners":
+        this.setState({ cardIcon: "fab fa-cc-diners-club animated fadeIn" });
+        break;
+      case "jcb":
+        this.setState({ cardIcon: "fab fa-cc-jcb animated fadeIn" });
+        break;
+
+      case "discover":
+        this.setState({ cardIcon: "fab fa-cc-discover animated fadeIn" });
+        break;
+      case "uatp":
+        this.setState({ cardIcon: "fab fa-uniregistry animated fadeIn" });
+        break;
+      default:
+        this.setState({ cardIcon: "fas fa-credit-card animated fadeIn" });
+        break;
     }
   }
 
@@ -213,6 +244,7 @@ export default class FormGroup extends PureComponent {
         const _options = {
           creditCard: true,
           delimiter: "-",
+          onCreditCardTypeChanged: this.cardTypeChangeHandler.bind(this),
           ...this.props.textBox.card
         };
         return (
@@ -227,7 +259,7 @@ export default class FormGroup extends PureComponent {
               {...this.props.textBox.others}
               {..._class}
             />
-            <span className="creditCardIcon" />
+            <span className={"creditCardIcon  " + this.state.cardIcon} />
           </React.Fragment>
         );
       } else {

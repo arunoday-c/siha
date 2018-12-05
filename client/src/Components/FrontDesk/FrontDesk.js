@@ -5,7 +5,9 @@ import { bindActionCreators } from "redux";
 
 import "./front_desk.css";
 import Appointment from "../Appointment/Appointment";
+import AppointmentAr from "../AppointmentAr/AppointmentAr";
 import RegistrationPatient from "../RegistrationPatient/RegistrationPatient";
+import RegistrationPatientAr from "../RegistrationPatientAr/RegistrationPatientAr";
 import { getCookie } from "../../utils/algaehApiCall";
 import { removeGlobal, setGlobal } from "../../utils/GlobalFunctions";
 import { AlgaehActions } from "../../actions/algaehActions";
@@ -13,8 +15,15 @@ import { AlgaehActions } from "../../actions/algaehActions";
 class FrontDesk extends Component {
   constructor(props) {
     super(props);
+    let prevLang = getCookie("Language");
     this.state = {
-      FD_Screen: getCookie("ScreenName").replace("/", "")
+      Language: prevLang,
+      FD_Screen:
+        prevLang === "ar"
+          ? getCookie("ScreenName").replace("/", "") +
+            prevLang.charAt(0).toUpperCase() +
+            prevLang.slice(1)
+          : getCookie("ScreenName").replace("/", "")
     };
     this.routeComponents = this.routeComponents.bind(this);
   }
@@ -32,9 +41,15 @@ class FrontDesk extends Component {
         mappingName: "employeeSerDetails"
       },
       afterSuccess: data => {
+        debugger;
         this.setState(
           {
-            FD_Screen: Window.global["FD-STD"],
+            FD_Screen:
+              this.state.Language === "ar"
+                ? Window.global["FD-STD"] +
+                  this.state.Language.charAt(0).toUpperCase() +
+                  this.state.Language.slice(1)
+                : Window.global["FD-STD"],
             patient_code: Window.global["appt-pat-code"],
             provider_id: Window.global["appt-provider-id"],
             sub_department_id: Window.global["appt-dept-id"],
@@ -64,10 +79,36 @@ class FrontDesk extends Component {
   }
 
   componentList() {
+    debugger;
     return {
       Appointment: <Appointment />,
+      AppointmentAr: <AppointmentAr />,
       RegistrationPatient: (
         <RegistrationPatient
+          patient_code={this.state.patient_code}
+          provider_id={this.state.provider_id}
+          sub_department_id={this.state.sub_department_id}
+          hims_f_patient_appointment_id={
+            this.state.hims_f_patient_appointment_id
+          }
+          patient_details={{
+            patient_name: this.state.patient_name,
+            arabic_patient_name: this.state.arabic_patient_name,
+            date_of_birth: this.state.date_of_birth,
+            patient_age: this.state.patient_age,
+            patient_gender: this.state.patient_gender,
+            patient_phone: this.state.patient_phone,
+            patient_email: this.state.patient_email,
+            title_id: this.state.title_id
+          }}
+          visit_type={10}
+          fromAppoinment={true}
+          hims_d_services_id={this.state.hims_d_services_id}
+        />
+      ),
+
+      RegistrationPatientAr: (
+        <RegistrationPatientAr
           patient_code={this.state.patient_code}
           provider_id={this.state.provider_id}
           sub_department_id={this.state.sub_department_id}
@@ -93,6 +134,7 @@ class FrontDesk extends Component {
   }
 
   changeDisplays() {
+    debugger;
     return this.componentList()[this.state.FD_Screen];
   }
 
@@ -107,7 +149,11 @@ class FrontDesk extends Component {
           />
           <button
             style={{
-              display: this.state.FD_Screen === "Appointment" ? "none" : "block"
+              display:
+                this.state.FD_Screen === "Appointment" ||
+                this.state.FD_Screen === "AppointmentAr"
+                  ? "none"
+                  : "block"
             }}
             className="btn btn-default bk-bn"
             onClick={() => {

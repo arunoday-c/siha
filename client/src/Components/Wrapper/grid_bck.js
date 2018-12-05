@@ -26,7 +26,7 @@ class DataGrid extends PureComponent {
   onTextHandleEditChange(e) {
     const data = [...this.state.data];
     const _element = e.currentTarget;
-    const _rowIndex = parseInt(_element.getAttribute("row-id"));
+    const _rowIndex = parseInt(_element.getAttribute("row-id"), 10);
     const _colIndex = _element.getAttribute("column-id");
     let _value = "";
     if (typeof data[_rowIndex][_colIndex] === "number")
@@ -295,20 +295,20 @@ class DataGrid extends PureComponent {
           this.props.actions === undefined
             ? true
             : this.props.actions.allowEdit !== undefined
-              ? this.props.actions.allowEdit
-              : true;
+            ? this.props.actions.allowEdit
+            : true;
         const _allowDeleteButton =
           this.props.actions === undefined
             ? true
             : this.props.actions.allowDelete !== undefined
-              ? this.props.actions.allowDelete
-              : true;
+            ? this.props.actions.allowDelete
+            : true;
         const _orientation =
           this.props.actions === undefined
             ? "left"
             : this.props.actions.position !== undefined
-              ? this.props.actions.position
-              : "left";
+            ? this.props.actions.position
+            : "left";
         if (
           this.props.isEditable !== undefined &&
           this.props.isEditable === true
