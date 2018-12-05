@@ -32,7 +32,7 @@ class Encounters extends Component {
     this.getPatientVitals(Window.global["mrd_patient"], visit_id);
 
     const general_info = Enumerable.from(this.state.patientEncounters)
-      .where(w => w.hims_f_patient_encounter_id === parseInt(enc_id))
+      .where(w => w.hims_f_patient_encounter_id === parseInt(enc_id, 10))
       .firstOrDefault();
 
     this.setState({

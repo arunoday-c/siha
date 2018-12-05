@@ -2,10 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-
-import AppBar from "@material-ui/core/AppBar";
 import Enumerable from "linq";
-
 import {
   AlagehFormGroup,
   AlgaehDataGrid,

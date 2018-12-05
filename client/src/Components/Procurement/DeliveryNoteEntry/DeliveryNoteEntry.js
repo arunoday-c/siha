@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-
-import AppBar from "@material-ui/core/AppBar";
 import "./DeliveryNoteEntry.css";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import DNItemList from "./DNItemList/DNItemList";

@@ -47,7 +47,7 @@ class DisPatientForm extends Component {
           {context => (
             <div className="hptl-phase1-display-patient-form">
               <div
-                className="row inner-top-search"
+                className="row inner-top-sear"
                 style={{ paddingTop: 10, paddingBottom: 10 }}
               >
                 {/* Patient code */}

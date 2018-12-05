@@ -341,7 +341,7 @@ class PhySchSetup extends Component {
 
     let docs = Enumerable.from(this.state.scheduleList)
       .where(
-        w => w.hims_d_appointment_schedule_header_id === parseInt(header_id)
+        w => w.hims_d_appointment_schedule_header_id === parseInt(header_id,10)
       )
       .firstOrDefault();
 

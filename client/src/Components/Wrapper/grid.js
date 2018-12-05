@@ -36,7 +36,7 @@ class DataGrid extends PureComponent {
     const data = [...this.state.data];
     const _element = e.currentTarget;
     const _row_ID = _element.getAttribute("row-id");
-    const _rowIndex = parseInt(_row_ID);
+    const _rowIndex = parseInt(_row_ID, 10);
     const _colIndex = _element.getAttribute("column-id");
     let _value = "";
     if (typeof data[_rowIndex][_colIndex] === "number")

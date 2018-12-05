@@ -5,7 +5,7 @@ import { bindActionCreators } from "redux";
 import moment from "moment";
 import { texthandle, countertexthandle } from "./AddReciptFormHandaler";
 import {
-  AlgaehDateHandler,
+  //AlgaehDateHandler,
   AlgaehLabel,
   AlagehFormGroup,
   AlagehAutoComplete

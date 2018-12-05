@@ -266,7 +266,7 @@ class AppointmentStatus extends Component {
     AlgaehValidation({
       alertTypeIcon: "warning",
       onSuccess: () => {
-        this.state.steps_list.includes(parseInt(this.state.steps))
+        this.state.steps_list.includes(parseInt(this.state.steps, 10))
           ? swalMessage({
               title:
                 "Order already exists please select a unique order number?",
