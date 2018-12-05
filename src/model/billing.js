@@ -207,7 +207,7 @@ let addBillData = (req, res, next) => {
             );
           }
 
-          req.billing_header_id = headerResult.insertId;
+          // req.billing_header_id = headerResult.insertId;
           debugLog("Billing Header ", headerResult.insertId);
           let newDtls = new LINQ(inputParam.billdetails)
             .Select(s => {
@@ -515,7 +515,7 @@ let addBill = (dataBase, req, res, callBack, isCommited, next) => {
                   headerResult.insertId != null &&
                   headerResult.insertId != ""
                 ) {
-                  req.billing_header_id = headerResult.insertId;
+                  // req.billing_header_id = headerResult.insertId;
                   let detailsInsert = [];
                   bulkInputArrayObject(inputParam.billdetails, detailsInsert, {
                     hims_f_billing_header_id: headerResult.insertId
@@ -904,7 +904,7 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
     patient_payable: 0,
     comapany_resp: 0,
     company_payble: 0,
-    sec_company: 0,
+    // sec_company: 0,
     sec_deductable_percentage: 0,
     sec_deductable_amount: 0,
     sec_company_res: 0,
@@ -1550,7 +1550,7 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                     patient_payable: 0,
                     comapany_resp: 0,
                     company_payble: 0,
-                    sec_company: 0,
+                    // sec_company: 0,
                     sec_deductable_percentage: 0,
                     sec_deductable_amount: 0,
                     sec_company_res: 0,

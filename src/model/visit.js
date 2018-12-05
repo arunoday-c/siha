@@ -68,12 +68,15 @@ let insertPatientVisitData = (req, res, next) => {
         inputParam.age_in_days = days;
       }
       debugFunction("2");
+
+      debugLog("internal Inside: ", existingExparyDate);
+      debugLog("internal Inside: ", currentPatientEpisodeNo);
+      debugLog("today: ", today);
       if (
         (existingExparyDate != null || existingExparyDate != undefined) &&
-        moment(existingExparyDate).format("YYYYMMDD") >
-          moment(new Date()).format("YYYYMMDD")
+        moment(existingExparyDate).format("YYYY-MM-DD") >= today
       ) {
-        debugFunction("2");
+        debugFunction("Inside");
         inputParam.visit_expiery_date = existingExparyDate;
         inputParam.episode_id = currentPatientEpisodeNo;
       }
@@ -190,6 +193,7 @@ VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?);",
               ).format("YYYY-MM-DD");
               currentPatientEpisodeNo = expResult[0]["episode_id"];
               debugLog("expResult Inside ", existingExparyDate);
+              debugLog("expResult Inside ", currentPatientEpisodeNo);
             }
             // req.body.episode_id = expResult[0]["episode_id"];
             let currentEpisodeNo = null;
