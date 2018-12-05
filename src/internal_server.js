@@ -1,4 +1,6 @@
 import http from "http";
+
+import compression from "compression";
 import express from "express";
 import bodyParser from "body-parser";
 import routes from "./routes";
@@ -17,15 +19,17 @@ import { decryption } from "./utils/cryptography";
 
 let app = express();
 const _port = keys.port;
+app.use(compression());
 if (process.env.NODE_ENV == "production") {
   console.log("Running prod...." + _port);
   console.log(process.env.NODE_ENV);
   app.use(express.static("client/build"));
 }
 
+// app.server = http.createServer(app);
+app.use(cors());
 app.server = http.createServer(app);
 
-app.use(cors());
 //parse application json
 app.use(
   bodyParser.json({
@@ -122,6 +126,7 @@ process.on("warning", warning => {
 });
 process.on("uncaughtException", error => {
   logger.log("error", error);
+  process.exit(1);
 });
 process.on("unhandledRejection", (reason, promise) => {
   logger.error("Unhandled rejection", { reason: reason, promise: promise });
