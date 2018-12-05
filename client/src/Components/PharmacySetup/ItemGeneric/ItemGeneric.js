@@ -203,6 +203,7 @@ class ItemGeneric extends Component {
                       : this.props.itemgeneric
                 }}
                 isEditable={true}
+                filter={true}
                 paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
                   onDelete: deleteItemGeneric.bind(this, this),

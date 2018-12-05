@@ -346,7 +346,8 @@ let getItemMaster = (req, res, next) => {
     db.getConnection((error, connection) => {
       connection.query(
         "select * FROM hims_d_item_master where record_status='A' AND" +
-          where.condition,
+          where.condition +
+          " order by hims_d_item_master_id;",
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -410,7 +411,8 @@ let getItemCategory = (req, res, next) => {
     db.getConnection((error, connection) => {
       connection.query(
         "select * FROM hims_d_item_category where record_status='A' AND" +
-          where.condition,
+          where.condition +
+          " order by hims_d_item_category_id desc;",
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -443,7 +445,8 @@ let getItemGeneric = (req, res, next) => {
     db.getConnection((error, connection) => {
       connection.query(
         "select * FROM hims_d_item_generic where record_status='A' AND" +
-          where.condition,
+          where.condition +
+          " order by hims_d_item_generic_id;",
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -476,7 +479,8 @@ let getItemGroup = (req, res, next) => {
     db.getConnection((error, connection) => {
       connection.query(
         "select * FROM hims_d_item_group where record_status='A' AND" +
-          where.condition,
+          where.condition +
+          " order by hims_d_item_group_id;",
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -509,7 +513,8 @@ let getPharmacyUom = (req, res, next) => {
     db.getConnection((error, connection) => {
       connection.query(
         "select * FROM hims_d_pharmacy_uom where record_status='A' AND " +
-          where.condition,
+          where.condition +
+          " order by hims_d_pharmacy_uom_id;",
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -542,7 +547,8 @@ let getPharmacyLocation = (req, res, next) => {
     db.getConnection((error, connection) => {
       connection.query(
         "select * FROM hims_d_pharmacy_location where record_status='A' AND" +
-          where.condition,
+          where.condition +
+          " order by hims_d_pharmacy_location_id;",
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -1034,7 +1040,8 @@ let getItemForm = (req, res, next) => {
     db.getConnection((error, connection) => {
       connection.query(
         "select * FROM hims_d_item_form where record_status='A' AND" +
-          where.condition,
+          where.condition +
+          " order by hims_d_item_form;",
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -1068,7 +1075,8 @@ let getItemStorage = (req, res, next) => {
     db.getConnection((error, connection) => {
       connection.query(
         "select * FROM hims_d_item_storage where record_status='A' AND" +
-          where.condition,
+          where.condition +
+          " order by hims_d_item_storage_id;",
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -1222,7 +1230,8 @@ let getLocationPermission = (req, res, next) => {
     db.getConnection((error, connection) => {
       connection.query(
         "select * FROM hims_m_location_permission where record_status='A' AND" +
-          where.condition,
+          where.condition +
+          " order by hims_m_location_permission_id;",
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import DisplayOPBilling from "../../BillDetails/BillDetails";
+import DisplayOPBilling from "../../BillDetailsAr/BillDetailsAr";
 import "./AddBillingForm.css";
 import "./../../../styles/site.css";
 import {

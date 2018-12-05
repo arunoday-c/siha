@@ -93,7 +93,8 @@ export default {
       Checkchecked: false,
       billdetail: true,
       ProcessInsure: true,
-      applydiscount: true
+      applydiscount: true,
+      billDetails: true
     };
     return output;
   }

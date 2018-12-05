@@ -422,10 +422,7 @@ class Dashboard extends Component {
       },
       afterSuccess: data => {
         if (data.length > 0) {
-          let CurrencyDetail = {
-            Symbol: data[0].currency_symbol,
-            Position: data[0].symbol_position
-          };
+          let CurrencyDetail = data[0];
           sessionStorage.setItem(
             "CurrencyDetail",
             JSON.stringify(CurrencyDetail)

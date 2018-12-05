@@ -28,6 +28,7 @@ import "./../../../../styles/site.css";
 
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { getLabelFromLanguage } from "../../../../utils/GlobalFunctions";
 
 class AddReciptForm extends Component {
   constructor(props) {
@@ -89,7 +90,7 @@ class AddReciptForm extends Component {
                     <h6>
                       {this.state.receipt_number
                         ? this.state.receipt_number
-                        : "Not Generated"}
+                        : "غير منشأ"}
                     </h6>
                   </div>
                   <div className="col-lg-3">
@@ -172,7 +173,9 @@ class AddReciptForm extends Component {
                         disabled={this.state.Billexists}
                       />
 
-                      <span style={{ fontSize: "0.8rem" }}>Pay by Cash</span>
+                      <span style={{ fontSize: "0.8rem" }}>
+                        {getLabelFromLanguage({ fieldName: "payby_cash" })}
+                      </span>
                     </label>
                   </div>
                   <AlagehFormGroup
@@ -219,7 +222,9 @@ class AddReciptForm extends Component {
                         onChange={checkcardhandaler.bind(this, this, context)}
                         disabled={this.state.Billexists}
                       />
-                      <span style={{ fontSize: "0.8rem" }}>Pay by Card</span>
+                      <span style={{ fontSize: "0.8rem" }}>
+                        {getLabelFromLanguage({ fieldName: "payby_card" })}
+                      </span>
                     </label>
                   </div>
 
@@ -299,7 +304,9 @@ class AddReciptForm extends Component {
                         onChange={checkcheckhandaler.bind(this, this, context)}
                         disabled={this.state.Billexists}
                       />
-                      <span style={{ fontSize: "0.8rem" }}>Pay by Cheque</span>
+                      <span style={{ fontSize: "0.8rem" }}>
+                        {getLabelFromLanguage({ fieldName: "payby_check" })}
+                      </span>
                     </label>
                   </div>
                   <AlagehFormGroup
