@@ -31,9 +31,10 @@ export default ({ config, db }) => {
             next(error);
           });
         } else {
+          let result = req.records;
           res.status(httpStatus.ok).json({
             success: true,
-            records: req.body
+            records: result
           });
           next();
         }

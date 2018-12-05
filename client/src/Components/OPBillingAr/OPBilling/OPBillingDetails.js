@@ -39,7 +39,7 @@ export default class OPBillingDetails extends Component {
               {
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Billing Details"
+                    fieldName: "bill_details"
                   }}
                 />
               }
@@ -52,7 +52,7 @@ export default class OPBillingDetails extends Component {
               {
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Insurance Details"
+                    fieldName: "insurance_details"
                   }}
                 />
               }

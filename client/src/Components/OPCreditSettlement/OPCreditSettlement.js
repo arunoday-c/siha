@@ -20,14 +20,7 @@ import {
   SaveOPCreidt
 } from "./OPCreditSettlementEvents";
 import { AlgaehActions } from "../../actions/algaehActions";
-import { successfulMessage } from "../../utils/GlobalFunctions";
-import {
-  algaehApiCall,
-  swalMessage,
-  getCookie
-} from "../../utils/algaehApiCall.js";
-import AlgaehLoader from "../Wrapper/fullPageLoader";
-import Enumerable from "linq";
+import { algaehApiCall, getCookie } from "../../utils/algaehApiCall.js";
 import AlgaehReport from "../Wrapper/printReports";
 
 import moment from "moment";

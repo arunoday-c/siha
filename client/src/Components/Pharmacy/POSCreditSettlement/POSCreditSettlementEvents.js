@@ -9,6 +9,7 @@ import moment from "moment";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import FrontDesk from "../../../Search/FrontDesk.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
+import Enumerable from "linq";
 
 const PatientSearch = ($this, e) => {
   AlgaehSearch({
@@ -246,10 +247,125 @@ const getCtrlCode = ($this, billcode) => {
   });
 };
 
+const GenerateReciept = ($this, callback) => {
+  let obj = [];
+
+  if (
+    $this.state.Cashchecked === false &&
+    $this.state.Cardchecked === false &&
+    $this.state.Checkchecked === false
+  ) {
+    swalMessage({
+      title: "Invalid Input. Please select receipt type.",
+
+      type: "error"
+    });
+  } else {
+    if ($this.state.cash_amount > 0 || $this.state.Cashchecked === true) {
+      obj.push({
+        hims_f_receipt_header_id: null,
+        card_check_number: null,
+        expiry_date: null,
+        pay_type: $this.state.pay_cash,
+        amount: $this.state.cash_amount,
+        updated_date: null,
+        card_type: null
+      });
+    }
+
+    if ($this.state.card_amount > 0 || $this.state.Cardchecked === true) {
+      obj.push({
+        hims_f_receipt_header_id: null,
+        card_check_number: $this.state.card_check_number,
+        expiry_date: $this.state.card_date,
+        pay_type: $this.state.pay_card,
+        amount: $this.state.card_amount,
+        updated_date: null,
+        card_type: null
+      });
+    }
+    if ($this.state.cheque_amount > 0 || $this.state.Checkchecked === true) {
+      obj.push({
+        hims_f_receipt_header_id: null,
+        card_check_number: $this.state.cheque_number,
+        expiry_date: $this.state.cheque_date,
+        pay_type: $this.state.pay_cheque,
+        amount: $this.state.cheque_amount,
+        updated_date: null,
+        card_type: null
+      });
+    }
+
+    $this.setState(
+      {
+        receiptdetails: obj
+      },
+      () => {
+        callback($this);
+      }
+    );
+  }
+};
+
+const SavePosCreidt = $this => {
+  debugger;
+  const err = Validations($this);
+  if (!err) {
+    if ($this.state.unbalanced_amount === 0) {
+      GenerateReciept($this, that => {
+        let Inputobj = $this.state;
+
+        let listOfinclude = Enumerable.from(Inputobj.criedtdetails)
+          .where(w => w.include === "Y")
+          .toArray();
+
+        Inputobj.criedtdetails = listOfinclude;
+        AlgaehLoader({ show: true });
+        algaehApiCall({
+          uri: "/POSCreditSettlement/addPOSCreidtSettlement",
+          data: Inputobj,
+          method: "POST",
+          onSuccess: response => {
+            AlgaehLoader({ show: false });
+            if (response.data.success) {
+              debugger;
+              $this.setState({
+                pos_credit_number: response.data.records.pos_credit_number,
+                hims_f_pos_credit_header_id:
+                  response.data.records.hims_f_pos_credit_header_id,
+                receipt_number: response.data.records.receipt_number,
+                saveEnable: true
+              });
+              swalMessage({
+                title: "Done Successfully",
+                type: "success"
+              });
+            }
+          },
+          onFailure: error => {
+            debugger;
+            AlgaehLoader({ show: false });
+            swalMessage({
+              title: error.response.data.message || error.message,
+              type: "error"
+            });
+          }
+        });
+      });
+    } else {
+      swalMessage({
+        title: "Invalid Input. Please recive the amount.",
+        type: "error"
+      });
+    }
+  }
+};
+
 export {
   ClearData,
   Validations,
   getCashiersAndShiftMAP,
   PatientSearch,
-  getCtrlCode
+  getCtrlCode,
+  SavePosCreidt
 };

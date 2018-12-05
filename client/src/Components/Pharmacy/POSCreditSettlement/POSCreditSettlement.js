@@ -14,16 +14,15 @@ import AlgaehLabel from "../../Wrapper/label.js";
 import { getCookie } from "../../../utils/algaehApiCall";
 import {
   ClearData,
-  Validations,
   getCashiersAndShiftMAP,
   PatientSearch,
-  getCtrlCode
+  getCtrlCode,
+  SavePosCreidt
 } from "./POSCreditSettlementEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import { successfulMessage } from "../../../utils/GlobalFunctions";
-import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall.js";
-import AlgaehLoader from "../../Wrapper/fullPageLoader";
-import Enumerable from "linq";
+
+import { algaehApiCall } from "../../../utils/algaehApiCall.js";
+
 import AlgaehReport from "../../Wrapper/printReports";
 
 import moment from "moment";
@@ -90,123 +89,6 @@ class POSCreditSettlement extends Component {
     }
 
     this.setState({ ...this.state, ...output });
-  }
-
-  GenerateReciept(callback) {
-    let obj = [];
-
-    if (
-      this.state.Cashchecked === false &&
-      this.state.Cardchecked === false &&
-      this.state.Checkchecked === false
-    ) {
-      successfulMessage({
-        message: "Invalid Input. Please select receipt type.",
-        title: "Error",
-        icon: "error"
-      });
-    } else {
-      if (this.state.cash_amount > 0 || this.state.Cashchecked === true) {
-        obj.push({
-          hims_f_receipt_header_id: null,
-          card_check_number: null,
-          expiry_date: null,
-          pay_type: this.state.pay_cash,
-          amount: this.state.cash_amount,
-          updated_date: null,
-          card_type: null
-        });
-      }
-
-      if (this.state.card_amount > 0 || this.state.Cardchecked === true) {
-        obj.push({
-          hims_f_receipt_header_id: null,
-          card_check_number: this.state.card_check_number,
-          expiry_date: this.state.card_date,
-          pay_type: this.state.pay_card,
-          amount: this.state.card_amount,
-          updated_date: null,
-          card_type: null
-        });
-      }
-      if (this.state.cheque_amount > 0 || this.state.Checkchecked === true) {
-        obj.push({
-          hims_f_receipt_header_id: null,
-          card_check_number: this.state.cheque_number,
-          expiry_date: this.state.cheque_date,
-          pay_type: this.state.pay_cheque,
-          amount: this.state.cheque_amount,
-          updated_date: null,
-          card_type: null
-        });
-      }
-
-      this.setState(
-        {
-          receiptdetails: obj
-        },
-        () => {
-          callback(this);
-        }
-      );
-    }
-  }
-
-  SavePosCreidt(e) {
-    debugger;
-    const err = Validations(this);
-    if (!err) {
-      if (this.state.unbalanced_amount === 0) {
-        this.GenerateReciept($this => {
-          let Inputobj = $this.state;
-
-          let listOfinclude = Enumerable.from(Inputobj.criedtdetails)
-            .where(w => w.include === "Y")
-            .toArray();
-
-          Inputobj.criedtdetails = listOfinclude;
-          AlgaehLoader({ show: true });
-          algaehApiCall({
-            uri: "/POSCreditSettlement/addPOSCreidtSettlement",
-            data: Inputobj,
-            method: "POST",
-            onSuccess: response => {
-              AlgaehLoader({ show: false });
-              if (response.data.success) {
-                debugger;
-                $this.setState({
-                  pos_credit_number: response.data.records.pos_credit_number,
-                  hims_f_pos_credit_header_id:
-                    response.data.records.hims_f_pos_credit_header_id,
-                  receipt_number: response.data.records.receipt_number,
-                  saveEnable: true
-                });
-                successfulMessage({
-                  message: "Done Successfully",
-                  title: "Success",
-                  icon: "success"
-                });
-              }
-            },
-            onFailure: error => {
-              debugger;
-              AlgaehLoader({ show: false });
-              successfulMessage({
-                message: error.response.data.message || error.message,
-                title: "Error",
-                icon: "error"
-              });
-            }
-          });
-        });
-      } else {
-        successfulMessage({
-          message: "Invalid Input. Please recive the amount.",
-          title: "Error",
-          icon: "error"
-        });
-      }
-    }
   }
 
   render() {
@@ -378,7 +260,7 @@ class POSCreditSettlement extends Component {
               <button
                 type="button"
                 className="btn btn-primary"
-                onClick={this.SavePosCreidt.bind(this)}
+                onClick={SavePosCreidt.bind(this, this)}
                 disabled={this.state.saveEnable}
               >
                 <AlgaehLabel
