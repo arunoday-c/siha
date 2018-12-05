@@ -9,21 +9,21 @@ import extend from "extend";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehFormGroup,
-  AlagehAutoComplete
+  AlagehFormGroup
+  //AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
 import DisplayOPBilling from "../../../BillDetails/BillDetails";
 import {
-  serviceTypeHandeler,
-  serviceHandeler,
-  discounthandle,
-  adjustadvance,
-  billheaderCalculation,
-  onchangegridcol,
+  // serviceTypeHandeler,
+  // serviceHandeler,
+  // discounthandle,
+  // adjustadvance,
+  // billheaderCalculation,
+  // onchangegridcol,
   credittexthandle,
-  credittextCal,
-  EditGrid,
-  CancelGrid
+  credittextCal
+  // EditGrid,
+  // CancelGrid
 } from "./AddOPBillingHandaler";
 import ReciptForm from "../ReciptDetails/ReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";

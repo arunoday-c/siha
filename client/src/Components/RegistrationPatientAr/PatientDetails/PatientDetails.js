@@ -3,7 +3,7 @@ import PatientForm from "./PatientForm/PatientForm.js";
 import OtherInfo from "./OtherInfo/OtherInfo.js";
 import AlgaehLabel from "../../Wrapper/label.js";
 import "./PatientDetails.css";
-import { SetBulkState, checkSecurity } from "../../../utils/GlobalFunctions";
+import { SetBulkState } from "../../../utils/GlobalFunctions";
 import MyContext from "../../../utils/MyContext.js";
 
 import AlgaehSecurity from "../../Wrapper/algehSecurity";

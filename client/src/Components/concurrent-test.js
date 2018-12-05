@@ -78,7 +78,7 @@ class ConcurrentTest extends Component {
   runApiCalls(e) {
     if (this.state.enterURL === "") return;
     this.checkArrayToClear(() => {
-      const _concorrent = parseInt(this.state.enterConcurrent);
+      const _concorrent = parseInt(this.state.enterConcurrent, 10);
       const _data =
         this.state.enterInput !== "" ? JSON.parse(this.state.enterInput) : {};
       const _that = this;

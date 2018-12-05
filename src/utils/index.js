@@ -235,14 +235,14 @@ let runningNumberGen = options => {
           let numgenId = item["hims_f_app_numgen_id"];
           let intermediate_series = item["intermediate_series"];
           let postfix = item["postfix"];
-          let length = parseInt(item["length"]) - parseInt(prefix.length);
-          let increment_by = parseInt(item["increment_by"]);
+          let length = parseInt(item["length"],10) - parseInt(prefix.length,10);
+          let increment_by = parseInt(item["increment_by"],10);
           if (options.counter != null) {
-            increment_by = increment_by + parseInt(options.counter - 1);
+            increment_by = increment_by + parseInt(options.counter - 1,10);
           }
 
           let numgen_seperator = item["numgen_seperator"];
-          let newNumber = parseInt(postfix) + increment_by;
+          let newNumber = parseInt(postfix,10) + increment_by;
 
           let paddedNumber = padString(String(newNumber), length, "0");
 
@@ -306,17 +306,17 @@ let runningNumber = (
       let prefix = result["prefix"];
       let intermediate_series = result["intermediate_series"];
       let postfix = result["postfix"];
-      let length = parseInt(result["length"]) - parseInt(prefix.length);
+      let length = parseInt(result["length"],10) - parseInt(prefix.length,10);
       let increment_by = result["increment_by"];
       let numgen_seperator = result["numgen_seperator"];
       let postfix_start = result["postfix_start"];
       let postfix_end = result["postfix_end"];
 
-      let newNumber = parseInt(postfix) + parseInt(increment_by);
+      let newNumber = parseInt(postfix,10) + parseInt(increment_by,10);
 
       if (
-        parseInt(postfix_start) <= newNumber &&
-        parseInt(postfix_end) >= newNumber
+        parseInt(postfix_start,10) <= newNumber &&
+        parseInt(postfix_end,10) >= newNumber
       ) {
         let paddedNumber = padString(String(newNumber), length, "0");
         let queryAtt =
@@ -355,7 +355,7 @@ let runningNumber = (
             if (error) {
               throw error;
             }
-            newNumber = parseInt(postfix_start) + parseInt(increment_by);
+            newNumber = parseInt(postfix_start,10) + parseInt(increment_by,10);
             paddedNumber = padString(newNumber, length, "0");
 
             let interSeries = resultSeries[0]["param_value"];

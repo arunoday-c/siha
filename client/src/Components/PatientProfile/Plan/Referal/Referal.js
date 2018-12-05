@@ -4,13 +4,13 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 
-import moment from "moment";
-import Options from "../../../../Options.json";
+// import moment from "moment";
+// import Options from "../../../../Options.json";
 import {
   AlagehFormGroup,
-  AlagehAutoComplete,
-  AlgaehDataGrid,
-  AlgaehLabel
+  AlagehAutoComplete
+  // AlgaehDataGrid,
+  // AlgaehLabel
 } from "../../../Wrapper/algaehWrapper";
 import "./Referal.css";
 import "../../../../styles/site.css";

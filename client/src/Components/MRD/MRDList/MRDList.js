@@ -1,12 +1,7 @@
 import React, { Component } from "react";
 import "./mrd_list.css";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import {
-  AlagehFormGroup,
-  AlgaehDateHandler,
-  AlgaehDataGrid,
-  AlgaehLabel
-} from "../../Wrapper/algaehWrapper";
+import { AlgaehDataGrid, AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import algaehLoader from "../../Wrapper/fullPageLoader";
 import moment from "moment";
 import { setGlobal } from "../../../utils/GlobalFunctions";

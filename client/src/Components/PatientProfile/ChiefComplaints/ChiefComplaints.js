@@ -335,6 +335,8 @@ class ChiefComplaints extends Component {
               case "A":
                 _ResponseSplit["associated_symptoms"] = g.getSource();
                 break;
+              default:
+                null;
             }
           })
           .toArray();

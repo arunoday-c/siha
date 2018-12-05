@@ -20,7 +20,6 @@ import "./InvoiceGeneration.css";
 import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { getCookie } from "../../../utils/algaehApiCall";
-import AppBar from "@material-ui/core/AppBar";
 import AlgaehReport from "../../Wrapper/printReports.js";
 import { getAmountFormart } from "../../../utils/GlobalFunctions";
 
@@ -633,59 +632,57 @@ class InvoiceGeneration extends Component {
           </div>
         </div>
         <div className="hptl-phase1-footer">
-          
-            <div className="row">
-              <div className="col-lg-12">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={FinalizedAndInvoice.bind(this, this)}
-                  disabled={this.state.saveEnable}
-                >
-                  <AlgaehLabel
-                    label={{ fieldName: "btn_final", returnText: true }}
-                  />
-                </button>
+          <div className="row">
+            <div className="col-lg-12">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={FinalizedAndInvoice.bind(this, this)}
+                disabled={this.state.saveEnable}
+              >
+                <AlgaehLabel
+                  label={{ fieldName: "btn_final", returnText: true }}
+                />
+              </button>
 
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  onClick={ClearData.bind(this, this)}
-                  disabled={this.state.clearEnable}
-                >
-                  <AlgaehLabel
-                    label={{ fieldName: "btn_clear", returnText: true }}
-                  />
-                </button>
+              <button
+                type="button"
+                className="btn btn-default"
+                onClick={ClearData.bind(this, this)}
+                disabled={this.state.clearEnable}
+              >
+                <AlgaehLabel
+                  label={{ fieldName: "btn_clear", returnText: true }}
+                />
+              </button>
 
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  //created by Adnan
-                  onClick={this.generateInvoice.bind(this, "cash")}
-                  //created by Adnan
-                  disabled={this.state.generateVoice}
-                >
-                  <AlgaehLabel
-                    label={{ fieldName: "btn_cash", returnText: true }}
-                  />
-                </button>
+              <button
+                type="button"
+                className="btn btn-default"
+                //created by Adnan
+                onClick={this.generateInvoice.bind(this, "cash")}
+                //created by Adnan
+                disabled={this.state.generateVoice}
+              >
+                <AlgaehLabel
+                  label={{ fieldName: "btn_cash", returnText: true }}
+                />
+              </button>
 
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  //created by Adnan
-                  onClick={this.generateInvoice.bind(this, "credit")}
-                  //created by Adnan
-                  disabled={this.state.generateVoice}
-                >
-                  <AlgaehLabel
-                    label={{ fieldName: "btn_creidt", returnText: true }}
-                  />
-                </button>
-              </div>
+              <button
+                type="button"
+                className="btn btn-default"
+                //created by Adnan
+                onClick={this.generateInvoice.bind(this, "credit")}
+                //created by Adnan
+                disabled={this.state.generateVoice}
+              >
+                <AlgaehLabel
+                  label={{ fieldName: "btn_creidt", returnText: true }}
+                />
+              </button>
             </div>
-          
+          </div>
         </div>
       </div>
     );

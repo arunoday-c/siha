@@ -715,7 +715,10 @@ class Appointment extends PureComponent {
 
   updatePatientAppointment(data) {
     if (data !== null) {
-      this.state.edit_appointment_status_id = data.hims_d_appointment_status_id;
+      
+      this.setState({
+        edit_appointment_status_id : data.hims_d_appointment_status_id
+      })
     }
     AlgaehValidation({
       querySelector: "data-validate='editApptDiv'",

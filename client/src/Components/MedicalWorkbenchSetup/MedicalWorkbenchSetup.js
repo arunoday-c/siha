@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import "./medical_wb_setup.css";
 import "../../index.css";
-import BreadCrumb from "../common/BreadCrumb/BreadCrumb";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import PhysicalExamination from "./PhysicalExamination/PhysicalExamination";
 import ReviewofSystems from "./ReviewofSystems/ReviewofSystems";

@@ -77,6 +77,7 @@ class BreadCrumb extends PureComponent {
             <ul>
               <li className="printMenuDisplay">
                 <img
+                  alt="Algaeh"
                   className="printImg"
                   src={require("../BreadCrumb/images/print.png")}
                   title="Print"

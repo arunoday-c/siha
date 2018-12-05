@@ -242,7 +242,7 @@ VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?);",
                       }
                     }
                     inputParam.visit_expiery_date = moment()
-                      .add(parseInt(record[0]["param_value"]), "days")
+                      .add(parseInt(record[0]["param_value"],10), "days")
                       .format("YYYY-MM-DD");
                     currentEpisodeNo = record[0].episode_id;
 
@@ -502,7 +502,7 @@ let insertVisitData = (dataBase, req, res, callBack) => {
                 inputParam.visit_expiery_date = moment()
                   .add(
                     record != null && record.length != 0
-                      ? parseInt(record[0]["param_value"])
+                      ? parseInt(record[0]["param_value"],10)
                       : 0,
                     "days"
                   )
