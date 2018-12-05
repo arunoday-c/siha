@@ -137,7 +137,7 @@ let getTreatmentPlan = (req, res, next) => {
     db.getConnection((error, connection) => {
       connection.query(
         "select hims_f_treatment_plan_id, plan_name, patient_id, episode_id, visit_id, remarks,\
-         approve_status, consult_date from  hims_f_treatment_plan where record_status='A' and " +
+         approve_status, plan_status,consult_date from  hims_f_treatment_plan where record_status='A' and " +
           where.condition,
         where.values,
         (error, result) => {
