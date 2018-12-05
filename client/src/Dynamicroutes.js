@@ -76,6 +76,7 @@ import OPCreditSettlement from "./Components/OPCreditSettlement/OPCreditSettleme
 import POSCreditSettlement from "./Components/Pharmacy/POSCreditSettlement/POSCreditSettlement";
 import Algaeh from "./Components/Algaeh/Algaeh";
 
+import AppointmentAr from "./Components/AppointmentAr/AppointmentAr";
 const componts = (selectedLang, breadStyle) => {
   return {
     Dashboard: <Dashboard SelectLanguage={selectedLang} />,
@@ -111,6 +112,7 @@ const componts = (selectedLang, breadStyle) => {
     InitialStock: <InitialStock SelectLanguage={selectedLang} />,
     PrescriptionList: <PrescriptionList SelectLanguage={selectedLang} />,
     Appointment: <FrontDeskAppt SelectLanguage={selectedLang} />,
+    AppointmentAr: <AppointmentAr SelectLanguage={selectedLang} />,
     PharmacySetup: <PharmacySetup SelectLanguage={selectedLang} />,
     StockEnquiry: <StockEnquiry SelectLanguage={selectedLang} />,
     ItemMomentEnquiry: <ItemMomentEnquiry SelectLanguage={selectedLang} />,
