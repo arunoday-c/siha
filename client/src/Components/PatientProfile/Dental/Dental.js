@@ -118,7 +118,6 @@ class Dental extends Component {
   }
 
   markTeethSurface(e) {
-    debugger;
     e.currentTarget.classList.contains("mark-active")
       ? e.currentTarget.classList.remove("mark-active")
       : e.currentTarget.classList.add("mark-active");
