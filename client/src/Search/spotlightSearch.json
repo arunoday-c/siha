@@ -291,5 +291,21 @@
         "label": "Patient Code"
       }
     ]
+  },
+  "creidtpos": {
+    "POSCreidt": [
+      {
+        "fieldName": "pos_credit_number",
+        "label": "POS Credit Number"
+      },
+      {
+        "fieldName": "pos_credit_date",
+        "label": "POS Credit Date"
+      },
+      {
+        "fieldName": "patient_code",
+        "label": "Patient Code"
+      }
+    ]
   }
 }

@@ -3,11 +3,11 @@ export default {
     var output;
 
     output = {
-      hims_f_credit_header_id: null,
+      hims_f_pos_credit_header_id: null,
       patient_code: null,
       full_name: null,
-      credit_number: null,
-      credit_date: new Date(),
+      pos_credit_number: null,
+      pos_credit_date: new Date(),
       patient_id: null,
       reciept_amount: 0,
       write_off_amount: 0,
@@ -21,6 +21,7 @@ export default {
       posted_by: null,
       criedtdetails: [],
       include: "N",
+
       hims_f_receipt_header_id: null,
       receipt_number: null,
       receipt_date: new Date(),

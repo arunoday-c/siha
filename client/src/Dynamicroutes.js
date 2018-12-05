@@ -73,8 +73,10 @@ import PurchaseOrderList from "./Components/Procurement/PurchaseOrderList/Purcha
 import DayEndProcess from "./Components/Finance/DayEndProcess/DayEndProcess";
 import OPBillCancellation from "./Components/OPBillCancellation/OPBillCancellation";
 import OPCreditSettlement from "./Components/OPCreditSettlement/OPCreditSettlement";
+import POSCreditSettlement from "./Components/Pharmacy/POSCreditSettlement/POSCreditSettlement";
 import Algaeh from "./Components/Algaeh/Algaeh";
 
+import AppointmentAr from "./Components/AppointmentAr/AppointmentAr";
 const componts = (selectedLang, breadStyle) => {
   return {
     Dashboard: <Dashboard SelectLanguage={selectedLang} />,
@@ -110,6 +112,7 @@ const componts = (selectedLang, breadStyle) => {
     InitialStock: <InitialStock SelectLanguage={selectedLang} />,
     PrescriptionList: <PrescriptionList SelectLanguage={selectedLang} />,
     Appointment: <FrontDeskAppt SelectLanguage={selectedLang} />,
+    AppointmentAr: <AppointmentAr SelectLanguage={selectedLang} />,
     PharmacySetup: <PharmacySetup SelectLanguage={selectedLang} />,
     StockEnquiry: <StockEnquiry SelectLanguage={selectedLang} />,
     ItemMomentEnquiry: <ItemMomentEnquiry SelectLanguage={selectedLang} />,
@@ -166,6 +169,7 @@ const componts = (selectedLang, breadStyle) => {
     AdministrationSetup: <AdministrationSetup SelectLanguage={selectedLang} />,
     OPBillCancellation: <OPBillCancellation SelectLanguage={selectedLang} />,
     OPCreditSettlement: <OPCreditSettlement SelectLanguage={selectedLang} />,
+    POSCreditSettlement: <POSCreditSettlement SelectLanguage={selectedLang} />,
     AlgaehModules: <Algaeh />
   };
 };

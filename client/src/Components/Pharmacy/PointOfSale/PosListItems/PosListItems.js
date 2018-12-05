@@ -20,7 +20,6 @@ import {
   AddItems,
   deletePosDetail,
   updatePosDetail,
-  calculateAmount,
   adjustadvance,
   UomchangeTexts,
   dateFormater,
@@ -31,8 +30,7 @@ import {
   ViewInsurance,
   qtyonchangegridcol,
   EditGrid,
-  credittexthandle,
-  credittextCal
+  credittexthandle
 } from "./PosListItemsEvents";
 import ReciptForm from "./ReciptDetails/AddReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -669,7 +667,7 @@ class PosListItems extends Component {
                               ),
                               onEdit: EditGrid.bind(this, this, context),
                               onCancel: EditGrid.bind(this, this, context),
-                              onDone: updatePosDetail.bind(this, this)
+                              onDone: updatePosDetail.bind(this, this, context)
                             }}
 
                             // onRowSelect={row => {
@@ -1018,7 +1016,7 @@ class PosListItems extends Component {
                         </div>
 
                         <AlagehFormGroup
-                          div={{ className: "col-lg-3" }}
+                          div={{ className: "col-lg-2" }}
                           label={{
                             forceLabel: "Credit Amount"
                           }}
@@ -1036,17 +1034,13 @@ class PosListItems extends Component {
                               )
                             },
                             others: {
-                              placeholder: "0.00",
-                              onBlur: credittextCal.bind(this, this),
-                              onFocus: e => {
-                                e.target.oldvalue = e.target.value;
-                              }
+                              placeholder: "0.00"
                             }
                           }}
                         />
 
                         <div
-                          className="col-3"
+                          className="col-2"
                           style={{
                             background: " #44b8bd",
                             color: " #fff"
@@ -1060,6 +1054,16 @@ class PosListItems extends Component {
                           <h4>
                             {getAmountFormart(this.state.receiveable_amount)}
                           </h4>
+                        </div>
+
+                        <div className="col-2 highlightGrey">
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Balance Due"
+                            }}
+                          />
+
+                          <h6>{getAmountFormart(this.state.balance_credit)}</h6>
                         </div>
                       </div>
                       <ReciptForm POSIOputs={this.state} />

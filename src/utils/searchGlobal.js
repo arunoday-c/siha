@@ -219,6 +219,14 @@ let algaehSearchConfig = searchName => {
           PAT.patient_code from hims_f_credit_header BH inner join hims_f_patient as PAT on  \
           BH.patient_id = PAT.hims_d_patient_id",
         orderBy: "hims_f_credit_header_id desc"
+      },
+      {
+        searchName: "POSCreidt",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS hims_f_pos_credit_header_id, pos_credit_number, pos_credit_date, \
+          PAT.patient_code from hims_f_pos_credit_header BH inner join hims_f_patient as PAT on  \
+          BH.patient_id = PAT.hims_d_patient_id",
+        orderBy: "hims_f_pos_credit_header_id desc"
       }
 
       // visit

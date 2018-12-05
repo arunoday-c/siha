@@ -64,12 +64,12 @@ let addPosEntry = (req, res, next) => {
                 location_id, location_type, sub_total, discount_percentage, discount_amount, net_total, copay_amount, patient_responsibility,\
                 patient_tax, patient_payable,company_responsibility,company_tax,company_payable,comments, sec_company_responsibility,\
                 sec_company_tax,sec_company_payable,sec_copay_amount,net_tax,gross_total,sheet_discount_amount,\
-                sheet_discount_percentage,net_amount,credit_amount,receiveable_amount, card_number,effective_start_date,effective_end_date,\
+                sheet_discount_percentage,net_amount,credit_amount,balance_credit,receiveable_amount, card_number,effective_start_date,effective_end_date,\
                 insurance_provider_id, sub_insurance_provider_id, network_id, network_type, network_office_id, policy_number, \
                 secondary_card_number, secondary_effective_start_date, secondary_effective_end_date, secondary_insurance_provider_id,\
                 secondary_network_id, secondary_network_type, secondary_sub_insurance_provider_id, secondary_network_office_id, \
                 receipt_header_id, created_date,created_by,updated_date,updated_by) \
-            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
           documentCode,
           today,
@@ -102,6 +102,7 @@ let addPosEntry = (req, res, next) => {
           input.sheet_discount_percentage,
           input.net_amount,
           input.credit_amount,
+          input.balance_credit,
           input.receiveable_amount,
           input.card_number,
           input.effective_start_date,
@@ -230,7 +231,7 @@ let getPosEntry = (req, res, next) => {
         PH.copay_amount,PH.patient_responsibility,PH.patient_tax,PH.patient_payable,PH.company_responsibility,PH.company_tax,\
         PH.company_payable,PH.comments,PH.sec_company_responsibility,PH.sec_company_tax,PH.sec_company_payable,\
         PH.sec_copay_amount,PH.net_tax,PH.gross_total,PH.sheet_discount_amount,PH.sheet_discount_percentage,\
-        PH.net_amount,PH.credit_amount,PH.receiveable_amount,PH.posted,PH.card_number,PH.effective_start_date,\
+        PH.net_amount,PH.credit_amount,PH.balance_credit,PH.receiveable_amount,PH.posted,PH.card_number,PH.effective_start_date,\
         PH.effective_end_date,PH.insurance_provider_id,PH.sub_insurance_provider_id,PH.network_id,PH.network_type,\
         PH.network_office_id,PH.policy_number,PH.secondary_card_number,PH.secondary_effective_start_date,\
         PH.secondary_effective_end_date,PH.secondary_insurance_provider_id,PH.secondary_network_id,PH.secondary_network_type,\

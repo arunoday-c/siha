@@ -6,7 +6,7 @@ import {
   releaseDBConnection,
   jsonArrayToObject
 } from "../utils";
-import moment from "moment";
+//import moment from "moment";
 import httpStatus from "../utils/httpStatus";
 import { LINQ } from "node-linq";
 import { debugLog } from "../utils/logging";
@@ -57,7 +57,7 @@ let addTreatmentPlan = (req, res, next) => {
 };
 
 //created by irfan: to
-let addDentalTreatment = (req, res, next) => {
+let addDentalTreatmentBack = (req, res, next) => {
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -68,6 +68,24 @@ let addDentalTreatment = (req, res, next) => {
     db.getConnection((error, connection) => {
       if (error) {
         next(error);
+      }
+
+      let working_days = [];
+
+      let inputDays = [
+        req.body.sunday,
+        req.body.monday,
+        req.body.tuesday,
+        req.body.wednesday,
+        req.body.thursday,
+        req.body.friday,
+        req.body.saturday
+      ];
+
+      for (let d = 0; d < 7; d++) {
+        if (inputDays[d] == "Y") {
+          working_days.push(d);
+        }
       }
 
       const insurtColumns = [
@@ -101,6 +119,113 @@ let addDentalTreatment = (req, res, next) => {
             sampleInputObject: insurtColumns,
             arrayObj: req.body,
             newFieldToInsert: [new Date(), new Date()],
+            req: req
+          })
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+//created by irfan: to
+let addDentalTreatment = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      let finalInput = [];
+      for (let i = 0; i < input.send_teeth.length; i++) {
+        let surfaceArray = {
+          distal: "N",
+          incisal: "N",
+          occlusal: "N",
+          mesial: "N",
+          buccal: "N",
+          labial: "N",
+          cervical: "N",
+          palatal: "N",
+          lingual: "N"
+        };
+        let singleObj = new LINQ(input.send_teeth[i]["details"])
+          .Select(s => s.surface)
+          .ToArray();
+
+        let teeth_number = input.send_teeth[i]["teeth_number"];
+        extend(surfaceArray, { teeth_number });
+
+        for (let d = 0; d < singleObj.length; d++) {
+          if (singleObj[d] == "M") {
+            extend(surfaceArray, { mesial: "Y" });
+          }
+          if (singleObj[d] == "P") {
+            extend(surfaceArray, { palatal: "Y" });
+          }
+          if (singleObj[d] == "D") {
+            extend(surfaceArray, { distal: "Y" });
+          }
+          if (singleObj[d] == "I") {
+            extend(surfaceArray, { incisal: "Y" });
+          }
+          if (singleObj[d] == "L") {
+            extend(surfaceArray, { labial: "Y" });
+          }
+        }
+
+        finalInput.push(surfaceArray);
+      }
+
+      const insurtColumns = [
+        "teeth_number",
+        "distal",
+        "incisal",
+        "occlusal",
+        "mesial",
+        "buccal",
+        "labial",
+        "cervical",
+        "palatal",
+        "lingual",
+        "billed",
+        "created_by",
+        "updated_by"
+      ];
+
+      connection.query(
+        "INSERT INTO hims_f_dental_treatment(" +
+          insurtColumns.join(",") +
+          ",patient_id,episode_id,treatment_plan_id,service_id,\
+          scheduled_date,treatment_status,created_date,updated_date) VALUES ?",
+        [
+          jsonArrayToObject({
+            sampleInputObject: insurtColumns,
+            arrayObj: finalInput,
+            newFieldToInsert: [
+              input.patient_id,
+              input.episode_id,
+              input.treatment_plan_id,
+              input.service_id,
+              new Date(input.scheduled_date),
+              input.treatment_status,
+              new Date(),
+              new Date()
+            ],
             req: req
           })
         ],

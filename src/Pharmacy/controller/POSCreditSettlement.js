@@ -1,27 +1,28 @@
 import { Router } from "express";
-import { releaseConnection, generateDbConnection } from "../utils";
-import httpStatus from "../utils/httpStatus";
+import { releaseConnection, generateDbConnection } from "../../utils";
+import httpStatus from "../../utils/httpStatus";
 import { LINQ } from "node-linq";
 import {
-  addCreidtSettlement,
-  getCreidtSettlement,
-  updateOPBilling,
-  getPatientwiseBill
-} from "../model/opCreditSettlement";
+  addPOSCreidtSettlement,
+  getPOSCreidtSettlement,
+  updatePOSBilling,
+  getPatientPOSCriedt
+} from "../model/POSCreditSettlement";
 
-import { debugFunction, debugLog } from "../utils/logging";
-import { getReceiptEntry, ReceiptPaymentInsert } from "../model/receiptentry";
+import { debugFunction, debugLog } from "../../utils/logging";
+import { pharmacyReceiptInsert } from "../model/pharmacyGlobal";
+import { getReceiptEntry } from "../../model/receiptentry";
 import extend from "extend";
 export default ({ config, db }) => {
   let api = Router();
 
   // created by Nowshad : to save opBilling
   api.post(
-    "/addCreidtSettlement",
+    "/addPOSCreidtSettlement",
     generateDbConnection,
-    ReceiptPaymentInsert,
-    addCreidtSettlement,
-    updateOPBilling,
+    pharmacyReceiptInsert,
+    addPOSCreidtSettlement,
+    updatePOSBilling,
     (req, res, next) => {
       let connection = req.connection;
       connection.commit(error => {
@@ -44,9 +45,9 @@ export default ({ config, db }) => {
   );
 
   api.get(
-    "/getCreidtSettlement",
+    "/getPOSCreidtSettlement",
     generateDbConnection,
-    getCreidtSettlement,
+    getPOSCreidtSettlement,
     getReceiptEntry,
     (req, res, next) => {
       debugLog("test: ", "test");
@@ -78,8 +79,8 @@ export default ({ config, db }) => {
   );
 
   api.get(
-    "/getPatientwiseBill",
-    getPatientwiseBill,
+    "/getPatientPOSCriedt",
+    getPatientPOSCriedt,
     (req, res, next) => {
       let result = req.records;
       if (result.length == 0) {

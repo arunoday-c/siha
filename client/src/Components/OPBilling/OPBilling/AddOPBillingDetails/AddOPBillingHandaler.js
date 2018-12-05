@@ -145,6 +145,7 @@ const discounthandle = ($this, context, ctrl, e) => {
 
 const billheaderCalculation = ($this, context, e) => {
   // if (e.target.value !== e.target.oldvalue) {
+  debugger;
   let serviceInput = {
     isReceipt: false,
     intCalculateall: false,
@@ -200,7 +201,7 @@ const onchangegridcol = ($this, row, e) => {
 
 const credittexthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
-
+  debugger;
   if (e.target.value > $this.state.net_amount) {
     successfulMessage({
       message: "Invalid Input. Criedt amount cannot be greater than Net amount",
@@ -208,18 +209,21 @@ const credittexthandle = ($this, context, ctrl, e) => {
       icon: "warning"
     });
   } else {
+    // let balance_credit = $this.state.receiveable_amount - e.target.value;
     $this.setState(
       {
-        [e.target.name]: e.target.value
+        [e.target.name]: e.target.value,
+        balance_credit: e.target.value
       },
       () => {
-        // credittextCal($this, e);
+        billheaderCalculation($this, context, e);
       }
     );
 
     if (context != null) {
       context.updateState({
-        [e.target.name]: e.target.value
+        [e.target.name]: e.target.value,
+        balance_credit: e.target.value
       });
     }
   }

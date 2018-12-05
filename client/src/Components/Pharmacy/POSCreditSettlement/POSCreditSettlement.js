@@ -6,27 +6,29 @@ import { bindActionCreators } from "redux";
 
 import CreditDetails from "./CreditDetails/CreditDetails";
 
-import SettlementIOputs from "../../Models/OPCreditSettlement";
-import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
-import "./OPCreditSettlement.css";
-import MyContext from "../../utils/MyContext.js";
-import AlgaehLabel from "../Wrapper/label.js";
-
+import SettlementIOputs from "../../../Models/POSCreditSettlement";
+import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
+import "./POSCreditSettlement.css";
+import MyContext from "../../../utils/MyContext.js";
+import AlgaehLabel from "../../Wrapper/label.js";
+import { getCookie } from "../../../utils/algaehApiCall";
 import {
   ClearData,
   getCashiersAndShiftMAP,
   PatientSearch,
   getCtrlCode,
-  SaveOPCreidt
-} from "./OPCreditSettlementEvents";
-import { AlgaehActions } from "../../actions/algaehActions";
-import { algaehApiCall, getCookie } from "../../utils/algaehApiCall.js";
-import AlgaehReport from "../Wrapper/printReports";
+  SavePosCreidt
+} from "./POSCreditSettlementEvents";
+import { AlgaehActions } from "../../../actions/algaehActions";
+
+import { algaehApiCall } from "../../../utils/algaehApiCall.js";
+
+import AlgaehReport from "../../Wrapper/printReports";
 
 import moment from "moment";
-import Options from "../../Options.json";
+import Options from "../../../Options.json";
 
-class OPCreditSettlement extends Component {
+class POSCreditSettlement extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -104,24 +106,26 @@ class OPCreditSettlement extends Component {
               )
             },
             {
-              pageName: <AlgaehLabel label={{ fieldName: "credit_number" }} />
+              pageName: (
+                <AlgaehLabel label={{ fieldName: "pos_credit_number" }} />
+              )
             }
           ]}
           soptlightSearch={{
             label: (
               <AlgaehLabel
-                label={{ fieldName: "credit_number", returnText: true }}
+                label={{ fieldName: "pos_credit_number", returnText: true }}
               />
             ),
-            value: this.state.credit_number,
+            value: this.state.pos_credit_number,
             events: {
               onChange: getCtrlCode.bind(this, this)
             },
-            selectValue: "credit_number",
-            searchName: "opCreidt",
+            selectValue: "pos_credit_number",
+            searchName: "POSCreidt",
             jsonFile: {
               fileName: "spotlightSearch",
-              fieldName: "creidtbills.opCreidt"
+              fieldName: "creidtpos.POSCreidt"
             }
           }}
           userArea={
@@ -133,8 +137,8 @@ class OPCreditSettlement extends Component {
                   }}
                 />
                 <h6>
-                  {this.state.credit_date
-                    ? moment(this.state.credit_date).format("DD-MM-YYYY")
+                  {this.state.pos_credit_date
+                    ? moment(this.state.pos_credit_date).format("DD-MM-YYYY")
                     : "DD/MM/YYYY"}
                 </h6>
               </div>
@@ -256,7 +260,7 @@ class OPCreditSettlement extends Component {
               <button
                 type="button"
                 className="btn btn-primary"
-                onClick={SaveOPCreidt.bind(this, this)}
+                onClick={SavePosCreidt.bind(this, this)}
                 disabled={this.state.saveEnable}
               >
                 <AlgaehLabel
@@ -306,5 +310,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(OPCreditSettlement)
+  )(POSCreditSettlement)
 );
