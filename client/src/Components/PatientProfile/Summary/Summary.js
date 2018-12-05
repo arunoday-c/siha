@@ -12,7 +12,8 @@ class Summary extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      patientMedications: []
+      patientMedications: [],
+      patientEpisode: []
     };
 
     this.props.patient_history === undefined ||
@@ -21,6 +22,30 @@ class Summary extends Component {
       : null;
 
     this.getPatientMedication();
+    this.getEpisodeSummary();
+  }
+
+  getEpisodeSummary() {
+    algaehApiCall({
+      uri: "/doctorsWorkBench/getPatientEpisodeSummary",
+      method: "GET",
+      data: {
+        episode_id: Window.global["episode_id"]
+      },
+      cancelRequestId: "getPatientMedication1",
+      onSuccess: response => {
+        debugger;
+        if (response.data.success) {
+          this.setState({ patientEpisode: response.data.records });
+        }
+      },
+      onFailure: error => {
+        // swalMessage({
+        //   title: error.message,
+        //   type: "error"
+        // });
+      }
+    });
   }
 
   getPatientMedication() {
@@ -30,9 +55,8 @@ class Summary extends Component {
       data: {
         episode_id: Window.global["episode_id"]
       },
-      cancelRequestId: "getPatientMedication1",
+      cancelRequestId: "getPatientMedication11",
       onSuccess: response => {
-        debugger;
         if (response.data.success) {
           this.setState({ patientMedications: response.data.records });
         }
@@ -105,6 +129,12 @@ class Summary extends Component {
       this.props.patient_diagnosis !== undefined
         ? this.props.patient_diagnosis
         : [];
+
+    let _pat_episode =
+      Enumerable.from(this.state.patientEpisode).firstOrDefault() !== undefined
+        ? Enumerable.from(this.state.patientEpisode).firstOrDefault()
+        : {};
+
     return (
       <div id="patientSummary">
         <div className="row">
@@ -112,9 +142,11 @@ class Summary extends Component {
             <div className="bd-callout bd-callout-theme">
               <h6>Chief Complaints</h6>
               <p>
-                Patient {_pat_profile.full_name} {_pat_profile.gender}{" "}
-                {_pat_profile.age_in_years} Yrs Visited Cardiology on 08/11/2018
-                for Chest Pain, duration 1 month.
+                Patient {_pat_episode.patient_name} {_pat_episode.gender} aged{" "}
+                {_pat_episode.age} Yrs Visited{" "}
+                {_pat_episode.sub_department_name} Department on{" "}
+                {_pat_episode.visit_date} for the following chief complaints {},
+                from {_pat_episode.onset_date}.
               </p>
             </div>
 

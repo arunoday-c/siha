@@ -16,6 +16,7 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import Enumerable from "linq";
 
 let teeth = [];
+let my_send_obj = {};
 
 class Dental extends Component {
   constructor(props) {
@@ -122,66 +123,59 @@ class Dental extends Component {
       : e.currentTarget.classList.add("mark-active");
 
     let my_obj = {
-      tooth_number: parseInt(
-        e.currentTarget.parentElement.previousElementSibling.innerText,
-        10
-      ),
-      surface: e.currentTarget.innerText.toString()
-    };
-
-    let my_obj1 = {
-      patient_id: Window.global["current_patient"],
-      episode_id: Window.global["episode_id"],
-      treatment_plan_id: this.state.hims_f_treatment_plan_id,
-      service_id: this.state.hims_d_services_id,
       teeth_number: parseInt(
         e.currentTarget.parentElement.previousElementSibling.innerText,
         10
       ),
-      scheduled_date: this.state.scheduled_date,
-      distal: "Y",
-      incisal: "Y",
-      occlusal: "Y",
-      mesial: "Y",
-      buccal: "Y",
-      labial: "Y",
-      cervical: "Y",
-      palatal: "Y",
-      lingual: "Y",
-      billed: "Y",
-      treatment_status: "PL"
+      surface: e.currentTarget.innerText.toString()
+      // distal: e.currentTarget.innerText.toString() === "D" ? "Y" : "N",
+      // incisal: e.currentTarget.innerText.toString() === "I" ? "Y" : "N",
+      // occlusal: e.currentTarget.innerText.toString() === "O" ? "Y" : "N",
+      // mesial: e.currentTarget.innerText.toString() === "M" ? "Y" : "N",
+      // buccal: e.currentTarget.innerText.toString() === "B" ? "Y" : "N",
+      // labial: e.currentTarget.innerText.toString() === "L" ? "Y" : "N",
+      // cervical: e.currentTarget.innerText.toString() === "C" ? "Y" : "N",
+      // palatal: e.currentTarget.innerText.toString() === "P" ? "Y" : "N",
+      // lingual: e.currentTarget.innerText.toString() === "L" ? "Y" : "N"
     };
-
-    debugger;
 
     let my_item = Enumerable.from(teeth)
       .where(
         w =>
-          w.tooth_number === my_obj.tooth_number && w.surface === my_obj.surface
+          w.teeth_number === my_obj.teeth_number && w.surface === my_obj.surface
       )
       .firstOrDefault();
 
     if (my_item !== undefined) {
       teeth.splice(teeth.indexOf(my_item), 1);
-      console.log("Teeth Selected", teeth);
+      // console.log("Teeth Selected", teeth);
     } else {
       teeth.push(my_obj);
-      console.log("Teeth Selected", teeth);
+      // console.log("Teeth Selected", teeth);
     }
 
     let send_teeth = Enumerable.from(teeth)
-      .groupBy("$.tooth_number", null, (k, g) => {
-        debugger;
+      .groupBy("$.teeth_number", null, (k, g) => {
         let teeth = Enumerable.from(g.getSource()).firstOrDefault()
-          .tooth_number;
+          .teeth_number;
         return {
           teeth_number: teeth,
-          source: g.getSource()
+          details: g.getSource()
         };
       })
       .toArray();
 
-    console.log("Send Teeth", send_teeth);
+    my_send_obj = {
+      patient_id: Window.global["current_patient"],
+      episode_id: Window.global["episode_id"],
+      treatment_plan_id: this.state.hims_f_treatment_plan_id,
+      service_id: this.state.hims_d_services_id,
+      scheduled_date: this.state.scheduled_date,
+      treatment_status: "PL"
+    };
+
+    my_send_obj.send_teeth = send_teeth;
+    console.log("Send Teeth", JSON.stringify(my_send_obj));
 
     this.setState(
       {
@@ -200,9 +194,24 @@ class Dental extends Component {
       querySelector: "data-validate='addDentalPlanDiv'",
       alertTypeIcon: "warning",
       onSuccess: () => {
-        swalMessage({
-          title: "Added Successfully",
-          type: "success"
+        algaehApiCall({
+          uri: "/dental/addDentalTreatment",
+          method: "POST",
+          data: my_send_obj,
+          onSuccess: response => {
+            if (response.data.success) {
+              swalMessage({
+                title: "Added Successfully",
+                type: "success"
+              });
+            }
+          },
+          onError: error => {
+            swalMessage({
+              title: error.message,
+              type: "success"
+            });
+          }
         });
       }
     });
@@ -230,6 +239,7 @@ class Dental extends Component {
                 title: "Added Successfully",
                 type: "success"
               });
+              this.clearSaveState();
               this.getTreatementPlans();
             }
           },
@@ -323,6 +333,7 @@ class Dental extends Component {
           <span>{i}</span>
           <div className="surface-Marking">
             <div
+              surface="distal='Y'"
               onClick={this.markTeethSurface.bind(this)}
               className="top-surface"
             >
@@ -619,7 +630,7 @@ class Dental extends Component {
           >
             <div className="row">
               <AlagehFormGroup
-                div={{ className: "col-lg-4" }}
+                div={{ className: "col-lg-3" }}
                 label={{
                   forceLabel: "Treatment Plan",
                   isImp: true
@@ -720,7 +731,7 @@ class Dental extends Component {
 
               <AlgaehDateHandler
                 div={{ className: "col-lg-2" }}
-                label={{ forceLabel: "Scheduled Date", isImp: false }}
+                label={{ forceLabel: "Scheduled Date", isImp: true }}
                 textBox={{
                   className: "txt-fld",
                   name: "scheduled_date"
@@ -901,13 +912,28 @@ class Dental extends Component {
                 },
                 {
                   fieldName: "approved_status",
-                  label: "Status",
+                  label: "Approval Status",
                   displayTemplate: row => {
                     return (
                       <span>
                         {row.approved_status === "Y"
                           ? "Plan Approved"
                           : "Plan Not Approved"}
+                      </span>
+                    );
+                  }
+                },
+                {
+                  fieldName: "plan_status",
+                  label: "Plan Status",
+                  displayTemplate: row => {
+                    return (
+                      <span>
+                        {row.plan_status === "O"
+                          ? "Open"
+                          : row.plan_status === "C"
+                          ? "Closed"
+                          : null}
                       </span>
                     );
                   }
