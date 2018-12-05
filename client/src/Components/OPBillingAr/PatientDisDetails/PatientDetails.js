@@ -57,10 +57,10 @@ class DisPatientForm extends Component {
                     style={{
                       border: " 1px solid #ced4d9",
                       borderRadius: 5,
-                      marginLeft: 0
+                      marginRight: 0
                     }}
                   >
-                    <div className="col">
+                    <div className="col spotlightSearchBox">
                       <AlgaehLabel label={{ fieldName: "patient_code" }} />
                       <h6>
                         {this.state.patient_code
@@ -68,10 +68,7 @@ class DisPatientForm extends Component {
                           : "*** New ***"}
                       </h6>
                     </div>
-                    <div
-                      className="col-lg-3"
-                      style={{ borderLeft: "1px solid #ced4d8" }}
-                    >
+                    <div className="col-lg-3 spotlightSearchIconBox">
                       <i
                         className="fas fa-search fa-lg"
                         style={{

@@ -353,6 +353,9 @@ class InvInitialStock extends Component {
                       value: this.state.quantity,
                       events: {
                         onChange: numberchangeTexts.bind(this, this)
+                      },
+                      others: {
+                        step: "1"
                       }
                     }}
                   />

@@ -1,0 +1,14 @@
+.hptl-phase1-op-display-billing-form-ar {
+  background: #fff;
+  border-radius: 5px; }
+  .hptl-phase1-op-display-billing-form-ar mark {
+    background: none;
+    color: red; }
+  .hptl-phase1-op-display-billing-form-ar .form-details {
+    padding-bottom: 0px;
+    margin-top: 7px; }
+  .hptl-phase1-op-display-billing-form-ar .insurance-details {
+    padding: 20px;
+    padding-bottom: 5px; }
+  .hptl-phase1-op-display-billing-form-ar .button {
+    padding: 5px; }

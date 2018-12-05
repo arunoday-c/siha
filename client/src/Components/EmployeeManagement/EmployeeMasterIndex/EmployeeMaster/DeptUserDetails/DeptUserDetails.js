@@ -82,6 +82,20 @@ class DeptUserDetails extends Component {
         }
       });
     }
+    if (
+      this.props.specimapcategorylist === undefined ||
+      this.props.specimapcategorylist.length === 0
+    ) {
+      this.props.getEmployeeCategory({
+        uri: "/specialityAndCategory/getCategorySpecialityMap",
+        method: "GET",
+
+        redux: {
+          type: "EMP_SPEC_CATEGORY_GET_DATA",
+          mappingName: "specimapcategorylist"
+        }
+      });
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -354,9 +368,9 @@ class DeptUserDetails extends Component {
                         ),
                         displayTemplate: row => {
                           let display =
-                            this.props.specimapcategory === undefined
+                            this.props.specimapcategorylist === undefined
                               ? []
-                              : this.props.specimapcategory.filter(
+                              : this.props.specimapcategorylist.filter(
                                   f =>
                                     f.hims_m_category_speciality_mappings_id ===
                                     row.category_id
@@ -374,9 +388,9 @@ class DeptUserDetails extends Component {
                         },
                         editorTemplate: row => {
                           let display =
-                            this.props.specimapcategory === undefined
+                            this.props.specimapcategorylist === undefined
                               ? []
-                              : this.props.specimapcategory.filter(
+                              : this.props.specimapcategorylist.filter(
                                   f =>
                                     f.hims_m_category_speciality_mappings_id ===
                                     row.category_id
@@ -510,7 +524,8 @@ function mapStateToProps(state) {
     empcategory: state.empcategory,
     specimapcategory: state.specimapcategory,
     empdepspeciality: state.empdepspeciality,
-    depservices: state.depservices
+    depservices: state.depservices,
+    specimapcategorylist: state.specimapcategorylist
   };
 }
 

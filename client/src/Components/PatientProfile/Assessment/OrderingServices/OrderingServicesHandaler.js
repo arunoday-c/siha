@@ -474,11 +474,12 @@ const calculateAmount = ($this, row, ctrl, e) => {
       },
       afterSuccess: data => {
         extend(row, data.billdetails[0]);
-        for (let i = 0; i < orderservicesdata.length; i++) {
-          if (orderservicesdata[i].service_type_id === row.service_type_id) {
-            orderservicesdata[i] = row;
-          }
-        }
+        orderservicesdata[row.rowIdx] = row;
+        // for (let i = 0; i < orderservicesdata.length; i++) {
+        //   if (orderservicesdata[i].service_type_id === row.service_type_id) {
+        //     orderservicesdata[i] = row;
+        //   }
+        // }
         $this.setState({ orderservicesdata: orderservicesdata });
       }
     });

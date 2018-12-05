@@ -211,6 +211,14 @@ let algaehSearchConfig = searchName => {
           inner join hims_f_billing_header as BILLING on BH.from_bill_id = BILLING.hims_f_billing_header_id \
           where BH.record_status ='A'",
         orderBy: "hims_f_bill_cancel_header_id desc"
+      },
+      {
+        searchName: "opCreidt",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS hims_f_credit_header_id, credit_number, credit_date, \
+          PAT.patient_code from hims_f_credit_header BH inner join hims_f_patient as PAT on  \
+          BH.patient_id = PAT.hims_d_patient_id",
+        orderBy: "hims_f_credit_header_id desc"
       }
 
       // visit

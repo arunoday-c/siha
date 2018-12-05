@@ -26,7 +26,7 @@ import {
   swalMessage,
   getCookie
 } from "../../utils/algaehApiCall.js";
-import AddAdvanceModal from "../Advance/AdvanceModal";
+import AddAdvanceModal from "../AdvanceAr/AdvanceModalAr";
 import { imageToByteArray } from "../../utils/GlobalFunctions";
 import { setGlobal } from "../../utils/GlobalFunctions";
 import { AlgaehActions } from "../../actions/algaehActions";
@@ -542,7 +542,11 @@ class RegistrationPatientAr extends PureComponent {
 
   render() {
     return (
-      <div id="attach" style={{ marginBottom: "50px" }}>
+      <div
+        id="attach"
+        style={{ marginBottom: "50px" }}
+        className="arabicVersionFrontDesk"
+      >
         {/* <Barcode value='PAT-A-000017'/> */}
         <BreadCrumb
           title={

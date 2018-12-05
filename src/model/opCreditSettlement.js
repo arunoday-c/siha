@@ -21,7 +21,7 @@ let addCreidtSettlement = (req, res, next) => {
     let db = req.db;
     let inputParam = extend({}, req.body);
 
-    inputParam.receipt_header_id = req.records.receipt_header_id;
+    inputParam.reciept_header_id = req.records.receipt_header_id;
     inputParam.hospital_id = 1;
 
     let connection = req.connection;
@@ -45,8 +45,8 @@ let addCreidtSettlement = (req, res, next) => {
       connection.query(
         "INSERT INTO hims_f_credit_header ( credit_number, credit_date, patient_id, reciept_amount, write_off_amount,\
           hospital_id,recievable_amount, remarks, reciept_header_id,transaction_type, write_off_account,\
-          , created_by, created_date, updated_by, updated_date) \
-          VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          created_by, created_date) \
+          VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
           documentCode,
           inputParam.credit_date != null
@@ -62,8 +62,6 @@ let addCreidtSettlement = (req, res, next) => {
           inputParam.transaction_type,
           inputParam.write_off_account,
           inputParam.created_by,
-          new Date(),
-          inputParam.updated_by,
           new Date()
         ],
         (error, headerResult) => {
@@ -108,8 +106,8 @@ let addCreidtSettlement = (req, res, next) => {
                 }
 
                 req.records = {
-                  bill_cancel_number: documentCode,
-                  hims_f_bill_cancel_header_id: headerResult.insertId,
+                  credit_number: documentCode,
+                  hims_f_credit_header_id: headerResult.insertId,
                   receipt_number: req.records.receipt_number
                 };
                 releaseDBConnection(db, connection);
@@ -136,15 +134,11 @@ let getCreidtSettlement = (req, res, next) => {
     let db = req.db;
     let connection = req.connection;
 
-    // INNER JOIN hims_f_bill_cancel_details bd  ON\
-    //   bh.hims_f_bill_cancel_header_id=bd.hims_f_bill_cancel_header_id\
     connection.query(
-      "SELECT *, bh.receipt_header_id as cal_receipt_header_id FROM hims_f_bill_cancel_header bh \
-      inner join hims_f_patient as PAT on bh.patient_id = PAT.hims_d_patient_id\
-      inner join hims_f_patient_visit as vst on bh.visit_id = vst.hims_f_patient_visit_id\
-      inner join hims_f_billing_header as bill on BH.from_bill_id = bill.hims_f_billing_header_id \
-      where bh.record_status='A' AND bh.bill_cancel_number='" +
-        req.query.bill_cancel_number +
+      "SELECT *, bh.reciept_header_id as cal_receipt_header_id FROM hims_f_credit_header bh \
+      inner join hims_f_patient as PAT on bh.patient_id = PAT.hims_d_patient_id \
+      where  bh.credit_number='" +
+        req.query.credit_number +
         "'",
 
       (error, headerResult) => {
@@ -156,12 +150,13 @@ let getCreidtSettlement = (req, res, next) => {
         debugLog("result: ", headerResult);
         if (headerResult.length != 0) {
           debugLog(
-            "hims_f_bill_cancel_header_id: ",
-            headerResult[0].hims_f_bill_cancel_header_id
+            "hims_f_credit_header_id: ",
+            headerResult[0].hims_f_credit_header_id
           );
           connection.query(
-            "select * from hims_f_bill_cancel_details where hims_f_bill_cancel_header_id=? and record_status='A'",
-            headerResult[0].hims_f_bill_cancel_header_id,
+            "select * from hims_f_credit_detail bh inner join hims_f_billing_header as bill on \
+            bh.bill_header_id = bill.hims_f_billing_header_id where credit_header_id=?",
+            headerResult[0].hims_f_credit_header_id,
             (error, criedtdetails) => {
               if (error) {
                 releaseDBConnection(db, connection);
@@ -202,26 +197,35 @@ let updateOPBilling = (req, res, next) => {
   let connection = req.connection;
   let inputParam = extend({}, req.body);
 
-  debugLog("inputParam.from_bill_id: ", inputParam.from_bill_id);
-  connection.query(
-    "UPDATE `hims_f_billing_header` SET `cancelled`=?, `cancel_remarks`=?,`cancel_by` = ?,`updated_date` = ? \
-      WHERE `hims_f_billing_header_id`=?",
-    [
-      "Y",
-      inputParam.cancel_remarks,
-      req.userIdentity.algaeh_d_app_user_id,
-      new Date(),
-      inputParam.from_bill_id
-    ],
-    (error, result) => {
+  let details = inputParam.criedtdetails;
+  let qry = "";
+  for (let i = 0; i < details.length; i++) {
+    debugLog("bill_header_id: ", details[i].bill_header_id);
+    let balance_credit =
+      details[i].previous_balance - details[i].receipt_amount;
+
+    qry +=
+      " UPDATE `hims_f_billing_header` SET balance_credit='" +
+      balance_credit +
+      "' WHERE hims_f_billing_header_id='" +
+      details[i].bill_header_id +
+      "';";
+  }
+  debugLog("qry: ", qry);
+  if (qry != "") {
+    connection.query(qry, (error, result) => {
       if (error) {
         releaseDBConnection(db, connection);
         next(error);
       }
-      req.data = req.records.delivery_note_number;
+      req.data = result;
       next();
-    }
-  );
+    });
+  } else {
+    releaseDBConnection(db, connection);
+    req.records = {};
+    next();
+  }
 };
 
 //Created by nowshad to get the bills which has creidt amount

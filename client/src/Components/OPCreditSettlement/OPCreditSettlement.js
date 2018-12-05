@@ -97,30 +97,16 @@ class OPCreditSettlement extends Component {
     AlgaehLoader({ show: true });
 
     algaehApiCall({
-      uri: "/opBilling/get",
+      uri: "/opCreditSettlement/getCreidtSettlement",
       method: "GET",
-      data: { bill_number: billcode },
+      data: { credit_number: billcode },
       onSuccess: response => {
         if (response.data.success) {
           debugger;
 
           let data = response.data.records;
           debugger;
-          let x = Enumerable.from($this.props.patienttype)
-            .where(w => w.hims_d_patient_type_id === data.patient_type)
-            .toArray();
 
-          if (x !== undefined && x.length > 0) {
-            data.patient_type = x[0].patitent_type_desc;
-          } else {
-            data.patient_type = "Not Selected";
-          }
-
-          let visitDetails = data;
-
-          visitDetails.radioselect = 1;
-          data.visitDetails = [visitDetails];
-          data.mode_of_pay = data.insured === "Y" ? "Insured" : "Self";
           data.Billexists = true;
 
           if (data.receiptdetails.length !== 0) {
@@ -217,16 +203,21 @@ class OPCreditSettlement extends Component {
   }
 
   SaveBill(e) {
+    debugger;
     const err = Validations(this);
     if (!err) {
       if (this.state.unbalanced_amount === 0) {
         this.GenerateReciept($this => {
           let Inputobj = $this.state;
 
-          Inputobj.patient_payable = $this.state.patient_payable_h;
+          let listOfinclude = Enumerable.from(Inputobj.criedtdetails)
+            .where(w => w.include === "Y")
+            .toArray();
+
+          Inputobj.criedtdetails = listOfinclude;
           AlgaehLoader({ show: true });
           algaehApiCall({
-            uri: "/opBilling/addOpBIlling",
+            uri: "/opCreditSettlement/addCreidtSettlement",
             data: Inputobj,
             method: "POST",
             onSuccess: response => {
@@ -294,10 +285,10 @@ class OPCreditSettlement extends Component {
               onChange: this.getCtrlCode.bind(this)
             },
             selectValue: "credit_number",
-            searchName: "bills",
+            searchName: "opCreidt",
             jsonFile: {
               fileName: "spotlightSearch",
-              fieldName: "billing.opBilling"
+              fieldName: "creidtbills.opCreidt"
             }
           }}
           userArea={

@@ -137,6 +137,7 @@ class EmployeeMaster extends Component {
   }
 
   componentWillReceiveProps(newProps) {
+    debugger;
     if (
       newProps.employeeDetailsPop.hims_d_employee_id !== undefined &&
       this.state.full_name !== null
@@ -191,19 +192,21 @@ class EmployeeMaster extends Component {
                         />
                       }
                     </li>
-                    <li
-                      algaehtabs={"CommissionSetup"}
-                      className={"nav-item tab-button"}
-                      onClick={this.openTab.bind(this)}
-                    >
-                      {
-                        <AlgaehLabel
-                          label={{
-                            fieldName: "commission_setup"
-                          }}
-                        />
-                      }
-                    </li>
+                    {this.state.isdoctor === "Y" ? (
+                      <li
+                        algaehtabs={"CommissionSetup"}
+                        className={"nav-item tab-button"}
+                        onClick={this.openTab.bind(this)}
+                      >
+                        {
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "commission_setup"
+                            }}
+                          />
+                        }
+                      </li>
+                    ) : null}
                   </ul>
                 </div>
                 <MyContext.Provider

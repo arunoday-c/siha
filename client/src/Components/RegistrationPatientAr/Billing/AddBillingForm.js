@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import DisplayOPBilling from "../../BillDetails/BillDetails";
+import DisplayOPBilling from "../../BillDetailsAr/BillDetailsAr";
 import "./AddBillingForm.css";
 import "./../../../styles/site.css";
 import {
@@ -37,6 +37,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { getAmountFormart } from "../../../utils/GlobalFunctions";
+import { getLabelFromLanguage } from "../../../utils/GlobalFunctions";
 
 class AddBillingForm extends Component {
   constructor(props) {
@@ -109,7 +110,9 @@ class AddBillingForm extends Component {
                           onClick={ProcessInsurance.bind(this, this, context)}
                           disabled={this.state.ProcessInsure}
                         >
-                          Process Insurance
+                          {getLabelFromLanguage({
+                            fieldName: "process_insurance"
+                          })}
                         </button>
                       </div>
                       <div className="col-lg-6">
@@ -119,7 +122,7 @@ class AddBillingForm extends Component {
                           onClick={this.ShowBillDetails.bind(this)}
                           disabled={this.state.billdetail}
                         >
-                          Bill Details
+                          {getLabelFromLanguage({ fieldName: "bill_details" })}
                         </button>
 
                         <DisplayOPBilling
@@ -173,7 +176,7 @@ class AddBillingForm extends Component {
                         <h6>
                           {this.state.bill_number
                             ? this.state.bill_number
-                            : "Not Generated"}
+                            : "غير منشأ"}
                         </h6>
                       </div>
 
@@ -373,7 +376,7 @@ class AddBillingForm extends Component {
                           <h6>
                             {this.state.receipt_number
                               ? this.state.receipt_number
-                              : "Not Generated"}
+                              : "غير منشأ"}
                           </h6>
                         </div>
                         <div className="col-lg-3">
@@ -463,7 +466,11 @@ class AddBillingForm extends Component {
                             />
 
                             <span style={{ fontSize: "0.8rem" }}>
-                              Pay by Cash
+                              <AlgaehLabel
+                                label={{
+                                  fieldName: "payby_cash"
+                                }}
+                              />
                             </span>
                           </label>
                         </div>
@@ -516,7 +523,11 @@ class AddBillingForm extends Component {
                               )}
                             />
                             <span style={{ fontSize: "0.8rem" }}>
-                              Pay by Card
+                              <AlgaehLabel
+                                label={{
+                                  fieldName: "payby_card"
+                                }}
+                              />
                             </span>
                           </label>
                         </div>
@@ -605,7 +616,11 @@ class AddBillingForm extends Component {
                               )}
                             />
                             <span style={{ fontSize: "0.8rem" }}>
-                              Pay by Cheque
+                              <AlgaehLabel
+                                label={{
+                                  fieldName: "payby_check"
+                                }}
+                              />
                             </span>
                           </label>
                         </div>

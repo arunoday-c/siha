@@ -123,6 +123,7 @@ class PersonalDetails extends PureComponent {
   }
 
   render() {
+    debugger;
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -243,7 +244,7 @@ class PersonalDetails extends PureComponent {
                                 ? "name"
                                 : "arabic_name",
                             valueField: "value",
-                            data: variableJson.FORMAT_GENDER
+                            data: variableJson.EMP_FORMAT_GENDER
                           },
                           onChange: texthandle.bind(this, this, context),
                           others: {

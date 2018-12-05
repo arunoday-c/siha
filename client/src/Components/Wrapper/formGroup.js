@@ -1,7 +1,9 @@
 import React, { PureComponent } from "react";
-import { checkSecurity } from "../../utils/GlobalFunctions";
+import { checkSecurity, numberFormater } from "../../utils/GlobalFunctions";
 import "./wrapper.css";
 import Label from "../Wrapper/label";
+import Cleave from "cleave.js/react";
+import NumberFormat from "react-number-format";
 export default class FormGroup extends PureComponent {
   constructor(props) {
     super(props);
@@ -12,7 +14,13 @@ export default class FormGroup extends PureComponent {
       error: false,
       helperText: "",
       disabled: false,
-      hasSecurity: false
+      hasSecurity: false,
+      options: {
+        thousandSeparator: ",",
+        decimalSeparator: ".",
+        decimalScale: 2,
+        allowNegative: true
+      }
     };
   }
 
@@ -46,13 +54,47 @@ export default class FormGroup extends PureComponent {
     }
     return hasSecurity;
   }
+  onKeyPressHandler(evt) {
+    const charCode = evt.which ? evt.which : evt.keyCode;
+    if (
+      charCode > 31 &&
+      (charCode < 48 || charCode > 57) &&
+      this.state.decimal_separator_code !== charCode &&
+      this.state.thousand_separator_code !== charCode
+    ) {
+      return false;
+    }
+    return true;
+  }
 
+  getKeyCode(decimal) {
+    decimal = decimal || false;
+    const settings = JSON.parse(sessionStorage.getItem("CurrencyDetail"));
+    if (!decimal) {
+      this.setState({
+        decimal_separator_code: settings.decimal_separator.charCodeAt(0),
+        thousand_separator_code: settings.thousand_separator.charCodeAt(0)
+      });
+    } else {
+      this.setState({
+        options: {
+          thousandSeparator: settings.thousand_separator,
+          decimalSeparator: settings.decimal_separator,
+          decimalScale: parseInt(settings.decimal_places),
+          allowNegative: true,
+          ...this.props.textBox.decimal
+        }
+      });
+    }
+  }
   componentDidMount() {
     const _hasSecurity = this.getSecurityCheck();
     if (_hasSecurity) {
       this.setState({ hasSecurity: true });
       return;
     }
+    if (this.props.textBox.number !== undefined) this.getKeyCode(false);
+    if (this.props.textBox.decimal !== undefined) this.getKeyCode(true);
     this.setState({
       value: this.props.textBox.value,
       disabled:
@@ -124,23 +166,25 @@ export default class FormGroup extends PureComponent {
           : { onChange: this.internalStateSetting.bind(this) };
       if (this.props.textBox.decimal !== undefined) {
         return (
-          <input
-            type="number"
-            step=".0"
+          <NumberFormat
             name={this.props.textBox.name}
-            value={_value}
-            {..._onChange}
             {..._disabled}
             {..._required}
             {...this.props.textBox.others}
             {..._class}
+            value={_value}
+            thousandSeparator={this.state.options.thousandSeparator}
+            decimalSeparator={this.state.options.decimalSeparator}
+            decimalScale={this.state.options.decimalScale}
+            allowNegative={this.state.options.allowNegative}
+            fixedDecimalScale={true}
+            {..._onChange}
           />
         );
       } else if (this.props.textBox.number !== undefined) {
         return (
           <input
             type="number"
-            step=".0"
             name={this.props.textBox.name}
             value={_value}
             {..._onChange}
@@ -148,6 +192,7 @@ export default class FormGroup extends PureComponent {
             {..._disabled}
             {...this.props.textBox.others}
             {..._class}
+            onKeyPress={this.onKeyPressHandler.bind(this)}
           />
         );
       } else if (this.props.textBox.mask !== undefined) {
@@ -163,6 +208,27 @@ export default class FormGroup extends PureComponent {
             {...this.props.textBox.others}
             {..._class}
           />
+        );
+      } else if (this.props.textBox.card !== undefined) {
+        const _options = {
+          creditCard: true,
+          delimiter: "-",
+          ...this.props.textBox.card
+        };
+        return (
+          <React.Fragment>
+            <Cleave
+              options={_options}
+              name={this.props.textBox.name}
+              value={_value}
+              {..._onChange}
+              {..._required}
+              {..._disabled}
+              {...this.props.textBox.others}
+              {..._class}
+            />
+            <span className="creditCardIcon" />
+          </React.Fragment>
         );
       } else {
         const _isMultiline =

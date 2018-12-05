@@ -154,6 +154,8 @@ class AddOPBillingForm extends Component {
                         response.data.records.patient_payable_h =
                           response.data.records.patient_payable ||
                           $this.state.patient_payable;
+
+                        response.data.records.billDetails = false;
                         context.updateState({ ...response.data.records });
                       }
                     }
@@ -316,6 +318,7 @@ class AddOPBillingForm extends Component {
           total_amount: 0,
           unbalanced_amount: 0,
           saveEnable: true,
+          billDetails: true,
           applydiscount: true
         });
       }
@@ -423,6 +426,7 @@ class AddOPBillingForm extends Component {
                       className="btn btn-default"
                       style={{ marginTop: "24px" }}
                       onClick={this.ShowBillDetails.bind(this)}
+                      disabled={this.state.billDetails}
                     >
                       View Bill Details
                     </button>
@@ -686,6 +690,10 @@ class AddOPBillingForm extends Component {
                         data: this.state.billdetails
                       }}
                       isEditable={!this.state.Billexists}
+                      actions={{
+                        allowEdit: !this.state.Billexists,
+                        allowDelete: !this.state.Billexists
+                      }}
                       paging={{ page: 0, rowsPerPage: 5 }}
                       byForceEvents={true}
                       events={{

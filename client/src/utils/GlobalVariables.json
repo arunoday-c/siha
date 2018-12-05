@@ -5,6 +5,12 @@
     { "name": "Others", "arabic_name": "الآخرين", "value": "Others" }
   ],
 
+  "EMP_FORMAT_GENDER": [
+    { "name": "Male", "arabic_name": "الذكر", "value": "MALE" },
+    { "name": "Female", "arabic_name": "إناثا", "value": "FEMALE" },
+    { "name": "Others", "arabic_name": "الآخرين", "value": "OTHER" }
+  ],
+
   "FORMAT_MARTIALSTS": [
     { "name": "Married", "arabic_name": "زوجت", "value": "Married" },
     { "name": "Single", "arabic_name": "غير مرتبطة", "value": "Single" },
