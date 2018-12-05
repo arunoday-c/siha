@@ -130,12 +130,15 @@ class DisPatientForm extends Component {
                           : "--------"}
                       </h6>
                     </div>
-
-                    {this.state.cancelled === "Y" ? (
-                      <div className="col-lg-3">
+                    <div className="col-lg-3">
+                      {this.state.cancelled === "Y" ? (
                         <h5 style={{ color: "red" }}> Cancelled </h5>
-                      </div>
-                    ) : null}
+                      ) : this.state.balance_credit > 0 ? (
+                        <h5 style={{ color: "red" }}> Not Settled </h5>
+                      ) : (
+                        <h5 style={{ color: "green" }}> Settled </h5>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>

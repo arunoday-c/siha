@@ -423,6 +423,7 @@ class SubInsurance extends PureComponent {
                     }
                   ]}
                   keyId="service_name"
+                  filter={true}
                   dataSource={{
                     data:
                       this.props.pricelist === undefined

@@ -429,13 +429,20 @@ const credittexthandle = ($this, context, ctrl, e) => {
       type: "warning"
     });
   } else {
-    $this.setState({
-      [e.target.name]: e.target.value
-    });
+    $this.setState(
+      {
+        [e.target.name]: e.target.value,
+        balance_credit: e.target.value
+      },
+      () => {
+        billheaderCalculation($this, context);
+      }
+    );
 
     if (context != null) {
       context.updateState({
-        [e.target.name]: e.target.value
+        [e.target.name]: e.target.value,
+        balance_credit: e.target.value
       });
     }
   }

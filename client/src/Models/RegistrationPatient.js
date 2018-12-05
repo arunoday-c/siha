@@ -1,3 +1,6 @@
+import { getCookie } from "../utils/algaehApiCall";
+
+let prevLang = getCookie("Language");
 export default {
   inputParam: function(param) {
     var output;
@@ -81,7 +84,7 @@ export default {
       DialogOpen: false,
       sideBarOpen: false,
       sidBarOpen: true,
-      selectedLang: "en",
+      selectedLang: prevLang,
       chnageLang: false,
       AGEMM: null,
       AGEDD: null,

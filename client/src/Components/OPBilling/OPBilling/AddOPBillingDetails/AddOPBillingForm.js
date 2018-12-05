@@ -1059,7 +1059,7 @@ class AddOPBillingForm extends Component {
                             decimal: { allowNegative: false },
                             value: this.state.credit_amount,
                             className: "txt-fld",
-                            name: "state_credit_amount",
+                            name: "credit_amount",
                             events: {
                               onChange: credittexthandle.bind(
                                 this,
@@ -1068,11 +1068,11 @@ class AddOPBillingForm extends Component {
                               )
                             },
                             others: {
-                              placeholder: "0.00",
-                              onBlur: credittextCal.bind(this, this),
-                              onFocus: e => {
-                                e.target.oldvalue = e.target.value;
-                              }
+                              placeholder: "0.00"
+                              // onBlur: credittextCal.bind(this, this),
+                              // onFocus: e => {
+                              //   e.target.oldvalue = e.target.value;
+                              // }
                             }
                           }}
                         />
@@ -1099,7 +1099,8 @@ class AddOPBillingForm extends Component {
                               fieldName: "balance_due"
                             }}
                           />
-                          <h6>0.00</h6>
+
+                          <h6>{getAmountFormart(this.state.balance_credit)}</h6>
                         </div>
                       </div>
                       <ReciptForm BillingIOputs={this.props.BillingIOputs} />

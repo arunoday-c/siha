@@ -103,9 +103,9 @@ let addBillData = (req, res, next) => {
             incharge_or_provider, bill_date, advance_amount,advance_adjust, discount_amount, sub_total_amount \
             , total_tax,  billing_status, sheet_discount_amount, sheet_discount_percentage, net_amount, net_total \
             , company_res, sec_company_res, patient_res, patient_payable, company_payable, sec_company_payable \
-            , patient_tax, company_tax, sec_company_tax, net_tax, credit_amount, receiveable_amount \
+            , patient_tax, company_tax, sec_company_tax, net_tax, credit_amount, receiveable_amount,balance_credit \
             , created_by, created_date, updated_by, updated_date, copay_amount, deductable_amount) VALUES (?,?,?,?\
-              ,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              ,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         inputParam.patient_id,
         inputParam.visit_id,
@@ -137,6 +137,7 @@ let addBillData = (req, res, next) => {
         inputParam.net_tax,
         inputParam.credit_amount,
         inputParam.receiveable_amount,
+        inputParam.balance_credit,
         inputParam.created_by,
         new Date(),
         inputParam.updated_by,
@@ -206,7 +207,7 @@ let addBillData = (req, res, next) => {
             );
           }
 
-          req.billing_header_id = headerResult.insertId;
+          // req.billing_header_id = headerResult.insertId;
           debugLog("Billing Header ", headerResult.insertId);
           let newDtls = new LINQ(inputParam.billdetails)
             .Select(s => {
@@ -514,7 +515,7 @@ let addBill = (dataBase, req, res, callBack, isCommited, next) => {
                   headerResult.insertId != null &&
                   headerResult.insertId != ""
                 ) {
-                  req.billing_header_id = headerResult.insertId;
+                  // req.billing_header_id = headerResult.insertId;
                   let detailsInsert = [];
                   bulkInputArrayObject(inputParam.billdetails, detailsInsert, {
                     hims_f_billing_header_id: headerResult.insertId
@@ -903,7 +904,7 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
     patient_payable: 0,
     comapany_resp: 0,
     company_payble: 0,
-    sec_company: 0,
+    // sec_company: 0,
     sec_deductable_percentage: 0,
     sec_deductable_amount: 0,
     sec_company_res: 0,
@@ -1549,7 +1550,7 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                     patient_payable: 0,
                     comapany_resp: 0,
                     company_payble: 0,
-                    sec_company: 0,
+                    // sec_company: 0,
                     sec_deductable_percentage: 0,
                     sec_deductable_amount: 0,
                     sec_company_res: 0,

@@ -1,8 +1,9 @@
-import { swalMessage } from "../../../../utils/algaehApiCall";
+import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import Enumerable from "linq";
 import extend from "extend";
 import Options from "../../../../Options.json";
+import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 
 let texthandlerInterval = null;
 
@@ -31,7 +32,7 @@ const discounthandle = ($this, context, ctrl, e) => {
         sheet_discount_amount: sheet_discount_amount
       },
       () => {
-        PosheaderCalculation($this, e);
+        PosheaderCalculation($this, context);
       }
     );
 
@@ -106,33 +107,6 @@ const numberchangeTexts = ($this, context, e) => {
   }
 };
 
-// const getItemLocationStock = ($this, value) => {
-//
-//   $this.props.getItemLocationStock({
-//     uri: "/pharmacyGlobal/getItemLocationStock",
-//     method: "GET",
-//     data: {
-//       location_id: $this.state.location_id,
-//       item_id: value.item_id
-//     },
-//     redux: {
-//       type: "ITEMS_BATCH_GET_DATA",
-//       mappingName: "itemBatch"
-//     },
-//     afterSuccess: data => {
-//       if (data.length !== 0) {
-//         let total_quantity = 0;
-//         for (let i = 0; i < data.length; i++) {
-//           let qtyhand = data[i].qtyhand;
-//           total_quantity = total_quantity + qtyhand;
-//         }
-//         $this.setState({
-//           total_quantity: total_quantity
-//         });
-//       }
-//     }
-//   });
-// };
 const itemchangeText = ($this, context, e) => {
   let name = e.name || e.target.name;
   if ($this.state.location_id !== null) {
@@ -299,11 +273,6 @@ const AddItems = ($this, context) => {
   } else {
     let ItemInput = [
       {
-        // item_id: $this.state.item_id,
-        // item_category: $this.state.item_category_id,
-        // item_group_id: $this.state.item_group_id,
-        // pharmacy_location_id: $this.state.location_id,
-
         insured: $this.state.insured,
         conversion_factor: $this.state.conversion_factor,
         vat_applicable: "Y",
@@ -321,49 +290,65 @@ const AddItems = ($this, context) => {
       }
     ];
 
-    $this.props.getPrescriptionPOS({
+    algaehApiCall({
       uri: "/billing/getBillDetails",
       method: "POST",
       data: ItemInput,
-      redux: {
-        type: "BILL_GEN_GET_DATA",
-        mappingName: "xxx"
-      },
-      afterSuccess: data => {
-        if (data.billdetails[0].pre_approval === "Y") {
-          swalMessage({
-            title:
-              "Invalid Input. Selected Service is Pre-Approval required, you don't have rights to bill.",
-            type: "warning"
-          });
-        } else {
-          let existingservices = $this.state.pharmacy_stock_detail;
+      onSuccess: response => {
+        if (response.data.success) {
+          debugger;
+          let data = response.data.records;
+          if (data.billdetails[0].pre_approval === "Y") {
+            swalMessage({
+              title:
+                "Invalid Input. Selected Service is Pre-Approval required, you don't have rights to bill.",
+              type: "warning"
+            });
+          } else {
+            let existingservices = $this.state.pharmacy_stock_detail;
+            debugger;
+            if (data.billdetails.length !== 0) {
+              data.billdetails[0].extended_cost =
+                data.billdetails[0].gross_amount;
+              data.billdetails[0].net_extended_cost =
+                data.billdetails[0].net_amout;
 
-          if (data.billdetails.length !== 0) {
-            data.billdetails[0].extended_cost =
-              data.billdetails[0].gross_amount;
-            data.billdetails[0].net_extended_cost =
-              data.billdetails[0].net_amout;
+              data.billdetails[0].item_id = $this.state.item_id;
+              data.billdetails[0].item_category = $this.state.item_category;
+              data.billdetails[0].item_group_id = $this.state.item_group_id;
+              data.billdetails[0].expiry_date = $this.state.expiry_date;
+              data.billdetails[0].batchno = $this.state.batchno;
+              data.billdetails[0].uom_id = $this.state.uom_id;
+              data.billdetails[0].operation = "-";
+              data.billdetails[0].grn_no = $this.state.grn_no;
+              data.billdetails[0].qtyhand = $this.state.qtyhand;
+              data.billdetails[0].service_id = data.billdetails[0].services_id;
+              data.billdetails[0].discount_amount =
+                data.billdetails[0].discount_amout;
 
-            data.billdetails[0].item_id = $this.state.item_id;
-            data.billdetails[0].item_category = $this.state.item_category;
-            data.billdetails[0].item_group_id = $this.state.item_group_id;
-            data.billdetails[0].expiry_date = $this.state.expiry_date;
-            data.billdetails[0].batchno = $this.state.batchno;
-            data.billdetails[0].uom_id = $this.state.uom_id;
-            data.billdetails[0].operation = "-";
-            data.billdetails[0].grn_no = $this.state.grn_no;
-            data.billdetails[0].qtyhand = $this.state.qtyhand;
-            data.billdetails[0].service_id = data.billdetails[0].services_id;
-            data.billdetails[0].discount_amount =
-              data.billdetails[0].discount_amout;
+              existingservices.splice(0, 0, data.billdetails[0]);
+            }
+            debugger;
+            if (context != null) {
+              context.updateState({
+                pharmacy_stock_detail: existingservices,
+                item_id: null,
+                uom_id: null,
+                batchno: null,
+                expiry_date: null,
+                quantity: 0,
+                unit_cost: 0,
+                Batch_Items: [],
+                service_id: null,
+                conversion_factor: 1,
+                grn_no: null,
+                item_group_id: null,
+                item_category: null,
+                qtyhand: 0
+              });
+            }
 
-            existingservices.splice(0, 0, data.billdetails[0]);
-          }
-
-          if (context != null) {
-            context.updateState({
-              pharmacy_stock_detail: existingservices,
+            $this.setState({
               item_id: null,
               uom_id: null,
               batchno: null,
@@ -375,39 +360,197 @@ const AddItems = ($this, context) => {
               conversion_factor: 1,
               grn_no: null,
               item_group_id: null,
-              item_category: null,
+              selectBatchButton: false,
               qtyhand: 0
             });
+
+            algaehApiCall({
+              uri: "/billing/billingCalculations",
+              method: "POST",
+              data: { billdetails: existingservices },
+              onSuccess: response => {
+                if (response.data.success) {
+                  let data = response.data.records;
+
+                  data.patient_payable_h =
+                    data.patient_payable || $this.state.patient_payable;
+                  data.sub_total =
+                    data.sub_total_amount || $this.state.sub_total;
+                  data.patient_responsibility =
+                    data.patient_res || $this.state.patient_responsibility;
+                  data.company_responsibility =
+                    data.company_res || $this.state.company_responsibility;
+
+                  data.company_payable =
+                    data.company_payble || $this.state.company_payable;
+                  data.sec_company_responsibility =
+                    data.sec_company_res ||
+                    $this.state.sec_company_responsibility;
+                  data.sec_company_payable =
+                    data.sec_company_paybale || $this.state.sec_company_payable;
+
+                  data.copay_amount =
+                    data.copay_amount || $this.state.copay_amount;
+                  data.sec_copay_amount =
+                    data.sec_copay_amount || $this.state.sec_copay_amount;
+                  data.addItemButton = false;
+                  data.saveEnable = false;
+                  if (context != null) {
+                    context.updateState({ ...data });
+                  }
+                }
+                AlgaehLoader({ show: false });
+              },
+              onFailure: error => {
+                AlgaehLoader({ show: false });
+                swalMessage({
+                  title: error.message,
+                  type: "error"
+                });
+              }
+            });
           }
-
-          $this.setState({
-            item_id: null,
-            uom_id: null,
-            batchno: null,
-            expiry_date: null,
-            quantity: 0,
-            unit_cost: 0,
-            Batch_Items: [],
-            service_id: null,
-            conversion_factor: 1,
-            grn_no: null,
-            item_group_id: null,
-            selectBatchButton: false,
-            qtyhand: 0
-          });
-
-          $this.props.PosHeaderCalculations({
-            uri: "/billing/billingCalculations",
-            method: "POST",
-            data: { billdetails: existingservices },
-            redux: {
-              type: "POS_HEADER_GEN_GET_DATA",
-              mappingName: "posheader"
-            }
-          });
         }
+      },
+      onFailure: error => {
+        AlgaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
       }
     });
+
+    // algaehApiCall({
+    //   uri: "/billing/getBillDetails",
+    //   method: "POST",
+    //   data: ItemInput,
+    //   onSuccess: response => {
+    //     if (response.data.success) {
+    //       let data = response.data.records;
+
+    //       if (data.billdetails[0].pre_approval === "Y") {
+    //         swalMessage({
+    //           title:
+    //             "Invalid Input. Selected Service is Pre-Approval required, you don't have rights to bill.",
+    //           type: "warning"
+    //         });
+    //       } else {
+    //         let existingservices = $this.state.pharmacy_stock_detail;
+
+    //         if (data.billdetails.length !== 0) {
+    //           data.billdetails[0].extended_cost =
+    //             data.billdetails[0].gross_amount;
+    //           data.billdetails[0].net_extended_cost =
+    //             data.billdetails[0].net_amout;
+
+    //           data.billdetails[0].item_id = $this.state.item_id;
+    //           data.billdetails[0].item_category = $this.state.item_category;
+    //           data.billdetails[0].item_group_id = $this.state.item_group_id;
+    //           data.billdetails[0].expiry_date = $this.state.expiry_date;
+    //           data.billdetails[0].batchno = $this.state.batchno;
+    //           data.billdetails[0].uom_id = $this.state.uom_id;
+    //           data.billdetails[0].operation = "-";
+    //           data.billdetails[0].grn_no = $this.state.grn_no;
+    //           data.billdetails[0].qtyhand = $this.state.qtyhand;
+    //           data.billdetails[0].service_id = data.billdetails[0].services_id;
+    //           data.billdetails[0].discount_amount =
+    //             data.billdetails[0].discount_amout;
+
+    //           existingservices.splice(0, 0, data.billdetails[0]);
+    //         }
+
+    //         if (context != null) {
+    //           context.updateState({
+    //             pharmacy_stock_detail: existingservices,
+    //             item_id: null,
+    //             uom_id: null,
+    //             batchno: null,
+    //             expiry_date: null,
+    //             quantity: 0,
+    //             unit_cost: 0,
+    //             Batch_Items: [],
+    //             service_id: null,
+    //             conversion_factor: 1,
+    //             grn_no: null,
+    //             item_group_id: null,
+    //             item_category: null,
+    //             qtyhand: 0
+    //           });
+    //         }
+
+    //         $this.setState({
+    //           item_id: null,
+    //           uom_id: null,
+    //           batchno: null,
+    //           expiry_date: null,
+    //           quantity: 0,
+    //           unit_cost: 0,
+    //           Batch_Items: [],
+    //           service_id: null,
+    //           conversion_factor: 1,
+    //           grn_no: null,
+    //           item_group_id: null,
+    //           selectBatchButton: false,
+    //           qtyhand: 0
+    //         });
+
+    //         algaehApiCall({
+    //           uri: "/billing/billingCalculations",
+    //           method: "POST",
+    //           data: { billdetails: existingservices },
+    //           onSuccess: response => {
+    //             if (response.data.success) {
+    //               let data = response.data.records;
+
+    //               data.patient_payable_h =
+    //                 data.patient_payable || $this.state.patient_payable;
+    //               data.sub_total =
+    //                 data.sub_total_amount || $this.state.sub_total;
+    //               data.patient_responsibility =
+    //                 data.patient_res || $this.state.patient_responsibility;
+    //               data.company_responsibility =
+    //                 data.company_res || $this.state.company_responsibility;
+
+    //               data.company_payable =
+    //                 data.company_payble || $this.state.company_payable;
+    //               data.sec_company_responsibility =
+    //                 data.sec_company_res ||
+    //                 $this.state.sec_company_responsibility;
+    //               data.sec_company_payable =
+    //                 data.sec_company_paybale || $this.state.sec_company_payable;
+
+    //               data.copay_amount =
+    //                 data.copay_amount || $this.state.copay_amount;
+    //               data.sec_copay_amount =
+    //                 data.sec_copay_amount || $this.state.sec_copay_amount;
+    //               data.addItemButton = false;
+    //               data.saveEnable = false;
+    //               if (context != null) {
+    //                 context.updateState({ ...data });
+    //               }
+    //             }
+    //             AlgaehLoader({ show: false });
+    //           },
+    //           onFailure: error => {
+    //             AlgaehLoader({ show: false });
+    //             swalMessage({
+    //               title: error.message,
+    //               type: "error"
+    //             });
+    //           }
+    //         });
+    //       }
+    //     }
+    //   },
+    //   onFailure: error => {
+    //     AlgaehLoader({ show: false });
+    //     swalMessage({
+    //       title: error.message,
+    //       type: "error"
+    //     });
+    //   }
+    // });
   }
 };
 
@@ -428,16 +571,6 @@ const deletePosDetail = ($this, context, row) => {
       pharmacy_stock_detail.splice(i, 1);
     }
   }
-
-  $this.props.PosHeaderCalculations({
-    uri: "/billing/billingCalculations",
-    method: "POST",
-    data: { billdetails: pharmacy_stock_detail },
-    redux: {
-      type: "POS_HEADER_GEN_GET_DATA",
-      mappingName: "posheader"
-    }
-  });
 
   if (pharmacy_stock_detail.length === 0) {
     if (context !== undefined) {
@@ -479,10 +612,12 @@ const deletePosDetail = ($this, context, row) => {
         cheque_amount: 0,
         total_amount: 0,
         saveEnable: true,
-        unbalanced_amount: 0
+        unbalanced_amount: 0,
+        balance_credit: 0
       });
     }
   } else {
+    PosheaderCalculation($this, context);
     if (context !== undefined) {
       context.updateState({
         pharmacy_stock_detail: pharmacy_stock_detail
@@ -491,18 +626,8 @@ const deletePosDetail = ($this, context, row) => {
   }
 };
 
-const updatePosDetail = $this => {
-  //debugger;
-
-  $this.props.PosHeaderCalculations({
-    uri: "/billing/billingCalculations",
-    method: "POST",
-    data: { billdetails: $this.state.pharmacy_stock_detail },
-    redux: {
-      type: "POS_HEADER_GEN_GET_DATA",
-      mappingName: "posheader"
-    }
-  });
+const updatePosDetail = ($this, context) => {
+  PosheaderCalculation($this, context);
 };
 
 //Calculate Row Detail
@@ -538,34 +663,45 @@ const calculateAmount = ($this, row, ctrl, e) => {
       }
     ];
 
-    $this.props.generateBill({
+    algaehApiCall({
       uri: "/billing/getBillDetails",
       method: "POST",
       data: inputParam,
-      redux: {
-        type: "BILL_GEN_GET_DATA",
-        mappingName: "xxx"
-      },
-      afterSuccess: data => {
-        //debugger;
-        data.billdetails[0].extended_cost = data.billdetails[0].gross_amount;
-        data.billdetails[0].net_extended_cost = data.billdetails[0].net_amout;
+      onSuccess: response => {
+        if (response.data.success) {
+          let data = response.data.records;
+          // $this.props.generateBill({
+          //   uri: "/billing/getBillDetails",
+          //   method: "POST",
+          //   data: inputParam,
+          //   redux: {
+          //     type: "BILL_GEN_GET_DATA",
+          //     mappingName: "xxx"
+          //   },
+          //   afterSuccess: data => {
+          //debugger;
+          data.billdetails[0].extended_cost = data.billdetails[0].gross_amount;
+          data.billdetails[0].net_extended_cost = data.billdetails[0].net_amout;
 
-        data.billdetails[0].item_id = row.item_id;
-        data.billdetails[0].item_category = row.item_category;
-        data.billdetails[0].expiry_date = row.expiry_date;
-        data.billdetails[0].batchno = row.batchno;
-        data.billdetails[0].uom_id = row.uom_id;
-        data.billdetails[0].discount_amount =
-          data.billdetails[0].discount_amout;
-        extend(row, data.billdetails[0]);
-        pharmacy_stock_detail[row.rowIdx] = row;
-        // for (let i = 0; i < pharmacy_stock_detail.length; i++) {
-        //   if (pharmacy_stock_detail[i].item_id === row.item_id) {
-        //     pharmacy_stock_detail[i] = row;
-        //   }
-        // }
-        $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
+          data.billdetails[0].item_id = row.item_id;
+          data.billdetails[0].item_category = row.item_category;
+          data.billdetails[0].expiry_date = row.expiry_date;
+          data.billdetails[0].batchno = row.batchno;
+          data.billdetails[0].uom_id = row.uom_id;
+          data.billdetails[0].discount_amount =
+            data.billdetails[0].discount_amout;
+          extend(row, data.billdetails[0]);
+          pharmacy_stock_detail[row.rowIdx] = row;
+
+          $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
+        }
+      },
+      onFailure: error => {
+        AlgaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
       }
     });
   }
@@ -586,7 +722,7 @@ const adjustadvance = ($this, context, ctrl, e) => {
         [e.target.name]: e.target.value
       },
       () => {
-        PosheaderCalculation($this, e);
+        PosheaderCalculation($this, context);
       }
     );
 
@@ -598,7 +734,7 @@ const adjustadvance = ($this, context, ctrl, e) => {
   }
 };
 
-const PosheaderCalculation = ($this, e) => {
+const PosheaderCalculation = ($this, context) => {
   // if (e.target.value !== e.target.oldvalue) {
   let ItemInput = {
     isReceipt: false,
@@ -608,16 +744,48 @@ const PosheaderCalculation = ($this, e) => {
     ),
     sheet_discount_amount: parseFloat($this.state.sheet_discount_amount),
     advance_adjust: parseFloat($this.state.advance_adjust),
-    gross_total: parseFloat($this.state.gross_total)
+    gross_total: parseFloat($this.state.gross_total),
+    credit_amount: parseFloat($this.state.credit_amount)
   };
 
-  $this.props.PosHeaderCalculations({
+  algaehApiCall({
     uri: "/billing/billingCalculations",
     method: "POST",
     data: ItemInput,
-    redux: {
-      type: "POS_HEADER_GEN_GET_DATA",
-      mappingName: "posheader"
+    onSuccess: response => {
+      if (response.data.success) {
+        let data = response.data.records;
+
+        data.patient_payable_h =
+          data.patient_payable || $this.state.patient_payable;
+        data.sub_total = data.sub_total_amount || $this.state.sub_total;
+        data.patient_responsibility =
+          data.patient_res || $this.state.patient_responsibility;
+        data.company_responsibility =
+          data.company_res || $this.state.company_responsibility;
+
+        data.company_payable =
+          data.company_payble || $this.state.company_payable;
+        data.sec_company_responsibility =
+          data.sec_company_res || $this.state.sec_company_responsibility;
+        data.sec_company_payable =
+          data.sec_company_paybale || $this.state.sec_company_payable;
+
+        data.copay_amount = data.copay_amount || $this.state.copay_amount;
+        data.sec_copay_amount =
+          data.sec_copay_amount || $this.state.sec_copay_amount;
+        data.addItemButton = false;
+        data.saveEnable = false;
+        if (context != null) {
+          context.updateState({ ...data });
+        }
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
   // }
@@ -714,29 +882,31 @@ const credittexthandle = ($this, context, ctrl, e) => {
       type: "warning"
     });
   } else {
-    $this.setState({
-      [e.target.name]: e.target.value
-    });
+    $this.setState(
+      {
+        [e.target.name]: e.target.value,
+        balance_credit: e.target.value
+      },
+      () => {
+        PosheaderCalculation($this, context);
+        // $this.props.PosHeaderCalculations({
+        //   uri: "/billing/billingCalculations",
+        //   method: "POST",
+        //   data: { billdetails: $this.state.pharmacy_stock_detail },
+        //   redux: {
+        //     type: "POS_HEADER_GEN_GET_DATA",
+        //     mappingName: "posheader"
+        //   }
+        // });
+      }
+    );
 
     if (context != null) {
       context.updateState({
-        [e.target.name]: e.target.value
+        [e.target.name]: e.target.value,
+        balance_credit: e.target.value
       });
     }
-  }
-};
-
-const credittextCal = ($this, e) => {
-  if (e.target.value !== e.target.oldvalue) {
-    $this.props.PosHeaderCalculations({
-      uri: "/billing/billingCalculations",
-      method: "POST",
-      data: { billdetails: $this.state.pharmacy_stock_detail },
-      redux: {
-        type: "POS_HEADER_GEN_GET_DATA",
-        mappingName: "posheader"
-      }
-    });
   }
 };
 
@@ -759,6 +929,5 @@ export {
   ViewInsurance,
   qtyonchangegridcol,
   EditGrid,
-  credittexthandle,
-  credittextCal
+  credittexthandle
 };

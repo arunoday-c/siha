@@ -1,10 +1,10 @@
 {
-  "form_opcreidt": "OP Creidt Settlement",
-  "form_name": "OP Creidt Settlement",
+  "form_opcreidt": "POS Creidt Settlement",
+  "form_name": "POS Creidt Settlement",
   "form_home": "Home",
   "form_create": "Create New",
 
-  "credit_number": "Settlement Number",
+  "pos_credit_number": "Settlement Number",
   "credit_date": "Settlement Date",
   "patient_code": "Patient Code",
   "full_name": "Patient Name",
@@ -18,6 +18,7 @@
   "balance_amount": "Balance Amount",
   "write_off_amount": "Write Off Amount",
   "remarks": "Remarks",
+
   "payment_number": "Payment Number",
   "payment_date": "Payment Date",
 
