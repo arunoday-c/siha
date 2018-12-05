@@ -122,7 +122,7 @@ class PersistentDrawer extends React.Component {
       if (
         renderComp === "FrontDesk" ||
         renderComp === "OPBilling" ||
-        renderComp === "DoctorAppointment"
+        renderComp === "Appointment"
       ) {
         renderComp = renderComp + "Ar";
       }
