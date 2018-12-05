@@ -119,11 +119,7 @@ class PersistentDrawer extends React.Component {
         }
       );
     } else if (secLang === "ar") {
-      if (
-        renderComp === "FrontDesk" ||
-        renderComp === "OPBilling" ||
-        renderComp === "Appointment"
-      ) {
+      if (renderComp === "FrontDesk" || renderComp === "OPBilling") {
         renderComp = renderComp + "Ar";
       }
       setCookie("ScreenName", renderComp, 30);
@@ -227,12 +223,13 @@ class PersistentDrawer extends React.Component {
   TriggerPath(submenu, e) {
     debugger;
     const name = submenu.page_to_redirect.replace(/\s/g, ""); // e.currentTarget.getAttribute("name");
+
+    // submenu.screen_name === "Doctor Appointment"
     let screenName =
       submenu.page_to_redirect.replace(/\s/g, "") +
       (this.state.Language !== "en" &&
       (submenu.screen_name === "Front Desk" ||
-        submenu.screen_name === "Op Billing" ||
-        submenu.screen_name === "Doctor Appointment")
+        submenu.screen_name === "Op Billing")
         ? this.state.Language.charAt(0).toUpperCase() +
           this.state.Language.slice(1)
         : "");
