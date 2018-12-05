@@ -495,5 +495,9 @@
     { "name": "Open", "value": "O" },
     { "name": "Closed", "value": "C" },
     { "name": "Authorized", "value": "A" }
+  ],
+  "ACCESS_BY": [
+    { "name": "Other Users", "value": "OU" },
+    { "name": "Super User", "value": "SU" }
   ]
 }
