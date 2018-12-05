@@ -8,7 +8,7 @@ import {
 } from "../utils";
 //import moment from "moment";
 import httpStatus from "../utils/httpStatus";
-import { LINQ } from "node-linq";
+//import { LINQ } from "node-linq";
 import { debugLog, debugFunction } from "../utils/logging";
 
 //created by irfan: to add AlgaehGroupMAster
