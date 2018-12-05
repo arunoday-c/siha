@@ -119,7 +119,11 @@ class PersistentDrawer extends React.Component {
         }
       );
     } else if (secLang === "ar") {
-      if (renderComp === "FrontDesk" || renderComp === "OPBilling") {
+      if (
+        renderComp === "FrontDesk" ||
+        renderComp === "OPBilling" ||
+        renderComp === "DoctorAppointment"
+      ) {
         renderComp = renderComp + "Ar";
       }
       setCookie("ScreenName", renderComp, 30);

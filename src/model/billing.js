@@ -207,7 +207,7 @@ let addBillData = (req, res, next) => {
             );
           }
 
-          req.billing_header_id = headerResult.insertId;
+          // req.billing_header_id = headerResult.insertId;
           debugLog("Billing Header ", headerResult.insertId);
           let newDtls = new LINQ(inputParam.billdetails)
             .Select(s => {
@@ -515,7 +515,7 @@ let addBill = (dataBase, req, res, callBack, isCommited, next) => {
                   headerResult.insertId != null &&
                   headerResult.insertId != ""
                 ) {
-                  req.billing_header_id = headerResult.insertId;
+                  // req.billing_header_id = headerResult.insertId;
                   let detailsInsert = [];
                   bulkInputArrayObject(inputParam.billdetails, detailsInsert, {
                     hims_f_billing_header_id: headerResult.insertId

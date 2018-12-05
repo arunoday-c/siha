@@ -491,7 +491,7 @@ let getAlgaehModules = (req, res, next) => {
           "select algaeh_d_module_id, module_name,module_code, icons,other_language  from algaeh_d_app_module\
               where  record_status=md5('A') " +
             superUser +
-            " order by algaeh_d_module_id ",
+            " order by algaeh_d_module_id desc",
           (error, result) => {
             releaseDBConnection(db, connection);
             if (error) {
@@ -580,8 +580,8 @@ let getAlgaehScreens = (req, res, next) => {
     db.getConnection((error, connection) => {
       if (req.userIdentity.role_type != "GN") {
         connection.query(
-          "select  screen_code, screen_name, page_to_redirect, module_id, other_language  from algaeh_d_app_screens\
-              where  record_status='A' and module_id=? "[
+          "select algaeh_app_screens_id, screen_code, screen_name, page_to_redirect, module_id, other_language  from algaeh_d_app_screens\
+              where  record_status='A' and module_id=?  order by algaeh_app_screens_id desc "[
             req.query.module_id
           ],
           (error, result) => {
@@ -671,7 +671,7 @@ let getAlgaehComponents = (req, res, next) => {
       if (req.userIdentity.role_type != "GN") {
         connection.query(
           "select  algaeh_d_app_component_id, screen_id, component_code, component_name  from algaeh_d_app_component\
-              where  record_status='A' and screen_id=? "[
+              where  record_status='A' and screen_id=? order by algaeh_d_app_component_id desc "[
             req.query.screen_id
           ],
           (error, result) => {
@@ -761,7 +761,7 @@ let getAlgaehScreenElement = (req, res, next) => {
       if (req.userIdentity.role_type != "GN") {
         connection.query(
           "select  algaeh_d_app_scrn_elements_id, screen_element_code, screen_element_name, component_id  from algaeh_d_app_scrn_elements\
-              where  record_status='A' and component_id=? "[
+              where  record_status='A' and component_id=? order by algaeh_d_app_scrn_elements_id desc"[
             req.query.component_id
           ],
           (error, result) => {
