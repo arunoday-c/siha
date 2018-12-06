@@ -95,8 +95,8 @@ const ProcessService = ($this, e) => {
             $this.state.approval_limit_yesno === "N"
           ) {
             preserviceInput.push(serviceInput[0]);
-            for (let i = 0; i < preserviceInput.length; i++) {
-              preserviceInput[i].approval_limit_yesno =
+            for (let k = 0; k < preserviceInput.length; k++) {
+              preserviceInput[k].approval_limit_yesno =
                 data.billdetails[0].preapp_limit_exceed;
             }
 
@@ -327,12 +327,13 @@ const deleteServices = ($this, row, rowId) => {
   let preserviceInput = $this.state.preserviceInput;
   let saved = false;
 
-  for (var i = 0; i < orderservicesdata.length; i++) {
-    if (orderservicesdata[i].services_id === row["services_id"]) {
-      orderservicesdata.splice(i, 1);
-    }
-  }
-  // orderservicesdata.splice(rowId, 1);
+  // for (var i = 0; i < orderservicesdata.length; i++) {
+  //   if (orderservicesdata[i].services_id === row["services_id"]) {
+  //     orderservicesdata.splice(i, 1);
+  //   }
+  // }
+
+  orderservicesdata.splice(row.rowIdx, 1);
 
   if (orderservicesdata.length === 0) {
     saved = true;

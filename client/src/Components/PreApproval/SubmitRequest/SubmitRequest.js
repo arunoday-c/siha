@@ -1,5 +1,4 @@
 import React, { PureComponent } from "react";
-import Typography from "@material-ui/core/Typography";
 
 import "./SubmitRequest.css";
 import "../../../styles/site.css";
@@ -7,7 +6,6 @@ import {
   AlgaehLabel,
   AlgaehDataGrid,
   AlagehAutoComplete,
-  AlagehFormGroup,
   Modal
 } from "../../Wrapper/algaehWrapper";
 
@@ -48,12 +46,10 @@ export default class SubmitRequest extends PureComponent {
     return (
       <React.Fragment>
         <div>
-          <Modal
-            open={this.props.open}
-          >
-            <div className="algaeh-modal" style={{width:"50%"}}>
-
-     <div className="popupHeader"><div className="row">
+          <Modal open={this.props.open}>
+            <div className="algaeh-modal" style={{ width: "50%" }}>
+              <div className="popupHeader">
+                <div className="row">
                   <div className="col-lg-8">
                     <h4>{this.props.HeaderCaption}</h4>
                   </div>
@@ -68,13 +64,14 @@ export default class SubmitRequest extends PureComponent {
                       <i className="fas fa-times-circle" />
                     </button>
                   </div>
-                </div></div>
-                <div className="col-lg-12 popupInner" style={{height:"50vh"}}>
-
-<div className="row" style={{marginTop:10,marginBottom:10}}>
-
-
-      <div className="col">
+                </div>
+              </div>
+              <div className="col-lg-12 popupInner" style={{ height: "50vh" }}>
+                <div
+                  className="row"
+                  style={{ marginTop: 10, marginBottom: 10 }}
+                >
+                  <div className="col">
                     <AlgaehLabel
                       label={{
                         fieldName: "patient_code"
@@ -86,7 +83,7 @@ export default class SubmitRequest extends PureComponent {
                         : "Patient Code"}
                     </h6>
                   </div>
-                        <div className="col">
+                  <div className="col">
                     <AlgaehLabel
                       label={{
                         fieldName: "patient_name"
@@ -99,13 +96,11 @@ export default class SubmitRequest extends PureComponent {
                     </h6>
                   </div>
 
-
-
                   <AlagehAutoComplete
                     div={{ className: "col" }}
-                      label={{
-                        fieldName: "submission_type"
-                      }}
+                    label={{
+                      fieldName: "submission_type"
+                    }}
                     selector={{
                       name: "submission_type",
                       className: "select-fld",
@@ -118,9 +113,8 @@ export default class SubmitRequest extends PureComponent {
                       onChange: texthandle.bind(this, this)
                     }}
                   />
-
-                </div>     
- <div className="row grid-details">
+                </div>
+                <div className="row grid-details">
                   <div className="col-lg-12">
                     <div className="">
                       <AlgaehDataGrid
@@ -147,7 +141,11 @@ export default class SubmitRequest extends PureComponent {
                                 </div>
                               );
                             },
-                       others:{maxWidth:70,resizable: false,style:{textAlign:"center"}}
+                            others: {
+                              maxWidth: 70,
+                              resizable: false,
+                              style: { textAlign: "center" }
+                            }
                           },
                           {
                             fieldName: "service_code",
@@ -176,19 +174,29 @@ export default class SubmitRequest extends PureComponent {
                     </div>
                   </div>
                 </div>
-            
-
-            </div>
-                <div className=" popupFooter">
+              </div>
+              <div className=" popupFooter">
                 <div className="col-lg-12">
-                <div className="row">
-                <div className="col-lg-12">
-                <button className="btn btn-primary" onClick={SubmitRequestUpdate.bind(this, this)}>Submit</button>
-                <button className="btn btn-default" onClick={e => {this.onClose(e)}}>Close</button>
+                  <div className="row">
+                    <div className="col-lg-12">
+                      <button
+                        className="btn btn-primary"
+                        onClick={SubmitRequestUpdate.bind(this, this)}
+                      >
+                        Submit
+                      </button>
+                      <button
+                        className="btn btn-default"
+                        onClick={e => {
+                          this.onClose(e);
+                        }}
+                      >
+                        Close
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                </div>
-                </div>
-                </div>
+              </div>
             </div>
           </Modal>
         </div>

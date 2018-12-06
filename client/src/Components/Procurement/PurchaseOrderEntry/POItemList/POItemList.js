@@ -339,25 +339,24 @@ class POItemList extends Component {
                               ),
                               displayTemplate: row => {
                                 let display;
-                                {
-                                  this.state.po_from === "PHR"
-                                    ? (display =
-                                        this.props.poitemlist === undefined
-                                          ? []
-                                          : this.props.poitemlist.filter(
-                                              f =>
-                                                f.hims_d_item_master_id ===
-                                                row.phar_item_id
-                                            ))
-                                    : (display =
-                                        this.props.poitemlist === undefined
-                                          ? []
-                                          : this.props.poitemlist.filter(
-                                              f =>
-                                                f.hims_d_inventory_item_master_id ===
-                                                row.inv_item_id
-                                            ));
-                                }
+
+                                this.state.po_from === "PHR"
+                                  ? (display =
+                                      this.props.poitemlist === undefined
+                                        ? []
+                                        : this.props.poitemlist.filter(
+                                            f =>
+                                              f.hims_d_item_master_id ===
+                                              row.phar_item_id
+                                          ))
+                                  : (display =
+                                      this.props.poitemlist === undefined
+                                        ? []
+                                        : this.props.poitemlist.filter(
+                                            f =>
+                                              f.hims_d_inventory_item_master_id ===
+                                              row.inv_item_id
+                                          ));
 
                                 return (
                                   <span>
@@ -370,25 +369,24 @@ class POItemList extends Component {
                               },
                               editorTemplate: row => {
                                 let display;
-                                {
-                                  this.state.po_from === "PHR"
-                                    ? (display =
-                                        this.props.poitemlist === undefined
-                                          ? []
-                                          : this.props.poitemlist.filter(
-                                              f =>
-                                                f.hims_d_item_master_id ===
-                                                row.phar_item_id
-                                            ))
-                                    : (display =
-                                        this.props.poitemlist === undefined
-                                          ? []
-                                          : this.props.poitemlist.filter(
-                                              f =>
-                                                f.hims_d_inventory_item_master_id ===
-                                                row.inv_item_id
-                                            ));
-                                }
+
+                                this.state.po_from === "PHR"
+                                  ? (display =
+                                      this.props.poitemlist === undefined
+                                        ? []
+                                        : this.props.poitemlist.filter(
+                                            f =>
+                                              f.hims_d_item_master_id ===
+                                              row.phar_item_id
+                                          ))
+                                  : (display =
+                                      this.props.poitemlist === undefined
+                                        ? []
+                                        : this.props.poitemlist.filter(
+                                            f =>
+                                              f.hims_d_inventory_item_master_id ===
+                                              row.inv_item_id
+                                          ));
 
                                 return (
                                   <span>
@@ -413,25 +411,24 @@ class POItemList extends Component {
                               ),
                               displayTemplate: row => {
                                 let display;
-                                {
-                                  this.state.po_from === "PHR"
-                                    ? (display =
-                                        this.props.poitemcategory === undefined
-                                          ? []
-                                          : this.props.poitemcategory.filter(
-                                              f =>
-                                                f.hims_d_item_category_id ===
-                                                row.phar_item_category
-                                            ))
-                                    : (display =
-                                        this.props.poitemcategory === undefined
-                                          ? []
-                                          : this.props.poitemcategory.filter(
-                                              f =>
-                                                f.hims_d_inventory_tem_category_id ===
-                                                row.inv_item_category_id
-                                            ));
-                                }
+
+                                this.state.po_from === "PHR"
+                                  ? (display =
+                                      this.props.poitemcategory === undefined
+                                        ? []
+                                        : this.props.poitemcategory.filter(
+                                            f =>
+                                              f.hims_d_item_category_id ===
+                                              row.phar_item_category
+                                          ))
+                                  : (display =
+                                      this.props.poitemcategory === undefined
+                                        ? []
+                                        : this.props.poitemcategory.filter(
+                                            f =>
+                                              f.hims_d_inventory_tem_category_id ===
+                                              row.inv_item_category_id
+                                          ));
 
                                 return (
                                   <span>
@@ -444,25 +441,24 @@ class POItemList extends Component {
                               },
                               editorTemplate: row => {
                                 let display;
-                                {
-                                  this.state.po_from === "PHR"
-                                    ? (display =
-                                        this.props.poitemcategory === undefined
-                                          ? []
-                                          : this.props.poitemcategory.filter(
-                                              f =>
-                                                f.hims_d_item_category_id ===
-                                                row.phar_item_category
-                                            ))
-                                    : (display =
-                                        this.props.poitemcategory === undefined
-                                          ? []
-                                          : this.props.poitemcategory.filter(
-                                              f =>
-                                                f.hims_d_inventory_tem_category_id ===
-                                                row.inv_item_category_id
-                                            ));
-                                }
+
+                                this.state.po_from === "PHR"
+                                  ? (display =
+                                      this.props.poitemcategory === undefined
+                                        ? []
+                                        : this.props.poitemcategory.filter(
+                                            f =>
+                                              f.hims_d_item_category_id ===
+                                              row.phar_item_category
+                                          ))
+                                  : (display =
+                                      this.props.poitemcategory === undefined
+                                        ? []
+                                        : this.props.poitemcategory.filter(
+                                            f =>
+                                              f.hims_d_inventory_tem_category_id ===
+                                              row.inv_item_category_id
+                                          ));
 
                                 return (
                                   <span>
@@ -486,25 +482,24 @@ class POItemList extends Component {
                               ),
                               displayTemplate: row => {
                                 let display;
-                                {
-                                  this.state.po_from === "PHR"
-                                    ? (display =
-                                        this.props.poitemgroup === undefined
-                                          ? []
-                                          : this.props.poitemgroup.filter(
-                                              f =>
-                                                f.hims_d_item_group_id ===
-                                                row.phar_item_group
-                                            ))
-                                    : (display =
-                                        this.props.poitemgroup === undefined
-                                          ? []
-                                          : this.props.poitemgroup.filter(
-                                              f =>
-                                                f.hims_d_inventory_item_group_id ===
-                                                row.inv_item_group_id
-                                            ));
-                                }
+
+                                this.state.po_from === "PHR"
+                                  ? (display =
+                                      this.props.poitemgroup === undefined
+                                        ? []
+                                        : this.props.poitemgroup.filter(
+                                            f =>
+                                              f.hims_d_item_group_id ===
+                                              row.phar_item_group
+                                          ))
+                                  : (display =
+                                      this.props.poitemgroup === undefined
+                                        ? []
+                                        : this.props.poitemgroup.filter(
+                                            f =>
+                                              f.hims_d_inventory_item_group_id ===
+                                              row.inv_item_group_id
+                                          ));
 
                                 return (
                                   <span>
@@ -517,25 +512,24 @@ class POItemList extends Component {
                               },
                               editorTemplate: row => {
                                 let display;
-                                {
-                                  this.state.po_from === "PHR"
-                                    ? (display =
-                                        this.props.poitemgroup === undefined
-                                          ? []
-                                          : this.props.poitemgroup.filter(
-                                              f =>
-                                                f.hims_d_item_group_id ===
-                                                row.phar_item_group
-                                            ))
-                                    : (display =
-                                        this.props.poitemgroup === undefined
-                                          ? []
-                                          : this.props.poitemgroup.filter(
-                                              f =>
-                                                f.hims_d_inventory_item_group_id ===
-                                                row.inv_item_group_id
-                                            ));
-                                }
+
+                                this.state.po_from === "PHR"
+                                  ? (display =
+                                      this.props.poitemgroup === undefined
+                                        ? []
+                                        : this.props.poitemgroup.filter(
+                                            f =>
+                                              f.hims_d_item_group_id ===
+                                              row.phar_item_group
+                                          ))
+                                  : (display =
+                                      this.props.poitemgroup === undefined
+                                        ? []
+                                        : this.props.poitemgroup.filter(
+                                            f =>
+                                              f.hims_d_inventory_item_group_id ===
+                                              row.inv_item_group_id
+                                          ));
 
                                 return (
                                   <span>

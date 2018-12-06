@@ -12,7 +12,7 @@ import {
   checkcashhandaler,
   checkcardhandaler,
   checkcheckhandaler,
-  calculateRecipt,
+  // calculateRecipt,
   countertexthandle
 } from "./AddReciptFormHandaler";
 import {

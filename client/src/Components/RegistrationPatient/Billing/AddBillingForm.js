@@ -24,7 +24,6 @@ import {
   credittexthandle,
   advanceAdjustCal,
   discountCal,
-  credittextCal,
   cashtexthCal,
   cardtexthCal,
   chequetexthCal,
@@ -400,7 +399,7 @@ class AddBillingForm extends Component {
                             value: this.state.counter_id,
                             dataSource: {
                               textField:
-                                this.state.selectedLang == "en"
+                                this.state.selectedLang === "en"
                                   ? "counter_description"
                                   : "arabic_name",
                               valueField: "hims_d_counter_id",
@@ -426,7 +425,7 @@ class AddBillingForm extends Component {
                             value: this.state.shift_id,
                             dataSource: {
                               textField:
-                                this.state.selectedLang == "en"
+                                this.state.selectedLang === "en"
                                   ? "shift_description"
                                   : "arabic_name",
                               valueField: "hims_d_shift_id",

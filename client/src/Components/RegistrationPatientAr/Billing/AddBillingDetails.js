@@ -187,10 +187,12 @@ const discounthandle = ($this, context, ctrl, e) => {
   let sheet_discount_amount = 0;
 
   if (e.target.name === "sheet_discount_percentage") {
-    sheet_discount_percentage = parseFloat(e.target.value);
+    sheet_discount_percentage =
+      e.target.value === "" ? "" : parseFloat(e.target.value);
     sheet_discount_amount = 0;
   } else {
-    sheet_discount_amount = parseFloat(e.target.value);
+    sheet_discount_amount =
+      e.target.value === "" ? "" : parseFloat(e.target.value);
     sheet_discount_percentage = 0;
   }
   if (sheet_discount_percentage > 100) {
@@ -198,6 +200,30 @@ const discounthandle = ($this, context, ctrl, e) => {
       title: "Invalid Input. Discount % cannot be greater than 100.",
       type: "Warning"
     });
+    $this.setState({
+      sheet_discount_percentage: $this.state.sheet_discount_percentage
+    });
+
+    if (context !== null) {
+      context.updateState({
+        sheet_discount_percentage: $this.state.sheet_discount_percentage
+      });
+    }
+  } else if (sheet_discount_amount > $this.state.patient_payable) {
+    swalMessage({
+      title:
+        "Invalid Input. Discount Amount cannot be greater than Patient Share.",
+      type: "Warning"
+    });
+    $this.setState({
+      sheet_discount_amount: $this.state.sheet_discount_amount
+    });
+
+    if (context !== null) {
+      context.updateState({
+        sheet_discount_amount: $this.state.sheet_discount_amount
+      });
+    }
   } else {
     $this.setState({
       sheet_discount_percentage: sheet_discount_percentage,
@@ -217,13 +243,23 @@ const billheaderCalculation = ($this, context) => {
   let serviceInput = {
     isReceipt: false,
     intCalculateall: false,
-    sheet_discount_percentage: parseFloat(
-      $this.state.sheet_discount_percentage
-    ),
-    sheet_discount_amount: parseFloat($this.state.sheet_discount_amount),
-    advance_adjust: parseFloat($this.state.advance_adjust),
+    sheet_discount_percentage:
+      $this.state.sheet_discount_percentage === ""
+        ? 0
+        : parseFloat($this.state.sheet_discount_percentage),
+    sheet_discount_amount:
+      $this.state.sheet_discount_amount === ""
+        ? 0
+        : parseFloat($this.state.sheet_discount_amount),
+    advance_adjust:
+      $this.state.advance_adjust === undefined
+        ? 0
+        : parseFloat($this.state.advance_adjust),
     gross_total: parseFloat($this.state.gross_total),
-    credit_amount: parseFloat($this.state.credit_amount)
+    credit_amount:
+      $this.state.credit_amount === undefined
+        ? 0
+        : parseFloat($this.state.credit_amount)
   };
 
   algaehApiCall({
@@ -233,6 +269,8 @@ const billheaderCalculation = ($this, context) => {
     onSuccess: response => {
       if (response.data.success) {
         if (context !== null) {
+          response.data.records.credit_amount = serviceInput.credit_amount;
+          response.data.records.advance_adjust = serviceInput.advance_adjust;
           context.updateState({ ...response.data.records });
         }
       }
@@ -246,15 +284,6 @@ const billheaderCalculation = ($this, context) => {
       });
     }
   });
-  // $this.props.billingCalculations({
-  //   uri: "/billing/billingCalculations",
-  //   method: "POST",
-  //   data: serviceInput,
-  //   redux: {
-  //     type: "BILL_HEADER_GEN_GET_DATA",
-  //     mappingName: "genbill"
-  //   }
-  // });
 };
 
 const datehandle = ($this, context, ctrl, e) => {
@@ -268,7 +297,6 @@ const datehandle = ($this, context, ctrl, e) => {
 };
 
 const ProcessInsurance = ($this, context, ctrl, e) => {
-  debugger;
   if (
     $this.state.insured === "Y" &&
     ($this.state.primary_insurance_provider_id == null ||
@@ -428,14 +456,29 @@ const credittexthandle = ($this, context, ctrl, e) => {
       title: "Invalid Input. Criedt amount cannot be greater than Net amount",
       type: "warning"
     });
-  } else {
     $this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: $this.state.credit_amount
     });
 
     if (context !== null) {
       context.updateState({
+        [e.target.name]: $this.state.credit_amount
+      });
+    }
+  } else {
+    $this.setState(
+      {
         [e.target.name]: e.target.value
+      },
+      () => {
+        billheaderCalculation($this, context);
+      }
+    );
+
+    if (context !== null) {
+      context.updateState({
+        [e.target.name]: e.target.value,
+        balance_credit: e.target.value === "" ? 0 : e.target.value
       });
     }
   }

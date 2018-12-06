@@ -54,7 +54,7 @@ class AddSecInsuranceForm extends Component {
   }
 
   selectedValueInsurance(value, context, e) {
-    if (this.state.insured == "Y") {
+    if (this.state.insured === "Y") {
       this.setState({
         sec_insured: value,
         sec_insuranceYes: !this.state.sec_insuranceYes

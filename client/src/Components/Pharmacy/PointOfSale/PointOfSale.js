@@ -415,8 +415,7 @@ function mapStateToProps(state) {
     posheader: state.posheader,
     pospatients: state.pospatients,
     posentry: state.posentry,
-    existinsurance: state.existinsurance,
-    posheader: state.posheader
+    existinsurance: state.existinsurance
   };
 }
 

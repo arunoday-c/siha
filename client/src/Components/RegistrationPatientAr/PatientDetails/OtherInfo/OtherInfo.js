@@ -158,46 +158,46 @@ class OtherInfo extends Component {
   }
 }
 
-function AddPatientOtherHandlers(state, context) {
-  context = context || null;
+// function AddPatientOtherHandlers(state, context) {
+//   context = context || null;
 
-  return {
-    handle: val => {
-      state.setState({
-        value: val
-      });
-    },
+//   return {
+//     handle: val => {
+//       state.setState({
+//         value: val
+//       });
+//     },
 
-    numbertexthandle: e => {
-      state.setState({
-        [e.target.name]: e.target.value
-      });
+//     numbertexthandle: e => {
+//       state.setState({
+//         [e.target.name]: e.target.value
+//       });
 
-      if (context !== null) {
-        context.updateState({ [e.target.name]: e.target.value });
-      }
-    },
+//       if (context !== null) {
+//         context.updateState({ [e.target.name]: e.target.value });
+//       }
+//     },
 
-    texthandle: e => {
-      state.setState({
-        [e.target.name]: e.target.value
-      });
+//     texthandle: e => {
+//       state.setState({
+//         [e.target.name]: e.target.value
+//       });
 
-      if (context !== null) {
-        context.updateState({ [e.target.name]: e.target.value });
-      }
-    },
+//       if (context !== null) {
+//         context.updateState({ [e.target.name]: e.target.value });
+//       }
+//     },
 
-    selectedHandeler: e => {
-      state.setState({
-        [e.name]: e.value
-      });
-      if (context !== null) {
-        context.updateState({ [e.name]: e.value });
-      }
-    }
-  };
-}
+//     selectedHandeler: e => {
+//       state.setState({
+//         [e.name]: e.value
+//       });
+//       if (context !== null) {
+//         context.updateState({ [e.name]: e.value });
+//       }
+//     }
+//   };
+// }
 
 function mapStateToProps(state) {
   return {

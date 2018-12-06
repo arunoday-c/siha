@@ -84,6 +84,7 @@ const deleteDNDetail = ($this, context, row) => {
       dn_entry_detail.splice(i, 1);
     }
   }
+  dn_entry_detail.splice(row.rowIdx, 1);
 
   if (dn_entry_detail.length === 0) {
     assignDataandclear($this, context, dn_entry_detail, "dn_entry_detail");
@@ -97,21 +98,9 @@ const deleteDNDetail = ($this, context, row) => {
 };
 
 const updateDNDetail = ($this, context, row) => {
-  //debugger;
   let dn_entry_detail = $this.state.dn_entry_detail;
-  if ($this.state.dn_from === "PHR") {
-    for (var i = 0; i < dn_entry_detail.length; i++) {
-      if (dn_entry_detail[i].phar_item_id === row["phar_item_id"]) {
-        dn_entry_detail[i] = row;
-      }
-    }
-  } else {
-    for (var k = 0; k < dn_entry_detail.length; k++) {
-      if (dn_entry_detail[k].inv_item_id === row["inv_item_id"]) {
-        dn_entry_detail[k] = row;
-      }
-    }
-  }
+
+  dn_entry_detail[row.rowIdx] = row;
 
   let sub_total = Enumerable.from(dn_entry_detail).sum(s =>
     parseFloat(s.extended_price)
@@ -161,7 +150,6 @@ const dateFormater = ($this, value) => {
 };
 
 const onchangegridcol = ($this, row, e) => {
-  //debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   if (value > row.total_quantity) {
@@ -178,8 +166,6 @@ const onchangegridcol = ($this, row, e) => {
 };
 
 const onchhangegriddiscount = ($this, row, ctrl, e) => {
-  debugger;
-
   e = e || ctrl;
 
   if (e.target.value === "") {
@@ -205,7 +191,7 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
       row[name] = row[name];
       row.update();
     } else {
-      //debugger;
+      //
       extended_price = parseFloat(row.unit_price) * parseFloat(value);
       discount_amount = (extended_price * discount_percentage) / 100;
 

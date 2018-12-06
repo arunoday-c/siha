@@ -21,7 +21,6 @@ import {
   billheaderCalculation,
   onchangegridcol,
   credittexthandle,
-  credittextCal,
   EditGrid,
   CancelGrid
 } from "./AddOPBillingHandaler";
@@ -72,7 +71,15 @@ class AddOPBillingForm extends Component {
         method: "GET",
         redux: {
           type: "SERVICES_GET_DATA",
-          mappingName: "opbilservices",
+          mappingName: "opbilservices"
+        }
+      });
+
+      this.props.getServices({
+        uri: "/serviceType/getService",
+        method: "GET",
+        redux: {
+          type: "SERVICES_GET_DATA",
           mappingName: "opserviceslist"
         }
       });

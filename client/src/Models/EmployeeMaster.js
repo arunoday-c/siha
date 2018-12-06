@@ -1,7 +1,7 @@
 export default {
   inputParam: function(param) {
     var output;
-    var CurrentDate = new Date();
+
     output = {
       hims_d_employee_id: null,
       employee_code: "",
