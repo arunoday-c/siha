@@ -52,10 +52,15 @@ const discounthandle = ($this, context, ctrl, e) => {
       });
     }
   } else {
-    $this.setState({
-      sheet_discount_percentage: sheet_discount_percentage,
-      sheet_discount_amount: sheet_discount_amount
-    });
+    $this.setState(
+      {
+        sheet_discount_percentage: sheet_discount_percentage,
+        sheet_discount_amount: sheet_discount_amount
+      },
+      () => {
+        PosheaderCalculation($this, context);
+      }
+    );
 
     if (context !== null) {
       context.updateState({
