@@ -72,7 +72,6 @@ class AddOPBillingForm extends Component {
         method: "GET",
         redux: {
           type: "SERVICES_GET_DATA",
-          mappingName: "opbilservices",
           mappingName: "opserviceslist"
         }
       });
@@ -895,7 +894,6 @@ class AddOPBillingForm extends Component {
 function mapStateToProps(state) {
   return {
     servicetype: state.servicetype,
-    opbilservices: state.opbilservices,
     opserviceslist: state.opserviceslist
   };
 }

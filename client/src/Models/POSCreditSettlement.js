@@ -34,9 +34,7 @@ export default {
       saveEnable: true,
       postEnable: true,
       episode_id: null,
-      Cashchecked: true,
-      Cardchecked: false,
-      Checkchecked: false,
+
       pay_type: "R",
       Cashchecked: true,
       Cardchecked: false,

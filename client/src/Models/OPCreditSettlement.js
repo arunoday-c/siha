@@ -37,9 +37,7 @@ export default {
       Cardchecked: false,
       Checkchecked: false,
       pay_type: "R",
-      Cashchecked: true,
-      Cardchecked: false,
-      Checkchecked: false,
+
       cash_amount: 0,
       card_amount: 0,
       cheque_amount: 0,

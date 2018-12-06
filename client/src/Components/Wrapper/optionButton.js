@@ -19,18 +19,18 @@ export default class Options extends Component {
 
   handleChange = event => {
     this.setState({ value: event.target.value });
-    if (this.props.group.events != null)
+    if (this.props.group.events !== null)
       this.props.group.events.onChange(event);
   };
   renderLabel = () => {
-    if (this.props.label != null) {
+    if (this.props.label !== null) {
       return <Label label={this.props.label} />;
     }
   };
 
   orientationHorizontalVertical = () => {
-    if (this.props.group.orientation != null) {
-      if (this.props.group.orientation == "horizontal") {
+    if (this.props.group.orientation !== null) {
+      if (this.props.group.orientation === "horizontal") {
         return {};
       }
     }
@@ -43,14 +43,14 @@ export default class Options extends Component {
     });
   }
   renderOptions = () => {
-    if (this.props.group.controls != null) {
+    if (this.props.group.controls !== null) {
       return this.props.group.controls.map((row, index) => {
         return (
           <FormControlLabel
             value={row.value}
             control={<Radio color="primary" />}
             label={row.label}
-            disabled={row.disabled == null ? false : true}
+            disabled={row.disabled === null ? false : true}
           />
         );
       });
@@ -74,7 +74,7 @@ export default class Options extends Component {
   };
 
   renderCheckBox = () => {
-    if (this.props.group.controls != null) {
+    if (this.props.group.controls !== null) {
       return this.props.group.controls.map((row, index) => {
         return (
           <FormControlLabel
@@ -84,12 +84,12 @@ export default class Options extends Component {
                 value={row.value}
                 checked={row.checked}
                 color="primary"
-                onChange={row.events != null ? row.events.onChange : null}
+                onChange={row.events !== null ? row.events.onChange : null}
                 {...row.others}
               />
             }
             label={row.label}
-            disabled={row.disabled == null ? false : true}
+            disabled={row.disabled === null ? false : true}
           />
         );
       });
@@ -107,7 +107,7 @@ export default class Options extends Component {
   }
 
   renderSwitch = () => {
-    if (this.props.group.controls != null) {
+    if (this.props.group.controls !== null) {
       return this.props.group.controls.map((row, index) => {
         {
           this.settingState(row.value, row.checked);
@@ -120,12 +120,12 @@ export default class Options extends Component {
                 checked={this.state[row.value]}
                 name={this.props.group.name + "_" + index}
                 color="primary"
-                onChange={row.events != null ? row.events.onChange : null}
+                onChange={row.events !== null ? row.events.onChange : null}
                 {...row.others}
               />
             }
             label={row.label}
-            disabled={row.disabled == null ? false : true}
+            disabled={row.disabled === null ? false : true}
           />
         );
       });
@@ -135,12 +135,13 @@ export default class Options extends Component {
   };
 
   renderControl = () => {
-    if (this.props.optionsType == "radio") return this.renderRadioGroup();
-    else if (this.props.optionsType == "checkBox") return this.renderCheckBox();
-    else if (this.props.optionsType == "switch") return this.renderSwitch();
+    if (this.props.optionsType === "radio") return this.renderRadioGroup();
+    else if (this.props.optionsType === "checkBox")
+      return this.renderCheckBox();
+    else if (this.props.optionsType === "switch") return this.renderSwitch();
   };
   renderOthers = () => {
-    if (this.props.div != null) {
+    if (this.props.div !== null) {
       return this.props.div.others;
     }
   };
@@ -148,7 +149,7 @@ export default class Options extends Component {
   render() {
     return (
       <div
-        className={this.props.div != null ? this.props.div.className : null}
+        className={this.props.div !== null ? this.props.div.className : null}
         {...this.renderOthers()}
       >
         {this.renderLabel()}

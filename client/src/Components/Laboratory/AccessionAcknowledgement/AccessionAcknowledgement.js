@@ -36,8 +36,7 @@ import Options from "../../../Options.json";
 class AccessionAcknowledgement extends Component {
   constructor(props) {
     super(props);
-    let month = moment().format("MM");
-    let year = moment().format("YYYY");
+
     this.state = {
       to_date: new Date(),
       // from_date: moment("01" + month + year, "DDMMYYYY")._d,

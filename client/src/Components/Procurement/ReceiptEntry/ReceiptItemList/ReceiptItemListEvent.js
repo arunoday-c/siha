@@ -79,11 +79,7 @@ const assignDataandclear = ($this, context, stock_detail, assignData) => {
 const deleteReceiptDetail = ($this, context, row) => {
   let receipt_entry_detail = $this.state.receipt_entry_detail;
 
-  for (var i = 0; i < receipt_entry_detail.length; i++) {
-    if (receipt_entry_detail[i].phar_item_id === row["phar_item_id"]) {
-      receipt_entry_detail.splice(i, 1);
-    }
-  }
+  receipt_entry_detail.splice(row.rowIdx, 1);
 
   if (receipt_entry_detail.length === 0) {
     assignDataandclear(
@@ -102,22 +98,9 @@ const deleteReceiptDetail = ($this, context, row) => {
 };
 
 const updateReceiptDetail = ($this, context, row) => {
-  debugger;
   let receipt_entry_detail = $this.state.receipt_entry_detail;
-  if ($this.state.grn_for === "PHR") {
-    for (var i = 0; i < receipt_entry_detail.length; i++) {
-      if (receipt_entry_detail[i].phar_item_id === row["phar_item_id"]) {
-        receipt_entry_detail[i] = row;
-      }
-    }
-  } else {
-    for (var k = 0; k < receipt_entry_detail.length; k++) {
-      if (receipt_entry_detail[k].inv_item_id === row["inv_item_id"]) {
-        receipt_entry_detail[k] = row;
-      }
-    }
-  }
 
+  receipt_entry_detail[row.rowIdx] = row;
   let sub_total = Enumerable.from(receipt_entry_detail).sum(s =>
     parseFloat(s.extended_price)
   );
@@ -187,7 +170,6 @@ const dateFormater = ($this, value) => {
 };
 
 const onchangegridcol = ($this, row, e) => {
-  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   if (parseFloat(value) > row.dn_quantity) {
@@ -251,7 +233,6 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
 };
 
 const EditGrid = ($this, context, cancelRow) => {
-  debugger;
   if (context !== null) {
     let saveBtn = true;
     let postBtn = true;
@@ -269,7 +250,6 @@ const EditGrid = ($this, context, cancelRow) => {
 };
 
 const CancelGrid = ($this, context, cancelRow) => {
-  debugger;
   if (context !== null) {
     let saveBtn = false;
     let postBtn = false;

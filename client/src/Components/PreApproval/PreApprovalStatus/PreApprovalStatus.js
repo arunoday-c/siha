@@ -1,11 +1,10 @@
 import React, { PureComponent } from "react";
-import Typography from "@material-ui/core/Typography";
 
 import PatientDetails from "./PatientDetails/PatientDetails";
 import RequestDetails from "./RequestDetails/RequestDetails";
 import ApprovalDetails from "./ApprovalDetails/ApprovalDetails";
 import Attachments from "./Attachments/Attachments";
-import { AlgaehLabel, Modal } from "../../Wrapper/algaehWrapper";
+import { Modal } from "../../Wrapper/algaehWrapper";
 import "./../../../styles/site.css";
 import "./PreApprovalStatus.css";
 import MyContext from "../../../utils/MyContext.js";

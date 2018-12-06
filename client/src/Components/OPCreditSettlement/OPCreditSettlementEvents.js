@@ -66,7 +66,7 @@ const getPatientDetails = $this => {
     onFailure: error => {
       AlgaehLoader({ show: false });
       swalMessage({
-        title: error.message,
+        title: error.response.data.message || error.message,
         type: "error"
       });
     }

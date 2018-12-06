@@ -356,7 +356,7 @@ class DataGrid extends PureComponent {
     this.setState({
       isEditable: this.props.isEditable
     });
-    if (this.state.columns.length == 0) {
+    if (this.state.columns.length === 0) {
       if (this.props.columns !== undefined && this.props.columns.length !== 0) {
         let _columns = Enumerable.from(this.props.columns)
           .select(s => {
@@ -770,7 +770,7 @@ class DataGrid extends PureComponent {
           className: column.assignTdClass(rowInfo.original),
           ..._clickEvent
         };
-      } else if (_rowSel != "") {
+      } else if (_rowSel !== "") {
         return {
           className: _rowSel(rowInfo.original)
         };

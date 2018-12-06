@@ -20,8 +20,7 @@ import {
   onchangegridcol,
   uomtexthandle,
   stockingtexthandle,
-  stockonchangegridcol,
-  texthandlecontext
+  stockonchangegridcol
 } from "./UOMAdditionalInfoEvents";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import AHSnackbar from "../../../common/Inputs/AHSnackbar";
