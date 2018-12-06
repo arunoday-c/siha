@@ -178,7 +178,7 @@ const onchangegridcol = ($this, row, e) => {
 };
 
 const onchhangegriddiscount = ($this, row, ctrl, e) => {
-  //debugger;
+  debugger;
 
   e = e || ctrl;
 
@@ -196,12 +196,14 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
 
-    if (value > row.authorize_quantity) {
+    if (parseFloat(value) > row.po_quantity) {
       swalMessage({
         title:
           "Invalid Input.  DN Quantity cannot be greater than PO Quantity.",
         type: "warning"
       });
+      row[name] = row[name];
+      row.update();
     } else {
       //debugger;
       extended_price = (parseFloat(row.unit_price) * parseFloat(value)).toFixed(
