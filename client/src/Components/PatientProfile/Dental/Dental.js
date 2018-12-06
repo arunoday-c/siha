@@ -15,6 +15,7 @@ import {
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import Enumerable from "linq";
 import moment from "moment";
+import swal from "sweetalert2";
 
 let teeth = [];
 let my_send_obj = {};
@@ -118,7 +119,6 @@ class Dental extends Component {
   }
 
   markTeethSurface(e) {
-    debugger;
     e.currentTarget.classList.contains("mark-active")
       ? e.currentTarget.classList.remove("mark-active")
       : e.currentTarget.classList.add("mark-active");
@@ -241,6 +241,60 @@ class Dental extends Component {
               type: "error"
             });
           }
+        });
+      }
+    });
+  }
+
+  approveTreatementPlan(data, type) {
+    debugger;
+    swal({
+      title:
+        type === "Y"
+          ? "Approve plan?"
+          : type === "C"
+          ? "Cancel Plan?"
+          : "Update?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        algaehApiCall({
+          uri: "/dental/approveTreatmentPlan",
+          method: "PUT",
+          data: {
+            hims_f_treatment_plan_id: data.hims_f_treatment_plan_id,
+            approve_status: type
+          },
+          onSuccess: response => {
+            if (response.data.success) {
+              this.getTreatementPlans();
+              swalMessage({
+                title:
+                  type === "Y"
+                    ? "Plan Approved"
+                    : type === "C"
+                    ? "Plan Cancelled"
+                    : "Done",
+                type: "success"
+              });
+            }
+          },
+          onError: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
+        });
+      } else {
+        swalMessage({
+          title: "Not cancelled",
+          type: "error"
         });
       }
     });
@@ -457,23 +511,23 @@ class Dental extends Component {
           id="shift-grid"
           datavalidate="data-validate='shiftDiv'"
           columns={[
-            {
-              fieldName: "actions",
-              label: "Actions",
-              displayTemplate: row => {
-                return (
-                  <span
-                    onClick={() => {
-                      this.setState({
-                        openDentalModal: true
-                      });
-                    }}
-                  >
-                    <i className="fas fa-trash" />
-                  </span>
-                );
-              }
-            },
+            // {
+            //   fieldName: "actions",
+            //   label: "Actions",
+            //   displayTemplate: row => {
+            //     return (
+            //       <span
+            //         onClick={() => {
+            //           this.setState({
+            //             openDentalModal: true
+            //           });
+            //         }}
+            //       >
+            //         <i className="fas fa-trash" />
+            //       </span>
+            //     );
+            //   }
+            // },
             {
               fieldName: "teeth_number",
               label: "Tooth",
@@ -492,12 +546,28 @@ class Dental extends Component {
                     {row.labial === "Y" ? "L " : ""}
                   </span>
                 );
+              },
+              editorTemplate: row => {
+                return (
+                  <span>
+                    {row.distal === "Y" ? "D " : ""}
+                    {row.incisal === "Y" ? "I " : ""}
+                    {row.mesial === "Y" ? "M " : ""}
+                    {row.palatal === "Y" ? "P " : ""}
+                    {row.labial === "Y" ? "L " : ""}
+                  </span>
+                );
               }
             },
             {
               fieldName: "scheduled_date",
               label: "Date",
               displayTemplate: row => {
+                return (
+                  <span>{moment(row.scheduled_date).format("DD-MM-YYYY")}</span>
+                );
+              },
+              editorTemplate: row => {
                 return (
                   <span>{moment(row.scheduled_date).format("DD-MM-YYYY")}</span>
                 );
@@ -518,6 +588,9 @@ class Dental extends Component {
                       : null}
                   </span>
                 );
+              },
+              editorTemplate: row => {
+                //Bring AutoComplete here
               }
             }
           ]}
@@ -525,6 +598,7 @@ class Dental extends Component {
           dataSource={{
             data: this.state.dentalTreatments
           }}
+          isEditable={true}
           paging={{ page: 0, rowsPerPage: 5 }}
           events={{
             onEdit: () => {},
@@ -871,21 +945,29 @@ class Dental extends Component {
                       <div className="row">
                         <span className="col">
                           <i
+                            onClick={this.approveTreatementPlan.bind(
+                              this,
+                              row,
+                              "Y"
+                            )}
                             className="fas fa-check"
                             style={{
                               pointerEvents:
-                                row.approved_status === "Y" ? " none" : null,
-                              opacity:
-                                row.approved_status === "Y" ? "0.1" : null
+                                row.approve_status === "Y" ? " none" : null,
+                              opacity: row.approve_status === "Y" ? "0.1" : null
                             }}
                           />
 
                           <i
+                            onClick={this.approveTreatementPlan.bind(
+                              this,
+                              row,
+                              "C"
+                            )}
                             style={{
                               pointerEvents:
-                                row.approved_status === "Y" ? " none" : null,
-                              opacity:
-                                row.approved_status === "Y" ? "0.1" : null
+                                row.approve_status === "Y" ? " none" : null,
+                              opacity: row.approve_status === "Y" ? "0.1" : null
                             }}
                             className="fas fa-times"
                           />
@@ -913,12 +995,12 @@ class Dental extends Component {
                   disabled: true
                 },
                 {
-                  fieldName: "approved_status",
+                  fieldName: "approve_status",
                   label: "Approval Status",
                   displayTemplate: row => {
                     return (
                       <span>
-                        {row.approved_status === "Y"
+                        {row.approve_status === "Y"
                           ? "Plan Approved"
                           : "Plan Not Approved"}
                       </span>

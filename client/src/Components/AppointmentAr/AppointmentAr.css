@@ -171,8 +171,9 @@
         width: 120px; }
     .doctorApp-Ar .appointment .tg tbody {
       height: 44vh;
-      overflow: auto;
-      display: grid; }
+      overflow-x: hidden;
+      display: grid;
+      overflow-y: auto; }
       .doctorApp-Ar .appointment .tg tbody td.tg-baqh {
         width: 120px;
         font-size: 0.8rem;

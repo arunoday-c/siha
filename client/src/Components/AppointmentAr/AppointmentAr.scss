@@ -249,8 +249,9 @@
       }
       tbody {
         height: 44vh;
-        overflow: auto;
+        overflow-x: hidden;
         display: grid;
+        overflow-y: auto;
         td.tg-baqh {
           width: 120px;
 

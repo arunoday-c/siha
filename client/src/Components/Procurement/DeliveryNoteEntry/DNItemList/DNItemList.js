@@ -314,7 +314,10 @@ class DNItemList extends Component {
                                   <AlagehFormGroup
                                     div={{}}
                                     textBox={{
-                                      decimal: { allowNegative: false },
+                                      number: {
+                                        allowNegative: false,
+                                        thousandSeparator: ","
+                                      },
                                       value: row.dn_quantity,
                                       className: "txt-fld",
                                       name: "dn_quantity",

@@ -317,9 +317,103 @@ let getDentalTreatment = (req, res, next) => {
   }
 };
 
+//created by irfan: to
+let approveTreatmentPlan = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      if (input.approve_status == "Y") {
+        connection.query(
+          "update hims_f_treatment_plan set approve_status=? ,\
+             updated_date=?, updated_by=? WHERE  `record_status`='A' and `hims_f_treatment_plan_id`=?;",
+          [
+            input.approve_status,
+            new Date(),
+            input.updated_by,
+            input.hims_f_treatment_plan_id
+          ],
+          (error, results) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+            req.records = results;
+            next();
+          }
+        );
+      } else if (input.approve_status == "C") {
+        connection.beginTransaction(error => {
+          if (error) {
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(error);
+            });
+          }
+          connection.query(
+            "delete from hims_f_dental_treatment where treatment_plan_id=?;",
+            [input.hims_f_treatment_plan_id],
+            (error, results) => {
+              if (error) {
+                connection.rollback(() => {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                });
+              }
+              if (results != null) {
+                connection.query(
+                  "  delete from hims_f_treatment_plan where hims_f_treatment_plan_id=?",
+                  [input.hims_f_treatment_plan_id],
+                  (error, planResult) => {
+                    if (error) {
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      });
+                    }
+
+                    connection.commit(error => {
+                      if (error) {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                      }
+                      releaseDBConnection(db, connection);
+                      req.records = planResult;
+                      next();
+                    });
+                  }
+                );
+              } else {
+                connection.rollback(() => {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                });
+              }
+            }
+          );
+        });
+      } else {
+        req.records = { invalid_input: true };
+        next();
+      }
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addTreatmentPlan,
   addDentalTreatment,
   getTreatmentPlan,
-  getDentalTreatment
+  getDentalTreatment,
+  approveTreatmentPlan
 };

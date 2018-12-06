@@ -393,7 +393,10 @@ class ReceiptItemList extends Component {
                                   <AlagehFormGroup
                                     div={{}}
                                     textBox={{
-                                      decimal: { allowNegative: false },
+                                      number: {
+                                        allowNegative: false,
+                                        thousandSeparator: ","
+                                      },
                                       value: row.recieved_quantity,
                                       className: "txt-fld",
                                       name: "recieved_quantity",

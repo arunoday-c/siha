@@ -668,14 +668,20 @@ class RegistrationPatient extends PureComponent {
               }
             }}
           >
-            <PatientDetails
-              PatRegIOputs={this.state}
-              clearData={this.state.clearData}
-            />
+            <div className="row">
+              <div className="algaeh-md-12 algaeh-lg-12 algaeh-xl-8">
+                <PatientDetails
+                  PatRegIOputs={this.state}
+                  clearData={this.state.clearData}
+                />
 
-            <ConsultationDetails PatRegIOputs={this.state} />
-            <InsuranceDetails PatRegIOputs={this.state} />
-            <Billing PatRegIOputs={this.state} loader={true} />
+                <ConsultationDetails PatRegIOputs={this.state} />
+                <InsuranceDetails PatRegIOputs={this.state} />
+              </div>
+              <div className="algaeh-md-12 algaeh-lg-12 algaeh-xl-4">
+                <Billing PatRegIOputs={this.state} loader={true} />
+              </div>
+            </div>
             <div className="hptl-phase1-footer">
               <div className="row">
                 <div className="col-lg-12">
