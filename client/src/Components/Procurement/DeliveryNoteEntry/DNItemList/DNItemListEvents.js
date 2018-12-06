@@ -206,12 +206,8 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
       row.update();
     } else {
       //debugger;
-      extended_price = (parseFloat(row.unit_price) * parseFloat(value)).toFixed(
-        2
-      );
-      discount_amount = ((extended_price * discount_percentage) / 100).toFixed(
-        2
-      );
+      extended_price = parseFloat(row.unit_price) * parseFloat(value);
+      discount_amount = (extended_price * discount_percentage) / 100;
 
       extended_cost = extended_price - discount_amount;
 
@@ -219,17 +215,15 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
 
       row[name] = value;
       row["extended_price"] = extended_price;
-      row["extended_cost"] = extended_cost.toFixed(2);
-      row["unit_cost"] = (extended_cost / parseFloat(row.dn_quantity)).toFixed(
-        2
-      );
+      row["extended_cost"] = extended_cost;
+      row["unit_cost"] = extended_cost / parseFloat(row.dn_quantity);
 
-      row["tax_amount"] = tax_amount.toFixed(2);
-      row["total_amount"] = (tax_amount + extended_cost).toFixed(2);
+      row["tax_amount"] = tax_amount;
+      row["total_amount"] = tax_amount + extended_cost;
 
       row["discount_amount"] = discount_amount;
-      row["extended_cost"] = extended_cost.toFixed(2);
-      row["net_extended_cost"] = extended_cost.toFixed(2);
+      row["extended_cost"] = extended_cost;
+      row["net_extended_cost"] = extended_cost;
       row.update();
     }
   }
