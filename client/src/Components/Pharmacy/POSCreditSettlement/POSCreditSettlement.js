@@ -173,7 +173,7 @@ class POSCreditSettlement extends Component {
           }}
           selectedLang={this.state.selectedLang}
         />
-        <div style={{ marginTop: 75 }}>
+        <div className="hptl-phase1-pos-credit-form">
           <div
             className="row inner-top-search"
             style={{ paddingTop: 10, paddingBottom: 10 }}
