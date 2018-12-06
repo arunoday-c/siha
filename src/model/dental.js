@@ -2,7 +2,6 @@
 import extend from "extend";
 import {
   whereCondition,
-  deleteRecord,
   releaseDBConnection,
   jsonArrayToObject
 } from "../utils";
@@ -202,7 +201,7 @@ let addDentalTreatment = (req, res, next) => {
         "cervical",
         "palatal",
         "lingual",
-        "billed",
+
         "created_by",
         "updated_by"
       ];
@@ -211,7 +210,7 @@ let addDentalTreatment = (req, res, next) => {
         "INSERT INTO hims_f_dental_treatment(" +
           insurtColumns.join(",") +
           ",patient_id,episode_id,treatment_plan_id,service_id,\
-          scheduled_date,treatment_status,created_date,updated_date) VALUES ?",
+          scheduled_date,created_date,updated_date) VALUES ?",
         [
           jsonArrayToObject({
             sampleInputObject: insurtColumns,
@@ -222,7 +221,7 @@ let addDentalTreatment = (req, res, next) => {
               input.treatment_plan_id,
               input.service_id,
               new Date(input.scheduled_date),
-              input.treatment_status,
+
               new Date(),
               new Date()
             ],
@@ -401,6 +400,124 @@ let approveTreatmentPlan = (req, res, next) => {
           );
         });
       } else {
+        releaseDBConnection(db, connection);
+        req.records = { invalid_input: true };
+        next();
+      }
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to
+let deleteDentalPlan = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "delete from hims_f_dental_treatment where hims_f_dental_treatment_id=?",
+        [req.body.hims_f_dental_treatment_id],
+        (error, deleteRes) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+
+          req.records = deleteRes;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+//created by irfan: to
+let updateDentalPlanStatus = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      let input = extend({}, req.body);
+      if (input.plan_status == "C" || input.plan_status == "O") {
+        connection.query(
+          "update hims_f_treatment_plan set plan_status=? ,\
+             updated_date=?, updated_by=? WHERE  `record_status`='A' and `hims_f_treatment_plan_id`=?;",
+          [
+            input.plan_status,
+            new Date(),
+            input.updated_by,
+            input.hims_f_treatment_plan_id
+          ],
+          (error, results) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+            req.records = results;
+            next();
+          }
+        );
+      } else {
+        releaseDBConnection(db, connection);
+        req.records = { invalid_input: true };
+        next();
+      }
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to
+let updateDentalTreatmentStatus = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      let input = extend({}, req.body);
+      if (input.treatment_status == "WIP" || input.treatment_status == "CP") {
+        connection.query(
+          "update hims_f_dental_treatment set treatment_status=? ,\
+             updated_date=?, updated_by=? WHERE  `record_status`='A' and `hims_f_dental_treatment_id`=?;",
+          [
+            input.treatment_status,
+            new Date(),
+            input.updated_by,
+            input.hims_f_dental_treatment_id
+          ],
+          (error, results) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+            req.records = results;
+            next();
+          }
+        );
+      } else {
+        releaseDBConnection(db, connection);
         req.records = { invalid_input: true };
         next();
       }
@@ -415,5 +532,8 @@ module.exports = {
   addDentalTreatment,
   getTreatmentPlan,
   getDentalTreatment,
-  approveTreatmentPlan
+  approveTreatmentPlan,
+  deleteDentalPlan,
+  updateDentalPlanStatus,
+  updateDentalTreatmentStatus
 };

@@ -60,7 +60,7 @@ class AddSecInsuranceForm extends Component {
         sec_insuranceYes: !this.state.sec_insuranceYes
       });
 
-      if (context != null) {
+      if (context !== null) {
         context.updateState({
           sec_insured: value,
           sec_insuranceYes: !this.state.sec_insuranceYes

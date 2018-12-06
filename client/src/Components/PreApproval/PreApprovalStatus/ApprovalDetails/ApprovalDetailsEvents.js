@@ -21,21 +21,18 @@ const datehandle = ($this, row, ctrl, e) => {
 };
 
 const updateServices = ($this, context, row) => {
-  
   let service_array = [];
 
   row.update();
   // row.updated_by = getCookie("UserID");
 
   service_array.push(row);
-  if (context != null) {
+  if (context !== null) {
     context.updateState({
       update_pre_approval_service: service_array
     });
   }
 };
-const deleteServices = ($this, context, row) => {
-  
-};
+const deleteServices = ($this, context, row) => {};
 
 export { texthandle, datehandle, updateServices, deleteServices };

@@ -22,14 +22,12 @@ const updateServices = ($this, context, row) => {
   row.submission_type = "S";
   // row.apprv_date = 0;
   service_array.push(row);
-  if (context != null) {
+  if (context !== null) {
     context.updateState({
       update_pre_approval_service: service_array
     });
   }
 };
-const deleteServices = $this => {
-  
-};
+const deleteServices = $this => {};
 
 export { texthandle, datehandle, updateServices, deleteServices };

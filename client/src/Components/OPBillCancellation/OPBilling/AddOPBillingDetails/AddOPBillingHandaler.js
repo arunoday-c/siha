@@ -18,7 +18,7 @@ const serviceTypeHandeler = ($this, context, e) => {
       });
     }
   );
-  if (context != null) {
+  if (context !== null) {
     context.updateState({ [e.name]: e.value });
   }
 };
@@ -31,7 +31,7 @@ const serviceHandeler = ($this, context, e) => {
     },
     () => {}
   );
-  if (context != null) {
+  if (context !== null) {
     context.updateState({ [e.name]: e.value });
   }
 };
@@ -52,7 +52,7 @@ const texthandle = ($this, context, ctrl, e) => {
     [name]: value
   });
 
-  if (context != null) {
+  if (context !== null) {
     context.updateState({ [name]: value });
   }
 };
@@ -74,7 +74,7 @@ const adjustadvance = ($this, context, ctrl, e) => {
         [e.target.name]: e.target.value
       });
 
-      if (context != null) {
+      if (context !== null) {
         context.updateState({
           [e.target.name]: e.target.value
         });
@@ -108,7 +108,7 @@ const discounthandle = ($this, context, ctrl, e) => {
       sheet_discount_amount: sheet_discount_amount
     });
 
-    if (context != null) {
+    if (context !== null) {
       context.updateState({
         sheet_discount_percentage: sheet_discount_percentage,
         sheet_discount_amount: sheet_discount_amount
@@ -137,7 +137,7 @@ const billheaderCalculation = ($this, context, e) => {
       data: serviceInput,
       onSuccess: response => {
         if (response.data.success) {
-          if (context != null) {
+          if (context !== null) {
             response.data.records.patient_payable_h =
               response.data.records.patient_payable ||
               $this.state.patient_payable;
@@ -191,7 +191,7 @@ const credittexthandle = ($this, context, ctrl, e) => {
       }
     );
 
-    if (context != null) {
+    if (context !== null) {
       context.updateState({
         [e.target.name]: e.target.value
       });
@@ -212,7 +212,7 @@ const EditGrid = ($this, context, cancelRow) => {
     saveEnable = true;
     addNewService = true;
   }
-  if (context != null) {
+  if (context !== null) {
     let _billdetails = $this.state.billdetails;
     if (cancelRow !== undefined) {
       _billdetails[cancelRow.rowIdx] = cancelRow;
@@ -232,7 +232,7 @@ const CancelGrid = ($this, context, cancelRow) => {
     saveEnable = true;
     addNewService = true;
   }
-  if (context != null) {
+  if (context !== null) {
     let _billdetails = $this.state.billdetails;
     if (cancelRow !== undefined) {
       _billdetails[cancelRow.rowIdx] = cancelRow;

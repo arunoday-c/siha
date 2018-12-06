@@ -173,7 +173,7 @@ function AddPatientOtherHandlers(state, context) {
         [e.target.name]: e.target.value
       });
 
-      if (context != null) {
+      if (context !== null) {
         context.updateState({ [e.target.name]: e.target.value });
       }
     },
@@ -183,7 +183,7 @@ function AddPatientOtherHandlers(state, context) {
         [e.target.name]: e.target.value
       });
 
-      if (context != null) {
+      if (context !== null) {
         context.updateState({ [e.target.name]: e.target.value });
       }
     },
@@ -192,7 +192,7 @@ function AddPatientOtherHandlers(state, context) {
       state.setState({
         [e.name]: e.value
       });
-      if (context != null) {
+      if (context !== null) {
         context.updateState({ [e.name]: e.value });
       }
     }

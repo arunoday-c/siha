@@ -335,7 +335,7 @@ const getItemLocationStock = ($this, context, value) => {
 const EditGrid = ($this, context, cancelRow) => {
   //debugger;
   if ($this.state.hims_f_pharamcy_material_header_id !== null) {
-    if (context != null) {
+    if (context !== null) {
       let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
       if (cancelRow !== undefined) {
         _pharmacy_stock_detail[cancelRow.rowIdx] = cancelRow;

@@ -232,7 +232,7 @@ const serviceTypeHandeler = ($this, context, e) => {
   $this.setState({
     [e.name]: e.value
   });
-  if (context != null) {
+  if (context !== null) {
     context.updateState({ [e.name]: e.value });
   }
 };
@@ -255,7 +255,7 @@ const serviceServTypeHandeler = ($this, context, e) => {
       });
     }
   );
-  if (context != null) {
+  if (context !== null) {
     context.updateState({ [e.name]: e.value });
   }
 };

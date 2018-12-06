@@ -26,7 +26,7 @@ export default class MLCPatient extends Component {
           is_mlc: "N"
         },
         () => {
-          if (context != null) {
+          if (context !== null) {
             context.updateState({ is_mlc: this.state.is_mlc });
           }
         }
@@ -38,7 +38,7 @@ export default class MLCPatient extends Component {
           is_mlc: "Y"
         },
         () => {
-          if (context != null) {
+          if (context !== null) {
             context.updateState({ is_mlc: this.state.is_mlc });
           }
         }
@@ -140,7 +140,7 @@ function AddMlcHandlers(state, context) {
         [e.target.name]: e.target.value
       });
 
-      if (context != null) {
+      if (context !== null) {
         context.updateState({ [e.target.name]: e.target.value });
       }
     }

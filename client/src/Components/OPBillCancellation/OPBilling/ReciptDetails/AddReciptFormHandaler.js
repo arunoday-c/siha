@@ -16,7 +16,7 @@ const texthandle = ($this, context, ctrl, e) => {
     [name]: value
   });
 
-  if (context != null) {
+  if (context !== null) {
     context.updateState({ [name]: value });
   }
 };

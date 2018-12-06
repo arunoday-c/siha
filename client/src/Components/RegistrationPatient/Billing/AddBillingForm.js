@@ -313,11 +313,11 @@ class AddBillingForm extends Component {
                             onChange: credittexthandle.bind(this, this, context)
                           },
                           others: {
-                            placeholder: "0.00"
+                            placeholder: "0.00",
                             // onBlur: credittextCal.bind(this, this, context),
-                            // onFocus: e => {
-                            //   e.target.oldvalue = e.target.value;
-                            // }
+                            onFocus: e => {
+                              e.target.oldvalue = e.target.value;
+                            }
                           },
                           security: {
                             component_code: "FD_PR_BIL",

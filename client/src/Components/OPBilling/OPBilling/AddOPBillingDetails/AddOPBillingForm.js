@@ -134,7 +134,7 @@ class AddOPBillingForm extends Component {
                 if (this.state.mode_of_pay === "Insurance") {
                   applydiscount = true;
                 }
-                if (context != null) {
+                if (context !== null) {
                   context.updateState({
                     billdetails: existingservices,
                     applydiscount: applydiscount,
@@ -150,7 +150,7 @@ class AddOPBillingForm extends Component {
                   data: { billdetails: existingservices },
                   onSuccess: response => {
                     if (response.data.success) {
-                      if (context != null) {
+                      if (context !== null) {
                         response.data.records.patient_payable_h =
                           response.data.records.patient_payable ||
                           $this.state.patient_payable;
@@ -259,7 +259,7 @@ class AddOPBillingForm extends Component {
             response.data.records.patient_payable || this.state.patient_payable;
           response.data.records.saveEnable = false;
           response.data.records.addNewService = false;
-          if (context != null) {
+          if (context !== null) {
             context.updateState({ ...response.data.records });
           }
         }
@@ -333,7 +333,7 @@ class AddOPBillingForm extends Component {
               response.data.records.patient_payable ||
               this.state.patient_payable;
 
-            if (context != null) {
+            if (context !== null) {
               context.updateState({ ...response.data.records });
             }
           }
@@ -355,8 +355,6 @@ class AddOPBillingForm extends Component {
   }
 
   render() {
-    debugger;
-
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -509,7 +507,6 @@ class AddOPBillingForm extends Component {
                             <AlgaehLabel label={{ fieldName: "services_id" }} />
                           ),
                           displayTemplate: row => {
-                            debugger;
                             let display =
                               this.props.opserviceslist === undefined
                                 ? []
@@ -1068,7 +1065,9 @@ class AddOPBillingForm extends Component {
                               )
                             },
                             others: {
-                              placeholder: "0.00"
+                              placeholder: "0.00",
+                              disabled:
+                                this.state.Billexists === true ? true : false
                               // onBlur: credittextCal.bind(this, this),
                               // onFocus: e => {
                               //   e.target.oldvalue = e.target.value;

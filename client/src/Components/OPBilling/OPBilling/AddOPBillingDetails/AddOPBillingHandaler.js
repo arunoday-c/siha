@@ -6,7 +6,7 @@ const serviceTypeHandeler = ($this, context, e) => {
     $this.setState({
       [e]: null
     });
-    if (context != null) {
+    if (context !== null) {
       context.updateState({ [e]: null });
     }
     $this.props.getServices({
@@ -33,7 +33,7 @@ const serviceTypeHandeler = ($this, context, e) => {
         });
       }
     );
-    if (context != null) {
+    if (context !== null) {
       context.updateState({ [e.name]: e.value });
     }
   }
@@ -45,7 +45,7 @@ const serviceHandeler = ($this, context, e) => {
       [e]: null,
       visittypeselect: true
     });
-    if (context != null) {
+    if (context !== null) {
       context.updateState({ [e]: null });
     }
   } else {
@@ -56,7 +56,7 @@ const serviceHandeler = ($this, context, e) => {
       },
       () => {}
     );
-    if (context != null) {
+    if (context !== null) {
       context.updateState({ [e.name]: e.value });
     }
   }
@@ -78,7 +78,7 @@ const texthandle = ($this, context, ctrl, e) => {
     [name]: value
   });
 
-  if (context != null) {
+  if (context !== null) {
     context.updateState({ [name]: value });
   }
 };
@@ -100,7 +100,7 @@ const adjustadvance = ($this, context, ctrl, e) => {
         [e.target.name]: e.target.value
       });
 
-      if (context != null) {
+      if (context !== null) {
         context.updateState({
           [e.target.name]: e.target.value
         });
@@ -116,10 +116,12 @@ const discounthandle = ($this, context, ctrl, e) => {
   let sheet_discount_amount = 0;
 
   if (e.target.name === "sheet_discount_percentage") {
-    sheet_discount_percentage = parseFloat(e.target.value.replace(" %", ""));
+    sheet_discount_percentage =
+      e.target.value === "" ? "" : parseFloat(e.target.value);
     sheet_discount_amount = 0;
   } else {
-    sheet_discount_amount = parseFloat(e.target.value);
+    sheet_discount_amount =
+      e.target.value === "" ? "" : parseFloat(e.target.value);
     sheet_discount_percentage = 0;
   }
   if (sheet_discount_percentage > 100) {
@@ -128,13 +130,37 @@ const discounthandle = ($this, context, ctrl, e) => {
       title: "Warning",
       icon: "warning"
     });
+    $this.setState({
+      sheet_discount_percentage: $this.state.sheet_discount_percentage
+    });
+
+    if (context !== null) {
+      context.updateState({
+        sheet_discount_percentage: $this.state.sheet_discount_percentage
+      });
+    }
+  } else if (sheet_discount_amount > $this.state.patient_payable) {
+    swalMessage({
+      title:
+        "Invalid Input. Discount Amount cannot be greater than Patient Share.",
+      type: "Warning"
+    });
+    $this.setState({
+      sheet_discount_amount: $this.state.sheet_discount_amount
+    });
+
+    if (context !== null) {
+      context.updateState({
+        sheet_discount_amount: $this.state.sheet_discount_amount
+      });
+    }
   } else {
     $this.setState({
       sheet_discount_percentage: sheet_discount_percentage,
       sheet_discount_amount: sheet_discount_amount
     });
 
-    if (context != null) {
+    if (context !== null) {
       context.updateState({
         sheet_discount_percentage: sheet_discount_percentage,
         sheet_discount_amount: sheet_discount_amount
@@ -144,18 +170,23 @@ const discounthandle = ($this, context, ctrl, e) => {
 };
 
 const billheaderCalculation = ($this, context, e) => {
-  // if (e.target.value !== e.target.oldvalue) {
-  debugger;
   let serviceInput = {
     isReceipt: false,
     intCalculateall: false,
-    sheet_discount_percentage: parseFloat(
-      $this.state.sheet_discount_percentage
-    ),
-    sheet_discount_amount: parseFloat($this.state.sheet_discount_amount),
+    sheet_discount_percentage:
+      $this.state.sheet_discount_percentage === ""
+        ? 0
+        : parseFloat($this.state.sheet_discount_percentage),
+    sheet_discount_amount:
+      $this.state.sheet_discount_amount === ""
+        ? 0
+        : parseFloat($this.state.sheet_discount_amount),
     advance_adjust: parseFloat($this.state.advance_adjust),
     gross_total: parseFloat($this.state.gross_total),
-    credit_amount: parseFloat($this.state.credit_amount)
+    credit_amount:
+      $this.state.credit_amount === ""
+        ? 0
+        : parseFloat($this.state.credit_amount)
   };
 
   algaehApiCall({
@@ -164,7 +195,7 @@ const billheaderCalculation = ($this, context, e) => {
     data: serviceInput,
     onSuccess: response => {
       if (response.data.success) {
-        if (context != null) {
+        if (context !== null) {
           response.data.records.patient_payable_h =
             response.data.records.patient_payable ||
             $this.state.patient_payable;
@@ -179,17 +210,6 @@ const billheaderCalculation = ($this, context, e) => {
       });
     }
   });
-
-  // $this.props.billingCalculations({
-  //   uri: "/billing/billingCalculations",
-  //   method: "POST",
-  //   data: serviceInput,
-  //   redux: {
-  //     type: "BILL_HEADER_GEN_GET_DATA",
-  //     mappingName: "genbill"
-  //   }
-  // });
-  // }
 };
 
 const onchangegridcol = ($this, row, e) => {
@@ -201,29 +221,37 @@ const onchangegridcol = ($this, row, e) => {
 
 const credittexthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
-  debugger;
+
   if (e.target.value > $this.state.net_amount) {
     successfulMessage({
       message: "Invalid Input. Criedt amount cannot be greater than Net amount",
       title: "Warning",
       icon: "warning"
     });
+    $this.setState({
+      [e.target.name]: $this.state.credit_amount
+    });
+
+    if (context !== null) {
+      context.updateState({
+        [e.target.name]: $this.state.credit_amount
+      });
+    }
   } else {
     // let balance_credit = $this.state.receiveable_amount - e.target.value;
     $this.setState(
       {
-        [e.target.name]: e.target.value,
-        balance_credit: e.target.value
+        [e.target.name]: e.target.value
       },
       () => {
         billheaderCalculation($this, context, e);
       }
     );
 
-    if (context != null) {
+    if (context !== null) {
       context.updateState({
         [e.target.name]: e.target.value,
-        balance_credit: e.target.value
+        balance_credit: e.target.value === "" ? 0 : e.target.value
       });
     }
   }
@@ -242,7 +270,7 @@ const EditGrid = ($this, context, cancelRow) => {
     saveEnable = true;
     addNewService = true;
   }
-  if (context != null) {
+  if (context !== null) {
     let _billdetails = $this.state.billdetails;
     if (cancelRow !== undefined) {
       _billdetails[cancelRow.rowIdx] = cancelRow;
@@ -262,7 +290,7 @@ const CancelGrid = ($this, context, cancelRow) => {
     saveEnable = true;
     addNewService = true;
   }
-  if (context != null) {
+  if (context !== null) {
     let _billdetails = $this.state.billdetails;
     if (cancelRow !== undefined) {
       _billdetails[cancelRow.rowIdx] = cancelRow;

@@ -10,7 +10,7 @@ const writeOffhandle = ($this, context, ctrl, e) => {
     [e.target.name]: e.target.value,
     recievable_amount: recievable_amount
   });
-  if (context != null) {
+  if (context !== null) {
     context.updateState({
       [e.target.name]: e.target.value,
       recievable_amount: recievable_amount,
@@ -25,7 +25,7 @@ const EditGrid = ($this, context) => {
   if ($this.state.hims_f_credit_header_id !== null) {
     saveEnable = true;
   }
-  if (context != null) {
+  if (context !== null) {
     context.updateState({
       saveEnable: saveEnable
     });
@@ -38,7 +38,7 @@ const CancelGrid = ($this, context, cancelRow) => {
   if ($this.state.hims_f_credit_header_id !== null) {
     saveEnable = true;
   }
-  if (context != null) {
+  if (context !== null) {
     let _criedtdetails = $this.state.criedtdetails;
     if (cancelRow !== undefined) {
       _criedtdetails[cancelRow.rowIdx] = cancelRow;
@@ -61,7 +61,7 @@ const deleteCridetSettlement = ($this, context) => {
   if ($this.state.hims_f_credit_header_id !== null) {
     saveEnable = true;
   }
-  if (context != null) {
+  if (context !== null) {
     context.updateState({
       saveEnable: saveEnable,
       reciept_amount: reciept_amount,
@@ -82,7 +82,7 @@ const updateCridetSettlement = ($this, context) => {
   if ($this.state.hims_f_credit_header_id !== null) {
     saveEnable = true;
   }
-  if (context != null) {
+  if (context !== null) {
     context.updateState({
       saveEnable: saveEnable,
       reciept_amount: reciept_amount,
@@ -127,7 +127,7 @@ const includeHandler = ($this, context, row, e) => {
     saveEnable = false;
   }
 
-  if (context != null) {
+  if (context !== null) {
     context.updateState({
       reciept_amount: reciept_amount,
       write_off_amount: 0,

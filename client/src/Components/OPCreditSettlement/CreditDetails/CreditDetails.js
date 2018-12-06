@@ -141,6 +141,9 @@ class CreditDetails extends Component {
                             div={{}}
                             textBox={{
                               value: row.receipt_amount,
+                              decimal: {
+                                allowNegative: false
+                              },
                               className: "txt-fld",
                               name: "receipt_amount",
                               events: {
@@ -209,9 +212,8 @@ class CreditDetails extends Component {
                       fieldName: "write_off_amount"
                     }}
                     textBox={{
-                      number: {
-                        allowNegative: false,
-                        thousandSeparator: ","
+                      decimal: {
+                        allowNegative: false
                       },
                       className: "txt-fld",
                       name: "write_off_amount",

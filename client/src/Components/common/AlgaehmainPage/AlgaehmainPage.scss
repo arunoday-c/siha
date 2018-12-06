@@ -94,12 +94,10 @@ header {
 .leftNavCntr {
   background: #292929;
   margin-top: 0;
-  top: 0;
   z-index: 9999;
   position: fixed;
   height: 100%;
   width: 255px;
-  overflow: auto;
   box-shadow: 0 0 300px rgba(0, 0, 0, 0.5);
   animation-duration: 0.4s;
 }
@@ -109,7 +107,11 @@ header {
   .sideMenu-header {
     color: #212529;
     background: #f7f7f7;
-    padding-top: 50px;
+    margin-top: 52px;
+    height: 93vh;
+    height: 93vh;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
   .side-menu-title {
     padding: 5px 0;
@@ -118,6 +120,7 @@ header {
     border-top: 1px solid #fff;
     cursor: pointer;
     font-size: 0.9rem;
+    top: 0;
     i {
       text-shadow: 0px 2px 0px #fff;
     }
@@ -191,6 +194,7 @@ header {
     font-size: 20px;
     height: 52px;
     background: #000;
+    top: 0;
     position: fixed;
     width: 255px;
     z-index: 9;
@@ -217,7 +221,11 @@ header {
   .sideMenu-header {
     color: white;
     background: #292929;
-    padding-top: 50px;
+    margin-top: 52px;
+    height: 93vh;
+    height: 93vh;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
   .side-menu-title {
     padding: 5px 0;
@@ -295,6 +303,7 @@ header {
     background: #000;
     position: fixed;
     width: 255px;
+    top:0;
     z-index: 9;
   }
   .sideBarClose {

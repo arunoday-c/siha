@@ -14,7 +14,7 @@ const PatientSearch = ($this, context, e) => {
     onRowSelect: row => {
       $this.setState({ patient_code: row.patient_code });
 
-      if (context != null) {
+      if (context !== null) {
         context.updateState({ patient_code: row.patient_code });
       }
     }

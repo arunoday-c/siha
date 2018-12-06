@@ -118,8 +118,8 @@ class PurchaseOrderEntry extends Component {
                   }}
                 />
                 <h6>
-                  {this.state.docdate
-                    ? moment(this.state.docdate).format(Options.dateFormat)
+                  {this.state.po_date
+                    ? moment(this.state.po_date).format(Options.dateFormat)
                     : Options.dateFormat}
                 </h6>
               </div>

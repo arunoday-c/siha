@@ -99,7 +99,7 @@ class AddBillingForm extends Component {
           {context => (
             <div className="hptl-phase1-fd-billing-form">
               <div className="row">
-                <div className="col-4 primary-details">
+                <div className="algaeh-md-4 algaeh-lg-4 algaeh-xl-12  primary-details">
                   {/* <div className="container-fluid"> */}
                   <div className="Paper">
                     <div className="row primary-box-container">
@@ -196,7 +196,7 @@ class AddBillingForm extends Component {
                   </div>
                   {/* </div> */}
                 </div>
-                <div className="col-8 secondary-details">
+                <div className="algaeh-md-8 algaeh-lg-8 algaeh-xl-12  secondary-details">
                   <div className="Paper">
                     <div className="row">
                       <AlagehFormGroup

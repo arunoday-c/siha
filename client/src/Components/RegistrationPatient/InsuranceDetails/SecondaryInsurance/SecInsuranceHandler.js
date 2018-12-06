@@ -49,7 +49,7 @@ const insurancehandle = ($this, context, e) => {
       secondary_network_office_id: e.selected.network_id
     });
 
-    if (context != null) {
+    if (context !== null) {
       context.updateState({
         secondary_insurance_provider_id: e.selected.insurance_provider_id,
         secondary_sub_id: e.selected.sub_insurance_provider_id,
@@ -210,7 +210,7 @@ const InsuranceDetails = ($this, context, e) => {
                 sec_insurance_effective_end_date: row.net_effective_end_date
               });
 
-              if (context != null) {
+              if (context !== null) {
                 context.updateState({
                   secondary_insurance_provider_id:
                     row.hims_d_insurance_provider_id,
@@ -273,7 +273,7 @@ const InsuranceDetails = ($this, context, e) => {
             sec_insurance_effective_end_date: row.net_effective_end_date
           });
 
-          if (context != null) {
+          if (context !== null) {
             context.updateState({
               secondary_insurance_provider_id: row.hims_d_insurance_provider_id,
               secondary_sub_id: row.hims_d_insurance_sub_id,
@@ -328,7 +328,7 @@ const radioChange = ($this, context, e) => {
       secondary_effective_end_date: null
     });
 
-    if (context != null) {
+    if (context !== null) {
       context.updateState({
         [e.target.name]: e.target.value,
         sec_insuranceYes: !$this.state.sec_insuranceYes,

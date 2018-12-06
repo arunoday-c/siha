@@ -4,22 +4,16 @@ import Enumerable from "linq";
 import { SetBulkState } from "../../../../utils/GlobalFunctions";
 
 const DeptselectedHandeler = ($this, context, e) => {
-  debugger;
   let dept = Enumerable.from($this.props.deptanddoctors.departmets)
     .where(w => w.sub_department_id === e.value)
     .firstOrDefault();
 
-  $this.setState(
-    {
-      [e.name]: e.value,
-      department_id: e.selected.department_id,
-      doctors: dept.doctors
-    },
-    () => {
-      debugger;
-    }
-  );
-  if (context != null) {
+  $this.setState({
+    [e.name]: e.value,
+    department_id: e.selected.department_id,
+    doctors: dept.doctors
+  });
+  if (context !== null) {
     context.updateState({
       [e.name]: e.value,
       department_id: e.selected.department_id,
@@ -29,11 +23,10 @@ const DeptselectedHandeler = ($this, context, e) => {
 };
 
 const selectedHandeler = ($this, context, e) => {
-  //debugger;
+  //
   SetBulkState({
     state: $this,
     callback: () => {
-      debugger;
       if (
         $this.state.full_name !== "" &&
         ($this.state.title_id !== null && $this.state.title_id !== "") &&
@@ -60,7 +53,7 @@ const selectedHandeler = ($this, context, e) => {
             consultation: e.selected.consultation
           },
           () => {
-            if (context != null) {
+            if (context !== null) {
               context.updateState({
                 ...$this.state
               });
@@ -90,7 +83,6 @@ const selectedHandeler = ($this, context, e) => {
 };
 
 const doctorselectedHandeler = ($this, context, e) => {
-  debugger;
   if ($this.state.sub_department_id !== null) {
     let employee_list = Enumerable.from($this.props.providers)
       .where(w => w.hims_d_employee_id === e.value)
@@ -121,7 +113,7 @@ const doctorselectedHandeler = ($this, context, e) => {
                   generateBillDetails($this, context);
                 }
               );
-              if (context != null) {
+              if (context !== null) {
                 context.updateState({
                   [e.name]: e.value,
                   hims_d_services_id: e.selected.services_id,
@@ -173,7 +165,7 @@ const doctorselectedHandeler = ($this, context, e) => {
             generateBillDetails($this, context);
           }
         );
-        if (context != null) {
+        if (context !== null) {
           context.updateState({
             [e.name]: e.value,
             hims_d_services_id: e.selected.services_id,
@@ -224,14 +216,13 @@ const generateBillDetails = ($this, context) => {
   ];
   AlgaehLoader({ show: true });
 
-  debugger;
   algaehApiCall({
     uri: "/billing/getBillDetails",
     method: "POST",
     data: serviceInput,
     onSuccess: response => {
       if (response.data.success) {
-        if (context != null) {
+        if (context !== null) {
           context.updateState({ ...response.data.records });
         }
 
@@ -241,7 +232,7 @@ const generateBillDetails = ($this, context) => {
           data: response.data.records,
           onSuccess: response => {
             if (response.data.success) {
-              if (context != null) {
+              if (context !== null) {
                 context.updateState({ ...response.data.records });
               }
             }
