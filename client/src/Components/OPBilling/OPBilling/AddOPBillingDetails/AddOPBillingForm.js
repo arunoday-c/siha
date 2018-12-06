@@ -355,8 +355,6 @@ class AddOPBillingForm extends Component {
   }
 
   render() {
-    debugger;
-
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -509,7 +507,6 @@ class AddOPBillingForm extends Component {
                             <AlgaehLabel label={{ fieldName: "services_id" }} />
                           ),
                           displayTemplate: row => {
-                            debugger;
                             let display =
                               this.props.opserviceslist === undefined
                                 ? []
@@ -1068,7 +1065,9 @@ class AddOPBillingForm extends Component {
                               )
                             },
                             others: {
-                              placeholder: "0.00"
+                              placeholder: "0.00",
+                              disabled:
+                                this.state.Billexists === true ? true : false
                               // onBlur: credittextCal.bind(this, this),
                               // onFocus: e => {
                               //   e.target.oldvalue = e.target.value;

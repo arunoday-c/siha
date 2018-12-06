@@ -302,7 +302,7 @@ class SubInsurance extends PureComponent {
                       fieldName: "gross_amt",
                       label: <AlgaehLabel label={{ fieldName: "gross_amt" }} />,
                       displayTemplate: row => {
-                        return row.gross_amt.toFixed(2);
+                        return row.gross_amt;
                       },
                       editorTemplate: row => {
                         return (
@@ -333,7 +333,7 @@ class SubInsurance extends PureComponent {
                         />
                       ),
                       displayTemplate: row => {
-                        return row.corporate_discount_amt.toFixed(2);
+                        return row.corporate_discount_amt;
                       },
                       editorTemplate: row => {
                         return (
@@ -362,9 +362,7 @@ class SubInsurance extends PureComponent {
                         <AlgaehLabel label={{ fieldName: "net_amount" }} />
                       ),
                       displayTemplate: row => {
-                        return row.net_amount !== null
-                          ? row.net_amount.toFixed(2)
-                          : null;
+                        return row.net_amount !== null ? row.net_amount : null;
                       },
 
                       disabled: true

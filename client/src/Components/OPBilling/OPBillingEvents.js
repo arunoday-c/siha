@@ -111,8 +111,6 @@ const Validations = $this => {
 };
 
 const getCashiersAndShiftMAP = $this => {
-  debugger;
-
   let year = moment().format("YYYY");
 
   let month = moment().format("MM");
@@ -122,7 +120,6 @@ const getCashiersAndShiftMAP = $this => {
     method: "GET",
     data: { year: year, month: month, for: "T" },
     onSuccess: response => {
-      debugger;
       if (response.data.success) {
         if (response.data.records.length > 0) {
           $this.setState({ shift_id: response.data.records[0].shift_id });
