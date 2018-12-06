@@ -78,7 +78,6 @@ class OrderMedication extends Component {
         mappingName: "itemlist"
       },
       afterSuccess: data => {
-        
         this.setState({
           itemlist: data
         });
@@ -316,19 +315,19 @@ class OrderMedication extends Component {
                     fieldName: "frequency",
                     label: <AlgaehLabel label={{ forceLabel: "Frequency" }} />,
                     displayTemplate: row => {
-                      return row.frequency == "0"
+                      return row.frequency === "0"
                         ? "1-0-1"
-                        : row.frequency == "1"
+                        : row.frequency === "1"
                         ? "1-0-0"
-                        : row.frequency == "2"
+                        : row.frequency === "2"
                         ? "0-0-1"
-                        : row.frequency == "3"
+                        : row.frequency === "3"
                         ? "0-1-0"
-                        : row.frequency == "4"
+                        : row.frequency === "4"
                         ? "1-1-0"
-                        : row.frequency == "5"
+                        : row.frequency === "5"
                         ? "0-1-1"
-                        : row.frequency == "6"
+                        : row.frequency === "6"
                         ? "1-1-1"
                         : null;
                     }
@@ -339,15 +338,15 @@ class OrderMedication extends Component {
                       <AlgaehLabel label={{ forceLabel: "Frequency Type" }} />
                     ),
                     displayTemplate: row => {
-                      return row.frequency_type == "PD"
+                      return row.frequency_type === "PD"
                         ? "Per Day"
-                        : row.frequency_type == "PH"
+                        : row.frequency_type === "PH"
                         ? "Per Hour"
-                        : row.frequency_type == "PW"
+                        : row.frequency_type === "PW"
                         ? "Per Week"
-                        : row.frequency_type == "PM"
+                        : row.frequency_type === "PM"
                         ? "Per Month"
-                        : row.frequency_type == "AD"
+                        : row.frequency_type === "AD"
                         ? "Alternate Day"
                         : null;
                     }
@@ -358,9 +357,9 @@ class OrderMedication extends Component {
                       <AlgaehLabel label={{ forceLabel: "Frequency Time" }} />
                     ),
                     displayTemplate: row => {
-                      return row.frequency_time == "BM"
+                      return row.frequency_time === "BM"
                         ? "Before Meals"
-                        : row.frequency_time == "AM"
+                        : row.frequency_time === "AM"
                         ? "After Meals"
                         : null;
                     }

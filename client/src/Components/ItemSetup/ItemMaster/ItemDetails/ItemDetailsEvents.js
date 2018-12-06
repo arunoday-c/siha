@@ -1,36 +1,5 @@
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
-let texthandlerInterval = null;
-
-const texthandle = ($this, context, ctrl, e) => {
-  debugger;
-  e = e || ctrl;
-  let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
-
-  // $this.setState({
-  //   [name]: value
-  // });
-
-  // clearInterval(texthandlerInterval);
-  // texthandlerInterval = setInterval(() => {
-  // if (context !== undefined) {
-  //   context.updateState({ [name]: value });
-  // }
-  //   clearInterval(texthandlerInterval);
-  // }, 500);
-};
-
-// const onBlurFunction = ($this, context, ctrl, e) => {
-//   debugger;
-//   e = e || ctrl;
-//   let name = e.name || e.target.name;
-//   let value = e.value || e.target.value;
-
-//   if (context !== undefined) {
-//     context.updateState({ [name]: value });
-//   }
-// };
 
 const radioChange = ($this, context, e) => {
   let radioActive = true;
@@ -123,11 +92,4 @@ const VatAppilicable = ($this, context, e) => {
   }
 };
 
-export {
-  texthandle,
-  radioChange,
-  BatchExpRequired,
-  CptCodesSearch,
-  VatAppilicable
-  // onBlurFunction
-};
+export { radioChange, BatchExpRequired, CptCodesSearch, VatAppilicable };

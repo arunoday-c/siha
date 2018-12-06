@@ -1,7 +1,7 @@
 import { swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import Enumerable from "linq";
-
+import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 import Options from "../../../../Options.json";
 
 let texthandlerInterval = null;
@@ -24,7 +24,6 @@ const texthandle = ($this, context, e) => {
 };
 
 const discounthandle = ($this, context, ctrl, e) => {
-  debugger;
   e = e || ctrl;
   if ($this.state.order_quantity <= 0) {
     $this.setState({
@@ -67,7 +66,6 @@ const discounthandle = ($this, context, ctrl, e) => {
         sub_discount_percentage: $this.state.sub_discount_percentage
       });
     } else {
-      //debugger;
       extended_cost =
         parseFloat($this.state.extended_price) - sub_discount_amount;
       unit_cost = extended_cost / parseFloat($this.state.order_quantity);
@@ -75,6 +73,14 @@ const discounthandle = ($this, context, ctrl, e) => {
       tax_amount =
         (extended_cost * parseFloat($this.state.tax_percentage)) / 100;
       total_amount = tax_amount + extended_cost;
+
+      sub_discount_amount = getAmountFormart(sub_discount_amount, {
+        appendSymbol: false
+      });
+      extended_cost = getAmountFormart(extended_cost, { appendSymbol: false });
+      unit_cost = getAmountFormart(unit_cost, { appendSymbol: false });
+      tax_amount = getAmountFormart(tax_amount, { appendSymbol: false });
+      total_amount = getAmountFormart(total_amount, { appendSymbol: false });
 
       $this.setState({
         sub_discount_percentage: sub_discount_percentage,
@@ -102,7 +108,6 @@ const discounthandle = ($this, context, ctrl, e) => {
 };
 
 const numberchangeTexts = ($this, context, e) => {
-  //debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
@@ -112,7 +117,6 @@ const numberchangeTexts = ($this, context, e) => {
       type: "warning"
     });
   } else {
-    //debugger;
     let extended_price = 0;
     if (parseFloat(value) > 0 && parseFloat($this.state.unit_price) > 0) {
       extended_price = parseFloat(value) * parseFloat($this.state.unit_price);
@@ -158,7 +162,6 @@ const unitpricenumberchangeTexts = ($this, context, e) => {
       type: "warning"
     });
   } else {
-    //debugger;
     let extended_price = 0;
     if (parseFloat($this.state.order_quantity) > 0 && parseFloat(value) > 0) {
       extended_price =
@@ -198,7 +201,6 @@ const unitpricenumberchangeTexts = ($this, context, e) => {
 };
 
 const itemchangeText = ($this, context, e) => {
-  //debugger;
   let name = e.name || e.target.name;
   if (
     $this.state.pharmcy_location_id !== null ||
@@ -206,7 +208,7 @@ const itemchangeText = ($this, context, e) => {
   ) {
     if ($this.state.vendor_id !== null) {
       let value = e.value || e.target.value;
-      //debugger;
+
       if ($this.state.po_from === "PHR") {
         $this.setState({
           [name]: value,
@@ -293,7 +295,6 @@ const itemchangeText = ($this, context, e) => {
 };
 
 const AddItems = ($this, context) => {
-  //debugger;
   if ($this.state.order_quantity === 0) {
     swalMessage({
       title: "Invalid Input. Please enter Quantity Required .",
@@ -473,12 +474,7 @@ const deletePODetail = ($this, context, row) => {
   if ($this.state.po_from === "PHR") {
     let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
 
-    for (var i = 0; i < pharmacy_stock_detail.length; i++) {
-      if (pharmacy_stock_detail[i].phar_item_id === row["phar_item_id"]) {
-        pharmacy_stock_detail.splice(i, 1);
-      }
-    }
-
+    pharmacy_stock_detail.splice(row.rowIdx, 1);
     if (pharmacy_stock_detail.length === 0) {
       assignDataandclear(
         $this,
@@ -497,11 +493,7 @@ const deletePODetail = ($this, context, row) => {
     {
       let inventory_stock_detail = $this.state.inventory_stock_detail;
 
-      for (var k = 0; k < inventory_stock_detail.length; k++) {
-        if (inventory_stock_detail[k].inv_item_id === row["inv_item_id"]) {
-          inventory_stock_detail.splice(k, 1);
-        }
-      }
+      inventory_stock_detail.splice(row.rowIdx, 1);
 
       if (inventory_stock_detail.length === 0) {
         assignDataandclear(
@@ -522,7 +514,6 @@ const deletePODetail = ($this, context, row) => {
 };
 
 const updatePODetail = ($this, context, row) => {
-  debugger;
   let saveEnable = false;
   if ($this.state.hims_f_procurement_po_header_id !== null) {
     saveEnable = true;
@@ -531,11 +522,7 @@ const updatePODetail = ($this, context, row) => {
   if ($this.state.po_from === "PHR") {
     let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
 
-    for (var i = 0; i < pharmacy_stock_detail.length; i++) {
-      if (pharmacy_stock_detail[i].phar_item_id === row["phar_item_id"]) {
-        pharmacy_stock_detail[i] = row;
-      }
-    }
+    pharmacy_stock_detail[row.rowIdx] = row;
 
     let sub_total = Enumerable.from(pharmacy_stock_detail).sum(s =>
       parseFloat(s.extended_price)
@@ -580,11 +567,7 @@ const updatePODetail = ($this, context, row) => {
   } else {
     let inventory_stock_detail = $this.state.inventory_stock_detail;
 
-    for (var i = 0; i < inventory_stock_detail.length; i++) {
-      if (inventory_stock_detail[i].inv_item_id === row["inv_item_id"]) {
-        inventory_stock_detail[i] = row;
-      }
-    }
+    inventory_stock_detail[row.rowIdx] = row;
 
     let sub_total = Enumerable.from(inventory_stock_detail).sum(s =>
       parseFloat(s.extended_price)
@@ -636,7 +619,7 @@ const dateFormater = ($this, value) => {
 };
 
 const onchangegridcol = ($this, row, e) => {
-  //debugger;
+  //
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   if (value > row.total_quantity) {
@@ -653,7 +636,7 @@ const onchangegridcol = ($this, row, e) => {
 };
 
 const onchhangegriddiscount = ($this, row, ctrl, e) => {
-  //debugger;
+  //
 
   e = e || ctrl;
 
@@ -684,14 +667,15 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
       type: "warning"
     });
   } else {
-    //debugger;
+    //
     extended_cost = parseFloat(row.extended_price) - sub_discount_amount;
 
     tax_amount = (extended_cost * parseFloat(row.tax_percentage)) / 100;
-
-    row["extended_cost"] = extended_cost;
+    tax_amount = getAmountFormart(tax_amount, { appendSymbol: false });
+    extended_cost = getAmountFormart(extended_cost, { appendSymbol: false });
     row["unit_cost"] = extended_cost / parseFloat(row.order_quantity);
 
+    row["extended_cost"] = extended_cost;
     row["tax_amount"] = (extended_cost * parseFloat(row.tax_percentage)) / 100;
     row["total_amount"] = tax_amount + extended_cost;
 
@@ -704,7 +688,6 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
 };
 
 const AssignData = $this => {
-  debugger;
   if ($this.state.sub_discount_percentage === "") {
     $this.setState({
       sub_discount_percentage: 0
@@ -717,7 +700,6 @@ const AssignData = $this => {
 };
 
 const GridAssignData = ($this, row) => {
-  debugger;
   if (row.sub_discount_percentage === "") {
     row["sub_discount_percentage"] = 0;
   } else if (row.sub_discount_amount === "") {
@@ -727,7 +709,6 @@ const GridAssignData = ($this, row) => {
 };
 
 const EditGrid = ($this, context, cancelRow) => {
-  //debugger;
   if (context !== null) {
     context.updateState({
       saveEnable: true
@@ -736,7 +717,6 @@ const EditGrid = ($this, context, cancelRow) => {
 };
 
 const CancelGrid = ($this, context, cancelRow) => {
-  //debugger;
   let saveEnable = false;
 
   let _pharmacy_stock_detail =

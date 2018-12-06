@@ -15,7 +15,7 @@ import {
   postPatientDetails,
   postVisitDetails
 } from "../../actions/RegistrationPatient/Registrationactions";
-import Enumerable from "linq";
+
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import MyContext from "../../utils/MyContext.js";
 import { Validations } from "./FrontdeskValidation.js";

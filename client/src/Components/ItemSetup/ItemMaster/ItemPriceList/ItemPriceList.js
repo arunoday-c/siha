@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./item_price_list.css";
 import MyContext from "../../../../utils/MyContext";
-import { texthandle } from "./ItemPriceListEvents";
+// import { texthandle } from "./ItemPriceListEvents";
 import {
   AlagehFormGroup,
   AlagehAutoComplete

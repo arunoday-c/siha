@@ -22,9 +22,9 @@ import {
 } from "./OPBillCancellationEvents";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { successfulMessage } from "../../utils/GlobalFunctions";
-import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall.js";
+import { algaehApiCall } from "../../utils/algaehApiCall.js";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
-import Enumerable from "linq";
+
 import AlgaehReport from "../Wrapper/printReports";
 
 import moment from "moment";

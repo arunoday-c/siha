@@ -1,7 +1,7 @@
 export default {
   inputParam: function() {
     var output;
-    var CurrentDate = new Date();
+
     output = {
       hims_f_patient_advance_id: null,
       hims_f_patient_id: null,
@@ -9,7 +9,7 @@ export default {
       advance_amount: 0,
       //created_by: null,
       //created_date: new Date(),
-     // updated_by: null,
+      // updated_by: null,
       update_date: 0,
 
       pay_cash: "CA",
@@ -34,9 +34,9 @@ export default {
       counter_id: null,
       shift_id: null,
       unbalanced_amount: 0,
-     // created_by: null,
-     // created_date: new Date(),
-     // updated_by: null,
+      // created_by: null,
+      // created_date: new Date(),
+      // updated_by: null,
       updated_date: null,
       pay_type: "R",
       receiptdetails: []
