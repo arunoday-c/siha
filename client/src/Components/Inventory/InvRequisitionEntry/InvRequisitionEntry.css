@@ -1,5 +1,6 @@
 .hptl-phase1-requisition-form {
-  min-height: 80vh; }
+  min-height: 80vh;
+  padding-bottom: 60px; }
   .hptl-phase1-requisition-form .form-details {
     padding: 5px;
     padding-bottom: 0px; }
