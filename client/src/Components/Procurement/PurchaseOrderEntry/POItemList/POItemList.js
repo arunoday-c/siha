@@ -22,7 +22,11 @@ import {
   deletePODetail,
   updatePODetail,
   onchangegridcol,
-  onchhangegriddiscount
+  onchhangegriddiscount,
+  AssignData,
+  GridAssignData,
+  EditGrid,
+  CancelGrid
 } from "./POItemListEvents";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 
@@ -258,7 +262,8 @@ class POItemList extends Component {
                             onChange: discounthandle.bind(this, this, context)
                           },
                           others: {
-                            disabled: this.state.dataExitst
+                            disabled: this.state.dataExitst,
+                            onBlur: AssignData.bind(this, this)
                           }
                         }}
                       />
@@ -277,7 +282,8 @@ class POItemList extends Component {
                             onChange: discounthandle.bind(this, this, context)
                           },
                           others: {
-                            disabled: this.state.dataExitst
+                            disabled: this.state.dataExitst,
+                            onBlur: AssignData.bind(this, this)
                           }
                         }}
                       />
@@ -593,7 +599,12 @@ class POItemList extends Component {
                                         )
                                       },
                                       others: {
-                                        disabled: !this.state.authorizeEnable
+                                        disabled: !this.state.authorizeEnable,
+                                        onBlur: GridAssignData.bind(
+                                          this,
+                                          this,
+                                          row
+                                        )
                                       }
                                     }}
                                   />
@@ -624,7 +635,12 @@ class POItemList extends Component {
                                         )
                                       },
                                       others: {
-                                        disabled: !this.state.authorizeEnable
+                                        disabled: !this.state.authorizeEnable,
+                                        onBlur: GridAssignData.bind(
+                                          this,
+                                          this,
+                                          row
+                                        )
                                       }
                                     }}
                                   />
@@ -693,7 +709,10 @@ class POItemList extends Component {
                                   <AlagehFormGroup
                                     div={{}}
                                     textBox={{
-                                      decimal: { allowNegative: false },
+                                      number: {
+                                        allowNegative: false,
+                                        thousandSeparator: ","
+                                      },
                                       value: row.authorize_quantity,
                                       className: "txt-fld",
                                       name: "authorize_quantity",
@@ -751,10 +770,12 @@ class POItemList extends Component {
                                 : this.state.inventory_stock_detail
                           }}
                           isEditable={true}
+                          byForceEvents={true}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{
                             onDelete: deletePODetail.bind(this, this, context),
-                            onEdit: row => {},
+                            onEdit: EditGrid.bind(this, this, context),
+                            onCancel: CancelGrid.bind(this, this, context),
                             onDone: updatePODetail.bind(this, this, context)
                           }}
                         />

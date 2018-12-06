@@ -187,9 +187,10 @@ const dateFormater = ($this, value) => {
 };
 
 const onchangegridcol = ($this, row, e) => {
+  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  if (value > row.total_quantity) {
+  if (parseFloat(value) > row.dn_quantity) {
     swalMessage({
       title:
         "Invalid Input. Authorize Quantity cannot be greater than Ordered Quantity.",
@@ -197,7 +198,7 @@ const onchangegridcol = ($this, row, e) => {
     });
   } else {
     row[name] = value;
-    row["rejected_quantity"] = row.total_quantity - value;
+    row["rejected_quantity"] = row.dn_quantity - parseFloat(value);
     row.update();
   }
 };
