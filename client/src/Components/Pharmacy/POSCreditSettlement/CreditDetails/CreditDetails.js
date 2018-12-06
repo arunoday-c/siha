@@ -140,6 +140,9 @@ class CreditDetails extends Component {
                           <AlagehFormGroup
                             div={{}}
                             textBox={{
+                              decimal: {
+                                allowNegative: false
+                              },
                               value: row.receipt_amount,
                               className: "txt-fld",
                               name: "receipt_amount",
@@ -209,9 +212,8 @@ class CreditDetails extends Component {
                       fieldName: "write_off_amount"
                     }}
                     textBox={{
-                      number: {
-                        allowNegative: false,
-                        thousandSeparator: ","
+                      decimal: {
+                        allowNegative: false
                       },
                       className: "txt-fld",
                       name: "write_off_amount",
