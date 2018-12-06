@@ -36,11 +36,6 @@ app.use(
     limit: keys.bodyLimit
   })
 );
-//  app.use(()=>{
-//   const keepAliveAgent = new http.Agent({ keepAlive: true });
-//   options.agent = keepAliveAgent;
-//   http.request(options, onResponseCallback);
-//  })
 
 //passport config
 app.use(passport.initialize());
@@ -62,12 +57,18 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((id, done) => {
   done(null, { msg: "done" });
 });
-
+app.set("view cache", true);
 app.use((req, res, next) => {
   let reqH = req.headers;
 
   let reqUser = "";
+  res.setHeader("connection", "keep-alive");
+  res.setHeader("Transfer-Encoding", "gzip");
   if (req.url != "/api/v1/apiAuth") {
+    // if (req.url != "/api/v1/apiAuth/authUser") {
+    //   res.setHeader("Content-Encoding", "gzip");
+    //   //  res.setHeader("connection", "keep-alive");
+    // }
     reqUser = jwtDecode(reqH["x-api-key"]).id;
     if (req.url != "/api/v1/apiAuth/authUser") {
       let header = req.headers["x-app-user-identity"];
@@ -196,6 +197,7 @@ app.use((error, req, res, next) => {
 });
 
 app.server.listen(_port);
+
 console.log(`started on port ${_port}`);
 
 export default app;

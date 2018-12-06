@@ -6,6 +6,7 @@ import mkdirp from "mkdirp";
 import { logger, debugFunction, debugLog } from "./logging";
 import fs from "fs";
 import { LINQ } from "node-linq";
+
 import _ from "underscore";
 let paging = options => {
   let pageLimit = options.paging.pageNo * options.paging.pageSize;
@@ -202,6 +203,7 @@ let releaseConnection = (req, res) => {
   if (req.records != null) {
     delete req.records;
   }
+  res.flush();
 };
 let checkIsNull = (input, defaultType) => {
   return input == null || input == "" ? defaultType : input;

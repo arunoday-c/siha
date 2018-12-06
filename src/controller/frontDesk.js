@@ -32,6 +32,7 @@ export default ({ config, db }) => {
     },
     (req, res, next) => {
       debugLog("Data1:");
+
       res.status(httpStatus.ok).json({
         success: true,
         records: req.body
