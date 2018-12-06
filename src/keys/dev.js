@@ -4,7 +4,7 @@ export default {
   TOKENTIME: 2592000, // 60 * 60 * 30 ,
   // Server port and request body limit
   port: 3000,
-  bodyLimit: "900kb",
+  bodyLimit: "1024kb",
 
   mysqlDb: {
     connectionLimit: 20,

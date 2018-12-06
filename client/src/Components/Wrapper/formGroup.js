@@ -23,6 +23,9 @@ export default class FormGroup extends PureComponent {
       },
       cardIcon: "fas fa-credit-card"
     };
+    if (props.textBox.decimal !== undefined) {
+      this.decimalOnChangeHandler = this.decimalOnChangeHandler.bind(this);
+    }
   }
 
   important = () => {
@@ -164,6 +167,22 @@ export default class FormGroup extends PureComponent {
     }
   }
 
+  decimalOnChangeHandler(e) {
+    if (
+      this.props.textBox.events !== undefined &&
+      typeof this.props.textBox.events.onChange === "function"
+    ) {
+      this.props.textBox.events.onChange({
+        target: {
+          name: this.props.textBox.name,
+          formattedValue: e.formattedValue,
+          rawValue: e.value,
+          value: e.floatValue
+        }
+      });
+    }
+  }
+
   textBoxRender = () => {
     const _class =
       this.props.textBox.className !== undefined
@@ -209,7 +228,8 @@ export default class FormGroup extends PureComponent {
             decimalScale={this.state.options.decimalScale}
             allowNegative={this.state.options.allowNegative}
             fixedDecimalScale={true}
-            {..._onChange}
+            // {..._onChange}
+            onValueChange={this.decimalOnChangeHandler}
           />
         );
       } else if (this.props.textBox.number !== undefined) {
