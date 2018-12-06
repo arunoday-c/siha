@@ -784,10 +784,7 @@ class POItemList extends Component {
                   </div>
                 </div>
                 <div className="col-lg-12">
-                  <div
-                    className="portlet portlet-bordered box-shadow-normal margin-bottom-15"
-                    style={{ height: 80, marginBottom: 73 }}
-                  >
+                  <div style={{ marginBottom: 73 }}>
                     <div className="row">
                       <div className="col" />
 

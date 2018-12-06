@@ -47,7 +47,6 @@ class RequisitionList extends Component {
   }
 
   render() {
-    
     return (
       <React.Fragment>
         <div className="hptl-phase1-requisition-list-form">
@@ -149,7 +148,7 @@ class RequisitionList extends Component {
           <div className="row">
             <div className="col-lg-12">
               <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
-                <div className="portlet-body">
+                <div className="portlet-body" id="RequisitionListCntr">
                   <AlgaehDataGrid
                     id="RequisitionList_grid"
                     columns={[
