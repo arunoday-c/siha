@@ -19,7 +19,7 @@ const DeptselectedHandeler = ($this, context, e) => {
       debugger;
     }
   );
-  if (context != null) {
+  if (context !== null) {
     context.updateState({
       [e.name]: e.value,
       department_id: e.selected.department_id,
@@ -60,7 +60,7 @@ const selectedHandeler = ($this, context, e) => {
             consultation: e.selected.consultation
           },
           () => {
-            if (context != null) {
+            if (context !== null) {
               context.updateState({
                 ...$this.state
               });
@@ -121,7 +121,7 @@ const doctorselectedHandeler = ($this, context, e) => {
                   generateBillDetails($this, context);
                 }
               );
-              if (context != null) {
+              if (context !== null) {
                 context.updateState({
                   [e.name]: e.value,
                   hims_d_services_id: e.selected.services_id,
@@ -173,7 +173,7 @@ const doctorselectedHandeler = ($this, context, e) => {
             generateBillDetails($this, context);
           }
         );
-        if (context != null) {
+        if (context !== null) {
           context.updateState({
             [e.name]: e.value,
             hims_d_services_id: e.selected.services_id,
@@ -231,7 +231,7 @@ const generateBillDetails = ($this, context) => {
     data: serviceInput,
     onSuccess: response => {
       if (response.data.success) {
-        if (context != null) {
+        if (context !== null) {
           context.updateState({ ...response.data.records });
         }
 
@@ -241,7 +241,7 @@ const generateBillDetails = ($this, context) => {
           data: response.data.records,
           onSuccess: response => {
             if (response.data.success) {
-              if (context != null) {
+              if (context !== null) {
                 context.updateState({ ...response.data.records });
               }
             }

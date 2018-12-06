@@ -958,7 +958,11 @@ class PosListItems extends Component {
                             others: {
                               disabled: this.state.saveEnable,
                               placeholder: "0.00",
-                              // onBlur: PosheaderCalculation.bind(this, this),
+                              // onBlur: PosheaderCalculation.bind(
+                              //   this,
+                              //   this,
+                              //   context
+                              // ),
                               onFocus: e => {
                                 e.target.oldvalue = e.target.value;
                               }
@@ -983,7 +987,11 @@ class PosListItems extends Component {
                             others: {
                               disabled: this.state.saveEnable,
                               placeholder: "0.00",
-                              onBlur: PosheaderCalculation.bind(this, this),
+                              // onBlur: PosheaderCalculation.bind(
+                              //   this,
+                              //   this,
+                              //   context
+                              // ),
                               onFocus: e => {
                                 e.target.oldvalue = e.target.value;
                               }

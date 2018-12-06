@@ -35,7 +35,7 @@ const discounthandle = ($this, context, ctrl, e) => {
       }
     );
 
-    if (context != null) {
+    if (context !== null) {
       context.updateState({
         sheet_discount_percentage: sheet_discount_percentage,
         sheet_discount_amount: sheet_discount_amount
@@ -159,7 +159,7 @@ const AddItems = ($this, context) => {
           existingservices.splice(0, 0, data.billdetails[0]);
         }
 
-        if (context != null) {
+        if (context !== null) {
           context.updateState({
             pharmacy_stock_detail: existingservices,
             item_id: null,
@@ -294,7 +294,7 @@ const updateSalesReturnDetail = ($this, context) => {
     if ($this.state.hims_f_pharmcy_sales_return_header_id !== null) {
       saveEnable = true;
     }
-    if (context != null) {
+    if (context !== null) {
       context.updateState({
         saveEnable: saveEnable
       });
@@ -386,7 +386,7 @@ const adjustadvance = ($this, context, ctrl, e) => {
       }
     );
 
-    if (context != null) {
+    if (context !== null) {
       context.updateState({
         [e.target.name]: e.target.value
       });
@@ -426,7 +426,7 @@ const SalesReturnheaderCalculation = ($this, context) => {
 const EditGrid = ($this, context, cancelRow) => {
   let saveEnable = true;
 
-  if (context != null) {
+  if (context !== null) {
     let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
     if (cancelRow !== undefined) {
       _pharmacy_stock_detail[cancelRow.rowIdx] = cancelRow;
@@ -445,7 +445,7 @@ const CancelGrid = ($this, context, cancelRow) => {
     saveEnable = true;
   }
 
-  if (context != null) {
+  if (context !== null) {
     let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
     if (cancelRow !== undefined) {
       _pharmacy_stock_detail[cancelRow.rowIdx] = cancelRow;

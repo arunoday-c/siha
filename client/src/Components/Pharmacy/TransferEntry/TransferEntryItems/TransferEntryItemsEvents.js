@@ -149,7 +149,7 @@ const AddItems = ($this, context) => {
             existingservices.splice(0, 0, data.billdetails[0]);
           }
 
-          if (context != null) {
+          if (context !== null) {
             context.updateState({
               pharmacy_stock_detail: existingservices,
               item_id: null,
@@ -259,7 +259,7 @@ const deleteTransEntryDetail = ($this, context, e, rowId) => {
 
 const updateTransEntryDetail = ($this, context) => {
   //debugger;
-  if (context != null) {
+  if (context !== null) {
     context.updateState({
       saveEnable: false
     });
@@ -330,7 +330,7 @@ const getItemLocationStock = ($this, value) => {
 
 const EditGrid = ($this, context, cancelRow) => {
   //debugger;
-  if (context != null) {
+  if (context !== null) {
     let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
     if (cancelRow !== undefined) {
       _pharmacy_stock_detail[cancelRow.rowIdx] = cancelRow;

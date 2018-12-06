@@ -14,7 +14,7 @@ const BillSearch = ($this, context, e) => {
     onRowSelect: row => {
       $this.setState({ bill_number: row.bill_number });
 
-      if (context != null) {
+      if (context !== null) {
         context.updateState({ bill_number: row.bill_number });
       }
     }

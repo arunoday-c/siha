@@ -208,7 +208,7 @@ const generateBillDetails = ($this, context) => {
         data: serviceInput,
         onSuccess: response => {
           if (response.data.success) {
-            if (context != null) {
+            if (context !== null) {
               context.updateState({ ...response.data.records });
             }
 
@@ -218,7 +218,7 @@ const generateBillDetails = ($this, context) => {
               data: response.data.records,
               onSuccess: response => {
                 if (response.data.success) {
-                  if (context != null) {
+                  if (context !== null) {
                     context.updateState({ ...response.data.records });
                   }
                 }

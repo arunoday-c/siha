@@ -149,7 +149,7 @@ const AddItems = ($this, context) => {
             existingservices.splice(0, 0, data.billdetails[0]);
           }
 
-          if (context != null) {
+          if (context !== null) {
             context.updateState({
               inventory_stock_detail: existingservices,
               item_id: null,
