@@ -228,6 +228,15 @@ const credittexthandle = ($this, context, ctrl, e) => {
       title: "Warning",
       icon: "warning"
     });
+    $this.setState({
+      [e.target.name]: $this.state.credit_amount
+    });
+
+    if (context != null) {
+      context.updateState({
+        [e.target.name]: $this.state.credit_amount
+      });
+    }
   } else {
     // let balance_credit = $this.state.receiveable_amount - e.target.value;
     $this.setState(

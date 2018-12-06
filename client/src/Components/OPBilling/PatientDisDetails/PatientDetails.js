@@ -131,13 +131,15 @@ class DisPatientForm extends Component {
                       </h6>
                     </div>
                     <div className="col-lg-3">
-                      {this.state.cancelled === "Y" ? (
-                        <h5 style={{ color: "red" }}> Cancelled </h5>
-                      ) : this.state.balance_credit > 0 ? (
-                        <h5 style={{ color: "red" }}> Not Settled </h5>
-                      ) : (
-                        <h5 style={{ color: "green" }}> Settled </h5>
-                      )}
+                      {this.state.Billexists === true ? (
+                        this.state.cancelled === "Y" ? (
+                          <h5 style={{ color: "red" }}> Cancelled </h5>
+                        ) : this.state.balance_credit > 0 ? (
+                          <h5 style={{ color: "red" }}> Not Settled </h5>
+                        ) : (
+                          <h5 style={{ color: "green" }}> Settled </h5>
+                        )
+                      ) : null}
                     </div>
                   </div>
                 </div>

@@ -1065,7 +1065,9 @@ class AddOPBillingForm extends Component {
                               )
                             },
                             others: {
-                              placeholder: "0.00"
+                              placeholder: "0.00",
+                              disabled:
+                                this.state.Billexists === true ? true : false
                               // onBlur: credittextCal.bind(this, this),
                               // onFocus: e => {
                               //   e.target.oldvalue = e.target.value;

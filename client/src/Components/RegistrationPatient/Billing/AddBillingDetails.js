@@ -457,12 +457,12 @@ const credittexthandle = ($this, context, ctrl, e) => {
       type: "warning"
     });
     $this.setState({
-      [e.target.name]: e.target.oldvalue
+      [e.target.name]: $this.state.credit_amount
     });
 
     if (context != null) {
       context.updateState({
-        [e.target.name]: e.target.oldvalue
+        [e.target.name]: $this.state.credit_amount
       });
     }
   } else {
