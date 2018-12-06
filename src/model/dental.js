@@ -497,7 +497,7 @@ let updateDentalTreatmentStatus = (req, res, next) => {
         next(error);
       }
       let input = extend({}, req.body);
-      if (input.plan_status == "WIP" || input.plan_status == "CP") {
+      if (input.treatment_status == "WIP" || input.treatment_status == "CP") {
         connection.query(
           "update hims_f_dental_treatment set treatment_status=? ,\
              updated_date=?, updated_by=? WHERE  `record_status`='A' and `hims_f_dental_treatment_id`=?;",
