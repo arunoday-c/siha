@@ -41,7 +41,7 @@ const insurancehandle = ($this, context, e) => {
       ProcessInsure: false
     });
 
-    if (context != null) {
+    if (context !== null) {
       context.updateState({
         primary_insurance_provider_id: e.selected.insurance_provider_id,
         primary_sub_id: e.selected.sub_insurance_provider_id,
@@ -198,7 +198,7 @@ const InsuranceDetails = ($this, context, e) => {
                     ProcessInsure: false
                   });
 
-                  if (context != null) {
+                  if (context !== null) {
                     context.updateState({
                       primary_insurance_provider_id:
                         row.hims_d_insurance_provider_id,
@@ -264,7 +264,7 @@ const InsuranceDetails = ($this, context, e) => {
                 ProcessInsure: false
               });
 
-              if (context != null) {
+              if (context !== null) {
                 context.updateState({
                   primary_insurance_provider_id:
                     row.hims_d_insurance_provider_id,
@@ -324,7 +324,7 @@ const radioChange = ($this, context, e) => {
       primary_effective_end_date: null
     });
 
-    if (context != null) {
+    if (context !== null) {
       context.updateState({
         [e.target.name]: e.target.value,
         insuranceYes: !$this.state.insuranceYes,

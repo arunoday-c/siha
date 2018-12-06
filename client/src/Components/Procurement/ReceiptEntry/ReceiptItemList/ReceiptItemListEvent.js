@@ -252,7 +252,7 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
 
 const EditGrid = ($this, context, cancelRow) => {
   debugger;
-  if (context != null) {
+  if (context !== null) {
     let saveBtn = true;
     let postBtn = true;
 
@@ -270,7 +270,7 @@ const EditGrid = ($this, context, cancelRow) => {
 
 const CancelGrid = ($this, context, cancelRow) => {
   debugger;
-  if (context != null) {
+  if (context !== null) {
     let saveBtn = false;
     let postBtn = false;
     if ($this.state.hims_f_procurement_grn_header_id === null) {

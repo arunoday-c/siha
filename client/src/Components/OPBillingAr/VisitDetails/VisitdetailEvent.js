@@ -66,7 +66,7 @@ const handleChange = ($this, row, context, e) => {
         onSuccess: response => {
           if (response.data.success) {
             AlgaehLoader({ show: false });
-            // if (context != null) {
+            // if (context !==null) {
             //   context.updateState({ ...response.data.records });
             // }
             let data = response.data.records;

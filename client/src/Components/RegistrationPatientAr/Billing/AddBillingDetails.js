@@ -43,7 +43,7 @@ const calculateRecipt = ($this, context) => {
     data: serviceInput,
     onSuccess: response => {
       if (response.data.success) {
-        if (context != null) {
+        if (context !== null) {
           context.updateState({ ...response.data.records });
         }
       }
@@ -87,7 +87,7 @@ const cashtexthandle = ($this, context, ctrl, e) => {
       [e.target.name]: e.target.value
     });
 
-    if (context != null) {
+    if (context !== null) {
       context.updateState({ [e.target.name]: e.target.value });
     }
   }
@@ -119,7 +119,7 @@ const cardtexthandle = ($this, context, ctrl, e) => {
       [e.target.name]: e.target.value
     });
 
-    if (context != null) {
+    if (context !== null) {
       context.updateState({ [e.target.name]: e.target.value });
     }
   }
@@ -152,7 +152,7 @@ const chequetexthandle = ($this, context, ctrl, e) => {
       [e.target.name]: e.target.value
     });
 
-    if (context != null) {
+    if (context !== null) {
       context.updateState({ [e.target.name]: e.target.value });
     }
   }
@@ -172,7 +172,7 @@ const adjustadvance = ($this, context, ctrl, e) => {
       [e.target.name]: e.target.value
     });
 
-    if (context != null) {
+    if (context !== null) {
       context.updateState({
         [e.target.name]: e.target.value
       });
@@ -204,7 +204,7 @@ const discounthandle = ($this, context, ctrl, e) => {
       sheet_discount_amount: sheet_discount_amount
     });
 
-    if (context != null) {
+    if (context !== null) {
       context.updateState({
         sheet_discount_percentage: sheet_discount_percentage,
         sheet_discount_amount: sheet_discount_amount
@@ -232,7 +232,7 @@ const billheaderCalculation = ($this, context) => {
     data: serviceInput,
     onSuccess: response => {
       if (response.data.success) {
-        if (context != null) {
+        if (context !== null) {
           context.updateState({ ...response.data.records });
         }
       }
@@ -262,7 +262,7 @@ const datehandle = ($this, context, ctrl, e) => {
     [e]: moment(ctrl)._d
   });
 
-  if (context != null) {
+  if (context !== null) {
     context.updateState({ [e]: moment(ctrl)._d });
   }
 };
@@ -315,7 +315,7 @@ const ProcessInsurance = ($this, context, ctrl, e) => {
       data: serviceInput,
       onSuccess: response => {
         if (response.data.success) {
-          if (context != null) {
+          if (context !== null) {
             context.updateState({ ...response.data.records });
           }
 
@@ -327,7 +327,7 @@ const ProcessInsurance = ($this, context, ctrl, e) => {
               if (response.data.success) {
                 response.data.records.saveEnable = false;
                 response.data.records.ProcessInsure = true;
-                if (context != null) {
+                if (context !== null) {
                   context.updateState({ ...response.data.records });
                 }
               }
@@ -433,7 +433,7 @@ const credittexthandle = ($this, context, ctrl, e) => {
       [e.target.name]: e.target.value
     });
 
-    if (context != null) {
+    if (context !== null) {
       context.updateState({
         [e.target.name]: e.target.value
       });

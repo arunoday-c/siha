@@ -460,7 +460,7 @@ const credittexthandle = ($this, context, ctrl, e) => {
       [e.target.name]: $this.state.credit_amount
     });
 
-    if (context != null) {
+    if (context !== null) {
       context.updateState({
         [e.target.name]: $this.state.credit_amount
       });
@@ -475,7 +475,7 @@ const credittexthandle = ($this, context, ctrl, e) => {
       }
     );
 
-    if (context != null) {
+    if (context !== null) {
       context.updateState({
         [e.target.name]: e.target.value,
         balance_credit: e.target.value === "" ? 0 : e.target.value

@@ -100,7 +100,7 @@ const discounthandle = ($this, context, ctrl, e) => {
       sheet_discount_amount: sheet_discount_amount
     });
 
-    if (context != null) {
+    if (context !== null) {
       context.updateState({
         sheet_discount_percentage: sheet_discount_percentage,
         sheet_discount_amount: sheet_discount_amount
