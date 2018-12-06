@@ -14,29 +14,50 @@ const discounthandle = ($this, context, ctrl, e) => {
   let sheet_discount_amount = 0;
 
   if (e.target.name === "sheet_discount_percentage") {
-    sheet_discount_percentage = parseFloat(e.target.value.replace(" %", ""));
+    sheet_discount_percentage =
+      e.target.value === "" ? "" : parseFloat(e.target.value);
     sheet_discount_amount = 0;
   } else {
-    sheet_discount_amount = parseFloat(e.target.value);
+    sheet_discount_amount =
+      e.target.value === "" ? "" : parseFloat(e.target.value);
     sheet_discount_percentage = 0;
   }
   if (sheet_discount_percentage > 100) {
     swalMessage({
       title: "Invalid Input. Discount % cannot be greater than 100.",
-      type: "warning"
+      type: "Warning"
     });
-  } else {
-    $this.setState(
-      {
-        sheet_discount_percentage: sheet_discount_percentage,
-        sheet_discount_amount: sheet_discount_amount
-      },
-      () => {
-        PosheaderCalculation($this, context);
-      }
-    );
+    $this.setState({
+      sheet_discount_percentage: $this.state.sheet_discount_percentage
+    });
 
-    if (context != null) {
+    if (context !== null) {
+      context.updateState({
+        sheet_discount_percentage: $this.state.sheet_discount_percentage
+      });
+    }
+  } else if (sheet_discount_amount > $this.state.patient_payable) {
+    swalMessage({
+      title:
+        "Invalid Input. Discount Amount cannot be greater than Patient Share.",
+      type: "Warning"
+    });
+    $this.setState({
+      sheet_discount_amount: $this.state.sheet_discount_amount
+    });
+
+    if (context !== null) {
+      context.updateState({
+        sheet_discount_amount: $this.state.sheet_discount_amount
+      });
+    }
+  } else {
+    $this.setState({
+      sheet_discount_percentage: sheet_discount_percentage,
+      sheet_discount_amount: sheet_discount_amount
+    });
+
+    if (context !== null) {
       context.updateState({
         sheet_discount_percentage: sheet_discount_percentage,
         sheet_discount_amount: sheet_discount_amount
@@ -329,7 +350,7 @@ const AddItems = ($this, context) => {
               existingservices.splice(0, 0, data.billdetails[0]);
             }
             debugger;
-            if (context != null) {
+            if (context !== null) {
               context.updateState({
                 pharmacy_stock_detail: existingservices,
                 item_id: null,
@@ -395,7 +416,7 @@ const AddItems = ($this, context) => {
                     data.sec_copay_amount || $this.state.sec_copay_amount;
                   data.addItemButton = false;
                   data.saveEnable = false;
-                  if (context != null) {
+                  if (context !== null) {
                     context.updateState({ ...data });
                   }
                 }
@@ -420,137 +441,6 @@ const AddItems = ($this, context) => {
         });
       }
     });
-
-    // algaehApiCall({
-    //   uri: "/billing/getBillDetails",
-    //   method: "POST",
-    //   data: ItemInput,
-    //   onSuccess: response => {
-    //     if (response.data.success) {
-    //       let data = response.data.records;
-
-    //       if (data.billdetails[0].pre_approval === "Y") {
-    //         swalMessage({
-    //           title:
-    //             "Invalid Input. Selected Service is Pre-Approval required, you don't have rights to bill.",
-    //           type: "warning"
-    //         });
-    //       } else {
-    //         let existingservices = $this.state.pharmacy_stock_detail;
-
-    //         if (data.billdetails.length !== 0) {
-    //           data.billdetails[0].extended_cost =
-    //             data.billdetails[0].gross_amount;
-    //           data.billdetails[0].net_extended_cost =
-    //             data.billdetails[0].net_amout;
-
-    //           data.billdetails[0].item_id = $this.state.item_id;
-    //           data.billdetails[0].item_category = $this.state.item_category;
-    //           data.billdetails[0].item_group_id = $this.state.item_group_id;
-    //           data.billdetails[0].expiry_date = $this.state.expiry_date;
-    //           data.billdetails[0].batchno = $this.state.batchno;
-    //           data.billdetails[0].uom_id = $this.state.uom_id;
-    //           data.billdetails[0].operation = "-";
-    //           data.billdetails[0].grn_no = $this.state.grn_no;
-    //           data.billdetails[0].qtyhand = $this.state.qtyhand;
-    //           data.billdetails[0].service_id = data.billdetails[0].services_id;
-    //           data.billdetails[0].discount_amount =
-    //             data.billdetails[0].discount_amout;
-
-    //           existingservices.splice(0, 0, data.billdetails[0]);
-    //         }
-
-    //         if (context != null) {
-    //           context.updateState({
-    //             pharmacy_stock_detail: existingservices,
-    //             item_id: null,
-    //             uom_id: null,
-    //             batchno: null,
-    //             expiry_date: null,
-    //             quantity: 0,
-    //             unit_cost: 0,
-    //             Batch_Items: [],
-    //             service_id: null,
-    //             conversion_factor: 1,
-    //             grn_no: null,
-    //             item_group_id: null,
-    //             item_category: null,
-    //             qtyhand: 0
-    //           });
-    //         }
-
-    //         $this.setState({
-    //           item_id: null,
-    //           uom_id: null,
-    //           batchno: null,
-    //           expiry_date: null,
-    //           quantity: 0,
-    //           unit_cost: 0,
-    //           Batch_Items: [],
-    //           service_id: null,
-    //           conversion_factor: 1,
-    //           grn_no: null,
-    //           item_group_id: null,
-    //           selectBatchButton: false,
-    //           qtyhand: 0
-    //         });
-
-    //         algaehApiCall({
-    //           uri: "/billing/billingCalculations",
-    //           method: "POST",
-    //           data: { billdetails: existingservices },
-    //           onSuccess: response => {
-    //             if (response.data.success) {
-    //               let data = response.data.records;
-
-    //               data.patient_payable_h =
-    //                 data.patient_payable || $this.state.patient_payable;
-    //               data.sub_total =
-    //                 data.sub_total_amount || $this.state.sub_total;
-    //               data.patient_responsibility =
-    //                 data.patient_res || $this.state.patient_responsibility;
-    //               data.company_responsibility =
-    //                 data.company_res || $this.state.company_responsibility;
-
-    //               data.company_payable =
-    //                 data.company_payble || $this.state.company_payable;
-    //               data.sec_company_responsibility =
-    //                 data.sec_company_res ||
-    //                 $this.state.sec_company_responsibility;
-    //               data.sec_company_payable =
-    //                 data.sec_company_paybale || $this.state.sec_company_payable;
-
-    //               data.copay_amount =
-    //                 data.copay_amount || $this.state.copay_amount;
-    //               data.sec_copay_amount =
-    //                 data.sec_copay_amount || $this.state.sec_copay_amount;
-    //               data.addItemButton = false;
-    //               data.saveEnable = false;
-    //               if (context != null) {
-    //                 context.updateState({ ...data });
-    //               }
-    //             }
-    //             AlgaehLoader({ show: false });
-    //           },
-    //           onFailure: error => {
-    //             AlgaehLoader({ show: false });
-    //             swalMessage({
-    //               title: error.message,
-    //               type: "error"
-    //             });
-    //           }
-    //         });
-    //       }
-    //     }
-    //   },
-    //   onFailure: error => {
-    //     AlgaehLoader({ show: false });
-    //     swalMessage({
-    //       title: error.message,
-    //       type: "error"
-    //     });
-    //   }
-    // });
   }
 };
 
@@ -670,16 +560,7 @@ const calculateAmount = ($this, row, ctrl, e) => {
       onSuccess: response => {
         if (response.data.success) {
           let data = response.data.records;
-          // $this.props.generateBill({
-          //   uri: "/billing/getBillDetails",
-          //   method: "POST",
-          //   data: inputParam,
-          //   redux: {
-          //     type: "BILL_GEN_GET_DATA",
-          //     mappingName: "xxx"
-          //   },
-          //   afterSuccess: data => {
-          //debugger;
+
           data.billdetails[0].extended_cost = data.billdetails[0].gross_amount;
           data.billdetails[0].net_extended_cost = data.billdetails[0].net_amout;
 
@@ -726,7 +607,7 @@ const adjustadvance = ($this, context, ctrl, e) => {
       }
     );
 
-    if (context != null) {
+    if (context !== null) {
       context.updateState({
         [e.target.name]: e.target.value
       });
@@ -739,13 +620,24 @@ const PosheaderCalculation = ($this, context) => {
   let ItemInput = {
     isReceipt: false,
     intCalculateall: false,
-    sheet_discount_percentage: parseFloat(
-      $this.state.sheet_discount_percentage
-    ),
-    sheet_discount_amount: parseFloat($this.state.sheet_discount_amount),
-    advance_adjust: parseFloat($this.state.advance_adjust),
+
+    sheet_discount_percentage:
+      $this.state.sheet_discount_percentage === ""
+        ? 0
+        : parseFloat($this.state.sheet_discount_percentage),
+    sheet_discount_amount:
+      $this.state.sheet_discount_amount === ""
+        ? 0
+        : parseFloat($this.state.sheet_discount_amount),
+    advance_adjust:
+      $this.state.advance_adjust === undefined
+        ? 0
+        : parseFloat($this.state.advance_adjust),
     gross_total: parseFloat($this.state.gross_total),
-    credit_amount: parseFloat($this.state.credit_amount)
+    credit_amount:
+      $this.state.credit_amount === undefined
+        ? 0
+        : parseFloat($this.state.credit_amount)
   };
 
   algaehApiCall({
@@ -776,7 +668,10 @@ const PosheaderCalculation = ($this, context) => {
           data.sec_copay_amount || $this.state.sec_copay_amount;
         data.addItemButton = false;
         data.saveEnable = false;
-        if (context != null) {
+
+        // data.credit_amount = ItemInput.credit_amount;
+        // data.advance_adjust = ItemInput.advance_adjust;
+        if (context !== null) {
           context.updateState({ ...data });
         }
       }
@@ -860,7 +755,7 @@ const ViewInsurance = ($this, e) => {
 
 const EditGrid = ($this, context, cancelRow) => {
   //debugger;
-  if (context != null) {
+  if (context !== null) {
     let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
     if (cancelRow !== undefined) {
       _pharmacy_stock_detail[cancelRow.rowIdx] = cancelRow;
@@ -889,19 +784,10 @@ const credittexthandle = ($this, context, ctrl, e) => {
       },
       () => {
         PosheaderCalculation($this, context);
-        // $this.props.PosHeaderCalculations({
-        //   uri: "/billing/billingCalculations",
-        //   method: "POST",
-        //   data: { billdetails: $this.state.pharmacy_stock_detail },
-        //   redux: {
-        //     type: "POS_HEADER_GEN_GET_DATA",
-        //     mappingName: "posheader"
-        //   }
-        // });
       }
     );
 
-    if (context != null) {
+    if (context !== null) {
       context.updateState({
         [e.target.name]: e.target.value,
         balance_credit: e.target.value

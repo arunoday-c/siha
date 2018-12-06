@@ -103,7 +103,7 @@ const handleChange = ($this, row, context, e) => {
                         $this.state.patient_payable;
 
                       response.data.records.saveEnable = false;
-                      if (context != null) {
+                      if (context !== null) {
                         context.updateState({ ...response.data.records });
                       }
                     }

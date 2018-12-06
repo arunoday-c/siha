@@ -86,7 +86,7 @@ const discounthandle = ($this, context, ctrl, e) => {
         total_amount: total_amount
       });
 
-      if (context != null) {
+      if (context !== null) {
         context.updateState({
           sub_discount_percentage: sub_discount_percentage,
           sub_discount_amount: sub_discount_amount,
@@ -728,7 +728,7 @@ const GridAssignData = ($this, row) => {
 
 const EditGrid = ($this, context, cancelRow) => {
   //debugger;
-  if (context != null) {
+  if (context !== null) {
     context.updateState({
       saveEnable: true
     });
@@ -760,7 +760,7 @@ const CancelGrid = ($this, context, cancelRow) => {
     saveEnable = true;
   }
 
-  if (context != null) {
+  if (context !== null) {
     context.updateState({
       saveEnable: saveEnable,
       addItemButton: !$this.state.addItemButton,

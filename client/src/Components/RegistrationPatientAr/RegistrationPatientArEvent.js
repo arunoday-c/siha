@@ -47,7 +47,7 @@ const generateBillDetails = $this => {
           data: response.data.records,
           onSuccess: response => {
             if (response.data.success) {
-              // if (context != null) {
+              // if (context !==null) {
               //   context.updateState({ ...response.data.records });
               // }
               $this.setState({ ...response.data.records });

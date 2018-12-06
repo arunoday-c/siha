@@ -22,7 +22,7 @@ const texthandle = ($this, context, ctrl, e) => {
     [name]: value
   });
 
-  if (context != null) {
+  if (context !== null) {
     context.updateState({ [name]: value });
   }
 };
@@ -44,7 +44,7 @@ const calculateRecipt = ($this, context, e) => {
     data: serviceInput,
     onSuccess: response => {
       if (response.data.success) {
-        if (context != null) {
+        if (context !== null) {
           response.data.records.patient_payable_h =
             response.data.records.patient_payable ||
             $this.state.patient_payable;
@@ -95,7 +95,7 @@ const cashtexthandle = ($this, context, ctrl, e) => {
         }
       );
 
-      if (context != null) {
+      if (context !== null) {
         context.updateState({ [e.target.name]: e.target.value });
       }
     }
@@ -135,7 +135,7 @@ const cardtexthandle = ($this, context, ctrl, e) => {
         }
       );
 
-      if (context != null) {
+      if (context !== null) {
         context.updateState({ [e.target.name]: e.target.value });
       }
     }
@@ -176,7 +176,7 @@ const chequetexthandle = ($this, context, ctrl, e) => {
         }
       );
 
-      if (context != null) {
+      if (context !== null) {
         context.updateState({ [e.target.name]: e.target.value });
       }
     }
@@ -188,7 +188,7 @@ const datehandle = ($this, context, ctrl, e) => {
     [e]: moment(ctrl)._d
   });
 
-  if (context != null) {
+  if (context !== null) {
     context.updateState({ [e]: moment(ctrl)._d });
   }
 };
