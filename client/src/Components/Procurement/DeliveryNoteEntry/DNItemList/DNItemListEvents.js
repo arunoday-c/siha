@@ -178,7 +178,7 @@ const onchangegridcol = ($this, row, e) => {
 };
 
 const onchhangegriddiscount = ($this, row, ctrl, e) => {
-  //debugger;
+  debugger;
 
   e = e || ctrl;
 
@@ -196,20 +196,18 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
 
-    if (value > row.authorize_quantity) {
+    if (parseFloat(value) > row.po_quantity) {
       swalMessage({
         title:
           "Invalid Input.  DN Quantity cannot be greater than PO Quantity.",
         type: "warning"
       });
+      row[name] = row[name];
+      row.update();
     } else {
       //debugger;
-      extended_price = (parseFloat(row.unit_price) * parseFloat(value)).toFixed(
-        2
-      );
-      discount_amount = ((extended_price * discount_percentage) / 100).toFixed(
-        2
-      );
+      extended_price = parseFloat(row.unit_price) * parseFloat(value);
+      discount_amount = (extended_price * discount_percentage) / 100;
 
       extended_cost = extended_price - discount_amount;
 
@@ -217,17 +215,15 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
 
       row[name] = value;
       row["extended_price"] = extended_price;
-      row["extended_cost"] = extended_cost.toFixed(2);
-      row["unit_cost"] = (extended_cost / parseFloat(row.dn_quantity)).toFixed(
-        2
-      );
+      row["extended_cost"] = extended_cost;
+      row["unit_cost"] = extended_cost / parseFloat(row.dn_quantity);
 
-      row["tax_amount"] = tax_amount.toFixed(2);
-      row["total_amount"] = (tax_amount + extended_cost).toFixed(2);
+      row["tax_amount"] = tax_amount;
+      row["total_amount"] = tax_amount + extended_cost;
 
       row["discount_amount"] = discount_amount;
-      row["extended_cost"] = extended_cost.toFixed(2);
-      row["net_extended_cost"] = extended_cost.toFixed(2);
+      row["extended_cost"] = extended_cost;
+      row["net_extended_cost"] = extended_cost;
       row.update();
     }
   }

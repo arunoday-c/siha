@@ -24,72 +24,78 @@ const texthandle = ($this, context, e) => {
 };
 
 const discounthandle = ($this, context, ctrl, e) => {
-  //debugger;
+  debugger;
+  e = e || ctrl;
   if ($this.state.order_quantity <= 0) {
+    $this.setState({
+      [e.target.name]: 0
+    });
     swalMessage({
       title: "Invalid Input. Please Enter Quantity",
       type: "warning"
     });
   } else {
-    e = e || ctrl;
-
-    if (e.target.value === "") {
+    let sub_discount_percentage = 0;
+    let sub_discount_amount = 0;
+    let extended_cost = 0;
+    let unit_cost = 0;
+    let tax_amount = 0;
+    let total_amount = 0;
+    if (e.target.name === "sub_discount_percentage") {
+      sub_discount_percentage =
+        e.target.value === "" ? "" : parseFloat(e.target.value);
+      sub_discount_amount =
+        e.target.value === ""
+          ? 0
+          : (parseFloat($this.state.extended_price) * sub_discount_percentage) /
+            100;
+    } else {
+      sub_discount_amount =
+        e.target.value === "" ? "" : parseFloat(e.target.value);
+      sub_discount_percentage =
+        e.target.value === ""
+          ? 0
+          : (sub_discount_amount / parseFloat($this.state.extended_price)) *
+            100;
+    }
+    if (sub_discount_percentage > 100) {
+      swalMessage({
+        title: "Invalid Input. Discount % cannot be greater than 100.",
+        type: "warning"
+      });
       $this.setState({
-        [e.target.name]: 0
+        sub_discount_percentage: $this.state.sub_discount_percentage
       });
     } else {
-      let sub_discount_percentage = 0;
-      let sub_discount_amount = 0;
-      let extended_cost = 0;
-      let unit_cost = 0;
-      let tax_amount = 0;
-      let total_amount = 0;
-      if (e.target.name === "sub_discount_percentage") {
-        sub_discount_percentage = parseFloat(e.target.value);
-        sub_discount_amount =
-          (parseFloat($this.state.extended_price) * sub_discount_percentage) /
-          100;
-      } else {
-        sub_discount_amount = parseFloat(e.target.value);
-        sub_discount_percentage =
-          (sub_discount_amount / parseFloat($this.state.extended_price)) * 100;
-      }
-      if (sub_discount_percentage > 100) {
-        swalMessage({
-          title: "Invalid Input. Discount % cannot be greater than 100.",
-          type: "warning"
-        });
-      } else {
-        //debugger;
-        extended_cost =
-          parseFloat($this.state.extended_price) - sub_discount_amount;
-        unit_cost = extended_cost / parseFloat($this.state.order_quantity);
+      //debugger;
+      extended_cost =
+        parseFloat($this.state.extended_price) - sub_discount_amount;
+      unit_cost = extended_cost / parseFloat($this.state.order_quantity);
 
-        tax_amount =
-          (extended_cost * parseFloat($this.state.tax_percentage)) / 100;
-        total_amount = tax_amount + extended_cost;
+      tax_amount =
+        (extended_cost * parseFloat($this.state.tax_percentage)) / 100;
+      total_amount = tax_amount + extended_cost;
 
-        $this.setState({
+      $this.setState({
+        sub_discount_percentage: sub_discount_percentage,
+        sub_discount_amount: sub_discount_amount,
+        extended_cost: extended_cost,
+        net_extended_cost: extended_cost,
+        unit_cost: unit_cost,
+        tax_amount: tax_amount,
+        total_amount: total_amount
+      });
+
+      if (context != null) {
+        context.updateState({
           sub_discount_percentage: sub_discount_percentage,
-          sub_discount_amount: sub_discount_amount.toFixed(2),
-          extended_cost: extended_cost.toFixed(2),
-          net_extended_cost: extended_cost.toFixed(2),
-          unit_cost: unit_cost.toFixed(2),
-          tax_amount: tax_amount.toFixed(2),
-          total_amount: total_amount.toFixed(2)
+          sub_discount_amount: sub_discount_amount,
+          extended_cost: extended_cost,
+          net_extended_cost: extended_cost,
+          unit_cost: unit_cost,
+          tax_amount: tax_amount,
+          total_amount: total_amount
         });
-
-        if (context != null) {
-          context.updateState({
-            sub_discount_percentage: sub_discount_percentage,
-            sub_discount_amount: sub_discount_amount.toFixed(2),
-            extended_cost: extended_cost.toFixed(2),
-            net_extended_cost: extended_cost.toFixed(2),
-            unit_cost: unit_cost.toFixed(2),
-            tax_amount: tax_amount.toFixed(2),
-            total_amount: total_amount.toFixed(2)
-          });
-        }
       }
     }
   }
@@ -117,24 +123,24 @@ const numberchangeTexts = ($this, context, e) => {
     let total_amount = tax_amount + extended_price;
     $this.setState({
       [name]: value,
-      extended_price: extended_price.toFixed(2),
-      extended_cost: extended_price.toFixed(2),
-      net_extended_cost: extended_price.toFixed(2),
-      unit_cost: unit_cost.toFixed(2),
-      tax_amount: tax_amount.toFixed(2),
-      total_amount: total_amount.toFixed(2)
+      extended_price: extended_price,
+      extended_cost: extended_price,
+      net_extended_cost: extended_price,
+      unit_cost: unit_cost,
+      tax_amount: tax_amount,
+      total_amount: total_amount
     });
     clearInterval(texthandlerInterval);
     texthandlerInterval = setInterval(() => {
       if (context !== undefined) {
         context.updateState({
           [name]: value,
-          extended_price: extended_price.toFixed(2),
-          extended_cost: extended_price.toFixed(2),
-          net_extended_cost: extended_price.toFixed(2),
-          unit_cost: unit_cost.toFixed(2),
-          tax_amount: tax_amount.toFixed(2),
-          total_amount: total_amount.toFixed(2)
+          extended_price: extended_price,
+          extended_cost: extended_price,
+          net_extended_cost: extended_price,
+          unit_cost: unit_cost,
+          tax_amount: tax_amount,
+          total_amount: total_amount
         });
       }
       clearInterval(texthandlerInterval);
@@ -166,24 +172,24 @@ const unitpricenumberchangeTexts = ($this, context, e) => {
 
     $this.setState({
       [name]: parseFloat(value).toFixed(6),
-      extended_price: extended_price.toFixed(2),
-      extended_cost: extended_price.toFixed(2),
-      net_extended_cost: extended_price.toFixed(2),
-      unit_cost: unit_cost.toFixed(2),
-      tax_amount: tax_amount.toFixed(2),
-      total_amount: total_amount.toFixed(2)
+      extended_price: extended_price,
+      extended_cost: extended_price,
+      net_extended_cost: extended_price,
+      unit_cost: unit_cost,
+      tax_amount: tax_amount,
+      total_amount: total_amount
     });
     clearInterval(texthandlerInterval);
     texthandlerInterval = setInterval(() => {
       if (context !== undefined) {
         context.updateState({
           [name]: parseFloat(value).toFixed(6),
-          extended_price: extended_price.toFixed(2),
-          extended_cost: extended_price.toFixed(2),
-          net_extended_cost: extended_price.toFixed(2),
-          unit_cost: unit_cost.toFixed(2),
-          tax_amount: tax_amount.toFixed(2),
-          total_amount: total_amount.toFixed(2)
+          extended_price: extended_price,
+          extended_cost: extended_price,
+          net_extended_cost: extended_price,
+          unit_cost: unit_cost,
+          tax_amount: tax_amount,
+          total_amount: total_amount
         });
       }
       clearInterval(texthandlerInterval);
@@ -516,7 +522,12 @@ const deletePODetail = ($this, context, row) => {
 };
 
 const updatePODetail = ($this, context, row) => {
-  //debugger;
+  debugger;
+  let saveEnable = false;
+  if ($this.state.hims_f_procurement_po_header_id !== null) {
+    saveEnable = true;
+  }
+
   if ($this.state.po_from === "PHR") {
     let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
 
@@ -562,7 +573,8 @@ const updatePODetail = ($this, context, row) => {
         net_total: net_total,
         net_payable: net_payable,
         total_tax: total_tax,
-        detail_discount: detail_discount
+        detail_discount: detail_discount,
+        saveEnable: saveEnable
       });
     }
   } else {
@@ -610,7 +622,8 @@ const updatePODetail = ($this, context, row) => {
         net_total: net_total,
         net_payable: net_payable,
         total_tax: total_tax,
-        detail_discount: detail_discount
+        detail_discount: detail_discount,
+        saveEnable: saveEnable
       });
     }
   }
@@ -644,59 +657,118 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
 
   e = e || ctrl;
 
-  if (e.target.value === "") {
-    $this.setState({
-      [e.target.name]: 0
+  let sub_discount_percentage = 0;
+  let sub_discount_amount = 0;
+  let extended_cost = 0;
+
+  let tax_amount = 0;
+
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  if (name === "sub_discount_percentage") {
+    sub_discount_percentage = value === "" ? "" : parseFloat(value);
+    sub_discount_amount =
+      value === ""
+        ? 0
+        : (parseFloat(row.extended_price) * sub_discount_percentage) / 100;
+  } else {
+    sub_discount_amount = value === "" ? "" : parseFloat(value);
+    sub_discount_percentage =
+      value === ""
+        ? 0
+        : (sub_discount_amount / parseFloat(row.extended_price)) * 100;
+  }
+  if (sub_discount_percentage > 100) {
+    swalMessage({
+      title: "Invalid Input. Discount % cannot be greater than 100.",
+      type: "warning"
     });
   } else {
-    let sub_discount_percentage = 0;
-    let sub_discount_amount = 0;
-    let extended_cost = 0;
+    //debugger;
+    extended_cost = parseFloat(row.extended_price) - sub_discount_amount;
 
-    let tax_amount = 0;
+    tax_amount = (extended_cost * parseFloat(row.tax_percentage)) / 100;
 
-    let name = e.name || e.target.name;
-    let value = e.value || e.target.value;
-    if (name === "sub_discount_percentage") {
-      sub_discount_percentage = parseFloat(value);
-      sub_discount_amount =
-        (parseFloat(row.extended_price) * sub_discount_percentage) / 100;
-    } else {
-      sub_discount_amount = parseFloat(value);
-      sub_discount_percentage =
-        (sub_discount_amount / parseFloat(row.extended_price)) * 100;
-    }
-    if (sub_discount_percentage > 100) {
-      swalMessage({
-        title: "Invalid Input. Discount % cannot be greater than 100.",
-        type: "warning"
-      });
-    } else {
-      //debugger;
-      extended_cost = parseFloat(row.extended_price) - sub_discount_amount;
+    row["extended_cost"] = extended_cost;
+    row["unit_cost"] = extended_cost / parseFloat(row.order_quantity);
 
-      tax_amount = (extended_cost * parseFloat(row.tax_percentage)) / 100;
+    row["tax_amount"] = (extended_cost * parseFloat(row.tax_percentage)) / 100;
+    row["total_amount"] = tax_amount + extended_cost;
 
-      row["extended_cost"] = extended_cost.toFixed(2);
-      row["unit_cost"] = (
-        extended_cost / parseFloat(row.order_quantity)
-      ).toFixed(2);
-
-      row["tax_amount"] = (
-        (extended_cost * parseFloat(row.tax_percentage)) /
-        100
-      ).toFixed(2);
-      row["total_amount"] = (tax_amount + extended_cost).toFixed(2);
-
-      row["sub_discount_percentage"] = sub_discount_percentage;
-      row["sub_discount_amount"] = sub_discount_amount.toFixed(2);
-      row["extended_cost"] = extended_cost.toFixed(2);
-      row["net_extended_cost"] = extended_cost.toFixed(2);
-      row.update();
-    }
+    row["sub_discount_percentage"] = sub_discount_percentage;
+    row["sub_discount_amount"] = sub_discount_amount;
+    row["extended_cost"] = extended_cost;
+    row["net_extended_cost"] = extended_cost;
+    row.update();
   }
 };
 
+const AssignData = $this => {
+  debugger;
+  if ($this.state.sub_discount_percentage === "") {
+    $this.setState({
+      sub_discount_percentage: 0
+    });
+  } else if ($this.state.sub_discount_amount === "") {
+    $this.setState({
+      sub_discount_amount: 0
+    });
+  }
+};
+
+const GridAssignData = ($this, row) => {
+  debugger;
+  if (row.sub_discount_percentage === "") {
+    row["sub_discount_percentage"] = 0;
+  } else if (row.sub_discount_amount === "") {
+    row["sub_discount_amount"] = 0;
+  }
+  row.update();
+};
+
+const EditGrid = ($this, context, cancelRow) => {
+  //debugger;
+  if (context != null) {
+    context.updateState({
+      saveEnable: true
+    });
+  }
+};
+
+const CancelGrid = ($this, context, cancelRow) => {
+  //debugger;
+  let saveEnable = false;
+
+  let _pharmacy_stock_detail =
+    $this.state.po_from === "PHR"
+      ? $this.state.pharmacy_stock_detail
+      : $this.state.inventory_stock_detail;
+
+  let _inventory_stock_detail =
+    $this.state.po_from === "PHR"
+      ? $this.state.pharmacy_stock_detail
+      : $this.state.inventory_stock_detail;
+  if (cancelRow !== undefined) {
+    if ($this.state.po_from === "PHR") {
+      _pharmacy_stock_detail[cancelRow.rowIdx] = cancelRow;
+    } else {
+      _inventory_stock_detail[cancelRow.rowIdx] = cancelRow;
+    }
+  }
+
+  if ($this.state.hims_f_procurement_po_header_id !== null) {
+    saveEnable = true;
+  }
+
+  if (context != null) {
+    context.updateState({
+      saveEnable: saveEnable,
+      addItemButton: !$this.state.addItemButton,
+      pharmacy_stock_detail: _pharmacy_stock_detail,
+      inventory_stock_detail: _inventory_stock_detail
+    });
+  }
+};
 export {
   texthandle,
   discounthandle,
@@ -709,5 +781,9 @@ export {
   onchangegridcol,
   unitpricenumberchangeTexts,
   assignDataandclear,
-  onchhangegriddiscount
+  onchhangegriddiscount,
+  AssignData,
+  GridAssignData,
+  EditGrid,
+  CancelGrid
 };

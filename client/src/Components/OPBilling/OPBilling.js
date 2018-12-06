@@ -192,10 +192,8 @@ class OPBilling extends Component {
       data: { bill_number: billcode },
       onSuccess: response => {
         if (response.data.success) {
-          debugger;
-
           let data = response.data.records;
-          debugger;
+
           let x = Enumerable.from($this.props.patienttype)
             .where(w => w.hims_d_patient_type_id === data.patient_type)
             .toArray();
@@ -335,7 +333,6 @@ class OPBilling extends Component {
               }
             },
             onFailure: error => {
-              debugger;
               AlgaehLoader({ show: false });
               successfulMessage({
                 message: error.response.data.message || error.message,

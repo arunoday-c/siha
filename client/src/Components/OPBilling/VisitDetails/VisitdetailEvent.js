@@ -104,6 +104,7 @@ const handleChange = ($this, row, context, e) => {
 
                       response.data.records.saveEnable = false;
                       response.data.records.billDetails = false;
+                      response.data.records.applydiscount = applydiscount;
                       if (context != null) {
                         context.updateState({ ...response.data.records });
                       }

@@ -309,52 +309,50 @@ class PurchaseOrderEntry extends Component {
         </div>
 
         <div className="hptl-phase1-footer">
-          
-            <div className="row">
-              <div className="col-lg-12">
+          <div className="row">
+            <div className="col-lg-12">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={SavePOEnrty.bind(this, this)}
+                disabled={this.state.saveEnable}
+              >
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Save Order",
+                    returnText: true
+                  }}
+                />
+              </button>
+
+              <button
+                type="button"
+                className="btn btn-default"
+                disabled={this.state.ClearDisable}
+                onClick={ClearData.bind(this, this)}
+              >
+                <AlgaehLabel
+                  label={{ forceLabel: "Clear", returnText: true }}
+                />
+              </button>
+
+              {this.props.purchase_auth === true ? (
                 <button
                   type="button"
-                  className="btn btn-primary"
-                  onClick={SavePOEnrty.bind(this, this)}
-                  disabled={this.state.saveEnable}
+                  className="btn btn-other"
+                  disabled={this.state.authorize1 === "Y" ? true : false}
+                  onClick={AuthorizePOEntry.bind(this, this)}
                 >
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Save Order",
+                      forceLabel: "Authorize",
                       returnText: true
                     }}
                   />
                 </button>
-
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  disabled={this.state.ClearDisable}
-                  onClick={ClearData.bind(this, this)}
-                >
-                  <AlgaehLabel
-                    label={{ forceLabel: "Clear", returnText: true }}
-                  />
-                </button>
-
-                {this.props.purchase_auth === true ? (
-                  <button
-                    type="button"
-                    className="btn btn-other"
-                    disabled={this.state.authorize1 === "Y" ? true : false}
-                    onClick={AuthorizePOEntry.bind(this, this)}
-                  >
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Authorize",
-                        returnText: true
-                      }}
-                    />
-                  </button>
-                ) : null}
-              </div>
+              ) : null}
             </div>
-          
+          </div>
         </div>
       </div>
     );
