@@ -1111,3 +1111,75 @@ th {
   .tab-container .tab-button label {
     cursor: pointer;
     font-size: 0.8rem; }
+
+/* Extra small devices (phones, 600px and down) */
+/* Small devices (portrait tablets and large phones, 600px and up) */
+/* Medium devices (landscape tablets, 768px and up) */
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+  .algaeh-md-12,
+  .algaeh-md-8,
+  .algaeh-md-4 {
+    position: relative;
+    width: 100%;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 15px; }
+  .algaeh-md-12 {
+    flex: 0 0 100%;
+    max-width: 100%; }
+  .algaeh-md-8 {
+    flex: 0 0 66.666667%;
+    max-width: 66.666667%; }
+  .algaeh-md-4 {
+    flex: 0 0 33.333333%;
+    max-width: 33.333333%; }
+  .algaeh-modal,
+  .algaeh-modal-Ar {
+    max-width: 90.666667%; } }
+
+/* Large devices ( laptops and desktops, 1200px) */
+@media only screen and (min-width: 1200) {
+  .algaeh-lg-12,
+  .algaeh-lg-8,
+  .algaeh-lg-4 {
+    position: relative;
+    width: 100%;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 15px; }
+  .algaeh-lg-12 {
+    flex: 0 0 100%;
+    max-width: 100%; }
+  .algaeh-lg-8 {
+    flex: 0 0 66.666667%;
+    max-width: 66.666667%; }
+  .algaeh-lg-4 {
+    flex: 0 0 33.333333%;
+    max-width: 33.333333%; }
+  .algaeh-modal,
+  .algaeh-modal-Ar {
+    max-width: 90.666667%; } }
+
+/* Extra large devices (large laptops and desktops, 1440px and up) */
+@media only screen and (min-width: 1441px) {
+  .algaeh-xl-12,
+  .algaeh-xl-8,
+  .algaeh-xl-4 {
+    position: relative;
+    width: 100%;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 15px; }
+  .algaeh-xl-12 {
+    flex: 0 0 100%;
+    max-width: 100%; }
+  .algaeh-xl-8 {
+    flex: 0 0 66.666667%;
+    max-width: 66.666667%; }
+  .algaeh-xl-4 {
+    flex: 0 0 33.333333%;
+    max-width: 33.333333%; }
+  .algaeh-modal,
+  .algaeh-modal-Ar {
+    max-width: 66.666667%; } }
