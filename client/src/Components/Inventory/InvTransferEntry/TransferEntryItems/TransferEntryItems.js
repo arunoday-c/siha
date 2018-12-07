@@ -13,14 +13,12 @@ import {
 
 import {
   onchangegridcol,
-  // itemchangeText,
-  // numberchangeTexts,
-  // AddItems,
   deleteTransEntryDetail,
   updateTransEntryDetail,
-  // UomchangeTexts,
   dateFormater,
-  getItemLocationStock
+  getItemLocationStock,
+  EditGrid,
+  CancelGrid
 } from "./TransferEntryItemsEvents";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 
@@ -357,6 +355,17 @@ class TransferEntryItems extends Component {
                               />
                             );
                           }
+                        },
+                        {
+                          fieldName: "quantity_outstanding",
+                          label: (
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Quantity Outstanding"
+                              }}
+                            />
+                          ),
+                          disabled: true
                         }
                       ]}
                       keyId="service_type_id"
@@ -364,6 +373,7 @@ class TransferEntryItems extends Component {
                         data: this.state.inventory_stock_detail
                       }}
                       isEditable={true}
+                      byForceEvents={true}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         onDelete: deleteTransEntryDetail.bind(
@@ -371,8 +381,9 @@ class TransferEntryItems extends Component {
                           this,
                           context
                         ),
-                        onEdit: row => {},
-                        onDone: updateTransEntryDetail.bind(this, this)
+                        onEdit: EditGrid.bind(this, this, context),
+                        onCancel: CancelGrid.bind(this, this, context),
+                        onDone: updateTransEntryDetail.bind(this, this, context)
                       }}
                       onRowSelect={row => {
                         getItemLocationStock(this, row);
