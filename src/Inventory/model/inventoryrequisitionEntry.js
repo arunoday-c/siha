@@ -9,8 +9,8 @@ import extend from "extend";
 import httpStatus from "../../utils/httpStatus";
 import { debugLog } from "../../utils/logging";
 import moment from "moment";
-// import { getBillDetailsFunctionality } from "../../model/billing";
 import Promise from "bluebird";
+import { LINQ } from "node-linq";
 
 //created by Nowshad: to Insert Requisition Entry
 let addinventoryrequisitionEntry = (req, res, next) => {
@@ -416,11 +416,20 @@ let updateinvreqEntryOnceTranfer = (req, res, next) => {
   let db = req.db;
   let connection = req.connection;
   let inputParam = extend({}, req.body);
+  let complete = "Y";
 
+  debugLog("updateinvreqEntryOnceTranfer: ", complete);
+  const partial_recived = new LINQ(inputParam.inventory_stock_detail)
+    .Where(w => w.quantity_outstanding != 0)
+    .ToArray();
+
+  if (partial_recived.length > 0) {
+    complete = "N";
+  }
   connection.query(
     "UPDATE `hims_f_inventory_material_header` SET `is_completed`=?, `completed_date`=? \
       WHERE `hims_f_inventory_material_header_id`=?",
-    ["Y", new Date(), inputParam.hims_f_inventory_material_header_id],
+    [complete, new Date(), inputParam.hims_f_inventory_material_header_id],
     (error, result) => {
       if (error) {
         connection.rollback(() => {
@@ -428,9 +437,48 @@ let updateinvreqEntryOnceTranfer = (req, res, next) => {
           next(error);
         });
       }
-      releaseDBConnection(db, connection);
-      req.records = result;
-      next();
+
+      if (result != "" && result != null) {
+        let details = inputParam.inventory_stock_detail;
+
+        let qry = "";
+
+        for (let i = 0; i < details.length; i++) {
+          qry +=
+            " UPDATE `hims_f_inventory_material_detail` SET quantity_outstanding='" +
+            details[i].quantity_outstanding +
+            "' WHERE hims_f_inventory_material_detail_id='" +
+            details[i].material_requisition_detail_id +
+            "';";
+        }
+        debugLog("qry: ", qry);
+
+        if (qry != "") {
+          connection.query(qry, (error, detailResult) => {
+            if (error) {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
+            req.records = detailResult;
+            next();
+          });
+        } else {
+          releaseDBConnection(db, connection);
+          req.records = {};
+          next();
+        }
+      } else {
+        connection.rollback(() => {
+          releaseDBConnection(db, connection);
+          req.records = {};
+          next();
+        });
+      }
+      // releaseDBConnection(db, connection);
+      // req.records = result;
+      // next();
     }
   );
 };

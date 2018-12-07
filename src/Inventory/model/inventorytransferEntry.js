@@ -329,6 +329,7 @@ let updatetransferEntry = (req, res, next) => {
                 req.body.inventory_stock_detail[i].uom_transferred_id;
 
               delete req.body.inventory_stock_detail[i].operation;
+              req.body.inventory_stock_detail[i].operation = "+";
             }
 
             debugLog("To ", "Data");
@@ -410,6 +411,7 @@ let getrequisitionEntryTransfer = (req, res, next) => {
                 headerResult[0].to_location_id
               ],
               (error, inventory_stock_detail) => {
+                debugLog("inventory_stock_detail: ", inventory_stock_detail);
                 if (error) {
                   releaseDBConnection(db, connection);
                   next(error);

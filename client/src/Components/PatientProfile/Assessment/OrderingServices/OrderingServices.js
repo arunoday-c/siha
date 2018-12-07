@@ -645,6 +645,36 @@ class OrderingServices extends Component {
                 </div>
 
                 <div className="row">
+                  <div className="col-lg-5" style={{ textAlign: "right" }}>
+                    <div className="row">
+                      <div className="col-lg-4">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Sub Total"
+                          }}
+                        />
+                        <h5>{getAmountFormart(this.state.sub_total_amount)}</h5>
+                      </div>
+                      <div className="col-lg-4">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Discount Amount"
+                          }}
+                        />
+                        <h5>{getAmountFormart(this.state.discount_amount)}</h5>
+                      </div>
+
+                      <div className="col-lg-4">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Net Total"
+                          }}
+                        />
+                        <h5>{getAmountFormart(this.state.net_total)}</h5>
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="col-lg-7">
                     <div className="row">
                       <div className="col-lg-4">
@@ -672,35 +702,6 @@ class OrderingServices extends Component {
                         <h5>
                           {getAmountFormart(this.state.sec_company_paybale)}
                         </h5>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-lg-5" style={{ textAlign: "right" }}>
-                    <div className="row">
-                      <div className="col-lg-4">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Sub Total"
-                          }}
-                        />
-                        <h5>{getAmountFormart(this.state.sub_total_amount)}</h5>
-                      </div>
-                      <div className="col-lg-4">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Discount Amount"
-                          }}
-                        />
-                        <h5>{getAmountFormart(this.state.discount_amount)}</h5>
-                      </div>
-
-                      <div className="col-lg-4">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Net Total"
-                          }}
-                        />
-                        <h5>{getAmountFormart(this.state.net_total)}</h5>
                       </div>
                     </div>
                   </div>

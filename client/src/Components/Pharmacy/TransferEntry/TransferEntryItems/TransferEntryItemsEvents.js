@@ -279,12 +279,10 @@ const onchangegridcol = ($this, context, row, e) => {
     let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
 
     row[name] = value;
+    row["quantity_outstanding"] = row.quantity_authorized - value;
 
-    for (let x = 0; x < pharmacy_stock_detail.length; x++) {
-      if (pharmacy_stock_detail[x].item_id === row.item_id) {
-        pharmacy_stock_detail[x] = row;
-      }
-    }
+    pharmacy_stock_detail[row.rowIdx] = row;
+
     $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
 
     if (context !== undefined) {

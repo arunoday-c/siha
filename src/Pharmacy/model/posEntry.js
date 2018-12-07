@@ -364,15 +364,6 @@ let updatePosEntry = (req, res, next) => {
 
             req.posUpdate = records;
             next();
-            // connection.commit(error => {
-            //   if (error) {
-            //     releaseDBConnection(db, connection);
-            //     next(error);
-            //   }
-            //   req.posUpdate = records;
-            //   releaseDBConnection(db, connection);
-            //   next();
-            // });
           })
           .catch(error => {
             debugLog("caught1: ", error);
