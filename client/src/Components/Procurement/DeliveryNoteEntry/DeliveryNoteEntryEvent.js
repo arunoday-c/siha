@@ -5,6 +5,7 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import DNEntry from "../../../Models/DNEntry";
+import Enumerable from "linq";
 
 let texthandlerInterval = null;
 
@@ -233,25 +234,36 @@ const ClearData = ($this, e) => {
 
 const SaveDNEnrty = $this => {
   //debugger;
-  algaehApiCall({
-    uri: "/DeliveryNoteEntry/addDeliveryNoteEntry",
-    data: $this.state,
-    onSuccess: response => {
-      if (response.data.success === true) {
-        $this.setState({
-          delivery_note_number: response.data.records.delivery_note_number,
-          hims_f_procurement_dn_header_id:
-            response.data.records.hims_f_procurement_dn_header_id,
-          saveEnable: true
-        });
+  const dnQuantity = Enumerable.from($this.state.dn_entry_detail)
+    .where(w => w.dn_quantity === 0)
+    .toArray();
 
-        swalMessage({
-          type: "success",
-          title: "Saved successfully . ."
-        });
+  if (dnQuantity.length === 0) {
+    algaehApiCall({
+      uri: "/DeliveryNoteEntry/addDeliveryNoteEntry",
+      data: $this.state,
+      onSuccess: response => {
+        if (response.data.success === true) {
+          $this.setState({
+            delivery_note_number: response.data.records.delivery_note_number,
+            hims_f_procurement_dn_header_id:
+              response.data.records.hims_f_procurement_dn_header_id,
+            saveEnable: true
+          });
+
+          swalMessage({
+            type: "success",
+            title: "Saved successfully . ."
+          });
+        }
       }
-    }
-  });
+    });
+  } else {
+    swalMessage({
+      title: "Invalid Input. Please enter DN Quantity.",
+      type: "warning"
+    });
+  }
 };
 
 const getCtrlCode = ($this, docNumber) => {

@@ -117,8 +117,8 @@ class DeliveryNoteEntry extends Component {
                   }}
                 />
                 <h6>
-                  {this.state.docdate
-                    ? moment(this.state.docdate).format(Options.dateFormat)
+                  {this.state.dn_date
+                    ? moment(this.state.dn_date).format(Options.dateFormat)
                     : Options.dateFormat}
                 </h6>
               </div>

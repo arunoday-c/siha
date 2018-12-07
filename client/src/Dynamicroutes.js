@@ -11,7 +11,7 @@ import InsuranceSetup from "./Components/InsuranceSetup/InsuranceSetup";
 import SampleCollection from "./Components/Laboratory/SampleCollection/SampleCollection";
 import MedicalWorkbenchSetup from "./Components/MedicalWorkbenchSetup/MedicalWorkbenchSetup";
 import Workbench from "./Components/Workbench/Workbench";
-import OrderingServices from "./Components/DoctorsWorkbench/OrderingServices/OrderingServices";
+// import OrderingServices from "./Components/DoctorsWorkbench/OrderingServices/OrderingServices";
 import AccessionAcknowledgement from "./Components/Laboratory/AccessionAcknowledgement/AccessionAcknowledgement";
 import AdministrationSetup from "./Components/AdministrationSetup/AdminSetup";
 
@@ -94,7 +94,7 @@ const componts = (selectedLang, breadStyle) => {
     NurseWorkbench: (
       <Workbench SelectLanguage={selectedLang} type="NurseWorkbench" />
     ),
-    OrderingServices: <OrderingServices SelectLanguage={selectedLang} />,
+    // OrderingServices: <OrderingServices SelectLanguage={selectedLang} />,
 
     MedicalWorkbenchSetup: (
       <MedicalWorkbenchSetup SelectLanguage={selectedLang} />

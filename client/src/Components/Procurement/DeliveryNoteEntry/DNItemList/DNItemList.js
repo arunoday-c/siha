@@ -14,7 +14,8 @@ import MyContext from "../../../../utils/MyContext";
 import {
   deleteDNDetail,
   updateDNDetail,
-  onchhangegriddiscount
+  onchhangegriddiscount,
+  GridAssignData
 } from "./DNItemListEvents";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 
@@ -329,7 +330,12 @@ class DNItemList extends Component {
                                         )
                                       },
                                       others: {
-                                        disabled: !this.state.authorizeEnable
+                                        disabled: !this.state.authorizeEnable,
+                                        onBlur: GridAssignData.bind(
+                                          this,
+                                          this,
+                                          row
+                                        )
                                       }
                                     }}
                                   />

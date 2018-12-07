@@ -16,12 +16,12 @@ import MyContext from "../../../../utils/MyContext";
 import {
   deleteReceiptDetail,
   updateReceiptDetail,
-  onchhangegriddiscount,
   onchangegridcol,
   EditGrid,
   CancelGrid,
   onchangegridcoldatehandle,
-  changeDateFormat
+  changeDateFormat,
+  GridAssignData
 } from "./ReceiptItemListEvent";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 
@@ -411,7 +411,12 @@ class ReceiptItemList extends Component {
                                         disabled:
                                           this.state.posted === "Y"
                                             ? true
-                                            : false
+                                            : false,
+                                        onBlur: GridAssignData.bind(
+                                          this,
+                                          this,
+                                          row
+                                        )
                                       }
                                     }}
                                   />

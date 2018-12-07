@@ -294,6 +294,19 @@ const changeDateFormat = date => {
   }
 };
 
+const GridAssignData = ($this, row, e) => {
+  if (row.recieved_quantity === "" || row.recieved_quantity === 0) {
+    e.preventDefault();
+    row["recieved_quantity"] = 0;
+    swalMessage({
+      title: "Invalid Input. Recieved Quantity cannot be Zero.",
+      type: "warning"
+    });
+    row.update();
+    e.target.focus();
+  }
+};
+
 export {
   deleteReceiptDetail,
   updateReceiptDetail,
@@ -304,5 +317,6 @@ export {
   onchangegridcoldatehandle,
   EditGrid,
   CancelGrid,
-  changeDateFormat
+  changeDateFormat,
+  GridAssignData
 };

@@ -1,7 +1,7 @@
 import { swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import Enumerable from "linq";
-
+import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 import Options from "../../../../Options.json";
 
 const assignDataandclear = ($this, context, stock_detail, assignData) => {
@@ -98,41 +98,37 @@ const deleteDNDetail = ($this, context, row) => {
 };
 
 const updateDNDetail = ($this, context, row) => {
-  let dn_entry_detail = $this.state.dn_entry_detail;
+  if (row.dn_quantity === "" || row.dn_quantity === 0) {
+    swalMessage({
+      title: "Invalid Input. DN Quantity cannot be Zero.",
+      type: "warning"
+    });
+  } else {
+    let dn_entry_detail = $this.state.dn_entry_detail;
 
-  dn_entry_detail[row.rowIdx] = row;
+    dn_entry_detail[row.rowIdx] = row;
 
-  let sub_total = Enumerable.from(dn_entry_detail).sum(s =>
-    parseFloat(s.extended_price)
-  );
+    let sub_total = Enumerable.from(dn_entry_detail).sum(s =>
+      parseFloat(s.extended_price)
+    );
 
-  let net_total = Enumerable.from(dn_entry_detail).sum(s =>
-    parseFloat(s.net_extended_cost)
-  );
+    let net_total = Enumerable.from(dn_entry_detail).sum(s =>
+      parseFloat(s.net_extended_cost)
+    );
 
-  let net_payable = Enumerable.from(dn_entry_detail).sum(s =>
-    parseFloat(s.total_amount)
-  );
+    let net_payable = Enumerable.from(dn_entry_detail).sum(s =>
+      parseFloat(s.total_amount)
+    );
 
-  let total_tax = Enumerable.from(dn_entry_detail).sum(s =>
-    parseFloat(s.tax_amount)
-  );
+    let total_tax = Enumerable.from(dn_entry_detail).sum(s =>
+      parseFloat(s.tax_amount)
+    );
 
-  let detail_discount = Enumerable.from(dn_entry_detail).sum(s =>
-    parseFloat(s.discount_amount)
-  );
+    let detail_discount = Enumerable.from(dn_entry_detail).sum(s =>
+      parseFloat(s.discount_amount)
+    );
 
-  $this.setState({
-    dn_entry_detail: dn_entry_detail,
-    sub_total: sub_total,
-    net_total: net_total,
-    net_payable: net_payable,
-    total_tax: total_tax,
-    detail_discount: detail_discount
-  });
-
-  if (context !== undefined) {
-    context.updateState({
+    $this.setState({
       dn_entry_detail: dn_entry_detail,
       sub_total: sub_total,
       net_total: net_total,
@@ -140,6 +136,17 @@ const updateDNDetail = ($this, context, row) => {
       total_tax: total_tax,
       detail_discount: detail_discount
     });
+
+    if (context !== undefined) {
+      context.updateState({
+        dn_entry_detail: dn_entry_detail,
+        sub_total: sub_total,
+        net_total: net_total,
+        net_payable: net_payable,
+        total_tax: total_tax,
+        detail_discount: detail_discount
+      });
+    }
   }
 };
 
@@ -166,22 +173,20 @@ const onchangegridcol = ($this, row, e) => {
 };
 
 const onchhangegriddiscount = ($this, row, ctrl, e) => {
+  debugger;
   e = e || ctrl;
 
-  if (e.target.value === "") {
-    $this.setState({
-      [e.target.name]: 0
-    });
-  } else {
-    let discount_percentage = row.discount_percentage;
-    let discount_amount = 0;
-    let extended_cost = 0;
-    let extended_price = 0;
-    let tax_amount = 0;
+  let discount_percentage = row.discount_percentage;
+  let discount_amount = 0;
+  let extended_cost = 0;
+  let extended_price = 0;
+  let tax_amount = 0;
+  let unit_cost = 0;
 
-    let name = e.name || e.target.name;
-    let value = e.value || e.target.value;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
 
+  if (value !== "") {
     if (parseFloat(value) > row.po_quantity) {
       swalMessage({
         title:
@@ -191,27 +196,55 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
       row[name] = row[name];
       row.update();
     } else {
-      //
       extended_price = parseFloat(row.unit_price) * parseFloat(value);
       discount_amount = (extended_price * discount_percentage) / 100;
 
+      tax_amount = (extended_cost * parseFloat(row.tax_percentage)) / 100;
       extended_cost = extended_price - discount_amount;
 
-      tax_amount = (extended_cost * parseFloat(row.tax_percentage)) / 100;
+      extended_price = parseFloat(
+        getAmountFormart(extended_price, {
+          appendSymbol: false
+        })
+      );
+      discount_amount = getAmountFormart(discount_amount, {
+        appendSymbol: false
+      });
+      tax_amount = getAmountFormart(tax_amount, { appendSymbol: false });
+
+      debugger;
+      row["extended_price"] = parseFloat(extended_price);
+      row["extended_cost"] = parseFloat(extended_cost);
+      row["unit_cost"] = parseFloat(extended_cost) / parseFloat(value);
+
+      row["tax_amount"] = parseFloat(tax_amount);
+      row["total_amount"] = parseFloat(tax_amount) + parseFloat(extended_cost);
+
+      row["discount_amount"] = parseFloat(discount_amount);
+      row["extended_cost"] = parseFloat(extended_cost);
+      row["net_extended_cost"] = parseFloat(extended_cost);
 
       row[name] = value;
-      row["extended_price"] = extended_price;
-      row["extended_cost"] = extended_cost;
-      row["unit_cost"] = extended_cost / parseFloat(row.dn_quantity);
-
-      row["tax_amount"] = tax_amount;
-      row["total_amount"] = tax_amount + extended_cost;
-
-      row["discount_amount"] = discount_amount;
-      row["extended_cost"] = extended_cost;
-      row["net_extended_cost"] = extended_cost;
       row.update();
     }
+  } else {
+    row[name] = value;
+    row.update();
+  }
+};
+
+const GridAssignData = ($this, row, e) => {
+  debugger;
+
+  if (row.dn_quantity === "" || row.dn_quantity === 0) {
+    e.preventDefault();
+    row["dn_quantity"] = 0;
+    swalMessage({
+      title: "Invalid Input. DN Quantity cannot be Zero.",
+      type: "warning"
+    });
+    row.update();
+    e.target.focus();
   }
 };
 
@@ -221,5 +254,6 @@ export {
   dateFormater,
   onchangegridcol,
   assignDataandclear,
-  onchhangegriddiscount
+  onchhangegriddiscount,
+  GridAssignData
 };

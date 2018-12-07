@@ -401,45 +401,105 @@ const AddItems = ($this, ItemInput) => {
       };
       inputArray.push(inputObj);
     }
-
-    $this.props.getPrescriptionPOS({
+    debugger;
+    algaehApiCall({
       uri: "/posEntry/getPrescriptionPOS",
       method: "POST",
       data: inputArray,
-      redux: {
-        type: "POS_PRES_GET_DATA",
-        mappingName: "xxx"
-      },
-      afterSuccess: data => {
-        let existingservices = [];
+      onSuccess: response => {
+        if (response.data.success) {
+          debugger;
 
-        if (data.billdetails.length !== 0) {
-          for (let i = 0; i < data.billdetails.length; i++) {
-            data.billdetails[i].extended_cost =
-              data.billdetails[i].gross_amount;
-            data.billdetails[i].net_extended_cost =
-              data.billdetails[i].net_amout;
-            data.billdetails[i].operation = "-";
-            data.billdetails[0].service_id = data.billdetails[0].services_id;
+          if (response.data.records.result.length > 0) {
+            let data = response.data.records.result[0];
+            let existingservices = [];
 
-            data.billdetails[0].grn_no = data.billdetails[0].grnno;
+            if (data.billdetails.length !== 0) {
+              for (let i = 0; i < data.billdetails.length; i++) {
+                data.billdetails[i].extended_cost =
+                  data.billdetails[i].gross_amount;
+                data.billdetails[i].net_extended_cost =
+                  data.billdetails[i].net_amout;
+                data.billdetails[i].operation = "-";
+                data.billdetails[0].service_id =
+                  data.billdetails[0].services_id;
 
-            existingservices.splice(0, 0, data.billdetails[i]);
-          }
+                data.billdetails[0].grn_no = data.billdetails[0].grnno;
 
-          $this.setState({
-            pharmacy_stock_detail: existingservices
-          });
-          $this.props.PosHeaderCalculations({
-            uri: "/billing/billingCalculations",
-            method: "POST",
-            data: { billdetails: existingservices },
-            redux: {
-              type: "POS_HEADER_GEN_GET_DATA",
-              mappingName: "posheader"
+                existingservices.splice(0, 0, data.billdetails[i]);
+              }
+
+              $this.setState({
+                pharmacy_stock_detail: existingservices
+              });
+
+              if (data.message !== "") {
+                swalMessage({
+                  title: data.message,
+                  type: "warning"
+                });
+              }
             }
-          });
+
+            algaehApiCall({
+              uri: "/billing/billingCalculations",
+              method: "POST",
+              data: { billdetails: existingservices },
+              onSuccess: response => {
+                if (response.data.success) {
+                  let data = response.data.records;
+
+                  data.patient_payable_h =
+                    data.patient_payable || $this.state.patient_payable;
+                  data.sub_total =
+                    data.sub_total_amount || $this.state.sub_total;
+                  data.patient_responsibility =
+                    data.patient_res || $this.state.patient_responsibility;
+                  data.company_responsibility =
+                    data.company_res || $this.state.company_responsibility;
+
+                  data.company_payable =
+                    data.company_payble || $this.state.company_payable;
+                  data.sec_company_responsibility =
+                    data.sec_company_res ||
+                    $this.state.sec_company_responsibility;
+                  data.sec_company_payable =
+                    data.sec_company_paybale || $this.state.sec_company_payable;
+
+                  data.copay_amount =
+                    data.copay_amount || $this.state.copay_amount;
+                  data.sec_copay_amount =
+                    data.sec_copay_amount || $this.state.sec_copay_amount;
+                  data.addItemButton = false;
+                  data.saveEnable = false;
+
+                  $this.setState({ ...data });
+                }
+                AlgaehLoader({ show: false });
+              },
+              onFailure: error => {
+                AlgaehLoader({ show: false });
+                swalMessage({
+                  title: error.message,
+                  type: "error"
+                });
+              }
+            });
+          } else {
+            swalMessage({
+              title: response.data.records.message,
+              type: "warning"
+            });
+          }
         }
+        AlgaehLoader({ show: false });
+      },
+      onFailure: error => {
+        AlgaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
       }
     });
   }
