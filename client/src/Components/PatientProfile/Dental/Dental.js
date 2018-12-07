@@ -111,6 +111,54 @@ class Dental extends Component {
   addToBill(row) {
     debugger;
 
+    algaehApiCall({
+      uri: "/insurance/getPatientInsurance",
+      method: "GET",
+      data: {
+        patient_id: Window.global["current_patient"],
+        patient_visit_id: Window.global["visit_id"]
+      },
+      onSuccess: res => {
+        if (res.data.success) {
+          console.log("Insurance Details", res.data.records);
+
+          let ins = res.data.records.length > 0 ? res.data.records[0] : null;
+
+          algaehApiCall({
+            uri: "/billing/getBillDetails",
+            method: "POST",
+            data: {
+              insured: ins.length > 0 ? "Y" : "N",
+              vat_applicable: "Y",
+              hims_d_services_id: row.service_id,
+              primary_insurance_provider_id: ins.insurance_provider_id,
+              primary_network_office_id: ins.hims_d_insurance_network_office_id,
+              primary_network_id: ins.network_id,
+              sec_insured: ins.sec_insured,
+              secondary_insurance_provider_id:
+                ins.secondary_insurance_provider_id,
+              secondary_network_id: ins.secondary_network_id,
+              secondary_network_office_id: ins.secondary_network_office_id,
+              approval_amt: ins.approval_amt,
+              approval_limit_yesno: ins.approval_limit_yesno,
+              preapp_limit_amount: ins.preapp_limit_amount
+            },
+            onSuccess: res => {
+              if (res.data.success) {
+                console.log("Billing Response:", res.data.records);
+              }
+            }
+          });
+        }
+      },
+      onError: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+
     this.setState({
       billDetails: row,
       openBilling: true,
