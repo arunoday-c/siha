@@ -38,7 +38,13 @@
     display: inline-block;
     margin-top: 85%;
     border-top: 1px dotted #ccc;
-    width: 100%; }
+    width: 100%;
+    cursor: pointer; }
+    #dentalTreatment .tooth-sec > span:hover {
+      text-decoration: underline;
+      font-weight: bold; }
+      #dentalTreatment .tooth-sec > span:hover + .surface-Marking div {
+        background: -webkit-radial-gradient(center, ellipse cover, #faecc5 0%, #ffe498 50%, #eee1bc 100%); }
   #dentalTreatment .surface-Marking {
     height: 50px;
     width: 50px;

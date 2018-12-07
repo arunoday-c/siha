@@ -37,8 +37,21 @@
     margin-top: 85%;
     border-top: 1px dotted #ccc;
     width: 100%;
+    cursor: pointer;
+    &:hover {
+      text-decoration: underline;
+      font-weight: bold;
+      + .surface-Marking div {
+        background: -webkit-radial-gradient(
+          center,
+          ellipse cover,
+          rgb(250, 236, 197) 0%,
+          rgb(255, 228, 152) 50%,
+          rgb(238, 225, 188) 100%
+        );
+      }
+    }
   }
-
   .surface-Marking {
     height: 50px;
     width: 50px;
