@@ -45,9 +45,7 @@ export default class AlgaehModalPopUp extends PureComponent {
                 </div>
               </div>
             </div>
-            <div className="popupInner">
-              <div className="col-lg-12">{this.props.children}</div>
-            </div>
+            <div className="col-lg-12">{this.props.children}</div>
           </div>
         </div>,
         this.el

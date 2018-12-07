@@ -4,14 +4,18 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import "./Dental.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import { AlgaehValidation } from "../../../utils/GlobalFunctions";
+import {
+  AlgaehValidation,
+  getAmountFormart
+} from "../../../utils/GlobalFunctions";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import {
   AlagehAutoComplete,
   AlagehFormGroup,
   AlgaehDataGrid,
   AlgaehModalPopUp,
-  AlgaehDateHandler
+  AlgaehDateHandler,
+  AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import Enumerable from "linq";
@@ -30,7 +34,7 @@ class Dental extends Component {
       consult_date: new Date(),
       treatements: [],
       dentalTreatments: [],
-      openBilling: false,
+      openBillingModal: false,
       treatment_gridUpdate: true
     };
     this.getProcedures();
@@ -108,6 +112,8 @@ class Dental extends Component {
     debugger;
   }
 
+  saveBill() {}
+
   addToBill(row) {
     debugger;
 
@@ -127,22 +133,26 @@ class Dental extends Component {
           algaehApiCall({
             uri: "/billing/getBillDetails",
             method: "POST",
-            data: {
-              insured: ins.length > 0 ? "Y" : "N",
-              vat_applicable: "Y",
-              hims_d_services_id: row.service_id,
-              primary_insurance_provider_id: ins.insurance_provider_id,
-              primary_network_office_id: ins.hims_d_insurance_network_office_id,
-              primary_network_id: ins.network_id,
-              sec_insured: ins.sec_insured,
-              secondary_insurance_provider_id:
-                ins.secondary_insurance_provider_id,
-              secondary_network_id: ins.secondary_network_id,
-              secondary_network_office_id: ins.secondary_network_office_id,
-              approval_amt: ins.approval_amt,
-              approval_limit_yesno: ins.approval_limit_yesno,
-              preapp_limit_amount: ins.preapp_limit_amount
-            },
+            cancelRequestId: "getBillDetails4",
+            data: [
+              {
+                insured: res.data.records.length > 0 ? "Y" : "N",
+                vat_applicable: "Y",
+                hims_d_services_id: row.service_id,
+                primary_insurance_provider_id: ins.insurance_provider_id,
+                primary_network_office_id:
+                  ins.hims_d_insurance_network_office_id,
+                primary_network_id: ins.network_id,
+                sec_insured: ins.sec_insured,
+                secondary_insurance_provider_id:
+                  ins.secondary_insurance_provider_id,
+                secondary_network_id: ins.secondary_network_id,
+                secondary_network_office_id: ins.secondary_network_office_id,
+                approval_amt: ins.approval_amt,
+                approval_limit_yesno: ins.approval_limit_yesno,
+                preapp_limit_amount: ins.preapp_limit_amount
+              }
+            ],
             onSuccess: res => {
               if (res.data.success) {
                 console.log("Billing Response:", res.data.records);
@@ -161,7 +171,7 @@ class Dental extends Component {
 
     this.setState({
       billDetails: row,
-      openBilling: true,
+      openBillingModal: true,
       treatment_gridUpdate: false
     });
   }
@@ -620,6 +630,7 @@ class Dental extends Component {
   }
 
   getTreatementsGrid(data) {
+    debugger;
     return (
       <div className="col-lg-12" data-validate="denGrid">
         <AlgaehDataGrid
@@ -851,19 +862,18 @@ class Dental extends Component {
     return (
       <div id="dentalTreatment">
         <AlgaehModalPopUp
-          openPopup={this.state.openBilling}
+          openPopup={this.state.openBillingModal}
           title="Bill Service"
         >
           <div
-            className="col-lg-12 margin-bottom-15"
+            className="col-lg-12 margin-bottom-15 popupInner"
             data-validate="billDentalPlan"
           >
-            <div className="row">
-              <span>{JSON.stringify(this.state.billDetails)}</span>
+            <div className="row form-details" style={{ paddingBottom: 0 }}>
               <AlagehFormGroup
                 div={{ className: "col-lg-3" }}
                 label={{
-                  forceLabel: "Procedure",
+                  forceLabel: "Service Type",
                   isImp: true
                 }}
                 textBox={{
@@ -879,6 +889,340 @@ class Dental extends Component {
                   }
                 }}
               />
+
+              <AlagehAutoComplete
+                div={{ className: "col-lg-3" }}
+                label={{
+                  forceLabel: "Service Name"
+                }}
+                selector={{
+                  name: "services_id",
+                  className: "select-fld",
+                  value: this.state.services_id,
+                  dataSource: {
+                    // textField: "service_name",
+                    textField:
+                      this.state.selectedLang === "en"
+                        ? "service_name"
+                        : "arabic_service_name",
+                    valueField: "hims_d_services_id",
+                    data: this.props.billservices
+                  },
+                  onChange: null,
+                  others: {
+                    disabled: true
+                  }
+                }}
+              />
+            </div>
+            <hr />
+            {/* Amount Details */}
+            <div className="row">
+              <div className="col-lg-2">
+                <AlgaehLabel
+                  label={{
+                    fieldName: "quantity"
+                  }}
+                />
+                <h6>{this.state.quantity ? this.state.quantity : "0"}</h6>
+              </div>
+
+              <div className="col-lg-2">
+                <AlgaehLabel
+                  label={{
+                    fieldName: "unit_cost"
+                  }}
+                />
+                <h6>{getAmountFormart(this.state.unit_cost)}</h6>
+              </div>
+
+              <div className="col-lg-2">
+                <AlgaehLabel
+                  label={{
+                    fieldName: "gross_amount"
+                  }}
+                />
+                <h6>{getAmountFormart(this.state.gross_amount)}</h6>
+              </div>
+
+              <div className="col-lg-2">
+                <AlgaehLabel
+                  label={{
+                    fieldName: "discount_percentage"
+                  }}
+                />
+                <h6>
+                  {this.state.discount_percentage
+                    ? this.state.discount_percentage + "%"
+                    : "0.00%"}
+                </h6>
+              </div>
+
+              <div className="col-lg-2">
+                <AlgaehLabel
+                  label={{
+                    fieldName: "discount_amout"
+                  }}
+                />
+                <h6>{getAmountFormart(this.state.discount_amout)}</h6>
+              </div>
+
+              <div className="col-lg-2">
+                <AlgaehLabel
+                  label={{
+                    fieldName: "net_amout"
+                  }}
+                />
+                <h6>{getAmountFormart(this.state.net_amout)}</h6>
+              </div>
+            </div>
+            <hr />
+            {/* Insurance Details */}
+            <div className="row">
+              <div className="col-lg-6">
+                <AlgaehLabel
+                  label={{
+                    fieldName: "prim-insurance"
+                  }}
+                />
+                <div className="Paper">
+                  <div className="row insurance-details">
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "copay_percentage"
+                        }}
+                      />
+                      <h6>
+                        {this.state.copay_percentage
+                          ? this.state.copay_percentage + "%"
+                          : "0.00%"}
+                      </h6>
+                    </div>
+
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "copay_amount"
+                        }}
+                      />
+                      <h6>{getAmountFormart(this.state.copay_amount)}</h6>
+                    </div>
+
+                    <div className="col-3">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "deductable_percentage"
+                        }}
+                      />
+                      <h6>
+                        {this.state.deductable_percentage
+                          ? this.state.deductable_percentage + "%"
+                          : "0.00%"}
+                      </h6>
+                    </div>
+
+                    <div className="col-4">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "deductable_amount"
+                        }}
+                      />
+                      <h6>{getAmountFormart(this.state.deductable_amount)}</h6>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="col-lg-6">
+                <AlgaehLabel
+                  label={{
+                    fieldName: "sec_company"
+                  }}
+                />
+                <div className="Paper">
+                  <div className="row insurance-details">
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "sec_copay_percntage"
+                        }}
+                      />
+                      <h6>
+                        {this.state.sec_copay_percntage
+                          ? this.state.sec_copay_percntage + "%"
+                          : "0.00%"}
+                      </h6>
+                    </div>
+
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "sec_copay_amount"
+                        }}
+                      />
+                      <h6>{getAmountFormart(this.state.sec_copay_amount)}</h6>
+                    </div>
+
+                    <div className="col-3">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "sec_deductable_percentage"
+                        }}
+                      />
+                      <h6>
+                        {this.state.sec_deductable_percentage
+                          ? this.state.sec_deductable_percentage + "%"
+                          : "0.00%"}
+                      </h6>
+                    </div>
+
+                    <div className="col-4">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "sec_deductable_amount"
+                        }}
+                      />
+                      <h6>
+                        {getAmountFormart(this.state.sec_deductable_amount)}
+                      </h6>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr />
+            {/* Payables */}
+            <div className="row ">
+              <div className="col-lg-4">
+                <AlgaehLabel
+                  label={{
+                    fieldName: "patient_lbl"
+                  }}
+                />
+                <div className="Paper">
+                  <div className="row insurance-details">
+                    <div className="col-5">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "responsibility_lbl"
+                        }}
+                      />
+                      <h6>{getAmountFormart(this.state.patient_resp)}</h6>
+                    </div>
+
+                    <div className="col-3">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "tax_lbl"
+                        }}
+                      />
+                      <h6>{getAmountFormart(this.state.patient_tax)}</h6>
+                    </div>
+
+                    <div className="col-4">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "payable_lbl"
+                        }}
+                      />
+                      <h6>{getAmountFormart(this.state.patient_payable)}</h6>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/* <div className="col-lg-1"> &nbsp; </div> */}
+
+              <div className="col-lg-4">
+                <AlgaehLabel
+                  label={{
+                    fieldName: "company_lbl"
+                  }}
+                />
+                <div className="Paper">
+                  <div className="row insurance-details">
+                    <div className="col-5">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "responsibility_lbl"
+                        }}
+                      />
+                      <h6>{getAmountFormart(this.state.comapany_resp)}</h6>
+                    </div>
+
+                    <div className="col-3">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "tax_lbl"
+                        }}
+                      />
+                      <h6>{getAmountFormart(this.state.company_tax)}</h6>
+                    </div>
+
+                    <div className="col-4">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "payable_lbl"
+                        }}
+                      />
+                      <h6>{getAmountFormart(this.state.company_payble)}</h6>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* <div className="col-lg-1"> &nbsp; </div> */}
+
+              <div className="col-lg-4">
+                <AlgaehLabel
+                  label={{
+                    fieldName: "sec_comp_lbl"
+                  }}
+                />
+                <div className="Paper">
+                  <div className="row insurance-details">
+                    <div className="col-5">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "responsibility_lbl"
+                        }}
+                      />
+                      <h6>{getAmountFormart(this.state.sec_company_res)}</h6>
+                    </div>
+
+                    <div className="col-3">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "tax_lbl"
+                        }}
+                      />
+                      <h6>{getAmountFormart(this.state.sec_company_tax)}</h6>
+                    </div>
+
+                    <div className="col-4">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "payable_lbl"
+                        }}
+                      />
+                      <h6>
+                        {getAmountFormart(this.state.sec_company_paybale)}
+                      </h6>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="popupFooter">
+            <div className="col-lg-12 margin-bottom-15">
+              <button
+                onClick={this.saveBill.bind(this)}
+                className="btn btn-primary"
+                style={{ float: "right" }}
+              >
+                Save
+              </button>
             </div>
           </div>
         </AlgaehModalPopUp>
@@ -902,7 +1246,7 @@ class Dental extends Component {
           title="Dental Plan"
         >
           <div
-            className="col-lg-12 margin-bottom-15"
+            className="col-lg-12 margin-bottom-15 popupInner"
             data-validate="addDentalPlanDiv"
           >
             <div className="row">
@@ -1049,7 +1393,7 @@ class Dental extends Component {
               </div>
             </div>
           </div>
-          <div className="row">
+          <div className="popupFooter">
             <div className="col-lg-12 margin-bottom-15">
               <button
                 onClick={this.addDentalPlan.bind(this)}
