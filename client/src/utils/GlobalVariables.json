@@ -499,5 +499,10 @@
   "ACCESS_BY": [
     { "name": "Other Users", "value": "OU" },
     { "name": "Super User", "value": "SU" }
+  ],
+  "DENTAL_TREATMENT_STATUS": [
+    { "name": "Planned", "value": "PL" },
+    { "name": "Work In Progress", "value": "WIP" },
+    { "name": "Completed", "value": "CP" }
   ]
 }
