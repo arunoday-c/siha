@@ -132,8 +132,7 @@ process.on("warning", warning => {
   logger.log("warn", warning);
 });
 process.on("uncaughtException", error => {
-  logger.log("error", error);
-  process.exit(1);
+  logger.log("uncatched Exception", error);
 });
 process.on("unhandledRejection", (reason, promise) => {
   logger.error("Unhandled rejection", { reason: reason, promise: promise });
