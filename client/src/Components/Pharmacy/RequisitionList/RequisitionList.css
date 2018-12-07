@@ -12,3 +12,11 @@
 .hptl-phase1-requisition-list-form th,
 .hptl-phase1-requisition-list-form td {
   border-right: 1px solid #e6e6e6; }
+
+.hptl-phase1-requisition-list-form #RequisitionListCntr .ReactTable {
+  max-width: 95vw !important;
+  max-height: 42vh !important; }
+
+@media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
+  .hptl-phase1-requisition-list-form #RequisitionListCntr .ReactTable {
+    max-width: 93vw !important; } }
