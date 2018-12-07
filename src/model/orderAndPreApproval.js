@@ -209,6 +209,7 @@ let insertOrderedServices = (req, res, next) => {
   ];
 
   debugFunction("add order");
+  debugLog("request body:", req.body);
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
