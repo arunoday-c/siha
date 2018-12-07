@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import ReactTable from "react-table";
 import withFixedColumns from "react-table-hoc-fixed-columns";
 import "react-table/react-table.css";
@@ -9,7 +9,7 @@ import { algaehApiCall } from "../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../utils/GlobalFunctions";
 import "../Wrapper/wrapper.css";
 let ReactTableFixedColumns = withFixedColumns(ReactTable);
-class DataGrid extends PureComponent {
+class DataGrid extends Component {
   constructor(props) {
     if (props.expanded !== undefined) {
       ReactTableFixedColumns = ReactTable;
@@ -26,12 +26,14 @@ class DataGrid extends PureComponent {
       selectionChanged: false,
       recordsTotal: 0,
       inputParam: {},
-      isEditable: false
+      isEditable: false,
+      uiUpdate: true
     };
 
     this.tmp = new Set();
     this.updateStateVariables = this.updateStateVariables.bind(this);
   }
+
   onTextHandleEditChange(e) {
     const data = [...this.state.data];
     const _element = e.currentTarget;
@@ -305,9 +307,14 @@ class DataGrid extends PureComponent {
     inputProps = inputProps || $this.state.inputParam;
     pageSizeP = pageSizeP || $this.state.rowsPerPage;
     const _page = pageSizeP * page;
+    const _pagaeInput =
+      $this.props.dataSource.pageInputExclude !== undefined &&
+      $this.props.dataSource.pageInputExclude === true
+        ? {}
+        : { pageSize: pageSizeP, pageNo: _page };
     let input = {
       ...inputProps,
-      ...{ pageSize: pageSizeP, pageNo: _page }
+      ..._pagaeInput
     };
 
     new Promise((resolve, reject) => {
@@ -329,10 +336,18 @@ class DataGrid extends PureComponent {
               let dataS = eval(
                 "response.data." + $this.props.dataSource.responseSchema.data
               );
-              let total_pages = eval(
-                "response.data." +
-                  $this.props.dataSource.responseSchema.totalPages
-              );
+              let total_pages = 0;
+              if (
+                $this.props.dataSource.responseSchema.totalPages !== undefined
+              ) {
+                total_pages = eval(
+                  "response.data." +
+                    $this.props.dataSource.responseSchema.totalPages
+                );
+              } else {
+                total_pages = dataS.length;
+              }
+
               callBack(dataS, total_pages);
             } else {
               console.error(response);
@@ -455,17 +470,20 @@ class DataGrid extends PureComponent {
           }
         }
         if (this.props.dataSource.uri !== undefined) {
+          this.setState({ columns: _columns, data: [] });
+          const that = this;
           this.apiCallingFunction(this, 0, (data, totalPages) => {
+            debugger;
             const _total = Math.ceil(
-              this.props.dataSource.responseSchema.totalPages === undefined
-                ? data.length / this.props.paging.rowsPerPage
-                : totalPages / this.props.paging.rowsPerPage
+              that.props.dataSource.responseSchema.totalPages === undefined
+                ? data.length / that.props.paging.rowsPerPage
+                : totalPages / that.props.paging.rowsPerPage
             );
 
-            this.setState({
+            that.setState({
               data: data,
               totalPages: _total,
-              rowsPerPage: this.props.paging.rowsPerPage,
+              rowsPerPage: that.props.paging.rowsPerPage,
               recordsTotal: totalPages
             });
           });
@@ -505,8 +523,18 @@ class DataGrid extends PureComponent {
       }
     }
   }
-
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextProps.uiUpdate !== undefined) {
+      return nextState.uiUpdate;
+    }
+    if (this.state !== nextState) return true;
+    else return false;
+  }
   componentWillReceiveProps(props) {
+    debugger;
+    if (props.uiUpdate !== undefined) {
+      this.setState({ uiUpdate: props.uiUpdate });
+    }
     if (props.isEditable !== this.state.isEditable) {
       this.setState({
         isEditable: props.isEditable
@@ -879,6 +907,8 @@ class DataGrid extends PureComponent {
               : true
           }
           resizable={false}
+          freezeWhenExpanded={true}
+          //collapseOnDataChange={false}
           pageSizeOptions={[10, 20, 25, 50, 100]}
           previousText="Previous"
           nextText="Next"

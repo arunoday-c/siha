@@ -5,6 +5,7 @@ import { bindActionCreators } from "redux";
 import "./Dental.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
+import GlobalVariables from "../../../utils/GlobalVariables.json";
 import {
   AlagehAutoComplete,
   AlagehFormGroup,
@@ -19,7 +20,6 @@ import swal from "sweetalert2";
 
 let teeth = [];
 let my_send_obj = {};
-
 class Dental extends Component {
   constructor(props) {
     super(props);
@@ -29,10 +29,16 @@ class Dental extends Component {
       procedures: [],
       consult_date: new Date(),
       treatements: [],
-      dentalTreatments: []
+      dentalTreatments: [],
+      openBilling: false,
+      treatment_gridUpdate: true
     };
     this.getProcedures();
     this.getTreatementPlans();
+    this.deleteDentalPlan = this.deleteDentalPlan.bind(this);
+    this.updateDentalTreatmentStatus = this.updateDentalTreatmentStatus.bind(
+      this
+    );
   }
 
   clearSaveState() {
@@ -91,8 +97,25 @@ class Dental extends Component {
     }
   }
 
+  changeGridEditors(row, e) {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    row[name] = value;
+    row.update();
+  }
+
   markAllSurface(e) {
     debugger;
+  }
+
+  addToBill(row) {
+    debugger;
+
+    this.setState({
+      billDetails: row,
+      openBilling: true,
+      treatment_gridUpdate: false
+    });
   }
 
   getTreatementPlans() {
@@ -162,8 +185,7 @@ class Dental extends Component {
       episode_id: Window.global["episode_id"],
       treatment_plan_id: this.state.hims_f_treatment_plan_id,
       service_id: this.state.hims_d_services_id,
-      scheduled_date: this.state.scheduled_date,
-      treatment_status: "PL"
+      scheduled_date: this.state.scheduled_date
     };
 
     my_send_obj.send_teeth = send_teeth;
@@ -247,7 +269,6 @@ class Dental extends Component {
   }
 
   approveTreatementPlan(data, type) {
-    debugger;
     swal({
       title:
         type === "Y"
@@ -293,7 +314,7 @@ class Dental extends Component {
         });
       } else {
         swalMessage({
-          title: "Not cancelled",
+          title: "Request Cancelled",
           type: "error"
         });
       }
@@ -481,53 +502,82 @@ class Dental extends Component {
     return plot;
   }
 
-  getTreatementsGrid(data) {
+  deleteDentalPlan(data) {
     debugger;
 
-    algaehApiCall({
-      uri: "/dental/getDentalTreatment",
-      data: {
-        treatment_plan_id: data.hims_f_treatment_plan_id
-      },
-      method: "GET",
-      onSuccess: response => {
-        if (response.data.success) {
-          this.setState({
-            dentalTreatments: response.data.records
-          });
-        }
-      },
-      onError: error => {
+    swal({
+      title: "Delete Plan ?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        algaehApiCall({
+          uri: "/dental/deleteDentalPlan",
+          data: {
+            hims_f_dental_treatment_id: data.hims_f_dental_treatment_id
+          },
+          method: "DELETE",
+          onSuccess: res => {
+            if (res.data.success) {
+              swalMessage({
+                title: "Record Deleted",
+                type: "success"
+              });
+            }
+          },
+          onError: err => {
+            swalMessage({
+              title: err.message,
+              type: "error"
+            });
+          }
+        });
+      } else {
         swalMessage({
-          title: error.message,
+          title: "Request Cancelled",
           type: "error"
         });
       }
     });
+  }
 
+  updateDentalTreatmentStatus(data) {
+    debugger;
+    algaehApiCall({
+      uri: "/dental/updateDentalTreatmentStatus",
+      method: "PUT",
+      data: {
+        hims_f_dental_treatment_id: data.hims_f_dental_treatment_id,
+        treatment_statuss: data.treatment_status
+      },
+      onSuccess: res => {
+        if (res.data.success) {
+          swalMessage({
+            title: "Record Updated",
+            type: "success"
+          });
+        }
+      },
+      onError: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  getTreatementsGrid(data) {
     return (
-      <div className="col-lg-12">
+      <div className="col-lg-12" data-validate="denGrid">
         <AlgaehDataGrid
-          id="shift-grid"
-          datavalidate="data-validate='shiftDiv'"
+          id="grid_dental_treatment"
+          datavalidate="data-validate='denGrid'"
           columns={[
-            // {
-            //   fieldName: "actions",
-            //   label: "Actions",
-            //   displayTemplate: row => {
-            //     return (
-            //       <span
-            //         onClick={() => {
-            //           this.setState({
-            //             openDentalModal: true
-            //           });
-            //         }}
-            //       >
-            //         <i className="fas fa-trash" />
-            //       </span>
-            //     );
-            //   }
-            // },
             {
               fieldName: "teeth_number",
               label: "Tooth",
@@ -556,6 +606,26 @@ class Dental extends Component {
                     {row.palatal === "Y" ? "P " : ""}
                     {row.labial === "Y" ? "L " : ""}
                   </span>
+                );
+              }
+            },
+            {
+              fieldName: "service_id",
+              label: "Procedure",
+              displayTemplate: row => {
+                let x = Enumerable.from(this.state.procedures)
+                  .where(w => w.hims_d_services_id === row.service_id)
+                  .firstOrDefault();
+                return (
+                  <span>{x !== undefined ? x.service_name : "----------"}</span>
+                );
+              },
+              editorTemplate: row => {
+                let x = Enumerable.from(this.state.procedures)
+                  .where(w => w.hims_d_services_id === row.service_id)
+                  .firstOrDefault();
+                return (
+                  <span>{x !== undefined ? x.service_name : "----------"}</span>
                 );
               }
             },
@@ -590,20 +660,68 @@ class Dental extends Component {
                 );
               },
               editorTemplate: row => {
-                //Bring AutoComplete here
+                return (
+                  <AlagehAutoComplete
+                    selector={{
+                      name: "treatment_status",
+                      className: "select-fld",
+                      value: row.treatment_status,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: GlobalVariables.DENTAL_TREATMENT_STATUS
+                      },
+                      others: {
+                        errormessage: "Status - cannot be blank",
+                        required: true
+                      },
+                      onChange: this.changeGridEditors.bind(this, row)
+                    }}
+                  />
+                );
+              }
+            },
+            {
+              fieldName: "billed",
+              label: "Add To Bill",
+              displayTemplate: row => {
+                return (
+                  <button
+                    onClick={this.addToBill.bind(this, row)}
+                    className="btn btn-primary"
+                  >
+                    Add To Bill
+                  </button>
+                );
+              },
+              editorTemplate: row => {
+                return (
+                  <button
+                    onClick={this.addToBill.bind(this, row)}
+                    className="btn btn-primary"
+                  >
+                    Add To Bill
+                  </button>
+                );
               }
             }
           ]}
           keyId="algaeh_app_screens_id"
+          uiUpdate={this.state.treatment_gridUpdate}
           dataSource={{
-            data: this.state.dentalTreatments
+            pageInputExclude: true,
+            uri: "/dental/getDentalTreatment",
+            inputParam: { treatment_plan_id: data.hims_f_treatment_plan_id },
+            method: "GET",
+            responseSchema: { data: "records" }
+            // data: [] //this.state.dentalTreatments
           }}
-          isEditable={true}
           paging={{ page: 0, rowsPerPage: 5 }}
+          isEditable={true}
           events={{
             onEdit: () => {},
-            onDelete: () => {},
-            onDone: () => {}
+            onDelete: this.deleteDentalPlan,
+            onDone: this.updateDentalTreatmentStatus
           }}
         />
       </div>
@@ -676,7 +794,8 @@ class Dental extends Component {
     this.setState({
       openDentalModal: true,
       selected_treatement_plan: data.plan_name,
-      hims_f_treatment_plan_id: data.hims_f_treatment_plan_id
+      hims_f_treatment_plan_id: data.hims_f_treatment_plan_id,
+      treatment_gridUpdate: false
     });
   }
 
@@ -684,10 +803,44 @@ class Dental extends Component {
     return (
       <div id="dentalTreatment">
         <AlgaehModalPopUp
+          openPopup={this.state.openBilling}
+          title="Bill Service"
+        >
+          <div
+            className="col-lg-12 margin-bottom-15"
+            data-validate="billDentalPlan"
+          >
+            <div className="row">
+              <span>{JSON.stringify(this.state.billDetails)}</span>
+              <AlagehFormGroup
+                div={{ className: "col-lg-3" }}
+                label={{
+                  forceLabel: "Procedure",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "treatement_plan",
+                  value: this.state.selected_treatement_plan,
+                  events: {
+                    onChange: this.textHandle.bind(this)
+                  },
+                  others: {
+                    disabled: true,
+                    placeholder: "Enter Treatment Name"
+                  }
+                }}
+              />
+            </div>
+          </div>
+        </AlgaehModalPopUp>
+
+        <AlgaehModalPopUp
           events={{
             onClose: () => {
               teeth = [];
               this.setState({
+                treatment_gridUpdate: true,
                 openDentalModal: false,
                 hims_d_services_id: null,
                 quantity: 0,
