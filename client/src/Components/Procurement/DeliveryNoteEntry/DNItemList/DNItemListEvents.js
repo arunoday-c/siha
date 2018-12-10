@@ -173,7 +173,6 @@ const onchangegridcol = ($this, row, e) => {
 };
 
 const onchhangegriddiscount = ($this, row, ctrl, e) => {
-  debugger;
   e = e || ctrl;
 
   let discount_percentage = row.discount_percentage;
@@ -181,13 +180,13 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
   let extended_cost = 0;
   let extended_price = 0;
   let tax_amount = 0;
-  let unit_cost = 0;
 
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-
+  let quantity_recieved_todate =
+    row.quantity_recieved_todate + parseFloat(value);
   if (value !== "") {
-    if (parseFloat(value) > row.po_quantity) {
+    if (quantity_recieved_todate > row.po_quantity) {
       swalMessage({
         title:
           "Invalid Input.  DN Quantity cannot be greater than PO Quantity.",
@@ -212,7 +211,8 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
       });
       tax_amount = getAmountFormart(tax_amount, { appendSymbol: false });
 
-      debugger;
+      row["quantity_outstanding"] =
+        row.po_quantity - row.quantity_recieved_todate - parseFloat(value);
       row["extended_price"] = parseFloat(extended_price);
       row["extended_cost"] = parseFloat(extended_cost);
       row["unit_cost"] = parseFloat(extended_cost) / parseFloat(value);
@@ -234,8 +234,6 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
 };
 
 const GridAssignData = ($this, row, e) => {
-  debugger;
-
   if (row.dn_quantity === "" || row.dn_quantity === 0) {
     e.preventDefault();
     row["dn_quantity"] = 0;

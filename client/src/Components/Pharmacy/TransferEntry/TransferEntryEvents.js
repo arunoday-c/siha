@@ -173,8 +173,12 @@ const RequisitionSearch = ($this, e) => {
               // grnno
 
               data.pharmacy_stock_detail[i].quantity_transferred =
+                data.pharmacy_stock_detail[i].quantity_outstanding;
+
+              data.pharmacy_stock_detail[i].transfer_to_date =
                 data.pharmacy_stock_detail[i].quantity_authorized -
                 data.pharmacy_stock_detail[i].quantity_outstanding;
+
               data.pharmacy_stock_detail[i].quantity_outstanding = 0;
               data.pharmacy_stock_detail[i].expiry_date =
                 data.pharmacy_stock_detail[i].expirydt;

@@ -173,6 +173,9 @@ const RequisitionSearch = ($this, e) => {
 
               // grnno
               data.inventory_stock_detail[i].quantity_transferred =
+                data.inventory_stock_detail[i].quantity_outstanding;
+
+              data.inventory_stock_detail[i].transfer_to_date =
                 data.inventory_stock_detail[i].quantity_authorized -
                 data.inventory_stock_detail[i].quantity_outstanding;
               data.inventory_stock_detail[i].quantity_outstanding = 0;

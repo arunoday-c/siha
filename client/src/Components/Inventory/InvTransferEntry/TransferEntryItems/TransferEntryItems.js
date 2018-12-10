@@ -366,6 +366,17 @@ class TransferEntryItems extends Component {
                             />
                           ),
                           disabled: true
+                        },
+                        {
+                          fieldName: "transfer_to_date",
+                          label: (
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Transfer To Date"
+                              }}
+                            />
+                          ),
+                          disabled: true
                         }
                       ]}
                       keyId="service_type_id"

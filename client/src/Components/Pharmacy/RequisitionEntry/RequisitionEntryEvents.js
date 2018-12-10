@@ -7,7 +7,6 @@ import RequisitionIOputs from "../../../Models/Requisition";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const changeTexts = ($this, ctrl, e) => {
-  
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -15,7 +14,6 @@ const changeTexts = ($this, ctrl, e) => {
 };
 
 const getCtrlCode = ($this, docNumber) => {
-  
   AlgaehLoader({ show: true });
   $this.props.getRequisitionEntry({
     uri: "/requisitionEntry/getrequisitionEntry",
@@ -27,7 +25,6 @@ const getCtrlCode = ($this, docNumber) => {
       mappingName: "requisitionentry"
     },
     afterSuccess: data => {
-      
       if (
         $this.props.material_requisition_number !== undefined &&
         $this.props.material_requisition_number.length !== 0
@@ -38,6 +35,8 @@ const getCtrlCode = ($this, docNumber) => {
 
         for (let i = 0; i < data.pharmacy_stock_detail.length; i++) {
           data.pharmacy_stock_detail[i].quantity_authorized =
+            data.pharmacy_stock_detail[i].quantity_required;
+          data.pharmacy_stock_detail[i].quantity_outstanding =
             data.pharmacy_stock_detail[i].quantity_required;
 
           data.pharmacy_stock_detail[i].operation = "+";
@@ -55,9 +54,7 @@ const getCtrlCode = ($this, docNumber) => {
       }
 
       data.addedItem = true;
-      $this.setState(data, () => {
-        
-      });
+      $this.setState(data, () => {});
       AlgaehLoader({ show: false });
     }
   });
@@ -69,12 +66,10 @@ const ClearData = ($this, e) => {
 };
 
 const SaveRequisitionEntry = $this => {
-  
   algaehApiCall({
     uri: "/requisitionEntry/addrequisitionEntry",
     data: $this.state,
     onSuccess: response => {
-      
       if (response.data.success === true) {
         $this.setState({
           material_requisition_number:
@@ -93,8 +88,6 @@ const SaveRequisitionEntry = $this => {
 };
 
 const AuthorizeRequisitionEntry = ($this, authorize) => {
-  
-
   let authorize1 = "";
   let authorize2 = "";
   if (authorize === "authorize1") {
@@ -107,13 +100,11 @@ const AuthorizeRequisitionEntry = ($this, authorize) => {
     authorize2 = "Y";
   }
 
-  
   algaehApiCall({
     uri: "/requisitionEntry/updaterequisitionEntry",
     data: $this.state,
     method: "PUT",
     onSuccess: response => {
-      
       if (response.data.success === true) {
         $this.setState({
           postEnable: true,

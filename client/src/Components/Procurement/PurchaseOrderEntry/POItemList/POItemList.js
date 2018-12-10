@@ -726,6 +726,17 @@ class POItemList extends Component {
                               }
                             },
                             {
+                              fieldName: "quantity_outstanding",
+                              label: (
+                                <AlgaehLabel
+                                  label={{
+                                    forceLabel: "Quantity Outstanding"
+                                  }}
+                                />
+                              ),
+                              disabled: true
+                            },
+                            {
                               fieldName: "rejected_quantity",
                               label: (
                                 <AlgaehLabel

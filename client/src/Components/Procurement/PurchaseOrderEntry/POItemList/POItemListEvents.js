@@ -25,6 +25,7 @@ const texthandle = ($this, context, e) => {
 
 const discounthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
+
   if ($this.state.order_quantity <= 0) {
     $this.setState({
       [e.target.name]: 0
@@ -42,7 +43,7 @@ const discounthandle = ($this, context, ctrl, e) => {
     let total_amount = 0;
     if (e.target.name === "sub_discount_percentage") {
       sub_discount_percentage =
-        e.target.value === "" ? "" : parseFloat(e.target.value);
+        e.target.value === undefined ? "" : parseFloat(e.target.value);
       sub_discount_amount =
         e.target.value === ""
           ? 0
@@ -50,7 +51,7 @@ const discounthandle = ($this, context, ctrl, e) => {
             100;
     } else {
       sub_discount_amount =
-        e.target.value === "" ? "" : parseFloat(e.target.value);
+        e.target.value === undefined ? "" : parseFloat(e.target.value);
       sub_discount_percentage =
         e.target.value === ""
           ? 0
@@ -331,6 +332,7 @@ const AddItems = ($this, context) => {
       unit_cost: $this.state.unit_cost,
       expected_arrival_date: $this.state.expected_date,
       authorize_quantity: $this.state.authorize_quantity,
+      quantity_outstanding: 0,
       rejected_quantity: $this.state.rejected_quantity,
       pharmacy_requisition_id: $this.state.pharmacy_requisition_id,
       inventory_requisition_id: $this.state.inventory_requisition_id,
@@ -630,6 +632,7 @@ const onchangegridcol = ($this, row, e) => {
     });
   } else {
     row[name] = value;
+    row["quantity_outstanding"] = value;
     row["rejected_quantity"] = row.total_quantity - value;
     row.update();
   }

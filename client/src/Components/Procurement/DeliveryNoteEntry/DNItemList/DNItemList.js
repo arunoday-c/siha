@@ -342,7 +342,29 @@ class DNItemList extends Component {
                                 );
                               }
                             },
-
+                            //
+                            {
+                              fieldName: "quantity_outstanding",
+                              label: (
+                                <AlgaehLabel
+                                  label={{
+                                    forceLabel: "Quantity Outstanding"
+                                  }}
+                                />
+                              ),
+                              disabled: true
+                            },
+                            {
+                              fieldName: "quantity_recieved_todate",
+                              label: (
+                                <AlgaehLabel
+                                  label={{
+                                    forceLabel: "Quantity Recieved Todate"
+                                  }}
+                                />
+                              ),
+                              disabled: true
+                            },
                             {
                               fieldName: "discount_percentage",
                               label: (
