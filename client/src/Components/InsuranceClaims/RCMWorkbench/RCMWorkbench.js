@@ -1,14 +1,17 @@
 import React, { Component } from "react";
 import "./RCMWorkbench.css";
-
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
-
+import { algaehApiCall } from "../../../utils/algaehApiCall";
+import FrontDesk from "../../../Search/FrontDesk.json";
+// import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDateHandler
+  AlgaehDateHandler,
+  AlagehFormGroup
 } from "../../Wrapper/algaehWrapper";
+import AlgaehSearch from "../../Wrapper/globalSearch";
 
 const myData = [
   {
@@ -31,8 +34,53 @@ class RCMWorkbench extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedLang: "en"
+      selectedLang: "en",
+      claims: []
     };
+    this.getIncoices();
+  }
+
+  getIncoices() {
+    algaehApiCall({
+      uri: "/invoiceGeneration/getInvoiceGeneration",
+      method: "GET",
+      data: { invoice_number: null },
+      onSuccess: response => {
+        debugger;
+        this.setState({
+          claims: [response.data.records]
+        });
+      },
+      onError: error => {}
+    });
+  }
+
+  patientSearch() {
+    AlgaehSearch({
+      searchGrid: {
+        columns: FrontDesk
+      },
+      searchName: "patients",
+      uri: "/gloabelSearch/get",
+      onContainsChange: (text, serchBy, callBack) => {
+        callBack(text);
+      },
+      onRowSelect: row => {
+        //console.log("Selected Row:", row);
+        this.setState({
+          patient_code: row.patient_code,
+          patient_id: row.hims_d_patient_id,
+          patient_name: row.full_name,
+          age: row.age,
+          date_of_birth: row.date_of_birth,
+          gender: row.gender,
+          contact_number: row.contact_number,
+          email: row.email,
+          arabic_name: row.arabic_name,
+          title_id: row.title_id
+        });
+      }
+    });
   }
 
   render() {
@@ -62,6 +110,23 @@ class RCMWorkbench extends Component {
               )
             }
           ]}
+          // soptlightSearch={{
+          //   label: (
+          //     <AlgaehLabel
+          //       label={{ forceLabel: "Claim ID", returnText: true }}
+          //     />
+          //   ),
+          //   value: this.state.invoice_number,
+          //   selectValue: "invoice_number",
+          //   events: {
+          //     onChange: this.getCtrlCode.bind(this)
+          //   },
+          //   jsonFile: {
+          //     fileName: "spotlightSearch",
+          //     fieldName: "Invoice.InvoiceGen"
+          //   },
+          //   searchName: "InvoiceGen"
+          // }}
         />
 
         <div
@@ -81,14 +146,13 @@ class RCMWorkbench extends Component {
                   valueField: "hims_d_pharmacy_location_id",
                   data: this.props.locations
                 },
-
                 onChange: null,
                 onClear: null
               }}
             />
             <AlagehAutoComplete
               div={{ className: "col" }}
-              label={{ forceLabel: "Patient ID" }}
+              label={{ forceLabel: "Sub Company Name" }}
               selector={{
                 name: "location_id",
                 className: "select-fld",
@@ -103,6 +167,36 @@ class RCMWorkbench extends Component {
                 onClear: null
               }}
             />
+            <AlagehFormGroup
+              div={{ className: "col  margin-top-15 " }}
+              label={{
+                fieldName: "patient_code",
+                isImp: false
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "patient_code",
+                others: {
+                  disabled: true
+                },
+                value: this.state.patient_code,
+                events: {
+                  // onChange: this.texthandle.bind(this)
+                }
+              }}
+            />
+
+            <div className="col-lg-1" style={{ paddingTop: "40px" }}>
+              <i
+                //onClick={this.getPatient.bind(this)}
+                onClick={this.patientSearch.bind(this)}
+                className="fas fa-search"
+                style={{
+                  marginLeft: "-75%",
+                  cursor: "pointer"
+                }}
+              />
+            </div>
 
             <AlgaehDateHandler
               div={{ className: "col" }}
@@ -134,6 +228,11 @@ class RCMWorkbench extends Component {
               value={this.state.expiry_date}
             />
             <div className="col">
+              <button className="btn btn-default" style={{ marginTop: 21 }}>
+                Clear
+              </button>
+            </div>
+            <div className="col">
               <button className="btn btn-primary" style={{ marginTop: 21 }}>
                 Load Claims
               </button>
@@ -160,7 +259,7 @@ class RCMWorkbench extends Component {
                         }
                       },
                       {
-                        fieldName: "ClaimID",
+                        fieldName: "invoice_number",
                         label: <AlgaehLabel label={{ forceLabel: "ClaimID" }} />
                       },
 
@@ -264,7 +363,7 @@ class RCMWorkbench extends Component {
                     ]}
                     keyId="service_type_id"
                     dataSource={{
-                      data: myData
+                      data: this.state.claims
                     }}
                     isEditable={false}
                     paging={{ page: 0, rowsPerPage: 10 }}

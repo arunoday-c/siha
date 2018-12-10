@@ -208,6 +208,7 @@ class Dental extends Component {
         if (response.data.success) {
           algaehApiCall({
             uri: "/denta;/updateDentalTreatmentBilledStatus",
+            method: "POST",
             data: {
               hims_f_dental_treatment_id: this.state.d_id,
               billed: "Y"
