@@ -73,7 +73,7 @@ class PersistentDrawer extends React.Component {
       },
       onFailure: error => {
         swalMessage({
-          text: error.response.data.message,
+          text: error.message,
           type: "error"
         });
       }

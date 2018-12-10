@@ -107,25 +107,48 @@ class Dental extends Component {
       [e.target.name]: e.target.value
     });
 
+    // hims_d_services_id: 10851
+    // insured: "Y"
+    // primary_insurance_provider_id: 167
+    // primary_network_id: 2751
+    // primary_network_office_id: 59547
+    // secondary_insurance_provider_id: null
+    // secondary_network_id: null
+    // secondary_network_office_id: null
+    // vat_applicable: "Y"
+
     let inputParam = [
       {
         hims_d_services_id: bill_dtls.services_id,
         quantity: bill_dtls.quantity,
         discount_amout: bill_dtls.discount_amout,
         discount_percentage: e.target.value,
-        insured: "Y",
+        insured: this.state.ins_details !== null ? "Y" : "N",
         vat_applicable: "Y",
-        primary_insurance_provider_id: bill_dtls.insurance_provider_id,
-        primary_network_office_id: bill_dtls.hims_d_insurance_network_office_id,
-        primary_network_id: bill_dtls.network_id,
-        sec_insured: bill_dtls.sec_insured,
-        secondary_insurance_provider_id:
-          bill_dtls.secondary_insurance_provider_id,
-        secondary_network_id: bill_dtls.secondary_network_id,
-        secondary_network_office_id: bill_dtls.secondary_network_office_id,
-        approval_amt: bill_dtls.approval_amt,
-        approval_limit_yesno: bill_dtls.approval_limit_yesno,
+        primary_insurance_provider_id: bill_dtls.insurance_provider_id
+          ? bill_dtls.insurance_provider_id
+          : null,
+        primary_network_office_id: bill_dtls.hims_d_insurance_network_office_id
+          ? bill_dtls.hims_d_insurance_network_office_id
+          : null,
+        primary_network_id: bill_dtls.network_id ? bill_dtls.network_id : null,
+        sec_insured: bill_dtls.sec_insured ? bill_dtls.sec_insured : null,
+        secondary_insurance_provider_id: bill_dtls.secondary_insurance_provider_id
+          ? bill_dtls.secondary_insurance_provider_id
+          : null,
+        secondary_network_id: bill_dtls.secondary_network_id
+          ? bill_dtls.secondary_network_id
+          : null,
+        secondary_network_office_id: bill_dtls.secondary_network_office_id
+          ? bill_dtls.secondary_network_office_id
+          : null,
+        approval_amt: bill_dtls.approval_amt ? bill_dtls.approval_amt : null,
+        approval_limit_yesno: bill_dtls.approval_limit_yesno
+          ? bill_dtls.approval_limit_yesno
+          : null,
         preapp_limit_amount: bill_dtls.preapp_limit_amount
+          ? bill_dtls.preapp_limit_amount
+          : null
       }
     ];
 
@@ -168,13 +191,14 @@ class Dental extends Component {
           ...{
             visit_id: Window.global["visit_id"],
             patient_id: Window.global["current_patient"],
-            pre_approval: "N"
+            pre_approval: "N",
+            doctor_id: Window.global["provider_id"]
           }
         }
       ]
     };
 
-    console.log("inputObj", JSON.stringify(inputObj));
+    //console.log("inputObj", JSON.stringify(inputObj));
 
     algaehApiCall({
       uri: "/orderAndPreApproval/insertOrderedServices",
@@ -182,6 +206,25 @@ class Dental extends Component {
       method: "POST",
       onSuccess: response => {
         if (response.data.success) {
+          algaehApiCall({
+            uri: "/denta;/updateDentalTreatmentBilledStatus",
+            data: {
+              hims_f_dental_treatment_id: this.state.d_id,
+              billed: "Y"
+            },
+            onSuccess: res => {
+              if (res.data.success) {
+                console.log("Billed");
+              }
+            },
+            onError: error => {
+              swalMessage({
+                title: error.message,
+                type: "error"
+              });
+            }
+          });
+
           swalMessage({
             title: "Ordered Successfully...",
             type: "success"
@@ -198,7 +241,6 @@ class Dental extends Component {
   }
 
   addToBill(row) {
-    debugger;
     algaehApiCall({
       uri: "/insurance/getPatientInsurance",
       method: "GET",
@@ -265,7 +307,8 @@ class Dental extends Component {
 
     this.setState({
       openBillingModal: true,
-      treatment_gridUpdate: false
+      treatment_gridUpdate: false,
+      d_id: row.hims_f_dental_treatment_id
     });
   }
 
@@ -833,24 +876,32 @@ class Dental extends Component {
               fieldName: "billed",
               label: "Add To Bill",
               displayTemplate: row => {
-                return (
+                return row.billed === "N" ? (
                   <button
                     onClick={this.addToBill.bind(this, row)}
                     className="btn btn-primary"
                   >
                     Add To Bill
                   </button>
-                );
+                ) : row.billed === "SB" ? (
+                  <span>Sent to Billing</span>
+                ) : row.billed === "Y" ? (
+                  <span>Paid</span>
+                ) : null;
               },
               editorTemplate: row => {
-                return (
+                return row.billed === "N" ? (
                   <button
                     onClick={this.addToBill.bind(this, row)}
                     className="btn btn-primary"
                   >
                     Add To Bill
                   </button>
-                );
+                ) : row.billed === "SB" ? (
+                  <span>Sent to Billing</span>
+                ) : row.billed === "Y" ? (
+                  <span>Paid</span>
+                ) : null;
               }
             }
           ]}
