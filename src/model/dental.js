@@ -527,6 +527,55 @@ let updateDentalTreatmentStatus = (req, res, next) => {
   }
 };
 
+//created by irfan: to
+let updateDentalTreatmentBilledStatus = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      let input = extend({}, req.body);
+      if (input.billed == "SB" || input.billed == "Y") {
+        connection.query(
+          "update hims_f_dental_treatment set billed=? ,\
+             updated_date=?, updated_by=? WHERE  `record_status`='A' and `hims_f_dental_treatment_id`=?;",
+          [
+            input.billed,
+            new Date(),
+            input.updated_by,
+            input.hims_f_dental_treatment_id
+          ],
+          (error, results) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+
+            if (results.affectedRows > 0) {
+              req.records = results;
+              next();
+            } else {
+              req.records = { affectedRows: 0 };
+              next();
+            }
+          }
+        );
+      } else {
+        releaseDBConnection(db, connection);
+        req.records = { invalid_input: true };
+        next();
+      }
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addTreatmentPlan,
   addDentalTreatment,
@@ -535,5 +584,6 @@ module.exports = {
   approveTreatmentPlan,
   deleteDentalPlan,
   updateDentalPlanStatus,
-  updateDentalTreatmentStatus
+  updateDentalTreatmentStatus,
+  updateDentalTreatmentBilledStatus
 };

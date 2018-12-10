@@ -66,7 +66,7 @@ app.use((req, res, next) => {
   res.setHeader("Transfer-Encoding", "gzip");
   if (req.url != "/api/v1/apiAuth") {
     if (req.url != "/api/v1/apiAuth/authUser") {
-      res.setHeader("Content-Encoding", "gzip");
+      // res.setHeader("Content-Encoding", "gzip");
       //  res.setHeader("connection", "keep-alive");
     }
     reqUser = jwtDecode(reqH["x-api-key"]).id;
