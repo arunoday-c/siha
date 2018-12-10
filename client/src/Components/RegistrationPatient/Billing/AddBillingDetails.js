@@ -320,7 +320,6 @@ const ProcessInsurance = ($this, context, ctrl, e) => {
       type: "error"
     });
   } else {
-    debugger;
     let serviceInput = [
       {
         insured: $this.state.insured,
@@ -344,21 +343,19 @@ const ProcessInsurance = ($this, context, ctrl, e) => {
       data: serviceInput,
       onSuccess: response => {
         if (response.data.success) {
-          debugger;
           // response.data.records.billdetails[0].insured =
           //   response.data.records.billdetails[0].insurance_yesno;
           $this.setState({ ...response.data.records });
           if (context !== null) {
             context.updateState({ ...response.data.records });
           }
-          debugger;
+
           algaehApiCall({
             uri: "/billing/billingCalculations",
             method: "POST",
             data: response.data.records,
             onSuccess: response => {
               if (response.data.success) {
-                debugger;
                 response.data.records.saveEnable = false;
                 response.data.records.ProcessInsure = true;
                 $this.setState({ ...response.data.records });
