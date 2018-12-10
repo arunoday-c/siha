@@ -724,7 +724,7 @@ class ChiefComplaints extends Component {
                     <AlagehAutoComplete
                       div={{ className: "col-lg-12" }}
                       label={{
-                        forceLabel: "Chief Complaint"
+                        fieldName: "chief_cmpln"
                       }}
                       selector={{
                         name: "hims_f_episode_chief_complaint_id",
@@ -741,7 +741,7 @@ class ChiefComplaints extends Component {
                     <AlgaehDateHandler
                       div={{ className: "col-lg-12" }}
                       label={{
-                        forceLabel: "Duration / Onset",
+                        fieldName: "duration_onset",
                         isImp: false
                       }}
                       textBox={{
@@ -761,7 +761,7 @@ class ChiefComplaints extends Component {
                         <AlagehAutoComplete
                           div={{ className: "col-lg-10" }}
                           label={{
-                            forceLabel: "Location"
+                            fieldName: "lctn"
                           }}
                           selector={{
                             name: "location",
@@ -795,7 +795,7 @@ class ChiefComplaints extends Component {
                         <AlagehAutoComplete
                           div={{ className: "col-lg-10" }}
                           label={{
-                            forceLabel: "Quality"
+                            fieldName: "qlty"
                           }}
                           selector={{
                             name: "quality",
@@ -829,7 +829,7 @@ class ChiefComplaints extends Component {
                         <AlagehAutoComplete
                           div={{ className: "col-lg-10" }}
                           label={{
-                            forceLabel: "Context"
+                            fieldName: "ctx"
                           }}
                           selector={{
                             name: "context",
@@ -864,7 +864,7 @@ class ChiefComplaints extends Component {
                         <AlagehAutoComplete
                           div={{ className: "col-lg-10" }}
                           label={{
-                            forceLabel: "Timing"
+                            fieldName: "timing"
                           }}
                           selector={{
                             name: "timing",
@@ -899,7 +899,7 @@ class ChiefComplaints extends Component {
                         <AlagehAutoComplete
                           div={{ className: "col-lg-10" }}
                           label={{
-                            forceLabel: "Modifying Factor"
+                            fieldName: "mdfyng_fctr"
                           }}
                           selector={{
                             name: "modifying_factor",
@@ -935,7 +935,7 @@ class ChiefComplaints extends Component {
                         <AlagehAutoComplete
                           div={{ className: "col-lg-10" }}
                           label={{
-                            forceLabel: "Associated Symptoms"
+                            fieldName: "ast_symptms"
                           }}
                           selector={{
                             name: "associated_symptoms",
@@ -979,22 +979,20 @@ class ChiefComplaints extends Component {
                             fieldName: "chief_complaint",
                             label: (
                               <AlgaehLabel
-                                label={{ forceLabel: "Chief Complaint" }}
+                                label={{ fieldName: "chief_cmpln" }}
                               />
                             )
                           },
                           {
                             fieldName: "element_description",
                             label: (
-                              <AlgaehLabel
-                                label={{ forceLabel: "HPI Description" }}
-                              />
+                              <AlgaehLabel label={{ fieldName: "hpi_desc" }} />
                             )
                           },
                           {
                             fieldName: "element_type",
                             label: (
-                              <AlgaehLabel label={{ forceLabel: "HPI Type" }} />
+                              <AlgaehLabel label={{ fieldName: "hpi_type" }} />
                             ),
                             displayTemplate: row => (
                               <span>
@@ -1031,7 +1029,7 @@ class ChiefComplaints extends Component {
                     <AlagehFormGroup
                       div={{ className: "col-lg-12" }}
                       label={{
-                        forceLabel: "Comments",
+                        fieldName: "cmts",
                         isImp: false
                       }}
                       textBox={{
@@ -1283,7 +1281,7 @@ class ChiefComplaints extends Component {
                     fieldName: "chronic",
                     label: (
                       <AlgaehLabel
-                        label={{ fieldName: "chronic", forceLabel: "Chronic" }}
+                        label={{ fieldName: "chronic", fieldName: "chronic" }}
                       />
                     ),
                     displayTemplate: row => {
@@ -1308,7 +1306,7 @@ class ChiefComplaints extends Component {
                       <AlgaehLabel
                         label={{
                           fieldName: "complaint_inactive_date",
-                          forceLabel: "Inactive"
+                          fieldName: "inactive"
                         }}
                       />
                     ),

@@ -15,7 +15,7 @@ export function algaehApiCall(options) {
     swalMessage({
       title:
         "Looks like you're not connected to any network,\n please make sure you connect and try again",
-      imageUrl: "images/nointernet.png",
+      imageUrl: "images/nointernet.webp",
       imageHeight: 30,
       position: "center",
       timer: 4000
@@ -29,7 +29,7 @@ export function algaehApiCall(options) {
     ) {
       swalMessage({
         title: "Low internet connectivity, response may be delay",
-        imageUrl: "images/nointernet.png",
+        imageUrl: "images/nointernet.webp",
         imageHeight: 30,
         position: "top",
         timer: 4000

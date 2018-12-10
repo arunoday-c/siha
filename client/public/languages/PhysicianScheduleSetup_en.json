@@ -1,5 +1,23 @@
 {
   "phy_sch_setup": "Physician Schedule Setup",
   "doctor": "Doctor",
-  "department_name": "Department Name"
+  "department_name": "Department Name",
+  "selected_doctor": "Selected Doctor",
+  "appt_date": "Appointment Date",
+  "leave": "Leave",
+  "from_wrk_hr": "From Work Hour",
+  "to_wrk_hr": "To Work Hour",
+  "frm_brk_1": "From Work Break 1",
+  "to_brk_1": "To Work Break 1",
+  "frm_brk_2": "From Work Break 2",
+  "to_brk_2": "To Work Break 2",
+  "sch_desc": "Schedule Description",
+  "sel_slot_time": "Select Slot Time",
+  "sel_month": "Select Month",
+  "year": "year",
+  "frm_date": "From Date",
+  "to_date": "To Date",
+  "frm_time": "From Time",
+  "to_time": "To Time",
+  "wrkng_days": "Working Days"
 }

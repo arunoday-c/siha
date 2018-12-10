@@ -330,7 +330,7 @@ class Examination extends Component {
                       <AlagehAutoComplete
                         div={{ className: "col-lg-12" }}
                         label={{
-                          forceLabel: "Examination Type"
+                          fieldName: "exmn_type"
                         }}
                         selector={{
                           name: "hims_d_physical_examination_header_id",
@@ -350,7 +350,7 @@ class Examination extends Component {
                       <AlagehAutoComplete
                         div={{ className: "col-lg-12 margin-top-15" }}
                         label={{
-                          forceLabel: "Examination Description"
+                          fieldName: "exmn_desc"
                         }}
                         selector={{
                           name: "hims_d_physical_examination_details_id",
@@ -373,7 +373,7 @@ class Examination extends Component {
                       <AlagehAutoComplete
                         div={{ className: "col-lg-12 margin-top-15" }}
                         label={{
-                          forceLabel: "Examination"
+                          fieldName: "exmn"
                         }}
                         selector={{
                           name: "hims_d_physical_examination_subdetails_id",

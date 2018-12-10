@@ -213,7 +213,7 @@ class PhysicalExamination extends Component {
                     <AlagehAutoComplete
                       div={{ className: "col-9" }}
                       label={{
-                        forceLabel: "Select Examination Type",
+                        fieldName: "select_exmn_type",
                         isImp: true
                       }}
                       selector={{
@@ -327,7 +327,7 @@ class PhysicalExamination extends Component {
                     <AlagehAutoComplete
                       div={{ className: "col-9" }}
                       label={{
-                        forceLabel: "Select Examination Desc.",
+                        fieldName: "select_exmn_desc",
                         isImp: true
                       }}
                       selector={{

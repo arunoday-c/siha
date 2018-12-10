@@ -47,7 +47,7 @@ class BreadCrumb extends PureComponent {
               <Tooltip title="Search">
                 <img
                   className="finderImg"
-                  src={require("../BreadCrumb/images/search.png")}
+                  src={require("../BreadCrumb/images/search.webp")}
                   onClick={SearchDetails.bind(this, this)}
                 />
               </Tooltip>
@@ -113,7 +113,7 @@ class BreadCrumb extends PureComponent {
               <li className="printMenuDisplay">
                 <img
                   className="printImg"
-                  src={require("../BreadCrumb/images/print.png")}
+                  src={require("../BreadCrumb/images/print.webp")}
                   title="Print"
                   // {...(this.props.printArea.menuitems !== undefined &&
                   // this.props.printArea.menuitems.length === 1

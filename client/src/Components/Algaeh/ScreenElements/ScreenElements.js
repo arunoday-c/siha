@@ -117,6 +117,24 @@ class ScreenElements extends Component {
       <div className="screen_elements">
         <div className="col-lg-12">
           <div className="row">
+            <AlagehAutoComplete
+              div={{ className: "col" }}
+              label={{
+                forceLabel: "Component"
+              }}
+              selector={{
+                name: "component_id",
+                className: "select-fld",
+                value: this.state.component_id,
+                dataSource: {
+                  textField: "component_name",
+                  valueField: "algaeh_d_app_component_id",
+                  data: this.state.components
+                },
+                onChange: this.dropDownHandle.bind(this)
+              }}
+            />
+
             <AlagehFormGroup
               div={{ className: "col-lg-3" }}
               label={{
@@ -145,24 +163,6 @@ class ScreenElements extends Component {
                 events: {
                   onChange: this.changeTexts.bind(this)
                 }
-              }}
-            />
-
-            <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{
-                forceLabel: "Component"
-              }}
-              selector={{
-                name: "component_id",
-                className: "select-fld",
-                value: this.state.component_id,
-                dataSource: {
-                  textField: "component_name",
-                  valueField: "algaeh_d_app_component_id",
-                  data: this.state.components
-                },
-                onChange: this.dropDownHandle.bind(this)
               }}
             />
 

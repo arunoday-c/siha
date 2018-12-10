@@ -79,7 +79,7 @@ class BreadCrumb extends PureComponent {
                 <img
                   alt="Algaeh"
                   className="printImg"
-                  src={require("../BreadCrumb/images/print.png")}
+                  src={require("../../../assets/images/print.webp")}
                   title="Print"
                   // {...(this.props.printArea.menuitems !== undefined &&
                   // this.props.printArea.menuitems.length === 1

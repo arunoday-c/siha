@@ -13,5 +13,7 @@
   "max_value": "Max Value",
   "general": "General",
   "display": "Display",
-  "select_department": "Select Department"
+  "select_department": "Select Department",
+  "select_exmn_type": "Select Examination Type",
+  "select_exmn_desc": "Select Examination Desc"
 }

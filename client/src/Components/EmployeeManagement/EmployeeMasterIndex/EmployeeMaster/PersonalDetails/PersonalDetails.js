@@ -24,7 +24,7 @@ import {
 import variableJson from "../../../../../utils/GlobalVariables.json";
 import Enumerable from "linq";
 import DeptUserDetails from "../DeptUserDetails/DeptUserDetails";
-import noImage from "../../../../../assets/images/images.png";
+import noImage from "../../../../../assets/images/images.webp";
 import { displayFileFromServer } from "../../../../../utils/GlobalFunctions";
 
 class PersonalDetails extends PureComponent {
