@@ -26,7 +26,7 @@ let downloadImage = (dataString, folderName, imageName) => {
   response.data = new Buffer(matches[2], "base64");
   // return response;
   fs.writeFile(
-    logDirectory + "/" + folderName + "/" + imageName + ".png",
+    logDirectory + "/" + folderName + "/" + imageName + ".webp",
     response.data,
     function(err) {
       if (err) {
@@ -36,7 +36,7 @@ let downloadImage = (dataString, folderName, imageName) => {
   );
 };
 function readFileToBase64(folderName, imageName) {
-  const filePath = logDirectory + "/" + folderName + "/" + imageName + ".png";
+  const filePath = logDirectory + "/" + folderName + "/" + imageName + ".webp";
   if (!fs.existsSync(filePath)) {
     return null;
   }

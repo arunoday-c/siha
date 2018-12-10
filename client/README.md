@@ -651,9 +651,9 @@ Here is an example:
 
 ```js
 import React from 'react';
-import logo from './logo.png'; // Tell Webpack this JS file uses this image
+import logo from './logo.webp'; // Tell Webpack this JS file uses this image
 
-console.log(logo); // /logo.84287d09.png
+console.log(logo); // /logo.84287d09.webp
 
 function Header() {
   // Import result is the URL of your image
@@ -669,7 +669,7 @@ This works in CSS too:
 
 ```css
 .Logo {
-  background-image: url(./logo.png);
+  background-image: url(./logo.webp);
 }
 ```
 
@@ -722,7 +722,7 @@ render() {
   // Note: this is an escape hatch and should be used sparingly!
   // Normally we recommend using `import` for getting asset URLs
   // as described in “Adding Images and Fonts” above this section.
-  return <img src={process.env.PUBLIC_URL + '/img/logo.png'} />;
+  return <img src={process.env.PUBLIC_URL + '/img/logo.webp'} />;
 }
 ```
 
@@ -1478,7 +1478,7 @@ Similarly, `fit()` lets you focus on a specific test without running any other t
 Jest has an integrated coverage reporter that works well with ES6 and requires no configuration.<br>
 Run `npm test -- --coverage` (note extra `--` in the middle) to include a coverage report like this:
 
-![coverage report](http://i.imgur.com/5bFhnTS.png)
+![coverage report](http://i.imgur.com/5bFhnTS.webp)
 
 Note that tests run much slower with coverage so it is recommended to run it separately from your normal workflow.
 
@@ -1630,7 +1630,7 @@ Snapshot testing is a feature of Jest that automatically generates text snapshot
 
 If you use [Visual Studio Code](https://code.visualstudio.com), there is a [Jest extension](https://github.com/orta/vscode-jest) which works with Create React App out of the box. This provides a lot of IDE-like features while using a text editor: showing the status of a test run with potential fail messages inline, starting and stopping the watcher automatically, and offering one-click snapshot updates.
 
-![VS Code Jest Preview](https://cloud.githubusercontent.com/assets/49038/20795349/a032308a-b7c8-11e6-9b34-7eeac781003f.png)
+![VS Code Jest Preview](https://cloud.githubusercontent.com/assets/49038/20795349/a032308a-b7c8-11e6-9b34-7eeac781003f.webp)
 
 ## Debugging Tests
 
@@ -2196,7 +2196,7 @@ npm run deploy
 
 Finally, make sure **GitHub Pages** option in your GitHub project settings is set to use the `gh-pages` branch:
 
-<img src="http://i.imgur.com/HUjEr9l.png" width="500" alt="gh-pages branch setting">
+<img src="http://i.imgur.com/HUjEr9l.webp" width="500" alt="gh-pages branch setting">
 
 #### Step 5: Optionally, configure the domain
 
