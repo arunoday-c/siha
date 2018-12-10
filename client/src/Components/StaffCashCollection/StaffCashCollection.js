@@ -298,7 +298,7 @@ class StaffCashCollection extends Component {
         <BreadCrumb
           title={
             <AlgaehLabel
-              label={{ forceLabel: "Staff Cash Collection", align: "ltr" }}
+              label={{ fieldName: "staff_cash_collection", align: "ltr" }}
             />
           }
           breadStyle={this.props.breadStyle}
@@ -307,7 +307,7 @@ class StaffCashCollection extends Component {
               pageName: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Front Desk",
+                    fieldName: "front_desk",
                     align: "ltr"
                   }}
                 />
@@ -316,7 +316,7 @@ class StaffCashCollection extends Component {
             {
               pageName: (
                 <AlgaehLabel
-                  label={{ forceLabel: "Staff Cash Collection", align: "ltr" }}
+                  label={{ fieldName: "staff_cash_collection", align: "ltr" }}
                 />
               )
             }
@@ -332,7 +332,7 @@ class StaffCashCollection extends Component {
               <AlagehAutoComplete
                 div={{ className: "col-lg-3" }}
                 label={{
-                  forceLabel: "Shift Type",
+                  fieldName: "shift_type",
                   isImp: true
                 }}
                 selector={{
@@ -355,7 +355,7 @@ class StaffCashCollection extends Component {
               <AlgaehDateHandler
                 div={{ className: "col-lg-3" }}
                 label={{
-                  forceLabel: "Shift Date",
+                  fieldName: "shift_date",
                   isImp: true
                 }}
                 textBox={{
@@ -376,7 +376,7 @@ class StaffCashCollection extends Component {
               <AlagehAutoComplete
                 div={{ className: "col-lg-3" }}
                 label={{
-                  forceLabel: "Shift Status",
+                  fieldName: "shift_status",
                   isImp: false
                 }}
                 selector={{
@@ -425,7 +425,7 @@ class StaffCashCollection extends Component {
                     {
                       fieldName: "employee_name",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Employee Name" }} />
+                        <AlgaehLabel label={{ fieldName: "employee_name" }} />
                       ),
                       others: {
                         resizable: false,
@@ -448,7 +448,7 @@ class StaffCashCollection extends Component {
                     {
                       fieldName: "shift_id",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Shift Type" }} />
+                        <AlgaehLabel label={{ fieldName: "shift_type" }} />
                       ),
                       displayTemplate: row => {
                         let x = Enumerable.from(this.state.shifts)
@@ -464,7 +464,7 @@ class StaffCashCollection extends Component {
                     {
                       fieldName: "expected_cash",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Expected Cash" }} />
+                        <AlgaehLabel label={{ fieldName: "expected_cash" }} />
                       ),
                       others: {
                         resizable: false,
@@ -474,7 +474,7 @@ class StaffCashCollection extends Component {
                     {
                       fieldName: "actual_cash",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Actual Cash" }} />
+                        <AlgaehLabel label={{ fieldName: "actual_cash" }} />
                       ),
                       others: {
                         resizable: false,
@@ -484,7 +484,7 @@ class StaffCashCollection extends Component {
                     {
                       fieldName: "difference_cash",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Cash Diffrence" }} />
+                        <AlgaehLabel label={{ fieldName: "difference_cash" }} />
                       ),
                       others: {
                         resizable: false,
@@ -494,7 +494,7 @@ class StaffCashCollection extends Component {
                     {
                       fieldName: "cash_status",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Cash Status" }} />
+                        <AlgaehLabel label={{ fieldName: "cash_status" }} />
                       ),
                       displayTemplate: row => {
                         return row.cash_status === "T" ? (
@@ -515,13 +515,13 @@ class StaffCashCollection extends Component {
                     {
                       fieldName: "expected_card",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Expected Card" }} />
+                        <AlgaehLabel label={{ fieldName: "expected_card" }} />
                       )
                     },
                     {
                       fieldName: "actual_card",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Actual Card" }} />
+                        <AlgaehLabel label={{ fieldName: "actual_card" }} />
                       ),
                       others: {
                         resizable: false,
@@ -531,7 +531,7 @@ class StaffCashCollection extends Component {
                     {
                       fieldName: "difference_card",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Card Diffrence" }} />
+                        <AlgaehLabel label={{ fieldName: "difference_card" }} />
                       ),
                       others: {
                         resizable: false,
@@ -541,7 +541,7 @@ class StaffCashCollection extends Component {
                     {
                       fieldName: "card_status",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Card Status" }} />
+                        <AlgaehLabel label={{ fieldName: "card_status" }} />
                       ),
                       displayTemplate: row => {
                         return row.card_status === "T" ? (
@@ -563,15 +563,13 @@ class StaffCashCollection extends Component {
                     {
                       fieldName: "expected_cheque",
                       label: (
-                        <AlgaehLabel
-                          label={{ forceLabel: "Expected Cheque" }}
-                        />
+                        <AlgaehLabel label={{ fieldName: "expected_cheque" }} />
                       )
                     },
                     {
                       fieldName: "actual_cheque",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Actual Cheque" }} />
+                        <AlgaehLabel label={{ fieldName: "actual_cheque" }} />
                       ),
                       others: {
                         resizable: false,
@@ -582,7 +580,7 @@ class StaffCashCollection extends Component {
                       fieldName: "difference_cheque",
                       label: (
                         <AlgaehLabel
-                          label={{ forceLabel: "Cheque Diffrence" }}
+                          label={{ fieldName: "difference_cheque" }}
                         />
                       ),
                       others: {
@@ -593,7 +591,7 @@ class StaffCashCollection extends Component {
                     {
                       fieldName: "cheque_status",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Cheque Status" }} />
+                        <AlgaehLabel label={{ fieldName: "cheque_status" }} />
                       ),
                       displayTemplate: row => {
                         return row.cheque_status === "T" ? (
@@ -637,7 +635,7 @@ class StaffCashCollection extends Component {
                   <div className="col">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Shift Open Date"
+                        fieldName: "shift_open_date"
                       }}
                     />
                     <h6>{this.state.shift_open_date}</h6>
@@ -646,7 +644,7 @@ class StaffCashCollection extends Component {
                   <div className="col">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Shift Open Time"
+                        fieldName: "shift_open_time"
                       }}
                     />
                     <h6>{this.state.shift_open_time}</h6>
@@ -656,7 +654,7 @@ class StaffCashCollection extends Component {
                   <div className="col">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Shift Close Date"
+                        fieldName: "shift_close_date"
                       }}
                     />
                     <h6>{this.state.shift_close_date}</h6>
@@ -665,7 +663,7 @@ class StaffCashCollection extends Component {
                   <div className="col">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Shift Close Time"
+                        fieldName: "shift_close_time"
                       }}
                     />
                     <h6>{this.state.shift_close_time}</h6>
@@ -676,7 +674,7 @@ class StaffCashCollection extends Component {
                   <div className="col-lg-12">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Closed By"
+                        fieldName: "closed_by"
                       }}
                     />
                     <h6>Head of Department</h6>
@@ -684,7 +682,7 @@ class StaffCashCollection extends Component {
                   <AlagehFormGroup
                     div={{ className: "col-lg-12" }}
                     label={{
-                      forceLabel: "Remarks",
+                      fieldName: "remarks",
                       isImp: false
                     }}
                     textBox={{

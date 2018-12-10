@@ -822,7 +822,7 @@ class NurseWorkbench extends Component {
                             <AlagehAutoComplete
                               div={{ className: "col-3" }}
                               label={{
-                                forceLabel: "Temp. From"
+                                fieldName: "temp_frm"
                               }}
                               selector={{
                                 name: "temperature_from",
@@ -842,7 +842,7 @@ class NurseWorkbench extends Component {
                           <AlagehAutoComplete
                             div={{ className: "col-3" }}
                             label={{
-                              forceLabel: "BP (mmHg)",
+                              fieldName: "bp",
                               fieldName: "BP_type"
                             }}
                             selector={{
@@ -917,7 +917,7 @@ class NurseWorkbench extends Component {
 
                   <AlgaehDateHandler
                     div={{ className: "col-3" }}
-                    label={{ forceLabel: "Recorded Date", isImp: true }}
+                    label={{ fieldName: "rec_date", isImp: true }}
                     textBox={{
                       className: "txt-fld",
                       name: "recorded_date"
@@ -935,7 +935,7 @@ class NurseWorkbench extends Component {
                     div={{ className: "col-3" }}
                     label={{
                       isImp: true,
-                      forceLabel: "Recorded Time"
+                      fieldName: "rec_time"
                     }}
                     textBox={{
                       others: {
@@ -958,7 +958,7 @@ class NurseWorkbench extends Component {
                       <AlagehAutoComplete
                         div={{ className: "col-8" }}
                         label={{
-                          forceLabel: "Chief Complaint",
+                          fieldName: "chief_cmpln",
                           isImp: false
                         }}
                         selector={{
@@ -977,7 +977,7 @@ class NurseWorkbench extends Component {
                       <AlagehAutoComplete
                         div={{ className: "col-4" }}
                         label={{
-                          forceLabel: "Pain",
+                          fieldName: "pain",
                           isImp: false
                         }}
                         selector={{
@@ -995,7 +995,7 @@ class NurseWorkbench extends Component {
                       <AlagehAutoComplete
                         div={{ className: "col-4" }}
                         label={{
-                          forceLabel: "Severity",
+                          fieldName: "severity",
                           isImp: false
                         }}
                         selector={{
@@ -1028,7 +1028,7 @@ class NurseWorkbench extends Component {
                         div={{ className: "col-4" }}
                         label={{
                           isImp: false,
-                          forceLabel: "Duration"
+                          fieldName: "duration"
                         }}
                         textBox={{
                           className: "col txt-fld",
@@ -1047,7 +1047,7 @@ class NurseWorkbench extends Component {
                       <AlagehAutoComplete
                         div={{ className: "col-4" }}
                         label={{
-                          forceLabel: "Interval",
+                          fieldName: "interval",
                           isImp: false
                         }}
                         selector={{
@@ -1070,7 +1070,7 @@ class NurseWorkbench extends Component {
                         div={{ className: "col-12" }}
                         label={{
                           isImp: false,
-                          forceLabel: "Comment"
+                          fieldName: "comments"
                         }}
                         textBox={{
                           others: {

@@ -3,12 +3,12 @@ export default {
   SECRETKey: "ALGAEH Technologies PVT Ltd HIMSv1",
   TOKENTIME: 2592000, // 60 * 60 * 30 ,
   // Server port and request body limit
-  port: 3000,
+  port: 3006,
   bodyLimit: "1024kb",
 
   mysqlDb: {
     connectionLimit: 20,
-    // host: "166.62.10.184",
+    //host: "192.168.0.169",
     host: "49.206.18.38",
     // host: "localhost",
     port: 3306,

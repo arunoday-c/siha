@@ -229,8 +229,6 @@ class PhySchSetup extends Component {
       myObj.schedule_detail = provider_array;
 
       this.setState({ send_obj: myObj }, () => {
-        
-
         algaehApiCall({
           uri: "/appointment/addDoctorsSchedule",
           methid: "POST",
@@ -341,7 +339,7 @@ class PhySchSetup extends Component {
 
     let docs = Enumerable.from(this.state.scheduleList)
       .where(
-        w => w.hims_d_appointment_schedule_header_id === parseInt(header_id,10)
+        w => w.hims_d_appointment_schedule_header_id === parseInt(header_id, 10)
       )
       .firstOrDefault();
 
@@ -562,7 +560,7 @@ class PhySchSetup extends Component {
                     <AlagehFormGroup
                       div={{ className: "col-lg-3" }}
                       label={{
-                        forceLabel: "Selected Doctor",
+                        fieldName: "selected_doctor",
                         isImp: true
                       }}
                       textBox={{
@@ -579,7 +577,7 @@ class PhySchSetup extends Component {
                     />
                     {/* <AlgaehDateHandler
                       div={{ className: "col-lg-3" }}
-                      label={{ forceLabel: "Selected From Date", isImp: true }}
+                      label={{ fieldName: "Selected From Date", isImp: true }}
                       textBox={{
                         className: "txt-fld",
                         name: "from_date"
@@ -593,7 +591,7 @@ class PhySchSetup extends Component {
                     />
                     <AlgaehDateHandler
                       div={{ className: "col-lg-3" }}
-                      label={{ forceLabel: "Selected To Date", isImp: true }}
+                      label={{ fieldName: "Selected To Date", isImp: true }}
                       textBox={{
                         className: "txt-fld",
                         name: "to_date"
@@ -626,11 +624,7 @@ class PhySchSetup extends Component {
                   columns={[
                     {
                       fieldName: "schedule_date",
-                      label: (
-                        <AlgaehLabel
-                          label={{ forceLabel: "Appointment Date" }}
-                        />
-                      ),
+                      label: <AlgaehLabel label={{ fieldName: "appt_date" }} />,
                       disabled: true,
                       displayTemplate: row => {
                         return (
@@ -649,7 +643,7 @@ class PhySchSetup extends Component {
                     },
                     {
                       fieldName: "modified",
-                      label: <AlgaehLabel label={{ forceLabel: "Leave" }} />,
+                      label: <AlgaehLabel label={{ fieldName: "leave" }} />,
                       displayTemplate: row => {
                         return (
                           <input
@@ -674,7 +668,7 @@ class PhySchSetup extends Component {
                     {
                       fieldName: "from_work_hr",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "From Work Hour" }} />
+                        <AlgaehLabel label={{ fieldName: "from_wrk_hr" }} />
                       ),
                       displayTemplate: row => {
                         return (
@@ -706,9 +700,7 @@ class PhySchSetup extends Component {
                     },
                     {
                       fieldName: "to_work_hr",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "To Work Hour" }} />
-                      ),
+                      label: <AlgaehLabel label={{ fieldName: "to_wrk_hr" }} />,
                       displayTemplate: row => {
                         return (
                           <span>
@@ -739,11 +731,7 @@ class PhySchSetup extends Component {
                     },
                     {
                       fieldName: "from_break_hr1",
-                      label: (
-                        <AlgaehLabel
-                          label={{ forceLabel: "From Work Break 1" }}
-                        />
-                      ),
+                      label: <AlgaehLabel label={{ fieldName: "frm_brk_1" }} />,
                       displayTemplate: row => {
                         return (
                           <span>
@@ -774,11 +762,7 @@ class PhySchSetup extends Component {
                     },
                     {
                       fieldName: "to_break_hr1",
-                      label: (
-                        <AlgaehLabel
-                          label={{ forceLabel: "To Work Break 1" }}
-                        />
-                      ),
+                      label: <AlgaehLabel label={{ fieldName: "to_brk_1" }} />,
                       displayTemplate: row => {
                         return (
                           <span>
@@ -809,11 +793,7 @@ class PhySchSetup extends Component {
                     },
                     {
                       fieldName: "from_break_hr2",
-                      label: (
-                        <AlgaehLabel
-                          label={{ forceLabel: "From Work Break 2" }}
-                        />
-                      ),
+                      label: <AlgaehLabel label={{ fieldName: "frm_brk_2" }} />,
                       displayTemplate: row => {
                         return (
                           <span>
@@ -844,11 +824,7 @@ class PhySchSetup extends Component {
                     },
                     {
                       fieldName: "to_break_hr2",
-                      label: (
-                        <AlgaehLabel
-                          label={{ forceLabel: "To Work Break 2" }}
-                        />
-                      ),
+                      label: <AlgaehLabel label={{ fieldName: "to_brk_2" }} />,
                       displayTemplate: row => {
                         return (
                           <span>
@@ -958,7 +934,7 @@ class PhySchSetup extends Component {
                       <AlagehFormGroup
                         div={{ className: "col-4" }}
                         label={{
-                          forceLabel: "Schedule Description",
+                          fieldName: "sch_desc",
                           isImp: true
                         }}
                         textBox={{
@@ -979,7 +955,7 @@ class PhySchSetup extends Component {
                       <AlagehAutoComplete
                         div={{ className: "col-5" }}
                         label={{
-                          forceLabel: "Select Slot Time"
+                          fieldName: "sel_slot_time"
                         }}
                         selector={{
                           name: "slot",
@@ -1000,7 +976,7 @@ class PhySchSetup extends Component {
                       <AlagehAutoComplete
                         div={{ className: "col-3" }}
                         label={{
-                          forceLabel: "Select Month"
+                          fieldName: "sel_month"
                         }}
                         selector={{
                           name: "month",
@@ -1018,7 +994,7 @@ class PhySchSetup extends Component {
                       <AlagehFormGroup
                         div={{ className: "col-3" }}
                         label={{
-                          forceLabel: "Year",
+                          fieldName: "year",
                           isImp: true
                         }}
                         textBox={{
@@ -1037,7 +1013,7 @@ class PhySchSetup extends Component {
 
                       <AlgaehDateHandler
                         div={{ className: "col-lg-3" }}
-                        label={{ forceLabel: "From Date", isImp: true }}
+                        label={{ fieldName: "frm_date", isImp: true }}
                         textBox={{
                           className: "txt-fld",
                           name: "from_date"
@@ -1054,7 +1030,7 @@ class PhySchSetup extends Component {
                       />
                       <AlgaehDateHandler
                         div={{ className: "col-lg-3" }}
-                        label={{ forceLabel: "To Date", isImp: true }}
+                        label={{ fieldName: "to_date", isImp: true }}
                         textBox={{
                           className: "txt-fld",
                           name: "to_date"
@@ -1074,7 +1050,7 @@ class PhySchSetup extends Component {
                       <AlagehFormGroup
                         div={{ className: "col-3" }}
                         label={{
-                          forceLabel: "From Time",
+                          fieldName: "from_time",
                           isImp: true
                         }}
                         textBox={{
@@ -1096,7 +1072,7 @@ class PhySchSetup extends Component {
                       <AlagehFormGroup
                         div={{ className: "col-3" }}
                         label={{
-                          forceLabel: "To Time",
+                          fieldName: "to_time",
                           isImp: true
                         }}
                         textBox={{
@@ -1120,7 +1096,7 @@ class PhySchSetup extends Component {
                           <AlagehFormGroup
                             div={{ className: "col" }}
                             label={{
-                              forceLabel: "From Time",
+                              fieldName: "from_time",
                               isImp: true
                             }}
                             textBox={{
@@ -1140,7 +1116,7 @@ class PhySchSetup extends Component {
                           <AlagehFormGroup
                             div={{ className: "col" }}
                             label={{
-                              forceLabel: "To Time",
+                              fieldName: "to_time",
                               isImp: true
                             }}
                             textBox={{
@@ -1166,7 +1142,7 @@ class PhySchSetup extends Component {
                           <AlagehFormGroup
                             div={{ className: "col" }}
                             label={{
-                              forceLabel: "From Time",
+                              fieldName: "from_time",
                               isImp: true
                             }}
                             textBox={{
@@ -1186,7 +1162,7 @@ class PhySchSetup extends Component {
                           <AlagehFormGroup
                             div={{ className: "col" }}
                             label={{
-                              forceLabel: "To Time",
+                              fieldName: "to_time",
                               isImp: true
                             }}
                             textBox={{
@@ -1375,7 +1351,7 @@ class PhySchSetup extends Component {
                       <AlagehFormGroup
                         div={{ className: "col-4" }}
                         label={{
-                          forceLabel: "Schedule Description",
+                          fieldName: "sch_desc",
                           isImp: true
                         }}
                         textBox={{
@@ -1396,7 +1372,7 @@ class PhySchSetup extends Component {
                       <AlagehAutoComplete
                         div={{ className: "col-5" }}
                         label={{
-                          forceLabel: "Select Slot Time"
+                          fieldName: "sel_slot_time"
                         }}
                         selector={{
                           name: "slot",
@@ -1417,7 +1393,7 @@ class PhySchSetup extends Component {
                       <AlagehAutoComplete
                         div={{ className: "col-3" }}
                         label={{
-                          forceLabel: "Select Month"
+                          fieldName: "sel_month"
                         }}
                         selector={{
                           name: "month",
@@ -1435,7 +1411,7 @@ class PhySchSetup extends Component {
                       <AlagehFormGroup
                         div={{ className: "col-3" }}
                         label={{
-                          forceLabel: "Year",
+                          fieldName: "year",
                           isImp: true
                         }}
                         textBox={{
@@ -1454,7 +1430,7 @@ class PhySchSetup extends Component {
 
                       <AlgaehDateHandler
                         div={{ className: "col-lg-3" }}
-                        label={{ forceLabel: "From Date", isImp: true }}
+                        label={{ fieldName: "frm_date", isImp: true }}
                         textBox={{
                           className: "txt-fld",
                           name: "from_date"
@@ -1471,7 +1447,7 @@ class PhySchSetup extends Component {
                       />
                       <AlgaehDateHandler
                         div={{ className: "col-lg-3" }}
-                        label={{ forceLabel: "To Date", isImp: true }}
+                        label={{ fieldName: "to_date", isImp: true }}
                         textBox={{
                           className: "txt-fld",
                           name: "to_date"
@@ -1491,7 +1467,7 @@ class PhySchSetup extends Component {
                       <AlagehFormGroup
                         div={{ className: "col-3" }}
                         label={{
-                          forceLabel: "From Time",
+                          fieldName: "frm_time",
                           isImp: true
                         }}
                         textBox={{
@@ -1513,7 +1489,7 @@ class PhySchSetup extends Component {
                       <AlagehFormGroup
                         div={{ className: "col-3" }}
                         label={{
-                          forceLabel: "To Time",
+                          fieldName: "to_time",
                           isImp: true
                         }}
                         textBox={{
@@ -1537,7 +1513,7 @@ class PhySchSetup extends Component {
                           <AlagehFormGroup
                             div={{ className: "col" }}
                             label={{
-                              forceLabel: "From Time",
+                              fieldName: "frm_time",
                               isImp: true
                             }}
                             textBox={{
@@ -1557,7 +1533,7 @@ class PhySchSetup extends Component {
                           <AlagehFormGroup
                             div={{ className: "col" }}
                             label={{
-                              forceLabel: "To Time",
+                              fieldName: "to_time",
                               isImp: true
                             }}
                             textBox={{
@@ -1583,7 +1559,7 @@ class PhySchSetup extends Component {
                           <AlagehFormGroup
                             div={{ className: "col" }}
                             label={{
-                              forceLabel: "From Time",
+                              fieldName: "frm_time",
                               isImp: true
                             }}
                             textBox={{
@@ -1603,7 +1579,7 @@ class PhySchSetup extends Component {
                           <AlagehFormGroup
                             div={{ className: "col" }}
                             label={{
-                              forceLabel: "To Time",
+                              fieldName: "to_ime",
                               isImp: true
                             }}
                             textBox={{
@@ -1753,7 +1729,7 @@ class PhySchSetup extends Component {
           <AlagehAutoComplete
             div={{ className: "col" }}
             label={{
-              forceLabel: "Select Month"
+              fieldName: "sel_month"
             }}
             selector={{
               name: "month",
@@ -1771,7 +1747,7 @@ class PhySchSetup extends Component {
           <AlagehFormGroup
             div={{ className: "col-2" }}
             label={{
-              forceLabel: "Year",
+              fieldName: "year",
               isImp: true
             }}
             textBox={{
@@ -1895,7 +1871,7 @@ class PhySchSetup extends Component {
                             <div className="col-lg-6">
                               <AlgaehLabel
                                 label={{
-                                  forceLabel: "From Date",
+                                  fieldName: "frm_date",
                                   isImp: true
                                 }}
                               />
@@ -1912,7 +1888,7 @@ class PhySchSetup extends Component {
                             <div className="col-lg-6">
                               <AlgaehLabel
                                 label={{
-                                  forceLabel: "To Date",
+                                  fieldName: "to_date",
                                   isImp: true
                                 }}
                               />
@@ -1935,7 +1911,7 @@ class PhySchSetup extends Component {
                             <div className="col-lg-6">
                               <AlgaehLabel
                                 label={{
-                                  forceLabel: "From Time",
+                                  fieldName: "frm_time",
                                   isImp: true
                                 }}
                               />
@@ -1953,7 +1929,7 @@ class PhySchSetup extends Component {
                             <div className="col-lg-6 ">
                               <AlgaehLabel
                                 label={{
-                                  forceLabel: "To Time",
+                                  fieldName: "to_time",
                                   isImp: true
                                 }}
                               />
@@ -1980,7 +1956,7 @@ class PhySchSetup extends Component {
                             <div className="col-lg-6">
                               <AlgaehLabel
                                 label={{
-                                  forceLabel: "From Time",
+                                  fieldName: "frm_time",
                                   isImp: true
                                 }}
                               />
@@ -1997,7 +1973,7 @@ class PhySchSetup extends Component {
                             <div className="col-lg-6">
                               <AlgaehLabel
                                 label={{
-                                  forceLabel: "To Time",
+                                  fieldName: "to_time",
                                   isImp: true
                                 }}
                               />
@@ -2021,7 +1997,7 @@ class PhySchSetup extends Component {
                             <div className="col-lg-6">
                               <AlgaehLabel
                                 label={{
-                                  forceLabel: "From Time",
+                                  fieldName: "frm_time",
                                   isImp: true
                                 }}
                               />
@@ -2039,7 +2015,7 @@ class PhySchSetup extends Component {
                             <div className="col-lg-6">
                               <AlgaehLabel
                                 label={{
-                                  forceLabel: "To Time",
+                                  fieldName: "to_time",
                                   isImp: true
                                 }}
                               />
@@ -2062,7 +2038,7 @@ class PhySchSetup extends Component {
                       <div className="col-lg-12">
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Working Days",
+                            fieldName: "wrkng_days",
                             isImp: true
                           }}
                         />

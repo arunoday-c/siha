@@ -80,7 +80,7 @@ class Scheduler extends Component {
                       <div className="row">
                         <AlgaehDateHandler
                           div={{ className: "col" }}
-                          label={{ forceLabel: "From Date", isImp: true }}
+                          label={{ fieldName: "frm_date", isImp: true }}
                           textBox={{
                             className: "txt-fld",
                             name: "from_date"
@@ -94,7 +94,7 @@ class Scheduler extends Component {
                         />
                         <AlgaehDateHandler
                           div={{ className: "col" }}
-                          label={{ forceLabel: "To Date", isImp: true }}
+                          label={{ fieldName: "to_date", isImp: true }}
                           textBox={{
                             className: "txt-fld",
                             name: "to_date"
@@ -112,7 +112,7 @@ class Scheduler extends Component {
                         <AlagehFormGroup
                           div={{ className: "col" }}
                           label={{
-                            forceLabel: "From Time",
+                            fieldName: "frm_time",
                             isImp: true
                           }}
                           textBox={{
@@ -132,7 +132,7 @@ class Scheduler extends Component {
                         <AlagehFormGroup
                           div={{ className: "col" }}
                           label={{
-                            forceLabel: "To Time",
+                            fieldName: "to_time",
                             isImp: true
                           }}
                           textBox={{
@@ -158,7 +158,7 @@ class Scheduler extends Component {
                         <AlagehFormGroup
                           div={{ className: "col" }}
                           label={{
-                            forceLabel: "From Time",
+                            fieldName: "frm_time",
                             isImp: true
                           }}
                           textBox={{
@@ -179,7 +179,7 @@ class Scheduler extends Component {
                         <AlagehFormGroup
                           div={{ className: "col" }}
                           label={{
-                            forceLabel: "To Time",
+                            fieldName: "to_time",
                             isImp: true
                           }}
                           textBox={{
@@ -204,7 +204,7 @@ class Scheduler extends Component {
                         <AlagehFormGroup
                           div={{ className: "col" }}
                           label={{
-                            forceLabel: "From Time",
+                            fieldName: "frm_time",
                             isImp: true
                           }}
                           textBox={{
@@ -224,7 +224,7 @@ class Scheduler extends Component {
                         <AlagehFormGroup
                           div={{ className: "col" }}
                           label={{
-                            forceLabel: "To Time",
+                            fieldName: "to_time",
                             isImp: true
                           }}
                           textBox={{

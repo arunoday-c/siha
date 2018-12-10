@@ -237,7 +237,7 @@ class OrderingServices extends Component {
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
                     label={{
-                      forceLabel: "Select Service Type"
+                      fieldName: "sel_srvc_typ"
                     }}
                     selector={{
                       name: "s_service_type",
@@ -258,7 +258,7 @@ class OrderingServices extends Component {
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
                     label={{
-                      forceLabel: "Select Service"
+                      fieldName: "sel_srvc"
                     }}
                     selector={{
                       name: "s_service",
@@ -279,7 +279,7 @@ class OrderingServices extends Component {
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
                     label={{
-                      forceLabel: "Test Type"
+                      fieldName: "tst_type"
                     }}
                     selector={{
                       name: "test_type",
@@ -650,7 +650,7 @@ class OrderingServices extends Component {
                       <div className="col-lg-4">
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Sub Total"
+                            fieldName: "sub_ttl"
                           }}
                         />
                         <h5>{getAmountFormart(this.state.sub_total_amount)}</h5>
@@ -658,7 +658,7 @@ class OrderingServices extends Component {
                       <div className="col-lg-4">
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Discount Amount"
+                            fieldName: "dsct_amt"
                           }}
                         />
                         <h5>{getAmountFormart(this.state.discount_amount)}</h5>
@@ -667,7 +667,7 @@ class OrderingServices extends Component {
                       <div className="col-lg-4">
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Net Total"
+                            fieldName: "net_ttl"
                           }}
                         />
                         <h5>{getAmountFormart(this.state.net_total)}</h5>
@@ -680,7 +680,7 @@ class OrderingServices extends Component {
                       <div className="col-lg-4">
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Patient Payable"
+                            fieldName: "pat_payable"
                           }}
                         />
                         <h5>{getAmountFormart(this.state.patient_payable)}</h5>
@@ -688,7 +688,7 @@ class OrderingServices extends Component {
                       <div className="col-lg-4">
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Company Payable"
+                            fieldName: "co_payable"
                           }}
                         />
                         <h5>{getAmountFormart(this.state.company_payble)}</h5>
@@ -696,7 +696,7 @@ class OrderingServices extends Component {
                       <div className="col-lg-4">
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Sec Company Payable"
+                            fieldName: "sec_co_payable"
                           }}
                         />
                         <h5>

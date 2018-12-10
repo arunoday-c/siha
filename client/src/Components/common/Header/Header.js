@@ -126,7 +126,7 @@ class Header extends PureComponent {
               <i className="fas fa-flag" onClick={this.Languaue.bind(this, "Ar")}></i>
             </div> */}
           </Toolbar>
-        
+        </AppBar>
       </div>
     );
   }
