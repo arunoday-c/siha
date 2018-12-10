@@ -22,7 +22,7 @@ class Experiment extends Component {
     //   uri: "/masters/getFile",
     //   fileType: "PAT-A-0000530",
     //   destinationName: "PAT-A-0000530",
-    //   fileName: "PAT-A-0000530.png",
+    //   fileName: "PAT-A-0000530.webp",
     //   resize: { width: 100, height: 100 },
     //   onFileSuccess: data => {
     //     this.setState({ patImg: data });

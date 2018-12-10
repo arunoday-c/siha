@@ -1,4 +1,4 @@
-import hims_app_logo from "../assets/images/hospital_logo_reports.png";
+import hims_app_logo from "../assets/images/hospital_logo_reports.webp";
 
 export function header(data) {
   return `

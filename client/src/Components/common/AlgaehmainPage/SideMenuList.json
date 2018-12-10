@@ -446,6 +446,12 @@
         "label": "Receipt Entry",
         "arlabel": "دخول الإيصال",
         "path": "/ReceiptEntry"
+      },
+      {
+        "name": "Shipment Entry",
+        "label": "Shipment Entry",
+        "arlabel": "دخول الشحنة",
+        "path": "/ShipmentEntry"
       }
     ]
   },

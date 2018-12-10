@@ -594,7 +594,7 @@
     padding: 0;
     list-style: none; }
     :global .pain-scale-ul li {
-      background: url("./assets/images/pain_scale.png") no-repeat center transparent;
+      background: url("./assets/images/pain_scale.webp") no-repeat center transparent;
       width: 31px;
       height: 31px;
       display: inline-block;
