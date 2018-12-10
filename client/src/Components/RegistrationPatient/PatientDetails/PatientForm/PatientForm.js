@@ -143,7 +143,9 @@ class AddPatientForm extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
+    debugger;
     this.setState(nextProps.PatRegIOputs, () => {
+      debugger;
       if (this.state.country_id === null) return;
       if (this.state.country_id !== nextProps.country_id) {
         let country = Enumerable.from(this.props.countries)
