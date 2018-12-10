@@ -246,7 +246,7 @@ class ReceiptEntry extends Component {
               </div>
               <div className="row">
                 <AlagehAutoComplete
-                  div={{ className: "col" }}
+                  div={{ className: "col-2" }}
                   label={{ forceLabel: "Payment Terms" }}
                   selector={{
                     name: "payment_terms",
