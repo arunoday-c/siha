@@ -125,7 +125,9 @@ let addDeliveryNoteEntry = (req, res, next) => {
                 "quantity_recieved_todate",
                 "batchno_expiry_required",
                 "batchno",
-                "expiry_date"
+                "expiry_date",
+                "purchase_order_header_id",
+                "purchase_order_detail_id"
               ];
 
               connection.query(
@@ -152,7 +154,8 @@ let addDeliveryNoteEntry = (req, res, next) => {
                   }
 
                   req.records = {
-                    delivery_note_number: documentCode
+                    delivery_note_number: documentCode,
+                    hims_f_procurement_dn_header_id: headerResult.insertId
                   };
                   next();
                 }
@@ -448,8 +451,8 @@ let updatePOEntry = (req, res, next) => {
                 next(error);
               });
             }
-            req.records = detailResult;
-            req.data = req.records.delivery_note_number;
+            req.porecords = detailResult;
+
             next();
           });
         } else {
@@ -464,8 +467,6 @@ let updatePOEntry = (req, res, next) => {
           next();
         });
       }
-      // req.data = req.records.delivery_note_number;
-      // next();
     }
   );
 };

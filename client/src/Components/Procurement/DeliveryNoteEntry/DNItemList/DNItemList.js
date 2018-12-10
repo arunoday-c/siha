@@ -6,7 +6,8 @@ import { bindActionCreators } from "redux";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehFormGroup
+  AlagehFormGroup,
+  AlgaehDateHandler
 } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import MyContext from "../../../../utils/MyContext";
@@ -15,7 +16,12 @@ import {
   deleteDNDetail,
   updateDNDetail,
   onchhangegriddiscount,
-  GridAssignData
+  GridAssignData,
+  onchangegridcol,
+  EditGrid,
+  CancelGrid,
+  onchangegridcoldatehandle,
+  changeDateFormat
 } from "./DNItemListEvents";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 
@@ -272,7 +278,35 @@ class DNItemList extends Component {
                                   label={{ forceLabel: "Batch  No." }}
                                 />
                               ),
-                              disabled: true
+                              editorTemplate: row => {
+                                return (
+                                  <AlagehFormGroup
+                                    div={{}}
+                                    textBox={{
+                                      value: row.batchno,
+                                      className: "txt-fld",
+                                      name: "batchno",
+                                      events: {
+                                        onChange: onchangegridcol.bind(
+                                          this,
+                                          this,
+                                          row
+                                        )
+                                      },
+                                      others: {
+                                        disabled:
+                                          this.state.posted === "Y"
+                                            ? true
+                                            : false
+                                      }
+                                    }}
+                                  />
+                                );
+                              },
+                              others: {
+                                minWidth: 150,
+                                resizable: false
+                              }
                             },
                             {
                               fieldName: "expiry_date",
@@ -281,7 +315,40 @@ class DNItemList extends Component {
                                   label={{ forceLabel: "Expiry Date" }}
                                 />
                               ),
-                              disabled: true
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    {changeDateFormat(row.expiry_date)}
+                                  </span>
+                                );
+                              },
+                              editorTemplate: row => {
+                                return (
+                                  <AlgaehDateHandler
+                                    div={{}}
+                                    textBox={{
+                                      className: "txt-fld hidden",
+                                      name: "expiry_date"
+                                    }}
+                                    minDate={new Date()}
+                                    disabled={
+                                      this.state.posted === "Y" ? true : false
+                                    }
+                                    events={{
+                                      onChange: onchangegridcoldatehandle.bind(
+                                        this,
+                                        this,
+                                        row
+                                      )
+                                    }}
+                                    value={row.expiry_date}
+                                  />
+                                );
+                              },
+                              others: {
+                                minWidth: 150,
+                                resizable: false
+                              }
                             },
 
                             {
@@ -419,9 +486,11 @@ class DNItemList extends Component {
                           }}
                           isEditable={true}
                           paging={{ page: 0, rowsPerPage: 10 }}
+                          byForceEvents={true}
                           events={{
                             onDelete: deleteDNDetail.bind(this, this, context),
-                            onEdit: row => {},
+                            onEdit: EditGrid.bind(this, this, context),
+                            onCancel: CancelGrid.bind(this, this, context),
                             onDone: updateDNDetail.bind(this, this, context)
                           }}
                         />
