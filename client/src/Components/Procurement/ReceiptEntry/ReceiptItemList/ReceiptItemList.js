@@ -21,7 +21,8 @@ import {
   CancelGrid,
   onchangegridcoldatehandle,
   changeDateFormat,
-  GridAssignData
+  GridAssignData,
+  onchhangegriddiscount
 } from "./ReceiptItemListEvent";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 
@@ -401,7 +402,7 @@ class ReceiptItemList extends Component {
                                       className: "txt-fld",
                                       name: "recieved_quantity",
                                       events: {
-                                        onChange: onchangegridcol.bind(
+                                        onChange: onchhangegriddiscount.bind(
                                           this,
                                           this,
                                           row
@@ -423,7 +424,26 @@ class ReceiptItemList extends Component {
                                 );
                               }
                             },
-
+                            {
+                              fieldName: "outstanding_quantity",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "OutStanding Quantity" }}
+                                />
+                              ),
+                              disabled: true
+                            },
+                            {
+                              fieldName: "quantity_recieved_todate",
+                              label: (
+                                <AlgaehLabel
+                                  label={{
+                                    forceLabel: "Quantity Recieved Todate"
+                                  }}
+                                />
+                              ),
+                              disabled: true
+                            },
                             {
                               fieldName: "discount_percentage",
                               label: (

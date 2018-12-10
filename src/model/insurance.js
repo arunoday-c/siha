@@ -336,7 +336,8 @@ let getListOfInsuranceProvider = (req, res, next) => {
 
       connection.query(
         "select * from hims_d_insurance_provider where record_status='A' AND" +
-          where.condition+" order by hims_d_insurance_provider_id desc",
+          where.condition +
+          " order by hims_d_insurance_provider_id desc",
         where.values,
 
         (error, result) => {
@@ -1763,6 +1764,44 @@ let deleteNetworkAndNetworkOfficRecords = (req, res, next) => {
   }
 };
 
+let getInsuranceProviders = (req, res, next) => {
+  let selectWhere = {
+    hims_d_insurance_provider_id: null
+  };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      let where = whereCondition(extend(selectWhere, req.query));
+      connection.query(
+        " SELECT hims_d_insurance_provider_id, insurance_provider_code,\
+        insurance_provider_name, arabic_provider_name from hims_d_insurance_provider where record_status='A' AND " +
+          where.condition,
+        where.values,
+
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getPatientInsurance,
   addPatientInsurance,
@@ -1782,6 +1821,7 @@ module.exports = {
   updateNetworkAndNetworkOffice,
   updatePriceListBulk,
   addPatientInsuranceData,
-  deleteNetworkAndNetworkOfficRecords
+  deleteNetworkAndNetworkOfficRecords,
+  getInsuranceProviders
   // getPreAprovalList
 };

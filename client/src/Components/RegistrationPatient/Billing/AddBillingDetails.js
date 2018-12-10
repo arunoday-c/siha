@@ -343,6 +343,9 @@ const ProcessInsurance = ($this, context, ctrl, e) => {
       data: serviceInput,
       onSuccess: response => {
         if (response.data.success) {
+          // response.data.records.billdetails[0].insured =
+          //   response.data.records.billdetails[0].insurance_yesno;
+          $this.setState({ ...response.data.records });
           if (context !== null) {
             context.updateState({ ...response.data.records });
           }
@@ -355,6 +358,7 @@ const ProcessInsurance = ($this, context, ctrl, e) => {
               if (response.data.success) {
                 response.data.records.saveEnable = false;
                 response.data.records.ProcessInsure = true;
+                $this.setState({ ...response.data.records });
                 if (context !== null) {
                   context.updateState({ ...response.data.records });
                 }

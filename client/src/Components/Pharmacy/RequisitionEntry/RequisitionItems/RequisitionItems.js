@@ -496,6 +496,15 @@ class RequisitionItems extends Component {
                                   />
                                 );
                               }
+                            },
+                            {
+                              fieldName: "quantity_outstanding",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Quantity OutStanding" }}
+                                />
+                              ),
+                              disabled: true
                             }
                           ]}
                           keyId="service_type_id"

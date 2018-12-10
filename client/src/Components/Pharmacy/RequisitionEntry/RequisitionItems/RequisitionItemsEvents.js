@@ -182,7 +182,8 @@ const AddItems = ($this, context) => {
       quantity_authorized: 0,
       item_uom: $this.state.item_uom,
       from_qtyhand: $this.state.from_qtyhand,
-      to_qtyhand: $this.state.to_qtyhand
+      to_qtyhand: $this.state.to_qtyhand,
+      quantity_outstanding: 0
     };
     pharmacy_stock_detail.push(ItemInput);
     $this.setState({
@@ -272,12 +273,14 @@ const onchangegridcol = ($this, context, row, e) => {
     row[name] = $this.state.quantity_transferred;
   } else {
     row[name] = value;
+    row["quantity_outstanding"] = value;
 
-    for (let x = 0; x < pharmacy_stock_detail.length; x++) {
-      if (pharmacy_stock_detail[x].item_id === row.item_id) {
-        pharmacy_stock_detail[x] = row;
-      }
-    }
+    pharmacy_stock_detail[row.rowIdx] = row;
+    // for (let x = 0; x < pharmacy_stock_detail.length; x++) {
+    //   if (pharmacy_stock_detail[x].item_id === row.item_id) {
+    //     pharmacy_stock_detail[x] = row;
+    //   }
+    // }
     $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
 
     if (context !== undefined) {

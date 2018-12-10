@@ -122,6 +122,7 @@ let addtransferEntry = (req, res, next) => {
                   "quantity_recieved",
                   "uom_recieved_id",
                   "quantity_outstanding",
+                  "transfer_to_date",
                   "grnno",
                   "unit_cost",
                   "sales_uom",

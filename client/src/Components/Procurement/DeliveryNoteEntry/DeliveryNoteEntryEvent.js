@@ -179,47 +179,80 @@ const PurchaseOrderSearch = ($this, e) => {
         callBack(text);
       },
       onRowSelect: row => {
-        $this.props.getPurchaseOrderEntry({
+        algaehApiCall({
           uri: "/PurchaseOrderEntry/getPurchaseOrderEntry",
           method: "GET",
           data: {
             purchase_number: row.purchase_number
           },
-          redux: {
-            type: "PO_ENTRY_GET_DATA",
-            mappingName: "purchaseorderentry"
-          },
-          afterSuccess: data => {
-            //debugger;
-            if (data !== null && data !== undefined) {
-              AlgaehLoader({ show: true });
+          onSuccess: response => {
+            debugger;
+            if (response.data.success) {
+              let data = response.data.records;
+              if (data !== null && data !== undefined) {
+                AlgaehLoader({ show: true });
 
-              data.saveEnable = false;
+                data.saveEnable = false;
 
-              data.location_type = "MS";
+                data.location_type = "MS";
 
-              data.dataExitst = true;
-              data.purchase_order_id = data.hims_f_procurement_po_header_id;
-              for (let i = 0; i < data.po_entry_detail.length; i++) {
-                data.po_entry_detail[i].po_quantity =
-                  data.po_entry_detail[i].authorize_quantity;
-                data.po_entry_detail[i].dn_quantity =
-                  data.po_entry_detail[i].authorize_quantity;
+                data.dataExitst = true;
+                data.purchase_order_id = data.hims_f_procurement_po_header_id;
+                for (let i = 0; i < data.po_entry_detail.length; i++) {
+                  data.po_entry_detail[i].po_quantity =
+                    data.po_entry_detail[i].authorize_quantity;
+                  debugger;
+                  data.po_entry_detail[i].dn_quantity =
+                    data.po_entry_detail[i].quantity_outstanding;
 
-                data.po_entry_detail[i].authorize_quantity = 0;
+                  data.po_entry_detail[i].quantity_recieved_todate =
+                    data.po_entry_detail[i].authorize_quantity -
+                    data.po_entry_detail[i].quantity_outstanding;
 
-                data.po_entry_detail[i].discount_percentage =
-                  data.po_entry_detail[i].sub_discount_percentage;
+                  data.po_entry_detail[i].authorize_quantity = 0;
+                  data.po_entry_detail[i].quantity_outstanding = 0;
 
-                data.po_entry_detail[i].discount_amount =
-                  data.po_entry_detail[i].sub_discount_amount;
+                  data.po_entry_detail[i].discount_percentage =
+                    data.po_entry_detail[i].sub_discount_percentage;
+
+                  data.po_entry_detail[i].discount_amount =
+                    data.po_entry_detail[i].sub_discount_amount;
+
+                  data.po_entry_detail[i].purchase_order_header_id =
+                    data.hims_f_procurement_po_header_id;
+                  data.po_entry_detail[i].purchase_order_detail_id =
+                    data.po_entry_detail[i].hims_f_procurement_po_detail_id;
+                }
+                data.dn_entry_detail = data.po_entry_detail;
+                $this.setState(data);
+                AlgaehLoader({ show: false });
               }
-              data.dn_entry_detail = data.po_entry_detail;
-              $this.setState(data);
-              AlgaehLoader({ show: false });
             }
+            AlgaehLoader({ show: false });
+          },
+          onFailure: error => {
+            AlgaehLoader({ show: false });
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
           }
         });
+
+        // $this.props.getPurchaseOrderEntry({
+        //   uri: "/PurchaseOrderEntry/getPurchaseOrderEntry",
+        //   method: "GET",
+        //   data: {
+        //     purchase_number: row.purchase_number
+        //   },
+        //   redux: {
+        //     type: "PO_ENTRY_GET_DATA",
+        //     mappingName: "purchaseorderentry"
+        //   },
+        //   afterSuccess: data => {
+        //     //debugger;
+        //   }
+        // });
       }
     });
   }

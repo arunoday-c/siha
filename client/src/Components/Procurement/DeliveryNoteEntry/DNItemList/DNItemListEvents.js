@@ -98,6 +98,11 @@ const deleteDNDetail = ($this, context, row) => {
 };
 
 const updateDNDetail = ($this, context, row) => {
+  let saveBtn = false;
+  if ($this.state.hims_f_procurement_dn_header_id !== null) {
+    saveBtn = true;
+  }
+
   if (row.dn_quantity === "" || row.dn_quantity === 0) {
     swalMessage({
       title: "Invalid Input. DN Quantity cannot be Zero.",
@@ -144,7 +149,8 @@ const updateDNDetail = ($this, context, row) => {
         net_total: net_total,
         net_payable: net_payable,
         total_tax: total_tax,
-        detail_discount: detail_discount
+        detail_discount: detail_discount,
+        saveEnable: saveBtn
       });
     }
   }
@@ -156,24 +162,7 @@ const dateFormater = ($this, value) => {
   }
 };
 
-const onchangegridcol = ($this, row, e) => {
-  let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
-  if (value > row.total_quantity) {
-    swalMessage({
-      title:
-        "Invalid Input. Authorize Quantity cannot be greater than Ordered Quantity.",
-      type: "warning"
-    });
-  } else {
-    row[name] = value;
-    row["rejected_quantity"] = row.total_quantity - value;
-    row.update();
-  }
-};
-
 const onchhangegriddiscount = ($this, row, ctrl, e) => {
-  debugger;
   e = e || ctrl;
 
   let discount_percentage = row.discount_percentage;
@@ -181,13 +170,13 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
   let extended_cost = 0;
   let extended_price = 0;
   let tax_amount = 0;
-  let unit_cost = 0;
 
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-
+  let quantity_recieved_todate =
+    row.quantity_recieved_todate + parseFloat(value);
   if (value !== "") {
-    if (parseFloat(value) > row.po_quantity) {
+    if (quantity_recieved_todate > row.po_quantity) {
       swalMessage({
         title:
           "Invalid Input.  DN Quantity cannot be greater than PO Quantity.",
@@ -212,7 +201,8 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
       });
       tax_amount = getAmountFormart(tax_amount, { appendSymbol: false });
 
-      debugger;
+      row["quantity_outstanding"] =
+        row.po_quantity - row.quantity_recieved_todate - parseFloat(value);
       row["extended_price"] = parseFloat(extended_price);
       row["extended_cost"] = parseFloat(extended_cost);
       row["unit_cost"] = parseFloat(extended_cost) / parseFloat(value);
@@ -234,8 +224,6 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
 };
 
 const GridAssignData = ($this, row, e) => {
-  debugger;
-
   if (row.dn_quantity === "" || row.dn_quantity === 0) {
     e.preventDefault();
     row["dn_quantity"] = 0;
@@ -248,6 +236,58 @@ const GridAssignData = ($this, row, e) => {
   }
 };
 
+const onchangegridcol = ($this, row, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  if (parseFloat(value) > row.dn_quantity) {
+    swalMessage({
+      title:
+        "Invalid Input. Authorize Quantity cannot be greater than Ordered Quantity.",
+      type: "warning"
+    });
+  } else {
+    row[name] = value;
+    row.update();
+  }
+};
+
+const EditGrid = ($this, context, cancelRow) => {
+  if (context !== null) {
+    context.updateState({
+      saveEnable: true
+    });
+  }
+};
+
+const CancelGrid = ($this, context, cancelRow) => {
+  if (context !== null) {
+    let saveBtn = false;
+    if ($this.state.hims_f_procurement_dn_header_id !== null) {
+      saveBtn = true;
+    }
+
+    let _dn_entry_detail = $this.state.dn_entry_detail;
+    if (cancelRow !== undefined) {
+      _dn_entry_detail[cancelRow.rowIdx] = cancelRow;
+    }
+    context.updateState({
+      saveEnable: saveBtn,
+      dn_entry_detail: _dn_entry_detail
+    });
+  }
+};
+
+const onchangegridcoldatehandle = ($this, row, ctrl, e) => {
+  row[e] = moment(ctrl)._d;
+  $this.setState({ append: !$this.state.append });
+};
+
+const changeDateFormat = date => {
+  if (date != null) {
+    return moment(date).format(Options.dateFormat);
+  }
+};
+
 export {
   deleteDNDetail,
   updateDNDetail,
@@ -255,5 +295,9 @@ export {
   onchangegridcol,
   assignDataandclear,
   onchhangegriddiscount,
-  GridAssignData
+  GridAssignData,
+  EditGrid,
+  CancelGrid,
+  onchangegridcoldatehandle,
+  changeDateFormat
 };

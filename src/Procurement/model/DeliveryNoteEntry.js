@@ -9,7 +9,7 @@ import extend from "extend";
 import httpStatus from "../../utils/httpStatus";
 import { debugLog } from "../../utils/logging";
 import moment, { now } from "moment";
-
+import { LINQ } from "node-linq";
 import Promise from "bluebird";
 
 //created by Nowshad: to save Delivery Note Entry
@@ -110,6 +110,7 @@ let addDeliveryNoteEntry = (req, res, next) => {
                 "inv_item_id",
                 "po_quantity",
                 "dn_quantity",
+                "quantity_outstanding",
                 "pharmacy_uom_id",
                 "inventory_uom_id",
                 "unit_cost",
@@ -121,9 +122,12 @@ let addDeliveryNoteEntry = (req, res, next) => {
                 "tax_amount",
                 "total_amount",
                 "item_type",
+                "quantity_recieved_todate",
                 "batchno_expiry_required",
                 "batchno",
-                "expiry_date"
+                "expiry_date",
+                "purchase_order_header_id",
+                "purchase_order_detail_id"
               ];
 
               connection.query(
@@ -150,7 +154,8 @@ let addDeliveryNoteEntry = (req, res, next) => {
                   }
 
                   req.records = {
-                    delivery_note_number: documentCode
+                    delivery_note_number: documentCode,
+                    hims_f_procurement_dn_header_id: headerResult.insertId
                   };
                   next();
                 }
@@ -398,12 +403,20 @@ let updatePOEntry = (req, res, next) => {
   let db = req.db;
   let connection = req.connection;
   let inputParam = extend({}, req.body);
+  let complete = "Y";
+  const partial_recived = new LINQ(inputParam.dn_entry_detail)
+    .Where(w => w.quantity_outstanding != 0)
+    .ToArray();
+
+  if (partial_recived.length > 0) {
+    complete = "N";
+  }
 
   connection.query(
     "UPDATE `hims_f_procurement_po_header` SET `is_completed`=?, `completed_date`=?, `updated_by` = ?,`updated_date` = ? \
       WHERE `hims_f_procurement_po_header_id`=?",
     [
-      "Y",
+      complete,
       new Date(),
       req.userIdentity.algaeh_d_app_user_id,
       new Date(),
@@ -414,8 +427,46 @@ let updatePOEntry = (req, res, next) => {
         releaseDBConnection(db, connection);
         next(error);
       }
-      req.data = req.records.delivery_note_number;
-      next();
+
+      if (result != "" && result != null) {
+        let details = inputParam.dn_entry_detail;
+
+        let qry = "";
+
+        for (let i = 0; i < details.length; i++) {
+          qry +=
+            " UPDATE `hims_f_procurement_po_detail` SET quantity_outstanding='" +
+            details[i].quantity_outstanding +
+            "' WHERE hims_f_procurement_po_detail_id='" +
+            details[i].purchase_order_detail_id +
+            "';";
+        }
+        debugLog("qry: ", qry);
+
+        if (qry != "") {
+          connection.query(qry, (error, detailResult) => {
+            if (error) {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
+            req.porecords = detailResult;
+
+            next();
+          });
+        } else {
+          releaseDBConnection(db, connection);
+          req.records = {};
+          next();
+        }
+      } else {
+        connection.rollback(() => {
+          releaseDBConnection(db, connection);
+          req.records = {};
+          next();
+        });
+      }
     }
   );
 };
