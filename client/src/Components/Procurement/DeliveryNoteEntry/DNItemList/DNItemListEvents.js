@@ -98,6 +98,11 @@ const deleteDNDetail = ($this, context, row) => {
 };
 
 const updateDNDetail = ($this, context, row) => {
+  let saveBtn = false;
+  if ($this.state.hims_f_procurement_dn_header_id !== null) {
+    saveBtn = true;
+  }
+
   if (row.dn_quantity === "" || row.dn_quantity === 0) {
     swalMessage({
       title: "Invalid Input. DN Quantity cannot be Zero.",
@@ -144,7 +149,8 @@ const updateDNDetail = ($this, context, row) => {
         net_total: net_total,
         net_payable: net_payable,
         total_tax: total_tax,
-        detail_discount: detail_discount
+        detail_discount: detail_discount,
+        saveEnable: saveBtn
       });
     }
   }
@@ -153,22 +159,6 @@ const updateDNDetail = ($this, context, row) => {
 const dateFormater = ($this, value) => {
   if (value !== null) {
     return moment(value).format(Options.dateFormat);
-  }
-};
-
-const onchangegridcol = ($this, row, e) => {
-  let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
-  if (value > row.total_quantity) {
-    swalMessage({
-      title:
-        "Invalid Input. Authorize Quantity cannot be greater than Ordered Quantity.",
-      type: "warning"
-    });
-  } else {
-    row[name] = value;
-    row["rejected_quantity"] = row.total_quantity - value;
-    row.update();
   }
 };
 
@@ -246,6 +236,58 @@ const GridAssignData = ($this, row, e) => {
   }
 };
 
+const onchangegridcol = ($this, row, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  if (parseFloat(value) > row.dn_quantity) {
+    swalMessage({
+      title:
+        "Invalid Input. Authorize Quantity cannot be greater than Ordered Quantity.",
+      type: "warning"
+    });
+  } else {
+    row[name] = value;
+    row.update();
+  }
+};
+
+const EditGrid = ($this, context, cancelRow) => {
+  if (context !== null) {
+    context.updateState({
+      saveEnable: true
+    });
+  }
+};
+
+const CancelGrid = ($this, context, cancelRow) => {
+  if (context !== null) {
+    let saveBtn = false;
+    if ($this.state.hims_f_procurement_dn_header_id !== null) {
+      saveBtn = true;
+    }
+
+    let _dn_entry_detail = $this.state.dn_entry_detail;
+    if (cancelRow !== undefined) {
+      _dn_entry_detail[cancelRow.rowIdx] = cancelRow;
+    }
+    context.updateState({
+      saveEnable: saveBtn,
+      dn_entry_detail: _dn_entry_detail
+    });
+  }
+};
+
+const onchangegridcoldatehandle = ($this, row, ctrl, e) => {
+  row[e] = moment(ctrl)._d;
+  $this.setState({ append: !$this.state.append });
+};
+
+const changeDateFormat = date => {
+  if (date != null) {
+    return moment(date).format(Options.dateFormat);
+  }
+};
+
 export {
   deleteDNDetail,
   updateDNDetail,
@@ -253,5 +295,9 @@ export {
   onchangegridcol,
   assignDataandclear,
   onchhangegriddiscount,
-  GridAssignData
+  GridAssignData,
+  EditGrid,
+  CancelGrid,
+  onchangegridcoldatehandle,
+  changeDateFormat
 };

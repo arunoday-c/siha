@@ -29,6 +29,7 @@ export default ({ config, db }) => {
           });
         } else {
           let result = req.records;
+          debugLog("result: ", result);
           res.status(httpStatus.ok).json({
             success: true,
             records: result

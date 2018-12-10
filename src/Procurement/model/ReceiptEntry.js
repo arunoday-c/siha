@@ -153,7 +153,9 @@ let addReceiptEntry = (req, res, next) => {
 
                 req.records = {
                   grn_number: documentCode,
-                  hims_f_procurement_grn_header_id: headerResult.insertId
+                  hims_f_procurement_grn_header_id: headerResult.insertId,
+                  year: year,
+                  period: period
                 };
                 next();
               }
@@ -399,8 +401,8 @@ let updateDNEntry = (req, res, next) => {
                 next(error);
               });
             }
-            req.records = detailResult;
-            req.data = req.records.grn_number;
+            req.dnrecords = detailResult;
+
             next();
           });
         } else {

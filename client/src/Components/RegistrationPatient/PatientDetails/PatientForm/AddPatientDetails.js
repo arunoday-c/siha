@@ -150,7 +150,7 @@ const nationalityhandle = ($this, context, e) => {
       ) {
         vat_applicable = "N";
       }
-      debugger;
+
       $this.setState(
         {
           [name]: value,
@@ -186,7 +186,6 @@ const generateBillDetails = ($this, context) => {
   SetBulkState({
     state: $this,
     callback: () => {
-      debugger;
       let serviceInput = [
         {
           insured: $this.state.insured,
