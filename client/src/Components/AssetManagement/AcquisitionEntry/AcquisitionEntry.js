@@ -23,7 +23,7 @@ class AcquisitionEntry extends Component {
         <BreadCrumb
           title={
             <AlgaehLabel
-              label={{ forceLabel: "Acquisition Entry", align: "ltr" }}
+              label={{ fieldName: "acquisition_entry", align: "ltr" }}
             />
           }
           breadStyle={this.props.breadStyle}
@@ -32,7 +32,7 @@ class AcquisitionEntry extends Component {
               pageName: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Home",
+                    fieldName: "home",
                     align: "ltr"
                   }}
                 />
@@ -41,7 +41,7 @@ class AcquisitionEntry extends Component {
             {
               pageName: (
                 <AlgaehLabel
-                  label={{ forceLabel: "Acquisition Entry", align: "ltr" }}
+                  label={{ fieldName: "acquisition_entry", align: "ltr" }}
                 />
               )
             }
@@ -49,7 +49,7 @@ class AcquisitionEntry extends Component {
           soptlightSearch={{
             label: (
               <AlgaehLabel
-                label={{ forceLabel: "Acquisition Number", returnText: true }}
+                label={{ fieldName: "acquisition_number", returnText: true }}
               />
             ),
             value: this.state.document_number,
@@ -68,7 +68,7 @@ class AcquisitionEntry extends Component {
               <div className="col">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Acquisition Date"
+                    fieldName: "acquisition_date"
                   }}
                 />
                 <h6>
@@ -88,7 +88,7 @@ class AcquisitionEntry extends Component {
           <div className="row">
             <AlagehAutoComplete
               div={{ className: "col" }}
-              label={{ forceLabel: "Transaction Type" }}
+              label={{ fieldName: "transaction_type" }}
               selector={{
                 name: "location_id",
                 className: "select-fld",
@@ -105,25 +105,7 @@ class AcquisitionEntry extends Component {
             />
             <AlagehAutoComplete
               div={{ className: "col" }}
-              label={{ forceLabel: "Location" }}
-              selector={{
-                name: "location_id",
-                className: "select-fld",
-                value: this.state.location_id,
-                dataSource: {
-                  textField: "location_description",
-                  valueField: "hims_d_pharmacy_location_id",
-                  data: this.props.locations
-                },
-
-                onChange: null,
-                onClear: null
-              }}
-            />
-
-            <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{ forceLabel: "Department" }}
+              label={{ fieldName: "location" }}
               selector={{
                 name: "location_id",
                 className: "select-fld",
@@ -141,7 +123,25 @@ class AcquisitionEntry extends Component {
 
             <AlagehAutoComplete
               div={{ className: "col" }}
-              label={{ forceLabel: "Depreciation Category" }}
+              label={{ fieldName: "department" }}
+              selector={{
+                name: "location_id",
+                className: "select-fld",
+                value: this.state.location_id,
+                dataSource: {
+                  textField: "location_description",
+                  valueField: "hims_d_pharmacy_location_id",
+                  data: this.props.locations
+                },
+
+                onChange: null,
+                onClear: null
+              }}
+            />
+
+            <AlagehAutoComplete
+              div={{ className: "col" }}
+              label={{ fieldName: "deprctn_cat" }}
               selector={{
                 name: "item_id",
                 className: "select-fld",
@@ -157,7 +157,7 @@ class AcquisitionEntry extends Component {
             />
             <AlgaehDateHandler
               div={{ className: "col-3" }}
-              label={{ forceLabel: "Transaction Date" }}
+              label={{ transaction_date: "Transaction Date" }}
               textBox={{
                 className: "txt-fld",
                 name: "expiry_date"
@@ -173,7 +173,7 @@ class AcquisitionEntry extends Component {
           <div className="row">
             <AlagehAutoComplete
               div={{ className: "col" }}
-              label={{ forceLabel: "Acquisition Type" }}
+              label={{ fieldName: "acquistn_type" }}
               selector={{
                 name: "item_id",
                 className: "select-fld",
@@ -189,7 +189,7 @@ class AcquisitionEntry extends Component {
             />
             <AlagehAutoComplete
               div={{ className: "col" }}
-              label={{ forceLabel: "Acquisition Account" }}
+              label={{ fieldName: "acquistn_account" }}
               selector={{
                 name: "item_id",
                 className: "select-fld",
@@ -206,7 +206,7 @@ class AcquisitionEntry extends Component {
             <AlagehFormGroup
               div={{ className: "col-4" }}
               label={{
-                forceLabel: "Asset Desc."
+                fieldName: "asset_desc"
               }}
               textBox={{
                 className: "txt-fld",
@@ -223,7 +223,7 @@ class AcquisitionEntry extends Component {
             <AlagehFormGroup
               div={{ className: "col" }}
               label={{
-                forceLabel: "Asset Group."
+                fieldName: "asset_group"
               }}
               textBox={{
                 className: "txt-fld",
@@ -271,7 +271,7 @@ class AcquisitionEntry extends Component {
                       {
                         fieldName: "item_id",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Item Name" }} />
+                          <AlgaehLabel label={{ fieldName: "item_name" }} />
                         )
                       },
 
@@ -279,55 +279,51 @@ class AcquisitionEntry extends Component {
                         fieldName: "item_category",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Depreciation Category" }}
+                            label={{ fieldName: "deprictn_catgry" }}
                           />
                         )
                       },
                       {
                         fieldName: "qtyhand",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Asset Code" }} />
+                          <AlgaehLabel label={{ fieldName: "asset_code" }} />
                         ),
                         disabled: true
                       },
                       {
                         fieldName: "expiry_date",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Asset Desc." }} />
+                          <AlgaehLabel label={{ fieldName: "asset_desc" }} />
                         )
                       },
                       {
                         fieldName: "batchno",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Barcode" }} />
-                        ),
+                        label: <AlgaehLabel label={{ fieldName: "barcode" }} />,
                         disabled: true
                       },
                       {
                         fieldName: "uom_id",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Account Set" }} />
+                          <AlgaehLabel label={{ fieldName: "account_set" }} />
                         )
                       },
                       {
                         fieldName: "unit_cost",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Asset Type Code" }}
+                            label={{ fieldName: "asset_type_code" }}
                           />
                         ),
                         disabled: true
                       },
                       {
                         fieldName: "quantity",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Category" }} />
-                        )
+                        label: <AlgaehLabel label={{ fieldName: "category" }} />
                       },
 
                       {
                         fieldName: "extended_cost",
-                        label: <AlgaehLabel label={{ forceLabel: "Group" }} />,
+                        label: <AlgaehLabel label={{ fieldName: "group" }} />,
                         disabled: true
                       }
                     ]}

@@ -194,6 +194,25 @@ class Modules extends Component {
               }}
             />
 
+            <AlagehFormGroup
+              div={{ className: "col-lg-1" }}
+              label={{
+                forceLabel: "Display Order",
+                isImp: true
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "display_order",
+                value: this.state.display_order,
+                events: {
+                  onChange: this.changeTexts.bind(this)
+                },
+                others: {
+                  type: "number"
+                }
+              }}
+            />
+
             <div className="col-lg-3">
               <button
                 type="submit"
@@ -232,6 +251,10 @@ class Modules extends Component {
                 {
                   fieldName: "licence_key",
                   label: "Licence Key"
+                },
+                {
+                  fieldName: "display_order",
+                  label: "Display Order"
                 }
               ]}
               keyId="algaeh_d_module_id"

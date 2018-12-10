@@ -460,7 +460,7 @@ class DoctorsWorkbench extends Component {
                         {
                           fieldName: "patient_type",
                           label: (
-                            <AlgaehLabel label={{ forceLabel: "Pay Type" }} />
+                            <AlgaehLabel label={{ fieldName: "pay_type" }} />
                           ),
                           displayTemplate: data => {
                             return (

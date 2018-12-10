@@ -225,7 +225,7 @@ class UserShiftMapping extends Component {
             <AlagehAutoComplete
               div={{ className: "col" }}
               label={{
-                forceLabel: "Shift Type",
+                fieldName: "shift_type",
                 isImp: true
               }}
               selector={{
@@ -243,7 +243,7 @@ class UserShiftMapping extends Component {
             <AlagehAutoComplete
               div={{ className: "col" }}
               label={{
-                forceLabel: "Select Cashier",
+                fieldName: "select_cashier",
                 isImp: true
               }}
               selector={{
@@ -262,7 +262,7 @@ class UserShiftMapping extends Component {
             <AlagehAutoComplete
               div={{ className: "col" }}
               label={{
-                forceLabel: "Select Month"
+                fieldName: "select_month"
               }}
               selector={{
                 name: "month",
@@ -280,7 +280,7 @@ class UserShiftMapping extends Component {
             <AlagehFormGroup
               div={{ className: "col" }}
               label={{
-                forceLabel: "Year",
+                fieldName: "year",
                 isImp: true
               }}
               textBox={{

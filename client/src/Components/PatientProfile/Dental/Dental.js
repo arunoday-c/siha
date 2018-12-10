@@ -35,7 +35,8 @@ class Dental extends Component {
       treatements: [],
       dentalTreatments: [],
       openBillingModal: false,
-      treatment_gridUpdate: true
+      treatment_gridUpdate: true,
+      billDetails: {}
     };
     this.getProcedures();
     this.getTreatementPlans();
@@ -90,7 +91,6 @@ class Dental extends Component {
           [e.target.name]: e.target.value,
           total_price: e.target.value * this.state.standard_fee
         });
-
         break;
 
       default:
@@ -99,6 +99,50 @@ class Dental extends Component {
         });
         break;
     }
+  }
+
+  calculateDiscount(e) {
+    let bill_dtls = { ...this.state.billDetails, ...this.state.ins_details };
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+
+    let inputParam = [
+      {
+        hims_d_services_id: bill_dtls.services_id,
+        quantity: bill_dtls.quantity,
+        discount_amout: bill_dtls.discount_amout,
+        discount_percentage: e.target.value,
+        insured: "Y",
+        vat_applicable: "Y",
+        primary_insurance_provider_id: bill_dtls.insurance_provider_id,
+        primary_network_office_id: bill_dtls.hims_d_insurance_network_office_id,
+        primary_network_id: bill_dtls.network_id,
+        sec_insured: bill_dtls.sec_insured,
+        secondary_insurance_provider_id:
+          bill_dtls.secondary_insurance_provider_id,
+        secondary_network_id: bill_dtls.secondary_network_id,
+        secondary_network_office_id: bill_dtls.secondary_network_office_id,
+        approval_amt: bill_dtls.approval_amt,
+        approval_limit_yesno: bill_dtls.approval_limit_yesno,
+        preapp_limit_amount: bill_dtls.preapp_limit_amount
+      }
+    ];
+
+    algaehApiCall({
+      uri: "/billing/getBillDetails",
+      method: "POST",
+      cancelRequestId: "getBillDetails8",
+      data: inputParam,
+      onSuccess: res => {
+        if (res.data.success) {
+          //console.log("Billing Response for getBillDetails:", res.data.records);
+          this.setState({
+            billDetails: res.data.records.billdetails[0]
+          });
+        }
+      }
+    });
   }
 
   changeGridEditors(row, e) {
@@ -112,11 +156,49 @@ class Dental extends Component {
     debugger;
   }
 
-  saveBill() {}
+  saveBill() {
+    let inputObj = {
+      visit_id: Window.global["visit_is"],
+      patient_id: Window.global["current_patient"],
+      incharge_or_provider: Window.global["provider_id"],
+      billed: "N",
+      billdetails: [
+        {
+          ...this.state.billDetails,
+          ...{
+            visit_id: Window.global["visit_id"],
+            patient_id: Window.global["current_patient"],
+            pre_approval: "N"
+          }
+        }
+      ]
+    };
+
+    console.log("inputObj", JSON.stringify(inputObj));
+
+    algaehApiCall({
+      uri: "/orderAndPreApproval/insertOrderedServices",
+      data: inputObj,
+      method: "POST",
+      onSuccess: response => {
+        if (response.data.success) {
+          swalMessage({
+            title: "Ordered Successfully...",
+            type: "success"
+          });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.response.data.message,
+          type: "error"
+        });
+      }
+    });
+  }
 
   addToBill(row) {
     debugger;
-
     algaehApiCall({
       uri: "/insurance/getPatientInsurance",
       method: "GET",
@@ -130,6 +212,10 @@ class Dental extends Component {
 
           let ins = res.data.records.length > 0 ? res.data.records[0] : null;
 
+          this.setState({
+            ins_details: ins
+          });
+
           algaehApiCall({
             uri: "/billing/getBillDetails",
             method: "POST",
@@ -139,23 +225,31 @@ class Dental extends Component {
                 insured: res.data.records.length > 0 ? "Y" : "N",
                 vat_applicable: "Y",
                 hims_d_services_id: row.service_id,
-                primary_insurance_provider_id: ins.insurance_provider_id,
+                primary_insurance_provider_id:
+                  ins !== null ? ins.insurance_provider_id : null,
                 primary_network_office_id:
-                  ins.hims_d_insurance_network_office_id,
-                primary_network_id: ins.network_id,
-                sec_insured: ins.sec_insured,
+                  ins !== null ? ins.hims_d_insurance_network_office_id : null,
+                primary_network_id: ins !== null ? ins.network_id : null,
+                sec_insured: ins !== null ? ins.sec_insured : null,
                 secondary_insurance_provider_id:
-                  ins.secondary_insurance_provider_id,
-                secondary_network_id: ins.secondary_network_id,
-                secondary_network_office_id: ins.secondary_network_office_id,
-                approval_amt: ins.approval_amt,
-                approval_limit_yesno: ins.approval_limit_yesno,
-                preapp_limit_amount: ins.preapp_limit_amount
+                  ins !== null ? ins.secondary_insurance_provider_id : null,
+                secondary_network_id:
+                  ins !== null ? ins.secondary_network_id : null,
+                secondary_network_office_id:
+                  ins !== null ? ins.secondary_network_office_id : null,
+                approval_amt: ins !== null ? ins.approval_amt : null,
+                approval_limit_yesno:
+                  ins !== null ? ins.approval_limit_yesno : null,
+                preapp_limit_amount:
+                  ins !== null ? ins.preapp_limit_amount : null
               }
             ],
             onSuccess: res => {
               if (res.data.success) {
                 console.log("Billing Response:", res.data.records);
+                this.setState({
+                  billDetails: res.data.records.billdetails[0]
+                });
               }
             }
           });
@@ -170,7 +264,6 @@ class Dental extends Component {
     });
 
     this.setState({
-      billDetails: row,
       openBillingModal: true,
       treatment_gridUpdate: false
     });
@@ -561,8 +654,6 @@ class Dental extends Component {
   }
 
   deleteDentalPlan(data) {
-    debugger;
-
     swal({
       title: "Delete Plan ?",
       type: "warning",
@@ -604,13 +695,12 @@ class Dental extends Component {
   }
 
   updateDentalTreatmentStatus(data) {
-    debugger;
     algaehApiCall({
       uri: "/dental/updateDentalTreatmentStatus",
       method: "PUT",
       data: {
         hims_f_dental_treatment_id: data.hims_f_dental_treatment_id,
-        treatment_statuss: data.treatment_status
+        treatment_status: data.treatment_status
       },
       onSuccess: res => {
         if (res.data.success) {
@@ -630,7 +720,6 @@ class Dental extends Component {
   }
 
   getTreatementsGrid(data) {
-    debugger;
     return (
       <div className="col-lg-12" data-validate="denGrid">
         <AlgaehDataGrid
@@ -859,6 +948,7 @@ class Dental extends Component {
   }
 
   render() {
+    let billDetails = this.state.billDetails;
     return (
       <div id="dentalTreatment">
         <AlgaehModalPopUp
@@ -873,13 +963,13 @@ class Dental extends Component {
               <AlagehFormGroup
                 div={{ className: "col-lg-3" }}
                 label={{
-                  forceLabel: "Service Type",
+                  fieldName: "service_type_id",
                   isImp: true
                 }}
                 textBox={{
                   className: "txt-fld",
                   name: "treatement_plan",
-                  value: this.state.selected_treatement_plan,
+                  value: billDetails.service_name,
                   events: {
                     onChange: this.textHandle.bind(this)
                   },
@@ -890,27 +980,22 @@ class Dental extends Component {
                 }}
               />
 
-              <AlagehAutoComplete
+              <AlagehFormGroup
                 div={{ className: "col-lg-3" }}
                 label={{
-                  forceLabel: "Service Name"
+                  fieldName: "procedure",
+                  isImp: true
                 }}
-                selector={{
-                  name: "services_id",
-                  className: "select-fld",
-                  value: this.state.services_id,
-                  dataSource: {
-                    // textField: "service_name",
-                    textField:
-                      this.state.selectedLang === "en"
-                        ? "service_name"
-                        : "arabic_service_name",
-                    valueField: "hims_d_services_id",
-                    data: this.props.billservices
+                textBox={{
+                  className: "txt-fld",
+                  name: "treatement_plan",
+                  value: billDetails.service_name,
+                  events: {
+                    onChange: this.textHandle.bind(this)
                   },
-                  onChange: null,
                   others: {
-                    disabled: true
+                    disabled: true,
+                    placeholder: "Enter Treatment Name"
                   }
                 }}
               />
@@ -924,7 +1009,7 @@ class Dental extends Component {
                     fieldName: "quantity"
                   }}
                 />
-                <h6>{this.state.quantity ? this.state.quantity : "0"}</h6>
+                <h6>1</h6>
               </div>
 
               <div className="col-lg-2">
@@ -933,7 +1018,7 @@ class Dental extends Component {
                     fieldName: "unit_cost"
                   }}
                 />
-                <h6>{getAmountFormart(this.state.unit_cost)}</h6>
+                <h6>{getAmountFormart(billDetails.unit_cost)}</h6>
               </div>
 
               <div className="col-lg-2">
@@ -942,7 +1027,7 @@ class Dental extends Component {
                     fieldName: "gross_amount"
                   }}
                 />
-                <h6>{getAmountFormart(this.state.gross_amount)}</h6>
+                <h6>{getAmountFormart(billDetails.gross_amount)}</h6>
               </div>
 
               <div className="col-lg-2">
@@ -951,11 +1036,27 @@ class Dental extends Component {
                     fieldName: "discount_percentage"
                   }}
                 />
-                <h6>
-                  {this.state.discount_percentage
-                    ? this.state.discount_percentage + "%"
+                {/* <h6>
+                  {billDetails.discount_percentage
+                    ? billDetails.discount_percentage + "%"
                     : "0.00%"}
-                </h6>
+                </h6> */}
+
+                <AlagehFormGroup
+                  // div={{ className: "col" }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "discount_percentage",
+                    value: this.state.discount_percentage,
+                    events: {
+                      onChange: this.calculateDiscount.bind(this)
+                    },
+                    others: {
+                      min: 0,
+                      type: "number"
+                    }
+                  }}
+                />
               </div>
 
               <div className="col-lg-2">
@@ -964,7 +1065,7 @@ class Dental extends Component {
                     fieldName: "discount_amout"
                   }}
                 />
-                <h6>{getAmountFormart(this.state.discount_amout)}</h6>
+                <h6>{getAmountFormart(billDetails.discount_amout)}</h6>
               </div>
 
               <div className="col-lg-2">
@@ -973,7 +1074,7 @@ class Dental extends Component {
                     fieldName: "net_amout"
                   }}
                 />
-                <h6>{getAmountFormart(this.state.net_amout)}</h6>
+                <h6>{getAmountFormart(billDetails.net_amout)}</h6>
               </div>
             </div>
             <hr />
@@ -994,8 +1095,8 @@ class Dental extends Component {
                         }}
                       />
                       <h6>
-                        {this.state.copay_percentage
-                          ? this.state.copay_percentage + "%"
+                        {billDetails.copay_percentage
+                          ? billDetails.copay_percentage + "%"
                           : "0.00%"}
                       </h6>
                     </div>
@@ -1006,7 +1107,7 @@ class Dental extends Component {
                           fieldName: "copay_amount"
                         }}
                       />
-                      <h6>{getAmountFormart(this.state.copay_amount)}</h6>
+                      <h6>{getAmountFormart(billDetails.copay_amount)}</h6>
                     </div>
 
                     <div className="col-3">
@@ -1016,8 +1117,8 @@ class Dental extends Component {
                         }}
                       />
                       <h6>
-                        {this.state.deductable_percentage
-                          ? this.state.deductable_percentage + "%"
+                        {billDetails.deductable_percentage
+                          ? billDetails.deductable_percentage + "%"
                           : "0.00%"}
                       </h6>
                     </div>
@@ -1028,7 +1129,7 @@ class Dental extends Component {
                           fieldName: "deductable_amount"
                         }}
                       />
-                      <h6>{getAmountFormart(this.state.deductable_amount)}</h6>
+                      <h6>{getAmountFormart(billDetails.deductable_amount)}</h6>
                     </div>
                   </div>
                 </div>
@@ -1049,8 +1150,8 @@ class Dental extends Component {
                         }}
                       />
                       <h6>
-                        {this.state.sec_copay_percntage
-                          ? this.state.sec_copay_percntage + "%"
+                        {billDetails.sec_copay_percntage
+                          ? billDetails.sec_copay_percntage + "%"
                           : "0.00%"}
                       </h6>
                     </div>
@@ -1061,7 +1162,7 @@ class Dental extends Component {
                           fieldName: "sec_copay_amount"
                         }}
                       />
-                      <h6>{getAmountFormart(this.state.sec_copay_amount)}</h6>
+                      <h6>{getAmountFormart(billDetails.sec_copay_amount)}</h6>
                     </div>
 
                     <div className="col-3">
@@ -1071,8 +1172,8 @@ class Dental extends Component {
                         }}
                       />
                       <h6>
-                        {this.state.sec_deductable_percentage
-                          ? this.state.sec_deductable_percentage + "%"
+                        {billDetails.sec_deductable_percentage
+                          ? billDetails.sec_deductable_percentage + "%"
                           : "0.00%"}
                       </h6>
                     </div>
@@ -1084,7 +1185,7 @@ class Dental extends Component {
                         }}
                       />
                       <h6>
-                        {getAmountFormart(this.state.sec_deductable_amount)}
+                        {getAmountFormart(billDetails.sec_deductable_amount)}
                       </h6>
                     </div>
                   </div>
@@ -1108,7 +1209,7 @@ class Dental extends Component {
                           fieldName: "responsibility_lbl"
                         }}
                       />
-                      <h6>{getAmountFormart(this.state.patient_resp)}</h6>
+                      <h6>{getAmountFormart(billDetails.patient_resp)}</h6>
                     </div>
 
                     <div className="col-3">
@@ -1117,7 +1218,7 @@ class Dental extends Component {
                           fieldName: "tax_lbl"
                         }}
                       />
-                      <h6>{getAmountFormart(this.state.patient_tax)}</h6>
+                      <h6>{getAmountFormart(billDetails.patient_tax)}</h6>
                     </div>
 
                     <div className="col-4">
@@ -1126,7 +1227,7 @@ class Dental extends Component {
                           fieldName: "payable_lbl"
                         }}
                       />
-                      <h6>{getAmountFormart(this.state.patient_payable)}</h6>
+                      <h6>{getAmountFormart(billDetails.patient_payable)}</h6>
                     </div>
                   </div>
                 </div>
@@ -1147,7 +1248,7 @@ class Dental extends Component {
                           fieldName: "responsibility_lbl"
                         }}
                       />
-                      <h6>{getAmountFormart(this.state.comapany_resp)}</h6>
+                      <h6>{getAmountFormart(billDetails.comapany_resp)}</h6>
                     </div>
 
                     <div className="col-3">
@@ -1156,7 +1257,7 @@ class Dental extends Component {
                           fieldName: "tax_lbl"
                         }}
                       />
-                      <h6>{getAmountFormart(this.state.company_tax)}</h6>
+                      <h6>{getAmountFormart(billDetails.company_tax)}</h6>
                     </div>
 
                     <div className="col-4">
@@ -1165,7 +1266,7 @@ class Dental extends Component {
                           fieldName: "payable_lbl"
                         }}
                       />
-                      <h6>{getAmountFormart(this.state.company_payble)}</h6>
+                      <h6>{getAmountFormart(billDetails.company_payble)}</h6>
                     </div>
                   </div>
                 </div>
@@ -1187,7 +1288,7 @@ class Dental extends Component {
                           fieldName: "responsibility_lbl"
                         }}
                       />
-                      <h6>{getAmountFormart(this.state.sec_company_res)}</h6>
+                      <h6>{getAmountFormart(billDetails.sec_company_res)}</h6>
                     </div>
 
                     <div className="col-3">
@@ -1196,7 +1297,7 @@ class Dental extends Component {
                           fieldName: "tax_lbl"
                         }}
                       />
-                      <h6>{getAmountFormart(this.state.sec_company_tax)}</h6>
+                      <h6>{getAmountFormart(billDetails.sec_company_tax)}</h6>
                     </div>
 
                     <div className="col-4">
@@ -1206,7 +1307,7 @@ class Dental extends Component {
                         }}
                       />
                       <h6>
-                        {getAmountFormart(this.state.sec_company_paybale)}
+                        {getAmountFormart(billDetails.sec_company_paybale)}
                       </h6>
                     </div>
                   </div>
@@ -1253,7 +1354,7 @@ class Dental extends Component {
               <AlagehFormGroup
                 div={{ className: "col-lg-3" }}
                 label={{
-                  forceLabel: "Treatment Plan",
+                  fieldName: "treatment_plan",
                   isImp: true
                 }}
                 textBox={{
@@ -1273,7 +1374,7 @@ class Dental extends Component {
               <AlagehAutoComplete
                 div={{ className: "col-lg-3" }}
                 label={{
-                  forceLabel: "Select a Procedure",
+                  fieldName: "sel_a_proc",
                   isImp: true
                 }}
                 selector={{
@@ -1292,7 +1393,7 @@ class Dental extends Component {
               <AlagehFormGroup
                 div={{ className: "col-lg-1" }}
                 label={{
-                  forceLabel: "Unit Price",
+                  fieldName: "unit_cost",
                   isImp: true
                 }}
                 textBox={{
@@ -1313,7 +1414,7 @@ class Dental extends Component {
               <AlagehFormGroup
                 div={{ className: "col-lg-1" }}
                 label={{
-                  forceLabel: "Quantity",
+                  fieldName: "quantity",
                   isImp: true
                 }}
                 textBox={{
@@ -1332,7 +1433,7 @@ class Dental extends Component {
               <AlagehFormGroup
                 div={{ className: "col-lg-1" }}
                 label={{
-                  forceLabel: "Total Price",
+                  fieldName: "total_price",
                   isImp: true
                 }}
                 textBox={{
@@ -1352,7 +1453,7 @@ class Dental extends Component {
 
               <AlgaehDateHandler
                 div={{ className: "col-lg-2" }}
-                label={{ forceLabel: "Scheduled Date", isImp: true }}
+                label={{ fieldName: "schld_date", isImp: true }}
                 textBox={{
                   className: "txt-fld",
                   name: "scheduled_date"
@@ -1413,7 +1514,7 @@ class Dental extends Component {
                 <AlagehFormGroup
                   div={{ className: "col-lg-3" }}
                   label={{
-                    forceLabel: "Treatment Plan",
+                    fieldName: "treatment_plan",
                     isImp: true
                   }}
                   textBox={{
@@ -1432,7 +1533,7 @@ class Dental extends Component {
                 <AlagehFormGroup
                   div={{ className: "col-lg-4" }}
                   label={{
-                    forceLabel: "Remarks",
+                    fieldName: "remarks",
                     isImp: true
                   }}
                   textBox={{
@@ -1448,9 +1549,9 @@ class Dental extends Component {
                   }}
                 />
 
-                <AlgaehDateHandler
+                {/* <AlgaehDateHandler
                   div={{ className: "col-lg-2" }}
-                  label={{ forceLabel: "Consult Date", isImp: false }}
+                  label={{ fieldName: "Consult Date", isImp: false }}
                   textBox={{
                     className: "txt-fld",
                     name: "consult_date"
@@ -1464,7 +1565,7 @@ class Dental extends Component {
                     }
                   }}
                   value={this.state.consult_date}
-                />
+                /> */}
 
                 <div className="col-lg-2 margin-top-15">
                   <button
@@ -1477,10 +1578,10 @@ class Dental extends Component {
               </div>
             </div>
           </div>
-          <div className="portlet-body">
+          <div className="portlet-body" data-validate="treatmentDiv">
             <AlgaehDataGrid
-              id="shift-grid"
-              datavalidate="data-validate='shiftDiv'"
+              id="treatment-grid"
+              datavalidate="data-validate='treatmentDiv'"
               columns={[
                 {
                   fieldName: "actions",
