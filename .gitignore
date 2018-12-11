@@ -4,7 +4,8 @@ dist
 client/build
 ### ignore netbeans ###
 nbproject/
-
+# ignore keys->dev
+src\keys\dev.js
 ### Linux ###
 *~
 
