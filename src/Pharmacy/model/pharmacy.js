@@ -1041,7 +1041,7 @@ let getItemForm = (req, res, next) => {
       connection.query(
         "select * FROM hims_d_item_form where record_status='A' AND" +
           where.condition +
-          " order by hims_d_item_form;",
+          " order by hims_d_item_form_id;",
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
