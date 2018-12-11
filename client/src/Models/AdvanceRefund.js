@@ -24,7 +24,6 @@ export default {
       cheque_amount: 0,
       selectedLang: "en",
       open: false,
-      MandatoryMsg: "",
 
       hims_f_receipt_header_id: null,
       receipt_number: null,
@@ -34,9 +33,7 @@ export default {
       counter_id: null,
       shift_id: null,
       unbalanced_amount: 0,
-      // created_by: null,
-      // created_date: new Date(),
-      // updated_by: null,
+
       updated_date: null,
       pay_type: "R",
       receiptdetails: []

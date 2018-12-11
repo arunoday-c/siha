@@ -20,7 +20,6 @@ import {
 import "./InvItemMomentEnquiry.css";
 import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import AHSnackbar from "../../common/Inputs/AHSnackbar.js";
 
 class InvItemMomentEnquiry extends Component {
   constructor(props) {
@@ -31,9 +30,7 @@ class InvItemMomentEnquiry extends Component {
       location_id: null,
       item_id: null,
       from_date: null,
-      to_date: null,
-      SnackbarOpen: false,
-      MandatoryMsg: ""
+      to_date: null
     };
   }
 
@@ -67,10 +64,6 @@ class InvItemMomentEnquiry extends Component {
       });
     }
   }
-
-  handleClose = () => {
-    this.setState({ SnackbarOpen: false });
-  };
 
   render() {
     return (
@@ -262,11 +255,6 @@ class InvItemMomentEnquiry extends Component {
                 />
               </div>
             </div>
-            <AHSnackbar
-              open={this.state.SnackbarOpen}
-              handleClose={this.handleClose}
-              MandatoryMsg={this.state.MandatoryMsg}
-            />
           </div>
         </div>
       </React.Fragment>

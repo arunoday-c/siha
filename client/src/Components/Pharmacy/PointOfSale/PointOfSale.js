@@ -21,7 +21,7 @@ import {
 import "./PointOfSale.css";
 import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import AHSnackbar from "../../common/Inputs/AHSnackbar.js";
+
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import PosListItems from "./PosListItems/PosListItems";
 import MyContext from "../../../utils/MyContext";
@@ -371,11 +371,6 @@ class PointOfSale extends Component {
                   />
                 </button>
 
-                <AHSnackbar
-                  open={this.state.open}
-                  handleClose={this.handleClose}
-                  MandatoryMsg={this.state.MandatoryMsg}
-                />
                 <button
                   type="button"
                   className="btn btn-default"

@@ -14,7 +14,7 @@ import {
   isDoctorChange
 } from "./PersonalDetailsEvents.js";
 import MyContext from "../../../../../utils/MyContext.js";
-import AHSnackbar from "../../../../common/Inputs/AHSnackbar.js";
+
 import {
   AlgaehDateHandler,
   AlagehFormGroup,
@@ -581,11 +581,6 @@ class PersonalDetails extends PureComponent {
               <div className="col">
                 <DeptUserDetails EmpMasterIOputs={this.state} />
               </div>
-              <AHSnackbar
-                open={this.state.DOBError}
-                // handleClose={this.handleClose}
-                Msg={this.state.DOBErrorMsg}
-              />
             </div>
           )}
         </MyContext.Consumer>

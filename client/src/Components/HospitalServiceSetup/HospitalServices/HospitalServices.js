@@ -24,14 +24,12 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import { getCookie } from "../../../utils/algaehApiCall";
 import { setGlobal } from "../../../utils/GlobalFunctions";
 
-import AHSnackbar from "../../common/Inputs/AHSnackbar.js";
-
 class HospitalServices extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       open: false,
-      MandatoryMsg: "",
+
       selectedLang: "en",
       Applicable: false,
 
@@ -362,12 +360,6 @@ class HospitalServices extends PureComponent {
                       ) : (
                         ""
                       )}
-
-                      <AHSnackbar
-                        open={this.state.open}
-                        handleClose={this.handleClose}
-                        MandatoryMsg={this.state.MandatoryMsg}
-                      />
                     </div>
                   </div>
                 </div>

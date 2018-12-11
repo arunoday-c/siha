@@ -29,7 +29,6 @@ import {
 import "./InitialStock.css";
 import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import AHSnackbar from "../../common/Inputs/AHSnackbar.js";
 
 class InitialStock extends Component {
   constructor(props) {
@@ -48,8 +47,7 @@ class InitialStock extends Component {
       quantity: 0,
       unit_cost: 0,
       docdate: new Date(),
-      SnackbarOpen: false,
-      MandatoryMsg: "",
+
       uom_id: null,
       conversion_fact: null,
       extended_cost: 0,
@@ -128,10 +126,6 @@ class InitialStock extends Component {
       });
     }
   }
-
-  handleClose = () => {
-    this.setState({ SnackbarOpen: false });
-  };
 
   render() {
     return (
@@ -214,7 +208,7 @@ class InitialStock extends Component {
             <div className="actions">
             </div>
           </div> */}
-              <div className="portlet-body">
+              <div className="portlet-body" data-validate="IntialStock">
                 <div className="row inline">
                   <AlagehFormGroup
                     div={{ className: "col-6" }}
@@ -600,11 +594,6 @@ class InitialStock extends Component {
                     />
                   </button>
 
-                  <AHSnackbar
-                    open={this.state.SnackbarOpen}
-                    handleClose={this.handleClose}
-                    MandatoryMsg={this.state.MandatoryMsg}
-                  />
                   <button
                     type="button"
                     className="btn btn-default"

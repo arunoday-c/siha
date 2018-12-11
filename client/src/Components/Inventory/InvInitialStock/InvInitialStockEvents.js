@@ -77,30 +77,42 @@ const AddItems = $this => {
     alertTypeIcon: "warning",
     querySelector: "data-validate='InvIntialStock'",
     onSuccess: () => {
-      let inventory_stock_detail = $this.state.inventory_stock_detail;
-      let itemObj = {
-        location_id: $this.state.location_id,
-        location_type: $this.state.location_type,
-        item_category_id: $this.state.item_category_id,
-        item_group_id: $this.state.item_group_id,
-        item_id: $this.state.item_id,
-        uom_id: $this.state.uom_id,
-        sales_uom: $this.state.sales_uom,
-        batchno: $this.state.batchno,
-        expiry_date: $this.state.expiry_date,
-        quantity: $this.state.quantity,
-        unit_cost: $this.state.unit_cost,
-        extended_cost: $this.state.extended_cost,
-        conversion_factor: $this.state.conversion_factor,
-        barcode: "",
-        grn_number: $this.state.grn_number,
-        noorecords: inventory_stock_detail.length + 1,
-        required_batchno: $this.state.required_batchno
-      };
+      if ($this.state.quantity === 0) {
+        swalMessage({
+          title: "Quantity, cannot be zero.",
+          type: "warning"
+        });
+        document.querySelector("[name='quantity']").focus();
+      } else if ($this.state.unit_cost === 0) {
+        swalMessage({
+          title: "Unit Cost, cannot be zero.",
+          type: "warning"
+        });
+        document.querySelector("[name='unit_cost']").focus();
+      } else {
+        let inventory_stock_detail = $this.state.inventory_stock_detail;
+        let itemObj = {
+          location_id: $this.state.location_id,
+          location_type: $this.state.location_type,
+          item_category_id: $this.state.item_category_id,
+          item_group_id: $this.state.item_group_id,
+          item_id: $this.state.item_id,
+          uom_id: $this.state.uom_id,
+          sales_uom: $this.state.sales_uom,
+          batchno: $this.state.batchno,
+          expiry_date: $this.state.expiry_date,
+          quantity: $this.state.quantity,
+          unit_cost: $this.state.unit_cost,
+          extended_cost: $this.state.extended_cost,
+          conversion_factor: $this.state.conversion_factor,
+          barcode: "",
+          grn_number: $this.state.grn_number,
+          noorecords: inventory_stock_detail.length + 1,
+          required_batchno: $this.state.required_batchno
+        };
 
-      inventory_stock_detail.push(itemObj);
-      $this.setState(
-        {
+        inventory_stock_detail.push(itemObj);
+        $this.setState({
           inventory_stock_detail: inventory_stock_detail,
 
           location_id: null,
@@ -117,9 +129,8 @@ const AddItems = $this => {
           saveEnable: false,
           grn_number: null,
           sales_uom: null
-        },
-        () => {}
-      );
+        });
+      }
     }
   });
 };
