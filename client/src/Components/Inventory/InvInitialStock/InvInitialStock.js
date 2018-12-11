@@ -47,8 +47,7 @@ class InvInitialStock extends Component {
       quantity: 0,
       unit_cost: 0,
       docdate: new Date(),
-      SnackbarOpen: false,
-      MandatoryMsg: "",
+
       uom_id: null,
       conversion_fact: null,
       extended_cost: 0,

@@ -23,7 +23,6 @@ import {
 } from "./DeptUserDetailsEvents";
 import Enumerable from "linq";
 // import GlobalVariables from "../../../../../utils/GlobalVariables.json";
-// import AHSnackbar from "../../../../common/Inputs/AHSnackbar";
 
 class DeptUserDetails extends Component {
   constructor(props) {

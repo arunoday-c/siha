@@ -256,8 +256,7 @@ class AddPatientForm extends PureComponent {
                             onBlur: texthandle.bind(this, this),
                             tabIndex: "2"
                           }
-                          // error: this.state.open
-                          // helperText: this.state.MandatoryMsg
+                          
                         }}
                       />
 

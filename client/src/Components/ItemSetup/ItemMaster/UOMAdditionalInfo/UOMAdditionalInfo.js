@@ -23,7 +23,6 @@ import {
   stockonchangegridcol
 } from "./UOMAdditionalInfoEvents";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import AHSnackbar from "../../../common/Inputs/AHSnackbar";
 
 class UOMAdditionalInfo extends Component {
   constructor(props) {
@@ -338,11 +337,6 @@ class UOMAdditionalInfo extends Component {
                   </div>
                 </div>
               </div>
-              <AHSnackbar
-                open={this.state.open}
-                handleClose={this.handleClose}
-                MandatoryMsg={this.state.MandatoryMsg}
-              />
             </div>
           )}
         </MyContext.Consumer>
