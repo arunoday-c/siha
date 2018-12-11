@@ -104,9 +104,7 @@ class InvoiceGeneration extends Component {
       billOut.company_payable = billOut.company_payble;
       billOut.sec_comapany_resp = billOut.sec_company_res;
       billOut.sec_company_payable = billOut.sec_company_paybale;
-
       this.setState({ ...this.state, ...billOut });
-      // console.log("Invoice Details:", this.state.Invoice_Detail);
     }
   }
 
@@ -232,9 +230,7 @@ class InvoiceGeneration extends Component {
                   className: "txt-fld",
                   name: "visit_code",
                   value: this.state.visit_code,
-                  events: {
-                    onChange: null
-                  },
+
                   others: {
                     disabled: true
                   }
@@ -520,26 +516,23 @@ class InvoiceGeneration extends Component {
             </div>
 
             <div className="row">
-              <div className="col-lg-12" style={{ textAlign: "right" }}>
-                <div className="row">
-                  <div className="col-lg-4">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Gross Amount"
-                      }}
-                    />
-                    <h5>{getAmountFormart(this.state.totalGross)}</h5>
-                  </div>
+              <div className="col-lg-12">
+                <div className="col-lg-4">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Gross Amount"
+                    }}
+                  />
+                  <h5>{getAmountFormart(this.state.totalGross)}</h5>
                 </div>
-                <div className="row">
-                  <div className="col-lg-4">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Discount Amount"
-                      }}
-                    />
-                    <h5>{getAmountFormart(this.state.totalDiscount)}</h5>
-                  </div>
+
+                <div className="col-lg-4">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Discount Amount"
+                    }}
+                  />
+                  <h5>{getAmountFormart(this.state.totalDiscount)}</h5>
                 </div>
               </div>
 
