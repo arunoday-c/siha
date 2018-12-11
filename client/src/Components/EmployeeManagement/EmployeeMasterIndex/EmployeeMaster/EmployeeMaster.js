@@ -245,13 +245,6 @@ class EmployeeMaster extends Component {
                         )}
                       </button>
                       <button
-                        onClick={ClearEmployee.bind(this, this)}
-                        type="button"
-                        className="btn btn-default"
-                      >
-                        <AlgaehLabel label={{ fieldName: "btn_clear" }} />
-                      </button>
-                      <button
                         onClick={e => {
                           this.onClose(e);
                         }}
@@ -259,6 +252,13 @@ class EmployeeMaster extends Component {
                         className="btn btn-default"
                       >
                         <AlgaehLabel label={{ fieldName: "btnCancel" }} />
+                      </button>
+                      <button
+                        onClick={ClearEmployee.bind(this, this)}
+                        type="button"
+                        className="btn btn-other"
+                      >
+                        <AlgaehLabel label={{ fieldName: "btn_clear" }} />
                       </button>
                     </div>
                   </div>
