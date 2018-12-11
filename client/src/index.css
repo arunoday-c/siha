@@ -682,21 +682,55 @@
         float: left;
         margin-right: 10px;
         margin-left: 0px; }
-      :global .algaeh-modal .popupFooter button {
+      :global .algaeh-modal .popupFooter .btn {
         float: right;
+        min-width: 70px;
+        padding: 4px 10px;
+        margin-top: 2px;
         margin-left: 10px;
-        padding: 5px 10px;
         font-size: 0.8rem;
         text-transform: uppercase;
-        min-width: 70px; }
+        background-size: 300% 100%;
+        -moz-transition: all 0.2s ease-in-out;
+        -o-transition: all 0.2s ease-in-out;
+        -webkit-transition: all 0.2s ease-in-out;
+        transition: all 0.2s ease-in-out; }
+        :global .algaeh-modal .popupFooter .btn:hover {
+          background-position: 100% 0;
+          -moz-transition: all 0.2s ease-in-out;
+          -o-transition: all 0.2s ease-in-out;
+          -webkit-transition: all 0.2s ease-in-out;
+          transition: all 0.2s ease-in-out; }
       :global .algaeh-modal .popupFooter .btn-primary {
-        background: #34b8bc;
         color: #fff;
-        border: 1px solid #34b8bc; }
+        background-color: none;
+        background-image: linear-gradient(to right, #34b8bc, #25d8df, #34b8bc, #25d8df);
+        border-color: #44b8bd; }
+        :global .algaeh-modal .popupFooter .btn-primary:hover {
+          background-color: none;
+          border-color: #44b8bd; }
+        :global .algaeh-modal .popupFooter .btn-primary:focus {
+          background-color: #34b8bc;
+          border-color: #34b8bc; }
+        :global .algaeh-modal .popupFooter .btn-primary.disabled, :global .algaeh-modal .popupFooter .btn-primary:disabled {
+          opacity: 0.3;
+          cursor: not-allowed; }
+        :global .algaeh-modal .popupFooter .btn-primary:active {
+          background-color: #fff;
+          border-color: #fff; }
       :global .algaeh-modal .popupFooter .btn-default {
-        background: #efefef;
-        color: #5a5a5a;
-        border: 1px solid #adadad; }
+        color: #212529;
+        background-color: none;
+        background-image: linear-gradient(to right, #ffffff, #ececec, #ffffff, #ececec);
+        border-color: #b6b6b6; }
+        :global .algaeh-modal .popupFooter .btn-default:hover, :global .algaeh-modal .popupFooter .btn-default:focus {
+          background-color: none;
+          border-color: #b6b6b6; }
+      :global .algaeh-modal .popupFooter .btn-other {
+        color: #212529;
+        border-color: #b6b6b6; }
+        :global .algaeh-modal .popupFooter .btn-other:hover, :global .algaeh-modal .popupFooter .btn-other:focus {
+          background-color: #e6e6e6; }
   :global .algaeh-modal-Ar {
     margin: 3% auto 0;
     background-color: #fff;
