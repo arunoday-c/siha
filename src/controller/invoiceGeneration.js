@@ -5,13 +5,14 @@ import httpStatus from "../utils/httpStatus";
 import {
   getVisitWiseBillDetailS,
   addInvoiceGeneration,
-  getInvoiceGeneration
+  getInvoiceGeneration,
+  getInvoicesForClaims
 } from "../model/invoiceGeneration";
 
 export default ({ config, db }) => {
   let api = Router();
 
-  // created by irfan :to add Appointment Status
+  // created by irfan :to
   api.get(
     "/getVisitWiseBillDetailS",
     getVisitWiseBillDetailS,
@@ -26,7 +27,7 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-  // created by irfan :to add Appointment Status
+  // created by irfan :to add
   api.post(
     "/addInvoiceGeneration",
     addInvoiceGeneration,
@@ -54,6 +55,23 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+
+  // created by irfan
+  api.get("/getInvoicesForClaims", getInvoicesForClaims, (req, res, next) => {
+    let result = req.records;
+    if (result.invalid_input == true) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: "please provide valid input"
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
 
   return api;
 };
