@@ -361,8 +361,6 @@ let getInvoicesForClaims = (req, res, next) => {
     sub_insurance_id: "ALL"
   };
 
-  // patient_id: "ALL",
-  // insurance_provider_id: "ALL",
   if (
     req.query.patient_id != "null" ||
     (req.query.from_date != "null" && req.query.to_date != "null") ||
@@ -370,7 +368,6 @@ let getInvoicesForClaims = (req, res, next) => {
     req.query.insurance_provider_id != "null"
   ) {
     if (req.query.patient_id != "null" && req.query.patient_id != undefined) {
-      debugLog("inside: patient ");
       req.query["IH.patient_id"] = req.query.patient_id;
     }
     delete req.query.patient_id;
@@ -380,17 +377,20 @@ let getInvoicesForClaims = (req, res, next) => {
       req.query.insurance_provider_id != undefined
     ) {
       req.query["IH.insurance_provider_id"] = req.query.insurance_provider_id;
-      debugLog("inside: insurance ");
     }
     delete req.query.insurance_provider_id;
 
     let invoice_date = "";
 
-    if (req.query.from_date != "null" && req.query.to_date != "null") {
+    if (
+      req.query.from_date != "null" &&
+      req.query.to_date != "null" &&
+      req.query.from_date != undefined &&
+      req.query.to_date != undefined
+    ) {
       invoice_date = ` date(invoice_date) between date('${
         req.query.from_date
       }') and date('${req.query.to_date}') and `;
-      debugLog("inside: invoice_date hhh");
     }
     delete req.query.from_date;
     delete req.query.to_date;
@@ -427,12 +427,41 @@ let getInvoicesForClaims = (req, res, next) => {
           where.values,
 
           (error, result) => {
-            releaseDBConnection(db, connection);
             if (error) {
+              releaseDBConnection(db, connection);
               next(error);
             }
-            req.records = result;
-            next();
+            let outputArray = [];
+            if (result.length > 0) {
+              for (let i = 0; i < result.length; i++) {
+                connection.query(
+                  "SELECT hims_f_invoice_details_id, invoice_header_id, bill_header_id, bill_detail_id, service_type_id,\
+    service_id, quantity, gross_amount, discount_amount, patient_resp, patient_tax, patient_payable,\
+    company_resp, company_tax, company_payable, sec_company_resp, sec_company_tax, sec_company_payable\
+    from hims_f_invoice_details where invoice_header_id=?",
+                  [result[i].hims_f_invoice_header_id],
+
+                  (error, invoiceDetails) => {
+                    if (error) {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    }
+
+                    outputArray.push({ ...result[i], invoiceDetails });
+
+                    if (i == result.length - 1) {
+                      releaseDBConnection(db, connection);
+                      req.records = outputArray;
+                      next();
+                    }
+                  }
+                );
+              }
+            } else {
+              releaseDBConnection(db, connection);
+              req.records = result;
+              next();
+            }
           }
         );
       });
