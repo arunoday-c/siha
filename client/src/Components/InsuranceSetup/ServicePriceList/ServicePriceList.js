@@ -32,8 +32,6 @@ class SubInsurance extends PureComponent {
       applicable: null,
       corporate_discount: 0,
       dummy: true
-      // pre_approval: null,
-      // insurance_service_name: ""
     };
     this.baseState = this.state;
   }

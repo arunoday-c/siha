@@ -20,7 +20,6 @@ import {
 import "./ItemMomentEnquiry.css";
 import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import AHSnackbar from "../../common/Inputs/AHSnackbar.js";
 
 class ItemMomentEnquiry extends Component {
   constructor(props) {
@@ -31,9 +30,7 @@ class ItemMomentEnquiry extends Component {
       location_id: null,
       item_id: null,
       from_date: null,
-      to_date: null,
-      SnackbarOpen: false,
-      MandatoryMsg: ""
+      to_date: null
     };
   }
 
@@ -67,10 +64,6 @@ class ItemMomentEnquiry extends Component {
       });
     }
   }
-
-  handleClose = () => {
-    this.setState({ SnackbarOpen: false });
-  };
 
   render() {
     return (
@@ -268,11 +261,6 @@ class ItemMomentEnquiry extends Component {
                 />
               </div>
             </div>
-            <AHSnackbar
-              open={this.state.SnackbarOpen}
-              handleClose={this.handleClose}
-              MandatoryMsg={this.state.MandatoryMsg}
-            />
           </div>
         </div>
       </React.Fragment>

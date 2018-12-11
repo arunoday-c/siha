@@ -259,8 +259,6 @@ class AddPatientForm extends PureComponent {
                             tabIndex: "2",
                             placeholder: "Enter Full Name"
                           }
-                          // error: this.state.open
-                          // helperText: this.state.MandatoryMsg
                         }}
                       />
 

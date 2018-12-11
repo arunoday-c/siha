@@ -1,9 +1,7 @@
 import moment from "moment";
 import Options from "../../Options.json";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
-
-// import math from "mathjs";
-// import Enumerable from "linq";
+import { AlgaehValidation } from "../../utils/GlobalFunctions";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 
 var intervalId;
@@ -172,62 +170,48 @@ const PostDoctorCommission = $this => {
 };
 
 const LoadBills = $this => {
-  if ($this.state.doctor_id === null) {
-    $this.setState({
-      SnackbarOpen: true,
-      MandatoryMsg: "Invalid Input. Please select Doctor."
-    });
-  } else if ($this.state.from_date === null) {
-    $this.setState({
-      SnackbarOpen: true,
-      MandatoryMsg: "Invalid Input. Please select From date."
-    });
-  } else if ($this.state.to_date === null) {
-    $this.setState({
-      SnackbarOpen: true,
-      MandatoryMsg: "Invalid Input. Please select To date."
-    });
-  } else if ($this.state.select_type === null) {
-    $this.setState({
-      SnackbarOpen: true,
-      MandatoryMsg: "Invalid Input. Please select Select Type."
-    });
-  } else if (
-    $this.state.select_type === "SS" &&
-    $this.state.select_service === null
-  ) {
-    $this.setState({
-      SnackbarOpen: true,
-      MandatoryMsg: "Invalid Input. Please select Service."
-    });
-  } else {
-    AlgaehLoader({ show: true });
-    let inpObj = {
-      incharge_or_provider: $this.state.doctor_id,
-      from_date: moment($this.state.from_date).format(Options.dateFormatYear),
-      to_date: moment($this.state.to_date).format(Options.dateFormatYear),
-      select_type: $this.state.select_type,
-      service_type_id: $this.state.select_service
-    };
+  AlgaehValidation({
+    alertTypeIcon: "warning",
+    querySelector: "data-validate='DoctorData'",
+    onSuccess: () => {
+      if (
+        $this.state.select_type === "SS" &&
+        $this.state.select_service === null
+      ) {
+        swalMessage({
+          title: "Please select Service.",
+          type: "warning"
+        });
+        document.querySelector("[name='select_service']").focus();
+      } else {
+        AlgaehLoader({ show: true });
+        let inpObj = {
+          incharge_or_provider: $this.state.doctor_id,
+          from_date: moment($this.state.from_date).format(
+            Options.dateFormatYear
+          ),
+          to_date: moment($this.state.to_date).format(Options.dateFormatYear),
+          select_type: $this.state.select_type,
+          service_type_id: $this.state.select_service
+        };
 
-    $this.props.getDoctorsCommission({
-      uri: "/doctorsCommission/getDoctorsCommission",
-      method: "GET",
-      data: inpObj,
-      redux: {
-        type: "BILL_DOC_COMMISSION_DATA",
-        mappingName: "billscommission"
-      },
-      afterSuccess: data => {
-        // let providers = Enumerable.from(data)
-        //   .where(w => w.isdoctor === "Y")
-        //   .toArray();
-        $this.setState({ billscommission: data }, () => {
-          AlgaehLoader({ show: false });
+        $this.props.getDoctorsCommission({
+          uri: "/doctorsCommission/getDoctorsCommission",
+          method: "GET",
+          data: inpObj,
+          redux: {
+            type: "BILL_DOC_COMMISSION_DATA",
+            mappingName: "billscommission"
+          },
+          afterSuccess: data => {
+            $this.setState({ billscommission: data }, () => {
+              AlgaehLoader({ show: false });
+            });
+          }
         });
       }
-    });
-  }
+    }
+  });
 };
 
 const ClearData = $this => {

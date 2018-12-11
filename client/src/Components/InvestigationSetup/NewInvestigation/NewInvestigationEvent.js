@@ -15,20 +15,22 @@ const Validations = $this => {
 
   if ($this.state.description === null) {
     isError = true;
-    $this.setState({
-      open: true,
-      MandatoryMsg: "Invalid Input. Test Name Cannot be blank."
+    swalMessage({
+      type: "error",
+      title: "Invalid Input. Test Name Cannot be blank."
     });
+
     document.querySelector("[name='description']").focus();
     return isError;
   }
 
   if ($this.state.services_id === null) {
     isError = true;
-    $this.setState({
-      open: true,
-      MandatoryMsg: "Invalid Input. Service Cannot be blank."
+    swalMessage({
+      type: "error",
+      title: "Invalid Input. Service Cannot be blank."
     });
+
     return isError;
   }
 };

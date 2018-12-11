@@ -23,7 +23,7 @@ import {
 import "./DoctorCommission.css";
 import "../../styles/site.css";
 import { AlgaehActions } from "../../actions/algaehActions";
-import AHSnackbar from "../common/Inputs/AHSnackbar.js";
+
 import GlobalVariables from "../../utils/GlobalVariables.json";
 import moment from "moment";
 import Options from "../../Options.json";
@@ -35,7 +35,6 @@ class DoctorCommission extends Component {
     super(props);
 
     this.state = {
-      SnackbarOpen: false,
       providers: [],
       select_type: "AS",
       doctor_id: null,
@@ -92,9 +91,6 @@ class DoctorCommission extends Component {
       return moment(value).format(Options.dateFormat);
     }
   }
-  handleClose = () => {
-    this.setState({ SnackbarOpen: false });
-  };
 
   render() {
     return (
@@ -171,11 +167,13 @@ class DoctorCommission extends Component {
             <div
               className="row inner-top-search"
               style={{ marginTop: 76, paddingBottom: 10 }}
+              data-validate="DoctorData"
             >
               <AlagehAutoComplete
                 div={{ className: "col" }}
                 label={{
-                  forceLabel: "Doctor"
+                  forceLabel: "Doctor",
+                  isImp: true
                 }}
                 selector={{
                   name: "doctor_id",
@@ -193,7 +191,7 @@ class DoctorCommission extends Component {
 
               <AlgaehDateHandler
                 div={{ className: "col" }}
-                label={{ forceLabel: "Form Date" }}
+                label={{ forceLabel: "Form Date", isImp: true }}
                 textBox={{ className: "txt-fld", name: "from_date" }}
                 maxDate={new Date()}
                 events={{
@@ -204,7 +202,7 @@ class DoctorCommission extends Component {
 
               <AlgaehDateHandler
                 div={{ className: "col" }}
-                label={{ forceLabel: "To Date" }}
+                label={{ forceLabel: "To Date", isImp: true }}
                 textBox={{ className: "txt-fld", name: "to_date" }}
                 maxDate={new Date()}
                 events={{
@@ -216,7 +214,8 @@ class DoctorCommission extends Component {
               <AlagehAutoComplete
                 div={{ className: "col" }}
                 label={{
-                  forceLabel: "Select Type"
+                  forceLabel: "Select Type",
+                  isImp: true
                 }}
                 selector={{
                   name: "select_type",
@@ -575,11 +574,6 @@ class DoctorCommission extends Component {
                     />
                   </button>
 
-                  <AHSnackbar
-                    open={this.state.SnackbarOpen}
-                    handleClose={this.handleClose}
-                    MandatoryMsg={this.state.MandatoryMsg}
-                  />
                   <button
                     type="button"
                     className="btn btn-default"
