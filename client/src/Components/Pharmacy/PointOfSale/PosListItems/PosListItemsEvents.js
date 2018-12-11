@@ -712,7 +712,8 @@ const CloseItemBatch = ($this, e) => {
     expiry_date:
       e.selected === true ? moment(e.expirydt)._d : $this.state.expiry_date,
 
-    grn_no: e.selected === true ? e.grnno : $this.state.grn_no
+    grn_no: e.selected === true ? e.grnno : $this.state.grn_no,
+    qtyhand: e.selected === true ? e.qtyhand : $this.state.qtyhand
   });
 };
 
