@@ -1,5 +1,6 @@
 .hptl-phase1-invoice-generation-form {
   background: #ffff;
+  border-radius: 5px;
   .form-details {
     padding: 5px;
     padding-bottom: 5px;
@@ -28,6 +29,10 @@
     }
   }
   #InvoiceGen {
-    width: 98vw !important;
+    .ReactTable {
+      max-width: 98vw !important;
+      height: 30vh !important;
+      margin-bottom: 20px;
+    }
   }
 }

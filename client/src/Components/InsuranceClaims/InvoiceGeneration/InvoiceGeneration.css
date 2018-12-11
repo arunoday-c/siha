@@ -1,5 +1,6 @@
 .hptl-phase1-invoice-generation-form {
-  background: #ffff; }
+  background: #ffff;
+  border-radius: 5px; }
   .hptl-phase1-invoice-generation-form .form-details {
     padding: 5px;
     padding-bottom: 5px; }
@@ -18,5 +19,7 @@
     margin-top: -10px; }
   .hptl-phase1-invoice-generation-form #doctorOrder .ReactTable {
     height: 10vh !important; }
-  .hptl-phase1-invoice-generation-form #InvoiceGen {
-    width: 98vw !important; }
+  .hptl-phase1-invoice-generation-form #InvoiceGen .ReactTable {
+    max-width: 98vw !important;
+    height: 30vh !important;
+    margin-bottom: 20px; }
