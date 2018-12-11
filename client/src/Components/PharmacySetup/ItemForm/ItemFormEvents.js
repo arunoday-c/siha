@@ -82,7 +82,7 @@ const deleteItemForm = ($this, row) => {
 };
 
 const insertItemForm = ($this, e) => {
-  e.preventDefault();
+  // e.preventDefault();
 
   AlgaehValidation({
     alertTypeIcon: "warning",
@@ -92,7 +92,8 @@ const insertItemForm = ($this, e) => {
         data: $this.state,
         onSuccess: response => {
           if (response.data.success === true) {
-            resetState($this);
+            debugger;
+            // resetState($this);
             //Handle Successful Add here
             getItemForm($this);
             swalMessage({

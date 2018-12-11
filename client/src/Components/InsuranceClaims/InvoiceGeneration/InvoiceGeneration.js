@@ -56,12 +56,6 @@ class InvoiceGeneration extends Component {
   }
 
   componentDidMount() {
-    // let prevLang = getCookie("Language");
-
-    // this.setState({
-    //   selectedLang: prevLang
-    // });
-
     if (
       this.props.servicetype === undefined ||
       this.props.servicetype.length === 0
@@ -88,23 +82,6 @@ class InvoiceGeneration extends Component {
           mappingName: "serviceslist"
         }
       });
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (
-      nextProps.invheadercal !== undefined &&
-      nextProps.invheadercal.length !== 0 &&
-      this.state.Invoice_Detail.length !== 0
-    ) {
-      let billOut = nextProps.invheadercal;
-      billOut.patient_resp = billOut.patient_res;
-      billOut.patient_payable = billOut.patient_payable;
-      billOut.company_resp = billOut.company_res;
-      billOut.company_payable = billOut.company_payble;
-      billOut.sec_comapany_resp = billOut.sec_company_res;
-      billOut.sec_company_payable = billOut.sec_company_paybale;
-      this.setState({ ...this.state, ...billOut });
     }
   }
 
@@ -683,7 +660,6 @@ function mapStateToProps(state) {
     servicetype: state.servicetype,
     orderedserviceslist: state.orderedserviceslist,
     serviceslist: state.serviceslist,
-    invheadercal: state.invheadercal,
     invoiceGen: state.invoiceGen
   };
 }
@@ -695,7 +671,6 @@ function mapDispatchToProps(dispatch) {
       getServices: AlgaehActions,
       getMedicationList: AlgaehActions,
       initialStateOrders: AlgaehActions,
-      billingCalculations: AlgaehActions,
       getInvoiceGeneration: AlgaehActions
     },
     dispatch

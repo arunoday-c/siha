@@ -59,55 +59,81 @@ const VisitSearch = ($this, e) => {
 const getVisitWiseBillDetailS = $this => {
   let inputobj = { visit_id: $this.state.visit_id, insurance_yesno: "Y" };
 
-  $this.props.getMedicationList({
+  algaehApiCall({
     uri: "/invoiceGeneration/getVisitWiseBillDetailS",
     method: "GET",
     data: inputobj,
-    redux: {
-      type: "BILLED_VISITWISE_GET_DATA",
-      mappingName: "visitwisebilldetail"
-    },
-    afterSuccess: data => {
-      if (data.length > 0) {
-        //created by Adnan
-        let gross_total = Enumerable.from(data)
-          .select(w => w.gross_amount)
-          .sum();
+    onSuccess: response => {
+      AlgaehLoader({ show: true });
+      if (response.data.success) {
+        let data = response.data.records;
+        if (data.length > 0) {
+          let gross_total = Enumerable.from(data)
+            .select(w => w.gross_amount)
+            .sum();
 
-        let discout_total = Enumerable.from(data)
-          .select(w => w.discount_amout)
-          .sum();
-        //created by Adnan
+          let discout_total = Enumerable.from(data)
+            .select(w => w.discount_amout)
+            .sum();
 
-        for (let i = 0; i < data.length; i++) {
-          data[i].service_id = data[i].services_id;
-          data[i].bill_header_id = data[i].hims_f_billing_header_id;
-          data[i].bill_detail_id = data[i].hims_f_billing_details_id;
-          data[i].bill_detail_id = data[i].hims_f_billing_details_id;
-          data[i].company_resp = data[i].comapany_resp;
-          data[i].company_payable = data[i].company_payble;
-        }
-
-        $this.setState({
-          saveEnable: false,
-          clearEnable: false,
-          Invoice_Detail: data,
-          //created by Adnan
-          totalGross: gross_total,
-          totalDiscount: discout_total
-          //created by Adnan
-        });
-
-        $this.props.billingCalculations({
-          uri: "/billing/billingCalculations",
-          method: "POST",
-          data: { billdetails: data },
-          redux: {
-            type: "INVOICE_HEADER_GEN_GET_DATA",
-            mappingName: "invheadercal"
+          for (let i = 0; i < data.length; i++) {
+            data[i].service_id = data[i].services_id;
+            data[i].bill_header_id = data[i].hims_f_billing_header_id;
+            data[i].bill_detail_id = data[i].hims_f_billing_details_id;
+            data[i].bill_detail_id = data[i].hims_f_billing_details_id;
+            data[i].company_resp = data[i].comapany_resp;
+            data[i].company_payable = data[i].company_payble;
           }
-        });
+
+          $this.setState({
+            saveEnable: false,
+            clearEnable: false,
+            Invoice_Detail: data,
+            totalGross: gross_total,
+            totalDiscount: discout_total
+          });
+
+          algaehApiCall({
+            uri: "/billing/billingCalculations",
+            method: "POST",
+            data: { billdetails: data },
+            onSuccess: response => {
+              debugger;
+              if (response.data.success) {
+                response.data.records.patient_resp =
+                  response.data.records.patient_res;
+                response.data.records.patient_payable =
+                  response.data.records.patient_payable;
+                response.data.records.company_resp =
+                  response.data.records.company_res;
+                response.data.records.company_payable =
+                  response.data.records.company_payble;
+                response.data.records.sec_comapany_resp =
+                  response.data.records.sec_company_res;
+                response.data.records.sec_company_payable =
+                  response.data.records.sec_company_paybale;
+                $this.setState({ ...response.data.records });
+              }
+              AlgaehLoader({ show: false });
+            },
+            onFailure: error => {
+              AlgaehLoader({ show: false });
+              swalMessage({
+                title: error.message,
+                type: "error"
+              });
+            }
+          });
+        }
       }
+      AlgaehLoader({ show: false });
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
 };
