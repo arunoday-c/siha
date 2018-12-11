@@ -434,134 +434,147 @@ class PersonalDetails extends PureComponent {
                       />
                     </div>
                   </div>
-                  <div className="col-lg-4 secondary-details">
-                    <div className="row secondary-box-container">
+                  <div className="col-lg-4">
+                    <div className="row">
+                      <div className="col-lg-12">
+                        <h6
+                          style={{ margin: "9px 0 15px", textAlign: "center" }}
+                        >
+                          Only if Doctor
+                        </h6>
+                      </div>
                       <div className="col-lg-6">
-                        <div className="image-drop-area">
-                          <Dropzone
-                            onDrop={onDrop.bind(
-                              this,
-                              this,
-                              "filePreview",
-                              context
-                            )}
-                            id="attach-width"
-                            className="dropzone"
-                            accept="image/*"
-                            multiple={false}
-                            name="image"
-                          >
-                            {/* this.state.filePreview
+                        <div className="row secondary-box-container">
+                          <div className="col-lg-12 customCheckbox">
+                            <label className="checkbox inline">
+                              <input
+                                type="checkbox"
+                                name="isdoctor"
+                                value="Y"
+                                checked={this.state.Applicable}
+                                onChange={isDoctorChange.bind(
+                                  this,
+                                  this,
+                                  context
+                                )}
+                              />
+                              <span>
+                                <AlgaehLabel
+                                  label={{ fieldName: "isdoctor" }}
+                                />
+                              </span>
+                            </label>
+                          </div>
+
+                          <AlagehFormGroup
+                            div={{ className: "col-lg-12 mandatory" }}
+                            label={{
+                              fieldName: "license_number",
+                              isImp: true
+                            }}
+                            textBox={{
+                              value: this.state.license_number,
+                              className: "txt-fld",
+                              name: "license_number",
+
+                              events: {
+                                onChange: texthandle.bind(this, this, context)
+                              },
+                              others: {
+                                disabled:
+                                  this.state.isdoctor === "Y" ? false : true,
+                                tabIndex: "6"
+                              }
+                            }}
+                          />
+                          <AlgaehDateHandler
+                            div={{ className: "col-lg-12" }}
+                            label={{
+                              fieldName: "date_of_joining",
+                              isImp: true
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "date_of_joining"
+                            }}
+                            maxDate={new Date()}
+                            events={{
+                              onChange: datehandle.bind(this, this, context)
+                            }}
+                            value={this.state.date_of_joining}
+                          />
+                          <AlgaehDateHandler
+                            div={{ className: "col-lg-12" }}
+                            label={{ fieldName: "date_of_leaving" }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "date_of_leaving"
+                            }}
+                            maxDate={new Date()}
+                            events={{
+                              onChange: datehandle.bind(this, this, context)
+                            }}
+                            value={this.state.date_of_leaving}
+                          />
+                        </div>
+                      </div>
+                      <div className="col-lg-6 secondary-details">
+                        <div className="row secondary-box-container">
+                          <div className="col-lg-12">
+                            <div
+                              className="image-drop-area"
+                              style={{ height: 177 }}
+                            >
+                              <Dropzone
+                                onDrop={onDrop.bind(
+                                  this,
+                                  this,
+                                  "filePreview",
+                                  context
+                                )}
+                                id="attach-width"
+                                className="dropzone"
+                                accept="image/*"
+                                multiple={false}
+                                name="image"
+                              >
+                                {/* this.state.filePreview
                                   ? this.state.filePreview
                                   : noImage */}
-                            <img
-                              src={this.state.filePreview}
-                              alt="Employee Profile Picture"
-                              onError={e => {
-                                e.target.src = noImage;
-                              }}
-                            />
+                                <img
+                                  src={this.state.filePreview}
+                                  alt="Employee Profile Picture"
+                                  onError={e => {
+                                    e.target.src = noImage;
+                                  }}
+                                />
 
-                            <div className="attach-design text-center">
-                              <AlgaehLabel
-                                label={{
-                                  fieldName: "attach_photo",
-                                  align: ""
-                                }}
-                              />
-                            </div>
-                            <div
-                              style={{
-                                width: this.state.percent + "%",
-                                height: 3,
-                                backgroundColor: "#E1AE54"
-                              }}
-                            />
-                            {/* <Line
+                                <div className="attach-design text-center">
+                                  <AlgaehLabel
+                                    label={{
+                                      fieldName: "attach_photo",
+                                      align: ""
+                                    }}
+                                  />
+                                </div>
+                                <div
+                                  style={{
+                                    width: this.state.percent + "%",
+                                    height: 3,
+                                    backgroundColor: "#E1AE54"
+                                  }}
+                                />
+                                {/* <Line
                               percent={this.state.percent}
                               strokeWidth="1"
                               strokeColor="#2db7f5"
                               strokeLinecap="square"
                             /> */}
-                          </Dropzone>
+                              </Dropzone>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div
-                      className="row secondary-box-container"
-                      style={{ paddingTop: "5px" }}
-                    >
-                      <div
-                        className="col-lg-4 customCheckbox"
-                        style={{ paddingTop: "20px" }}
-                      >
-                        <label className="checkbox inline">
-                          <input
-                            type="checkbox"
-                            name="isdoctor"
-                            value="Y"
-                            checked={this.state.Applicable}
-                            onChange={isDoctorChange.bind(this, this, context)}
-                          />
-                          <span>
-                            <AlgaehLabel label={{ fieldName: "isdoctor" }} />
-                          </span>
-                        </label>
-                      </div>
-
-                      <AlagehFormGroup
-                        div={{ className: "col-lg-8 mandatory" }}
-                        label={{
-                          fieldName: "license_number",
-                          isImp: true
-                        }}
-                        textBox={{
-                          value: this.state.license_number,
-                          className: "txt-fld",
-                          name: "license_number",
-
-                          events: {
-                            onChange: texthandle.bind(this, this, context)
-                          },
-                          others: {
-                            disabled:
-                              this.state.isdoctor === "Y" ? false : true,
-                            tabIndex: "6"
-                          }
-                        }}
-                      />
-                    </div>
-
-                    <div
-                      className="row secondary-box-container"
-                      style={{ paddingTop: "10px" }}
-                    >
-                      <AlgaehDateHandler
-                        div={{ className: "col-lg-6" }}
-                        label={{ fieldName: "date_of_joining", isImp: true }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "date_of_joining"
-                        }}
-                        maxDate={new Date()}
-                        events={{
-                          onChange: datehandle.bind(this, this, context)
-                        }}
-                        value={this.state.date_of_joining}
-                      />
-                      <AlgaehDateHandler
-                        div={{ className: "col-lg-6" }}
-                        label={{ fieldName: "date_of_leaving" }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "date_of_leaving"
-                        }}
-                        maxDate={new Date()}
-                        events={{
-                          onChange: datehandle.bind(this, this, context)
-                        }}
-                        value={this.state.date_of_leaving}
-                      />
                     </div>
                   </div>
                 </div>
