@@ -25,25 +25,29 @@ const VisitSearch = ($this, e) => {
           visit_id: row.hims_f_patient_visit_id
         },
         () => {
-          // if ($this.state.insured === "Y") {
-          //   $this.props.getPatientInsurance({
-          //     uri: "/insurance/getPatientInsurance",
-          //     method: "GET",
-          //     data: {
-          //       patient_id: $this.state.patient_id,
-          //       patient_visit_id: $this.state.visit_id
-          //     },
-          //     redux: {
-          //       type: "EXIT_INSURANCE_GET_DATA",
-          //       mappingName: "existinsurance"
-          //     },
-          //     afterSuccess: data => {
-          //
-          //       data[0].mode_of_pay = "2";
-          //       $this.setState(data[0]);
-          //     }
-          //   });
-          // }
+          algaehApiCall({
+            uri: "/insurance/getPatientInsurance",
+            method: "GET",
+            data: {
+              patient_id: $this.state.patient_id,
+              patient_visit_id: $this.state.visit_id
+            },
+            onSuccess: response => {
+              if (response.data.success) {
+                debugger;
+                $this.setState({ ...response.data.records });
+              }
+              AlgaehLoader({ show: false });
+            },
+            onFailure: error => {
+              AlgaehLoader({ show: false });
+              swalMessage({
+                title: error.message,
+                type: "error"
+              });
+            }
+          });
+
           getOrderServices($this);
           getVisitWiseBillDetailS($this);
         }

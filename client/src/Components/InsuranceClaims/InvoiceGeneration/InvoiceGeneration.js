@@ -104,9 +104,7 @@ class InvoiceGeneration extends Component {
       billOut.company_payable = billOut.company_payble;
       billOut.sec_comapany_resp = billOut.sec_company_res;
       billOut.sec_company_payable = billOut.sec_company_paybale;
-
       this.setState({ ...this.state, ...billOut });
-      // console.log("Invoice Details:", this.state.Invoice_Detail);
     }
   }
 
@@ -221,10 +219,10 @@ class InvoiceGeneration extends Component {
           style={{ marginTop: 76, paddingBottom: 10 }}
         >
           {/* Patient code */}
-          <div className="col-lg-8">
+          <div className="col-4">
             <div className="row">
               <AlagehFormGroup
-                div={{ className: "col-lg-3" }}
+                div={{ className: "col-3" }}
                 label={{
                   forceLabel: "Visit Code"
                 }}
@@ -232,16 +230,14 @@ class InvoiceGeneration extends Component {
                   className: "txt-fld",
                   name: "visit_code",
                   value: this.state.visit_code,
-                  events: {
-                    onChange: null
-                  },
+
                   others: {
                     disabled: true
                   }
                 }}
               />
               <div
-                className="col-lg-2 print_actions"
+                className="col-2-lg-2 print_actions"
                 style={{ marginTop: "auto" }}
               >
                 <span
@@ -253,9 +249,9 @@ class InvoiceGeneration extends Component {
               </div>
             </div>
           </div>
-          <div className="col-lg-4">
+          <div className="col-8">
             <div className="row">
-              <div className="col-lg-4">
+              <div className="col-3">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Patient Code"
@@ -267,7 +263,7 @@ class InvoiceGeneration extends Component {
                     : "Patient Code"}
                 </h6>
               </div>
-              <div className="col-lg-4">
+              <div className="col-3">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Patient Name"
@@ -520,32 +516,30 @@ class InvoiceGeneration extends Component {
             </div>
 
             <div className="row">
-              <div className="col-lg-12" style={{ textAlign: "right" }}>
+              <div className="col-4">
                 <div className="row">
-                  <div className="col-lg-4">
+                  <div className="col-6">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Gross Amount"
+                        forceLabel: "Patient Payable"
                       }}
                     />
-                    <h5>{getAmountFormart(this.state.totalGross)}</h5>
+                    <h5>{getAmountFormart(this.state.patient_payable)}</h5>
                   </div>
-                </div>
-                <div className="row">
-                  <div className="col-lg-4">
+                  <div className="col-6">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Discount Amount"
+                        forceLabel: "Patient Payable"
                       }}
                     />
-                    <h5>{getAmountFormart(this.state.totalDiscount)}</h5>
+                    <h5>{getAmountFormart(this.state.patient_payable)}</h5>
                   </div>
                 </div>
               </div>
 
-              <div className="col-lg-12">
+              <div className="col-8">
                 <div className="row">
-                  <div className="col-lg-3">
+                  <div className="col-2">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Patient Resp."
@@ -554,7 +548,7 @@ class InvoiceGeneration extends Component {
                     <h5>{getAmountFormart(this.state.patient_resp)}</h5>
                   </div>
 
-                  <div className="col-lg-3">
+                  <div className="col-2">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Patient Tax"
@@ -563,7 +557,7 @@ class InvoiceGeneration extends Component {
                     <h5>{getAmountFormart(this.state.patient_tax)}</h5>
                   </div>
 
-                  <div className="col-lg-3">
+                  <div className="col-2">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Patient Payable"
@@ -572,7 +566,7 @@ class InvoiceGeneration extends Component {
                     <h5>{getAmountFormart(this.state.patient_payable)}</h5>
                   </div>
 
-                  <div className="col-lg-3">
+                  <div className="col-2">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Company Resp."
@@ -580,9 +574,7 @@ class InvoiceGeneration extends Component {
                     />
                     <h5>{getAmountFormart(this.state.company_resp)}</h5>
                   </div>
-                </div>
-                <div className="row">
-                  <div className="col-lg-3">
+                  <div className="col-2">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Company Tax"
@@ -590,7 +582,7 @@ class InvoiceGeneration extends Component {
                     />
                     <h5>{getAmountFormart(this.state.company_tax)}</h5>
                   </div>
-                  <div className="col-lg-3">
+                  <div className="col-2">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Company Payable"
@@ -599,7 +591,7 @@ class InvoiceGeneration extends Component {
                     <h5>{getAmountFormart(this.state.company_payble)}</h5>
                   </div>
 
-                  <div className="col-lg-3">
+                  <div className="col-2">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Sec Company Resp."
@@ -607,7 +599,7 @@ class InvoiceGeneration extends Component {
                     />
                     <h5>{getAmountFormart(this.state.sec_comapany_resp)}</h5>
                   </div>
-                  <div className="col-lg-3">
+                  <div className="col-2">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Sec Company Tax"
@@ -615,9 +607,7 @@ class InvoiceGeneration extends Component {
                     />
                     <h5>{getAmountFormart(this.state.sec_company_tax)}</h5>
                   </div>
-                </div>
-                <div className="row">
-                  <div className="col-lg-4">
+                  <div className="col-2">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Sec Company Payable"
@@ -628,7 +618,6 @@ class InvoiceGeneration extends Component {
                 </div>
               </div>
             </div>
-            <hr />
           </div>
         </div>
         <div className="hptl-phase1-footer">
