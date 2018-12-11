@@ -152,7 +152,10 @@ class POItemList extends Component {
                               : this.state.inventory_uom_id,
                           dataSource: {
                             textField: "uom_description",
-                            valueField: "hims_d_pharmacy_uom_id",
+                            valueField:
+                              this.state.po_from === "PHR"
+                                ? "hims_d_pharmacy_uom_id"
+                                : "hims_d_inventory_uom_id",
                             data: this.props.poitemuom
                           },
                           others: {

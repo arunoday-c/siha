@@ -93,7 +93,7 @@ let addPurchaseOrderEntry = (req, res, next) => {
             new Date()
           ],
           (error, headerResult) => {
-            debugLog("error: ", "Check");
+            debugLog("Success: ", "Check");
             if (error) {
               connection.rollback(() => {
                 releaseDBConnection(db, connection);
@@ -114,6 +114,7 @@ let addPurchaseOrderEntry = (req, res, next) => {
                 "order_quantity",
                 "total_quantity",
                 "pharmacy_uom_id",
+                "inventory_uom_id",
                 "unit_price",
                 "extended_price",
                 "sub_discount_percentage",
@@ -144,6 +145,7 @@ let addPurchaseOrderEntry = (req, res, next) => {
                 ],
                 (error, detailResult) => {
                   if (error) {
+                    debugLog("error: ", "Check");
                     connection.rollback(() => {
                       releaseDBConnection(db, connection);
                       next(error);
@@ -154,20 +156,6 @@ let addPurchaseOrderEntry = (req, res, next) => {
                     purchase_number: documentCode
                   };
                   next();
-
-                  // connection.commit(error => {
-                  //   if (error) {
-                  //     connection.rollback(() => {
-                  //       releaseDBConnection(db, connection);
-                  //       next(error);
-                  //     });
-                  //   }
-                  //   releaseDBConnection(db, connection);
-                  //   req.records = {
-                  //     purchase_number: documentCode
-                  //   };
-                  //   next();
-                  // });
                 }
               );
             } else {

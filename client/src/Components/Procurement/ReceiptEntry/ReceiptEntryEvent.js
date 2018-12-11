@@ -459,6 +459,7 @@ const PostReceiptEntry = $this => {
     $this.state.inventory_stock_detail = $this.state.receipt_entry_detail;
 
     for (let i = 0; i < $this.state.inventory_stock_detail.length; i++) {
+      debugger;
       $this.state.inventory_stock_detail[i].location_id =
         $this.state.inventory_location_id;
       $this.state.inventory_stock_detail[i].location_type =
@@ -467,23 +468,23 @@ const PostReceiptEntry = $this => {
       $this.state.inventory_stock_detail[i].quantity =
         $this.state.inventory_stock_detail[i].recieved_quantity;
 
-      $this.state.pharmacy_stock_detail[i].uom_id =
-        $this.state.pharmacy_stock_detail[i].inventory_uom_id;
+      $this.state.inventory_stock_detail[i].uom_id =
+        $this.state.inventory_stock_detail[i].inventory_uom_id;
       $this.state.inventory_stock_detail[i].sales_uom =
         $this.state.inventory_stock_detail[i].inventory_uom_id;
-      $this.state.pharmacy_stock_detail[i].item_id =
-        $this.state.pharmacy_stock_detail[i].inv_item_id;
+      $this.state.inventory_stock_detail[i].item_id =
+        $this.state.inventory_stock_detail[i].inv_item_id;
       $this.state.inventory_stock_detail[i].item_code_id =
         $this.state.inventory_stock_detail[i].inv_item_id;
       $this.state.inventory_stock_detail[i].grn_number = $this.state.grn_number;
       $this.state.inventory_stock_detail[i].item_category_id =
         $this.state.inventory_stock_detail[i].inv_item_category_id;
-      $this.state.pharmacy_stock_detail[i].item_group_id =
-        $this.state.pharmacy_stock_detail[i].inv_item_group_id;
+      $this.state.inventory_stock_detail[i].item_group_id =
+        $this.state.inventory_stock_detail[i].inv_item_group_id;
 
       $this.state.inventory_stock_detail[i].net_total =
         $this.state.inventory_stock_detail[i].net_extended_cost;
-      $this.state.pharmacy_stock_detail[i].operation = "+";
+      $this.state.inventory_stock_detail[i].operation = "+";
     }
   }
 
@@ -492,6 +493,7 @@ const PostReceiptEntry = $this => {
     data: $this.state,
     method: "PUT",
     onSuccess: response => {
+      debugger;
       if (response.data.success === true) {
         $this.setState({
           postEnable: true
