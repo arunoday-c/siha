@@ -266,6 +266,10 @@ class PersonalDetails extends PureComponent {
 
                           events: {
                             onChange: texthandle.bind(this, this, context)
+                          },
+                          others: {
+                            placeholder: "Enter Email Address",
+                            type: "email"
                           }
                         }}
                       />
@@ -285,7 +289,9 @@ class PersonalDetails extends PureComponent {
                             onChange: texthandle.bind(this, this, context)
                           },
                           others: {
-                            tabIndex: "7"
+                            tabIndex: "7",
+                            placeholder: "(+01)123-456-7890",
+                            type: "number"
                           }
                         }}
                       />
