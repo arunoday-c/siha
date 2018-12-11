@@ -57,6 +57,7 @@
 .ReactTable .fa-file-prescription,
 .ReactTable .fa-prescription,
 .ReactTable .fa-arrow-right,
+.ReactTable .fa-eye,
 .ReactTable .fa-plus {
   cursor: pointer;
   border: 1px solid #44b8bd;
@@ -84,6 +85,7 @@
 .ReactTable .fa-file-export:hover,
 .ReactTable .fa-sync-alt:hover,
 .ReactTable .fa-file-alt:hover,
+.ReactTable .fa-eye:hover,
 .ReactTable .fa-file-prescription:hover,
 .ReactTable .fa-prescription:hover,
 .ReactTable .fa-arrow-right:hover,

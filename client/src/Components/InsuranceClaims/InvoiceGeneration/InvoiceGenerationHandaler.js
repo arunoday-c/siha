@@ -89,7 +89,7 @@ const getVisitWiseBillDetailS = $this => {
           clearEnable: false,
           Invoice_Detail: data,
           //created by Adnan
-          totalGross: gross_total,
+          gross_amount: gross_total,
           totalDiscount: discout_total
           //created by Adnan
         });

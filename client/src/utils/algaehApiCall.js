@@ -8,14 +8,15 @@ import config from "../utils/config.json";
 import axiosCancel from "axios-cancel";
 import AlgaehLoader from "../Components/Wrapper/fullPageLoader.js";
 const dateFormat = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/;
+
 export function algaehApiCall(options) {
   // "baseUrl": "http://192.168.0.149:3000/api/v1",
 
   if (!window.navigator.onLine) {
     swalMessage({
       title:
-        "Looks like you're not connected to any network,\n please make sure you connect and try again",
-      imageUrl: "images/nointernet.webp",
+        "Looks like you're not connected to any network,\n please make sure you connect to a network and try again",
+      imageUrl: "images/nointernet.png",
       imageHeight: 30,
       position: "center",
       timer: 4000
@@ -28,8 +29,8 @@ export function algaehApiCall(options) {
       window.navigator.connection.effectiveType === "2g"
     ) {
       swalMessage({
-        title: "Low internet connectivity, response may be delay",
-        imageUrl: "images/nointernet.webp",
+        title: "Low internet connectivity, response may be delayed",
+        imageUrl: "images/nointernet.png",
         imageHeight: 30,
         position: "top",
         timer: 4000

@@ -1802,6 +1802,44 @@ let getInsuranceProviders = (req, res, next) => {
   }
 };
 
+let getSubInsuraces = (req, res, next) => {
+  let selectWhere = {
+    insurance_provider_id: null
+  };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      let where = whereCondition(extend(selectWhere, req.query));
+      connection.query(
+        " SELECT hims_d_insurance_sub_id, insurance_sub_code, insurance_sub_name, arabic_sub_name,\
+        insurance_provider_id  from hims_d_insurance_sub where record_status='A' AND " +
+          where.condition,
+        where.values,
+
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getPatientInsurance,
   addPatientInsurance,
@@ -1822,6 +1860,7 @@ module.exports = {
   updatePriceListBulk,
   addPatientInsuranceData,
   deleteNetworkAndNetworkOfficRecords,
-  getInsuranceProviders
+  getInsuranceProviders,
+  getSubInsuraces
   // getPreAprovalList
 };
