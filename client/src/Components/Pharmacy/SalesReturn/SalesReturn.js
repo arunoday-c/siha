@@ -15,7 +15,7 @@ import {
 import "./SalesReturn.css";
 import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import AHSnackbar from "../../common/Inputs/AHSnackbar.js";
+
 import ItemListsReturn from "./ItemListsReturn/ItemListsReturn";
 import MyContext from "../../../utils/MyContext";
 import SALESRETURNIOputs from "../../../Models/SalesReturn";
@@ -323,11 +323,6 @@ class SalesReturn extends Component {
                     />
                   </button>
 
-                  <AHSnackbar
-                    open={this.state.open}
-                    handleClose={this.handleClose}
-                    MandatoryMsg={this.state.MandatoryMsg}
-                  />
                   <button
                     type="button"
                     className="btn btn-default"

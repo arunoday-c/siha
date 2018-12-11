@@ -123,7 +123,7 @@ const CptCodesSearch = $this => {
 const clearData = $this => {
   $this.setState({
     open: false,
-    MandatoryMsg: "",
+
     selectedLang: "en",
     Applicable: false,
 

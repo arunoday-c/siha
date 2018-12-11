@@ -1,7 +1,7 @@
 import moment from "moment";
 import Options from "../../../Options.json";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import math from "mathjs";
 import Enumerable from "linq";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
@@ -62,25 +62,6 @@ const getItemUom = $this => {
       });
     }
   });
-
-  // $this.props.getItemMasterAndItemUom({
-  //   uri: "/pharmacy/getItemMasterAndItemUom",
-  //   method: "GET",
-  //   redux: {
-  //     type: "ITEMS_GET_DATA",
-  //     mappingName: "itemuomlist"
-  //   },
-  //   afterSuccess: data => {
-  //     let itemuomlist = Enumerable.from(data)
-  //       .where(
-  //         w => w.hims_d_item_master_id === $this.state.item_id,
-  //         w => w.uom_id === $this.state.uom_id
-  //       )
-  //       .firstOrDefault();
-
-  //     $this.setState({ conversion_factor: itemuomlist.conversion_factor });
-  //   }
-  // });
 };
 
 const itemchangeText = ($this, e) => {
@@ -99,86 +80,66 @@ const itemchangeText = ($this, e) => {
 };
 
 const AddItems = $this => {
-  if ($this.state.location_id === null) {
-    $this.setState({
-      SnackbarOpen: true,
-      MandatoryMsg: "Invalid Input. Please select Location."
-    });
-  } else if ($this.state.item_id === null) {
-    $this.setState({
-      SnackbarOpen: true,
-      MandatoryMsg: "Invalid Input. Please select Item."
-    });
-  } else if ($this.state.batchno === null) {
-    $this.setState({
-      SnackbarOpen: true,
-      MandatoryMsg: "Invalid Input. Batch No. cannot be blank."
-    });
-  } else if ($this.state.expiry_date === null) {
-    $this.setState({
-      SnackbarOpen: true,
-      MandatoryMsg: "Invalid Input. Please select Expiry Date."
-    });
-  } else if ($this.state.quantity === 0) {
-    $this.setState({
-      SnackbarOpen: true,
-      MandatoryMsg: "Invalid Input. Quantity cannot be blank."
-    });
-  } else if ($this.state.unit_cost === 0) {
-    $this.setState({
-      SnackbarOpen: true,
-      MandatoryMsg: "Invalid Input. Unit Cost cannot be blank."
-    });
-  } else if ($this.state.grn_number === 0) {
-    $this.setState({
-      SnackbarOpen: true,
-      MandatoryMsg: "Invalid Input. Recipt Number(GRN) cannot be blank."
-    });
-  } else {
-    let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
-    let itemObj = {
-      location_id: $this.state.location_id,
-      location_type: $this.state.location_type,
-      item_category_id: $this.state.item_category_id,
-      item_group_id: $this.state.item_group_id,
-      item_id: $this.state.item_id,
-      uom_id: $this.state.uom_id,
-      sales_uom: $this.state.sales_uom,
-      batchno: $this.state.batchno,
-      expiry_date: $this.state.expiry_date,
-      quantity: $this.state.quantity,
-      unit_cost: $this.state.unit_cost,
-      extended_cost: $this.state.extended_cost,
-      conversion_factor: $this.state.conversion_factor,
-      barcode: "",
-      grn_number: $this.state.grn_number,
-      noorecords: pharmacy_stock_detail.length + 1,
-      required_batchno: $this.state.required_batchno
-    };
+  AlgaehValidation({
+    alertTypeIcon: "warning",
+    querySelector: "data-validate='InvIntialStock'",
+    onSuccess: () => {
+      if ($this.state.quantity === 0) {
+        swalMessage({
+          title: "Quantity, cannot be zero.",
+          type: "error"
+        });
+        document.querySelector("[name='quantity']").focus();
+      } else if ($this.state.unit_cost === 0) {
+        swalMessage({
+          title: "Unit Cost, cannot be zero.",
+          type: "error"
+        });
+        document.querySelector("[name='unit_cost']").focus();
+      } else {
+        let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+        let itemObj = {
+          location_id: $this.state.location_id,
+          location_type: $this.state.location_type,
+          item_category_id: $this.state.item_category_id,
+          item_group_id: $this.state.item_group_id,
+          item_id: $this.state.item_id,
+          uom_id: $this.state.uom_id,
+          sales_uom: $this.state.sales_uom,
+          batchno: $this.state.batchno,
+          expiry_date: $this.state.expiry_date,
+          quantity: $this.state.quantity,
+          unit_cost: $this.state.unit_cost,
+          extended_cost: $this.state.extended_cost,
+          conversion_factor: $this.state.conversion_factor,
+          barcode: "",
+          grn_number: $this.state.grn_number,
+          noorecords: pharmacy_stock_detail.length + 1,
+          required_batchno: $this.state.required_batchno
+        };
 
-    pharmacy_stock_detail.push(itemObj);
-    $this.setState(
-      {
-        pharmacy_stock_detail: pharmacy_stock_detail,
+        pharmacy_stock_detail.push(itemObj);
+        $this.setState({
+          pharmacy_stock_detail: pharmacy_stock_detail,
 
-        location_id: null,
-        item_category_id: null,
-        item_group_id: null,
-        item_id: null,
-        batchno: null,
-        expiry_date: null,
-        quantity: 0,
-        unit_cost: 0,
-        uom_id: null,
-        conversion_fact: null,
-        extended_cost: 0,
-        saveEnable: false,
-        grn_number: null,
-        sales_uom: null
-      },
-      () => {}
-    );
-  }
+          location_id: null,
+          item_category_id: null,
+          item_group_id: null,
+          item_id: null,
+          batchno: null,
+          expiry_date: null,
+          quantity: 0,
+          unit_cost: 0,
+          uom_id: null,
+          conversion_fact: null,
+          extended_cost: 0,
+          saveEnable: false,
+          grn_number: null,
+          sales_uom: null
+        });
+      }
+    }
+  });
 };
 
 const datehandle = ($this, ctrl, e) => {

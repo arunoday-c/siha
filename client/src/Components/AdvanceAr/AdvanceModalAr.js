@@ -30,7 +30,7 @@ import {
 import AdvRefunIOputs from "../../Models/AdvanceRefund";
 import { successfulMessage } from "../../utils/GlobalFunctions";
 // import { getCookie } from "../../utils/algaehApiCall";
-import AHSnackbar from "../common/Inputs/AHSnackbar.js";
+
 import { postAdvance } from "../../actions/RegistrationPatient/Billingactions";
 
 class AddAdvanceModalAr extends PureComponent {
@@ -513,12 +513,6 @@ class AddAdvanceModalAr extends PureComponent {
                   </div>
                 </div>
               </div>
-
-              <AHSnackbar
-                open={this.state.open}
-                handleClose={this.handleClose}
-                MandatoryMsg={this.state.MandatoryMsg}
-              />
             </div>
           </Modal>
         </div>
