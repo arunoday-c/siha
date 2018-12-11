@@ -31,11 +31,12 @@ let updateIntoItemLocation = (req, res, next) => {
 
     let inputParam = req.body;
 
-    let xmlQuery = "<hims_m_item_location>";
+    let xmlQuery = "";
     debugLog("req.body: ", req.body);
 
     new LINQ(inputParam.pharmacy_stock_detail)
       .Select(s => {
+        xmlQuery += "<hims_m_item_location>";
         xmlQuery += createXmlString({
           item_id: s.item_id,
           pharmacy_location_id: s.location_id,
@@ -80,9 +81,10 @@ let updateIntoItemLocation = (req, res, next) => {
           updated_by: req.userIdentity.algaeh_d_app_user_id,
           operation: s.operation
         });
+        xmlQuery += "</hims_m_item_location>";
       })
       .ToArray();
-    xmlQuery += "</hims_m_item_location>";
+    // xmlQuery += "</hims_m_item_location>";
 
     debugLog("xmlQuery", xmlQuery);
     connection.query(

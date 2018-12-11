@@ -268,7 +268,7 @@ let createUserLogin = (req, res, next) => {
                 next(error);
               });
             }
-            debugLog("result:", result);
+
             if (result.insertId != null && result.insertId != undefined) {
               connection.query(
                 "INSERT INTO `algaeh_d_app_password` ( userid,password,created_date, created_by, updated_date, updated_by)\
@@ -289,16 +289,14 @@ let createUserLogin = (req, res, next) => {
                     });
                   }
 
-                  debugLog("pwdResult:", pwdResult);
                   if (
                     pwdResult.insertId != null &&
                     pwdResult.insertId != undefined
                   ) {
                     connection.query(
-                      "INSERT INTO `algaeh_m_group_user_mappings` ( app_group_id, user_id, role_id,created_date, created_by, updated_date, updated_by)\
-                      VALUE(?,?,?,?,?,?,?)",
+                      "INSERT INTO `algaeh_m_role_user_mappings` ( user_id,  role_id,created_date, created_by, updated_date, updated_by)\
+                      VALUE(?,?,?,?,?,?)",
                       [
-                        input.app_group_id,
                         result.insertId,
                         input.role_id,
                         new Date(),
