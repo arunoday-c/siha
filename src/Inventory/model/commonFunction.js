@@ -101,14 +101,27 @@ let updateIntoInvItemLocation = (req, res, next) => {
             // if (result[0][0].Error != null) {
             if (result[0][0].Error != null) {
               debugLog("Error: ", result[0][0].Error);
+
               const error = new Error();
               error.message = result[0][0].Error;
-              req.options.onFailure(error);
+              if (req.options != null) {
+                req.options.onFailure(error);
+              } else {
+                next(error);
+              }
             } else {
-              req.options.onSuccess(result);
+              if (req.options != null) {
+                req.options.onSuccess(result);
+              } else {
+                next();
+              }
             }
           } else {
-            req.options.onSuccess(result);
+            if (req.options != null) {
+              req.options.onSuccess(result);
+            } else {
+              next();
+            }
           }
         }
       }

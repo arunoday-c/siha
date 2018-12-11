@@ -67,6 +67,7 @@ const discounthandle = ($this, context, ctrl, e) => {
         sub_discount_percentage: $this.state.sub_discount_percentage
       });
     } else {
+      debugger;
       extended_cost =
         parseFloat($this.state.extended_price) - sub_discount_amount;
       unit_cost = extended_cost / parseFloat($this.state.order_quantity);
@@ -118,6 +119,7 @@ const numberchangeTexts = ($this, context, e) => {
       type: "warning"
     });
   } else {
+    debugger;
     let extended_price = 0;
     if (parseFloat(value) > 0 && parseFloat($this.state.unit_price) > 0) {
       extended_price = parseFloat(value) * parseFloat($this.state.unit_price);
@@ -163,13 +165,14 @@ const unitpricenumberchangeTexts = ($this, context, e) => {
       type: "warning"
     });
   } else {
+    debugger;
     let extended_price = 0;
     if (parseFloat($this.state.order_quantity) > 0 && parseFloat(value) > 0) {
       extended_price =
         parseFloat($this.state.order_quantity) * parseFloat(value);
     }
 
-    let unit_cost = extended_price / parseFloat(value);
+    let unit_cost = extended_price / parseFloat($this.state.order_quantity);
     let tax_amount =
       (extended_price * parseFloat($this.state.tax_percentage)) / 100;
     let total_amount = tax_amount + extended_price;
@@ -239,6 +242,7 @@ const itemchangeText = ($this, context, e) => {
           });
         }
       } else {
+        debugger;
         $this.setState({
           [name]: value,
           inv_item_category_id: e.selected.category_id,
@@ -307,6 +311,7 @@ const AddItems = ($this, context) => {
       type: "warning"
     });
   } else {
+    debugger;
     let ItemInput = {
       completed: "N",
       phar_item_category: $this.state.phar_item_category,
