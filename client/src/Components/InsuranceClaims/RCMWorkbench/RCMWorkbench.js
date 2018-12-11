@@ -12,6 +12,7 @@ import {
   AlagehFormGroup,
   AlgaehModalPopUp
 } from "../../Wrapper/algaehWrapper";
+import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import ValidateBills from "./ValidateBills/ValidateBills";
 
@@ -80,6 +81,8 @@ class RCMWorkbench extends Component {
             : null
         };
 
+        AlgaehLoader({ show: true });
+
         algaehApiCall({
           uri: "/invoiceGeneration/getInvoicesForClaims",
           method: "GET",
@@ -88,8 +91,11 @@ class RCMWorkbench extends Component {
             this.setState({
               claims: response.data.records
             });
+            AlgaehLoader({ show: false });
           },
-          onError: error => {}
+          onError: error => {
+            AlgaehLoader({ show: false });
+          }
         });
       }
     });
@@ -382,15 +388,10 @@ class RCMWorkbench extends Component {
                         )
                       },
                       {
-                        fieldName: "policy_group",
+                        fieldName: "network_type",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Policy Group" }} />
                         )
-                      },
-                      {
-                        fieldName: "desc",
-                        label: <AlgaehLabel label={{ forceLabel: "Desc." }} />,
-                        disabled: true
                       },
                       {
                         fieldName: "network_type",
@@ -406,10 +407,9 @@ class RCMWorkbench extends Component {
                       {
                         fieldName: "patient_code",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Patient Id" }} />
+                          <AlgaehLabel label={{ forceLabel: "Patient Code" }} />
                         )
                       },
-
                       {
                         fieldName: "patient_name",
                         label: (

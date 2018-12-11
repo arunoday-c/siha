@@ -17,8 +17,16 @@ class ValidateBills extends PureComponent {
     };
   }
 
+  // componentWillUnmount() {
+  //   this.setState({
+  //     invoice_details: []
+  //   });
+  // }
+
   render() {
     let invoices = this.props.data !== undefined ? [this.props.data] : [];
+    let invoice_details =
+      this.props.data !== undefined ? this.props.data.invoiceDetails : [];
 
     return (
       <AlgaehModalPopUp
@@ -36,43 +44,59 @@ class ValidateBills extends PureComponent {
               <AlgaehDataGrid
                 id="validate-bills-grid"
                 columns={[
+                  // {
+                  //   fieldName: "actions",
+                  //   label: "Select",
+                  //   displayTemplate: row => {
+                  //     return (
+                  //       <div className="customCheckbox">
+                  //         <input
+                  //           type="checkbox"
+                  //           onChange={() => {
+                  //             this.setState({
+                  //               invoice_details: row.invoiceDetails
+                  //             });
+                  //           }}
+                  //         />
+                  //       </div>
+                  //     );
+                  //   }
+                  // },
                   {
                     fieldName: "actions",
-                    label: "Select",
+                    label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
                     displayTemplate: row => {
-                      return (
-                        <div className="customCheckbox">
-                          <input
-                            type="checkbox"
-                            onChange={() => {
-                              this.setState({
-                                invoice_details: row.Invoice_Detail
-                              });
-                            }}
-                          />
-                        </div>
-                      );
+                      return <span>Not Validated</span>;
                     }
                   },
                   {
-                    fieldName: "actions",
-                    label: <AlgaehLabel label={{ forceLabel: "Status" }} />
-                  },
-                  {
                     fieldName: "status",
-                    label: <AlgaehLabel label={{ forceLabel: "Bill Status" }} />
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Bill Status" }} />
+                    ),
+                    displayTemplate: row => {
+                      return <span>Paid</span>;
+                    }
                   },
                   {
-                    fieldName: "invoice_number",
-                    label: <AlgaehLabel label={{ forceLabel: "Case Type" }} />
+                    fieldName: "patient_name",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Patient Name" }} />
+                    )
                   },
                   {
                     fieldName: "invoice_number",
                     label: <AlgaehLabel label={{ forceLabel: "Bill Number" }} />
                   },
                   {
-                    fieldName: "invoice_number",
+                    fieldName: "visit_code",
                     label: <AlgaehLabel label={{ forceLabel: "Visit Code" }} />
+                  },
+                  {
+                    fieldName: "gross_amount",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Gross Amount" }} />
+                    )
                   }
                 ]}
                 keyId="id"
@@ -161,26 +185,37 @@ class ValidateBills extends PureComponent {
                 columns={[
                   {
                     fieldName: "quantity",
+                    label: <AlgaehLabel label={{ forceLabel: "Quantity" }} />
+                  },
+                  {
+                    fieldName: "gross_amount",
                     label: (
-                      <AlgaehLabel label={{ forceLabel: "Billing Code" }} />
+                      <AlgaehLabel label={{ forceLabel: "Gross Amount" }} />
                     )
                   },
                   {
-                    fieldName: "status",
+                    fieldName: "discount_amount",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Discount Amount" }} />
+                    )
+                  },
+                  {
+                    fieldName: "patient_resp",
                     label: (
                       <AlgaehLabel
-                        label={{ forceLabel: "Billing Code Desc." }}
+                        label={{ forceLabel: "Patient Responsibility" }}
                       />
                     )
                   },
                   {
-                    fieldName: "invoice_number",
-                    label: <AlgaehLabel label={{ forceLabel: "CPT Code" }} />
+                    fieldName: "patient_tax",
+                    label: <AlgaehLabel label={{ forceLabel: "Patient Tax" }} />
                   }
                 ]}
                 keyId="id"
                 dataSource={{
-                  data: this.state.invoice_details
+                  data: invoice_details
+                  // data: this.state.invoice_details
                 }}
                 isEditable={false}
                 paging={{ page: 0, rowsPerPage: 5 }}
@@ -215,7 +250,7 @@ class ValidateBills extends PureComponent {
           </div>
         </div>
         <div className="popupFooter">
-          <button className="btn-primary">VALIDATE</button>
+          <button className="btn btn-primary">VALIDATE</button>
         </div>
       </AlgaehModalPopUp>
     );
