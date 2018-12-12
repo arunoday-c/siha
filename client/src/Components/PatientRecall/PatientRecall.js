@@ -5,6 +5,7 @@ import {
   AlagehAutoComplete
 } from "../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
+import { AlgaehValidation } from "../../utils/GlobalFunctions";
 
 class PatientRecall extends Component {
   constructor(props) {
@@ -19,25 +20,30 @@ class PatientRecall extends Component {
   }
 
   loadPatients() {
-    algaehApiCall({
-      uri: "/doctorsWorkBench/getFollowUp",
-      method: "GET",
-      data: {
-        department_id: this.state.sub_department_id,
-        doctor_id: this.state.provider_id,
-        date_of_recall: this.state.date_of_recall
-      },
-      onSuccess: response => {
-        if (response.data.success) {
-          this.setState({
-            patients: response.data.records
-          });
-        }
-      },
-      onFailure: error => {
-        swalMessage({
-          title: error.message,
-          type: "error"
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      onSuccess: () => {
+        algaehApiCall({
+          uri: "/doctorsWorkBench/getFollowUp",
+          method: "GET",
+          data: {
+            department_id: this.state.sub_department_id,
+            doctor_id: this.state.provider_id,
+            date_of_recall: this.state.date_of_recall
+          },
+          onSuccess: response => {
+            if (response.data.success) {
+              this.setState({
+                patients: response.data.records
+              });
+            }
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
         });
       }
     });
@@ -125,7 +131,7 @@ class PatientRecall extends Component {
 
           <AlgaehDateHandler
             div={{ className: "col" }}
-            label={{ forceLabel: "Date", isImp: false }}
+            label={{ forceLabel: "Date" }}
             textBox={{
               className: "txt-fld",
               name: "date_of_recall"
