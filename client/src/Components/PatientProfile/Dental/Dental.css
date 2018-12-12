@@ -10,12 +10,7 @@
   /*============== canine ==============*/
   /*============== incisors ==============*/ }
   #dentalTreatment .top-teeth-sec {
-    border-bottom: 2px dotted #ccc;
-    margin-right: 0;
-    margin-left: 0; }
-  #dentalTreatment .bottom-teeth-sec {
-    margin-right: 0;
-    margin-left: 0; }
+    border-bottom: 2px dotted #ccc; }
   #dentalTreatment .teeth-sec h6 {
     text-transform: uppercase;
     font-size: 0.7rem;
