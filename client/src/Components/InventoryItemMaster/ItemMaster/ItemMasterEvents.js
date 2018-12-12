@@ -80,6 +80,7 @@ const InsertUpdateItems = $this => {
                   type: "success",
                   title: "Saved successfully . ."
                 });
+                $this.props.onClose && $this.props.onClose(true);
               }
             }
           });
@@ -95,6 +96,7 @@ const InsertUpdateItems = $this => {
                   type: "success",
                   title: "Updated successfully . ."
                 });
+                $this.props.onClose && $this.props.onClose(true);
               }
             }
           });

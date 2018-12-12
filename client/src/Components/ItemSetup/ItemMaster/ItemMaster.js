@@ -12,15 +12,13 @@ import ItemPriceList from "./ItemPriceList/ItemPriceList";
 export default class PatientDetails extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      changesDone: false
-    };
+    this.state = {};
   }
 
   onClose = e => {
     let IOputs = ItemSetup.inputParam();
     this.setState({ ...this.state, ...IOputs });
-    this.props.onClose && this.props.onClose(this.state.changesDone);
+    this.props.onClose && this.props.onClose(false);
   };
 
   componentWillMount() {
