@@ -526,298 +526,286 @@ class InvoiceGeneration extends Component {
               </div>
             </div>
 
-            <div className="row">
-              {/* Insurance */}
-              <div className="col-6">
-                <div className="row">
-                  <div
-                    className="col-6"
-                    style={{ borderRight: "1px solid #000" }}
-                  >
-                    <h6
-                      style={{
-                        borderBottom: " 1px solid #d0d0d0",
-                        fontSize: "0.9rem",
-                        paddingBottom: 5,
-                        paddingTop: "10px"
-                      }}
-                    >
-                      Primary Insurance
-                    </h6>
-                    <div className="col-6">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "insurance_company"
-                        }}
-                      />
-                      <h6>
-                        {this.state.insurance_provider_name
-                          ? this.state.insurance_provider_name
-                          : "---"}
-                      </h6>
-                    </div>
+            {/* Insurance */}
+            <div className="col-12">
+              <div className="row">
+                <div className="col-7 insurance-sec">
+                  <div className="row">
+                    <div className="col-12">
+                      <h5>Primary Insurance</h5>
+                      <div className="row">
+                        <div className="col-4">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "insurance_company"
+                            }}
+                          />
+                          <h6>
+                            {this.state.insurance_provider_name
+                              ? this.state.insurance_provider_name
+                              : "---"}
+                          </h6>
+                        </div>
 
-                    <div className="col-6">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "sub_insurance_company"
-                        }}
-                      />
-                      <h6>
-                        {this.state.sub_insurance_provider_name
-                          ? this.state.sub_insurance_provider_name
-                          : "---"}
-                      </h6>
-                    </div>
-                    <div className="col-6">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "plan_desc"
-                        }}
-                      />
-                      <h6>
-                        {this.state.network_type
-                          ? this.state.network_type
-                          : "---"}
-                      </h6>
-                    </div>
+                        <div className="col-4">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "sub_insurance_company"
+                            }}
+                          />
+                          <h6>
+                            {this.state.sub_insurance_provider_name
+                              ? this.state.sub_insurance_provider_name
+                              : "---"}
+                          </h6>
+                        </div>
+                        <div className="col-4">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "plan_desc"
+                            }}
+                          />
+                          <h6>
+                            {this.state.network_type
+                              ? this.state.network_type
+                              : "---"}
+                          </h6>
+                        </div>
 
-                    <div className="col-6">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "policy_no"
-                        }}
-                      />
-                      <h6>
-                        {this.state.policy_number
-                          ? this.state.policy_number
-                          : "---"}
-                      </h6>
-                    </div>
-                    <div className="col-lg-6">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "card_no"
-                        }}
-                      />
-                      <h6>
-                        {this.state.card_number
-                          ? this.state.card_number
-                          : "---"}
-                      </h6>
-                    </div>
+                        <div className="col-4">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "policy_no"
+                            }}
+                          />
+                          <h6>
+                            {this.state.policy_number
+                              ? this.state.policy_number
+                              : "---"}
+                          </h6>
+                        </div>
+                        <div className="col-4">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "card_no"
+                            }}
+                          />
+                          <h6>
+                            {this.state.card_number
+                              ? this.state.card_number
+                              : "---"}
+                          </h6>
+                        </div>
 
-                    <div className="col-6">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "ins_expiry_date"
-                        }}
-                      />
-                      <h6>
-                        {this.state.effective_end_date
-                          ? moment(this.state.effective_end_date).format(
-                              Options.dateFormat
-                            )
-                          : "---"}
-                      </h6>
+                        <div className="col-4">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "ins_expiry_date"
+                            }}
+                          />
+                          <h6>
+                            {this.state.effective_end_date
+                              ? moment(this.state.effective_end_date).format(
+                                  Options.dateFormat
+                                )
+                              : "---"}
+                          </h6>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  <div className="col-6">
-                    <h6
-                      style={{
-                        borderBottom: " 1px solid #d0d0d0",
-                        fontSize: "0.9rem",
-                        paddingBottom: 5
-                      }}
-                    >
-                      Secondary Insurance
-                    </h6>
-                    <div className="col-6">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "insurance_company"
-                        }}
-                      />
-                      <h6>
-                        {this.state.secondary_insurance_provider_name
-                          ? this.state.secondary_insurance_provider_name
-                          : "---"}
-                      </h6>
-                    </div>
+                    <div className="col-12">
+                      <h5>Secondary Insurance</h5>
+                      <div className="row">
+                        <div className="col-4">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "insurance_company"
+                            }}
+                          />
+                          <h6>
+                            {this.state.secondary_insurance_provider_name
+                              ? this.state.secondary_insurance_provider_name
+                              : "---"}
+                          </h6>
+                        </div>
 
-                    <div className="col-6">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "sub_insurance_company"
-                        }}
-                      />
-                      <h6>
-                        {this.state.secondary_sub_insurance_provider_name
-                          ? this.state.secondary_sub_insurance_provider_name
-                          : "---"}
-                      </h6>
-                    </div>
+                        <div className="col-4">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "sub_insurance_company"
+                            }}
+                          />
+                          <h6>
+                            {this.state.secondary_sub_insurance_provider_name
+                              ? this.state.secondary_sub_insurance_provider_name
+                              : "---"}
+                          </h6>
+                        </div>
 
-                    <div className="col-6">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "plan_desc"
-                        }}
-                      />
-                      <h6>
-                        {this.state.secondary_network_type
-                          ? this.state.secondary_network_type
-                          : "---"}
-                      </h6>
-                    </div>
+                        <div className="col-4">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "plan_desc"
+                            }}
+                          />
+                          <h6>
+                            {this.state.secondary_network_type
+                              ? this.state.secondary_network_type
+                              : "---"}
+                          </h6>
+                        </div>
 
-                    <div className="col-6">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "policy_no"
-                        }}
-                      />
-                      <h6>
-                        {this.state.secondary_policy_number
-                          ? this.state.secondary_policy_number
-                          : "---"}
-                      </h6>
-                    </div>
+                        <div className="col-4">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "policy_no"
+                            }}
+                          />
+                          <h6>
+                            {this.state.secondary_policy_number
+                              ? this.state.secondary_policy_number
+                              : "---"}
+                          </h6>
+                        </div>
 
-                    <div className="col-6">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "card_no"
-                        }}
-                      />
-                      <h6>
-                        {this.state.secondary_card_number
-                          ? this.state.secondary_card_number
-                          : "---"}
-                      </h6>
-                    </div>
+                        <div className="col-4">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "card_no"
+                            }}
+                          />
+                          <h6>
+                            {this.state.secondary_card_number
+                              ? this.state.secondary_card_number
+                              : "---"}
+                          </h6>
+                        </div>
 
-                    <div className="col-6">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "ins_expiry_date"
-                        }}
-                      />
-                      <h6>
-                        {this.state.secondary_effective_end_date
-                          ? moment(
-                              this.state.secondary_effective_end_date
-                            ).format(Options.dateFormat)
-                          : "---"}
-                      </h6>
+                        <div className="col-4">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "ins_expiry_date"
+                            }}
+                          />
+                          <h6>
+                            {this.state.secondary_effective_end_date
+                              ? moment(
+                                  this.state.secondary_effective_end_date
+                                ).format(Options.dateFormat)
+                              : "---"}
+                          </h6>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              {/* Values */}
-              <div className="col-6">
-                <div className="row">
-                  <div className="col-4">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Gross Total"
-                      }}
-                    />
-                    <h5>{getAmountFormart(this.state.gross_amount)}</h5>
-                  </div>
-                  <div className="col-4">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Discount Total"
-                      }}
-                    />
-                    <h5>{getAmountFormart(this.state.discount_amount)}</h5>
-                  </div>
+                {/* Values */}
+                <div className="col-5 amount-sec">
+                  <div className="row">
+                    <div className="col-4">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Gross Total"
+                        }}
+                      />
+                      <h5>{getAmountFormart(this.state.gross_amount)}</h5>
+                    </div>
+                    <div className="col-4">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Discount Total"
+                        }}
+                      />
+                      <h5>{getAmountFormart(this.state.discount_amount)}</h5>
+                    </div>
 
-                  <div className="col-4">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Net Total"
-                      }}
-                    />
-                    <h5>{getAmountFormart(this.state.net_amout)}</h5>
-                  </div>
+                    <div className="col-4">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Net Total"
+                        }}
+                      />
+                      <h5>{getAmountFormart(this.state.net_amout)}</h5>
+                    </div>
 
-                  <div className="col-4">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Patient Resp."
-                      }}
-                    />
-                    <h5>{getAmountFormart(this.state.patient_resp)}</h5>
-                  </div>
+                    <div className="col-4">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Patient Resp."
+                        }}
+                      />
+                      <h5>{getAmountFormart(this.state.patient_resp)}</h5>
+                    </div>
 
-                  <div className="col-4">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Patient Tax"
-                      }}
-                    />
-                    <h5>{getAmountFormart(this.state.patient_tax)}</h5>
-                  </div>
+                    <div className="col-4">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Patient Tax"
+                        }}
+                      />
+                      <h5>{getAmountFormart(this.state.patient_tax)}</h5>
+                    </div>
 
-                  <div className="col-4">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Patient Payable"
-                      }}
-                    />
-                    <h5>{getAmountFormart(this.state.patient_payable)}</h5>
-                  </div>
+                    <div className="col-4">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Patient Payable"
+                        }}
+                      />
+                      <h5>{getAmountFormart(this.state.patient_payable)}</h5>
+                    </div>
 
-                  <div className="col-4">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Company Resp."
-                      }}
-                    />
-                    <h5>{getAmountFormart(this.state.company_resp)}</h5>
-                  </div>
-                  <div className="col-4">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Company Tax"
-                      }}
-                    />
-                    <h5>{getAmountFormart(this.state.company_tax)}</h5>
-                  </div>
-                  <div className="col-4">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Company Payable"
-                      }}
-                    />
-                    <h5>{getAmountFormart(this.state.company_payble)}</h5>
-                  </div>
+                    <div className="col-4">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Company Resp."
+                        }}
+                      />
+                      <h5>{getAmountFormart(this.state.company_resp)}</h5>
+                    </div>
+                    <div className="col-4">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Company Tax"
+                        }}
+                      />
+                      <h5>{getAmountFormart(this.state.company_tax)}</h5>
+                    </div>
+                    <div className="col-4">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Company Payable"
+                        }}
+                      />
+                      <h5>{getAmountFormart(this.state.company_payble)}</h5>
+                    </div>
 
-                  <div className="col-4">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Sec Company Resp."
-                      }}
-                    />
-                    <h5>{getAmountFormart(this.state.sec_comapany_resp)}</h5>
-                  </div>
-                  <div className="col-4">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Sec Company Tax"
-                      }}
-                    />
-                    <h5>{getAmountFormart(this.state.sec_company_tax)}</h5>
-                  </div>
-                  <div className="col-4">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Sec Company Payable"
-                      }}
-                    />
-                    <h5>{getAmountFormart(this.state.sec_company_payable)}</h5>
+                    <div className="col-4">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Sec Company Resp."
+                        }}
+                      />
+                      <h5>{getAmountFormart(this.state.sec_comapany_resp)}</h5>
+                    </div>
+                    <div className="col-4">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Sec Company Tax"
+                        }}
+                      />
+                      <h5>{getAmountFormart(this.state.sec_company_tax)}</h5>
+                    </div>
+                    <div className="col-4">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Sec Company Payable"
+                        }}
+                      />
+                      <h5>
+                        {getAmountFormart(this.state.sec_company_payable)}
+                      </h5>
+                    </div>
                   </div>
                 </div>
               </div>
