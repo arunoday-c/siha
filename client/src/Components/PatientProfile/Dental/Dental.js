@@ -1466,150 +1466,162 @@ class Dental extends Component {
           openPopup={this.state.openDentalModal}
           title="Dental Plan"
         >
-          <div
-            className="col-lg-12 margin-bottom-15 popupInner"
-            data-validate="addDentalPlanDiv"
-          >
-            <div className="row">
-              <AlagehFormGroup
-                div={{ className: "col-lg-3" }}
-                label={{
-                  fieldName: "treatment_plan",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "treatement_plan",
-                  value: this.state.selected_treatement_plan,
-                  events: {
-                    onChange: this.textHandle.bind(this)
-                  },
-                  others: {
-                    disabled: true,
-                    placeholder: "Enter Treatment Name"
-                  }
-                }}
-              />
+          <div className="popupInner" data-validate="addDentalPlanDiv">
+            <div className="col-lg-12">
+              <div className="row">
+                <div className="col-lg-12 popRightDiv">
+                  <div className="row">
+                    <AlagehFormGroup
+                      div={{ className: "col-3" }}
+                      label={{
+                        fieldName: "treatment_plan",
+                        isImp: true
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "treatement_plan",
+                        value: this.state.selected_treatement_plan,
+                        events: {
+                          onChange: this.textHandle.bind(this)
+                        },
+                        others: {
+                          disabled: true,
+                          placeholder: "Enter Treatment Name"
+                        }
+                      }}
+                    />
 
-              <AlagehAutoComplete
-                div={{ className: "col-lg-3" }}
-                label={{
-                  fieldName: "sel_a_proc",
-                  isImp: true
-                }}
-                selector={{
-                  name: "hims_d_services_id",
-                  className: "select-fld",
-                  value: this.state.hims_d_services_id,
-                  dataSource: {
-                    textField: "service_name",
-                    valueField: "hims_d_services_id",
-                    data: this.state.procedures
-                  },
-                  onChange: this.dropDownHandler.bind(this)
-                }}
-              />
+                    <AlagehAutoComplete
+                      div={{ className: "col-2" }}
+                      label={{
+                        fieldName: "sel_a_proc",
+                        isImp: true
+                      }}
+                      selector={{
+                        name: "hims_d_services_id",
+                        className: "select-fld",
+                        value: this.state.hims_d_services_id,
+                        dataSource: {
+                          textField: "service_name",
+                          valueField: "hims_d_services_id",
+                          data: this.state.procedures
+                        },
+                        onChange: this.dropDownHandler.bind(this)
+                      }}
+                    />
 
-              <AlagehFormGroup
-                div={{ className: "col-lg-1" }}
-                label={{
-                  fieldName: "unit_cost",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "standard_fee",
-                  value: this.state.standard_fee,
-                  events: {
-                    onChange: this.textHandle.bind(this)
-                  },
-                  others: {
-                    disabled: true,
-                    min: 0,
-                    type: "number"
-                  }
-                }}
-              />
+                    <AlagehFormGroup
+                      div={{ className: "col" }}
+                      label={{
+                        fieldName: "unit_cost",
+                        isImp: true
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "standard_fee",
+                        value: this.state.standard_fee,
+                        events: {
+                          onChange: this.textHandle.bind(this)
+                        },
+                        others: {
+                          disabled: true,
+                          min: 0,
+                          type: "number"
+                        }
+                      }}
+                    />
 
-              <AlagehFormGroup
-                div={{ className: "col-lg-1" }}
-                label={{
-                  fieldName: "quantity",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "quantity",
-                  value: this.state.quantity,
-                  events: {
-                    onChange: this.textHandle.bind(this)
-                  },
-                  others: {
-                    min: 0,
-                    type: "number"
-                  }
-                }}
-              />
-              <AlagehFormGroup
-                div={{ className: "col-lg-1" }}
-                label={{
-                  fieldName: "total_price",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "total_price",
-                  value: this.state.total_price,
-                  events: {
-                    onChange: this.textHandle.bind(this)
-                  },
-                  others: {
-                    disabled: true,
-                    min: 0,
-                    type: "number"
-                  }
-                }}
-              />
+                    <AlagehFormGroup
+                      div={{ className: "col" }}
+                      label={{
+                        fieldName: "quantity",
+                        isImp: true
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "quantity",
+                        value: this.state.quantity,
+                        events: {
+                          onChange: this.textHandle.bind(this)
+                        },
+                        others: {
+                          disabled: true,
+                          min: 0,
+                          type: "number"
+                        }
+                      }}
+                    />
+                    <AlagehFormGroup
+                      div={{ className: "col" }}
+                      label={{
+                        fieldName: "total_price",
+                        isImp: true
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "total_price",
+                        value: this.state.total_price,
+                        events: {
+                          onChange: this.textHandle.bind(this)
+                        },
+                        others: {
+                          disabled: true,
+                          min: 0,
+                          type: "number"
+                        }
+                      }}
+                    />
 
-              <AlgaehDateHandler
-                div={{ className: "col-lg-2" }}
-                label={{ fieldName: "schld_date", isImp: false }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "scheduled_date"
-                }}
-                minDate={new Date()}
-                events={{
-                  onChange: selectedDate => {
-                    this.setState({
-                      scheduled_date: selectedDate
-                    });
-                  }
-                }}
-                value={this.state.scheduled_date}
-              />
-            </div>
+                    <AlgaehDateHandler
+                      div={{ className: "col" }}
+                      label={{ fieldName: "schld_date", isImp: false }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "scheduled_date"
+                      }}
+                      minDate={new Date()}
+                      events={{
+                        onChange: selectedDate => {
+                          this.setState({
+                            scheduled_date: selectedDate
+                          });
+                        }
+                      }}
+                      value={this.state.scheduled_date}
+                    />
+                  </div>
+                  <hr />
+                  <div className="col-lg-12" id="dentalTreatment">
+                    <div className="row top-teeth-sec">
+                      <div className="col-lg-6 teeth-sec">
+                        <h6>Upper Left</h6>
+                        <div className="row">
+                          {this.generateToothUpperLeftSet()}
+                        </div>
+                      </div>
+                      <div className="col-lg-6 teeth-sec">
+                        <h6>Upper Right</h6>
+                        <div className="row">
+                          {this.generateToothUpperRightSet()}
+                        </div>
+                      </div>
+                    </div>
 
-            <div className="col-lg-12" id="dentalTreatment">
-              <div className="row top-teeth-sec">
-                <div className="col-lg-6 teeth-sec">
-                  <h6>Upper Left</h6>
-                  <div className="row">{this.generateToothUpperLeftSet()}</div>
-                </div>
-                <div className="col-lg-6 teeth-sec">
-                  <h6>Upper Right</h6>
-                  <div className="row">{this.generateToothUpperRightSet()}</div>
-                </div>
-              </div>
-
-              <div className="row bottom-teeth-sec">
-                <div className="col-lg-6 teeth-sec">
-                  <div className="row">{this.generateToothLowerLeftSet()}</div>
-                  <h6>Lower Left</h6>
-                </div>
-                <div className="col-lg-6 teeth-sec">
-                  <div className="row">{this.generateToothLowerRightSet()}</div>
-                  <h6>Lower Right</h6>
+                    <div className="row bottom-teeth-sec">
+                      <div className="col-lg-6 teeth-sec">
+                        <div className="row">
+                          {this.generateToothLowerLeftSet()}
+                        </div>
+                        <h6>Lower Left</h6>
+                      </div>
+                      <div className="col-lg-6 teeth-sec">
+                        <div className="row">
+                          {this.generateToothLowerRightSet()}
+                        </div>
+                        <h6>Lower Right</h6>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1630,47 +1642,46 @@ class Dental extends Component {
 
         <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
           <div className="portlet-title" data-validate="addTreatementDiv">
-            <div className="col-lg-12 margin-bottom-15">
-              <div className="row">
-                <AlagehFormGroup
-                  div={{ className: "col-lg-3" }}
-                  label={{
-                    fieldName: "treatment_plan",
-                    isImp: true
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "plan_name",
-                    value: this.state.plan_name,
-                    events: {
-                      onChange: this.textHandle.bind(this)
-                    },
-                    others: {
-                      placeholder: "Enter Treatment Name"
-                    }
-                  }}
-                />
+            <div className="row margin-bottom-15">
+              <AlagehFormGroup
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "treatment_plan",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "plan_name",
+                  value: this.state.plan_name,
+                  events: {
+                    onChange: this.textHandle.bind(this)
+                  },
+                  others: {
+                    placeholder: "Enter Treatment Name"
+                  }
+                }}
+              />
 
-                <AlagehFormGroup
-                  div={{ className: "col-lg-4" }}
-                  label={{
-                    fieldName: "remarks",
-                    isImp: true
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "remarks",
-                    value: this.state.remarks,
-                    events: {
-                      onChange: this.textHandle.bind(this)
-                    },
-                    others: {
-                      placeholder: "Enter Remarks"
-                    }
-                  }}
-                />
+              <AlagehFormGroup
+                div={{ className: "col-lg-4" }}
+                label={{
+                  fieldName: "remarks",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "remarks",
+                  value: this.state.remarks,
+                  events: {
+                    onChange: this.textHandle.bind(this)
+                  },
+                  others: {
+                    placeholder: "Enter Remarks"
+                  }
+                }}
+              />
 
-                {/* <AlgaehDateHandler
+              {/* <AlgaehDateHandler
                   div={{ className: "col-lg-2" }}
                   label={{ fieldName: "Consult Date", isImp: false }}
                   textBox={{
@@ -1688,14 +1699,13 @@ class Dental extends Component {
                   value={this.state.consult_date}
                 /> */}
 
-                <div className="col-lg-2 margin-top-15">
-                  <button
-                    onClick={this.addTreatementPlan.bind(this)}
-                    className="btn btn-primary"
-                  >
-                    Add Plan
-                  </button>
-                </div>
+              <div className="col-lg-2 margin-top-15">
+                <button
+                  onClick={this.addTreatementPlan.bind(this)}
+                  className="btn btn-primary"
+                >
+                  Add Plan
+                </button>
               </div>
             </div>
           </div>
@@ -1709,7 +1719,7 @@ class Dental extends Component {
                   columns={[
                     {
                       fieldName: "actions",
-                      label: "Actions",
+                      label: <AlgaehLabel label={{ forceLabel: "Actions" }} />,
                       displayTemplate: row => {
                         return (
                           <div className="row">
@@ -1751,11 +1761,19 @@ class Dental extends Component {
                             </span>
                           </div>
                         );
+                      },
+                      others: {
+                        width: 130
                       }
                     },
                     {
                       fieldName: "plan_name",
-                      label: "Treatement Plan",
+
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Treatement Plan" }}
+                        />
+                      ),
                       displayTemplate: row => {
                         return (
                           <span
@@ -1770,16 +1788,30 @@ class Dental extends Component {
                       },
                       className: row => {
                         return "greenCell";
+                      },
+                      others: {
+                        width: 150
                       }
                     },
                     {
                       fieldName: "remarks",
-                      label: "Remarks",
-                      disabled: true
+
+                      label: <AlgaehLabel label={{ forceLabel: "Remarks" }} />,
+
+                      disabled: true,
+                      others: {
+                        width: 250
+                      }
                     },
                     {
                       fieldName: "approve_status",
-                      label: "Approval Status",
+
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Approval Status" }}
+                        />
+                      ),
+
                       displayTemplate: row => {
                         return (
                           <span>
@@ -1792,7 +1824,10 @@ class Dental extends Component {
                     },
                     {
                       fieldName: "plan_status",
-                      label: "Plan Status",
+
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Plan Status" }} />
+                      ),
                       displayTemplate: row => {
                         return (
                           <span>
@@ -1807,7 +1842,8 @@ class Dental extends Component {
                     },
                     {
                       fieldName: "consult_date",
-                      label: "Date"
+
+                      label: <AlgaehLabel label={{ forceLabel: "Date" }} />
                     }
                   ]}
                   keyId="algaeh_app_screens_id"
