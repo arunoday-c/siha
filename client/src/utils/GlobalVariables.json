@@ -504,5 +504,12 @@
     { "name": "Planned", "value": "PL" },
     { "name": "Work In Progress", "value": "WIP" },
     { "name": "Completed", "value": "CP" }
+  ],
+  "FORMAT_INVOICE_TYPE": [
+    {
+      "name": "Primary Insurance",
+      "value": "P"
+    },
+    { "name": "Secondary Insurance", "value": "S" }
   ]
 }

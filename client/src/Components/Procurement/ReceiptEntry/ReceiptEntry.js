@@ -136,7 +136,7 @@ class ReceiptEntry extends Component {
             <div className="col-lg-12">
               <div className="row">
                 <AlagehAutoComplete
-                  div={{ className: "col" }}
+                  div={{ className: "col-2" }}
                   label={{ forceLabel: "PO For" }}
                   selector={{
                     name: "grn_for",
@@ -155,7 +155,7 @@ class ReceiptEntry extends Component {
                   }}
                 />
                 <AlagehAutoComplete
-                  div={{ className: "col" }}
+                  div={{ className: "col-2" }}
                   label={{ forceLabel: "Location" }}
                   selector={{
                     name:
@@ -184,7 +184,7 @@ class ReceiptEntry extends Component {
                 />
 
                 <AlagehAutoComplete
-                  div={{ className: "col" }}
+                  div={{ className: "col-2" }}
                   label={{ forceLabel: "Vendor" }}
                   selector={{
                     name: "vendor_id",
@@ -204,7 +204,7 @@ class ReceiptEntry extends Component {
                 />
 
                 <AlagehFormGroup
-                  div={{ className: "col" }}
+                  div={{ className: "col-2" }}
                   label={{
                     forceLabel: "Delivery Note No."
                   }}
@@ -243,10 +243,8 @@ class ReceiptEntry extends Component {
                     onClick={DeliverySearch.bind(this, this)}
                   />
                 </div>
-              </div>
-              <div className="row">
-                <AlagehAutoComplete
-                  div={{ className: "col-2" }}
+                {/* <AlagehAutoComplete
+                  div={{ className: "col" }}
                   label={{ forceLabel: "Payment Terms" }}
                   selector={{
                     name: "payment_terms",
@@ -263,9 +261,19 @@ class ReceiptEntry extends Component {
                     onChange: texthandle.bind(this, this),
                     onClear: texthandle.bind(this, this)
                   }}
-                />
-                <AlgaehDateHandler
-                  div={{ className: "col-3" }}
+                /> */}
+
+                <div className="col">
+                  <AlgaehLabel label={{ forceLabel: "Payment Terms" }} />
+                  <h6>
+                    {this.state.payment_terms
+                      ? this.state.payment_terms
+                      : "0 days"}
+                  </h6>
+                </div>
+
+                {/*    <AlgaehDateHandler
+                  div={{ className: "col" }}
                   label={{ forceLabel: "Expected Arrival" }}
                   textBox={{
                     className: "txt-fld",
@@ -278,7 +286,7 @@ class ReceiptEntry extends Component {
                   }}
                   value={this.state.expiry_date}
                 />
-                {/* <div
+                <div
                   className="customCheckbox col-lg-3"
                   style={{ border: "none", marginTop: "28px" }}
                 >

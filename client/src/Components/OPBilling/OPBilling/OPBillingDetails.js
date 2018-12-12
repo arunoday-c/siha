@@ -26,7 +26,16 @@ export default class OPBillingDetails extends Component {
     });
   }
 
+  componentWillReceiveProps(newProps) {
+    if (newProps.BillingIOputs.insured === "N") {
+      this.setState({
+        pageDisplay: "BillingDetails"
+      });
+    }
+  }
+
   render() {
+    debugger;
     return (
       <div className="hptl-phase1-opbilling-details margin-top-15 margin-bottom-15 ">
         <div className="tab-container toggle-section">
@@ -44,7 +53,7 @@ export default class OPBillingDetails extends Component {
                 />
               }
             </li>
-            {this.state.insured === "Y" ? (
+            {this.props.BillingIOputs.insured === "Y" ? (
               <li
                 algaehtabs={"DisplayInsuranceDetails"}
                 className={"nav-item tab-button"}

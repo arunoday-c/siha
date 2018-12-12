@@ -30,8 +30,7 @@ let selectSection = (req, res, next) => {
         query:
           "SELECT * FROM `hims_d_lab_section` WHERE `record_status`='A' AND " +
           condition.condition +
-          " " +
-          pagePaging,
+          "order by hims_d_lab_section_id desc",
         values: condition.values
       },
       result => {
@@ -184,8 +183,7 @@ let selectContainer = (req, res, next) => {
         query:
           "SELECT * FROM `hims_d_lab_container` WHERE `record_status`='A' AND " +
           condition.condition +
-          " " +
-          pagePaging,
+          "order by hims_d_lab_container_id desc",
         values: condition.values
       },
       result => {
@@ -341,8 +339,7 @@ let selectSpecimen = (req, res, next) => {
         query:
           "SELECT * FROM `hims_d_lab_specimen` WHERE `record_status`='A' AND " +
           condition.condition +
-          " " +
-          pagePaging,
+          "order by hims_d_lab_specimen_id desc",
         values: condition.values
       },
       result => {
@@ -500,8 +497,7 @@ let selectAnalytes = (req, res, next) => {
         query:
           "SELECT * FROM `hims_d_lab_analytes` WHERE `record_status`='A' AND " +
           condition.condition +
-          " " +
-          pagePaging,
+          "order by hims_d_lab_analytes_id desc",
         values: condition.values
       },
       result => {
@@ -664,8 +660,7 @@ let selectTestCategory = (req, res, next) => {
         query:
           "SELECT * FROM `hims_d_test_category` WHERE `record_status`='A' AND " +
           condition.condition +
-          " " +
-          pagePaging,
+          "order by hims_d_test_category_id desc",
         values: condition.values
       },
       result => {
