@@ -40,5 +40,12 @@
   "btn_final": "Finalize and Generate Invoice",
   "btn_clear": "Clear",
   "btn_cash": "Cash Invoice",
-  "btn_creidt": "Creidt Invoice"
+  "btn_creidt": "Creidt Invoice",
+
+  "insurance_company": "Insurance Company",
+  "sub_insurance_company": "Sub Insurance Company",
+  "plan_desc": "Plan",
+  "policy_no": "Policy Number",
+  "card_no": "Card Number",
+  "ins_expiry_date": "Expiry Date"
 }
