@@ -188,6 +188,10 @@ class ValidateBills extends PureComponent {
                     label: <AlgaehLabel label={{ forceLabel: "Quantity" }} />
                   },
                   {
+                    fieldName: "cpt_code",
+                    label: <AlgaehLabel label={{ forceLabel: "CPT Code" }} />
+                  },
+                  {
                     fieldName: "gross_amount",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Gross Amount" }} />
