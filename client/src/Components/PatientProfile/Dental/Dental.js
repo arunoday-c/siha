@@ -2015,7 +2015,7 @@ class Dental extends Component {
                     }
                   ]}
                   keyId="algaeh_app_screens_id"
-                  uiUpdate={this.state.treatment_gridUpdate}
+                  //uiUpdate={this.state.treatment_gridUpdate}
                   dataSource={{
                     // pageInputExclude: true,
                     // uri: "/dental/getDentalTreatment",
