@@ -36,7 +36,9 @@ class Dental extends Component {
       dentalTreatments: [],
       openBillingModal: false,
       treatment_gridUpdate: true,
-      billDetails: {}
+      billDetails: {},
+      scheduled_date: new Date(),
+      selected_plan: "------"
     };
     this.getProcedures();
     this.getTreatementPlans();
@@ -44,6 +46,7 @@ class Dental extends Component {
     this.updateDentalTreatmentStatus = this.updateDentalTreatmentStatus.bind(
       this
     );
+    this.loadDentalTreatment = this.loadDentalTreatment.bind(this);
   }
 
   clearSaveState() {
@@ -121,7 +124,7 @@ class Dental extends Component {
       {
         hims_d_services_id: bill_dtls.services_id,
         quantity: bill_dtls.quantity,
-        discount_amout: bill_dtls.discount_amout,
+        discount_amout: 0,
         discount_percentage: e.target.value,
         insured: this.state.ins_details !== null ? "Y" : "N",
         vat_applicable: "Y",
@@ -176,7 +179,9 @@ class Dental extends Component {
   }
 
   markAllSurface(e) {
-    debugger;
+    for (var i = 0; i < e.target.nextSibling.childElementCount; i++) {
+      e.target.nextSibling.children[i].click();
+    }
   }
 
   saveBill() {
@@ -198,8 +203,6 @@ class Dental extends Component {
       ]
     };
 
-    //console.log("inputObj", JSON.stringify(inputObj));
-
     algaehApiCall({
       uri: "/orderAndPreApproval/insertOrderedServices",
       data: inputObj,
@@ -207,15 +210,24 @@ class Dental extends Component {
       onSuccess: response => {
         if (response.data.success) {
           algaehApiCall({
-            uri: "/denta;/updateDentalTreatmentBilledStatus",
-            method: "POST",
+            uri: "/dental/updateDentalTreatmentBilledStatus",
+            method: "PUT",
             data: {
               hims_f_dental_treatment_id: this.state.d_id,
-              billed: "Y"
+              billed: "SB"
             },
             onSuccess: res => {
               if (res.data.success) {
-                console.log("Billed");
+                //console.log("Billed");
+
+                this.setState(
+                  {
+                    openBillingModal: false
+                  },
+                  () => {
+                    this.loadDentalTreatment();
+                  }
+                );
               }
             },
             onError: error => {
@@ -358,10 +370,10 @@ class Dental extends Component {
 
     if (my_item !== undefined) {
       teeth.splice(teeth.indexOf(my_item), 1);
-      // console.log("Teeth Selected", teeth);
+      //console.log("Teeth Selected", teeth);
     } else {
       teeth.push(my_obj);
-      // console.log("Teeth Selected", teeth);
+      //console.log("Teeth Selected", teeth);
     }
 
     let send_teeth = Enumerable.from(teeth)
@@ -412,6 +424,18 @@ class Dental extends Component {
               swalMessage({
                 title: "Added Successfully",
                 type: "success"
+              });
+
+              this.loadDentalTreatment();
+              teeth = [];
+              this.setState({
+                treatment_gridUpdate: true,
+                openDentalModal: false,
+                hims_d_services_id: null,
+                quantity: 0,
+                standard_fee: 0,
+                total_price: 0,
+                hims_f_treatment_plan_id: null
               });
             }
           },
@@ -534,7 +558,7 @@ class Dental extends Component {
             i
           }
         >
-          <span>{i}</span>
+          <span onClick={this.markAllSurface.bind(this)}>{i}</span>
           <div className="surface-Marking">
             <div
               onClick={this.markTeethSurface.bind(this)}
@@ -592,7 +616,7 @@ class Dental extends Component {
             i
           }
         >
-          <span>{i}</span>
+          <span onClick={this.markAllSurface.bind(this)}>{i}</span>
           <div className="surface-Marking">
             <div
               surface="distal='Y'"
@@ -641,7 +665,6 @@ class Dental extends Component {
     for (let i = 32; i >= 25; i--) {
       plot.push(
         <div
-          onClick={this.markAllSurface.bind(this)}
           key={i}
           className={
             "col tooth-sec down-side " +
@@ -655,7 +678,7 @@ class Dental extends Component {
             counter
           }
         >
-          <span>{i}</span>
+          <span onClick={this.markAllSurface.bind(this)}>{i}</span>
           <div className="surface-Marking">
             <div
               onClick={this.markTeethSurface.bind(this)}
@@ -697,6 +720,68 @@ class Dental extends Component {
     return plot;
   }
 
+  generateToothLowerRightSet() {
+    let plot = [];
+    let counter = 9;
+
+    for (let i = 24; i >= 17; i--) {
+      plot.push(
+        <div
+          key={i}
+          className={
+            "col tooth-sec down-side " +
+            (counter <= 10
+              ? "incisors-down-"
+              : counter === 11
+              ? "canine-down-"
+              : counter < 14
+              ? "premolar-down-"
+              : "i molar-down-") +
+            counter
+          }
+        >
+          <span onClick={this.markAllSurface.bind(this)}>{i}</span>
+          <div className="surface-Marking">
+            <div
+              onClick={this.markTeethSurface.bind(this)}
+              className="top-surface"
+            >
+              <span>D</span>
+            </div>
+            <div
+              onClick={this.markTeethSurface.bind(this)}
+              className="right-surface"
+            >
+              <span>L</span>
+            </div>
+            <div
+              onClick={this.markTeethSurface.bind(this)}
+              className="bottom-surface"
+            >
+              <span>I</span>
+            </div>
+            <div
+              onClick={this.markTeethSurface.bind(this)}
+              className="left-surface"
+            >
+              <span>P</span>
+            </div>
+            {counter >= 21 ? (
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className="middle-surface"
+              >
+                <span>M</span>
+              </div>
+            ) : null}
+          </div>
+        </div>
+      );
+      counter++;
+    }
+    return plot;
+  }
+
   deleteDentalPlan(data) {
     swal({
       title: "Delete Plan ?",
@@ -720,6 +805,7 @@ class Dental extends Component {
                 title: "Record Deleted",
                 type: "success"
               });
+              this.loadDentalTreatment();
             }
           },
           onError: err => {
@@ -752,6 +838,7 @@ class Dental extends Component {
             title: "Record Updated",
             type: "success"
           });
+          this.loadDentalTreatment();
         }
       },
       onError: err => {
@@ -877,6 +964,7 @@ class Dental extends Component {
               fieldName: "billed",
               label: "Add To Bill",
               displayTemplate: row => {
+                debugger;
                 return row.billed === "N" ? (
                   <button
                     onClick={this.addToBill.bind(this, row)}
@@ -928,66 +1016,46 @@ class Dental extends Component {
     );
   }
 
-  generateToothLowerRightSet() {
-    let plot = [];
-    let counter = 9;
-
-    for (let i = 24; i >= 17; i--) {
-      plot.push(
-        <div
-          key={i}
-          className={
-            "col tooth-sec down-side " +
-            (counter <= 10
-              ? "incisors-down-"
-              : counter === 11
-              ? "canine-down-"
-              : counter < 14
-              ? "premolar-down-"
-              : "i molar-down-") +
-            counter
+  loadDentalTreatment(data) {
+    data !== undefined
+      ? this.setState(
+          {
+            plan_id: data.hims_f_treatment_plan_id
+          },
+          () => {
+            algaehApiCall({
+              uri: "/dental/getDentalTreatment",
+              method: "GET",
+              data: {
+                treatment_plan_id: this.state.plan_id
+              },
+              onSuccess: response => {
+                if (response.data.success) {
+                  this.setState({
+                    dentalTreatments: response.data.records,
+                    selected_plan: data.plan_name
+                  });
+                }
+              },
+              onError: error => {}
+            });
           }
-        >
-          <span>{i}</span>
-          <div className="surface-Marking">
-            <div
-              onClick={this.markTeethSurface.bind(this)}
-              className="top-surface"
-            >
-              <span>D</span>
-            </div>
-            <div
-              onClick={this.markTeethSurface.bind(this)}
-              className="right-surface"
-            >
-              <span>L</span>
-            </div>
-            <div
-              onClick={this.markTeethSurface.bind(this)}
-              className="bottom-surface"
-            >
-              <span>I</span>
-            </div>
-            <div
-              onClick={this.markTeethSurface.bind(this)}
-              className="left-surface"
-            >
-              <span>P</span>
-            </div>
-            {counter >= 21 ? (
-              <div
-                onClick={this.markTeethSurface.bind(this)}
-                className="middle-surface"
-              >
-                <span>M</span>
-              </div>
-            ) : null}
-          </div>
-        </div>
-      );
-      counter++;
-    }
-    return plot;
+        )
+      : algaehApiCall({
+          uri: "/dental/getDentalTreatment",
+          method: "GET",
+          data: {
+            treatment_plan_id: this.state.plan_id
+          },
+          onSuccess: response => {
+            if (response.data.success) {
+              this.setState({
+                dentalTreatments: response.data.records
+              });
+            }
+          },
+          onError: error => {}
+        });
   }
 
   openAddModal(data) {
@@ -1011,7 +1079,7 @@ class Dental extends Component {
             className="col-lg-12 margin-bottom-15 popupInner"
             data-validate="billDentalPlan"
           >
-            <div className="row form-details" style={{ paddingBottom: 0 }}>
+            <div className="row" style={{ paddingBottom: 0 }}>
               <AlagehFormGroup
                 div={{ className: "col-lg-3" }}
                 label={{
@@ -1505,7 +1573,7 @@ class Dental extends Component {
 
               <AlgaehDateHandler
                 div={{ className: "col-lg-2" }}
-                label={{ fieldName: "schld_date", isImp: true }}
+                label={{ fieldName: "schld_date", isImp: false }}
                 textBox={{
                   className: "txt-fld",
                   name: "scheduled_date"
@@ -1521,31 +1589,32 @@ class Dental extends Component {
                 value={this.state.scheduled_date}
               />
             </div>
-          </div>
 
-          <div className="col-lg-12" id="dentalTreatment">
-            <div className="row top-teeth-sec">
-              <div className="col-lg-6 teeth-sec">
-                <h6>Upper Left</h6>
-                <div className="row">{this.generateToothUpperLeftSet()}</div>
+            <div className="col-lg-12" id="dentalTreatment">
+              <div className="row top-teeth-sec">
+                <div className="col-lg-6 teeth-sec">
+                  <h6>Upper Left</h6>
+                  <div className="row">{this.generateToothUpperLeftSet()}</div>
+                </div>
+                <div className="col-lg-6 teeth-sec">
+                  <h6>Upper Right</h6>
+                  <div className="row">{this.generateToothUpperRightSet()}</div>
+                </div>
               </div>
-              <div className="col-lg-6 teeth-sec">
-                <h6>Upper Right</h6>
-                <div className="row">{this.generateToothUpperRightSet()}</div>
+
+              <div className="row bottom-teeth-sec">
+                <div className="col-lg-6 teeth-sec">
+                  <div className="row">{this.generateToothLowerLeftSet()}</div>
+                  <h6>Lower Left</h6>
+                </div>
+                <div className="col-lg-6 teeth-sec">
+                  <div className="row">{this.generateToothLowerRightSet()}</div>
+                  <h6>Lower Right</h6>
+                </div>
               </div>
             </div>
-
-            <div className="row bottom-teeth-sec">
-              <div className="col-lg-6 teeth-sec">
-                <div className="row">{this.generateToothLowerLeftSet()}</div>
-                <h6>Lower Left</h6>
-              </div>
-              <div className="col-lg-6 teeth-sec">
-                <div className="row">{this.generateToothLowerRightSet()}</div>
-                <h6>Lower Right</h6>
-              </div>
-            </div>
           </div>
+
           <div className="popupFooter">
             <div className="col-lg-12 margin-bottom-15">
               <button
@@ -1630,114 +1699,305 @@ class Dental extends Component {
               </div>
             </div>
           </div>
-          <div className="portlet-body" data-validate="treatmentDiv">
-            <AlgaehDataGrid
-              id="treatment-grid"
-              datavalidate="data-validate='treatmentDiv'"
-              columns={[
-                {
-                  fieldName: "actions",
-                  label: "Actions",
-                  displayTemplate: row => {
-                    return (
-                      <div className="row">
-                        <span className="col">
-                          <i
-                            onClick={this.approveTreatementPlan.bind(
-                              this,
-                              row,
-                              "Y"
-                            )}
-                            className="fas fa-check"
-                            style={{
-                              pointerEvents:
-                                row.approve_status === "Y" ? " none" : null,
-                              opacity: row.approve_status === "Y" ? "0.1" : null
+          <div className="portlet-body">
+            <div className="row">
+              <div className="col-lg-5" data-validate="treatmentDiv">
+                <span> Treatment Plans </span>
+                <AlgaehDataGrid
+                  id="treatment-grid"
+                  datavalidate="data-validate='treatmentDiv'"
+                  columns={[
+                    {
+                      fieldName: "actions",
+                      label: "Actions",
+                      displayTemplate: row => {
+                        return (
+                          <div className="row">
+                            <span className="col">
+                              <i
+                                onClick={this.approveTreatementPlan.bind(
+                                  this,
+                                  row,
+                                  "Y"
+                                )}
+                                className="fas fa-check"
+                                style={{
+                                  pointerEvents:
+                                    row.approve_status === "Y" ? " none" : null,
+                                  opacity:
+                                    row.approve_status === "Y" ? "0.1" : null
+                                }}
+                              />
+
+                              <i
+                                onClick={this.approveTreatementPlan.bind(
+                                  this,
+                                  row,
+                                  "C"
+                                )}
+                                style={{
+                                  pointerEvents:
+                                    row.approve_status === "Y" ? " none" : null,
+                                  opacity:
+                                    row.approve_status === "Y" ? "0.1" : null
+                                }}
+                                className="fas fa-times"
+                              />
+
+                              <i
+                                onClick={this.openAddModal.bind(this, row)}
+                                className="fas fa-plus"
+                              />
+                            </span>
+                          </div>
+                        );
+                      }
+                    },
+                    {
+                      fieldName: "plan_name",
+                      label: "Treatement Plan",
+                      displayTemplate: row => {
+                        return (
+                          <span
+                            className="pat-code"
+                            onClick={() => {
+                              this.loadDentalTreatment(row);
+                            }}
+                          >
+                            {row.plan_name}
+                          </span>
+                        );
+                      },
+                      className: row => {
+                        return "greenCell";
+                      }
+                    },
+                    {
+                      fieldName: "remarks",
+                      label: "Remarks",
+                      disabled: true
+                    },
+                    {
+                      fieldName: "approve_status",
+                      label: "Approval Status",
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {row.approve_status === "Y"
+                              ? "Plan Approved"
+                              : "Plan Not Approved"}
+                          </span>
+                        );
+                      }
+                    },
+                    {
+                      fieldName: "plan_status",
+                      label: "Plan Status",
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {row.plan_status === "O"
+                              ? "Open"
+                              : row.plan_status === "C"
+                              ? "Closed"
+                              : null}
+                          </span>
+                        );
+                      }
+                    },
+                    {
+                      fieldName: "consult_date",
+                      label: "Date"
+                    }
+                  ]}
+                  keyId="algaeh_app_screens_id"
+                  dataSource={{
+                    data: this.state.treatements
+                  }}
+                  filter={false}
+                  paging={{ page: 0, rowsPerPage: 10 }}
+                  // expanded={{
+                  //   detailTemplate: row => {
+                  //     return <div>{this.getTreatementsGrid(row)}</div>;
+                  //   }
+                  // }}
+                  events={{
+                    onEdit: () => {},
+                    onDelete: () => {},
+                    onDone: () => {}
+                  }}
+                />
+              </div>
+              <div className="col-lg-7" data-validate="denGrid">
+                <span> {this.state.selected_plan}</span>
+                <AlgaehDataGrid
+                  id="grid_dental_treatment"
+                  datavalidate="data-validate='denGrid'"
+                  columns={[
+                    {
+                      fieldName: "teeth_number",
+                      label: "Tooth",
+                      disabled: true
+                    },
+                    {
+                      fieldName: "distal",
+                      label: "Surfaces",
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {row.distal === "Y" ? "D " : ""}
+                            {row.incisal === "Y" ? "I " : ""}
+                            {row.mesial === "Y" ? "M " : ""}
+                            {row.palatal === "Y" ? "P " : ""}
+                            {row.labial === "Y" ? "L " : ""}
+                          </span>
+                        );
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <span>
+                            {row.distal === "Y" ? "D " : ""}
+                            {row.incisal === "Y" ? "I " : ""}
+                            {row.mesial === "Y" ? "M " : ""}
+                            {row.palatal === "Y" ? "P " : ""}
+                            {row.labial === "Y" ? "L " : ""}
+                          </span>
+                        );
+                      }
+                    },
+                    {
+                      fieldName: "service_id",
+                      label: "Procedure",
+                      displayTemplate: row => {
+                        let x = Enumerable.from(this.state.procedures)
+                          .where(w => w.hims_d_services_id === row.service_id)
+                          .firstOrDefault();
+                        return (
+                          <span>
+                            {x !== undefined ? x.service_name : "----------"}
+                          </span>
+                        );
+                      },
+                      editorTemplate: row => {
+                        let x = Enumerable.from(this.state.procedures)
+                          .where(w => w.hims_d_services_id === row.service_id)
+                          .firstOrDefault();
+                        return (
+                          <span>
+                            {x !== undefined ? x.service_name : "----------"}
+                          </span>
+                        );
+                      }
+                    },
+                    {
+                      fieldName: "scheduled_date",
+                      label: "Date",
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {moment(row.scheduled_date).format("DD-MM-YYYY")}
+                          </span>
+                        );
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <span>
+                            {moment(row.scheduled_date).format("DD-MM-YYYY")}
+                          </span>
+                        );
+                      }
+                    },
+                    {
+                      fieldName: "treatment_status",
+                      label: "Status",
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {row.treatment_status === "PL"
+                              ? "Planned"
+                              : row.treatment_status === "WIP"
+                              ? "Work in Progress"
+                              : row.treatment_status === "CP"
+                              ? "Completed"
+                              : null}
+                          </span>
+                        );
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <AlagehAutoComplete
+                            selector={{
+                              name: "treatment_status",
+                              className: "select-fld",
+                              value: row.treatment_status,
+                              dataSource: {
+                                textField: "name",
+                                valueField: "value",
+                                data: GlobalVariables.DENTAL_TREATMENT_STATUS
+                              },
+                              others: {
+                                errormessage: "Status - cannot be blank",
+                                required: true
+                              },
+                              onChange: this.changeGridEditors.bind(this, row)
                             }}
                           />
-
-                          <i
-                            onClick={this.approveTreatementPlan.bind(
-                              this,
-                              row,
-                              "C"
-                            )}
-                            style={{
-                              pointerEvents:
-                                row.approve_status === "Y" ? " none" : null,
-                              opacity: row.approve_status === "Y" ? "0.1" : null
-                            }}
-                            className="fas fa-times"
-                          />
-
-                          <i
-                            onClick={this.openAddModal.bind(this, row)}
-                            className="fas fa-plus"
-                          />
-                        </span>
-                      </div>
-                    );
-                  }
-                },
-                {
-                  fieldName: "consult_date",
-                  label: "Date"
-                },
-                {
-                  fieldName: "plan_name",
-                  label: "Treatement Plan"
-                },
-                {
-                  fieldName: "remarks",
-                  label: "Remarks",
-                  disabled: true
-                },
-                {
-                  fieldName: "approve_status",
-                  label: "Approval Status",
-                  displayTemplate: row => {
-                    return (
-                      <span>
-                        {row.approve_status === "Y"
-                          ? "Plan Approved"
-                          : "Plan Not Approved"}
-                      </span>
-                    );
-                  }
-                },
-                {
-                  fieldName: "plan_status",
-                  label: "Plan Status",
-                  displayTemplate: row => {
-                    return (
-                      <span>
-                        {row.plan_status === "O"
-                          ? "Open"
-                          : row.plan_status === "C"
-                          ? "Closed"
-                          : null}
-                      </span>
-                    );
-                  }
-                }
-              ]}
-              keyId="algaeh_app_screens_id"
-              dataSource={{
-                data: this.state.treatements
-              }}
-              filter={true}
-              paging={{ page: 0, rowsPerPage: 10 }}
-              expanded={{
-                detailTemplate: row => {
-                  return <div>{this.getTreatementsGrid(row)}</div>;
-                }
-              }}
-              events={{
-                onEdit: () => {},
-                onDelete: () => {},
-                onDone: () => {}
-              }}
-            />
+                        );
+                      }
+                    },
+                    {
+                      fieldName: "billed",
+                      label: "Billing",
+                      displayTemplate: row => {
+                        return row.billed === "N" ? (
+                          <button
+                            onClick={this.addToBill.bind(this, row)}
+                            className="btn btn-primary"
+                          >
+                            Add To Bill
+                          </button>
+                        ) : row.billed === "SB" ? (
+                          <span>Sent to Billing</span>
+                        ) : row.billed === "Y" ? (
+                          <span>Paid</span>
+                        ) : null;
+                      },
+                      editorTemplate: row => {
+                        return row.billed === "N" ? (
+                          <button
+                            onClick={this.addToBill.bind(this, row)}
+                            className="btn btn-primary"
+                          >
+                            Add To Bill
+                          </button>
+                        ) : row.billed === "SB" ? (
+                          <span>Sent to Billing</span>
+                        ) : row.billed === "Y" ? (
+                          <span>Paid</span>
+                        ) : null;
+                      }
+                    }
+                  ]}
+                  keyId="algaeh_app_screens_id"
+                  uiUpdate={this.state.treatment_gridUpdate}
+                  dataSource={{
+                    // pageInputExclude: true,
+                    // uri: "/dental/getDentalTreatment",
+                    // inputParam: { treatment_plan_id: data.hims_f_treatment_plan_id },
+                    // method: "GET",
+                    // responseSchema: { data: "records" }
+                    data: this.state.dentalTreatments
+                  }}
+                  paging={{ page: 0, rowsPerPage: 10 }}
+                  isEditable={true}
+                  events={{
+                    onEdit: () => {},
+                    onDelete: this.deleteDentalPlan,
+                    onDone: this.updateDentalTreatmentStatus
+                  }}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
