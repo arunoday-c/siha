@@ -35,7 +35,13 @@ const VisitSearch = ($this, e) => {
             onSuccess: response => {
               if (response.data.success) {
                 debugger;
-                $this.setState({ ...response.data.records });
+                response.data.records[0].sub_insurance_id =
+                  response.data.records[0].sub_insurance_provider_id;
+
+                response.data.records[0].network_office_id =
+                  response.data.records[0].hims_d_insurance_network_office_id;
+
+                $this.setState({ ...response.data.records[0] });
               }
               AlgaehLoader({ show: false });
             },
@@ -76,6 +82,10 @@ const getVisitWiseBillDetailS = $this => {
             .select(w => w.discount_amout)
             .sum();
 
+          let net_total = Enumerable.from(data)
+            .select(w => w.net_amout)
+            .sum();
+
           for (let i = 0; i < data.length; i++) {
             data[i].service_id = data[i].services_id;
             data[i].bill_header_id = data[i].hims_f_billing_header_id;
@@ -89,8 +99,9 @@ const getVisitWiseBillDetailS = $this => {
             saveEnable: false,
             clearEnable: false,
             Invoice_Detail: data,
-            totalGross: gross_total,
-            totalDiscount: discout_total
+            gross_amount: gross_total,
+            discount_amount: discout_total,
+            net_amout: net_total
           });
 
           algaehApiCall({
@@ -247,13 +258,26 @@ const getCtrlCode = ($this, docNumber) => {
       let discout_total = Enumerable.from(data)
         .select(w => w.discount_amout)
         .sum();
-      //created by Adnan
 
-      data.totalGross = gross_total;
-      data.totalDiscount = discout_total;
+      let net_total = Enumerable.from(data)
+        .select(w => w.net_amout)
+        .sum();
+
+      data.gross_amount = gross_total;
+      data.discount_amount = discout_total;
+      data.net_amout = net_total;
       $this.setState(data);
       AlgaehLoader({ show: false });
     }
+  });
+};
+
+const texthandle = ($this, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  $this.setState({
+    [name]: value
   });
 };
 
@@ -263,5 +287,6 @@ export {
   FinalizedAndInvoice,
   ClearData,
   getVisitWiseBillDetailS,
-  getCtrlCode
+  getCtrlCode,
+  texthandle
 };

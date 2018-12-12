@@ -76,52 +76,50 @@ export default class RadTemplate extends PureComponent {
               {context => (
                 <div className="hptl-phase1-add-rad-tamplate-form">
                   <div className="popupInner">
-                    <div className="col-12 popRightDiv">
-                      <div className="container-fluid">
-                        <div className="row form-details">
-                          <AlagehFormGroup
-                            div={{ className: "col-lg-6" }}
-                            label={{
-                              fieldName: "template_name",
-                              isImp: true
-                            }}
-                            textBox={{
-                              className: "txt-fld",
-                              name: "template_name",
-                              value: this.state.template_name,
-                              events: {
-                                onChange: texthandle.bind(this, this, context)
-                              }
-                            }}
-                          />
-                        </div>
-                        <div className="row form-details">
-                          <div className="col-lg-12 editor">
-                            <RichTextEditor
-                              value={this.state.template_html}
-                              onChange={rtehandle.bind(this, this, context)}
-                              modules={{
-                                toolbar: [
-                                  [{ header: [1, 2, false] }],
-                                  [
-                                    "bold",
-                                    "italic",
-                                    "underline",
-                                    "strike",
-                                    "blockquote",
-                                    { list: "ordered" },
-                                    { list: "bullet" },
-                                    { indent: "-1" },
-                                    { indent: "+1" },
-                                    "image",
-                                    { color: [] },
-                                    { background: [] }
-                                  ]
+                    <div className="popRightDiv">
+                      <div className="row">
+                        <AlagehFormGroup
+                          div={{ className: "col-lg-6" }}
+                          label={{
+                            fieldName: "template_name",
+                            isImp: true
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "template_name",
+                            value: this.state.template_name,
+                            events: {
+                              onChange: texthandle.bind(this, this, context)
+                            }
+                          }}
+                        />
+                      </div>
+                      <div className="row">
+                        <div className="col-lg-12 editor">
+                          <RichTextEditor
+                            value={this.state.template_html}
+                            onChange={rtehandle.bind(this, this, context)}
+                            modules={{
+                              toolbar: [
+                                [{ header: [1, 2, false] }],
+                                [
+                                  "bold",
+                                  "italic",
+                                  "underline",
+                                  "strike",
+                                  "blockquote",
+                                  { list: "ordered" },
+                                  { list: "bullet" },
+                                  { indent: "-1" },
+                                  { indent: "+1" },
+                                  "image",
+                                  { color: [] },
+                                  { background: [] }
                                 ]
-                              }}
-                              style={{ minHeight: "40vh" }}
-                            />
-                          </div>
+                              ]
+                            }}
+                            style={{ minHeight: "40vh" }}
+                          />
                         </div>
                       </div>
                     </div>
@@ -130,7 +128,15 @@ export default class RadTemplate extends PureComponent {
                   <div className="popupFooter">
                     <div className="col-lg-12">
                       <div className="row">
-                        <div className="col-lg-2">
+                        <div className="col-lg-4"> &nbsp;</div>
+
+                        <div className="col-lg-8">
+                          <button
+                            className="btn btn-primary"
+                            onClick={saveTemplate.bind(this, this, context)}
+                          >
+                            Save
+                          </button>
                           <button
                             className="btn btn-default"
                             onClick={e => {
@@ -138,17 +144,6 @@ export default class RadTemplate extends PureComponent {
                             }}
                           >
                             Close
-                          </button>
-                        </div>
-                        <div className="col-lg-8"> &nbsp;</div>
-
-                        <div className="col-lg-2">
-                          <button
-                            className="btn btn-primary"
-                            style={{ float: "right" }}
-                            onClick={saveTemplate.bind(this, this, context)}
-                          >
-                            Save
                           </button>
                         </div>
                       </div>
