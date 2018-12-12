@@ -21,7 +21,8 @@ import {
   updateNetworkAndNetworkOffice,
   updatePriceListBulk,
   deleteNetworkAndNetworkOfficRecords,
-  getInsuranceProviders
+  getInsuranceProviders,
+  getSubInsuraces
 } from "../model/insurance";
 
 export default ({ config, db }) => {
@@ -302,6 +303,16 @@ export default ({ config, db }) => {
 
   // created by irfan
   api.get("/getInsuranceProviders", getInsuranceProviders, (req, res, next) => {
+    let result = req.records;
+    res.status(httpStatus.ok).json({
+      success: true,
+      records: result
+    });
+    next();
+  });
+
+  //created by Adnan
+  api.get("/getSubInsuraces", getSubInsuraces, (req, res, next) => {
     let result = req.records;
     res.status(httpStatus.ok).json({
       success: true,

@@ -706,7 +706,8 @@ let getEmployeeDetails = (req, res, next) => {
         CS.category_speciality_status,CS.effective_start_date,CS.effective_end_date\
         from hims_d_employee E,hims_m_employee_department_mappings ED,hims_m_category_speciality_mappings CS\
          Where E.record_status='A' and ED.record_status='A' and CS.record_status='A' and E.hims_d_employee_id=ED.employee_id and ED.category_speciality_id=CS.hims_m_category_speciality_mappings_id AND " +
-          where.condition,
+          where.condition +
+          "order by E.hims_d_employee_id desc ",
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
