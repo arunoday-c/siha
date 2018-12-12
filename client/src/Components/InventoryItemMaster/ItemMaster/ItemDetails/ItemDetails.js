@@ -243,9 +243,13 @@ class ItemDetails extends Component {
                     <label className="checkbox" style={{ color: "#212529" }}>
                       <input
                         type="checkbox"
-                        name="Batchno Expiry"
-                        checked={this.state.batchexpreq}
-                        onChange={BatchExpRequired.bind(this, this)}
+                        name="required_batchno_expiry"
+                        checked={
+                          this.state.required_batchno_expiry === "Y"
+                            ? true
+                            : false
+                        }
+                        onChange={BatchExpRequired.bind(this, this, context)}
                       />
                       <span style={{ fontSize: "0.8rem" }}>
                         Req. Batch Expiry
@@ -314,7 +318,9 @@ class ItemDetails extends Component {
                               type="checkbox"
                               name="vat_applicable"
                               value="Y"
-                              checked={this.state.Applicable}
+                              checked={
+                                this.state.vat_applicable === "Y" ? true : false
+                              }
                               onChange={VatAppilicable.bind(
                                 this,
                                 this,
@@ -340,7 +346,7 @@ class ItemDetails extends Component {
 
                             others: {
                               disabled:
-                                this.state.Applicable === true ? false : true
+                                this.state.vat_applicable === "Y" ? false : true
                             }
                           }}
                         />
