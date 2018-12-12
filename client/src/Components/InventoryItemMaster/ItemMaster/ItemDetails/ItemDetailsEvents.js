@@ -1,9 +1,9 @@
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
+import { SetBulkState } from "../../../../utils/GlobalFunctions";
 //let texthandlerInterval = null;
 
 const texthandle = ($this, context, ctrl, e) => {
-  
   e = e || ctrl;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -46,14 +46,27 @@ const radioChange = ($this, context, e) => {
   }
 };
 
-const BatchExpRequired = ($this, e) => {
-  let required_batchno_expiry = "N";
-  if (!$this.state.batchexpreq === true) {
-    required_batchno_expiry = "Y";
-  }
-  $this.setState({
-    required_batchno_expiry: required_batchno_expiry,
-    batchexpreq: !$this.state.batchexpreq
+const BatchExpRequired = ($this, context) => {
+  SetBulkState({
+    state: $this,
+    callback: () => {
+      let required_batchno_expiry = "N";
+      if (!$this.state.batchexpreq === true) {
+        required_batchno_expiry = "Y";
+      }
+      $this.setState({
+        required_batchno_expiry: required_batchno_expiry,
+        batchexpreq: !$this.state.batchexpreq,
+        ...$this.state
+      });
+
+      if (context !== undefined) {
+        context.updateState({
+          required_batchno_expiry: required_batchno_expiry,
+          ...$this.state
+        });
+      }
+    }
   });
 };
 
@@ -83,29 +96,39 @@ const CptCodesSearch = ($this, context) => {
 };
 
 const VatAppilicable = ($this, context, e) => {
-  let Applicable = false;
-  let Value = "N";
+  let name = e.target.name;
+  SetBulkState({
+    state: $this,
+    callback: () => {
+      debugger;
+      let Applicable = false;
+      let Value = "N";
 
-  if ($this.state.Applicable === true) {
-    Applicable = false;
-    Value = "N";
-  } else if ($this.state.Applicable === false) {
-    Applicable = true;
-    Value = "Y";
-  }
-  $this.setState({
-    [e.target.name]: Value,
-    Applicable: Applicable,
-    vat_percent: 0
+      if ($this.state.Applicable === true) {
+        Applicable = false;
+        Value = "N";
+      } else if ($this.state.Applicable === false) {
+        Applicable = true;
+        Value = "Y";
+      }
+      $this.setState({
+        [name]: Value,
+        // Applicable: Applicable,
+        vat_percent: 0,
+        ...$this.state
+      });
+
+      // $this.state.
+      if (context !== undefined) {
+        context.updateState({
+          [name]: Value,
+          // Applicable: Applicable,
+          vat_percent: 0,
+          ...$this.state
+        });
+      }
+    }
   });
-
-  if (context !== undefined) {
-    context.updateState({
-      [e.target.name]: Value,
-      Applicable: Applicable,
-      vat_percent: 0
-    });
-  }
 };
 
 export {

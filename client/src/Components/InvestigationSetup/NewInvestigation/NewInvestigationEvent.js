@@ -34,7 +34,7 @@ const Validations = $this => {
     return isError;
   }
 };
-const InsertLabTest = $this => {
+const InsertLabTest = ($this, e) => {
   const err = Validations($this);
 
   if (!err) {
@@ -48,6 +48,7 @@ const InsertLabTest = $this => {
               type: "success",
               title: "Saved successfully . ."
             });
+            $this.props.onClose && $this.props.onClose(true);
           }
         }
       });
@@ -62,6 +63,7 @@ const InsertLabTest = $this => {
               type: "success",
               title: "Updated successfully . ."
             });
+            $this.props.onClose && $this.props.onClose(true);
           }
         }
       });

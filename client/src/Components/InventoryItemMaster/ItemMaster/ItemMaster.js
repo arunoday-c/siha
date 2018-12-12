@@ -17,7 +17,7 @@ export default class PatientDetails extends Component {
     this.state = {};
   }
   onClose = e => {
-    this.props.onClose && this.props.onClose(e);
+    this.props.onClose && this.props.onClose(false);
     let IOputs = InventoryItem.inputParam();
     this.setState({ ...this.state, ...IOputs });
   };
