@@ -135,7 +135,7 @@ class PurchaseOrderEntry extends Component {
             <div className="col-lg-12">
               <div className="row">
                 <AlagehAutoComplete
-                  div={{ className: "col" }}
+                  div={{ className: "col-2" }}
                   label={{ forceLabel: "PO For" }}
                   selector={{
                     name: "po_from",
@@ -154,7 +154,7 @@ class PurchaseOrderEntry extends Component {
                   }}
                 />
                 <AlagehAutoComplete
-                  div={{ className: "col" }}
+                  div={{ className: "col-2" }}
                   label={{ forceLabel: "Location Code" }}
                   selector={{
                     name:
@@ -183,7 +183,7 @@ class PurchaseOrderEntry extends Component {
                 />
 
                 <AlagehAutoComplete
-                  div={{ className: "col" }}
+                  div={{ className: "col-2" }}
                   label={{ forceLabel: "Vendor No." }}
                   selector={{
                     name: "vendor_id",
@@ -203,7 +203,7 @@ class PurchaseOrderEntry extends Component {
                 />
 
                 <AlagehFormGroup
-                  div={{ className: "col" }}
+                  div={{ className: "col-2" }}
                   label={{
                     forceLabel: "Requisition No."
                   }}
@@ -221,9 +221,10 @@ class PurchaseOrderEntry extends Component {
                   }}
                 />
                 <div
-                  className="col-lg-1"
+                  className="col"
                   style={{
-                    paddingLeft: 0
+                    paddingLeft: 0,
+                    paddingRight: 0
                   }}
                 >
                   <span
@@ -242,8 +243,6 @@ class PurchaseOrderEntry extends Component {
                     onClick={RequisitionSearch.bind(this, this)}
                   />
                 </div>
-              </div>
-              <div className="row">
                 <AlagehAutoComplete
                   div={{ className: "col" }}
                   label={{ forceLabel: "Payment Terms" }}
@@ -264,7 +263,7 @@ class PurchaseOrderEntry extends Component {
                   }}
                 />
                 <AlgaehDateHandler
-                  div={{ className: "col-3" }}
+                  div={{ className: "col" }}
                   label={{ forceLabel: "Expected Arrival" }}
                   textBox={{
                     className: "txt-fld",

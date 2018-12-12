@@ -276,7 +276,7 @@ class PatientProfile extends Component {
               src={
                 this.state.patImg.length > 0
                   ? this.state.patImg
-                  : "https://x1.xingassets.com/assets/frontend_minified/img/users/nobody_m.original.webp"
+                  : "../assets/images/nobody_m.original.webp"
               }
             />
           </div>
