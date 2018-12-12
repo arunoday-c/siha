@@ -435,10 +435,15 @@ let getInvoicesForClaims = (req, res, next) => {
             if (result.length > 0) {
               for (let i = 0; i < result.length; i++) {
                 connection.query(
-                  "SELECT hims_f_invoice_details_id, invoice_header_id, bill_header_id, bill_detail_id, service_type_id,\
-    service_id, quantity, gross_amount, discount_amount, patient_resp, patient_tax, patient_payable,\
-    company_resp, company_tax, company_payable, sec_company_resp, sec_company_tax, sec_company_payable\
-    from hims_f_invoice_details where invoice_header_id=?",
+                  "SELECT hims_f_invoice_details_id, invoice_header_id, bill_header_id, bill_detail_id,\
+                  service_id, quantity, gross_amount, discount_amount, patient_resp, patient_tax, patient_payable,\
+                  company_resp, company_tax, company_payable, sec_company_resp, sec_company_tax, sec_company_payable,\
+                  ID.service_type_id,ST.service_type_code, ST.service_type, ST. arabic_service_type,\
+                  S.cpt_code,C.cpt_desc,C.prefLabel  \
+                  from hims_f_invoice_details ID  inner join hims_d_service_type ST on \
+                   ID.service_type_id=ST.hims_d_service_type_id inner join hims_d_services S on\
+                     ID.service_id=S.hims_d_services_id  left join hims_d_cpt_code C on S.cpt_code=C.cpt_code\
+                  where invoice_header_id=?",
                   [result[i].hims_f_invoice_header_id],
 
                   (error, invoiceDetails) => {
