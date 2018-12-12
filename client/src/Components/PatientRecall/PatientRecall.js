@@ -111,7 +111,7 @@ class PatientRecall extends Component {
           />
 
           <AlagehAutoComplete
-            div={{ className: "col" }}
+            div={{ className: "col mandatory" }}
             label={{
               forceLabel: "Doctor",
               isImp: true

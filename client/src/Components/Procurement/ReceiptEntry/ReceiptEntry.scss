@@ -1,10 +1,7 @@
-.hims-receipt-entry {
-}
-
 #ReceiptGrid {
   .ReactTable {
-    max-width: 95vw !important;
-    max-height: 42vh !important ;
+    max-width: 96vw !important;
+    max-height: 48vh !important;
   }
 
   @media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
