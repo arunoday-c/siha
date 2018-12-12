@@ -17,7 +17,6 @@ class LoginUsers extends Component {
       login_users: []
     };
     this.getGroups();
-
     this.getLoginUsers();
   }
 

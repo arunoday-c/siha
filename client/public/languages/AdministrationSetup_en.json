@@ -7,5 +7,6 @@
   "role": "Roles",
   "add_to_list": "Add To List",
   "display_name": "Display Name",
-  "effective_start_date": "Effective Start Date"
+  "effective_start_date": "Effective Start Date",
+  "screen_assignment": "Screen Assignment"
 }
