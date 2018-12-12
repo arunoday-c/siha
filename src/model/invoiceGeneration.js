@@ -186,10 +186,11 @@ let addInvoiceGeneration = (req, res, next) => {
           let today = moment().format("YYYY-MM-DD");
           debugLog("input:", input);
           connection.query(
-            "INSERT INTO `hims_f_invoice_header` (invoice_number,invoice_date,patient_id,visit_id,gross_amount,discount_amount,patient_resp,\
-              patient_tax, patient_payable, company_resp, company_tax, company_payable, sec_company_resp, sec_company_tax, sec_company_payable,\
-                created_date,created_by,updated_date,updated_by) \
-            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            "INSERT INTO `hims_f_invoice_header` (invoice_number,invoice_date,patient_id,visit_id,gross_amount,discount_amount,\
+              net_amount, patient_resp,patient_tax, patient_payable, company_resp, company_tax, company_payable, \
+              sec_company_resp, sec_company_tax, sec_company_payable,insurance_provider_id, sub_insurance_id, network_id, network_office_id, \
+              created_date,created_by,updated_date,updated_by) \
+            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             [
               documentCode,
               new Date(input.invoice_date),
@@ -197,6 +198,7 @@ let addInvoiceGeneration = (req, res, next) => {
               input.visit_id,
               input.gross_amount,
               input.discount_amount,
+              input.net_amount,
               input.patient_resp,
               input.patient_tax,
               input.patient_payable,
@@ -206,6 +208,12 @@ let addInvoiceGeneration = (req, res, next) => {
               input.sec_company_resp,
               input.sec_company_tax,
               input.sec_company_payable,
+
+              input.insurance_provider_id,
+              input.sub_insurance_id,
+              input.network_id,
+              input.network_office_id,
+
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
@@ -231,6 +239,7 @@ let addInvoiceGeneration = (req, res, next) => {
                   "quantity",
                   "gross_amount",
                   "discount_amount",
+                  "net_amount",
                   "patient_resp",
                   "patient_tax",
                   "patient_payable",
