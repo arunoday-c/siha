@@ -37,17 +37,18 @@ const ShowTemplate = $this => {
   });
 };
 
-const CloseTemplate = ($this, hims_d_rad_template_detail_id) => {
+const CloseTemplate = ($this, data) => {
+  debugger;
   let radObj = {
-    template_name: $this.state.template_name,
-    template_html: $this.state.template_html
+    template_name: data.template_name,
+    template_html: data.template_html
   };
   let insert_rad_temp = $this.state.insert_rad_temp;
   let RadTemplate = $this.state.RadTemplate;
   let Updateobj = {};
   if (
-    hims_d_rad_template_detail_id !== 0 &&
-    hims_d_rad_template_detail_id === null
+    data.hims_d_rad_template_detail_id !== 0 &&
+    data.hims_d_rad_template_detail_id === null
   ) {
     RadTemplate.push(radObj);
 
@@ -61,23 +62,25 @@ const CloseTemplate = ($this, hims_d_rad_template_detail_id) => {
       insert_rad_temp: insert_rad_temp
     });
   } else {
-    if (hims_d_rad_template_detail_id !== 0) {
+    if (data.hims_d_rad_template_detail_id !== 0) {
       let update_rad_temp = $this.state.update_rad_temp;
 
       for (let i = 0; i < RadTemplate.length; i++) {
         if (
           RadTemplate[i].hims_d_rad_template_detail_id ===
-          hims_d_rad_template_detail_id
+          data.hims_d_rad_template_detail_id
         ) {
-          RadTemplate[i].template_name = $this.state.template_name;
-          RadTemplate[i].template_html = $this.state.template_html;
+          RadTemplate[i].template_name = data.template_name;
+          RadTemplate[i].template_html = data.template_html;
         }
       }
 
       Updateobj = {
-        template_name: $this.state.template_name,
-        template_html: $this.state.template_html,
-        hims_d_rad_template_detail_id: hims_d_rad_template_detail_id
+        template_name: data.template_name,
+        template_html: data.template_html,
+        hims_d_rad_template_detail_id: data.hims_d_rad_template_detail_id,
+        template_status: "A",
+        record_status: "A"
       };
       update_rad_temp.push(Updateobj);
       $this.setState({
@@ -86,7 +89,7 @@ const CloseTemplate = ($this, hims_d_rad_template_detail_id) => {
         update_rad_temp: update_rad_temp,
         record_status: "A"
       });
-    } else if (hims_d_rad_template_detail_id === null) {
+    } else if (data.hims_d_rad_template_detail_id === null) {
     } else {
       $this.setState({
         openTemplate: !$this.state.openTemplate
