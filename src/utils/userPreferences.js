@@ -2,8 +2,7 @@ import loki from "lokijs";
 import extend from "extend";
 import path from "path";
 import fs from "fs";
-import httpStatus from "../utils/httpStatus";
-import { debugLog } from "../utils/logging";
+
 let db = new loki("algaeh_users.json", { autoload: true });
 let saveUserPreferences = (req, res, next) => {
   let settings = extend(

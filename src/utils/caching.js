@@ -28,19 +28,6 @@ let getCacheData = (options, callBack) => {
 //Add From cache(.Json)
 let setCacheData = (options, callBack) => {
   try {
-    // let CacheName =
-    //   options.cacheName != null
-    //     ? options.cacheName + ".json"
-    //     : "masterCacheData.json";
-    // let filePath = path.join(__dirname, "../../Masters/" + CacheName);
-    // let db = null;
-    // if (!fs.existsSync(filePath)) {
-    //   db = new loki(filePath, { autoload: true });
-    // } else {
-    //   db = new loki(CacheName);
-    //   db.loadJSON(fs.readFileSync(filePath));
-    // }
-
     let masterCollection = db.addCollection(options.key, {
       disableMeta: true
     });
