@@ -178,6 +178,16 @@ body {
       line-height: 23px;
       text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
     }
+    .img-upload-loader {
+      position: absolute;
+      top: 40%;
+      left: 40%;
+      text-align: center;
+      i {
+        font-size: 2rem;
+        color: #34b8bc;
+      }
+    }
   }
 
   .image-ins-drop-area {

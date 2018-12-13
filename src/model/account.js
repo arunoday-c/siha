@@ -189,7 +189,7 @@ let authUser = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       let query =
-        "SELECT algaeh_d_app_user_id, username, user_display_name,  locked, login_attempts,\
+        "SELECT algaeh_d_app_user_id, username, user_display_name,  locked, user_type,login_attempts,\
         password_expiry_rule, algaeh_m_role_user_mappings_id,app_d_app_roles_id,app_group_id,\
         role_code, role_name, role_discreption, role_type,\
         algaeh_d_app_group_id, app_group_code, app_group_name, app_group_desc, group_type, \
