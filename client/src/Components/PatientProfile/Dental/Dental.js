@@ -37,12 +37,14 @@ class Dental extends Component {
       openBillingModal: false,
       treatment_gridUpdate: true,
       billDetails: {},
+      surface: {},
       scheduled_date: new Date(),
-      selected_plan: "------"
+      selected_plan: "------",
+      hims_d_services_id: ""
     };
     this.getProcedures();
     this.getTreatementPlans();
-    this.deleteDentalPlan = this.deleteDentalPlan.bind(this);
+    // this.deleteDentalPlan = this.deleteDentalPlan.bind(this);
     this.updateDentalTreatmentStatus = this.updateDentalTreatmentStatus.bind(
       this
     );
@@ -179,8 +181,15 @@ class Dental extends Component {
   }
 
   markAllSurface(e) {
-    for (var i = 0; i < e.target.nextSibling.childElementCount; i++) {
-      e.target.nextSibling.children[i].click();
+    if (this.state.hims_d_services_id.length !== 0) {
+      for (var i = 0; i < e.target.nextSibling.childElementCount; i++) {
+        e.target.nextSibling.children[i].click();
+      }
+    } else {
+      swalMessage({
+        title: "Please Select a service first",
+        type: "warning"
+      });
     }
   }
 
@@ -348,65 +357,75 @@ class Dental extends Component {
   }
 
   markTeethSurface(e) {
-    e.currentTarget.classList.contains("mark-active")
-      ? e.currentTarget.classList.remove("mark-active")
-      : e.currentTarget.classList.add("mark-active");
+    if (this.state.hims_d_services_id.length !== 0) {
+      debugger;
+      e.currentTarget.classList.contains("mark-active")
+        ? e.currentTarget.classList.remove("mark-active")
+        : e.currentTarget.classList.add("mark-active");
 
-    let my_obj = {
-      teeth_number: parseInt(
-        e.currentTarget.parentElement.previousElementSibling.innerText,
-        10
-      ),
-      surface: e.currentTarget.innerText.toString()
-    };
+      let my_obj = {
+        teeth_number: parseInt(
+          e.currentTarget.parentElement.previousElementSibling.innerText,
+          10
+        ),
+        surface: e.currentTarget.innerText.toString()
+      };
 
-    let my_item = Enumerable.from(teeth)
-      .where(
-        w =>
-          w.teeth_number === my_obj.teeth_number && w.surface === my_obj.surface
-      )
-      .firstOrDefault();
+      let my_item = Enumerable.from(teeth)
+        .where(
+          w =>
+            w.teeth_number === my_obj.teeth_number &&
+            w.surface === my_obj.surface
+        )
+        .firstOrDefault();
 
-    if (my_item !== undefined) {
-      teeth.splice(teeth.indexOf(my_item), 1);
-      //console.log("Teeth Selected", teeth);
-    } else {
-      teeth.push(my_obj);
-      //console.log("Teeth Selected", teeth);
-    }
-
-    let send_teeth = Enumerable.from(teeth)
-      .groupBy("$.teeth_number", null, (k, g) => {
-        let teeth = Enumerable.from(g.getSource()).firstOrDefault()
-          .teeth_number;
-        return {
-          teeth_number: teeth,
-          details: g.getSource()
-        };
-      })
-      .toArray();
-
-    my_send_obj = {
-      patient_id: Window.global["current_patient"],
-      episode_id: Window.global["episode_id"],
-      treatment_plan_id: this.state.hims_f_treatment_plan_id,
-      service_id: this.state.hims_d_services_id,
-      scheduled_date: this.state.scheduled_date
-    };
-
-    my_send_obj.send_teeth = send_teeth;
-    //console.log("Send Teeth", JSON.stringify(my_send_obj));
-
-    this.setState(
-      {
-        quantity: send_teeth.length
-      },
-      () => {
-        this.setState({
-          total_price: this.state.quantity * this.state.standard_fee
-        });
+      if (my_item !== undefined) {
+        teeth.splice(teeth.indexOf(my_item), 1);
+        //console.log("Teeth Selected", teeth);
+      } else {
+        teeth.push(my_obj);
+        //console.log("Teeth Selected", teeth);
       }
-    );
+
+      let send_teeth = Enumerable.from(teeth)
+        .groupBy("$.teeth_number", null, (k, g) => {
+          let teeth = Enumerable.from(g.getSource()).firstOrDefault()
+            .teeth_number;
+          return {
+            teeth_number: teeth,
+            details: g.getSource()
+          };
+        })
+        .toArray();
+
+      my_send_obj = {
+        patient_id: Window.global["current_patient"],
+        episode_id: Window.global["episode_id"],
+        treatment_plan_id: this.state.hims_f_treatment_plan_id,
+        service_id: this.state.hims_d_services_id,
+        scheduled_date: this.state.scheduled_date
+      };
+
+      my_send_obj.send_teeth = send_teeth;
+      //console.log("Send Teeth", JSON.stringify(my_send_obj));
+
+      this.setState(
+        {
+          quantity: send_teeth.length
+        },
+        () => {
+          this.setState({
+            total_price: this.state.quantity * this.state.standard_fee
+          });
+        }
+      );
+    } else {
+      debugger;
+      swalMessage({
+        title: "Please Select a service first",
+        type: "warning"
+      });
+    }
   }
 
   addDentalPlan() {
@@ -539,9 +558,16 @@ class Dental extends Component {
     });
   }
 
-  generateToothUpperLeftSet() {
+  generateToothUpperLeftSet(teeth) {
     let plot = [];
     for (let i = 1; i < 9; i++) {
+      const _marking =
+        teeth !== undefined
+          ? Enumerable.from(teeth)
+              .where(w => w.teeth_number === i)
+              .firstOrDefault()
+          : undefined;
+
       plot.push(
         <div
           key={i}
@@ -561,32 +587,72 @@ class Dental extends Component {
           <div className="surface-Marking">
             <div
               onClick={this.markTeethSurface.bind(this)}
-              className="top-surface"
+              className={
+                "top-surface " +
+                (_marking !== undefined
+                  ? _marking.distal === "Y" &&
+                    _marking.service_id === this.state.hims_d_services_id
+                    ? " mark-active"
+                    : ""
+                  : "")
+              }
             >
               <span>D</span>
             </div>
             <div
               onClick={this.markTeethSurface.bind(this)}
-              className="right-surface"
+              className={
+                "right-surface " +
+                (_marking !== undefined
+                  ? _marking.labial === "Y" &&
+                    _marking.service_id === this.state.hims_d_services_id
+                    ? " mark-active"
+                    : ""
+                  : "")
+              }
             >
               <span>L</span>
             </div>
             <div
               onClick={this.markTeethSurface.bind(this)}
-              className="bottom-surface"
+              className={
+                "bottom-surface " +
+                (_marking !== undefined
+                  ? _marking.incisal === "Y" &&
+                    _marking.service_id === this.state.hims_d_services_id
+                    ? " mark-active"
+                    : ""
+                  : "")
+              }
             >
               <span>I</span>
             </div>
             <div
               onClick={this.markTeethSurface.bind(this)}
-              className="left-surface"
+              className={
+                "left-surface " +
+                (_marking !== undefined
+                  ? _marking.palatal === "Y" &&
+                    _marking.service_id === this.state.hims_d_services_id
+                    ? " mark-active"
+                    : ""
+                  : "")
+              }
             >
               <span>P</span>
             </div>
             {i >= 6 ? null : (
               <div
                 onClick={this.markTeethSurface.bind(this)}
-                className="middle-surface"
+                className={
+                  "middle-surface " +
+                  (_marking !== undefined
+                    ? _marking.mesial === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
               >
                 <span>M</span>
               </div>
@@ -597,9 +663,16 @@ class Dental extends Component {
     }
     return plot;
   }
-  generateToothUpperRightSet() {
+
+  generateToothUpperRightSet(teeth) {
     let plot = [];
     for (let i = 9; i < 17; i++) {
+      const _marking =
+        teeth !== undefined
+          ? Enumerable.from(teeth)
+              .where(w => w.teeth_number === i)
+              .firstOrDefault()
+          : undefined;
       plot.push(
         <div
           key={i}
@@ -618,34 +691,73 @@ class Dental extends Component {
           <span onClick={this.markAllSurface.bind(this)}>{i}</span>
           <div className="surface-Marking">
             <div
-              surface="distal='Y'"
               onClick={this.markTeethSurface.bind(this)}
-              className="top-surface"
+              className={
+                "top-surface " +
+                (_marking !== undefined
+                  ? _marking.distal === "Y" &&
+                    _marking.service_id === this.state.hims_d_services_id
+                    ? " mark-active"
+                    : ""
+                  : "")
+              }
             >
               <span>D</span>
             </div>
             <div
               onClick={this.markTeethSurface.bind(this)}
-              className="right-surface"
+              className={
+                "right-surface" +
+                (_marking !== undefined
+                  ? _marking.labial === "Y" &&
+                    _marking.service_id === this.state.hims_d_services_id
+                    ? " mark-active"
+                    : ""
+                  : "")
+              }
             >
               <span>L</span>
             </div>
             <div
               onClick={this.markTeethSurface.bind(this)}
-              className="bottom-surface"
+              className={
+                "bottom-surface" +
+                (_marking !== undefined
+                  ? _marking.incisal === "Y" &&
+                    _marking.service_id === this.state.hims_d_services_id
+                    ? " mark-active"
+                    : ""
+                  : "")
+              }
             >
               <span>I</span>
             </div>
             <div
               onClick={this.markTeethSurface.bind(this)}
-              className="left-surface"
+              className={
+                "left-surface" +
+                (_marking !== undefined
+                  ? _marking.palatal === "Y" &&
+                    _marking.service_id === this.state.hims_d_services_id
+                    ? " mark-active"
+                    : ""
+                  : "")
+              }
             >
               <span>P</span>
             </div>
             {i >= 12 ? (
               <div
                 onClick={this.markTeethSurface.bind(this)}
-                className="middle-surface"
+                className={
+                  "middle-surface" +
+                  (_marking !== undefined
+                    ? _marking.mesial === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
               >
                 <span>M</span>
               </div>
@@ -657,11 +769,18 @@ class Dental extends Component {
     return plot;
   }
 
-  generateToothLowerLeftSet() {
+  generateToothLowerLeftSet(teeth) {
     let plot = [];
     let counter = 1;
 
     for (let i = 32; i >= 25; i--) {
+      const _marking =
+        teeth !== undefined
+          ? Enumerable.from(teeth)
+              .where(w => w.teeth_number === i)
+              .firstOrDefault()
+          : undefined;
+
       plot.push(
         <div
           key={i}
@@ -681,32 +800,72 @@ class Dental extends Component {
           <div className="surface-Marking">
             <div
               onClick={this.markTeethSurface.bind(this)}
-              className="top-surface"
+              className={
+                "top-surface " +
+                (_marking !== undefined
+                  ? _marking.distal === "Y" &&
+                    _marking.service_id === this.state.hims_d_services_id
+                    ? " mark-active"
+                    : ""
+                  : "")
+              }
             >
               <span>D</span>
             </div>
             <div
               onClick={this.markTeethSurface.bind(this)}
-              className="right-surface"
+              className={
+                "right-surface" +
+                (_marking !== undefined
+                  ? _marking.labial === "Y" &&
+                    _marking.service_id === this.state.hims_d_services_id
+                    ? " mark-active"
+                    : ""
+                  : "")
+              }
             >
               <span>L</span>
             </div>
             <div
               onClick={this.markTeethSurface.bind(this)}
-              className="bottom-surface"
+              className={
+                "bottom-surface" +
+                (_marking !== undefined
+                  ? _marking.incisal === "Y" &&
+                    _marking.service_id === this.state.hims_d_services_id
+                    ? " mark-active"
+                    : ""
+                  : "")
+              }
             >
               <span>I</span>
             </div>
             <div
               onClick={this.markTeethSurface.bind(this)}
-              className="left-surface"
+              className={
+                "left-surface" +
+                (_marking !== undefined
+                  ? _marking.palatal === "Y" &&
+                    _marking.service_id === this.state.hims_d_services_id
+                    ? " mark-active"
+                    : ""
+                  : "")
+              }
             >
               <span>P</span>
             </div>
             {counter >= 6 ? null : (
               <div
                 onClick={this.markTeethSurface.bind(this)}
-                className="middle-surface"
+                className={
+                  "middle-surface" +
+                  (_marking !== undefined
+                    ? _marking.mesial === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
               >
                 <span>M</span>
               </div>
@@ -719,11 +878,18 @@ class Dental extends Component {
     return plot;
   }
 
-  generateToothLowerRightSet() {
+  generateToothLowerRightSet(teeth) {
     let plot = [];
     let counter = 9;
 
     for (let i = 24; i >= 17; i--) {
+      const _marking =
+        teeth !== undefined
+          ? Enumerable.from(teeth)
+              .where(w => w.teeth_number === i)
+              .firstOrDefault()
+          : undefined;
+
       plot.push(
         <div
           key={i}
@@ -743,32 +909,72 @@ class Dental extends Component {
           <div className="surface-Marking">
             <div
               onClick={this.markTeethSurface.bind(this)}
-              className="top-surface"
+              className={
+                "top-surface" +
+                (_marking !== undefined
+                  ? _marking.distal === "Y" &&
+                    _marking.service_id === this.state.hims_d_services_id
+                    ? " mark-active"
+                    : ""
+                  : "")
+              }
             >
               <span>D</span>
             </div>
             <div
               onClick={this.markTeethSurface.bind(this)}
-              className="right-surface"
+              className={
+                "right-surface " +
+                (_marking !== undefined
+                  ? _marking.labial === "Y" &&
+                    _marking.service_id === this.state.hims_d_services_id
+                    ? " mark-active"
+                    : ""
+                  : "")
+              }
             >
               <span>L</span>
             </div>
             <div
               onClick={this.markTeethSurface.bind(this)}
-              className="bottom-surface"
+              className={
+                "bottom-surface " +
+                (_marking !== undefined
+                  ? _marking.incisal === "Y" &&
+                    _marking.service_id === this.state.hims_d_services_id
+                    ? " mark-active"
+                    : ""
+                  : "")
+              }
             >
               <span>I</span>
             </div>
             <div
               onClick={this.markTeethSurface.bind(this)}
-              className="left-surface"
+              className={
+                "left-surface " +
+                (_marking !== undefined
+                  ? _marking.palatal === "Y" &&
+                    _marking.service_id === this.state.hims_d_services_id
+                    ? " mark-active"
+                    : ""
+                  : "")
+              }
             >
               <span>P</span>
             </div>
-            {counter >= 21 ? (
+            {i <= 21 ? (
               <div
                 onClick={this.markTeethSurface.bind(this)}
-                className="middle-surface"
+                className={
+                  "middle-surface " +
+                  (_marking !== undefined
+                    ? _marking.mesial === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
               >
                 <span>M</span>
               </div>
@@ -782,6 +988,7 @@ class Dental extends Component {
   }
 
   deleteDentalPlan(data) {
+    debugger;
     swal({
       title: "Delete Plan ?",
       type: "warning",
@@ -963,7 +1170,6 @@ class Dental extends Component {
               fieldName: "billed",
               label: "Add To Bill",
               displayTemplate: row => {
-                debugger;
                 return row.billed === "N" ? (
                   <button
                     onClick={this.addToBill.bind(this, row)}
@@ -1058,12 +1264,29 @@ class Dental extends Component {
   }
 
   openAddModal(data) {
-    this.setState({
-      openDentalModal: true,
-      selected_treatement_plan: data.plan_name,
-      hims_f_treatment_plan_id: data.hims_f_treatment_plan_id,
-      treatment_gridUpdate: false
-    });
+    this.setState(
+      {
+        openDentalModal: true,
+        selected_treatement_plan: data.plan_name,
+        hims_f_treatment_plan_id: data.hims_f_treatment_plan_id,
+        treatment_gridUpdate: false
+      },
+      () => {
+        algaehApiCall({
+          uri: "/dental/getDentalTreatment",
+          method: "GET",
+          data: { treatment_plan_id: this.state.hims_f_treatment_plan_id },
+          onSuccess: response => {
+            if (response.data.success) {
+              this.setState({
+                highlightTeeth: response.data.records
+              });
+            }
+          },
+          onError: error => {}
+        });
+      }
+    );
   }
 
   render() {
@@ -1505,7 +1728,13 @@ class Dental extends Component {
                           valueField: "hims_d_services_id",
                           data: this.state.procedures
                         },
-                        onChange: this.dropDownHandler.bind(this)
+                        onChange: this.dropDownHandler.bind(this),
+                        onClear: () => {
+                          this.setState({
+                            hims_d_services_id: "",
+                            standard_fee: 0
+                          });
+                        }
                       }}
                     />
 
@@ -1595,13 +1824,17 @@ class Dental extends Component {
                       <div className="col-lg-6 teeth-sec">
                         <h6>Upper Left</h6>
                         <div className="row">
-                          {this.generateToothUpperLeftSet()}
+                          {this.generateToothUpperLeftSet(
+                            this.state.highlightTeeth
+                          )}
                         </div>
                       </div>
                       <div className="col-lg-6 teeth-sec">
                         <h6>Upper Right</h6>
                         <div className="row">
-                          {this.generateToothUpperRightSet()}
+                          {this.generateToothUpperRightSet(
+                            this.state.highlightTeeth
+                          )}
                         </div>
                       </div>
                     </div>
@@ -1609,13 +1842,17 @@ class Dental extends Component {
                     <div className="row bottom-teeth-sec">
                       <div className="col-lg-6 teeth-sec">
                         <div className="row">
-                          {this.generateToothLowerLeftSet()}
+                          {this.generateToothLowerLeftSet(
+                            this.state.highlightTeeth
+                          )}
                         </div>
                         <h6>Lower Left</h6>
                       </div>
                       <div className="col-lg-6 teeth-sec">
                         <div className="row">
-                          {this.generateToothLowerRightSet()}
+                          {this.generateToothLowerRightSet(
+                            this.state.highlightTeeth
+                          )}
                         </div>
                         <h6>Lower Right</h6>
                       </div>
@@ -1889,6 +2126,44 @@ class Dental extends Component {
                         );
                       },
                       editorTemplate: row => {
+                        //  let data=[];
+
+                        //  if (row.teeth_number>5 && row.teeth_number<12 ||
+
+                        //   row.teeth_number>27 && row.teeth_number<21
+                        //   ) {
+                        //   data= [
+                        //     { name: "D", value: "D" },
+                        //     { name: "I", value: "I" },
+                        //     { name: "P", value: "P" },
+                        //     { name: "L", value: "L" }
+                        //   ];
+                        //  } else {
+                        //    data =  [
+                        //     { name: "D", value: "D" },
+                        //     { name: "I", value: "I" },
+                        //     { name: "M", value: "M" },
+                        //     { name: "P", value: "P" },
+                        //     { name: "L", value: "L" }
+                        //   ];
+                        //  }
+                        //   return (
+                        //     <AlagehAutoComplete
+                        //       selector={{
+                        //         name: "surface",
+                        //         className: "select-fld",
+                        //         value: this.state.surface,
+                        //         multiselect: true,
+                        //         dataSource: {
+                        //           textField: "name",
+                        //           valueField: "value",
+                        //           data: data
+                        //         },
+                        //         onChange: () => {}
+                        //       }}
+                        //     />
+                        //   );
+
                         return (
                           <span>
                             {row.distal === "Y" ? "D " : ""}
@@ -2014,20 +2289,23 @@ class Dental extends Component {
                     }
                   ]}
                   keyId="algaeh_app_screens_id"
-                  //uiUpdate={this.state.treatment_gridUpdate}
                   dataSource={{
-                    // pageInputExclude: true,
-                    // uri: "/dental/getDentalTreatment",
-                    // inputParam: { treatment_plan_id: data.hims_f_treatment_plan_id },
-                    // method: "GET",
-                    // responseSchema: { data: "records" }
                     data: this.state.dentalTreatments
                   }}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   isEditable={true}
                   events={{
                     onEdit: () => {},
-                    onDelete: this.deleteDentalPlan,
+                    onDelete: row => {
+                      debugger;
+
+                      row.billed === "SB" || row.billed === "Y"
+                        ? swalMessage({
+                            title: "Treatment already completed, cannot delete",
+                            type: "warning"
+                          })
+                        : this.deleteDentalPlan(row);
+                    },
                     onDone: this.updateDentalTreatmentStatus
                   }}
                 />

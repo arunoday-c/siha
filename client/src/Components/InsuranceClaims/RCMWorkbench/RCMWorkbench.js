@@ -9,8 +9,7 @@ import {
   AlgaehLabel,
   AlagehAutoComplete,
   AlgaehDateHandler,
-  AlagehFormGroup,
-  AlgaehModalPopUp
+  AlagehFormGroup
 } from "../../Wrapper/algaehWrapper";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import AlgaehSearch from "../../Wrapper/globalSearch";
@@ -123,7 +122,8 @@ class RCMWorkbench extends Component {
       patient_code: null,
       insurance_provider_id: null,
       sub_insurance_id: null,
-      patient_id: null
+      patient_id: null,
+      claims: []
     });
   }
 
