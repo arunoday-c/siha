@@ -6,14 +6,14 @@ import {
   getCookie,
   swalMessage
 } from "../../utils/algaehApiCall";
-
+import noImage from "../../assets/images/images.webp";
 import { displayFileFromServer } from "../../utils/GlobalFunctions";
 import Webcam from "react-webcam";
 export default class AlgaehFileUploader extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      filePreview: "",
+      filePreview: noImage,
       showCropper: false,
       showProgress: false,
       progressPercentage: 0,
@@ -23,19 +23,27 @@ export default class AlgaehFileUploader extends PureComponent {
   }
   componentDidMount() {
     const that = this;
-    displayFileFromServer({
-      uri: "/masters/getFile",
-      fileType: that.props.serviceParameters.fileType,
-      destinationName: that.props.serviceParameters.destinationName,
-      onFileSuccess: data => {
-        that.setState({ filePreview: data });
-      }
-    });
-  }
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      filePreview: nextProps.src
-    });
+    if (that.props.serviceParameters.destinationName !== "") {
+      displayFileFromServer({
+        uri: "/masters/getFile",
+        fileType: that.props.serviceParameters.fileType,
+        destinationName: that.props.serviceParameters.destinationName,
+        onFileSuccess: data => {
+          if (data !== undefined && data !== "") {
+            that.setState({ filePreview: data });
+          } else {
+            that.setState({
+              filePreview: noImage
+            });
+          }
+        },
+        onFileFailure: data => {
+          that.setState({
+            filePreview: noImage
+          });
+        }
+      });
+    }
   }
 
   // resizingAndCompressImage(file) {
@@ -107,6 +115,17 @@ export default class AlgaehFileUploader extends PureComponent {
   }
 
   showAttachmentHandler(e) {
+    if (this.props.serviceParameters.uniqueID === "") {
+      const _messageUniqueBlank =
+        this.props.uniqueBlankMessage === undefined
+          ? "With out unique image can not process"
+          : this.props.uniqueBlankMessage;
+      swalMessage({
+        title: _messageUniqueBlank,
+        type: "error"
+      });
+      return;
+    }
     this.imager.click();
   }
 

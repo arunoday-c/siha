@@ -4,6 +4,7 @@ import Enumerable from "linq";
 import { SetBulkState } from "../../../../utils/GlobalFunctions";
 
 const DeptselectedHandeler = ($this, context, e) => {
+  debugger;
   let dept = Enumerable.from($this.props.deptanddoctors.departmets)
     .where(w => w.sub_department_id === e.value)
     .firstOrDefault();
@@ -11,12 +12,14 @@ const DeptselectedHandeler = ($this, context, e) => {
   $this.setState({
     [e.name]: e.value,
     department_id: e.selected.department_id,
+    department_type: e.selected.department_type,
     doctors: dept.doctors
   });
   if (context !== null) {
     context.updateState({
       [e.name]: e.value,
       department_id: e.selected.department_id,
+      department_type: e.selected.department_type,
       doctors: dept.doctors
     });
   }
@@ -110,7 +113,10 @@ const doctorselectedHandeler = ($this, context, e) => {
                   billdetail: false
                 },
                 () => {
-                  generateBillDetails($this, context);
+                  debugger;
+                  if ($this.state.existing_plan !== "Y") {
+                    generateBillDetails($this, context);
+                  }
                 }
               );
               if (context !== null) {
@@ -198,8 +204,17 @@ const doctorselectedHandeler = ($this, context, e) => {
 };
 
 const generateBillDetails = ($this, context) => {
+  let zeroBill = false;
+  debugger;
+  if (
+    $this.state.department_type === "D" &&
+    $this.state.existing_plan === "Y"
+  ) {
+    zeroBill = true;
+  }
   let serviceInput = [
     {
+      zeroBill: zeroBill,
       insured: $this.state.insured,
       //TODO change middle ware to promisify function --added by Nowshad
       vat_applicable: $this.state.vat_applicable,
@@ -258,4 +273,72 @@ const generateBillDetails = ($this, context) => {
   });
 };
 
-export { DeptselectedHandeler, selectedHandeler, doctorselectedHandeler };
+const radioChange = ($this, context, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  $this.setState(
+    {
+      [name]: value
+    },
+    () => {
+      debugger;
+      if (name === "existing_plan" && value === "Y") {
+        getTreatementPlans($this);
+        if ($this.state.doctor_id !== null) {
+          generateBillDetails($this, context);
+        }
+      }
+      if (
+        name === "existing_plan" &&
+        value === "N" &&
+        $this.state.doctor_id !== null
+      ) {
+        generateBillDetails($this, context);
+      }
+    }
+  );
+
+  if (context !== null) {
+    context.updateState({
+      [name]: value
+    });
+  }
+};
+
+const getTreatementPlans = $this => {
+  $this.props.getTreatmentPlan({
+    uri: "/dental/getTreatmentPlan",
+    method: "GET",
+    data: {
+      patient_id: $this.state.hims_d_patient_id,
+      plan_status: "O"
+    },
+    redux: {
+      type: "DENTAL_PLAN_DATA",
+      mappingName: "dentalplans"
+    }
+  });
+};
+
+const texthandle = ($this, context, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  $this.setState({
+    [name]: value
+  });
+
+  if (context !== null) {
+    context.updateState({
+      [name]: value
+    });
+  }
+};
+
+export {
+  DeptselectedHandeler,
+  selectedHandeler,
+  doctorselectedHandeler,
+  radioChange,
+  texthandle
+};

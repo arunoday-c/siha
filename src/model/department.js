@@ -358,7 +358,8 @@ let selectdoctors = (req, res, next) => {
       hims_m_employee_department_mappings.services_id,\
       hims_d_sub_department.department_id,\
       hims_d_sub_department.sub_department_name,\
-      hims_d_sub_department.arabic_sub_department_name\
+      hims_d_sub_department.arabic_sub_department_name,\
+      hims_d_sub_department.department_type\
       from hims_m_employee_department_mappings,\
       hims_d_employee,hims_d_sub_department,hims_d_department,\
       hims_d_employee_category,hims_m_category_speciality_mappings\
