@@ -357,7 +357,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
     next(e);
   }
 };
-0;
+
 //created by irfan: to get
 let getRoleBaseInActiveComponents = (req, res, next) => {
   try {
@@ -512,6 +512,84 @@ let getAlgaehModules = (req, res, next) => {
     next(e);
   }
 };
+
+//created by irfan: to
+let updateAlgaehModules = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      let input = extend({}, req.body);
+
+      if (
+        req.userIdentity.role_type == "SU" &&
+        req.userIdentity.group_type == "SU"
+      ) {
+        if (
+          input.hims_f_dental_treatment_id != "null" ||
+          input.hims_f_dental_treatment_id != undefined
+        ) {
+          connection.query(
+            "update hims_f_dental_treatment set  scheduled_date=?, distal=?, incisal=?,\
+             occlusal=?, mesial=?, buccal=?, labial=?, cervical=?, palatal=?, lingual=?,\
+               updated_date=?, updated_by=? WHERE  `record_status`='A' and `hims_f_dental_treatment_id`=?;",
+            [
+              input.scheduled_date,
+
+              input.distal,
+              input.incisal,
+              input.occlusal,
+              input.mesial,
+              input.buccal,
+              input.labial,
+              input.cervical,
+              input.palatal,
+              input.lingual,
+              new Date(),
+              input.updated_by,
+              input.hims_f_dental_treatment_id
+            ],
+            (error, results) => {
+              releaseDBConnection(db, connection);
+              if (error) {
+                next(error);
+              }
+
+              if (results.affectedRows > 0) {
+                req.records = results;
+                next();
+              } else {
+                req.records = { affectedRows: 0 };
+                next();
+              }
+            }
+          );
+        } else {
+          releaseDBConnection(db, connection);
+          req.records = { invalid_input: true };
+          next();
+        }
+      } else {
+        req.records = {
+          validUser: false,
+          message: "you dont have admin privilege"
+        };
+        next();
+      }
+      //----------------------
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//==========================
 
 //created by irfan: to add
 let addAlgaehScreen = (req, res, next) => {
@@ -798,6 +876,8 @@ let getAlgaehScreenElement = (req, res, next) => {
     next(e);
   }
 };
+
+//--------ROLE BASE SCREEN ASSIGNMENT----------------
 
 module.exports = {
   addAlgaehGroupMAster,
