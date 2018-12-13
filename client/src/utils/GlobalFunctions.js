@@ -164,7 +164,6 @@ export function displayFileFromServer(options) {
     },
     others: { responseType: "arraybuffer" },
     onSuccess: response => {
-      debugger;
       if (response.data) {
         const _data =
           "data:" +
@@ -177,7 +176,12 @@ export function displayFileFromServer(options) {
       }
     },
     onFailure: details => {
-      debugger;
+      if (
+        options.onFileFailure !== undefined &&
+        typeof options.onFileFailure === "function"
+      ) {
+        options.onFileFailure(details);
+      }
     }
   });
 }
