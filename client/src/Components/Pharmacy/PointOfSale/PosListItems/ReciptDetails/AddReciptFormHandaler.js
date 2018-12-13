@@ -1,5 +1,7 @@
 import moment from "moment";
 import { successfulMessage } from "../../../../../utils/GlobalFunctions";
+import { swalMessage, algaehApiCall } from "../../../../../utils/algaehApiCall";
+import { debug } from "util";
 let texthandlerInterval = null;
 
 const texthandle = ($this, context, ctrl, e) => {
@@ -24,8 +26,8 @@ const texthandle = ($this, context, ctrl, e) => {
 };
 
 const calculateRecipt = ($this, context) => {
-  var intervalId;
-
+  // var intervalId;
+  debugger;
   let serviceInput = {
     isReceipt: true,
     intCalculateall: false,
@@ -36,19 +38,48 @@ const calculateRecipt = ($this, context) => {
     receiveable_amount: parseFloat($this.state.receiveable_amount)
   };
 
-  clearInterval(intervalId);
-  intervalId = setInterval(() => {
-    $this.props.reciptCalculations({
-      uri: "/billing/billingCalculations",
-      method: "POST",
-      data: serviceInput,
-      redux: {
-        type: "BILL_HEADER_GEN_GET_DATA",
-        mappingName: "posheader"
+  algaehApiCall({
+    uri: "/billing/billingCalculations",
+    method: "POST",
+    data: serviceInput,
+    onSuccess: response => {
+      if (response.data.success) {
+        let data = response.data.records;
+
+        data.patient_payable_h =
+          data.patient_payable || $this.state.patient_payable;
+        data.sub_total = data.sub_total_amount || $this.state.sub_total;
+        data.patient_responsibility =
+          data.patient_res || $this.state.patient_responsibility;
+        data.company_responsibility =
+          data.company_res || $this.state.company_responsibility;
+
+        data.company_payable =
+          data.company_payble || $this.state.company_payable;
+        data.sec_company_responsibility =
+          data.sec_company_res || $this.state.sec_company_responsibility;
+        data.sec_company_payable =
+          data.sec_company_paybale || $this.state.sec_company_payable;
+
+        data.copay_amount = data.copay_amount || $this.state.copay_amount;
+        data.sec_copay_amount =
+          data.sec_copay_amount || $this.state.sec_copay_amount;
+        data.addItemButton = false;
+        data.saveEnable = false;
+        debugger;
+        $this.setState({ ...data });
+        if (context !== null) {
+          context.updateState({ ...data });
+        }
       }
-    });
-    clearInterval(intervalId);
-  }, 500);
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
 };
 
 const cashtexthandle = ($this, context, ctrl, e) => {
@@ -60,10 +91,9 @@ const cashtexthandle = ($this, context, ctrl, e) => {
   let receiveable_amount = parseFloat($this.state.receiveable_amount);
 
   if (cash_amount + card_amount + cheque_amount > receiveable_amount) {
-    successfulMessage({
-      message: "Invalid Input. Sum of all amount to be equal to Receivable.",
-      title: "Warning",
-      icon: "warning"
+    swalMessage({
+      title: "Invalid Input. Sum of all amount to be equal to Receivable.",
+      type: "warning"
     });
     $this.setState(
       {
@@ -98,10 +128,9 @@ const cardtexthandle = ($this, context, ctrl, e) => {
   let receiveable_amount = parseFloat($this.state.receiveable_amount);
 
   if (cash_amount + card_amount + cheque_amount > receiveable_amount) {
-    successfulMessage({
-      message: "Invalid Input. Sum of all amount to be equal to Receivable.",
-      title: "Warning",
-      icon: "warning"
+    swalMessage({
+      title: "Invalid Input. Sum of all amount to be equal to Receivable.",
+      type: "warning"
     });
     $this.setState(
       {
@@ -137,10 +166,9 @@ const chequetexthandle = ($this, context, ctrl, e) => {
   let receiveable_amount = parseFloat($this.state.receiveable_amount);
 
   if (cash_amount + card_amount + cheque_amount > receiveable_amount) {
-    successfulMessage({
-      message: "Invalid Input. Sum of all amount to be equal to Receivable.",
-      title: "Warning",
-      icon: "warning"
+    swalMessage({
+      title: "Invalid Input. Sum of all amount to be equal to Receivable.",
+      type: "warning"
     });
     $this.setState(
       {
@@ -178,9 +206,10 @@ const datehandle = ($this, context, ctrl, e) => {
 };
 
 const checkcashhandaler = ($this, context, e) => {
+  let Cashchecked = e.target.checked;
   $this.setState(
     {
-      Cashchecked: e.target.checked,
+      Cashchecked: Cashchecked,
       cash_amount: 0
     },
     () => {
@@ -188,21 +217,19 @@ const checkcashhandaler = ($this, context, e) => {
     }
   );
 
-  clearInterval(texthandlerInterval);
-  texthandlerInterval = setInterval(() => {
-    if (context !== undefined) {
-      context.updateState({
-        cash_amount: 0
-      });
-    }
-    clearInterval(texthandlerInterval);
-  }, 500);
+  if (context !== undefined) {
+    context.updateState({
+      cash_amount: 0,
+      Cashchecked: Cashchecked
+    });
+  }
 };
 
 const checkcardhandaler = ($this, context, e) => {
+  let Cardchecked = e.target.checked;
   $this.setState(
     {
-      Cardchecked: e.target.checked,
+      Cardchecked: Cardchecked,
       card_amount: 0,
       card_check_number: null,
       expiry_date: null
@@ -212,23 +239,21 @@ const checkcardhandaler = ($this, context, e) => {
     }
   );
 
-  clearInterval(texthandlerInterval);
-  texthandlerInterval = setInterval(() => {
-    if (context !== undefined) {
-      context.updateState({
-        card_amount: 0,
-        card_check_number: null,
-        expiry_date: null
-      });
-    }
-    clearInterval(texthandlerInterval);
-  }, 500);
+  if (context !== undefined) {
+    context.updateState({
+      Cardchecked: Cardchecked,
+      card_amount: 0,
+      card_check_number: null,
+      expiry_date: null
+    });
+  }
 };
 
 const checkcheckhandaler = ($this, context, e) => {
+  let Checkchecked = e.target.checked;
   $this.setState(
     {
-      Checkchecked: e.target.checked,
+      Checkchecked: Checkchecked,
       cheque_amount: 0,
       cheque_number: null,
       cheque_date: null
@@ -238,17 +263,14 @@ const checkcheckhandaler = ($this, context, e) => {
     }
   );
 
-  clearInterval(texthandlerInterval);
-  texthandlerInterval = setInterval(() => {
-    if (context !== undefined) {
-      context.updateState({
-        cheque_amount: 0,
-        cheque_number: null,
-        cheque_date: null
-      });
-    }
-    clearInterval(texthandlerInterval);
-  }, 500);
+  if (context !== undefined) {
+    context.updateState({
+      Checkchecked: Checkchecked,
+      cheque_amount: 0,
+      cheque_number: null,
+      cheque_date: null
+    });
+  }
 };
 
 export {

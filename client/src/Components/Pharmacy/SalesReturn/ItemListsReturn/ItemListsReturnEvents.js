@@ -1,6 +1,5 @@
-import { successfulMessage } from "../../../../utils/GlobalFunctions";
+import { swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
-// import Enumerable from "linq";
 import extend from "extend";
 
 let texthandlerInterval = null;
@@ -19,10 +18,9 @@ const discounthandle = ($this, context, ctrl, e) => {
     sheet_discount_percentage = 0;
   }
   if (sheet_discount_percentage > 100) {
-    successfulMessage({
-      message: "Invalid Input. Discount % cannot be greater than 100.",
-      title: "Warning",
-      icon: "warning"
+    swalMessage({
+      title: "Invalid Input. Discount % cannot be greater than 100.",
+      type: "warning"
     });
   } else {
     $this.setState(
@@ -98,10 +96,9 @@ const itemchangeText = ($this, e) => {
           Batch_Items: data.locationResult
         });
       } else {
-        successfulMessage({
-          message: "Invalid Input. No Stock Avaiable for selected Item.",
-          title: "Warning",
-          icon: "warning"
+        swalMessage({
+          title: "Invalid Input. No Stock Avaiable for selected Item.",
+          type: "warning"
         });
       }
     }
@@ -136,11 +133,10 @@ const AddItems = ($this, context) => {
     },
     afterSuccess: data => {
       if (data.billdetails[0].pre_approval === "Y") {
-        successfulMessage({
-          message:
+        swalMessage({
+          title:
             "Invalid Input. Selected Service is Pre-Approval required, you don't have rights to bill.",
-          title: "Warning",
-          icon: "warning"
+          type: "warning"
         });
       } else {
         let existingservices = $this.state.pharmacy_stock_detail;
@@ -306,75 +302,87 @@ const updateSalesReturnDetail = ($this, context) => {
 const calculateAmount = ($this, row, context, ctrl, e) => {
   e = e || ctrl;
 
-  let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+  debugger;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  if (value < 0) {
+    swalMessage({
+      title:
+        "Invalid Input. Retuen Quantity cannot be less than or equal to Zero",
+      type: "warning"
+    });
+  } else if (value > row.quantity) {
+    swalMessage({
+      title:
+        "Invalid Input. Retuen Quantity cannot be greater than SOld Quantity",
+      type: "warning"
+    });
+  } else {
+    let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
 
-  row[e.target.name] = parseFloat(e.target.value);
-  let inputParam = [
-    {
-      hims_d_services_id: row.service_id,
-      vat_applicable: "Y",
-      quantity: row.return_quantity,
-      discount_amout:
-        e.target.name === "discount_percentage" ? 0 : row.discount_amout,
-      discount_percentage:
-        e.target.name === "discount_amout" ? 0 : row.discount_percentage,
-      unit_cost: row.unit_cost,
-      insured: $this.state.insured,
-      primary_insurance_provider_id: $this.state.insurance_provider_id,
-      primary_network_office_id: $this.state.hims_d_insurance_network_office_id,
-      primary_network_id: $this.state.network_id,
-      sec_insured: $this.state.sec_insured,
-      secondary_insurance_provider_id:
-        $this.state.secondary_insurance_provider_id,
-      secondary_network_id: $this.state.secondary_network_id,
-      secondary_network_office_id: $this.state.secondary_network_office_id
-    }
-  ];
+    row[name] = value === undefined || value === "" ? 0 : parseFloat(value);
+    let inputParam = [
+      {
+        hims_d_services_id: row.service_id,
+        vat_applicable: "Y",
+        quantity: row.return_quantity,
+        discount_amout: name === "discount_percentage" ? 0 : row.discount_amout,
+        discount_percentage:
+          name === "discount_amout" ? 0 : row.discount_percentage,
+        unit_cost: row.unit_cost,
+        insured: $this.state.insured,
+        primary_insurance_provider_id: $this.state.insurance_provider_id,
+        primary_network_office_id:
+          $this.state.hims_d_insurance_network_office_id,
+        primary_network_id: $this.state.network_id,
+        sec_insured: $this.state.sec_insured,
+        secondary_insurance_provider_id:
+          $this.state.secondary_insurance_provider_id,
+        secondary_network_id: $this.state.secondary_network_id,
+        secondary_network_office_id: $this.state.secondary_network_office_id
+      }
+    ];
 
-  $this.props.generateBill({
-    uri: "/billing/getBillDetails",
-    method: "POST",
-    data: inputParam,
-    redux: {
-      type: "BILL_GEN_GET_DATA",
-      mappingName: "xxx"
-    },
-    afterSuccess: data => {
-      data.billdetails[0].extended_cost = data.billdetails[0].gross_amount;
-      data.billdetails[0].net_extended_cost = data.billdetails[0].net_amout;
-      data.billdetails[0].quantity = row.quantity;
+    $this.props.generateBill({
+      uri: "/billing/getBillDetails",
+      method: "POST",
+      data: inputParam,
+      redux: {
+        type: "BILL_GEN_GET_DATA",
+        mappingName: "xxx"
+      },
+      afterSuccess: data => {
+        data.billdetails[0].extended_cost = data.billdetails[0].gross_amount;
+        data.billdetails[0].net_extended_cost = data.billdetails[0].net_amout;
+        data.billdetails[0].quantity = row.quantity;
 
-      extend(row, data.billdetails[0]);
-      // for (let i = 0; i < pharmacy_stock_detail.length; i++) {
-      //   if (pharmacy_stock_detail[i].item_id === row.item_id) {
-      //     pharmacy_stock_detail[i] = row;
-      //   }
-      // }
-      pharmacy_stock_detail[row.rowIdx] = row;
-      $this.setState({
-        pharmacy_stock_detail: pharmacy_stock_detail,
-        dataChange: true
-      });
+        extend(row, data.billdetails[0]);
 
-      if (context !== undefined) {
-        context.updateState({
+        pharmacy_stock_detail[row.rowIdx] = row;
+        $this.setState({
           pharmacy_stock_detail: pharmacy_stock_detail,
           dataChange: true
         });
+
+        if (context !== undefined) {
+          context.updateState({
+            pharmacy_stock_detail: pharmacy_stock_detail,
+            dataChange: true
+          });
+        }
       }
-    }
-  });
+    });
+  }
 };
 
 const adjustadvance = ($this, context, ctrl, e) => {
   e = e || ctrl;
 
   if (e.target.value > $this.state.advance_amount) {
-    successfulMessage({
-      message:
+    swalMessage({
+      title:
         "Invalid Input. Adjusted amount cannot be greater than Advance amount",
-      title: "Warning",
-      icon: "warning"
+      type: "warning"
     });
   } else {
     $this.setState(

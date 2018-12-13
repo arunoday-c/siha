@@ -86,9 +86,9 @@ let insertPatientVisitData = (req, res, next) => {
         "INSERT INTO `hims_f_patient_visit` (`patient_id`, `visit_type`, \
 `age_in_years`, `age_in_months`, `age_in_days`, `insured`,`sec_insured`,\
 `visit_date`, `department_id`, `sub_department_id`, `doctor_id`, `maternity_patient`,\
-`is_mlc`, `mlc_accident_reg_no`, `mlc_police_station`, `mlc_wound_certified_date`, \
+`is_mlc`, `mlc_accident_reg_no`, `mlc_police_station`, `mlc_wound_certified_date`, `existing_plan`,`treatment_plan_id`,\
 `created_by`, `created_date`,`visit_code`,`visit_expiery_date`,`episode_id`,`appointment_id`, `appointment_patient`)\
-VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?);",
+VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?, ?, ?);",
         [
           inputParam.patient_id,
           inputParam.visit_type,
@@ -108,6 +108,8 @@ VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?);",
           inputParam.mlc_wound_certified_date != null
             ? new Date(inputParam.mlc_wound_certified_date)
             : inputParam.mlc_wound_certified_date,
+          inputParam.existing_plan,
+          inputParam.treatment_plan_id,
           inputParam.created_by,
           new Date(),
           inputParam.visit_code,
@@ -183,99 +185,108 @@ VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?);",
             }
           } else {
             debugLog("Else ", expResult);
-            //fetching expiry date and episode id for existing patient
-            if (
-              expResult[0].visit_expiery_date != null &&
-              expResult[0].episode_id != null
-            ) {
-              existingExparyDate = moment(
+            if (inputParam.existing_plan === "Y") {
+              inputParam.visit_expiery_date = moment(
                 expResult[0]["visit_expiery_date"]
               ).format("YYYY-MM-DD");
-              currentPatientEpisodeNo = expResult[0]["episode_id"];
-              debugLog("expResult Inside ", existingExparyDate);
-              debugLog("expResult Inside ", currentPatientEpisodeNo);
-            }
-            // req.body.episode_id = expResult[0]["episode_id"];
-            let currentEpisodeNo = null;
-            //checking expiry if expired or not_there create new expiry date
-            debugLog("existingExparyDate ", existingExparyDate);
-            if (
-              existingExparyDate == null ||
-              existingExparyDate == undefined ||
-              existingExparyDate < today
-            ) {
+              inputParam.episode_id = expResult[0]["episode_id"];
+              internalInsertPatientVisitData();
+              //Data
+            } else {
+              //fetching expiry date and episode id for existing patient
+              if (
+                expResult[0].visit_expiery_date != null &&
+                expResult[0].episode_id != null
+              ) {
+                existingExparyDate = moment(
+                  expResult[0]["visit_expiery_date"]
+                ).format("YYYY-MM-DD");
+                currentPatientEpisodeNo = expResult[0]["episode_id"];
+                debugLog("expResult Inside ", existingExparyDate);
+                debugLog("expResult Inside ", currentPatientEpisodeNo);
+              }
+              // req.body.episode_id = expResult[0]["episode_id"];
+              let currentEpisodeNo = null;
+              //checking expiry if expired or not_there create new expiry date
               debugLog("existingExparyDate ", existingExparyDate);
-              //create new expiry date
-              db.query(
-                "SELECT param_value,episode_id from algaeh_d_app_config WHERE algaeh_d_app_config_id=11 \
+              if (
+                existingExparyDate == null ||
+                existingExparyDate == undefined ||
+                existingExparyDate < today
+              ) {
+                debugLog("existingExparyDate ", existingExparyDate);
+                //create new expiry date
+                db.query(
+                  "SELECT param_value,episode_id from algaeh_d_app_config WHERE algaeh_d_app_config_id=11 \
                 and record_status='A'",
-                (error, record) => {
-                  debugLog("In Expiry date records ", record);
-                  if (error) {
-                    if (req.options == null) {
-                      db.rollback(() => {
-                        releaseDBConnection(req.db, db);
-                        next(error);
-                      });
-                    } else {
-                      req.options.onFailure(error);
-                    }
-                  } else {
-                    if (record.length == 0) {
+                  (error, record) => {
+                    debugLog("In Expiry date records ", record);
+                    if (error) {
                       if (req.options == null) {
                         db.rollback(() => {
                           releaseDBConnection(req.db, db);
-                          next(
+                          next(error);
+                        });
+                      } else {
+                        req.options.onFailure(error);
+                      }
+                    } else {
+                      if (record.length == 0) {
+                        if (req.options == null) {
+                          db.rollback(() => {
+                            releaseDBConnection(req.db, db);
+                            next(
+                              httpStatus.generateError(
+                                httpStatus.notModified,
+                                "Episode value not found.Please contact administrator."
+                              )
+                            );
+                          });
+                        } else {
+                          req.options.onFailure(
                             httpStatus.generateError(
                               httpStatus.notModified,
                               "Episode value not found.Please contact administrator."
                             )
                           );
-                        });
-                      } else {
-                        req.options.onFailure(
-                          httpStatus.generateError(
-                            httpStatus.notModified,
-                            "Episode value not found.Please contact administrator."
-                          )
+                        }
+                      }
+                      inputParam.visit_expiery_date = moment()
+                        .add(parseInt(record[0]["param_value"], 10), "days")
+                        .format("YYYY-MM-DD");
+                      currentEpisodeNo = record[0].episode_id;
+
+                      if (currentEpisodeNo > 0) {
+                        let nextEpisodeNo = currentEpisodeNo + 1;
+                        inputParam.episode_id = currentEpisodeNo;
+                        req.body.episode_id = inputParam.episode_id;
+                        db.query(
+                          "update algaeh_d_app_config set episode_id=? where algaeh_d_app_config_id=11 and record_status='A' ",
+                          [nextEpisodeNo],
+                          (error, updateResult) => {
+                            if (error) {
+                              if (req.options == null) {
+                                db.rollback(() => {
+                                  releaseDBConnection(req.db, dataBase);
+                                  next(error);
+                                });
+                              } else {
+                                req.options.onFailure(error);
+                              }
+                            } else {
+                              internalInsertPatientVisitData();
+                            }
+                          }
                         );
                       }
                     }
-                    inputParam.visit_expiery_date = moment()
-                      .add(parseInt(record[0]["param_value"],10), "days")
-                      .format("YYYY-MM-DD");
-                    currentEpisodeNo = record[0].episode_id;
-
-                    if (currentEpisodeNo > 0) {
-                      let nextEpisodeNo = currentEpisodeNo + 1;
-                      inputParam.episode_id = currentEpisodeNo;
-                      req.body.episode_id = inputParam.episode_id;
-                      db.query(
-                        "update algaeh_d_app_config set episode_id=? where algaeh_d_app_config_id=11 and record_status='A' ",
-                        [nextEpisodeNo],
-                        (error, updateResult) => {
-                          if (error) {
-                            if (req.options == null) {
-                              db.rollback(() => {
-                                releaseDBConnection(req.db, dataBase);
-                                next(error);
-                              });
-                            } else {
-                              req.options.onFailure(error);
-                            }
-                          } else {
-                            internalInsertPatientVisitData();
-                          }
-                        }
-                      );
-                    }
                   }
-                }
-              );
-            } else {
-              inputParam.episode_id = expResult[0]["episode_id"];
-              req.body.episode_id = inputParam.episode_id;
-              internalInsertPatientVisitData();
+                );
+              } else {
+                inputParam.episode_id = expResult[0]["episode_id"];
+                req.body.episode_id = inputParam.episode_id;
+                internalInsertPatientVisitData();
+              }
             }
           }
         }
@@ -502,7 +513,7 @@ let insertVisitData = (dataBase, req, res, callBack) => {
                 inputParam.visit_expiery_date = moment()
                   .add(
                     record != null && record.length != 0
-                      ? parseInt(record[0]["param_value"],10)
+                      ? parseInt(record[0]["param_value"], 10)
                       : 0,
                     "days"
                   )
