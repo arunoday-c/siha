@@ -153,5 +153,6 @@
   "payby_card": "Pay By Card",
   "payby_check": "Pay By Cheque",
   "NotGenerated": "Not Generated",
-  "PastVisit": "Past Visit"
+  "PastVisit": "Past Visit",
+  "treatment_plan_id": "Treatment Plan"
 }
