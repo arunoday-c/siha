@@ -184,7 +184,7 @@ class OrderMedication extends Component {
                 forceLabel: "Dosage"
               }}
               textBox={{
-                decimal: { allowNegative: false },
+                number: { allowNegative: false },
                 className: "txt-fld",
                 name: "dosage",
                 value: this.state.dosage,
@@ -206,7 +206,7 @@ class OrderMedication extends Component {
                 forceLabel: "Duration (Days)"
               }}
               textBox={{
-                decimal: { allowNegative: false },
+                number: { allowNegative: false },
                 className: "txt-fld",
                 name: "no_of_days",
                 value: this.state.no_of_days,
@@ -228,7 +228,7 @@ class OrderMedication extends Component {
                 forceLabel: "Total Qty."
               }}
               textBox={{
-                decimal: { allowNegative: false },
+                number: { allowNegative: false },
                 className: "txt-fld",
                 name: "dispense",
                 value: this.state.dispense,

@@ -191,8 +191,19 @@ const DeliverySearch = ($this, e) => {
               }
 
               for (let i = 0; i < data.dn_entry_detail.length; i++) {
+                data.dn_entry_detail[i].outstanding_quantity = 0;
+                data.dn_entry_detail[i].quantity_recieved_todate =
+                  data.dn_entry_detail[i].dn_quantity -
+                  data.dn_entry_detail[i].quantity_outstanding;
+
                 data.dn_entry_detail[i].recieved_quantity =
-                  data.dn_entry_detail[i].dn_quantity;
+                  data.dn_entry_detail[i].quantity_recieved_todate -
+                  data.dn_entry_detail[i].quantity_outstanding;
+
+                data.dn_entry_detail[i].dn_header_id =
+                  data.hims_f_procurement_dn_header_id;
+                data.dn_entry_detail[i].dn_detail_id =
+                  data.dn_entry_detail[i].hims_f_procurement_dn_detail_id;
               }
 
               data.receipt_entry_detail = data.dn_entry_detail;
@@ -241,10 +252,13 @@ const SaveReceiptEnrty = $this => {
       data: $this.state,
       onSuccess: response => {
         if (response.data.success === true) {
+          debugger;
           $this.setState({
             grn_number: response.data.records.grn_number,
             hims_f_procurement_grn_header_id:
               response.data.records.hims_f_procurement_grn_header_id,
+            year: response.data.records.year,
+            period: response.data.records.period,
             saveEnable: true,
             postEnable: false
           });
@@ -445,6 +459,7 @@ const PostReceiptEntry = $this => {
     $this.state.inventory_stock_detail = $this.state.receipt_entry_detail;
 
     for (let i = 0; i < $this.state.inventory_stock_detail.length; i++) {
+      debugger;
       $this.state.inventory_stock_detail[i].location_id =
         $this.state.inventory_location_id;
       $this.state.inventory_stock_detail[i].location_type =
@@ -453,23 +468,23 @@ const PostReceiptEntry = $this => {
       $this.state.inventory_stock_detail[i].quantity =
         $this.state.inventory_stock_detail[i].recieved_quantity;
 
-      $this.state.pharmacy_stock_detail[i].uom_id =
-        $this.state.pharmacy_stock_detail[i].inventory_uom_id;
+      $this.state.inventory_stock_detail[i].uom_id =
+        $this.state.inventory_stock_detail[i].inventory_uom_id;
       $this.state.inventory_stock_detail[i].sales_uom =
         $this.state.inventory_stock_detail[i].inventory_uom_id;
-      $this.state.pharmacy_stock_detail[i].item_id =
-        $this.state.pharmacy_stock_detail[i].inv_item_id;
+      $this.state.inventory_stock_detail[i].item_id =
+        $this.state.inventory_stock_detail[i].inv_item_id;
       $this.state.inventory_stock_detail[i].item_code_id =
         $this.state.inventory_stock_detail[i].inv_item_id;
       $this.state.inventory_stock_detail[i].grn_number = $this.state.grn_number;
       $this.state.inventory_stock_detail[i].item_category_id =
         $this.state.inventory_stock_detail[i].inv_item_category_id;
-      $this.state.pharmacy_stock_detail[i].item_group_id =
-        $this.state.pharmacy_stock_detail[i].inv_item_group_id;
+      $this.state.inventory_stock_detail[i].item_group_id =
+        $this.state.inventory_stock_detail[i].inv_item_group_id;
 
       $this.state.inventory_stock_detail[i].net_total =
         $this.state.inventory_stock_detail[i].net_extended_cost;
-      $this.state.pharmacy_stock_detail[i].operation = "+";
+      $this.state.inventory_stock_detail[i].operation = "+";
     }
   }
 
@@ -478,6 +493,7 @@ const PostReceiptEntry = $this => {
     data: $this.state,
     method: "PUT",
     onSuccess: response => {
+      debugger;
       if (response.data.success === true) {
         $this.setState({
           postEnable: true

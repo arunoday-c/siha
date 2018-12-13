@@ -31,11 +31,12 @@ let updateIntoInvItemLocation = (req, res, next) => {
 
     let inputParam = req.body;
 
-    let xmlQuery = "<hims_m_inventory_item_location>";
+    let xmlQuery = "";
     debugLog("req.body: ", req.body);
 
     new LINQ(inputParam.inventory_stock_detail)
       .Select(s => {
+        xmlQuery += "<hims_m_inventory_item_location>";
         xmlQuery += createXmlString({
           item_id: s.item_id,
           inventory_location_id: s.location_id,
@@ -80,9 +81,9 @@ let updateIntoInvItemLocation = (req, res, next) => {
           updated_by: req.userIdentity.algaeh_d_app_user_id,
           operation: s.operation
         });
+        xmlQuery += "</hims_m_inventory_item_location>";
       })
       .ToArray();
-    xmlQuery += "</hims_m_inventory_item_location>";
 
     debugLog("xmlQuery", xmlQuery);
     connection.query(
@@ -101,14 +102,27 @@ let updateIntoInvItemLocation = (req, res, next) => {
             // if (result[0][0].Error != null) {
             if (result[0][0].Error != null) {
               debugLog("Error: ", result[0][0].Error);
+
               const error = new Error();
               error.message = result[0][0].Error;
-              req.options.onFailure(error);
+              if (req.options != null) {
+                req.options.onFailure(error);
+              } else {
+                next(error);
+              }
             } else {
-              req.options.onSuccess(result);
+              if (req.options != null) {
+                req.options.onSuccess(result);
+              } else {
+                next();
+              }
             }
           } else {
-            req.options.onSuccess(result);
+            if (req.options != null) {
+              req.options.onSuccess(result);
+            } else {
+              next();
+            }
           }
         }
       }

@@ -872,7 +872,7 @@ $forntSize: 0.7rem;
     list-style: none;
 
     li {
-      background: url("./assets/images/pain_scale.png") no-repeat center
+      background: url("./assets/images/pain_scale.webp") no-repeat center
         transparent;
       width: 31px;
       height: 31px;
@@ -999,25 +999,88 @@ $forntSize: 0.7rem;
         margin-left: 0px;
       }
 
-      button {
+      .btn {
         float: right;
+        min-width: 70px;
+        padding: 4px 10px;
+        margin-top: 2px;
         margin-left: 10px;
-        padding: 5px 10px;
         font-size: 0.8rem;
         text-transform: uppercase;
-        min-width: 70px;
+        background-size: 300% 100%;
+        -moz-transition: all 0.2s ease-in-out;
+        -o-transition: all 0.2s ease-in-out;
+        -webkit-transition: all 0.2s ease-in-out;
+        transition: all 0.2s ease-in-out;
+
+        &:hover {
+          background-position: 100% 0;
+          -moz-transition: all 0.2s ease-in-out;
+          -o-transition: all 0.2s ease-in-out;
+          -webkit-transition: all 0.2s ease-in-out;
+          transition: all 0.2s ease-in-out;
+        }
       }
 
       .btn-primary {
-        background: #34b8bc;
         color: #fff;
-        border: 1px solid #34b8bc;
+        background-color: none;
+        background-image: linear-gradient(
+          to right,
+          #34b8bc,
+          #25d8df,
+          #34b8bc,
+          #25d8df
+        );
+        //box-shadow: 0 4px 15px 0 rgba(23, 168, 108, 0.75);
+        border-color: #44b8bd;
+
+        &:hover {
+          background-color: none;
+          border-color: #44b8bd;
+        }
+
+        &:focus {
+          background-color: #34b8bc;
+          border-color: #34b8bc;
+        }
+
+        &.disabled,
+        &:disabled {
+          opacity: 0.3;
+          cursor: not-allowed;
+        }
+        &:active {
+          background-color: #fff;
+          border-color: #fff;
+        }
+      }
+      .btn-default {
+        color: #212529;
+        background-color: none;
+        background-image: linear-gradient(
+          to right,
+          #ffffff,
+          #ececec,
+          #ffffff,
+          #ececec
+        );
+        //box-shadow: 0 4px 15px 0 rgba(23, 168, 108, 0.75);
+        border-color: rgb(182, 182, 182);
+        &:hover,
+        &:focus {
+          background-color: none;
+          border-color: rgb(182, 182, 182);
+        }
       }
 
-      .btn-default {
-        background: #efefef;
-        color: #5a5a5a;
-        border: 1px solid #adadad;
+      .btn-other {
+        color: #212529;
+        border-color: rgb(182, 182, 182);
+        &:hover,
+        &:focus {
+          background-color: rgb(230, 230, 230);
+        }
       }
     }
   }

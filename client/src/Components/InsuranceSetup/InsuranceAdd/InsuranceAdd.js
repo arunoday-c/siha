@@ -24,7 +24,6 @@ import {
   updatedata
 } from "./InsuranceAddHandaler";
 
-import AHSnackbar from "../../common/Inputs/AHSnackbar";
 import MyContext from "../../../utils/MyContext";
 import { setGlobal } from "../../../utils/GlobalFunctions";
 import { getCookie } from "../../../utils/algaehApiCall";
@@ -127,10 +126,6 @@ class InsuranceAdd extends PureComponent {
       insurance_provider_name: insurance_provider_name
     });
   }
-
-  handleClose = () => {
-    this.setState({ snackeropen: false });
-  };
 
   onClose = e => {
     if (this.state.screenName === "SubInsurance") {
@@ -260,11 +255,6 @@ class InsuranceAdd extends PureComponent {
                         >
                           Cancel
                         </button>
-                        <AHSnackbar
-                          open={this.state.snackeropen}
-                          handleClose={this.handleClose}
-                          MandatoryMsg={this.state.MandatoryMsg}
-                        />
                       </div>
                     </div>
                   </div>

@@ -20,14 +20,13 @@ import RadInvestigation from "../RadInvestigation/RadInvestigation";
 // import { getCookie } from "../../../utils/algaehApiCall";
 import InvestigationIOputs from "../../../Models/InvestigationSetup";
 import MyContext from "../../../utils/MyContext.js";
-import AHSnackbar from "../../common/Inputs/AHSnackbar.js";
 
 class NewInvestigation extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       open: false,
-      MandatoryMsg: "",
+
       InvestigationtypeEnable: false
     };
   }
@@ -73,7 +72,7 @@ class NewInvestigation extends PureComponent {
     }
   }
   onClose = e => {
-    this.props.onClose && this.props.onClose(e);
+    this.props.onClose && this.props.onClose(false);
   };
 
   handleClose = () => {
@@ -273,11 +272,6 @@ class NewInvestigation extends PureComponent {
                       >
                         Cancel
                       </button>
-                      <AHSnackbar
-                        open={this.state.open}
-                        handleClose={this.handleClose}
-                        MandatoryMsg={this.state.MandatoryMsg}
-                      />
                     </div>
                   </div>
                 </div>

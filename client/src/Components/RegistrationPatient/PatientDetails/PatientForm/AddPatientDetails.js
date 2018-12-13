@@ -150,6 +150,7 @@ const nationalityhandle = ($this, context, e) => {
       ) {
         vat_applicable = "N";
       }
+
       $this.setState(
         {
           [name]: value,
@@ -160,6 +161,12 @@ const nationalityhandle = ($this, context, e) => {
             $this.state.appointment_patient === "Y" ||
             $this.state.doctor_id !== null
           ) {
+            if (context !== undefined) {
+              context.updateState({
+                [name]: value,
+                vat_applicable: vat_applicable
+              });
+            }
             // $this.processInsurance.Click();
             generateBillDetails($this, context);
           } else {
@@ -182,6 +189,8 @@ const generateBillDetails = ($this, context) => {
       let serviceInput = [
         {
           insured: $this.state.insured,
+          // insured:
+          //   $this.state.primary_insurance_provider_id !== null ? "Y" : "N",
           //TODO change middle ware to promisify function --added by Nowshad
           vat_applicable: $this.state.vat_applicable,
           hims_d_services_id: $this.state.hims_d_services_id,

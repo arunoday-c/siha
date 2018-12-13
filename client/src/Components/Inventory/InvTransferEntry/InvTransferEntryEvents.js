@@ -149,6 +149,7 @@ const RequisitionSearch = ($this, e) => {
             mappingName: "inventoryrequisitionentry"
           },
           afterSuccess: data => {
+            debugger;
             AlgaehLoader({ show: true });
             let from_location_id = data.from_location_id;
             let from_location_type = data.from_location_type;
@@ -172,7 +173,12 @@ const RequisitionSearch = ($this, e) => {
 
               // grnno
               data.inventory_stock_detail[i].quantity_transferred =
-                data.inventory_stock_detail[i].quantity_required;
+                data.inventory_stock_detail[i].quantity_outstanding;
+
+              data.inventory_stock_detail[i].transfer_to_date =
+                data.inventory_stock_detail[i].quantity_authorized -
+                data.inventory_stock_detail[i].quantity_outstanding;
+              data.inventory_stock_detail[i].quantity_outstanding = 0;
 
               data.inventory_stock_detail[i].expiry_date =
                 data.inventory_stock_detail[i].expirydt;

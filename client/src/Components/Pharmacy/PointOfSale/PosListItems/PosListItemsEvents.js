@@ -136,42 +136,24 @@ const numberchangeTexts = ($this, context, e) => {
 const itemchangeText = ($this, context, e) => {
   let name = e.name || e.target.name;
   if ($this.state.location_id !== null) {
-    let value = e.value || e.target.value;
+    if (e.selected.service_id !== null) {
+      let value = e.value || e.target.value;
 
-    $this.props.getSelectedItemDetais({
-      uri: "/pharmacyGlobal/getUomLocationStock",
-      method: "GET",
-      data: {
-        location_id: $this.state.location_id,
-        item_id: value
-      },
-      redux: {
-        type: "ITEMS_UOM_DETAILS_GET_DATA",
-        mappingName: "itemdetaillist"
-      },
-      afterSuccess: data => {
-        if (data.locationResult.length > 0) {
-          getUnitCost($this, context, e.selected.service_id);
-          $this.setState({
-            [name]: value,
-            item_category: e.selected.category_id,
-            uom_id: e.selected.sales_uom_id,
-            service_id: e.selected.service_id,
-            item_group_id: e.selected.group_id,
-            quantity: 1,
-
-            expiry_date: data.locationResult[0].expirydt,
-            batchno: data.locationResult[0].batchno,
-            grn_no: data.locationResult[0].grnno,
-            qtyhand: data.locationResult[0].qtyhand,
-            ItemUOM: data.uomResult,
-            Batch_Items: data.locationResult,
-
-            addItemButton: false
-          });
-
-          if (context !== undefined) {
-            context.updateState({
+      $this.props.getSelectedItemDetais({
+        uri: "/pharmacyGlobal/getUomLocationStock",
+        method: "GET",
+        data: {
+          location_id: $this.state.location_id,
+          item_id: value
+        },
+        redux: {
+          type: "ITEMS_UOM_DETAILS_GET_DATA",
+          mappingName: "itemdetaillist"
+        },
+        afterSuccess: data => {
+          if (data.locationResult.length > 0) {
+            getUnitCost($this, context, e.selected.service_id);
+            $this.setState({
               [name]: value,
               item_category: e.selected.category_id,
               uom_id: e.selected.sales_uom_id,
@@ -185,18 +167,51 @@ const itemchangeText = ($this, context, e) => {
               qtyhand: data.locationResult[0].qtyhand,
               ItemUOM: data.uomResult,
               Batch_Items: data.locationResult,
+
               addItemButton: false
             });
+
+            if (context !== undefined) {
+              context.updateState({
+                [name]: value,
+                item_category: e.selected.category_id,
+                uom_id: e.selected.sales_uom_id,
+                service_id: e.selected.service_id,
+                item_group_id: e.selected.group_id,
+                quantity: 1,
+
+                expiry_date: data.locationResult[0].expirydt,
+                batchno: data.locationResult[0].batchno,
+                grn_no: data.locationResult[0].grnno,
+                qtyhand: data.locationResult[0].qtyhand,
+                ItemUOM: data.uomResult,
+                Batch_Items: data.locationResult,
+                addItemButton: false
+              });
+            }
+            // getItemLocationStock($this, { item_id: value });
+          } else {
+            swalMessage({
+              title: "No stock available for selected Item.",
+              type: "warning"
+            });
           }
-          // getItemLocationStock($this, { item_id: value });
-        } else {
+        }
+      });
+    } else {
+      $this.setState(
+        {
+          [name]: null
+        },
+        () => {
           swalMessage({
-            title: "No stock available for selected Item.",
+            title:
+              "Invalid Input. Hospital service not linked to this item, contact Admin.",
             type: "warning"
           });
         }
-      }
-    });
+      );
+    }
   } else {
     $this.setState(
       {
@@ -223,6 +238,7 @@ const getUnitCost = ($this, context, serviceid) => {
         mappingName: "hospitalservices"
       },
       afterSuccess: data => {
+        debugger;
         let servdata = Enumerable.from(data)
           .where(w => w.hims_d_services_id === parseInt(serviceid, 10))
           .firstOrDefault();
@@ -712,7 +728,8 @@ const CloseItemBatch = ($this, e) => {
     expiry_date:
       e.selected === true ? moment(e.expirydt)._d : $this.state.expiry_date,
 
-    grn_no: e.selected === true ? e.grnno : $this.state.grn_no
+    grn_no: e.selected === true ? e.grnno : $this.state.grn_no,
+    qtyhand: e.selected === true ? e.qtyhand : $this.state.qtyhand
   });
 };
 

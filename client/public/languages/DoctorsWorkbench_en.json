@@ -26,7 +26,7 @@
   "severity": "Severity",
   "interval": "Interval",
   "created_date": "Ordered Date",
-
+  "pay_type": "Pay Type",
   "visit_code": "Visit Code",
   "select_service": "Select Service",
   "test_type": "Test Type",

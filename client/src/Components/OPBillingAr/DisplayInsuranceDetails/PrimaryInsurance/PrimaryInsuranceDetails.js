@@ -278,7 +278,7 @@ export default class AddInsuranceForm extends Component {
                 <div className="col-lg-4 centerAlign">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "max_limit"
+                      fieldName: "max_limit"
                     }}
                   />
                 </div>

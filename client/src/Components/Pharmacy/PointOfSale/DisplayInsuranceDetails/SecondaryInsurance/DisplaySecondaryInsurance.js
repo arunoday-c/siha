@@ -91,7 +91,9 @@ export default class DisplaySecondaryInsurance extends Component {
                       }}
                     />
                     <h6>
-                      {this.state.card_number ? this.state.card_number : "---"}
+                      {this.state.secondary_card_number
+                        ? this.state.secondary_card_number
+                        : "---"}
                     </h6>
                   </div>
 

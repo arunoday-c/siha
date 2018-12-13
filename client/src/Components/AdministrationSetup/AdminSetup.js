@@ -3,6 +3,7 @@ import "./admin_setup.css";
 import LoginUsers from "./LoginUsers/LoginUsers";
 import Roles from "./Roles/Roles";
 import Groups from "./Groups/Groups";
+import ScreenAssignment from "./ScreenAssignment/ScreenAssignment";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 
 class AdminSetup extends Component {
@@ -64,6 +65,19 @@ class AdminSetup extends Component {
                   <AlgaehLabel
                     label={{
                       fieldName: "login_users"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"ScreenAssignment"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "screen_assignment"
                     }}
                   />
                 }
@@ -144,6 +158,8 @@ class AdminSetup extends Component {
             <Groups />
           ) : this.state.pageDisplay === "Roles" ? (
             <Roles />
+          ) : this.state.pageDisplay === "ScreenAssignment" ? (
+            <ScreenAssignment />
           ) : null}
         </div>
       </div>

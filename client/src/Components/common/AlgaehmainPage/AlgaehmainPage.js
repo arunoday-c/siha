@@ -73,7 +73,7 @@ class PersistentDrawer extends React.Component {
       },
       onFailure: error => {
         swalMessage({
-          text: error.response.data.message,
+          text: error.message,
           type: "error"
         });
       }
@@ -435,7 +435,6 @@ class PersistentDrawer extends React.Component {
           <div
             anchor={anchor}
             className={"animated leftNavCntr " + this.state.class}
-            ref={scrollLeftPanel => (this.scrollLeftPanel = scrollLeftPanel)}
           >
             <div className="hptl-phase1-sideMenuBar">
               <div className="menuBar-title">
@@ -456,7 +455,12 @@ class PersistentDrawer extends React.Component {
                   onChange={this.SearchModuleHandler.bind(this)}
                 />
               </div>
-              <div className="sideMenu-header">
+              <div
+                className="sideMenu-header"
+                ref={scrollLeftPanel =>
+                  (this.scrollLeftPanel = scrollLeftPanel)
+                }
+              >
                 {this.createSideMenuItemList()}
               </div>
             </div>

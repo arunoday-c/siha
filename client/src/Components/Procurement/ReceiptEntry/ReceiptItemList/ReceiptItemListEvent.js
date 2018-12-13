@@ -1,7 +1,7 @@
 import { swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import Enumerable from "linq";
-
+import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 import Options from "../../../../Options.json";
 
 const assignDataandclear = ($this, context, stock_detail, assignData) => {
@@ -180,7 +180,6 @@ const onchangegridcol = ($this, row, e) => {
     });
   } else {
     row[name] = value;
-    row["rejected_quantity"] = row.dn_quantity - parseFloat(value);
     row.update();
   }
 };
@@ -188,47 +187,62 @@ const onchangegridcol = ($this, row, e) => {
 const onchhangegriddiscount = ($this, row, ctrl, e) => {
   e = e || ctrl;
 
-  if (e.target.value === "") {
-    $this.setState({
-      [e.target.name]: 0
-    });
-  } else {
-    let discount_percentage = row.discount_percentage;
-    let discount_amount = 0;
-    let extended_cost = 0;
-    let extended_price = 0;
-    let tax_amount = 0;
+  let discount_percentage = row.discount_percentage;
+  let discount_amount = 0;
+  let extended_cost = 0;
+  let extended_price = 0;
+  let tax_amount = 0;
 
-    let name = e.name || e.target.name;
-    let value = e.value || e.target.value;
-
-    if (value > row.authorize_quantity) {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  let quantity_recieved_todate =
+    row.quantity_recieved_todate + parseFloat(value);
+  if (value !== "") {
+    debugger;
+    if (quantity_recieved_todate > row.dn_quantity) {
       swalMessage({
         title:
-          "Invalid Input.  DN Quantity cannot be greater than PO Quantity.",
+          "Invalid Input.  Recived Quantity cannot be greater than DN Quantity.",
         type: "warning"
       });
+      row[name] = row[name];
+      row.update();
     } else {
-      extended_price = parseFloat(row.unit_price) * parseFloat(value);
+      extended_price = parseFloat(row.unit_cost) * parseFloat(value);
       discount_amount = (extended_price * discount_percentage) / 100;
 
+      tax_amount = (extended_cost * parseFloat(row.tax_percentage)) / 100;
       extended_cost = extended_price - discount_amount;
 
-      tax_amount = (extended_cost * parseFloat(row.tax_percentage)) / 100;
+      extended_price = parseFloat(
+        getAmountFormart(extended_price, {
+          appendSymbol: false
+        })
+      );
+      discount_amount = getAmountFormart(discount_amount, {
+        appendSymbol: false
+      });
+      tax_amount = getAmountFormart(tax_amount, { appendSymbol: false });
+
+      row["outstanding_quantity"] =
+        row.dn_quantity - row.quantity_recieved_todate - parseFloat(value);
+      row["extended_price"] = parseFloat(extended_price);
+      row["extended_cost"] = parseFloat(extended_cost);
+      row["unit_cost"] = parseFloat(extended_cost) / parseFloat(value);
+
+      row["tax_amount"] = parseFloat(tax_amount);
+      row["total_amount"] = parseFloat(tax_amount) + parseFloat(extended_cost);
+
+      row["discount_amount"] = parseFloat(discount_amount);
+      row["extended_cost"] = parseFloat(extended_cost);
+      row["net_extended_cost"] = parseFloat(extended_cost);
 
       row[name] = value;
-      row["extended_price"] = extended_price;
-      row["extended_cost"] = extended_cost;
-      row["unit_cost"] = extended_cost / parseFloat(row.dn_quantity);
-
-      row["tax_amount"] = tax_amount;
-      row["total_amount"] = tax_amount + extended_cost;
-
-      row["discount_amount"] = discount_amount;
-      row["extended_cost"] = extended_cost;
-      row["net_extended_cost"] = extended_cost;
       row.update();
     }
+  } else {
+    row[name] = value;
+    row.update();
   }
 };
 
@@ -294,6 +308,19 @@ const changeDateFormat = date => {
   }
 };
 
+const GridAssignData = ($this, row, e) => {
+  if (row.recieved_quantity === "" || row.recieved_quantity === 0) {
+    e.preventDefault();
+    row["recieved_quantity"] = 0;
+    swalMessage({
+      title: "Invalid Input. Recieved Quantity cannot be Zero.",
+      type: "warning"
+    });
+    row.update();
+    e.target.focus();
+  }
+};
+
 export {
   deleteReceiptDetail,
   updateReceiptDetail,
@@ -304,5 +331,6 @@ export {
   onchangegridcoldatehandle,
   EditGrid,
   CancelGrid,
-  changeDateFormat
+  changeDateFormat,
+  GridAssignData
 };

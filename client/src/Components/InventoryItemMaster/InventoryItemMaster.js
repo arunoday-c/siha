@@ -101,7 +101,9 @@ class InventoryItemMaster extends Component {
         itemPop: {}
       },
       () => {
-        getItems(this, this);
+        if (e === true) {
+          getItems(this, this);
+        }
       }
     );
   }

@@ -186,10 +186,11 @@ let addInvoiceGeneration = (req, res, next) => {
           let today = moment().format("YYYY-MM-DD");
           debugLog("input:", input);
           connection.query(
-            "INSERT INTO `hims_f_invoice_header` (invoice_number,invoice_date,patient_id,visit_id,gross_amount,discount_amount,patient_resp,\
-              patient_tax, patient_payable, company_resp, company_tax, company_payable, sec_company_resp, sec_company_tax, sec_company_payable,\
-                created_date,created_by,updated_date,updated_by) \
-            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            "INSERT INTO `hims_f_invoice_header` (invoice_number,invoice_date,patient_id,visit_id,gross_amount,discount_amount,\
+              net_amount, patient_resp,patient_tax, patient_payable, company_resp, company_tax, company_payable, \
+              sec_company_resp, sec_company_tax, sec_company_payable,insurance_provider_id, sub_insurance_id, network_id, network_office_id, \
+              created_date,created_by,updated_date,updated_by) \
+            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             [
               documentCode,
               new Date(input.invoice_date),
@@ -197,6 +198,7 @@ let addInvoiceGeneration = (req, res, next) => {
               input.visit_id,
               input.gross_amount,
               input.discount_amount,
+              input.net_amount,
               input.patient_resp,
               input.patient_tax,
               input.patient_payable,
@@ -206,6 +208,12 @@ let addInvoiceGeneration = (req, res, next) => {
               input.sec_company_resp,
               input.sec_company_tax,
               input.sec_company_payable,
+
+              input.insurance_provider_id,
+              input.sub_insurance_id,
+              input.network_id,
+              input.network_office_id,
+
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
@@ -231,6 +239,7 @@ let addInvoiceGeneration = (req, res, next) => {
                   "quantity",
                   "gross_amount",
                   "discount_amount",
+                  "net_amount",
                   "patient_resp",
                   "patient_tax",
                   "patient_payable",
@@ -355,8 +364,132 @@ let getInvoiceGeneration = (req, res, next) => {
   }
 };
 
+//created by irfan: to
+let getInvoicesForClaims = (req, res, next) => {
+  let selectWhere = {
+    sub_insurance_id: "ALL"
+  };
+
+  if (
+    req.query.patient_id != "null" ||
+    (req.query.from_date != "null" && req.query.to_date != "null") ||
+    req.query.sub_insurance_id != "null" ||
+    req.query.insurance_provider_id != "null"
+  ) {
+    if (req.query.patient_id != "null" && req.query.patient_id != undefined) {
+      req.query["IH.patient_id"] = req.query.patient_id;
+    }
+    delete req.query.patient_id;
+
+    if (
+      req.query.insurance_provider_id != "null" &&
+      req.query.insurance_provider_id != undefined
+    ) {
+      req.query["IH.insurance_provider_id"] = req.query.insurance_provider_id;
+    }
+    delete req.query.insurance_provider_id;
+
+    let invoice_date = "";
+
+    if (
+      req.query.from_date != "null" &&
+      req.query.to_date != "null" &&
+      req.query.from_date != undefined &&
+      req.query.to_date != undefined
+    ) {
+      invoice_date = ` date(invoice_date) between date('${
+        req.query.from_date
+      }') and date('${req.query.to_date}') and `;
+    }
+    delete req.query.from_date;
+    delete req.query.to_date;
+    try {
+      if (req.db == null) {
+        next(httpStatus.dataBaseNotInitilizedError());
+      }
+
+      let db = req.db;
+
+      let where = whereCondition(extend(selectWhere, req.query));
+      debugLog("where:", where);
+      db.getConnection((error, connection) => {
+        connection.query(
+          "SELECT hims_f_invoice_header_id, invoice_number, invoice_date, IH.patient_id, visit_id,\
+         IH.insurance_provider_id, IH.sub_insurance_id, IH.network_id, IH.network_office_id, gross_amount,\
+         discount_amount, patient_resp, patient_tax, patient_payable, company_resp, company_tax, \
+         company_payable, sec_company_resp, sec_company_tax, sec_company_payable, submission_date,\
+         submission_ammount, remittance_date, remittance_ammount, denial_ammount,\
+         P.patient_code,P.full_name as patient_name,P.arabic_name as arabic_patient_name,P.contact_number ,\
+         V.visit_code,insurance_provider_name,arabic_provider_name as arabic_insurance_provider_name ,\
+         insurance_sub_code as sub_insurance_provider_code,insurance_sub_name as sub_insurance_provider,\
+         arabic_sub_name as arabic_sub_insurance_provider, network_type,arabic_network_type,\
+         NET_OF.price_from,NET_OF.employer,NET_OF.policy_number\
+        from  hims_f_invoice_header IH  inner join hims_f_patient P on IH.patient_id=P.hims_d_patient_id and\
+        P.record_status='A'  inner join hims_f_patient_visit V on IH.visit_id=V.hims_f_patient_visit_id and\
+        V.record_status='A' left join hims_d_insurance_provider IP on IH.insurance_provider_id=IP.hims_d_insurance_provider_id\
+        and IP.record_status='A' left join hims_d_insurance_sub SI on IH.sub_insurance_id=SI.hims_d_insurance_sub_id\
+        and SI.record_status='A' left join hims_d_insurance_network NET on IH.network_id=NET.hims_d_insurance_network_id\
+        and NET.record_status='A' left join hims_d_insurance_network_office NET_OF on IH.network_office_id=NET_OF.hims_d_insurance_network_office_id\
+        and NET_OF.record_status='A' where " +
+            invoice_date +
+            where.condition,
+          where.values,
+
+          (error, result) => {
+            if (error) {
+              releaseDBConnection(db, connection);
+              next(error);
+            }
+            let outputArray = [];
+            if (result.length > 0) {
+              for (let i = 0; i < result.length; i++) {
+                connection.query(
+                  "SELECT hims_f_invoice_details_id, invoice_header_id, bill_header_id, bill_detail_id,\
+                  service_id, quantity, gross_amount, discount_amount, patient_resp, patient_tax, patient_payable,\
+                  company_resp, company_tax, company_payable, sec_company_resp, sec_company_tax, sec_company_payable,\
+                  ID.service_type_id,ST.service_type_code, ST.service_type, ST. arabic_service_type,\
+                  S.cpt_code,C.cpt_desc,C.prefLabel  \
+                  from hims_f_invoice_details ID  inner join hims_d_service_type ST on \
+                   ID.service_type_id=ST.hims_d_service_type_id inner join hims_d_services S on\
+                     ID.service_id=S.hims_d_services_id  left join hims_d_cpt_code C on S.cpt_code=C.cpt_code\
+                  where invoice_header_id=?",
+                  [result[i].hims_f_invoice_header_id],
+
+                  (error, invoiceDetails) => {
+                    if (error) {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    }
+
+                    outputArray.push({ ...result[i], invoiceDetails });
+
+                    if (i == result.length - 1) {
+                      releaseDBConnection(db, connection);
+                      req.records = outputArray;
+                      next();
+                    }
+                  }
+                );
+              }
+            } else {
+              releaseDBConnection(db, connection);
+              req.records = result;
+              next();
+            }
+          }
+        );
+      });
+    } catch (e) {
+      next(e);
+    }
+  } else {
+    req.records = { invalid_input: true };
+    next();
+  }
+};
 module.exports = {
   getVisitWiseBillDetailS,
   addInvoiceGeneration,
-  getInvoiceGeneration
+  getInvoiceGeneration,
+  getInvoicesForClaims
 };

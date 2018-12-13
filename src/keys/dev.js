@@ -8,7 +8,7 @@ export default {
 
   mysqlDb: {
     connectionLimit: 20,
-    // host: "166.62.10.184",
+    //host: "192.168.0.169",
     host: "49.206.18.38",
     // host: "localhost",
     port: 3306,

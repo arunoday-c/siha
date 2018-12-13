@@ -1,4 +1,3 @@
-import AlgaehSearch from "../../../Wrapper/globalSearch";
 import swal from "sweetalert2";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import extend from "extend";
@@ -187,8 +186,7 @@ const ProcessService = ($this, e) => {
 
             data.billdetails[0].visit_id = $this.state.visit_id;
             data.billdetails[0].patient_id = $this.state.patient_id;
-            // data.billdetails[0].doctor_id = $this.state.doctor_id;
-            data.billdetails[0].doctor_id = "2";
+
             data.billdetails[0].insurance_provider_id =
               $this.state.insurance_provider_id;
             data.billdetails[0].insurance_sub_id =
@@ -201,7 +199,8 @@ const ProcessService = ($this, e) => {
             // data.billdetails[0].icd_code === ""
             //   ? null
             //   : data.billdetails[0].icd_code;
-            //Approval Table
+            //Approval Table TODO
+            //TODO
 
             data.billdetails[0].insurance_network_office_id =
               $this.state.hims_d_insurance_network_office_id;
@@ -279,59 +278,11 @@ const ProcessService = ($this, e) => {
   }
 };
 
-const VisitSearch = ($this, e) => {
-  AlgaehSearch({
-    searchGrid: {
-      columns: [
-        {
-          fieldName: "visit_code",
-          label: "Visit Code"
-        },
-        {
-          fieldName: "patient_code",
-          label: "Patient Code"
-        },
-        {
-          fieldName: "full_name",
-          label: "Patient Name"
-        }
-      ]
-    },
-    searchName: "visit",
-    uri: "/gloabelSearch/get",
-    onContainsChange: (text, serchBy, callBack) => {
-      callBack(text);
-    },
-    onRowSelect: row => {
-      $this.setState(
-        {
-          visit_code: row.visit_code,
-          patient_code: row.patient_code,
-          full_name: row.full_name,
-          patient_id: row.patient_id,
-          visit_id: row.hims_f_patient_visit_id,
-          insured: row.insured
-        },
-        () => {
-          if ($this.state.insured === "Y") {
-          }
-        }
-      );
-    }
-  });
-};
-
 //if services got delete and if pre apprival limit exceed
 const deleteServices = ($this, row, rowId) => {
   let orderservicesdata = $this.state.orderservicesdata;
   let preserviceInput = $this.state.preserviceInput;
   let saved = false;
-
-  // for (var i = 0; i < orderservicesdata.length; i++) {
-  //   if (orderservicesdata[i].services_id === row["services_id"]) {
-  //     orderservicesdata.splice(i, 1);
-  //   }
-  // }
 
   orderservicesdata.splice(row.rowIdx, 1);
 
@@ -476,11 +427,6 @@ const calculateAmount = ($this, row, ctrl, e) => {
       afterSuccess: data => {
         extend(row, data.billdetails[0]);
         orderservicesdata[row.rowIdx] = row;
-        // for (let i = 0; i < orderservicesdata.length; i++) {
-        //   if (orderservicesdata[i].service_type_id === row.service_type_id) {
-        //     orderservicesdata[i] = row;
-        //   }
-        // }
         $this.setState({ orderservicesdata: orderservicesdata });
       }
     });
@@ -540,7 +486,6 @@ export {
   serviceHandeler,
   texthandle,
   ProcessService,
-  VisitSearch,
   deleteServices,
   SaveOrdersServices,
   calculateAmount,

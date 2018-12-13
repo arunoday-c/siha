@@ -87,7 +87,7 @@ class PatientMRD extends Component {
             </div>
             <div className="patientImg box-shadow">
               <img
-                src={require("../../../assets/images/nobody_m.original.jpg")}
+                src={require("../../../assets/images/nobody_m.original.webp")}
                 alt="Patient profile"
               />
             </div>
@@ -167,7 +167,7 @@ class PatientMRD extends Component {
                 className="btn btn-outline-secondary btn-sm"
               >
                 <img
-                  src={require("../../common/BreadCrumb/images/print.png")}
+                  src={require("../../../assets/images/print.webp")}
                   alt="Print icon"
                 />
               </button>

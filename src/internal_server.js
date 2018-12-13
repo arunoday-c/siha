@@ -63,12 +63,12 @@ app.use((req, res, next) => {
 
   let reqUser = "";
   res.setHeader("connection", "keep-alive");
-  // res.setHeader("Transfer-Encoding", "gzip");
+  //res.setHeader("Transfer-Encoding", "gzip");
   if (req.url != "/api/v1/apiAuth") {
-    // if (req.url != "/api/v1/apiAuth/authUser") {
-    //   res.setHeader("Content-Encoding", "gzip");
-    //   //  res.setHeader("connection", "keep-alive");
-    // }
+    if (req.url != "/api/v1/apiAuth/authUser") {
+      // res.setHeader("Content-Encoding", "gzip");
+      //  res.setHeader("connection", "keep-alive");
+    }
     reqUser = jwtDecode(reqH["x-api-key"]).id;
     if (req.url != "/api/v1/apiAuth/authUser") {
       let header = req.headers["x-app-user-identity"];

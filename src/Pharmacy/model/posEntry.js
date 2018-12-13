@@ -364,15 +364,6 @@ let updatePosEntry = (req, res, next) => {
 
             req.posUpdate = records;
             next();
-            // connection.commit(error => {
-            //   if (error) {
-            //     releaseDBConnection(db, connection);
-            //     next(error);
-            //   }
-            //   req.posUpdate = records;
-            //   releaseDBConnection(db, connection);
-            //   next();
-            // });
           })
           .catch(error => {
             debugLog("caught1: ", error);
@@ -406,77 +397,93 @@ let getPrescriptionPOS = (req, res, next) => {
       if (error) {
         next(error);
       }
-      connection.beginTransaction(error => {
-        if (error) {
-          connection.rollback(() => {
-            releaseDBConnection(db, connection);
-            next(error);
-          });
-        }
-        debugLog("req.body", req.body);
-        const _reqBody = req.body;
-        const item_ids = new LINQ(_reqBody)
-          .Select(s => {
-            return s.item_id;
-          })
-          .ToArray();
-        const location_ids = new LINQ(_reqBody)
-          .Select(s => {
-            return s.pharmacy_location_id;
-          })
-          .ToArray();
 
-        return new Promise((resolve, reject) => {
-          //Select bachno,exp,itemcat,Query hims_mitem_location... input item_id and location_id
-          connection.query(
-            "select item_id, pharmacy_location_id, batchno, expirydt, qtyhand, grnno, sales_uom from hims_m_item_location where \
-            item_id in (?) and pharmacy_location_id in (?) and qtyhand > 0",
-            [item_ids, location_ids],
-            (error, result) => {
-              if (error) {
-                reject(error);
-              }
-              debugLog("result", result);
-              let _req = new LINQ(result)
-                .Select(s => {
-                  const ItemcatrgoryGroup = new LINQ(_reqBody)
+      debugLog("req.body", req.body);
+      const _reqBody = req.body;
+      const item_ids = new LINQ(_reqBody)
+        .Select(s => {
+          return s.item_id;
+        })
+        .ToArray();
+      const location_ids = new LINQ(_reqBody)
+        .Select(s => {
+          return s.pharmacy_location_id;
+        })
+        .ToArray();
+      let _message = "";
+      return new Promise((resolve, reject) => {
+        connection.query(
+          "select itmloc.item_id, itmloc.pharmacy_location_id, itmloc.batchno, itmloc.expirydt, itmloc.qtyhand, itmloc.grnno, itmloc.sales_uom, item.item_description \
+          from hims_m_item_location as itmloc inner join hims_d_item_master as item on itmloc.item_id = item.hims_d_item_master_id  \
+          where item_id in (?) and pharmacy_location_id in (?) and qtyhand > 0",
+          [item_ids, location_ids],
+          (error, result) => {
+            if (error) {
+              reject(error);
+            }
+            debugLog("result", result);
+
+            let _req = new LINQ(result)
+              .Select(s => {
+                const ItemcatrgoryGroup = new LINQ(_reqBody)
+                  .Where(
+                    w =>
+                      w.item_id == s.item_id &&
+                      w.pharmacy_location_id == s.pharmacy_location_id
+                  )
+                  .FirstOrDefault();
+
+                debugLog("ItemcatrgoryGroup", ItemcatrgoryGroup);
+                return {
+                  ...new LINQ(_reqBody)
                     .Where(
                       w =>
                         w.item_id == s.item_id &&
                         w.pharmacy_location_id == s.pharmacy_location_id
                     )
-                    .FirstOrDefault();
+                    .FirstOrDefault(),
+                  ...{
+                    batchno: s.batchno,
+                    expirydt: s.expirydt,
+                    grnno: s.grnno,
+                    sales_uom: s.sales_uom,
+                    qtyhand: s.qtyhand,
 
-                  debugLog("ItemcatrgoryGroup", ItemcatrgoryGroup);
-                  return {
-                    ...new LINQ(_reqBody)
-                      .Where(
-                        w =>
-                          w.item_id == s.item_id &&
-                          w.pharmacy_location_id == s.pharmacy_location_id
-                      )
-                      .FirstOrDefault(),
-                    ...{
-                      batchno: s.batchno,
-                      expirydt: s.expirydt,
-                      grnno: s.grnno,
-                      sales_uom: s.sales_uom,
-                      qtyhand: s.qtyhand,
+                    item_category_id: ItemcatrgoryGroup.item_category_id,
+                    item_group_id: ItemcatrgoryGroup.item_group_id
+                  }
+                };
+              })
+              .ToArray();
 
-                      item_category_id: ItemcatrgoryGroup.item_category_id,
-                      item_group_id: ItemcatrgoryGroup.item_group_id
-                    }
-                  };
-                })
-                .ToArray();
-              req.body = _req;
-              resolve(result);
+            req.body = _req;
+
+            for (let i = 0; i < _reqBody.length; i++) {
+              debugLog("for: ", _reqBody[i]);
+              const _mess = new LINQ(result)
+                .Where(w => w.item_id !== _reqBody[i].item_id)
+                .FirstOrDefault();
+              debugLog("_mess: ", _mess);
+
+              if (_mess != null) {
+                _message =
+                  "Invalid Input. Some Items not avilable in selected location, Please check Prescription and stock enquiry for more details.";
+              }
+              // _message +=
+              //   "Some of Items '" +
+              //   _reqBody[i]["item_id"] +
+              //   "' not avilable in selected location ";
             }
-          );
-        })
-          .then(result => {
-            //check then
-            debugLog("result", result);
+
+            resolve(result);
+          }
+        );
+      })
+        .then(result => {
+          //check then
+          debugLog("result them:", result);
+          if (result.length > 0) {
+            debugLog("result them:", result);
             return new Promise((resolve, reject) => {
               try {
                 getBillDetailsFunctionality(req, res, next, resolve);
@@ -486,26 +493,49 @@ let getPrescriptionPOS = (req, res, next) => {
             }).then(resultbilling => {
               //expiry_date, uom_id, and batchno add with the result
               debugLog("Check result: ", resultbilling);
+
               const _result =
                 result != null && result.length > 0 ? result[0] : {};
               // if (resultbilling != null && resultbilling.length > 0) {
+              debugLog("_message: ", _message);
+              _result.message = _message;
               debugLog("_result", _result);
               debugLog("resultbilling", resultbilling);
-              req.records = {
-                ...resultbilling,
-                ..._result
+              let obj = {
+                result: [
+                  {
+                    ...resultbilling,
+                    ..._result
+                  }
+                ]
               };
+              debugLog("obj: ", obj);
+              req.records = obj;
               releaseDBConnection(db, connection);
               next();
             });
-          })
-          .catch(e => {
-            connection.rollback(() => {
-              releaseDBConnection(db, connection);
-              next(e);
-            });
+          } else {
+            debugLog("result else:  ", result);
+            const message =
+              "Invalid Input. Items not avilable in selected location, for this Prescription Please check Prescription List or stock enquiry for more details.";
+            let obj = {
+              result: result,
+              message: message
+            };
+
+            debugLog("result message:  ", obj);
+            req.records = obj;
+            releaseDBConnection(db, connection);
+            next();
+          }
+        })
+        .catch(e => {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(e);
           });
-      });
+        });
+      // });
     });
   } catch (e) {
     next(e);

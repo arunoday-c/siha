@@ -278,12 +278,14 @@ const onchangegridcol = ($this, context, row, e) => {
     row[name] = $this.state.quantity_transferred;
   } else {
     row[name] = value;
+    row["quantity_outstanding"] = value;
 
-    for (let x = 0; x < inventory_stock_detail.length; x++) {
-      if (inventory_stock_detail[x].item_id === row.item_id) {
-        inventory_stock_detail[x] = row;
-      }
-    }
+    inventory_stock_detail[row.rowIdx] = row;
+    // for (let x = 0; x < inventory_stock_detail.length; x++) {
+    //   if (inventory_stock_detail[x].item_id === row.item_id) {
+    //     inventory_stock_detail[x] = row;
+    //   }
+    // }
     $this.setState({ inventory_stock_detail: inventory_stock_detail });
 
     if (context !== undefined) {

@@ -24,7 +24,6 @@ import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall.js";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import Enumerable from "linq";
 import AlgaehReport from "../Wrapper/printReports";
-import AHSnackbar from "../common/Inputs/AHSnackbar.js";
 
 import moment from "moment";
 import Options from "../../Options.json";
@@ -471,12 +470,6 @@ class OPBilling extends Component {
                 />
                 {/* Save */}
               </button>
-
-              <AHSnackbar
-                open={this.state.open}
-                handleClose={this.handleClose}
-                MandatoryMsg={this.state.MandatoryMsg}
-              />
 
               <button
                 type="button"

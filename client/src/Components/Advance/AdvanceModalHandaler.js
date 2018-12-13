@@ -172,10 +172,7 @@ const Validations = ($this, e) => {
         title: "Invalid. Card Number cannot be blank.",
         type: "error"
       });
-      $this.setState({
-        open: true,
-        MandatoryMsg: ""
-      });
+
       return isError;
     }
 

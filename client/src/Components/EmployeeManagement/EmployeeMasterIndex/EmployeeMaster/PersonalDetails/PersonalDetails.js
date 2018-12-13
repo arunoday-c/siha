@@ -14,7 +14,7 @@ import {
   isDoctorChange
 } from "./PersonalDetailsEvents.js";
 import MyContext from "../../../../../utils/MyContext.js";
-import AHSnackbar from "../../../../common/Inputs/AHSnackbar.js";
+
 import {
   AlgaehDateHandler,
   AlagehFormGroup,
@@ -24,8 +24,8 @@ import {
 import variableJson from "../../../../../utils/GlobalVariables.json";
 import Enumerable from "linq";
 import DeptUserDetails from "../DeptUserDetails/DeptUserDetails";
-import noImage from "../../../../../assets/images/images.png";
-import { displayFileFromServer } from "../../../../../utils/GlobalFunctions";
+// import noImage from "../../../../../assets/images/images.webp";
+// import { displayFileFromServer } from "../../../../../utils/GlobalFunctions";
 import AlgaehFileUploader from "../../../../Wrapper/algaehFileUpload";
 class PersonalDetails extends PureComponent {
   constructor(props) {
@@ -145,10 +145,10 @@ class PersonalDetails extends PureComponent {
               </div> */}
               <div className="col-lg-12">
                 <div className="row">
-                  <div className="col-lg-8 primary-details">
+                  <div className="col-lg-10 primary-details">
                     <div className="row paddin-bottom-5">
                       <AlagehFormGroup
-                        div={{ className: "col mandatory" }}
+                        div={{ className: "col " }}
                         label={{
                           fieldName: "employee_code",
                           isImp: true
@@ -166,7 +166,7 @@ class PersonalDetails extends PureComponent {
                         }}
                       />
                       <AlagehAutoComplete
-                        div={{ className: "col-2 mandatory" }}
+                        div={{ className: "col-2 " }}
                         label={{
                           fieldName: "title_id",
                           isImp: true
@@ -191,7 +191,7 @@ class PersonalDetails extends PureComponent {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col mandatory" }}
+                        div={{ className: "col " }}
                         label={{
                           fieldName: "full_name",
                           isImp: true
@@ -210,7 +210,7 @@ class PersonalDetails extends PureComponent {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col mandatory arabic-txt-fld" }}
+                        div={{ className: "col  arabic-txt-fld" }}
                         label={{
                           fieldName: "arabic_name",
                           isImp: true
@@ -230,7 +230,7 @@ class PersonalDetails extends PureComponent {
                     </div>
                     <div className="row paddin-bottom-5">
                       <AlgaehDateHandler
-                        div={{ className: "col-3 mandatory", tabIndex: "5" }}
+                        div={{ className: "col-3 ", tabIndex: "5" }}
                         label={{ fieldName: "date_of_birth", isImp: true }}
                         textBox={{
                           className: "txt-fld",
@@ -243,7 +243,7 @@ class PersonalDetails extends PureComponent {
                         value={this.state.date_of_birth}
                       />
                       <AlagehAutoComplete
-                        div={{ className: "col-2 mandatory" }}
+                        div={{ className: "col-2 " }}
                         label={{
                           fieldName: "gender",
                           isImp: true
@@ -268,7 +268,7 @@ class PersonalDetails extends PureComponent {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col mandatory" }}
+                        div={{ className: "col " }}
                         label={{
                           fieldName: "email",
                           isImp: true
@@ -280,12 +280,16 @@ class PersonalDetails extends PureComponent {
 
                           events: {
                             onChange: texthandle.bind(this, this, context)
+                          },
+                          others: {
+                            placeholder: "Enter Email Address",
+                            type: "email"
                           }
                         }}
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col mandatory" }}
+                        div={{ className: "col " }}
                         label={{
                           fieldName: "contact_no",
                           isImp: true
@@ -299,14 +303,16 @@ class PersonalDetails extends PureComponent {
                             onChange: texthandle.bind(this, this, context)
                           },
                           others: {
-                            tabIndex: "7"
+                            tabIndex: "7",
+                            placeholder: "(+01)123-456-7890",
+                            type: "number"
                           }
                         }}
                       />
                     </div>
                     <div className="row paddin-bottom-5">
                       <AlagehAutoComplete
-                        div={{ className: "col mandatory" }}
+                        div={{ className: "col " }}
                         label={{
                           fieldName: "employee_designation_id",
                           isImp: true
@@ -331,7 +337,7 @@ class PersonalDetails extends PureComponent {
                       />
 
                       <AlagehAutoComplete
-                        div={{ className: "col mandatory" }}
+                        div={{ className: "col " }}
                         label={{
                           fieldName: "country_id",
                           isImp: true
@@ -387,9 +393,6 @@ class PersonalDetails extends PureComponent {
                           }
                         }}
                       />
-                    </div>
-
-                    <div className="row paddin-bottom-5">
                       <AlagehAutoComplete
                         div={{ className: "col" }}
                         label={{
@@ -414,6 +417,9 @@ class PersonalDetails extends PureComponent {
                           }
                         }}
                       />
+                    </div>
+
+                    <div className="row paddin-bottom-5">
                       <AlagehAutoComplete
                         div={{ className: "col" }}
                         label={{
@@ -446,23 +452,60 @@ class PersonalDetails extends PureComponent {
                           }
                         }}
                       />
+                      <AlgaehDateHandler
+                        div={{ className: "col" }}
+                        label={{ fieldName: "date_of_leaving" }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "date_of_leaving"
+                        }}
+                        maxDate={new Date()}
+                        events={{
+                          onChange: datehandle.bind(this, this, context)
+                        }}
+                        value={this.state.date_of_leaving}
+                      />
                     </div>
                   </div>
-                  <div className="col-lg-4 secondary-details">
+
+                  <div className="col-lg-2 secondary-details">
                     <div className="row secondary-box-container">
-                      <div className="col-lg-6">
-                        <AlgaehFileUploader
-                          name="attach_photo"
-                          accept="image/*"
-                          textAltMessage="Empoyee Image"
-                          serviceParameters={{
-                            uniqueID: this.state.employee_code,
-                            destinationName: this.state.employee_code,
-                            fileType: "Employees"
-                          }}
-                        />
-                        {/* <div className="image-drop-area">
-                           <Dropzone
+                      <div className="col-12">
+                        <div className="row">
+                          <AlgaehDateHandler
+                            div={{ className: "col" }}
+                            label={{
+                              fieldName: "date_of_joining",
+                              isImp: true
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "date_of_joining"
+                            }}
+                            maxDate={new Date()}
+                            events={{
+                              onChange: datehandle.bind(this, this, context)
+                            }}
+                            value={this.state.date_of_joining}
+                          />
+                        </div>
+                      </div>
+                      <div className="col">
+                        <div
+                          className="image-drop-area"
+                          style={{ marginTop: 17, height: 150 }}
+                        >
+                          <AlgaehFileUploader
+                            name="attach_photo"
+                            accept="image/*"
+                            textAltMessage="Empoyee Image"
+                            serviceParameters={{
+                              uniqueID: this.state.employee_code,
+                              destinationName: this.state.employee_code,
+                              fileType: "Employees"
+                            }}
+                          />
+                          {/* <Dropzone
                             onDrop={onDrop.bind(
                               this,
                               this,
@@ -499,98 +542,61 @@ class PersonalDetails extends PureComponent {
                               }}
                             />
                          
-                          </Dropzone> 
-                        </div> */}
+                          </Dropzone>  */}
+                        </div>
                       </div>
-                    </div>
-                    <div
-                      className="row secondary-box-container"
-                      style={{ paddingTop: "5px" }}
-                    >
-                      <div
-                        className="col-lg-4 customCheckbox"
-                        style={{ paddingTop: "20px" }}
-                      >
-                        <label className="checkbox inline">
-                          <input
-                            type="checkbox"
-                            name="isdoctor"
-                            value="Y"
-                            checked={this.state.Applicable}
-                            onChange={isDoctorChange.bind(this, this, context)}
-                          />
-                          <span>
-                            <AlgaehLabel label={{ fieldName: "isdoctor" }} />
-                          </span>
-                        </label>
-                      </div>
-
-                      <AlagehFormGroup
-                        div={{ className: "col-lg-8 mandatory" }}
-                        label={{
-                          fieldName: "license_number",
-                          isImp: true
-                        }}
-                        textBox={{
-                          value: this.state.license_number,
-                          className: "txt-fld",
-                          name: "license_number",
-
-                          events: {
-                            onChange: texthandle.bind(this, this, context)
-                          },
-                          others: {
-                            disabled:
-                              this.state.isdoctor === "Y" ? false : true,
-                            tabIndex: "6"
-                          }
-                        }}
-                      />
-                    </div>
-
-                    <div
-                      className="row secondary-box-container"
-                      style={{ paddingTop: "10px" }}
-                    >
-                      <AlgaehDateHandler
-                        div={{ className: "col-lg-6" }}
-                        label={{ fieldName: "date_of_joining", isImp: true }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "date_of_joining"
-                        }}
-                        maxDate={new Date()}
-                        events={{
-                          onChange: datehandle.bind(this, this, context)
-                        }}
-                        value={this.state.date_of_joining}
-                      />
-                      <AlgaehDateHandler
-                        div={{ className: "col-lg-6" }}
-                        label={{ fieldName: "date_of_leaving" }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "date_of_leaving"
-                        }}
-                        maxDate={new Date()}
-                        events={{
-                          onChange: datehandle.bind(this, this, context)
-                        }}
-                        value={this.state.date_of_leaving}
-                      />
                     </div>
                   </div>
                 </div>
               </div>
 
               <div className="col-lg-12">
+                <hr />
+                <h6>If user is a Doctor</h6>
+                <div className="row secondary-box-container">
+                  <div
+                    className="col-2 customCheckbox"
+                    style={{ marginTop: 23, border: "none" }}
+                  >
+                    <label className="checkbox inline">
+                      <input
+                        type="checkbox"
+                        name="isdoctor"
+                        value="Y"
+                        checked={this.state.Applicable}
+                        onChange={isDoctorChange.bind(this, this, context)}
+                      />
+                      <span>
+                        <AlgaehLabel label={{ fieldName: "isdoctor" }} />
+                      </span>
+                    </label>
+                  </div>
+
+                  <AlagehFormGroup
+                    div={{ className: "col-3" }}
+                    label={{
+                      fieldName: "license_number",
+                      isImp: true
+                    }}
+                    textBox={{
+                      value: this.state.license_number,
+                      className: "txt-fld",
+                      name: "license_number",
+
+                      events: {
+                        onChange: texthandle.bind(this, this, context)
+                      },
+                      others: {
+                        disabled: this.state.isdoctor === "Y" ? false : true,
+                        tabIndex: "6"
+                      }
+                    }}
+                  />
+                </div>
+              </div>
+              <div className="col">
                 <DeptUserDetails EmpMasterIOputs={this.state} />
               </div>
-              <AHSnackbar
-                open={this.state.DOBError}
-                // handleClose={this.handleClose}
-                MandatoryMsg={this.state.DOBErrorMsg}
-              />
             </div>
           )}
         </MyContext.Consumer>

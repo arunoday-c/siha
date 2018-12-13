@@ -16,12 +16,13 @@ import MyContext from "../../../../utils/MyContext";
 import {
   deleteReceiptDetail,
   updateReceiptDetail,
-  onchhangegriddiscount,
   onchangegridcol,
   EditGrid,
   CancelGrid,
   onchangegridcoldatehandle,
-  changeDateFormat
+  changeDateFormat,
+  GridAssignData,
+  onchhangegriddiscount
 } from "./ReceiptItemListEvent";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 
@@ -401,7 +402,7 @@ class ReceiptItemList extends Component {
                                       className: "txt-fld",
                                       name: "recieved_quantity",
                                       events: {
-                                        onChange: onchangegridcol.bind(
+                                        onChange: onchhangegriddiscount.bind(
                                           this,
                                           this,
                                           row
@@ -411,14 +412,38 @@ class ReceiptItemList extends Component {
                                         disabled:
                                           this.state.posted === "Y"
                                             ? true
-                                            : false
+                                            : false,
+                                        onBlur: GridAssignData.bind(
+                                          this,
+                                          this,
+                                          row
+                                        )
                                       }
                                     }}
                                   />
                                 );
                               }
                             },
-
+                            {
+                              fieldName: "outstanding_quantity",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "OutStanding Quantity" }}
+                                />
+                              ),
+                              disabled: true
+                            },
+                            {
+                              fieldName: "quantity_recieved_todate",
+                              label: (
+                                <AlgaehLabel
+                                  label={{
+                                    forceLabel: "Quantity Recieved Todate"
+                                  }}
+                                />
+                              ),
+                              disabled: true
+                            },
                             {
                               fieldName: "discount_percentage",
                               label: (

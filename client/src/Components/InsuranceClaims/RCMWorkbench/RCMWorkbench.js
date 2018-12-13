@@ -1,43 +1,167 @@
 import React, { Component } from "react";
 import "./RCMWorkbench.css";
-
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
-
+import { algaehApiCall } from "../../../utils/algaehApiCall";
+import FrontDesk from "../../../Search/FrontDesk.json";
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDateHandler
+  AlgaehDateHandler,
+  AlagehFormGroup,
+  AlgaehModalPopUp
 } from "../../Wrapper/algaehWrapper";
-
-const myData = [
-  {
-    ClaimID: "123",
-    ins_company: "Bupa",
-    name: "ABC",
-    policy_group: "Policy",
-    desc: "Description",
-    bill_date: "20-11-2018",
-    patient_code: "PAT-A-0000545",
-    patientName: "Khalid",
-    submitAmt: "100",
-    remitAmt: "100",
-    receipt_amt: "100",
-    reciptStatus: "Paid"
-  }
-];
+import AlgaehLoader from "../../Wrapper/fullPageLoader";
+import AlgaehSearch from "../../Wrapper/globalSearch";
+import ValidateBills from "./ValidateBills/ValidateBills";
 
 class RCMWorkbench extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedLang: "en"
+      selectedLang: "en",
+      claims: [],
+      openClaims: false
     };
+    this.dropDownHandler = this.dropDownHandler.bind(this);
+    this.clearSearch = this.clearSearch.bind(this);
+    this.getInvoicesForClaims = this.getInvoicesForClaims.bind(this);
+    this.getInsuranceProviders();
+  }
+
+  dropDownHandler(value) {
+    switch (value.name) {
+      case "insurance_provider_id":
+        this.setState(
+          {
+            [value.name]: value.value
+          },
+          () => {
+            algaehApiCall({
+              uri: "/insurance/getSubInsuraces",
+              method: "GET",
+              data: {
+                insurance_provider_id: this.state.insurance_provider_id
+              },
+              onSuccess: response => {
+                if (response.data.success) {
+                  this.setState({
+                    sub_ins_companies: response.data.records
+                  });
+                }
+              },
+              onError: error => {}
+            });
+          }
+        );
+        break;
+
+      default:
+        this.setState({
+          [value.name]: value.value
+        });
+        break;
+    }
+  }
+
+  getInvoicesForClaims() {
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      onSuccess: () => {
+        let send_data = {
+          patient_id: this.state.patient_id ? this.state.patient_id : null,
+          from_date: this.state.from_date ? this.state.from_date : null,
+          to_date: this.state.to_date ? this.state.to_date : null,
+          insurance_provider_id: this.state.insurance_provider_id
+            ? this.state.insurance_provider_id
+            : null,
+          sub_insurance_id: this.state.sub_insurance_id
+            ? this.state.sub_insurance_id
+            : null
+        };
+
+        AlgaehLoader({ show: true });
+
+        algaehApiCall({
+          uri: "/invoiceGeneration/getInvoicesForClaims",
+          method: "GET",
+          data: send_data,
+          onSuccess: response => {
+            this.setState({
+              claims: response.data.records
+            });
+            AlgaehLoader({ show: false });
+          },
+          onError: error => {
+            AlgaehLoader({ show: false });
+          }
+        });
+      }
+    });
+  }
+
+  getInsuranceProviders() {
+    algaehApiCall({
+      uri: "/insurance/getInsuranceProviders",
+      method: "GET",
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({
+            insurance_providers: response.data.records
+          });
+        }
+      },
+      onError: error => {}
+    });
+  }
+
+  clearSearch() {
+    this.setState({
+      from_date: null,
+      to_date: null,
+      patient_code: null,
+      insurance_provider_id: null,
+      sub_insurance_id: null,
+      patient_id: null
+    });
+  }
+
+  getInvoices() {}
+
+  patientSearch() {
+    AlgaehSearch({
+      searchGrid: {
+        columns: FrontDesk
+      },
+      searchName: "patients",
+      uri: "/gloabelSearch/get",
+      onContainsChange: (text, serchBy, callBack) => {
+        callBack(text);
+      },
+      onRowSelect: row => {
+        this.setState({
+          patient_code: row.patient_code,
+          patient_id: row.hims_d_patient_id
+        });
+      }
+    });
+  }
+
+  handleClose() {
+    this.setState({
+      openClaims: false
+    });
   }
 
   render() {
     return (
       <div className="" style={{ marginBottom: "50px" }}>
+        <ValidateBills
+          data={this.state.sendProps}
+          closeModal={this.handleClose.bind(this)}
+          openPopup={this.state.openClaims}
+        />
         <BreadCrumb
           title={
             <AlgaehLabel
@@ -62,6 +186,23 @@ class RCMWorkbench extends Component {
               )
             }
           ]}
+          // soptlightSearch={{
+          //   label: (
+          //     <AlgaehLabel
+          //       label={{ forceLabel: "Claim ID", returnText: true }}
+          //     />
+          //   ),
+          //   value: this.state.invoice_number,
+          //   selectValue: "invoice_number",
+          //   events: {
+          //     onChange: this.getCtrlCode.bind(this)
+          //   },
+          //   jsonFile: {
+          //     fileName: "spotlightSearch",
+          //     fieldName: "Invoice.InvoiceGen"
+          //   },
+          //   searchName: "InvoiceGen"
+          // }}
         />
 
         <div
@@ -70,71 +211,125 @@ class RCMWorkbench extends Component {
         >
           <div className="row">
             <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{ forceLabel: "Company Name" }}
+              div={{ className: "col-lg-2" }}
+              label={{ isImp: false, forceLabel: "Company Name" }}
               selector={{
-                name: "location_id",
+                name: "insurance_provider_id",
                 className: "select-fld",
-                value: this.state.location_id,
+                value: this.state.insurance_provider_id,
                 dataSource: {
-                  textField: "location_description",
-                  valueField: "hims_d_pharmacy_location_id",
-                  data: this.props.locations
+                  textField: "insurance_provider_name",
+                  valueField: "hims_d_insurance_provider_id",
+                  data: this.state.insurance_providers
                 },
-
-                onChange: null,
-                onClear: null
+                onChange: this.dropDownHandler,
+                onClear: () => {
+                  this.setState({
+                    insurance_provider_id: null,
+                    sub_insurance_id: null
+                  });
+                }
               }}
             />
             <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{ forceLabel: "Patient ID" }}
+              div={{ className: "col-lg-2" }}
+              label={{ isImp: false, forceLabel: "Sub Company Name" }}
               selector={{
-                name: "location_id",
+                name: "sub_insurance_id",
                 className: "select-fld",
-                value: this.state.location_id,
+                value: this.state.sub_insurance_id,
                 dataSource: {
-                  textField: "location_description",
-                  valueField: "hims_d_pharmacy_location_id",
-                  data: this.props.locations
+                  textField: "insurance_sub_name",
+                  valueField: "hims_d_insurance_sub_id",
+                  data: this.state.sub_ins_companies
                 },
-
-                onChange: null,
-                onClear: null
+                onChange: this.dropDownHandler,
+                onClear: () => {
+                  this.setState({
+                    sub_insurance_id: null
+                  });
+                }
               }}
+            />
+            <AlagehFormGroup
+              div={{ className: "col-lg-2" }}
+              label={{
+                forceLabel: "Patient Code",
+                isImp: false
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "patient_code",
+                others: {
+                  disabled: true
+                },
+                value: this.state.patient_code,
+                events: {
+                  // onChange: this.texthandle.bind(this)
+                }
+              }}
+            />
+
+            <div className="col-lg-1 margin-top-15">
+              <i
+                onClick={this.patientSearch.bind(this)}
+                className="fas fa-search"
+                style={{
+                  cursor: "pointer"
+                }}
+              />
+            </div>
+
+            <AlgaehDateHandler
+              div={{ className: "col-lg-2" }}
+              label={{ isImp: false, forceLabel: "From Date" }}
+              textBox={{
+                className: "txt-fld",
+                name: "from_date"
+              }}
+              maxDate={new Date()}
+              events={{
+                onChange: selDate => {
+                  this.setState({
+                    from_date: selDate
+                  });
+                }
+              }}
+              value={this.state.from_date}
             />
 
             <AlgaehDateHandler
-              div={{ className: "col" }}
-              label={{ forceLabel: "From Date" }}
+              div={{ className: "col-lg-2" }}
+              label={{ isImp: false, forceLabel: "To Date" }}
               textBox={{
                 className: "txt-fld",
-                name: "expiry_date"
+                name: "to_date"
               }}
-              minDate={new Date()}
-              //disabled={true}
+              maxDate={new Date()}
               events={{
-                onChange: null
+                onChange: selDate => {
+                  this.setState({
+                    to_date: selDate
+                  });
+                }
               }}
-              value={this.state.expiry_date}
+              value={this.state.to_date}
             />
-
-            <AlgaehDateHandler
-              div={{ className: "col" }}
-              label={{ forceLabel: "To Date" }}
-              textBox={{
-                className: "txt-fld",
-                name: "expiry_date"
-              }}
-              minDate={new Date()}
-              //disabled={true}
-              events={{
-                onChange: null
-              }}
-              value={this.state.expiry_date}
-            />
-            <div className="col">
-              <button className="btn btn-primary" style={{ marginTop: 21 }}>
+            <div className="col-lg-1">
+              <button
+                onClick={this.clearSearch}
+                className="btn btn-default"
+                style={{ marginTop: 21 }}
+              >
+                Clear
+              </button>
+            </div>
+            <div className="col-lg-1">
+              <button
+                onClick={this.getInvoicesForClaims}
+                className="btn btn-primary"
+                style={{ marginTop: 21 }}
+              >
                 Load Claims
               </button>
             </div>
@@ -151,43 +346,46 @@ class RCMWorkbench extends Component {
                     columns={[
                       {
                         fieldName: "actions",
-                        label: <AlgaehLabel label={{ forceLabel: "Action" }} />,
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Details" }} />
+                        ),
                         displayTemplate: row => {
-                          return <i className="fas fa-check" />;
+                          return (
+                            <i
+                              onClick={() => {
+                                this.setState({
+                                  openClaims: true,
+                                  sendProps: row
+                                });
+                              }}
+                              className="fas fa-eye"
+                            />
+                          );
                         },
-                        other: {
-                          maxWidth: 55
+                        others: {
+                          maxWidth: 55,
+                          fixed: "left"
                         }
                       },
                       {
-                        fieldName: "ClaimID",
+                        fieldName: "invoice_number",
                         label: <AlgaehLabel label={{ forceLabel: "ClaimID" }} />
                       },
 
                       {
-                        fieldName: "ins_company",
+                        fieldName: "insurance_provider_name",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Ins. Company" }} />
                         )
                       },
                       {
-                        fieldName: "name",
-                        label: <AlgaehLabel label={{ forceLabel: "Name" }} />,
-                        disabled: true
-                      },
-                      {
-                        fieldName: "policy_group",
+                        fieldName: "network_type",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Policy Group" }} />
                         )
                       },
                       {
-                        fieldName: "desc",
-                        label: <AlgaehLabel label={{ forceLabel: "Desc." }} />,
-                        disabled: true
-                      },
-                      {
-                        fieldName: "plan",
+                        fieldName: "network_type",
                         label: <AlgaehLabel label={{ forceLabel: "Plan" }} />
                       },
                       {
@@ -200,19 +398,18 @@ class RCMWorkbench extends Component {
                       {
                         fieldName: "patient_code",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Patient Id" }} />
+                          <AlgaehLabel label={{ forceLabel: "Patient Code" }} />
                         )
                       },
-
                       {
-                        fieldName: "patientName",
+                        fieldName: "patient_name",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Patient Name" }} />
                         ),
                         disabled: true
                       },
                       {
-                        fieldName: "submitAmt",
+                        fieldName: "submission_ammount",
                         label: (
                           <AlgaehLabel
                             label={{
@@ -222,22 +419,21 @@ class RCMWorkbench extends Component {
                         )
                       },
                       {
-                        fieldName: "submitDate",
+                        fieldName: "submission_date",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Submit Date" }} />
                         )
                       },
 
                       {
-                        fieldName: "remitAmt.",
+                        fieldName: "remittance_ammount.",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Remit Amt." }} />
                         ),
                         disabled: true
                       },
-
                       {
-                        fieldName: "remitDate",
+                        fieldName: "remittance_date",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Remit Date" }} />
                         ),
@@ -245,15 +441,14 @@ class RCMWorkbench extends Component {
                       },
 
                       {
-                        fieldName: "receipt_amt.",
+                        fieldName: "denial_ammount.",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Remit Amt." }} />
+                          <AlgaehLabel label={{ forceLabel: "Denial Amt." }} />
                         ),
                         disabled: true
                       },
-
                       {
-                        fieldName: "reciptStatus",
+                        fieldName: "receipt_status",
                         label: (
                           <AlgaehLabel
                             label={{ forceLabel: "Recipt Status" }}
@@ -264,7 +459,7 @@ class RCMWorkbench extends Component {
                     ]}
                     keyId="service_type_id"
                     dataSource={{
-                      data: myData
+                      data: this.state.claims
                     }}
                     isEditable={false}
                     paging={{ page: 0, rowsPerPage: 10 }}

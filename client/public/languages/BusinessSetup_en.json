@@ -62,5 +62,9 @@
   "category_code": "Category Code",
   "category_name": "Category Name",
   "category_speciality_map": "Category Speciality Mapping",
-  "description": "Description"
+  "description": "Description",
+  "shift_type": "Shift Type",
+  "select_cashier": "Select Cashier",
+  "select_month": "Select Month",
+  "year": "Year"
 }

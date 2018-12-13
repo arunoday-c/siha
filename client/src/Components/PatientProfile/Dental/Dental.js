@@ -4,14 +4,18 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import "./Dental.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import { AlgaehValidation } from "../../../utils/GlobalFunctions";
+import {
+  AlgaehValidation,
+  getAmountFormart
+} from "../../../utils/GlobalFunctions";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import {
   AlagehAutoComplete,
   AlagehFormGroup,
   AlgaehDataGrid,
   AlgaehModalPopUp,
-  AlgaehDateHandler
+  AlgaehDateHandler,
+  AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import Enumerable from "linq";
@@ -30,8 +34,11 @@ class Dental extends Component {
       consult_date: new Date(),
       treatements: [],
       dentalTreatments: [],
-      openBilling: false,
-      treatment_gridUpdate: true
+      openBillingModal: false,
+      treatment_gridUpdate: true,
+      billDetails: {},
+      scheduled_date: new Date(),
+      selected_plan: "------"
     };
     this.getProcedures();
     this.getTreatementPlans();
@@ -39,6 +46,7 @@ class Dental extends Component {
     this.updateDentalTreatmentStatus = this.updateDentalTreatmentStatus.bind(
       this
     );
+    this.loadDentalTreatment = this.loadDentalTreatment.bind(this);
   }
 
   clearSaveState() {
@@ -86,7 +94,6 @@ class Dental extends Component {
           [e.target.name]: e.target.value,
           total_price: e.target.value * this.state.standard_fee
         });
-
         break;
 
       default:
@@ -97,6 +104,73 @@ class Dental extends Component {
     }
   }
 
+  calculateDiscount(e) {
+    let bill_dtls = { ...this.state.billDetails, ...this.state.ins_details };
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+
+    // hims_d_services_id: 10851
+    // insured: "Y"
+    // primary_insurance_provider_id: 167
+    // primary_network_id: 2751
+    // primary_network_office_id: 59547
+    // secondary_insurance_provider_id: null
+    // secondary_network_id: null
+    // secondary_network_office_id: null
+    // vat_applicable: "Y"
+
+    let inputParam = [
+      {
+        hims_d_services_id: bill_dtls.services_id,
+        quantity: bill_dtls.quantity,
+        discount_amout: 0,
+        discount_percentage: e.target.value,
+        insured: this.state.ins_details !== null ? "Y" : "N",
+        vat_applicable: "Y",
+        primary_insurance_provider_id: bill_dtls.insurance_provider_id
+          ? bill_dtls.insurance_provider_id
+          : null,
+        primary_network_office_id: bill_dtls.hims_d_insurance_network_office_id
+          ? bill_dtls.hims_d_insurance_network_office_id
+          : null,
+        primary_network_id: bill_dtls.network_id ? bill_dtls.network_id : null,
+        sec_insured: bill_dtls.sec_insured ? bill_dtls.sec_insured : null,
+        secondary_insurance_provider_id: bill_dtls.secondary_insurance_provider_id
+          ? bill_dtls.secondary_insurance_provider_id
+          : null,
+        secondary_network_id: bill_dtls.secondary_network_id
+          ? bill_dtls.secondary_network_id
+          : null,
+        secondary_network_office_id: bill_dtls.secondary_network_office_id
+          ? bill_dtls.secondary_network_office_id
+          : null,
+        approval_amt: bill_dtls.approval_amt ? bill_dtls.approval_amt : null,
+        approval_limit_yesno: bill_dtls.approval_limit_yesno
+          ? bill_dtls.approval_limit_yesno
+          : null,
+        preapp_limit_amount: bill_dtls.preapp_limit_amount
+          ? bill_dtls.preapp_limit_amount
+          : null
+      }
+    ];
+
+    algaehApiCall({
+      uri: "/billing/getBillDetails",
+      method: "POST",
+      cancelRequestId: "getBillDetails8",
+      data: inputParam,
+      onSuccess: res => {
+        if (res.data.success) {
+          //console.log("Billing Response for getBillDetails:", res.data.records);
+          this.setState({
+            billDetails: res.data.records.billdetails[0]
+          });
+        }
+      }
+    });
+  }
+
   changeGridEditors(row, e) {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
@@ -105,16 +179,148 @@ class Dental extends Component {
   }
 
   markAllSurface(e) {
-    debugger;
+    for (var i = 0; i < e.target.nextSibling.childElementCount; i++) {
+      e.target.nextSibling.children[i].click();
+    }
+  }
+
+  saveBill() {
+    let inputObj = {
+      visit_id: Window.global["visit_is"],
+      patient_id: Window.global["current_patient"],
+      incharge_or_provider: Window.global["provider_id"],
+      billed: "N",
+      billdetails: [
+        {
+          ...this.state.billDetails,
+          ...{
+            visit_id: Window.global["visit_id"],
+            patient_id: Window.global["current_patient"],
+            pre_approval: "N",
+            doctor_id: Window.global["provider_id"]
+          }
+        }
+      ]
+    };
+
+    algaehApiCall({
+      uri: "/orderAndPreApproval/insertOrderedServices",
+      data: inputObj,
+      method: "POST",
+      onSuccess: response => {
+        if (response.data.success) {
+          algaehApiCall({
+            uri: "/dental/updateDentalTreatmentBilledStatus",
+            method: "PUT",
+            data: {
+              hims_f_dental_treatment_id: this.state.d_id,
+              billed: "SB"
+            },
+            onSuccess: res => {
+              if (res.data.success) {
+                this.setState(
+                  {
+                    openBillingModal: false,
+                    discount_amout: 0
+                  },
+                  () => {
+                    this.loadDentalTreatment();
+                  }
+                );
+              }
+            },
+            onError: error => {
+              swalMessage({
+                title: error.message,
+                type: "error"
+              });
+            }
+          });
+
+          swalMessage({
+            title: "Ordered Successfully...",
+            type: "success"
+          });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.response.data.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   addToBill(row) {
-    debugger;
+    algaehApiCall({
+      uri: "/insurance/getPatientInsurance",
+      method: "GET",
+      data: {
+        patient_id: Window.global["current_patient"],
+        patient_visit_id: Window.global["visit_id"]
+      },
+      onSuccess: res => {
+        if (res.data.success) {
+          console.log("Insurance Details", res.data.records);
+
+          let ins = res.data.records.length > 0 ? res.data.records[0] : null;
+
+          this.setState({
+            ins_details: ins
+          });
+
+          algaehApiCall({
+            uri: "/billing/getBillDetails",
+            method: "POST",
+            cancelRequestId: "getBillDetails4",
+            data: [
+              {
+                insured: res.data.records.length > 0 ? "Y" : "N",
+                vat_applicable: "Y",
+                hims_d_services_id: row.service_id,
+                primary_insurance_provider_id:
+                  ins !== null ? ins.insurance_provider_id : null,
+                primary_network_office_id:
+                  ins !== null ? ins.hims_d_insurance_network_office_id : null,
+                primary_network_id: ins !== null ? ins.network_id : null,
+                sec_insured: ins !== null ? ins.sec_insured : null,
+                secondary_insurance_provider_id:
+                  ins !== null ? ins.secondary_insurance_provider_id : null,
+                secondary_network_id:
+                  ins !== null ? ins.secondary_network_id : null,
+                secondary_network_office_id:
+                  ins !== null ? ins.secondary_network_office_id : null,
+                approval_amt: ins !== null ? ins.approval_amt : null,
+                approval_limit_yesno:
+                  ins !== null ? ins.approval_limit_yesno : null,
+                preapp_limit_amount:
+                  ins !== null ? ins.preapp_limit_amount : null
+              }
+            ],
+            onSuccess: res => {
+              if (res.data.success) {
+                console.log("Billing Response:", res.data.records);
+                this.setState({
+                  billDetails: res.data.records.billdetails[0]
+                });
+              }
+            }
+          });
+        }
+      },
+      onError: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
 
     this.setState({
-      billDetails: row,
-      openBilling: true,
-      treatment_gridUpdate: false
+      openBillingModal: true,
+      treatment_gridUpdate: false,
+      d_id: row.hims_f_dental_treatment_id
     });
   }
 
@@ -163,10 +369,10 @@ class Dental extends Component {
 
     if (my_item !== undefined) {
       teeth.splice(teeth.indexOf(my_item), 1);
-      // console.log("Teeth Selected", teeth);
+      //console.log("Teeth Selected", teeth);
     } else {
       teeth.push(my_obj);
-      // console.log("Teeth Selected", teeth);
+      //console.log("Teeth Selected", teeth);
     }
 
     let send_teeth = Enumerable.from(teeth)
@@ -217,6 +423,18 @@ class Dental extends Component {
               swalMessage({
                 title: "Added Successfully",
                 type: "success"
+              });
+
+              this.loadDentalTreatment();
+              teeth = [];
+              this.setState({
+                treatment_gridUpdate: true,
+                openDentalModal: false,
+                hims_d_services_id: null,
+                quantity: 0,
+                standard_fee: 0,
+                total_price: 0,
+                hims_f_treatment_plan_id: null
               });
             }
           },
@@ -339,7 +557,7 @@ class Dental extends Component {
             i
           }
         >
-          <span>{i}</span>
+          <span onClick={this.markAllSurface.bind(this)}>{i}</span>
           <div className="surface-Marking">
             <div
               onClick={this.markTeethSurface.bind(this)}
@@ -397,7 +615,7 @@ class Dental extends Component {
             i
           }
         >
-          <span>{i}</span>
+          <span onClick={this.markAllSurface.bind(this)}>{i}</span>
           <div className="surface-Marking">
             <div
               surface="distal='Y'"
@@ -446,7 +664,6 @@ class Dental extends Component {
     for (let i = 32; i >= 25; i--) {
       plot.push(
         <div
-          onClick={this.markAllSurface.bind(this)}
           key={i}
           className={
             "col tooth-sec down-side " +
@@ -460,7 +677,7 @@ class Dental extends Component {
             counter
           }
         >
-          <span>{i}</span>
+          <span onClick={this.markAllSurface.bind(this)}>{i}</span>
           <div className="surface-Marking">
             <div
               onClick={this.markTeethSurface.bind(this)}
@@ -502,9 +719,69 @@ class Dental extends Component {
     return plot;
   }
 
-  deleteDentalPlan(data) {
-    debugger;
+  generateToothLowerRightSet() {
+    let plot = [];
+    let counter = 9;
 
+    for (let i = 24; i >= 17; i--) {
+      plot.push(
+        <div
+          key={i}
+          className={
+            "col tooth-sec down-side " +
+            (counter <= 10
+              ? "incisors-down-"
+              : counter === 11
+              ? "canine-down-"
+              : counter < 14
+              ? "premolar-down-"
+              : "i molar-down-") +
+            counter
+          }
+        >
+          <span onClick={this.markAllSurface.bind(this)}>{i}</span>
+          <div className="surface-Marking">
+            <div
+              onClick={this.markTeethSurface.bind(this)}
+              className="top-surface"
+            >
+              <span>D</span>
+            </div>
+            <div
+              onClick={this.markTeethSurface.bind(this)}
+              className="right-surface"
+            >
+              <span>L</span>
+            </div>
+            <div
+              onClick={this.markTeethSurface.bind(this)}
+              className="bottom-surface"
+            >
+              <span>I</span>
+            </div>
+            <div
+              onClick={this.markTeethSurface.bind(this)}
+              className="left-surface"
+            >
+              <span>P</span>
+            </div>
+            {counter >= 21 ? (
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className="middle-surface"
+              >
+                <span>M</span>
+              </div>
+            ) : null}
+          </div>
+        </div>
+      );
+      counter++;
+    }
+    return plot;
+  }
+
+  deleteDentalPlan(data) {
     swal({
       title: "Delete Plan ?",
       type: "warning",
@@ -527,6 +804,7 @@ class Dental extends Component {
                 title: "Record Deleted",
                 type: "success"
               });
+              this.loadDentalTreatment();
             }
           },
           onError: err => {
@@ -546,13 +824,12 @@ class Dental extends Component {
   }
 
   updateDentalTreatmentStatus(data) {
-    debugger;
     algaehApiCall({
       uri: "/dental/updateDentalTreatmentStatus",
       method: "PUT",
       data: {
         hims_f_dental_treatment_id: data.hims_f_dental_treatment_id,
-        treatment_statuss: data.treatment_status
+        treatment_status: data.treatment_status
       },
       onSuccess: res => {
         if (res.data.success) {
@@ -560,6 +837,7 @@ class Dental extends Component {
             title: "Record Updated",
             type: "success"
           });
+          this.loadDentalTreatment();
         }
       },
       onError: err => {
@@ -685,24 +963,33 @@ class Dental extends Component {
               fieldName: "billed",
               label: "Add To Bill",
               displayTemplate: row => {
-                return (
+                debugger;
+                return row.billed === "N" ? (
                   <button
                     onClick={this.addToBill.bind(this, row)}
                     className="btn btn-primary"
                   >
                     Add To Bill
                   </button>
-                );
+                ) : row.billed === "SB" ? (
+                  <span>Sent to Billing</span>
+                ) : row.billed === "Y" ? (
+                  <span>Paid</span>
+                ) : null;
               },
               editorTemplate: row => {
-                return (
+                return row.billed === "N" ? (
                   <button
                     onClick={this.addToBill.bind(this, row)}
                     className="btn btn-primary"
                   >
                     Add To Bill
                   </button>
-                );
+                ) : row.billed === "SB" ? (
+                  <span>Sent to Billing</span>
+                ) : row.billed === "Y" ? (
+                  <span>Paid</span>
+                ) : null;
               }
             }
           ]}
@@ -728,66 +1015,46 @@ class Dental extends Component {
     );
   }
 
-  generateToothLowerRightSet() {
-    let plot = [];
-    let counter = 9;
-
-    for (let i = 24; i >= 17; i--) {
-      plot.push(
-        <div
-          key={i}
-          className={
-            "col tooth-sec down-side " +
-            (counter <= 10
-              ? "incisors-down-"
-              : counter === 11
-              ? "canine-down-"
-              : counter < 14
-              ? "premolar-down-"
-              : "i molar-down-") +
-            counter
+  loadDentalTreatment(data) {
+    data !== undefined
+      ? this.setState(
+          {
+            plan_id: data.hims_f_treatment_plan_id
+          },
+          () => {
+            algaehApiCall({
+              uri: "/dental/getDentalTreatment",
+              method: "GET",
+              data: {
+                treatment_plan_id: this.state.plan_id
+              },
+              onSuccess: response => {
+                if (response.data.success) {
+                  this.setState({
+                    dentalTreatments: response.data.records,
+                    selected_plan: data.plan_name
+                  });
+                }
+              },
+              onError: error => {}
+            });
           }
-        >
-          <span>{i}</span>
-          <div className="surface-Marking">
-            <div
-              onClick={this.markTeethSurface.bind(this)}
-              className="top-surface"
-            >
-              <span>D</span>
-            </div>
-            <div
-              onClick={this.markTeethSurface.bind(this)}
-              className="right-surface"
-            >
-              <span>L</span>
-            </div>
-            <div
-              onClick={this.markTeethSurface.bind(this)}
-              className="bottom-surface"
-            >
-              <span>I</span>
-            </div>
-            <div
-              onClick={this.markTeethSurface.bind(this)}
-              className="left-surface"
-            >
-              <span>P</span>
-            </div>
-            {counter >= 21 ? (
-              <div
-                onClick={this.markTeethSurface.bind(this)}
-                className="middle-surface"
-              >
-                <span>M</span>
-              </div>
-            ) : null}
-          </div>
-        </div>
-      );
-      counter++;
-    }
-    return plot;
+        )
+      : algaehApiCall({
+          uri: "/dental/getDentalTreatment",
+          method: "GET",
+          data: {
+            treatment_plan_id: this.state.plan_id
+          },
+          onSuccess: response => {
+            if (response.data.success) {
+              this.setState({
+                dentalTreatments: response.data.records
+              });
+            }
+          },
+          onError: error => {}
+        });
   }
 
   openAddModal(data) {
@@ -800,28 +1067,28 @@ class Dental extends Component {
   }
 
   render() {
+    let billDetails = this.state.billDetails;
     return (
       <div id="dentalTreatment">
         <AlgaehModalPopUp
-          openPopup={this.state.openBilling}
+          openPopup={this.state.openBillingModal}
           title="Bill Service"
         >
           <div
-            className="col-lg-12 margin-bottom-15"
+            className="col-lg-12 margin-bottom-15 popupInner"
             data-validate="billDentalPlan"
           >
-            <div className="row">
-              <span>{JSON.stringify(this.state.billDetails)}</span>
+            <div className="row" style={{ paddingBottom: 0 }}>
               <AlagehFormGroup
                 div={{ className: "col-lg-3" }}
                 label={{
-                  forceLabel: "Procedure",
+                  fieldName: "service_type_id",
                   isImp: true
                 }}
                 textBox={{
                   className: "txt-fld",
                   name: "treatement_plan",
-                  value: this.state.selected_treatement_plan,
+                  value: billDetails.service_name,
                   events: {
                     onChange: this.textHandle.bind(this)
                   },
@@ -831,6 +1098,351 @@ class Dental extends Component {
                   }
                 }}
               />
+
+              <AlagehFormGroup
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "procedure",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "treatement_plan",
+                  value: billDetails.service_name,
+                  events: {
+                    onChange: this.textHandle.bind(this)
+                  },
+                  others: {
+                    disabled: true,
+                    placeholder: "Enter Treatment Name"
+                  }
+                }}
+              />
+            </div>
+            <hr />
+            {/* Amount Details */}
+            <div className="row">
+              <div className="col-lg-2">
+                <AlgaehLabel
+                  label={{
+                    fieldName: "quantity"
+                  }}
+                />
+                <h6>1</h6>
+              </div>
+
+              <div className="col-lg-2">
+                <AlgaehLabel
+                  label={{
+                    fieldName: "unit_cost"
+                  }}
+                />
+                <h6>{getAmountFormart(billDetails.unit_cost)}</h6>
+              </div>
+
+              <div className="col-lg-2">
+                <AlgaehLabel
+                  label={{
+                    fieldName: "gross_amount"
+                  }}
+                />
+                <h6>{getAmountFormart(billDetails.gross_amount)}</h6>
+              </div>
+
+              <div className="col-lg-2">
+                <AlgaehLabel
+                  label={{
+                    fieldName: "discount_percentage"
+                  }}
+                />
+                {/* <h6>
+                  {billDetails.discount_percentage
+                    ? billDetails.discount_percentage + "%"
+                    : "0.00%"}
+                </h6> */}
+
+                <AlagehFormGroup
+                  // div={{ className: "col" }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "discount_percentage",
+                    value: this.state.discount_percentage,
+                    events: {
+                      onChange: this.calculateDiscount.bind(this)
+                    },
+                    others: {
+                      min: 0,
+                      type: "number"
+                    }
+                  }}
+                />
+              </div>
+
+              <div className="col-lg-2">
+                <AlgaehLabel
+                  label={{
+                    fieldName: "discount_amout"
+                  }}
+                />
+                <h6>{getAmountFormart(billDetails.discount_amout)}</h6>
+              </div>
+
+              <div className="col-lg-2">
+                <AlgaehLabel
+                  label={{
+                    fieldName: "net_amout"
+                  }}
+                />
+                <h6>{getAmountFormart(billDetails.net_amout)}</h6>
+              </div>
+            </div>
+            <hr />
+            {/* Insurance Details */}
+            <div className="row">
+              <div className="col-lg-6">
+                <AlgaehLabel
+                  label={{
+                    fieldName: "prim-insurance"
+                  }}
+                />
+                <div className="Paper">
+                  <div className="row insurance-details">
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "copay_percentage"
+                        }}
+                      />
+                      <h6>
+                        {billDetails.copay_percentage
+                          ? billDetails.copay_percentage + "%"
+                          : "0.00%"}
+                      </h6>
+                    </div>
+
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "copay_amount"
+                        }}
+                      />
+                      <h6>{getAmountFormart(billDetails.copay_amount)}</h6>
+                    </div>
+
+                    <div className="col-3">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "deductable_percentage"
+                        }}
+                      />
+                      <h6>
+                        {billDetails.deductable_percentage
+                          ? billDetails.deductable_percentage + "%"
+                          : "0.00%"}
+                      </h6>
+                    </div>
+
+                    <div className="col-4">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "deductable_amount"
+                        }}
+                      />
+                      <h6>{getAmountFormart(billDetails.deductable_amount)}</h6>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="col-lg-6">
+                <AlgaehLabel
+                  label={{
+                    fieldName: "sec_company"
+                  }}
+                />
+                <div className="Paper">
+                  <div className="row insurance-details">
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "sec_copay_percntage"
+                        }}
+                      />
+                      <h6>
+                        {billDetails.sec_copay_percntage
+                          ? billDetails.sec_copay_percntage + "%"
+                          : "0.00%"}
+                      </h6>
+                    </div>
+
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "sec_copay_amount"
+                        }}
+                      />
+                      <h6>{getAmountFormart(billDetails.sec_copay_amount)}</h6>
+                    </div>
+
+                    <div className="col-3">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "sec_deductable_percentage"
+                        }}
+                      />
+                      <h6>
+                        {billDetails.sec_deductable_percentage
+                          ? billDetails.sec_deductable_percentage + "%"
+                          : "0.00%"}
+                      </h6>
+                    </div>
+
+                    <div className="col-4">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "sec_deductable_amount"
+                        }}
+                      />
+                      <h6>
+                        {getAmountFormart(billDetails.sec_deductable_amount)}
+                      </h6>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr />
+            {/* Payables */}
+            <div className="row ">
+              <div className="col-lg-4">
+                <AlgaehLabel
+                  label={{
+                    fieldName: "patient_lbl"
+                  }}
+                />
+                <div className="Paper">
+                  <div className="row insurance-details">
+                    <div className="col-5">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "responsibility_lbl"
+                        }}
+                      />
+                      <h6>{getAmountFormart(billDetails.patient_resp)}</h6>
+                    </div>
+
+                    <div className="col-3">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "tax_lbl"
+                        }}
+                      />
+                      <h6>{getAmountFormart(billDetails.patient_tax)}</h6>
+                    </div>
+
+                    <div className="col-4">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "payable_lbl"
+                        }}
+                      />
+                      <h6>{getAmountFormart(billDetails.patient_payable)}</h6>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/* <div className="col-lg-1"> &nbsp; </div> */}
+
+              <div className="col-lg-4">
+                <AlgaehLabel
+                  label={{
+                    fieldName: "company_lbl"
+                  }}
+                />
+                <div className="Paper">
+                  <div className="row insurance-details">
+                    <div className="col-5">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "responsibility_lbl"
+                        }}
+                      />
+                      <h6>{getAmountFormart(billDetails.comapany_resp)}</h6>
+                    </div>
+
+                    <div className="col-3">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "tax_lbl"
+                        }}
+                      />
+                      <h6>{getAmountFormart(billDetails.company_tax)}</h6>
+                    </div>
+
+                    <div className="col-4">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "payable_lbl"
+                        }}
+                      />
+                      <h6>{getAmountFormart(billDetails.company_payble)}</h6>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* <div className="col-lg-1"> &nbsp; </div> */}
+
+              <div className="col-lg-4">
+                <AlgaehLabel
+                  label={{
+                    fieldName: "sec_comp_lbl"
+                  }}
+                />
+                <div className="Paper">
+                  <div className="row insurance-details">
+                    <div className="col-5">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "responsibility_lbl"
+                        }}
+                      />
+                      <h6>{getAmountFormart(billDetails.sec_company_res)}</h6>
+                    </div>
+
+                    <div className="col-3">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "tax_lbl"
+                        }}
+                      />
+                      <h6>{getAmountFormart(billDetails.sec_company_tax)}</h6>
+                    </div>
+
+                    <div className="col-4">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "payable_lbl"
+                        }}
+                      />
+                      <h6>
+                        {getAmountFormart(billDetails.sec_company_paybale)}
+                      </h6>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="popupFooter">
+            <div className="col-lg-12 margin-bottom-15">
+              <button
+                onClick={this.saveBill.bind(this)}
+                className="btn btn-primary"
+                style={{ float: "right" }}
+              >
+                Save
+              </button>
             </div>
           </div>
         </AlgaehModalPopUp>
@@ -853,155 +1465,168 @@ class Dental extends Component {
           openPopup={this.state.openDentalModal}
           title="Dental Plan"
         >
-          <div
-            className="col-lg-12 margin-bottom-15"
-            data-validate="addDentalPlanDiv"
-          >
-            <div className="row">
-              <AlagehFormGroup
-                div={{ className: "col-lg-3" }}
-                label={{
-                  forceLabel: "Treatment Plan",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "treatement_plan",
-                  value: this.state.selected_treatement_plan,
-                  events: {
-                    onChange: this.textHandle.bind(this)
-                  },
-                  others: {
-                    disabled: true,
-                    placeholder: "Enter Treatment Name"
-                  }
-                }}
-              />
+          <div className="popupInner" data-validate="addDentalPlanDiv">
+            <div className="col-lg-12">
+              <div className="row">
+                <div className="col-lg-12 popRightDiv">
+                  <div className="row">
+                    <AlagehFormGroup
+                      div={{ className: "col-3" }}
+                      label={{
+                        fieldName: "treatment_plan",
+                        isImp: true
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "treatement_plan",
+                        value: this.state.selected_treatement_plan,
+                        events: {
+                          onChange: this.textHandle.bind(this)
+                        },
+                        others: {
+                          disabled: true,
+                          placeholder: "Enter Treatment Name"
+                        }
+                      }}
+                    />
 
-              <AlagehAutoComplete
-                div={{ className: "col-lg-3" }}
-                label={{
-                  forceLabel: "Select a Procedure",
-                  isImp: true
-                }}
-                selector={{
-                  name: "hims_d_services_id",
-                  className: "select-fld",
-                  value: this.state.hims_d_services_id,
-                  dataSource: {
-                    textField: "service_name",
-                    valueField: "hims_d_services_id",
-                    data: this.state.procedures
-                  },
-                  onChange: this.dropDownHandler.bind(this)
-                }}
-              />
+                    <AlagehAutoComplete
+                      div={{ className: "col-2" }}
+                      label={{
+                        fieldName: "sel_a_proc",
+                        isImp: true
+                      }}
+                      selector={{
+                        name: "hims_d_services_id",
+                        className: "select-fld",
+                        value: this.state.hims_d_services_id,
+                        dataSource: {
+                          textField: "service_name",
+                          valueField: "hims_d_services_id",
+                          data: this.state.procedures
+                        },
+                        onChange: this.dropDownHandler.bind(this)
+                      }}
+                    />
 
-              <AlagehFormGroup
-                div={{ className: "col-lg-1" }}
-                label={{
-                  forceLabel: "Unit Price",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "standard_fee",
-                  value: this.state.standard_fee,
-                  events: {
-                    onChange: this.textHandle.bind(this)
-                  },
-                  others: {
-                    disabled: true,
-                    min: 0,
-                    type: "number"
-                  }
-                }}
-              />
+                    <AlagehFormGroup
+                      div={{ className: "col" }}
+                      label={{
+                        fieldName: "unit_cost",
+                        isImp: true
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "standard_fee",
+                        value: this.state.standard_fee,
+                        events: {
+                          onChange: this.textHandle.bind(this)
+                        },
+                        others: {
+                          disabled: true,
+                          min: 0,
+                          type: "number"
+                        }
+                      }}
+                    />
 
-              <AlagehFormGroup
-                div={{ className: "col-lg-1" }}
-                label={{
-                  forceLabel: "Quantity",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "quantity",
-                  value: this.state.quantity,
-                  events: {
-                    onChange: this.textHandle.bind(this)
-                  },
-                  others: {
-                    min: 0,
-                    type: "number"
-                  }
-                }}
-              />
-              <AlagehFormGroup
-                div={{ className: "col-lg-1" }}
-                label={{
-                  forceLabel: "Total Price",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "total_price",
-                  value: this.state.total_price,
-                  events: {
-                    onChange: this.textHandle.bind(this)
-                  },
-                  others: {
-                    disabled: true,
-                    min: 0,
-                    type: "number"
-                  }
-                }}
-              />
+                    <AlagehFormGroup
+                      div={{ className: "col" }}
+                      label={{
+                        fieldName: "quantity",
+                        isImp: true
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "quantity",
+                        value: this.state.quantity,
+                        events: {
+                          onChange: this.textHandle.bind(this)
+                        },
+                        others: {
+                          disabled: true,
+                          min: 0,
+                          type: "number"
+                        }
+                      }}
+                    />
+                    <AlagehFormGroup
+                      div={{ className: "col" }}
+                      label={{
+                        fieldName: "total_price",
+                        isImp: true
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "total_price",
+                        value: this.state.total_price,
+                        events: {
+                          onChange: this.textHandle.bind(this)
+                        },
+                        others: {
+                          disabled: true,
+                          min: 0,
+                          type: "number"
+                        }
+                      }}
+                    />
 
-              <AlgaehDateHandler
-                div={{ className: "col-lg-2" }}
-                label={{ forceLabel: "Scheduled Date", isImp: true }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "scheduled_date"
-                }}
-                minDate={new Date()}
-                events={{
-                  onChange: selectedDate => {
-                    this.setState({
-                      scheduled_date: selectedDate
-                    });
-                  }
-                }}
-                value={this.state.scheduled_date}
-              />
+                    <AlgaehDateHandler
+                      div={{ className: "col" }}
+                      label={{ fieldName: "schld_date", isImp: false }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "scheduled_date"
+                      }}
+                      minDate={new Date()}
+                      events={{
+                        onChange: selectedDate => {
+                          this.setState({
+                            scheduled_date: selectedDate
+                          });
+                        }
+                      }}
+                      value={this.state.scheduled_date}
+                    />
+                  </div>
+                  <hr />
+                  <div className="col-lg-12" id="dentalTreatment">
+                    <div className="row top-teeth-sec">
+                      <div className="col-lg-6 teeth-sec">
+                        <h6>Upper Left</h6>
+                        <div className="row">
+                          {this.generateToothUpperLeftSet()}
+                        </div>
+                      </div>
+                      <div className="col-lg-6 teeth-sec">
+                        <h6>Upper Right</h6>
+                        <div className="row">
+                          {this.generateToothUpperRightSet()}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="row bottom-teeth-sec">
+                      <div className="col-lg-6 teeth-sec">
+                        <div className="row">
+                          {this.generateToothLowerLeftSet()}
+                        </div>
+                        <h6>Lower Left</h6>
+                      </div>
+                      <div className="col-lg-6 teeth-sec">
+                        <div className="row">
+                          {this.generateToothLowerRightSet()}
+                        </div>
+                        <h6>Lower Right</h6>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="col-lg-12" id="dentalTreatment">
-            <div className="row top-teeth-sec">
-              <div className="col-lg-6 teeth-sec">
-                <h6>Upper Left</h6>
-                <div className="row">{this.generateToothUpperLeftSet()}</div>
-              </div>
-              <div className="col-lg-6 teeth-sec">
-                <h6>Upper Right</h6>
-                <div className="row">{this.generateToothUpperRightSet()}</div>
-              </div>
-            </div>
-
-            <div className="row bottom-teeth-sec">
-              <div className="col-lg-6 teeth-sec">
-                <div className="row">{this.generateToothLowerLeftSet()}</div>
-                <h6>Lower Left</h6>
-              </div>
-              <div className="col-lg-6 teeth-sec">
-                <div className="row">{this.generateToothLowerRightSet()}</div>
-                <h6>Lower Right</h6>
-              </div>
-            </div>
-          </div>
-          <div className="row">
+          <div className="popupFooter">
             <div className="col-lg-12 margin-bottom-15">
               <button
                 onClick={this.addDentalPlan.bind(this)}
@@ -1016,49 +1641,48 @@ class Dental extends Component {
 
         <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
           <div className="portlet-title" data-validate="addTreatementDiv">
-            <div className="col-lg-12 margin-bottom-15">
-              <div className="row">
-                <AlagehFormGroup
-                  div={{ className: "col-lg-3" }}
-                  label={{
-                    forceLabel: "Treatment Plan",
-                    isImp: true
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "plan_name",
-                    value: this.state.plan_name,
-                    events: {
-                      onChange: this.textHandle.bind(this)
-                    },
-                    others: {
-                      placeholder: "Enter Treatment Name"
-                    }
-                  }}
-                />
+            <div className="row margin-bottom-15">
+              <AlagehFormGroup
+                div={{ className: "col-lg-3" }}
+                label={{
+                  fieldName: "treatment_plan",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "plan_name",
+                  value: this.state.plan_name,
+                  events: {
+                    onChange: this.textHandle.bind(this)
+                  },
+                  others: {
+                    placeholder: "Enter Treatment Name"
+                  }
+                }}
+              />
 
-                <AlagehFormGroup
-                  div={{ className: "col-lg-4" }}
-                  label={{
-                    forceLabel: "Remarks",
-                    isImp: true
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "remarks",
-                    value: this.state.remarks,
-                    events: {
-                      onChange: this.textHandle.bind(this)
-                    },
-                    others: {
-                      placeholder: "Enter Remarks"
-                    }
-                  }}
-                />
+              <AlagehFormGroup
+                div={{ className: "col-lg-4" }}
+                label={{
+                  fieldName: "remarks",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "remarks",
+                  value: this.state.remarks,
+                  events: {
+                    onChange: this.textHandle.bind(this)
+                  },
+                  others: {
+                    placeholder: "Enter Remarks"
+                  }
+                }}
+              />
 
-                <AlgaehDateHandler
+              {/* <AlgaehDateHandler
                   div={{ className: "col-lg-2" }}
-                  label={{ forceLabel: "Consult Date", isImp: false }}
+                  label={{ fieldName: "Consult Date", isImp: false }}
                   textBox={{
                     className: "txt-fld",
                     name: "consult_date"
@@ -1072,127 +1696,343 @@ class Dental extends Component {
                     }
                   }}
                   value={this.state.consult_date}
-                />
+                /> */}
 
-                <div className="col-lg-2 margin-top-15">
-                  <button
-                    onClick={this.addTreatementPlan.bind(this)}
-                    className="btn btn-primary"
-                  >
-                    Add Plan
-                  </button>
-                </div>
+              <div className="col-lg-2 margin-top-15">
+                <button
+                  onClick={this.addTreatementPlan.bind(this)}
+                  className="btn btn-primary"
+                >
+                  Add Plan
+                </button>
               </div>
             </div>
           </div>
           <div className="portlet-body">
-            <AlgaehDataGrid
-              id="shift-grid"
-              datavalidate="data-validate='shiftDiv'"
-              columns={[
-                {
-                  fieldName: "actions",
-                  label: "Actions",
-                  displayTemplate: row => {
-                    return (
-                      <div className="row">
-                        <span className="col">
-                          <i
-                            onClick={this.approveTreatementPlan.bind(
-                              this,
-                              row,
-                              "Y"
-                            )}
-                            className="fas fa-check"
-                            style={{
-                              pointerEvents:
-                                row.approve_status === "Y" ? " none" : null,
-                              opacity: row.approve_status === "Y" ? "0.1" : null
+            <div className="row">
+              <div className="col-lg-5" data-validate="treatmentDiv">
+                <span> Treatment Plans </span>
+                <AlgaehDataGrid
+                  id="treatment-grid"
+                  datavalidate="data-validate='treatmentDiv'"
+                  columns={[
+                    {
+                      fieldName: "actions",
+                      label: <AlgaehLabel label={{ forceLabel: "Actions" }} />,
+                      displayTemplate: row => {
+                        return (
+                          <div className="row">
+                            <span className="col">
+                              <i
+                                onClick={this.approveTreatementPlan.bind(
+                                  this,
+                                  row,
+                                  "Y"
+                                )}
+                                className="fas fa-check"
+                                style={{
+                                  pointerEvents:
+                                    row.approve_status === "Y" ? " none" : null,
+                                  opacity:
+                                    row.approve_status === "Y" ? "0.1" : null
+                                }}
+                              />
+
+                              <i
+                                onClick={this.approveTreatementPlan.bind(
+                                  this,
+                                  row,
+                                  "C"
+                                )}
+                                style={{
+                                  pointerEvents:
+                                    row.approve_status === "Y" ? " none" : null,
+                                  opacity:
+                                    row.approve_status === "Y" ? "0.1" : null
+                                }}
+                                className="fas fa-times"
+                              />
+
+                              <i
+                                onClick={this.openAddModal.bind(this, row)}
+                                className="fas fa-plus"
+                              />
+                            </span>
+                          </div>
+                        );
+                      },
+                      others: {
+                        width: 130
+                      }
+                    },
+                    {
+                      fieldName: "plan_name",
+
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Treatement Plan" }}
+                        />
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span
+                            className="pat-code"
+                            onClick={() => {
+                              this.loadDentalTreatment(row);
+                            }}
+                          >
+                            {row.plan_name}
+                          </span>
+                        );
+                      },
+                      className: row => {
+                        return "greenCell";
+                      },
+                      others: {
+                        width: 150
+                      }
+                    },
+                    {
+                      fieldName: "remarks",
+
+                      label: <AlgaehLabel label={{ forceLabel: "Remarks" }} />,
+
+                      disabled: true,
+                      others: {
+                        width: 250
+                      }
+                    },
+                    {
+                      fieldName: "approve_status",
+
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Approval Status" }}
+                        />
+                      ),
+
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {row.approve_status === "Y"
+                              ? "Plan Approved"
+                              : "Plan Not Approved"}
+                          </span>
+                        );
+                      }
+                    },
+                    {
+                      fieldName: "plan_status",
+
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Plan Status" }} />
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {row.plan_status === "O"
+                              ? "Open"
+                              : row.plan_status === "C"
+                              ? "Closed"
+                              : null}
+                          </span>
+                        );
+                      }
+                    },
+                    {
+                      fieldName: "consult_date",
+
+                      label: <AlgaehLabel label={{ forceLabel: "Date" }} />
+                    }
+                  ]}
+                  keyId="algaeh_app_screens_id"
+                  dataSource={{
+                    data: this.state.treatements
+                  }}
+                  filter={false}
+                  paging={{ page: 0, rowsPerPage: 10 }}
+                  // expanded={{
+                  //   detailTemplate: row => {
+                  //     return <div>{this.getTreatementsGrid(row)}</div>;
+                  //   }
+                  // }}
+                  events={{
+                    onEdit: () => {},
+                    onDelete: () => {},
+                    onDone: () => {}
+                  }}
+                />
+              </div>
+              <div className="col-lg-7" data-validate="denGrid">
+                <span> {this.state.selected_plan}</span>
+                <AlgaehDataGrid
+                  id="grid_dental_treatment"
+                  datavalidate="data-validate='denGrid'"
+                  columns={[
+                    {
+                      fieldName: "teeth_number",
+                      label: "Tooth",
+                      disabled: true
+                    },
+                    {
+                      fieldName: "distal",
+                      label: "Surfaces",
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {row.distal === "Y" ? "D " : ""}
+                            {row.incisal === "Y" ? "I " : ""}
+                            {row.mesial === "Y" ? "M " : ""}
+                            {row.palatal === "Y" ? "P " : ""}
+                            {row.labial === "Y" ? "L " : ""}
+                          </span>
+                        );
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <span>
+                            {row.distal === "Y" ? "D " : ""}
+                            {row.incisal === "Y" ? "I " : ""}
+                            {row.mesial === "Y" ? "M " : ""}
+                            {row.palatal === "Y" ? "P " : ""}
+                            {row.labial === "Y" ? "L " : ""}
+                          </span>
+                        );
+                      }
+                    },
+                    {
+                      fieldName: "service_id",
+                      label: "Procedure",
+                      displayTemplate: row => {
+                        let x = Enumerable.from(this.state.procedures)
+                          .where(w => w.hims_d_services_id === row.service_id)
+                          .firstOrDefault();
+                        return (
+                          <span>
+                            {x !== undefined ? x.service_name : "----------"}
+                          </span>
+                        );
+                      },
+                      editorTemplate: row => {
+                        let x = Enumerable.from(this.state.procedures)
+                          .where(w => w.hims_d_services_id === row.service_id)
+                          .firstOrDefault();
+                        return (
+                          <span>
+                            {x !== undefined ? x.service_name : "----------"}
+                          </span>
+                        );
+                      }
+                    },
+                    {
+                      fieldName: "scheduled_date",
+                      label: "Date",
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {moment(row.scheduled_date).format("DD-MM-YYYY")}
+                          </span>
+                        );
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <span>
+                            {moment(row.scheduled_date).format("DD-MM-YYYY")}
+                          </span>
+                        );
+                      }
+                    },
+                    {
+                      fieldName: "treatment_status",
+                      label: "Status",
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {row.treatment_status === "PL"
+                              ? "Planned"
+                              : row.treatment_status === "WIP"
+                              ? "Work in Progress"
+                              : row.treatment_status === "CP"
+                              ? "Completed"
+                              : null}
+                          </span>
+                        );
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <AlagehAutoComplete
+                            selector={{
+                              name: "treatment_status",
+                              className: "select-fld",
+                              value: row.treatment_status,
+                              dataSource: {
+                                textField: "name",
+                                valueField: "value",
+                                data: GlobalVariables.DENTAL_TREATMENT_STATUS
+                              },
+                              others: {
+                                errormessage: "Status - cannot be blank",
+                                required: true
+                              },
+                              onChange: this.changeGridEditors.bind(this, row)
                             }}
                           />
-
-                          <i
-                            onClick={this.approveTreatementPlan.bind(
-                              this,
-                              row,
-                              "C"
-                            )}
-                            style={{
-                              pointerEvents:
-                                row.approve_status === "Y" ? " none" : null,
-                              opacity: row.approve_status === "Y" ? "0.1" : null
-                            }}
-                            className="fas fa-times"
-                          />
-
-                          <i
-                            onClick={this.openAddModal.bind(this, row)}
-                            className="fas fa-plus"
-                          />
-                        </span>
-                      </div>
-                    );
-                  }
-                },
-                {
-                  fieldName: "consult_date",
-                  label: "Date"
-                },
-                {
-                  fieldName: "plan_name",
-                  label: "Treatement Plan"
-                },
-                {
-                  fieldName: "remarks",
-                  label: "Remarks",
-                  disabled: true
-                },
-                {
-                  fieldName: "approve_status",
-                  label: "Approval Status",
-                  displayTemplate: row => {
-                    return (
-                      <span>
-                        {row.approve_status === "Y"
-                          ? "Plan Approved"
-                          : "Plan Not Approved"}
-                      </span>
-                    );
-                  }
-                },
-                {
-                  fieldName: "plan_status",
-                  label: "Plan Status",
-                  displayTemplate: row => {
-                    return (
-                      <span>
-                        {row.plan_status === "O"
-                          ? "Open"
-                          : row.plan_status === "C"
-                          ? "Closed"
-                          : null}
-                      </span>
-                    );
-                  }
-                }
-              ]}
-              keyId="algaeh_app_screens_id"
-              dataSource={{
-                data: this.state.treatements
-              }}
-              filter={true}
-              paging={{ page: 0, rowsPerPage: 10 }}
-              expanded={{
-                detailTemplate: row => {
-                  return <div>{this.getTreatementsGrid(row)}</div>;
-                }
-              }}
-              events={{
-                onEdit: () => {},
-                onDelete: () => {},
-                onDone: () => {}
-              }}
-            />
+                        );
+                      }
+                    },
+                    {
+                      fieldName: "billed",
+                      label: "Billing",
+                      displayTemplate: row => {
+                        return row.billed === "N" ? (
+                          <button
+                            onClick={this.addToBill.bind(this, row)}
+                            className="btn btn-primary"
+                          >
+                            Add To Bill
+                          </button>
+                        ) : row.billed === "SB" ? (
+                          <span>Sent to Billing</span>
+                        ) : row.billed === "Y" ? (
+                          <span>Paid</span>
+                        ) : null;
+                      },
+                      editorTemplate: row => {
+                        return row.billed === "N" ? (
+                          <button
+                            onClick={this.addToBill.bind(this, row)}
+                            className="btn btn-primary"
+                          >
+                            Add To Bill
+                          </button>
+                        ) : row.billed === "SB" ? (
+                          <span>Sent to Billing</span>
+                        ) : row.billed === "Y" ? (
+                          <span>Paid</span>
+                        ) : null;
+                      }
+                    }
+                  ]}
+                  keyId="algaeh_app_screens_id"
+                  //uiUpdate={this.state.treatment_gridUpdate}
+                  dataSource={{
+                    // pageInputExclude: true,
+                    // uri: "/dental/getDentalTreatment",
+                    // inputParam: { treatment_plan_id: data.hims_f_treatment_plan_id },
+                    // method: "GET",
+                    // responseSchema: { data: "records" }
+                    data: this.state.dentalTreatments
+                  }}
+                  paging={{ page: 0, rowsPerPage: 10 }}
+                  isEditable={true}
+                  events={{
+                    onEdit: () => {},
+                    onDelete: this.deleteDentalPlan,
+                    onDone: this.updateDentalTreatmentStatus
+                  }}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>

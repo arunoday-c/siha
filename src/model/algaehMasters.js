@@ -26,13 +26,12 @@ let addAlgaehGroupMAster = (req, res, next) => {
       }
       if (req.userIdentity.role_type != "GN") {
         connection.query(
-          "INSERT INTO `algaeh_d_app_group` (app_group_code, app_group_name, app_group_desc, group_type,created_date, created_by, updated_date, updated_by)\
-            VALUE(?,?,?,?,?,?,?,?)",
+          "INSERT INTO `algaeh_d_app_group` (app_group_code, app_group_name, app_group_desc, created_date, created_by, updated_date, updated_by)\
+            VALUE(?,?,?,?,?,?,?)",
           [
             input.app_group_code,
             input.app_group_name,
             input.app_group_desc,
-            input.group_type,
             new Date(),
             input.created_by,
             new Date(),
@@ -255,7 +254,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
               "select algaeh_d_module_id, module_name,module_code, icons,other_language  from algaeh_d_app_module\
               where  record_status=md5('A') " +
                 superUser +
-                " order by algaeh_d_module_id ",
+                " order by display_order ",
               (error, result) => {
                 if (error) {
                   releaseDBConnection(db, connection);

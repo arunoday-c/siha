@@ -91,6 +91,20 @@ class InvestigationSetup extends Component {
     });
   }
 
+  CloseModel(e) {
+    this.setState(
+      {
+        ...this.state,
+        isOpen: !this.state.isOpen
+      },
+      () => {
+        if (e === true) {
+          getInvestigations(this, this);
+        }
+      }
+    );
+  }
+
   changeDateFormat = date => {
     if (date != null) {
       return moment(date).format(Options.dateFormat);
@@ -175,7 +189,7 @@ class InvestigationSetup extends Component {
                   />
                 }
                 open={this.state.isOpen}
-                onClose={this.ShowModel.bind(this)}
+                onClose={this.CloseModel.bind(this)}
                 InvestigationPop={this.state.InvestigationPop}
               />
             </div>

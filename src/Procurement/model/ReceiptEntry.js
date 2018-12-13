@@ -9,7 +9,7 @@ import extend from "extend";
 import httpStatus from "../../utils/httpStatus";
 import { debugLog } from "../../utils/logging";
 import moment, { now } from "moment";
-
+import { LINQ } from "node-linq";
 import Promise from "bluebird";
 
 //created by Nowshad: to save Receipt Entry
@@ -153,7 +153,9 @@ let addReceiptEntry = (req, res, next) => {
 
                 req.records = {
                   grn_number: documentCode,
-                  hims_f_procurement_grn_header_id: headerResult.insertId
+                  hims_f_procurement_grn_header_id: headerResult.insertId,
+                  year: year,
+                  period: period
                 };
                 next();
               }
@@ -350,13 +352,21 @@ let updateDNEntry = (req, res, next) => {
   let db = req.db;
   let connection = req.connection;
   let inputParam = extend({}, req.body);
+  let complete = "Y";
+  const partial_recived = new LINQ(inputParam.receipt_entry_detail)
+    .Where(w => w.outstanding_quantity != 0)
+    .ToArray();
+
+  if (partial_recived.length > 0) {
+    complete = "N";
+  }
 
   debugLog("inputParam.dn_id: ", inputParam.dn_id);
   connection.query(
     "UPDATE `hims_f_procurement_dn_header` SET `is_completed`=?, `completed_date`=?, `updated_by` = ?,`updated_date` = ? \
       WHERE `hims_f_procurement_dn_header_id`=?",
     [
-      "Y",
+      complete,
       new Date(),
       req.userIdentity.algaeh_d_app_user_id,
       new Date(),
@@ -367,8 +377,48 @@ let updateDNEntry = (req, res, next) => {
         releaseDBConnection(db, connection);
         next(error);
       }
-      req.data = req.records.delivery_note_number;
-      next();
+
+      if (result != "" && result != null) {
+        let details = inputParam.receipt_entry_detail;
+
+        let qry = "";
+
+        for (let i = 0; i < details.length; i++) {
+          qry +=
+            " UPDATE `hims_f_procurement_dn_detail` SET quantity_outstanding='" +
+            details[i].outstanding_quantity +
+            "' WHERE hims_f_procurement_dn_detail_id='" +
+            details[i].dn_detail_id +
+            "';";
+        }
+        debugLog("qry: ", qry);
+
+        if (qry != "") {
+          connection.query(qry, (error, detailResult) => {
+            if (error) {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
+            req.dnrecords = detailResult;
+
+            next();
+          });
+        } else {
+          releaseDBConnection(db, connection);
+          req.records = {};
+          next();
+        }
+      } else {
+        connection.rollback(() => {
+          releaseDBConnection(db, connection);
+          req.records = {};
+          next();
+        });
+      }
+      // req.data = req.records.delivery_note_number;
+      // next();
     }
   );
 };

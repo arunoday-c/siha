@@ -117,8 +117,8 @@ class DeliveryNoteEntry extends Component {
                   }}
                 />
                 <h6>
-                  {this.state.docdate
-                    ? moment(this.state.docdate).format(Options.dateFormat)
+                  {this.state.dn_date
+                    ? moment(this.state.dn_date).format(Options.dateFormat)
                     : Options.dateFormat}
                 </h6>
               </div>
@@ -134,8 +134,8 @@ class DeliveryNoteEntry extends Component {
             <div className="col-lg-12">
               <div className="row">
                 <AlagehAutoComplete
-                  div={{ className: "col" }}
-                  label={{ forceLabel: "DN For" }}
+                  div={{ className: "col-2" }}
+                  label={{ forceLabel: "Delivery Note For" }}
                   selector={{
                     name: "dn_from",
                     className: "select-fld",
@@ -153,7 +153,7 @@ class DeliveryNoteEntry extends Component {
                   }}
                 />
                 <AlagehAutoComplete
-                  div={{ className: "col" }}
+                  div={{ className: "col-2" }}
                   label={{ forceLabel: "Location Code" }}
                   selector={{
                     name:
@@ -182,7 +182,7 @@ class DeliveryNoteEntry extends Component {
                 />
 
                 <AlagehAutoComplete
-                  div={{ className: "col" }}
+                  div={{ className: "col-2" }}
                   label={{ forceLabel: "Vendor No." }}
                   selector={{
                     name: "vendor_id",
@@ -202,7 +202,7 @@ class DeliveryNoteEntry extends Component {
                 />
 
                 <AlagehFormGroup
-                  div={{ className: "col" }}
+                  div={{ className: "col-2" }}
                   label={{
                     forceLabel: "Purchase Order No."
                   }}
@@ -241,10 +241,8 @@ class DeliveryNoteEntry extends Component {
                     onClick={PurchaseOrderSearch.bind(this, this)}
                   />
                 </div>
-              </div>
-              <div className="row">
-                <AlagehAutoComplete
-                  div={{ className: "col" }}
+                {/* <AlagehAutoComplete
+                  div={{ className: "col-2" }}
                   label={{ forceLabel: "Payment Terms" }}
                   selector={{
                     name: "payment_terms",
@@ -261,36 +259,27 @@ class DeliveryNoteEntry extends Component {
                     onChange: texthandle.bind(this, this),
                     onClear: texthandle.bind(this, this)
                   }}
-                />
-                <AlgaehDateHandler
-                  div={{ className: "col-3" }}
-                  label={{ forceLabel: "Expected Arrival" }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "expiry_date"
-                  }}
-                  minDate={new Date()}
-                  disabled={true}
-                  events={{
-                    onChange: null
-                  }}
-                  value={this.state.expiry_date}
-                />
-                {/* <div
-                  className="customCheckbox col-lg-3"
-                  style={{ border: "none", marginTop: "28px" }}
-                >
-                  <label className="checkbox" style={{ color: "#212529" }}>
-                    <input
-                      type="checkbox"
-                      name="Multiple PO"
-                      checked={this.state.Cashchecked}
-                      onChange={null}
-                    />
+                /> */}
 
-                    <span style={{ fontSize: "0.8rem" }}>From Multiple PO</span>
-                  </label>
-                </div> */}
+                <div className="col">
+                  <AlgaehLabel label={{ forceLabel: "Payment Terms" }} />
+                  <h6>
+                    {this.state.payment_terms
+                      ? this.state.payment_terms
+                      : "0 days"}
+                  </h6>
+                </div>
+
+                <div className="col">
+                  <AlgaehLabel label={{ forceLabel: "Expected Arrival" }} />
+                  <h6>
+                    {this.state.expiry_date
+                      ? moment(this.state.expiry_date).format(
+                          Options.dateFormat
+                        )
+                      : Options.dateFormat}
+                  </h6>
+                </div>
               </div>
             </div>
           </div>

@@ -257,22 +257,35 @@ const deleteTransEntryDetail = ($this, context, e, rowId) => {
   }
 };
 
-const updateTransEntryDetail = ($this, e) => {
-  $this.props.PosHeaderCalculations({
-    uri: "/billing/billingCalculations",
-    method: "POST",
-    data: { billdetails: $this.state.inventory_stock_detail },
-    redux: {
-      type: "posheader",
-      mappingName: "posheader"
-    }
-  });
+const updateTransEntryDetail = ($this, context, e) => {
+  let saveEnable = false;
+
+  if ($this.state.hims_f_inventory_transfer_header_id !== null) {
+    saveEnable = true;
+  }
+
+  if (context !== null) {
+    context.updateState({
+      saveEnable: saveEnable
+    });
+  }
+
+  // $this.props.PosHeaderCalculations({
+  //   uri: "/billing/billingCalculations",
+  //   method: "POST",
+  //   data: { billdetails: $this.state.inventory_stock_detail },
+  //   redux: {
+  //     type: "posheader",
+  //     mappingName: "posheader"
+  //   }
+  // });
 };
 
 const onchangegridcol = ($this, context, row, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  if (value > row.quantity_authorized) {
+  let transfer_to_date = row.transfer_to_date + parseFloat(value);
+  if (transfer_to_date > row.quantity_authorized) {
     swalMessage({
       title: "Invalid Input. Cannot be greater than Authorized Quantity.",
       type: "warning"
@@ -280,14 +293,14 @@ const onchangegridcol = ($this, context, row, e) => {
     row[name] = $this.state.quantity_transferred;
   } else {
     let inventory_stock_detail = $this.state.inventory_stock_detail;
-
+    debugger;
     row[name] = value;
 
-    for (let x = 0; x < inventory_stock_detail.length; x++) {
-      if (inventory_stock_detail[x].item_id === row.item_id) {
-        inventory_stock_detail[x] = row;
-      }
-    }
+    row["quantity_outstanding"] =
+      row.quantity_authorized - row.transfer_to_date - parseFloat(value);
+
+    inventory_stock_detail[row.rowIdx] = row;
+
     $this.setState({ inventory_stock_detail: inventory_stock_detail });
 
     if (context !== undefined) {
@@ -331,6 +344,34 @@ const getItemLocationStock = ($this, value) => {
   });
 };
 
+const EditGrid = ($this, context) => {
+  let saveEnable = true;
+
+  if (context !== null) {
+    context.updateState({
+      saveEnable: saveEnable
+    });
+  }
+};
+
+const CancelGrid = ($this, context, cancelRow) => {
+  let saveEnable = false;
+
+  if ($this.state.hims_f_inventory_transfer_header_id !== null) {
+    saveEnable = true;
+  }
+  if (context !== null) {
+    let _inventory_stock_detail = $this.state.inventory_stock_detail;
+    if (cancelRow !== undefined) {
+      _inventory_stock_detail[cancelRow.rowIdx] = cancelRow;
+    }
+    context.updateState({
+      saveEnable: saveEnable,
+      inventory_stock_detail: _inventory_stock_detail
+    });
+  }
+};
+
 export {
   UomchangeTexts,
   itemchangeText,
@@ -341,5 +382,7 @@ export {
   updateTransEntryDetail,
   onchangegridcol,
   dateFormater,
-  getItemLocationStock
+  getItemLocationStock,
+  EditGrid,
+  CancelGrid
 };

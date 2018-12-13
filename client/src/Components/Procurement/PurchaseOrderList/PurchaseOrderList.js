@@ -79,7 +79,7 @@ class PurchaseOrderList extends Component {
             <div className="col-lg-12">
               <div className="row">
                 <AlagehAutoComplete
-                  div={{ className: "col" }}
+                  div={{ className: "col-3" }}
                   label={{ forceLabel: "PO For" }}
                   selector={{
                     name: "po_from",
@@ -97,7 +97,7 @@ class PurchaseOrderList extends Component {
                 />
 
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-4" }}
+                  div={{ className: "col-3" }}
                   label={{ forceLabel: "Location" }}
                   selector={{
                     name:

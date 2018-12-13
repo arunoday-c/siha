@@ -13,12 +13,8 @@ import {
 
 import {
   onchangegridcol,
-  // itemchangeText,
-  // numberchangeTexts,
-  // AddItems,
   deleteTransEntryDetail,
   updateTransEntryDetail,
-  // UomchangeTexts,
   dateFormater,
   getItemLocationStock,
   EditGrid
@@ -354,6 +350,28 @@ class TransferEntryItems extends Component {
                               />
                             );
                           }
+                        },
+                        {
+                          fieldName: "quantity_outstanding",
+                          label: (
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Quantity Outstanding"
+                              }}
+                            />
+                          ),
+                          disabled: true
+                        },
+                        {
+                          fieldName: "transfer_to_date",
+                          label: (
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Transfer To Date"
+                              }}
+                            />
+                          ),
+                          disabled: true
                         }
                       ]}
                       keyId="service_type_id"
@@ -361,6 +379,7 @@ class TransferEntryItems extends Component {
                         data: this.state.pharmacy_stock_detail
                       }}
                       isEditable={true}
+                      byForceEvents={true}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         onDelete: deleteTransEntryDetail.bind(

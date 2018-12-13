@@ -68,14 +68,11 @@ const InsertServices = $this => {
         onSuccess: response => {
           if (response.data.success === true) {
             clearData($this);
-            $this.setState({
-              changesDone: true
-            });
+            $this.props.onClose && $this.props.onClose(true);
             swalMessage({
               title: "Saved successfully . .",
               type: "success"
             });
-            $this.props.onClose && $this.props.onClose($this.state.changesDone);
           }
         }
       });
@@ -86,14 +83,11 @@ const InsertServices = $this => {
         method: "PUT",
         onSuccess: response => {
           if (response.data.success === true) {
-            $this.setState({
-              changesDone: true
-            });
             swalMessage({
               title: "Updated successfully . .",
               type: "success"
             });
-            $this.props.onClose && $this.props.onClose($this.state.changesDone);
+            $this.props.onClose && $this.props.onClose(true);
           }
         }
       });
@@ -123,7 +117,7 @@ const CptCodesSearch = $this => {
 const clearData = $this => {
   $this.setState({
     open: false,
-    MandatoryMsg: "",
+
     selectedLang: "en",
     Applicable: false,
 

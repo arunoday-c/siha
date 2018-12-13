@@ -2,12 +2,6 @@
   padding-top: 20px;
   .top-teeth-sec {
     border-bottom: 2px dotted #ccc;
-    margin-right: 0;
-    margin-left: 0;
-  }
-  .bottom-teeth-sec {
-    margin-right: 0;
-    margin-left: 0;
   }
   .teeth-sec h6 {
     text-transform: uppercase;
@@ -37,8 +31,21 @@
     margin-top: 85%;
     border-top: 1px dotted #ccc;
     width: 100%;
+    cursor: pointer;
+    &:hover {
+      text-decoration: underline;
+      font-weight: bold;
+      + .surface-Marking div {
+        background: -webkit-radial-gradient(
+          center,
+          ellipse cover,
+          rgb(250, 236, 197) 0%,
+          rgb(255, 228, 152) 50%,
+          rgb(238, 225, 188) 100%
+        );
+      }
+    }
   }
-
   .surface-Marking {
     height: 50px;
     width: 50px;
@@ -109,140 +116,140 @@
 
   /*============== molar ==============*/
   .molar-up-1 {
-    background-image: url(../../../assets/images/molar-up.png);
+    background-image: url(../../../assets/images/molar-up.webp);
   }
 
   .molar-up-2 {
-    background-image: url(../../../assets/images/molar-up.png);
+    background-image: url(../../../assets/images/molar-up.webp);
   }
 
   .molar-up-3 {
-    background-image: url(../../../assets/images/molar-up.png);
+    background-image: url(../../../assets/images/molar-up.webp);
   }
 
   .molar-up-14 {
-    background-image: url(../../../assets/images/molar-up.png);
+    background-image: url(../../../assets/images/molar-up.webp);
   }
 
   .molar-up-15 {
-    background-image: url(../../../assets/images/molar-up.png);
+    background-image: url(../../../assets/images/molar-up.webp);
   }
 
   .molar-up-16 {
-    background-image: url(../../../assets/images/molar-up.png);
+    background-image: url(../../../assets/images/molar-up.webp);
   }
 
   /*============== premolar ==============*/
   .premolar-up-4 {
-    background-image: url(../../../assets/images/premolar-up.png);
+    background-image: url(../../../assets/images/premolar-up.webp);
   }
 
   .premolar-up-5 {
-    background-image: url(../../../assets/images/premolar-up.png);
+    background-image: url(../../../assets/images/premolar-up.webp);
   }
 
   .premolar-up-12 {
-    background-image: url(../../../assets/images/premolar-up.png);
+    background-image: url(../../../assets/images/premolar-up.webp);
   }
 
   .premolar-up-13 {
-    background-image: url(../../../assets/images/premolar-up.png);
+    background-image: url(../../../assets/images/premolar-up.webp);
   }
 
   /*============== canine ==============*/
   .canine-up-6 {
-    background-image: url(../../../assets/images/canine-up.png);
+    background-image: url(../../../assets/images/canine-up.webp);
   }
 
   .canine-up-11 {
-    background-image: url(../../../assets/images/canine-up.png);
+    background-image: url(../../../assets/images/canine-up.webp);
   }
 
   /*============== incisors-up ==============*/
   .incisors-up-up-7 {
-    background-image: url(../../../assets/images/incisors-up.png);
+    background-image: url(../../../assets/images/incisors-up.webp);
   }
 
   .incisors-up-up-8 {
-    background-image: url(../../../assets/images/incisors-up.png);
+    background-image: url(../../../assets/images/incisors-up.webp);
   }
 
   .incisors-up-up-9 {
-    background-image: url(../../../assets/images/incisors-up.png);
+    background-image: url(../../../assets/images/incisors-up.webp);
   }
 
   .incisors-up-up-10 {
-    background-image: url(../../../assets/images/incisors-up.png);
+    background-image: url(../../../assets/images/incisors-up.webp);
   }
 
   /*============== Down ==============*/
   /*============== Molar ==============*/
 
   .molar-down-1 {
-    background-image: url(../../../assets/images/molar-down.png);
+    background-image: url(../../../assets/images/molar-down.webp);
   }
 
   .molar-down-2 {
-    background-image: url(../../../assets/images/molar-down.png);
+    background-image: url(../../../assets/images/molar-down.webp);
   }
 
   .molar-down-3 {
-    background-image: url(../../../assets/images/molar-down.png);
+    background-image: url(../../../assets/images/molar-down.webp);
   }
 
   .molar-down-14 {
-    background-image: url(../../../assets/images/molar-down.png);
+    background-image: url(../../../assets/images/molar-down.webp);
   }
 
   .molar-down-15 {
-    background-image: url(../../../assets/images/molar-down.png);
+    background-image: url(../../../assets/images/molar-down.webp);
   }
 
   .molar-down-16 {
-    background-image: url(../../../assets/images/molar-down.png);
+    background-image: url(../../../assets/images/molar-down.webp);
   }
 
   /*============== premolar ==============*/
   .premolar-down-4 {
-    background-image: url(../../../assets/images/premolar-down.png);
+    background-image: url(../../../assets/images/premolar-down.webp);
   }
 
   .premolar-down-5 {
-    background-image: url(../../../assets/images/premolar-down.png);
+    background-image: url(../../../assets/images/premolar-down.webp);
   }
 
   .premolar-down-12 {
-    background-image: url(../../../assets/images/premolar-down.png);
+    background-image: url(../../../assets/images/premolar-down.webp);
   }
 
   .premolar-down-13 {
-    background-image: url(../../../assets/images/premolar-down.png);
+    background-image: url(../../../assets/images/premolar-down.webp);
   }
 
   /*============== canine ==============*/
   .canine-down-6 {
-    background-image: url(../../../assets/images/canine-down.png);
+    background-image: url(../../../assets/images/canine-down.webp);
   }
 
   .canine-down-11 {
-    background-image: url(../../../assets/images/canine-down.png);
+    background-image: url(../../../assets/images/canine-down.webp);
   }
 
   /*============== incisors ==============*/
   .incisors-down-7 {
-    background-image: url(../../../assets/images/incisors-down.png);
+    background-image: url(../../../assets/images/incisors-down.webp);
   }
 
   .incisors-down-8 {
-    background-image: url(../../../assets/images/incisors-down.png);
+    background-image: url(../../../assets/images/incisors-down.webp);
   }
 
   .incisors-down-9 {
-    background-image: url(../../../assets/images/incisors-down.png);
+    background-image: url(../../../assets/images/incisors-down.webp);
   }
 
   .incisors-down-10 {
-    background-image: url(../../../assets/images/incisors-down.png);
+    background-image: url(../../../assets/images/incisors-down.webp);
   }
 
   div.tooltip {

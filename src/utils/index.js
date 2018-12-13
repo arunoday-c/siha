@@ -537,6 +537,10 @@ let bulkInputArrayObject = (arrayObj, outArray, objectToChang) => {
 };
 let bulkMasters = (fileName, bulkObject) => {
   try {
+    let testobj = JSON.stringify(bulkObject);
+    if (testobj == "" || testobj == null) {
+      return;
+    }
     const masterDir = path.join(__dirname, "../../Masters/");
     if (!fs.existsSync(masterDir)) {
       fs.mkdirSync(masterDir);
@@ -544,7 +548,7 @@ let bulkMasters = (fileName, bulkObject) => {
     const fPath = masterDir + fileName + ".json";
     if (!fs.exists(fPath)) {
       var writeStream = fs.createWriteStream(fPath);
-      writeStream.write(JSON.stringify(bulkObject));
+      writeStream.write(testobj);
       writeStream.end();
       return bulkObject;
     }

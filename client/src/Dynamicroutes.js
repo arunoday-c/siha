@@ -11,7 +11,7 @@ import InsuranceSetup from "./Components/InsuranceSetup/InsuranceSetup";
 import SampleCollection from "./Components/Laboratory/SampleCollection/SampleCollection";
 import MedicalWorkbenchSetup from "./Components/MedicalWorkbenchSetup/MedicalWorkbenchSetup";
 import Workbench from "./Components/Workbench/Workbench";
-import OrderingServices from "./Components/DoctorsWorkbench/OrderingServices/OrderingServices";
+// import OrderingServices from "./Components/DoctorsWorkbench/OrderingServices/OrderingServices";
 import AccessionAcknowledgement from "./Components/Laboratory/AccessionAcknowledgement/AccessionAcknowledgement";
 import AdministrationSetup from "./Components/AdministrationSetup/AdminSetup";
 
@@ -63,6 +63,7 @@ import InvTransferEntry from "./Components/Inventory/InvTransferEntry/InvTransfe
 import DeliveryNoteEntry from "./Components/Procurement/DeliveryNoteEntry/DeliveryNoteEntry";
 import PurchaseOrderEntry from "./Components/Procurement/PurchaseOrderEntry/PurchaseOrderEntry";
 import ReceiptEntry from "./Components/Procurement/ReceiptEntry/ReceiptEntry";
+import ShipmentEntry from "./Components/Procurement/ShipmentEntry/ShipmentEntry";
 
 import VendorSetup from "./Components/VendorSetup/VendorSetup";
 import AcquisitionEntry from "./Components/AssetManagement/AcquisitionEntry/AcquisitionEntry";
@@ -94,7 +95,7 @@ const componts = (selectedLang, breadStyle) => {
     NurseWorkbench: (
       <Workbench SelectLanguage={selectedLang} type="NurseWorkbench" />
     ),
-    OrderingServices: <OrderingServices SelectLanguage={selectedLang} />,
+    // OrderingServices: <OrderingServices SelectLanguage={selectedLang} />,
 
     MedicalWorkbenchSetup: (
       <MedicalWorkbenchSetup SelectLanguage={selectedLang} />
@@ -158,6 +159,7 @@ const componts = (selectedLang, breadStyle) => {
     DeliveryNoteEntry: <DeliveryNoteEntry SelectLanguage={selectedLang} />,
     PurchaseOrderEntry: <PurchaseOrderEntry SelectLanguage={selectedLang} />,
     ReceiptEntry: <ReceiptEntry SelectLanguage={selectedLang} />,
+    ShipmentEntry: <ShipmentEntry SelectLanguage={selectedLang} />,
     AcquisitionEntry: <AcquisitionEntry SelectLanguage={selectedLang} />,
     DepreciationEntry: <DepreciationEntry SelectLanguage={selectedLang} />,
     DepreciationReversal: (

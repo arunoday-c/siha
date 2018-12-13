@@ -269,7 +269,9 @@ const updateTransEntryDetail = ($this, context) => {
 const onchangegridcol = ($this, context, row, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  if (value > row.quantity_authorized) {
+  debugger;
+  let transfer_to_date = row.transfer_to_date + parseFloat(value);
+  if (transfer_to_date > row.quantity_authorized) {
     swalMessage({
       title: "Invalid Input. Cannot be greater than Authorized Quantity.",
       type: "warning"
@@ -279,12 +281,11 @@ const onchangegridcol = ($this, context, row, e) => {
     let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
 
     row[name] = value;
+    row["quantity_outstanding"] =
+      row.quantity_authorized - row.transfer_to_date - value;
 
-    for (let x = 0; x < pharmacy_stock_detail.length; x++) {
-      if (pharmacy_stock_detail[x].item_id === row.item_id) {
-        pharmacy_stock_detail[x] = row;
-      }
-    }
+    pharmacy_stock_detail[row.rowIdx] = row;
+
     $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
 
     if (context !== undefined) {

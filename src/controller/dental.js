@@ -9,7 +9,8 @@ import {
   approveTreatmentPlan,
   deleteDentalPlan,
   updateDentalPlanStatus,
-  updateDentalTreatmentStatus
+  updateDentalTreatmentStatus,
+  updateDentalTreatmentBilledStatus
 } from "../model/dental";
 
 export default ({ config, db }) => {
@@ -145,6 +146,33 @@ export default ({ config, db }) => {
         res.status(httpStatus.ok).json({
           success: false,
           records: "please provide valid input"
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :to
+  api.put(
+    "/updateDentalTreatmentBilledStatus",
+    updateDentalTreatmentBilledStatus,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.invalid_input == true) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: "please provide valid input"
+        });
+      } else if (result.affectedRows == 0) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: "records doesn't match"
         });
       } else {
         res.status(httpStatus.ok).json({

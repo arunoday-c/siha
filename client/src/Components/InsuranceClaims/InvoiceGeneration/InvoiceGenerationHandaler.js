@@ -25,25 +25,35 @@ const VisitSearch = ($this, e) => {
           visit_id: row.hims_f_patient_visit_id
         },
         () => {
-          // if ($this.state.insured === "Y") {
-          //   $this.props.getPatientInsurance({
-          //     uri: "/insurance/getPatientInsurance",
-          //     method: "GET",
-          //     data: {
-          //       patient_id: $this.state.patient_id,
-          //       patient_visit_id: $this.state.visit_id
-          //     },
-          //     redux: {
-          //       type: "EXIT_INSURANCE_GET_DATA",
-          //       mappingName: "existinsurance"
-          //     },
-          //     afterSuccess: data => {
-          //
-          //       data[0].mode_of_pay = "2";
-          //       $this.setState(data[0]);
-          //     }
-          //   });
-          // }
+          algaehApiCall({
+            uri: "/insurance/getPatientInsurance",
+            method: "GET",
+            data: {
+              patient_id: $this.state.patient_id,
+              patient_visit_id: $this.state.visit_id
+            },
+            onSuccess: response => {
+              if (response.data.success) {
+                debugger;
+                response.data.records[0].sub_insurance_id =
+                  response.data.records[0].sub_insurance_provider_id;
+
+                response.data.records[0].network_office_id =
+                  response.data.records[0].hims_d_insurance_network_office_id;
+
+                $this.setState({ ...response.data.records[0] });
+              }
+              AlgaehLoader({ show: false });
+            },
+            onFailure: error => {
+              AlgaehLoader({ show: false });
+              swalMessage({
+                title: error.message,
+                type: "error"
+              });
+            }
+          });
+
           getOrderServices($this);
           getVisitWiseBillDetailS($this);
         }
@@ -55,55 +65,86 @@ const VisitSearch = ($this, e) => {
 const getVisitWiseBillDetailS = $this => {
   let inputobj = { visit_id: $this.state.visit_id, insurance_yesno: "Y" };
 
-  $this.props.getMedicationList({
+  algaehApiCall({
     uri: "/invoiceGeneration/getVisitWiseBillDetailS",
     method: "GET",
     data: inputobj,
-    redux: {
-      type: "BILLED_VISITWISE_GET_DATA",
-      mappingName: "visitwisebilldetail"
-    },
-    afterSuccess: data => {
-      if (data.length > 0) {
-        //created by Adnan
-        let gross_total = Enumerable.from(data)
-          .select(w => w.gross_amount)
-          .sum();
+    onSuccess: response => {
+      AlgaehLoader({ show: true });
+      if (response.data.success) {
+        let data = response.data.records;
+        if (data.length > 0) {
+          let gross_total = Enumerable.from(data)
+            .select(w => w.gross_amount)
+            .sum();
 
-        let discout_total = Enumerable.from(data)
-          .select(w => w.discount_amout)
-          .sum();
-        //created by Adnan
+          let discout_total = Enumerable.from(data)
+            .select(w => w.discount_amout)
+            .sum();
 
-        for (let i = 0; i < data.length; i++) {
-          data[i].service_id = data[i].services_id;
-          data[i].bill_header_id = data[i].hims_f_billing_header_id;
-          data[i].bill_detail_id = data[i].hims_f_billing_details_id;
-          data[i].bill_detail_id = data[i].hims_f_billing_details_id;
-          data[i].company_resp = data[i].comapany_resp;
-          data[i].company_payable = data[i].company_payble;
-        }
+          let net_total = Enumerable.from(data)
+            .select(w => w.net_amout)
+            .sum();
 
-        $this.setState({
-          saveEnable: false,
-          clearEnable: false,
-          Invoice_Detail: data,
-          //created by Adnan
-          totalGross: gross_total,
-          totalDiscount: discout_total
-          //created by Adnan
-        });
-
-        $this.props.billingCalculations({
-          uri: "/billing/billingCalculations",
-          method: "POST",
-          data: { billdetails: data },
-          redux: {
-            type: "INVOICE_HEADER_GEN_GET_DATA",
-            mappingName: "invheadercal"
+          for (let i = 0; i < data.length; i++) {
+            data[i].service_id = data[i].services_id;
+            data[i].bill_header_id = data[i].hims_f_billing_header_id;
+            data[i].bill_detail_id = data[i].hims_f_billing_details_id;
+            data[i].bill_detail_id = data[i].hims_f_billing_details_id;
+            data[i].company_resp = data[i].comapany_resp;
+            data[i].company_payable = data[i].company_payble;
           }
-        });
+
+          $this.setState({
+            saveEnable: false,
+            clearEnable: false,
+            Invoice_Detail: data,
+            gross_amount: gross_total,
+            discount_amount: discout_total,
+            net_amout: net_total
+          });
+
+          algaehApiCall({
+            uri: "/billing/billingCalculations",
+            method: "POST",
+            data: { billdetails: data },
+            onSuccess: response => {
+              debugger;
+              if (response.data.success) {
+                response.data.records.patient_resp =
+                  response.data.records.patient_res;
+                response.data.records.patient_payable =
+                  response.data.records.patient_payable;
+                response.data.records.company_resp =
+                  response.data.records.company_res;
+                response.data.records.company_payable =
+                  response.data.records.company_payble;
+                response.data.records.sec_comapany_resp =
+                  response.data.records.sec_company_res;
+                response.data.records.sec_company_payable =
+                  response.data.records.sec_company_paybale;
+                $this.setState({ ...response.data.records });
+              }
+              AlgaehLoader({ show: false });
+            },
+            onFailure: error => {
+              AlgaehLoader({ show: false });
+              swalMessage({
+                title: error.message,
+                type: "error"
+              });
+            }
+          });
+        }
       }
+      AlgaehLoader({ show: false });
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
 };
@@ -217,13 +258,26 @@ const getCtrlCode = ($this, docNumber) => {
       let discout_total = Enumerable.from(data)
         .select(w => w.discount_amout)
         .sum();
-      //created by Adnan
 
-      data.totalGross = gross_total;
-      data.totalDiscount = discout_total;
+      let net_total = Enumerable.from(data)
+        .select(w => w.net_amout)
+        .sum();
+
+      data.gross_amount = gross_total;
+      data.discount_amount = discout_total;
+      data.net_amout = net_total;
       $this.setState(data);
       AlgaehLoader({ show: false });
     }
+  });
+};
+
+const texthandle = ($this, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  $this.setState({
+    [name]: value
   });
 };
 
@@ -233,5 +287,6 @@ export {
   FinalizedAndInvoice,
   ClearData,
   getVisitWiseBillDetailS,
-  getCtrlCode
+  getCtrlCode,
+  texthandle
 };

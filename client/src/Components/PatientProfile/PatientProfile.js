@@ -276,7 +276,7 @@ class PatientProfile extends Component {
               src={
                 this.state.patImg.length > 0
                   ? this.state.patImg
-                  : "https://x1.xingassets.com/assets/frontend_minified/img/users/nobody_m.original.jpg"
+                  : "../assets/images/nobody_m.original.webp"
               }
             />
           </div>
@@ -322,14 +322,16 @@ class PatientProfile extends Component {
               </b>
             </span>
           </div>
-          <div className="patientVital">
-            {_Vitals.map((row, idx) => (
-              <span key={idx}>
-                {row.vitals_name}
-                <b>{" : " + row.vital_value}</b>
-              </span>
-            ))}
-          </div>
+          {_Vitals.length > 0 ? (
+            <div className="patientVital">
+              {_Vitals.map((row, idx) => (
+                <span key={idx}>
+                  {row.vitals_name}
+                  <b>{" : " + row.vital_value}</b>
+                </span>
+              ))}
+            </div>
+          ) : null}
           <div className="moreAction">
             <button type="button" className="btn btn-outline-secondary btn-sm">
               <i className="fas fa-caret-square-down fa-lg" />

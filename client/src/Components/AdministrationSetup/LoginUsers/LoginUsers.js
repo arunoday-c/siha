@@ -17,7 +17,6 @@ class LoginUsers extends Component {
       login_users: []
     };
     this.getGroups();
-    this.getRoles();
     this.getLoginUsers();
   }
 
@@ -75,10 +74,13 @@ class LoginUsers extends Component {
     });
   }
 
-  getRoles() {
+  getRoles(group_id) {
     algaehApiCall({
       uri: "/algaehappuser/selectRoles",
       method: "GET",
+      data: {
+        algaeh_d_app_group_id: group_id
+      },
       onSuccess: response => {
         if (response.data.success) {
           this.setState({ roles: response.data.records });
@@ -100,9 +102,20 @@ class LoginUsers extends Component {
   }
 
   dropDownHandler(value) {
-    this.setState({
-      [value.name]: value.value
-    });
+    switch (value.name) {
+      case "app_group_id":
+        this.getRoles(value.value);
+        this.setState({
+          [value.name]: value.value
+        });
+
+        break;
+
+      default:
+        this.setState({
+          [value.name]: value.value
+        });
+    }
   }
 
   deleteLoginUser() {}
