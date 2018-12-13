@@ -6,5 +6,6 @@
   "sub_department_id": null,
   "role_id": null,
   "group_type": null,
-  "role_type": null
+  "role_type": null,
+  "user_type": null
 }

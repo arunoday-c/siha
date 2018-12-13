@@ -357,7 +357,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
     next(e);
   }
 };
-
+0;
 //created by irfan: to get
 let getRoleBaseInActiveComponents = (req, res, next) => {
   try {
