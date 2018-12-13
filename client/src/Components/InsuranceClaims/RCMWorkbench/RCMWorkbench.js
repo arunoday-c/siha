@@ -123,7 +123,8 @@ class RCMWorkbench extends Component {
       patient_code: null,
       insurance_provider_id: null,
       sub_insurance_id: null,
-      patient_id: null
+      patient_id: null,
+      claims: []
     });
   }
 
