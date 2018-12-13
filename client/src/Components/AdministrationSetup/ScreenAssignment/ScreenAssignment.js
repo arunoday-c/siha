@@ -74,47 +74,48 @@ class ScreenAssignment extends Component {
   render() {
     return (
       <div className="screen_assignment">
-        <div className="col-lg-12">
-          <div className="row">
-            <AlagehAutoComplete
-              div={{ className: "col-lg-3" }}
-              label={{
-                fieldName: "group",
-                isImp: true
-              }}
-              selector={{
-                name: "app_group_id",
-                className: "select-fld",
-                value: this.state.app_group_id,
-                dataSource: {
-                  textField: "app_group_name",
-                  valueField: "algaeh_d_app_group_id",
-                  data: this.state.groups
-                },
-                onChange: this.dropDownHandler.bind(this)
-              }}
-            />
+        <div className="row">
+          <div className="col-lg-4">
+            <div className="row">
+              <AlagehAutoComplete
+                div={{ className: "col-12" }}
+                label={{
+                  fieldName: "group",
+                  isImp: true
+                }}
+                selector={{
+                  name: "app_group_id",
+                  className: "select-fld",
+                  value: this.state.app_group_id,
+                  dataSource: {
+                    textField: "app_group_name",
+                    valueField: "algaeh_d_app_group_id",
+                    data: this.state.groups
+                  },
+                  onChange: this.dropDownHandler.bind(this)
+                }}
+              />
 
-            <AlagehAutoComplete
-              div={{ className: "col-lg-3" }}
-              label={{
-                fieldName: "role",
-                isImp: true
-              }}
-              selector={{
-                name: "role_id",
-                className: "select-fld",
-                value: this.state.role_id,
-                dataSource: {
-                  textField: "role_name",
-                  valueField: "app_d_app_roles_id",
-                  data: this.state.roles
-                },
-                onChange: this.dropDownHandler.bind(this)
-              }}
-            />
+              <AlagehAutoComplete
+                div={{ className: "col-12" }}
+                label={{
+                  fieldName: "role",
+                  isImp: true
+                }}
+                selector={{
+                  name: "role_id",
+                  className: "select-fld",
+                  value: this.state.role_id,
+                  dataSource: {
+                    textField: "role_name",
+                    valueField: "app_d_app_roles_id",
+                    data: this.state.roles
+                  },
+                  onChange: this.dropDownHandler.bind(this)
+                }}
+              />
 
-            {/* <div className="col">
+              {/* <div className="col">
               <button
                 style={{ marginTop: 21 }}
                 onClick={this.loadModulesandScreens.bind(this)}
@@ -128,42 +129,47 @@ class ScreenAssignment extends Component {
                 />
               </button>
             </div> */}
+            </div>
           </div>
-
-          <div>
-            <div>
-              <span>General</span>
-              <ul
-                style={{
-                  listStyle: "none"
-                }}
-              >
+          <div className="col-lg-4">
+            <h6>Modules</h6>
+            <div className="moduleList list-group-check">
+              <ul className="mainmenu">
                 <li>
-                  <div className="row">
-                    <input type="checkbox" />
-                    <span>DASHBOARD </span>
-                  </div>
+                  <input type="checkbox" />
+                  <a>Home</a>
+                </li>
+                <li>
+                  <input type="checkbox" />
+                  <a>About</a>
+                </li>
+                <li>
+                  <input type="checkbox" />
+                  <a>Products</a>
+                  <ul className="submenu">
+                    <li>
+                      <input type="checkbox" />
+                      <a>Tops</a>
+                    </li>
+                    <li>
+                      <input type="checkbox" />
+                      <a>Bottoms</a>
+                    </li>
+                    <li>
+                      <input type="checkbox" />
+                      <a>Footwear</a>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <input type="checkbox" />
+                  <a>Contact us</a>
                 </li>
               </ul>
             </div>
-            <div>
-              <span>Settings</span>
-              <ul
-                style={{
-                  listStyle: "none"
-                }}
-              >
-                <li>
-                  <div className="row">
-                    <input type="checkbox" />
-                    <span>DASHBOARD </span>
-                  </div>
-                </li>
-              </ul>
-            </div>
           </div>
-
-          <div>
+          <div className="col-lg-4">2346987265</div>
+          <div className="col-lg-12">
             <button className="btn btn-primary">SAVE</button>
           </div>
         </div>
