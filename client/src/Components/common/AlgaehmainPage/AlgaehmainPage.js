@@ -461,6 +461,9 @@ class PersistentDrawer extends React.Component {
                   (this.scrollLeftPanel = scrollLeftPanel)
                 }
               >
+                <div className="menuBarLoader">
+                  <i className="fas fa-spinner fa-spin" />
+                </div>
                 {this.createSideMenuItemList()}
               </div>
             </div>
