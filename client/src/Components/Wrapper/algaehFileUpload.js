@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import { Cropper } from "react-image-cropper";
 import Dropzone from "react-dropzone";
 import {
@@ -9,7 +9,7 @@ import {
 import noImage from "../../assets/images/images.webp";
 import { displayFileFromServer } from "../../utils/GlobalFunctions";
 import Webcam from "react-webcam";
-export default class AlgaehFileUploader extends PureComponent {
+export default class AlgaehFileUploader extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -23,13 +23,25 @@ export default class AlgaehFileUploader extends PureComponent {
       showLoader: true
     };
   }
+  componentWillReceiveProps(nextProps) {
+    if (
+      nextProps.serviceParameters.uniqueID !==
+      this.props.serviceParameters.uniqueID
+    ) {
+      this.getDisplayImage(nextProps);
+    }
+  }
   componentDidMount() {
+    this.getDisplayImage(this.props);
+  }
+
+  getDisplayImage(propsP) {
     const that = this;
-    if (that.props.serviceParameters.destinationName !== "") {
+    if (propsP.serviceParameters.uniqueID !== "") {
       displayFileFromServer({
         uri: "/masters/getFile",
-        fileType: that.props.serviceParameters.fileType,
-        destinationName: that.props.serviceParameters.destinationName,
+        fileType: propsP.serviceParameters.fileType,
+        destinationName: propsP.serviceParameters.uniqueID,
         onFileSuccess: data => {
           if (data !== undefined && data !== "") {
             that.setState({ filePreview: data, showLoader: false });
@@ -55,6 +67,11 @@ export default class AlgaehFileUploader extends PureComponent {
     }
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextProps !== this.props || nextState !== this.state) {
+      return true;
+    } else return false;
+  }
   // resizingAndCompressImage(file) {
   //   const _buffer = sharp(file.preview)
   //     .webp({

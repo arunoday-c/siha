@@ -516,7 +516,6 @@ class PersonalDetails extends PureComponent {
                             textAltMessage="Empoyee Image"
                             serviceParameters={{
                               uniqueID: this.state.employee_code,
-                              destinationName: this.state.employee_code,
                               fileType: "Employees"
                             }}
                           />
