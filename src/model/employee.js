@@ -714,6 +714,7 @@ let getEmployeeDetails = (req, res, next) => {
           if (error) {
             next(error);
           }
+
           req.records = result;
           next();
         }

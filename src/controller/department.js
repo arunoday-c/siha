@@ -177,6 +177,7 @@ export default ({ config, db }) => {
         subDept["department_id"] = firstItem.department_id;
         subDept["sub_department_id"] = firstItem.sub_department_id;
         subDept["sub_department_name"] = firstItem.sub_department_name;
+        subDept["department_type"] = firstItem.department_type;
         subDept["arabic_sub_department_name"] =
           firstItem.arabic_sub_department_name;
         subDept["doctors"] = departmets[item];

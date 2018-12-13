@@ -143,6 +143,14 @@ body {
     color: #fff;
     line-height: 23px;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5); }
+  :global .image-drop-area .img-upload-loader {
+    position: absolute;
+    top: 40%;
+    left: 40%;
+    text-align: center; }
+    :global .image-drop-area .img-upload-loader i {
+      font-size: 2rem;
+      color: #34b8bc; }
 
 :global .image-ins-drop-area {
   border: 1px solid #93a4ad;

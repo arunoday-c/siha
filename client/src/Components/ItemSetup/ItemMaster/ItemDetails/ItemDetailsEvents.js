@@ -82,23 +82,12 @@ const CptCodesSearch = ($this, context) => {
 
 const VatAppilicable = ($this, context, e) => {
   let name = e.target.name;
+  let value = e.target.value;
   SetBulkState({
     state: $this,
     callback: () => {
-      debugger;
-      let Applicable = false;
-      let Value = "N";
-
-      if ($this.state.Applicable === true) {
-        Applicable = false;
-        Value = "N";
-      } else if ($this.state.Applicable === false) {
-        Applicable = true;
-        Value = "Y";
-      }
       $this.setState({
-        [name]: Value,
-        // Applicable: Applicable,
+        [name]: value,
         vat_percent: 0,
         ...$this.state
       });
@@ -106,8 +95,7 @@ const VatAppilicable = ($this, context, e) => {
       // $this.state.
       if (context !== undefined) {
         context.updateState({
-          [name]: Value,
-          // Applicable: Applicable,
+          [name]: value,
           vat_percent: 0,
           ...$this.state
         });

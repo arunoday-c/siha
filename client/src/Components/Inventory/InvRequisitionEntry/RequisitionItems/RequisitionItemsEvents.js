@@ -15,7 +15,7 @@ const UomchangeTexts = ($this, ctrl, e) => {
 
 const numberchangeTexts = ($this, context, e) => {
   let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
+  let value = e.value || e.target.value === "" ? 0 : e.target.value;
   if (value < 0) {
     swalMessage({
       title: "Invalid Input. cannot be less than zero.",

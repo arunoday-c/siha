@@ -411,7 +411,7 @@ let getInvoicesForClaims = (req, res, next) => {
       let db = req.db;
 
       let where = whereCondition(extend(selectWhere, req.query));
-      debugLog("where:", where);
+
       db.getConnection((error, connection) => {
         connection.query(
           "SELECT hims_f_invoice_header_id, invoice_number, invoice_date, IH.patient_id, visit_id,\

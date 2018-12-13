@@ -13,7 +13,8 @@ let encryption = data => {
       app_group_id: data["app_group_id"],
       group_type: data["group_type"],
 
-      username: data["username"]
+      username: data["username"],
+      user_type: data["user_type"]
     }
   });
   return new cryptr(keys.SECRETKey).encrypt(stringData);

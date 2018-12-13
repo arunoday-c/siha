@@ -1,4 +1,8 @@
-import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall";
+import {
+  swalMessage,
+  algaehApiCall,
+  cancelRequest
+} from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import Enumerable from "linq";
 import extend from "extend";
@@ -538,7 +542,49 @@ const deletePosDetail = ($this, context, row) => {
 };
 
 const updatePosDetail = ($this, context) => {
-  PosheaderCalculation($this, context);
+  // PosheaderCalculation($this, context);
+
+  algaehApiCall({
+    uri: "/billing/billingCalculations",
+    method: "POST",
+    data: { billdetails: $this.state.pharmacy_stock_detail },
+    onSuccess: response => {
+      if (response.data.success) {
+        let data = response.data.records;
+
+        data.patient_payable_h =
+          data.patient_payable || $this.state.patient_payable;
+        data.sub_total = data.sub_total_amount || $this.state.sub_total;
+        data.patient_responsibility =
+          data.patient_res || $this.state.patient_responsibility;
+        data.company_responsibility =
+          data.company_res || $this.state.company_responsibility;
+
+        data.company_payable =
+          data.company_payble || $this.state.company_payable;
+        data.sec_company_responsibility =
+          data.sec_company_res || $this.state.sec_company_responsibility;
+        data.sec_company_payable =
+          data.sec_company_paybale || $this.state.sec_company_payable;
+
+        data.copay_amount = data.copay_amount || $this.state.copay_amount;
+        data.sec_copay_amount =
+          data.sec_copay_amount || $this.state.sec_copay_amount;
+        data.addItemButton = false;
+        data.saveEnable = false;
+
+        if (context !== null) {
+          context.updateState({ ...data });
+        }
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
 };
 
 //Calculate Row Detail
@@ -577,6 +623,7 @@ const calculateAmount = ($this, row, ctrl, e) => {
     algaehApiCall({
       uri: "/billing/getBillDetails",
       method: "POST",
+      cancelRequestId: "getPosDetails",
       data: inputParam,
       onSuccess: response => {
         if (response.data.success) {

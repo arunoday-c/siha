@@ -6,36 +6,53 @@ import {
   getCookie,
   swalMessage
 } from "../../utils/algaehApiCall";
-
+import noImage from "../../assets/images/images.webp";
 import { displayFileFromServer } from "../../utils/GlobalFunctions";
 import Webcam from "react-webcam";
 export default class AlgaehFileUploader extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      filePreview: "",
+      filePreview: noImage,
       showCropper: false,
       showProgress: false,
+      showZoom: false,
       progressPercentage: 0,
       fileExtention: "",
-      openWebCam: false
+      openWebCam: false,
+      showLoader: true
     };
   }
   componentDidMount() {
     const that = this;
-    displayFileFromServer({
-      uri: "/masters/getFile",
-      fileType: that.props.serviceParameters.fileType,
-      destinationName: that.props.serviceParameters.destinationName,
-      onFileSuccess: data => {
-        that.setState({ filePreview: data });
-      }
-    });
-  }
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      filePreview: nextProps.src
-    });
+    if (that.props.serviceParameters.destinationName !== "") {
+      displayFileFromServer({
+        uri: "/masters/getFile",
+        fileType: that.props.serviceParameters.fileType,
+        destinationName: that.props.serviceParameters.destinationName,
+        onFileSuccess: data => {
+          if (data !== undefined && data !== "") {
+            that.setState({ filePreview: data, showLoader: false });
+          } else {
+            that.setState({
+              filePreview: noImage,
+              showLoader: false
+            });
+          }
+        },
+        onFileFailure: data => {
+          that.setState({
+            filePreview: noImage,
+            showLoader: false
+          });
+        }
+      });
+    } else {
+      that.setState({
+        filePreview: noImage,
+        showLoader: false
+      });
+    }
   }
 
   // resizingAndCompressImage(file) {
@@ -64,7 +81,10 @@ export default class AlgaehFileUploader extends PureComponent {
     }
   }
   onCloseCropperHandler(e) {
-    this.setState({ showCropper: false, filePreview: "" });
+    const _from = e.target.getAttribute("from");
+    if (_from === "crop")
+      this.setState({ showCropper: false, filePreview: "" });
+    if (_from === "zoom") this.setState({ showZoom: false });
   }
   onCroppedHandler(e) {
     this.SavingImageOnServer();
@@ -88,6 +108,7 @@ export default class AlgaehFileUploader extends PureComponent {
             {" "}
             <button
               className="btn btn-default"
+              from="crop"
               onClick={this.onCloseCropperHandler.bind(this)}
             >
               Cancel
@@ -106,7 +127,38 @@ export default class AlgaehFileUploader extends PureComponent {
     }
   }
 
+  zoomImageImplement() {
+    if (this.state.showZoom) {
+      return (
+        <div className="Image-cropper ">
+          <img src={this.state.filePreview} />
+          <div className="row crop-action">
+            {" "}
+            <button
+              className="btn btn-default"
+              from="zoom"
+              onClick={this.onCloseCropperHandler.bind(this)}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      );
+    }
+  }
+
   showAttachmentHandler(e) {
+    if (this.props.serviceParameters.uniqueID === "") {
+      const _messageUniqueBlank =
+        this.props.uniqueBlankMessage === undefined
+          ? "With out unique image can not process"
+          : this.props.uniqueBlankMessage;
+      swalMessage({
+        title: _messageUniqueBlank,
+        type: "error"
+      });
+      return;
+    }
     this.imager.click();
   }
 
@@ -213,6 +265,22 @@ export default class AlgaehFileUploader extends PureComponent {
       );
     } else null;
   }
+  implementLoader() {
+    if (this.state.showLoader) {
+      return (
+        <div className="img-upload-loader">
+          <i className="fas fa-spinner fa-spin" />
+        </div>
+      );
+    } else null;
+  }
+
+  zoomHandler(e) {
+    this.setState({
+      showZoom: true
+    });
+  }
+
   render() {
     const _accept =
       this.props.accept !== undefined ? { accept: this.props.accept } : {};
@@ -223,6 +291,7 @@ export default class AlgaehFileUploader extends PureComponent {
     return (
       <React.Fragment>
         {this.cropperImplement()}
+        {this.zoomImageImplement()}
         {this.implementWebCam()}
         <div className="image-drop-area">
           <Dropzone
@@ -240,6 +309,7 @@ export default class AlgaehFileUploader extends PureComponent {
             />
             {this.implementProgressBar()}
           </Dropzone>
+          {this.implementLoader()}
           <div className="img-upload-actions">
             <i
               className="fas fa-paperclip"
@@ -249,7 +319,10 @@ export default class AlgaehFileUploader extends PureComponent {
               className="fas fa-camera"
               onClick={this.webCamHandler.bind(this)}
             />
-            <i className="fas fa-search-plus" />
+            <i
+              className="fas fa-search-plus"
+              onClick={this.zoomHandler.bind(this)}
+            />
           </div>
         </div>
       </React.Fragment>

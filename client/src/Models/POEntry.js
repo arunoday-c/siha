@@ -14,7 +14,7 @@ export default {
       location_type: null,
       vendor_id: null,
       expected_date: new Date(),
-
+      material_requisition_number: null,
       on_hold: null,
       phar_requisition_id: null,
       inv_requisition_id: null,
