@@ -1,4 +1,14 @@
-.hptl-phase1-add-patient-form {
+.hptl-phase1-add-employee-form {
+  padding: 0 15px;
+  h6 {
+    margin: 10px 0 0;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #d3d3d3;
+    span {
+      border-bottom: 3px solid #00cbd0;
+    }
+  }
+
   .primary-details {
     border-right: 1px dashed #d3d3d3;
     padding-top: 8px;
