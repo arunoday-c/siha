@@ -219,10 +219,22 @@ const ClearData = $this => {
       patient_payable: 0,
       company_resp: 0,
       company_tax: 0,
-      company_payable: 0,
+      company_payble: 0,
       sec_company_resp: 0,
       sec_company_tax: 0,
-      sec_company_payable: 0
+      sec_company_payable: 0,
+      net_amout: 0,
+      insurance_provider_name: "---",
+      sub_insurance_provider_name: "---",
+      network_type: "---",
+      policy_number: "---",
+      card_number: "---",
+      effective_end_date: "---",
+      secondary_insurance_provider_name: "---",
+      secondary_network_type: "---",
+      secondary_policy_number: "---",
+      secondary_card_number: "---",
+      secondary_effective_end_date: "---"
     },
     () => {
       $this.props.initialStateOrders({
