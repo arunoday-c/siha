@@ -23,7 +23,7 @@ import {
 } from "../../../../Wrapper/algaehWrapper";
 import variableJson from "../../../../../utils/GlobalVariables.json";
 import Enumerable from "linq";
-import DeptUserDetails from "../DeptUserDetails/DeptUserDetails";
+// import DeptUserDetails from "../DeptUserDetails/DeptUserDetails";
 // import noImage from "../../../../../assets/images/images.webp";
 // import { displayFileFromServer } from "../../../../../utils/GlobalFunctions";
 import AlgaehFileUploader from "../../../../Wrapper/algaehFileUpload";
@@ -92,33 +92,48 @@ class PersonalDetails extends PureComponent {
           .where(w => w.hims_d_country_id === this.state.country_id)
           .firstOrDefault();
         let states = country !== undefined ? country.states : [];
-        if (nextProps.state_id !== this.state.state_id) {
-          let cities = Enumerable.from(states)
-            .where(w => w.hims_d_state_id === this.state.state_id)
-            .firstOrDefault();
-
-          this.props.getStates({
-            redux: {
-              data: states,
-              type: "STATE_GET_DATA",
-              mappingName: "countrystates"
-            },
-            afterSuccess: callback => {
-              // this.setState({
-              //   state_id: this.state.state_id
-              // });
+        if (this.props.countries !== undefined && states.length !== 0) {
+          if (nextProps.state_id !== this.state.state_id) {
+            let cities = Enumerable.from(states)
+              .where(w => w.hims_d_state_id === this.state.state_id)
+              .firstOrDefault();
+            if (cities !== undefined) {
+              this.setState({
+                countrystates: states,
+                cities: cities.cities,
+                state_id: this.state.state_id,
+                city_id: this.state.city_id
+              });
+            } else {
+              this.setState({
+                countrystates: states,
+                state_id: this.state.state_id
+              });
             }
-          });
-          if (cities !== undefined) {
-            this.props.getCities({
-              redux: {
-                data: cities.cities,
-                type: "CITY_GET_DATA",
-                mappingName: "cities"
-              }
-            });
           }
         }
+        // if (nextProps.state_id !== this.state.state_id) {
+        //   let cities = Enumerable.from(states)
+        //     .where(w => w.hims_d_state_id === this.state.state_id)
+        //     .firstOrDefault();
+
+        //   this.props.getStates({
+        //     redux: {
+        //       data: states,
+        //       type: "STATE_GET_DATA",
+        //       mappingName: "countrystates"
+        //     }
+        //   });
+        //   if (cities !== undefined) {
+        //     this.props.getCities({
+        //       redux: {
+        //         data: cities.cities,
+        //         type: "CITY_GET_DATA",
+        //         mappingName: "cities"
+        //       }
+        //     });
+        //   }
+        // }
       }
     });
   }
@@ -594,9 +609,9 @@ class PersonalDetails extends PureComponent {
                   />
                 </div>
               </div>
-              <div className="col">
+              {/* <div className="col">
                 <DeptUserDetails EmpMasterIOputs={this.state} />
-              </div>
+              </div> */}
             </div>
           )}
         </MyContext.Consumer>

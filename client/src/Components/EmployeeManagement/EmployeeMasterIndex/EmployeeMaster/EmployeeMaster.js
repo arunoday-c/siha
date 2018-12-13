@@ -7,6 +7,9 @@ import "./EmployeeMaster.css";
 
 import CommissionSetup from "./CommissionSetup/CommissionSetup";
 import PersonalDetails from "./PersonalDetails/PersonalDetails";
+import DeptUserDetails from "./DeptUserDetails/DeptUserDetails";
+import PayRollDetails from "./PayRollDetails/PayRollDetails";
+
 import { AlgaehLabel, Modal } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import MyContext from "../../../../utils/MyContext";
@@ -191,6 +194,33 @@ class EmployeeMaster extends Component {
                         />
                       }
                     </li>
+                    <li
+                      algaehtabs={"DeptUserDetails"}
+                      className={"nav-item tab-button"}
+                      onClick={this.openTab.bind(this)}
+                    >
+                      {
+                        <AlgaehLabel
+                          label={{
+                            fieldName: "deptuser_details"
+                          }}
+                        />
+                      }
+                    </li>
+
+                    <li
+                      algaehtabs={"PayRollDetails"}
+                      className={"nav-item tab-button"}
+                      onClick={this.openTab.bind(this)}
+                    >
+                      {
+                        <AlgaehLabel
+                          label={{
+                            fieldName: "pay_roll_details"
+                          }}
+                        />
+                      }
+                    </li>
                     {this.state.isdoctor === "Y" ? (
                       <li
                         algaehtabs={"CommissionSetup"}
@@ -219,6 +249,10 @@ class EmployeeMaster extends Component {
                   <div className="employee-section">
                     {this.state.pageDisplay === "PersonalDetails" ? (
                       <PersonalDetails EmpMasterIOputs={this.state} />
+                    ) : this.state.pageDisplay === "DeptUserDetails" ? (
+                      <DeptUserDetails EmpMasterIOputs={this.state} />
+                    ) : this.state.pageDisplay === "PayRollDetails" ? (
+                      <PayRollDetails EmpMasterIOputs={this.state} />
                     ) : this.state.pageDisplay === "CommissionSetup" ? (
                       <CommissionSetup EmpMasterIOputs={this.state} />
                     ) : null}
