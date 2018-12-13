@@ -13,7 +13,7 @@ const getEmployeeDetails = $this => {
           let Employeedetails = Enumerable.from(data)
             .groupBy("$.hims_d_employee_id", null, (k, g) => {
               let firstRecordSet = Enumerable.from(g).firstOrDefault();
-              debugger;
+
               return {
                 hims_d_employee_id: firstRecordSet.hims_d_employee_id,
                 title_id: firstRecordSet.title_id,
@@ -71,7 +71,6 @@ const getEmployeeDetails = $this => {
 };
 
 const EditEmployeeMaster = ($this, row) => {
-  debugger;
   $this.setState({
     isOpen: !$this.state.isOpen,
     employeeDetailsPop: row

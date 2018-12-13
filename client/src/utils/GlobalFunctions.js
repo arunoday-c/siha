@@ -2,6 +2,7 @@ import extend from "extend";
 import { swalMessage, algaehApiCall, getCookie } from "../utils/algaehApiCall";
 import crypto from "crypto";
 import Enumerable from "linq";
+
 export function successfulMessage(options) {
   options.icon = options.icon || "error";
 
@@ -74,14 +75,6 @@ export function saveImageOnServer(options) {
     },
     ...options
   };
-  // if (settings.saveDirectly) {
-  //   if (settings.destinationName === "" || settings.fileName === "") {
-  //     swalMessage({
-  //       title: "Please provide valid details for destinaion upload",
-  //       type: "error"
-  //     });
-  //   }
-  // }
 
   if (settings.fileControl !== undefined) {
     settings.fileControl.map(file => {
@@ -91,47 +84,72 @@ export function saveImageOnServer(options) {
       if (settings.saveDirectly === false && settings.fileName === "") {
         settings.fileName = getCookie("ScreenName").replace("/", "");
       }
-      const formData = new FormData();
-      debugger;
-      formData.append("image", file);
 
-      algaehApiCall({
-        uri: "/masters/imageSave",
-        data: formData,
-        method: "POST",
-        header: {
-          "content-type": "multipart/form-data",
-          "x-file-details": JSON.stringify({
-            tempFileName: settings.fileName,
-            pageName: settings.pageName,
-            saveDirectly: settings.saveDirectly,
-            destinationName: settings.destinationName,
-            fileType: settings.fileType
-          })
-        },
-        others: {
-          onUploadProgress: progressEvent => {
-            let percentCompleted = Math.round(
-              (progressEvent.loaded * 100) / progressEvent.total
-            );
+      const reader = new FileReader();
+      //reader.readAsBinaryString(file);
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        //  console.log("reader result " , reader.result)
+        const fileAsBinaryString = reader.result.split(",")[1];
+        const _fileName = file.name.split(".");
+        algaehApiCall({
+          uri: "/masters/imageSave",
+          data: fileAsBinaryString,
+          method: "POST",
+          header: {
+            "content-type": "application/octet-stream", // "multipart/form-data",
+            "x-file-details": JSON.stringify({
+              tempFileName: settings.fileName,
+              pageName: settings.pageName,
+              saveDirectly: settings.saveDirectly,
+              destinationName: settings.destinationName,
+              fileType: settings.fileType,
+              fileExtention: _fileName[_fileName.length - 1]
+            })
+          },
+          others: {
+            onUploadProgress: progressEvent => {
+              let percentCompleted = Math.round(
+                (progressEvent.loaded * 100) / progressEvent.total
+              );
 
-            if (percentCompleted >= 100) {
-              settings.thisState.stateName.setState({
-                [settings.thisState.stateProgressName]: 100,
-                [settings.thisState.filePreview]: file.preview
+              if (percentCompleted >= 100) {
+                settings.thisState.stateName.setState({
+                  [settings.thisState.stateProgressName]: 100,
+                  [settings.thisState.filePreview]: file.preview
+                });
+              } else {
+                settings.thisState.stateName.setState({
+                  [settings.thisState.stateProgressName]: percentCompleted
+                });
+              }
+            }
+          },
+          onSuccess: result => {
+            if (result.data.success) {
+              swalMessage({
+                title: "Image Uploaded Successfully",
+                type: "success"
               });
             } else {
-              settings.thisState.stateName.setState({
-                [settings.thisState.stateProgressName]: percentCompleted
+              swalMessage({
+                title: "Image Uploding failure",
+                type: "Error"
               });
             }
           }
-        }
-      });
+        });
+      };
+      reader.onabort = () => console.log("file reading was aborted");
+      reader.onerror = () => console.log("file reading has failed");
+
+      // const formData = new FormData();
+      // formData.append("file", reader);
     });
   }
 }
 export function displayFileFromServer(options) {
+  debugger;
   const _resize =
     options.resize !== undefined
       ? { resize: JSON.stringify(options.resize) }
@@ -142,11 +160,11 @@ export function displayFileFromServer(options) {
     data: {
       fileType: options.fileType,
       destinationName: options.destinationName,
-      fileName: options.fileName,
       ..._resize
     },
     others: { responseType: "arraybuffer" },
     onSuccess: response => {
+      debugger;
       if (response.data) {
         const _data =
           "data:" +
@@ -158,7 +176,9 @@ export function displayFileFromServer(options) {
         }
       }
     },
-    onFailure: () => {}
+    onFailure: details => {
+      debugger;
+    }
   });
 }
 

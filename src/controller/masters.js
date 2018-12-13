@@ -21,8 +21,9 @@ import { getCacheData, setCacheData } from "../utils/caching";
 import { saveImageInTemp, showFile } from "../utils/images";
 import { getFormula } from "../model/algaeh_formulas";
 import request from "request";
-import querystring from "querystring";
-import http from "http";
+import { debugLog } from "../utils/logging";
+import mime from "mime/lite";
+import stream from "stream";
 export default () => {
   let api = Router();
 
@@ -36,49 +37,63 @@ export default () => {
 
   // api.post("/imageSave", saveImageInTemp);
   api.post("/imageSave", (req, res, next) => {
-    console.log("req File", req.image);
-    let post_data = querystring.stringify(req.body);
-    var post_options = {
-      host: "localhost",
-      port: "3010",
-      path: "/api/v1/Document/save",
-      method: "POST",
-      headers: {
-        "Content-Type": "multipart/form-data",
-        "Content-Length": Buffer.byteLength(post_data),
-        ...req.headers
+    const _xheaders = req.headers["x-file-details"];
+    request.post(
+      {
+        headers: {
+          "Content-Type": "application/octet-stream",
+          "x-file-details": _xheaders,
+          "access-control-allow-origin": "*"
+        },
+        url: "http://localhost:3010/api/v1/Document/save",
+        body: req
+      },
+      (err, resp, body) => {
+        if (err) {
+          next(err);
+        }
+        res.status(resp.statusCode).json(JSON.parse(resp.body));
       }
-    };
-    // Set up the request
-    var post_req = http.request(post_options, function(res) {
-      res.setEncoding("utf8");
-      res.on("data", function(chunk) {
-        console.log("Response: " + chunk);
-      });
-    });
-
-    // post the data
-    post_req.write(post_data);
-    post_req.end();
-
-    // request(
-    //   {
-    //     headers: req.headers,
-    //     method: "POST",
-    //     uri: "http://localhost:3010/api/v1/Document/save"
-    //   },
-    //   (err, resp, body) => {
-    //     if (err) {
-    //       next(err);
-    //     }
-    //     res.status(200).json({
-    //       message: "Success",
-    //       status: true
-    //     });
-    //   }
-    // );
+    );
   });
-  api.get("/getFile", showFile);
+  api.get("/getFile", (req, res, next) => {
+    request.get(
+      {
+        url: "http://localhost:3010/api/v1/Document/get",
+        qs: req.query
+      },
+      (err, resp, body) => {
+        if (err) {
+          res.status(resp.statusCode).json({
+            success: false,
+            message: err
+          });
+        } else {
+          const _result = JSON.parse(resp.body);
+          if (_result.success) {
+            const _resultData = _result.records;
+            if (_result.fileExtention == null) {
+              res.status(httpStatus.notFound).json({
+                success: false,
+                message: "No file exits"
+              });
+            } else {
+              const _mime = mime.getType(_result.fileExtention);
+              res.setHeader("content-type", _mime);
+              let bufferStream = new stream.PassThrough();
+              bufferStream.end(new Buffer.from(_resultData, "base64"));
+              bufferStream.pipe(res);
+            }
+          } else {
+            res.status(httpStatus.notFound).json({
+              success: false,
+              message: "file not found"
+            });
+          }
+        }
+      }
+    );
+  });
   api.get(
     "/subDeptClinicalNonClinicalAll",
     (req, res, next) => {
