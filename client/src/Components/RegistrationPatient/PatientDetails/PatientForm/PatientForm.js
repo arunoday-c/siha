@@ -25,7 +25,7 @@ import {
   AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
 import variableJson from "../../../../utils/GlobalVariables.json";
-
+import AlgaehFileUploader from "../../../Wrapper/algaehFileUpload";
 import Enumerable from "linq";
 
 class AddPatientForm extends PureComponent {
@@ -686,7 +686,17 @@ class AddPatientForm extends PureComponent {
                     >
                       <div className="col-lg-5">
                         <div className="image-drop-area">
-                          <Dropzone
+                          <AlgaehFileUploader
+                            name="attach_photo"
+                            accept="image/*"
+                            textAltMessage="Patient Image"
+                            serviceParameters={{
+                              uniqueID: this.state.patient_code,
+                              destinationName: this.state.patient_code,
+                              fileType: "Patients"
+                            }}
+                          />
+                          {/* <Dropzone
                             onDrop={onDrop.bind(this, this, "filePreview")}
                             id="attach-width"
                             className="dropzone"
@@ -708,11 +718,8 @@ class AddPatientForm extends PureComponent {
                                 }}
                               />
                             </div>
-                          </Dropzone>
+                          </Dropzone> */}
                         </div>
-                        {/* <div>
-                        
-                        </div> */}
                       </div>
                       <div className="col-lg-7">
                         <div className="image-drop-area">
