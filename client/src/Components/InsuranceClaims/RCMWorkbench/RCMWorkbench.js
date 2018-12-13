@@ -9,8 +9,7 @@ import {
   AlgaehLabel,
   AlagehAutoComplete,
   AlgaehDateHandler,
-  AlagehFormGroup,
-  AlgaehModalPopUp
+  AlagehFormGroup
 } from "../../Wrapper/algaehWrapper";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import AlgaehSearch from "../../Wrapper/globalSearch";
