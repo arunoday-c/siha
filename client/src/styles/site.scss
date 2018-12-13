@@ -146,6 +146,48 @@ body {
       min-width: 130px;
       padding-left: 0px;
     }
+
+    .img-upload-actions {
+      i {
+        display: inline-block;
+        width: 33.33%;
+        padding: 5px;
+        background: #8c8c8c;
+        cursor: pointer;
+        text-align: center;
+        color: #fff;
+        &:hover {
+          background: #34b8bc;
+        }
+      }
+    }
+    .img-upload-progress {
+      background-color: none;
+      background-image: linear-gradient(to left, #34b8bc, #25d8df);
+      height: 26px;
+      width: 100%;
+      position: absolute;
+      bottom: -26px;
+      left: 0;
+      z-index: 1;
+      margin: 0;
+      text-align: right;
+      font-size: 0.7rem;
+      padding: 0 5px 0 0;
+      color: #fff;
+      line-height: 23px;
+      text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+    }
+    .img-upload-loader {
+      position: absolute;
+      top: 40%;
+      left: 40%;
+      text-align: center;
+      i {
+        font-size: 2rem;
+        color: #34b8bc;
+      }
+    }
   }
 
   .image-ins-drop-area {
@@ -1528,5 +1570,74 @@ th {
   .algaeh-modal,
   .algaeh-modal-Ar {
     max-width: 66.666667%;
+  }
+}
+.Image-cropper {
+  position: fixed;
+  border: 5px solid #d5ac70;
+  -webkit-box-shadow: 0 20px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 20px 50px #999999;
+  top: 10vh;
+  z-index: 9;
+  padding-bottom: 31px;
+  overflow: hidden;
+  background: #fff;
+  right: 2vw;
+  padding: 2px 2px 33px;
+
+  div {
+    div {
+      img {
+        height: auto;
+        width: auto;
+        max-height: 60vh;
+        max-width: 95vw;
+      }
+    }
+  }
+  .crop-action {
+    bottom: 0;
+    position: absolute;
+    z-index: 9;
+    width: 100%;
+    left: 15px;
+    button {
+      width: 50%;
+      border-radius: 0;
+    }
+  }
+}
+
+.image-area-cntr {
+  position: fixed;
+  z-index: 9;
+  top: 15vh;
+  left: 20vw;
+  width: 640px;
+  height: 480px;
+  margin: auto;
+  box-shadow: 0 30px 100px rgba(0, 0, 0, 0.5);
+  .videoActions {
+    position: absolute;
+    z-index: 9;
+    right: 0;
+    top: 4px;
+    i {
+      padding: 10px;
+      background: #8c8c8c;
+      font-size: 1.1rem;
+      text-align: center;
+      line-height: 30px;
+      display: inline;
+      margin-left: 2px;
+      color: #fff;
+      cursor: pointer;
+      &:last-child {
+        background: #68b5b9;
+      }
+      &:hover {
+        background: rgba(0, 0, 0, 0.1);
+      }
+    }
   }
 }

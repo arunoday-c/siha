@@ -117,6 +117,40 @@ body {
     margin: 8px 0px;
     min-width: 130px;
     padding-left: 0px; }
+  :global .image-drop-area .img-upload-actions i {
+    display: inline-block;
+    width: 33.33%;
+    padding: 5px;
+    background: #8c8c8c;
+    cursor: pointer;
+    text-align: center;
+    color: #fff; }
+    :global .image-drop-area .img-upload-actions i:hover {
+      background: #34b8bc; }
+  :global .image-drop-area .img-upload-progress {
+    background-color: none;
+    background-image: linear-gradient(to left, #34b8bc, #25d8df);
+    height: 26px;
+    width: 100%;
+    position: absolute;
+    bottom: -26px;
+    left: 0;
+    z-index: 1;
+    margin: 0;
+    text-align: right;
+    font-size: 0.7rem;
+    padding: 0 5px 0 0;
+    color: #fff;
+    line-height: 23px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5); }
+  :global .image-drop-area .img-upload-loader {
+    position: absolute;
+    top: 40%;
+    left: 40%;
+    text-align: center; }
+    :global .image-drop-area .img-upload-loader i {
+      font-size: 2rem;
+      color: #34b8bc; }
 
 :global .image-ins-drop-area {
   border: 1px solid #93a4ad;
@@ -1186,3 +1220,59 @@ th {
   .algaeh-modal,
   .algaeh-modal-Ar {
     max-width: 66.666667%; } }
+
+.Image-cropper {
+  position: fixed;
+  border: 5px solid #d5ac70;
+  -webkit-box-shadow: 0 20px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 20px 50px #999999;
+  top: 10vh;
+  z-index: 9;
+  padding-bottom: 31px;
+  overflow: hidden;
+  background: #fff;
+  right: 2vw;
+  padding: 2px 2px 33px; }
+  .Image-cropper div div img {
+    height: auto;
+    width: auto;
+    max-height: 60vh;
+    max-width: 95vw; }
+  .Image-cropper .crop-action {
+    bottom: 0;
+    position: absolute;
+    z-index: 9;
+    width: 100%;
+    left: 15px; }
+    .Image-cropper .crop-action button {
+      width: 50%;
+      border-radius: 0; }
+
+.image-area-cntr {
+  position: fixed;
+  z-index: 9;
+  top: 15vh;
+  left: 20vw;
+  width: 640px;
+  height: 480px;
+  margin: auto;
+  box-shadow: 0 30px 100px rgba(0, 0, 0, 0.5); }
+  .image-area-cntr .videoActions {
+    position: absolute;
+    z-index: 9;
+    right: 0;
+    top: 4px; }
+    .image-area-cntr .videoActions i {
+      padding: 10px;
+      background: #8c8c8c;
+      font-size: 1.1rem;
+      text-align: center;
+      line-height: 30px;
+      display: inline;
+      margin-left: 2px;
+      color: #fff;
+      cursor: pointer; }
+      .image-area-cntr .videoActions i:last-child {
+        background: #68b5b9; }
+      .image-area-cntr .videoActions i:hover {
+        background: rgba(0, 0, 0, 0.1); }

@@ -140,18 +140,9 @@ class RCMWorkbench extends Component {
         callBack(text);
       },
       onRowSelect: row => {
-        //console.log("Selected Row:", row);
         this.setState({
           patient_code: row.patient_code,
           patient_id: row.hims_d_patient_id
-          // patient_name: row.full_name,
-          // age: row.age,
-          // date_of_birth: row.date_of_birth,
-          // gender: row.gender,
-          // contact_number: row.contact_number,
-          // email: row.email,
-          // arabic_name: row.arabic_name,
-          // title_id: row.title_id
         });
       }
     });
@@ -456,7 +447,6 @@ class RCMWorkbench extends Component {
                         ),
                         disabled: true
                       },
-
                       {
                         fieldName: "receipt_status",
                         label: (

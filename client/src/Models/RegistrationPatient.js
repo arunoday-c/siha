@@ -136,7 +136,10 @@ export default {
       radioSecNo: true,
       radioSecYes: false,
       hideInsurance: false,
-      hideSecInsurance: false
+      hideSecInsurance: false,
+      existing_plan: "N",
+      department_type: "N",
+      treatment_plan_id: null
     };
     return output;
   }

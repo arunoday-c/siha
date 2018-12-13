@@ -13,6 +13,7 @@ const texthandle = ($this, ctrl, e) => {
 const Validations = $this => {
   let isError = false;
 
+  debugger;
   if ($this.state.description === null) {
     isError = true;
     swalMessage({
@@ -22,19 +23,52 @@ const Validations = $this => {
 
     document.querySelector("[name='description']").focus();
     return isError;
-  }
-
-  if ($this.state.services_id === null) {
+  } else if ($this.state.services_id === null) {
     isError = true;
     swalMessage({
       type: "error",
       title: "Invalid Input. Service Cannot be blank."
     });
+    document.querySelector("[name='services_id']").focus();
+    return isError;
+  } else if ($this.state.lab_section_id === null) {
+    isError = true;
+    swalMessage({
+      type: "error",
+      title: "Invalid Input. Lab Section Cannot be blank."
+    });
+    document.querySelector("[name='lab_section_id']").focus();
+    return isError;
+  } else if ($this.state.specimen_id === null) {
+    isError = true;
+    swalMessage({
+      type: "error",
+      title: "Invalid Input. Specimen Cannot be blank."
+    });
+    document.querySelector("[name='specimen_id']").focus();
+    return isError;
+  } else if ($this.state.container_id === null) {
+    isError = true;
+    swalMessage({
+      type: "error",
+      title: "Invalid Input. Container Cannot be blank."
+    });
+    document.querySelector("[name='container_id']").focus();
+    return isError;
+  } else if (
+    $this.state.investigation_type === "L" &&
+    $this.state.analytes.length === 0
+  ) {
+    isError = true;
+    swalMessage({
+      type: "error",
+      title: "Invalid Input. Atleast One Analytes to be add."
+    });
 
     return isError;
   }
 };
-const InsertLabTest = $this => {
+const InsertLabTest = ($this, e) => {
   const err = Validations($this);
 
   if (!err) {
@@ -48,6 +82,7 @@ const InsertLabTest = $this => {
               type: "success",
               title: "Saved successfully . ."
             });
+            $this.props.onClose && $this.props.onClose(true);
           }
         }
       });
@@ -62,6 +97,7 @@ const InsertLabTest = $this => {
               type: "success",
               title: "Updated successfully . ."
             });
+            $this.props.onClose && $this.props.onClose(true);
           }
         }
       });

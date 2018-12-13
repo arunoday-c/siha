@@ -8,31 +8,14 @@ const texthandle = ($this, context, ctrl, e) => {
     [name]: value,
     dataEnter: true
   });
-
-  if (context !== undefined) {
-    context.updateState({
-      [name]: value,
-      dataEnter: true
-      // template_html: $this.state.template_html
-    });
-  }
 };
 
 const rtehandle = ($this, context, template_html) => {
-  debugger;
-  $this.setState({ template_html });
-
-  if (context !== undefined) {
-    context.updateState({
-      template_html: template_html,
-      template_name: $this.state.template_name
-    });
-  }
+  $this.setState({ template_html: template_html });
 };
 
 const saveTemplate = ($this, e) => {
-  $this.props.onClose &&
-    $this.props.onClose($this.state.hims_d_rad_template_detail_id);
+  $this.props.onClose && $this.props.onClose($this.state);
 };
 
 export { texthandle, saveTemplate, rtehandle };

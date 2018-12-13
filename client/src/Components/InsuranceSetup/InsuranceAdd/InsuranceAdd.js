@@ -127,10 +127,6 @@ class InsuranceAdd extends PureComponent {
     });
   }
 
-  handleClose = () => {
-    this.setState({ snackeropen: false });
-  };
-
   onClose = e => {
     if (this.state.screenName === "SubInsurance") {
       if (this.state.sub_insurance.length === 0) {

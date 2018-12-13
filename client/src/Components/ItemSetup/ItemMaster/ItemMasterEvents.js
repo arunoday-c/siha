@@ -85,9 +85,7 @@ const InsertUpdateItems = $this => {
             data: $this.state,
             onSuccess: response => {
               if (response.data.success === true) {
-                $this.setState({
-                  changesDone: true
-                });
+                $this.props.onClose && $this.props.onClose(true);
                 swalMessage({
                   type: "success",
                   title: "Saved successfully . ."
@@ -103,9 +101,7 @@ const InsertUpdateItems = $this => {
             method: "PUT",
             onSuccess: response => {
               if (response.data.success === true) {
-                $this.setState({
-                  changesDone: true
-                });
+                $this.props.onClose && $this.props.onClose(true);
                 swalMessage({
                   type: "success",
                   title: "Updated successfully . ."

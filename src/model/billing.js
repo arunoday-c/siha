@@ -1008,6 +1008,10 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                 ? 0
                 : servicesDetails.unit_cost;
 
+            let zeroBill =
+              servicesDetails.zeroBill == undefined
+                ? false
+                : servicesDetails.zeroBill;
             let gross_amount = 0,
               net_amout = 0,
               sec_unit_cost = 0;
@@ -1099,6 +1103,49 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
               servicesDetails.preapp_limit_amount == undefined
                 ? 0
                 : servicesDetails.preapp_limit_amount;
+            debugLog("zeroBill: ", zeroBill);
+            if (zeroBill === true) {
+              let out = {
+                hims_f_billing_details_id: null,
+                hims_f_billing_header_id: null,
+                service_type_id: records.service_type_id,
+                service_name: records.service_name,
+                services_id: servicesDetails.hims_d_services_id,
+                quantity: 1,
+                unit_cost: 0,
+                insurance_yesno: null,
+                gross_amount: 0,
+                discount_amout: 0,
+                discount_percentage: 0,
+                net_amout: 0,
+                copay_percentage: 0,
+                copay_amount: 0,
+                deductable_amount: 0,
+                deductable_percentage: 0,
+                tax_inclusive: "N",
+                patient_tax: 0,
+                company_tax: 0,
+                total_tax: 0,
+                patient_resp: 0,
+                patient_payable: 0,
+                comapany_resp: 0,
+                company_payble: 0,
+
+                sec_deductable_percentage: 0,
+                sec_deductable_amount: 0,
+                sec_company_res: 0,
+                sec_company_tax: 0,
+                sec_company_paybale: 0,
+                sec_copay_percntage: 0,
+                sec_copay_amount: 0
+              };
+              outputArray.push(out);
+              req.records = { billdetails: outputArray };
+              next();
+              return;
+            }
+
+            debugLog("After zeroBill: ", zeroBill);
             new Promise((resolve, reject) => {
               try {
                 if (insured == "Y") {

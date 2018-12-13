@@ -5,6 +5,7 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 // import Enumerable from "linq";
 import POSIOputs from "../../../Models/POS";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import { debug } from "util";
 
 const changeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -206,53 +207,127 @@ const GenerateReciept = ($this, callBack) => {
   }
 };
 
-const SavePosEnrty = $this => {
-  GenerateReciept($this, that => {
-    $this.state.posted = "Y";
-    $this.state.transaction_type = "POS";
-    $this.state.transaction_date = $this.state.pos_date;
-    //debugger;
-    for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
-      $this.state.pharmacy_stock_detail[i].location_id =
-        $this.state.location_id;
-      $this.state.pharmacy_stock_detail[i].location_type =
-        $this.state.location_type;
-      $this.state.pharmacy_stock_detail[i].operation = "-";
-      $this.state.pharmacy_stock_detail[i].sales_uom =
-        $this.state.pharmacy_stock_detail[i].uom_id;
-      $this.state.pharmacy_stock_detail[i].item_code_id = $this.state.item_id;
-      $this.state.pharmacy_stock_detail[i].grn_number =
-        $this.state.pharmacy_stock_detail[i].grn_no;
-      $this.state.pharmacy_stock_detail[i].item_category_id =
-        $this.state.pharmacy_stock_detail[i].item_category;
-      $this.state.pharmacy_stock_detail[i].net_total =
-        $this.state.pharmacy_stock_detail[i].net_extended_cost;
+const Validations = $this => {
+  let isError = false;
+  debugger;
+  if ($this.state.card_amount > 0) {
+    if (
+      $this.state.card_check_number === null ||
+      $this.state.card_check_number === ""
+    ) {
+      isError = true;
+
+      swalMessage({
+        type: "warning",
+        title: "Invalid. Card Number cannot be blank."
+      });
+
+      document.querySelector("[name='card_check_number']").focus();
+      return isError;
     }
 
-    algaehApiCall({
-      uri: "/posEntry/addPosEntry",
-      data: $this.state,
-      onSuccess: response => {
-        if (response.data.success === true) {
-          $this.setState({
-            pos_number: response.data.records.pos_number,
-            hims_f_pharmacy_pos_header_id:
-              response.data.records.hims_f_pharmacy_pos_header_id,
-            year: response.data.records.year,
-            period: response.data.records.period,
-            receipt_number: response.data.records.receipt_number,
-            saveEnable: true,
-            postEnable: false
-          });
+    if ($this.state.card_date === null || $this.state.card_date === "") {
+      isError = true;
 
-          swalMessage({
-            type: "success",
-            title: "Saved successfully . ."
-          });
-        }
-      }
+      swalMessage({
+        type: "warning",
+        title: "Invalid. Card Date Cannot be blank."
+      });
+
+      document.querySelector("[name='card_date']").focus();
+      return isError;
+    }
+  }
+  if ($this.state.cheque_amount > 0) {
+    if (
+      $this.state.cheque_number === null ||
+      $this.state.cheque_number === ""
+    ) {
+      isError = true;
+
+      swalMessage({
+        type: "warning",
+        title: "Invalid Input. Check Number cannot be blank."
+      });
+
+      document.querySelector("[name='cheque_number']").focus();
+      return isError;
+    }
+
+    if ($this.state.cheque_date === null || $this.state.cheque_date === "") {
+      isError = true;
+
+      swalMessage({
+        type: "warning",
+        title: "Invalid Input. Cheque Date Cannot be blank."
+      });
+
+      document.querySelector("[name='cheque_date']").focus();
+      return isError;
+    }
+  } else if ($this.state.unbalanced_amount > 0) {
+    isError = true;
+
+    swalMessage({
+      type: "warning",
+      title: "Invalid Input. Unbanalced Amount should nullify."
     });
-  });
+
+    return isError;
+  }
+};
+
+const SavePosEnrty = $this => {
+  const err = Validations($this);
+
+  if (!err) {
+    GenerateReciept($this, that => {
+      $this.state.posted = "Y";
+      $this.state.transaction_type = "POS";
+      $this.state.transaction_date = $this.state.pos_date;
+      //debugger;
+      for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
+        $this.state.pharmacy_stock_detail[i].location_id =
+          $this.state.location_id;
+        $this.state.pharmacy_stock_detail[i].location_type =
+          $this.state.location_type;
+        $this.state.pharmacy_stock_detail[i].operation = "-";
+        $this.state.pharmacy_stock_detail[i].sales_uom =
+          $this.state.pharmacy_stock_detail[i].uom_id;
+        $this.state.pharmacy_stock_detail[i].item_code_id = $this.state.item_id;
+        $this.state.pharmacy_stock_detail[i].grn_number =
+          $this.state.pharmacy_stock_detail[i].grn_no;
+        $this.state.pharmacy_stock_detail[i].item_category_id =
+          $this.state.pharmacy_stock_detail[i].item_category;
+        $this.state.pharmacy_stock_detail[i].net_total =
+          $this.state.pharmacy_stock_detail[i].net_extended_cost;
+      }
+
+      algaehApiCall({
+        uri: "/posEntry/addPosEntry",
+        data: $this.state,
+        onSuccess: response => {
+          if (response.data.success === true) {
+            $this.setState({
+              pos_number: response.data.records.pos_number,
+              hims_f_pharmacy_pos_header_id:
+                response.data.records.hims_f_pharmacy_pos_header_id,
+              year: response.data.records.year,
+              period: response.data.records.period,
+              receipt_number: response.data.records.receipt_number,
+              saveEnable: true,
+              postEnable: false
+            });
+
+            swalMessage({
+              type: "success",
+              title: "Saved successfully . ."
+            });
+          }
+        }
+      });
+    });
+  }
 };
 
 const PostPosEntry = $this => {

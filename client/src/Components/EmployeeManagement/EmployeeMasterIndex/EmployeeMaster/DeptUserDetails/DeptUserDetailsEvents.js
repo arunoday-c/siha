@@ -77,58 +77,75 @@ const categorytexthandle = ($this, ctrl, e) => {
 
 const AddDeptUser = ($this, context, e) => {
   e.preventDefault();
-
+  debugger;
   AlgaehValidation({
     alertTypeIcon: "warning",
     querySelector: "data-validate='deptUserdtl'",
     onSuccess: () => {
-      let deptDetails = $this.state.deptDetails;
-      let insertdeptDetails = $this.state.insertdeptDetails;
-
-      let intExists = false;
-      for (let x = 0; x < deptDetails.length; x++) {
-        if (
-          deptDetails[x].sub_department_id === $this.state.sub_department_id
-        ) {
-          intExists = true;
-        }
-      }
-      if (intExists === false) {
-        let inpObj = {
-          sub_department_id: $this.state.sub_department_id,
-          category_speciality_id: $this.state.category_speciality_id,
-          user_id: $this.state.user_id,
-          category_id: $this.state.category_id,
-          speciality_id: $this.state.speciality_id,
-          services_id: $this.state.services_id
-        };
-
-        if ($this.state.hims_d_employee_id !== null) {
-          inpObj.employee_id = $this.state.hims_d_employee_id;
-          insertdeptDetails.push(inpObj);
-        }
-        deptDetails.push(inpObj);
-        $this.setState({
-          deptDetails: deptDetails,
-          sub_department_id: null,
-          insertdeptDetails: insertdeptDetails,
-          user_id: null,
-          speciality_id: null,
-          category_id: null,
-          services_id: null
-        });
-
-        if (context !== undefined) {
-          context.updateState({
-            deptDetails: deptDetails,
-            insertdeptDetails: insertdeptDetails
-          });
-        }
-      } else {
+      if ($this.state.sub_department_id === null) {
         swalMessage({
-          title: "Invalid Input. Selected Department already defined",
+          title: "Invalid Input. Department cannot be blank",
           type: "warning"
         });
+      } else if ($this.state.speciality_id === null) {
+        swalMessage({
+          title: "Invalid Input. Speciality cannot be blank",
+          type: "warning"
+        });
+      } else if ($this.state.specimapcategory === null) {
+        swalMessage({
+          title: "Invalid Input. Category cannot be blank",
+          type: "warning"
+        });
+      } else {
+        let deptDetails = $this.state.deptDetails;
+        let insertdeptDetails = $this.state.insertdeptDetails;
+
+        let intExists = false;
+        for (let x = 0; x < deptDetails.length; x++) {
+          if (
+            deptDetails[x].sub_department_id === $this.state.sub_department_id
+          ) {
+            intExists = true;
+          }
+        }
+        if (intExists === false) {
+          let inpObj = {
+            sub_department_id: $this.state.sub_department_id,
+            category_speciality_id: $this.state.category_speciality_id,
+            user_id: $this.state.user_id,
+            category_id: $this.state.category_id,
+            speciality_id: $this.state.speciality_id,
+            services_id: $this.state.services_id
+          };
+
+          if ($this.state.hims_d_employee_id !== null) {
+            inpObj.employee_id = $this.state.hims_d_employee_id;
+            insertdeptDetails.push(inpObj);
+          }
+          deptDetails.push(inpObj);
+          $this.setState({
+            deptDetails: deptDetails,
+            sub_department_id: null,
+            insertdeptDetails: insertdeptDetails,
+            user_id: null,
+            speciality_id: null,
+            category_id: null,
+            services_id: null
+          });
+
+          if (context !== undefined) {
+            context.updateState({
+              deptDetails: deptDetails,
+              insertdeptDetails: insertdeptDetails
+            });
+          }
+        } else {
+          swalMessage({
+            title: "Invalid Input. Selected Department already defined",
+            type: "warning"
+          });
+        }
       }
     }
   });

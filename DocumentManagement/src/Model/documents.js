@@ -1,63 +1,126 @@
 import mongoose from "mongoose";
-import multer from "multer";
-import GridFsStorage from "multer-gridfs-storage";
-import Grid from "gridfs-stream";
-import config from "../../../keys/keys";
-import crypto from "crypto";
-const connection = mongoose.connect(
-  config.mongoDb.connectionURI,
-  {
-    useNewUrlParser: true
-  }
-);
-const conn = mongoose.createConnection(config.mongoDb.connectionURI, {
-  useNewUrlParser: true
-});
-let gfs;
-
-conn.once("open", () => {
-  console.log("Open connection for mongoose");
-  // Init stream
-  gfs = Grid(conn.db, mongoose.mongo);
-  gfs.collection("uploads");
-});
-
-let storage = new GridFsStorage({
-  // url: config.mongoDb.connectionURI,
-  db: connection,
-  file: (req, file) => {
-    console.log("before promisify", file);
-    return new Promise((resolve, reject) => {
-      crypto.randomBytes(16, (err, buf) => {
-        if (err) {
-          return reject(err);
-        }
-        const filename = buf.toString("hex") + path.extname(file.originalname);
-        const fileInfo = {
-          filename: filename,
-          bucketName: "uploads"
-        };
-        resolve(fileInfo);
+import EmployeeDocModel from "./employeeDoc";
+import PatientDocModel from "./patientDoc";
+import { logger, debugLog } from "../Utils/logging";
+module.exports = db => {
+  return {
+    saveDocument: (req, res, next) => {
+      let buffer = "";
+      req.on("data", chunk => {
+        buffer += chunk.toString();
       });
-    });
-  }
-});
+      req.on("end", () => {
+        const _utf = new Buffer.from(buffer, "base64");
 
-module.exports = {
-  saveDocument: (req, res, next) => {
-    console.log("Here in save Document", req.file);
-    const upload = multer({ storage }).single("image");
-    upload(req, res, error => {
-      const MyModel = conn.model("algaeh_hims_employees");
-      const m = new MyModel();
-      var post = new BlogPost();
-      m.save(); // works
-      console.log("File uploaded successful");
-    });
+        const _headerFile = JSON.parse(req.headers["x-file-details"]);
+        const _clientID = req.headers["x-client-ip"];
+        if (_headerFile.fileType == "Employees") {
+          EmployeeDocModel.findOneAndUpdate(
+            {
+              pageName: _headerFile.pageName,
+              destinationName: _headerFile.destinationName
+            },
+            {
+              pageName: _headerFile.pageName,
+              destinationName: _headerFile.destinationName,
+              clientID: _clientID,
+              image: _utf,
+              fileExtention: _headerFile.fileExtention
+            },
+            (error, result) => {
+              if (error) {
+                res.status(400).json({
+                  success: false,
+                  records: error
+                });
+              } else {
+                if (result == null) {
+                  let _EmployeeDocModel = new EmployeeDocModel();
+                  _EmployeeDocModel.pageName = _headerFile.pageName;
+                  _EmployeeDocModel.destinationName =
+                    _headerFile.destinationName;
+                  _EmployeeDocModel.clientID = _clientID;
+                  _EmployeeDocModel.image = _utf;
+                  _EmployeeDocModel.fileExtention = _headerFile.fileExtention;
+                  _EmployeeDocModel.save();
+                }
+              }
+              res.status(200).json({
+                success: true,
+                records: "Success"
+              });
+            }
+          );
+        } else if (_headerFile.fileType == "Patients") {
+          PatientDocModel.findOneAndUpdate(
+            {
+              pageName: _headerFile.pageName,
+              destinationName: _headerFile.destinationName,
+              fileExtention: _headerFile.fileExtention
+            },
+            {
+              pageName: _headerFile.pageName,
+              destinationName: _headerFile.destinationName,
+              clientID: _clientID,
+              image: _utf,
+              fileExtention: _headerFile.fileExtention
+            },
+            (error, result) => {
+              if (error) {
+                res.status(400).json({
+                  success: false,
+                  records: error
+                });
+              } else {
+                if (result == null) {
+                  let _PatientDocModel = new PatientDocModel();
+                  _PatientDocModel.pageName = _headerFile.pageName;
+                  _PatientDocModel.destinationName =
+                    _headerFile.destinationName;
+                  _PatientDocModel.clientID = _clientID;
+                  _PatientDocModel.image = _utf;
+                  _PatientDocModel.fileExtention = _headerFile.fileExtention;
+                  _PatientDocModel.save();
+                }
+              }
+              res.status(200).json({
+                success: true,
+                records: "Success"
+              });
+            }
+          );
+        }
+      });
+    },
+    getDocument: (req, res, next) => {
+      const _headerFile = req.query;
 
-    res.status(200).json({
-      success: true,
-      records: req.file
-    });
-  }
+      if (_headerFile.fileType == "Employees") {
+        EmployeeDocModel.findOne(
+          { destinationName: _headerFile.destinationName },
+          (error, result) => {
+            if (error) {
+              res.status(400).json({
+                success: false,
+                records: err
+              });
+            } else {
+              if (result != null) {
+                res.status(200).json({
+                  success: true,
+                  fileExtention: result.fileExtention,
+                  records: result.image
+                });
+              } else {
+                res.status(400).json({
+                  success: false,
+                  message: "file not found"
+                });
+              }
+            }
+          }
+        );
+      }
+    }
+  };
 };

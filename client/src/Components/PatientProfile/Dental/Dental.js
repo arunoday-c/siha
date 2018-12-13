@@ -218,11 +218,10 @@ class Dental extends Component {
             },
             onSuccess: res => {
               if (res.data.success) {
-                //console.log("Billed");
-
                 this.setState(
                   {
-                    openBillingModal: false
+                    openBillingModal: false,
+                    discount_amout: 0
                   },
                   () => {
                     this.loadDentalTreatment();
@@ -2015,7 +2014,7 @@ class Dental extends Component {
                     }
                   ]}
                   keyId="algaeh_app_screens_id"
-                  uiUpdate={this.state.treatment_gridUpdate}
+                  //uiUpdate={this.state.treatment_gridUpdate}
                   dataSource={{
                     // pageInputExclude: true,
                     // uri: "/dental/getDentalTreatment",

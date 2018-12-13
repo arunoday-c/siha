@@ -1,17 +1,14 @@
 "use strict";
 import extend from "extend";
 import {
- 
   whereCondition,
   releaseDBConnection,
   jsonArrayToObject
 } from "../utils";
 
-
 import httpStatus from "../utils/httpStatus";
 
-
-import {  debugFunction, debugLog } from "../utils/logging";
+import { debugFunction, debugLog } from "../utils/logging";
 
 //created by irfan: to insert investigation
 let addInvestigationTest = (req, res, next) => {
@@ -546,15 +543,13 @@ let updateInvestigationTest = (req, res, next) => {
                   qry +=
                     " UPDATE `hims_d_rad_template_detail` SET template_name='" +
                     inputParam[i].template_name +
-                    "',template_html=\
-    '" +
+                    "',template_html='" +
                     inputParam[i].template_html +
                     "',template_status='" +
                     inputParam[i].template_status +
                     "', updated_date='" +
-                    new Date() +
-                    "',updated_by=\
-    '" +
+                    new Date().toLocaleString() +
+                    "',updated_by='" +
                     investigationDetails.updated_by +
                     "',record_status='" +
                     inputParam[i].record_status +

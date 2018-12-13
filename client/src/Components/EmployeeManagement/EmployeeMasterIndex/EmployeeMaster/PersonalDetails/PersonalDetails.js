@@ -24,9 +24,9 @@ import {
 import variableJson from "../../../../../utils/GlobalVariables.json";
 import Enumerable from "linq";
 import DeptUserDetails from "../DeptUserDetails/DeptUserDetails";
-import noImage from "../../../../../assets/images/images.webp";
-import { displayFileFromServer } from "../../../../../utils/GlobalFunctions";
-
+// import noImage from "../../../../../assets/images/images.webp";
+// import { displayFileFromServer } from "../../../../../utils/GlobalFunctions";
+import AlgaehFileUploader from "../../../../Wrapper/algaehFileUpload";
 class PersonalDetails extends PureComponent {
   constructor(props) {
     super(props);
@@ -67,21 +67,22 @@ class PersonalDetails extends PureComponent {
         }
       });
     }
-    this.getImage(this);
+    // this.getImage(this);
   }
 
-  getImage($this, context) {
-    displayFileFromServer({
-      uri: "/masters/getFile",
-      fileType: "Employees",
-      destinationName: $this.state.employee_code,
-      fileName: $this.state.employee_code,
-      resize: { width: 100, height: 100 },
-      onFileSuccess: data => {
-        $this.setState({ filePreview: data });
-      }
-    });
-  }
+  // getImage($this, context) {
+  //   debugger;
+  //   displayFileFromServer({
+  //     uri: "/masters/getFile",
+  //     fileType: "Employees",
+  //     destinationName: $this.state.employee_code,
+  //     fileName: $this.state.employee_code,
+  //     resize: { width: 100, height: 100 },
+  //     onFileSuccess: data => {
+  //       $this.setState({ filePreview: data });
+  //     }
+  //   });
+  // }
 
   componentWillReceiveProps(nextProps) {
     this.setState(nextProps.EmpMasterIOputs, () => {
@@ -123,12 +124,25 @@ class PersonalDetails extends PureComponent {
   }
 
   render() {
-    debugger;
     return (
       <React.Fragment>
         <MyContext.Consumer>
           {context => (
             <div className="hptl-phase1-add-patient-form">
+              {/* <div className="Image-cropper">
+                <Cropper
+                  alt="Employee Profile Picture"
+                  src={this.state.filePreview}
+                  ref={ref => {
+                    this.EmployeeCropper = ref;
+                  }}
+                />
+                <div className="row crop-action">
+                  {" "}
+                  <button className="btn btn-default">Cancel</button>
+                  <button className="btn btn-primary">Crop</button>
+                </div>
+              </div> */}
               <div className="col-lg-12">
                 <div className="row">
                   <div className="col-lg-10 primary-details">
@@ -481,7 +495,17 @@ class PersonalDetails extends PureComponent {
                           className="image-drop-area"
                           style={{ marginTop: 17, height: 150 }}
                         >
-                          <Dropzone
+                          <AlgaehFileUploader
+                            name="attach_photo"
+                            accept="image/*"
+                            textAltMessage="Empoyee Image"
+                            serviceParameters={{
+                              uniqueID: this.state.employee_code,
+                              destinationName: this.state.employee_code,
+                              fileType: "Employees"
+                            }}
+                          />
+                          {/* <Dropzone
                             onDrop={onDrop.bind(
                               this,
                               this,
@@ -494,9 +518,6 @@ class PersonalDetails extends PureComponent {
                             multiple={false}
                             name="image"
                           >
-                            {/* this.state.filePreview
-                                  ? this.state.filePreview
-                                  : noImage */}
                             <img
                               src={this.state.filePreview}
                               alt="Employee Profile Picture"
@@ -520,13 +541,8 @@ class PersonalDetails extends PureComponent {
                                 backgroundColor: "#E1AE54"
                               }}
                             />
-                            {/* <Line
-                              percent={this.state.percent}
-                              strokeWidth="1"
-                              strokeColor="#2db7f5"
-                              strokeLinecap="square"
-                            /> */}
-                          </Dropzone>
+                         
+                          </Dropzone>  */}
                         </div>
                       </div>
                     </div>

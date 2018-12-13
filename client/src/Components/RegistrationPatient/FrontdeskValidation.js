@@ -85,57 +85,6 @@ export function Validations(state) {
 
     document.querySelector("[name='contact_number']").focus();
     return isError;
-  } else if (state.state.card_amount > 0) {
-    if (state.state.card_number === null || state.state.card_number === "") {
-      isError = true;
-
-      swalMessage({
-        type: "warning",
-        title: "Invalid. Card Number cannot be blank."
-      });
-
-      document.querySelector("[name='card_number']").focus();
-      return isError;
-    }
-
-    if (state.state.card_date === null || state.state.card_date === "") {
-      isError = true;
-
-      swalMessage({
-        type: "warning",
-        title: "Invalid. Card Date Cannot be blank."
-      });
-
-      document.querySelector("[name='card_date']").focus();
-      return isError;
-    }
-  } else if (state.state.cheque_amount > 0) {
-    if (
-      state.state.cheque_number === null ||
-      state.state.cheque_number === ""
-    ) {
-      isError = true;
-
-      swalMessage({
-        type: "warning",
-        title: "Invalid Input. Check Number cannot be blank."
-      });
-
-      document.querySelector("[name='cheque_number']").focus();
-      return isError;
-    }
-
-    if (state.state.cheque_date === null || state.state.cheque_date === "") {
-      isError = true;
-
-      swalMessage({
-        type: "warning",
-        title: "Invalid Input. Cheque Date Cannot be blank."
-      });
-
-      document.querySelector("[name='cheque_date']").focus();
-      return isError;
-    }
   } else if (
     state.state.insured === "Y" &&
     (state.state.primary_insurance_provider_id === null ||
@@ -208,5 +157,70 @@ export function Validations(state) {
     });
 
     return isError;
+  } else if (
+    state.state.existing_plan === "Y" &&
+    state.state.treatment_plan_id === null
+  ) {
+    isError = true;
+
+    swalMessage({
+      type: "warning",
+      title: "Invalid Input. Treatment Plan is Mandatory."
+    });
+
+    return isError;
+  }
+  if (state.state.card_amount > 0) {
+    if (state.state.card_number === null || state.state.card_number === "") {
+      isError = true;
+
+      swalMessage({
+        type: "warning",
+        title: "Invalid. Card Number cannot be blank."
+      });
+
+      document.querySelector("[name='card_number']").focus();
+      return isError;
+    }
+
+    if (state.state.card_date === null || state.state.card_date === "") {
+      isError = true;
+
+      swalMessage({
+        type: "warning",
+        title: "Invalid. Card Date Cannot be blank."
+      });
+
+      document.querySelector("[name='card_date']").focus();
+      return isError;
+    }
+  }
+  if (state.state.cheque_amount > 0) {
+    if (
+      state.state.cheque_number === null ||
+      state.state.cheque_number === ""
+    ) {
+      isError = true;
+
+      swalMessage({
+        type: "warning",
+        title: "Invalid Input. Check Number cannot be blank."
+      });
+
+      document.querySelector("[name='cheque_number']").focus();
+      return isError;
+    }
+
+    if (state.state.cheque_date === null || state.state.cheque_date === "") {
+      isError = true;
+
+      swalMessage({
+        type: "warning",
+        title: "Invalid Input. Cheque Date Cannot be blank."
+      });
+
+      document.querySelector("[name='cheque_date']").focus();
+      return isError;
+    }
   }
 }
