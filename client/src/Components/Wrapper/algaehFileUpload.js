@@ -16,9 +16,11 @@ export default class AlgaehFileUploader extends PureComponent {
       filePreview: noImage,
       showCropper: false,
       showProgress: false,
+      showZoom: false,
       progressPercentage: 0,
       fileExtention: "",
-      openWebCam: false
+      openWebCam: false,
+      showLoader: true
     };
   }
   componentDidMount() {
@@ -30,18 +32,25 @@ export default class AlgaehFileUploader extends PureComponent {
         destinationName: that.props.serviceParameters.destinationName,
         onFileSuccess: data => {
           if (data !== undefined && data !== "") {
-            that.setState({ filePreview: data });
+            that.setState({ filePreview: data, showLoader: false });
           } else {
             that.setState({
-              filePreview: noImage
+              filePreview: noImage,
+              showLoader: false
             });
           }
         },
         onFileFailure: data => {
           that.setState({
-            filePreview: noImage
+            filePreview: noImage,
+            showLoader: false
           });
         }
+      });
+    } else {
+      that.setState({
+        filePreview: noImage,
+        showLoader: false
       });
     }
   }
@@ -72,7 +81,10 @@ export default class AlgaehFileUploader extends PureComponent {
     }
   }
   onCloseCropperHandler(e) {
-    this.setState({ showCropper: false, filePreview: "" });
+    const _from = e.target.getAttribute("from");
+    if (_from === "crop")
+      this.setState({ showCropper: false, filePreview: "" });
+    if (_from === "zoom") this.setState({ showZoom: false });
   }
   onCroppedHandler(e) {
     this.SavingImageOnServer();
@@ -96,6 +108,7 @@ export default class AlgaehFileUploader extends PureComponent {
             {" "}
             <button
               className="btn btn-default"
+              from="crop"
               onClick={this.onCloseCropperHandler.bind(this)}
             >
               Cancel
@@ -111,6 +124,26 @@ export default class AlgaehFileUploader extends PureComponent {
       );
     } else {
       null;
+    }
+  }
+
+  zoomImageImplement() {
+    if (this.state.showZoom) {
+      return (
+        <div className="Image-cropper ">
+          <img src={this.state.filePreview} />
+          <div className="row crop-action">
+            {" "}
+            <button
+              className="btn btn-default"
+              from="zoom"
+              onClick={this.onCloseCropperHandler.bind(this)}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      );
     }
   }
 
@@ -232,6 +265,22 @@ export default class AlgaehFileUploader extends PureComponent {
       );
     } else null;
   }
+  implementLoader() {
+    if (this.state.showLoader) {
+      return (
+        <div className="img-upload-loader">
+          <i className="fas fa-spinner fa-spin" />
+        </div>
+      );
+    } else null;
+  }
+
+  zoomHandler(e) {
+    this.setState({
+      showZoom: true
+    });
+  }
+
   render() {
     const _accept =
       this.props.accept !== undefined ? { accept: this.props.accept } : {};
@@ -242,6 +291,7 @@ export default class AlgaehFileUploader extends PureComponent {
     return (
       <React.Fragment>
         {this.cropperImplement()}
+        {this.zoomImageImplement()}
         {this.implementWebCam()}
         <div className="image-drop-area">
           <Dropzone
@@ -259,6 +309,7 @@ export default class AlgaehFileUploader extends PureComponent {
             />
             {this.implementProgressBar()}
           </Dropzone>
+          {this.implementLoader()}
           <div className="img-upload-actions">
             <i
               className="fas fa-paperclip"
@@ -268,7 +319,10 @@ export default class AlgaehFileUploader extends PureComponent {
               className="fas fa-camera"
               onClick={this.webCamHandler.bind(this)}
             />
-            <i className="fas fa-search-plus" />
+            <i
+              className="fas fa-search-plus"
+              onClick={this.zoomHandler.bind(this)}
+            />
           </div>
         </div>
       </React.Fragment>
