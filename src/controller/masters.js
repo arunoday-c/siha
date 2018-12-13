@@ -69,7 +69,7 @@ export default () => {
             message: err
           });
         } else {
-          const _result = JSON.parse(resp.body);
+          const _result = JSON.parse(body);
           if (_result.success) {
             const _resultData = _result.records;
             if (_result.fileExtention == null) {

@@ -120,6 +120,31 @@ module.exports = db => {
             }
           }
         );
+      } else if (_headerFile.fileType == "Patients") {
+        PatientDocModel.findOne(
+          { destinationName: _headerFile.destinationName },
+          (error, result) => {
+            if (error) {
+              res.status(400).json({
+                success: false,
+                records: err
+              });
+            } else {
+              if (result != null) {
+                res.status(200).json({
+                  success: true,
+                  fileExtention: result.fileExtention,
+                  records: result.image
+                });
+              } else {
+                res.status(400).json({
+                  success: false,
+                  message: "file not found"
+                });
+              }
+            }
+          }
+        );
       }
     }
   };

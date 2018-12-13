@@ -1,10 +1,11 @@
 import mongoose from "mongoose";
 let Schema = mongoose.Schema;
-let employeeSchema = new Schema({
+let patientSchema = new Schema({
   pageName: String,
   clientID: String,
-  image: String,
-  destinationName: String
+  image: Buffer,
+  destinationName: String,
+  fileExtention: String
 });
 
-module.exports = mongoose.model("algaeh_hims_patients", employeeSchema);
+module.exports = mongoose.model("algaeh_hims_patients", patientSchema);
