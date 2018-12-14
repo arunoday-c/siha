@@ -1,5 +1,4 @@
 .hptl-phase1-add-employee-form {
-  padding: 0 15px;
   h6 {
     margin: 10px 0;
     padding-bottom: 2px;
@@ -14,7 +13,6 @@
 
   .primary-details {
     border-right: 1px dashed #d3d3d3;
-    padding-top: 8px;
   }
   mark {
     background: none;
@@ -35,7 +33,6 @@
   }
 
   .secondary-details {
-    padding-top: 8px;
     .secondary-box-container {
       .attach-design {
         background: #8c8c8c;
@@ -53,4 +50,16 @@
       }
     }
   }
+  .dropzone {
+    img {
+      height: 200px;
+    }
+  }
+}
+.popRightDiv {
+  max-height: 68vh !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
 }

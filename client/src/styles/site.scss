@@ -1620,6 +1620,9 @@ th {
   height: 480px;
   margin: auto;
   box-shadow: 0 30px 100px rgba(0, 0, 0, 0.5);
+  video {
+    background: #000;
+  }
   .videoActions {
     position: absolute;
     z-index: 9;
