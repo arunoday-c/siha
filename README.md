@@ -4,7 +4,7 @@
 hims_d_service_type,
 hims_d_vitals_header
 
-# to create (ADMIN or SUPER ADMIN)
+# Howto create (ADMIN or SUPER ADMIN)
 
 to create ADMIN or SUPER ADMIN go to database
 add flags in 3 tables Manually
