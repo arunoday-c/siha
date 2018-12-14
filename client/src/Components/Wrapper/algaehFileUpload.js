@@ -32,38 +32,71 @@ export default class AlgaehFileUploader extends Component {
     }
   }
   componentDidMount() {
-    this.getDisplayImage(this.props);
+    if (
+      this.props.onref !== undefined &&
+      typeof this.props.onref === "function"
+    ) {
+      this.props.onref(this);
+    } else this.getDisplayImage(this.props);
   }
-
+  componentWillUnmount() {
+    if (
+      this.props.onref !== undefined &&
+      typeof this.props.onref === "function"
+    )
+      this.props.onref(undefined);
+  }
   getDisplayImage(propsP) {
     const that = this;
-    if (propsP.serviceParameters.uniqueID !== "") {
+
+    if (
+      propsP.serviceParameters.uniqueID !== null &&
+      propsP.serviceParameters.uniqueID !== ""
+    ) {
       displayFileFromServer({
         uri: "/masters/getFile",
         fileType: propsP.serviceParameters.fileType,
         destinationName: propsP.serviceParameters.uniqueID,
         onFileSuccess: data => {
-          if (data !== undefined && data !== "") {
-            that.setState({ filePreview: data, showLoader: false });
+          if (propsP.events !== undefined) {
+            if (typeof propsP.events.onSuccess === "function") {
+              propsP.events.onSuccess(data);
+            }
+          } else {
+            if (data !== undefined && data !== "") {
+              that.setState({ filePreview: data, showLoader: false });
+            } else {
+              that.setState({
+                filePreview: noImage,
+                showLoader: false
+              });
+            }
+          }
+        },
+        onFileFailure: data => {
+          if (propsP.events !== undefined) {
+            if (typeof propsP.events.onFailure === "function") {
+              propsP.events.onFailure(data);
+            }
           } else {
             that.setState({
               filePreview: noImage,
               showLoader: false
             });
           }
-        },
-        onFileFailure: data => {
-          that.setState({
-            filePreview: noImage,
-            showLoader: false
-          });
         }
       });
     } else {
-      that.setState({
-        filePreview: noImage,
-        showLoader: false
-      });
+      if (propsP.events !== undefined) {
+        if (typeof propsP.events.onFailure === "function") {
+          propsP.events.onFailure();
+        }
+      } else {
+        that.setState({
+          filePreview: noImage,
+          showLoader: false
+        });
+      }
     }
   }
 
@@ -179,20 +212,24 @@ export default class AlgaehFileUploader extends Component {
     this.imager.click();
   }
 
-  SavingImageOnServer() {
-    const _pageName = getCookie("ScreenName").replace("/", "");
+  SavingImageOnServer(dataToSave, fileExtention) {
+    debugger;
     const that = this;
+    dataToSave = dataToSave || that.cropperImage.crop().split(",")[1];
+    fileExtention = fileExtention || that.state.fileExtention;
+    const _pageName = getCookie("ScreenName").replace("/", "");
+
     algaehApiCall({
       uri: "/masters/imageSave",
       method: "POST",
-      data: that.cropperImage.crop().split(",")[1],
+      data: dataToSave,
       header: {
         "content-type": "application/octet-stream",
         "x-file-details": JSON.stringify({
           pageName: _pageName,
           destinationName: that.props.serviceParameters.uniqueID,
           fileType: that.props.serviceParameters.fileType,
-          fileExtention: that.state.fileExtention
+          fileExtention: fileExtention
         })
       },
       others: {
@@ -305,44 +342,51 @@ export default class AlgaehFileUploader extends Component {
       this.props.textAltMessage !== undefined
         ? this.props.textAltMessage
         : "No File Preview";
-    return (
-      <React.Fragment>
-        {this.cropperImplement()}
-        {this.zoomImageImplement()}
-        {this.implementWebCam()}
-        <div className="image-drop-area">
-          <Dropzone
-            className="dropzone"
-            name={this.props.name + "_DropZone"}
-            onDrop={this.dropZoneHandlerOnDrop.bind(this)}
-            {..._accept}
-          >
-            <img
-              src={this.state.filePreview}
-              alt={_alt}
-              ref={ref => {
-                this.imager = ref;
-              }}
-            />
-            {this.implementProgressBar()}
-          </Dropzone>
-          {this.implementLoader()}
-          <div className="img-upload-actions">
-            <i
-              className="fas fa-paperclip"
-              onClick={this.showAttachmentHandler.bind(this)}
-            />
-            <i
-              className="fas fa-camera"
-              onClick={this.webCamHandler.bind(this)}
-            />
-            <i
-              className="fas fa-search-plus"
-              onClick={this.zoomHandler.bind(this)}
-            />
+    const _showControl =
+      this.props.showControl === undefined ? true : this.props.showControl;
+
+    if (_showControl) {
+      return (
+        <React.Fragment>
+          {this.cropperImplement()}
+          {this.zoomImageImplement()}
+          {this.implementWebCam()}
+          <div className="image-drop-area">
+            <Dropzone
+              className="dropzone"
+              name={this.props.name + "_DropZone"}
+              onDrop={this.dropZoneHandlerOnDrop.bind(this)}
+              {..._accept}
+            >
+              <img
+                src={this.state.filePreview}
+                alt={_alt}
+                ref={ref => {
+                  this.imager = ref;
+                }}
+              />
+              {this.implementProgressBar()}
+            </Dropzone>
+            {this.implementLoader()}
+            <div className="img-upload-actions">
+              <i
+                className="fas fa-paperclip"
+                onClick={this.showAttachmentHandler.bind(this)}
+              />
+              <i
+                className="fas fa-camera"
+                onClick={this.webCamHandler.bind(this)}
+              />
+              <i
+                className="fas fa-search-plus"
+                onClick={this.zoomHandler.bind(this)}
+              />
+            </div>
           </div>
-        </div>
-      </React.Fragment>
-    );
+        </React.Fragment>
+      );
+    } else {
+      return <React.Fragment />;
+    }
   }
 }

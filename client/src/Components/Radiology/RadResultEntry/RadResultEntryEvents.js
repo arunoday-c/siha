@@ -16,7 +16,6 @@ const examhandle = ($this, e) => {
   let value = e.value || e.target.value;
 
   if ($this.state.pre_exam_status === "CO") {
-    
     $this.setState({
       [name]: $this.state.exam_status
     });
@@ -122,6 +121,12 @@ const UpdateRadOrder = ($this, value) => {
     cancelButtonText: "No"
   }).then(willProceed => {
     if (willProceed.value) {
+      //SaveTemplate
+      $this.radiologyValidateTemplate.SavingImageOnServer(
+        $this.state.template_html,
+        "html"
+      );
+
       algaehApiCall({
         uri: "/radiology/updateRadOrderedServices",
         data: inputobj,

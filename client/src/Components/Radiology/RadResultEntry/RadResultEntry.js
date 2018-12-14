@@ -27,6 +27,7 @@ import {
   rtehandle,
   onvalidate
 } from "./RadResultEntryEvents";
+import AlgaehFileUploader from "../../Wrapper/algaehFileUpload";
 
 class RadResultEntry extends Component {
   constructor(props) {
@@ -411,6 +412,27 @@ class RadResultEntry extends Component {
               <div className="col-lg-12">
                 <div className="row">
                   <div className="col-lg-12">
+                    <AlgaehFileUploader
+                      showControl={false}
+                      onref={ref => {
+                        this.radiologyValidateTemplate = ref;
+                      }}
+                      serviceParameters={{
+                        uniqueID: {
+                          templateID: this.state.template_name,
+                          patient_code: this.state.patient_code
+                        },
+                        fileType: "Patients"
+                      }}
+                      events={{
+                        onSuccess: data => {
+                          debugger;
+                        },
+                        onFileFailure: () => {
+                          debugger;
+                        }
+                      }}
+                    />
                     <button
                       type="button"
                       className="btn btn-primary"
