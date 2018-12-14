@@ -1012,6 +1012,11 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
               servicesDetails.zeroBill == undefined
                 ? false
                 : servicesDetails.zeroBill;
+
+            let FollowUp =
+              servicesDetails.FollowUp == undefined
+                ? false
+                : servicesDetails.FollowUp;
             let gross_amount = 0,
               net_amout = 0,
               sec_unit_cost = 0;
@@ -1407,7 +1412,14 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                     });
                   }
                 } else {
-                  unit_cost = unit_cost != 0 ? unit_cost : records.standard_fee;
+                  if (FollowUp === true) {
+                    unit_cost =
+                      unit_cost != 0 ? unit_cost : records.followup_free_fee;
+                  } else {
+                    unit_cost =
+                      unit_cost != 0 ? unit_cost : records.standard_fee;
+                  }
+
                   if (conversion_factor != 0) {
                     unit_cost = unit_cost * conversion_factor;
                   }
