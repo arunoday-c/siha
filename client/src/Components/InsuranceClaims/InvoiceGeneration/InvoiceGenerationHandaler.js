@@ -258,24 +258,10 @@ const getCtrlCode = ($this, docNumber) => {
       mappingName: "invoiceGen"
     },
     afterSuccess: data => {
+      debugger;
       data.generateVoice = false;
       data.clearEnable = false;
 
-      let gross_total = Enumerable.from(data)
-        .select(w => w.gross_amount)
-        .sum();
-
-      let discout_total = Enumerable.from(data)
-        .select(w => w.discount_amout)
-        .sum();
-
-      let net_total = Enumerable.from(data)
-        .select(w => w.net_amout)
-        .sum();
-
-      data.gross_amount = gross_total;
-      data.discount_amount = discout_total;
-      data.net_amout = net_total;
       $this.setState(data);
       AlgaehLoader({ show: false });
     }

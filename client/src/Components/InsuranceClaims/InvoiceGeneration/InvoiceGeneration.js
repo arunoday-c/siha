@@ -57,7 +57,6 @@ class InvoiceGeneration extends Component {
       sec_company_resp: null,
       sec_company_tax: null,
       sec_company_payable: null,
-
       insurance_provider_id: null,
       sub_insurance_id: null,
       network_id: null,
@@ -145,7 +144,6 @@ class InvoiceGeneration extends Component {
             />
           }
           breadStyle={this.props.breadStyle}
-          //breadWidth={this.props.breadWidth}
           pageNavPath={[
             {
               pageName: (

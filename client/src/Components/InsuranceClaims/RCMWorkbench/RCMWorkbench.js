@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./RCMWorkbench.css";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import FrontDesk from "../../../Search/FrontDesk.json";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import {
@@ -87,10 +87,18 @@ class RCMWorkbench extends Component {
           method: "GET",
           data: send_data,
           onSuccess: response => {
-            this.setState({
-              claims: response.data.records
-            });
-            AlgaehLoader({ show: false });
+            if (response.data.success) {
+              this.setState({
+                claims: response.data.records
+              });
+              AlgaehLoader({ show: false });
+            } else {
+              swalMessage({
+                title: response.data.records,
+                type: "error"
+              });
+              AlgaehLoader({ show: false });
+            }
           },
           onError: error => {
             AlgaehLoader({ show: false });

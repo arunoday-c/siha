@@ -62,7 +62,7 @@ export default ({ config, db }) => {
     if (result.invalid_input == true) {
       res.status(httpStatus.ok).json({
         success: false,
-        records: "please provide valid input"
+        records: "Please Select at least One Criteria"
       });
     } else {
       res.status(httpStatus.ok).json({
