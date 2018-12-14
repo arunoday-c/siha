@@ -247,7 +247,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
             (req.userIdentity.role_type == "SU" &&
               req.userIdentity.user_type == "SU") ||
             (req.userIdentity.role_type == "AD" &&
-              req.userIdentity.user_type == "SU")
+              req.userIdentity.user_type == "AD")
           ) {
             debugLog("ADMIN  if concondition");
             debugLog("role type:", req.userIdentity);
