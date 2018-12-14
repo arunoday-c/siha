@@ -4,7 +4,7 @@ let employeeSchema = new Schema({
   pageName: String,
   clientID: String,
   image: Buffer,
-  destinationName: String,
+  destinationName: Object,
   fileExtention: String,
   updatedDate: Date
 });

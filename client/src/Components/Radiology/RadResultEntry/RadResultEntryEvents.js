@@ -16,7 +16,6 @@ const examhandle = ($this, e) => {
   let value = e.value || e.target.value;
 
   if ($this.state.pre_exam_status === "CO") {
-    
     $this.setState({
       [name]: $this.state.exam_status
     });
@@ -68,100 +67,116 @@ const rtehandle = ($this, template_html) => {
 };
 
 const UpdateRadOrder = ($this, value) => {
-  let inputobj = {};
-  let status = "",
-    report_type = "";
-  if ($this.state.exam_status === "AW") {
-    status = "UP";
-    report_type = "PR";
-  } else if ($this.state.exam_status === "ST") {
-    status = "UP";
-    report_type = "PR";
-  } else if ($this.state.exam_status === "CN") {
-    status = "CN";
-    report_type = "PR";
-  } else if ($this.state.exam_status === "CO") {
-    status = "RC";
-    report_type = "FL";
-  }
+  if ($this.state.template_id === null && value === "Validate") {
+    swalMessage({
+      title: "Invalid Input. Please Select Template",
+      type: "warning"
+    });
+  } else {
+    let inputobj = {};
+    let status = "",
+      report_type = "";
+    if ($this.state.exam_status === "AW") {
+      status = "UP";
+      report_type = "PR";
+    } else if ($this.state.exam_status === "ST") {
+      status = "UP";
+      report_type = "PR";
+    } else if ($this.state.exam_status === "CN") {
+      status = "CN";
+      report_type = "PR";
+    } else if ($this.state.exam_status === "CO") {
+      status = "RC";
+      report_type = "FL";
+    }
 
-  if (value === "Validate") {
-    status = "RA";
-  }
-  inputobj = {
-    hims_f_rad_order_id: $this.state.hims_f_rad_order_id,
-    status: status,
-    cancelled: $this.state.cancelled,
-    scheduled_date_time: moment(new Date())._d,
-    scheduled_by: $this.state.scheduled_by,
-    arrived: $this.state.arrived,
-    arrived_date: moment(new Date())._d,
-    validate_by: $this.state.validate_by,
-    validate_date_time: $this.state.validate_date_time,
-    attended_by: $this.state.attended_by,
-    technician_id: $this.state.technician_id,
+    if (value === "Validate") {
+      status = "RA";
+    }
+    inputobj = {
+      hims_f_rad_order_id: $this.state.hims_f_rad_order_id,
+      status: status,
+      cancelled: $this.state.cancelled,
+      scheduled_date_time: moment(new Date())._d,
+      scheduled_by: $this.state.scheduled_by,
+      arrived: $this.state.arrived,
+      arrived_date: moment(new Date())._d,
+      validate_by: $this.state.validate_by,
+      validate_date_time: $this.state.validate_date_time,
+      attended_by: $this.state.attended_by,
+      technician_id: $this.state.technician_id,
+      template_id: $this.state.template_id,
 
-    attended_date_time: $this.state.attended_date_time,
-    exam_start_date_time: $this.state.exam_start_date_time,
-    exam_end_date_time: $this.state.exam_end_date_time,
-    exam_status: $this.state.exam_status,
-    report_type: report_type
-  };
+      attended_date_time: $this.state.attended_date_time,
+      exam_start_date_time: $this.state.exam_start_date_time,
+      exam_end_date_time: $this.state.exam_end_date_time,
+      exam_status: $this.state.exam_status,
+      report_type: report_type
+    };
 
-  swal({
-    title:
-      "Are you sure the patient " +
-      $this.state.full_name +
-      " for the procedure " +
-      $this.state.service_name,
-    type: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Yes!",
-    confirmButtonColor: "#",
-    cancelButtonColor: "#d33",
-    cancelButtonText: "No"
-  }).then(willProceed => {
-    if (willProceed.value) {
-      algaehApiCall({
-        uri: "/radiology/updateRadOrderedServices",
-        data: inputobj,
-        method: "PUT",
-        onSuccess: response => {
-          if (response.data.success === true) {
+    swal({
+      title:
+        "Are you sure the patient " +
+        $this.state.full_name +
+        " for the procedure " +
+        $this.state.service_name,
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willProceed => {
+      if (willProceed.value) {
+        //SaveTemplate
+        if (value === "Validate") {
+          $this.radiologyValidateTemplate.SavingImageOnServer(
+            $this.state.template_html,
+            "html"
+          );
+        }
+
+        algaehApiCall({
+          uri: "/radiology/updateRadOrderedServices",
+          data: inputobj,
+          method: "PUT",
+          onSuccess: response => {
+            if (response.data.success === true) {
+              swalMessage({
+                title: "Record updated successfully . .",
+                type: "success"
+              });
+              $this.props.getRadiologyTestList({
+                uri: "/radiology/getRadOrderedServices",
+                method: "GET",
+                data: inputobj,
+                redux: {
+                  type: "RAD_LIST_GET_DATA",
+                  mappingName: "radschlist"
+                },
+                afterSuccess: data => {
+                  $this.setState({
+                    isOpen: !$this.state.isOpen
+                  });
+                }
+              });
+            }
+          },
+          onFailure: error => {
             swalMessage({
-              title: "Record updated successfully . .",
-              type: "success"
-            });
-            $this.props.getRadiologyTestList({
-              uri: "/radiology/getRadOrderedServices",
-              method: "GET",
-              data: inputobj,
-              redux: {
-                type: "RAD_LIST_GET_DATA",
-                mappingName: "radschlist"
-              },
-              afterSuccess: data => {
-                $this.setState({
-                  isOpen: !$this.state.isOpen
-                });
-              }
+              title: error.message,
+              type: "error"
             });
           }
-        },
-        onFailure: error => {
-          swalMessage({
-            title: error.message,
-            type: "error"
-          });
-        }
-      });
-    } else {
-      swalMessage({
-        title: "Cancelled",
-        type: "warning"
-      });
-    }
-  });
+        });
+      } else {
+        swalMessage({
+          title: "Cancelled",
+          type: "warning"
+        });
+      }
+    });
+  }
 };
 
 const onvalidate = $this => {

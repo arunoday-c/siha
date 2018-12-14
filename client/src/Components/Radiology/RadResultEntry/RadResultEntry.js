@@ -27,12 +27,13 @@ import {
   rtehandle,
   onvalidate
 } from "./RadResultEntryEvents";
+import AlgaehFileUploader from "../../Wrapper/algaehFileUpload";
 
 class RadResultEntry extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      template_name: null,
+      template_id: null,
       template_html: null,
       pre_exam_status: null,
       exam_start_date_time: null,
@@ -70,6 +71,7 @@ class RadResultEntry extends Component {
     }
   }
   componentWillReceiveProps(newProps) {
+    debugger;
     if (
       newProps.selectedPatient !== undefined &&
       (newProps.radschlist === undefined || newProps.radschlist.length === 0)
@@ -77,6 +79,7 @@ class RadResultEntry extends Component {
       if (this.state.changesDone === false) {
         newProps.selectedPatient.pre_exam_status =
           newProps.selectedPatient.exam_status;
+
         this.setState({ ...this.state, ...newProps.selectedPatient });
       }
     } else {
@@ -363,9 +366,9 @@ class RadResultEntry extends Component {
                           forceLabel: "Select Template"
                         }}
                         selector={{
-                          name: "template_name",
+                          name: "template_id",
                           className: "select-fld",
-                          value: this.state.template_name,
+                          value: this.state.template_id,
                           dataSource: {
                             textField: "template_name",
                             valueField: "hims_d_rad_template_detail_id",
@@ -411,6 +414,30 @@ class RadResultEntry extends Component {
               <div className="col-lg-12">
                 <div className="row">
                   <div className="col-lg-12">
+                    <AlgaehFileUploader
+                      showControl={false}
+                      onref={ref => {
+                        this.radiologyValidateTemplate = ref;
+                      }}
+                      needConvertion={false}
+                      addDataTag={false}
+                      //debugger
+                      serviceParameters={{
+                        uniqueID: {
+                          templateID: this.state.template_id,
+                          patient_code: this.state.patient_code
+                        },
+                        fileType: "Patients"
+                      }}
+                      events={{
+                        onSuccess: data => {
+                          debugger;
+                        },
+                        onFileFailure: () => {
+                          debugger;
+                        }
+                      }}
+                    />
                     <button
                       type="button"
                       className="btn btn-primary"

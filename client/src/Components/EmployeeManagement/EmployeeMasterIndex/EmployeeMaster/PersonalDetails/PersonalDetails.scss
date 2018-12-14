@@ -1,7 +1,18 @@
-.hptl-phase1-add-patient-form {
+.hptl-phase1-add-employee-form {
+  h6 {
+    margin: 10px 0;
+    padding-bottom: 2px;
+    border-bottom: 1px solid #d3d3d3;
+    span {
+      border-bottom: 2px solid #8c8c8c;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      line-height: 0;
+    }
+  }
+
   .primary-details {
     border-right: 1px dashed #d3d3d3;
-    padding-top: 8px;
   }
   mark {
     background: none;
@@ -22,7 +33,6 @@
   }
 
   .secondary-details {
-    padding-top: 8px;
     .secondary-box-container {
       .attach-design {
         background: #8c8c8c;
@@ -40,4 +50,16 @@
       }
     }
   }
+  .dropzone {
+    img {
+      height: 200px;
+    }
+  }
+}
+.popRightDiv {
+  max-height: 68vh !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
 }

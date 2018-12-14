@@ -155,7 +155,7 @@ export function displayFileFromServer(options) {
       : {};
   algaehApiCall({
     uri: options.uri,
-    method: "get",
+    method: "GET",
     data: {
       fileType: options.fileType,
       destinationName: options.destinationName,
@@ -164,11 +164,20 @@ export function displayFileFromServer(options) {
     others: { responseType: "arraybuffer" },
     onSuccess: response => {
       if (response.data) {
-        const _data =
-          "data:" +
-          response.headers["content-type"] +
-          ";base64," +
-          new Buffer(response.data, "binary").toString("base64");
+        const _addData =
+          options.addDataTag === undefined ? true : options.addDataTag;
+        let _data = undefined;
+        if (_addData) {
+          _data =
+            "data:" +
+            response.headers["content-type"] +
+            ";base64," +
+            new Buffer(response.data, "binary").toString("base64");
+        } else {
+          debugger;
+          _data = new Buffer(response.data, "binary").toString("base64");
+        }
+
         if (typeof options.onFileSuccess === "function") {
           options.onFileSuccess(_data);
         }

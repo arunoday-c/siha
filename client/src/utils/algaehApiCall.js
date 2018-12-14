@@ -66,10 +66,15 @@ export function algaehApiCall(options) {
       let str = [];
       for (let p in settings.data) {
         if (settings.data.hasOwnProperty(p)) {
-          if (settings.data[p] !== undefined)
+          if (settings.data[p] !== undefined) {
+            let _newData = settings.data[p];
+            if (typeof _newData === "object") {
+              _newData = JSON.stringify(_newData);
+            }
             str.push(
-              encodeURIComponent(p) + "=" + encodeURIComponent(settings.data[p])
+              encodeURIComponent(p) + "=" + encodeURIComponent(_newData)
             );
+          }
         }
       }
       settings.data = {};
