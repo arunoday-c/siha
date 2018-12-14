@@ -5,7 +5,6 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 // import Enumerable from "linq";
 import POSIOputs from "../../../Models/POS";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import { debug } from "util";
 
 const changeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -35,7 +34,6 @@ const getCtrlCode = ($this, docNumber) => {
       mappingName: "posentry"
     },
     afterSuccess: data => {
-      //debugger;
       data.saveEnable = true;
       data.patient_payable_h = data.patient_payable;
       data.case_type = "O";
@@ -209,7 +207,7 @@ const GenerateReciept = ($this, callBack) => {
 
 const Validations = $this => {
   let isError = false;
-  debugger;
+
   if ($this.state.card_amount > 0) {
     if (
       $this.state.card_check_number === null ||
@@ -285,7 +283,7 @@ const SavePosEnrty = $this => {
       $this.state.posted = "Y";
       $this.state.transaction_type = "POS";
       $this.state.transaction_date = $this.state.pos_date;
-      //debugger;
+
       for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
         $this.state.pharmacy_stock_detail[i].location_id =
           $this.state.location_id;
@@ -387,7 +385,6 @@ const VisitSearch = ($this, e) => {
         callBack(text);
       },
       onRowSelect: row => {
-        debugger;
         $this.setState(
           {
             visit_code: row.visit_code,
@@ -443,7 +440,6 @@ const getMedicationList = $this => {
       mappingName: "medicationlist"
     },
     afterSuccess: data => {
-      debugger;
       AddItems($this, data);
     }
   });
@@ -476,15 +472,13 @@ const AddItems = ($this, ItemInput) => {
       };
       inputArray.push(inputObj);
     }
-    debugger;
+
     algaehApiCall({
       uri: "/posEntry/getPrescriptionPOS",
       method: "POST",
       data: inputArray,
       onSuccess: response => {
         if (response.data.success) {
-          debugger;
-
           if (response.data.records.result.length > 0) {
             let data = response.data.records.result[0];
             let existingservices = [];

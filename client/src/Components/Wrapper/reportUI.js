@@ -9,7 +9,6 @@ import ReactDOM from "react-dom";
 import AlgaehSearch from "../Wrapper/globalSearch";
 export default class ReportUI extends Component {
   constructor(props) {
-    //debugger;
     super(props);
     this.state = {
       pageDisplay: "",

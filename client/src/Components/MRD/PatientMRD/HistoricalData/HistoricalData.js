@@ -179,12 +179,7 @@ class HistoricalData extends Component {
   }
 
   generateVitalColumns(data) {
-    //debugger;
-    // let x = Enumerable.from(data)
-    //   .groupBy("$.vital_id", null, (k, g) => {
-    //     return g.getSource();
-    //   })
-    //   .toArray();
+   
 
     return [
       {

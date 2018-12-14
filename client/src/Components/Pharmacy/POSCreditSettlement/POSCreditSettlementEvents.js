@@ -23,7 +23,6 @@ const PatientSearch = ($this, e) => {
     },
 
     onRowSelect: row => {
-      debugger;
       $this.setState(
         {
           patient_code: row.patient_code,
@@ -40,14 +39,13 @@ const PatientSearch = ($this, e) => {
 
 const getPatientDetails = $this => {
   AlgaehLoader({ show: true });
-  debugger;
+
   algaehApiCall({
     uri: "/POSCreditSettlement/getPatientPOSCriedt",
     method: "GET",
     data: { patient_id: $this.state.patient_id },
     onSuccess: response => {
       if (response.data.success) {
-        debugger;
         let data = response.data.records;
         if (data.length > 0) {
           for (let i = 0; i < data.length; i++) {
@@ -182,7 +180,6 @@ const getCashiersAndShiftMAP = $this => {
     method: "GET",
     data: { year: year, month: month, for: "T" },
     onSuccess: response => {
-      debugger;
       if (response.data.success) {
         if (response.data.records.length > 0) {
           $this.setState({ shift_id: response.data.records[0].shift_id });
@@ -207,10 +204,7 @@ const getCtrlCode = ($this, billcode) => {
     data: { pos_credit_number: billcode },
     onSuccess: response => {
       if (response.data.success) {
-        debugger;
-
         let data = response.data.records;
-        debugger;
 
         data.Billexists = true;
 
@@ -308,7 +302,6 @@ const GenerateReciept = ($this, callback) => {
 };
 
 const SavePosCreidt = $this => {
-  debugger;
   const err = Validations($this);
   if (!err) {
     if ($this.state.unbalanced_amount === 0) {
@@ -328,7 +321,6 @@ const SavePosCreidt = $this => {
           onSuccess: response => {
             AlgaehLoader({ show: false });
             if (response.data.success) {
-              debugger;
               $this.setState({
                 pos_credit_number: response.data.records.pos_credit_number,
                 hims_f_pos_credit_header_id:
@@ -343,7 +335,6 @@ const SavePosCreidt = $this => {
             }
           },
           onFailure: error => {
-            debugger;
             AlgaehLoader({ show: false });
             swalMessage({
               title: error.response.data.message || error.message,

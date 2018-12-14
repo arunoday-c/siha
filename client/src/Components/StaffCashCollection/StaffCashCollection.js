@@ -60,8 +60,6 @@ class StaffCashCollection extends Component {
   }
 
   authAndCloseShift(status, e) {
-    debugger;
-
     AlgaehValidation({
       alertTypeIcon: "warning",
       onSuccess: () => {

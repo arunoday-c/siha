@@ -35,7 +35,6 @@ export default class OPBillingDetails extends Component {
   }
 
   render() {
-    debugger;
     return (
       <div className="hptl-phase1-opbilling-details margin-top-15 margin-bottom-15 ">
         <div className="tab-container toggle-section">

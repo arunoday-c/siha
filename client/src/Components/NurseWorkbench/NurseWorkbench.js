@@ -427,7 +427,7 @@ class NurseWorkbench extends Component {
   }
 
   moveToStation(data, e) {
-    debugger;
+    
     this.setState({
       patient_name: data.full_name,
       current_patient: data.patient_id,

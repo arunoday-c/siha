@@ -35,19 +35,7 @@ export default class PatientDetails extends PureComponent {
       });
     }
   }
-  // componentDidUpdate() {
-  //   debugger;
-  //   checkSecurity({
-  //     securityType: "componet",
-  //     component_code: "FD_PR_PAT_DETAIL",
-  //     module_code: "FTDSK",
-  //     screen_code: "FD0002",
-  //     hasSecurity: () => {
-  //       this.patientForm.classList.add("d-none");
-  //       this.setState({ actionPatientDesign: false });
-  //     }
-  //   });
-  // }
+
   render() {
     let patientSelect = this.state.actionPatientDesign ? "active" : "";
     let informationSelect = this.state.actionInformationDesign ? "" : "active";

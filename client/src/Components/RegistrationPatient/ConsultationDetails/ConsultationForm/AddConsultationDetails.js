@@ -4,7 +4,6 @@ import Enumerable from "linq";
 import { SetBulkState } from "../../../../utils/GlobalFunctions";
 
 const DeptselectedHandeler = ($this, context, e) => {
-  debugger;
   let dept = Enumerable.from($this.props.deptanddoctors.departmets)
     .where(w => w.sub_department_id === e.value)
     .firstOrDefault();
@@ -113,7 +112,6 @@ const doctorselectedHandeler = ($this, context, e) => {
                   billdetail: false
                 },
                 () => {
-                  debugger;
                   if ($this.state.existing_plan !== "Y") {
                     generateBillDetails($this, context);
                   }
@@ -205,7 +203,7 @@ const doctorselectedHandeler = ($this, context, e) => {
 
 const generateBillDetails = ($this, context) => {
   let zeroBill = false;
-  debugger;
+
   if (
     $this.state.department_type === "D" &&
     $this.state.existing_plan === "Y"
@@ -281,7 +279,6 @@ const radioChange = ($this, context, e) => {
       [name]: value
     },
     () => {
-      debugger;
       if (name === "existing_plan" && value === "Y") {
         getTreatementPlans($this);
         if ($this.state.doctor_id !== null) {

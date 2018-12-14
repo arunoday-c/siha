@@ -149,7 +149,6 @@ export function saveImageOnServer(options) {
   }
 }
 export function displayFileFromServer(options) {
-  debugger;
   const _resize =
     options.resize !== undefined
       ? { resize: JSON.stringify(options.resize) }
@@ -239,7 +238,7 @@ export function AlgaehValidation(options) {
     return;
   }
   let _rootValidationElement = null;
-  // debugger;
+
   if (settings.querySelector !== undefined && settings.querySelector !== "")
     _rootValidationElement = document.querySelector(
       "[" + settings.querySelector + "]"

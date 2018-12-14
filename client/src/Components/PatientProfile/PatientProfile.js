@@ -103,7 +103,6 @@ class PatientProfile extends Component {
           openPopup={true}
           events={{
             onClose: (that = this) => {
-              debugger;
               allergyPopUp = false;
               // that.handleClose.bind(this);
             }
@@ -159,7 +158,6 @@ class PatientProfile extends Component {
   }
 
   render() {
-    debugger;
     const _pat_profile =
       this.props.patient_profile !== undefined &&
       this.props.patient_profile.length > 0
