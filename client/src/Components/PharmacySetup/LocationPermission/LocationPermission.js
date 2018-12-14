@@ -52,16 +52,13 @@ class LocationPermission extends Component {
     ) {
       getLocationPermission(this, this);
     }
-    if (
-      this.props.locationpermi === undefined ||
-      this.props.locationpermi.length === 0
-    ) {
+    if (this.props.location === undefined || this.props.location.length === 0) {
       this.props.getLocation({
         uri: "/pharmacy/getPharmacyLocation",
         method: "GET",
         redux: {
           type: "ANALYTES_GET_DATA",
-          mappingName: "locationpermi"
+          mappingName: "location"
         }
       });
     }
@@ -109,7 +106,7 @@ class LocationPermission extends Component {
                 dataSource: {
                   textField: "location_description",
                   valueField: "hims_d_pharmacy_location_id",
-                  data: this.props.locationpermi
+                  data: this.props.location
                 },
                 onChange: changeTexts.bind(this, this)
               }}
@@ -211,9 +208,9 @@ class LocationPermission extends Component {
                     ),
                     displayTemplate: row => {
                       let display =
-                        this.props.locationpermi === undefined
+                        this.props.location === undefined
                           ? []
-                          : this.props.locationpermi.filter(
+                          : this.props.location.filter(
                               f =>
                                 f.hims_d_pharmacy_location_id ===
                                 row.location_id
@@ -237,7 +234,7 @@ class LocationPermission extends Component {
                             dataSource: {
                               textField: "location_description",
                               valueField: "hims_d_pharmacy_location_id",
-                              data: this.props.locationpermi
+                              data: this.props.location
                             },
                             onChange: onchangegridcol.bind(this, this, row),
                             others: {
@@ -356,7 +353,7 @@ function mapStateToProps(state) {
   return {
     locationpermission: state.locationpermission,
     userdrtails: state.userdrtails,
-    locationpermi: state.locationpermi
+    location: state.location
   };
 }
 
