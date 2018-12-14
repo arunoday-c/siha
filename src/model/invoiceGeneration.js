@@ -152,7 +152,6 @@ let addInvoiceGeneration = (req, res, next) => {
     let db = req.db;
     let input = extend({}, req.body);
 
-    debugLog("inside stock");
     db.getConnection((error, connection) => {
       if (error) {
         next(error);
@@ -281,8 +280,14 @@ let addInvoiceGeneration = (req, res, next) => {
                     if (detailResult.affectedRows > 0) {
                       connection.query(
                         "UPDATE hims_f_billing_header SET invoice_generated = 'Y' ,updated_date=?, updated_by=?\
-                      WHERE record_status='A' and  hims_f_billing_header_id in (?) ",
-                        [new Date(), input.updated_by, billHeaderIds],
+                      WHERE record_status='A' and  hims_f_billing_header_id in (?);\
+                      UPDATE hims_f_patient_visit SET invoice_generated='Y' WHERE hims_f_patient_visit_id = ?; ",
+                        [
+                          new Date(),
+                          input.updated_by,
+                          billHeaderIds,
+                          input.visit_id
+                        ],
                         (error, invoiceFlagResult) => {
                           if (error) {
                             connection.rollback(() => {
@@ -290,6 +295,7 @@ let addInvoiceGeneration = (req, res, next) => {
                               next(error);
                             });
                           }
+                          debugLog("invoiceFlagResult:", invoiceFlagResult);
 
                           connection.commit(error => {
                             if (error) {
