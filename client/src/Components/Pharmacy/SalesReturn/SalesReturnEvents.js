@@ -14,14 +14,13 @@ const changeTexts = ($this, ctrl, e) => {
 
 const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
-  debugger;
+
   algaehApiCall({
     uri: "/salesReturn/getsalesReturn",
     method: "GET",
     data: { sales_return_number: docNumber },
     onSuccess: response => {
       if (response.data.success) {
-        debugger;
         let data = response.data.records;
         data.saveEnable = true;
         data.patient_payable_h = data.patient_payable;
@@ -232,7 +231,6 @@ const getPOSEntry = $this => {
     data: { pos_number: $this.state.pos_number },
     onSuccess: response => {
       if (response.data.success) {
-        debugger;
         let data = response.data.records;
         data.patient_payable_h = data.patient_payable;
 

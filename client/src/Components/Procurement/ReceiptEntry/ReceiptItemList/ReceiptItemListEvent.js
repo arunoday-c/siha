@@ -198,7 +198,6 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
   let quantity_recieved_todate =
     row.quantity_recieved_todate + parseFloat(value);
   if (value !== "") {
-    debugger;
     if (quantity_recieved_todate > row.dn_quantity) {
       swalMessage({
         title:

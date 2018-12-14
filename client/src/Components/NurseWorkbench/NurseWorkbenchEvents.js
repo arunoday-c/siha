@@ -18,7 +18,6 @@ const getAllChiefComplaints = ($this, callBack) => {
 };
 
 const getPatientChiefComplaints = $this => {
-  debugger;
   $this.props.getPatientChiefComplaints({
     uri: "/nurseWorkBench/getPatientNurseChiefComplaints",
     data: {
@@ -67,7 +66,6 @@ const BMICalculation = (weight, height, calculation) => {
 };
 
 const getFormula = options => {
-  debugger;
   if (options === undefined) return;
 
   if (Window.global === undefined) {

@@ -312,7 +312,7 @@ class DataGrid extends Component {
       $this.props.dataSource.pageInputExclude === true
         ? {}
         : { pageSize: pageSizeP, pageNo: _page };
-    //debugger;
+
     let input = {
       ...inputProps,
       ..._pagaeInput
@@ -478,7 +478,6 @@ class DataGrid extends Component {
           });
           const that = this;
           this.apiCallingFunction(this, 0, (data, totalPages) => {
-            //debugger;
             const _total = Math.ceil(
               that.props.dataSource.responseSchema.totalPages === undefined
                 ? data.length / that.props.paging.rowsPerPage
@@ -536,7 +535,6 @@ class DataGrid extends Component {
     else return false;
   }
   componentWillReceiveProps(props) {
-    //debugger;
     if (props.uiUpdate !== undefined) {
       this.setState({ uiUpdate: props.uiUpdate });
     }

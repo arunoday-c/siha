@@ -1,8 +1,4 @@
-import {
-  swalMessage,
-  algaehApiCall,
-  cancelRequest
-} from "../../../../utils/algaehApiCall";
+import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import Enumerable from "linq";
 import extend from "extend";
@@ -89,7 +85,6 @@ const UomchangeTexts = ($this, context, ctrl, e) => {
     $this.setState({
       [name]: value,
       conversion_factor: e.selected.conversion_factor,
-      // quantity: e.selected.conversion_factor,
       unit_cost: unit_cost
     });
 
@@ -99,7 +94,6 @@ const UomchangeTexts = ($this, context, ctrl, e) => {
         context.updateState({
           [name]: value,
           conversion_factor: e.selected.conversion_factor,
-          // quantity: e.selected.conversion_factor,
           unit_cost: unit_cost
         });
       }
@@ -164,14 +158,12 @@ const itemchangeText = ($this, context, e) => {
               service_id: e.selected.service_id,
               item_group_id: e.selected.group_id,
               quantity: 1,
-
               expiry_date: data.locationResult[0].expirydt,
               batchno: data.locationResult[0].batchno,
               grn_no: data.locationResult[0].grnno,
               qtyhand: data.locationResult[0].qtyhand,
               ItemUOM: data.uomResult,
               Batch_Items: data.locationResult,
-
               addItemButton: false
             });
 
@@ -193,7 +185,6 @@ const itemchangeText = ($this, context, e) => {
                 addItemButton: false
               });
             }
-            // getItemLocationStock($this, { item_id: value });
           } else {
             swalMessage({
               title: "No stock available for selected Item.",
@@ -242,7 +233,6 @@ const getUnitCost = ($this, context, serviceid) => {
         mappingName: "hospitalservices"
       },
       afterSuccess: data => {
-        debugger;
         let servdata = Enumerable.from(data)
           .where(w => w.hims_d_services_id === parseInt(serviceid, 10))
           .firstOrDefault();
@@ -302,7 +292,6 @@ const getUnitCost = ($this, context, serviceid) => {
   }
 };
 const AddItems = ($this, context) => {
-  debugger;
   if ($this.state.item_id === null) {
     swalMessage({
       title: "Invalid Input. Please Select Item.",
@@ -342,7 +331,6 @@ const AddItems = ($this, context) => {
       data: ItemInput,
       onSuccess: response => {
         if (response.data.success) {
-          debugger;
           let data = response.data.records;
           if (data.billdetails[0].pre_approval === "Y") {
             swalMessage({
@@ -352,7 +340,7 @@ const AddItems = ($this, context) => {
             });
           } else {
             let existingservices = $this.state.pharmacy_stock_detail;
-            debugger;
+
             if (data.billdetails.length !== 0) {
               data.billdetails[0].extended_cost =
                 data.billdetails[0].gross_amount;
@@ -374,7 +362,7 @@ const AddItems = ($this, context) => {
 
               existingservices.splice(0, 0, data.billdetails[0]);
             }
-            debugger;
+
             if (context !== null) {
               context.updateState({
                 pharmacy_stock_detail: existingservices,
@@ -589,7 +577,7 @@ const updatePosDetail = ($this, context) => {
 
 //Calculate Row Detail
 const calculateAmount = ($this, row, ctrl, e) => {
-  //debugger;
+  //
   e = e || ctrl;
   if (e.target.value !== e.target.oldvalue) {
     let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
@@ -823,7 +811,7 @@ const ViewInsurance = ($this, e) => {
 };
 
 const EditGrid = ($this, context, cancelRow) => {
-  //debugger;
+  //
   if (context !== null) {
     let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
     if (cancelRow !== undefined) {

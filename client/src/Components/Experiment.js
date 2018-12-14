@@ -124,7 +124,6 @@ class Experiment extends Component {
           <button
             className="btn btn-primary"
             onClick={() => {
-              debugger;
               this.setState({
                 openModal: true
               });

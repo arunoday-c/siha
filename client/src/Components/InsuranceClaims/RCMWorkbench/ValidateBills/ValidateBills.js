@@ -10,18 +10,12 @@ import noImage from "../../../../assets/images/images.webp";
 class ValidateBills extends PureComponent {
   constructor(props) {
     super(props);
-    debugger;
+
     this.state = {
       invoices: [],
       invoice_details: []
     };
   }
-
-  // componentWillUnmount() {
-  //   this.setState({
-  //     invoice_details: []
-  //   });
-  // }
 
   render() {
     let invoices = this.props.data !== undefined ? [this.props.data] : [];

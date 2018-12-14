@@ -1,7 +1,6 @@
 import Enumerable from "linq";
 
 const getPatientProfile = $this => {
-  debugger;
   $this.props.getPatientProfile({
     uri: "/doctorsWorkBench/getPatientProfile",
     method: "GET",
@@ -13,19 +12,6 @@ const getPatientProfile = $this => {
     redux: {
       type: "PATIENT_PROFILE",
       mappingName: "patient_profile"
-    },
-    afterSuccess: data => {
-      debugger;
-      // displayFileFromServer({
-      //   uri: "/masters/getFile",
-      //   fileType: data[0].patient_code,
-      //   destinationName: data[0].patient_code,
-      //   fileName: data[0].patient_code,
-      //   resize: { width: 100, height: 100 },
-      //   onFileSuccess: data => {
-      //     $this.setState({ patImg: data });
-      //   }
-      // });
     }
   });
 };

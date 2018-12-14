@@ -41,7 +41,6 @@ class FrontDesk extends Component {
         mappingName: "employeeSerDetails"
       },
       afterSuccess: data => {
-        debugger;
         this.setState(
           {
             FD_Screen:
@@ -79,7 +78,6 @@ class FrontDesk extends Component {
   }
 
   componentList() {
-    debugger;
     return {
       Appointment: <Appointment />,
       AppointmentAr: <AppointmentAr />,
@@ -134,7 +132,6 @@ class FrontDesk extends Component {
   }
 
   changeDisplays() {
-    debugger;
     return this.componentList()[this.state.FD_Screen];
   }
 

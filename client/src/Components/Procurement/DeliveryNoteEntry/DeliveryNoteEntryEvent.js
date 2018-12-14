@@ -10,7 +10,6 @@ import Enumerable from "linq";
 let texthandlerInterval = null;
 
 const texthandle = ($this, e) => {
-  //debugger;
   if (e.value === undefined) {
     $this.setState({ [e]: null });
   } else {
@@ -24,7 +23,6 @@ const texthandle = ($this, e) => {
 };
 
 const loctexthandle = ($this, e) => {
-  //debugger;
   if (e.value === undefined) {
     $this.setState({ [e]: null });
   } else {
@@ -42,7 +40,6 @@ const loctexthandle = ($this, e) => {
 };
 
 const vendortexthandle = ($this, e) => {
-  //debugger;
   if (e.value === undefined) {
     $this.setState({ [e]: null, payment_terms: null });
   } else {
@@ -66,7 +63,6 @@ const vendortexthandle = ($this, e) => {
 };
 
 const poforhandle = ($this, e) => {
-  //debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
@@ -149,7 +145,6 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const PurchaseOrderSearch = ($this, e) => {
-  //debugger;
   if (
     $this.state.pharmcy_location_id === null &&
     $this.state.inventory_location_id === null
@@ -159,7 +154,6 @@ const PurchaseOrderSearch = ($this, e) => {
       type: "warning"
     });
   } else {
-    //debugger;
     let Inputs = "";
 
     if ($this.state.dn_from === "PHR") {
@@ -186,7 +180,6 @@ const PurchaseOrderSearch = ($this, e) => {
             purchase_number: row.purchase_number
           },
           onSuccess: response => {
-            debugger;
             if (response.data.success) {
               let data = response.data.records;
               if (data !== null && data !== undefined) {
@@ -201,7 +194,7 @@ const PurchaseOrderSearch = ($this, e) => {
                 for (let i = 0; i < data.po_entry_detail.length; i++) {
                   data.po_entry_detail[i].po_quantity =
                     data.po_entry_detail[i].authorize_quantity;
-                  debugger;
+
                   data.po_entry_detail[i].dn_quantity =
                     data.po_entry_detail[i].quantity_outstanding;
 
@@ -238,21 +231,6 @@ const PurchaseOrderSearch = ($this, e) => {
             });
           }
         });
-
-        // $this.props.getPurchaseOrderEntry({
-        //   uri: "/PurchaseOrderEntry/getPurchaseOrderEntry",
-        //   method: "GET",
-        //   data: {
-        //     purchase_number: row.purchase_number
-        //   },
-        //   redux: {
-        //     type: "PO_ENTRY_GET_DATA",
-        //     mappingName: "purchaseorderentry"
-        //   },
-        //   afterSuccess: data => {
-        //     //debugger;
-        //   }
-        // });
       }
     });
   }
@@ -266,7 +244,6 @@ const ClearData = ($this, e) => {
 };
 
 const SaveDNEnrty = $this => {
-  //debugger;
   const dnQuantity = Enumerable.from($this.state.dn_entry_detail)
     .where(w => w.dn_quantity === 0)
     .toArray();

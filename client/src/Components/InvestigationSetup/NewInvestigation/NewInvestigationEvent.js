@@ -13,7 +13,6 @@ const texthandle = ($this, ctrl, e) => {
 const Validations = $this => {
   let isError = false;
 
-  debugger;
   if ($this.state.description === null) {
     isError = true;
     swalMessage({

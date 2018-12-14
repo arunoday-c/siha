@@ -42,7 +42,6 @@ const getItemUom = $this => {
 
     onSuccess: response => {
       if (response.data.success) {
-        debugger;
         if (response.data.records.length > 0) {
           let itemuomlist = Enumerable.from(response.data.records)
             .where(
@@ -68,7 +67,7 @@ const itemchangeText = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   getItemUom($this);
-  debugger;
+
   $this.setState({
     [name]: value,
     item_category_id: e.selected.category_id,

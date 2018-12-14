@@ -32,7 +32,6 @@ class DNItemList extends Component {
   }
 
   componentWillMount() {
-    //debugger;
     let InputOutput = this.props.DNEntry;
     this.setState({ ...this.state, ...InputOutput });
   }
@@ -42,7 +41,6 @@ class DNItemList extends Component {
   }
 
   render() {
-    //debugger;
     return (
       <React.Fragment>
         <MyContext.Consumer>

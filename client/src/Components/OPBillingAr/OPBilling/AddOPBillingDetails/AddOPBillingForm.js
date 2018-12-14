@@ -365,8 +365,6 @@ class AddOPBillingForm extends Component {
   }
 
   render() {
-    debugger;
-
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -516,7 +514,6 @@ class AddOPBillingForm extends Component {
                             <AlgaehLabel label={{ fieldName: "services_id" }} />
                           ),
                           displayTemplate: row => {
-                            debugger;
                             let display =
                               this.props.opserviceslist === undefined
                                 ? []

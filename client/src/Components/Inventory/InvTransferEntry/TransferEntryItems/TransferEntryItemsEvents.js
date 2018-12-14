@@ -293,7 +293,7 @@ const onchangegridcol = ($this, context, row, e) => {
     row[name] = $this.state.quantity_transferred;
   } else {
     let inventory_stock_detail = $this.state.inventory_stock_detail;
-    debugger;
+
     row[name] = value;
 
     row["quantity_outstanding"] =

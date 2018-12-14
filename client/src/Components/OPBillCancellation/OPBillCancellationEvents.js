@@ -145,8 +145,6 @@ const getBillDetails = $this => {
     data: { bill_number: $this.state.bill_number },
     onSuccess: response => {
       if (response.data.success) {
-        debugger;
-
         let data = response.data.records;
 
         let x = Enumerable.from($this.props.patienttype)
@@ -190,10 +188,8 @@ const getCtrlCode = ($this, billcode) => {
     data: { bill_cancel_number: billcode },
     onSuccess: response => {
       if (response.data.success) {
-        debugger;
-
         let data = response.data.records;
-        debugger;
+
         let x = Enumerable.from($this.props.patienttype)
           .where(w => w.hims_d_patient_type_id === data.patient_type)
           .toArray();

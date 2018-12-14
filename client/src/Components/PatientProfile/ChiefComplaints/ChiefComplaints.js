@@ -1279,11 +1279,7 @@ class ChiefComplaints extends Component {
                   },
                   {
                     fieldName: "chronic",
-                    label: (
-                      <AlgaehLabel
-                        label={{ fieldName: "chronic", fieldName: "chronic" }}
-                      />
-                    ),
+                    label: <AlgaehLabel label={{ fieldName: "chronic" }} />,
                     displayTemplate: row => {
                       const _chronic = row.chronic === "N" ? "No" : "Yes";
                       return <span>{_chronic}</span>;
@@ -1305,8 +1301,8 @@ class ChiefComplaints extends Component {
                     label: (
                       <AlgaehLabel
                         label={{
-                          fieldName: "complaint_inactive_date",
-                          fieldName: "inactive"
+                          fieldName: "complaint_inactive_date"
+                          // fieldName: "inactive"
                         }}
                       />
                     ),

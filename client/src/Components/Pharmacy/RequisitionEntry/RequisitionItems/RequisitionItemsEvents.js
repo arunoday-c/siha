@@ -248,7 +248,7 @@ const updatePosDetail = ($this, context, row) => {
     }
   }
   $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
-  //debugger;
+
   if ($this.state.hims_f_pharamcy_material_header_id !== null) {
     authBtnEnable = !$this.state.authBtnEnable;
   }
@@ -336,7 +336,6 @@ const getItemLocationStock = ($this, context, value) => {
 };
 
 const EditGrid = ($this, context, cancelRow) => {
-  //debugger;
   if ($this.state.hims_f_pharamcy_material_header_id !== null) {
     if (context !== null) {
       let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
