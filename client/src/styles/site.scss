@@ -135,7 +135,7 @@ body {
       min-height: 100%;
       img {
         width: 100%;
-        height: 81px;
+        height: 120px;
       }
     }
 
@@ -1460,12 +1460,6 @@ th {
     &:focus {
       outline: none;
     }
-
-    .image-drop-area {
-      border: 1px solid #93a4ad;
-      min-height: 137px;
-      position: relative;
-    }
     label {
       cursor: pointer;
       font-size: 0.8rem;
@@ -1585,16 +1579,13 @@ th {
   right: 2vw;
   padding: 2px 2px 33px;
 
-  div {
-    div {
-      img {
-        height: auto;
-        width: auto;
-        max-height: 60vh;
-        max-width: 95vw;
-      }
-    }
+  img {
+    height: auto;
+    width: auto;
+    max-height: 60vh;
+    max-width: 95vw;
   }
+
   .crop-action {
     bottom: 0;
     position: absolute;
@@ -1607,7 +1598,19 @@ th {
     }
   }
 }
-
+.zoomCntr {
+  .crop-action {
+    bottom: 0;
+    position: absolute;
+    z-index: 9;
+    width: 100%;
+    left: 15px;
+    button {
+      width: 100%;
+      border-radius: 0;
+    }
+  }
+}
 .image-area-cntr {
   position: fixed;
   z-index: 9;
@@ -1617,6 +1620,9 @@ th {
   height: 480px;
   margin: auto;
   box-shadow: 0 30px 100px rgba(0, 0, 0, 0.5);
+  video {
+    background: #000;
+  }
   .videoActions {
     position: absolute;
     z-index: 9;

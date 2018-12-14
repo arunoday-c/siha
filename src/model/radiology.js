@@ -41,7 +41,7 @@ let getRadOrderedServices = (req, res, next) => {
         next(error);
       }
       db.query(
-        "SELECT hims_f_rad_order_id,patient_id,visit_id,provider_id, billed, service_id,SR.service_code,SR.service_name,\
+        "SELECT hims_f_rad_order_id,patient_id,visit_id,provider_id, template_id, billed, service_id,SR.service_code,SR.service_name,\
         status, cancelled, ordered_by, ordered_date, test_type, technician_id, scheduled_date_time,scheduled_by,arrived_date,arrived,validate_by,\
         validate_date_time,attended_by,attended_date_time,exam_start_date_time,exam_end_date_time,exam_status,report_type,\
         PAT.patient_code,PAT.full_name,PAT.date_of_birth,PAT.gender\
@@ -159,7 +159,8 @@ let updateRadOrderedServices = (req, res, next) => {
     exam_start_date_time: null,
     exam_end_date_time: null,
     exam_status: null,
-    report_type: null
+    report_type: null,
+    template_id: null
   };
   if (req.db == null) {
     next(httpStatus.dataBaseNotInitilizedError());
@@ -195,7 +196,7 @@ let updateRadOrderedServices = (req, res, next) => {
       "UPDATE `hims_f_rad_order` \
      SET `status`=?,  `cancelled`=?,`scheduled_date_time`=?, `scheduled_by`=?, `arrived_date`=?,`arrived`=?,\
      `validate_by`=?, `validate_date_time` = ?, `attended_by`=?,`attended_date_time`=?,`exam_start_date_time`=?, \
-     `exam_end_date_time`=?, `exam_status`=?, `report_type`=?,`technician_id`=?\
+     `exam_end_date_time`=?, `exam_status`=?, `report_type`=?,`technician_id`=?, `template_id`=?\
      WHERE `hims_f_rad_order_id`=?",
       [
         inputParam.status,
@@ -213,6 +214,7 @@ let updateRadOrderedServices = (req, res, next) => {
         inputParam.exam_status,
         inputParam.report_type,
         inputParam.technician_id,
+        inputParam.template_id,
         inputParam.hims_f_rad_order_id
       ],
       (error, result) => {

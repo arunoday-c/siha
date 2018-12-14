@@ -10,9 +10,13 @@ module.exports = db => {
         buffer += chunk.toString();
       });
       req.on("end", () => {
-        const _utf = new Buffer.from(buffer, "base64");
-
         const _headerFile = JSON.parse(req.headers["x-file-details"]);
+
+        const _utf =
+          _headerFile.needConvertion == true
+            ? new Buffer.from(buffer, "base64")
+            : buffer;
+
         const _clientID = req.headers["x-client-ip"];
         if (_headerFile.fileType == "Employees") {
           EmployeeDocModel.findOneAndUpdate(
@@ -97,6 +101,12 @@ module.exports = db => {
     },
     getDocument: (req, res, next) => {
       const _headerFile = req.query;
+      let _destination = _headerFile.destinationName;
+      try {
+        _destination = JSON.parse(_destination);
+      } catch (e) {
+        _destination = _headerFile.destinationName;
+      }
 
       if (_headerFile.fileType == "Employees") {
         EmployeeDocModel.findOne(
@@ -125,7 +135,7 @@ module.exports = db => {
         );
       } else if (_headerFile.fileType == "Patients") {
         PatientDocModel.findOne(
-          { destinationName: _headerFile.destinationName },
+          { destinationName: _destination },
           (error, result) => {
             if (error) {
               res.status(400).json({

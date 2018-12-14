@@ -111,6 +111,19 @@ header {
     height: 93vh;
     overflow-y: auto;
     overflow-x: hidden;
+    .menuBarLoader {
+      position: absolute;
+      height: 100%;
+      background: rgb(233, 233, 233);
+      width: 100%;
+      z-index: 9;
+      text-align: center;
+      padding-top: 100%;
+      i {
+        color: #00babe;
+        font-size: 3rem;
+      }
+    }
   }
   .side-menu-title {
     padding: 5px 0;

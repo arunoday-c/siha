@@ -53,15 +53,15 @@ class LocationPermission extends Component {
       getLocationPermission(this, this);
     }
     if (
-      this.props.invlocationpermi === undefined ||
-      this.props.invlocationpermi.length === 0
+      this.props.inventorylocation === undefined ||
+      this.props.inventorylocation.length === 0
     ) {
       this.props.getLocation({
         uri: "/inventory/getInventoryLocation",
         method: "GET",
         redux: {
           type: "ANALYTES_GET_DATA",
-          mappingName: "invlocationpermi"
+          mappingName: "inventorylocation"
         }
       });
     }
@@ -109,7 +109,7 @@ class LocationPermission extends Component {
                 dataSource: {
                   textField: "location_description",
                   valueField: "hims_d_inventory_location_id",
-                  data: this.props.invlocationpermi
+                  data: this.props.inventorylocation
                 },
                 onChange: changeTexts.bind(this, this)
               }}
@@ -194,9 +194,9 @@ class LocationPermission extends Component {
                     ),
                     displayTemplate: row => {
                       let display =
-                        this.props.invlocationpermi === undefined
+                        this.props.inventorylocation === undefined
                           ? []
-                          : this.props.invlocationpermi.filter(
+                          : this.props.inventorylocation.filter(
                               f =>
                                 f.hims_d_inventory_location_id ===
                                 row.location_id
@@ -220,7 +220,7 @@ class LocationPermission extends Component {
                             dataSource: {
                               textField: "location_description",
                               valueField: "hims_d_inventory_location_id",
-                              data: this.props.invlocationpermi
+                              data: this.props.inventorylocation
                             },
                             onChange: onchangegridcol.bind(this, this, row),
                             others: {
@@ -339,7 +339,7 @@ function mapStateToProps(state) {
   return {
     invlocationpermission: state.invlocationpermission,
     userdrtails: state.userdrtails,
-    invlocationpermi: state.invlocationpermi
+    inventorylocation: state.inventorylocation
   };
 }
 

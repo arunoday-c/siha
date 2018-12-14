@@ -70,6 +70,7 @@ export default () => {
           });
         } else {
           const _result = JSON.parse(body);
+
           if (_result.success) {
             const _resultData = _result.records;
             if (_result.fileExtention == null) {

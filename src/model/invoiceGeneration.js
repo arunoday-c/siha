@@ -89,7 +89,7 @@ let getVisitWiseBillDetailS = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_f_billing_header_id, patient_id, visit_id from hims_f_billing_header where record_status='A' and visit_id=?",
+        "select hims_f_billing_header_id, patient_id, visit_id from hims_f_billing_header where record_status='A' and invoice_generated='N' and visit_id=?",
         [req.query.visit_id],
         (error, result) => {
           if (error) {
@@ -153,7 +153,7 @@ let addInvoiceGeneration = (req, res, next) => {
     let db = req.db;
     let input = extend({}, req.body);
 
-    debugLog("inside", "add stock");
+    debugLog("inside stock");
     db.getConnection((error, connection) => {
       if (error) {
         next(error);
@@ -221,15 +221,12 @@ let addInvoiceGeneration = (req, res, next) => {
               req.userIdentity.algaeh_d_app_user_id
             ],
             (error, headerResult) => {
-              debugLog(" Error :", Error);
               if (error) {
                 connection.rollback(() => {
                   releaseDBConnection(db, connection);
                   next(error);
                 });
               }
-
-              debugLog(" pos header id :", headerResult);
 
               if (headerResult.insertId != null) {
                 const insurtColumns = [
@@ -272,20 +269,67 @@ let addInvoiceGeneration = (req, res, next) => {
                       });
                     }
 
-                    connection.commit(error => {
-                      if (error) {
-                        connection.rollback(() => {
-                          releaseDBConnection(db, connection);
-                          next(error);
-                        });
+                    let _tempBillHeaderIds = new LINQ(req.body.Invoice_Detail)
+                      .Select(s => s.hims_f_billing_header_id)
+                      .ToArray();
+
+                    let billHeaderIds = _tempBillHeaderIds.filter(
+                      (item, pos) => {
+                        return _tempBillHeaderIds.indexOf(item) == pos;
                       }
-                      releaseDBConnection(db, connection);
-                      req.records = {
-                        invoice_number: documentCode,
-                        hims_f_invoice_header_id: headerResult.insertId
-                      };
-                      next();
-                    });
+                    );
+
+                    if (detailResult.affectedRows > 0) {
+                      connection.query(
+                        "UPDATE hims_f_billing_header SET invoice_generated = 'Y' ,updated_date=?, updated_by=?\
+                      WHERE record_status='A' and  hims_f_billing_header_id in (?) ",
+                        [new Date(), input.updated_by, billHeaderIds],
+                        (error, invoiceFlagResult) => {
+                          if (error) {
+                            connection.rollback(() => {
+                              releaseDBConnection(db, connection);
+                              next(error);
+                            });
+                          }
+
+                          connection.commit(error => {
+                            if (error) {
+                              connection.rollback(() => {
+                                releaseDBConnection(db, connection);
+                                next(error);
+                              });
+                            }
+                            releaseDBConnection(db, connection);
+                            req.records = {
+                              invoice_number: documentCode,
+                              hims_f_invoice_header_id: headerResult.insertId
+                            };
+                            next();
+                          });
+                        }
+                      );
+                    } else {
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        req.records = { error: "error occured" };
+                        next();
+                      });
+                    }
+
+                    // connection.commit(error => {
+                    //   if (error) {
+                    //     connection.rollback(() => {
+                    //       releaseDBConnection(db, connection);
+                    //       next(error);
+                    //     });
+                    //   }
+                    //   releaseDBConnection(db, connection);
+                    //   req.records = {
+                    //     invoice_number: documentCode,
+                    //     hims_f_invoice_header_id: headerResult.insertId
+                    //   };
+                    //   next();
+                    // });
                   }
                 );
               } else {

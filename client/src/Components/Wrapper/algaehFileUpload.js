@@ -37,6 +37,7 @@ export default class AlgaehFileUploader extends Component {
       typeof this.props.onref === "function"
     ) {
       this.props.onref(this);
+      this.getDisplayImage(this.props);
     } else this.getDisplayImage(this.props);
   }
   componentWillUnmount() {
@@ -57,6 +58,7 @@ export default class AlgaehFileUploader extends Component {
         uri: "/masters/getFile",
         fileType: propsP.serviceParameters.fileType,
         destinationName: propsP.serviceParameters.uniqueID,
+        addDataTag: propsP.addDataTag === undefined ? true : propsP.addDataTag,
         onFileSuccess: data => {
           if (propsP.events !== undefined) {
             if (typeof propsP.events.onSuccess === "function") {
@@ -180,7 +182,7 @@ export default class AlgaehFileUploader extends Component {
   zoomImageImplement() {
     if (this.state.showZoom) {
       return (
-        <div className="Image-cropper ">
+        <div className="Image-cropper zoomCntr">
           <img src={this.state.filePreview} />
           <div className="row crop-action">
             {" "}
@@ -213,12 +215,14 @@ export default class AlgaehFileUploader extends Component {
   }
 
   SavingImageOnServer(dataToSave, fileExtention) {
-    debugger;
     const that = this;
     dataToSave = dataToSave || that.cropperImage.crop().split(",")[1];
     fileExtention = fileExtention || that.state.fileExtention;
     const _pageName = getCookie("ScreenName").replace("/", "");
-
+    const _needConvertion =
+      that.props.needConvertion === undefined
+        ? {}
+        : { needConvertion: that.props.needConvertion };
     algaehApiCall({
       uri: "/masters/imageSave",
       method: "POST",
@@ -229,7 +233,8 @@ export default class AlgaehFileUploader extends Component {
           pageName: _pageName,
           destinationName: that.props.serviceParameters.uniqueID,
           fileType: that.props.serviceParameters.fileType,
-          fileExtention: fileExtention
+          fileExtention: fileExtention,
+          ..._needConvertion
         })
       },
       others: {
