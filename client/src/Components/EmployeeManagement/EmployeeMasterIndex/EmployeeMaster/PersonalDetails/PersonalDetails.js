@@ -160,10 +160,10 @@ class PersonalDetails extends PureComponent {
                 </div>
               </div> */}
                 <div className="col-lg-12">
-                  <h6>
-                    <span>Basic Info.</span>
-                  </h6>
                   <div className="row">
+                    <h6>
+                      <span>Basic Info.</span>
+                    </h6>
                     <div className="col-lg-10 primary-details">
                       <div className="row paddin-bottom-5">
                         <AlagehFormGroup
@@ -184,7 +184,7 @@ class PersonalDetails extends PureComponent {
                             }
                           }}
                         />
-                        <AlagehAutoComplete
+                        {/* <AlagehAutoComplete
                           div={{ className: "col-2 " }}
                           label={{
                             fieldName: "title_id",
@@ -207,7 +207,7 @@ class PersonalDetails extends PureComponent {
                               tabIndex: "2"
                             }
                           }}
-                        />
+                        /> */}
 
                         <AlagehFormGroup
                           div={{ className: "col " }}
@@ -248,6 +248,9 @@ class PersonalDetails extends PureComponent {
                         />
                       </div>
                       <div className="row paddin-bottom-5">
+                        <h6>
+                          <span>Basic Info.</span>
+                        </h6>
                         <AlgaehDateHandler
                           div={{ className: "col-3 ", tabIndex: "5" }}
                           label={{ fieldName: "date_of_birth", isImp: true }}
@@ -510,10 +513,7 @@ class PersonalDetails extends PureComponent {
                           </div>
                         </div>
                         <div className="col">
-                          <div
-                            className="image-drop-area"
-                            style={{ marginTop: 17, height: 150 }}
-                          >
+                          <div>
                             <AlgaehFileUploader
                               name="attach_photo"
                               accept="image/*"
@@ -524,44 +524,6 @@ class PersonalDetails extends PureComponent {
                                 fileType: "Employees"
                               }}
                             />
-                            {/* <Dropzone
-                            onDrop={onDrop.bind(
-                              this,
-                              this,
-                              "filePreview",
-                              context
-                            )}
-                            id="attach-width"
-                            className="dropzone"
-                            accept="image/*"
-                            multiple={false}
-                            name="image"
-                          >
-                            <img
-                              src={this.state.filePreview}
-                              alt="Employee Profile Picture"
-                              onError={e => {
-                                e.target.src = noImage;
-                              }}
-                            />
-
-                            <div className="attach-design text-center">
-                              <AlgaehLabel
-                                label={{
-                                  fieldName: "attach_photo",
-                                  align: ""
-                                }}
-                              />
-                            </div>
-                            <div
-                              style={{
-                                width: this.state.percent + "%",
-                                height: 3,
-                                backgroundColor: "#E1AE54"
-                              }}
-                            />
-                         
-                          </Dropzone>  */}
                           </div>
                         </div>
                       </div>

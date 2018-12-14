@@ -1141,10 +1141,6 @@ th {
     border-color: #dbad64; }
   .tab-container .tab-button:focus {
     outline: none; }
-  .tab-container .tab-button .image-drop-area {
-    border: 1px solid #93a4ad;
-    min-height: 137px;
-    position: relative; }
   .tab-container .tab-button label {
     cursor: pointer;
     font-size: 0.8rem; }
@@ -1233,7 +1229,7 @@ th {
   background: #fff;
   right: 2vw;
   padding: 2px 2px 33px; }
-  .Image-cropper div div img {
+  .Image-cropper img {
     height: auto;
     width: auto;
     max-height: 60vh;
@@ -1247,6 +1243,16 @@ th {
     .Image-cropper .crop-action button {
       width: 50%;
       border-radius: 0; }
+
+.zoomCntr .crop-action {
+  bottom: 0;
+  position: absolute;
+  z-index: 9;
+  width: 100%;
+  left: 15px; }
+  .zoomCntr .crop-action button {
+    width: 100%;
+    border-radius: 0; }
 
 .image-area-cntr {
   position: fixed;

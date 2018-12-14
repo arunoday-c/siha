@@ -130,7 +130,7 @@ export default class AlgaehFileUploader extends PureComponent {
   zoomImageImplement() {
     if (this.state.showZoom) {
       return (
-        <div className="Image-cropper ">
+        <div className="Image-cropper zoomCntr">
           <img src={this.state.filePreview} />
           <div className="row crop-action">
             {" "}
