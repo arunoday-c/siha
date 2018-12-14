@@ -387,7 +387,6 @@ class Speciality extends Component {
                     <AlgaehLabel label={{ fieldName: "department_name" }} />
                   ),
                   displayTemplate: row => {
-                    //debugger;
                     let x = Enumerable.from(this.state.departments)
                       .where(
                         w =>

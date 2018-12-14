@@ -455,7 +455,6 @@ class AppointmentAr extends PureComponent {
               this.setState(
                 { appointmentSchedule: response.data.records },
                 () => {
-                  //debugger;
                   this.setState({
                     slot:
                       this.state.appointmentSchedule !== undefined
@@ -677,7 +676,6 @@ class AppointmentAr extends PureComponent {
         openPatEdit = true;
       }
       this.setState({ patToEdit: patient, openPatEdit: openPatEdit }, () => {
-        //debugger;
         let pat_edit = this.state.patToEdit;
 
         this.setState(
@@ -778,7 +776,6 @@ class AppointmentAr extends PureComponent {
                 title_id: this.state.edit_title_id
               };
 
-              // debugger;
               algaehApiCall({
                 uri: "/appointment/updatePatientAppointment",
                 method: "PUT",
@@ -1102,7 +1099,6 @@ class AppointmentAr extends PureComponent {
     }
   }
   plotAddIcon(patient, data) {
-    //debugger;
     const _isstandby =
       patient === null || patient === undefined
         ? "N"
@@ -1412,7 +1408,6 @@ class AppointmentAr extends PureComponent {
   }
 
   generateTimeslots(data) {
-    //debugger;
     const clinic_id = data.clinic_id;
     const provider_id = data.provider_id;
     const sch_header_id = data.hims_d_appointment_schedule_header_id;

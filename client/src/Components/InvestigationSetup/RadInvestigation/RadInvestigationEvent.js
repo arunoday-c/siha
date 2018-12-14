@@ -38,7 +38,6 @@ const ShowTemplate = $this => {
 };
 
 const CloseTemplate = ($this, data) => {
-  debugger;
   let radObj = {
     template_name: data.template_name,
     template_html: data.template_html

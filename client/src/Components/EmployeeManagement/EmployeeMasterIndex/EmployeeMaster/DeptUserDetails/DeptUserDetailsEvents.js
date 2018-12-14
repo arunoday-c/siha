@@ -77,7 +77,7 @@ const categorytexthandle = ($this, ctrl, e) => {
 
 const AddDeptUser = ($this, context, e) => {
   e.preventDefault();
-  debugger;
+
   AlgaehValidation({
     alertTypeIcon: "warning",
     querySelector: "data-validate='deptUserdtl'",

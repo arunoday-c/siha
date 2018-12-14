@@ -358,7 +358,6 @@ class Dental extends Component {
 
   markTeethSurface(e) {
     if (this.state.hims_d_services_id.length !== 0) {
-      debugger;
       e.currentTarget.classList.contains("mark-active")
         ? e.currentTarget.classList.remove("mark-active")
         : e.currentTarget.classList.add("mark-active");
@@ -420,7 +419,6 @@ class Dental extends Component {
         }
       );
     } else {
-      debugger;
       swalMessage({
         title: "Please Select a service first",
         type: "warning"
@@ -988,7 +986,6 @@ class Dental extends Component {
   }
 
   deleteDentalPlan(data) {
-    debugger;
     swal({
       title: "Delete Plan ?",
       type: "warning",
@@ -2297,8 +2294,6 @@ class Dental extends Component {
                   events={{
                     onEdit: () => {},
                     onDelete: row => {
-                      debugger;
-
                       row.billed === "SB" || row.billed === "Y"
                         ? swalMessage({
                             title: "Treatment already completed, cannot delete",

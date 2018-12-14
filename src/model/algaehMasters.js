@@ -244,8 +244,10 @@ let getRoleBaseActiveModules = (req, res, next) => {
       new Promise((resolve, reject) => {
         try {
           if (
-            req.userIdentity.role_type == "SU" ||
-            req.userIdentity.role_type == "AD"
+            (req.userIdentity.role_type == "SU" &&
+              req.userIdentity.user_type == "SU") ||
+            (req.userIdentity.role_type == "AD" &&
+              req.userIdentity.user_type == "AD")
           ) {
             debugLog("ADMIN  if concondition");
             debugLog("role type:", req.userIdentity);
@@ -877,7 +879,7 @@ let getAlgaehScreenElement = (req, res, next) => {
   }
 };
 
-//--------ROLE BASE SCREEN ASSIGNMENT----------------
+//--------ROLE BASE SCREEN ASSIGNMENT---------------
 
 module.exports = {
   addAlgaehGroupMAster,

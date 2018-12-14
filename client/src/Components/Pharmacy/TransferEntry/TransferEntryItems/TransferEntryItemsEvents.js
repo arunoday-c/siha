@@ -258,7 +258,6 @@ const deleteTransEntryDetail = ($this, context, e, rowId) => {
 };
 
 const updateTransEntryDetail = ($this, context) => {
-  //debugger;
   if (context !== null) {
     context.updateState({
       saveEnable: false
@@ -269,7 +268,7 @@ const updateTransEntryDetail = ($this, context) => {
 const onchangegridcol = ($this, context, row, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  debugger;
+
   let transfer_to_date = row.transfer_to_date + parseFloat(value);
   if (transfer_to_date > row.quantity_authorized) {
     swalMessage({
@@ -330,7 +329,6 @@ const getItemLocationStock = ($this, value) => {
 };
 
 const EditGrid = ($this, context, cancelRow) => {
-  //debugger;
   if (context !== null) {
     let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
     if (cancelRow !== undefined) {

@@ -100,7 +100,6 @@ const VatAppilicable = ($this, context, e) => {
   SetBulkState({
     state: $this,
     callback: () => {
-      debugger;
       let Applicable = false;
       let Value = "N";
 

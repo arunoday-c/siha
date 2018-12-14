@@ -95,7 +95,6 @@ const AddUom = ($this, context) => {
         SetBulkState({
           state: $this,
           callback: () => {
-            debugger;
             if ($this.state.stocking_uom === "Y") {
               stocking_uom_id = $this.state.uom_id;
             } else {
@@ -129,7 +128,7 @@ const AddUom = ($this, context) => {
               stocking_uom_id: stocking_uom_id,
               convertEnable: false
             });
-            debugger;
+
             $this.state.stocking_uom_id = stocking_uom_id;
             if (context !== undefined) {
               context.updateState({

@@ -207,7 +207,6 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const deleteSalesReturnDetail = ($this, context, row) => {
-  //debugger;
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
   pharmacy_stock_detail.splice(row.rowIdx, 1);
 
@@ -274,7 +273,6 @@ const deleteSalesReturnDetail = ($this, context, row) => {
 };
 
 const updateSalesReturnDetail = ($this, context) => {
-  //debugger;
   if ($this.state.dataChange === true) {
     $this.props.SalesReturnCalculations({
       uri: "/billing/billingCalculations",
@@ -302,7 +300,6 @@ const updateSalesReturnDetail = ($this, context) => {
 const calculateAmount = ($this, row, context, ctrl, e) => {
   e = e || ctrl;
 
-  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   if (value < 0) {

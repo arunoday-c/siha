@@ -3,7 +3,6 @@ import { signature_footer } from "./signature_footer";
 import "../../src/index.css";
 
 export function printReport(data) {
-  //debugger;
   return `
     <div class="print-body">
     <header> ${header(data)} </header> 

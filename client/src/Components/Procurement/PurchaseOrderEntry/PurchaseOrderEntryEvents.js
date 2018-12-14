@@ -10,7 +10,6 @@ import POEntry from "../../../Models/POEntry";
 let texthandlerInterval = null;
 
 const texthandle = ($this, e) => {
-  //debugger;
   if (e.value === undefined) {
     $this.setState({ [e]: null });
   } else {
@@ -24,7 +23,6 @@ const texthandle = ($this, e) => {
 };
 
 const loctexthandle = ($this, e) => {
-  //debugger;
   if (e.value === undefined) {
     $this.setState({ [e]: null });
   } else {
@@ -42,7 +40,6 @@ const loctexthandle = ($this, e) => {
 };
 
 const vendortexthandle = ($this, e) => {
-  //debugger;
   if (e.value === undefined) {
     $this.setState({ [e]: null, payment_terms: null });
   } else {
@@ -66,7 +63,6 @@ const vendortexthandle = ($this, e) => {
 };
 
 const poforhandle = ($this, e) => {
-  //debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
@@ -149,7 +145,6 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const RequisitionSearch = ($this, e) => {
-  //debugger;
   if (
     $this.state.pharmcy_location_id === null &&
     $this.state.inventory_location_id === null
@@ -159,7 +154,6 @@ const RequisitionSearch = ($this, e) => {
       type: "warning"
     });
   } else {
-    //debugger;
     let from_location_id =
       $this.state.po_from === "PHR"
         ? $this.state.pharmcy_location_id
@@ -190,7 +184,6 @@ const RequisitionSearch = ($this, e) => {
             mappingName: "porequisitionentry"
           },
           afterSuccess: data => {
-            //debugger;
             if (data !== null && data !== undefined) {
               AlgaehLoader({ show: true });
 
@@ -358,7 +351,6 @@ const getCtrlCode = ($this, docNumber) => {
       mappingName: "purchaseorderentry"
     },
     afterSuccess: data => {
-      //debugger;
       if (
         $this.props.purchase_number !== undefined &&
         $this.props.purchase_number.length !== 0
@@ -481,7 +473,6 @@ const getData = $this => {
 };
 
 const AuthorizePOEntry = $this => {
-  //debugger;
   let stock_detail =
     $this.state.po_from === "PHR"
       ? $this.state.pharmacy_stock_detail

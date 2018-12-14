@@ -37,7 +37,6 @@ class POItemList extends Component {
   }
 
   componentWillMount() {
-    //debugger;
     let InputOutput = this.props.POEntry;
     this.setState({ ...this.state, ...InputOutput });
   }
@@ -47,7 +46,6 @@ class POItemList extends Component {
   }
 
   render() {
-    //debugger;
     return (
       <React.Fragment>
         <MyContext.Consumer>

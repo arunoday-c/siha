@@ -179,7 +179,6 @@ const DeliverySearch = ($this, e) => {
           data: { delivery_note_number: row.delivery_note_number },
           onSuccess: response => {
             if (response.data.success) {
-              debugger;
               let data = response.data.records;
               if (
                 $this.props.delivery_note_number !== undefined &&
@@ -241,7 +240,6 @@ const ClearData = ($this, e) => {
 };
 
 const SaveReceiptEnrty = $this => {
-  debugger;
   const batchExpiryDate = Enumerable.from($this.state.receipt_entry_detail)
     .where(w => w.batchno === null || w.expiry_date === null)
     .toArray();
@@ -252,7 +250,6 @@ const SaveReceiptEnrty = $this => {
       data: $this.state,
       onSuccess: response => {
         if (response.data.success === true) {
-          debugger;
           $this.setState({
             grn_number: response.data.records.grn_number,
             hims_f_procurement_grn_header_id:
@@ -459,7 +456,6 @@ const PostReceiptEntry = $this => {
     $this.state.inventory_stock_detail = $this.state.receipt_entry_detail;
 
     for (let i = 0; i < $this.state.inventory_stock_detail.length; i++) {
-      debugger;
       $this.state.inventory_stock_detail[i].location_id =
         $this.state.inventory_location_id;
       $this.state.inventory_stock_detail[i].location_type =
@@ -493,7 +489,6 @@ const PostReceiptEntry = $this => {
     data: $this.state,
     method: "PUT",
     onSuccess: response => {
-      debugger;
       if (response.data.success === true) {
         $this.setState({
           postEnable: true

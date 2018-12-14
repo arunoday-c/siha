@@ -67,11 +67,9 @@ const Validations = $this => {
 };
 
 const InsertUpdateItems = $this => {
-  debugger;
   SetBulkState({
     state: $this,
     callback: () => {
-      debugger;
       const err = Validations($this);
 
       if (!err) {

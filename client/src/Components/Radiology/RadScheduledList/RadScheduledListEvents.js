@@ -43,7 +43,6 @@ const PatientSearch = ($this, e) => {
 };
 
 const datehandle = ($this, ctrl, e) => {
-  
   let intFailure = false;
   if (e === "from_date") {
     if (Date.parse($this.state.to_date) < Date.parse(moment(ctrl)._d)) {
@@ -123,6 +122,7 @@ const openResultEntry = ($this, row) => {
         mappingName: "templatelist"
       },
       afterSuccess: data => {
+        debugger;
         let Template = row;
         Template.Templatelist = data;
         $this.setState({

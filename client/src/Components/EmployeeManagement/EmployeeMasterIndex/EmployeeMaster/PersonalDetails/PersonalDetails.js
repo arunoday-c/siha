@@ -67,22 +67,7 @@ class PersonalDetails extends PureComponent {
         }
       });
     }
-    // this.getImage(this);
   }
-
-  // getImage($this, context) {
-  //   debugger;
-  //   displayFileFromServer({
-  //     uri: "/masters/getFile",
-  //     fileType: "Employees",
-  //     destinationName: $this.state.employee_code,
-  //     fileName: $this.state.employee_code,
-  //     resize: { width: 100, height: 100 },
-  //     onFileSuccess: data => {
-  //       $this.setState({ filePreview: data });
-  //     }
-  //   });
-  // }
 
   componentWillReceiveProps(nextProps) {
     this.setState(nextProps.EmpMasterIOputs, () => {

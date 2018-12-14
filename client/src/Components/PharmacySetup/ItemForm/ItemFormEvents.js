@@ -92,8 +92,6 @@ const insertItemForm = ($this, e) => {
         data: $this.state,
         onSuccess: response => {
           if (response.data.success === true) {
-            debugger;
-            // resetState($this);
             //Handle Successful Add here
             getItemForm($this);
             swalMessage({

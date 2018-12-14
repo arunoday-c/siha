@@ -34,7 +34,6 @@ class Summary extends Component {
       },
       cancelRequestId: "getPatientMedication1",
       onSuccess: response => {
-        debugger;
         if (response.data.success) {
           this.setState({ patientEpisode: response.data.records });
         }
@@ -130,7 +129,6 @@ class Summary extends Component {
         ? this.props.patient_diagnosis
         : [];
 
-    debugger;
     let _pat_episode =
       Enumerable.from(this.state.patientEpisode).firstOrDefault() !== undefined
         ? Enumerable.from(this.state.patientEpisode).firstOrDefault()

@@ -50,7 +50,6 @@ class Encounters extends Component {
       },
       cancelRequestId: "getPatientVitals",
       onSuccess: response => {
-        //debugger;
         algaehLoader({ show: false });
         if (response.data.success && response.data.records.length !== 0) {
           const _Vitals =

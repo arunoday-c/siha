@@ -34,7 +34,6 @@ const VisitSearch = ($this, e) => {
             },
             onSuccess: response => {
               if (response.data.success) {
-                debugger;
                 response.data.records[0].sub_insurance_id =
                   response.data.records[0].sub_insurance_provider_id;
 
@@ -109,7 +108,6 @@ const getVisitWiseBillDetailS = $this => {
             method: "POST",
             data: { billdetails: data },
             onSuccess: response => {
-              debugger;
               if (response.data.success) {
                 response.data.records.patient_resp =
                   response.data.records.patient_res;

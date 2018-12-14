@@ -52,12 +52,10 @@ export function postVisitDetails(dataValue, callback) {
         }
       },
       onFailure: error => {
-        onFailure: error => {
-          dispatch({
-            type: "VISIT_GET_ERR_DATA",
-            payload: error
-          });
-        };
+        dispatch({
+          type: "VISIT_GET_ERR_DATA",
+          payload: error
+        });
       }
     });
   };

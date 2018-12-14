@@ -167,11 +167,9 @@ class OPBillCancellation extends Component {
   }
 
   CancelOPBill(e) {
-    debugger;
     const err = Validations(this);
     if (!err) {
       this.GenerateReciept($this => {
-        debugger;
         let Inputobj = $this.state;
 
         Inputobj.patient_payable = $this.state.patient_payable_h;
@@ -183,7 +181,7 @@ class OPBillCancellation extends Component {
           method: "POST",
           onSuccess: response => {
             AlgaehLoader({ show: false });
-            debugger;
+
             if (response.data.success) {
               $this.setState({
                 bill_cancel_number: response.data.records.bill_number,
@@ -200,7 +198,6 @@ class OPBillCancellation extends Component {
             }
           },
           onFailure: error => {
-            debugger;
             AlgaehLoader({ show: false });
             successfulMessage({
               message: error.response.data.message || error.message,

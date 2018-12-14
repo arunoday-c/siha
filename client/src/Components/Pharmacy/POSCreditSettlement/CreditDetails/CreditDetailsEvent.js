@@ -74,7 +74,7 @@ const deleteCridetSettlement = ($this, context) => {
 
 const updateCridetSettlement = ($this, context) => {
   let saveEnable = false;
-  debugger;
+
   let reciept_amount = Enumerable.from($this.state.criedtdetails).sum(w =>
     parseFloat(w.receipt_amount)
   );
@@ -94,7 +94,6 @@ const updateCridetSettlement = ($this, context) => {
 };
 
 const includeHandler = ($this, context, row, e) => {
-  debugger;
   let _criedtdetails = $this.state.criedtdetails;
   let reciept_amount = 0;
   let include = "Y";
@@ -120,7 +119,7 @@ const includeHandler = ($this, context, row, e) => {
       _criedtdetails[k] = row;
     }
   }
-  debugger;
+
   let listOfinclude = Enumerable.from(_criedtdetails)
     .where(w => w.include === "Y")
     .toArray();
@@ -151,7 +150,6 @@ const onchangegridcol = ($this, row, e) => {
       type: "error"
     });
   } else {
-    debugger;
     let balance_amount = parseFloat(row.previous_balance) - parseFloat(value);
     row[name] = value;
     row["balance_amount"] = balance_amount;

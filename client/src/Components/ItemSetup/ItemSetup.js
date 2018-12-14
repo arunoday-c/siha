@@ -125,7 +125,6 @@ class ItemSetup extends Component {
   }
 
   CloseModel(e) {
-    debugger;
     this.setState(
       {
         ...this.state,

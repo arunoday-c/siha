@@ -149,14 +149,13 @@ export function saveImageOnServer(options) {
   }
 }
 export function displayFileFromServer(options) {
-  debugger;
   const _resize =
     options.resize !== undefined
       ? { resize: JSON.stringify(options.resize) }
       : {};
   algaehApiCall({
     uri: options.uri,
-    method: "get",
+    method: "GET",
     data: {
       fileType: options.fileType,
       destinationName: options.destinationName,
@@ -165,11 +164,20 @@ export function displayFileFromServer(options) {
     others: { responseType: "arraybuffer" },
     onSuccess: response => {
       if (response.data) {
-        const _data =
-          "data:" +
-          response.headers["content-type"] +
-          ";base64," +
-          new Buffer(response.data, "binary").toString("base64");
+        const _addData =
+          options.addDataTag === undefined ? true : options.addDataTag;
+        let _data = undefined;
+        if (_addData) {
+          _data =
+            "data:" +
+            response.headers["content-type"] +
+            ";base64," +
+            new Buffer(response.data, "binary").toString("base64");
+        } else {
+          debugger;
+          _data = new Buffer(response.data, "binary").toString("base64");
+        }
+
         if (typeof options.onFileSuccess === "function") {
           options.onFileSuccess(_data);
         }
@@ -239,7 +247,7 @@ export function AlgaehValidation(options) {
     return;
   }
   let _rootValidationElement = null;
-  // debugger;
+
   if (settings.querySelector !== undefined && settings.querySelector !== "")
     _rootValidationElement = document.querySelector(
       "[" + settings.querySelector + "]"

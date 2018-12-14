@@ -26,8 +26,6 @@ const texthandle = ($this, context, ctrl, e) => {
 };
 
 const calculateRecipt = ($this, context) => {
-  // var intervalId;
-  debugger;
   let serviceInput = {
     isReceipt: true,
     intCalculateall: false,
@@ -66,7 +64,7 @@ const calculateRecipt = ($this, context) => {
           data.sec_copay_amount || $this.state.sec_copay_amount;
         data.addItemButton = false;
         data.saveEnable = false;
-        debugger;
+
         $this.setState({ ...data });
         if (context !== null) {
           context.updateState({ ...data });

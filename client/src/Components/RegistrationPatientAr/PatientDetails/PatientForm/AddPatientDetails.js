@@ -8,7 +8,6 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import Enumerable from "linq";
 
 const texthandle = ($this, e) => {
-  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
@@ -64,7 +63,6 @@ const titlehandle = ($this, e) => {
       [e]: null
     });
   } else {
-    debugger;
     if (e.selected.title === "Mr") {
       setGender = "Male";
     } else if (e.selected.title === "Mrs") {
@@ -139,13 +137,13 @@ const nationalityhandle = ($this, context, e) => {
       let name = e.name || e.target.name;
       let value = e.value || e.target.value;
       //TODO HOSPITAL
-      debugger;
+
       let hospitaldetails = Enumerable.from($this.props.hospitaldetails)
         .where(w => w.hims_d_hospital_id === 1)
         .firstOrDefault();
 
       let vat_applicable = "Y";
-      debugger;
+
       if (
         hospitaldetails.local_vat_applicable === "N" &&
         hospitaldetails.default_nationality === value
@@ -158,7 +156,6 @@ const nationalityhandle = ($this, context, e) => {
           vat_applicable: vat_applicable
         },
         () => {
-          debugger;
           if (
             $this.state.appointment_patient === "Y" ||
             $this.state.doctor_id !== null
@@ -182,7 +179,6 @@ const generateBillDetails = ($this, context) => {
   SetBulkState({
     state: $this,
     callback: () => {
-      debugger;
       let serviceInput = [
         {
           insured: $this.state.insured,
