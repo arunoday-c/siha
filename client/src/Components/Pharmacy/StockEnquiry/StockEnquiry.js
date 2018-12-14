@@ -70,7 +70,7 @@ class StockEnquiry extends Component {
   }
 
   render() {
-    let total_quantity = Enumerable.from(this.props.inventoryitemBatch)
+    let total_quantity = Enumerable.from(this.props.itemBatch)
       .select(w => w.qtyhand)
       .sum();
     return (
