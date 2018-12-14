@@ -5,7 +5,8 @@ let patientSchema = new Schema({
   clientID: String,
   image: Buffer,
   destinationName: String,
-  fileExtention: String
+  fileExtention: String,
+  updatedDate: Date
 });
 
 module.exports = mongoose.model("algaeh_hims_patients", patientSchema);

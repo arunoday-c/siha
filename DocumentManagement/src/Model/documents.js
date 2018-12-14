@@ -25,7 +25,8 @@ module.exports = db => {
               destinationName: _headerFile.destinationName,
               clientID: _clientID,
               image: _utf,
-              fileExtention: _headerFile.fileExtention
+              fileExtention: _headerFile.fileExtention,
+              updatedDate: new Date()
             },
             (error, result) => {
               if (error) {
@@ -42,6 +43,7 @@ module.exports = db => {
                   _EmployeeDocModel.clientID = _clientID;
                   _EmployeeDocModel.image = _utf;
                   _EmployeeDocModel.fileExtention = _headerFile.fileExtention;
+                  _EmployeeDocModel.updatedDate = new Date();
                   _EmployeeDocModel.save();
                 }
               }
@@ -55,15 +57,15 @@ module.exports = db => {
           PatientDocModel.findOneAndUpdate(
             {
               pageName: _headerFile.pageName,
-              destinationName: _headerFile.destinationName,
-              fileExtention: _headerFile.fileExtention
+              destinationName: _headerFile.destinationName
             },
             {
               pageName: _headerFile.pageName,
               destinationName: _headerFile.destinationName,
               clientID: _clientID,
               image: _utf,
-              fileExtention: _headerFile.fileExtention
+              fileExtention: _headerFile.fileExtention,
+              updatedDate: new Date()
             },
             (error, result) => {
               if (error) {
@@ -80,6 +82,7 @@ module.exports = db => {
                   _PatientDocModel.clientID = _clientID;
                   _PatientDocModel.image = _utf;
                   _PatientDocModel.fileExtention = _headerFile.fileExtention;
+                  _PatientDocModel.updatedDate = new Date();
                   _PatientDocModel.save();
                 }
               }
