@@ -221,7 +221,6 @@ class PersistentDrawer extends React.Component {
   }
 
   TriggerPath(submenu, e) {
-    debugger;
     const name = submenu.page_to_redirect.replace(/\s/g, ""); // e.currentTarget.getAttribute("name");
 
     // submenu.screen_name === "Doctor Appointment"

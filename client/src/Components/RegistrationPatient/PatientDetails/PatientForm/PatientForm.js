@@ -692,7 +692,7 @@ class AddPatientForm extends PureComponent {
                             textAltMessage="Patient Image"
                             serviceParameters={{
                               uniqueID: this.state.patient_code,
-                              destinationName: this.state.patient_code,
+                              //   destinationName: this.state.patient_code,
                               fileType: "Patients"
                             }}
                           />
