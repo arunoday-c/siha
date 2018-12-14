@@ -417,6 +417,7 @@ class RadResultEntry extends Component {
                       onref={ref => {
                         this.radiologyValidateTemplate = ref;
                       }}
+                      //debugger
                       serviceParameters={{
                         uniqueID: {
                           templateID: this.state.template_name,
