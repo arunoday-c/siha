@@ -2,6 +2,7 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import Enumerable from "linq";
 import { SetBulkState } from "../../../../utils/GlobalFunctions";
+import moment from "moment";
 
 const DeptselectedHandeler = ($this, context, e) => {
   let dept = Enumerable.from($this.props.deptanddoctors.departmets)
@@ -202,17 +203,33 @@ const doctorselectedHandeler = ($this, context, e) => {
 };
 
 const generateBillDetails = ($this, context) => {
+  debugger;
   let zeroBill = false;
+  let DoctorVisits = Enumerable.from($this.state.visitDetails)
+    .where(w => w.doctor_id === $this.state.doctor_id)
+    .toArray();
 
+  let FollowUp = false;
+  let currentDate = moment(new Date()).format("YYYY-MM-DD");
+  let expiryDate = 0;
+  if (DoctorVisits.length > 0) {
+    expiryDate = Enumerable.from(DoctorVisits).max(s => s.visit_expiery_date);
+  }
   if (
     $this.state.department_type === "D" &&
     $this.state.existing_plan === "Y"
   ) {
     zeroBill = true;
+  } else {
+    if (expiryDate > currentDate) {
+      FollowUp = true;
+    }
   }
+
   let serviceInput = [
     {
       zeroBill: zeroBill,
+      FollowUp: FollowUp,
       insured: $this.state.insured,
       //TODO change middle ware to promisify function --added by Nowshad
       vat_applicable: $this.state.vat_applicable,
