@@ -76,8 +76,10 @@ import OPBillCancellation from "./Components/OPBillCancellation/OPBillCancellati
 import OPCreditSettlement from "./Components/OPCreditSettlement/OPCreditSettlement";
 import POSCreditSettlement from "./Components/Pharmacy/POSCreditSettlement/POSCreditSettlement";
 import Algaeh from "./Components/Algaeh/Algaeh";
-import SelfService from "./Components/EmployeeManagement/SelfService/SelfService";
+import VisitClose from "./Components/VisitClose/VisitClose";
 import AppointmentAr from "./Components/AppointmentAr/AppointmentAr";
+import SelfService from "./Components/EmployeeManagement/SelfService/SelfService";
+
 const componts = (selectedLang, breadStyle) => {
   return {
     Dashboard: <Dashboard SelectLanguage={selectedLang} />,
@@ -172,6 +174,7 @@ const componts = (selectedLang, breadStyle) => {
     OPBillCancellation: <OPBillCancellation SelectLanguage={selectedLang} />,
     OPCreditSettlement: <OPCreditSettlement SelectLanguage={selectedLang} />,
     POSCreditSettlement: <POSCreditSettlement SelectLanguage={selectedLang} />,
+    VisitClose: <VisitClose SelectLanguage={selectedLang} />,
     AlgaehModules: <Algaeh />,
     SelfService: <SelfService SelectLanguage={selectedLang} />
   };
