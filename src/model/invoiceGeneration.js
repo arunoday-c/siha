@@ -635,7 +635,7 @@ let getInvoicesForClaims = (req, res, next) => {
                   service_id, quantity, gross_amount, discount_amount, patient_resp, patient_tax, patient_payable,\
                   company_resp, company_tax, company_payable, sec_company_resp, sec_company_tax, sec_company_payable,\
                   ID.service_type_id,ST.service_type_code, ST.service_type, ST. arabic_service_type,\
-                  S.cpt_code,C.cpt_desc,C.prefLabel  \
+                  S.cpt_code,S.service_code,S.service_name,C.cpt_desc,C.prefLabel  \
                   from hims_f_invoice_details ID  inner join hims_d_service_type ST on \
                    ID.service_type_id=ST.hims_d_service_type_id inner join hims_d_services S on\
                      ID.service_id=S.hims_d_services_id  left join hims_d_cpt_code C on S.cpt_code=C.cpt_code\
@@ -849,10 +849,112 @@ let getPatientIcdForInvoice = (req, res, next) => {
   }
 };
 
+//created by irfan:
+let deleteInvoiceIcd = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    if (
+      req.body.hims_f_invoice_icd_id != "null" &&
+      req.body.hims_f_invoice_icd_id != undefined
+    ) {
+      db.getConnection((error, connection) => {
+        connection.query(
+          " DELETE FROM hims_f_invoice_icd WHERE hims_f_invoice_icd_id = ?; ",
+          [req.body.hims_f_invoice_icd_id],
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+
+            if (result.affectedRows > 0) {
+              req.records = result;
+              next();
+            } else {
+              req.records = { invalid_input: true };
+              next();
+            }
+          }
+        );
+      });
+    } else {
+      req.records = { invalid_input: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan:
+let addInvoiceIcd = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.body);
+
+    if (
+      input.invoice_header_id != "null" &&
+      input.invoice_header_id != undefined &&
+      input.daignosis_id != "null" &&
+      input.daignosis_id != undefined
+    ) {
+      db.getConnection((error, connection) => {
+        connection.query(
+          "INSERT INTO `hims_f_invoice_icd` (invoice_header_id, patient_id, episode_id, daignosis_id,\
+             diagnosis_type, final_daignosis,\
+            created_date, created_by, updated_date, updated_by ) \
+          VALUE(?,?,?,?,?,?,?,?,?,?)",
+          [
+            input.invoice_header_id,
+            input.patient_id,
+            input.episode_id,
+            input.daignosis_id,
+            input.diagnosis_type,
+            input.final_daignosis,
+            new Date(),
+            input.created_by,
+            new Date(),
+            input.updated_by
+          ],
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+            debugLog("result:", result);
+            if (result.affectedRows > 0) {
+              debugLog("inssside:", result);
+              req.records = result;
+              next();
+            } else {
+              req.records = { invalid_input: true };
+              next();
+            }
+          }
+        );
+      });
+    } else {
+      req.records = { invalid_input: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getVisitWiseBillDetailS,
   addInvoiceGeneration,
   getInvoiceGeneration,
   getInvoicesForClaims,
-  getPatientIcdForInvoice
+  getPatientIcdForInvoice,
+  deleteInvoiceIcd,
+  addInvoiceIcd
 };

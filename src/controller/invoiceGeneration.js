@@ -7,7 +7,9 @@ import {
   addInvoiceGeneration,
   getInvoiceGeneration,
   getInvoicesForClaims,
-  getPatientIcdForInvoice
+  getPatientIcdForInvoice,
+  deleteInvoiceIcd,
+  addInvoiceIcd
 } from "../model/invoiceGeneration";
 
 export default ({ config, db }) => {
@@ -94,6 +96,40 @@ export default ({ config, db }) => {
       next();
     }
   );
+
+  // created by irfan
+  api.delete("/deleteInvoiceIcd", deleteInvoiceIcd, (req, res, next) => {
+    let result = req.records;
+    if (result.invalid_input == true) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: "please provide valid input"
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
+
+  // created by irfan
+  api.post("/addInvoiceIcd", addInvoiceIcd, (req, res, next) => {
+    let result = req.records;
+    if (result.invalid_input == true) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: "please provide valid input"
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
 
   return api;
 };
