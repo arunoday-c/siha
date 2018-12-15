@@ -597,22 +597,24 @@ let getInvoicesForClaims = (req, res, next) => {
           }
           connection.query(
             "SELECT hims_f_invoice_header_id, invoice_number, invoice_date, IH.patient_id, visit_id,\
-         IH.insurance_provider_id, IH.sub_insurance_id, IH.network_id, IH.network_office_id, gross_amount,\
-         discount_amount, patient_resp, patient_tax, patient_payable, company_resp, company_tax, \
-         company_payable, sec_company_resp, sec_company_tax, sec_company_payable, submission_date,\
-         submission_ammount, remittance_date, remittance_ammount, denial_ammount,claim_validated,\
-         P.patient_code,P.full_name as patient_name,P.arabic_name as arabic_patient_name,P.contact_number ,\
-         V.visit_code,V.episode_id,insurance_provider_name,arabic_provider_name as arabic_insurance_provider_name ,\
-         insurance_sub_code as sub_insurance_provider_code,insurance_sub_name as sub_insurance_provider,\
-         arabic_sub_name as arabic_sub_insurance_provider, network_type,arabic_network_type,\
-         NET_OF.price_from,NET_OF.employer,NET_OF.policy_number\
-        from  hims_f_invoice_header IH  inner join hims_f_patient P on IH.patient_id=P.hims_d_patient_id and\
-        P.record_status='A'  inner join hims_f_patient_visit V on IH.visit_id=V.hims_f_patient_visit_id and\
-        V.record_status='A' left join hims_d_insurance_provider IP on IH.insurance_provider_id=IP.hims_d_insurance_provider_id\
-        and IP.record_status='A' left join hims_d_insurance_sub SI on IH.sub_insurance_id=SI.hims_d_insurance_sub_id\
-        and SI.record_status='A' left join hims_d_insurance_network NET on IH.network_id=NET.hims_d_insurance_network_id\
-        and NET.record_status='A' left join hims_d_insurance_network_office NET_OF on IH.network_office_id=NET_OF.hims_d_insurance_network_office_id\
-        and NET_OF.record_status='A' where " +
+            IH.insurance_provider_id, IH.sub_insurance_id, IH.network_id, IH.network_office_id, gross_amount,\
+            discount_amount, patient_resp, patient_tax, patient_payable, company_resp, company_tax, \
+            company_payable, sec_company_resp, sec_company_tax, sec_company_payable, submission_date,\
+            submission_ammount, remittance_date, remittance_ammount, denial_ammount,claim_validated,\
+            P.patient_code,P.full_name as patient_name,P.arabic_name as arabic_patient_name,P.contact_number ,\
+            V.visit_code,V.episode_id,V.doctor_id,E.full_name as doctor_name,E.employee_code,insurance_provider_name,\
+            arabic_provider_name as arabic_insurance_provider_name ,\
+            insurance_sub_code as sub_insurance_provider_code,insurance_sub_name as sub_insurance_provider,\
+            arabic_sub_name as arabic_sub_insurance_provider, network_type,arabic_network_type,\
+            NET_OF.price_from,NET_OF.employer,NET_OF.policy_number\
+           from  hims_f_invoice_header IH  inner join hims_f_patient P on IH.patient_id=P.hims_d_patient_id and\
+           P.record_status='A'  inner join hims_f_patient_visit V on IH.visit_id=V.hims_f_patient_visit_id and\
+           V.record_status='A' inner join hims_d_employee E on V.doctor_id=E.hims_d_employee_id and E.record_status='A'         \
+           left join hims_d_insurance_provider IP on IH.insurance_provider_id=IP.hims_d_insurance_provider_id\
+           and IP.record_status='A' left join hims_d_insurance_sub SI on IH.sub_insurance_id=SI.hims_d_insurance_sub_id\
+           and SI.record_status='A' left join hims_d_insurance_network NET on IH.network_id=NET.hims_d_insurance_network_id\
+           and NET.record_status='A' left join hims_d_insurance_network_office NET_OF on IH.network_office_id=NET_OF.hims_d_insurance_network_office_id\
+           and NET_OF.record_status='A' where " +
               invoice_date +
               where.condition,
             where.values,
@@ -807,9 +809,49 @@ let getInvoicesForClaims = (req, res, next) => {
     next();
   }
 };
+
+//created by irfan:
+let getPatientIcdForInvoice = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    if (
+      req.query.invoice_header_id != "null" &&
+      req.query.invoice_header_id != undefined
+    ) {
+      db.getConnection((error, connection) => {
+        connection.query(
+          " select hims_f_invoice_icd_id, invoice_header_id, patient_id, episode_id,\
+        daignosis_id, diagnosis_type, final_daignosis,ICD.icd_code,ICD.icd_description,\
+        ICD.icd_level,ICD.icd_type from hims_f_invoice_icd INV,hims_d_icd ICD \
+        where INV.record_status='A' and ICD.record_status='A' and  INV.daignosis_id=ICD.hims_d_icd_id and \
+        invoice_header_id=?",
+          [req.query.invoice_header_id],
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+            req.records = result;
+            next();
+          }
+        );
+      });
+    } else {
+      req.records = { invalid_input: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getVisitWiseBillDetailS,
   addInvoiceGeneration,
   getInvoiceGeneration,
-  getInvoicesForClaims
+  getInvoicesForClaims,
+  getPatientIcdForInvoice
 };
