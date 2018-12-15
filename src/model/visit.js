@@ -902,10 +902,57 @@ let checkVisitExists = (req, res, next) => {
   }
 };
 
+let closeVisit = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      let inputParam = extend([], req.body);
+
+      let qry = "";
+      debugLog("inputParam: ", inputParam);
+      for (let i = 0; i < inputParam.length; i++) {
+        qry +=
+          " UPDATE `hims_f_patient_visit` SET visit_status='" +
+          inputParam[i].visit_status +
+          "' WHERE hims_f_patient_visit_id='" +
+          details[i].hims_f_patient_visit_id +
+          "';";
+      }
+      debugLog("qry: ", qry);
+
+      if (qry != "") {
+        connection.query(qry, (error, detailResult) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = detailResult;
+          next();
+        });
+      } else {
+        releaseDBConnection(db, connection);
+        req.records = [];
+        next();
+      }
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addVisit,
   updateVisit,
   insertVisitData,
   checkVisitExists,
-  insertPatientVisitData
+  insertPatientVisitData,
+  closeVisit
 };
