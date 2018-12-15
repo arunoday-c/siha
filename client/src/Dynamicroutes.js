@@ -76,7 +76,7 @@ import OPBillCancellation from "./Components/OPBillCancellation/OPBillCancellati
 import OPCreditSettlement from "./Components/OPCreditSettlement/OPCreditSettlement";
 import POSCreditSettlement from "./Components/Pharmacy/POSCreditSettlement/POSCreditSettlement";
 import Algaeh from "./Components/Algaeh/Algaeh";
-
+import SelfService from "./Components/EmployeeManagement/SelfService/SelfService";
 import AppointmentAr from "./Components/AppointmentAr/AppointmentAr";
 const componts = (selectedLang, breadStyle) => {
   return {
@@ -172,7 +172,8 @@ const componts = (selectedLang, breadStyle) => {
     OPBillCancellation: <OPBillCancellation SelectLanguage={selectedLang} />,
     OPCreditSettlement: <OPCreditSettlement SelectLanguage={selectedLang} />,
     POSCreditSettlement: <POSCreditSettlement SelectLanguage={selectedLang} />,
-    AlgaehModules: <Algaeh />
+    AlgaehModules: <Algaeh />,
+    SelfService: <SelfService SelectLanguage={selectedLang} />
   };
 };
 

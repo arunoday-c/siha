@@ -255,7 +255,7 @@ class POItemList extends Component {
                           forceLabel: "Discount %"
                         }}
                         textBox={{
-                          number: { allowNegative: false },
+                          decimal: { allowNegative: false },
                           value: this.state.sub_discount_percentage,
                           className: "txt-fld",
                           name: "sub_discount_percentage",

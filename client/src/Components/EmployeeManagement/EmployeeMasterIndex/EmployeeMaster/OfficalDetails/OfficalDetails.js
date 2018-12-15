@@ -29,9 +29,9 @@ class OfficalDetails extends PureComponent {
         <div className="hptl-phase1-add-employee-form popRightDiv">
           <div className="row">
             <div className="col-lg-8 primary-details">
-              <h6>
+              <h5>
                 <span>Joining Details</span>
-              </h6>
+              </h5>
               <div className="row paddin-bottom-5">
                 <AlgaehDateHandler
                   div={{ className: "col" }}
@@ -102,9 +102,9 @@ class OfficalDetails extends PureComponent {
                 />
               </div>
 
-              <h6>
+              <h5>
                 <span>Relieving Details</span>
-              </h6>
+              </h5>
 
               <div className="row paddin-bottom-5">
                 <AlgaehDateHandler
@@ -154,15 +154,17 @@ class OfficalDetails extends PureComponent {
                   }}
                 />
               </div>
-              <h6>
+              <h5>
                 <span>Accomodation Details</span>
-              </h6>
-              <div className="row paddin-bottom-5">Discussion required</div>
+              </h5>
+              <div className="row paddin-bottom-5">
+                <div className="col">Tables Come Here</div>
+              </div>
             </div>
             <div className="col-lg-4 secondary-details">
-              <h6>
+              <h5>
                 <span>Employee Bank Details</span>
-              </h6>
+              </h5>
               <div className="row paddin-bottom-5">
                 <AlagehFormGroup
                   div={{ className: "col-6" }}
@@ -222,9 +224,9 @@ class OfficalDetails extends PureComponent {
                   }}
                 />
               </div>
-              <h6>
+              <h5>
                 <span>Company Bank Details</span>
-              </h6>
+              </h5>
               <div className="row paddin-bottom-5">
                 <AlagehAutoComplete
                   div={{ className: "col" }}
