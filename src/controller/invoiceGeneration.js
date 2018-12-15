@@ -9,7 +9,8 @@ import {
   getInvoicesForClaims,
   getPatientIcdForInvoice,
   deleteInvoiceIcd,
-  addInvoiceIcd
+  addInvoiceIcd,
+  updateClaimValidatedStatus
 } from "../model/invoiceGeneration";
 
 export default ({ config, db }) => {
@@ -130,6 +131,27 @@ export default ({ config, db }) => {
     }
     next();
   });
+
+  // created by irfan
+  api.put(
+    "/updateClaimValidatedStatus",
+    updateClaimValidatedStatus,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.invalid_input == true) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: "please provide valid input"
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    }
+  );
 
   return api;
 };

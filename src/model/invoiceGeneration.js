@@ -928,9 +928,61 @@ let addInvoiceIcd = (req, res, next) => {
             if (error) {
               next(error);
             }
-            debugLog("result:", result);
+
             if (result.affectedRows > 0) {
-              debugLog("inssside:", result);
+              req.records = result;
+              next();
+            } else {
+              req.records = { invalid_input: true };
+              next();
+            }
+          }
+        );
+      });
+    } else {
+      req.records = { invalid_input: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan:
+let updateClaimValidatedStatus = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.body);
+
+    if (
+      input.hims_f_invoice_header_id != "null" &&
+      input.hims_f_invoice_header_id != undefined &&
+      (input.claim_validated == "V" ||
+        input.claim_validated == "E" ||
+        input.claim_validated == "X" ||
+        input.claim_validated == "P")
+    ) {
+      db.getConnection((error, connection) => {
+        connection.query(
+          "UPDATE hims_f_invoice_header SET claim_validated = ?, updated_date=?, updated_by=?  WHERE hims_f_invoice_header_id = ?",
+
+          [
+            input.claim_validated,
+            new Date(),
+            input.updated_by,
+            input.hims_f_invoice_header_id
+          ],
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+
+            if (result.affectedRows > 0) {
               req.records = result;
               next();
             } else {
@@ -956,5 +1008,6 @@ module.exports = {
   getInvoicesForClaims,
   getPatientIcdForInvoice,
   deleteInvoiceIcd,
-  addInvoiceIcd
+  addInvoiceIcd,
+  updateClaimValidatedStatus
 };
