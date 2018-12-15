@@ -78,6 +78,7 @@ import POSCreditSettlement from "./Components/Pharmacy/POSCreditSettlement/POSCr
 import Algaeh from "./Components/Algaeh/Algaeh";
 import VisitClose from "./Components/VisitClose/VisitClose";
 import AppointmentAr from "./Components/AppointmentAr/AppointmentAr";
+import SelfService from "./Components/EmployeeManagement/SelfService/SelfService";
 
 const componts = (selectedLang, breadStyle) => {
   return {
@@ -174,7 +175,8 @@ const componts = (selectedLang, breadStyle) => {
     OPCreditSettlement: <OPCreditSettlement SelectLanguage={selectedLang} />,
     POSCreditSettlement: <POSCreditSettlement SelectLanguage={selectedLang} />,
     VisitClose: <VisitClose SelectLanguage={selectedLang} />,
-    AlgaehModules: <Algaeh />
+    AlgaehModules: <Algaeh />,
+    SelfService: <SelfService SelectLanguage={selectedLang} />
   };
 };
 

@@ -264,6 +264,8 @@ class POItemList extends Component {
                           },
                           others: {
                             disabled: this.state.dataExitst,
+                            min: 0,
+                            max: 100,
                             onBlur: AssignData.bind(this, this)
                           }
                         }}
