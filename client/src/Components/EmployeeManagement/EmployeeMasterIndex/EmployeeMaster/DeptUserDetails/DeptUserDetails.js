@@ -533,9 +533,105 @@ class DeptUserDetails extends Component {
 
                   <div className="row">
                     <AlagehAutoComplete
-                      div={{ className: "col-3" }}
+                      div={{ className: "col" }}
+                      label={{
+                        forceLabel: "Employee Designation",
+                        isImp: true
+                      }}
+                      selector={{
+                        name: "title_id",
+                        className: "select-fld",
+                        value: this.state.title_id,
+                        dataSource: {
+                          textField:
+                            this.state.selectedLang === "en"
+                              ? "title"
+                              : "arabic_title",
+                          valueField: "his_d_title_id",
+                          data: this.props.titles
+                        },
+                        onChange: null,
+                        others: {
+                          tabIndex: "2"
+                        }
+                      }}
+                    />
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
                       label={{
                         forceLabel: "Reporting to",
+                        isImp: true
+                      }}
+                      selector={{
+                        name: "title_id",
+                        className: "select-fld",
+                        value: this.state.title_id,
+                        dataSource: {
+                          textField:
+                            this.state.selectedLang === "en"
+                              ? "title"
+                              : "arabic_title",
+                          valueField: "his_d_title_id",
+                          data: this.props.titles
+                        },
+                        onChange: null,
+                        others: {
+                          tabIndex: "2"
+                        }
+                      }}
+                    />
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      label={{
+                        forceLabel: "Employee Group",
+                        isImp: true
+                      }}
+                      selector={{
+                        name: "title_id",
+                        className: "select-fld",
+                        value: this.state.title_id,
+                        dataSource: {
+                          textField:
+                            this.state.selectedLang === "en"
+                              ? "title"
+                              : "arabic_title",
+                          valueField: "his_d_title_id",
+                          data: this.props.titles
+                        },
+                        onChange: null,
+                        others: {
+                          tabIndex: "2"
+                        }
+                      }}
+                    />{" "}
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      label={{
+                        forceLabel: "Overtime Group",
+                        isImp: true
+                      }}
+                      selector={{
+                        name: "title_id",
+                        className: "select-fld",
+                        value: this.state.title_id,
+                        dataSource: {
+                          textField:
+                            this.state.selectedLang === "en"
+                              ? "title"
+                              : "arabic_title",
+                          valueField: "his_d_title_id",
+                          data: this.props.titles
+                        },
+                        onChange: null,
+                        others: {
+                          tabIndex: "2"
+                        }
+                      }}
+                    />
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      label={{
+                        forceLabel: "Assign Hospital/Clinic",
                         isImp: true
                       }}
                       selector={{
