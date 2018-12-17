@@ -107,10 +107,10 @@ let getVisitWiseBillDetailS = (req, res, next) => {
             // copay_amount, deductable_amount, deductable_percentage, tax_inclusive, patient_tax, company_tax, total_tax,\
             //   patient_resp, patient_payable, comapany_resp, company_payble, sec_company, sec_deductable_percentage, \
             //   sec_deductable_amount, sec_company_res, sec_company_tax, sec_company_paybale, sec_copay_percntage,\
-            //   sec_copay_amount, pre_approval, commission_given from hims_f_billing_details where record_status='A'
+            //   sec_copay_amount, pre_approval, commission_given from hims_f_billing_details where ='A'
 
             connection.query(
-              "select hims_f_billing_details_id, hims_f_billing_header_id, BD.service_type_id ,ST.service_type, services_id,S.service_name, quantity,\
+              "select hims_f_billing_details_id, hims_f_billing_header_id, BD.service_type_id ,ST.service_type, services_id,S.service_name, S.cpt_code, quantity,\
               unit_cost, insurance_yesno, gross_amount, discount_amout, discount_percentage, net_amout, copay_percentage,\
               copay_amount, deductable_amount, deductable_percentage, tax_inclusive, patient_tax, company_tax, total_tax,\
                 patient_resp, patient_payable, comapany_resp, company_payble, sec_company, sec_deductable_percentage, \
@@ -233,6 +233,7 @@ let addInvoiceGeneration = (req, res, next) => {
                   "bill_detail_id",
                   "service_type_id",
                   "service_id",
+                  "cpt_code",
                   "quantity",
                   "gross_amount",
                   "discount_amount",
@@ -500,11 +501,11 @@ let getInvoicesForClaimsBACKUP = (req, res, next) => {
                   service_id, quantity, gross_amount, discount_amount, patient_resp, patient_tax, patient_payable,\
                   company_resp, company_tax, company_payable, sec_company_resp, sec_company_tax, sec_company_payable,\
                   ID.service_type_id,ST.service_type_code, ST.service_type, ST. arabic_service_type,\
-                  S.cpt_code,C.cpt_desc,C.prefLabel  \
+                  S.service_code,S.service_name,ID.cpt_code,C.cpt_desc,C.prefLabel  \
                   from hims_f_invoice_details ID  inner join hims_d_service_type ST on \
-                   ID.service_type_id=ST.hims_d_service_type_id inner join hims_d_services S on\
-                     ID.service_id=S.hims_d_services_id  left join hims_d_cpt_code C on S.cpt_code=C.cpt_code\
-                  where invoice_header_id=?",
+                   ID.service_type_id=ST.hims_d_service_type_id and ST.record_status='A'\
+                   inner join hims_d_services S on ID.service_id=S.hims_d_services_id and\
+                   S.record_status='A' left join hims_d_cpt_code C on ID.cpt_code=C.cpt_code where invoice_header_id=?",
                   [result[i].hims_f_invoice_header_id],
 
                   (error, invoiceDetails) => {
@@ -632,14 +633,14 @@ let getInvoicesForClaims = (req, res, next) => {
                 for (let i = 0; i < result.length; i++) {
                   connection.query(
                     "SELECT hims_f_invoice_details_id, invoice_header_id, bill_header_id, bill_detail_id,\
-                  service_id, quantity, gross_amount, discount_amount, patient_resp, patient_tax, patient_payable,\
-                  company_resp, company_tax, company_payable, sec_company_resp, sec_company_tax, sec_company_payable,\
-                  ID.service_type_id,ST.service_type_code, ST.service_type, ST. arabic_service_type,\
-                  S.cpt_code,S.service_code,S.service_name,C.cpt_desc,C.prefLabel  \
-                  from hims_f_invoice_details ID  inner join hims_d_service_type ST on \
-                   ID.service_type_id=ST.hims_d_service_type_id inner join hims_d_services S on\
-                     ID.service_id=S.hims_d_services_id  left join hims_d_cpt_code C on S.cpt_code=C.cpt_code\
-                  where invoice_header_id=?",
+                    service_id, quantity, gross_amount, discount_amount, patient_resp, patient_tax, patient_payable,\
+                    company_resp, company_tax, company_payable, sec_company_resp, sec_company_tax, sec_company_payable,\
+                    ID.service_type_id,ST.service_type_code, ST.service_type, ST. arabic_service_type,\
+                    S.service_code,S.service_name,ID.cpt_code,C.cpt_desc,C.prefLabel  \
+                    from hims_f_invoice_details ID  inner join hims_d_service_type ST on \
+                     ID.service_type_id=ST.hims_d_service_type_id and ST.record_status='A'\
+                     inner join hims_d_services S on ID.service_id=S.hims_d_services_id and\
+                     S.record_status='A' left join hims_d_cpt_code C on ID.cpt_code=C.cpt_code where invoice_header_id=?",
                     [result[i].hims_f_invoice_header_id],
 
                     (error, invoiceDetails) => {
@@ -1001,6 +1002,57 @@ let updateClaimValidatedStatus = (req, res, next) => {
   }
 };
 
+//created by irfan:
+let updateInvoiceDetails = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.body);
+
+    if (
+      input.hims_f_invoice_details_id != "null" &&
+      input.hims_f_invoice_details_id != undefined &&
+      input.cpt_code != "null" &&
+      input.cpt_code != undefined
+    ) {
+      db.getConnection((error, connection) => {
+        connection.query(
+          "UPDATE hims_f_invoice_details SET cpt_code = ?, updated_date=?, updated_by=?  WHERE hims_f_invoice_details_id = ?",
+
+          [
+            input.cpt_code,
+            new Date(),
+            input.updated_by,
+            input.hims_f_invoice_details_id
+          ],
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+
+            if (result.affectedRows > 0) {
+              req.records = result;
+              next();
+            } else {
+              req.records = { invalid_input: true };
+              next();
+            }
+          }
+        );
+      });
+    } else {
+      req.records = { invalid_input: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getVisitWiseBillDetailS,
   addInvoiceGeneration,
@@ -1009,5 +1061,6 @@ module.exports = {
   getPatientIcdForInvoice,
   deleteInvoiceIcd,
   addInvoiceIcd,
-  updateClaimValidatedStatus
+  updateClaimValidatedStatus,
+  updateInvoiceDetails
 };
