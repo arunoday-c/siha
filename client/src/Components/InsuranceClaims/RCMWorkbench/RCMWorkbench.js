@@ -16,7 +16,8 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 import ValidateBills from "./ValidateBills/ValidateBills";
 import moment from "moment";
 import ClaimSubmission from "./ClaimSubmission/ClaimSubmission";
-import { Checkbox } from "@material-ui/core";
+
+let validatedClaims = [];
 
 class RCMWorkbench extends Component {
   constructor(props) {
@@ -65,6 +66,24 @@ class RCMWorkbench extends Component {
           [value.name]: value.value
         });
         break;
+    }
+  }
+
+  addClaimsArray(row, e) {
+    debugger;
+
+    if (row.claim_validated === "P") {
+      e.preventDefault();
+      swalMessage({
+        title: "Please Validate the bill first",
+        type: "warning"
+      });
+    } else if (validatedClaims.includes(row)) {
+      validatedClaims.pop(row);
+      //console.log("Validate Claims", validatedClaims);
+    } else {
+      validatedClaims.push(row);
+      //console.log("Validate Claims", validatedClaims);
     }
   }
 
@@ -161,9 +180,14 @@ class RCMWorkbench extends Component {
   }
 
   openReviewSubmit() {
-    this.setState({
-      openSubmit: true
-    });
+    validatedClaims.length === 0
+      ? swalMessage({
+          title: "please select atleast one invoice to submit",
+          type: "warning"
+        })
+      : this.setState({
+          openSubmit: true
+        });
   }
 
   handleClose() {
@@ -196,6 +220,7 @@ class RCMWorkbench extends Component {
           openPopup={this.state.openClaims}
         />
         <ClaimSubmission
+          data={validatedClaims}
           claimSubmission={this.state.openSubmit}
           closeSubmissionModal={this.handleSubmitClose.bind(this)}
         />
@@ -391,25 +416,58 @@ class RCMWorkbench extends Component {
                           );
                         },
                         others: {
-                          maxWidth: 55,
                           fixed: "left"
                         }
                       },
                       {
                         fieldName: "select",
-                        label: "Select",
+                        label: <AlgaehLabel label={{ forceLabel: "Select" }} />,
                         displayTemplate: row => {
-                          return <input type="checkbox" />;
+                          return (
+                            <input
+                              type="checkbox"
+                              onChange={this.addClaimsArray.bind(this, row)}
+                            />
+                          );
                         },
                         editorTemplate: row => {
-                          return <input type="checkbox" />;
+                          return (
+                            <input
+                              type="checkbox"
+                              //checked={}
+                              onChange={this.addClaimsArray.bind(this, row)}
+                            />
+                          );
+                        },
+                        others: {
+                          fixed: "left"
                         }
                       },
                       {
                         fieldName: "invoice_number",
-                        label: <AlgaehLabel label={{ forceLabel: "ClaimID" }} />
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Claim ID" }} />
+                        )
                       },
-
+                      {
+                        fieldName: "claim_validated",
+                        label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.claim_validated === "V"
+                                ? "Validated"
+                                : row.claim_validated === "E"
+                                ? "Error"
+                                : row.claim_validated === "X"
+                                ? "XML Generated"
+                                : row.claim_validated === "P"
+                                ? "Pending"
+                                : "----"}
+                            </span>
+                          );
+                        }
+                      },
                       {
                         fieldName: "insurance_provider_name",
                         label: (
@@ -533,25 +591,6 @@ class RCMWorkbench extends Component {
                             </span>
                           );
                         }
-                      },
-                      {
-                        fieldName: "claim_validated",
-                        label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {row.claim_validated === "V"
-                                ? "Validated"
-                                : row.claim_validated === "E"
-                                ? "Error"
-                                : row.claim_validated === "X"
-                                ? "XML Generated"
-                                : row.claim_validated === "P"
-                                ? "Pending"
-                                : "----"}
-                            </span>
-                          );
-                        }
                       }
                     ]}
                     keyId="service_type_id"
@@ -605,7 +644,7 @@ class RCMWorkbench extends Component {
               </button>
 
               <button
-                //onClick={this.openReviewSubmit}
+                onClick={this.openReviewSubmit}
                 type="button"
                 className="btn btn-other"
               >

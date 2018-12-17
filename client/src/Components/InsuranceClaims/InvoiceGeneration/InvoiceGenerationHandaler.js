@@ -69,6 +69,7 @@ const getVisitWiseBillDetailS = $this => {
     method: "GET",
     data: inputobj,
     onSuccess: response => {
+      debugger;
       AlgaehLoader({ show: true });
       if (response.data.success) {
         let data = response.data.records;

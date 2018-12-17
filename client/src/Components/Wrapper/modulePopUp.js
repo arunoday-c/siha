@@ -25,7 +25,6 @@ export default class AlgaehModalPopUp extends PureComponent {
     modalRoot.removeChild(this.el);
   }
   componentWillReceiveProps(newProps) {
-    debugger;
     this.setState({ openPopup: newProps.openPopup });
   }
   render() {

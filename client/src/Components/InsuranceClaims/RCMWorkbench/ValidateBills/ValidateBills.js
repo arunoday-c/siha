@@ -606,6 +606,13 @@ class ValidateBills extends PureComponent {
                     disabled: true
                   },
                   {
+                    fieldName: "service_name",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Service Name" }} />
+                    ),
+                    disabled: true
+                  },
+                  {
                     fieldName: "gross_amount",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Gross Amount" }} />
@@ -672,7 +679,7 @@ class ValidateBills extends PureComponent {
                   // data: this.state.invoice_details
                 }}
                 isEditable={true}
-                paging={{ page: 0, rowsPerPage: 5 }}
+                paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
                   onDelete: row => {},
                   onEdit: row => {},
