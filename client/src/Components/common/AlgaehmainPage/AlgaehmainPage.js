@@ -445,6 +445,7 @@ class PersistentDrawer extends React.Component {
                 />
                 <input
                   type="text"
+                  autoComplete="off"
                   name="searchModules"
                   className="subMenuSearchFld"
                   placeholder="Search Modules"

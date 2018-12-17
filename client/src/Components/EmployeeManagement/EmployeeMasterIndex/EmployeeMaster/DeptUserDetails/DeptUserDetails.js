@@ -116,6 +116,128 @@ class DeptUserDetails extends Component {
                   <h5>
                     <span>Define Department</span>
                   </h5>
+                  <div className="row">
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      label={{
+                        forceLabel: "Employee Designation",
+                        isImp: true
+                      }}
+                      selector={{
+                        name: "title_id",
+                        className: "select-fld",
+                        value: this.state.title_id,
+                        dataSource: {
+                          textField:
+                            this.state.selectedLang === "en"
+                              ? "title"
+                              : "arabic_title",
+                          valueField: "his_d_title_id",
+                          data: this.props.titles
+                        },
+                        onChange: null,
+                        others: {
+                          tabIndex: "2"
+                        }
+                      }}
+                    />
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      label={{
+                        forceLabel: "Reporting to",
+                        isImp: true
+                      }}
+                      selector={{
+                        name: "title_id",
+                        className: "select-fld",
+                        value: this.state.title_id,
+                        dataSource: {
+                          textField:
+                            this.state.selectedLang === "en"
+                              ? "title"
+                              : "arabic_title",
+                          valueField: "his_d_title_id",
+                          data: this.props.titles
+                        },
+                        onChange: null,
+                        others: {
+                          tabIndex: "2"
+                        }
+                      }}
+                    />
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      label={{
+                        forceLabel: "Employee Group",
+                        isImp: true
+                      }}
+                      selector={{
+                        name: "title_id",
+                        className: "select-fld",
+                        value: this.state.title_id,
+                        dataSource: {
+                          textField:
+                            this.state.selectedLang === "en"
+                              ? "title"
+                              : "arabic_title",
+                          valueField: "his_d_title_id",
+                          data: this.props.titles
+                        },
+                        onChange: null,
+                        others: {
+                          tabIndex: "2"
+                        }
+                      }}
+                    />{" "}
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      label={{
+                        forceLabel: "Overtime Group",
+                        isImp: true
+                      }}
+                      selector={{
+                        name: "title_id",
+                        className: "select-fld",
+                        value: this.state.title_id,
+                        dataSource: {
+                          textField:
+                            this.state.selectedLang === "en"
+                              ? "title"
+                              : "arabic_title",
+                          valueField: "his_d_title_id",
+                          data: this.props.titles
+                        },
+                        onChange: null,
+                        others: {
+                          tabIndex: "2"
+                        }
+                      }}
+                    />
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      label={{
+                        forceLabel: "Assign Hospital/Clinic",
+                        isImp: true
+                      }}
+                      selector={{
+                        name: "title_id",
+                        className: "select-fld",
+                        value: this.state.title_id,
+                        dataSource: {
+                          textField:
+                            this.state.selectedLang === "en"
+                              ? "title"
+                              : "arabic_title",
+                          valueField: "his_d_title_id",
+                          data: this.props.titles
+                        },
+                        onChange: null,
+                        others: {
+                          tabIndex: "2"
+                        }
+                      }}
+                    />
+                  </div>
                   <div className="row" data-validate="deptUserdtl">
                     <AlagehAutoComplete
                       div={{ className: "col-lg-2" }}
@@ -182,7 +304,7 @@ class DeptUserDetails extends Component {
                         onChange: categorytexthandle.bind(this, this)
                       }}
                     />
-                    <AlagehAutoComplete
+                    {/* <AlagehAutoComplete
                       div={{ className: "col-lg-2" }}
                       label={{
                         fieldName: "user_id"
@@ -198,7 +320,7 @@ class DeptUserDetails extends Component {
                         },
                         onChange: texthandle.bind(this, this, context)
                       }}
-                    />
+                    /> */}
 
                     <AlagehAutoComplete
                       div={{ className: "col-lg-3" }}
@@ -229,17 +351,14 @@ class DeptUserDetails extends Component {
                       }}
                     />
 
-                    <div
-                      className="col-lg-1 actions"
-                      style={{ paddingTop: "2%" }}
-                    >
-                      <a
+                    <div className="col-lg-2" style={{ paddingTop: "21px" }}>
+                      <button
                         // href="javascript"
-                        className="btn btn-primary btn-circle active"
+                        className="btn btn-primary"
                         onClick={AddDeptUser.bind(this, this, context)}
                       >
-                        <i className="fas fa-plus" />
-                      </a>
+                        Add
+                      </button>
                     </div>
                   </div>
                   <div className="row">
@@ -524,134 +643,6 @@ class DeptUserDetails extends Component {
                         }}
                       />
                     </div>
-                  </div>
-                </div>
-                <div className="col-lg-12">
-                  <h5>
-                    <span>Assign Manager</span>
-                  </h5>
-
-                  <div className="row">
-                    <AlagehAutoComplete
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Employee Designation",
-                        isImp: true
-                      }}
-                      selector={{
-                        name: "title_id",
-                        className: "select-fld",
-                        value: this.state.title_id,
-                        dataSource: {
-                          textField:
-                            this.state.selectedLang === "en"
-                              ? "title"
-                              : "arabic_title",
-                          valueField: "his_d_title_id",
-                          data: this.props.titles
-                        },
-                        onChange: null,
-                        others: {
-                          tabIndex: "2"
-                        }
-                      }}
-                    />
-                    <AlagehAutoComplete
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Reporting to",
-                        isImp: true
-                      }}
-                      selector={{
-                        name: "title_id",
-                        className: "select-fld",
-                        value: this.state.title_id,
-                        dataSource: {
-                          textField:
-                            this.state.selectedLang === "en"
-                              ? "title"
-                              : "arabic_title",
-                          valueField: "his_d_title_id",
-                          data: this.props.titles
-                        },
-                        onChange: null,
-                        others: {
-                          tabIndex: "2"
-                        }
-                      }}
-                    />
-                    <AlagehAutoComplete
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Employee Group",
-                        isImp: true
-                      }}
-                      selector={{
-                        name: "title_id",
-                        className: "select-fld",
-                        value: this.state.title_id,
-                        dataSource: {
-                          textField:
-                            this.state.selectedLang === "en"
-                              ? "title"
-                              : "arabic_title",
-                          valueField: "his_d_title_id",
-                          data: this.props.titles
-                        },
-                        onChange: null,
-                        others: {
-                          tabIndex: "2"
-                        }
-                      }}
-                    />{" "}
-                    <AlagehAutoComplete
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Overtime Group",
-                        isImp: true
-                      }}
-                      selector={{
-                        name: "title_id",
-                        className: "select-fld",
-                        value: this.state.title_id,
-                        dataSource: {
-                          textField:
-                            this.state.selectedLang === "en"
-                              ? "title"
-                              : "arabic_title",
-                          valueField: "his_d_title_id",
-                          data: this.props.titles
-                        },
-                        onChange: null,
-                        others: {
-                          tabIndex: "2"
-                        }
-                      }}
-                    />
-                    <AlagehAutoComplete
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Assign Hospital/Clinic",
-                        isImp: true
-                      }}
-                      selector={{
-                        name: "title_id",
-                        className: "select-fld",
-                        value: this.state.title_id,
-                        dataSource: {
-                          textField:
-                            this.state.selectedLang === "en"
-                              ? "title"
-                              : "arabic_title",
-                          valueField: "his_d_title_id",
-                          data: this.props.titles
-                        },
-                        onChange: null,
-                        others: {
-                          tabIndex: "2"
-                        }
-                      }}
-                    />
                   </div>
                 </div>
               </div>
