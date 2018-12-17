@@ -16,6 +16,7 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 import ValidateBills from "./ValidateBills/ValidateBills";
 import moment from "moment";
 import ClaimSubmission from "./ClaimSubmission/ClaimSubmission";
+import { Checkbox } from "@material-ui/core";
 
 class RCMWorkbench extends Component {
   constructor(props) {
@@ -395,6 +396,16 @@ class RCMWorkbench extends Component {
                         }
                       },
                       {
+                        fieldName: "select",
+                        label: "Select",
+                        displayTemplate: row => {
+                          return <input type="checkbox" />;
+                        },
+                        editorTemplate: row => {
+                          return <input type="checkbox" />;
+                        }
+                      },
+                      {
                         fieldName: "invoice_number",
                         label: <AlgaehLabel label={{ forceLabel: "ClaimID" }} />
                       },
@@ -510,7 +521,6 @@ class RCMWorkbench extends Component {
                           );
                         }
                       },
-
                       {
                         fieldName: "denial_ammount.",
                         label: (

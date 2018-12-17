@@ -259,6 +259,13 @@ class ValidateBills extends PureComponent {
   //Add Service here
   // }
 
+  changeGridEditors(row, e) {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    row[name] = value;
+    row.update();
+  }
+
   render() {
     let invoices =
       this.state.invoices !== undefined ? [this.state.invoices] : [];
@@ -564,7 +571,25 @@ class ValidateBills extends PureComponent {
                   },
                   {
                     fieldName: "cpt_code",
-                    label: <AlgaehLabel label={{ forceLabel: "CPT Code" }} />
+                    label: <AlgaehLabel label={{ forceLabel: "CPT Code" }} />,
+                    editorTemplate: row => {
+                      return (
+                        <AlagehFormGroup
+                          textBox={{
+                            value: row.cpt_code,
+                            className: "txt-fld",
+                            name: "cpt_code",
+                            events: {
+                              onChange: this.changeGridEditors.bind(this, row)
+                            }
+                            // others: {
+                            //   errormessage: "Description - cannot be blank",
+                            //   required: true
+                            // }
+                          }}
+                        />
+                      );
+                    }
                   },
                   {
                     fieldName: "service_type_code",
