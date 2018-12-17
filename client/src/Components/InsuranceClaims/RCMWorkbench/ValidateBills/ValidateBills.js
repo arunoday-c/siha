@@ -1,4 +1,5 @@
 import React, { PureComponent } from "react";
+import "./ValidateBills.css";
 import {
   AlgaehModalPopUp,
   AlgaehDataGrid,
@@ -282,500 +283,482 @@ class ValidateBills extends PureComponent {
         }}
         openPopup={this.props.openPopup}
       >
-        <div className="col-lg-12 popupInner">
+        <div className="popupInner">
           {/* {JSON.stringify(this.props.data)} */}
-          <div className="row">
-            <div className="col-lg-8">
-              <AlgaehDataGrid
-                id="validate-bills-grid"
-                columns={[
-                  // {
-                  //   fieldName: "actions",
-                  //   label: "Select",
-                  //   displayTemplate: row => {
-                  //     return (
-                  //       <div className="customCheckbox">
-                  //         <input
-                  //           type="checkbox"
-                  //           onChange={() => {
-                  //             this.setState({
-                  //               invoice_details: row.invoiceDetails
-                  //             });
-                  //           }}
-                  //         />
-                  //       </div>
-                  //     );
-                  //   }
-                  // },
-                  {
-                    fieldName: "claim_validated",
-                    label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
-                    displayTemplate: row => {
-                      return (
-                        <span>
-                          {row.claim_validated === "V"
-                            ? "Validated"
-                            : row.claim_validated === "E"
-                            ? "Error"
-                            : row.claim_validated === "X"
-                            ? "XML Generated"
-                            : row.claim_validated === "P"
-                            ? "Pending"
-                            : "----"}
-                        </span>
-                      );
-                    }
-                  },
-                  // {
-                  //   fieldName: "status",
-                  //   label: (
-                  //     <AlgaehLabel label={{ forceLabel: "Bill Status" }} />
-                  //   ),
-                  //   displayTemplate: row => {
-                  //     return <span>Paid</span>;
-                  //   }
-                  // },
-                  // {
-                  //   fieldName: "claim_status",
-                  //   label: (
-                  //     <AlgaehLabel label={{ forceLabel: "Claim Status" }} />
-                  //   ),
-                  //   displayTemplate: row => {
-                  //     return <span>Paid</span>;
-                  //   }
-                  // },
-                  {
-                    fieldName: "patient_name",
-                    label: (
-                      <AlgaehLabel label={{ forceLabel: "Patient Name" }} />
-                    )
-                  },
-                  {
-                    fieldName: "invoice_number",
-                    label: (
-                      <AlgaehLabel label={{ forceLabel: "Invoice Number" }} />
-                    )
-                  },
-                  {
-                    fieldName: "visit_code",
-                    label: <AlgaehLabel label={{ forceLabel: "Visit Code" }} />
-                  },
-                  {
-                    fieldName: "gross_amount",
-                    label: (
-                      <AlgaehLabel label={{ forceLabel: "Gross Amount" }} />
-                    )
-                  },
-                  {
-                    fieldName: "discount_amount",
-                    label: (
-                      <AlgaehLabel label={{ forceLabel: "Discount Amount" }} />
-                    )
-                  },
-                  {
-                    fieldName: "patient_resp",
-                    label: (
-                      <AlgaehLabel
-                        label={{ forceLabel: "Patient Responsibility" }}
-                      />
-                    )
-                  },
-                  {
-                    fieldName: "patient_tax",
-                    label: <AlgaehLabel label={{ forceLabel: "Patient Tax" }} />
-                  },
-                  {
-                    fieldName: "patient_payable",
-                    label: (
-                      <AlgaehLabel label={{ forceLabel: "Patient Payable" }} />
-                    )
-                  },
-                  {
-                    fieldName: "company_resp",
-                    label: (
-                      <AlgaehLabel
-                        label={{ forceLabel: "Company Responsibility" }}
-                      />
-                    )
-                  },
-                  {
-                    fieldName: "company_tax",
-                    label: <AlgaehLabel label={{ forceLabel: "Company Tax" }} />
-                  },
-                  {
-                    fieldName: "company_payable",
-                    label: (
-                      <AlgaehLabel label={{ forceLabel: "Company Payable" }} />
-                    )
-                  }
-                ]}
-                keyId="id"
-                dataSource={{
-                  data: invoices
-                }}
-                isEditable={false}
-                paging={{ page: 0, rowsPerPage: 5 }}
-                events={{
-                  onDelete: row => {},
-                  onEdit: row => {},
-                  onDone: row => {}
-                }}
-              />
-            </div>
-
-            <div className="col-lg-4">
-              <div className="image-drop-area">
-                <Dropzone
-                  onDrop={() => {}}
-                  id="insurance"
-                  className="dropzone"
-                  accept="image/*"
-                  multiple={false}
-                  name="image"
-                >
-                  <img
-                    src={this.state.img}
-                    alt="Insurance Image"
-                    onError={e => {
-                      e.target.src = noImage;
+          <div
+            className="popRightDiv"
+            style={{ paddingTop: 15, paddingBottom: 15 }}
+          >
+            <div className="row ">
+              <div className="col-lg-8">
+                <div id="claimGrid_cntr">
+                  <AlgaehDataGrid
+                    id="validate-bills-grid"
+                    columns={[
+                      // {
+                      //   fieldName: "actions",
+                      //   label: "Select",
+                      //   displayTemplate: row => {
+                      //     return (
+                      //       <div className="customCheckbox">
+                      //         <input
+                      //           type="checkbox"
+                      //           onChange={() => {
+                      //             this.setState({
+                      //               invoice_details: row.invoiceDetails
+                      //             });
+                      //           }}
+                      //         />
+                      //       </div>
+                      //     );
+                      //   }
+                      // },
+                      {
+                        fieldName: "claim_validated",
+                        label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.claim_validated === "V"
+                                ? "Validated"
+                                : row.claim_validated === "E"
+                                ? "Error"
+                                : row.claim_validated === "X"
+                                ? "XML Generated"
+                                : row.claim_validated === "P"
+                                ? "Pending"
+                                : "----"}
+                            </span>
+                          );
+                        }
+                      },
+                      // {
+                      //   fieldName: "status",
+                      //   label: (
+                      //     <AlgaehLabel label={{ forceLabel: "Bill Status" }} />
+                      //   ),
+                      //   displayTemplate: row => {
+                      //     return <span>Paid</span>;
+                      //   }
+                      // },
+                      // {
+                      //   fieldName: "claim_status",
+                      //   label: (
+                      //     <AlgaehLabel label={{ forceLabel: "Claim Status" }} />
+                      //   ),
+                      //   displayTemplate: row => {
+                      //     return <span>Paid</span>;
+                      //   }
+                      // },
+                      {
+                        fieldName: "patient_name",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Patient Name" }} />
+                        )
+                      },
+                      {
+                        fieldName: "invoice_number",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Invoice Number" }}
+                          />
+                        )
+                      },
+                      {
+                        fieldName: "visit_code",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Visit Code" }} />
+                        )
+                      },
+                      {
+                        fieldName: "gross_amount",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Gross Amount" }} />
+                        )
+                      },
+                      {
+                        fieldName: "discount_amount",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Discount Amount" }}
+                          />
+                        )
+                      },
+                      {
+                        fieldName: "patient_resp",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Patient Responsibility" }}
+                          />
+                        )
+                      },
+                      {
+                        fieldName: "patient_tax",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Patient Tax" }} />
+                        )
+                      },
+                      {
+                        fieldName: "patient_payable",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Patient Payable" }}
+                          />
+                        )
+                      },
+                      {
+                        fieldName: "company_resp",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Company Responsibility" }}
+                          />
+                        )
+                      },
+                      {
+                        fieldName: "company_tax",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Company Tax" }} />
+                        )
+                      },
+                      {
+                        fieldName: "company_payable",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Company Payable" }}
+                          />
+                        )
+                      }
+                    ]}
+                    keyId="id"
+                    dataSource={{
+                      data: invoices
+                    }}
+                    isEditable={false}
+                    paging={{ page: 0, rowsPerPage: 10 }}
+                    events={{
+                      onDelete: row => {},
+                      onEdit: row => {},
+                      onDone: row => {}
                     }}
                   />
-
-                  <div className="attach-design text-center">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Photo"
-                      }}
-                    />
-                  </div>
-                  <div
-                    style={{
-                      width: this.state.percent + "%",
-                      height: 3,
-                      backgroundColor: "#E1AE54"
+                </div>
+                <div id="invoiceDetailGrid_Cntr">
+                  <AlgaehDataGrid
+                    id="validate-bills-grid"
+                    columns={[
+                      {
+                        fieldName: "quantity",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Quantity" }} />
+                        ),
+                        disabled: true
+                      },
+                      {
+                        fieldName: "cpt_code",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "CPT Code" }} />
+                        ),
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              textBox={{
+                                value: row.cpt_code,
+                                className: "txt-fld",
+                                name: "cpt_code",
+                                events: {
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                }
+                                // others: {
+                                //   errormessage: "Description - cannot be blank",
+                                //   required: true
+                                // }
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "service_type_code",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Service Code" }} />
+                        ),
+                        disabled: true
+                      },
+                      {
+                        fieldName: "service_type",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Service Type" }} />
+                        ),
+                        disabled: true
+                      },
+                      {
+                        fieldName: "gross_amount",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Gross Amount" }} />
+                        ),
+                        disabled: true
+                      },
+                      {
+                        fieldName: "discount_amount",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Discount Amount" }}
+                          />
+                        ),
+                        disabled: true
+                      },
+                      {
+                        fieldName: "patient_resp",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Patient Responsibility" }}
+                          />
+                        ),
+                        disabled: true
+                      },
+                      {
+                        fieldName: "patient_tax",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Patient Tax" }} />
+                        ),
+                        disabled: true
+                      },
+                      {
+                        fieldName: "patient_payable",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Patient Payable" }}
+                          />
+                        ),
+                        disabled: true
+                      },
+                      {
+                        fieldName: "company_resp",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Company Responsibility" }}
+                          />
+                        ),
+                        disabled: true
+                      },
+                      {
+                        fieldName: "company_tax",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Company Tax" }} />
+                        ),
+                        disabled: true
+                      },
+                      {
+                        fieldName: "company_payable",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Company Payable" }}
+                          />
+                        ),
+                        disabled: true
+                      }
+                    ]}
+                    keyId="id"
+                    dataSource={{
+                      data: invoice_details
+                      // data: this.state.invoice_details
+                    }}
+                    isEditable={true}
+                    paging={{ page: 0, rowsPerPage: 10 }}
+                    events={{
+                      onDelete: row => {},
+                      onEdit: row => {},
+                      onDone: row => {}
                     }}
                   />
-                </Dropzone>
-              </div>
-              <div className="image-drop-area margin-top-15">
-                <Dropzone
-                  onDrop={() => {}}
-                  id="insurance"
-                  className="dropzone"
-                  accept="image/*"
-                  multiple={false}
-                  name="image"
-                >
-                  <img
-                    src={this.state.img}
-                    alt="Report Image"
-                    onError={e => {
-                      e.target.src = noImage;
-                    }}
-                  />
-
-                  <div className="attach-design text-center">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Photo"
-                      }}
-                    />
-                  </div>
-                  <div
-                    style={{
-                      width: this.state.percent + "%",
-                      height: 3,
-                      backgroundColor: "#E1AE54"
-                    }}
-                  />
-                </Dropzone>
-              </div>
-            </div>
-          </div>
-
-          <div className="row margin-top-15">
-            <div className="col-lg-8">
-              {/*             
-              <div className="row">
-                <AlagehAutoComplete
-                  div={{ className: "col-lg-4" }}
-                  label={{
-                    forceLabel: "Service Type",
-                    isImp: true
-                  }}
-                  selector={{
-                    name: "hims_d_service_type_id",
-                    className: "select-fld",
-                    value: this.state.hims_d_service_type_id,
-                    dataSource: {
-                      textField: "service_type",
-                      valueField: "hims_d_service_type_id",
-                      data: this.state.service_types
-                    },
-                    onChange: this.dropDownHandler.bind(this),
-                    onClear: () => {
-                      this.setState({
-                        hims_d_service_type_id: null,
-                        hims_d_services_id: null
-                      });
-                    },
-                    others: {
-                      //tabIndex: "4"
-                    }
-                  }}
-                />
-                <AlagehAutoComplete
-                  div={{ className: "col-lg-4" }}
-                  label={{
-                    forceLabel: "Service",
-                    isImp: true
-                  }}
-                  selector={{
-                    name: "hims_d_services_id",
-                    className: "select-fld",
-                    value: this.state.hims_d_services_id,
-                    dataSource: {
-                      textField: "service_name",
-                      valueField: "hims_d_services_id",
-                      data: this.state.services
-                    },
-                    onChange: this.dropDownHandler.bind(this),
-                    onClear: () => {
-                      this.setState({
-                        hims_d_services_id: null
-                      });
-                    },
-                    others: {
-                      //tabIndex: "4"
-                    }
-                  }}
-                />
-
-                <div className="col-lg-3 margin-top-15">
-                  <button
-                    onClick={this.addServiceToInvoice.bind(this)}
-                    className="btn btn-primary"
-                  >
-                    ADD
-                  </button>
                 </div>
               </div>
-             */}
-              <AlgaehDataGrid
-                id="validate-bills-grid"
-                columns={[
-                  {
-                    fieldName: "quantity",
-                    label: <AlgaehLabel label={{ forceLabel: "Quantity" }} />,
-                    disabled: true
-                  },
-                  {
-                    fieldName: "cpt_code",
-                    label: <AlgaehLabel label={{ forceLabel: "CPT Code" }} />,
-                    editorTemplate: row => {
-                      return (
-                        <AlagehFormGroup
-                          textBox={{
-                            value: row.cpt_code,
-                            className: "txt-fld",
-                            name: "cpt_code",
-                            events: {
-                              onChange: this.changeGridEditors.bind(this, row)
-                            }
-                            // others: {
-                            //   errormessage: "Description - cannot be blank",
-                            //   required: true
-                            // }
+
+              <div className="col-lg-4">
+                <div className="row">
+                  <div className="col-lg-6  margin-top-15">
+                    <div className="image-drop-area">
+                      <Dropzone
+                        onDrop={() => {}}
+                        id="insurance"
+                        className="dropzone"
+                        accept="image/*"
+                        multiple={false}
+                        name="image"
+                      >
+                        <img
+                          src={this.state.img}
+                          alt="Insurance Image"
+                          onError={e => {
+                            e.target.src = noImage;
                           }}
                         />
-                      );
-                    }
-                  },
-                  {
-                    fieldName: "service_type_code",
-                    label: (
-                      <AlgaehLabel label={{ forceLabel: "Service Code" }} />
-                    ),
-                    disabled: true
-                  },
-                  {
-                    fieldName: "service_type",
-                    label: (
-                      <AlgaehLabel label={{ forceLabel: "Service Type" }} />
-                    ),
-                    disabled: true
-                  },
-                  {
-                    fieldName: "gross_amount",
-                    label: (
-                      <AlgaehLabel label={{ forceLabel: "Gross Amount" }} />
-                    ),
-                    disabled: true
-                  },
-                  {
-                    fieldName: "discount_amount",
-                    label: (
-                      <AlgaehLabel label={{ forceLabel: "Discount Amount" }} />
-                    ),
-                    disabled: true
-                  },
-                  {
-                    fieldName: "patient_resp",
-                    label: (
-                      <AlgaehLabel
-                        label={{ forceLabel: "Patient Responsibility" }}
+
+                        <div className="attach-design text-center">
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Photo"
+                            }}
+                          />
+                        </div>
+                        <div
+                          style={{
+                            width: this.state.percent + "%",
+                            height: 3,
+                            backgroundColor: "#E1AE54"
+                          }}
+                        />
+                      </Dropzone>
+                    </div>
+                  </div>
+                  <div className="col-lg-6 margin-top-15">
+                    <div className="image-drop-area">
+                      <Dropzone
+                        onDrop={() => {}}
+                        id="insurance"
+                        className="dropzone"
+                        accept="image/*"
+                        multiple={false}
+                        name="image"
+                      >
+                        <img
+                          src={this.state.img}
+                          alt="Report Image"
+                          onError={e => {
+                            e.target.src = noImage;
+                          }}
+                        />
+
+                        <div className="attach-design text-center">
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Photo"
+                            }}
+                          />
+                        </div>
+                        <div
+                          style={{
+                            width: this.state.percent + "%",
+                            height: 3,
+                            backgroundColor: "#E1AE54"
+                          }}
+                        />
+                      </Dropzone>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <AlagehFormGroup
+                      div={{ className: "col  margin-top-15 " }}
+                      label={{
+                        forceLabel: "ICD Code",
+                        isImp: false
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "icd_code",
+                        others: {
+                          disabled: true
+                        },
+                        value: this.state.icd_code,
+                        events: {
+                          // onChange: this.texthandle.bind(this)
+                        }
+                      }}
+                    />
+
+                    <div className="col-lg-1" style={{ paddingTop: "40px" }}>
+                      <i
+                        onClick={this.icdSearch.bind(this)}
+                        className="fas fa-search"
+                        style={{
+                          marginLeft: "-75%",
+                          cursor: "pointer"
+                        }}
                       />
-                    ),
-                    disabled: true
-                  },
-                  {
-                    fieldName: "patient_tax",
-                    label: (
-                      <AlgaehLabel label={{ forceLabel: "Patient Tax" }} />
-                    ),
-                    disabled: true
-                  },
-                  {
-                    fieldName: "patient_payable",
-                    label: (
-                      <AlgaehLabel label={{ forceLabel: "Patient Payable" }} />
-                    ),
-                    disabled: true
-                  },
-                  {
-                    fieldName: "company_resp",
-                    label: (
-                      <AlgaehLabel
-                        label={{ forceLabel: "Company Responsibility" }}
-                      />
-                    ),
-                    disabled: true
-                  },
-                  {
-                    fieldName: "company_tax",
-                    label: (
-                      <AlgaehLabel label={{ forceLabel: "Company Tax" }} />
-                    ),
-                    disabled: true
-                  },
-                  {
-                    fieldName: "company_payable",
-                    label: (
-                      <AlgaehLabel label={{ forceLabel: "Company Payable" }} />
-                    ),
-                    disabled: true
-                  }
-                ]}
-                keyId="id"
-                dataSource={{
-                  data: invoice_details
-                  // data: this.state.invoice_details
-                }}
-                isEditable={true}
-                paging={{ page: 0, rowsPerPage: 5 }}
-                events={{
-                  onDelete: row => {},
-                  onEdit: row => {},
-                  onDone: row => {}
-                }}
-              />
-            </div>
+                    </div>
 
-            <div className="col-lg-4">
-              <div className="row">
-                <AlagehFormGroup
-                  div={{ className: "col  margin-top-15 " }}
-                  label={{
-                    forceLabel: "ICD Code",
-                    isImp: false
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "icd_code",
-                    others: {
-                      disabled: true
-                    },
-                    value: this.state.icd_code,
-                    events: {
-                      // onChange: this.texthandle.bind(this)
-                    }
-                  }}
-                />
-
-                <div className="col-lg-1" style={{ paddingTop: "40px" }}>
-                  <i
-                    onClick={this.icdSearch.bind(this)}
-                    className="fas fa-search"
-                    style={{
-                      marginLeft: "-75%",
-                      cursor: "pointer"
-                    }}
-                  />
-                </div>
-
-                <div className="col">
-                  <button
-                    onClick={this.addICDtoInvoice.bind(this)}
-                    className="btn btn-primary margin-top-15"
-                  >
-                    Add ICD
-                  </button>
+                    <div className="col">
+                      <button
+                        onClick={this.addICDtoInvoice.bind(this)}
+                        className="btn btn-primary margin-top-15"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                  <div id="icd_bill_cntr">
+                    <AlgaehDataGrid
+                      id="validate-bills-grid"
+                      columns={[
+                        {
+                          fieldName: "actions",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Action" }} />
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <span
+                                onClick={this.deleteICDfromInvoice.bind(
+                                  this,
+                                  row
+                                )}
+                              >
+                                <i className="fas fa-trash-alt" />
+                              </span>
+                            );
+                          },
+                          editorTemplate: row => {
+                            return (
+                              <span
+                                onClick={this.deleteICDfromInvoice.bind(
+                                  this,
+                                  row
+                                )}
+                              >
+                                <i className="fas fa-trash-alt" />
+                              </span>
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "icd_type",
+                          label: <AlgaehLabel label={{ forceLabel: "Type" }} />
+                        },
+                        {
+                          fieldName: "icd_code",
+                          label: <AlgaehLabel label={{ forceLabel: "Code" }} />
+                        },
+                        {
+                          fieldName: "icd_description",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Description" }}
+                            />
+                          )
+                        }
+                      ]}
+                      keyId="id"
+                      dataSource={{
+                        data: this.state.icds
+                      }}
+                      isEditable={false}
+                      paging={{ page: 0, rowsPerPage: 10 }}
+                      events={{
+                        onDelete: row => {},
+                        onEdit: row => {},
+                        onDone: row => {}
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
-              <AlgaehDataGrid
-                id="validate-bills-grid"
-                columns={[
-                  {
-                    fieldName: "actions",
-                    label: <AlgaehLabel label={{ forceLabel: "Action" }} />,
-                    displayTemplate: row => {
-                      return (
-                        <span
-                          onClick={this.deleteICDfromInvoice.bind(this, row)}
-                        >
-                          <i className="fas fa-trash-alt" />
-                        </span>
-                      );
-                    },
-                    editorTemplate: row => {
-                      return (
-                        <span
-                          onClick={this.deleteICDfromInvoice.bind(this, row)}
-                        >
-                          <i className="fas fa-trash-alt" />
-                        </span>
-                      );
-                    }
-                  },
-                  {
-                    fieldName: "icd_type",
-                    label: <AlgaehLabel label={{ forceLabel: "Type" }} />
-                  },
-                  {
-                    fieldName: "icd_code",
-                    label: <AlgaehLabel label={{ forceLabel: "Code" }} />
-                  },
-                  {
-                    fieldName: "icd_description",
-                    label: <AlgaehLabel label={{ forceLabel: "Description" }} />
-                  }
-                ]}
-                keyId="id"
-                dataSource={{
-                  data: this.state.icds
-                }}
-                isEditable={false}
-                paging={{ page: 0, rowsPerPage: 5 }}
-                events={{
-                  onDelete: row => {},
-                  onEdit: row => {},
-                  onDone: row => {}
-                }}
-              />
             </div>
           </div>
         </div>
-        <div className="popupFooter">
+        <div className="col-lg-12 popupFooter">
           <button
             onClick={this.validateInvoice.bind(this)}
             className="btn btn-primary"

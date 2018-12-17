@@ -109,7 +109,6 @@ const getSampleCollectionDetails = $this => {
       mappingName: "samplecollection"
     },
     afterSuccess: data => {
-      
       $this.setState({ sample_collection: data });
     }
   });
@@ -136,7 +135,7 @@ const AcceptandRejectSample = ($this, row, AccRej) => {
           if (response.data.success === true) {
             getSampleCollectionDetails($this);
             swalMessage({
-              title: "Accepted Successfully",
+              title: "Record Updated",
               type: "success"
             });
           }

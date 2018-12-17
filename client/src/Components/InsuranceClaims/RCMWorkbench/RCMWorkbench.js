@@ -228,11 +228,11 @@ class RCMWorkbench extends Component {
 
         <div
           className="portlet portlet-bordered box-shadow-normal margin-bottom-15"
-          style={{ marginTop: 90 }}
+          style={{ marginTop: 60 }}
         >
           <div className="row">
             <AlagehAutoComplete
-              div={{ className: "col-lg-2" }}
+              div={{ className: "col" }}
               label={{ isImp: false, forceLabel: "Company Name" }}
               selector={{
                 name: "insurance_provider_id",
@@ -253,7 +253,7 @@ class RCMWorkbench extends Component {
               }}
             />
             <AlagehAutoComplete
-              div={{ className: "col-lg-2" }}
+              div={{ className: "col" }}
               label={{ isImp: false, forceLabel: "Sub Company Name" }}
               selector={{
                 name: "sub_insurance_id",
@@ -273,7 +273,7 @@ class RCMWorkbench extends Component {
               }}
             />
             <AlagehFormGroup
-              div={{ className: "col-lg-2" }}
+              div={{ className: "col" }}
               label={{
                 forceLabel: "Patient Code",
                 isImp: false
@@ -291,7 +291,7 @@ class RCMWorkbench extends Component {
               }}
             />
 
-            <div className="col-lg-1 margin-top-15">
+            <div className="col-1 margin-top-15">
               <i
                 onClick={this.patientSearch.bind(this)}
                 className="fas fa-search"
@@ -302,7 +302,7 @@ class RCMWorkbench extends Component {
             </div>
 
             <AlgaehDateHandler
-              div={{ className: "col-lg-2" }}
+              div={{ className: "col" }}
               label={{ isImp: false, forceLabel: "From Date" }}
               textBox={{
                 className: "txt-fld",
@@ -320,7 +320,7 @@ class RCMWorkbench extends Component {
             />
 
             <AlgaehDateHandler
-              div={{ className: "col-lg-2" }}
+              div={{ className: "col" }}
               label={{ isImp: false, forceLabel: "To Date" }}
               textBox={{
                 className: "txt-fld",
@@ -336,32 +336,32 @@ class RCMWorkbench extends Component {
               }}
               value={this.state.to_date}
             />
-            <div className="col-lg-1">
-              <button
-                onClick={this.clearSearch}
-                className="btn btn-default"
-                style={{ marginTop: 21 }}
-              >
-                Clear
-              </button>
-            </div>
-            <div className="col-lg-1">
+          </div>
+          <div className="row">
+            <div className="col">
               <button
                 onClick={this.getInvoicesForClaims}
                 className="btn btn-primary"
-                style={{ marginTop: 21 }}
+                style={{ marginTop: 21, marginLeft: 5, float: "right" }}
               >
                 Load Claims
+              </button>
+              <button
+                onClick={this.clearSearch}
+                className="btn btn-default"
+                style={{ marginTop: 21, float: "right" }}
+              >
+                Clear
               </button>
             </div>
           </div>
         </div>
 
         <div className="row">
-          <div className="col-lg-12">
+          <div className="col-12">
             <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
               <div className="row">
-                <div className="col-lg-12" id="rcm_desktop_cntr">
+                <div className="col-12" id="rcm_desktop_cntr">
                   <AlgaehDataGrid
                     id="rcm_desktop"
                     columns={[
@@ -397,7 +397,7 @@ class RCMWorkbench extends Component {
                       },
                       {
                         fieldName: "select",
-                        label: "Select",
+                        label: <AlgaehLabel label={{ forceLabel: "Select" }} />,
                         displayTemplate: row => {
                           return <input type="checkbox" />;
                         },
@@ -576,7 +576,7 @@ class RCMWorkbench extends Component {
         </div>
         <div className="hptl-phase1-footer">
           <div className="row">
-            <div className="col-lg-12">
+            <div className="col-12">
               {/* <button type="button" className="btn btn-primary">
                 <AlgaehLabel
                   label={{
@@ -595,23 +595,23 @@ class RCMWorkbench extends Component {
                 />
               </button> */}
 
-              <button type="button" className="btn btn-other">
+              <button
+                //onClick={this.openReviewSubmit}
+                type="button"
+                className="btn btn-primary"
+              >
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Re-Submit",
+                    forceLabel: "Submit Claims",
                     returnText: true
                   }}
                 />
               </button>
 
-              <button
-                //onClick={this.openReviewSubmit}
-                type="button"
-                className="btn btn-other"
-              >
+              <button type="button" className="btn btn-default">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Submit Claims",
+                    forceLabel: "Re-Submit",
                     returnText: true
                   }}
                 />
