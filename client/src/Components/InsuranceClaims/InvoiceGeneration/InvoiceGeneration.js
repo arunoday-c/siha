@@ -203,7 +203,7 @@ class InvoiceGeneration extends Component {
           className="row  inner-top-search"
           style={{ marginTop: 76, paddingBottom: 10 }}
         >
-          {/* Patient code */}
+          {/* Visit code */}
           <div className="col-4">
             <div className="row">
               <AlagehFormGroup

@@ -11,7 +11,7 @@ const VisitSearch = ($this, e) => {
     },
     searchName: "visit",
     uri: "/gloabelSearch/get",
-    inputs: "pv.insured = 'Y'",
+    inputs: "pv.insured = 'Y' and pv.invoice_generated='N'",
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },

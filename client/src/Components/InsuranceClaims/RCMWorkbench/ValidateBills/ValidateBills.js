@@ -2,32 +2,276 @@ import React, { PureComponent } from "react";
 import {
   AlgaehModalPopUp,
   AlgaehDataGrid,
-  AlgaehLabel
+  AlgaehLabel,
+  AlagehFormGroup
+  //AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
+import AlgaehSearch from "../../../Wrapper/globalSearch";
+import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import Dropzone from "react-dropzone";
 import noImage from "../../../../assets/images/images.webp";
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+import swal from "sweetalert2";
+//import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 
 class ValidateBills extends PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
-      invoices: [],
       invoice_details: []
     };
   }
 
+  validateInvoice() {
+    algaehApiCall({
+      uri: "/invoiceGeneration/updateClaimValidatedStatus",
+      data: {
+        hims_f_invoice_header_id: this.state.invoices.hims_f_invoice_header_id,
+        claim_validated: "V"
+      },
+      method: "PUT",
+      onSuccess: res => {
+        if (res.data.success) {
+          swalMessage({
+            title: "Invoice Validated Successfully",
+            type: "success"
+          });
+
+          document.getElementById("load-claims").click();
+        }
+      },
+      onError: error => {
+        swalMessage({
+          title: error.name,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    nextProps.data !== undefined
+      ? this.setState(
+          {
+            invoices: nextProps.data
+          },
+          () => {
+            this.getInvoiceICDs();
+          }
+        )
+      : null;
+  }
+
+  addICDtoInvoice() {
+    let invoice = this.state.invoices;
+
+    this.state.icd_code !== null > 0
+      ? algaehApiCall({
+          uri: "/invoiceGeneration/addInvoiceIcd",
+          data: {
+            invoice_header_id: invoice.hims_f_invoice_header_id,
+            patient_id: invoice.patient_id,
+            episode_id: invoice.episode_id,
+            daignosis_id: this.state.hims_d_icd_id,
+            diagnosis_type: "P",
+            final_daignosis: "Y"
+          },
+          method: "POST",
+          onSuccess: res => {
+            if (res.data.success) {
+              swalMessage({
+                title: "Record added successfully",
+                type: "success"
+              });
+              this.setState({
+                icd_code: null,
+                hims_d_icd_id: null
+              });
+              this.getInvoiceICDs();
+            }
+          },
+          onError: err => {
+            swalMessage({
+              title: err.message,
+              type: "error"
+            });
+          }
+        })
+      : swalMessage({
+          title: "Please select an ICD",
+          type: "warning"
+        });
+  }
+
+  //TODO
+  // Reload ICD for invoice after deletion
+
+  deleteICDfromInvoice(data) {
+    swal({
+      title: "Are you sure you want to delete the ICD from the Invoice?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        algaehApiCall({
+          uri: "/invoiceGeneration/deleteInvoiceIcd",
+          data: {
+            hims_f_invoice_icd_id: data.hims_f_invoice_icd_id
+          },
+          method: "DELETE",
+          onSuccess: response => {
+            if (response.data.success) {
+              swalMessage({
+                title: "Record deleted successfully . .",
+                type: "success"
+              });
+
+              this.getInvoiceICDs();
+            }
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "warning"
+            });
+          }
+        });
+      } else {
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "error"
+        });
+      }
+    });
+  }
+
+  icdSearch() {
+    AlgaehSearch({
+      searchGrid: {
+        columns: spotlightSearch.Diagnosis.IcdCodes
+      },
+      searchName: "IcdCodes",
+      uri: "/gloabelSearch/get",
+      onContainsChange: (text, serchBy, callBack) => {
+        callBack(text);
+      },
+      onRowSelect: row => {
+        debugger;
+
+        this.setState({
+          icd_code: row.icd_code,
+          hims_d_icd_id: row.hims_d_icd_id
+        });
+      }
+    });
+  }
+
+  getInvoiceICDs() {
+    let id = this.state.invoices.hims_f_invoice_header_id;
+
+    algaehApiCall({
+      uri: "/invoiceGeneration/getPatientIcdForInvoice",
+      data: { invoice_header_id: id },
+      method: "GET",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            icds: res.data.records
+          });
+        }
+      },
+      onError: error => {
+        swalMessage({
+          title: "Sorry for the inconvenience , Please reload the page",
+          type: "error"
+        });
+      }
+    });
+  }
+
+  // getServices(id) {
+  //   algaehApiCall({
+  //     uri: "/serviceType/getService",
+  //     method: "GET",
+  //     data: { service_type_id: id },
+  //     onSuccess: res => {
+  //       if (res.data.success) {
+  //         this.setState({
+  //           services: res.data.records
+  //         });
+  //       }
+  //     },
+  //     onError: error => {
+  //       swalMessage({
+  //         title: error.message,
+  //         type: "error"
+  //       });
+  //     }
+  //   });
+  // }
+
+  // getServiceType() {
+  //   algaehApiCall({
+  //     uri: "/serviceType",
+  //     method: "GET",
+  //     onSuccess: res => {
+  //       if (res.data.success) {
+  //         this.setState({
+  //           service_types: res.data.records
+  //         });
+  //       }
+  //     },
+  //     onError: error => {
+  //       swalMessage({
+  //         title: error.message,
+  //         type: "error"
+  //       });
+  //     }
+  //   });
+  // }
+
+  // dropDownHandler(value) {
+  //   switch (value.name) {
+  //     case "hims_d_service_type_id":
+  //       this.setState(
+  //         {
+  //           [value.name]: value.value
+  //         },
+  //         () => {
+  //           this.getServices(this.state.hims_d_service_type_id);
+  //         }
+  //       );
+  //       break;
+  //     default:
+  //       this.setState({
+  //         [value.name]: value.value
+  //       });
+  //       break;
+  //   }
+  // }
+
+  // addServiceToInvoice() {
+  //Add Service here
+  // }
+
   render() {
-    let invoices = this.props.data !== undefined ? [this.props.data] : [];
+    let invoices =
+      this.state.invoices !== undefined ? [this.state.invoices] : [];
     let invoice_details =
-      this.props.data !== undefined ? this.props.data.invoiceDetails : [];
+      this.state.invoices !== undefined
+        ? this.state.invoices.invoiceDetails
+        : [];
 
     return (
       <AlgaehModalPopUp
+        title="Claim Validation"
         events={{
-          onClose: () => {
-            this.props.closeModal;
-          }
+          onClose: this.props.closeModal
         }}
         openPopup={this.props.openPopup}
       >
@@ -57,21 +301,42 @@ class ValidateBills extends PureComponent {
                   //   }
                   // },
                   {
-                    fieldName: "actions",
+                    fieldName: "claim_validated",
                     label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
                     displayTemplate: row => {
-                      return <span>Not Validated</span>;
+                      return (
+                        <span>
+                          {row.claim_validated === "V"
+                            ? "Validated"
+                            : row.claim_validated === "E"
+                            ? "Error"
+                            : row.claim_validated === "X"
+                            ? "XML Generated"
+                            : row.claim_validated === "P"
+                            ? "Pending"
+                            : "----"}
+                        </span>
+                      );
                     }
                   },
-                  {
-                    fieldName: "status",
-                    label: (
-                      <AlgaehLabel label={{ forceLabel: "Bill Status" }} />
-                    ),
-                    displayTemplate: row => {
-                      return <span>Paid</span>;
-                    }
-                  },
+                  // {
+                  //   fieldName: "status",
+                  //   label: (
+                  //     <AlgaehLabel label={{ forceLabel: "Bill Status" }} />
+                  //   ),
+                  //   displayTemplate: row => {
+                  //     return <span>Paid</span>;
+                  //   }
+                  // },
+                  // {
+                  //   fieldName: "claim_status",
+                  //   label: (
+                  //     <AlgaehLabel label={{ forceLabel: "Claim Status" }} />
+                  //   ),
+                  //   displayTemplate: row => {
+                  //     return <span>Paid</span>;
+                  //   }
+                  // },
                   {
                     fieldName: "patient_name",
                     label: (
@@ -80,7 +345,9 @@ class ValidateBills extends PureComponent {
                   },
                   {
                     fieldName: "invoice_number",
-                    label: <AlgaehLabel label={{ forceLabel: "Bill Number" }} />
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Invoice Number" }} />
+                    )
                   },
                   {
                     fieldName: "visit_code",
@@ -91,6 +358,48 @@ class ValidateBills extends PureComponent {
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Gross Amount" }} />
                     )
+                  },
+                  {
+                    fieldName: "discount_amount",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Discount Amount" }} />
+                    )
+                  },
+                  {
+                    fieldName: "patient_resp",
+                    label: (
+                      <AlgaehLabel
+                        label={{ forceLabel: "Patient Responsibility" }}
+                      />
+                    )
+                  },
+                  {
+                    fieldName: "patient_tax",
+                    label: <AlgaehLabel label={{ forceLabel: "Patient Tax" }} />
+                  },
+                  {
+                    fieldName: "patient_payable",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Patient Payable" }} />
+                    )
+                  },
+                  {
+                    fieldName: "company_resp",
+                    label: (
+                      <AlgaehLabel
+                        label={{ forceLabel: "Company Responsibility" }}
+                      />
+                    )
+                  },
+                  {
+                    fieldName: "company_tax",
+                    label: <AlgaehLabel label={{ forceLabel: "Company Tax" }} />
+                  },
+                  {
+                    fieldName: "company_payable",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Company Payable" }} />
+                    )
                   }
                 ]}
                 keyId="id"
@@ -99,6 +408,11 @@ class ValidateBills extends PureComponent {
                 }}
                 isEditable={false}
                 paging={{ page: 0, rowsPerPage: 5 }}
+                events={{
+                  onDelete: row => {},
+                  onEdit: row => {},
+                  onDone: row => {}
+                }}
               />
             </div>
 
@@ -174,12 +488,79 @@ class ValidateBills extends PureComponent {
 
           <div className="row margin-top-15">
             <div className="col-lg-8">
+              {/*             
+              <div className="row">
+                <AlagehAutoComplete
+                  div={{ className: "col-lg-4" }}
+                  label={{
+                    forceLabel: "Service Type",
+                    isImp: true
+                  }}
+                  selector={{
+                    name: "hims_d_service_type_id",
+                    className: "select-fld",
+                    value: this.state.hims_d_service_type_id,
+                    dataSource: {
+                      textField: "service_type",
+                      valueField: "hims_d_service_type_id",
+                      data: this.state.service_types
+                    },
+                    onChange: this.dropDownHandler.bind(this),
+                    onClear: () => {
+                      this.setState({
+                        hims_d_service_type_id: null,
+                        hims_d_services_id: null
+                      });
+                    },
+                    others: {
+                      //tabIndex: "4"
+                    }
+                  }}
+                />
+                <AlagehAutoComplete
+                  div={{ className: "col-lg-4" }}
+                  label={{
+                    forceLabel: "Service",
+                    isImp: true
+                  }}
+                  selector={{
+                    name: "hims_d_services_id",
+                    className: "select-fld",
+                    value: this.state.hims_d_services_id,
+                    dataSource: {
+                      textField: "service_name",
+                      valueField: "hims_d_services_id",
+                      data: this.state.services
+                    },
+                    onChange: this.dropDownHandler.bind(this),
+                    onClear: () => {
+                      this.setState({
+                        hims_d_services_id: null
+                      });
+                    },
+                    others: {
+                      //tabIndex: "4"
+                    }
+                  }}
+                />
+
+                <div className="col-lg-3 margin-top-15">
+                  <button
+                    onClick={this.addServiceToInvoice.bind(this)}
+                    className="btn btn-primary"
+                  >
+                    ADD
+                  </button>
+                </div>
+              </div>
+             */}
               <AlgaehDataGrid
                 id="validate-bills-grid"
                 columns={[
                   {
                     fieldName: "quantity",
-                    label: <AlgaehLabel label={{ forceLabel: "Quantity" }} />
+                    label: <AlgaehLabel label={{ forceLabel: "Quantity" }} />,
+                    disabled: true
                   },
                   {
                     fieldName: "cpt_code",
@@ -189,25 +570,29 @@ class ValidateBills extends PureComponent {
                     fieldName: "service_type_code",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Service Code" }} />
-                    )
+                    ),
+                    disabled: true
                   },
                   {
                     fieldName: "service_type",
                     label: (
-                      <AlgaehLabel label={{ forceLabel: "Service Name" }} />
-                    )
+                      <AlgaehLabel label={{ forceLabel: "Service Type" }} />
+                    ),
+                    disabled: true
                   },
                   {
                     fieldName: "gross_amount",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Gross Amount" }} />
-                    )
+                    ),
+                    disabled: true
                   },
                   {
                     fieldName: "discount_amount",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Discount Amount" }} />
-                    )
+                    ),
+                    disabled: true
                   },
                   {
                     fieldName: "patient_resp",
@@ -215,11 +600,45 @@ class ValidateBills extends PureComponent {
                       <AlgaehLabel
                         label={{ forceLabel: "Patient Responsibility" }}
                       />
-                    )
+                    ),
+                    disabled: true
                   },
                   {
                     fieldName: "patient_tax",
-                    label: <AlgaehLabel label={{ forceLabel: "Patient Tax" }} />
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Patient Tax" }} />
+                    ),
+                    disabled: true
+                  },
+                  {
+                    fieldName: "patient_payable",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Patient Payable" }} />
+                    ),
+                    disabled: true
+                  },
+                  {
+                    fieldName: "company_resp",
+                    label: (
+                      <AlgaehLabel
+                        label={{ forceLabel: "Company Responsibility" }}
+                      />
+                    ),
+                    disabled: true
+                  },
+                  {
+                    fieldName: "company_tax",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Company Tax" }} />
+                    ),
+                    disabled: true
+                  },
+                  {
+                    fieldName: "company_payable",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Company Payable" }} />
+                    ),
+                    disabled: true
                   }
                 ]}
                 keyId="id"
@@ -227,40 +646,117 @@ class ValidateBills extends PureComponent {
                   data: invoice_details
                   // data: this.state.invoice_details
                 }}
-                isEditable={false}
+                isEditable={true}
                 paging={{ page: 0, rowsPerPage: 5 }}
+                events={{
+                  onDelete: row => {},
+                  onEdit: row => {},
+                  onDone: row => {}
+                }}
               />
             </div>
 
             <div className="col-lg-4">
+              <div className="row">
+                <AlagehFormGroup
+                  div={{ className: "col  margin-top-15 " }}
+                  label={{
+                    forceLabel: "ICD Code",
+                    isImp: false
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "icd_code",
+                    others: {
+                      disabled: true
+                    },
+                    value: this.state.icd_code,
+                    events: {
+                      // onChange: this.texthandle.bind(this)
+                    }
+                  }}
+                />
+
+                <div className="col-lg-1" style={{ paddingTop: "40px" }}>
+                  <i
+                    onClick={this.icdSearch.bind(this)}
+                    className="fas fa-search"
+                    style={{
+                      marginLeft: "-75%",
+                      cursor: "pointer"
+                    }}
+                  />
+                </div>
+
+                <div className="col">
+                  <button
+                    onClick={this.addICDtoInvoice.bind(this)}
+                    className="btn btn-primary margin-top-15"
+                  >
+                    Add ICD
+                  </button>
+                </div>
+              </div>
               <AlgaehDataGrid
                 id="validate-bills-grid"
                 columns={[
                   {
                     fieldName: "actions",
+                    label: <AlgaehLabel label={{ forceLabel: "Action" }} />,
+                    displayTemplate: row => {
+                      return (
+                        <span
+                          onClick={this.deleteICDfromInvoice.bind(this, row)}
+                        >
+                          <i className="fas fa-trash-alt" />
+                        </span>
+                      );
+                    },
+                    editorTemplate: row => {
+                      return (
+                        <span
+                          onClick={this.deleteICDfromInvoice.bind(this, row)}
+                        >
+                          <i className="fas fa-trash-alt" />
+                        </span>
+                      );
+                    }
+                  },
+                  {
+                    fieldName: "icd_type",
                     label: <AlgaehLabel label={{ forceLabel: "Type" }} />
                   },
                   {
-                    fieldName: "status",
+                    fieldName: "icd_code",
                     label: <AlgaehLabel label={{ forceLabel: "Code" }} />
                   },
                   {
-                    fieldName: "invoice_number",
+                    fieldName: "icd_description",
                     label: <AlgaehLabel label={{ forceLabel: "Description" }} />
                   }
                 ]}
                 keyId="id"
                 dataSource={{
-                  data: []
+                  data: this.state.icds
                 }}
                 isEditable={false}
                 paging={{ page: 0, rowsPerPage: 5 }}
+                events={{
+                  onDelete: row => {},
+                  onEdit: row => {},
+                  onDone: row => {}
+                }}
               />
             </div>
           </div>
         </div>
         <div className="popupFooter">
-          <button className="btn btn-primary">VALIDATE</button>
+          <button
+            onClick={this.validateInvoice.bind(this)}
+            className="btn btn-primary"
+          >
+            VALIDATE
+          </button>
         </div>
       </AlgaehModalPopUp>
     );

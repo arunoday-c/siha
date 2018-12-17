@@ -14,6 +14,8 @@ import {
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import ValidateBills from "./ValidateBills/ValidateBills";
+import moment from "moment";
+import ClaimSubmission from "./ClaimSubmission/ClaimSubmission";
 
 class RCMWorkbench extends Component {
   constructor(props) {
@@ -26,6 +28,7 @@ class RCMWorkbench extends Component {
     this.dropDownHandler = this.dropDownHandler.bind(this);
     this.clearSearch = this.clearSearch.bind(this);
     this.getInvoicesForClaims = this.getInvoicesForClaims.bind(this);
+    this.openReviewSubmit = this.openReviewSubmit.bind(this);
     this.getInsuranceProviders();
   }
 
@@ -156,20 +159,46 @@ class RCMWorkbench extends Component {
     });
   }
 
+  openReviewSubmit() {
+    this.setState({
+      openSubmit: true
+    });
+  }
+
   handleClose() {
     this.setState({
       openClaims: false
     });
   }
 
+  handleSubmitClose() {
+    this.setState({
+      openSubmit: false
+    });
+  }
+
   render() {
     return (
       <div className="" style={{ marginBottom: "50px" }}>
+        <button
+          id="load-claims"
+          onClick={() => {
+            this.getInvoicesForClaims();
+            this.setState({
+              openClaims: false
+            });
+          }}
+        />
         <ValidateBills
           data={this.state.sendProps}
           closeModal={this.handleClose.bind(this)}
           openPopup={this.state.openClaims}
         />
+        <ClaimSubmission
+          claimSubmission={this.state.openSubmit}
+          closeSubmissionModal={this.handleSubmitClose.bind(this)}
+        />
+
         <BreadCrumb
           title={
             <AlgaehLabel
@@ -194,23 +223,6 @@ class RCMWorkbench extends Component {
               )
             }
           ]}
-          // soptlightSearch={{
-          //   label: (
-          //     <AlgaehLabel
-          //       label={{ forceLabel: "Claim ID", returnText: true }}
-          //     />
-          //   ),
-          //   value: this.state.invoice_number,
-          //   selectValue: "invoice_number",
-          //   events: {
-          //     onChange: this.getCtrlCode.bind(this)
-          //   },
-          //   jsonFile: {
-          //     fileName: "spotlightSearch",
-          //     fieldName: "Invoice.InvoiceGen"
-          //   },
-          //   searchName: "InvoiceGen"
-          // }}
         />
 
         <div
@@ -361,10 +373,17 @@ class RCMWorkbench extends Component {
                           return (
                             <i
                               onClick={() => {
-                                this.setState({
-                                  openClaims: true,
-                                  sendProps: row
-                                });
+                                row.claim_validated === "V" ||
+                                row.claim_validated === "X"
+                                  ? swalMessage({
+                                      title:
+                                        "Invoice Already Validated, You can now submit the invoice for claims",
+                                      type: "warning"
+                                    })
+                                  : this.setState({
+                                      openClaims: true,
+                                      sendProps: row
+                                    });
                               }}
                               className="fas fa-eye"
                             />
@@ -383,13 +402,17 @@ class RCMWorkbench extends Component {
                       {
                         fieldName: "insurance_provider_name",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Ins. Company" }} />
+                          <AlgaehLabel
+                            label={{ forceLabel: "Insurance Company" }}
+                          />
                         )
                       },
                       {
-                        fieldName: "network_type",
+                        fieldName: "policy_number",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Policy Group" }} />
+                          <AlgaehLabel
+                            label={{ forceLabel: "Policy Number" }}
+                          />
                         )
                       },
                       {
@@ -397,10 +420,17 @@ class RCMWorkbench extends Component {
                         label: <AlgaehLabel label={{ forceLabel: "Plan" }} />
                       },
                       {
-                        fieldName: "bill_date",
+                        fieldName: "invoice_date",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Bill Date" }} />
+                          <AlgaehLabel label={{ forceLabel: "Invoice Date" }} />
                         ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {moment(row.invoice_date).format("DD-MM-YYYY")}
+                            </span>
+                          );
+                        },
                         disabled: true
                       },
                       {
@@ -424,28 +454,61 @@ class RCMWorkbench extends Component {
                               forceLabel: "Submit Amt."
                             }}
                           />
-                        )
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.submission_ammount
+                                ? row.submission_ammount
+                                : 0}
+                            </span>
+                          );
+                        }
                       },
                       {
                         fieldName: "submission_date",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Submit Date" }} />
-                        )
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.submission_date
+                                ? row.submission_date
+                                : "------"}
+                            </span>
+                          );
+                        }
                       },
-
                       {
                         fieldName: "remittance_ammount.",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Remit Amt." }} />
                         ),
-                        disabled: true
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.remittance_ammount
+                                ? row.remittance_ammount
+                                : 0}
+                            </span>
+                          );
+                        }
                       },
                       {
                         fieldName: "remittance_date",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Remit Date" }} />
                         ),
-                        disabled: true
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.remittance_date
+                                ? row.remittance_date
+                                : "------"}
+                            </span>
+                          );
+                        }
                       },
 
                       {
@@ -453,16 +516,32 @@ class RCMWorkbench extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Denial Amt." }} />
                         ),
-                        disabled: true
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.denial_ammount ? row.denial_ammount : 0}
+                            </span>
+                          );
+                        }
                       },
                       {
-                        fieldName: "receipt_status",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Recipt Status" }}
-                          />
-                        ),
-                        disabled: true
+                        fieldName: "claim_validated",
+                        label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.claim_validated === "V"
+                                ? "Validated"
+                                : row.claim_validated === "E"
+                                ? "Error"
+                                : row.claim_validated === "X"
+                                ? "XML Generated"
+                                : row.claim_validated === "P"
+                                ? "Pending"
+                                : "----"}
+                            </span>
+                          );
+                        }
                       }
                     ]}
                     keyId="service_type_id"
@@ -488,23 +567,23 @@ class RCMWorkbench extends Component {
         <div className="hptl-phase1-footer">
           <div className="row">
             <div className="col-lg-12">
-              <button type="button" className="btn btn-primary">
+              {/* <button type="button" className="btn btn-primary">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Validate",
                     returnText: true
                   }}
                 />
-              </button>
+              </button> */}
 
-              <button type="button" className="btn btn-default">
+              {/* <button type="button" className="btn btn-default">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Post",
                     returnText: true
                   }}
                 />
-              </button>
+              </button> */}
 
               <button type="button" className="btn btn-other">
                 <AlgaehLabel
@@ -515,10 +594,14 @@ class RCMWorkbench extends Component {
                 />
               </button>
 
-              <button type="button" className="btn btn-other">
+              <button
+                //onClick={this.openReviewSubmit}
+                type="button"
+                className="btn btn-other"
+              >
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Submit",
+                    forceLabel: "Submit Claims",
                     returnText: true
                   }}
                 />
