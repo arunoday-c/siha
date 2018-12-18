@@ -27,7 +27,7 @@ class ClaimSubmission extends Component {
         openPopup={this.props.claimSubmission}
       >
         <div className="col-lg-12 popupInner">
-          <div className="row">
+          <div className="row popRightDiv">
             <AlgaehDataGrid
               id="claim-submit-griid"
               columns={[{ fieldName: "status", label: "Status" }]}
@@ -46,12 +46,14 @@ class ClaimSubmission extends Component {
           </div>
         </div>
         <div className="popupFooter">
-          <button
-            onClick={this.submitClaims.bind(this)}
-            className="btn btn-primary"
-          >
-            Submit
-          </button>
+          <div className="col-lg-12">
+            <button
+              onClick={this.submitClaims.bind(this)}
+              className="btn btn-primary"
+            >
+              Submit
+            </button>
+          </div>
         </div>
       </AlgaehModalPopUp>
     );
