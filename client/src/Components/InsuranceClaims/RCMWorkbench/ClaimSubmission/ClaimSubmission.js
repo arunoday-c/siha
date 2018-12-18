@@ -7,6 +7,62 @@ import {
   AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
 import { algaehApiCall } from "../../../../utils/algaehApiCall";
+import js2xml from "js2xmlparser";
+
+var obj = {
+  "@": {
+    "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "xsi:noNamespaceSchemaLocation":
+      "http://www.eclaimlinks.ae/DataDictionary/CommonTypes/DataDictionary.xsd"
+  },
+  Header: {
+    SenderID: "MF3222",
+    ReceiverID: "C019",
+    TransactionDate: "01-12-2018 13:33",
+    RecordCount: "1",
+    DispositionFlag: "TEST"
+  },
+  Claim: {
+    ID: "OPB0002596",
+    MemberID: "097110040110646901",
+    PayerID: "A012",
+    ProviderID: "MF3222",
+    EmiratesIDNumber: "784-1982-3530290-2",
+    Gross: "28.60",
+    PatientShare: "0.00",
+    Net: "28.60",
+    Encounter: {
+      FacilityID: "MF3222",
+      Type: "1",
+      PatientID: "NH001044",
+      Start: "04-02-2018 00:00",
+      End: "04-02-2018 00:00",
+      StartType: "1",
+      EndType: "1"
+    },
+    Diagnosis: [
+      {
+        Type: "ReasonForVisit",
+        Code: "M54.5"
+      },
+      {
+        Type: "ReasonForVisit",
+        Code: "K29.70"
+      }
+    ],
+    Activity: {
+      ID: "1",
+      Start: "04-02-2018 00:00",
+      Type: "3",
+      Code: "81001",
+      Quantity: "1",
+      Net: "28.60",
+      OrderingClinician: "GD5799",
+      Clinician: "GD5799",
+      PriorAuthorizationID: ""
+    }
+  }
+};
 
 class ClaimSubmission extends Component {
   constructor(props) {
@@ -17,7 +73,15 @@ class ClaimSubmission extends Component {
     this.baseState = this.state;
   }
 
-  submitClaims() {}
+  submitClaims() {
+    console.log("State: ", this.state);
+
+    console.log(
+      js2xml.parse("Claim.Submission", obj, {
+        declaration: { encoding: "iso-8859-1", version: "1.1" }
+      })
+    );
+  }
 
   componentWillReceiveProps(nextProps) {
     //console.log("Data", nextProps.data !== undefined ? nextProps.data : "wait");
@@ -34,10 +98,26 @@ class ClaimSubmission extends Component {
     debugger;
     let _win = window;
     _win.open(
-      "data:text/xml;charset=ISO-8859-1," +
-        "<?xml version='1.0' encoding='iso-8859-1'?> <Claim.Submission xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='http://www.eclaimlinks.ae/DataDictionary/CommonTypes/DataDictionary.xsd'> <Header> <SenderID>MF3222</SenderID> <ReceiverID>C019</ReceiverID> <TransactionDate>01-12-2018 13:33</TransactionDate> <RecordCount>1</RecordCount> <DispositionFlag>TEST</DispositionFlag> </Header> <Claim> <ID>OPB0002596</ID> <MemberID>097110040110646901</MemberID> <PayerID>A012</PayerID> <ProviderID>MF3222</ProviderID> <EmiratesIDNumber>784-1982-3530290-2</EmiratesIDNumber> <Gross>28.60</Gross> <PatientShare>0.00</PatientShare> <Net>28.60</Net> <Encounter> <FacilityID>MF3222</FacilityID> <Type>1</Type> <PatientID>NH001044</PatientID> <Start>04-02-2018 00:00</Start> <End>04-02-2018 00:00</End> <StartType>1</StartType> <EndType>1</EndType> </Encounter> <Diagnosis> <Type>ReasonForVisit</Type> <Code>M54.5</Code> </Diagnosis> <Diagnosis> <Type>ReasonForVisit</Type> <Code>K29.70</Code> </Diagnosis> <Activity> <ID>1</ID> <Start>04-02-2018 00:00</Start> <Type>3</Type> <Code>81001</Code> <Quantity>1</Quantity> <Net>28.60</Net> <OrderingClinician>GD5799</OrderingClinician> <Clinician>GD5799</Clinician> <PriorAuthorizationID></PriorAuthorizationID> </Activity> </Claim> </Claim.Submission>"
+      "data:text/plain;charset=utf-8," +
+        "<?xml version='1.0' encoding='iso-8859-1'?>"
     );
     _win.close();
+  }
+
+  downloadXml(filename, text) {
+    var element = document.createElement("a");
+    element.setAttribute(
+      "href",
+      "data:text/plain;charset=utf-8," + encodeURIComponent(text)
+    );
+    element.setAttribute("download", filename);
+
+    element.style.display = "none";
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
   }
 
   loadInvoiceDetails(row) {
@@ -434,17 +514,23 @@ class ClaimSubmission extends Component {
         </div>
         <div className="popupFooter">
           <button
-            // onClick={this.submitClaims.bind(this)}
+            onClick={this.submitClaims.bind(this)}
             className="btn btn-primary"
           >
             Submit
           </button>
 
           <button
-            //onClick={this.submitClaims.bind(this)}
+            onClick={this.downloadXml.bind(
+              this,
+              "Test.xml",
+              js2xml.parse("Claim.Submission", obj, {
+                declaration: { encoding: "iso-8859-1", version: "1.1" }
+              })
+            )}
             className="btn btn-primary"
           >
-            <a onClick={this.downloadXmlHandler.bind(this)}>Generate XML</a>
+            Generate Test XML
           </button>
         </div>
       </AlgaehModalPopUp>

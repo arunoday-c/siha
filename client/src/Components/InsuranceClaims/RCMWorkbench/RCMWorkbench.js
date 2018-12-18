@@ -258,7 +258,7 @@ class RCMWorkbench extends Component {
           <div className="row">
             <AlagehAutoComplete
               div={{ className: "col" }}
-              label={{ isImp: false, forceLabel: "Company Name" }}
+              label={{ isImp: true, forceLabel: "Company Name" }}
               selector={{
                 name: "insurance_provider_id",
                 className: "select-fld",

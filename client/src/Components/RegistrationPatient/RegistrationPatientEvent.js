@@ -203,8 +203,8 @@ const ShowAdvanceScreen = ($this, e) => {
     });
   } else {
     swalMessage({
-      title: "Select Patient",
-      type: "error"
+      title: "Please select a patient to add advance for",
+      type: "warning"
     });
   }
 };

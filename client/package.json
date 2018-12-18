@@ -60,5 +60,5 @@
       "no-script-url": 0
     }
   },
-  "proxy": "http://localhost:3006"
+  "proxy": "http://localhost:3000"
 }
