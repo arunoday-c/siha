@@ -16,7 +16,7 @@ export default {
     password: "medteam2013",
     //database: "security_algaeh_hims_db",
     database: "algaeh_hims_db",
-    //database: "hims_test_db",
+    // database: "hims_test_db",
     multipleStatements: true,
     acquireTimeout: 20000,
     dateStrings: true,

@@ -112,7 +112,6 @@ class AddAdvanceModal extends PureComponent {
   }
 
   SaveAdvance(context, e) {
-    debugger;
     const err = Validations(this, this);
 
     if (!err) {
@@ -121,6 +120,12 @@ class AddAdvanceModal extends PureComponent {
           $this.setState({
             receipt_number: data.receipt_number
           });
+
+          context.updateState({
+            advance_amount: data.total_advance_amount,
+            AdvanceOpen: false
+          });
+
           successfulMessage({
             message: "Done Successfully",
             title: "Success",
@@ -142,7 +147,7 @@ class AddAdvanceModal extends PureComponent {
                   <div className="popupHeader">{this.props.HeaderCaption} </div>
                   <div className="col-lg-12 popupInner">
                     <div className="row">
-                      <button
+                      {/* <button
                         onClick={() => {
                           context.updateState({
                             advance_amount: 8888
@@ -150,7 +155,7 @@ class AddAdvanceModal extends PureComponent {
                         }}
                       >
                         Hello BTN
-                      </button>
+                      </button> */}
                       <div className="col-lg-3">
                         <AlgaehLabel
                           label={{

@@ -87,8 +87,60 @@ class Formula extends Component {
       }
     });
   }
-  deleteformulas() {}
-  updateformulas() {}
+
+  deleteformulas(data) {
+    algaehApiCall({
+      uri: "/algaehMasters/deleteFormula",
+      method: "DELETE",
+      data: {
+        algaeh_d_formulas_id: data.algaeh_d_formulas_id
+      },
+      onSuccess: response => {
+        if (response.data.success) {
+          swalMessage({
+            title: "Record updated successfully",
+            type: "success"
+          });
+
+          this.getFormulas();
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  updateformulas(data) {
+    algaehApiCall({
+      uri: "/algaehMasters/updateFormula",
+      method: "PUT",
+      data: {
+        algaeh_d_formulas_id: data.algaeh_d_formulas_id,
+        formula_for: data.formula_for,
+        formula: data.formula
+      },
+      onSuccess: response => {
+        if (response.data.success) {
+          swalMessage({
+            title: "Record updated successfully",
+            type: "success"
+          });
+
+          this.getFormulas();
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
 
   render() {
     return (
@@ -153,10 +205,9 @@ class Formula extends Component {
             </div>
           </div>
 
-          <div data-validate="shiftDiv" id="algaehGrid_Cntr">
+          <div data-validate="formulaDiv" id="algaehGrid_Cntr">
             <AlgaehDataGrid
-              id="shift-grid"
-              datavalidate="data-validate='shiftDiv'"
+              id="formula-grid"
               columns={[
                 {
                   fieldName: "algaeh_d_formulas_id",
@@ -172,7 +223,7 @@ class Formula extends Component {
                   label: "Formula"
                 }
               ]}
-              keyId="algaeh_d_module_id"
+              keyId="algaeh_d_formulas_id"
               dataSource={{
                 data: this.state.formulas
               }}
