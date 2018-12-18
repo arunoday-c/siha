@@ -330,7 +330,7 @@ class ValidateBills extends PureComponent {
         }}
         openPopup={this.props.openPopup}
       >
-        <div className="popupInner">
+        <div className="popupInner ClaimValidationPopup">
           {/* {JSON.stringify(this.props.data)} */}
           <div
             className="popRightDiv"
@@ -717,47 +717,48 @@ class ValidateBills extends PureComponent {
                       </Dropzone>
                     </div>
                   </div>
-                  <div className="row">
-                    <AlagehFormGroup
-                      div={{ className: "col  margin-top-15 " }}
-                      label={{
-                        forceLabel: "ICD Code",
-                        isImp: false
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "icd_code",
-                        others: {
-                          disabled: true
-                        },
-                        value: this.state.icd_code,
-                        events: {
-                          // onChange: this.texthandle.bind(this)
-                        }
+                  <AlagehFormGroup
+                    div={{ className: "col  margin-top-15 " }}
+                    label={{
+                      forceLabel: "ICD Code",
+                      isImp: false
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "icd_code",
+                      others: {
+                        disabled: true
+                      },
+                      value: this.state.icd_code,
+                      events: {
+                        // onChange: this.texthandle.bind(this)
+                      }
+                    }}
+                  />
+
+                  <div
+                    className="col-2"
+                    style={{ padding: 0, paddingTop: "40px" }}
+                  >
+                    <i
+                      onClick={this.icdSearch.bind(this)}
+                      className="fas fa-search"
+                      style={{
+                        cursor: "pointer"
                       }}
                     />
-
-                    <div className="col-lg-1" style={{ paddingTop: "40px" }}>
-                      <i
-                        onClick={this.icdSearch.bind(this)}
-                        className="fas fa-search"
-                        style={{
-                          marginLeft: "-75%",
-                          cursor: "pointer"
-                        }}
-                      />
-                    </div>
-
-                    <div className="col">
-                      <button
-                        onClick={this.addICDtoInvoice.bind(this)}
-                        className="btn btn-primary margin-top-15"
-                      >
-                        +
-                      </button>
-                    </div>
                   </div>
-                  <div id="icd_bill_cntr">
+
+                  <div className="col-3">
+                    <button
+                      onClick={this.addICDtoInvoice.bind(this)}
+                      className="btn btn-primary margin-top-15"
+                      style={{ marginTop: 36 }}
+                    >
+                      Add
+                    </button>
+                  </div>
+                  <div className="col-12 margin-top-15" id="icd_bill_cntr">
                     <AlgaehDataGrid
                       id="validate-bills-grid"
                       columns={[
