@@ -1908,7 +1908,8 @@ let patientAdvanceRefund = (req, res, next) => {
                                         }
                                         req.records = {
                                           receipt_number: newNumber,
-                                          total_advance_amount:inputParameters.advance_amount
+                                          total_advance_amount:
+                                            inputParameters.advance_amount
                                         };
                                         releaseDBConnection(db, connection);
                                         next();
@@ -2172,7 +2173,11 @@ created_by, created_date, updated_by, updated_date,  counter_id, shift_id, pay_t
                                           });
                                         }
                                         releaseDBConnection(db, connection);
-                                        req.records = { payment_no: newNumber };
+                                        req.records = {
+                                          payment_no: newNumber,
+                                          total_advance_amount:
+                                            inputParameters.advance_amount
+                                        };
                                         next();
                                       });
                                     }
