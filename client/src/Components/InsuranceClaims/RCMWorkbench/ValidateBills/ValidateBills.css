@@ -1,9 +1,14 @@
-#claimGrid_cntr .ReactTable {
-  height: 20vh !important;
-  margin-top: 15px;
+.ClaimValidationPopup {
   margin-bottom: 15px; }
-  #claimGrid_cntr .ReactTable .rt-table {
-    overflow-y: hidden; }
-
-#invoiceDetailGrid_Cntr .ReactTable {
-  height: 43vh !important; }
+  .ClaimValidationPopup .image-drop-area {
+    height: 128px !important; }
+  .ClaimValidationPopup #claimGrid_cntr .ReactTable {
+    height: 20vh !important;
+    margin-top: 15px;
+    margin-bottom: 15px; }
+    .ClaimValidationPopup #claimGrid_cntr .ReactTable .rt-table {
+      overflow-y: hidden; }
+  .ClaimValidationPopup #invoiceDetailGrid_Cntr .ReactTable {
+    height: 43vh !important; }
+  .ClaimValidationPopup #icd_bill_cntr .ReactTable {
+    height: 34.5vh !important; }
