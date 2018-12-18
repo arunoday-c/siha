@@ -79,6 +79,7 @@ import Algaeh from "./Components/Algaeh/Algaeh";
 import VisitClose from "./Components/VisitClose/VisitClose";
 import AppointmentAr from "./Components/AppointmentAr/AppointmentAr";
 import SelfService from "./Components/EmployeeManagement/SelfService/SelfService";
+import AttendanceRegularization from "./Components/EmployeeManagement/AttendanceRegularization/AttendanceRegularization";
 
 const componts = (selectedLang, breadStyle) => {
   return {
@@ -176,7 +177,10 @@ const componts = (selectedLang, breadStyle) => {
     POSCreditSettlement: <POSCreditSettlement SelectLanguage={selectedLang} />,
     VisitClose: <VisitClose SelectLanguage={selectedLang} />,
     AlgaehModules: <Algaeh />,
-    SelfService: <SelfService SelectLanguage={selectedLang} />
+    SelfService: <SelfService SelectLanguage={selectedLang} />,
+    AttendanceRegularization: (
+      <AttendanceRegularization SelectLanguage={selectedLang} />
+    )
   };
 };
 

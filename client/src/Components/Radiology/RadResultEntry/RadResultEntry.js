@@ -103,7 +103,7 @@ class RadResultEntry extends Component {
             f => f.hims_d_employee_id === this.state.ordered_by
           );
     return (
-      <div>
+      <div className="RadResultEntry">
         <Modal open={this.props.open}>
           <div className="algaeh-modal">
             <div className="popupHeader">

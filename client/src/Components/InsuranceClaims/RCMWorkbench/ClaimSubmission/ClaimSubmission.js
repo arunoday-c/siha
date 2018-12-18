@@ -6,6 +6,7 @@ import {
   AlgaehLabel,
   AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
+import { algaehApiCall } from "../../../../utils/algaehApiCall";
 
 class ClaimSubmission extends Component {
   constructor(props) {
@@ -13,6 +14,7 @@ class ClaimSubmission extends Component {
     this.state = {
       selectedLang: "en"
     };
+    this.baseState = this.state;
   }
 
   submitClaims() {}
@@ -24,8 +26,37 @@ class ClaimSubmission extends Component {
     });
   }
 
-  loadInvoiceDetails(row) {
+  componentWillUnmount() {
+    this.setState(this.baseState);
+  }
+
+  downloadXmlHandler() {
     debugger;
+    let _win = window;
+    _win.open(
+      "data:text/xml;charset=ISO-8859-1," +
+        "<?xml version='1.0' encoding='iso-8859-1'?> <Claim.Submission xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='http://www.eclaimlinks.ae/DataDictionary/CommonTypes/DataDictionary.xsd'> <Header> <SenderID>MF3222</SenderID> <ReceiverID>C019</ReceiverID> <TransactionDate>01-12-2018 13:33</TransactionDate> <RecordCount>1</RecordCount> <DispositionFlag>TEST</DispositionFlag> </Header> <Claim> <ID>OPB0002596</ID> <MemberID>097110040110646901</MemberID> <PayerID>A012</PayerID> <ProviderID>MF3222</ProviderID> <EmiratesIDNumber>784-1982-3530290-2</EmiratesIDNumber> <Gross>28.60</Gross> <PatientShare>0.00</PatientShare> <Net>28.60</Net> <Encounter> <FacilityID>MF3222</FacilityID> <Type>1</Type> <PatientID>NH001044</PatientID> <Start>04-02-2018 00:00</Start> <End>04-02-2018 00:00</End> <StartType>1</StartType> <EndType>1</EndType> </Encounter> <Diagnosis> <Type>ReasonForVisit</Type> <Code>M54.5</Code> </Diagnosis> <Diagnosis> <Type>ReasonForVisit</Type> <Code>K29.70</Code> </Diagnosis> <Activity> <ID>1</ID> <Start>04-02-2018 00:00</Start> <Type>3</Type> <Code>81001</Code> <Quantity>1</Quantity> <Net>28.60</Net> <OrderingClinician>GD5799</OrderingClinician> <Clinician>GD5799</Clinician> <PriorAuthorizationID></PriorAuthorizationID> </Activity> </Claim> </Claim.Submission>"
+    );
+    _win.close();
+  }
+
+  loadInvoiceDetails(row) {
+    algaehApiCall({
+      uri: "/invoiceGeneration/getPatientIcdForInvoice",
+      data: {
+        invoice_header_id: row.hims_f_invoice_header_id
+      },
+      method: "GET",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            icds: res.data.records
+          });
+        }
+      },
+      onFailure: err => {}
+    });
+
     this.setState({
       invoice_details: row.invoiceDetails
     });
@@ -337,7 +368,7 @@ class ClaimSubmission extends Component {
                   data: this.state.invoice_details
                   // data: this.state.invoice_details
                 }}
-                isEditable={true}
+                isEditable={false}
                 paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
                   onDelete: row => {},
@@ -351,28 +382,28 @@ class ClaimSubmission extends Component {
               <AlgaehDataGrid
                 id="validate-bills-grid"
                 columns={[
-                  {
-                    fieldName: "actions",
-                    label: <AlgaehLabel label={{ forceLabel: "Action" }} />,
-                    displayTemplate: row => {
-                      return (
-                        <span
-                        //onClick={this.deleteICDfromInvoice.bind(this, row)}
-                        >
-                          <i className="fas fa-trash-alt" />
-                        </span>
-                      );
-                    },
-                    editorTemplate: row => {
-                      return (
-                        <span
-                        // onClick={this.deleteICDfromInvoice.bind(this, row)}
-                        >
-                          <i className="fas fa-trash-alt" />
-                        </span>
-                      );
-                    }
-                  },
+                  // {
+                  //   fieldName: "actions",
+                  //   label: <AlgaehLabel label={{ forceLabel: "Action" }} />,
+                  //   displayTemplate: row => {
+                  //     return (
+                  //       <span
+                  //       //onClick={this.deleteICDfromInvoice.bind(this, row)}
+                  //       >
+                  //         <i className="fas fa-trash-alt" />
+                  //       </span>
+                  //     );
+                  //   },
+                  //   editorTemplate: row => {
+                  //     return (
+                  //       <span
+                  //       // onClick={this.deleteICDfromInvoice.bind(this, row)}
+                  //       >
+                  //         <i className="fas fa-trash-alt" />
+                  //       </span>
+                  //     );
+                  //   }
+                  // },
                   {
                     fieldName: "icd_type",
                     label: <AlgaehLabel label={{ forceLabel: "Type" }} />
@@ -403,17 +434,17 @@ class ClaimSubmission extends Component {
         </div>
         <div className="popupFooter">
           <button
-            onClick={this.submitClaims.bind(this)}
+            // onClick={this.submitClaims.bind(this)}
             className="btn btn-primary"
           >
             Submit
           </button>
 
           <button
-            onClick={this.submitClaims.bind(this)}
+            //onClick={this.submitClaims.bind(this)}
             className="btn btn-primary"
           >
-            Generate XML
+            <a onClick={this.downloadXmlHandler.bind(this)}>Generate XML</a>
           </button>
         </div>
       </AlgaehModalPopUp>
