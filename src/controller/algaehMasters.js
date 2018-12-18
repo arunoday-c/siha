@@ -14,7 +14,9 @@ import {
   addAlgaehComponent,
   getAlgaehComponents,
   addAlgaehScreenElement,
-  getAlgaehScreenElement
+  getAlgaehScreenElement,
+  getFormulas,
+  addFormula
 } from "../model/algaehMasters";
 
 export default ({ config, db }) => {
@@ -266,6 +268,40 @@ export default ({ config, db }) => {
           records: result
         });
       }
+
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :
+  api.get(
+    "/getFormulas",
+    getFormulas,
+    (req, res, next) => {
+      let result = req.records;
+
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :
+  api.post(
+    "/addFormula",
+    addFormula,
+    (req, res, next) => {
+      let result = req.records;
+
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
 
       next();
     },
