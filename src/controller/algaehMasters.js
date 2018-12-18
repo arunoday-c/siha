@@ -16,7 +16,9 @@ import {
   addAlgaehScreenElement,
   getAlgaehScreenElement,
   getFormulas,
-  addFormula
+  addFormula,
+  updateFormula,
+  deleteFormula
 } from "../model/algaehMasters";
 
 export default ({ config, db }) => {
@@ -295,6 +297,40 @@ export default ({ config, db }) => {
   api.post(
     "/addFormula",
     addFormula,
+    (req, res, next) => {
+      let result = req.records;
+
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :
+  api.put(
+    "/updateFormula",
+    updateFormula,
+    (req, res, next) => {
+      let result = req.records;
+
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :
+  api.delete(
+    "/deleteFormula",
+    deleteFormula,
     (req, res, next) => {
       let result = req.records;
 

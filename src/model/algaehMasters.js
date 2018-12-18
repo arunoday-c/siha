@@ -928,6 +928,7 @@ let addFormula = (req, res, next) => {
             next(error);
           }
           req.records = result;
+
           next();
         }
       );
@@ -936,6 +937,79 @@ let addFormula = (req, res, next) => {
     next(e);
   }
 };
+
+//created by irfan:
+let updateFormula = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      debugLog("bode:", req.body);
+      connection.query(
+        " UPDATE algaeh_d_formulas SET algaeh_d_formulas_id = ?, formula_for = ?,\
+         formula = ? WHERE algaeh_d_formulas_id =?;",
+        [
+          input.algaeh_d_formulas_id,
+          input.formula_for,
+          input.formula,
+          input.old_formulas_id
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan:
+let deleteFormula = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        " DELETE FROM algaeh_d_formulas WHERE algaeh_d_formulas_id = ?;",
+        [input.algaeh_d_formulas_id],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 //--------ROLE BASE SCREEN ASSIGNMENT---------------
 
 module.exports = {
@@ -952,5 +1026,7 @@ module.exports = {
   addAlgaehScreenElement,
   getAlgaehScreenElement,
   getFormulas,
-  addFormula
+  addFormula,
+  updateFormula,
+  deleteFormula
 };
