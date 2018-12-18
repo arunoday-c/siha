@@ -123,7 +123,8 @@ class AddAdvanceModal extends PureComponent {
 
           context.updateState({
             advance_amount: data.total_advance_amount,
-            AdvanceOpen: false
+            AdvanceOpen: false,
+            RefundOpen: false
           });
 
           successfulMessage({
@@ -147,15 +148,6 @@ class AddAdvanceModal extends PureComponent {
                   <div className="popupHeader">{this.props.HeaderCaption} </div>
                   <div className="col-lg-12 popupInner">
                     <div className="row">
-                      {/* <button
-                        onClick={() => {
-                          context.updateState({
-                            advance_amount: 8888
-                          });
-                        }}
-                      >
-                        Hello BTN
-                      </button> */}
                       <div className="col-lg-3">
                         <AlgaehLabel
                           label={{
