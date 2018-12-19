@@ -238,7 +238,7 @@ export default ({ config, db }) => {
     }
   );
 
-  // created by irfan
+  // created by irfan:
   api.delete(
     "/deleteEarningDeduction",
     deleteEarningDeduction,
