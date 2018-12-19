@@ -4,6 +4,7 @@ import {
   paging,
   whereCondition,
   releaseDBConnection,
+  deleteRecord,
   jsonArrayToObject
 } from "../utils";
 import httpStatus from "../utils/httpStatus";
@@ -11,7 +12,7 @@ import httpStatus from "../utils/httpStatus";
 import { debugLog } from "../utils/logging";
 import Promise from "bluebird";
 
-// api to add employee
+//api to add employee
 let addEmployee = (req, res, next) => {
   try {
     if (req.db == null) {
@@ -254,7 +255,7 @@ let addEmployee = (req, res, next) => {
   }
 };
 
-// api to add employee groups
+//created by adnan:api to add employee groups
 let addEmployeeGroups = (req, res, next) => {
   try {
     if (req.db == null) {
@@ -292,6 +293,127 @@ let addEmployeeGroups = (req, res, next) => {
         }
       );
     });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan:
+let getEmployeeGroups = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_d_employee_group_id, group_description,\
+         monthly_accrual_days, airfare_eligibility, airfare_amount from hims_d_employee_group\
+        where record_status='A'  order by hims_d_employee_group_id desc",
+
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan:
+let updateEmployeeGroup = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.body);
+
+    if (
+      input.hims_d_employee_group_id != "null" &&
+      input.hims_d_employee_group_id != undefined
+    ) {
+      db.getConnection((error, connection) => {
+        connection.query(
+          "UPDATE hims_d_employee_group SET group_description = ?,\
+           monthly_accrual_days = ?, airfare_eligibility = ?, airfare_amount = ?,\
+            updated_date=?, updated_by=?  WHERE hims_d_employee_group_id = ?",
+
+          [
+            input.group_description,
+            input.monthly_accrual_days,
+            input.airfare_eligibility,
+            input.airfare_amount,
+            new Date(),
+            input.updated_by,
+            input.hims_d_employee_group_id
+          ],
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+
+            if (result.affectedRows > 0) {
+              req.records = result;
+              next();
+            } else {
+              req.records = { invalid_input: true };
+              next();
+            }
+          }
+        );
+      });
+    } else {
+      req.records = { invalid_input: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by:irfan to delete
+let deleteEmployeeGroup = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let input = extend({}, req.body);
+    if (
+      input.hims_d_employee_group_id != "null" &&
+      input.hims_d_employee_group_id != undefined
+    ) {
+      deleteRecord(
+        {
+          db: req.db,
+          tableName: "hims_d_employee_group",
+          id: req.body.hims_d_employee_group_id,
+          query:
+            "UPDATE hims_d_employee_group SET  record_status='I' WHERE hims_d_employee_group_id=?",
+          values: [req.body.hims_d_employee_group_id]
+        },
+        result => {
+          req.records = result;
+          next();
+        },
+        error => {
+          next(error);
+        },
+        true
+      );
+    } else {
+      req.records = { invalid_input: true };
+      next();
+    }
   } catch (e) {
     next(e);
   }
@@ -354,26 +476,6 @@ let getEmployee = (req, res, next) => {
     next(e);
   }
 };
-
-// let getEmployeeGroups = (req , res , next) =>{
-
-// try {
-//   if (req.db == null) {
-//     next(httpStatus.dataBaseNotInitilizedError());
-//   }
-
-
-
-
-// }
-// catch(e) {
-//   next(e)
-// }
-
-
-
-
-// }
 
 //created by irfan: to update Employee
 let updateEmployee = (req, res, next) => {
@@ -897,5 +999,8 @@ module.exports = {
   getEmployeeCategory,
   getDoctorServiceCommission,
   getDoctorServiceTypeCommission,
-  addEmployeeGroups
+  addEmployeeGroups,
+  getEmployeeGroups,
+  updateEmployeeGroup,
+  deleteEmployeeGroup
 };
