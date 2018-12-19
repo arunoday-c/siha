@@ -58,6 +58,5 @@
       "no-eval": false,
       "no-script-url": 0
     }
-  },
-  "proxy": "http://localhost:3000"
+  }
 }

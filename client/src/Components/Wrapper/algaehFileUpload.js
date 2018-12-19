@@ -55,7 +55,8 @@ export default class AlgaehFileUploader extends Component {
       propsP.serviceParameters.uniqueID !== ""
     ) {
       displayFileFromServer({
-        uri: "/masters/getFile",
+        uri: "/Document/get",
+        module: "documentManagement",
         fileType: propsP.serviceParameters.fileType,
         destinationName: propsP.serviceParameters.uniqueID,
         addDataTag: propsP.addDataTag === undefined ? true : propsP.addDataTag,
@@ -119,13 +120,32 @@ export default class AlgaehFileUploader extends Component {
 
   dropZoneHandlerOnDrop(file) {
     const _file = file[0];
+
     const _fileExtention = _file.name.split(".");
     if (_file.type.indexOf("image") > -1) {
-      this.setState({
-        showCropper: true,
-        filePreview: _file.preview, //this.resizingAndCompressImage(_file),
-        fileExtention: "image/webp"
-      });
+      //----new Compression method
+
+      const reader = new FileReader();
+      reader.readAsDataURL(_file);
+
+      reader.onload = event => {
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = () => {
+          const elem = document.createElement("canvas");
+          elem.height = img.height;
+          elem.width = img.width;
+          const ctx = elem.getContext("2d");
+          ctx.drawImage(img, 0, 0, img.width, img.height);
+          const _dataURL = elem.toDataURL("image/webp", 0.7);
+          this.setState({
+            showCropper: true,
+            filePreview: _dataURL, //this.resizingAndCompressImage(_file),
+            fileExtention: "image/webp"
+          });
+        };
+      };
+      //---End compression
     } else {
       this.setState({
         fileExtention: _fileExtention[_fileExtention.length - 1]
@@ -139,11 +159,33 @@ export default class AlgaehFileUploader extends Component {
     if (_from === "zoom") this.setState({ showZoom: false });
   }
   onCroppedHandler(e) {
+    debugger;
+    // const _values = this.cropperImage.values();
+
+    // const elem = document.createElement("canvas");
+    // elem.height = _values.original.imgHeight;
+    // elem.width = _values.original.imgWidth;
+    // const ctx = elem.getContext("2d");
+    // ctx.drawImage(
+    //   this.cropperImage.img,
+    //   _values.display.x,
+    //   _values.display.y,
+    //   _values.original.imgWidth,
+    //   _values.original.imgHeight
+    // );
+
+    // const _dataU = elem.toDataURL("image/webp", 0.95);
+    // this.SavingImageOnServer(_dataU);
     this.SavingImageOnServer();
-    this.setState({
-      showCropper: false,
-      filePreview: this.cropperImage.crop()
-    });
+    this.setState(
+      {
+        showCropper: false,
+        filePreview: this.cropperImage.crop()
+      },
+      () => {
+        this.SavingImageOnServer();
+      }
+    );
   }
   cropperImplement() {
     if (this.state.showCropper) {
@@ -216,19 +258,30 @@ export default class AlgaehFileUploader extends Component {
 
   SavingImageOnServer(dataToSave, fileExtention) {
     const that = this;
-    dataToSave = dataToSave || that.cropperImage.crop().split(",")[1];
+    dataToSave = dataToSave || that.state.filePreview;
     fileExtention = fileExtention || that.state.fileExtention;
+    debugger;
+
     const _pageName = getCookie("ScreenName").replace("/", "");
     const _needConvertion =
       that.props.needConvertion === undefined
         ? {}
         : { needConvertion: that.props.needConvertion };
+    const _splitter = dataToSave.split(",");
+    // const mime = _splitter[0].match(/:(.*?);/)[1];
+    // const _blob = atob(_splitter[1]);
+    // const reader = new FileReader();
+    // reader.readAsArrayBuffer([_blob], { type: mime });
+
+    // reader.onloadend = () => {
+    //console.log("Render result", reader.result);
     algaehApiCall({
-      uri: "/masters/imageSave",
+      uri: "/Document/save",
       method: "POST",
-      data: dataToSave,
+      data: _splitter[1],
+      module: "documentManagement",
       header: {
-        "content-type": "application/octet-stream",
+        "content-type": "multipart/form-data", //"application/octet-stream",
         "x-file-details": JSON.stringify({
           pageName: _pageName,
           destinationName: that.props.serviceParameters.uniqueID,
@@ -270,6 +323,7 @@ export default class AlgaehFileUploader extends Component {
         }
       }
     });
+    //};
   }
   implementProgressBar() {
     if (this.state.showProgress) {

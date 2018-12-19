@@ -1,6 +1,19 @@
 {
   "baseUrl": "/api/v1",
-  "base-Url": "http://192.168.0.145:3002/api/v1",
+  "routersAndPorts": {
+    "default": {
+      "port": 3000,
+      "url": "http://localhost:"
+    },
+    "finance": {
+      "port": 3007,
+      "url": "http://localhost:"
+    },
+    "documentManagement": {
+      "port": 3006,
+      "url": "http://localhost:"
+    }
+  },
   "apiAuth": {
     "user": "devteam",
     "password": "devteam"

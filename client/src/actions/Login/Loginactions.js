@@ -18,9 +18,10 @@ export function getTokenDetals(that) {
       }
     });
   }).then(myIP => {
+    const _myRoute = config.routersAndPorts.default;
     axios({
       method: "GET",
-      url: auth_url,
+      url: _myRoute.url + _myRoute.port + auth_url,
       headers: {
         Authorization: basicAuth,
         "x-client-ip": myIP

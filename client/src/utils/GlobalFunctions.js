@@ -93,9 +93,10 @@ export function saveImageOnServer(options) {
         const fileAsBinaryString = reader.result.split(",")[1];
         const _fileName = file.name.split(".");
         algaehApiCall({
-          uri: "/masters/imageSave",
+          uri: "/Document/save",
           data: fileAsBinaryString,
           method: "POST",
+          module: "documentManagement",
           header: {
             "content-type": "application/octet-stream", // "multipart/form-data",
             "x-file-details": JSON.stringify({
@@ -156,31 +157,26 @@ export function displayFileFromServer(options) {
   algaehApiCall({
     uri: options.uri,
     method: "GET",
+    module: "documentManagement",
+    headers: {
+      Accept: "blob"
+    },
     data: {
       fileType: options.fileType,
       destinationName: options.destinationName,
       ..._resize
     },
-    others: { responseType: "arraybuffer" },
+    others: { responseType: "blob" },
     onSuccess: response => {
       if (response.data) {
-        const _addData =
-          options.addDataTag === undefined ? true : options.addDataTag;
-        let _data = undefined;
-        if (_addData) {
-          _data =
-            "data:" +
-            response.headers["content-type"] +
-            ";base64," +
-            new Buffer(response.data, "binary").toString("base64");
-        } else {
-          debugger;
-          _data = new Buffer(response.data, "binary").toString("base64");
-        }
+        let reader = new FileReader();
 
-        if (typeof options.onFileSuccess === "function") {
-          options.onFileSuccess(_data);
-        }
+        reader.onloadend = () => {
+          if (typeof options.onFileSuccess === "function") {
+            options.onFileSuccess(reader.result);
+          }
+        };
+        reader.readAsDataURL(response.data);
       }
     },
     onFailure: details => {
