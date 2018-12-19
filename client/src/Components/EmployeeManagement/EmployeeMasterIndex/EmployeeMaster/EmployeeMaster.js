@@ -7,6 +7,7 @@ import "./EmployeeMaster.css";
 
 import CommissionSetup from "./CommissionSetup/CommissionSetup";
 import PersonalDetails from "./PersonalDetails/PersonalDetails";
+import FamilyAndIdentification from "./FamilyAndIdentification/FamilyAndIdentification";
 import DeptUserDetails from "./DeptUserDetails/DeptUserDetails";
 import PayRollDetails from "./PayRollDetails/PayRollDetails";
 import OfficalDetails from "./OfficalDetails/OfficalDetails";
@@ -212,6 +213,19 @@ class EmployeeMaster extends Component {
                       </li>
                     ) : null}
                     <li
+                      algaehtabs={"FamilyAndIdentification"}
+                      className={"nav-item tab-button"}
+                      onClick={this.openTab.bind(this)}
+                    >
+                      {
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Family & Identification Details"
+                          }}
+                        />
+                      }
+                    </li>
+                    <li
                       algaehtabs={"OfficalDetails"}
                       className={"nav-item tab-button"}
                       onClick={this.openTab.bind(this)}
@@ -279,6 +293,8 @@ class EmployeeMaster extends Component {
                       <PersonalDetails EmpMasterIOputs={this.state} />
                     ) : this.state.pageDisplay === "CommissionSetup" ? (
                       <CommissionSetup EmpMasterIOputs={this.state} />
+                    ) : this.state.pageDisplay === "FamilyAndIdentification" ? (
+                      <FamilyAndIdentification EmpMasterIOputs={this.state} />
                     ) : this.state.pageDisplay === "OfficalDetails" ? (
                       <OfficalDetails EmpMasterIOputs={this.state} />
                     ) : this.state.pageDisplay === "DeptUserDetails" ? (
