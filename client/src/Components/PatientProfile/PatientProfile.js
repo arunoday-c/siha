@@ -172,7 +172,7 @@ class PatientProfile extends Component {
               return g.getSource();
             })
             .orderBy(g => g.visit_date)
-            .firstOrDefault()
+            .lastOrDefault()
         : [];
 
     const _patient_allergies =

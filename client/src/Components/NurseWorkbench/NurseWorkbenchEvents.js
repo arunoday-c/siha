@@ -1,6 +1,64 @@
 import { setGlobal } from "../../utils/GlobalFunctions";
-import { algaehApiCall } from "../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 import config from "../../utils/config.json";
+import moment from "moment";
+import Enumerable from "linq";
+
+const getPatientAllergies = $this => {
+  $this.props.getPatientAllergies({
+    uri: "/doctorsWorkBench/getPatientAllergies",
+    method: "GET",
+    data: {
+      patient_id: $this.state.patient_id
+    },
+    cancelRequestId: "getPatientAllergies",
+    redux: {
+      type: "PATIENT_ALLERGIES",
+      mappingName: "patient_allergies"
+    },
+    afterSuccess: data => {
+      let _allergies = Enumerable.from(data)
+        .groupBy("$.allergy_type", null, (k, g) => {
+          return {
+            allergy_type: k,
+            allergy_type_desc:
+              k === "F"
+                ? "Food"
+                : k === "A"
+                ? "Airborne"
+                : k === "AI"
+                ? "Animal  &  Insect"
+                : k === "C"
+                ? "Chemical & Others"
+                : "",
+            allergyList: g.getSource()
+          };
+        })
+        .toArray();
+      $this.setState({
+        patientAllergies: _allergies,
+        allPatientAllergies: data
+      });
+    }
+  });
+};
+
+const texthandle = ($this, data, ctrl, e) => {
+  e = e || ctrl;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  let allAllergies = $this.state.allAllergies;
+  data[name] = value;
+  for (let i = 0; i < allAllergies.length; i++) {
+    if (allAllergies[i].severity === data.severity) {
+      allAllergies[i] = data;
+    }
+  }
+
+  $this.setState({
+    allAllergies: allAllergies
+  });
+};
 
 const getAllChiefComplaints = ($this, callBack) => {
   $this.props.getAllChiefComplaints({
@@ -56,6 +114,20 @@ const temperatureConvertion = (temprature, tofarenheat = "C") => {
   else return (temprature - 32) * (5 / 9);
 };
 
+const datehandle = ($this, ctrl, e) => {
+  if (Date.parse(new Date()) < Date.parse(moment(ctrl)._d)) {
+    swalMessage({
+      title: "Invalid Input. Cannot be grater than Today's Date.",
+      type: "warning"
+    });
+    return;
+  }
+
+  $this.setState({
+    [e]: moment(ctrl)._d
+  });
+};
+
 const BMICalculation = (weight, height, calculation) => {
   if (height === "") return "";
   let BMI = 0;
@@ -100,11 +172,33 @@ const getFormula = options => {
   }
 };
 
+const getAllAllergies = ($this, callBack) => {
+  $this.props.getAllAllergies({
+    uri: "/doctorsWorkBench/getAllAllergies",
+    method: "GET",
+    cancelRequestId: "getAllAllergies",
+    data: {
+      allergy_type: "ALL"
+    },
+    redux: {
+      type: "ALL_ALLERGIES",
+      mappingName: "allallergies"
+    },
+    afterSuccess: data => {
+      if (typeof callBack === "function") callBack(data);
+    }
+  });
+};
+
 export {
   getAllChiefComplaints,
   getPatientChiefComplaints,
   getDepartmentVitals,
   temperatureConvertion,
   getFormula,
-  BMICalculation
+  BMICalculation,
+  datehandle,
+  getPatientAllergies,
+  texthandle,
+  getAllAllergies
 };

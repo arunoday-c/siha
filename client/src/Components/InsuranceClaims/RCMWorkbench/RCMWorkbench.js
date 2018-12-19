@@ -16,7 +16,8 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 import ValidateBills from "./ValidateBills/ValidateBills";
 import moment from "moment";
 import ClaimSubmission from "./ClaimSubmission/ClaimSubmission";
-import { Checkbox } from "@material-ui/core";
+
+let validatedClaims = [];
 
 class RCMWorkbench extends Component {
   constructor(props) {
@@ -65,6 +66,24 @@ class RCMWorkbench extends Component {
           [value.name]: value.value
         });
         break;
+    }
+  }
+
+  addClaimsArray(row, e) {
+    debugger;
+
+    if (row.claim_validated === "P") {
+      e.preventDefault();
+      swalMessage({
+        title: "Please Validate the bill first",
+        type: "warning"
+      });
+    } else if (validatedClaims.includes(row)) {
+      validatedClaims.pop(row);
+      //console.log("Validate Claims", validatedClaims);
+    } else {
+      validatedClaims.push(row);
+      //console.log("Validate Claims", validatedClaims);
     }
   }
 
@@ -161,9 +180,14 @@ class RCMWorkbench extends Component {
   }
 
   openReviewSubmit() {
-    this.setState({
-      openSubmit: true
-    });
+    validatedClaims.length === 0
+      ? swalMessage({
+          title: "please select atleast one invoice to submit",
+          type: "warning"
+        })
+      : this.setState({
+          openSubmit: true
+        });
   }
 
   handleClose() {
@@ -196,6 +220,7 @@ class RCMWorkbench extends Component {
           openPopup={this.state.openClaims}
         />
         <ClaimSubmission
+          data={validatedClaims}
           claimSubmission={this.state.openSubmit}
           closeSubmissionModal={this.handleSubmitClose.bind(this)}
         />
@@ -233,7 +258,7 @@ class RCMWorkbench extends Component {
           <div className="row">
             <AlagehAutoComplete
               div={{ className: "col" }}
-              label={{ isImp: false, forceLabel: "Company Name" }}
+              label={{ isImp: true, forceLabel: "Company Name" }}
               selector={{
                 name: "insurance_provider_id",
                 className: "select-fld",
@@ -391,7 +416,6 @@ class RCMWorkbench extends Component {
                           );
                         },
                         others: {
-                          maxWidth: 55,
                           fixed: "left"
                         }
                       },
@@ -399,17 +423,51 @@ class RCMWorkbench extends Component {
                         fieldName: "select",
                         label: <AlgaehLabel label={{ forceLabel: "Select" }} />,
                         displayTemplate: row => {
-                          return <input type="checkbox" />;
+                          return (
+                            <input
+                              type="checkbox"
+                              onChange={this.addClaimsArray.bind(this, row)}
+                            />
+                          );
                         },
                         editorTemplate: row => {
-                          return <input type="checkbox" />;
+                          return (
+                            <input
+                              type="checkbox"
+                              //checked={}
+                              onChange={this.addClaimsArray.bind(this, row)}
+                            />
+                          );
+                        },
+                        others: {
+                          fixed: "left"
                         }
                       },
                       {
                         fieldName: "invoice_number",
-                        label: <AlgaehLabel label={{ forceLabel: "ClaimID" }} />
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Claim ID" }} />
+                        )
                       },
-
+                      {
+                        fieldName: "claim_validated",
+                        label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.claim_validated === "V"
+                                ? "Validated"
+                                : row.claim_validated === "E"
+                                ? "Error"
+                                : row.claim_validated === "X"
+                                ? "XML Generated"
+                                : row.claim_validated === "P"
+                                ? "Pending"
+                                : "----"}
+                            </span>
+                          );
+                        }
+                      },
                       {
                         fieldName: "insurance_provider_name",
                         label: (
@@ -533,25 +591,6 @@ class RCMWorkbench extends Component {
                             </span>
                           );
                         }
-                      },
-                      {
-                        fieldName: "claim_validated",
-                        label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {row.claim_validated === "V"
-                                ? "Validated"
-                                : row.claim_validated === "E"
-                                ? "Error"
-                                : row.claim_validated === "X"
-                                ? "XML Generated"
-                                : row.claim_validated === "P"
-                                ? "Pending"
-                                : "----"}
-                            </span>
-                          );
-                        }
                       }
                     ]}
                     keyId="service_type_id"
@@ -577,26 +616,8 @@ class RCMWorkbench extends Component {
         <div className="hptl-phase1-footer">
           <div className="row">
             <div className="col-12">
-              {/* <button type="button" className="btn btn-primary">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Validate",
-                    returnText: true
-                  }}
-                />
-              </button> */}
-
-              {/* <button type="button" className="btn btn-default">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Post",
-                    returnText: true
-                  }}
-                />
-              </button> */}
-
               <button
-                //onClick={this.openReviewSubmit}
+                onClick={this.openReviewSubmit}
                 type="button"
                 className="btn btn-primary"
               >
@@ -608,7 +629,11 @@ class RCMWorkbench extends Component {
                 />
               </button>
 
-              <button type="button" className="btn btn-default">
+              <button
+                // onClick={this.openReviewSubmit}
+                type="button"
+                className="btn btn-other"
+              >
                 <AlgaehLabel
                   label={{
                     forceLabel: "Re-Submit",

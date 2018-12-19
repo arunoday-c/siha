@@ -172,6 +172,28 @@ class ValidateBills extends PureComponent {
     });
   }
 
+  cptSearch(row, e) {
+    AlgaehSearch({
+      searchGrid: {
+        columns: spotlightSearch.Services.CptCodes
+      },
+      searchName: "CptCodes",
+      uri: "/gloabelSearch/get",
+      onContainsChange: (text, serchBy, callBack) => {
+        callBack(text);
+      },
+      onRowSelect: data => {
+        // this.setState({
+        //   cpt_code: row.hims_d_cpt_code_id,
+        //   cpt_code_data: row.cpt_code
+        // });
+
+        row["cpt_code"] = data.cpt_code;
+        row.update();
+      }
+    });
+  }
+
   getInvoiceICDs() {
     let id = this.state.invoices.hims_f_invoice_header_id;
 
@@ -259,6 +281,31 @@ class ValidateBills extends PureComponent {
   // addServiceToInvoice() {
   //Add Service here
   // }
+
+  updateInvoiceDetail(data) {
+    algaehApiCall({
+      uri: "/invoiceGeneration/updateInvoiceDetails",
+      data: {
+        hims_f_invoice_details_id: data.hims_f_invoice_details_id,
+        cpt_code: data.cpt_code
+      },
+      method: "PUT",
+      onSuccess: res => {
+        if (res.data.success) {
+          swalMessage({
+            title: "Record Updated",
+            type: "success"
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: "Cannot update, Please try again",
+          type: "error"
+        });
+      }
+    });
+  }
 
   changeGridEditors(row, e) {
     let name = e.name || e.target.name;
@@ -460,23 +507,37 @@ class ValidateBills extends PureComponent {
                         ),
                         editorTemplate: row => {
                           return (
-                            <AlagehFormGroup
-                              textBox={{
-                                value: row.cpt_code,
-                                className: "txt-fld",
-                                name: "cpt_code",
-                                events: {
-                                  onChange: this.changeGridEditors.bind(
-                                    this,
-                                    row
-                                  )
-                                }
-                                // others: {
-                                //   errormessage: "Description - cannot be blank",
-                                //   required: true
-                                // }
-                              }}
-                            />
+                            <div className="row">
+                              <AlagehFormGroup
+                                div={{ className: "col  margin-top-15" }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "cpt_code",
+                                  others: {
+                                    disabled: true
+                                  },
+                                  value: row.cpt_code,
+                                  events: {
+                                    onChange: this.changeGridEditors.bind(this)
+                                  }
+                                }}
+                              />
+
+                              <div
+                                className="col-lg-1"
+                                style={{ paddingTop: "40px" }}
+                              >
+                                <i
+                                  name="cpt_code"
+                                  onClick={this.cptSearch.bind(this, row)}
+                                  className="fas fa-search"
+                                  style={{
+                                    marginLeft: "-75%",
+                                    cursor: "pointer"
+                                  }}
+                                />
+                              </div>
+                            </div>
                           );
                         }
                       },
@@ -491,6 +552,13 @@ class ValidateBills extends PureComponent {
                         fieldName: "service_type",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Service Type" }} />
+                        ),
+                        disabled: true
+                      },
+                      {
+                        fieldName: "service_name",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Service Name" }} />
                         ),
                         disabled: true
                       },
@@ -571,7 +639,7 @@ class ValidateBills extends PureComponent {
                     events={{
                       onDelete: row => {},
                       onEdit: row => {},
-                      onDone: row => {}
+                      onDone: this.updateInvoiceDetail.bind(this)
                     }}
                   />
                 </div>

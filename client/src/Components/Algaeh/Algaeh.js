@@ -3,6 +3,8 @@ import Modules from "./Modules/Modules";
 import Components from "./Components/Components";
 import Screens from "./Screens/Screens";
 import ScreenElements from "./ScreenElements/ScreenElements";
+import Formula from "./Formula/Formula";
+
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import "./algaeh.css";
 
@@ -82,9 +84,24 @@ class Algaeh extends Component {
                   />
                 }
               </li>
+
+              <li
+                algaehtabs={"Formula"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Formula"
+                    }}
+                  />
+                }
+              </li>
             </ul>
           </div>
         </div>
+
         <div className="algaeh-section">
           {this.state.pageDisplay === "Modules" ? (
             <Modules />
@@ -94,6 +111,8 @@ class Algaeh extends Component {
             <Components />
           ) : this.state.pageDisplay === "ScreenElements" ? (
             <ScreenElements />
+          ) : this.state.pageDisplay === "Formula" ? (
+            <Formula />
           ) : null}
         </div>
       </div>

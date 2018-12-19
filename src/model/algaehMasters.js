@@ -879,6 +879,137 @@ let getAlgaehScreenElement = (req, res, next) => {
   }
 };
 
+//created by irfan:
+let getFormulas = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select algaeh_d_formulas_id, formula_for, formula from algaeh_d_formulas ",
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan:
+let addFormula = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT INTO `algaeh_d_formulas` (algaeh_d_formulas_id, formula_for, formula)\
+          VALUE(?,?,?)",
+        [input.algaeh_d_formulas_id, input.formula_for, input.formula],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan:
+let updateFormula = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      debugLog("bode:", req.body);
+      connection.query(
+        " UPDATE algaeh_d_formulas SET algaeh_d_formulas_id = ?, formula_for = ?,\
+         formula = ? WHERE algaeh_d_formulas_id =?;",
+        [
+          input.algaeh_d_formulas_id,
+          input.formula_for,
+          input.formula,
+          input.old_formulas_id
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan:
+let deleteFormula = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        " DELETE FROM algaeh_d_formulas WHERE algaeh_d_formulas_id = ?;",
+        [input.algaeh_d_formulas_id],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 //--------ROLE BASE SCREEN ASSIGNMENT---------------
 
 module.exports = {
@@ -893,5 +1024,9 @@ module.exports = {
   addAlgaehComponent,
   getAlgaehComponents,
   addAlgaehScreenElement,
-  getAlgaehScreenElement
+  getAlgaehScreenElement,
+  getFormulas,
+  addFormula,
+  updateFormula,
+  deleteFormula
 };
