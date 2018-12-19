@@ -1,12 +1,13 @@
 {
-  "name": "finance",
+  "name": "hr_management",
   "version": "1.0.0",
-  "description": "Algaeh Finance services",
+  "description": "Algaeh HR Management services",
   "main": "dist",
   "scripts": {
-    "finance_server": "cross-env  PORT=3007  NODE_ENV=development nodemon -w  src --exec \"babel-node src/finance_server.js \"",
+    "hr_server": "cross-env  PORT=3004  NODE_ENV=development nodemon -w  src --exec \"babel-node src/hr_server.js \"",
     "build": "babel src -s -D -d dist ",
-    "dev": "npm run finance_server",
+    "dev": "npm run hr_server",
+    "api": "npm run hr_server",
     "lint": "eslint src && eslint test",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -47,6 +48,6 @@
     "nodemon": "^1.17.3"
   },
   "keywords": [],
-  "author": "Algaeh technologies private limited",
+  "author": "",
   "license": "ISC"
 }
