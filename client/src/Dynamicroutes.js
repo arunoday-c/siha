@@ -81,6 +81,7 @@ import AppointmentAr from "./Components/AppointmentAr/AppointmentAr";
 import SelfService from "./Components/EmployeeManagement/SelfService/SelfService";
 import AttendanceRegularization from "./Components/EmployeeManagement/AttendanceRegularization/AttendanceRegularization";
 import EmployeeGroups from "./Components/EmployeeManagement/EmployeeGroups/EmployeeGroups";
+import PayrollSettings from "./Components/PayrollManagement/PayrollSettings/PayrollSettings";
 
 const componts = (selectedLang, breadStyle) => {
   return {
@@ -182,7 +183,8 @@ const componts = (selectedLang, breadStyle) => {
     AttendanceRegularization: (
       <AttendanceRegularization SelectLanguage={selectedLang} />
     ),
-    EmployeeGroup: <EmployeeGroups SelectLanguage={selectedLang} />
+    EmployeeGroup: <EmployeeGroups SelectLanguage={selectedLang} />,
+    PayrollSettings: <PayrollSettings SelectLanguage={selectedLang} />
   };
 };
 

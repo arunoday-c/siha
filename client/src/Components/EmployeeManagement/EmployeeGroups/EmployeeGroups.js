@@ -9,6 +9,7 @@ import {
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import swal from "sweetalert2";
 
 class EmployeeGroups extends Component {
   constructor(props) {
@@ -16,6 +17,24 @@ class EmployeeGroups extends Component {
     this.state = {
       employee_groups: []
     };
+
+    this.getEmployeeGroups();
+  }
+
+  getEmployeeGroups() {
+    algaehApiCall({
+      uri: "/employee/getEmployeeGroups",
+      method: "GET",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            employee_groups: res.data.records
+          });
+        }
+      },
+
+      onFailure: err => {}
+    });
   }
 
   dropDownHandler(value) {
@@ -46,9 +65,83 @@ class EmployeeGroups extends Component {
     row.update();
   }
 
-  deleteEmployeeGroups() {}
+  deleteEmployeeGroups(data) {
+    swal({
+      title: "Are you sure you want to delete " + data.group_description + " ?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        algaehApiCall({
+          uri: "/employee/deleteEmployeeGroup",
+          data: {
+            hims_d_employee_group_id: data.hims_d_employee_group_id
+          },
+          method: "DELETE",
+          onSuccess: response => {
+            if (response.data.records.success) {
+              swalMessage({
+                title: "Record deleted successfully . .",
+                type: "success"
+              });
 
-  updateEmployeeGroups() {}
+              this.getEmployeeGroups();
+            } else if (!response.data.records.success) {
+              swalMessage({
+                title: response.data.records.message,
+                type: "error"
+              });
+            }
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
+        });
+      } else {
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "error"
+        });
+      }
+    });
+  }
+
+  updateEmployeeGroups(data) {
+    algaehApiCall({
+      uri: "/employee/updateEmployeeGroup",
+      method: "PUT",
+      data: {
+        hims_d_employee_group_id: data.hims_d_employee_group_id,
+        group_description: data.group_description,
+        monthly_accrual_days: data.monthly_accrual_days,
+        airfare_eligibility: data.airfare_eligibility,
+        airfare_amount: data.airfare_amount
+      },
+      onSuccess: response => {
+        if (response.data.success) {
+          swalMessage({
+            title: "Record updated successfully",
+            type: "success"
+          });
+
+          this.getEmployeeGroups();
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
 
   addEmployeeGroups() {
     AlgaehValidation({
@@ -110,6 +203,7 @@ class EmployeeGroups extends Component {
             }}
             textBox={{
               className: "txt-fld",
+              //decimal: { allowNegative: false },
               name: "monthly_accrual_days",
               value: this.state.monthly_accrual_days,
               events: {
@@ -171,22 +265,22 @@ class EmployeeGroups extends Component {
           </div>
         </div>
 
-        <div className="group-section">
+        <div className="group-section" data-validate="empGrpDiv">
           <AlgaehDataGrid
             id="emp-groups-grid"
-            datavalidate="data-validate='apptClinicsDiv'"
+            datavalidate="data-validate='empGrpDiv'"
             columns={[
               {
-                fieldName: "description",
-                label: <AlgaehLabel label={{ forceLabel: "description" }} />,
+                fieldName: "group_description",
+                label: <AlgaehLabel label={{ forceLabel: "Description" }} />,
                 editorTemplate: row => {
                   return (
                     <AlagehFormGroup
                       div={{ className: "col" }}
                       textBox={{
                         className: "txt-fld",
-                        name: "description",
-                        value: row.description,
+                        name: "group_description",
+                        value: row.group_description,
                         events: {
                           onChange: this.changeGridEditors.bind(this, row)
                         },
@@ -200,26 +294,50 @@ class EmployeeGroups extends Component {
                 }
               },
               {
-                fieldName: "sub_department_id",
-                label: <AlgaehLabel label={{ fieldName: "department_name" }} />,
-                displayTemplate: row => {
-                  return this.getDeptName(row.sub_department_id);
-                },
+                fieldName: "monthly_accrual_days",
+                label: (
+                  <AlgaehLabel label={{ forceLabel: "Monthly Accural Days" }} />
+                ),
+                editorTemplate: row => {
+                  return (
+                    <AlagehFormGroup
+                      div={{ className: "col" }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "monthly_accrual_days",
+                        value: row.monthly_accrual_days,
+                        events: {
+                          onChange: this.changeGridEditors.bind(this, row)
+                        },
+                        others: {
+                          errormessage: "Field cannot be blank",
+                          required: true
+                        }
+                      }}
+                    />
+                  );
+                }
+              },
+              {
+                fieldName: "airfare_eligibility",
+                label: (
+                  <AlgaehLabel label={{ forceLabel: "Airfare Eligibility" }} />
+                ),
                 editorTemplate: row => {
                   return (
                     <AlagehAutoComplete
                       div={{ className: "col" }}
                       selector={{
-                        name: "sub_department_id",
+                        name: "airfare_eligibility",
                         className: "select-fld",
-                        value: row.sub_department_id,
+                        value: row.airfare_eligibility,
                         dataSource: {
-                          textField: "sub_department_name",
-                          valueField: "sub_department_id",
-                          data: this.state.departments
+                          textField: "name",
+                          valueField: "value",
+                          data: GlobalVariables.AIRFARE_ELEGIBILITY
                         },
                         others: {
-                          errormessage: "Department - cannot be blank",
+                          errormessage: "Field cannot be blank",
                           required: true
                         },
                         onChange: this.changeGridEditors.bind(this, row)
@@ -229,65 +347,30 @@ class EmployeeGroups extends Component {
                 }
               },
               {
-                fieldName: "provider_id",
-                label: <AlgaehLabel label={{ fieldName: "doctor" }} />,
-                displayTemplate: row => {
-                  return this.getDoctorName(row.provider_id);
-                },
+                fieldName: "airfare_amount",
+                label: <AlgaehLabel label={{ forceLabel: "Airfare Amount" }} />,
                 editorTemplate: row => {
                   return (
-                    <AlagehAutoComplete
+                    <AlagehFormGroup
                       div={{ className: "col" }}
-                      selector={{
-                        name: "provider_id",
-                        className: "select-fld",
-                        value: row.provider_id,
-                        dataSource: {
-                          textField: "full_name",
-                          valueField: "employee_id",
-                          data: this.state.all_docs
+                      textBox={{
+                        className: "txt-fld",
+                        name: "airfare_amount",
+                        value: row.airfare_amount,
+                        events: {
+                          onChange: this.changeGridEditors.bind(this, row)
                         },
                         others: {
-                          errormessage: "Doctor - cannot be blank",
+                          errormessage: "Field cannot be blank",
                           required: true
-                        },
-                        onChange: this.changeGridEditors.bind(this, row)
-                      }}
-                    />
-                  );
-                }
-              },
-              {
-                fieldName: "room_id",
-                label: <AlgaehLabel label={{ fieldName: "room" }} />,
-                displayTemplate: row => {
-                  return this.getRoomName(row.room_id);
-                },
-                editorTemplate: row => {
-                  return (
-                    <AlagehAutoComplete
-                      div={{ className: "col" }}
-                      selector={{
-                        name: "room_id",
-                        className: "select-fld",
-                        value: row.room_id,
-                        dataSource: {
-                          textField: "description",
-                          valueField: "hims_d_appointment_room_id",
-                          data: this.state.appointmentRooms
-                        },
-                        others: {
-                          errormessage: "Room - cannot be blank",
-                          required: true
-                        },
-                        onChange: this.changeGridEditors.bind(this, row)
+                        }
                       }}
                     />
                   );
                 }
               }
             ]}
-            keyId="hims_d_appointment_clinic_id"
+            keyId="hims_d_employee_group_id"
             dataSource={{
               data: this.state.employee_groups
             }}
