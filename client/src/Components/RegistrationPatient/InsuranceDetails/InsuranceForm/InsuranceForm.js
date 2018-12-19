@@ -4,8 +4,6 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import Dropzone from "react-dropzone";
-import AddCircle from "@material-ui/icons/AddCircle";
-import IconButton from "@material-ui/core/IconButton";
 
 import "./InsuranceForm.css";
 import "./../../../../styles/site.css";
@@ -90,28 +88,18 @@ class AddInsuranceForm extends Component {
                           </label>
                         </div>
                       </div>
-                      <div className="col-lg-1" style={{ paddingRight: 0 }}>
-                        <Tooltip id="tooltip-icon" title="Add New">
-                          <IconButton
-                            component="div"
-                            className="go-button"
-                            color="primary"
-                            disabled={this.state.insuranceYes}
-                            // disabled={
-                            //   this.state.saveEnable === true
-                            //     ? true
-                            //     : this.state.insuranceYes
-                            // }
-                          >
-                            <AddCircle
-                              onClick={InsuranceDetails.bind(
-                                this,
-                                this,
-                                context
-                              )}
-                            />
-                          </IconButton>
-                        </Tooltip>
+                      <div
+                        className="col-lg-1"
+                        style={{ paddingRight: 0, marginTop: 20 }}
+                      >
+                        <button
+                          type="button"
+                          className="btn btn-primary btn-rounded"
+                          disabled={this.state.insuranceYes}
+                          onClick={InsuranceDetails.bind(this, this, context)}
+                        >
+                          <i className="fas fa-plus" />
+                        </button>
                       </div>
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}

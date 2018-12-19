@@ -203,7 +203,7 @@ const doctorselectedHandeler = ($this, context, e) => {
 };
 
 const generateBillDetails = ($this, context) => {
-  debugger;
+  //debugger;
   let zeroBill = false;
   let DoctorVisits = Enumerable.from($this.state.visitDetails)
     .where(w => w.doctor_id === $this.state.doctor_id)

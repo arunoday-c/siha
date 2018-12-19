@@ -40,7 +40,12 @@ body {
   transition: all 0.2s ease-in-out; }
 
 :global .btn-rounded {
-  border-radius: 50%; }
+  border-radius: 100%;
+  width: 30px;
+  height: 30px;
+  text-align: center; }
+  :global .btn-rounded i {
+    text-align: center; }
 
 :global .btn-primary {
   color: #fff;

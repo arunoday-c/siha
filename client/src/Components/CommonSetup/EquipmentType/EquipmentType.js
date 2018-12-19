@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Paper from "@material-ui/core/Paper";
+
 import "./equipment.css";
 import Button from "@material-ui/core/Button";
 import moment from "moment";
@@ -32,7 +32,7 @@ class EquipmentType extends Component {
   render() {
     return (
       <div className="equipment">
-        <Paper className="container-fluid">
+        <div className="container-fluid">
           <form>
             <div
               className="row"
@@ -136,7 +136,7 @@ class EquipmentType extends Component {
               </table> */}
             </div>
           </div>
-        </Paper>
+        </div>
       </div>
     );
   }

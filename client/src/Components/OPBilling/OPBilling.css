@@ -16,7 +16,8 @@
     background-color: #fbfbfb;
     font-size: "11px";
     margin-right: "5px"; }
-  .hptl-opbilling-details .paper {
+  .hptl-opbilling-details .Paper {
+    background: #fff;
     background-color: #292929 !important;
     left: 0px;
     width: 250px; }

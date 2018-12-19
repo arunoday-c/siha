@@ -71,7 +71,7 @@ class RadResultEntry extends Component {
     }
   }
   componentWillReceiveProps(newProps) {
-    debugger;
+    //debugger;
     if (
       newProps.selectedPatient !== undefined &&
       (newProps.radschlist === undefined || newProps.radschlist.length === 0)
@@ -431,10 +431,10 @@ class RadResultEntry extends Component {
                       }}
                       events={{
                         onSuccess: data => {
-                          debugger;
+                          //debugger;
                         },
                         onFileFailure: () => {
-                          debugger;
+                          //debugger;
                         }
                       }}
                     />

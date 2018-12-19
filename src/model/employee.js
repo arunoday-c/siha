@@ -345,7 +345,7 @@ let updateEmployeeGroup = (req, res, next) => {
         connection.query(
           "UPDATE hims_d_employee_group SET group_description = ?,\
            monthly_accrual_days = ?, airfare_eligibility = ?, airfare_amount = ?,\
-            updated_date=?, updated_by=?  WHERE hims_d_employee_group_id = ?",
+            updated_date=?, updated_by=?  WHERE record_status='A' and  hims_d_employee_group_id = ?",
 
           [
             input.group_description,
@@ -991,6 +991,208 @@ let getDoctorServiceTypeCommission = (req, res, next) => {
   }
 };
 
+//created by irfan:api to
+let addEarningDeduction = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT  INTO hims_d_earning_deduction (earning_deduction_code,earning_deduction_description,short_desc,\
+          component_category,calculation_method,component_frequency,calculation_type,component_type,\
+          shortage_deduction_applicable,overtime_applicable,limit_applicable,limit_amount,\
+          process_limit_required,process_limit_days,general_ledger,allow_round_off,round_off_type,\
+          round_off_amount, created_date,created_by,updated_date,updated_by) values(\
+            ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        [
+          input.earning_deduction_code,
+          input.earning_deduction_description,
+          input.short_desc,
+          input.component_category,
+          input.calculation_method,
+          input.component_frequency,
+          input.calculation_type,
+          input.component_type,
+          input.shortage_deduction_applicable,
+          input.overtime_applicable,
+          input.limit_applicable,
+          input.limit_amount,
+          input.process_limit_required,
+          input.process_limit_days,
+          input.general_ledger,
+          input.allow_round_off,
+          input.round_off_type,
+          input.round_off_amount,
+
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan:
+let getEarningDeduction = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_d_earning_deduction_id,earning_deduction_code,earning_deduction_description,\
+        short_desc,component_category,calculation_method,component_frequency,calculation_type,\
+        component_type,shortage_deduction_applicable,overtime_applicable,limit_applicable,limit_amount,\
+        process_limit_required,process_limit_days,general_ledger,allow_round_off,round_off_type,\
+        round_off_amount from hims_d_earning_deduction\
+        where record_status='A'  order by hims_d_earning_deduction_id desc",
+
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan:
+let updateEarningDeduction = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.body);
+
+    if (
+      input.hims_d_earning_deduction_id != "null" &&
+      input.hims_d_earning_deduction_id != undefined
+    ) {
+      db.getConnection((error, connection) => {
+        connection.query(
+          "update hims_d_earning_deduction set  earning_deduction_code=?,earning_deduction_description=?,short_desc=?,\
+          component_category=?,calculation_method=?,component_frequency=?,calculation_type=?,\
+          component_type=?,shortage_deduction_applicable=?,overtime_applicable=?,limit_applicable=?,\
+          limit_amount=?,process_limit_required=?,process_limit_days=?,general_ledger=?,\
+          allow_round_off=?,round_off_type=?,round_off_amount=?,\
+            updated_date=?, updated_by=?  WHERE record_status='A' and  hims_d_earning_deduction_id = ?",
+
+          [
+            input.earning_deduction_code,
+            input.earning_deduction_description,
+            input.short_desc,
+            input.component_category,
+            input.calculation_method,
+            input.component_frequency,
+            input.calculation_type,
+            input.component_type,
+            input.shortage_deduction_applicable,
+            input.overtime_applicable,
+            input.limit_applicable,
+            input.limit_amount,
+            input.process_limit_required,
+            input.process_limit_days,
+            input.general_ledger,
+            input.allow_round_off,
+            input.round_off_type,
+            input.round_off_amount,
+
+            new Date(),
+            input.updated_by,
+            input.hims_d_earning_deduction_id
+          ],
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+
+            if (result.affectedRows > 0) {
+              req.records = result;
+              next();
+            } else {
+              req.records = { invalid_input: true };
+              next();
+            }
+          }
+        );
+      });
+    } else {
+      req.records = { invalid_input: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by:irfan to delete
+let deleteEarningDeduction = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let input = extend({}, req.body);
+    if (
+      input.hims_d_earning_deduction_id != "null" &&
+      input.hims_d_earning_deduction_id != undefined
+    ) {
+      deleteRecord(
+        {
+          db: req.db,
+          tableName: "hims_d_employee_group",
+          id: req.body.hims_d_earning_deduction_id,
+          query:
+            "UPDATE hims_d_earning_deduction SET  record_status='I' WHERE hims_d_earning_deduction_id=?",
+          values: [req.body.hims_d_earning_deduction_id]
+        },
+        result => {
+          req.records = result;
+          next();
+        },
+        error => {
+          next(error);
+        },
+        true
+      );
+    } else {
+      req.records = { invalid_input: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addEmployee,
   getEmployee,
@@ -1002,5 +1204,9 @@ module.exports = {
   addEmployeeGroups,
   getEmployeeGroups,
   updateEmployeeGroup,
-  deleteEmployeeGroup
+  deleteEmployeeGroup,
+  addEarningDeduction,
+  getEarningDeduction,
+  updateEarningDeduction,
+  deleteEarningDeduction
 };
