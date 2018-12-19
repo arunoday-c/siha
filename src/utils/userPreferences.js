@@ -32,7 +32,8 @@ let saveUserPreferences = (req, res, next) => {
   userCollection.insert({
     screenName: settings.screenName,
     identifier: settings.identifier,
-    selectedValue: settings.value
+    selectedValue: settings.value,
+    name: settings.name
   });
   db.save();
   res.status(200).json({
