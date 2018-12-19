@@ -2,7 +2,9 @@ import React, { Component } from "react";
 import "./employee_groups.css";
 import {
   AlagehFormGroup,
-  AlagehAutoComplete
+  AlagehAutoComplete,
+  AlgaehDataGrid,
+  AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
@@ -11,7 +13,9 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 class EmployeeGroups extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      employee_groups: []
+    };
   }
 
   dropDownHandler(value) {
@@ -34,6 +38,17 @@ class EmployeeGroups extends Component {
       airfare_amount: ""
     });
   }
+
+  changeGridEditors(row, e) {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    row[name] = value;
+    row.update();
+  }
+
+  deleteEmployeeGroups() {}
+
+  updateEmployeeGroups() {}
 
   addEmployeeGroups() {
     AlgaehValidation({
@@ -156,7 +171,135 @@ class EmployeeGroups extends Component {
           </div>
         </div>
 
-        <div className="group-section">Grid Comes here</div>
+        <div className="group-section">
+          <AlgaehDataGrid
+            id="appt-status-grid"
+            datavalidate="data-validate='apptClinicsDiv'"
+            columns={[
+              {
+                fieldName: "description",
+                label: <AlgaehLabel label={{ forceLabel: "description" }} />,
+                editorTemplate: row => {
+                  return (
+                    <AlagehFormGroup
+                      div={{ className: "col" }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "description",
+                        value: row.description,
+                        events: {
+                          onChange: this.changeGridEditors.bind(this, row)
+                        },
+                        others: {
+                          errormessage: "Description - cannot be blank",
+                          required: true
+                        }
+                      }}
+                    />
+                  );
+                }
+              },
+              {
+                fieldName: "sub_department_id",
+                label: <AlgaehLabel label={{ fieldName: "department_name" }} />,
+                displayTemplate: row => {
+                  return this.getDeptName(row.sub_department_id);
+                },
+                editorTemplate: row => {
+                  return (
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      selector={{
+                        name: "sub_department_id",
+                        className: "select-fld",
+                        value: row.sub_department_id,
+                        dataSource: {
+                          textField: "sub_department_name",
+                          valueField: "sub_department_id",
+                          data: this.state.departments
+                        },
+                        others: {
+                          errormessage: "Department - cannot be blank",
+                          required: true
+                        },
+                        onChange: this.changeGridEditors.bind(this, row)
+                      }}
+                    />
+                  );
+                }
+              },
+              {
+                fieldName: "provider_id",
+                label: <AlgaehLabel label={{ fieldName: "doctor" }} />,
+                displayTemplate: row => {
+                  return this.getDoctorName(row.provider_id);
+                },
+                editorTemplate: row => {
+                  return (
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      selector={{
+                        name: "provider_id",
+                        className: "select-fld",
+                        value: row.provider_id,
+                        dataSource: {
+                          textField: "full_name",
+                          valueField: "employee_id",
+                          data: this.state.all_docs
+                        },
+                        others: {
+                          errormessage: "Doctor - cannot be blank",
+                          required: true
+                        },
+                        onChange: this.changeGridEditors.bind(this, row)
+                      }}
+                    />
+                  );
+                }
+              },
+              {
+                fieldName: "room_id",
+                label: <AlgaehLabel label={{ fieldName: "room" }} />,
+                displayTemplate: row => {
+                  return this.getRoomName(row.room_id);
+                },
+                editorTemplate: row => {
+                  return (
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      selector={{
+                        name: "room_id",
+                        className: "select-fld",
+                        value: row.room_id,
+                        dataSource: {
+                          textField: "description",
+                          valueField: "hims_d_appointment_room_id",
+                          data: this.state.appointmentRooms
+                        },
+                        others: {
+                          errormessage: "Room - cannot be blank",
+                          required: true
+                        },
+                        onChange: this.changeGridEditors.bind(this, row)
+                      }}
+                    />
+                  );
+                }
+              }
+            ]}
+            keyId="hims_d_appointment_clinic_id"
+            dataSource={{
+              data: this.state.employee_groups
+            }}
+            isEditable={true}
+            paging={{ page: 0, rowsPerPage: 10 }}
+            events={{
+              onEdit: () => {},
+              onDelete: this.deleteEmployeeGroups.bind(this),
+              onDone: this.updateEmployeeGroups.bind(this)
+            }}
+          />
+        </div>
       </div>
     );
   }

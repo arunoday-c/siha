@@ -355,6 +355,26 @@ let getEmployee = (req, res, next) => {
   }
 };
 
+// let getEmployeeGroups = (req , res , next) =>{
+
+// try {
+//   if (req.db == null) {
+//     next(httpStatus.dataBaseNotInitilizedError());
+//   }
+
+
+
+
+// }
+// catch(e) {
+//   next(e)
+// }
+
+
+
+
+// }
+
 //created by irfan: to update Employee
 let updateEmployee = (req, res, next) => {
   try {
