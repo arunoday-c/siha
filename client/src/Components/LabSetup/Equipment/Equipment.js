@@ -1,11 +1,8 @@
 import React, { Component } from "react";
-import Paper from "@material-ui/core/Paper";
+
 import LinearProgress from "@material-ui/core/LinearProgress";
 import "./Equipment.css";
 import Button from "@material-ui/core/Button";
-
-import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
-import IconButton from "@material-ui/core/IconButton";
 
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
@@ -46,7 +43,7 @@ class Equipment extends Component {
     return (
       <div className="lab_section">
         <LinearProgress id="myProg" style={{ display: "none" }} />
-        <Paper className="container-fluid">
+        <div className="container-fluid">
           <form>
             <div
               className="row"
@@ -115,13 +112,13 @@ class Equipment extends Component {
                 }}
               />
               <div className="col-lg-2 go-button">
-                <Tooltip id="tooltip-icon" title="Add To List">
+                {/* <Tooltip id="tooltip-icon" title="Add To List">
                   <IconButton className="" color="primary">
                     <PlayCircleFilled
                     //   onClick={ProcessInsurance.bind(this, this, context)}
                     />
                   </IconButton>
-                </Tooltip>
+                </Tooltip> */}
               </div>
             </div>
           </form>
@@ -226,7 +223,7 @@ class Equipment extends Component {
               </Button>
             </div>
           </div>
-        </Paper>
+        </div>
       </div>
     );
   }

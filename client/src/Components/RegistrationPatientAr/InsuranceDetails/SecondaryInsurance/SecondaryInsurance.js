@@ -6,9 +6,6 @@ import { bindActionCreators } from "redux";
 import Dropzone from "react-dropzone";
 import "./SecondaryInsurance.css";
 import "../../../../styles/site.css";
-import AddCircle from "@material-ui/icons/AddCircle";
-// import Tooltip from "@material-ui/core/Tooltip";
-import IconButton from "@material-ui/core/IconButton";
 import MyContext from "../../../../utils/MyContext.js";
 import { successfulMessage } from "../../../../utils/GlobalFunctions";
 
@@ -16,8 +13,7 @@ import {
   AlgaehDateHandler,
   AlagehFormGroup,
   AlgaehLabel,
-  AlagehAutoComplete,
-  Tooltip
+  AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import {
@@ -122,28 +118,21 @@ class AddSecInsuranceForm extends Component {
                           </label>
                         </div>
                       </div>
-                      <div className="col-lg-1" style={{ paddingLeft: 0 }}>
-                        <Tooltip id="tooltip-icon" title="Add New">
-                          <IconButton
-                            className="go-button"
-                            color="primary"
-                            disabled={this.state.sec_insuranceYes}
-                            // disabled={
-                            //   this.state.saveEnable === true
-                            //     ? true
-                            //     : this.state.sec_insuranceYes
-                            // }
-                          >
-                            <AddCircle
-                              onClick={InsuranceDetails.bind(
-                                this,
-                                this,
-                                context
-                              )}
-                            />
-                          </IconButton>
-                        </Tooltip>
+
+                      <div
+                        className="col-lg-1"
+                        style={{ paddingRight: 0, marginTop: 20 }}
+                      >
+                        <button
+                          type="button"
+                          className="btn btn-primary btn-rounded"
+                          disabled={this.state.sec_insuranceYes}
+                          onClick={InsuranceDetails.bind(this, this, context)}
+                        >
+                          <i className="fas fa-plus" />
+                        </button>
                       </div>
+
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
@@ -305,14 +294,6 @@ class AddSecInsuranceForm extends Component {
                         value={this.state.secondary_effective_end_date}
                         disabled={this.state.sec_insuranceYes}
                       />
-
-                      {/* <div className="col-lg-1">
-                        <Tooltip id="tooltip-icon" title="Process">
-                          <IconButton className="go-button" color="primary">
-                            <PlayCircleFilled />
-                          </IconButton>
-                        </Tooltip>
-                      </div> */}
                     </div>
                   </div>
 

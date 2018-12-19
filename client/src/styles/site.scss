@@ -44,7 +44,13 @@ body {
   }
 
   .btn-rounded {
-    border-radius: 50%;
+    border-radius: 100%;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    i {
+      text-align: center;
+    }
   }
   .btn-primary {
     color: #fff;

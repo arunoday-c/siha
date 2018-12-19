@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
-import IconButton from "@material-ui/core/IconButton";
 
 import {
   AlagehFormGroup,
@@ -569,14 +567,12 @@ class OrderingServices extends Component {
                                   ? "Required"
                                   : "Not Required"}
                                 {row.pre_approval === "Y" ? (
-                                  <IconButton
-                                    className="go-button"
-                                    color="primary"
+                                  <button
+                                    className="btn btn-primary btn-rounded"
+                                    onClick={this.playclick.bind(this)}
                                   >
-                                    <PlayCircleFilled
-                                      onClick={this.playclick.bind(this)}
-                                    />
-                                  </IconButton>
+                                    Apply
+                                  </button>
                                 ) : null}
                               </span>
                             );
@@ -588,14 +584,12 @@ class OrderingServices extends Component {
                                   ? "Required"
                                   : "Not Required"}
                                 {row.pre_approval === "Y" ? (
-                                  <IconButton
-                                    className="go-button"
-                                    color="primary"
+                                  <button
+                                    className="btn btn-primary btn-rounded"
+                                    onClick={this.playclick.bind(this)}
                                   >
-                                    <PlayCircleFilled
-                                      onClick={this.playclick.bind(this)}
-                                    />
-                                  </IconButton>
+                                    Apply
+                                  </button>
                                 ) : null}
                               </span>
                             );
