@@ -220,7 +220,7 @@ class EarningsDeductions extends Component {
         <div className="col-lg-12">
           <div className="row">
             <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
+              div={{ className: "col-3" }}
               label={{
                 forceLabel: "Code",
                 isImp: true
@@ -236,7 +236,7 @@ class EarningsDeductions extends Component {
             />
 
             <AlagehFormGroup
-              div={{ className: "col-lg-4" }}
+              div={{ className: "col-3" }}
               label={{
                 forceLabel: "Description",
                 isImp: true
@@ -251,7 +251,7 @@ class EarningsDeductions extends Component {
               }}
             />
             <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
+              div={{ className: "col-3" }}
               label={{
                 forceLabel: "Short Description",
                 isImp: true
@@ -267,7 +267,7 @@ class EarningsDeductions extends Component {
             />
 
             <AlagehAutoComplete
-              div={{ className: "col-lg-3" }}
+              div={{ className: "col-3" }}
               label={{
                 forceLabel: "Component Category",
                 isImp: true
@@ -285,7 +285,7 @@ class EarningsDeductions extends Component {
               }}
             />
             <AlagehAutoComplete
-              div={{ className: "col-lg-3" }}
+              div={{ className: "col-3" }}
               label={{
                 forceLabel: "Calculation Method",
                 isImp: true
@@ -303,7 +303,7 @@ class EarningsDeductions extends Component {
               }}
             />
             <AlagehAutoComplete
-              div={{ className: "col-lg-3" }}
+              div={{ className: "col-3" }}
               label={{
                 forceLabel: "Component Frequency",
                 isImp: true
@@ -321,7 +321,7 @@ class EarningsDeductions extends Component {
               }}
             />
             <AlagehAutoComplete
-              div={{ className: "col-lg-3" }}
+              div={{ className: "col-3" }}
               label={{
                 forceLabel: "Calculation Type",
                 isImp: true
@@ -339,7 +339,7 @@ class EarningsDeductions extends Component {
               }}
             />
             <AlagehAutoComplete
-              div={{ className: "col-lg-3" }}
+              div={{ className: "col-3" }}
               label={{
                 forceLabel: "Component Type",
                 isImp: true
@@ -358,7 +358,7 @@ class EarningsDeductions extends Component {
             />
 
             <AlagehAutoComplete
-              div={{ className: "col-lg-3" }}
+              div={{ className: "col-3" }}
               label={{
                 forceLabel: "Shortage Deduction Applicable",
                 isImp: true
@@ -377,7 +377,7 @@ class EarningsDeductions extends Component {
             />
 
             <AlagehAutoComplete
-              div={{ className: "col-lg-3" }}
+              div={{ className: "col-3" }}
               label={{
                 forceLabel: "Overtime Applicable",
                 isImp: true
@@ -395,7 +395,7 @@ class EarningsDeductions extends Component {
               }}
             />
             <AlagehAutoComplete
-              div={{ className: "col-lg-3" }}
+              div={{ className: "col-3" }}
               label={{
                 forceLabel: "Limit Applicable",
                 isImp: true
@@ -414,7 +414,7 @@ class EarningsDeductions extends Component {
             />
 
             <AlagehFormGroup
-              div={{ className: "col-lg-2" }}
+              div={{ className: "col-3" }}
               label={{
                 forceLabel: "Monthly Accural Days",
                 isImp: true
@@ -434,7 +434,7 @@ class EarningsDeductions extends Component {
             />
 
             <AlagehAutoComplete
-              div={{ className: "col-lg-3" }}
+              div={{ className: "col-3" }}
               label={{
                 forceLabel: "Process Limit Required",
                 isImp: true
@@ -453,7 +453,7 @@ class EarningsDeductions extends Component {
             />
 
             <AlagehFormGroup
-              div={{ className: "col-lg-2" }}
+              div={{ className: "col-3" }}
               label={{
                 forceLabel: "Process Limit Days",
                 isImp: true
@@ -472,7 +472,7 @@ class EarningsDeductions extends Component {
               }}
             />
             <AlagehFormGroup
-              div={{ className: "col-lg-2" }}
+              div={{ className: "col-3" }}
               label={{
                 forceLabel: "General Ledger",
                 isImp: true
@@ -489,7 +489,7 @@ class EarningsDeductions extends Component {
             />
 
             <AlagehAutoComplete
-              div={{ className: "col-lg-3" }}
+              div={{ className: "col-3" }}
               label={{
                 forceLabel: "Allow Round Off",
                 isImp: true
@@ -507,7 +507,7 @@ class EarningsDeductions extends Component {
               }}
             />
             <AlagehAutoComplete
-              div={{ className: "col-lg-3" }}
+              div={{ className: "col-3" }}
               label={{
                 forceLabel: "Round Off Type",
                 isImp: true
@@ -526,7 +526,7 @@ class EarningsDeductions extends Component {
             />
 
             <AlagehFormGroup
-              div={{ className: "col-lg-2" }}
+              div={{ className: "col-3" }}
               label={{
                 forceLabel: "Round Off Amount",
                 isImp: true
@@ -585,11 +585,32 @@ class EarningsDeductions extends Component {
                   }
                 },
                 {
-                  fieldName: "monthly_accrual_days",
+                  fieldName: "earning_deduction_description",
+                  label: <AlgaehLabel label={{ forceLabel: "Description" }} />,
+                  editorTemplate: row => {
+                    return (
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "earning_deduction_description",
+                          value: row.earning_deduction_description,
+                          events: {
+                            onChange: this.changeGridEditors.bind(this, row)
+                          },
+                          others: {
+                            errormessage: "Description - cannot be blank",
+                            required: true
+                          }
+                        }}
+                      />
+                    );
+                  }
+                },
+                {
+                  fieldName: "short_desc",
                   label: (
-                    <AlgaehLabel
-                      label={{ forceLabel: "Monthly Accural Days" }}
-                    />
+                    <AlgaehLabel label={{ forceLabel: "Short Description" }} />
                   ),
                   editorTemplate: row => {
                     return (
@@ -597,13 +618,13 @@ class EarningsDeductions extends Component {
                         div={{ className: "col" }}
                         textBox={{
                           className: "txt-fld",
-                          name: "monthly_accrual_days",
-                          value: row.monthly_accrual_days,
+                          name: "short_desc",
+                          value: row.short_desc,
                           events: {
                             onChange: this.changeGridEditors.bind(this, row)
                           },
                           others: {
-                            errormessage: "Field cannot be blank",
+                            errormessage: "Short Description - cannot be blank",
                             required: true
                           }
                         }}
@@ -614,9 +635,7 @@ class EarningsDeductions extends Component {
                 {
                   fieldName: "component_category",
                   label: (
-                    <AlgaehLabel
-                      label={{ forceLabel: "Airfare Eligibility" }}
-                    />
+                    <AlgaehLabel label={{ forceLabel: "Component Category" }} />
                   ),
                   editorTemplate: row => {
                     return (
@@ -632,7 +651,7 @@ class EarningsDeductions extends Component {
                             data: GlobalVariables.COMPONENT_CATEGORY
                           },
                           others: {
-                            errormessage: "Field cannot be blank",
+                            errormessage: "Component Category cannot be blank",
                             required: true
                           },
                           onChange: this.changeGridEditors.bind(this, row)
@@ -642,9 +661,266 @@ class EarningsDeductions extends Component {
                   }
                 },
                 {
-                  fieldName: "airfare_amount",
+                  fieldName: "calculation_method",
                   label: (
-                    <AlgaehLabel label={{ forceLabel: "Airfare Amount" }} />
+                    <AlgaehLabel label={{ forceLabel: "Calculation Method" }} />
+                  ),
+                  editorTemplate: row => {
+                    return (
+                      <AlagehAutoComplete
+                        div={{ className: "col" }}
+                        selector={{
+                          name: "calculation_method",
+                          className: "select-fld",
+                          value: row.calculation_method,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: GlobalVariables.calculation_method
+                          },
+                          others: {
+                            errormessage: "Calculation Method cannot be blank",
+                            required: true
+                          },
+                          onChange: this.changeGridEditors.bind(this, row)
+                        }}
+                      />
+                    );
+                  }
+                },
+                {
+                  fieldName: "component_frequency",
+                  label: (
+                    <AlgaehLabel
+                      label={{ forceLabel: "Component Frequency" }}
+                    />
+                  ),
+                  editorTemplate: row => {
+                    return (
+                      <AlagehAutoComplete
+                        div={{ className: "col" }}
+                        selector={{
+                          name: "component_frequency",
+                          className: "select-fld",
+                          value: row.component_frequency,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: GlobalVariables.component_frequency
+                          },
+                          others: {
+                            errormessage: "Component Frequency cannot be blank",
+                            required: true
+                          },
+                          onChange: this.changeGridEditors.bind(this, row)
+                        }}
+                      />
+                    );
+                  }
+                },
+                {
+                  fieldName: "calculation_type",
+                  label: (
+                    <AlgaehLabel label={{ forceLabel: "Calculation Type" }} />
+                  ),
+                  editorTemplate: row => {
+                    return (
+                      <AlagehAutoComplete
+                        div={{ className: "col" }}
+                        selector={{
+                          name: "calculation_type",
+                          className: "select-fld",
+                          value: row.calculation_type,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: GlobalVariables.calculation_type
+                          },
+                          others: {
+                            errormessage: "Calculation Type cannot be blank",
+                            required: true
+                          },
+                          onChange: this.changeGridEditors.bind(this, row)
+                        }}
+                      />
+                    );
+                  }
+                },
+                {
+                  fieldName: "component_type",
+                  label: (
+                    <AlgaehLabel label={{ forceLabel: "Component Type" }} />
+                  ),
+                  editorTemplate: row => {
+                    return (
+                      <AlagehAutoComplete
+                        div={{ className: "col" }}
+                        selector={{
+                          name: "component_type",
+                          className: "select-fld",
+                          value: row.component_type,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: GlobalVariables.component_type
+                          },
+                          others: {
+                            errormessage: "Calculation Type cannot be blank",
+                            required: true
+                          },
+                          onChange: this.changeGridEditors.bind(this, row)
+                        }}
+                      />
+                    );
+                  }
+                },
+                {
+                  fieldName: "shortage_deduction_applicable",
+                  label: (
+                    <AlgaehLabel
+                      label={{ forceLabel: "Shortage Deduction Applicable" }}
+                    />
+                  ),
+                  editorTemplate: row => {
+                    return (
+                      <AlagehAutoComplete
+                        div={{ className: "col" }}
+                        selector={{
+                          name: "shortage_deduction_applicable",
+                          className: "select-fld",
+                          value: row.shortage_deduction_applicable,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: GlobalVariables.shortage_deduction_applicable
+                          },
+                          others: {
+                            errormessage:
+                              "Shortage Deduction Applicable Type cannot be blank",
+                            required: true
+                          },
+                          onChange: this.changeGridEditors.bind(this, row)
+                        }}
+                      />
+                    );
+                  }
+                },
+                {
+                  fieldName: "overtime_applicable",
+                  label: (
+                    <AlgaehLabel
+                      label={{ forceLabel: "Overtime Applicable" }}
+                    />
+                  ),
+                  editorTemplate: row => {
+                    return (
+                      <AlagehAutoComplete
+                        div={{ className: "col" }}
+                        selector={{
+                          name: "overtime_applicable",
+                          className: "select-fld",
+                          value: row.overtime_applicable,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: GlobalVariables.overtime_applicable
+                          },
+                          others: {
+                            errormessage: "Overtime Applicable cannot be blank",
+                            required: true
+                          },
+                          onChange: this.changeGridEditors.bind(this, row)
+                        }}
+                      />
+                    );
+                  }
+                },
+                {
+                  fieldName: "limit_applicable",
+                  label: (
+                    <AlgaehLabel label={{ forceLabel: "Limit Applicable" }} />
+                  ),
+                  editorTemplate: row => {
+                    return (
+                      <AlagehAutoComplete
+                        div={{ className: "col" }}
+                        selector={{
+                          name: "limit_applicable",
+                          className: "select-fld",
+                          value: row.limit_applicable,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: GlobalVariables.limit_applicable
+                          },
+                          others: {
+                            errormessage: "Limit Applicable cannot be blank",
+                            required: true
+                          },
+                          onChange: this.changeGridEditors.bind(this, row)
+                        }}
+                      />
+                    );
+                  }
+                },
+                {
+                  fieldName: "limit_amount",
+                  label: <AlgaehLabel label={{ forceLabel: "Limit Amount" }} />,
+                  editorTemplate: row => {
+                    return (
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "limit_amount",
+                          value: row.limit_amount,
+                          events: {
+                            onChange: this.changeGridEditors.bind(this, row)
+                          },
+                          others: {
+                            errormessage: "Limit Amount - cannot be blank",
+                            required: true
+                          }
+                        }}
+                      />
+                    );
+                  }
+                },
+                {
+                  fieldName: "process_limit_required",
+                  label: (
+                    <AlgaehLabel
+                      label={{ forceLabel: "Process Limit Required" }}
+                    />
+                  ),
+                  editorTemplate: row => {
+                    return (
+                      <AlagehAutoComplete
+                        div={{ className: "col" }}
+                        selector={{
+                          name: "process_limit_required",
+                          className: "select-fld",
+                          value: row.process_limit_required,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: GlobalVariables.process_limit_required
+                          },
+                          others: {
+                            errormessage:
+                              "Process Limit Required Type cannot be blank",
+                            required: true
+                          },
+                          onChange: this.changeGridEditors.bind(this, row)
+                        }}
+                      />
+                    );
+                  }
+                },
+                {
+                  fieldName: "process_limit_days",
+                  label: (
+                    <AlgaehLabel label={{ forceLabel: "Process Limit Days" }} />
                   ),
                   editorTemplate: row => {
                     return (
@@ -652,13 +928,96 @@ class EarningsDeductions extends Component {
                         div={{ className: "col" }}
                         textBox={{
                           className: "txt-fld",
-                          name: "airfare_amount",
-                          value: row.airfare_amount,
+                          name: "process_limit_days",
+                          value: row.process_limit_days,
                           events: {
                             onChange: this.changeGridEditors.bind(this, row)
                           },
                           others: {
-                            errormessage: "Field cannot be blank",
+                            errormessage:
+                              "Process Limit Days - cannot be blank",
+                            required: true
+                          }
+                        }}
+                      />
+                    );
+                  }
+                },
+                {
+                  fieldName: "general_ledger",
+                  label: (
+                    <AlgaehLabel label={{ forceLabel: "General Ledger" }} />
+                  ),
+                  editorTemplate: row => {
+                    return (
+                      <AlagehAutoComplete
+                        div={{ className: "col" }}
+                        selector={{
+                          name: "general_ledger",
+                          className: "select-fld",
+                          value: row.general_ledger,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: GlobalVariables.general_ledger
+                          },
+                          others: {
+                            errormessage: "General Ledger Type cannot be blank",
+                            required: true
+                          },
+                          onChange: this.changeGridEditors.bind(this, row)
+                        }}
+                      />
+                    );
+                  }
+                },
+                {
+                  fieldName: "allow_round_off",
+                  label: (
+                    <AlgaehLabel label={{ forceLabel: "Allow Round Off" }} />
+                  ),
+                  editorTemplate: row => {
+                    return (
+                      <AlagehAutoComplete
+                        div={{ className: "col" }}
+                        selector={{
+                          name: "allow_round_off",
+                          className: "select-fld",
+                          value: row.allow_round_off,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: GlobalVariables.allow_round_off
+                          },
+                          others: {
+                            errormessage:
+                              "Allow Round Off Type cannot be blank",
+                            required: true
+                          },
+                          onChange: this.changeGridEditors.bind(this, row)
+                        }}
+                      />
+                    );
+                  }
+                },
+                {
+                  fieldName: "round_off_amount",
+                  label: (
+                    <AlgaehLabel label={{ forceLabel: "Round off Amount" }} />
+                  ),
+                  editorTemplate: row => {
+                    return (
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "round_off_amount",
+                          value: row.round_off_amount,
+                          events: {
+                            onChange: this.changeGridEditors.bind(this, row)
+                          },
+                          others: {
+                            errormessage: "Round off Amount - cannot be blank",
                             required: true
                           }
                         }}
