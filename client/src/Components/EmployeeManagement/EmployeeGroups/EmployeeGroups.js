@@ -173,7 +173,7 @@ class EmployeeGroups extends Component {
 
         <div className="group-section">
           <AlgaehDataGrid
-            id="appt-status-grid"
+            id="emp-groups-grid"
             datavalidate="data-validate='apptClinicsDiv'"
             columns={[
               {
