@@ -24,6 +24,13 @@ $black: #000;
   opacity: 1;
 
   animation: slideEffect 0.25s;
+
+  .label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    text-align: left;
+    margin-top: 5px;
+  }
 }
 @keyframes slideEffect {
   from {
@@ -41,29 +48,22 @@ $black: #000;
   outline: none;
   font-size: 1.6rem;
   color: $black;
-  background-color: #f8f5f4;
+  background-color: #ffffff;
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkViZW5lXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMjIuNyAyMi41IiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IDAgMCAyMi43IDIyLjUiIHhtbDpzcGFjZT0icHJlc2VydmUiPjxjaXJjbGUgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNjY2NzY2IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgY3g9IjguMSIgY3k9IjguNCIgcj0iNi44Ii8+PGxpbmUgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNjY2NzY2IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgeDE9IjEzLjIiIHkxPSIxMi45IiB4Mj0iMjEuNSIgeTI9IjIxLjQiLz48L3N2Zz4=);
   background-position: left 17px center;
   background-repeat: no-repeat;
-  background-size: 3.5%;
-  padding: 0 40% 0 52px;
+  background-size: 5%;
+  padding-left: 60px;
   -webkit-appearance: none;
-  border: none;
+  border: 1px solid #e0dcdb;
+  border-radius: 0;
+  border-width: 0 1px;
+  &::placeholder {
+    color: #acacac;
+    font-size: 1.2rem;
+  }
 }
 
-#spotlightFilterBy {
-  position: absolute;
-  right: 2%;
-  margin-top: 15px;
-  // width: 180px;
-  select {
-    border: none;
-    background-color: transparent;
-  }
-  button {
-    margin-top: -9px;
-  }
-}
 #spotlightResultArea {
   background-color: #f9f5f4;
   width: 100%;
@@ -83,11 +83,12 @@ $black: #000;
   cursor: pointer;
   .helpTextEsc {
     font-size: 0.7rem;
-    color: #ffffff;
+    color: #000000;
     margin-right: 5px;
     padding: 1px 8px 3px;
-    background: #8c8c8c;
+    background: #e3feff;
     border-radius: 10px;
+    border: 1px solid #02bbae;
   }
   .globalSearch-Close {
     background: #f7f5f4;
@@ -100,5 +101,41 @@ $black: #000;
     line-height: 35px;
     text-shadow: 0 1px 1px #ffffff;
     cursor: pointer;
+  }
+}
+.filterBySelect,
+.searchBySelect {
+  border-radius: 0;
+  width: 100%;
+  border: 1px solid #8c8c8c;
+  padding: 3px 5px;
+  font-size: 0.8rem;
+  border-radius: 5px;
+}
+.speckCntr {
+  padding-left: 0;
+  padding-right: 0;
+  .fa-microphone {
+    font-size: 1.5rem;
+    text-align: left;
+    line-height: 56px;
+    color: #8c8c8c;
+  }
+  .flash {
+    -webkit-animation: colorchange 1s infinite alternate;
+    text-shadow: 0 0 10px #ff0200;
+  }
+  @-webkit-keyframes colorchange {
+    0% {
+      color: 8c8c8c;
+    }
+
+    50% {
+      color: red;
+    }
+
+    100% {
+      color: #8c8c8c;
+    }
   }
 }
