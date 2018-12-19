@@ -141,6 +141,22 @@ const datehandle = ($this, context, ctrl, e) => {
 
 const sameAsPresent = ($this, context, e) => {
   //Handle here
+
+  let same_address = false;
+  let value = "N";
+  let name = e.target.name;
+
+  if ($this.state.same_address === true) {
+    same_address = false;
+    value = "N";
+  } else if ($this.state.same_address === false) {
+    same_address = true;
+    value = "Y";
+  }
+  $this.setState({
+    [name]: value,
+    same_address: same_address
+  });
 };
 
 const isDoctorChange = ($this, context, e) => {
@@ -179,5 +195,6 @@ export {
   onDrop,
   countryStatehandle,
   datehandle,
-  isDoctorChange
+  isDoctorChange,
+  sameAsPresent
 };

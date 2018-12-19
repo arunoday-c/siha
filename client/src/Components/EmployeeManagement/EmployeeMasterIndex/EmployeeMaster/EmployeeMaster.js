@@ -197,6 +197,33 @@ class EmployeeMaster extends Component {
                         />
                       }
                     </li>
+                    <li
+                      algaehtabs={"DeptUserDetails"}
+                      className={"nav-item tab-button"}
+                      onClick={this.openTab.bind(this)}
+                    >
+                      {
+                        <AlgaehLabel
+                          label={{
+                            fieldName: "deptuser_details"
+                          }}
+                        />
+                      }
+                    </li>
+
+                    <li
+                      algaehtabs={"PayRollDetails"}
+                      className={"nav-item tab-button"}
+                      onClick={this.openTab.bind(this)}
+                    >
+                      {
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Payroll Details"
+                          }}
+                        />
+                      }
+                    </li>
                     {this.state.isdoctor === "Y" ? (
                       <li
                         algaehtabs={"CommissionSetup"}
@@ -238,33 +265,7 @@ class EmployeeMaster extends Component {
                         />
                       }
                     </li>
-                    <li
-                      algaehtabs={"DeptUserDetails"}
-                      className={"nav-item tab-button"}
-                      onClick={this.openTab.bind(this)}
-                    >
-                      {
-                        <AlgaehLabel
-                          label={{
-                            fieldName: "deptuser_details"
-                          }}
-                        />
-                      }
-                    </li>
 
-                    <li
-                      algaehtabs={"PayRollDetails"}
-                      className={"nav-item tab-button"}
-                      onClick={this.openTab.bind(this)}
-                    >
-                      {
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Payroll Details"
-                          }}
-                        />
-                      }
-                    </li>
                     <li
                       algaehtabs={"RulesDetails"}
                       className={"nav-item tab-button"}
@@ -291,16 +292,16 @@ class EmployeeMaster extends Component {
                   <div className="employee-section">
                     {this.state.pageDisplay === "PersonalDetails" ? (
                       <PersonalDetails EmpMasterIOputs={this.state} />
+                    ) : this.state.pageDisplay === "DeptUserDetails" ? (
+                      <DeptUserDetails EmpMasterIOputs={this.state} />
+                    ) : this.state.pageDisplay === "PayRollDetails" ? (
+                      <PayRollDetails EmpMasterIOputs={this.state} />
                     ) : this.state.pageDisplay === "CommissionSetup" ? (
                       <CommissionSetup EmpMasterIOputs={this.state} />
                     ) : this.state.pageDisplay === "FamilyAndIdentification" ? (
                       <FamilyAndIdentification EmpMasterIOputs={this.state} />
                     ) : this.state.pageDisplay === "OfficalDetails" ? (
                       <OfficalDetails EmpMasterIOputs={this.state} />
-                    ) : this.state.pageDisplay === "DeptUserDetails" ? (
-                      <DeptUserDetails EmpMasterIOputs={this.state} />
-                    ) : this.state.pageDisplay === "PayRollDetails" ? (
-                      <PayRollDetails EmpMasterIOputs={this.state} />
                     ) : this.state.pageDisplay === "RulesDetails" ? (
                       <RulesDetails EmpMasterIOputs={this.state} />
                     ) : null}
@@ -315,6 +316,7 @@ class EmployeeMaster extends Component {
 
                     <div className="col-lg-8">
                       <button
+                        // onClick={() => {}}
                         onClick={InsertUpdateEmployee.bind(this, this)}
                         type="button"
                         className="btn btn-primary"

@@ -118,6 +118,29 @@ class DeptUserDetails extends Component {
                   </h5>
                   <div className="row">
                     <AlagehAutoComplete
+                      div={{ className: "col-lg-2" }}
+                      label={{
+                        fieldName: "sub_department_id",
+                        isImp: true
+                      }}
+                      selector={{
+                        name: "sub_department_id",
+                        className: "select-fld",
+                        value: this.state.sub_department_id,
+
+                        dataSource: {
+                          textField:
+                            this.state.selectedLang === "en"
+                              ? "sub_department_name"
+                              : "arabic_sub_department_name",
+                          valueField: "hims_d_sub_department_id",
+                          data: this.props.subdepartment
+                        },
+
+                        onChange: departmenttexthandle.bind(this, this)
+                      }}
+                    />
+                    <AlagehAutoComplete
                       div={{ className: "col" }}
                       label={{
                         forceLabel: "Employee Designation",
@@ -239,30 +262,6 @@ class DeptUserDetails extends Component {
                     />
                   </div>
                   <div className="row" data-validate="deptUserdtl">
-                    <AlagehAutoComplete
-                      div={{ className: "col-lg-2" }}
-                      label={{
-                        fieldName: "sub_department_id",
-                        isImp: true
-                      }}
-                      selector={{
-                        name: "sub_department_id",
-                        className: "select-fld",
-                        value: this.state.sub_department_id,
-
-                        dataSource: {
-                          textField:
-                            this.state.selectedLang === "en"
-                              ? "sub_department_name"
-                              : "arabic_sub_department_name",
-                          valueField: "hims_d_sub_department_id",
-                          data: this.props.subdepartment
-                        },
-
-                        onChange: departmenttexthandle.bind(this, this)
-                      }}
-                    />
-
                     <AlagehAutoComplete
                       div={{ className: "col-lg-2" }}
                       label={{

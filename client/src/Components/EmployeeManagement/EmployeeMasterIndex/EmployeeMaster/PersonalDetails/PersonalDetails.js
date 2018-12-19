@@ -11,7 +11,8 @@ import {
   onDrop,
   countryStatehandle,
   datehandle,
-  isDoctorChange
+  isDoctorChange,
+  sameAsPresent
 } from "./PersonalDetailsEvents.js";
 import MyContext from "../../../../../utils/MyContext.js";
 
@@ -64,6 +65,34 @@ class PersonalDetails extends PureComponent {
         redux: {
           type: "CTRY_GET_DATA",
           mappingName: "countries"
+        }
+      });
+    }
+
+    if (
+      this.props.relegions === undefined ||
+      this.props.relegions.length === 0
+    ) {
+      this.props.getRelegion({
+        uri: "/masters/get/relegion",
+        method: "GET",
+        redux: {
+          type: "RELGE_GET_DATA",
+          mappingName: "relegions"
+        }
+      });
+    }
+
+    if (
+      this.props.nationalities === undefined ||
+      this.props.nationalities.length === 0
+    ) {
+      this.props.getNationalities({
+        uri: "/masters/get/nationality",
+        method: "GET",
+        redux: {
+          type: "NAT_GET_DATA",
+          mappingName: "nationalities"
         }
       });
     }
@@ -310,80 +339,68 @@ class PersonalDetails extends PureComponent {
                             isImp: false
                           }}
                           selector={{
-                            name: "country_id",
+                            name: "religion_id",
                             className: "select-fld",
-                            value: this.state.country_id,
+                            value: this.state.religion_id,
                             dataSource: {
                               textField:
                                 this.state.selectedLang === "en"
-                                  ? "country_name"
-                                  : "arabic_country_name",
-                              valueField: "hims_d_country_id",
-                              data: this.props.countries
+                                  ? "religion_name"
+                                  : "arabic_religion_name",
+                              valueField: "hims_d_religion_id",
+                              data: this.props.relegions
                             },
-                            onChange: countryStatehandle.bind(
-                              this,
-                              this,
-                              context
-                            ),
+                            onChange: texthandle.bind(this, this, context),
                             others: {
                               tabIndex: "10"
                             }
                           }}
                         />
                         <AlagehAutoComplete
-                          div={{ className: "col-4" }}
+                          div={{
+                            className: "col-lg-4"
+                          }}
                           label={{
                             forceLabel: "Marital Status",
                             isImp: false
                           }}
                           selector={{
-                            name: "country_id",
+                            name: "marital_status",
                             className: "select-fld",
-                            value: this.state.country_id,
+                            value: this.state.marital_status,
                             dataSource: {
                               textField:
                                 this.state.selectedLang === "en"
-                                  ? "country_name"
-                                  : "arabic_country_name",
-                              valueField: "hims_d_country_id",
-                              data: this.props.countries
+                                  ? "name"
+                                  : "arabic_name",
+                              valueField: "value",
+                              data: variableJson.FORMAT_MARTIALSTS
                             },
-                            onChange: countryStatehandle.bind(
-                              this,
-                              this,
-                              context
-                            ),
-                            others: {
-                              tabIndex: "10"
-                            }
+                            onChange: texthandle.bind(this, this, context)
                           }}
                         />
                         <AlagehAutoComplete
-                          div={{ className: "col-4" }}
+                          div={{ className: "col-lg-3" }}
                           label={{
                             forceLabel: "Nationality",
-                            isImp: false
+                            isImp: true
                           }}
                           selector={{
-                            name: "country_id",
+                            name: "nationality_id",
                             className: "select-fld",
-                            value: this.state.country_id,
+                            value: this.state.nationality_id,
                             dataSource: {
                               textField:
                                 this.state.selectedLang === "en"
-                                  ? "country_name"
-                                  : "arabic_country_name",
-                              valueField: "hims_d_country_id",
-                              data: this.props.countries
+                                  ? "nationality"
+                                  : "arabic_nationality",
+                              valueField: "hims_d_nationality_id",
+                              data: this.props.nationalities
                             },
-                            onChange: countryStatehandle.bind(
-                              this,
-                              this,
-                              context
-                            ),
+                            onChange: texthandle.bind(this, this, context),
                             others: {
-                              tabIndex: "10"
+                              //disabled: this.state.existingPatient,
+                              //tabIndex: "13"
                             }
                           }}
                         />
@@ -401,8 +418,8 @@ class PersonalDetails extends PureComponent {
                               }}
                               textBox={{
                                 className: "txt-fld",
-                                name: "address",
-                                value: this.state.address,
+                                name: "present_address",
+                                value: this.state.present_address,
                                 events: {
                                   onChange: texthandle.bind(
                                     this,
@@ -422,9 +439,9 @@ class PersonalDetails extends PureComponent {
                                 isImp: false
                               }}
                               selector={{
-                                name: "country_id",
+                                name: "present_country_id",
                                 className: "select-fld",
-                                value: this.state.country_id,
+                                value: this.state.present_country_id,
                                 dataSource: {
                                   textField:
                                     this.state.selectedLang === "en"
@@ -451,9 +468,9 @@ class PersonalDetails extends PureComponent {
                                 isImp: false
                               }}
                               selector={{
-                                name: "state_id",
+                                name: "present_state_id",
                                 className: "select-fld",
-                                value: this.state.state_id,
+                                value: this.state.present_state_id,
                                 dataSource: {
                                   textField:
                                     this.state.selectedLang === "en"
@@ -480,9 +497,9 @@ class PersonalDetails extends PureComponent {
                                 isImp: false
                               }}
                               selector={{
-                                name: "city_id",
+                                name: "present_city_id",
                                 className: "select-fld",
-                                value: this.state.city_id,
+                                value: this.state.present_city_id,
                                 dataSource: {
                                   textField:
                                     this.state.selectedLang === "en"
@@ -512,10 +529,10 @@ class PersonalDetails extends PureComponent {
                               <label className="checkbox inline">
                                 <input
                                   type="checkbox"
-                                  name="isdoctor"
+                                  name="same_address"
                                   value="Y"
-                                  checked={this.state.Applicable}
-                                  onChange={isDoctorChange.bind(
+                                  checked={this.state.same_address}
+                                  onChange={sameAsPresent.bind(
                                     this,
                                     this,
                                     context
@@ -535,8 +552,11 @@ class PersonalDetails extends PureComponent {
                               }}
                               textBox={{
                                 className: "txt-fld",
-                                name: "address",
-                                value: this.state.address,
+                                name: "permanent_address",
+                                value:
+                                  this.state.same_address === true
+                                    ? this.state.present_address
+                                    : this.state.permanent_address,
                                 events: {
                                   onChange: texthandle.bind(
                                     this,
@@ -556,9 +576,12 @@ class PersonalDetails extends PureComponent {
                                 isImp: false
                               }}
                               selector={{
-                                name: "country_id",
+                                name: "permanent_country_id",
                                 className: "select-fld",
-                                value: this.state.country_id,
+                                value:
+                                  this.state.same_address === true
+                                    ? this.state.present_country_id
+                                    : this.state.permanent_country_id,
                                 dataSource: {
                                   textField:
                                     this.state.selectedLang === "en"
@@ -585,9 +608,9 @@ class PersonalDetails extends PureComponent {
                                 isImp: false
                               }}
                               selector={{
-                                name: "state_id",
+                                name: "permanent_state_id",
                                 className: "select-fld",
-                                value: this.state.state_id,
+                                value: this.state.permanent_state_id,
                                 dataSource: {
                                   textField:
                                     this.state.selectedLang === "en"
@@ -614,9 +637,12 @@ class PersonalDetails extends PureComponent {
                                 isImp: false
                               }}
                               selector={{
-                                name: "city_id",
+                                name: "permanent_city_id",
                                 className: "select-fld",
-                                value: this.state.city_id,
+                                value:
+                                  this.state.same_address === true
+                                    ? this.state.present_city_id
+                                    : this.state.permanent_city_id,
                                 dataSource: {
                                   textField:
                                     this.state.selectedLang === "en"
@@ -724,8 +750,10 @@ function mapStateToProps(state) {
   return {
     titles: state.titles,
     cities: state.cities,
+    nationalities: state.nationalities,
     countries: state.countries,
     countrystates: state.countrystates,
+    relegions: state.relegions,
     patients: state.patients,
     services: state.services,
     designations: state.designations
@@ -738,9 +766,11 @@ function mapDispatchToProps(dispatch) {
       getTitles: AlgaehActions,
       getCities: AlgaehActions,
       getCountries: AlgaehActions,
+      getNationalities: AlgaehActions,
       getStates: AlgaehActions,
       getServices: AlgaehActions,
-      getDesignations: AlgaehActions
+      getDesignations: AlgaehActions,
+      getRelegion: AlgaehActions
     },
     dispatch
   );
