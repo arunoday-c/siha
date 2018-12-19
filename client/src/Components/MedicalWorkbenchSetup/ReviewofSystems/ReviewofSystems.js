@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import "./review_of_systems.css";
-import Paper from "@material-ui/core/Paper";
+
 class ReviewofSystems extends Component {
   render() {
     return (
       <div className="review_of_systems">
-        <Paper>
+        <div>
           <div
             className="row"
             style={{
@@ -16,7 +16,7 @@ class ReviewofSystems extends Component {
           >
             REVIEW OF SYSTEMS
           </div>
-        </Paper>
+        </div>
       </div>
     );
   }

@@ -33,7 +33,7 @@ import {
 } from "./PosListItemsEvents";
 import ReciptForm from "./ReciptDetails/AddReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
-import Paper from "@material-ui/core/Paper";
+
 import ItemBatchs from "../ItemBatchs/ItemBatchs";
 import DisplayInsuranceDetails from "../DisplayInsuranceDetails/DisplayInsuranceDetails";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
@@ -762,7 +762,7 @@ class PosListItems extends Component {
                   <div className="algaeh-md-12 algaeh-lg-12 algaeh-xl-4">
                     <div className="row">
                       <div className="algaeh-md-4 algaeh-lg-4 algaeh-xl-12">
-                        <Paper className="Paper">
+                        <div className="Paper">
                           <div className="row">
                             <div className="col-lg-6">
                               <AlgaehLabel
@@ -946,11 +946,11 @@ class PosListItems extends Component {
                               </div>
                             </div>
                           </div>
-                        </Paper>
+                        </div>
                       </div>
 
                       <div className="algaeh-md-8 algaeh-lg-8 algaeh-xl-12  primary-details">
-                        <Paper className="Paper">
+                        <div className="Paper">
                           <div className="row secondary-box-container">
                             <AlagehFormGroup
                               div={{ className: "col-lg-4" }}
@@ -1131,7 +1131,7 @@ class PosListItems extends Component {
                             </div>
                           </div>
                           <ReciptForm POSIOputs={this.state} />
-                        </Paper>
+                        </div>
                       </div>
                     </div>
                   </div>

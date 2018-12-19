@@ -2,10 +2,6 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import Paper from "@material-ui/core/Paper";
-
-import IconButton from "@material-ui/core/IconButton";
-import PlayCircleFilled from "@material-ui/icons/PlayCircleFilled";
 
 import "./LabInvestigation.css";
 import "./../../../styles/site.css";
@@ -257,7 +253,7 @@ class LabInvestigation extends Component {
                   }}
                 />
               </div>
-              <Paper className="Paper">
+              <div className="Paper">
                 <div className="row">
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
@@ -338,11 +334,12 @@ class LabInvestigation extends Component {
                   />
 
                   <div className="col-lg-1">
-                    <IconButton className="go-button" color="primary">
-                      <PlayCircleFilled
-                        onClick={AddAnalytes.bind(this, this, context)}
-                      />
-                    </IconButton>
+                    <button
+                      className="btn btn-primary"
+                      onClick={AddAnalytes.bind(this, this, context)}
+                    >
+                      Add
+                    </button>
                   </div>
                 </div>
                 <div className="row">
@@ -548,7 +545,7 @@ class LabInvestigation extends Component {
                     </div>
                   </div>
                 </div>
-              </Paper>
+              </div>
             </div>
           )}
         </MyContext.Consumer>

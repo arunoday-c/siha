@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import Collections from "@material-ui/icons/Collections";
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb";
 
 import "./OPBillPendingList.css";
@@ -164,7 +163,7 @@ class OPBillPendingList extends Component {
                         displayTemplate: row => {
                           return (
                             <span>
-                              <IconButton
+                              {/* <IconButton
                                 color="primary"
                                 title="Collection"
                                 style={{ maxHeight: "4vh" }}
@@ -172,7 +171,7 @@ class OPBillPendingList extends Component {
                                 <Collections
                                 // onClick={ListOfItems.bind(this, this, row)}
                                 />
-                              </IconButton>
+                              </IconButton> */}
                             </span>
                           );
                         },

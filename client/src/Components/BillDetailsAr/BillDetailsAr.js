@@ -11,8 +11,6 @@ import {
   Modal
 } from "../Wrapper/algaehWrapper";
 
-import Paper from "@material-ui/core/Paper";
-
 import { AlgaehActions } from "../../actions/algaehActions";
 import { getAmountFormart } from "../../utils/GlobalFunctions";
 
@@ -371,7 +369,7 @@ class BillDetailsAr extends PureComponent {
                         fieldName: "prim-insurance"
                       }}
                     />
-                    <Paper className="Paper">
+                    <div className="Paper">
                       <div className="row insurance-details">
                         <div className="col">
                           <AlgaehLabel
@@ -419,7 +417,7 @@ class BillDetailsAr extends PureComponent {
                           </h6>
                         </div>
                       </div>
-                    </Paper>
+                    </div>
                   </div>
 
                   <div className="col-lg-6">
@@ -428,7 +426,7 @@ class BillDetailsAr extends PureComponent {
                         fieldName: "sec_company"
                       }}
                     />
-                    <Paper className="Paper">
+                    <div className="Paper">
                       <div className="row insurance-details">
                         <div className="col">
                           <AlgaehLabel
@@ -478,7 +476,7 @@ class BillDetailsAr extends PureComponent {
                           </h6>
                         </div>
                       </div>
-                    </Paper>
+                    </div>
                   </div>
                 </div>
                 <hr />
@@ -490,7 +488,7 @@ class BillDetailsAr extends PureComponent {
                         fieldName: "patient_lbl"
                       }}
                     />
-                    <Paper className="Paper">
+                    <div className="Paper">
                       <div className="row insurance-details">
                         <div className="col-5">
                           <AlgaehLabel
@@ -521,7 +519,7 @@ class BillDetailsAr extends PureComponent {
                           </h6>
                         </div>
                       </div>
-                    </Paper>
+                    </div>
                   </div>
                   {/* <div className="col-lg-1"> &nbsp; </div> */}
 
@@ -531,7 +529,7 @@ class BillDetailsAr extends PureComponent {
                         fieldName: "company_lbl"
                       }}
                     />
-                    <Paper className="Paper">
+                    <div className="Paper">
                       <div className="row insurance-details">
                         <div className="col-5">
                           <AlgaehLabel
@@ -560,7 +558,7 @@ class BillDetailsAr extends PureComponent {
                           <h6>{getAmountFormart(this.state.company_payble)}</h6>
                         </div>
                       </div>
-                    </Paper>
+                    </div>
                   </div>
 
                   {/* <div className="col-lg-1"> &nbsp; </div> */}
@@ -571,7 +569,7 @@ class BillDetailsAr extends PureComponent {
                         fieldName: "sec_comp_lbl"
                       }}
                     />
-                    <Paper className="Paper">
+                    <div className="Paper">
                       <div className="row insurance-details">
                         <div className="col-5">
                           <AlgaehLabel
@@ -606,7 +604,7 @@ class BillDetailsAr extends PureComponent {
                           </h6>
                         </div>
                       </div>
-                    </Paper>
+                    </div>
                   </div>
                 </div>
               </div>
