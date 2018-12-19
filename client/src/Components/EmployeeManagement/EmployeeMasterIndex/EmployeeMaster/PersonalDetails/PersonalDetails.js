@@ -133,9 +133,9 @@ class PersonalDetails extends PureComponent {
                 <div className="col-lg-12">
                   <div className="row">
                     <div className="col-lg-10 primary-details">
-                      <h6>
+                      <h5>
                         <span>Basic Info.</span>
-                      </h6>
+                      </h5>
                       <div className="row paddin-bottom-5">
                         <AlagehFormGroup
                           div={{ className: "col-2 mandatory" }}
@@ -237,9 +237,9 @@ class PersonalDetails extends PureComponent {
 
                       <div className="row">
                         <div className="col-12">
-                          <h6>
+                          <h5>
                             <span>Personal Info.</span>
-                          </h6>
+                          </h5>
                           <div className="row paddin-bottom-5">
                             <AlagehFormGroup
                               div={{ className: "col-4" }}
@@ -393,9 +393,9 @@ class PersonalDetails extends PureComponent {
                           </div>
                         </div>
                         <div className="col-12">
-                          <h6>
+                          <h5>
                             <span>Identification Details</span>
-                          </h6>
+                          </h5>
                           <div className="row paddin-bottom-5">
                             <AlagehAutoComplete
                               div={{ className: "col-2" }}
@@ -498,9 +498,9 @@ class PersonalDetails extends PureComponent {
                         </div>
 
                         <div className="col-12">
-                          <h6>
+                          <h5>
                             <span>Family Details</span>
-                          </h6>
+                          </h5>
                           <div className="row paddin-bottom-5">
                             <AlagehAutoComplete
                               div={{ className: "col" }}
@@ -624,9 +624,9 @@ class PersonalDetails extends PureComponent {
 
                       <div className="row">
                         <div className="col-6">
-                          <h6>
+                          <h5>
                             <span>Present Address</span>
-                          </h6>
+                          </h5>
                           <div className="row paddin-bottom-5">
                             <AlagehFormGroup
                               div={{ className: "col-12" }}
@@ -735,9 +735,9 @@ class PersonalDetails extends PureComponent {
                           </div>
                         </div>
                         <div className="col-6">
-                          <h6>
+                          <h5>
                             <span>Permanent Address</span>
-                          </h6>
+                          </h5>
                           <div className="row paddin-bottom-5">
                             <div
                               className="col-4 customCheckbox"
@@ -872,9 +872,9 @@ class PersonalDetails extends PureComponent {
                     </div>
 
                     <div className="col-lg-2 secondary-details">
-                      <h6>
+                      <h5>
                         <span>Profile Image</span>
-                      </h6>
+                      </h5>
                       <div className="row secondary-box-container">
                         <div className="col">
                           <div>
@@ -891,9 +891,9 @@ class PersonalDetails extends PureComponent {
                           </div>
                         </div>
                       </div>
-                      <h6 style={{ marginTop: 20 }}>
+                      <h5 style={{ marginTop: 20 }}>
                         <span>If its a Doctor</span>
-                      </h6>
+                      </h5>
                       <div className="row secondary-box-container">
                         <div
                           className="col-12 customCheckbox"

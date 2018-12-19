@@ -1256,7 +1256,7 @@ th {
 
 .image-area-cntr {
   position: fixed;
-  z-index: 9;
+  z-index: 99999;
   top: 15vh;
   left: 20vw;
   width: 640px;

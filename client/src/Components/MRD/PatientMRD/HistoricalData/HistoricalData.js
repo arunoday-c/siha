@@ -179,8 +179,6 @@ class HistoricalData extends Component {
   }
 
   generateVitalColumns(data) {
-   
-
     return [
       {
         accessor: "visit_date",
@@ -520,7 +518,7 @@ class HistoricalData extends Component {
                             f.final_daignosis === "Y" ? "Yes" : "No"
                         }
                       ]}
-                      defaultPageSize={5}
+                      defaultPageSize={10}
                     />
                   </div>
                 </div>
@@ -565,7 +563,7 @@ class HistoricalData extends Component {
                           accessor: "service_desc"
                         }
                       ]}
-                      defaultPageSize={5}
+                      defaultPageSize={10}
                     />
                   </div>
                 </div>
@@ -626,7 +624,7 @@ class HistoricalData extends Component {
                           Header: "No. of Days"
                         }
                       ]}
-                      defaultPageSize={5}
+                      defaultPageSize={10}
                     />
                   </div>
                 </div>
@@ -683,7 +681,7 @@ class HistoricalData extends Component {
                           accessor: "rad_billed"
                         }
                       ]}
-                      defaultPageSize={5}
+                      defaultPageSize={10}
                     />
                   </div>
                 </div>
@@ -747,7 +745,7 @@ class HistoricalData extends Component {
                           Header: "No. of Days"
                         }
                       ]}
-                      defaultPageSize={5}
+                      defaultPageSize={10}
                     />
                   </div>
                 </div>
@@ -818,7 +816,7 @@ class HistoricalData extends Component {
                           accessor: "duration"
                         }
                       ]}
-                      defaultPageSize={5}
+                      defaultPageSize={10}
                     />
                   </div>
                 </div>
@@ -1025,7 +1023,7 @@ class HistoricalData extends Component {
                     }
                   ]}
                   data={_groupData}
-                  defaultPageSize={5}
+                  defaultPageSize={10}
                 />
               </div>
             </div>

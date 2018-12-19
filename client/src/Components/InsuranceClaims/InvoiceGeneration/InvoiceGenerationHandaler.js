@@ -11,7 +11,7 @@ const VisitSearch = ($this, e) => {
     },
     searchName: "visit",
     uri: "/gloabelSearch/get",
-    inputs: "pv.insured = 'Y'",
+    inputs: "pv.insured = 'Y' and pv.invoice_generated='N'",
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
@@ -69,6 +69,7 @@ const getVisitWiseBillDetailS = $this => {
     method: "GET",
     data: inputobj,
     onSuccess: response => {
+      debugger;
       AlgaehLoader({ show: true });
       if (response.data.success) {
         let data = response.data.records;
@@ -258,24 +259,10 @@ const getCtrlCode = ($this, docNumber) => {
       mappingName: "invoiceGen"
     },
     afterSuccess: data => {
+      debugger;
       data.generateVoice = false;
       data.clearEnable = false;
 
-      let gross_total = Enumerable.from(data)
-        .select(w => w.gross_amount)
-        .sum();
-
-      let discout_total = Enumerable.from(data)
-        .select(w => w.discount_amout)
-        .sum();
-
-      let net_total = Enumerable.from(data)
-        .select(w => w.net_amout)
-        .sum();
-
-      data.gross_amount = gross_total;
-      data.discount_amount = discout_total;
-      data.net_amout = net_total;
       $this.setState(data);
       AlgaehLoader({ show: false });
     }

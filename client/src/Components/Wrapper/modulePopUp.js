@@ -28,7 +28,7 @@ export default class AlgaehModalPopUp extends PureComponent {
     this.setState({ openPopup: newProps.openPopup });
   }
   render() {
-    const { openPopup } = this.state;
+    const openPopup = this.state.openPopup;
     if (openPopup) {
       return ReactDOM.createPortal(
         <div className="algaehModalWrapper">

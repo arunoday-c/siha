@@ -144,6 +144,7 @@ class Vitals extends Component {
           data: bodyArray,
           onSuccess: response => {
             if (response.data.success) {
+              getVitalHistory(this);
               swalMessage({
                 title: "Vitals recorded successfully . .",
                 type: "success"

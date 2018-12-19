@@ -29,9 +29,9 @@ class OfficalDetails extends PureComponent {
         <div className="hptl-phase1-add-employee-form popRightDiv">
           <div className="row">
             <div className="col-lg-8 primary-details">
-              <h6>
+              <h5>
                 <span>Joining Details</span>
-              </h6>
+              </h5>
               <div className="row paddin-bottom-5">
                 <AlgaehDateHandler
                   div={{ className: "col" }}
@@ -102,9 +102,9 @@ class OfficalDetails extends PureComponent {
                 />
               </div>
 
-              <h6>
+              <h5>
                 <span>Relieving Details</span>
-              </h6>
+              </h5>
 
               <div className="row paddin-bottom-5">
                 <AlgaehDateHandler
@@ -154,20 +154,130 @@ class OfficalDetails extends PureComponent {
                   }}
                 />
               </div>
-              <h6>
+              <h5>
                 <span>Accomodation Details</span>
-              </h6>
-              <div className="row paddin-bottom-5" />
+              </h5>
+              <div className="row paddin-bottom-5">
+                <div className="col">Tables Come Here</div>
+              </div>
             </div>
             <div className="col-lg-4 secondary-details">
-              <h6>
+              <h5>
                 <span>Employee Bank Details</span>
-              </h6>
-              <div className="row paddin-bottom-5" />
-              <h6>
+              </h5>
+              <div className="row paddin-bottom-5">
+                <AlagehFormGroup
+                  div={{ className: "col-6" }}
+                  label={{
+                    forceLabel: "Bank Name",
+                    isImp: true
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "full_name",
+                    value: this.state.full_name,
+                    events: {
+                      onChange: null
+                    },
+                    others: {
+                      tabIndex: "2"
+                    }
+                  }}
+                />
+                <AlagehFormGroup
+                  div={{ className: "col-6" }}
+                  label={{
+                    forceLabel: "SWIFT Code",
+                    isImp: true
+                  }}
+                  textBox={{
+                    value: this.state.primary_contact_no,
+                    className: "txt-fld",
+                    name: "primary_contact_no",
+
+                    events: {
+                      onChange: null
+                    },
+                    others: {
+                      type: "number"
+                    }
+                  }}
+                />
+
+                <AlagehFormGroup
+                  div={{ className: "col-12" }}
+                  label={{
+                    forceLabel: "Account No.",
+                    isImp: true
+                  }}
+                  textBox={{
+                    value: this.state.primary_contact_no,
+                    className: "txt-fld",
+                    name: "primary_contact_no",
+
+                    events: {
+                      onChange: null
+                    },
+                    others: {
+                      type: "number"
+                    }
+                  }}
+                />
+              </div>
+              <h5>
                 <span>Company Bank Details</span>
-              </h6>
-              <div className="row paddin-bottom-5" />
+              </h5>
+              <div className="row paddin-bottom-5">
+                <AlagehAutoComplete
+                  div={{ className: "col" }}
+                  label={{
+                    forceLabel: "Select a Bank",
+                    isImp: true
+                  }}
+                  selector={{
+                    name: "title_id",
+                    className: "select-fld",
+                    value: this.state.title_id,
+                    dataSource: {
+                      textField:
+                        this.state.selectedLang === "en"
+                          ? "title"
+                          : "arabic_title",
+                      valueField: "his_d_title_id",
+                      data: this.props.titles
+                    },
+                    onChange: null,
+                    others: {
+                      tabIndex: "2"
+                    }
+                  }}
+                />
+
+                <AlagehAutoComplete
+                  div={{ className: "col" }}
+                  label={{
+                    forceLabel: "Mode of Payment",
+                    isImp: true
+                  }}
+                  selector={{
+                    name: "title_id",
+                    className: "select-fld",
+                    value: this.state.title_id,
+                    dataSource: {
+                      textField:
+                        this.state.selectedLang === "en"
+                          ? "title"
+                          : "arabic_title",
+                      valueField: "his_d_title_id",
+                      data: this.props.titles
+                    },
+                    onChange: null,
+                    others: {
+                      tabIndex: "2"
+                    }
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>

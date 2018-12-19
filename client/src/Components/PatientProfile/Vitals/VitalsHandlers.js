@@ -1,6 +1,7 @@
 import { setGlobal } from "../../../utils/GlobalFunctions";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import config from "../../../utils/config.json";
+
 const getVitalHistory = ($this, callBack) => {
   $this.props.getVitalHistory({
     uri: "/doctorsWorkBench/getPatientVitals",
