@@ -162,7 +162,7 @@ class ValidateBills extends PureComponent {
         callBack(text);
       },
       onRowSelect: row => {
-        debugger;
+        //debugger;
 
         this.setState({
           icd_code: row.icd_code,

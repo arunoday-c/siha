@@ -70,7 +70,7 @@ class RCMWorkbench extends Component {
   }
 
   addClaimsArray(row, e) {
-    debugger;
+    //debugger;
 
     if (row.claim_validated === "P") {
       e.preventDefault();

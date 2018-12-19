@@ -159,7 +159,7 @@ export default class AlgaehFileUploader extends Component {
     if (_from === "zoom") this.setState({ showZoom: false });
   }
   onCroppedHandler(e) {
-    debugger;
+    //debugger;
     // const _values = this.cropperImage.values();
 
     // const elem = document.createElement("canvas");
@@ -260,7 +260,7 @@ export default class AlgaehFileUploader extends Component {
     const that = this;
     dataToSave = dataToSave || that.state.filePreview;
     fileExtention = fileExtention || that.state.fileExtention;
-    debugger;
+    //debugger;
 
     const _pageName = getCookie("ScreenName").replace("/", "");
     const _needConvertion =
