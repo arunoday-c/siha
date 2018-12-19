@@ -56,10 +56,27 @@ export function algaehApiCall(options) {
         baseUrl: config.baseUrl,
         printInput: false,
         isfetch: false,
-        cancelRequestId: null
+        cancelRequestId: null,
+        module: null
       },
       options
     );
+    let _baseUrl = settings.baseUrl;
+    if (settings.module === null || settings.module === "") {
+      const _defRoute = config.routersAndPorts.default;
+      const _url =
+        _defRoute.url === undefined ? "http://localhost:" : _defRoute.url;
+      const _baseurlInner =
+        _defRoute.baseUrl === undefined ? _baseUrl : _defRoute.baseUrl;
+      settings.baseUrl = _url + _defRoute.port + _baseurlInner;
+    } else {
+      const _myRouter = config.routersAndPorts[settings.module];
+      const _url =
+        _myRouter.url === undefined ? "http://localhost:" : _myRouter.url;
+      const _baseurlInner =
+        _myRouter.baseUrl === undefined ? _baseUrl : _myRouter.baseUrl;
+      settings.baseUrl = _url + _myRouter.port + _baseurlInner;
+    }
     let queryParametres = "";
     settings.data = JSON.parse(JSON.stringify(settings.data), valueReviver);
     if (String(settings.method).toUpperCase() === "GET") {

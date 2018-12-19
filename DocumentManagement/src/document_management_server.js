@@ -6,7 +6,7 @@ import keys from "../../keys/keys";
 import router from "./routes";
 import { logger } from "./utils/logging";
 const app = exxpress();
-const portNumber = keys.port;
+const portNumber = process.env.PORT; //keys.port;
 app.server = http.createServer(app);
 app.use(cors());
 //parse application json

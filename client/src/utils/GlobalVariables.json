@@ -511,5 +511,11 @@
       "value": "P"
     },
     { "name": "Secondary Insurance", "value": "S" }
+  ],
+  "AIRFARE_ELEGIBILITY": [
+    { "name": "6", "value": "6" },
+    { "name": "12", "value": "12" },
+    { "name": "18", "value": "18" },
+    { "name": "24", "value": "24" }
   ]
 }

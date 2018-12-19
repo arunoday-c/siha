@@ -80,6 +80,7 @@ import VisitClose from "./Components/VisitClose/VisitClose";
 import AppointmentAr from "./Components/AppointmentAr/AppointmentAr";
 import SelfService from "./Components/EmployeeManagement/SelfService/SelfService";
 import AttendanceRegularization from "./Components/EmployeeManagement/AttendanceRegularization/AttendanceRegularization";
+import EmployeeGroups from "./Components/EmployeeManagement/EmployeeGroups/EmployeeGroups";
 
 const componts = (selectedLang, breadStyle) => {
   return {
@@ -180,7 +181,8 @@ const componts = (selectedLang, breadStyle) => {
     SelfService: <SelfService SelectLanguage={selectedLang} />,
     AttendanceRegularization: (
       <AttendanceRegularization SelectLanguage={selectedLang} />
-    )
+    ),
+    EmployeeGroup: <EmployeeGroups SelectLanguage={selectedLang} />
   };
 };
 

@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import EmployeeDocModel from "./employeeDoc";
 import PatientDocModel from "./patientDoc";
 import { logger, debugLog } from "../Utils/logging";
+import stream from "stream";
 module.exports = db => {
   return {
     saveDocument: (req, res, next) => {
@@ -13,10 +14,8 @@ module.exports = db => {
         const _headerFile = JSON.parse(req.headers["x-file-details"]);
 
         const _utf =
-          _headerFile.needConvertion == true
-            ? new Buffer.from(buffer, "base64")
-            : buffer;
-
+          _headerFile.needConvertion == true ? new Buffer.from(buffer) : buffer;
+        // const _utf = buffer;
         const _clientID = req.headers["x-client-ip"];
         if (_headerFile.fileType == "Employees") {
           EmployeeDocModel.findOneAndUpdate(
@@ -90,6 +89,7 @@ module.exports = db => {
                   _PatientDocModel.save();
                 }
               }
+
               res.status(200).json({
                 success: true,
                 records: "Success"
@@ -119,11 +119,16 @@ module.exports = db => {
               });
             } else {
               if (result != null) {
-                res.status(200).json({
-                  success: true,
-                  fileExtention: result.fileExtention,
-                  records: result.image
-                });
+                res.setHeader("content-type", result.fileExtention);
+                res.status(200);
+                let bufferStream = new stream.PassThrough();
+                bufferStream.end(result.image);
+                bufferStream.pipe(res);
+                // res.status(200).json({
+                //   success: true,
+                //   fileExtention: result.fileExtention,
+                //   records: result.image
+                // });
               } else {
                 res.status(400).json({
                   success: false,

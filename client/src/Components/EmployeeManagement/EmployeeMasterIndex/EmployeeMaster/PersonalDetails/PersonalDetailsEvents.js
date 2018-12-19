@@ -139,6 +139,10 @@ const datehandle = ($this, context, ctrl, e) => {
   }, 500);
 };
 
+const sameAsPresent = ($this, context, e) => {
+  //Handle here
+};
+
 const isDoctorChange = ($this, context, e) => {
   let Applicable = false;
   let Value = "N";

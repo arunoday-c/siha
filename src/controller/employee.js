@@ -7,7 +7,8 @@ import {
   getEmployeeDetails,
   getDoctorServiceCommission,
   getEmployeeCategory,
-  getDoctorServiceTypeCommission
+  getDoctorServiceTypeCommission,
+  addEmployeeGroups
 } from "../model/employee";
 import httpStatus from "../utils/httpStatus";
 export default ({ config, db }) => {
@@ -31,6 +32,21 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+
+  api.post(
+    "/addEmployeeGroups",
+    addEmployeeGroups,
+    (req, res, next) => {
+      let resultBack = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: resultBack
+      });
+      next();
+    },
+    releaseConnection
+  );
+
   api.put(
     "/updateEmployee",
     updateEmployee,

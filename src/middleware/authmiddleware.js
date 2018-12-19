@@ -14,11 +14,12 @@ let generateAccessToken = (req, res, next) => {
   if (req.result.success == true) {
     req.token = jwt.sign(
       {
-        id: req.body.username
+        id: req.body.username,
+        iat: Math.floor(Date.now() / 1000) - 30
       },
       SECRET,
       {
-        expiresIn: TOKENTIME
+        expiresIn: "10h" //TOKENTIME
       }
     );
     next();

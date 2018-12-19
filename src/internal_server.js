@@ -105,7 +105,6 @@ app.use((req, res, next) => {
 
     requestMethod: req.method
   });
-
   next();
 });
 
