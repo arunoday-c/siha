@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import "./time_Sheets.css";
-import EarningsDeductions from "./EarningsDeductions/EarningsDeductions";
+import "./TimeSheets.css";
+import EarningsDeductions from "../PayrollSettings/EarningsDeductions/EarningsDeductions";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 
 class TimeSheets extends Component {

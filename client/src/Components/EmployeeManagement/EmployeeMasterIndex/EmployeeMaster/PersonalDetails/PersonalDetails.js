@@ -477,7 +477,7 @@ class PersonalDetails extends PureComponent {
                                       ? "state_name"
                                       : "arabic_state_name",
                                   valueField: "hims_d_state_id",
-                                  data: this.props.countrystates
+                                  data: this.props.present_countrystates
                                 },
                                 onChange: countryStatehandle.bind(
                                   this,
@@ -506,7 +506,7 @@ class PersonalDetails extends PureComponent {
                                       ? "city_name"
                                       : "city_arabic_name",
                                   valueField: "hims_d_city_id",
-                                  data: this.props.cities
+                                  data: this.props.present_cities
                                 },
                                 onChange: texthandle.bind(this, this, context),
                                 others: {
@@ -753,6 +753,8 @@ function mapStateToProps(state) {
     nationalities: state.nationalities,
     countries: state.countries,
     countrystates: state.countrystates,
+    present_countrystates: state.present_countrystates,
+    present_cities: state.present_cities,
     relegions: state.relegions,
     patients: state.patients,
     services: state.services,
