@@ -241,7 +241,7 @@ class FamilyAndIdentification extends PureComponent {
                     Add
                   </button>
                 </div>
-                <div className="col-12">Table Comes Here</div>
+                <div className="col-12">TABLE</div>
               </div>
             </div>
           </div>
