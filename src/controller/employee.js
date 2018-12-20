@@ -15,7 +15,8 @@ import {
   addEarningDeduction,
   getEarningDeduction,
   updateEarningDeduction,
-  deleteEarningDeduction
+  deleteEarningDeduction,
+  addEmployeeMaster
 } from "../model/employee";
 import httpStatus from "../utils/httpStatus";
 export default ({ config, db }) => {
@@ -257,6 +258,20 @@ export default ({ config, db }) => {
       }
       next();
     }
+  );
+
+  api.post(
+    "/addEmployeeMaster",
+    addEmployeeMaster,
+    (req, res, next) => {
+      let resultBack = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: resultBack
+      });
+      next();
+    },
+    releaseConnection
   );
   return api;
 };
