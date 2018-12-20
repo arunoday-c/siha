@@ -610,14 +610,20 @@ class PersonalDetails extends PureComponent {
                               selector={{
                                 name: "permanent_state_id",
                                 className: "select-fld",
-                                value: this.state.permanent_state_id,
+                                value:
+                                  this.state.same_address === true
+                                    ? this.state.present_state_id
+                                    : this.state.permanent_state_id,
                                 dataSource: {
                                   textField:
                                     this.state.selectedLang === "en"
                                       ? "state_name"
                                       : "arabic_state_name",
                                   valueField: "hims_d_state_id",
-                                  data: this.props.countrystates
+                                  data:
+                                    this.state.same_address === true
+                                      ? this.props.present_countrystates
+                                      : this.props.countrystates
                                 },
                                 onChange: countryStatehandle.bind(
                                   this,
@@ -649,7 +655,10 @@ class PersonalDetails extends PureComponent {
                                       ? "city_name"
                                       : "city_arabic_name",
                                   valueField: "hims_d_city_id",
-                                  data: this.props.cities
+                                  data:
+                                    this.state.same_address === true
+                                      ? this.props.present_cities
+                                      : this.props.cities
                                 },
                                 onChange: texthandle.bind(this, this, context),
                                 others: {

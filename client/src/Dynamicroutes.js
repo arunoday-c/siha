@@ -80,9 +80,10 @@ import VisitClose from "./Components/VisitClose/VisitClose";
 import AppointmentAr from "./Components/AppointmentAr/AppointmentAr";
 import SelfService from "./Components/EmployeeManagement/SelfService/SelfService";
 import AttendanceRegularization from "./Components/EmployeeManagement/AttendanceRegularization/AttendanceRegularization";
-import EmployeeGroups from "./Components/EmployeeManagement/EmployeeGroups/EmployeeGroups";
+//import EmployeeGroups from "./Components/EmployeeManagement/EmployeeGroups/EmployeeGroups";
 import PayrollSettings from "./Components/PayrollManagement/PayrollSettings/PayrollSettings";
 import TimeSheet from "./Components/PayrollManagement/TimeSheets/TimeSheets";
+import HRSettings from "./Components/EmployeeManagement/HRSettings/HRSettings";
 
 const componts = (selectedLang, breadStyle) => {
   return {
@@ -184,9 +185,10 @@ const componts = (selectedLang, breadStyle) => {
     AttendanceRegularization: (
       <AttendanceRegularization SelectLanguage={selectedLang} />
     ),
-    EmployeeGroup: <EmployeeGroups SelectLanguage={selectedLang} />,
+    //EmployeeGroup: <EmployeeGroups SelectLanguage={selectedLang} />,
     PayrollSettings: <PayrollSettings SelectLanguage={selectedLang} />,
-    TimeSheet: <TimeSheet SelectLanguage={selectedLang} />
+    TimeSheet: <TimeSheet SelectLanguage={selectedLang} />,
+    HRSettings: <HRSettings SelectLanguage={selectedLang} />
   };
 };
 
