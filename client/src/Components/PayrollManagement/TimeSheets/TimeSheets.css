@@ -1,6 +1,5 @@
-.time_sheets .time_Sheets_cntr {
-  padding-top: 15px;
-  padding-bottom: 15px;
-  border-radius: 5px;
-  border: 1px solid #d3d3d3;
-  background: #ffff; }
+#TimeSheetGrid_Cntr .ReactTable {
+  max-height: 30vh !important; }
+
+#EmployeeLeaveBalance_Cntr .ReactTable {
+  max-height: 20vh !important; }

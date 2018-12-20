@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import "./TimeSheets.css";
-import EarningsDeductions from "../PayrollSettings/EarningsDeductions/EarningsDeductions";
+import TimeSheetData from "./TimeSheetData/TimeSheetData";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 
 class TimeSheets extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageDisplay: "EarningsDeductions"
+      pageDisplay: "TimeSheetData"
     };
   }
 
@@ -25,35 +25,11 @@ class TimeSheets extends Component {
 
   render() {
     return (
-      <div className="payroll_settings">
-        <div className="row">
-          <div className="tabMaster toggle-section">
-            <ul className="nav">
-              <li
-                algaehtabs={"AppointmentStatus"}
-                className={"nav-item tab-button active"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Earnings & Deductions"
-                    }}
-                  />
-                }
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className="payroll-setion">
-          {this.state.pageDisplay === "EarningsDeductions" ? (
-            <EarningsDeductions />
-          ) : //)
-          //   : this.state.pageDisplay === "AppointmentRooms" ? (
-          //     <AppointmentRooms />
-          //   ) : this.state.pageDisplay === "AppointmentClinics" ? (
-          //     <AppointmentClinics />
-          null}
+      <div className="time_sheets">
+        <div className="time_sheets-setion">
+          {this.state.pageDisplay === "TimeSheetData" ? (
+            <TimeSheetData />
+          ) : null}
         </div>
       </div>
     );
