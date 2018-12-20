@@ -28,7 +28,7 @@ export default class SelfService extends Component {
             <AlgaehDateHandler
               div={{ className: "col-3 margin-bottom-15" }}
               label={{
-                forceLabel: "From Date",
+                forceLabel: "Select Date",
                 isImp: true
               }}
               textBox={{
@@ -39,29 +39,81 @@ export default class SelfService extends Component {
                 }
               }}
               maxDate={new Date()}
+            />{" "}
+            <div className="col">
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Old In-Time"
+                }}
+              />
+              <h6>00.00</h6>
+            </div>{" "}
+            <div className="col">
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Old Out-Time"
+                }}
+              />
+              <h6>00.00</h6>
+            </div>
+            <AlgaehDateHandler
+              div={{ className: "col margin-bottom-15" }}
+              label={{
+                forceLabel: "New In Time",
+                isImp: true
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "date_of_joining",
+                others: {
+                  tabIndex: "6",
+                  type: "time"
+                }
+              }}
+              //  maxDate={new Date()}
             />
             <AlgaehDateHandler
-              div={{ className: "col-3 margin-bottom-15" }}
+              div={{ className: "col margin-bottom-15" }}
               label={{
-                forceLabel: "To Date",
+                forceLabel: "New Out Time",
                 isImp: true
               }}
               textBox={{
                 className: "txt-fld",
                 name: "date_of_joining",
                 others: {
-                  tabIndex: "6"
+                  tabIndex: "6",
+                  type: "time"
                 }
               }}
-              maxDate={new Date()}
+              // maxDate={new Date()}
             />
-            <div className="col-3 margin-bottom-15">
+            <AlagehFormGroup
+              div={{ className: "col-4" }}
+              label={{
+                forceLabel: "Reason for Regularization",
+                isImp: true
+              }}
+              textBox={{
+                className: "txt-fld",
+                //decimal: { allowNegative: false },
+                name: "limit_amount",
+                value: this.state.limit_amount,
+                events: {
+                  //  onChange: this.changeTexts.bind(this)
+                },
+                others: {
+                  // type: "number"
+                }
+              }}
+            />
+            <div className="col margin-bottom-15">
               <button
                 type="button"
                 className="btn btn-primary"
                 style={{ marginTop: 21 }}
               >
-                Load
+                Request
               </button>
             </div>
           </div>
@@ -73,9 +125,9 @@ export default class SelfService extends Component {
                 </h3>
               </div>
               <div className="actions">
-                <a className="btn btn-primary btn-circle active">
-                  {/* <i className="fas fa-calculator" /> */}
-                </a>
+                {/* <a className="btn btn-primary btn-circle active">
+                   <i className="fas fa-calculator" /> 
+                </a> */}
               </div>
             </div>
 
@@ -154,7 +206,7 @@ export default class SelfService extends Component {
                       data: []
                     }}
                     isEditable={false}
-                    filterable
+                    //filterable
                     defaultPageSize={10}
                     className="-striped -highlight"
                   />
