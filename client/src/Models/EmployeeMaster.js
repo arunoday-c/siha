@@ -29,8 +29,8 @@ export default {
       country_id: null,
       Applicable: false,
 
-      primary_contact_no: 0,
-      secondary_contact_number: 0,
+      primary_contact_no: "",
+      secondary_contact_number: "",
       email: "",
       emergancy_contact_person: "",
       emergancy_contact_no: 0,

@@ -19,23 +19,61 @@ const texthandle = ($this, context, e) => {
 };
 
 const countryStatehandle = ($this, context, e) => {
+  debugger;
   let name;
   let value;
   if (e.name !== undefined) {
-    if (e.name === "country_id") {
+    if (e.name === "present_country_id") {
       name = e.name;
       value = e.value;
       $this.setState({
-        state_id: 0,
-        city_id: 0
+        present_state_id: 0,
+        present_city_id: 0
       });
       if (context !== undefined) {
         context.updateState({
-          state_id: null,
-          city_id: null
+          present_state_id: null,
+          present_city_id: null
         });
       }
-
+      $this.props.getStates({
+        redux: {
+          data: e.selected.states,
+          type: "STATE_GET_DATA",
+          mappingName: "present_countrystates"
+        }
+      });
+    } else if (e.name === "present_state_id") {
+      name = e.name;
+      value = e.value;
+      $this.setState({
+        present_city_id: null
+      });
+      if (context !== undefined) {
+        context.updateState({
+          present_city_id: null
+        });
+      }
+      $this.props.getCities({
+        redux: {
+          data: e.selected.cities,
+          type: "CITY_GET_DATA",
+          mappingName: "present_cities"
+        }
+      });
+    } else if (e.name === "permanent_country_id") {
+      name = e.name;
+      value = e.value;
+      $this.setState({
+        permanent_state_id: 0,
+        permanent_city_id: 0
+      });
+      if (context !== undefined) {
+        context.updateState({
+          permanent_state_id: null,
+          permanent_city_id: null
+        });
+      }
       $this.props.getStates({
         redux: {
           data: e.selected.states,
@@ -43,15 +81,16 @@ const countryStatehandle = ($this, context, e) => {
           mappingName: "countrystates"
         }
       });
-    } else if (e.name === "state_id") {
+    } else if (e.name === "permanent_state_id") {
+      debugger;
       name = e.name;
       value = e.value;
       $this.setState({
-        city_id: null
+        permanent_city_id: null
       });
       if (context !== undefined) {
         context.updateState({
-          city_id: null
+          permanent_city_id: null
         });
       }
       $this.props.getCities({
@@ -63,7 +102,6 @@ const countryStatehandle = ($this, context, e) => {
       });
     }
   }
-
   $this.setState({
     [name]: value
   });
