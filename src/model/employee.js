@@ -1236,7 +1236,7 @@ let deleteEarningDeduction = (req, res, next) => {
       deleteRecord(
         {
           db: req.db,
-          tableName: "hims_d_employee_group",
+          tableName: "hims_d_earning_deduction",
           id: req.body.hims_d_earning_deduction_id,
           query:
             "UPDATE hims_d_earning_deduction SET  record_status='I' WHERE hims_d_earning_deduction_id=?",
@@ -1260,6 +1260,185 @@ let deleteEarningDeduction = (req, res, next) => {
   }
 };
 
+//created by irfan:api to
+let addEmployeeIdentification = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT  INTO hims_d_employee_identification (employee_id,identity_documents_id,\
+          identity_number,valid_upto,issue_date,alert_required,alert_date,\
+          created_date,created_by,updated_date,updated_by) values(\
+            ?,?,?,?,?,?,?,?,?,?,?)",
+        [
+          input.employee_id,
+          input.identity_documents_id,
+          input.identity_number,
+          input.valid_upto,
+          input.issue_date,
+          input.alert_required,
+          input.alert_date,
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan:
+let getEmployeeIdentification = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    if (req.query.employee_id != "null" && req.query.employee_id != undefined) {
+      db.getConnection((error, connection) => {
+        connection.query(
+          "select hims_d_employee_identification_id,employee_id,\
+        identity_documents_id,identity_number,valid_upto,issue_date,alert_required,\
+        alert_date from hims_d_employee_identification\
+        where record_status='A' and  employee_id=? order by hims_d_employee_identification_id desc",
+          [req.query.employee_id],
+
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+            req.records = result;
+            next();
+          }
+        );
+      });
+    } else {
+      req.records = { invalid_input: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan:
+let updateEmployeeIdentification = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.body);
+
+    if (
+      input.hims_d_employee_identification_id != "null" &&
+      input.hims_d_employee_identification_id != undefined
+    ) {
+      db.getConnection((error, connection) => {
+        connection.query(
+          "update hims_d_employee_identification set  identity_documents_id=?,\
+          identity_number=?,valid_upto=?,issue_date=?,alert_required=?,alert_date=?,\
+            updated_date=?, updated_by=?  WHERE record_status='A' and  hims_d_employee_identification_id = ?",
+
+          [
+            input.identity_documents_id,
+            input.identity_number,
+            input.valid_upto,
+            input.issue_date,
+            input.alert_required,
+            input.alert_date,
+            new Date(),
+            input.updated_by,
+            input.hims_d_employee_identification_id
+          ],
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+
+            if (result.affectedRows > 0) {
+              req.records = result;
+              next();
+            } else {
+              req.records = { invalid_input: true };
+              next();
+            }
+          }
+        );
+      });
+    } else {
+      req.records = { invalid_input: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by:irfan to delete
+let deleteEmployeeIdentification = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let input = extend({}, req.body);
+    if (
+      input.hims_d_employee_identification_id != "null" &&
+      input.hims_d_employee_identification_id != undefined
+    ) {
+      deleteRecord(
+        {
+          db: req.db,
+          tableName: "hims_d_employee_identification",
+          id: req.body.hims_d_employee_identification_id,
+          query:
+            "UPDATE hims_d_employee_identification SET  record_status='I' WHERE hims_d_employee_identification_id=?",
+          values: [req.body.hims_d_employee_identification_id]
+        },
+        result => {
+          if (result.affectedRows > 0) {
+            req.records = result;
+            next();
+          } else {
+            req.records = { invalid_input: true };
+            next();
+          }
+        },
+        error => {
+          next(error);
+        },
+        true
+      );
+    } else {
+      req.records = { invalid_input: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
 module.exports = {
   addEmployee,
   addEmployeeMaster,
@@ -1276,5 +1455,9 @@ module.exports = {
   addEarningDeduction,
   getEarningDeduction,
   updateEarningDeduction,
-  deleteEarningDeduction
+  deleteEarningDeduction,
+  addEmployeeIdentification,
+  getEmployeeIdentification,
+  updateEmployeeIdentification,
+  deleteEmployeeIdentification
 };
