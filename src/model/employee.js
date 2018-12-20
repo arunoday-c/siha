@@ -911,9 +911,7 @@ let updateEmployee = (req, res, next) => {
 let getEmployeeDetails = (req, res, next) => {
   let employeeWhereCondition = {
     employee_code: "ALL",
-    first_name: "ALL",
-    middle_name: "ALL",
-    last_name: "ALL",
+
     sex: "ALL",
     blood_group: "ALL",
     employee_status: "ALL",
@@ -932,7 +930,7 @@ let getEmployeeDetails = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "SELECT E.hims_d_employee_id,E.employee_code,E.title_id,E.first_name,E.middle_name,E.last_name,E.full_name,E.arabic_name,E.employee_designation_id,\
+        "SELECT E.hims_d_employee_id,E.employee_code,E.title_id,E.full_name,E.arabic_name,E.employee_designation_id,\
         E.license_number,E.sex,E.date_of_birth,E.date_of_joining,E.date_of_leaving,E.present_address,E.present_address2,\
         E.present_pincode,E.present_pincode,E.present_state_id,E.present_country_id,\
         E.permanent_address , E.permanent_address2, E.permanent_pincode, E.permanent_city_id, E.permanent_state_id,\
@@ -1439,6 +1437,7 @@ let deleteEmployeeIdentification = (req, res, next) => {
     next(e);
   }
 };
+
 module.exports = {
   addEmployee,
   addEmployeeMaster,
