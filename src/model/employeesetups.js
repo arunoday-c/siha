@@ -1,7 +1,12 @@
 import extend from "extend";
 import httpStatus from "../utils/httpStatus";
 import { debugLog } from "../utils/logging";
-import { whereCondition, deleteRecord, releaseDBConnection } from "../utils";
+import {
+  selectStatement,
+  whereCondition,
+  deleteRecord,
+  releaseDBConnection
+} from "../utils";
 let getDesignations = (req, res, next) => {
   let Diet = {
     hims_d_designation_id: "ALL"
@@ -128,7 +133,7 @@ let deleteDesignation = (req, res, next) => {
   }
 };
 let getEmpSpeciality = (req, res, next) => {
-  let Diet = {
+  let select = {
     hims_d_employee_speciality_id: "ALL",
     sub_department_id: "ALL"
   };
@@ -136,21 +141,16 @@ let getEmpSpeciality = (req, res, next) => {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
-    let pagePaging = "";
-    if (req.paging != null) {
-      let Page = paging(req.paging);
-      pagePaging += " LIMIT " + Page.pageNo + "," + page.pageSize;
-    }
 
-    let condition = whereCondition(extend(Diet, req.query));
+    let condition = whereCondition(extend(select, req.query));
     selectStatement(
       {
         db: req.db,
         query:
-          "SELECT * FROM `hims_d_employee_speciality` WHERE `record_status`='A' AND " +
+          "SELECT hims_d_employee_speciality_id, sub_department_id, speciality_code, speciality_name, \
+          arabic_name, speciality_desc, speciality_status FROM `hims_d_employee_speciality` WHERE `record_status`='A' AND " +
           condition.condition +
-          " " +
-          pagePaging,
+          " order by hims_d_employee_speciality_id desc ",
         values: condition.values
       },
       result => {
@@ -168,28 +168,24 @@ let getEmpSpeciality = (req, res, next) => {
 };
 
 let getEmpCategory = (req, res, next) => {
-  let Diet = {
+  let select = {
     hims_employee_category_id: "ALL"
   };
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
-    let pagePaging = "";
-    if (req.paging != null) {
-      let Page = paging(req.paging);
-      pagePaging += " LIMIT " + Page.pageNo + "," + page.pageSize;
-    }
 
-    let condition = whereCondition(extend(Diet, req.query));
+    let condition = whereCondition(extend(select, req.query));
     selectStatement(
       {
         db: req.db,
         query:
-          "SELECT * FROM `hims_d_employee_category` WHERE `record_status`='A' AND " +
+          "SELECT hims_employee_category_id, employee_category_code, employee_category_name, arabic_name,\
+           employee_category_desc, employee_category_status\
+          FROM `hims_d_employee_category` WHERE `record_status`='A' AND " +
           condition.condition +
-          " " +
-          pagePaging,
+          " order by hims_employee_category_id desc ",
         values: condition.values
       },
       result => {
