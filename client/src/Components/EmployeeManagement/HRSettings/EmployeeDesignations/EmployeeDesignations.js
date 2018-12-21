@@ -16,12 +16,12 @@ class EmployeeDesignations extends Component {
       employee_designations: []
     };
 
-    //this.getDesignations();
+    this.getDesignations();
   }
 
   getDesignations() {
     algaehApiCall({
-      uri: "/employee/getDesignations",
+      uri: "/employeesetups/getDesignations",
       method: "GET",
       onSuccess: res => {
         if (res.data.success) {
@@ -265,6 +265,11 @@ class EmployeeDesignations extends Component {
                       />
                     );
                   }
+                },
+                {
+                  fieldName: "created_date",
+                  label: <AlgaehLabel label={{ forceLabel: "Created Date" }} />,
+                  disabled: true
                 }
               ]}
               keyId="hims_d_designation_id"

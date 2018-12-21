@@ -113,6 +113,133 @@ class DeptUserDetails extends Component {
             <div className="hptl-phase1-dept-user-form popRightDiv">
               <div className="row">
                 <div className="col-lg-12">
+                  <div className="row margin-top-15">
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Employee Department"
+                        }}
+                      />
+                      <h6>Not Defined</h6>
+                    </div>
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Employee Designation"
+                        }}
+                      />
+                      <h6>Not Defined</h6>
+                    </div>
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Reporting to"
+                        }}
+                      />
+                      <h6>Not Defined</h6>
+                    </div>
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Speciality"
+                        }}
+                      />
+                      <h6>Not Defined</h6>
+                    </div>{" "}
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Category"
+                        }}
+                      />
+                      <h6>Not Defined</h6>
+                    </div>{" "}
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Services"
+                        }}
+                      />
+                      <h6>Not Defined</h6>
+                    </div>
+                  </div>
+                  <h5>
+                    <span>Define Group & Hospital</span>
+                  </h5>
+                  <div className="row">
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      label={{
+                        forceLabel: "Employee Group",
+                        isImp: true
+                      }}
+                      selector={{
+                        name: "title_id",
+                        className: "select-fld",
+                        value: this.state.title_id,
+                        dataSource: {
+                          textField:
+                            this.state.selectedLang === "en"
+                              ? "title"
+                              : "arabic_title",
+                          valueField: "his_d_title_id",
+                          data: this.props.titles
+                        },
+                        onChange: null,
+                        others: {
+                          tabIndex: "2"
+                        }
+                      }}
+                    />{" "}
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      label={{
+                        forceLabel: "Overtime Group",
+                        isImp: true
+                      }}
+                      selector={{
+                        name: "title_id",
+                        className: "select-fld",
+                        value: this.state.title_id,
+                        dataSource: {
+                          textField:
+                            this.state.selectedLang === "en"
+                              ? "title"
+                              : "arabic_title",
+                          valueField: "his_d_title_id",
+                          data: this.props.titles
+                        },
+                        onChange: null,
+                        others: {
+                          tabIndex: "2"
+                        }
+                      }}
+                    />
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      label={{
+                        forceLabel: "Assign Hospital/Clinic",
+                        isImp: true
+                      }}
+                      selector={{
+                        name: "title_id",
+                        className: "select-fld",
+                        value: this.state.title_id,
+                        dataSource: {
+                          textField:
+                            this.state.selectedLang === "en"
+                              ? "title"
+                              : "arabic_title",
+                          valueField: "his_d_title_id",
+                          data: this.props.titles
+                        },
+                        onChange: null,
+                        others: {
+                          tabIndex: "2"
+                        }
+                      }}
+                    />
+                  </div>
                   <h5>
                     <span>Define Department</span>
                   </h5>
@@ -191,80 +318,6 @@ class DeptUserDetails extends Component {
                     <AlagehAutoComplete
                       div={{ className: "col" }}
                       label={{
-                        forceLabel: "Employee Group",
-                        isImp: true
-                      }}
-                      selector={{
-                        name: "title_id",
-                        className: "select-fld",
-                        value: this.state.title_id,
-                        dataSource: {
-                          textField:
-                            this.state.selectedLang === "en"
-                              ? "title"
-                              : "arabic_title",
-                          valueField: "his_d_title_id",
-                          data: this.props.titles
-                        },
-                        onChange: null,
-                        others: {
-                          tabIndex: "2"
-                        }
-                      }}
-                    />{" "}
-                    <AlagehAutoComplete
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Overtime Group",
-                        isImp: true
-                      }}
-                      selector={{
-                        name: "title_id",
-                        className: "select-fld",
-                        value: this.state.title_id,
-                        dataSource: {
-                          textField:
-                            this.state.selectedLang === "en"
-                              ? "title"
-                              : "arabic_title",
-                          valueField: "his_d_title_id",
-                          data: this.props.titles
-                        },
-                        onChange: null,
-                        others: {
-                          tabIndex: "2"
-                        }
-                      }}
-                    />
-                    <AlagehAutoComplete
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Assign Hospital/Clinic",
-                        isImp: true
-                      }}
-                      selector={{
-                        name: "title_id",
-                        className: "select-fld",
-                        value: this.state.title_id,
-                        dataSource: {
-                          textField:
-                            this.state.selectedLang === "en"
-                              ? "title"
-                              : "arabic_title",
-                          valueField: "his_d_title_id",
-                          data: this.props.titles
-                        },
-                        onChange: null,
-                        others: {
-                          tabIndex: "2"
-                        }
-                      }}
-                    />
-                  </div>
-                  <div className="row" data-validate="deptUserdtl">
-                    <AlagehAutoComplete
-                      div={{ className: "col-lg-2" }}
-                      label={{
                         fieldName: "speciality_id",
                         isImp: true
                       }}
@@ -284,7 +337,7 @@ class DeptUserDetails extends Component {
                     />
 
                     <AlagehAutoComplete
-                      div={{ className: "col-lg-2" }}
+                      div={{ className: "col" }}
                       label={{
                         fieldName: "category_id",
                         isImp: true
@@ -322,7 +375,7 @@ class DeptUserDetails extends Component {
                     /> */}
 
                     <AlagehAutoComplete
-                      div={{ className: "col-lg-3" }}
+                      div={{ className: "col" }}
                       label={{
                         fieldName: "services_id"
                       }}
@@ -350,7 +403,7 @@ class DeptUserDetails extends Component {
                       }}
                     />
 
-                    <div className="col-lg-2" style={{ paddingTop: "21px" }}>
+                    <div className="col-1" style={{ paddingTop: "21px" }}>
                       <button
                         // href="javascript"
                         className="btn btn-primary"

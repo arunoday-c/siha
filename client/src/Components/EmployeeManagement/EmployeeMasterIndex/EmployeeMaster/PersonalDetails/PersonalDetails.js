@@ -374,7 +374,7 @@ class PersonalDetails extends PureComponent {
                                   ? "name"
                                   : "arabic_name",
                               valueField: "value",
-                              data: variableJson.FORMAT_MARTIALSTS
+                              data: variableJson.FORMAT_MARTIALSTS_EMP
                             },
                             onChange: texthandle.bind(this, this, context)
                           }}

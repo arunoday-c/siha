@@ -1,169 +1,121 @@
 import React, { Component } from "react";
 import "./SelfService.css";
-import {
-  AlgaehDateHandler,
-  AlagehFormGroup,
-  AlgaehLabel,
-  AlagehAutoComplete
-} from "../../Wrapper/algaehWrapper";
-import ReactTable from "react-table";
-
-import "react-table/react-table.css";
-import treeTableHOC from "react-table/lib/hoc/treeTable";
-const TreeTable = treeTableHOC(ReactTable);
+import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
+import Dashboard from "./Dashboard/Dashboard";
+import AttendanceRegularization from "./AttendanceRegularization/AttendanceRegularization";
+import ApplyLeave from "./ApplyLeave/ApplyLeave";
 
 export default class SelfService extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedLang: this.props.SelectLanguage
+      pageDisplay: "Dashboard"
     };
   }
 
+  openTab(e) {
+    var element = document.querySelectorAll("[algaehtabs]");
+    for (var i = 0; i < element.length; i++) {
+      element[i].classList.remove("active");
+    }
+    e.currentTarget.classList.add("active");
+    var specified = e.currentTarget.getAttribute("algaehtabs");
+    this.setState({
+      pageDisplay: specified
+    });
+  }
   render() {
     return (
-      <React.Fragment>
-        <div className="hptl-SelfService-form">
-          <div className="row  inner-top-search">
-            <AlgaehDateHandler
-              div={{ className: "col-3 margin-bottom-15" }}
-              label={{
-                forceLabel: "From Date",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "date_of_joining",
-                others: {
-                  tabIndex: "6"
-                }
-              }}
-              maxDate={new Date()}
-            />
-            <AlgaehDateHandler
-              div={{ className: "col-3 margin-bottom-15" }}
-              label={{
-                forceLabel: "To Date",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "date_of_joining",
-                others: {
-                  tabIndex: "6"
-                }
-              }}
-              maxDate={new Date()}
-            />
-            <div className="col-3 margin-bottom-15">
-              <button
-                type="button"
-                className="btn btn-primary"
-                style={{ marginTop: 21 }}
-              >
-                Load
-              </button>
+      <div className="hr_settings">
+        <div className="row EmployeeProfile">
+          <div className="EmployeeInfo-Top box-shadow-normal">
+            <div className="EmployeeImg box-shadow">
+              <img
+                alt="Algaeh-HIS"
+                // src={
+                //   this.state.patImg.length > 0
+                //     ? this.state.patImg
+                //     : "../assets/images/nobody_m.original.webp"
+                // }
+              />
             </div>
-          </div>
-          <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
-            <div className="portlet-title">
-              <div className="caption">
-                <h3 className="caption-subject">
-                  Attendance Regularization Status
-                </h3>
-              </div>
-              <div className="actions">
-                <a className="btn btn-primary btn-circle active">
-                  {/* <i className="fas fa-calculator" /> */}
-                </a>
-              </div>
+            <div className="EmployeeName">
+              <h6>Shane Warne</h6>
+              <p>Male ,49Y 2M 27D</p>
             </div>
-
-            <div className="portlet-body">
-              <div className="row">
-                <div className="col-lg-12" id="SelfService_Cntr">
-                  <TreeTable
-                    id="SelfService_grid"
-                    columns={[
-                      {
-                        Header: "Applied",
-                        accessor: "Applied",
-                        columns: [
-                          {
-                            Header: "Date",
-                            accessor: "AppliedDate"
-                          },
-                          {
-                            Header: "Reason",
-                            accessor: "AppliedReson"
-                          }
-                        ]
-                      },
-                      {
-                        Header: "Attendance",
-                        accessor: "Attendance",
-                        columns: [
-                          {
-                            Header: "Date",
-                            accessor: "AttendanceDate"
-                          }
-                        ]
-                      },
-                      {
-                        Header: "Login Time",
-                        accessor: "LoginTime",
-
-                        columns: [
-                          {
-                            Header: "Old",
-                            accessor: "LoginTimeOld"
-                          },
-                          {
-                            Header: "New",
-                            accessor: "LoginTimeNew"
-                          }
-                        ]
-                      },
-                      {
-                        Header: "Login Out",
-                        accessor: "LoginOut",
-                        columns: [
-                          {
-                            Header: "Old",
-                            accessor: "LoginOutOld"
-                          },
-                          {
-                            Header: "New",
-                            accessor: "LoginOutNew"
-                          }
-                        ]
-                      },
-                      {
-                        Header: "Regularization",
-                        accessor: "Regularization",
-                        columns: [
-                          {
-                            Header: "Status",
-                            accessor: "RegularizationStatus"
-                          }
-                        ]
-                      }
-                    ]}
-                    keyId="algaeh_d_module_id"
-                    dataSource={{
-                      data: []
-                    }}
-                    isEditable={false}
-                    filterable
-                    defaultPageSize={10}
-                    className="-striped -highlight"
-                  />
-                </div>
-              </div>
+            <div className="EmployeeDemographic">
+              <span>
+                DOB:<b>13-09-1969</b>
+              </span>
+              <span>
+                Mobile: <b>6180123456123</b>
+              </span>
+              <span>
+                Nationality: <b>Australian </b>
+              </span>
             </div>
           </div>
         </div>
-      </React.Fragment>
+        <div className="row EmployeeTopNav box-shadow-normal">
+          <div className="tabMaster toggle-section">
+            <ul className="nav">
+              <li
+                algaehtabs={"Dashboard"}
+                className={"nav-item tab-button active"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Dashboard"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"AttendanceRegularization"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Attendance Regularization"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"ApplyLeave"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Apply Leave"
+                    }}
+                  />
+                }
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div className="hr-setion">
+          {this.state.pageDisplay === "Dashboard" ? (
+            <Dashboard />
+          ) : this.state.pageDisplay === "AttendanceRegularization" ? (
+            <AttendanceRegularization />
+          ) : this.state.pageDisplay === "ApplyLeave" ? (
+            <ApplyLeave />
+          ) : //)
+          //   : this.state.pageDisplay === "AppointmentRooms" ? (
+          //     <AppointmentRooms />
+          //   ) : this.state.pageDisplay === "AppointmentClinics" ? (
+          //     <AppointmentClinics />
+          null}
+        </div>
+      </div>
     );
   }
 }
