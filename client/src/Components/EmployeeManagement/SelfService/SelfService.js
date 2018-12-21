@@ -27,7 +27,7 @@ export default class SelfService extends Component {
   }
   render() {
     return (
-      <div className="hr_settings">
+      <div className="selfServiceModule">
         <div className="row EmployeeProfile">
           <div className="EmployeeInfo-Top box-shadow-normal">
             <div className="EmployeeImg box-shadow">
@@ -108,7 +108,7 @@ export default class SelfService extends Component {
             </ul>
           </div>
         </div>
-        <div className="hr-setion">
+        <div className="selfService-setion">
           {this.state.pageDisplay === "Dashboard" ? (
             <Dashboard />
           ) : this.state.pageDisplay === "AttendanceRegularization" ? (

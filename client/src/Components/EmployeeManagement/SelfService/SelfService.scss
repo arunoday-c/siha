@@ -1,264 +1,266 @@
-.EmployeeProfile {
-  .EmployeeInfo-Top {
-    background: white;
-    height: 110px;
-    padding: 5px 0 0;
-    width: 100%;
-    position: fixed;
-    z-index: 999;
+.selfServiceModule {
+  .EmployeeProfile {
+    .EmployeeInfo-Top {
+      background: white;
+      height: 110px;
+      padding: 5px 0 0;
+      width: 100%;
+      position: fixed;
+      z-index: 999;
 
-    div {
-      float: left;
-      color: #858585;
-    }
+      div {
+        float: left;
+        color: #858585;
+      }
 
-    .backBtn {
-      border-right: 1px solid #e1e1e1;
-      padding-right: 10px;
-      padding-left: 10px;
-      button {
-        height: 60px;
-        border: 1px solid #e1e1e1;
-        font-size: 0.7rem;
-      }
-      i {
-        display: block;
-        margin-bottom: 5px;
-      }
-    }
-
-    .EmployeeImg {
-      margin: 1px 10px;
-      border-radius: 4px;
-      border: 1px solid #e1e1e1;
-      img {
-        height: 95px;
-        border-radius: 4px;
-        overflow: hidden;
-      }
-    }
-    .EmployeeName {
-      max-width: 30%;
-      margin-top: 2px;
-      border-left: 1px solid #e1e1e1;
-      border-right: 1px solid #e1e1e1;
-      padding-left: 10px;
-      padding-right: 10px;
-      min-height: 98px;
-      h6 {
-        font-size: 1.2rem;
-        margin-bottom: 2px;
-        color: #000;
-        line-height: 1.6rem;
-        min-height: 50px;
-      }
-      p {
-        font-size: 0.8rem;
-        margin: 0;
-        padding: 0;
-        b {
-          color: #34b8bc;
-          font-weight: 300;
-          font-size: 1.2rem;
+      .backBtn {
+        border-right: 1px solid #e1e1e1;
+        padding-right: 10px;
+        padding-left: 10px;
+        button {
+          height: 60px;
+          border: 1px solid #e1e1e1;
+          font-size: 0.7rem;
         }
-      }
-    }
-    .EmployeeDemographic {
-      font-size: 0.8rem;
-      line-height: 1.3rem;
-      border-right: 1px solid #e1e1e1;
-      padding-left: 10px;
-      padding-right: 10px;
-      min-height: 98px;
-      span {
-        display: block;
-        line-height: 1.5rem;
         i {
-          text-align: center;
-          width: 20px;
-        }
-        b {
-          color: #34b8bc;
-        }
-      }
-    }
-    .EmployeeHospitalDetail {
-      font-size: 0.8rem;
-      line-height: 1.3rem;
-      border-right: 1px solid #e1e1e1;
-      padding-left: 10px;
-      padding-right: 10px;
-      min-height: 98px;
-      span {
-        display: block;
-        b {
-          color: #34b8bc;
-        }
-      }
-    }
-    .EmployeeVital {
-      font-size: 0.8rem;
-      max-width: 33%;
-      line-height: 1.3rem;
-      padding-left: 10px;
-      padding-right: 10px;
-      min-height: 98px;
-      span {
-        display: inline-block;
-        margin-right: 8px;
-
-        b {
-          color: #34b8bc;
-        }
-      }
-    }
-    .moreAction {
-      float: right;
-      border-right: 1px solid #e1e1e1;
-      padding-right: 10px;
-      button {
-        height: 60px;
-        border: 1px solid #e1e1e1;
-        font-size: 0.7rem;
-        margin-left: 0;
-      }
-      i {
-        display: block;
-        margin-bottom: 5px;
-      }
-    }
-  }
-}
-.EmployeeTopNav {
-  background: white;
-  height: 35px;
-  padding: 0;
-  width: 100%;
-  color: #797979;
-  font-size: 1rem;
-  text-transform: uppercase;
-  position: fixed;
-  top: 163px;
-  z-index: 99;
-  .tabMaster {
-    box-shadow: none;
-    ul {
-      position: relative;
-      li {
-        &:after {
           display: block;
-          content: "";
-          border-bottom: solid 3px #00a9ad;
-          transform: scaleX(0);
-          transition: transform 150ms ease-in-out;
+          margin-bottom: 5px;
         }
-        &:hover:after {
-          transform: scaleX(1);
+      }
+
+      .EmployeeImg {
+        margin: 1px 10px;
+        border-radius: 4px;
+        border: 1px solid #e1e1e1;
+        img {
+          height: 95px;
+          border-radius: 4px;
+          overflow: hidden;
         }
-        span {
+      }
+      .EmployeeName {
+        max-width: 30%;
+        margin-top: 2px;
+        border-left: 1px solid #e1e1e1;
+        border-right: 1px solid #e1e1e1;
+        padding-left: 10px;
+        padding-right: 10px;
+        min-height: 98px;
+        h6 {
+          font-size: 1.2rem;
+          margin-bottom: 2px;
+          color: #000;
+          line-height: 1.6rem;
+          min-height: 50px;
+        }
+        p {
           font-size: 0.8rem;
-          text-transform: uppercase;
-          padding: 9px 15px 8px;
-          color: #858585;
-          cursor: pointer;
-        }
-        span.active {
-          border-bottom: solid 3px #00a9ad;
-          color: #fff;
-          background: #34b8bc;
-          &:hover {
-            cursor: default;
-            color: #fff;
-          }
-          &:hover:after {
-            display: none !important;
-            border: none !important;
-            cursor: pointer;
+          margin: 0;
+          padding: 0;
+          b {
+            color: #34b8bc;
+            font-weight: 300;
+            font-size: 1.2rem;
           }
         }
       }
-    }
-    .Employee-quick-info {
-      color: #34b8bc;
-      margin: 0;
-      padding: 0;
-      list-style: none;
-      position: absolute;
-      right: 20px;
-      li {
-        background: #ffffff;
-        color: #53bcb1;
-        padding: 4px 10px 3px;
-        cursor: pointer;
-        margin: 0 10px;
-        list-style: none;
-        display: inline-block;
-        section {
-          width: 30vw;
-          height: auto;
-          position: absolute;
-          right: 0;
-          top: 30px;
-          background: #53bdb1;
-          z-index: 9;
-          padding: 10px;
-          border-radius: 5px;
-          color: #fff;
-          display: none;
-          b.top-nav-sec-hdg {
+      .EmployeeDemographic {
+        font-size: 0.8rem;
+        line-height: 1.3rem;
+        border-right: 1px solid #e1e1e1;
+        padding-left: 10px;
+        padding-right: 10px;
+        min-height: 98px;
+        span {
+          display: block;
+          line-height: 1.5rem;
+          i {
             text-align: center;
-            border-bottom: 1px solid #337e74;
-            margin-left: -10px;
-            margin-right: -10px;
-            padding-bottom: 11px;
+            width: 20px;
           }
           b {
-            display: block;
-            border-bottom: 1px solid #3f9c90;
-            margin-bottom: 10px;
-            padding-bottom: 5px;
-            font-size: 0.8rem;
-          }
-          .listofA-D-D {
-            display: inline-block;
-            margin-right: 8px;
-            border: 1px solid #317970;
-            padding: 3px 10px;
-            margin: 0;
-            color: #fff;
-            margin-right: 5px;
-            margin-bottom: 3px;
-            border-radius: 20px;
-            background: #3f9c91;
-            font-size: 0.7rem;
-            white-space: normal;
-          }
-          p {
-            background: rgba(0, 0, 0, 0.05);
-            border-top: 1px solid #65dace;
-            margin: -10px;
-            padding: 10px;
+            color: #34b8bc;
           }
         }
       }
-      li:hover {
-        background: #53bcb1;
-        color: #fff;
-        padding: 4px 10px;
-        section {
+      .EmployeeHospitalDetail {
+        font-size: 0.8rem;
+        line-height: 1.3rem;
+        border-right: 1px solid #e1e1e1;
+        padding-left: 10px;
+        padding-right: 10px;
+        min-height: 98px;
+        span {
           display: block;
+          b {
+            color: #34b8bc;
+          }
+        }
+      }
+      .EmployeeVital {
+        font-size: 0.8rem;
+        max-width: 33%;
+        line-height: 1.3rem;
+        padding-left: 10px;
+        padding-right: 10px;
+        min-height: 98px;
+        span {
+          display: inline-block;
+          margin-right: 8px;
+
+          b {
+            color: #34b8bc;
+          }
+        }
+      }
+      .moreAction {
+        float: right;
+        border-right: 1px solid #e1e1e1;
+        padding-right: 10px;
+        button {
+          height: 60px;
+          border: 1px solid #e1e1e1;
+          font-size: 0.7rem;
+          margin-left: 0;
+        }
+        i {
+          display: block;
+          margin-bottom: 5px;
         }
       }
     }
   }
-}
-.EmployeeContentArea {
-  margin: 100px 10px 0;
-  z-index: 1;
-  width: 100%;
-}
-.hr-setion {
-  margin-top: 160px;
-  padding-top: 0;
-  background: none;
+  .EmployeeTopNav {
+    background: white;
+    height: 35px;
+    padding: 0;
+    width: 100%;
+    color: #797979;
+    font-size: 1rem;
+    text-transform: uppercase;
+    position: fixed;
+    top: 163px;
+    z-index: 99;
+    .tabMaster {
+      box-shadow: none;
+      ul {
+        position: relative;
+        li {
+          &:after {
+            display: block;
+            content: "";
+            border-bottom: solid 3px #00a9ad;
+            transform: scaleX(0);
+            transition: transform 150ms ease-in-out;
+          }
+          &:hover:after {
+            transform: scaleX(1);
+          }
+          span {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            padding: 9px 15px 8px;
+            color: #858585;
+            cursor: pointer;
+          }
+          span.active {
+            border-bottom: solid 3px #00a9ad;
+            color: #fff;
+            background: #34b8bc;
+            &:hover {
+              cursor: default;
+              color: #fff;
+            }
+            &:hover:after {
+              display: none !important;
+              border: none !important;
+              cursor: pointer;
+            }
+          }
+        }
+      }
+      .Employee-quick-info {
+        color: #34b8bc;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        position: absolute;
+        right: 20px;
+        li {
+          background: #ffffff;
+          color: #53bcb1;
+          padding: 4px 10px 3px;
+          cursor: pointer;
+          margin: 0 10px;
+          list-style: none;
+          display: inline-block;
+          section {
+            width: 30vw;
+            height: auto;
+            position: absolute;
+            right: 0;
+            top: 30px;
+            background: #53bdb1;
+            z-index: 9;
+            padding: 10px;
+            border-radius: 5px;
+            color: #fff;
+            display: none;
+            b.top-nav-sec-hdg {
+              text-align: center;
+              border-bottom: 1px solid #337e74;
+              margin-left: -10px;
+              margin-right: -10px;
+              padding-bottom: 11px;
+            }
+            b {
+              display: block;
+              border-bottom: 1px solid #3f9c90;
+              margin-bottom: 10px;
+              padding-bottom: 5px;
+              font-size: 0.8rem;
+            }
+            .listofA-D-D {
+              display: inline-block;
+              margin-right: 8px;
+              border: 1px solid #317970;
+              padding: 3px 10px;
+              margin: 0;
+              color: #fff;
+              margin-right: 5px;
+              margin-bottom: 3px;
+              border-radius: 20px;
+              background: #3f9c91;
+              font-size: 0.7rem;
+              white-space: normal;
+            }
+            p {
+              background: rgba(0, 0, 0, 0.05);
+              border-top: 1px solid #65dace;
+              margin: -10px;
+              padding: 10px;
+            }
+          }
+        }
+        li:hover {
+          background: #53bcb1;
+          color: #fff;
+          padding: 4px 10px;
+          section {
+            display: block;
+          }
+        }
+      }
+    }
+  }
+  .EmployeeContentArea {
+    margin: 100px 10px 0;
+    z-index: 1;
+    width: 100%;
+  }
+  .selfService-setion {
+    margin-top: 160px;
+    padding-top: 0;
+    background: none;
+  }
 }
