@@ -280,8 +280,8 @@ let addEmployeeMaster = (req, res, next) => {
           permanent_city_id,permanent_state_id,permanent_country_id,isdoctor,license_number, \
           date_of_joining,appointment_type,employee_type,reliving_date,notice_period,date_of_leaving,\
           company_bank_id,employee_bank_name,employee_bank_ifsc_code,employee_account_number,mode_of_payment,\
-          created_date,created_by,updated_date,updated_by) values(\
-            ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          accomodation_provided,created_date,created_by,updated_date,updated_by) values(\
+            ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
           input.employee_code,
           input.full_name,
@@ -319,6 +319,7 @@ let addEmployeeMaster = (req, res, next) => {
           input.employee_bank_ifsc_code,
           input.employee_account_number,
           input.mode_of_payment,
+          input.accomodation_provided,
           new Date(),
           input.created_by,
           new Date(),
@@ -410,18 +411,167 @@ let addEmployeeInfo = (req, res, next) => {
             reject(e);
           }
         })
-          .then(dtResult => {
-            for (let i = 0; i < 100; i++) {
-              debugLog("second");
+          .then(departmntResult => {
+            debugLog("second");
+            if (input != "null" && input != undefined) {
+              connection.query(
+                " UPDATE hims_d_employee SET airfare_process=?,contract_type=?,emergency_contact_no=?,\
+              emergency_contact_person=?,employee_designation_id=?,employee_group_id=?,\
+              entitled_daily_ot=?,exclude_machine_data=?,exit_date=?,gratuity_applicable=?,\
+              hospital_id=?,late_coming_rule=?,leave_salary_process=?,overtime_group_id=?,reporting_to_id=?,\
+              secondary_contact_no=?,sub_department_id=?,suspend_salary=?,title_id=?,weekoff_from=?,\
+              updated_date=?, updated_by=?  WHERE record_status='A' and  hims_d_employee_id=?",
+
+                [
+                  input.airfare_process,
+                  input.contract_type,
+                  input.emergency_contact_no,
+                  input.emergency_contact_person,
+                  input.employee_designation_id,
+                  input.employee_group_id,
+
+                  input.entitled_daily_ot,
+                  input.exclude_machine_data,
+                  input.exit_date,
+                  input.gratuity_applicable,
+                  input.hospital_id,
+                  input.late_coming_rule,
+                  input.leave_salary_process,
+                  input.overtime_group_id,
+                  input.reporting_to_id,
+                  input.secondary_contact_no,
+                  input.sub_department_id,
+                  input.suspend_salary,
+                  input.title_id,
+                  input.weekoff_from,
+                  new Date(),
+                  input.updated_by,
+                  input.employee_id
+                ],
+                (error, empResult) => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+
+                  return;
+                }
+              );
+            } else {
+              return;
             }
           })
-          .then(departResult => {
-            for (let i = 0; i < 100; i++) {
-              debugLog("third");
+          .then(employResult => {
+            debugLog("third");
+            if (input.idDetails.length > 0) {
+              const insurtColumns = [
+                "identity_documents_id",
+                "identity_number",
+                "valid_upto",
+                "issue_date",
+                "alert_required",
+                "alert_date",
+
+                "created_by",
+                "updated_by"
+              ];
+
+              connection.query(
+                "INSERT INTO hims_d_employee_identification (" +
+                  insurtColumns.join(",") +
+                  ",`employee_id`,created_date,updated_date) VALUES ?",
+                [
+                  jsonArrayToObject({
+                    sampleInputObject: insurtColumns,
+                    arrayObj: input.idDetails,
+                    newFieldToInsert: [
+                      input.employee_id,
+                      new Date(),
+                      new Date()
+                    ],
+                    req: req
+                  })
+                ],
+                (error, Identity_Result) => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+
+                  return;
+                }
+              );
+            } else {
+              return;
             }
           })
-          .then(forth => {
+          .then(Identity_Result => {
             debugLog("fourth");
+
+            if (input.dependentDetails.length > 0) {
+              const insurtColumns = [
+                "dependent_type",
+                "dependent_name",
+                "dependent_identity_type",
+                "dependent_identity_no",
+                "created_by",
+                "updated_by"
+              ];
+
+              connection.query(
+                "INSERT INTO hims_d_employee_dependents (" +
+                  insurtColumns.join(",") +
+                  ",`employee_id`,created_date,updated_date) VALUES ?",
+                [
+                  jsonArrayToObject({
+                    sampleInputObject: insurtColumns,
+                    arrayObj: input.idDetails,
+                    newFieldToInsert: [
+                      input.employee_id,
+                      new Date(),
+                      new Date()
+                    ],
+                    req: req
+                  })
+                ],
+                (error, Identity_Result) => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+
+                  connection.commit(error => {
+                    if (error) {
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      });
+                    }
+                    releaseDBConnection(db, connection);
+                    req.records = result;
+                    next();
+                  });
+                }
+              );
+            } else {
+              connection.commit(error => {
+                if (error) {
+                  connection.rollback(() => {
+                    releaseDBConnection(db, connection);
+                    next(error);
+                  });
+                }
+                releaseDBConnection(db, connection);
+                req.records = result;
+                next();
+              });
+            }
           });
       });
     });
