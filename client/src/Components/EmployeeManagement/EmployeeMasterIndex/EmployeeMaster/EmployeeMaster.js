@@ -227,6 +227,19 @@ class EmployeeMaster extends Component {
                     </li>
 
                     <li
+                      algaehtabs={"OfficalDetails"}
+                      className={"nav-item tab-button"}
+                      onClick={this.openTab.bind(this)}
+                    >
+                      {
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Offical Details"
+                          }}
+                        />
+                      }
+                    </li>
+                    <li
                       algaehtabs={"DeptUserDetails"}
                       className={"nav-item tab-button"}
                       onClick={this.openTab.bind(this)}

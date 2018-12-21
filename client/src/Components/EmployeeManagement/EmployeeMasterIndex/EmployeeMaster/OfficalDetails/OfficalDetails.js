@@ -104,24 +104,10 @@ class OfficalDetails extends PureComponent {
                   <h5>
                     <span>Relieving Details</span>
                   </h5>
-
                   <div className="row paddin-bottom-5">
                     <AlgaehDateHandler
                       div={{ className: "col" }}
-                      label={{ fieldName: "date_of_leaving" }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "reliving_date"
-                      }}
-                      maxDate={new Date()}
-                      events={{
-                        onChange: datehandle.bind(this, this)
-                      }}
-                      value={this.state.reliving_date}
-                    />
-                    <AlgaehDateHandler
-                      div={{ className: "col" }}
-                      label={{ forceLabel: "Relieving Date" }}
+                      label={{ forceLabel: "Date of Resignation" }}
                       textBox={{
                         className: "txt-fld",
                         name: "date_of_leaving"
@@ -133,21 +119,67 @@ class OfficalDetails extends PureComponent {
                       value={this.state.date_of_leaving}
                     />
                     <AlagehFormGroup
-                      div={{ className: "col-4" }}
+                      div={{ className: "col-2" }}
                       label={{
                         forceLabel: "Notice Period",
                         isImp: false
                       }}
                       textBox={{
-                        value: this.state.notice_period,
+                        value: this.state.primary_contact_no,
                         className: "txt-fld",
-                        name: "notice_period",
+                        name: "primary_contact_no",
+
                         events: {
-                          onChange: texthandle.bind(this, this, context)
+                          onChange: null
                         },
                         others: {
                           tabIndex: "7",
                           type: "number"
+                        }
+                      }}
+                    />
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Relieving Date"
+                        }}
+                      />
+                      <h6>DD/MM/YYYY</h6>
+                    </div>{" "}
+                    <AlgaehDateHandler
+                      div={{ className: "col" }}
+                      label={{ forceLabel: "Date of Exit" }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "date_of_leaving"
+                      }}
+                      maxDate={new Date()}
+                      events={{
+                        onChange: datehandle.bind(this, this)
+                      }}
+                      value={this.state.date_of_leaving}
+                    />
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      label={{
+                        forceLabel: "Employee Status",
+                        isImp: true
+                      }}
+                      selector={{
+                        name: "title_id",
+                        className: "select-fld",
+                        value: this.state.title_id,
+                        dataSource: {
+                          textField:
+                            this.state.selectedLang === "en"
+                              ? "title"
+                              : "arabic_title",
+                          valueField: "his_d_title_id",
+                          data: this.props.titles
+                        },
+                        onChange: null,
+                        others: {
+                          tabIndex: "2"
                         }
                       }}
                     />
