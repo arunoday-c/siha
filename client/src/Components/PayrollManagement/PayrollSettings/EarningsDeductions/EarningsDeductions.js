@@ -521,22 +521,27 @@ class EarningsDeductions extends Component {
                   <input type="checkbox" value="yes" />
                   <span>Yes</span>
                 </label>
-                <label className="checkbox inline">
-                  <input type="checkbox" value="no" checked />
-                  <span>No</span>
-                </label>
               </div>
             </div>
             <div className="col-3">
               {" "}
               <label>Calculation Method</label>
-              <div className="customCheckbox">
-                <label className="checkbox inline">
-                  <input type="checkbox" value="fixed" checked />
+              <div className="customRadio">
+                <label className="radio inline">
+                  <input
+                    type="radio"
+                    value="fixed"
+                    name="CalculationMethod"
+                    checked
+                  />
                   <span>Fixed</span>
                 </label>
-                <label className="checkbox inline">
-                  <input type="checkbox" value="formula" />
+                <label className="radio inline">
+                  <input
+                    type="radio"
+                    value="formula"
+                    name="CalculationMethod"
+                  />
                   <span>Formula</span>
                 </label>
               </div>
@@ -545,13 +550,22 @@ class EarningsDeductions extends Component {
             <div className="col-3">
               {" "}
               <label>Calculation Type</label>
-              <div className="customCheckbox">
-                <label className="checkbox inline">
-                  <input type="checkbox" value="fixed" checked />
+              <div className="customRadio">
+                <label className="radio inline">
+                  <input
+                    type="radio"
+                    value="fixed"
+                    name="CalculationType"
+                    checked
+                  />
                   <span>Fixed</span>
                 </label>
-                <label className="checkbox inline">
-                  <input type="checkbox" value="variables" />
+                <label className="radio inline">
+                  <input
+                    type="radio"
+                    value="variables"
+                    name="CalculationType"
+                  />
                   <span>Variables</span>
                 </label>
               </div>
@@ -565,10 +579,6 @@ class EarningsDeductions extends Component {
                   <input type="checkbox" value="yes" />
                   <span>Yes</span>
                 </label>
-                <label className="checkbox inline">
-                  <input type="checkbox" value="no" checked />
-                  <span>No</span>
-                </label>
               </div>
               <input placeholder="Limit Amount" type="text" disabled />
             </div>
@@ -579,10 +589,6 @@ class EarningsDeductions extends Component {
                 <label className="checkbox inline">
                   <input type="checkbox" value="yes" />
                   <span>Yes</span>
-                </label>
-                <label className="checkbox inline">
-                  <input type="checkbox" value="no" checked />
-                  <span>No</span>
                 </label>
               </div>
               <input placeholder="Limit Days" type="number" disabled />
@@ -788,7 +794,6 @@ class EarningsDeductions extends Component {
             />*/}
             <div className="col form-group">
               <button
-                style={{ marginTop: 21 }}
                 className="btn btn-primary"
                 id="srch-sch"
                 onClick={this.addEarningsDeductions.bind(this)}
@@ -798,7 +803,7 @@ class EarningsDeductions extends Component {
             </div>
           </div>
 
-          <div data-validate="erngsDdctnsGrid">
+          <div data-validate="erngsDdctnsGrid" id="erngs-ddctns-gridCntr">
             <AlgaehDataGrid
               id="erngs-ddctns-grid"
               datavalidate="data-validate='erngsDdctnsGrid'"
