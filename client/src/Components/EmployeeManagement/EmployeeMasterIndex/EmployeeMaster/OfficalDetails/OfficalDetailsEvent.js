@@ -1,6 +1,7 @@
 import moment from "moment";
 import { saveImageOnServer } from "../../../../../utils/GlobalFunctions";
 let texthandlerInterval = null;
+
 const texthandle = ($this, context, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -16,6 +17,24 @@ const texthandle = ($this, context, e) => {
     }
     clearInterval(texthandlerInterval);
   }, 500);
+};
+
+const accomodationProvided = ($this, context, e) => {
+  let accomadation_provided = false;
+  let value = "N";
+  let name = e.target.name;
+
+  if ($this.state.accomadation_provided === true) {
+    accomadation_provided = false;
+    value = "N";
+  } else if ($this.state.accomadation_provided === false) {
+    accomadation_provided = true;
+    value = "Y";
+  }
+  $this.setState({
+    [name]: value,
+    accomadation_provided: accomadation_provided
+  });
 };
 
 const countryStatehandle = ($this, context, e) => {
@@ -175,5 +194,6 @@ export {
   onDrop,
   countryStatehandle,
   datehandle,
-  isDoctorChange
+  isDoctorChange,
+  accomodationProvided
 };

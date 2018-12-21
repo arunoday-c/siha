@@ -124,6 +124,7 @@ const AddDeptUser = ($this, context, e) => {
             insertdeptDetails.push(inpObj);
           }
           deptDetails.push(inpObj);
+
           $this.setState({
             deptDetails: deptDetails,
             sub_department_id: null,

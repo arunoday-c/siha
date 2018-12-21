@@ -217,7 +217,7 @@ class EarningsDeductions extends Component {
   render() {
     return (
       <div className="earnings_deductions">
-        <div id="calc-contain">
+        <div id="calc-contain" className="d-none">
           <form name="calculator">
             <div className="row">
               <div className="col-12">
@@ -413,9 +413,9 @@ class EarningsDeductions extends Component {
         </div>
 
         <div className="col-lg-12">
-          <div className="row">
+          <div className="row earningDeductionForms">
             <AlagehFormGroup
-              div={{ className: "col-3" }}
+              div={{ className: "col-2" }}
               label={{
                 forceLabel: "Code",
                 isImp: true
@@ -429,9 +429,8 @@ class EarningsDeductions extends Component {
                 }
               }}
             />
-
             <AlagehFormGroup
-              div={{ className: "col-3" }}
+              div={{ className: "col-7" }}
               label={{
                 forceLabel: "Description",
                 isImp: true
@@ -460,7 +459,6 @@ class EarningsDeductions extends Component {
                 }
               }}
             />
-
             <AlagehAutoComplete
               div={{ className: "col-3" }}
               label={{
@@ -475,24 +473,6 @@ class EarningsDeductions extends Component {
                   textField: "name",
                   valueField: "value",
                   data: GlobalVariables.COMPONENT_CATEGORY
-                },
-                onChange: this.dropDownHandler.bind(this)
-              }}
-            />
-            <AlagehAutoComplete
-              div={{ className: "col-3" }}
-              label={{
-                forceLabel: "Calculation Method",
-                isImp: true
-              }}
-              selector={{
-                name: "calculation_method",
-                className: "select-fld",
-                value: this.state.calculation_method,
-                dataSource: {
-                  textField: "name",
-                  valueField: "value",
-                  data: GlobalVariables.CALC_METHOD
                 },
                 onChange: this.dropDownHandler.bind(this)
               }}
@@ -518,24 +498,6 @@ class EarningsDeductions extends Component {
             <AlagehAutoComplete
               div={{ className: "col-3" }}
               label={{
-                forceLabel: "Calculation Type",
-                isImp: true
-              }}
-              selector={{
-                name: "calculation_type",
-                className: "select-fld",
-                value: this.state.calculation_type,
-                dataSource: {
-                  textField: "name",
-                  valueField: "value",
-                  data: GlobalVariables.CALC_TYPE
-                },
-                onChange: this.dropDownHandler.bind(this)
-              }}
-            />
-            <AlagehAutoComplete
-              div={{ className: "col-3" }}
-              label={{
                 forceLabel: "Component Type",
                 isImp: true
               }}
@@ -550,45 +512,82 @@ class EarningsDeductions extends Component {
                 },
                 onChange: this.dropDownHandler.bind(this)
               }}
-            />
-
-            <AlagehAutoComplete
-              div={{ className: "col-3" }}
-              label={{
-                forceLabel: "Shortage Deduction Applicable",
-                isImp: true
-              }}
-              selector={{
-                name: "shortage_deduction_applicable",
-                className: "select-fld",
-                value: this.state.shortage_deduction_applicable,
-                dataSource: {
-                  textField: "name",
-                  valueField: "value",
-                  data: GlobalVariables.FORMAT_YESNO
-                },
-                onChange: this.dropDownHandler.bind(this)
-              }}
-            />
-
-            <AlagehAutoComplete
-              div={{ className: "col-3" }}
-              label={{
-                forceLabel: "Overtime Applicable",
-                isImp: true
-              }}
-              selector={{
-                name: "overtime_applicable",
-                className: "select-fld",
-                value: this.state.overtime_applicable,
-                dataSource: {
-                  textField: "name",
-                  valueField: "value",
-                  data: GlobalVariables.FORMAT_YESNO
-                },
-                onChange: this.dropDownHandler.bind(this)
-              }}
-            />
+            />{" "}
+            <div className="col-3">
+              {" "}
+              <label>Shortage Deduction Applicable</label>
+              <div className="customCheckbox">
+                <label className="checkbox inline">
+                  <input type="checkbox" value="yes" />
+                  <span>Yes</span>
+                </label>
+                <label className="checkbox inline">
+                  <input type="checkbox" value="no" checked />
+                  <span>No</span>
+                </label>
+              </div>
+            </div>
+            <div className="col-3">
+              {" "}
+              <label>Calculation Method</label>
+              <div className="customCheckbox">
+                <label className="checkbox inline">
+                  <input type="checkbox" value="fixed" checked />
+                  <span>Fixed</span>
+                </label>
+                <label className="checkbox inline">
+                  <input type="checkbox" value="formula" />
+                  <span>Formula</span>
+                </label>
+              </div>
+              <input type="text" disabled />
+            </div>{" "}
+            <div className="col-3">
+              {" "}
+              <label>Calculation Type</label>
+              <div className="customCheckbox">
+                <label className="checkbox inline">
+                  <input type="checkbox" value="fixed" checked />
+                  <span>Fixed</span>
+                </label>
+                <label className="checkbox inline">
+                  <input type="checkbox" value="variables" />
+                  <span>Variables</span>
+                </label>
+              </div>
+              <input type="text" disabled />
+            </div>
+            <div className="col-3">
+              {" "}
+              <label>Limit Applicable</label>
+              <div className="customCheckbox">
+                <label className="checkbox inline">
+                  <input type="checkbox" value="yes" />
+                  <span>Yes</span>
+                </label>
+                <label className="checkbox inline">
+                  <input type="checkbox" value="no" checked />
+                  <span>No</span>
+                </label>
+              </div>
+              <input placeholder="Limit Amount" type="text" disabled />
+            </div>
+            <div className="col-3">
+              {" "}
+              <label>PROCESS LIMIT REQUIRED</label>
+              <div className="customCheckbox">
+                <label className="checkbox inline">
+                  <input type="checkbox" value="yes" />
+                  <span>Yes</span>
+                </label>
+                <label className="checkbox inline">
+                  <input type="checkbox" value="no" checked />
+                  <span>No</span>
+                </label>
+              </div>
+              <input placeholder="Limit Days" type="number" disabled />
+            </div>
+            {/*
             <AlagehAutoComplete
               div={{ className: "col-3" }}
               label={{
@@ -607,27 +606,6 @@ class EarningsDeductions extends Component {
                 onChange: this.dropDownHandler.bind(this)
               }}
             />
-
-            <AlagehFormGroup
-              div={{ className: "col-3" }}
-              label={{
-                forceLabel: "Monthly Accural Days",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                //decimal: { allowNegative: false },
-                name: "limit_amount",
-                value: this.state.limit_amount,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                },
-                others: {
-                  type: "number"
-                }
-              }}
-            />
-
             <AlagehAutoComplete
               div={{ className: "col-3" }}
               label={{
@@ -646,7 +624,6 @@ class EarningsDeductions extends Component {
                 onChange: this.dropDownHandler.bind(this)
               }}
             />
-
             <AlagehFormGroup
               div={{ className: "col-3" }}
               label={{
@@ -666,6 +643,78 @@ class EarningsDeductions extends Component {
                 }
               }}
             />
+             <AlagehAutoComplete
+              div={{ className: "col-2" }}
+              label={{
+                forceLabel: "Calculation Method",
+                isImp: true
+              }}
+              selector={{
+                name: "calculation_method",
+                className: "select-fld",
+                value: this.state.calculation_method,
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: GlobalVariables.CALC_METHOD
+                },
+                onChange: this.dropDownHandler.bind(this)
+              }}
+            /> 
+            <AlagehAutoComplete
+              div={{ className: "col-3" }}
+              label={{
+                forceLabel: "Calculation Type",
+                isImp: true
+              }}
+              selector={{
+                name: "calculation_type",
+                className: "select-fld",
+                value: this.state.calculation_type,
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: GlobalVariables.CALC_TYPE
+                },
+                onChange: this.dropDownHandler.bind(this)
+              }}
+            />
+            <AlagehAutoComplete
+              div={{ className: "col-3" }}
+              label={{
+                forceLabel: "Shortage Deduction Applicable",
+                isImp: true
+              }}
+              selector={{
+                name: "shortage_deduction_applicable",
+                className: "select-fld",
+                value: this.state.shortage_deduction_applicable,
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: GlobalVariables.FORMAT_YESNO
+                },
+                onChange: this.dropDownHandler.bind(this)
+              }}
+            />
+            <AlagehAutoComplete
+              div={{ className: "col-3" }}
+              label={{
+                forceLabel: "Overtime Applicable",
+                isImp: true
+              }}
+              selector={{
+                name: "overtime_applicable",
+                className: "select-fld",
+                value: this.state.overtime_applicable,
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: GlobalVariables.FORMAT_YESNO
+                },
+                onChange: this.dropDownHandler.bind(this)
+              }}
+            />
             <AlagehFormGroup
               div={{ className: "col-3" }}
               label={{
@@ -682,7 +731,6 @@ class EarningsDeductions extends Component {
                 }
               }}
             />
-
             <AlagehAutoComplete
               div={{ className: "col-3" }}
               label={{
@@ -719,7 +767,6 @@ class EarningsDeductions extends Component {
                 onChange: this.dropDownHandler.bind(this)
               }}
             />
-
             <AlagehFormGroup
               div={{ className: "col-3" }}
               label={{
@@ -738,7 +785,7 @@ class EarningsDeductions extends Component {
                   type: "number"
                 }
               }}
-            />
+            />*/}
             <div className="col form-group">
               <button
                 style={{ marginTop: 21 }}

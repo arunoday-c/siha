@@ -113,11 +113,65 @@ const InsertUpdateEmployee = $this => {
 
   if (!err) {
     if ($this.state.hims_d_employee_id === null) {
+      let data = {
+        employee_code: $this.state.employee_code,
+        full_name: $this.state.full_name,
+        arabic_name: $this.state.arabic_name,
+        date_of_birth: $this.state.date_of_birth,
+        sex: $this.state.sex,
+        primary_contact_no: $this.state.primary_contact_no,
+        email: $this.state.email,
+        blood_group: $this.state.blood_group,
+        nationality: $this.state.nationality,
+        religion_id: $this.state.religion_id,
+        marital_status: $this.state.marital_status,
+        present_address: $this.state.present_address,
+        present_address2: $this.state.present_address2,
+        present_pincode: $this.state.present_pincode,
+        present_city_id: $this.state.present_city_id,
+        present_state_id: $this.state.present_state_id,
+        present_country_id: $this.state.present_country_id,
+        permanent_address: $this.state.same_address
+          ? $this.state.present_address
+          : $this.state.permanent_address,
+        permanent_address2: $this.state.same_address
+          ? $this.state.present_address2
+          : $this.state.permanent_address2,
+        permanent_pincode: $this.state.same_address
+          ? $this.state.present_pincode
+          : $this.state.permanent_pincode,
+        permanent_city_id: $this.state.same_address
+          ? $this.state.present_city_id
+          : $this.state.permanent_city_id,
+        permanent_state_id: $this.state.same_address
+          ? $this.state.present_state_id
+          : $this.state.permanent_state_id,
+        permanent_country_id: $this.state.same_address
+          ? $this.state.present_country_id
+          : $this.state.permanent_country_id,
+        isdoctor: $this.state.isdoctor,
+        license_number: $this.state.license_number,
+        date_of_joining: $this.state.date_of_joining,
+        appointment_type: $this.state.date_of_joining,
+        employee_type: $this.state.employee_type,
+        reliving_date: $this.state.reliving_date,
+        notice_period: $this.state.notice_period,
+        date_of_leaving: $this.state.date_of_joining,
+        company_bank_id: $this.state.company_bank_id,
+        employee_bank_name: $this.state.employee_bank_name,
+        employee_bank_ifsc_code: $this.state.employee_bank_ifsc_code,
+        employee_account_number: $this.state.employee_account_number,
+        mode_of_payment: $this.state.mode_of_payment
+      };
+
       algaehApiCall({
         uri: "/employee/addEmployeeMaster",
-        data: $this.state,
+        data: data,
         onSuccess: response => {
           if (response.data.success === true) {
+            $this.setState({
+              hims_d_employee_id: response.data.records.insertId
+            });
             swalMessage({
               title: "Saved successfully . .",
               type: "success"

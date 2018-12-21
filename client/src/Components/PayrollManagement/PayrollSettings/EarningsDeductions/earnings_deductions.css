@@ -59,3 +59,6 @@
       padding: 8px 0; }
       .earnings_deductions #calc-contain .submitBtn input[type="button"]:hover {
         background: #34b8bc; }
+
+.earnings_deductions .earningDeductionForms > div {
+  margin-bottom: 10px; }
