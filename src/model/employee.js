@@ -262,6 +262,9 @@ let addEmployeeMaster = (req, res, next) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
+    if (req.body.license_number == "null") {
+      delete req.body.license_number;
+    }
     let input = extend({}, req.body);
     db.getConnection((error, connection) => {
       if (error) {
@@ -274,8 +277,10 @@ let addEmployeeMaster = (req, res, next) => {
           marital_status,present_address,present_address2,present_pincode,present_city_id,\
           present_state_id,present_country_id,permanent_address,permanent_address2,permanent_pincode,\
           permanent_city_id,permanent_state_id,permanent_country_id,isdoctor,license_number, \
+          date_of_joining,appointment_type,employee_type,reliving_date,notice_period,date_of_leaving,\
+          company_bank_id,employee_bank_name,employee_bank_ifsc_code,employee_account_number,mode_of_payment,\
           created_date,created_by,updated_date,updated_by) values(\
-            ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
           input.employee_code,
           input.full_name,
@@ -302,6 +307,17 @@ let addEmployeeMaster = (req, res, next) => {
           input.permanent_country_id,
           input.isdoctor,
           input.license_number,
+          input.date_of_joining,
+          input.appointment_type,
+          input.employee_type,
+          input.reliving_date,
+          input.notice_period,
+          input.date_of_leaving,
+          input.company_bank_id,
+          input.employee_bank_name,
+          input.employee_bank_ifsc_code,
+          input.employee_account_number,
+          input.mode_of_payment,
           new Date(),
           input.created_by,
           new Date(),
@@ -490,9 +506,7 @@ let deleteEmployeeGroup = (req, res, next) => {
 let getEmployee = (req, res, next) => {
   let employeeWhereCondition = {
     employee_code: "ALL",
-    first_name: "ALL",
-    middle_name: "ALL",
-    last_name: "ALL",
+
     sex: "ALL",
     blood_group: "ALL",
     employee_status: "ALL",
@@ -911,7 +925,6 @@ let updateEmployee = (req, res, next) => {
 let getEmployeeDetails = (req, res, next) => {
   let employeeWhereCondition = {
     employee_code: "ALL",
-
     sex: "ALL",
     blood_group: "ALL",
     employee_status: "ALL",
@@ -1416,7 +1429,7 @@ let deleteEmployeeIdentification = (req, res, next) => {
           values: [req.body.hims_d_employee_identification_id]
         },
         result => {
-          if (result.affectedRows > 0) {
+          if (result.records.affectedRows > 0) {
             req.records = result;
             next();
           } else {
