@@ -18,7 +18,7 @@ import { AlgaehActions } from "../../../../actions/algaehActions";
 import MyContext from "../../../../utils/MyContext";
 
 import EmpMasterIOputs from "../../../../Models/EmployeeMaster";
-import { getCookie } from "../../../../utils/algaehApiCall";
+import { getCookie, swalMessage } from "../../../../utils/algaehApiCall";
 import { InsertUpdateEmployee, ClearEmployee } from "./EmployeeMasterEvents";
 
 class EmployeeMaster extends Component {
@@ -36,15 +36,28 @@ class EmployeeMaster extends Component {
   }
 
   openTab(e) {
-    var element = document.querySelectorAll("[algaehtabs]");
-    for (var i = 0; i < element.length; i++) {
-      element[i].classList.remove("active");
-    }
-    e.currentTarget.classList.add("active");
     var specified = e.currentTarget.getAttribute("algaehtabs");
-    this.setState({
-      pageDisplay: specified
-    });
+
+    if (
+      this.state.hims_d_employee_id === null &&
+      specified !== "OfficalDetails" &&
+      specified !== "PersonalDetails"
+    ) {
+      swalMessage({
+        title: "Please fill the basic details to proceed",
+        type: "warning"
+      });
+    } else {
+      var element = document.querySelectorAll("[algaehtabs]");
+      for (var i = 0; i < element.length; i++) {
+        element[i].classList.remove("active");
+      }
+      e.currentTarget.classList.add("active");
+
+      this.setState({
+        pageDisplay: specified
+      });
+    }
   }
 
   SideMenuBarOpen(sidOpen) {
@@ -149,6 +162,7 @@ class EmployeeMaster extends Component {
     ) {
       let IOputs = newProps.employeeDetailsPop;
       IOputs.Applicable = IOputs.isdoctor === "Y" ? true : false;
+      IOputs.samechecked = IOputs.same_address === "Y" ? true : false;
       this.setState({ ...this.state, ...IOputs });
     } else {
       let IOputs = EmpMasterIOputs.inputParam();
@@ -197,6 +211,21 @@ class EmployeeMaster extends Component {
                         />
                       }
                     </li>
+
+                    <li
+                      algaehtabs={"OfficalDetails"}
+                      className={"nav-item tab-button"}
+                      onClick={this.openTab.bind(this)}
+                    >
+                      {
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Offical Details"
+                          }}
+                        />
+                      }
+                    </li>
+
                     <li
                       algaehtabs={"DeptUserDetails"}
                       className={"nav-item tab-button"}
@@ -248,19 +277,6 @@ class EmployeeMaster extends Component {
                         <AlgaehLabel
                           label={{
                             forceLabel: "Family & Identification Details"
-                          }}
-                        />
-                      }
-                    </li>
-                    <li
-                      algaehtabs={"OfficalDetails"}
-                      className={"nav-item tab-button"}
-                      onClick={this.openTab.bind(this)}
-                    >
-                      {
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Offical Details"
                           }}
                         />
                       }

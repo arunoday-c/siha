@@ -47,7 +47,7 @@ class EmployeeDesignations extends Component {
     }).then(willDelete => {
       if (willDelete.value) {
         algaehApiCall({
-          uri: "/employee/deleteEmployeeGroup",
+          uri: "/employeesetups/deleteDesignation",
           data: {
             hims_d_designation_id: data.hims_d_designation_id
           },
@@ -116,7 +116,7 @@ class EmployeeDesignations extends Component {
       alertTypeIcon: "warning",
       onSuccess: () => {
         algaehApiCall({
-          uri: "/employee/addDesignations",
+          uri: "/employeesetups/addDesignation",
           method: "POST",
           data: {
             designation_code: this.state.designation_code,

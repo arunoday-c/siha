@@ -1,14 +1,11 @@
 import React, { PureComponent } from "react";
 import "./PersonalDetails.css";
-import Dropzone from "react-dropzone";
 import { AlgaehActions } from "../../../../../actions/algaehActions";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import {
   texthandle,
-  titlehandle,
-  onDrop,
   countryStatehandle,
   datehandle,
   isDoctorChange,
@@ -24,9 +21,6 @@ import {
 } from "../../../../Wrapper/algaehWrapper";
 import variableJson from "../../../../../utils/GlobalVariables.json";
 import Enumerable from "linq";
-// import DeptUserDetails from "../DeptUserDetails/DeptUserDetails";
-// import noImage from "../../../../../assets/images/images.webp";
-// import { displayFileFromServer } from "../../../../../utils/GlobalFunctions";
 import AlgaehFileUploader from "../../../../Wrapper/algaehFileUpload";
 class PersonalDetails extends PureComponent {
   constructor(props) {
@@ -531,7 +525,7 @@ class PersonalDetails extends PureComponent {
                                   type="checkbox"
                                   name="same_address"
                                   value="Y"
-                                  checked={this.state.same_address}
+                                  checked={this.state.samechecked}
                                   onChange={sameAsPresent.bind(
                                     this,
                                     this,
