@@ -66,6 +66,8 @@ import opBillCancellation from "../controller/opBillCancellation";
 import opCreditSettlement from "../controller/opCreditSettlement";
 import algaehMasters from "../controller/algaehMasters";
 import dental from "../controller/dental";
+
+import attendance from "../Payroll/controller/attendance";
 let router = express();
 
 //connect to DB
