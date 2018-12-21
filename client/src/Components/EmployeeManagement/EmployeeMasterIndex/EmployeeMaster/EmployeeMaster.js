@@ -2,9 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-
 import "./EmployeeMaster.css";
-
 import CommissionSetup from "./CommissionSetup/CommissionSetup";
 import PersonalDetails from "./PersonalDetails/PersonalDetails";
 import FamilyAndIdentification from "./FamilyAndIdentification/FamilyAndIdentification";
@@ -18,7 +16,7 @@ import { AlgaehActions } from "../../../../actions/algaehActions";
 import MyContext from "../../../../utils/MyContext";
 
 import EmpMasterIOputs from "../../../../Models/EmployeeMaster";
-import { getCookie } from "../../../../utils/algaehApiCall";
+import { getCookie, swalMessage } from "../../../../utils/algaehApiCall";
 import { InsertUpdateEmployee, ClearEmployee } from "./EmployeeMasterEvents";
 
 class EmployeeMaster extends Component {
@@ -36,15 +34,28 @@ class EmployeeMaster extends Component {
   }
 
   openTab(e) {
+    var specified = e.currentTarget.getAttribute("algaehtabs");
+
+    // if (
+    //   this.state.hims_d_employee_id === null &&
+    //   specified !== "OfficalDetails" &&
+    //   specified !== "PersonalDetails"
+    // ) {
+    // swalMessage({
+    //   title: "Please fill the basic details to proceed",
+    //   type: "warning"
+    // });
+    //  } else {
     var element = document.querySelectorAll("[algaehtabs]");
     for (var i = 0; i < element.length; i++) {
       element[i].classList.remove("active");
     }
     e.currentTarget.classList.add("active");
-    var specified = e.currentTarget.getAttribute("algaehtabs");
+
     this.setState({
       pageDisplay: specified
     });
+    //}
   }
 
   SideMenuBarOpen(sidOpen) {
@@ -149,6 +160,7 @@ class EmployeeMaster extends Component {
     ) {
       let IOputs = newProps.employeeDetailsPop;
       IOputs.Applicable = IOputs.isdoctor === "Y" ? true : false;
+      IOputs.samechecked = IOputs.same_address === "Y" ? true : false;
       this.setState({ ...this.state, ...IOputs });
     } else {
       let IOputs = EmpMasterIOputs.inputParam();
@@ -197,6 +209,7 @@ class EmployeeMaster extends Component {
                         />
                       }
                     </li>
+
                     <li
                       algaehtabs={"OfficalDetails"}
                       className={"nav-item tab-button"}

@@ -561,5 +561,14 @@
     { "name": "Floor", "value": "FL" },
     { "name": "Ceiling", "value": "CL" },
     { "name": "Round", "value": "RD" }
+  ],
+  "EMPLOYEE_TYPE": [
+    { "name": "Permanent", "value": "PE" },
+    { "name": "Contract", "value": "CO" }
+  ],
+  "EMP_APPT_TYPE": [
+    { "name": "Agency", "value": "A" },
+    { "name": "Direct", "value": "D" },
+    { "name": "Referal", "value": "R" }
   ]
 }
