@@ -4,6 +4,7 @@ import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import Dashboard from "./Dashboard/Dashboard";
 import AttendanceRegularization from "./AttendanceRegularization/AttendanceRegularization";
 import ApplyLeave from "./ApplyLeave/ApplyLeave";
+import employeeProfileImg from "../../../assets/images/employee_profile_img.webp";
 
 export default class SelfService extends Component {
   constructor(props) {
@@ -30,28 +31,34 @@ export default class SelfService extends Component {
         <div className="row EmployeeProfile">
           <div className="EmployeeInfo-Top box-shadow-normal">
             <div className="EmployeeImg box-shadow">
-              <img
-                alt="Algaeh-HIS"
-                // src={
-                //   this.state.patImg.length > 0
-                //     ? this.state.patImg
-                //     : "../assets/images/nobody_m.original.webp"
-                // }
-              />
+              <img alt="Algaeh-HIS" src={employeeProfileImg} />
             </div>
             <div className="EmployeeName">
-              <h6>Shane Warne</h6>
-              <p>Male ,49Y 2M 27D</p>
+              <h6>SYED ADIL FAWAD NIZAMI</h6>
+              <p>
+                {" "}
+                <b>Specialist</b>
+              </p>
+              <p>General Medicine</p>
             </div>
             <div className="EmployeeDemographic">
               <span>
-                DOB:<b>13-09-1969</b>
+                <i className="fas fa-user-tie" /> <b>EMP378456</b>
               </span>
               <span>
-                Mobile: <b>6180123456123</b>
+                <i className="fas fa-mobile" /> <b>+96 34765738465</b>
               </span>
               <span>
-                Nationality: <b>Australian </b>
+                <i className="fas fa-envelope" />{" "}
+                <b>fawad.nizami@hospital.com</b>
+              </span>
+              <span>
+                <i className="fas fa-globe-asia" /> <b>India</b>
+              </span>
+            </div>
+            <div className="EmployeeDemographic">
+              <span>
+                Reporting to: <b>Abdulrahman Fahmy</b>
               </span>
             </div>
           </div>
@@ -67,7 +74,7 @@ export default class SelfService extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Dashboard"
+                      forceLabel: "Personal Info"
                     }}
                   />
                 }
