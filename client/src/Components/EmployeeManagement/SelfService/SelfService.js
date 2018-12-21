@@ -27,7 +27,36 @@ export default class SelfService extends Component {
   render() {
     return (
       <div className="hr_settings">
-        <div className="row">
+        <div className="row EmployeeProfile">
+          <div className="EmployeeInfo-Top box-shadow-normal">
+            <div className="EmployeeImg box-shadow">
+              <img
+                alt="Algaeh-HIS"
+                // src={
+                //   this.state.patImg.length > 0
+                //     ? this.state.patImg
+                //     : "../assets/images/nobody_m.original.webp"
+                // }
+              />
+            </div>
+            <div className="EmployeeName">
+              <h6>Shane Warne</h6>
+              <p>Male ,49Y 2M 27D</p>
+            </div>
+            <div className="EmployeeDemographic">
+              <span>
+                DOB:<b>13-09-1969</b>
+              </span>
+              <span>
+                Mobile: <b>6180123456123</b>
+              </span>
+              <span>
+                Nationality: <b>Australian </b>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div className="row EmployeeTopNav box-shadow-normal">
           <div className="tabMaster toggle-section">
             <ul className="nav">
               <li

@@ -24,6 +24,9 @@ class AttendanceRegularization extends Component {
       <React.Fragment>
         <div className="hptl-SelfService-form">
           <div className="col-lg-12">
+            <h5>
+              <span>Request Attendance Regularization List</span>
+            </h5>
             <div className="row">
               <AlgaehDateHandler
                 div={{ className: "col-3 margin-bottom-15" }}
@@ -117,101 +120,89 @@ class AttendanceRegularization extends Component {
                 </button>
               </div>
             </div>
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">
-                    Attendance Regularization Status
-                  </h3>
-                </div>
-                <div className="actions">
-                  {/* <a className="btn btn-primary btn-circle active">
-                   <i className="fas fa-calculator" /> 
-                </a> */}
-                </div>
-              </div>
 
-              <div className="portlet-body">
-                <div className="row">
-                  <div className="col-lg-12" id="SelfService_Cntr">
-                    <TreeTable
-                      id="SelfService_grid"
-                      columns={[
+            <hr />
+            <h5>
+              <span>Attendance Regularization List</span>
+            </h5>
+            <div className="row">
+              <div className="col-lg-12" id="SelfService_Cntr">
+                <TreeTable
+                  id="SelfService_grid"
+                  columns={[
+                    {
+                      Header: "Applied",
+                      accessor: "Applied",
+                      columns: [
                         {
-                          Header: "Applied",
-                          accessor: "Applied",
-                          columns: [
-                            {
-                              Header: "Date",
-                              accessor: "AppliedDate"
-                            },
-                            {
-                              Header: "Reason",
-                              accessor: "AppliedReson"
-                            }
-                          ]
+                          Header: "Date",
+                          accessor: "AppliedDate"
                         },
                         {
-                          Header: "Attendance",
-                          accessor: "Attendance",
-                          columns: [
-                            {
-                              Header: "Date",
-                              accessor: "AttendanceDate"
-                            }
-                          ]
-                        },
-                        {
-                          Header: "Login Time",
-                          accessor: "LoginTime",
-
-                          columns: [
-                            {
-                              Header: "Old",
-                              accessor: "LoginTimeOld"
-                            },
-                            {
-                              Header: "New",
-                              accessor: "LoginTimeNew"
-                            }
-                          ]
-                        },
-                        {
-                          Header: "Login Out",
-                          accessor: "LoginOut",
-                          columns: [
-                            {
-                              Header: "Old",
-                              accessor: "LoginOutOld"
-                            },
-                            {
-                              Header: "New",
-                              accessor: "LoginOutNew"
-                            }
-                          ]
-                        },
-                        {
-                          Header: "Regularization",
-                          accessor: "Regularization",
-                          columns: [
-                            {
-                              Header: "Status",
-                              accessor: "RegularizationStatus"
-                            }
-                          ]
+                          Header: "Reason",
+                          accessor: "AppliedReson"
                         }
-                      ]}
-                      keyId="algaeh_d_module_id"
-                      dataSource={{
-                        data: []
-                      }}
-                      isEditable={false}
-                      //filterable
-                      defaultPageSize={10}
-                      className="-striped -highlight"
-                    />
-                  </div>
-                </div>
+                      ]
+                    },
+                    {
+                      Header: "Attendance",
+                      accessor: "Attendance",
+                      columns: [
+                        {
+                          Header: "Date",
+                          accessor: "AttendanceDate"
+                        }
+                      ]
+                    },
+                    {
+                      Header: "Login Time",
+                      accessor: "LoginTime",
+
+                      columns: [
+                        {
+                          Header: "Old",
+                          accessor: "LoginTimeOld"
+                        },
+                        {
+                          Header: "New",
+                          accessor: "LoginTimeNew"
+                        }
+                      ]
+                    },
+                    {
+                      Header: "Login Out",
+                      accessor: "LoginOut",
+                      columns: [
+                        {
+                          Header: "Old",
+                          accessor: "LoginOutOld"
+                        },
+                        {
+                          Header: "New",
+                          accessor: "LoginOutNew"
+                        }
+                      ]
+                    },
+                    {
+                      Header: "Regularization",
+                      accessor: "Regularization",
+                      columns: [
+                        {
+                          Header: "Status",
+                          accessor: "RegularizationStatus"
+                        }
+                      ]
+                    }
+                  ]}
+                  keyId="algaeh_d_module_id"
+                  dataSource={{
+                    data: []
+                  }}
+                  isEditable={false}
+                  //filterable
+                  defaultPageSize={10}
+                  className="-striped -highlight"
+                />
               </div>
             </div>
           </div>

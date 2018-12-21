@@ -1,2 +1,205 @@
-.hptl-SelfService-form {
-  margin: 0 0 15px; }
+.EmployeeProfile .EmployeeInfo-Top {
+  background: white;
+  height: 70px;
+  padding: 5px 0 0;
+  width: 100%;
+  position: fixed;
+  z-index: 999; }
+  .EmployeeProfile .EmployeeInfo-Top div {
+    float: left;
+    color: #858585; }
+  .EmployeeProfile .EmployeeInfo-Top .backBtn {
+    border-right: 1px solid #e1e1e1;
+    padding-right: 10px;
+    padding-left: 10px; }
+    .EmployeeProfile .EmployeeInfo-Top .backBtn button {
+      height: 60px;
+      border: 1px solid #e1e1e1;
+      font-size: 0.7rem; }
+    .EmployeeProfile .EmployeeInfo-Top .backBtn i {
+      display: block;
+      margin-bottom: 5px; }
+  .EmployeeProfile .EmployeeInfo-Top .EmployeeImg {
+    margin: 1px 10px;
+    border-radius: 4px;
+    border: 1px solid #e1e1e1; }
+    .EmployeeProfile .EmployeeInfo-Top .EmployeeImg img {
+      height: 55px;
+      border-radius: 4px;
+      overflow: hidden; }
+  .EmployeeProfile .EmployeeInfo-Top .EmployeeName {
+    max-width: 230px;
+    margin-top: 2px;
+    border-left: 1px solid #e1e1e1;
+    border-right: 1px solid #e1e1e1;
+    padding-left: 10px;
+    padding-right: 10px;
+    min-height: 57px; }
+    .EmployeeProfile .EmployeeInfo-Top .EmployeeName h6 {
+      font-size: 1rem;
+      margin-bottom: 2px;
+      color: #000;
+      line-height: 1.2rem; }
+    .EmployeeProfile .EmployeeInfo-Top .EmployeeName p {
+      font-size: 0.8rem;
+      margin: 0;
+      padding: 0; }
+  .EmployeeProfile .EmployeeInfo-Top .EmployeeDemographic {
+    font-size: 0.8rem;
+    line-height: 1.3rem;
+    border-right: 1px solid #e1e1e1;
+    padding-left: 10px;
+    padding-right: 10px;
+    min-height: 57px; }
+    .EmployeeProfile .EmployeeInfo-Top .EmployeeDemographic span {
+      display: block; }
+      .EmployeeProfile .EmployeeInfo-Top .EmployeeDemographic span b {
+        color: #34b8bc; }
+  .EmployeeProfile .EmployeeInfo-Top .EmployeeHospitalDetail {
+    font-size: 0.8rem;
+    line-height: 1.3rem;
+    border-right: 1px solid #e1e1e1;
+    padding-left: 10px;
+    padding-right: 10px;
+    min-height: 57px; }
+    .EmployeeProfile .EmployeeInfo-Top .EmployeeHospitalDetail span {
+      display: block; }
+      .EmployeeProfile .EmployeeInfo-Top .EmployeeHospitalDetail span b {
+        color: #34b8bc; }
+  .EmployeeProfile .EmployeeInfo-Top .EmployeeVital {
+    font-size: 0.8rem;
+    max-width: 33%;
+    line-height: 1.3rem;
+    padding-left: 10px;
+    padding-right: 10px;
+    min-height: 57px; }
+    .EmployeeProfile .EmployeeInfo-Top .EmployeeVital span {
+      display: inline-block;
+      margin-right: 8px; }
+      .EmployeeProfile .EmployeeInfo-Top .EmployeeVital span b {
+        color: #34b8bc; }
+  .EmployeeProfile .EmployeeInfo-Top .moreAction {
+    float: right;
+    border-right: 1px solid #e1e1e1;
+    padding-right: 10px; }
+    .EmployeeProfile .EmployeeInfo-Top .moreAction button {
+      height: 60px;
+      border: 1px solid #e1e1e1;
+      font-size: 0.7rem;
+      margin-left: 0; }
+    .EmployeeProfile .EmployeeInfo-Top .moreAction i {
+      display: block;
+      margin-bottom: 5px; }
+
+.EmployeeTopNav {
+  background: white;
+  height: 35px;
+  padding: 0;
+  width: 100%;
+  color: #797979;
+  font-size: 1rem;
+  text-transform: uppercase;
+  position: fixed;
+  top: 123px;
+  z-index: 99; }
+  .EmployeeTopNav .tabMaster {
+    box-shadow: none; }
+    .EmployeeTopNav .tabMaster ul {
+      position: relative; }
+      .EmployeeTopNav .tabMaster ul li:after {
+        display: block;
+        content: "";
+        border-bottom: solid 3px #00a9ad;
+        transform: scaleX(0);
+        transition: transform 150ms ease-in-out; }
+      .EmployeeTopNav .tabMaster ul li:hover:after {
+        transform: scaleX(1); }
+      .EmployeeTopNav .tabMaster ul li span {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        padding: 9px 15px 8px;
+        color: #858585;
+        cursor: pointer; }
+      .EmployeeTopNav .tabMaster ul li span.active {
+        border-bottom: solid 3px #00a9ad;
+        color: #fff;
+        background: #34b8bc; }
+        .EmployeeTopNav .tabMaster ul li span.active:hover {
+          cursor: default;
+          color: #fff; }
+        .EmployeeTopNav .tabMaster ul li span.active:hover:after {
+          display: none !important;
+          border: none !important;
+          cursor: pointer; }
+    .EmployeeTopNav .tabMaster .Employee-quick-info {
+      color: #34b8bc;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      position: absolute;
+      right: 20px; }
+      .EmployeeTopNav .tabMaster .Employee-quick-info li {
+        background: #ffffff;
+        color: #53bcb1;
+        padding: 4px 10px 3px;
+        cursor: pointer;
+        margin: 0 10px;
+        list-style: none;
+        display: inline-block; }
+        .EmployeeTopNav .tabMaster .Employee-quick-info li section {
+          width: 30vw;
+          height: auto;
+          position: absolute;
+          right: 0;
+          top: 30px;
+          background: #53bdb1;
+          z-index: 9;
+          padding: 10px;
+          border-radius: 5px;
+          color: #fff;
+          display: none; }
+          .EmployeeTopNav .tabMaster .Employee-quick-info li section b.top-nav-sec-hdg {
+            text-align: center;
+            border-bottom: 1px solid #337e74;
+            margin-left: -10px;
+            margin-right: -10px;
+            padding-bottom: 11px; }
+          .EmployeeTopNav .tabMaster .Employee-quick-info li section b {
+            display: block;
+            border-bottom: 1px solid #3f9c90;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            font-size: 0.8rem; }
+          .EmployeeTopNav .tabMaster .Employee-quick-info li section .listofA-D-D {
+            display: inline-block;
+            margin-right: 8px;
+            border: 1px solid #317970;
+            padding: 3px 10px;
+            margin: 0;
+            color: #fff;
+            margin-right: 5px;
+            margin-bottom: 3px;
+            border-radius: 20px;
+            background: #3f9c91;
+            font-size: 0.7rem;
+            white-space: normal; }
+          .EmployeeTopNav .tabMaster .Employee-quick-info li section p {
+            background: rgba(0, 0, 0, 0.05);
+            border-top: 1px solid #65dace;
+            margin: -10px;
+            padding: 10px; }
+      .EmployeeTopNav .tabMaster .Employee-quick-info li:hover {
+        background: #53bcb1;
+        color: #fff;
+        padding: 4px 10px; }
+        .EmployeeTopNav .tabMaster .Employee-quick-info li:hover section {
+          display: block; }
+
+.EmployeeContentArea {
+  margin: 100px 10px 0;
+  z-index: 1;
+  width: 100%; }
+
+.hr-setion {
+  margin-top: 120px;
+  padding-top: 0; }
