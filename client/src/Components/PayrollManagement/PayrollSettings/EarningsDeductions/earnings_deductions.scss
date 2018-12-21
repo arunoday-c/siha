@@ -81,4 +81,9 @@
       margin-bottom: 10px;
     }
   }
+  #erngs-ddctns-gridCntr {
+    .ReactTable {
+      max-height: 41vh !important;
+    }
+  }
 }

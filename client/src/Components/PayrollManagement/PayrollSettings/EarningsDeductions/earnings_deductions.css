@@ -62,3 +62,6 @@
 
 .earnings_deductions .earningDeductionForms > div {
   margin-bottom: 10px; }
+
+.earnings_deductions #erngs-ddctns-gridCntr .ReactTable {
+  max-height: 41vh !important; }
