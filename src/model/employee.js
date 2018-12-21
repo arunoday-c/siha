@@ -338,6 +338,87 @@ let addEmployeeMaster = (req, res, next) => {
   }
 };
 
+//created by irfan:api to
+let addEmployeeInfo = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT  INTO hims_d_employee (employee_code,full_name,arabic_name,\
+          date_of_birth,sex,primary_contact_no,email,blood_group,nationality,religion_id,\
+          marital_status,present_address,present_address2,present_pincode,present_city_id,\
+          present_state_id,present_country_id,permanent_address,permanent_address2,permanent_pincode,\
+          permanent_city_id,permanent_state_id,permanent_country_id,isdoctor,license_number, \
+          date_of_joining,appointment_type,employee_type,reliving_date,notice_period,date_of_leaving,\
+          company_bank_id,employee_bank_name,employee_bank_ifsc_code,employee_account_number,mode_of_payment,\
+          created_date,created_by,updated_date,updated_by) values(\
+            ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        [
+          input.employee_code,
+          input.full_name,
+          input.arabic_name,
+          input.date_of_birth,
+          input.sex,
+          input.primary_contact_no,
+          input.email,
+          input.blood_group,
+          input.nationality,
+          input.religion_id,
+          input.marital_status,
+          input.present_address,
+          input.present_address2,
+          input.present_pincode,
+          input.present_city_id,
+          input.present_state_id,
+          input.present_country_id,
+          input.permanent_address,
+          input.permanent_address2,
+          input.permanent_pincode,
+          input.permanent_city_id,
+          input.permanent_state_id,
+          input.permanent_country_id,
+          input.isdoctor,
+          input.license_number,
+          input.date_of_joining,
+          input.appointment_type,
+          input.employee_type,
+          input.reliving_date,
+          input.notice_period,
+          input.date_of_leaving,
+          input.company_bank_id,
+          input.employee_bank_name,
+          input.employee_bank_ifsc_code,
+          input.employee_account_number,
+          input.mode_of_payment,
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 //created by adnan:api to add employee groups
 let addEmployeeGroups = (req, res, next) => {
   try {
