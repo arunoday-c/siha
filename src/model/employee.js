@@ -11,6 +11,7 @@ import httpStatus from "../utils/httpStatus";
 
 import { debugLog } from "../utils/logging";
 import Promise from "bluebird";
+import department from "../controller/department";
 
 //api to add employee
 let addEmployee = (req, res, next) => {
@@ -351,68 +352,78 @@ let addEmployeeInfo = (req, res, next) => {
       if (error) {
         next(error);
       }
-
-      connection.query(
-        "INSERT  INTO hims_d_employee (employee_code,full_name,arabic_name,\
-          date_of_birth,sex,primary_contact_no,email,blood_group,nationality,religion_id,\
-          marital_status,present_address,present_address2,present_pincode,present_city_id,\
-          present_state_id,present_country_id,permanent_address,permanent_address2,permanent_pincode,\
-          permanent_city_id,permanent_state_id,permanent_country_id,isdoctor,license_number, \
-          date_of_joining,appointment_type,employee_type,reliving_date,notice_period,date_of_leaving,\
-          company_bank_id,employee_bank_name,employee_bank_ifsc_code,employee_account_number,mode_of_payment,\
-          created_date,created_by,updated_date,updated_by) values(\
-            ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-        [
-          input.employee_code,
-          input.full_name,
-          input.arabic_name,
-          input.date_of_birth,
-          input.sex,
-          input.primary_contact_no,
-          input.email,
-          input.blood_group,
-          input.nationality,
-          input.religion_id,
-          input.marital_status,
-          input.present_address,
-          input.present_address2,
-          input.present_pincode,
-          input.present_city_id,
-          input.present_state_id,
-          input.present_country_id,
-          input.permanent_address,
-          input.permanent_address2,
-          input.permanent_pincode,
-          input.permanent_city_id,
-          input.permanent_state_id,
-          input.permanent_country_id,
-          input.isdoctor,
-          input.license_number,
-          input.date_of_joining,
-          input.appointment_type,
-          input.employee_type,
-          input.reliving_date,
-          input.notice_period,
-          input.date_of_leaving,
-          input.company_bank_id,
-          input.employee_bank_name,
-          input.employee_bank_ifsc_code,
-          input.employee_account_number,
-          input.mode_of_payment,
-          new Date(),
-          input.created_by,
-          new Date(),
-          input.updated_by
-        ],
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
             next(error);
-          }
-          req.records = result;
-          next();
+          });
         }
-      );
+        new Promise((resolve, reject) => {
+          try {
+            debugLog("first");
+            if (input.deptDetails.length > 0) {
+              const insurtColumns = [
+                "services_id",
+                "sub_department_id",
+                "category_speciality_id",
+                "employee_designation_id",
+                "reporting_to_id",
+                "created_by",
+                "updated_by"
+              ];
+
+              connection.query(
+                "INSERT INTO hims_m_employee_department_mappings(" +
+                  insurtColumns.join(",") +
+                  ",`employee_id`,created_date,updated_date) VALUES ?",
+                [
+                  jsonArrayToObject({
+                    sampleInputObject: insurtColumns,
+                    arrayObj: input.deptDetails,
+                    newFieldToInsert: [
+                      input.employee_id,
+                      new Date(),
+                      new Date()
+                    ],
+                    req: req
+                  })
+                ],
+                (error, result) => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+                  if (result.length > 0) {
+                    resolve(result);
+                  } else {
+                    resolve({});
+                  }
+                }
+              );
+            } else {
+              resolve({});
+            }
+          } catch (e) {
+            reject(e);
+          }
+        })
+          .then(dtResult => {
+            for (let i = 0; i < 100; i++) {
+              debugLog("second");
+            }
+          })
+          .then(departResult => {
+            for (let i = 0; i < 100; i++) {
+              debugLog("third");
+            }
+          })
+          .then(forth => {
+            debugLog("fourth");
+          });
+      });
     });
   } catch (e) {
     next(e);
@@ -1552,5 +1563,6 @@ module.exports = {
   addEmployeeIdentification,
   getEmployeeIdentification,
   updateEmployeeIdentification,
-  deleteEmployeeIdentification
+  deleteEmployeeIdentification,
+  addEmployeeInfo
 };

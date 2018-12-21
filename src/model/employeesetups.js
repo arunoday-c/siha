@@ -86,7 +86,6 @@ let addDesignation = (req, res, next) => {
     next(e);
   }
 };
-
 //created by:irfan to delete
 let deleteDesignation = (req, res, next) => {
   try {

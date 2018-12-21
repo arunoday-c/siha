@@ -20,7 +20,8 @@ import {
   addEmployeeIdentification,
   getEmployeeIdentification,
   updateEmployeeIdentification,
-  deleteEmployeeIdentification
+  deleteEmployeeIdentification,
+  addEmployeeInfo
 } from "../model/employee";
 import httpStatus from "../utils/httpStatus";
 export default ({ config, db }) => {
@@ -353,6 +354,20 @@ export default ({ config, db }) => {
       }
       next();
     }
+  );
+
+  api.post(
+    "/addEmployeeInfo",
+    addEmployeeInfo,
+    (req, res, next) => {
+      let resultBack = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: resultBack
+      });
+      next();
+    },
+    releaseConnection
   );
 
   return api;
