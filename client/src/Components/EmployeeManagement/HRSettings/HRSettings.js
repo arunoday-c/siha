@@ -59,7 +59,7 @@ class HRSettings extends Component {
             </ul>
           </div>
         </div>
-        <div className="hr-setion">
+        <div className="hr-section">
           {this.state.pageDisplay === "EmployeeGroups" ? (
             <EmployeeGroups />
           ) : this.state.pageDisplay === "EmployeeDesignations" ? (

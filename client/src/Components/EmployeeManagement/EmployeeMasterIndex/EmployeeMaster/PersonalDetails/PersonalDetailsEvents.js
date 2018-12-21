@@ -1,6 +1,7 @@
 import moment from "moment";
 import { saveImageOnServer } from "../../../../../utils/GlobalFunctions";
 let texthandlerInterval = null;
+
 const texthandle = ($this, context, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -19,7 +20,6 @@ const texthandle = ($this, context, e) => {
 };
 
 const countryStatehandle = ($this, context, e) => {
-  debugger;
   let name;
   let value;
   if (e.name !== undefined) {
@@ -180,20 +180,20 @@ const datehandle = ($this, context, ctrl, e) => {
 const sameAsPresent = ($this, context, e) => {
   //Handle here
 
-  let same_address = false;
+  let samechecked = false;
   let value = "N";
   let name = e.target.name;
 
-  if ($this.state.same_address === true) {
-    same_address = false;
+  if ($this.state.samechecked === true) {
+    samechecked = false;
     value = "N";
-  } else if ($this.state.same_address === false) {
-    same_address = true;
+  } else if ($this.state.samechecked === false) {
+    samechecked = true;
     value = "Y";
   }
   $this.setState({
     [name]: value,
-    same_address: same_address
+    samechecked: samechecked
   });
 };
 
