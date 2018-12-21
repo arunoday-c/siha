@@ -76,6 +76,7 @@ class FamilyAndIdentification extends PureComponent {
       },
       onSuccess: res => {
         if (res.data.success) {
+          this.getEmployeeIdentification();
           swalMessage({
             title: "Record added successfully",
             type: "success"
@@ -110,9 +111,9 @@ class FamilyAndIdentification extends PureComponent {
                         isImp: false
                       }}
                       selector={{
-                        name: "primary_identity_id",
+                        name: "identity_documents_id",
                         className: "select-fld",
-                        value: this.state.primary_identity_id,
+                        value: this.state.identity_documents_id,
                         dataSource: {
                           textField:
                             this.state.selectedLang === "en"
@@ -196,6 +197,7 @@ class FamilyAndIdentification extends PureComponent {
                         Add
                       </button>
                     </div>
+
                     <div className="col-lg-12 margin-top-15">
                       <AlgaehDataGrid
                         id="employee-ids-grid"
@@ -351,7 +353,53 @@ class FamilyAndIdentification extends PureComponent {
                         Add
                       </button>
                     </div>
-                    <div className="col-12">TABLE</div>
+
+                    <div className="col-lg-12 margin-top-15">
+                      <AlgaehDataGrid
+                        id="employee-ids-grid"
+                        columns={[
+                          {
+                            fieldName: "identity_documents_id",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Dependent Type" }}
+                              />
+                            )
+                          },
+                          {
+                            fieldName: "identity_number",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Dependent Name" }}
+                              />
+                            )
+                          },
+                          {
+                            fieldName: "issue_date",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "ID Card Type" }}
+                              />
+                            )
+                          },
+                          {
+                            fieldName: "valid_upto",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "ID Number" }}
+                              />
+                            )
+                          }
+                        ]}
+                        keyId="service_code"
+                        dataSource={{
+                          data: this.state.employee_ids
+                          //data: []
+                        }}
+                        isEditable={true}
+                        paging={{ page: 0, rowsPerPage: 5 }}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

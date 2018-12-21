@@ -15,7 +15,6 @@ class EmployeeDesignations extends Component {
     this.state = {
       employee_designations: []
     };
-
     this.getDesignations();
   }
 

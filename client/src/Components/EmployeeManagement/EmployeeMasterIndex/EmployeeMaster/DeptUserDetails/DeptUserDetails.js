@@ -41,33 +41,6 @@ class DeptUserDetails extends Component {
 
   componentDidMount() {
     if (
-      this.props.empcategory === undefined ||
-      this.props.empcategory.length === 0
-    ) {
-      this.props.getEmpCategory({
-        uri: "/employeesetups/getEmpCategory",
-        method: "GET",
-        redux: {
-          type: "EMP_SPECILITY_GET_DATA",
-          mappingName: "empcategory"
-        }
-      });
-    }
-    if (
-      this.props.empspeciality === undefined ||
-      this.props.empspeciality.length === 0
-    ) {
-      this.props.getEmpSpeciality({
-        uri: "/employeesetups/getEmpSpeciality",
-        method: "GET",
-        redux: {
-          type: "EMP_SPECILITY_GET_DATA",
-          mappingName: "empspeciality"
-        }
-      });
-    }
-
-    if (
       this.props.depservices === undefined ||
       this.props.depservices.length === 0
     ) {
@@ -81,6 +54,7 @@ class DeptUserDetails extends Component {
         }
       });
     }
+
     if (
       this.props.specimapcategorylist === undefined ||
       this.props.specimapcategorylist.length === 0
@@ -92,6 +66,20 @@ class DeptUserDetails extends Component {
         redux: {
           type: "EMP_SPEC_CATEGORY_GET_DATA",
           mappingName: "specimapcategorylist"
+        }
+      });
+    }
+
+    if (
+      this.props.designations === undefined ||
+      this.props.designations.length === 0
+    ) {
+      this.props.getDesignations({
+        uri: "/employeesetups/getDesignations",
+        method: "GET",
+        redux: {
+          type: "DSGTN_GET_DATA",
+          mappingName: "designations"
         }
       });
     }
@@ -267,54 +255,7 @@ class DeptUserDetails extends Component {
                         onChange: departmenttexthandle.bind(this, this)
                       }}
                     />
-                    <AlagehAutoComplete
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Employee Designation",
-                        isImp: true
-                      }}
-                      selector={{
-                        name: "title_id",
-                        className: "select-fld",
-                        value: this.state.title_id,
-                        dataSource: {
-                          textField:
-                            this.state.selectedLang === "en"
-                              ? "title"
-                              : "arabic_title",
-                          valueField: "his_d_title_id",
-                          data: this.props.titles
-                        },
-                        onChange: null,
-                        others: {
-                          tabIndex: "2"
-                        }
-                      }}
-                    />
-                    <AlagehAutoComplete
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Reporting to",
-                        isImp: true
-                      }}
-                      selector={{
-                        name: "title_id",
-                        className: "select-fld",
-                        value: this.state.title_id,
-                        dataSource: {
-                          textField:
-                            this.state.selectedLang === "en"
-                              ? "title"
-                              : "arabic_title",
-                          valueField: "his_d_title_id",
-                          data: this.props.titles
-                        },
-                        onChange: null,
-                        others: {
-                          tabIndex: "2"
-                        }
-                      }}
-                    />
+
                     <AlagehAutoComplete
                       div={{ className: "col" }}
                       label={{
@@ -356,6 +297,53 @@ class DeptUserDetails extends Component {
                         onChange: categorytexthandle.bind(this, this)
                       }}
                     />
+
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      label={{
+                        forceLabel: "Employee Designation",
+                        isImp: true
+                      }}
+                      selector={{
+                        name: "hims_d_designation_id",
+                        className: "select-fld",
+                        value: this.state.hims_d_designation_id,
+                        dataSource: {
+                          textField: "designation",
+                          valueField: "hims_d_designation_id",
+                          data: this.props.designations
+                        },
+                        onChange: () => {},
+                        others: {
+                          tabIndex: "2"
+                        }
+                      }}
+                    />
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      label={{
+                        forceLabel: "Reporting to",
+                        isImp: true
+                      }}
+                      selector={{
+                        name: "title_id",
+                        className: "select-fld",
+                        value: this.state.title_id,
+                        dataSource: {
+                          textField:
+                            this.state.selectedLang === "en"
+                              ? "title"
+                              : "arabic_title",
+                          valueField: "his_d_title_id",
+                          data: this.props.titles
+                        },
+                        onChange: null,
+                        others: {
+                          tabIndex: "2"
+                        }
+                      }}
+                    />
+
                     {/* <AlagehAutoComplete
                       div={{ className: "col-lg-2" }}
                       label={{
@@ -715,6 +703,7 @@ function mapStateToProps(state) {
     specimapcategory: state.specimapcategory,
     empdepspeciality: state.empdepspeciality,
     depservices: state.depservices,
+    designations: state.designations,
     specimapcategorylist: state.specimapcategorylist
   };
 }
@@ -727,7 +716,8 @@ function mapDispatchToProps(dispatch) {
       getEmpSpeciality: AlgaehActions,
       getEmpCategory: AlgaehActions,
       getEmployeeCategory: AlgaehActions,
-      getDepServices: AlgaehActions
+      getDepServices: AlgaehActions,
+      getDesignations: AlgaehActions
     },
     dispatch
   );

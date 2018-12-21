@@ -170,7 +170,7 @@ const InsertUpdateEmployee = $this => {
         onSuccess: response => {
           if (response.data.success === true) {
             $this.setState({
-              employee_id: response.data.records.insertId
+              hims_d_employee_id: response.data.records.insertId
             });
             swalMessage({
               title: "Saved successfully . .",

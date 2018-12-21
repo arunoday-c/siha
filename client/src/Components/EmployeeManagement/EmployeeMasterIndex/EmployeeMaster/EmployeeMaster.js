@@ -2,9 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-
 import "./EmployeeMaster.css";
-
 import CommissionSetup from "./CommissionSetup/CommissionSetup";
 import PersonalDetails from "./PersonalDetails/PersonalDetails";
 import FamilyAndIdentification from "./FamilyAndIdentification/FamilyAndIdentification";
@@ -38,26 +36,26 @@ class EmployeeMaster extends Component {
   openTab(e) {
     var specified = e.currentTarget.getAttribute("algaehtabs");
 
-    if (
-      this.state.hims_d_employee_id === null &&
-      specified !== "OfficalDetails" &&
-      specified !== "PersonalDetails"
-    ) {
-      swalMessage({
-        title: "Please fill the basic details to proceed",
-        type: "warning"
-      });
-    } else {
-      var element = document.querySelectorAll("[algaehtabs]");
-      for (var i = 0; i < element.length; i++) {
-        element[i].classList.remove("active");
-      }
-      e.currentTarget.classList.add("active");
-
-      this.setState({
-        pageDisplay: specified
-      });
+    // if (
+    //   this.state.hims_d_employee_id === null &&
+    //   specified !== "OfficalDetails" &&
+    //   specified !== "PersonalDetails"
+    // ) {
+    // swalMessage({
+    //   title: "Please fill the basic details to proceed",
+    //   type: "warning"
+    // });
+    //  } else {
+    var element = document.querySelectorAll("[algaehtabs]");
+    for (var i = 0; i < element.length; i++) {
+      element[i].classList.remove("active");
     }
+    e.currentTarget.classList.add("active");
+
+    this.setState({
+      pageDisplay: specified
+    });
+    //}
   }
 
   SideMenuBarOpen(sidOpen) {
@@ -207,20 +205,6 @@ class EmployeeMaster extends Component {
                         <AlgaehLabel
                           label={{
                             fieldName: "personal_details"
-                          }}
-                        />
-                      }
-                    </li>
-
-                    <li
-                      algaehtabs={"OfficalDetails"}
-                      className={"nav-item tab-button"}
-                      onClick={this.openTab.bind(this)}
-                    >
-                      {
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Offical Details"
                           }}
                         />
                       }
