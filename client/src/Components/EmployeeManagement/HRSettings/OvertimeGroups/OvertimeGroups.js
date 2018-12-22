@@ -1,5 +1,8 @@
 import React, { Component } from "react";
 import "./overtime_groups.css";
+import {
+  AlagehFormGroup,
+} from "../../../Wrapper/algaehWrapper";
 
 class OvertimeGroups extends Component {
   render() {
