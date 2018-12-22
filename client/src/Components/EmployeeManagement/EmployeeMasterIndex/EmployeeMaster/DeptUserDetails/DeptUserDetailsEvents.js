@@ -1,7 +1,7 @@
 import { swalMessage } from "../../../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../../../utils/GlobalFunctions";
 import extend from "extend";
-
+let texthandlerInterval = null;
 const texthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
   let name = e.name || e.target.name;
@@ -10,6 +10,14 @@ const texthandle = ($this, context, ctrl, e) => {
   $this.setState({
     [name]: value
   });
+
+  clearInterval(texthandlerInterval);
+  texthandlerInterval = setInterval(() => {
+    if (context !== undefined) {
+      context.updateState({ [name]: value });
+    }
+    clearInterval(texthandlerInterval);
+  }, 500);
 };
 
 const departmenttexthandle = ($this, ctrl, e) => {
@@ -116,7 +124,9 @@ const AddDeptUser = ($this, context, e) => {
             user_id: $this.state.user_id,
             category_id: $this.state.category_id,
             speciality_id: $this.state.speciality_id,
-            services_id: $this.state.services_id
+            services_id: $this.state.services_id,
+            reporting_to: $this.state.reporting_to,
+            hims_d_designation_id: $this.state.hims_d_designation_id
           };
 
           if ($this.state.hims_d_employee_id !== null) {
@@ -132,7 +142,9 @@ const AddDeptUser = ($this, context, e) => {
             user_id: null,
             speciality_id: null,
             category_id: null,
-            services_id: null
+            services_id: null,
+            reporting_to: null,
+            hims_d_designation_id: null
           });
 
           if (context !== undefined) {

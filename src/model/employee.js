@@ -36,7 +36,7 @@ let addEmployee = (req, res, next) => {
 
         connection.query(
           "INSERT hims_d_employee(employee_code,title_id,first_name,middle_name,last_name,\
-          full_name,arabic_name,employee_designation_id,license_number,sex,date_of_birth,date_of_joining,date_of_leaving,address,\
+          full_name,arabic_name,employee_designation_id,license_number,sex,date_of_birth,date_of_joining,date_of_resignation,address,\
           address2,pincode,city_id,state_id,country_id,primary_contact_no,secondary_contact_no,email,emergancy_contact_person,emergancy_contact_no,\
           blood_group,isdoctor,employee_status,effective_start_date,effective_end_date,created_date,created_by,updated_date,updated_by) values(\
             ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
@@ -55,7 +55,7 @@ let addEmployee = (req, res, next) => {
               ? new Date(input.date_of_birth)
               : input.date_of_birth,
             input.date_of_joining,
-            input.date_of_leaving,
+            input.date_of_resignation,
             input.address,
             input.address2,
             input.pincode,
@@ -278,7 +278,7 @@ let addEmployeeMaster = (req, res, next) => {
           marital_status,present_address,present_address2,present_pincode,present_city_id,\
           present_state_id,present_country_id,permanent_address,permanent_address2,permanent_pincode,\
           permanent_city_id,permanent_state_id,permanent_country_id,isdoctor,license_number, \
-          date_of_joining,appointment_type,employee_type,reliving_date,notice_period,date_of_leaving,\
+          date_of_joining,appointment_type,employee_type,reliving_date,notice_period,date_of_resignation,\
           company_bank_id,employee_bank_name,employee_bank_ifsc_code,employee_account_number,mode_of_payment,\
           accomodation_provided,created_date,created_by,updated_date,updated_by) values(\
             ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
@@ -313,7 +313,7 @@ let addEmployeeMaster = (req, res, next) => {
           input.employee_type,
           input.reliving_date,
           input.notice_period,
-          input.date_of_leaving,
+          input.date_of_resignation,
           input.company_bank_id,
           input.employee_bank_name,
           input.employee_bank_ifsc_code,
@@ -383,7 +383,7 @@ let addEmployeeInfo = (req, res, next) => {
                     sampleInputObject: insurtColumns,
                     arrayObj: input.deptDetails,
                     newFieldToInsert: [
-                      input.employee_id,
+                      input.hims_d_employee_id,
                       new Date(),
                       new Date()
                     ],
@@ -446,7 +446,7 @@ let addEmployeeInfo = (req, res, next) => {
                   input.weekoff_from,
                   new Date(),
                   input.updated_by,
-                  input.employee_id
+                  input.hims_d_employee_id
                 ],
                 (error, empResult) => {
                   if (error) {
@@ -487,7 +487,7 @@ let addEmployeeInfo = (req, res, next) => {
                     sampleInputObject: insurtColumns,
                     arrayObj: input.idDetails,
                     newFieldToInsert: [
-                      input.employee_id,
+                      input.hims_d_employee_id,
                       new Date(),
                       new Date()
                     ],
@@ -531,7 +531,7 @@ let addEmployeeInfo = (req, res, next) => {
                     sampleInputObject: insurtColumns,
                     arrayObj: input.idDetails,
                     newFieldToInsert: [
-                      input.employee_id,
+                      input.hims_d_employee_id,
                       new Date(),
                       new Date()
                     ],
@@ -753,7 +753,7 @@ let getEmployee = (req, res, next) => {
     blood_group: "ALL",
     employee_status: "ALL",
     date_of_joining: "ALL",
-    date_of_leaving: "ALL",
+    date_of_resignation: "ALL",
     primary_contact_no: "ALL",
     email: "ALL"
   };
@@ -824,7 +824,7 @@ let updateEmployee = (req, res, next) => {
         connection.query(
           "UPDATE hims_d_employee SET employee_code=?,title_id=?,first_name=?,middle_name=?,last_name=?,\
         full_name=?,arabic_name=?,employee_designation_id=?,license_number=?,sex=?,date_of_birth=?,date_of_joining=?\
-        ,date_of_leaving=?,address=?,address2=?,pincode=?,city_id=?,state_id=?,country_id=?,primary_contact_no=?,\
+        ,date_of_resignation=?,address=?,address2=?,pincode=?,city_id=?,state_id=?,country_id=?,primary_contact_no=?,\
         secondary_contact_no=?,email=?,emergancy_contact_person=?,emergancy_contact_no=?,blood_group=?,isdoctor=?,\
         employee_status=?,effective_start_date=?,effective_end_date=?,updated_date=?,updated_by=?,record_status=? WHERE record_status='A' and  hims_d_employee_id=?",
           [
@@ -840,7 +840,7 @@ let updateEmployee = (req, res, next) => {
             input.sex,
             input.date_of_birth,
             input.date_of_joining,
-            input.date_of_leaving,
+            input.date_of_resignation,
             input.address,
             input.address2,
             input.pincode,
@@ -1171,7 +1171,7 @@ let getEmployeeDetails = (req, res, next) => {
     blood_group: "ALL",
     employee_status: "ALL",
     date_of_joining: "ALL",
-    date_of_leaving: "ALL",
+    date_of_resignation: "ALL",
     primary_contact_no: "ALL",
     email: "ALL"
   };
@@ -1186,7 +1186,7 @@ let getEmployeeDetails = (req, res, next) => {
     db.getConnection((error, connection) => {
       connection.query(
         "SELECT E.hims_d_employee_id,E.employee_code,E.title_id,E.full_name,E.arabic_name,E.employee_designation_id,\
-        E.license_number,E.sex,E.date_of_birth,E.date_of_joining,E.date_of_leaving,E.present_address,E.present_address2,\
+        E.license_number,E.sex,E.date_of_birth,E.date_of_joining,E.date_of_resignation,E.present_address,E.present_address2,\
         E.present_pincode,E.present_pincode,E.present_state_id,E.present_country_id,\
         E.permanent_address , E.permanent_address2, E.permanent_pincode, E.permanent_city_id, E.permanent_state_id,\
         E.permanent_country_id, E.primary_contact_no, E.secondary_contact_no,E.email,\

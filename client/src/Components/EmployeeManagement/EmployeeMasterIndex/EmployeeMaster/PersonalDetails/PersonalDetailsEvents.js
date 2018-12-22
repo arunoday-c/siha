@@ -179,7 +179,6 @@ const datehandle = ($this, context, ctrl, e) => {
 
 const sameAsPresent = ($this, context, e) => {
   //Handle here
-
   let samechecked = false;
   let value = "N";
   let name = e.target.name;
@@ -195,6 +194,17 @@ const sameAsPresent = ($this, context, e) => {
     [name]: value,
     samechecked: samechecked
   });
+
+  clearInterval(texthandlerInterval);
+  texthandlerInterval = setInterval(() => {
+    if (context !== undefined) {
+      context.updateState({
+        [name]: value,
+        samechecked: samechecked
+      });
+    }
+    clearInterval(texthandlerInterval);
+  }, 500);
 };
 
 const isDoctorChange = ($this, context, e) => {

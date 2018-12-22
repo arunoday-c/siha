@@ -31,8 +31,8 @@ export default {
       same_address: false,
       primary_contact_no: null,
       secondary_contact_number: null,
-      email: "",
-      emergancy_contact_person: "",
+      email: null,
+      emergancy_contact_person: null,
       emergancy_contact_no: 0,
       blood_group: null,
       isdoctor: "N",
@@ -40,9 +40,12 @@ export default {
 
       servTypeCommission: [],
       serviceComm: [],
+      dependentDetails: [],
 
       updateservTypeCommission: [],
       insertservTypeCommission: [],
+
+      dependentDetails: [],
 
       updateserviceComm: [],
       insertserviceComm: [],
@@ -50,6 +53,14 @@ export default {
       deptDetails: [],
       updatedeptDetails: [],
       insertdeptDetails: [],
+
+      idDetails: [],
+      insertIdDetails: [],
+      updateIdDetails: [],
+
+      dependentDetails: [],
+      insertDependentDetails: [],
+      updateDependentDetails: [],
 
       selectedLang: "en"
     };
