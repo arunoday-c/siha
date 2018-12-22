@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import {
   AlgaehDateHandler,
   AlagehFormGroup,
-  AlgaehLabel
+  AlgaehLabel,
+  AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
 import "./dashboard.css";
 
@@ -59,7 +60,7 @@ class Dashboard extends Component {
                 </div>
                 <div className="actions">
                   <a className="btn btn-other btn-circle active">
-                    <i className="fas fa-pen" />
+                    <i className="fas fa-plus" />
                   </a>
                 </div>
               </div>
@@ -170,11 +171,7 @@ class Dashboard extends Component {
                 >
                   <h3 className="caption-subject">Offical Details</h3>
                 </div>
-                <div className="actions">
-                  <a className="btn btn-other btn-circle active">
-                    <i className="fas fa-pen" />
-                  </a>
-                </div>
+                <div className="actions" />
               </div>
               <div className="portlet-body">
                 <div className="row">
@@ -225,7 +222,7 @@ class Dashboard extends Component {
                 </div>
                 <div className="actions">
                   <a className="btn btn-other btn-circle active">
-                    <i className="fas fa-pen" />
+                    <i className="fas fa-plus" />
                   </a>
                 </div>
               </div>
@@ -286,51 +283,32 @@ class Dashboard extends Component {
                 </div>
                 <div className="actions">
                   <a className="btn btn-other btn-circle active">
-                    <i className="fas fa-pen" />
+                    <i className="fas fa-plus" />
                   </a>
                 </div>
               </div>
               <div className="portlet-body">
                 <div className="row">
-                  <div className="col">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Relieving Date"
+                  <div className="col-12" id="selfService_FamilyTable_Cntr">
+                    <AlgaehDataGrid
+                      columns={[
+                        {
+                          fieldName: "earning_deduction_code",
+                          label: <AlgaehLabel label={{ forceLabel: "Code" }} />
+                        }
+                      ]}
+                      keyId="hims_d_employee_group_id"
+                      dataSource={{
+                        data: []
+                      }}
+                      isEditable={true}
+                      paging={{ page: 0, rowsPerPage: 10 }}
+                      events={{
+                        onEdit: () => {},
+                        onDelete: () => {},
+                        onDone: () => {}
                       }}
                     />
-                    <h6>DD/MM/YYYY</h6>
-                  </div>
-                  <div className="col">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Relieving Date"
-                      }}
-                    />
-                    <h6>DD/MM/YYYY</h6>
-                  </div>
-                  <div className="col">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Relieving Date"
-                      }}
-                    />
-                    <h6>DD/MM/YYYY</h6>
-                  </div>
-                  <div className="col">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Relieving Date"
-                      }}
-                    />
-                    <h6>DD/MM/YYYY</h6>
-                  </div>
-                  <div className="col">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Relieving Date"
-                      }}
-                    />
-                    <h6>DD/MM/YYYY</h6>
                   </div>
                 </div>
               </div>
@@ -348,7 +326,7 @@ class Dashboard extends Component {
                 </div>
                 <div className="actions">
                   <a className="btn btn-other btn-circle active">
-                    <i className="fas fa-pen" />
+                    <i className="fas fa-plus" />
                   </a>
                 </div>
               </div>
@@ -410,7 +388,7 @@ class Dashboard extends Component {
                 </div>
                 <div className="actions">
                   <a className="btn btn-other btn-circle active">
-                    <i className="fas fa-pen" />
+                    <i className="fas fa-plus" />
                   </a>
                 </div>
               </div>
