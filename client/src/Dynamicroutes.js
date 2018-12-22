@@ -83,6 +83,8 @@ import AttendanceRegularization from "./Components/EmployeeManagement/Attendance
 //import EmployeeGroups from "./Components/EmployeeManagement/EmployeeGroups/EmployeeGroups";
 import PayrollSettings from "./Components/PayrollManagement/PayrollSettings/PayrollSettings";
 import TimeSheet from "./Components/PayrollManagement/TimeSheets/TimeSheets";
+import HolidayMgmnt from "./Components/PayrollManagement/HolidayManagement/HolidayMgmnt";
+
 import HRSettings from "./Components/EmployeeManagement/HRSettings/HRSettings";
 
 const componts = (selectedLang, breadStyle) => {
@@ -188,6 +190,7 @@ const componts = (selectedLang, breadStyle) => {
     //EmployeeGroup: <EmployeeGroups SelectLanguage={selectedLang} />,
     PayrollSettings: <PayrollSettings SelectLanguage={selectedLang} />,
     TimeSheet: <TimeSheet SelectLanguage={selectedLang} />,
+    HolidayMgmnt: <HolidayMgmnt SelectLanguage={selectedLang} />,
     HRSettings: <HRSettings SelectLanguage={selectedLang} />
   };
 };

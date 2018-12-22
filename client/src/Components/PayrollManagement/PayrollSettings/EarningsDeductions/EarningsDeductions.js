@@ -524,7 +524,6 @@ class EarningsDeductions extends Component {
               </div>
             </div>
             <div className="col-3">
-              {" "}
               <label>Calculation Method</label>
               <div className="customRadio">
                 <label className="radio inline">
@@ -546,7 +545,7 @@ class EarningsDeductions extends Component {
                 </label>
               </div>
               <input type="text" disabled />
-            </div>{" "}
+            </div>
             <div className="col-3">
               {" "}
               <label>Calculation Type</label>
