@@ -272,7 +272,8 @@ let visaMaster = (req, res, next) => {
         "SELECT `hims_d_visa_type_id`, `visa_type_code`, `visa_type`, `arabic_visa_type`, \
          `created_by`, `created_date`, `updated_by`, `updated_date`, `visa_status` FROM \
          `hims_d_visa_type` WHERE `record_status`='A' AND " +
-          where.condition+" order by hims_d_visa_type_id desc",
+          where.condition +
+          " order by hims_d_visa_type_id desc",
         where.values,
         (error, result) => {
           connection.release();
@@ -388,7 +389,7 @@ let killDbConnections = (req, res, next) => {
         debugLog("idList:", idList);
         let qry = "";
         for (let i = 0; i < idList.length; i++) {
-          qry += "kill " + idList[i] + ";"
+          qry += "kill " + idList[i] + ";";
         }
         if (idList.length > 0) {
           connection.query(qry, (error, finalResult) => {
@@ -411,6 +412,33 @@ let killDbConnections = (req, res, next) => {
     next(e);
   }
 };
+
+//created by irfan: to get
+let getBank = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select   hims_d_bank_id, bank_name, bank_code, bank_short_name,\
+         address1, contact_person, contact_number, active_status from\
+          hims_d_bank where record_status='A' order by hims_d_bank_id desc ",
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
 module.exports = {
   titleMaster,
   countryMaster,
@@ -422,5 +450,6 @@ module.exports = {
   visaMaster,
   clinicalNonClinicalAll,
   countryStateCity,
-  killDbConnections
+  killDbConnections,
+  getBank
 };
