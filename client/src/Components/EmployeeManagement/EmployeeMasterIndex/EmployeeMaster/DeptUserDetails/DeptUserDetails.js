@@ -54,6 +54,34 @@ class DeptUserDetails extends Component {
         }
       });
     }
+    if (
+      this.props.organizations === undefined ||
+      this.props.organizations.length === 0
+    ) {
+      this.props.getOrganizations({
+        uri: "/organization/getOrganization",
+        method: "GET",
+        redux: {
+          type: "ORGS_GET_DATA",
+          mappingName: "organizations"
+        }
+      });
+    }
+
+    if (
+      this.props.emp_groups === undefined ||
+      this.props.emp_groups.length === 0
+    ) {
+      this.props.getEmpGroups({
+        uri: "/employee/getEmployeeGroups",
+        method: "GET",
+        data: { record_status: "A" },
+        redux: {
+          type: "EMP_GROUP_GET",
+          mappingName: "emp_groups"
+        }
+      });
+    }
 
     if (
       this.props.specimapcategorylist === undefined ||
@@ -66,6 +94,20 @@ class DeptUserDetails extends Component {
         redux: {
           type: "EMP_SPEC_CATEGORY_GET_DATA",
           mappingName: "specimapcategorylist"
+        }
+      });
+    }
+    if (
+      this.props.all_employees === undefined ||
+      this.props.all_employees.length === 0
+    ) {
+      this.props.getEmployees({
+        uri: "/employee/get",
+        method: "GET",
+
+        redux: {
+          type: "EMPLY_GET_DATA",
+          mappingName: "all_employees"
         }
       });
     }
@@ -162,18 +204,15 @@ class DeptUserDetails extends Component {
                         isImp: true
                       }}
                       selector={{
-                        name: "title_id",
+                        name: "hims_d_employee_group_id",
                         className: "select-fld",
-                        value: this.state.title_id,
+                        value: this.state.hims_d_employee_group_id,
                         dataSource: {
-                          textField:
-                            this.state.selectedLang === "en"
-                              ? "title"
-                              : "arabic_title",
-                          valueField: "his_d_title_id",
-                          data: this.props.titles
+                          textField: "group_description",
+                          valueField: "hims_d_employee_group_id",
+                          data: this.props.emp_groups
                         },
-                        onChange: null,
+                        onChange: texthandle.bind(this, this, context),
                         others: {
                           tabIndex: "2"
                         }
@@ -210,18 +249,15 @@ class DeptUserDetails extends Component {
                         isImp: true
                       }}
                       selector={{
-                        name: "title_id",
+                        name: "hims_d_hospital_id",
                         className: "select-fld",
-                        value: this.state.title_id,
+                        value: this.state.hims_d_hospital_id,
                         dataSource: {
-                          textField:
-                            this.state.selectedLang === "en"
-                              ? "title"
-                              : "arabic_title",
-                          valueField: "his_d_title_id",
-                          data: this.props.titles
+                          textField: "hospital_name",
+                          valueField: "hims_d_hospital_id",
+                          data: this.props.organizations
                         },
-                        onChange: null,
+                        onChange: texthandle.bind(this, this, context),
                         others: {
                           tabIndex: "2"
                         }
@@ -313,7 +349,7 @@ class DeptUserDetails extends Component {
                           valueField: "hims_d_designation_id",
                           data: this.props.designations
                         },
-                        onChange: () => {},
+                        onChange: texthandle.bind(this, this, context),
                         others: {
                           tabIndex: "2"
                         }
@@ -326,18 +362,18 @@ class DeptUserDetails extends Component {
                         isImp: true
                       }}
                       selector={{
-                        name: "title_id",
+                        name: "reporting_to",
                         className: "select-fld",
-                        value: this.state.title_id,
+                        value: this.state.reporting_to,
                         dataSource: {
                           textField:
                             this.state.selectedLang === "en"
-                              ? "title"
-                              : "arabic_title",
-                          valueField: "his_d_title_id",
-                          data: this.props.titles
+                              ? "full_name"
+                              : "arabic_name",
+                          valueField: "hims_d_employee_id",
+                          data: this.props.all_employees
                         },
-                        onChange: null,
+                        onChange: texthandle.bind(this, this, context),
                         others: {
                           tabIndex: "2"
                         }
@@ -576,52 +612,68 @@ class DeptUserDetails extends Component {
                               );
                             }
                           },
-                          {
-                            fieldName: "user_id",
-                            label: (
-                              <AlgaehLabel label={{ fieldName: "user_id" }} />
-                            ),
-                            displayTemplate: row => {
-                              let display =
-                                this.props.userdrtails === undefined
-                                  ? []
-                                  : this.props.userdrtails.filter(
-                                      f =>
-                                        f.algaeh_d_app_user_id === row.user_id
-                                    );
+                          // {
+                          //   fieldName: "user_id",
+                          //   label: (
+                          //     <AlgaehLabel label={{ fieldName: "user_id" }} />
+                          //   ),
+                          //   displayTemplate: row => {
+                          //     let display =
+                          //       this.props.userdrtails === undefined
+                          //         ? []
+                          //         : this.props.userdrtails.filter(
+                          //             f =>
+                          //               f.algaeh_d_app_user_id === row.user_id
+                          //           );
 
-                              return (
-                                <span>
-                                  {display !== undefined && display.length !== 0
-                                    ? this.state.selectedLang === "en"
-                                      ? display[0].username
-                                      : display[0].arabic_service_type
-                                    : ""}
-                                </span>
-                              );
-                            },
-                            editorTemplate: row => {
-                              return (
-                                <AlagehAutoComplete
-                                  div={{}}
-                                  selector={{
-                                    name: "user_id",
-                                    className: "select-fld",
-                                    value: row.user_id,
-                                    dataSource: {
-                                      textField: "username",
-                                      valueField: "algaeh_d_app_user_id",
-                                      data: this.props.userdrtails
-                                    },
-                                    onChange: colgridtexthandle.bind(
-                                      this,
-                                      this,
-                                      row
-                                    )
-                                  }}
-                                />
-                              );
-                            }
+                          //     return (
+                          //       <span>
+                          //         {display !== undefined && display.length !== 0
+                          //           ? this.state.selectedLang === "en"
+                          //             ? display[0].username
+                          //             : display[0].arabic_service_type
+                          //           : ""}
+                          //       </span>
+                          //     );
+                          //   },
+                          //   editorTemplate: row => {
+                          //     return (
+                          //       <AlagehAutoComplete
+                          //         div={{}}
+                          //         selector={{
+                          //           name: "user_id",
+                          //           className: "select-fld",
+                          //           value: row.user_id,
+                          //           dataSource: {
+                          //             textField: "username",
+                          //             valueField: "algaeh_d_app_user_id",
+                          //             data: this.props.userdrtails
+                          //           },
+                          //           onChange: colgridtexthandle.bind(
+                          //             this,
+                          //             this,
+                          //             row
+                          //           )
+                          //         }}
+                          //       />
+                          //     );
+                          //   }
+                          // },
+                          {
+                            fieldName: "hims_d_designation_id",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Designation" }}
+                              />
+                            )
+                          },
+                          {
+                            fieldName: "reporting_to",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Reporting To" }}
+                              />
+                            )
                           },
                           {
                             fieldName: "services_id",
@@ -704,20 +756,26 @@ function mapStateToProps(state) {
     empdepspeciality: state.empdepspeciality,
     depservices: state.depservices,
     designations: state.designations,
-    specimapcategorylist: state.specimapcategorylist
+    specimapcategorylist: state.specimapcategorylist,
+    all_employees: state.all_employees,
+    emp_groups: state.emp_groups,
+    organizations: state.organizations
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
+      getEmpGroups: AlgaehActions,
       getUserDetails: AlgaehActions,
       getSubDepartment: AlgaehActions,
       getEmpSpeciality: AlgaehActions,
       getEmpCategory: AlgaehActions,
       getEmployeeCategory: AlgaehActions,
       getDepServices: AlgaehActions,
-      getDesignations: AlgaehActions
+      getDesignations: AlgaehActions,
+      getEmployees: AlgaehActions,
+      getOrganizations: AlgaehActions
     },
     dispatch
   );

@@ -8,7 +8,7 @@ import {
   releaseDBConnection
 } from "../utils";
 let getDesignations = (req, res, next) => {
-  let Diet = {
+  let desgn = {
     hims_d_designation_id: "ALL"
   };
   try {
@@ -21,7 +21,7 @@ let getDesignations = (req, res, next) => {
       pagePaging += " LIMIT " + Page.pageNo + "," + page.pageSize;
     }
 
-    let condition = whereCondition(extend(Diet, req.query));
+    let condition = whereCondition(extend(desgn, req.query));
     selectStatement(
       {
         db: req.db,
@@ -86,7 +86,6 @@ let addDesignation = (req, res, next) => {
     next(e);
   }
 };
-
 //created by:irfan to delete
 let deleteDesignation = (req, res, next) => {
   try {

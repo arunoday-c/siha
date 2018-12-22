@@ -110,6 +110,7 @@ const Validations = $this => {
 
 const InsertUpdateEmployee = $this => {
   const err = Validations($this);
+  console.log("Input:", $this.state);
 
   if (!err) {
     if ($this.state.hims_d_employee_id === null) {
@@ -152,11 +153,11 @@ const InsertUpdateEmployee = $this => {
         isdoctor: $this.state.isdoctor,
         license_number: $this.state.license_number,
         date_of_joining: $this.state.date_of_joining,
-        appointment_type: $this.state.date_of_joining,
+        appointment_type: $this.state.appointment_type,
         employee_type: $this.state.employee_type,
         reliving_date: $this.state.reliving_date,
         notice_period: $this.state.notice_period,
-        date_of_leaving: $this.state.date_of_joining,
+        date_of_leaving: $this.state.date_of_leaving,
         company_bank_id: $this.state.company_bank_id,
         employee_bank_name: $this.state.employee_bank_name,
         employee_bank_ifsc_code: $this.state.employee_bank_ifsc_code,
@@ -179,23 +180,41 @@ const InsertUpdateEmployee = $this => {
           }
         }
       });
-    } else {
-      $this.state.record_status = "A";
+    } else if ($this.state.hims_d_employee_id !== null) {
+      debugger;
+
       algaehApiCall({
-        uri: "/employee/updateEmployee",
+        uri: "/employee/addEmployeeInfo",
         data: $this.state,
-        method: "PUT",
-        onSuccess: response => {
-          if (response.data.success === true) {
+        method: "POST",
+        onSuccess: res => {
+          if (res.data.success) {
             swalMessage({
-              title: "Updated successfully . .",
+              title: "Saved successfully . .",
               type: "success"
             });
           }
-        }
+        },
+        onFailure: err => {}
       });
+
+      // $this.state.record_status = "A";
+      // algaehApiCall({
+      //   uri: "/employee/updateEmployee",
+      //   data: $this.state,
+      //   method: "PUT",
+      //   onSuccess: response => {
+      //     if (response.data.success === true) {
+      //       swalMessage({
+      //         title: "Updated successfully . .",
+      //         type: "success"
+      //       });
+      //     }
+      //   }
+      // });
     }
   }
+
   // if (!err) {
   //   if ($this.state.hims_d_employee_id === null) {
   //     algaehApiCall({

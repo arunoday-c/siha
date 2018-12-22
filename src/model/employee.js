@@ -11,6 +11,7 @@ import httpStatus from "../utils/httpStatus";
 
 import { debugLog } from "../utils/logging";
 import Promise from "bluebird";
+import department from "../controller/department";
 
 //api to add employee
 let addEmployee = (req, res, next) => {
@@ -35,7 +36,7 @@ let addEmployee = (req, res, next) => {
 
         connection.query(
           "INSERT hims_d_employee(employee_code,title_id,first_name,middle_name,last_name,\
-          full_name,arabic_name,employee_designation_id,license_number,sex,date_of_birth,date_of_joining,date_of_leaving,address,\
+          full_name,arabic_name,employee_designation_id,license_number,sex,date_of_birth,date_of_joining,date_of_resignation,address,\
           address2,pincode,city_id,state_id,country_id,primary_contact_no,secondary_contact_no,email,emergancy_contact_person,emergancy_contact_no,\
           blood_group,isdoctor,employee_status,effective_start_date,effective_end_date,created_date,created_by,updated_date,updated_by) values(\
             ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
@@ -54,7 +55,7 @@ let addEmployee = (req, res, next) => {
               ? new Date(input.date_of_birth)
               : input.date_of_birth,
             input.date_of_joining,
-            input.date_of_leaving,
+            input.date_of_resignation,
             input.address,
             input.address2,
             input.pincode,
@@ -277,10 +278,10 @@ let addEmployeeMaster = (req, res, next) => {
           marital_status,present_address,present_address2,present_pincode,present_city_id,\
           present_state_id,present_country_id,permanent_address,permanent_address2,permanent_pincode,\
           permanent_city_id,permanent_state_id,permanent_country_id,isdoctor,license_number, \
-          date_of_joining,appointment_type,employee_type,reliving_date,notice_period,date_of_leaving,\
+          date_of_joining,appointment_type,employee_type,reliving_date,notice_period,date_of_resignation,\
           company_bank_id,employee_bank_name,employee_bank_ifsc_code,employee_account_number,mode_of_payment,\
-          created_date,created_by,updated_date,updated_by) values(\
-            ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          accomodation_provided,created_date,created_by,updated_date,updated_by) values(\
+            ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
           input.employee_code,
           input.full_name,
@@ -312,12 +313,13 @@ let addEmployeeMaster = (req, res, next) => {
           input.employee_type,
           input.reliving_date,
           input.notice_period,
-          input.date_of_leaving,
+          input.date_of_resignation,
           input.company_bank_id,
           input.employee_bank_name,
           input.employee_bank_ifsc_code,
           input.employee_account_number,
           input.mode_of_payment,
+          input.accomodation_provided,
           new Date(),
           input.created_by,
           new Date(),
@@ -351,68 +353,227 @@ let addEmployeeInfo = (req, res, next) => {
       if (error) {
         next(error);
       }
-
-      connection.query(
-        "INSERT  INTO hims_d_employee (employee_code,full_name,arabic_name,\
-          date_of_birth,sex,primary_contact_no,email,blood_group,nationality,religion_id,\
-          marital_status,present_address,present_address2,present_pincode,present_city_id,\
-          present_state_id,present_country_id,permanent_address,permanent_address2,permanent_pincode,\
-          permanent_city_id,permanent_state_id,permanent_country_id,isdoctor,license_number, \
-          date_of_joining,appointment_type,employee_type,reliving_date,notice_period,date_of_leaving,\
-          company_bank_id,employee_bank_name,employee_bank_ifsc_code,employee_account_number,mode_of_payment,\
-          created_date,created_by,updated_date,updated_by) values(\
-            ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-        [
-          input.employee_code,
-          input.full_name,
-          input.arabic_name,
-          input.date_of_birth,
-          input.sex,
-          input.primary_contact_no,
-          input.email,
-          input.blood_group,
-          input.nationality,
-          input.religion_id,
-          input.marital_status,
-          input.present_address,
-          input.present_address2,
-          input.present_pincode,
-          input.present_city_id,
-          input.present_state_id,
-          input.present_country_id,
-          input.permanent_address,
-          input.permanent_address2,
-          input.permanent_pincode,
-          input.permanent_city_id,
-          input.permanent_state_id,
-          input.permanent_country_id,
-          input.isdoctor,
-          input.license_number,
-          input.date_of_joining,
-          input.appointment_type,
-          input.employee_type,
-          input.reliving_date,
-          input.notice_period,
-          input.date_of_leaving,
-          input.company_bank_id,
-          input.employee_bank_name,
-          input.employee_bank_ifsc_code,
-          input.employee_account_number,
-          input.mode_of_payment,
-          new Date(),
-          input.created_by,
-          new Date(),
-          input.updated_by
-        ],
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
             next(error);
-          }
-          req.records = result;
-          next();
+          });
         }
-      );
+        new Promise((resolve, reject) => {
+          try {
+            debugLog("first");
+            if (input.deptDetails.length > 0) {
+              const insurtColumns = [
+                "services_id",
+                "sub_department_id",
+                "category_speciality_id",
+                "employee_designation_id",
+                "reporting_to_id",
+                "created_by",
+                "updated_by"
+              ];
+
+              connection.query(
+                "INSERT INTO hims_m_employee_department_mappings(" +
+                  insurtColumns.join(",") +
+                  ",`employee_id`,created_date,updated_date) VALUES ?",
+                [
+                  jsonArrayToObject({
+                    sampleInputObject: insurtColumns,
+                    arrayObj: input.deptDetails,
+                    newFieldToInsert: [
+                      input.hims_d_employee_id,
+                      new Date(),
+                      new Date()
+                    ],
+                    req: req
+                  })
+                ],
+                (error, result) => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+                  if (result.length > 0) {
+                    resolve(result);
+                  } else {
+                    resolve({});
+                  }
+                }
+              );
+            } else {
+              resolve({});
+            }
+          } catch (e) {
+            reject(e);
+          }
+        })
+          .then(departmntResult => {
+            debugLog("second");
+            if (input != "null" && input != undefined) {
+              connection.query(
+                " UPDATE hims_d_employee SET airfare_process=?,contract_type=?,emergency_contact_no=?,\
+              emergency_contact_person=?,employee_designation_id=?,employee_group_id=?,\
+              entitled_daily_ot=?,exclude_machine_data=?,exit_date=?,gratuity_applicable=?,\
+              hospital_id=?,late_coming_rule=?,leave_salary_process=?,overtime_group_id=?,reporting_to_id=?,\
+              secondary_contact_no=?,sub_department_id=?,suspend_salary=?,title_id=?,weekoff_from=?,\
+              updated_date=?, updated_by=?  WHERE record_status='A' and  hims_d_employee_id=?",
+
+                [
+                  input.airfare_process,
+                  input.contract_type,
+                  input.emergency_contact_no,
+                  input.emergency_contact_person,
+                  input.employee_designation_id,
+                  input.employee_group_id,
+
+                  input.entitled_daily_ot,
+                  input.exclude_machine_data,
+                  input.exit_date,
+                  input.gratuity_applicable,
+                  input.hospital_id,
+                  input.late_coming_rule,
+                  input.leave_salary_process,
+                  input.overtime_group_id,
+                  input.reporting_to_id,
+                  input.secondary_contact_no,
+                  input.sub_department_id,
+                  input.suspend_salary,
+                  input.title_id,
+                  input.weekoff_from,
+                  new Date(),
+                  input.updated_by,
+                  input.hims_d_employee_id
+                ],
+                (error, empResult) => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+
+                  return;
+                }
+              );
+            } else {
+              return;
+            }
+          })
+          .then(employResult => {
+            debugLog("third");
+            if (input.idDetails.length > 0) {
+              const insurtColumns = [
+                "identity_documents_id",
+                "identity_number",
+                "valid_upto",
+                "issue_date",
+                "alert_required",
+                "alert_date",
+
+                "created_by",
+                "updated_by"
+              ];
+
+              connection.query(
+                "INSERT INTO hims_d_employee_identification (" +
+                  insurtColumns.join(",") +
+                  ",`employee_id`,created_date,updated_date) VALUES ?",
+                [
+                  jsonArrayToObject({
+                    sampleInputObject: insurtColumns,
+                    arrayObj: input.idDetails,
+                    newFieldToInsert: [
+                      input.hims_d_employee_id,
+                      new Date(),
+                      new Date()
+                    ],
+                    req: req
+                  })
+                ],
+                (error, Identity_Result) => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+
+                  return;
+                }
+              );
+            } else {
+              return;
+            }
+          })
+          .then(Identity_Result => {
+            debugLog("fourth");
+
+            if (input.dependentDetails.length > 0) {
+              const insurtColumns = [
+                "dependent_type",
+                "dependent_name",
+                "dependent_identity_type",
+                "dependent_identity_no",
+                "created_by",
+                "updated_by"
+              ];
+
+              connection.query(
+                "INSERT INTO hims_d_employee_dependents (" +
+                  insurtColumns.join(",") +
+                  ",`employee_id`,created_date,updated_date) VALUES ?",
+                [
+                  jsonArrayToObject({
+                    sampleInputObject: insurtColumns,
+                    arrayObj: input.idDetails,
+                    newFieldToInsert: [
+                      input.hims_d_employee_id,
+                      new Date(),
+                      new Date()
+                    ],
+                    req: req
+                  })
+                ],
+                (error, Identity_Result) => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+
+                  connection.commit(error => {
+                    if (error) {
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      });
+                    }
+                    releaseDBConnection(db, connection);
+                    req.records = result;
+                    next();
+                  });
+                }
+              );
+            } else {
+              connection.commit(error => {
+                if (error) {
+                  connection.rollback(() => {
+                    releaseDBConnection(db, connection);
+                    next(error);
+                  });
+                }
+                releaseDBConnection(db, connection);
+                req.records = result;
+                next();
+              });
+            }
+          });
+      });
     });
   } catch (e) {
     next(e);
@@ -592,7 +753,7 @@ let getEmployee = (req, res, next) => {
     blood_group: "ALL",
     employee_status: "ALL",
     date_of_joining: "ALL",
-    date_of_leaving: "ALL",
+    date_of_resignation: "ALL",
     primary_contact_no: "ALL",
     email: "ALL"
   };
@@ -663,7 +824,7 @@ let updateEmployee = (req, res, next) => {
         connection.query(
           "UPDATE hims_d_employee SET employee_code=?,title_id=?,first_name=?,middle_name=?,last_name=?,\
         full_name=?,arabic_name=?,employee_designation_id=?,license_number=?,sex=?,date_of_birth=?,date_of_joining=?\
-        ,date_of_leaving=?,address=?,address2=?,pincode=?,city_id=?,state_id=?,country_id=?,primary_contact_no=?,\
+        ,date_of_resignation=?,address=?,address2=?,pincode=?,city_id=?,state_id=?,country_id=?,primary_contact_no=?,\
         secondary_contact_no=?,email=?,emergancy_contact_person=?,emergancy_contact_no=?,blood_group=?,isdoctor=?,\
         employee_status=?,effective_start_date=?,effective_end_date=?,updated_date=?,updated_by=?,record_status=? WHERE record_status='A' and  hims_d_employee_id=?",
           [
@@ -679,7 +840,7 @@ let updateEmployee = (req, res, next) => {
             input.sex,
             input.date_of_birth,
             input.date_of_joining,
-            input.date_of_leaving,
+            input.date_of_resignation,
             input.address,
             input.address2,
             input.pincode,
@@ -1010,7 +1171,7 @@ let getEmployeeDetails = (req, res, next) => {
     blood_group: "ALL",
     employee_status: "ALL",
     date_of_joining: "ALL",
-    date_of_leaving: "ALL",
+    date_of_resignation: "ALL",
     primary_contact_no: "ALL",
     email: "ALL"
   };
@@ -1025,7 +1186,7 @@ let getEmployeeDetails = (req, res, next) => {
     db.getConnection((error, connection) => {
       connection.query(
         "SELECT E.hims_d_employee_id,E.employee_code,E.title_id,E.full_name,E.arabic_name,E.employee_designation_id,\
-        E.license_number,E.sex,E.date_of_birth,E.date_of_joining,E.date_of_leaving,E.present_address,E.present_address2,\
+        E.license_number,E.sex,E.date_of_birth,E.date_of_joining,E.date_of_resignation,E.present_address,E.present_address2,\
         E.present_pincode,E.present_pincode,E.present_state_id,E.present_country_id,\
         E.permanent_address , E.permanent_address2, E.permanent_pincode, E.permanent_city_id, E.permanent_state_id,\
         E.permanent_country_id, E.primary_contact_no, E.secondary_contact_no,E.email,\
@@ -1552,5 +1713,6 @@ module.exports = {
   addEmployeeIdentification,
   getEmployeeIdentification,
   updateEmployeeIdentification,
-  deleteEmployeeIdentification
+  deleteEmployeeIdentification,
+  addEmployeeInfo
 };

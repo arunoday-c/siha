@@ -12,7 +12,6 @@ import {
   sameAsPresent
 } from "./PersonalDetailsEvents.js";
 import MyContext from "../../../../../utils/MyContext.js";
-
 import {
   AlgaehDateHandler,
   AlagehFormGroup,
@@ -27,8 +26,7 @@ class PersonalDetails extends PureComponent {
     super(props);
 
     this.state = {
-      // Applicable: false,
-      percent: 0
+      samechecked: false
     };
   }
 
@@ -548,7 +546,7 @@ class PersonalDetails extends PureComponent {
                                 className: "txt-fld",
                                 name: "permanent_address",
                                 value:
-                                  this.state.same_address === true
+                                  this.state.samechecked === true
                                     ? this.state.present_address
                                     : this.state.permanent_address,
                                 events: {
@@ -573,7 +571,7 @@ class PersonalDetails extends PureComponent {
                                 name: "permanent_country_id",
                                 className: "select-fld",
                                 value:
-                                  this.state.same_address === true
+                                  this.state.samechecked === true
                                     ? this.state.present_country_id
                                     : this.state.permanent_country_id,
                                 dataSource: {
@@ -605,7 +603,7 @@ class PersonalDetails extends PureComponent {
                                 name: "permanent_state_id",
                                 className: "select-fld",
                                 value:
-                                  this.state.same_address === true
+                                  this.state.samechecked === true
                                     ? this.state.present_state_id
                                     : this.state.permanent_state_id,
                                 dataSource: {
@@ -615,7 +613,7 @@ class PersonalDetails extends PureComponent {
                                       : "arabic_state_name",
                                   valueField: "hims_d_state_id",
                                   data:
-                                    this.state.same_address === true
+                                    this.state.samechecked === true
                                       ? this.props.present_countrystates
                                       : this.props.countrystates
                                 },
@@ -640,7 +638,7 @@ class PersonalDetails extends PureComponent {
                                 name: "permanent_city_id",
                                 className: "select-fld",
                                 value:
-                                  this.state.same_address === true
+                                  this.state.samechecked === true
                                     ? this.state.present_city_id
                                     : this.state.permanent_city_id,
                                 dataSource: {
@@ -650,7 +648,7 @@ class PersonalDetails extends PureComponent {
                                       : "city_arabic_name",
                                   valueField: "hims_d_city_id",
                                   data:
-                                    this.state.same_address === true
+                                    this.state.samechecked === true
                                       ? this.props.present_cities
                                       : this.props.cities
                                 },

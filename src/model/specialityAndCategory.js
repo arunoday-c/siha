@@ -577,7 +577,7 @@ module.exports = {
   addCategorySpecialityMappings,
   makeEmployeeSpecialityInActive,
   getCategorySpecialityMap,
-  getCategorySpecialityMap,
+
   updateCategorySpecialityMap,
   deleteCategorySpecialityMap,
   makeCategorySpecialityMapInActive

@@ -167,7 +167,7 @@ class EmployeeDesignations extends Component {
         <div className="col-lg-12">
           <div className="row">
             <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
+              div={{ className: "col-lg-2" }}
               label={{
                 forceLabel: "Code",
                 isImp: true
@@ -182,7 +182,7 @@ class EmployeeDesignations extends Component {
               }}
             />
             <AlagehFormGroup
-              div={{ className: "col-lg-2" }}
+              div={{ className: "col-lg-3" }}
               label={{
                 forceLabel: "Designation",
                 isImp: true
@@ -194,9 +194,6 @@ class EmployeeDesignations extends Component {
                 value: this.state.designation,
                 events: {
                   onChange: this.changeTexts.bind(this)
-                },
-                others: {
-                  type: "number"
                 }
               }}
             />

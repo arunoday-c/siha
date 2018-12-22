@@ -11,19 +11,34 @@ import MyContext from "../../../../../utils/MyContext.js";
 import variableJson from "../../../../../utils/GlobalVariables.json";
 import {
   texthandle,
-  titlehandle,
-  onDrop,
-  countryStatehandle,
   datehandle,
-  isDoctorChange,
   accomodationProvided
 } from "./OfficalDetailsEvent.js";
+import { AlgaehActions } from "../../../../../actions/algaehActions";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 
 class OfficalDetails extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      accomodation_provided: false
+    };
+  }
+
+  componentDidMount() {
+    if (this.props.banks === undefined || this.props.banks.length === 0) {
+      this.props.getBanks({
+        uri: "/masters/getBank",
+        method: "GET",
+        redux: {
+          type: "BANK_GET_DATA",
+          mappingName: "banks"
+        }
+      });
+    }
   }
 
   render() {
@@ -53,7 +68,7 @@ class OfficalDetails extends PureComponent {
                       }}
                       maxDate={new Date()}
                       events={{
-                        onChange: datehandle.bind(this, this)
+                        onChange: datehandle.bind(this, this, context)
                       }}
                       value={this.state.date_of_joining}
                     />
@@ -114,7 +129,7 @@ class OfficalDetails extends PureComponent {
                       }}
                       maxDate={new Date()}
                       events={{
-                        onChange: datehandle.bind(this, this)
+                        onChange: datehandle.bind(this, this, context)
                       }}
                       value={this.state.date_of_leaving}
                     />
@@ -125,12 +140,12 @@ class OfficalDetails extends PureComponent {
                         isImp: false
                       }}
                       textBox={{
-                        value: this.state.primary_contact_no,
+                        value: this.state.notice_period,
                         className: "txt-fld",
-                        name: "primary_contact_no",
+                        name: "notice_period",
 
                         events: {
-                          onChange: null
+                          onChange: texthandle.bind(this, this, context)
                         },
                         others: {
                           tabIndex: "7",
@@ -144,20 +159,20 @@ class OfficalDetails extends PureComponent {
                           forceLabel: "Relieving Date"
                         }}
                       />
-                      <h6>DD/MM/YYYY</h6>
-                    </div>{" "}
+                      <h6>{this.state.releiving_date}</h6>
+                    </div>
                     <AlgaehDateHandler
                       div={{ className: "col" }}
                       label={{ forceLabel: "Date of Exit" }}
                       textBox={{
                         className: "txt-fld",
-                        name: "date_of_leaving"
+                        name: "exit_date"
                       }}
                       maxDate={new Date()}
                       events={{
-                        onChange: datehandle.bind(this, this)
+                        onChange: datehandle.bind(this, this, context)
                       }}
-                      value={this.state.date_of_leaving}
+                      value={this.state.exit_date}
                     />
                     <AlagehAutoComplete
                       div={{ className: "col" }}
@@ -195,7 +210,7 @@ class OfficalDetails extends PureComponent {
                       <label className="checkbox inline">
                         <input
                           type="checkbox"
-                          name="accomadation_provided"
+                          name="accomodation_provided"
                           value="Y"
                           checked={this.state.accomodation_provided}
                           onChange={accomodationProvided.bind(
@@ -283,18 +298,15 @@ class OfficalDetails extends PureComponent {
                         isImp: true
                       }}
                       selector={{
-                        name: "title_id",
+                        name: "hims_d_bank_id",
                         className: "select-fld",
-                        value: this.state.title_id,
+                        value: this.state.hims_d_bank_id,
                         dataSource: {
-                          textField:
-                            this.state.selectedLang === "en"
-                              ? "title"
-                              : "arabic_title",
-                          valueField: "his_d_title_id",
-                          data: this.props.titles
+                          textField: "bank_name",
+                          valueField: "hims_d_bank_id",
+                          data: this.props.banks
                         },
-                        onChange: null,
+                        onChange: texthandle.bind(this, this, context),
                         others: {
                           tabIndex: "2"
                         }
@@ -308,18 +320,15 @@ class OfficalDetails extends PureComponent {
                         isImp: true
                       }}
                       selector={{
-                        name: "title_id",
+                        name: "mode_of_payment",
                         className: "select-fld",
-                        value: this.state.title_id,
+                        value: this.state.mode_of_payment,
                         dataSource: {
-                          textField:
-                            this.state.selectedLang === "en"
-                              ? "title"
-                              : "arabic_title",
-                          valueField: "his_d_title_id",
-                          data: this.props.titles
+                          textField: "name",
+                          valueField: "value",
+                          data: variableJson.MODE_OF_PAYMENT
                         },
-                        onChange: null,
+                        onChange: texthandle.bind(this, this, context),
                         others: {
                           tabIndex: "2"
                         }
@@ -336,4 +345,24 @@ class OfficalDetails extends PureComponent {
   }
 }
 
-export default OfficalDetails;
+function mapStateToProps(state) {
+  return {
+    banks: state.banks
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getBanks: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(OfficalDetails)
+);

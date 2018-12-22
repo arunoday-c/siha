@@ -9,7 +9,8 @@ import {
   visaMaster,
   clinicalNonClinicalAll,
   countryStateCity,
-  killDbConnections
+  killDbConnections,
+  getBank
 } from "../model/masters";
 import { Router } from "express";
 import { releaseConnection, bulkMasters } from "../utils";
@@ -376,6 +377,20 @@ export default () => {
   api.get(
     "/killDbConnections",
     killDbConnections,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  api.get(
+    "/getBank",
+    getBank,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

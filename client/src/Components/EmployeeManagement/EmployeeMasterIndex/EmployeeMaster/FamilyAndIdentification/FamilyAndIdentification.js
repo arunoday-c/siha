@@ -7,15 +7,21 @@ import {
   AlgaehDataGrid,
   AlgaehLabel
 } from "../../../../Wrapper/algaehWrapper";
-//import variableJson from "../../../../../utils/GlobalVariables.json";
+import variableJson from "../../../../../utils/GlobalVariables.json";
 import { algaehApiCall } from "../../../../../utils/algaehApiCall";
 import MyContext from "../../../../../utils/MyContext.js";
-import { texthandle, datehandle } from "./FamilyAndIdentificationEvent";
+import {
+  texthandle,
+  datehandle,
+  AddEmpId,
+  addDependentType
+} from "./FamilyAndIdentificationEvent";
 import { AlgaehActions } from "../../../../../actions/algaehActions";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { swalMessage } from "../../../../../utils/algaehApiCall";
+import moment from "moment";
 
 class FamilyAndIdentification extends PureComponent {
   constructor(props) {
@@ -41,13 +47,22 @@ class FamilyAndIdentification extends PureComponent {
     });
   }
 
+  componentWillMount() {
+    let InputOutput = this.props.EmpMasterIOputs;
+    this.setState({ ...this.state, ...InputOutput });
+  }
+
   componentDidMount() {
     let InputOutput = this.props.EmpMasterIOputs;
-    this.setState({ ...this.state, ...InputOutput }, () => {
-      this.state.hims_d_employee_id !== null
-        ? this.getEmployeeIdentification()
-        : null;
-    });
+    this.setState(
+      { ...this.state, ...InputOutput }
+
+      //   , () => {
+      //   this.state.hims_d_employee_id !== null
+      //     ? this.getEmployeeIdentification()
+      //     : null;
+      // }
+    );
 
     if (this.props.idtypes === undefined || this.props.idtypes.length === 0) {
       this.props.getIDTypes({
@@ -61,36 +76,36 @@ class FamilyAndIdentification extends PureComponent {
     }
   }
 
-  addEmployeeIdentification() {
-    algaehApiCall({
-      uri: "/employee/addEmployeeIdentification",
-      method: "POST",
-      data: {
-        employee_id: this.state.hims_d_employee_id,
-        identity_documents_id: this.state.identity_documents_id,
-        identity_number: this.state.identity_number,
-        valid_upto: this.state.valid_upto,
-        issue_date: this.state.issue_date
-        // alert_required : this.state.alert_required,
-        // alert_date : this.state.alert_date
-      },
-      onSuccess: res => {
-        if (res.data.success) {
-          this.getEmployeeIdentification();
-          swalMessage({
-            title: "Record added successfully",
-            type: "success"
-          });
-        }
-      },
-      onFailure: err => {
-        swalMessage({
-          title: err.message,
-          type: "error"
-        });
-      }
-    });
-  }
+  // addEmployeeIdentification() {
+  //   algaehApiCall({
+  //     uri: "/employee/addEmployeeIdentification",
+  //     method: "POST",
+  //     data: {
+  //       employee_id: this.state.hims_d_employee_id,
+  //       identity_documents_id: this.state.identity_documents_id,
+  //       identity_number: this.state.identity_number,
+  //       valid_upto: this.state.valid_upto,
+  //       issue_date: this.state.issue_date
+  //       // alert_required : this.state.alert_required,
+  //       // alert_date : this.state.alert_date
+  //     },
+  //     onSuccess: res => {
+  //       if (res.data.success) {
+  //         this.getEmployeeIdentification();
+  //         swalMessage({
+  //           title: "Record added successfully",
+  //           type: "success"
+  //         });
+  //       }
+  //     },
+  //     onFailure: err => {
+  //       swalMessage({
+  //         title: err.message,
+  //         type: "error"
+  //       });
+  //     }
+  //   });
+  // }
 
   render() {
     return (
@@ -135,9 +150,9 @@ class FamilyAndIdentification extends PureComponent {
                         isImp: false
                       }}
                       textBox={{
-                        value: this.state.primary_contact_no,
+                        value: this.state.identity_number,
                         className: "txt-fld",
-                        name: "primary_contact_no",
+                        name: "identity_number",
 
                         events: {
                           onChange: texthandle.bind(this, this, context)
@@ -164,7 +179,12 @@ class FamilyAndIdentification extends PureComponent {
                       }}
                       maxDate={new Date()}
                       events={{
-                        onChange: datehandle.bind(this, this, context)
+                        //onChange: datehandle.bind(this, this, context)
+                        onChange: selDate => {
+                          this.setState({
+                            issue_date: moment(selDate).format("YYYY-MM-DD")
+                          });
+                        }
                       }}
                       value={this.state.issue_date}
                     />
@@ -176,23 +196,28 @@ class FamilyAndIdentification extends PureComponent {
                       }}
                       textBox={{
                         className: "txt-fld",
-                        name: "expiry_date",
+                        name: "valid_upto",
                         others: {
                           tabIndex: "4"
                         }
                       }}
                       //maxDate={new Date()}
                       events={{
-                        onChange: datehandle.bind(this, this, context)
+                        //onChange: datehandle.bind(this, this, context)
+                        onChange: selDate => {
+                          this.setState({
+                            valid_upto: moment(selDate).format("YYYY-MM-DD")
+                          });
+                        }
                       }}
-                      value={this.state.expiry_date}
+                      value={this.state.valid_upto}
                     />
                     <div className="col">
                       <button
                         type="button"
                         className="btn btn-primary"
                         style={{ marginTop: 21 }}
-                        onClick={this.addEmployeeIdentification.bind(this)}
+                        onClick={AddEmpId.bind(this, this, context)}
                       >
                         Add
                       </button>
@@ -200,6 +225,7 @@ class FamilyAndIdentification extends PureComponent {
 
                     <div className="col-lg-12 margin-top-15">
                       <AlgaehDataGrid
+                        data-validate="empIdGrid"
                         id="employee-ids-grid"
                         columns={[
                           {
@@ -235,7 +261,7 @@ class FamilyAndIdentification extends PureComponent {
                         ]}
                         keyId="service_code"
                         dataSource={{
-                          data: this.state.employee_ids
+                          data: this.state.idDetails
                           //data: []
                         }}
                         isEditable={true}
@@ -253,73 +279,64 @@ class FamilyAndIdentification extends PureComponent {
                     <AlagehAutoComplete
                       div={{ className: "col" }}
                       label={{
-                        forceLabel: "Depedent Type",
+                        forceLabel: "Dependent Type",
                         isImp: false
                       }}
                       selector={{
-                        name: "country_id",
+                        name: "dependent_type",
                         className: "select-fld",
-                        value: this.state.country_id,
+                        value: this.state.dependent_type,
                         dataSource: {
-                          textField:
-                            this.state.selectedLang === "en"
-                              ? "country_name"
-                              : "arabic_country_name",
-                          valueField: "hims_d_country_id",
-                          data: this.props.countries
+                          textField: "name",
+                          valueField: "value",
+                          data: variableJson.DEPENDENT_TYPE
                         },
-                        //onChange: countryStatehandle.bind(this, this, context),
+                        onChange: texthandle.bind(this, this, context),
                         others: {
                           // tabIndex: "10"
                         }
                       }}
                     />
-                    <AlagehAutoComplete
+                    <AlagehFormGroup
                       div={{ className: "col" }}
                       label={{
-                        forceLabel: "Depedent Name",
-                        isImp: false
+                        forceLabel: "Dependent Name",
+                        isImp: true
                       }}
-                      selector={{
-                        name: "country_id",
-                        className: "select-fld",
-                        value: this.state.country_id,
-                        dataSource: {
-                          textField:
-                            this.state.selectedLang === "en"
-                              ? "country_name"
-                              : "arabic_country_name",
-                          valueField: "hims_d_country_id",
-                          data: this.props.countries
+                      textBox={{
+                        className: "txt-fld",
+                        name: "dependent_name",
+                        value: this.state.dependent_name,
+                        events: {
+                          onChange: texthandle.bind(this, this, context)
                         },
-                        //onChange: countryStatehandle.bind(this, this, context),
                         others: {
-                          // tabIndex: "10"
+                          //tabIndex: "1"
                         }
                       }}
                     />
 
                     <AlagehAutoComplete
-                      div={{ className: "col" }}
+                      div={{ className: "col-2" }}
                       label={{
-                        forceLabel: "ID Card Type",
+                        forceLabel: "Id Type",
                         isImp: false
                       }}
                       selector={{
-                        name: "country_id",
+                        name: "dependent_identity_type",
                         className: "select-fld",
-                        value: this.state.country_id,
+                        value: this.state.dependent_identity_type,
                         dataSource: {
                           textField:
                             this.state.selectedLang === "en"
-                              ? "country_name"
-                              : "arabic_country_name",
-                          valueField: "hims_d_country_id",
-                          data: this.props.countries
+                              ? "identity_document_name"
+                              : "arabic_identity_document_name",
+                          valueField: "hims_d_identity_document_id",
+                          data: this.props.idtypes
                         },
-                        //onChange: countryStatehandle.bind(this, this, context),
+                        onChange: texthandle.bind(this, this, context),
                         others: {
-                          // tabIndex: "10"
+                          //tabIndex: "1"
                         }
                       }}
                     />
@@ -330,17 +347,15 @@ class FamilyAndIdentification extends PureComponent {
                         isImp: false
                       }}
                       textBox={{
-                        value: this.state.primary_contact_no,
+                        value: this.state.dependent_identity_no,
                         className: "txt-fld",
-                        name: "primary_contact_no",
+                        name: "dependent_identity_no",
 
                         events: {
-                          //onChange: texthandle.bind(this, this, context)
+                          onChange: texthandle.bind(this, this, context)
                         },
                         others: {
-                          //   tabIndex: "7",
-                          placeholder: "(+01)123-456-7890",
-                          type: "number"
+                          //   tabIndex: "7"
                         }
                       }}
                     />
@@ -349,17 +364,18 @@ class FamilyAndIdentification extends PureComponent {
                         type="button"
                         className="btn btn-primary"
                         style={{ marginTop: 21 }}
+                        onClick={addDependentType.bind(this, this, context)}
                       >
                         Add
                       </button>
                     </div>
-
                     <div className="col-lg-12 margin-top-15">
                       <AlgaehDataGrid
-                        id="employee-ids-grid"
+                        data-validate="dependentGrid"
+                        id="dep-ids-grid"
                         columns={[
                           {
-                            fieldName: "identity_documents_id",
+                            fieldName: "dependent_type",
                             label: (
                               <AlgaehLabel
                                 label={{ forceLabel: "Dependent Type" }}
@@ -367,7 +383,7 @@ class FamilyAndIdentification extends PureComponent {
                             )
                           },
                           {
-                            fieldName: "identity_number",
+                            fieldName: "dependent_name",
                             label: (
                               <AlgaehLabel
                                 label={{ forceLabel: "Dependent Name" }}
@@ -375,7 +391,7 @@ class FamilyAndIdentification extends PureComponent {
                             )
                           },
                           {
-                            fieldName: "issue_date",
+                            fieldName: "dependent_identity_type",
                             label: (
                               <AlgaehLabel
                                 label={{ forceLabel: "ID Card Type" }}
@@ -383,7 +399,7 @@ class FamilyAndIdentification extends PureComponent {
                             )
                           },
                           {
-                            fieldName: "valid_upto",
+                            fieldName: "dependent_identity_no",
                             label: (
                               <AlgaehLabel
                                 label={{ forceLabel: "ID Number" }}
@@ -391,10 +407,9 @@ class FamilyAndIdentification extends PureComponent {
                             )
                           }
                         ]}
-                        keyId="service_code"
+                        keyId="dependent_identity_no"
                         dataSource={{
-                          data: this.state.employee_ids
-                          //data: []
+                          data: this.state.dependentDetails
                         }}
                         isEditable={true}
                         paging={{ page: 0, rowsPerPage: 5 }}
