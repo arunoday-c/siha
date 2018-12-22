@@ -2,14 +2,7 @@ import React, { Component } from "react";
 import "./overtime_groups.css";
 import {
   AlagehFormGroup,
-} from "../../../Wrapper/algaehWrapper";
-
-import {
   AlagehAutoComplete,
-  AlgaehLabel,
-  AlgaehDataGrid,
-  AlgaehDateHandler,
-  AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
 
 class OvertimeGroups extends Component {
