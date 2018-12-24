@@ -33,18 +33,18 @@ class EarningsDeductions extends Component {
       earning_deduction_description: "",
       short_desc: this.state.short_desc,
       component_category: "",
-      calculation_method: "",
+      calculation_method: "FI",
       component_frequency: "",
-      calculation_type: "",
+      calculation_type: "F",
       component_type: "",
-      shortage_deduction_applicable: "",
-      overtime_applicable: "",
-      limit_applicable: "",
+      shortage_deduction_applicable: false,
+      overtime_applicable: false,
+      limit_applicable: false,
       limit_amount: "",
-      process_limit_required: "",
+      process_limit_required: false,
       process_limit_days: "",
       general_ledger: "",
-      allow_round_off: "",
+      allow_round_off: false,
       round_off_type: "",
       round_off_amount: ""
     });
@@ -175,6 +175,7 @@ class EarningsDeductions extends Component {
           onSuccess: res => {
             if (res.data.success) {
               this.clearState();
+              this.getEarningDeductions();
               swalMessage({
                 title: "Record added successfully",
                 type: "success"
@@ -596,7 +597,6 @@ class EarningsDeductions extends Component {
               </div>
             </div>
             <div className="col-3">
-              {" "}
               <label>Overtime Applicable</label>
               <div className="customCheckbox">
                 <label className="checkbox inline">
@@ -637,6 +637,10 @@ class EarningsDeductions extends Component {
               </div>
 
               <AlagehFormGroup
+                label={{
+                  forceLabel: "Formula",
+                  isImp: this.state.calculation_method === "FO"
+                }}
                 textBox={{
                   className: "txt-fld",
                   name: "formula",
@@ -678,7 +682,6 @@ class EarningsDeductions extends Component {
               </div>
             </div>
             <div className="col-3">
-              {" "}
               <label>Limit Applicable</label>
               <div className="customCheckbox">
                 <label className="checkbox inline">
@@ -692,13 +695,11 @@ class EarningsDeductions extends Component {
                   <span>Yes</span>
                 </label>
               </div>
-              {/* <input
-                name="limit_amount"
-                placeholder="Limit Amount"
-                type="number"
-                disabled={!this.state.limit_applicable}
-              /> */}
               <AlagehFormGroup
+                label={{
+                  forceLabel: "Limit Amount",
+                  isImp: this.state.limit_applicable
+                }}
                 textBox={{
                   className: "txt-fld",
                   name: "limit_amount",
@@ -715,7 +716,6 @@ class EarningsDeductions extends Component {
               />
             </div>
             <div className="col-3">
-              {" "}
               <label>PROCESS LIMIT REQUIRED</label>
               <div className="customCheckbox">
                 <label className="checkbox inline">
@@ -729,12 +729,12 @@ class EarningsDeductions extends Component {
                   <span>Yes</span>
                 </label>
               </div>
-              {/* <input
-                placeholder="Limit Days"
-                type="number"
-                disabled={!this.state.process_limit_required}
-              /> */}
+
               <AlagehFormGroup
+                label={{
+                  forceLabel: "Limit Days",
+                  isImp: this.state.process_limit_required
+                }}
                 textBox={{
                   className: "txt-fld",
                   name: "process_limit_days",
@@ -751,7 +751,6 @@ class EarningsDeductions extends Component {
               />
             </div>
             <div className="col-3">
-              {" "}
               <label>Allow Round off</label>
               <div className="customCheckbox">
                 <label className="checkbox inline">
@@ -769,7 +768,7 @@ class EarningsDeductions extends Component {
               div={{ className: "col-3" }}
               label={{
                 forceLabel: "Round Off Type",
-                isImp: true
+                isImp: this.state.allow_round_off
               }}
               selector={{
                 name: "round_off_type",
@@ -792,7 +791,7 @@ class EarningsDeductions extends Component {
               div={{ className: "col-3" }}
               label={{
                 forceLabel: "Round Off Amount",
-                isImp: true
+                isImp: this.state.allow_round_off
               }}
               textBox={{
                 className: "txt-fld",
@@ -1099,6 +1098,21 @@ class EarningsDeductions extends Component {
                   label: (
                     <AlgaehLabel label={{ forceLabel: "Component Category" }} />
                   ),
+                  displayTemplate: row => {
+                    return (
+                      <span>
+                        {row.component_category === "A"
+                          ? "Advance"
+                          : row.component_category === "E"
+                          ? "Earnings"
+                          : row.component_category === "D"
+                          ? "Deduction"
+                          : row.component_category === "C"
+                          ? "Employer Contribution"
+                          : "------"}
+                      </span>
+                    );
+                  },
                   editorTemplate: row => {
                     return (
                       <AlagehAutoComplete
@@ -1127,6 +1141,17 @@ class EarningsDeductions extends Component {
                   label: (
                     <AlgaehLabel label={{ forceLabel: "Calculation Method" }} />
                   ),
+                  displayTemplate: row => {
+                    return (
+                      <span>
+                        {row.calculation_method === "FO"
+                          ? "Formula"
+                          : row.calculation_method === "FI"
+                          ? "Fixed"
+                          : "------"}
+                      </span>
+                    );
+                  },
                   editorTemplate: row => {
                     return (
                       <AlagehAutoComplete
@@ -1138,7 +1163,7 @@ class EarningsDeductions extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.calculation_method
+                            data: GlobalVariables.CALC_METHOD
                           },
                           others: {
                             errormessage: "Calculation Method cannot be blank",
@@ -1157,6 +1182,21 @@ class EarningsDeductions extends Component {
                       label={{ forceLabel: "Component Frequency" }}
                     />
                   ),
+                  displayTemplate: row => {
+                    return (
+                      <span>
+                        {row.component_frequency === "M"
+                          ? "Monthly"
+                          : row.component_frequency === "Y"
+                          ? "Yearly"
+                          : row.component_frequency === "Q"
+                          ? "Quarterly"
+                          : row.component_frequency === "H"
+                          ? "Hourly"
+                          : "------"}
+                      </span>
+                    );
+                  },
                   editorTemplate: row => {
                     return (
                       <AlagehAutoComplete
@@ -1185,6 +1225,17 @@ class EarningsDeductions extends Component {
                   label: (
                     <AlgaehLabel label={{ forceLabel: "Calculation Type" }} />
                   ),
+                  displayTemplate: row => {
+                    return (
+                      <span>
+                        {row.calculation_type === "F"
+                          ? "Fixed"
+                          : row.calculation_type === "V"
+                          ? "Variable"
+                          : "------"}
+                      </span>
+                    );
+                  },
                   editorTemplate: row => {
                     return (
                       <AlagehAutoComplete
@@ -1213,6 +1264,35 @@ class EarningsDeductions extends Component {
                   label: (
                     <AlgaehLabel label={{ forceLabel: "Component Type" }} />
                   ),
+                  displayTemplate: row => {
+                    return (
+                      <span>
+                        {row.component_type === "N"
+                          ? "None"
+                          : row.component_type === "B"
+                          ? "Bonus"
+                          : row.component_type === "EEP"
+                          ? "Employee PF"
+                          : row.component_type === "ERP"
+                          ? "Employer PF"
+                          : row.component_type === "LS"
+                          ? "Leave Salary"
+                          : row.component_type === "LE"
+                          ? "Leave Encashment"
+                          : row.component_type === "EOS"
+                          ? "End of Service"
+                          : row.component_type === "FS"
+                          ? "Final Settlement"
+                          : row.component_type === "LOP"
+                          ? "LOP Deduction"
+                          : row.component_type === "NP"
+                          ? "Notice Period"
+                          : row.component_type === "AR"
+                          ? "Airfare"
+                          : "------"}
+                      </span>
+                    );
+                  },
                   editorTemplate: row => {
                     return (
                       <AlagehAutoComplete
@@ -1243,6 +1323,15 @@ class EarningsDeductions extends Component {
                       label={{ forceLabel: "Shortage Deduction Applicable" }}
                     />
                   ),
+                  displayTemplate: row => {
+                    return (
+                      <span>
+                        {row.shortage_deduction_applicable === "Y"
+                          ? "Yes"
+                          : "No"}
+                      </span>
+                    );
+                  },
                   editorTemplate: row => {
                     return (
                       <AlagehAutoComplete
@@ -1274,6 +1363,15 @@ class EarningsDeductions extends Component {
                       label={{ forceLabel: "Overtime Applicable" }}
                     />
                   ),
+                  displayTemplate: row => {
+                    return (
+                      <span>
+                        {row.shortage_deduction_applicable === "Y"
+                          ? "Yes"
+                          : "No"}
+                      </span>
+                    );
+                  },
                   editorTemplate: row => {
                     return (
                       <AlagehAutoComplete
@@ -1302,6 +1400,15 @@ class EarningsDeductions extends Component {
                   label: (
                     <AlgaehLabel label={{ forceLabel: "Limit Applicable" }} />
                   ),
+                  displayTemplate: row => {
+                    return (
+                      <span>
+                        {row.shortage_deduction_applicable === "Y"
+                          ? "Yes"
+                          : "No"}
+                      </span>
+                    );
+                  },
                   editorTemplate: row => {
                     return (
                       <AlagehAutoComplete
@@ -1355,6 +1462,15 @@ class EarningsDeductions extends Component {
                       label={{ forceLabel: "Process Limit Required" }}
                     />
                   ),
+                  displayTemplate: row => {
+                    return (
+                      <span>
+                        {row.shortage_deduction_applicable === "Y"
+                          ? "Yes"
+                          : "No"}
+                      </span>
+                    );
+                  },
                   editorTemplate: row => {
                     return (
                       <AlagehAutoComplete
@@ -1438,6 +1554,15 @@ class EarningsDeductions extends Component {
                   label: (
                     <AlgaehLabel label={{ forceLabel: "Allow Round Off" }} />
                   ),
+                  displayTemplate: row => {
+                    return (
+                      <span>
+                        {row.shortage_deduction_applicable === "Y"
+                          ? "Yes"
+                          : "No"}
+                      </span>
+                    );
+                  },
                   editorTemplate: row => {
                     return (
                       <AlagehAutoComplete
@@ -1449,7 +1574,7 @@ class EarningsDeductions extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.allow_round_off
+                            data: GlobalVariables.FORMAT_YESNO
                           },
                           others: {
                             errormessage:
@@ -1460,6 +1585,45 @@ class EarningsDeductions extends Component {
                         }}
                       />
                     );
+                  }
+                },
+                {
+                  fieldName: "round_off_type",
+                  label: (
+                    <AlgaehLabel label={{ forceLabel: "Round off Type" }} />
+                  ),
+                  displayTemplate: row => {
+                    return (
+                      <span>
+                        {row.round_off_type === "FL"
+                          ? "Floor"
+                          : row.round_off_type === "CL"
+                          ? "Ceiling"
+                          : row.round_off_type === "RD"
+                          ? "Round"
+                          : "------"}
+                      </span>
+                    );
+                  },
+                  editorTemplate: row => {
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      selector={{
+                        name: "round_off_type",
+                        className: "select-fld",
+                        value: row.round_off_type,
+                        dataSource: {
+                          textField: "name",
+                          valueField: "value",
+                          data: GlobalVariables.ROUND_OFF_TYPE
+                        },
+                        others: {
+                          errormessage: "Field cannot be blank",
+                          required: true
+                        },
+                        onChange: this.changeGridEditors.bind(this, row)
+                      }}
+                    />;
                   }
                 },
                 {

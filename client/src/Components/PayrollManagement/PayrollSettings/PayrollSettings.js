@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./payroll_settings.css";
 import EarningsDeductions from "./EarningsDeductions/EarningsDeductions";
+import LoanMaster from "./LoanMaster/LoanMaster";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 
 class PayrollSettings extends Component {
@@ -30,7 +31,7 @@ class PayrollSettings extends Component {
           <div className="tabMaster toggle-section">
             <ul className="nav">
               <li
-                algaehtabs={"AppointmentStatus"}
+                algaehtabs={"EarningsDeductions"}
                 className={"nav-item tab-button active"}
                 onClick={this.openTab.bind(this)}
               >
@@ -42,12 +43,27 @@ class PayrollSettings extends Component {
                   />
                 }
               </li>
+              <li
+                algaehtabs={"LoanMaster"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Loan Master"
+                    }}
+                  />
+                }
+              </li>
             </ul>
           </div>
         </div>
         <div className="payroll-setion">
           {this.state.pageDisplay === "EarningsDeductions" ? (
             <EarningsDeductions />
+          ) : this.state.pageDisplay === "LoanMaster" ? (
+            <LoanMaster />
           ) : //)
           //   : this.state.pageDisplay === "AppointmentRooms" ? (
           //     <AppointmentRooms />

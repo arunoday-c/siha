@@ -1330,7 +1330,7 @@ let addEarningDeduction = (req, res, next) => {
           shortage_deduction_applicable,overtime_applicable,limit_applicable,limit_amount,\
           process_limit_required,process_limit_days,general_ledger,allow_round_off,round_off_type,\
           round_off_amount, created_date,created_by,updated_date,updated_by) values(\
-            ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
           input.earning_deduction_code,
           input.earning_deduction_description,
@@ -1351,7 +1351,6 @@ let addEarningDeduction = (req, res, next) => {
           input.allow_round_off,
           input.round_off_type,
           input.round_off_amount,
-
           new Date(),
           input.created_by,
           new Date(),
