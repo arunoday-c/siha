@@ -15,7 +15,12 @@ class EarningsDeductions extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      earning_deductions: []
+      earning_deductions: [],
+      shortage_deduction_applicable: false,
+      limit_applicable: false,
+      process_limit_required: false,
+      calculation_type: "F",
+      calculation_method: "FI"
     };
 
     this.getEarningDeductions();
@@ -205,6 +210,41 @@ class EarningsDeductions extends Component {
     this.setState({
       [e.target.name]: e.target.value
     });
+  }
+
+  changeChecks(e) {
+    switch (e.target.name) {
+      case "shortage_deduction_applicable":
+        this.setState({
+          shortage_deduction_applicable: !this.state
+            .shortage_deduction_applicable
+        });
+        break;
+
+      case "limit_applicable":
+        this.setState({
+          limit_applicable: !this.state.limit_applicable
+        });
+        break;
+
+      case "process_limit_required":
+        this.setState({
+          process_limit_required: !this.state.process_limit_required
+        });
+        break;
+
+      case "calculation_type":
+        this.setState({
+          calculation_type: e.target.value
+        });
+        break;
+
+      case "calculation_method":
+        this.setState({
+          calculation_method: e.target.value
+        });
+        break;
+    }
   }
 
   changeGridEditors(row, e) {
@@ -518,7 +558,13 @@ class EarningsDeductions extends Component {
               <label>Shortage Deduction Applicable</label>
               <div className="customCheckbox">
                 <label className="checkbox inline">
-                  <input type="checkbox" value="yes" />
+                  <input
+                    type="checkbox"
+                    value="yes"
+                    name="shortage_deduction_applicable"
+                    checked={this.state.shortage_deduction_applicable}
+                    onChange={this.changeChecks.bind(this)}
+                  />
                   <span>Yes</span>
                 </label>
               </div>
@@ -529,22 +575,39 @@ class EarningsDeductions extends Component {
                 <label className="radio inline">
                   <input
                     type="radio"
-                    value="fixed"
-                    name="CalculationMethod"
-                    checked
+                    value="FI"
+                    name="calculation_method"
+                    checked={this.state.calculation_method === "FI"}
+                    onChange={this.changeChecks.bind(this)}
                   />
                   <span>Fixed</span>
                 </label>
                 <label className="radio inline">
                   <input
                     type="radio"
-                    value="formula"
-                    name="CalculationMethod"
+                    value="FO"
+                    name="calculation_method"
+                    checked={this.state.calculation_method === "FO"}
+                    onChange={this.changeChecks.bind(this)}
                   />
                   <span>Formula</span>
                 </label>
               </div>
-              <input type="text" disabled />
+
+              <AlagehFormGroup
+                textBox={{
+                  className: "txt-fld",
+                  name: "formula",
+                  value: this.state.formula,
+                  events: {
+                    onChange: this.changeTexts.bind(this)
+                  },
+                  others: {
+                    placeholder: "Eg: (a+b)/c",
+                    disabled: this.state.calculation_method === "FI"
+                  }
+                }}
+              />
             </div>
             <div className="col-3">
               {" "}
@@ -553,44 +616,97 @@ class EarningsDeductions extends Component {
                 <label className="radio inline">
                   <input
                     type="radio"
-                    value="fixed"
-                    name="CalculationType"
-                    checked
+                    value="F"
+                    name="calculation_type"
+                    onChange={this.changeChecks.bind(this)}
+                    checked={this.state.calculation_type === "F"}
                   />
                   <span>Fixed</span>
                 </label>
                 <label className="radio inline">
                   <input
                     type="radio"
-                    value="variables"
-                    name="CalculationType"
+                    value="V"
+                    name="calculation_type"
+                    onChange={this.changeChecks.bind(this)}
+                    checked={this.state.calculation_type === "V"}
                   />
                   <span>Variables</span>
                 </label>
               </div>
-              <input type="text" disabled />
             </div>
             <div className="col-3">
               {" "}
               <label>Limit Applicable</label>
               <div className="customCheckbox">
                 <label className="checkbox inline">
-                  <input type="checkbox" value="yes" />
+                  <input
+                    type="checkbox"
+                    value="yes"
+                    name="limit_applicable"
+                    checked={this.state.limit_applicable}
+                    onChange={this.changeChecks.bind(this)}
+                  />
                   <span>Yes</span>
                 </label>
               </div>
-              <input placeholder="Limit Amount" type="text" disabled />
+              {/* <input
+                name="limit_amount"
+                placeholder="Limit Amount"
+                type="number"
+                disabled={!this.state.limit_applicable}
+              /> */}
+              <AlagehFormGroup
+                textBox={{
+                  className: "txt-fld",
+                  name: "limit_amount",
+                  value: this.state.limit_amount,
+                  events: {
+                    onChange: this.changeTexts.bind(this)
+                  },
+                  others: {
+                    placeholder: "Limit Amount",
+                    type: "number",
+                    disabled: !this.state.limit_applicable
+                  }
+                }}
+              />
             </div>
             <div className="col-3">
               {" "}
               <label>PROCESS LIMIT REQUIRED</label>
               <div className="customCheckbox">
                 <label className="checkbox inline">
-                  <input type="checkbox" value="yes" />
+                  <input
+                    type="checkbox"
+                    value="yes"
+                    name="process_limit_required"
+                    checked={this.state.process_limit_required}
+                    onChange={this.changeChecks.bind(this)}
+                  />
                   <span>Yes</span>
                 </label>
               </div>
-              <input placeholder="Limit Days" type="number" disabled />
+              {/* <input
+                placeholder="Limit Days"
+                type="number"
+                disabled={!this.state.process_limit_required}
+              /> */}
+              <AlagehFormGroup
+                textBox={{
+                  className: "txt-fld",
+                  name: "process_limit_days",
+                  value: this.state.process_limit_days,
+                  events: {
+                    onChange: this.changeTexts.bind(this)
+                  },
+                  others: {
+                    placeholder: "Limit Days",
+                    type: "number",
+                    disabled: !this.state.process_limit_required
+                  }
+                }}
+              />
             </div>
             {/*
             <AlagehAutoComplete
@@ -952,7 +1068,7 @@ class EarningsDeductions extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.component_frequency
+                            data: GlobalVariables.COMP_FREQ
                           },
                           others: {
                             errormessage: "Component Frequency cannot be blank",
@@ -980,7 +1096,7 @@ class EarningsDeductions extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.calculation_type
+                            data: GlobalVariables.CALC_TYPE
                           },
                           others: {
                             errormessage: "Calculation Type cannot be blank",
@@ -1008,7 +1124,7 @@ class EarningsDeductions extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.component_type
+                            data: GlobalVariables.COMP_TYPE
                           },
                           others: {
                             errormessage: "Calculation Type cannot be blank",
@@ -1038,7 +1154,7 @@ class EarningsDeductions extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.shortage_deduction_applicable
+                            data: GlobalVariables.FORMAT_YESNO
                           },
                           others: {
                             errormessage:
@@ -1069,7 +1185,7 @@ class EarningsDeductions extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.overtime_applicable
+                            data: GlobalVariables.FORMAT_YESNO
                           },
                           others: {
                             errormessage: "Overtime Applicable cannot be blank",
@@ -1097,7 +1213,7 @@ class EarningsDeductions extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.limit_applicable
+                            data: GlobalVariables.FORMAT_YESNO
                           },
                           others: {
                             errormessage: "Limit Applicable cannot be blank",
@@ -1150,7 +1266,7 @@ class EarningsDeductions extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.process_limit_required
+                            data: GlobalVariables.FORMAT_YESNO
                           },
                           others: {
                             errormessage:
@@ -1189,34 +1305,34 @@ class EarningsDeductions extends Component {
                     );
                   }
                 },
-                {
-                  fieldName: "general_ledger",
-                  label: (
-                    <AlgaehLabel label={{ forceLabel: "General Ledger" }} />
-                  ),
-                  editorTemplate: row => {
-                    return (
-                      <AlagehAutoComplete
-                        div={{ className: "col" }}
-                        selector={{
-                          name: "general_ledger",
-                          className: "select-fld",
-                          value: row.general_ledger,
-                          dataSource: {
-                            textField: "name",
-                            valueField: "value",
-                            data: GlobalVariables.general_ledger
-                          },
-                          others: {
-                            errormessage: "General Ledger Type cannot be blank",
-                            required: true
-                          },
-                          onChange: this.changeGridEditors.bind(this, row)
-                        }}
-                      />
-                    );
-                  }
-                },
+                // {
+                //   fieldName: "general_ledger",
+                //   label: (
+                //     <AlgaehLabel label={{ forceLabel: "General Ledger" }} />
+                //   ),
+                //   editorTemplate: row => {
+                //     return (
+                //       <AlagehAutoComplete
+                //         div={{ className: "col" }}
+                //         selector={{
+                //           name: "general_ledger",
+                //           className: "select-fld",
+                //           value: row.general_ledger,
+                //           dataSource: {
+                //             textField: "name",
+                //             valueField: "value",
+                //             data: GlobalVariables.general_ledger
+                //           },
+                //           others: {
+                //             errormessage: "General Ledger Type cannot be blank",
+                //             required: true
+                //           },
+                //           onChange: this.changeGridEditors.bind(this, row)
+                //         }}
+                //       />
+                //     );
+                //   }
+                // },
                 {
                   fieldName: "allow_round_off",
                   label: (
