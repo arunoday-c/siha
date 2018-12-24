@@ -20,9 +20,10 @@ class EarningsDeductions extends Component {
       limit_applicable: false,
       process_limit_required: false,
       calculation_type: "F",
-      calculation_method: "FI"
+      calculation_method: "FI",
+      allow_round_off: false,
+      overtime_applicable: false
     };
-
     this.getEarningDeductions();
   }
 
@@ -157,15 +158,17 @@ class EarningsDeductions extends Component {
             component_frequency: this.state.component_frequency,
             calculation_type: this.state.calculation_type,
             component_type: this.state.component_type,
-            shortage_deduction_applicable: this.state
-              .shortage_deduction_applicable,
-            overtime_applicable: this.state.overtime_applicable,
-            limit_applicable: this.state.limit_applicable,
+            shortage_deduction_applicable:
+              this.state.shortage_deduction_applicable === true ? "Y" : "N",
+            overtime_applicable:
+              this.state.overtime_applicable === true ? "Y" : "N",
+            limit_applicable: this.state.limit_applicable === true ? "Y" : "N",
             limit_amount: this.state.limit_amount,
-            process_limit_required: this.state.process_limit_required,
+            process_limit_required:
+              this.state.process_limit_required === true ? "Y" : "N",
             process_limit_days: this.state.process_limit_days,
             general_ledger: this.state.general_ledger,
-            allow_round_off: this.state.allow_round_off,
+            allow_round_off: this.state.allow_round_off === true ? "Y" : "N",
             round_off_type: this.state.round_off_type,
             round_off_amount: this.state.round_off_amount
           },
@@ -244,6 +247,29 @@ class EarningsDeductions extends Component {
           calculation_method: e.target.value
         });
         break;
+
+      case "overtime_applicable":
+        this.setState({
+          overtime_applicable: !this.state.overtime_applicable
+        });
+        break;
+
+      case "allow_round_off":
+        this.setState(
+          {
+            allow_round_off: !this.state.allow_round_off
+          },
+          () => {
+            this.setState({
+              round_off_type: this.state.allow_round_off
+                ? this.state.round_off_type
+                : null,
+              round_off_amount: this.state.allow_round_off
+                ? this.state.round_off_amount
+                : null
+            });
+          }
+        );
     }
   }
 
@@ -570,6 +596,22 @@ class EarningsDeductions extends Component {
               </div>
             </div>
             <div className="col-3">
+              {" "}
+              <label>Overtime Applicable</label>
+              <div className="customCheckbox">
+                <label className="checkbox inline">
+                  <input
+                    type="checkbox"
+                    value="yes"
+                    name="overtime_applicable"
+                    checked={this.state.overtime_applicable}
+                    onChange={this.changeChecks.bind(this)}
+                  />
+                  <span>Yes</span>
+                </label>
+              </div>
+            </div>
+            <div className="col-3">
               <label>Calculation Method</label>
               <div className="customRadio">
                 <label className="radio inline">
@@ -713,7 +755,12 @@ class EarningsDeductions extends Component {
               <label>Allow Round off</label>
               <div className="customCheckbox">
                 <label className="checkbox inline">
-                  <input type="checkbox" value="yes" />
+                  <input
+                    type="checkbox"
+                    name="allow_round_off"
+                    checked={this.state.allow_round_off}
+                    onChange={this.changeChecks.bind(this)}
+                  />
                   <span>Yes</span>
                 </label>
               </div>
@@ -725,29 +772,38 @@ class EarningsDeductions extends Component {
                 isImp: true
               }}
               selector={{
-                name: "component_type",
+                name: "round_off_type",
                 className: "select-fld",
-                value: this.state.component_type,
+                value: this.state.allow_round_off
+                  ? this.state.round_off_type
+                  : null,
                 dataSource: {
                   textField: "name",
                   valueField: "value",
-                  data: GlobalVariables.COMP_TYPE
+                  data: GlobalVariables.ROUND_OFF_TYPE
                 },
-                onChange: this.dropDownHandler.bind(this)
+                onChange: this.dropDownHandler.bind(this),
+                others: {
+                  disabled: !this.state.allow_round_off
+                }
               }}
             />{" "}
             <AlagehFormGroup
               div={{ className: "col-3" }}
               label={{
-                forceLabel: "Round Off Amt.",
+                forceLabel: "Round Off Amount",
                 isImp: true
               }}
               textBox={{
                 className: "txt-fld",
-                name: "earning_deduction_description",
-                value: this.state.earning_deduction_description,
+                name: "round_off_amount",
+                value: this.state.round_off_amount,
                 events: {
                   onChange: this.changeTexts.bind(this)
+                },
+                others: {
+                  type: "number",
+                  disabled: !this.state.allow_round_off
                 }
               }}
             />
