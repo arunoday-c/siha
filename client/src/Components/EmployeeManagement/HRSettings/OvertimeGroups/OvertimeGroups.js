@@ -9,6 +9,7 @@ import {
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
+import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 
 class OvertimeGroups extends Component {
   constructor(props) {
@@ -154,37 +155,42 @@ class OvertimeGroups extends Component {
   }
 
   addOvertimeGroups() {
-    let data = {
-      overtime_group_code: this.state.overtime_group_code,
-      overtime_group_description: this.state.overtime_group_description,
-      overtime_group_status: this.state.overtime_group_status,
-      working_day_hour: this.state.working_day_hour,
-      weekoff_day_hour: this.state.weekoff_day_hour,
-      holiday_hour: this.state.holiday_hour,
-      working_day_rate: this.state.working_day_rate,
-      weekoff_day_rate: this.state.weekoff_day_rate,
-      holiday_rate: this.state.holiday_rate,
-      payment_type: this.state.payment_type
-    };
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      onSuccess: () => {
+        let data = {
+          overtime_group_code: this.state.overtime_group_code,
+          overtime_group_description: this.state.overtime_group_description,
+          overtime_group_status: this.state.overtime_group_status,
+          working_day_hour: this.state.working_day_hour,
+          weekoff_day_hour: this.state.weekoff_day_hour,
+          holiday_hour: this.state.holiday_hour,
+          working_day_rate: this.state.working_day_rate,
+          weekoff_day_rate: this.state.weekoff_day_rate,
+          holiday_rate: this.state.holiday_rate,
+          payment_type: this.state.payment_type
+        };
 
-    algaehApiCall({
-      uri: "/employeesetups/addOvertimeGroups",
-      method: "POST",
-      data: data,
-      onSuccess: res => {
-        if (res.data.success) {
-          swalMessage({
-            title: "Record Added Successfully",
-            type: "success"
-          });
-          this.clearState();
-          this.getOvertimeGroups();
-        }
-      },
-      onFailure: err => {
-        swalMessage({
-          title: err.message,
-          type: "error"
+        algaehApiCall({
+          uri: "/employeesetups/addOvertimeGroups",
+          method: "POST",
+          data: data,
+          onSuccess: res => {
+            if (res.data.success) {
+              swalMessage({
+                title: "Record Added Successfully",
+                type: "success"
+              });
+              this.clearState();
+              this.getOvertimeGroups();
+            }
+          },
+          onFailure: err => {
+            swalMessage({
+              title: err.message,
+              type: "error"
+            });
+          }
         });
       }
     });
@@ -233,7 +239,7 @@ class OvertimeGroups extends Component {
                           div={{ className: "col-4" }}
                           label={{
                             forceLabel: "Group Code",
-                            isImp: false
+                            isImp: true
                           }}
                           textBox={{
                             className: "txt-fld",
@@ -248,7 +254,7 @@ class OvertimeGroups extends Component {
                           div={{ className: "col-8" }}
                           label={{
                             forceLabel: "Group Description",
-                            isImp: false
+                            isImp: true
                           }}
                           textBox={{
                             className: "txt-fld",
@@ -298,7 +304,7 @@ class OvertimeGroups extends Component {
                           div={{ className: "col-4" }}
                           label={{
                             forceLabel: "Working Day",
-                            isImp: false
+                            isImp: true
                           }}
                           textBox={{
                             className: "txt-fld",
@@ -322,7 +328,7 @@ class OvertimeGroups extends Component {
                           div={{ className: "col-4" }}
                           label={{
                             forceLabel: "Week Off",
-                            isImp: false
+                            isImp: true
                           }}
                           textBox={{
                             className: "txt-fld",
@@ -346,7 +352,7 @@ class OvertimeGroups extends Component {
                           div={{ className: "col-4" }}
                           label={{
                             forceLabel: "Holiday",
-                            isImp: false
+                            isImp: true
                           }}
                           textBox={{
                             className: "txt-fld",
@@ -392,9 +398,10 @@ class OvertimeGroups extends Component {
                   <h3 className="caption-subject">Overtime Group List</h3>
                 </div>
               </div>
-              <div className="portlet-body">
+              <div className="portlet-body" data-validate="OTDiv">
                 <div id="GroupListGrid_Cntr">
                   <AlgaehDataGrid
+                    datavalidate="data-validate='OTDiv'"
                     columns={[
                       {
                         fieldName: "overtime_group_code",
