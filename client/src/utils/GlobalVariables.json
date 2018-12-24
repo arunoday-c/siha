@@ -584,5 +584,9 @@
     { "name": "Cheque", "value": "CH" },
     { "name": "Transfer", "value": "TRF" },
     { "name": "Wages and Protection System", "value": "WPS" }
+  ],
+  "OT_PAYMENT": [
+    { "name": "% of Component", "value": "PC" },
+    { "name": "Rate per Hour", "value": "RT" }
   ]
 }

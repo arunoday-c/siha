@@ -7,7 +7,8 @@ import {
   deleteDesignation,
   getOvertimeGroups,
   addOvertimeGroups,
-  deleteOvertimeGroups
+  deleteOvertimeGroups,
+  updateOvertimeGroups
 } from "../model/employeesetups";
 import { releaseConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
@@ -106,14 +107,11 @@ export default ({ config, db }) => {
     getOvertimeGroups,
     (req, res, next) => {
       let result = req.records;
-      if (result.length == 0) {
-        next(httpStatus.generateError(httpStatus.notFound, "No records found"));
-      } else {
-        res.status(httpStatus.ok).json({
-          success: true,
-          records: result
-        });
-      }
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+
       next();
     },
     releaseConnection
@@ -134,6 +132,7 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
+  //created by Adnan
   api.delete(
     "/deleteOvertimeGroups",
     deleteOvertimeGroups,
@@ -142,7 +141,7 @@ export default ({ config, db }) => {
       if (result.invalid_input == true) {
         res.status(httpStatus.ok).json({
           success: false,
-          records: "please provide valid input"
+          records: "Please provide valid input"
         });
       } else {
         res.status(httpStatus.ok).json({
@@ -153,6 +152,23 @@ export default ({ config, db }) => {
       next();
     }
   );
+
+  //created by Adnan
+  api.put("/updateOvertimeGroups", updateOvertimeGroups, (req, res, next) => {
+    let result = req.records;
+    if (result.invalid_input == true) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: "Please provide valid input"
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
 
   return api;
 };
