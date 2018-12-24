@@ -176,6 +176,7 @@ class OvertimeGroups extends Component {
           method: "POST",
           data: data,
           onSuccess: res => {
+            debugger;
             if (res.data.success) {
               swalMessage({
                 title: "Record Added Successfully",
@@ -183,11 +184,17 @@ class OvertimeGroups extends Component {
               });
               this.clearState();
               this.getOvertimeGroups();
+            } else {
+              swalMessage({
+                title: res.data.message,
+                type: "error"
+              });
             }
           },
           onFailure: err => {
+            debugger;
             swalMessage({
-              title: err.message,
+              title: err.response.data.message,
               type: "error"
             });
           }
@@ -307,6 +314,7 @@ class OvertimeGroups extends Component {
                             isImp: true
                           }}
                           textBox={{
+                            allowNegative: false,
                             className: "txt-fld",
                             name:
                               this.state.payment_type === "RT"
@@ -320,7 +328,9 @@ class OvertimeGroups extends Component {
                               onChange: this.changeTexts.bind(this)
                             },
                             others: {
-                              type: "number"
+                              type: "number",
+                              checkvalidation: "$value <= 0",
+                              errormessage: "Please Select a proper value"
                             }
                           }}
                         />
@@ -344,7 +354,9 @@ class OvertimeGroups extends Component {
                               onChange: this.changeTexts.bind(this)
                             },
                             others: {
-                              type: "number"
+                              type: "number",
+                              checkvalidation: "$value <= 0",
+                              errormessage: "Please Select a proper value"
                             }
                           }}
                         />
@@ -368,7 +380,9 @@ class OvertimeGroups extends Component {
                               onChange: this.changeTexts.bind(this)
                             },
                             others: {
-                              type: "number"
+                              type: "number",
+                              checkvalidation: "$value <= 0",
+                              errormessage: "Please Select a proper value"
                             }
                           }}
                         />
