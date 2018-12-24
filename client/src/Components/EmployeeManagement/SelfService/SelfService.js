@@ -4,6 +4,7 @@ import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import Dashboard from "./Dashboard/Dashboard";
 import AttendanceRegularization from "./AttendanceRegularization/AttendanceRegularization";
 import ApplyLeave from "./ApplyLeave/ApplyLeave";
+import LoanRequest from "./LoanRequest/LoanRequest";
 import employeeProfileImg from "../../../assets/images/employee_profile_img.webp";
 
 export default class SelfService extends Component {
@@ -105,6 +106,19 @@ export default class SelfService extends Component {
                   />
                 }
               </li>
+              <li
+                algaehtabs={"LoanRequest"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Loan Request"
+                    }}
+                  />
+                }
+              </li>
             </ul>
           </div>
         </div>
@@ -115,8 +129,9 @@ export default class SelfService extends Component {
             <AttendanceRegularization />
           ) : this.state.pageDisplay === "ApplyLeave" ? (
             <ApplyLeave />
-          ) : //)
-          //   : this.state.pageDisplay === "AppointmentRooms" ? (
+          ) : this.state.pageDisplay === "LoanRequest" ? (
+            <LoanRequest />
+          ) : //   : this.state.pageDisplay === "AppointmentRooms" ? (
           //     <AppointmentRooms />
           //   ) : this.state.pageDisplay === "AppointmentClinics" ? (
           //     <AppointmentClinics />

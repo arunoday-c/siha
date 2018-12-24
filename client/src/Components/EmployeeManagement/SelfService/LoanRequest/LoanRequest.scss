@@ -1,4 +1,4 @@
-.apply_leave {
+.loan_request {
   h5 {
     margin: 0 0 10px;
     padding-bottom: 2px;
@@ -10,23 +10,9 @@
       line-height: 0;
     }
   }
-  #leaveRequestList_cntr {
+  #LoanRequestList_cntr {
     .ReactTable {
       max-height: 42vh !important;
-    }
-  }
-}
-
-.leaveBalanceCntr {
-  & > div {
-    // border: 2px solid #d3d3d3;
-    background: #fff;
-    overflow: hidden;
-    &:first-child {
-      border-radius: 5px 0 0 5px;
-    }
-    &:last-child {
-      border-radius: 0 5px 5px 0;
     }
   }
 }

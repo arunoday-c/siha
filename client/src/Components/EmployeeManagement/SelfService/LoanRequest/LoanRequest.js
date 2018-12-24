@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./apply_leave.css";
+import "./LoanRequest.css";
 
 import {
   AlgaehDateHandler,
@@ -14,7 +14,7 @@ import "react-table/react-table.css";
 import treeTableHOC from "react-table/lib/hoc/treeTable";
 const TreeTable = treeTableHOC(ReactTable);
 
-class ApplyLeave extends Component {
+class LoanRequest extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -25,20 +25,39 @@ class ApplyLeave extends Component {
   render() {
     return (
       <React.Fragment>
-        <div className="row apply_leave">
+        <div className="row loan_request">
           <div className="col-3">
             <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">Request Leave</h3>
+                  <h3 className="caption-subject">Request loan</h3>
                 </div>
               </div>
               <div className="portlet-body">
                 <div className="row">
+                  <AlagehFormGroup
+                    div={{ className: "col-6" }}
+                    label={{
+                      forceLabel: "Loan Amount",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      //decimal: { allowNegative: false },
+                      name: "limit_amount",
+                      value: this.state.limit_amount,
+                      events: {
+                        //  onChange: this.changeTexts.bind(this)
+                      },
+                      others: {
+                        // type: "number"
+                      }
+                    }}
+                  />
                   <AlagehAutoComplete
                     div={{ className: "col-6" }}
                     label={{
-                      forceLabel: "Leave Type",
+                      forceLabel: "No. of EMI",
                       isImp: true
                     }}
                     selector={{
@@ -53,56 +72,10 @@ class ApplyLeave extends Component {
                       //  onChange: this.dropDownHandler.bind(this)
                     }}
                   />
-                  <div className="col-6">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Avialable Balance"
-                      }}
-                    />
-                    <h6>0.0 days</h6>
-                  </div>
-                  <AlgaehDateHandler
-                    div={{ className: "col-6 margin-bottom-15" }}
-                    label={{
-                      forceLabel: "Date From",
-                      isImp: true
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "date_of_joining",
-                      others: {
-                        tabIndex: "6"
-                      }
-                    }}
-                    maxDate={new Date()}
-                  />{" "}
-                  <AlgaehDateHandler
-                    div={{ className: "col-6 margin-bottom-15" }}
-                    label={{
-                      forceLabel: "Date To",
-                      isImp: true
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "date_of_joining",
-                      others: {
-                        tabIndex: "6"
-                      }
-                    }}
-                    maxDate={new Date()}
-                  />{" "}
-                  <div className="col-12">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "No. of Days"
-                      }}
-                    />
-                    <h6>0.0 days</h6>
-                  </div>
                   <AlagehFormGroup
                     div={{ className: "col-12" }}
                     label={{
-                      forceLabel: "Reason for Leave",
+                      forceLabel: "Reason for Loan",
                       isImp: true
                     }}
                     textBox={{
@@ -135,43 +108,43 @@ class ApplyLeave extends Component {
             <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">Leave Request List</h3>
+                  <h3 className="caption-subject">Loan Request List</h3>
                 </div>
               </div>
               <div className="portlet-body">
                 <div className="row">
-                  <div className="col-lg-12" id="leaveRequestList_cntr">
+                  <div className="col-lg-12" id="LoanRequestList_cntr">
                     <AlgaehDataGrid
-                      id="leaveRequestList_grid"
+                      id="LoanRequestList_grid"
                       columns={[
                         {
                           fieldName: "",
-                          label: "Leave Requested On"
+                          label: "Loan Requested On"
                           //disabled: true
                         },
                         {
                           fieldName: "",
-                          label: "Leave Type"
+                          label: "Loan Amount"
                           //disabled: true
                         },
                         {
                           fieldName: "",
-                          label: "Leave From"
+                          label: "No. of EMI"
                           //disabled: true
                         },
                         {
                           fieldName: "",
-                          label: "Leave To"
+                          label: " Reason for Loan"
                           //disabled: true
                         },
                         {
                           fieldName: "",
-                          label: "No. of Days"
+                          label: "No. of EMI Pending"
                           //disabled: true
                         },
                         {
                           fieldName: "",
-                          label: "Leave Reason"
+                          label: "Balance Due"
                           //disabled: true
                         },
                         {
@@ -198,77 +171,9 @@ class ApplyLeave extends Component {
             </div>
           </div>{" "}
         </div>
-        <div className="col-12">
-          <div className="row leaveBalanceCntr box-shadow-normal">
-            <div className="col">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Total Abscent"
-                }}
-              />
-              <h6>0/0 Day (s)</h6>
-            </div>
-            <div className="col">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Sick Leave"
-                }}
-              />
-              <h6>0/3 Day (s)</h6>
-            </div>
-            <div className="col">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Casual Leave"
-                }}
-              />
-              <h6>0/3 Day (s)</h6>
-            </div>
-            <div className="col">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Commpensatory Off"
-                }}
-              />
-              <h6>0/0 Day (s)</h6>
-            </div>{" "}
-            <div className="col">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Earned Leave"
-                }}
-              />
-              <h6>0/7 Day (s)</h6>
-            </div>{" "}
-            <div className="col">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Paternity Leave"
-                }}
-              />
-              <h6>0/5 Day (s)</h6>
-            </div>{" "}
-            <div className="col">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Loss of Pay"
-                }}
-              />
-              <h6>0/0 Day (s)</h6>
-            </div>
-            <div className="col">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Hajj Leave"
-                }}
-              />
-              <h6>0/15 Day (s)</h6>
-            </div>
-          </div>
-        </div>
       </React.Fragment>
     );
   }
 }
 
-export default ApplyLeave;
+export default LoanRequest;

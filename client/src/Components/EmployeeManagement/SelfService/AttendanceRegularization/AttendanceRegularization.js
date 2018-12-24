@@ -66,7 +66,7 @@ class AttendanceRegularization extends Component {
                   <AlgaehDateHandler
                     div={{ className: "col-6 margin-bottom-15" }}
                     label={{
-                      forceLabel: "New In Time",
+                      forceLabel: "New In-Time",
                       isImp: true
                     }}
                     textBox={{
@@ -82,7 +82,7 @@ class AttendanceRegularization extends Component {
                   <AlgaehDateHandler
                     div={{ className: "col-6 margin-bottom-15" }}
                     label={{
-                      forceLabel: "New Out Time",
+                      forceLabel: "New Out-Time",
                       isImp: true
                     }}
                     textBox={{
