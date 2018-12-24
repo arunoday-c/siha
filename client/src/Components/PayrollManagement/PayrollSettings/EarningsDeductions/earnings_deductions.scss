@@ -1,0 +1,89 @@
+.earnings_deductions {
+  #calc-contain {
+    position: absolute;
+    width: 40vw;
+    border: 4px solid #ffffff;
+    border-radius: 0;
+    margin: 0px auto;
+    padding: 0;
+    top: 20%;
+    background: #082829;
+    z-index: 9999;
+    left: 30vw;
+    -webkit-box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    overflow: hidden;
+    input[type="button"] {
+      background: #145052;
+      font-size: 20px;
+      font-weight: 900;
+      /* border-radius: 7px; */
+      /* margin-left: 13px; */
+      border: 1px solid #082829;
+      /* margin-top: 10px; */
+      color: #fff;
+
+      &:hover {
+        background-color: #34b8bc;
+        color: white;
+        cursor: pointer;
+      }
+    }
+    input[type="text"] {
+      position: relative;
+      display: block;
+      width: 100%;
+      margin: 0;
+      font-size: 20px;
+      background: #000;
+      border-radius: 0;
+      border: none;
+      padding: 10px;
+      color: #fff;
+    }
+    .number-sec {
+      padding-right: 0;
+    }
+    .delimeter-sec {
+      padding-left: 0;
+      input[type="button"] {
+        background: #0c3638;
+        &:hover {
+          background: #34b8bc;
+        }
+      }
+    }
+    .ComponentsFormula {
+      input[type="button"] {
+        font-size: 0.9rem;
+        background: #0b3638;
+        &:hover {
+          background: #34b8bc;
+        }
+      }
+    }
+    .submitBtn {
+      border-top: 2px solid #fff;
+      input[type="button"] {
+        text-transform: uppercase;
+        font-size: 1rem;
+        background: #238286;
+        padding: 8px 0;
+        &:hover {
+          background: #34b8bc;
+        }
+      }
+    }
+  }
+  .earningDeductionForms {
+    & > div {
+      margin-bottom: 10px;
+    }
+  }
+  #erngs-ddctns-gridCntr {
+    .ReactTable {
+      max-height: 41vh !important;
+    }
+  }
+}

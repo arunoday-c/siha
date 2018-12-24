@@ -54,7 +54,7 @@ class AddAdvanceModal extends PureComponent {
   }
 
   onClose = e => {
-    debugger;
+    //debugger;
     this.props.onClose && this.props.onClose(e);
   };
 

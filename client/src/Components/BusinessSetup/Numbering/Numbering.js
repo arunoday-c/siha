@@ -6,7 +6,7 @@ import { getOptions } from "../../../actions/BusinessSetup/Options.js";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import Paper from "@material-ui/core/Paper";
+
 import Button from "@material-ui/core/Button";
 
 class Numbering extends Component {
@@ -98,7 +98,7 @@ class Numbering extends Component {
   render() {
     return (
       <div className="numbering">
-        <Paper className="container-fluid">
+        <div className="container-fluid">
           <form>
             <div
               className="row"
@@ -326,7 +326,7 @@ class Numbering extends Component {
           <div className="row form-details">
             <div className="col" />
           </div>
-        </Paper>
+        </div>
       </div>
     );
   }

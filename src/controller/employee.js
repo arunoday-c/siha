@@ -7,7 +7,21 @@ import {
   getEmployeeDetails,
   getDoctorServiceCommission,
   getEmployeeCategory,
-  getDoctorServiceTypeCommission
+  getDoctorServiceTypeCommission,
+  addEmployeeGroups,
+  getEmployeeGroups,
+  updateEmployeeGroup,
+  deleteEmployeeGroup,
+  addEarningDeduction,
+  getEarningDeduction,
+  updateEarningDeduction,
+  deleteEarningDeduction,
+  addEmployeeMaster,
+  addEmployeeIdentification,
+  getEmployeeIdentification,
+  updateEmployeeIdentification,
+  deleteEmployeeIdentification,
+  addEmployeeInfo
 } from "../model/employee";
 import httpStatus from "../utils/httpStatus";
 export default ({ config, db }) => {
@@ -31,6 +45,21 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+
+  api.post(
+    "/addEmployeeGroups",
+    addEmployeeGroups,
+    (req, res, next) => {
+      let resultBack = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: resultBack
+      });
+      next();
+    },
+    releaseConnection
+  );
+
   api.put(
     "/updateEmployee",
     updateEmployee,
@@ -109,6 +138,232 @@ export default ({ config, db }) => {
       res.status(httpStatus.ok).json({
         success: true,
         records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  api.get(
+    "/getEmployeeGroups",
+    getEmployeeGroups,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan
+  api.put("/updateEmployeeGroup", updateEmployeeGroup, (req, res, next) => {
+    let result = req.records;
+    if (result.invalid_input == true) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: "please provide valid input"
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
+
+  // created by irfan
+  api.delete("/deleteEmployeeGroup", deleteEmployeeGroup, (req, res, next) => {
+    let result = req.records;
+    if (result.invalid_input == true) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: "please provide valid input"
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
+
+  // created by irfan
+  api.post("/addEarningDeduction", addEarningDeduction, (req, res, next) => {
+    let result = req.records;
+    if (result.invalid_input == true) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: "please provide valid input"
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
+
+  api.get(
+    "/getEarningDeduction",
+    getEarningDeduction,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan
+  api.put(
+    "/updateEarningDeduction",
+    updateEarningDeduction,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.invalid_input == true) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: "please provide valid input"
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    }
+  );
+
+  // created by irfan:
+  api.delete(
+    "/deleteEarningDeduction",
+    deleteEarningDeduction,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.invalid_input == true) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: "please provide valid input"
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    }
+  );
+
+  api.post(
+    "/addEmployeeMaster",
+    addEmployeeMaster,
+    (req, res, next) => {
+      let resultBack = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: resultBack
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  api.post(
+    "/addEmployeeIdentification",
+    addEmployeeIdentification,
+    (req, res, next) => {
+      let resultBack = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: resultBack
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan
+  api.get(
+    "/getEmployeeIdentification",
+    getEmployeeIdentification,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.invalid_input == true) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: "please provide valid input"
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    }
+  );
+
+  // created by irfan
+  api.put(
+    "/updateEmployeeIdentification",
+    updateEmployeeIdentification,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.invalid_input == true) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: "please provide valid input"
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    }
+  );
+
+  // created by irfan
+  api.delete(
+    "/deleteEmployeeIdentification",
+    deleteEmployeeIdentification,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.invalid_input == true) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: "please provide valid input"
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    }
+  );
+
+  api.post(
+    "/addEmployeeInfo",
+    addEmployeeInfo,
+    (req, res, next) => {
+      let resultBack = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: resultBack
       });
       next();
     },

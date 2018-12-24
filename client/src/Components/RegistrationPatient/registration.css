@@ -15,7 +15,8 @@
     width: 100% !important;
     background-color: #fbfbfb;
     margin-right: "5px"; }
-  .hptl-phase1-patientreg-details .paper {
+  .hptl-phase1-patientreg-details .Paper {
+    background: #fff;
     background-color: #292929 !important;
     left: 0px;
     width: 250px; }

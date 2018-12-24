@@ -95,7 +95,7 @@ class ClaimSubmission extends Component {
   }
 
   downloadXmlHandler() {
-    debugger;
+    //debugger;
     let _win = window;
     _win.open(
       "data:text/plain;charset=utf-8," +

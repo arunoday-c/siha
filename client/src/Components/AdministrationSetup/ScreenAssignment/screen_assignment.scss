@@ -1,56 +1,72 @@
 .screen_assignment {
-  /* reset our lists to remove bullet points and padding */
-  .mainmenu,
-  .submenu {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
+  .moduleList {
+    border: 1px solid #d3d3d3;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border-radius: 5px;
+    max-height: 40vh;
 
-  /* make ALL links (main and submenu) have padding and background color */
-  .mainmenu a {
-    display: block;
-    background-color: #ccc;
-    text-decoration: none;
-    padding: 10px;
-    color: #000;
-  }
+    /* reset our lists to remove bullet points and padding */
+    .mainmenu,
+    .submenu {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
 
-  /* add hover behaviour */
-  .mainmenu a:hover {
-    background-color: #c5c5c5;
-  }
+    /* make ALL links (main and submenu) have padding and background color */
+    .mainmenu {
+      li {
+        display: block;
+        text-decoration: none;
+        padding: 0;
+        border-bottom: 1px solid #d3d3d3;
+        color: #000;
 
-  /* when hovering over a .mainmenu item,
-      display the submenu inside it.
-      we're changing the submenu's max-height from 0 to 200px;
-    */
+        /* add hover behaviour */
+        &:hover {
+          background: #33b8bc;
+          color: #fff;
+          .submenu {
+            display: block;
+            max-height: 200px;
+          }
+        }
+        &:last-child {
+          border-bottom: 0;
+        }
+      }
 
-  .mainmenu li:hover .submenu {
-    display: block;
-    max-height: 200px;
-  }
+      input[type="checkbox"] {
+        margin: 10px;
+      }
+      a {
+        padding: 4px 10px 6px;
+        border-left: 1px solid #d3d3d3;
+        display: inline-block;
+      }
+    }
 
-  /*
-      we now overwrite the background-color for .submenu links only.
-      CSS reads down the page, so code at the bottom will overwrite the code at the top.
-    */
+    .submenu {
+      overflow: hidden;
+      -webkit-transition: all 0.5s ease-out;
+      /* background: #efefef; */
+      border-top: 1px dashed #d3d3d3;
+      margin-left: 34px;
+      border-left: 1px solid #d3d3d3;
+      li {
+        &:hover {
+          background-color: #238286;
+          color: #fff;
+        }
+        &:last-child {
+          border-bottom: 0;
+        }
+      }
+    }
 
-  .submenu a {
-    background-color: #999;
-  }
-
-  /* hover behaviour for links inside .submenu */
-  .submenu a:hover {
-    background-color: #666;
-  }
-
-  /* this is the initial state of all submenus.
+    /* this is the initial state of all submenus.
       we set it to max-height: 0, and hide the overflowed content.
     */
-  .submenu {
-    overflow: hidden;
-    // max-height: 0;
-    -webkit-transition: all 0.5s ease-out;
   }
 }

@@ -1,179 +1,115 @@
-import moment from "moment";
-import { saveImageOnServer } from "../../../../../utils/GlobalFunctions";
 let texthandlerInterval = null;
-const texthandle = ($this, context, e) => {
-  let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
 
-  $this.setState({
-    [name]: value
-  });
-
-  clearInterval(texthandlerInterval);
-  texthandlerInterval = setInterval(() => {
-    if (context !== undefined) {
-      context.updateState({ [name]: value });
-    }
-    clearInterval(texthandlerInterval);
-  }, 500);
-};
-
-const countryStatehandle = ($this, context, e) => {
-  let name;
-  let value;
-  if (e.name !== undefined) {
-    if (e.name === "country_id") {
-      name = e.name;
-      value = e.value;
-      $this.setState({
-        state_id: 0,
-        city_id: 0
-      });
-      if (context !== undefined) {
-        context.updateState({
-          state_id: null,
-          city_id: null
-        });
-      }
-
-      $this.props.getStates({
-        redux: {
-          data: e.selected.states,
-          type: "STATE_GET_DATA",
-          mappingName: "countrystates"
-        }
-      });
-    } else if (e.name === "state_id") {
-      name = e.name;
-      value = e.value;
-      $this.setState({
-        city_id: null
-      });
-      if (context !== undefined) {
-        context.updateState({
-          city_id: null
-        });
-      }
-      $this.props.getCities({
-        redux: {
-          data: e.selected.cities,
-          type: "CITY_GET_DATA",
-          mappingName: "cities"
-        }
-      });
-    }
-  }
-
-  $this.setState({
-    [name]: value
-  });
-
-  if (context !== undefined) {
-    context.updateState({ [name]: value });
-  }
-};
-
-//Todo title and gender related chnage need to do
-const titlehandle = ($this, context, e) => {
-  let setGender;
-  if (e.value === 1) {
-    setGender = "Male";
-  } else if (e.value === 2) {
-    setGender = "Female";
-  }
-  $this.setState({
-    gender: setGender,
-    [e.name]: e.value
-  });
-
-  if (context !== undefined) {
-    context.updateState({ gender: setGender, [e.name]: e.value });
-  }
-};
-
-const numberSet = ($this, context, cntrl, e) => {
-  $this.setState({
-    [e.target.name]: e.target.value
-  });
-  if (context !== undefined) {
-    context.updateState({ [e.target.name]: e.target.value });
-  }
-};
-
-const onDrop = ($this, file, context, fileType) => {
-  saveImageOnServer({
-    fileControl: fileType,
-    thisState: {
-      stateName: $this,
-      stateProgressName: "percent",
-      filePreview: file
-    },
-    fileName: $this.state.employee_code,
-    pageName: "EmployeeMasterIndex",
-    destinationName: $this.state.employee_code,
-    saveDirectly: true,
-    fileType: "Employees",
-    onSuccess: ImageObj => {
-      $this.setState({
-        [ImageObj.fileName]: ImageObj.preview
-      });
-
-      if (context !== undefined) {
-        context.updateState({ [ImageObj.fileName]: ImageObj.preview });
-      }
-    }
-  });
-};
-
-const datehandle = ($this, ctrl, e) => {
-  $this.setState({
-    [e]: ctrl
-  });
-
-  //   clearInterval(texthandlerInterval);
-  //   texthandlerInterval = setInterval(() => {
-  //     if (context !== undefined) {
-  //       context.updateState({ [e]: moment(ctrl)._d });
-  //     }
-  //     clearInterval(texthandlerInterval);
-  //   }, 500);
-};
-
-const isDoctorChange = ($this, context, e) => {
-  let Applicable = false;
-  let Value = "N";
+const changeChecks = ($this, context, e) => {
   let name = e.target.name;
 
-  if ($this.state.Applicable === true) {
-    Applicable = false;
-    Value = "N";
-  } else if ($this.state.Applicable === false) {
-    Applicable = true;
-    Value = "Y";
+  switch (e.target.name) {
+    case "leave_salary_process":
+      $this.setState(
+        {
+          leave_salary_process: !$this.state.leave_salary_process
+        },
+        () => {
+          clearInterval(texthandlerInterval);
+          texthandlerInterval = setInterval(() => {
+            if (context !== undefined) {
+              context.updateState({
+                [name]: $this.state.leave_salary_process ? "Y" : "N"
+              });
+            }
+            clearInterval(texthandlerInterval);
+          }, 500);
+        }
+      );
+
+    case "late_coming_rule":
+      $this.setState(
+        {
+          late_coming_rule: !$this.state.late_coming_rule
+        },
+        () => {
+          clearInterval(texthandlerInterval);
+          texthandlerInterval = setInterval(() => {
+            if (context !== undefined) {
+              context.updateState({
+                [name]: $this.state.late_coming_rule ? "Y" : "N"
+              });
+            }
+            clearInterval(texthandlerInterval);
+          }, 500);
+        }
+      );
+
+    case "airfare_process":
+      $this.setState(
+        {
+          airfare_process: !$this.state.airfare_process
+        },
+        () => {
+          clearInterval(texthandlerInterval);
+          texthandlerInterval = setInterval(() => {
+            if (context !== undefined) {
+              context.updateState({
+                [name]: $this.state.airfare_process ? "Y" : "N"
+              });
+            }
+            clearInterval(texthandlerInterval);
+          }, 500);
+        }
+      );
+
+    case "exclude_machine_data":
+      $this.setState(
+        {
+          exclude_machine_data: !$this.state.exclude_machine_data
+        },
+        () => {
+          clearInterval(texthandlerInterval);
+          texthandlerInterval = setInterval(() => {
+            if (context !== undefined) {
+              context.updateState({
+                [name]: $this.state.exclude_machine_data ? "Y" : "N"
+              });
+            }
+            clearInterval(texthandlerInterval);
+          }, 500);
+        }
+      );
+    case "gratuity_applicable":
+      $this.setState(
+        {
+          gratuity_applicable: !$this.state.gratuity_applicable
+        },
+        () => {
+          clearInterval(texthandlerInterval);
+          texthandlerInterval = setInterval(() => {
+            if (context !== undefined) {
+              context.updateState({
+                [name]: $this.state.gratuity_applicable ? "Y" : "N"
+              });
+            }
+            clearInterval(texthandlerInterval);
+          }, 500);
+        }
+      );
+    case "suspend_salary":
+      $this.setState(
+        {
+          suspend_salary: !$this.state.suspend_salary
+        },
+        () => {
+          clearInterval(texthandlerInterval);
+          texthandlerInterval = setInterval(() => {
+            if (context !== undefined) {
+              context.updateState({
+                [name]: $this.state.suspend_salary ? "Y" : "N"
+              });
+            }
+            clearInterval(texthandlerInterval);
+          }, 500);
+        }
+      );
   }
-  $this.setState({
-    [name]: Value,
-    Applicable: Applicable
-  });
-
-  clearInterval(texthandlerInterval);
-  texthandlerInterval = setInterval(() => {
-    if (context !== undefined) {
-      context.updateState({
-        [name]: Value,
-        Applicable: Applicable
-      });
-    }
-    clearInterval(texthandlerInterval);
-  }, 500);
 };
 
-export {
-  texthandle,
-  titlehandle,
-  numberSet,
-  onDrop,
-  countryStatehandle,
-  datehandle,
-  isDoctorChange
-};
+export { changeChecks };

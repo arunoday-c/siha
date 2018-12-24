@@ -2,7 +2,6 @@ import React, { Component } from "react";
 // import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 // import styles from "./Footer.css";
 // import IconButton from 'material-ui/IconButton';
-// import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 // import Paper from 'material-ui/Paper';
 // import classNames from "classnames";
 

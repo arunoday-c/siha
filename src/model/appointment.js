@@ -250,7 +250,7 @@ let getAppointmentRoom = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select * FROM hims_d_appointment_room where record_status='A' AND" +
+        "select hims_d_appointment_room_id, description, room_active FROM hims_d_appointment_room where record_status='A' AND" +
           where.condition +
           " order by hims_d_appointment_room_id desc",
         where.values,
@@ -2796,7 +2796,7 @@ let getPatientAppointment = (req, res, next) => {
   }
 };
 
-//created by irfan: to get Patient Appointment
+//created by irfan: to get
 let getEmployeeServiceID = (req, res, next) => {
   let selectWhere = {
     employee_id: "ALL",
@@ -2808,13 +2808,15 @@ let getEmployeeServiceID = (req, res, next) => {
     }
     let db = req.db;
 
-    delete req.query.provider_id;
+    //delete req.query.provider_id;
 
     let where = whereCondition(extend(selectWhere, req.query));
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select * from hims_m_employee_department_mappings where record_status='A' and " +
+        "select  hims_d_employee_department_id, employee_id, services_id,\
+         sub_department_id, category_speciality_id, user_id from hims_m_employee_department_mappings\
+          where record_status='A' and " +
           where.condition,
         where.values,
         (error, result) => {

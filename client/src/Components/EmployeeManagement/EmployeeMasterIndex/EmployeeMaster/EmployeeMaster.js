@@ -2,11 +2,10 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-
 import "./EmployeeMaster.css";
-
 import CommissionSetup from "./CommissionSetup/CommissionSetup";
 import PersonalDetails from "./PersonalDetails/PersonalDetails";
+import FamilyAndIdentification from "./FamilyAndIdentification/FamilyAndIdentification";
 import DeptUserDetails from "./DeptUserDetails/DeptUserDetails";
 import PayRollDetails from "./PayRollDetails/PayRollDetails";
 import OfficalDetails from "./OfficalDetails/OfficalDetails";
@@ -17,7 +16,7 @@ import { AlgaehActions } from "../../../../actions/algaehActions";
 import MyContext from "../../../../utils/MyContext";
 
 import EmpMasterIOputs from "../../../../Models/EmployeeMaster";
-import { getCookie } from "../../../../utils/algaehApiCall";
+import { getCookie, swalMessage } from "../../../../utils/algaehApiCall";
 import { InsertUpdateEmployee, ClearEmployee } from "./EmployeeMasterEvents";
 
 class EmployeeMaster extends Component {
@@ -35,15 +34,28 @@ class EmployeeMaster extends Component {
   }
 
   openTab(e) {
+    var specified = e.currentTarget.getAttribute("algaehtabs");
+
+    // if (
+    //   this.state.hims_d_employee_id === null &&
+    //   specified !== "OfficalDetails" &&
+    //   specified !== "PersonalDetails"
+    // ) {
+    // swalMessage({
+    //   title: "Please fill the basic details to proceed",
+    //   type: "warning"
+    // });
+    //  } else {
     var element = document.querySelectorAll("[algaehtabs]");
     for (var i = 0; i < element.length; i++) {
       element[i].classList.remove("active");
     }
     e.currentTarget.classList.add("active");
-    var specified = e.currentTarget.getAttribute("algaehtabs");
+
     this.setState({
       pageDisplay: specified
     });
+    //}
   }
 
   SideMenuBarOpen(sidOpen) {
@@ -148,6 +160,7 @@ class EmployeeMaster extends Component {
     ) {
       let IOputs = newProps.employeeDetailsPop;
       IOputs.Applicable = IOputs.isdoctor === "Y" ? true : false;
+      IOputs.samechecked = IOputs.same_address === "Y" ? true : false;
       this.setState({ ...this.state, ...IOputs });
     } else {
       let IOputs = EmpMasterIOputs.inputParam();
@@ -196,21 +209,7 @@ class EmployeeMaster extends Component {
                         />
                       }
                     </li>
-                    {this.state.isdoctor === "Y" ? (
-                      <li
-                        algaehtabs={"CommissionSetup"}
-                        className={"nav-item tab-button"}
-                        onClick={this.openTab.bind(this)}
-                      >
-                        {
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "commission_setup"
-                            }}
-                          />
-                        }
-                      </li>
-                    ) : null}
+
                     <li
                       algaehtabs={"OfficalDetails"}
                       className={"nav-item tab-button"}
@@ -251,6 +250,35 @@ class EmployeeMaster extends Component {
                         />
                       }
                     </li>
+                    {this.state.isdoctor === "Y" ? (
+                      <li
+                        algaehtabs={"CommissionSetup"}
+                        className={"nav-item tab-button"}
+                        onClick={this.openTab.bind(this)}
+                      >
+                        {
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "commission_setup"
+                            }}
+                          />
+                        }
+                      </li>
+                    ) : null}
+                    <li
+                      algaehtabs={"FamilyAndIdentification"}
+                      className={"nav-item tab-button"}
+                      onClick={this.openTab.bind(this)}
+                    >
+                      {
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Family & Identification Details"
+                          }}
+                        />
+                      }
+                    </li>
+
                     <li
                       algaehtabs={"RulesDetails"}
                       className={"nav-item tab-button"}
@@ -277,14 +305,16 @@ class EmployeeMaster extends Component {
                   <div className="employee-section">
                     {this.state.pageDisplay === "PersonalDetails" ? (
                       <PersonalDetails EmpMasterIOputs={this.state} />
-                    ) : this.state.pageDisplay === "CommissionSetup" ? (
-                      <CommissionSetup EmpMasterIOputs={this.state} />
-                    ) : this.state.pageDisplay === "OfficalDetails" ? (
-                      <OfficalDetails EmpMasterIOputs={this.state} />
                     ) : this.state.pageDisplay === "DeptUserDetails" ? (
                       <DeptUserDetails EmpMasterIOputs={this.state} />
                     ) : this.state.pageDisplay === "PayRollDetails" ? (
                       <PayRollDetails EmpMasterIOputs={this.state} />
+                    ) : this.state.pageDisplay === "CommissionSetup" ? (
+                      <CommissionSetup EmpMasterIOputs={this.state} />
+                    ) : this.state.pageDisplay === "FamilyAndIdentification" ? (
+                      <FamilyAndIdentification EmpMasterIOputs={this.state} />
+                    ) : this.state.pageDisplay === "OfficalDetails" ? (
+                      <OfficalDetails EmpMasterIOputs={this.state} />
                     ) : this.state.pageDisplay === "RulesDetails" ? (
                       <RulesDetails EmpMasterIOputs={this.state} />
                     ) : null}
@@ -299,6 +329,7 @@ class EmployeeMaster extends Component {
 
                     <div className="col-lg-8">
                       <button
+                        // onClick={() => {}}
                         onClick={InsertUpdateEmployee.bind(this, this)}
                         type="button"
                         className="btn btn-primary"

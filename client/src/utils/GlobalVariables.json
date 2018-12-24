@@ -18,6 +18,13 @@
     { "name": "Widowed", "arabic_name": "الأرامل", "value": "Widowed" }
   ],
 
+  "FORMAT_MARTIALSTS_EMP": [
+    { "name": "Married", "arabic_name": "زوجت", "value": "M" },
+    { "name": "Single", "arabic_name": "غير مرتبطة", "value": "S" },
+    { "name": "Divorced", "arabic_name": "مطلقة", "value": "D" },
+    { "name": "Widowed", "arabic_name": "الأرامل", "value": "W" }
+  ],
+
   "FORMAT_PAYTYPE": [
     { "name": "Cash", "arabic_name": "السيولة النقدية", "value": "CA" },
     { "name": "Card", "arabic_name": "بطاقة", "value": "CD" },
@@ -511,5 +518,71 @@
       "value": "P"
     },
     { "name": "Secondary Insurance", "value": "S" }
+  ],
+  "AIRFARE_ELEGIBILITY": [
+    { "name": "6", "value": "6" },
+    { "name": "12", "value": "12" },
+    { "name": "18", "value": "18" },
+    { "name": "24", "value": "24" }
+  ],
+  "COMPONENT_CATEGORY": [
+    { "name": "Advance", "value": "A" },
+    { "name": "Earnings", "value": "E" },
+    { "name": "Deduction", "value": "D" },
+    { "name": "Employer Contribution", "value": "C" }
+  ],
+  "CALC_METHOD": [
+    { "name": "Formula", "value": "FO" },
+    { "name": "Fixed", "value": "FI" }
+  ],
+  "COMP_FREQ": [
+    { "name": "Monthly", "value": "M" },
+    { "name": "Yearly", "value": "Y" },
+    { "name": "Quarterly", "value": "Q" },
+    { "name": "Hourly", "value": "H" }
+  ],
+  "CALC_TYPE": [
+    { "name": "Fixed", "value": "F" },
+    { "name": "Variable", "value": "V" }
+  ],
+  "COMP_TYPE": [
+    { "name": "None", "value": "N" },
+    { "name": "Bonus", "value": "B" },
+    { "name": "Employee PF", "value": "EEP" },
+    { "name": "Leave Salary", "value": "LS" },
+    { "name": "Leave Encashment", "value": "LE" },
+    { "name": "End of Service", "value": "EOS" },
+    { "name": "Final Settlement", "value": "FS" },
+    { "name": "LOP Deduction", "value": "LOP" },
+    { "name": "Notice Period", "value": "NP" },
+    { "name": "Airfare", "value": "AR" }
+  ],
+  "ROUND_OFF_TYPE": [
+    { "name": "Floor", "value": "FL" },
+    { "name": "Ceiling", "value": "CL" },
+    { "name": "Round", "value": "RD" }
+  ],
+  "EMPLOYEE_TYPE": [
+    { "name": "Permanent", "value": "PE" },
+    { "name": "Contract", "value": "CO" }
+  ],
+  "EMP_APPT_TYPE": [
+    { "name": "Agency", "value": "A" },
+    { "name": "Direct", "value": "D" },
+    { "name": "Referal", "value": "R" }
+  ],
+  "DEPENDENT_TYPE": [
+    { "name": "Spouse", "value": "SP" },
+    { "name": "Father", "value": "FT" },
+    { "name": "Mother", "value": "MT" },
+    { "name": "Guardian", "value": "GU" },
+    { "name": "Son", "value": "SO" },
+    { "name": "Daughter", "value": "DG" }
+  ],
+  "MODE_OF_PAYMENT": [
+    { "name": "Cash", "value": "CA" },
+    { "name": "Cheque", "value": "CH" },
+    { "name": "Transfer", "value": "TRF" },
+    { "name": "Wages and Protection System", "value": "WPS" }
   ]
 }

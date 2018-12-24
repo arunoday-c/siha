@@ -1,0 +1,215 @@
+.selfServiceModule .EmployeeProfile .EmployeeInfo-Top {
+  background: white;
+  height: 110px;
+  padding: 5px 0 0;
+  width: 100%;
+  position: fixed;
+  z-index: 999; }
+  .selfServiceModule .EmployeeProfile .EmployeeInfo-Top div {
+    float: left;
+    color: #858585; }
+  .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .backBtn {
+    border-right: 1px solid #e1e1e1;
+    padding-right: 10px;
+    padding-left: 10px; }
+    .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .backBtn button {
+      height: 60px;
+      border: 1px solid #e1e1e1;
+      font-size: 0.7rem; }
+    .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .backBtn i {
+      display: block;
+      margin-bottom: 5px; }
+  .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .EmployeeImg {
+    margin: 1px 10px;
+    border-radius: 4px;
+    border: 1px solid #e1e1e1; }
+    .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .EmployeeImg img {
+      height: 95px;
+      border-radius: 4px;
+      overflow: hidden; }
+  .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .EmployeeName {
+    max-width: 30%;
+    margin-top: 2px;
+    border-left: 1px solid #e1e1e1;
+    border-right: 1px solid #e1e1e1;
+    padding-left: 10px;
+    padding-right: 10px;
+    min-height: 98px; }
+    .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .EmployeeName h6 {
+      font-size: 1.2rem;
+      margin-bottom: 2px;
+      color: #000;
+      line-height: 1.6rem;
+      min-height: 50px; }
+    .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .EmployeeName p {
+      font-size: 0.8rem;
+      margin: 0;
+      padding: 0; }
+      .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .EmployeeName p b {
+        color: #34b8bc;
+        font-weight: 300;
+        font-size: 1.2rem; }
+  .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .EmployeeDemographic {
+    font-size: 0.8rem;
+    line-height: 1.3rem;
+    border-right: 1px solid #e1e1e1;
+    padding-left: 10px;
+    padding-right: 10px;
+    min-height: 98px; }
+    .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .EmployeeDemographic span {
+      display: block;
+      line-height: 1.5rem; }
+      .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .EmployeeDemographic span i {
+        text-align: center;
+        width: 20px; }
+      .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .EmployeeDemographic span b {
+        color: #34b8bc; }
+  .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .EmployeeHospitalDetail {
+    font-size: 0.8rem;
+    line-height: 1.3rem;
+    border-right: 1px solid #e1e1e1;
+    padding-left: 10px;
+    padding-right: 10px;
+    min-height: 98px; }
+    .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .EmployeeHospitalDetail span {
+      display: block; }
+      .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .EmployeeHospitalDetail span b {
+        color: #34b8bc; }
+  .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .EmployeeVital {
+    font-size: 0.8rem;
+    max-width: 33%;
+    line-height: 1.3rem;
+    padding-left: 10px;
+    padding-right: 10px;
+    min-height: 98px; }
+    .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .EmployeeVital span {
+      display: inline-block;
+      margin-right: 8px; }
+      .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .EmployeeVital span b {
+        color: #34b8bc; }
+  .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .moreAction {
+    float: right;
+    border-right: 1px solid #e1e1e1;
+    padding-right: 10px; }
+    .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .moreAction button {
+      height: 60px;
+      border: 1px solid #e1e1e1;
+      font-size: 0.7rem;
+      margin-left: 0; }
+    .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .moreAction i {
+      display: block;
+      margin-bottom: 5px; }
+
+.selfServiceModule .EmployeeTopNav {
+  background: white;
+  height: 35px;
+  padding: 0;
+  width: 100%;
+  color: #797979;
+  font-size: 1rem;
+  text-transform: uppercase;
+  position: fixed;
+  top: 163px;
+  z-index: 99; }
+  .selfServiceModule .EmployeeTopNav .tabMaster {
+    box-shadow: none; }
+    .selfServiceModule .EmployeeTopNav .tabMaster ul {
+      position: relative; }
+      .selfServiceModule .EmployeeTopNav .tabMaster ul li:after {
+        display: block;
+        content: "";
+        border-bottom: solid 3px #00a9ad;
+        transform: scaleX(0);
+        transition: transform 150ms ease-in-out; }
+      .selfServiceModule .EmployeeTopNav .tabMaster ul li:hover:after {
+        transform: scaleX(1); }
+      .selfServiceModule .EmployeeTopNav .tabMaster ul li span {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        padding: 9px 15px 8px;
+        color: #858585;
+        cursor: pointer; }
+      .selfServiceModule .EmployeeTopNav .tabMaster ul li span.active {
+        border-bottom: solid 3px #00a9ad;
+        color: #fff;
+        background: #34b8bc; }
+        .selfServiceModule .EmployeeTopNav .tabMaster ul li span.active:hover {
+          cursor: default;
+          color: #fff; }
+        .selfServiceModule .EmployeeTopNav .tabMaster ul li span.active:hover:after {
+          display: none !important;
+          border: none !important;
+          cursor: pointer; }
+    .selfServiceModule .EmployeeTopNav .tabMaster .Employee-quick-info {
+      color: #34b8bc;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      position: absolute;
+      right: 20px; }
+      .selfServiceModule .EmployeeTopNav .tabMaster .Employee-quick-info li {
+        background: #ffffff;
+        color: #53bcb1;
+        padding: 4px 10px 3px;
+        cursor: pointer;
+        margin: 0 10px;
+        list-style: none;
+        display: inline-block; }
+        .selfServiceModule .EmployeeTopNav .tabMaster .Employee-quick-info li section {
+          width: 30vw;
+          height: auto;
+          position: absolute;
+          right: 0;
+          top: 30px;
+          background: #53bdb1;
+          z-index: 9;
+          padding: 10px;
+          border-radius: 5px;
+          color: #fff;
+          display: none; }
+          .selfServiceModule .EmployeeTopNav .tabMaster .Employee-quick-info li section b.top-nav-sec-hdg {
+            text-align: center;
+            border-bottom: 1px solid #337e74;
+            margin-left: -10px;
+            margin-right: -10px;
+            padding-bottom: 11px; }
+          .selfServiceModule .EmployeeTopNav .tabMaster .Employee-quick-info li section b {
+            display: block;
+            border-bottom: 1px solid #3f9c90;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            font-size: 0.8rem; }
+          .selfServiceModule .EmployeeTopNav .tabMaster .Employee-quick-info li section .listofA-D-D {
+            display: inline-block;
+            margin-right: 8px;
+            border: 1px solid #317970;
+            padding: 3px 10px;
+            margin: 0;
+            color: #fff;
+            margin-right: 5px;
+            margin-bottom: 3px;
+            border-radius: 20px;
+            background: #3f9c91;
+            font-size: 0.7rem;
+            white-space: normal; }
+          .selfServiceModule .EmployeeTopNav .tabMaster .Employee-quick-info li section p {
+            background: rgba(0, 0, 0, 0.05);
+            border-top: 1px solid #65dace;
+            margin: -10px;
+            padding: 10px; }
+      .selfServiceModule .EmployeeTopNav .tabMaster .Employee-quick-info li:hover {
+        background: #53bcb1;
+        color: #fff;
+        padding: 4px 10px; }
+        .selfServiceModule .EmployeeTopNav .tabMaster .Employee-quick-info li:hover section {
+          display: block; }
+
+.selfServiceModule .EmployeeContentArea {
+  margin: 100px 10px 0;
+  z-index: 1;
+  width: 100%; }
+
+.selfServiceModule .selfService-setion {
+  margin-top: 160px;
+  padding-top: 0;
+  background: none; }

@@ -1,7 +1,6 @@
 import React, { PureComponent } from "react";
 import "./../SideMenuBar/SideMenuBar.js";
 import "./header.css";
-import MenuIcon from "@material-ui/icons/Menu";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 
@@ -82,7 +81,7 @@ class Header extends PureComponent {
               </IconButton>
             </div>
             <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-              <h5>{this.props.title}</h5>
+              <h5>{this.props.title} ABOOBACKER</h5>
             </div>
             <div className="col-lg-5">
               <Button

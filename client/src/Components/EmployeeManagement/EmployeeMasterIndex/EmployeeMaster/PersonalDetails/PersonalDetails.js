@@ -1,20 +1,17 @@
 import React, { PureComponent } from "react";
 import "./PersonalDetails.css";
-import Dropzone from "react-dropzone";
 import { AlgaehActions } from "../../../../../actions/algaehActions";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import {
   texthandle,
-  titlehandle,
-  onDrop,
   countryStatehandle,
   datehandle,
-  isDoctorChange
+  isDoctorChange,
+  sameAsPresent
 } from "./PersonalDetailsEvents.js";
 import MyContext from "../../../../../utils/MyContext.js";
-
 import {
   AlgaehDateHandler,
   AlagehFormGroup,
@@ -23,17 +20,13 @@ import {
 } from "../../../../Wrapper/algaehWrapper";
 import variableJson from "../../../../../utils/GlobalVariables.json";
 import Enumerable from "linq";
-// import DeptUserDetails from "../DeptUserDetails/DeptUserDetails";
-// import noImage from "../../../../../assets/images/images.webp";
-// import { displayFileFromServer } from "../../../../../utils/GlobalFunctions";
 import AlgaehFileUploader from "../../../../Wrapper/algaehFileUpload";
 class PersonalDetails extends PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
-      // Applicable: false,
-      percent: 0
+      samechecked: false
     };
   }
 
@@ -64,6 +57,34 @@ class PersonalDetails extends PureComponent {
         redux: {
           type: "CTRY_GET_DATA",
           mappingName: "countries"
+        }
+      });
+    }
+
+    if (
+      this.props.relegions === undefined ||
+      this.props.relegions.length === 0
+    ) {
+      this.props.getRelegion({
+        uri: "/masters/get/relegion",
+        method: "GET",
+        redux: {
+          type: "RELGE_GET_DATA",
+          mappingName: "relegions"
+        }
+      });
+    }
+
+    if (
+      this.props.nationalities === undefined ||
+      this.props.nationalities.length === 0
+    ) {
+      this.props.getNationalities({
+        uri: "/masters/get/nationality",
+        method: "GET",
+        redux: {
+          type: "NAT_GET_DATA",
+          mappingName: "nationalities"
         }
       });
     }
@@ -234,394 +255,148 @@ class PersonalDetails extends PureComponent {
                           }}
                         />
                       </div>
+                      <h5>
+                        <span>Personal Info.</span>
+                      </h5>
+                      <div className="row paddin-bottom-5">
+                        <AlagehFormGroup
+                          div={{ className: "col-4" }}
+                          label={{
+                            fieldName: "contact_no",
+                            isImp: false
+                          }}
+                          textBox={{
+                            value: this.state.primary_contact_no,
+                            className: "txt-fld",
+                            name: "primary_contact_no",
 
-                      <div className="row">
-                        <div className="col-12">
-                          <h5>
-                            <span>Personal Info.</span>
-                          </h5>
-                          <div className="row paddin-bottom-5">
-                            <AlagehFormGroup
-                              div={{ className: "col-4" }}
-                              label={{
-                                fieldName: "contact_no",
-                                isImp: false
-                              }}
-                              textBox={{
-                                value: this.state.primary_contact_no,
-                                className: "txt-fld",
-                                name: "primary_contact_no",
+                            events: {
+                              onChange: texthandle.bind(this, this, context)
+                            },
+                            others: {
+                              tabIndex: "7",
+                              placeholder: "(+01)123-456-7890",
+                              type: "number"
+                            }
+                          }}
+                        />
 
-                                events: {
-                                  onChange: texthandle.bind(this, this, context)
-                                },
-                                others: {
-                                  tabIndex: "7",
-                                  placeholder: "(+01)123-456-7890",
-                                  type: "number"
-                                }
-                              }}
-                            />
+                        <AlagehFormGroup
+                          div={{ className: "col-5" }}
+                          label={{
+                            fieldName: "email",
+                            isImp: false
+                          }}
+                          textBox={{
+                            value: this.state.email,
+                            className: "txt-fld",
+                            name: "email",
 
-                            <AlagehFormGroup
-                              div={{ className: "col-5" }}
-                              label={{
-                                fieldName: "email",
-                                isImp: false
-                              }}
-                              textBox={{
-                                value: this.state.email,
-                                className: "txt-fld",
-                                name: "email",
+                            events: {
+                              onChange: texthandle.bind(this, this, context)
+                            },
+                            others: {
+                              tabIndex: "8",
+                              placeholder: "Enter Email Address",
+                              type: "email"
+                            }
+                          }}
+                        />
 
-                                events: {
-                                  onChange: texthandle.bind(this, this, context)
-                                },
-                                others: {
-                                  tabIndex: "8",
-                                  placeholder: "Enter Email Address",
-                                  type: "email"
-                                }
-                              }}
-                            />
+                        <AlagehAutoComplete
+                          div={{ className: "col-3" }}
+                          label={{
+                            fieldName: "blood_group"
+                          }}
+                          selector={{
+                            name: "blood_group",
+                            className: "select-fld",
+                            value: this.state.blood_group,
 
-                            <AlagehAutoComplete
-                              div={{ className: "col-3" }}
-                              label={{
-                                fieldName: "blood_group"
-                              }}
-                              selector={{
-                                name: "blood_group",
-                                className: "select-fld",
-                                value: this.state.blood_group,
-
-                                dataSource: {
-                                  textField: "name",
-                                  valueField: "value",
-                                  data: variableJson.FORMAT_BLOOD_GROUP
-                                },
-                                onChange: texthandle.bind(this, this, context),
-                                others: {
-                                  tabIndex: "9"
-                                }
-                              }}
-                            />
-                            <AlagehAutoComplete
-                              div={{ className: "col-4" }}
-                              label={{
-                                forceLabel: "Religion",
-                                isImp: false
-                              }}
-                              selector={{
-                                name: "country_id",
-                                className: "select-fld",
-                                value: this.state.country_id,
-                                dataSource: {
-                                  textField:
-                                    this.state.selectedLang === "en"
-                                      ? "country_name"
-                                      : "arabic_country_name",
-                                  valueField: "hims_d_country_id",
-                                  data: this.props.countries
-                                },
-                                onChange: countryStatehandle.bind(
-                                  this,
-                                  this,
-                                  context
-                                ),
-                                others: {
-                                  tabIndex: "10"
-                                }
-                              }}
-                            />
-                            <AlagehAutoComplete
-                              div={{ className: "col-4" }}
-                              label={{
-                                forceLabel: "Marital Status",
-                                isImp: false
-                              }}
-                              selector={{
-                                name: "country_id",
-                                className: "select-fld",
-                                value: this.state.country_id,
-                                dataSource: {
-                                  textField:
-                                    this.state.selectedLang === "en"
-                                      ? "country_name"
-                                      : "arabic_country_name",
-                                  valueField: "hims_d_country_id",
-                                  data: this.props.countries
-                                },
-                                onChange: countryStatehandle.bind(
-                                  this,
-                                  this,
-                                  context
-                                ),
-                                others: {
-                                  tabIndex: "10"
-                                }
-                              }}
-                            />
-                            <AlagehAutoComplete
-                              div={{ className: "col-4" }}
-                              label={{
-                                forceLabel: "Nationality",
-                                isImp: false
-                              }}
-                              selector={{
-                                name: "country_id",
-                                className: "select-fld",
-                                value: this.state.country_id,
-                                dataSource: {
-                                  textField:
-                                    this.state.selectedLang === "en"
-                                      ? "country_name"
-                                      : "arabic_country_name",
-                                  valueField: "hims_d_country_id",
-                                  data: this.props.countries
-                                },
-                                onChange: countryStatehandle.bind(
-                                  this,
-                                  this,
-                                  context
-                                ),
-                                others: {
-                                  tabIndex: "10"
-                                }
-                              }}
-                            />
-                          </div>
-                        </div>
-                        <div className="col-12">
-                          <h5>
-                            <span>Identification Details</span>
-                          </h5>
-                          <div className="row paddin-bottom-5">
-                            <AlagehAutoComplete
-                              div={{ className: "col-2" }}
-                              label={{
-                                forceLabel: "Id Type",
-                                isImp: false
-                              }}
-                              selector={{
-                                name: "country_id",
-                                className: "select-fld",
-                                value: this.state.country_id,
-                                dataSource: {
-                                  textField:
-                                    this.state.selectedLang === "en"
-                                      ? "country_name"
-                                      : "arabic_country_name",
-                                  valueField: "hims_d_country_id",
-                                  data: this.props.countries
-                                },
-                                onChange: countryStatehandle.bind(
-                                  this,
-                                  this,
-                                  context
-                                ),
-                                others: {
-                                  // tabIndex: "10"
-                                }
-                              }}
-                            />
-                            <AlagehFormGroup
-                              div={{ className: "col-2" }}
-                              label={{
-                                forceLabel: "Id Number",
-                                isImp: false
-                              }}
-                              textBox={{
-                                value: this.state.primary_contact_no,
-                                className: "txt-fld",
-                                name: "primary_contact_no",
-
-                                events: {
-                                  onChange: texthandle.bind(this, this, context)
-                                },
-                                others: {
-                                  //   tabIndex: "7",
-                                  placeholder: "(+01)123-456-7890",
-                                  type: "number"
-                                }
-                              }}
-                            />
-                            <AlgaehDateHandler
-                              div={{ className: "col-3" }}
-                              label={{
-                                forceLabel: "Issue Date",
-                                isImp: true
-                              }}
-                              textBox={{
-                                className: "txt-fld",
-                                name: "date_of_joining",
-                                others: {
-                                  //  tabIndex: "6"
-                                }
-                              }}
-                              maxDate={new Date()}
-                              events={{
-                                onChange: null
-                              }}
-                              value=""
-                            />
-                            <AlgaehDateHandler
-                              div={{ className: "col-3" }}
-                              label={{
-                                forceLabel: "Expiry Date",
-                                isImp: true
-                              }}
-                              textBox={{
-                                className: "txt-fld",
-                                name: "date_of_joining",
-                                others: {
-                                  //  tabIndex: "6"
-                                }
-                              }}
-                              maxDate={new Date()}
-                              events={{
-                                onChange: null
-                              }}
-                              value=""
-                            />
-                            <div className="col">
-                              <button
-                                type="button"
-                                className="btn btn-primary"
-                                style={{ marginTop: 21 }}
-                              >
-                                Add
-                              </button>
-                            </div>
-                            <div className="col-12">Table Comes Here</div>
-                          </div>
-                        </div>
-
-                        <div className="col-12">
-                          <h5>
-                            <span>Family Details</span>
-                          </h5>
-                          <div className="row paddin-bottom-5">
-                            <AlagehAutoComplete
-                              div={{ className: "col" }}
-                              label={{
-                                forceLabel: "Depedent Type",
-                                isImp: false
-                              }}
-                              selector={{
-                                name: "country_id",
-                                className: "select-fld",
-                                value: this.state.country_id,
-                                dataSource: {
-                                  textField:
-                                    this.state.selectedLang === "en"
-                                      ? "country_name"
-                                      : "arabic_country_name",
-                                  valueField: "hims_d_country_id",
-                                  data: this.props.countries
-                                },
-                                onChange: countryStatehandle.bind(
-                                  this,
-                                  this,
-                                  context
-                                ),
-                                others: {
-                                  // tabIndex: "10"
-                                }
-                              }}
-                            />
-                            <AlagehAutoComplete
-                              div={{ className: "col" }}
-                              label={{
-                                forceLabel: "Depedent Name",
-                                isImp: false
-                              }}
-                              selector={{
-                                name: "country_id",
-                                className: "select-fld",
-                                value: this.state.country_id,
-                                dataSource: {
-                                  textField:
-                                    this.state.selectedLang === "en"
-                                      ? "country_name"
-                                      : "arabic_country_name",
-                                  valueField: "hims_d_country_id",
-                                  data: this.props.countries
-                                },
-                                onChange: countryStatehandle.bind(
-                                  this,
-                                  this,
-                                  context
-                                ),
-                                others: {
-                                  // tabIndex: "10"
-                                }
-                              }}
-                            />
-
-                            <AlagehAutoComplete
-                              div={{ className: "col" }}
-                              label={{
-                                forceLabel: "ID Card Type",
-                                isImp: false
-                              }}
-                              selector={{
-                                name: "country_id",
-                                className: "select-fld",
-                                value: this.state.country_id,
-                                dataSource: {
-                                  textField:
-                                    this.state.selectedLang === "en"
-                                      ? "country_name"
-                                      : "arabic_country_name",
-                                  valueField: "hims_d_country_id",
-                                  data: this.props.countries
-                                },
-                                onChange: countryStatehandle.bind(
-                                  this,
-                                  this,
-                                  context
-                                ),
-                                others: {
-                                  // tabIndex: "10"
-                                }
-                              }}
-                            />
-                            <AlagehFormGroup
-                              div={{ className: "col" }}
-                              label={{
-                                forceLabel: "Id Number",
-                                isImp: false
-                              }}
-                              textBox={{
-                                value: this.state.primary_contact_no,
-                                className: "txt-fld",
-                                name: "primary_contact_no",
-
-                                events: {
-                                  onChange: texthandle.bind(this, this, context)
-                                },
-                                others: {
-                                  //   tabIndex: "7",
-                                  placeholder: "(+01)123-456-7890",
-                                  type: "number"
-                                }
-                              }}
-                            />
-                            <div className="col">
-                              <button
-                                type="button"
-                                className="btn btn-primary"
-                                style={{ marginTop: 21 }}
-                              >
-                                Add
-                              </button>
-                            </div>
-                            <div className="col-12">Table Comes Here</div>
-                          </div>
-                        </div>
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: variableJson.FORMAT_BLOOD_GROUP
+                            },
+                            onChange: texthandle.bind(this, this, context),
+                            others: {
+                              tabIndex: "9"
+                            }
+                          }}
+                        />
+                        <AlagehAutoComplete
+                          div={{ className: "col-4" }}
+                          label={{
+                            forceLabel: "Religion",
+                            isImp: false
+                          }}
+                          selector={{
+                            name: "religion_id",
+                            className: "select-fld",
+                            value: this.state.religion_id,
+                            dataSource: {
+                              textField:
+                                this.state.selectedLang === "en"
+                                  ? "religion_name"
+                                  : "arabic_religion_name",
+                              valueField: "hims_d_religion_id",
+                              data: this.props.relegions
+                            },
+                            onChange: texthandle.bind(this, this, context),
+                            others: {
+                              tabIndex: "10"
+                            }
+                          }}
+                        />
+                        <AlagehAutoComplete
+                          div={{
+                            className: "col-lg-4"
+                          }}
+                          label={{
+                            forceLabel: "Marital Status",
+                            isImp: false
+                          }}
+                          selector={{
+                            name: "marital_status",
+                            className: "select-fld",
+                            value: this.state.marital_status,
+                            dataSource: {
+                              textField:
+                                this.state.selectedLang === "en"
+                                  ? "name"
+                                  : "arabic_name",
+                              valueField: "value",
+                              data: variableJson.FORMAT_MARTIALSTS_EMP
+                            },
+                            onChange: texthandle.bind(this, this, context)
+                          }}
+                        />
+                        <AlagehAutoComplete
+                          div={{ className: "col-lg-3" }}
+                          label={{
+                            forceLabel: "Nationality",
+                            isImp: true
+                          }}
+                          selector={{
+                            name: "nationality_id",
+                            className: "select-fld",
+                            value: this.state.nationality_id,
+                            dataSource: {
+                              textField:
+                                this.state.selectedLang === "en"
+                                  ? "nationality"
+                                  : "arabic_nationality",
+                              valueField: "hims_d_nationality_id",
+                              data: this.props.nationalities
+                            },
+                            onChange: texthandle.bind(this, this, context),
+                            others: {
+                              //disabled: this.state.existingPatient,
+                              //tabIndex: "13"
+                            }
+                          }}
+                        />
                       </div>
-
                       <div className="row">
                         <div className="col-6">
                           <h5>
@@ -635,8 +410,8 @@ class PersonalDetails extends PureComponent {
                               }}
                               textBox={{
                                 className: "txt-fld",
-                                name: "address",
-                                value: this.state.address,
+                                name: "present_address",
+                                value: this.state.present_address,
                                 events: {
                                   onChange: texthandle.bind(
                                     this,
@@ -656,9 +431,9 @@ class PersonalDetails extends PureComponent {
                                 isImp: false
                               }}
                               selector={{
-                                name: "country_id",
+                                name: "present_country_id",
                                 className: "select-fld",
-                                value: this.state.country_id,
+                                value: this.state.present_country_id,
                                 dataSource: {
                                   textField:
                                     this.state.selectedLang === "en"
@@ -685,16 +460,16 @@ class PersonalDetails extends PureComponent {
                                 isImp: false
                               }}
                               selector={{
-                                name: "state_id",
+                                name: "present_state_id",
                                 className: "select-fld",
-                                value: this.state.state_id,
+                                value: this.state.present_state_id,
                                 dataSource: {
                                   textField:
                                     this.state.selectedLang === "en"
                                       ? "state_name"
                                       : "arabic_state_name",
                                   valueField: "hims_d_state_id",
-                                  data: this.props.countrystates
+                                  data: this.props.present_countrystates
                                 },
                                 onChange: countryStatehandle.bind(
                                   this,
@@ -714,16 +489,16 @@ class PersonalDetails extends PureComponent {
                                 isImp: false
                               }}
                               selector={{
-                                name: "city_id",
+                                name: "present_city_id",
                                 className: "select-fld",
-                                value: this.state.city_id,
+                                value: this.state.present_city_id,
                                 dataSource: {
                                   textField:
                                     this.state.selectedLang === "en"
                                       ? "city_name"
                                       : "city_arabic_name",
                                   valueField: "hims_d_city_id",
-                                  data: this.props.cities
+                                  data: this.props.present_cities
                                 },
                                 onChange: texthandle.bind(this, this, context),
                                 others: {
@@ -746,10 +521,10 @@ class PersonalDetails extends PureComponent {
                               <label className="checkbox inline">
                                 <input
                                   type="checkbox"
-                                  name="isdoctor"
+                                  name="same_address"
                                   value="Y"
-                                  checked={this.state.Applicable}
-                                  onChange={isDoctorChange.bind(
+                                  checked={this.state.samechecked}
+                                  onChange={sameAsPresent.bind(
                                     this,
                                     this,
                                     context
@@ -769,8 +544,11 @@ class PersonalDetails extends PureComponent {
                               }}
                               textBox={{
                                 className: "txt-fld",
-                                name: "address",
-                                value: this.state.address,
+                                name: "permanent_address",
+                                value:
+                                  this.state.samechecked === true
+                                    ? this.state.present_address
+                                    : this.state.permanent_address,
                                 events: {
                                   onChange: texthandle.bind(
                                     this,
@@ -790,9 +568,12 @@ class PersonalDetails extends PureComponent {
                                 isImp: false
                               }}
                               selector={{
-                                name: "country_id",
+                                name: "permanent_country_id",
                                 className: "select-fld",
-                                value: this.state.country_id,
+                                value:
+                                  this.state.samechecked === true
+                                    ? this.state.present_country_id
+                                    : this.state.permanent_country_id,
                                 dataSource: {
                                   textField:
                                     this.state.selectedLang === "en"
@@ -819,16 +600,22 @@ class PersonalDetails extends PureComponent {
                                 isImp: false
                               }}
                               selector={{
-                                name: "state_id",
+                                name: "permanent_state_id",
                                 className: "select-fld",
-                                value: this.state.state_id,
+                                value:
+                                  this.state.samechecked === true
+                                    ? this.state.present_state_id
+                                    : this.state.permanent_state_id,
                                 dataSource: {
                                   textField:
                                     this.state.selectedLang === "en"
                                       ? "state_name"
                                       : "arabic_state_name",
                                   valueField: "hims_d_state_id",
-                                  data: this.props.countrystates
+                                  data:
+                                    this.state.samechecked === true
+                                      ? this.props.present_countrystates
+                                      : this.props.countrystates
                                 },
                                 onChange: countryStatehandle.bind(
                                   this,
@@ -848,16 +635,22 @@ class PersonalDetails extends PureComponent {
                                 isImp: false
                               }}
                               selector={{
-                                name: "city_id",
+                                name: "permanent_city_id",
                                 className: "select-fld",
-                                value: this.state.city_id,
+                                value:
+                                  this.state.samechecked === true
+                                    ? this.state.present_city_id
+                                    : this.state.permanent_city_id,
                                 dataSource: {
                                   textField:
                                     this.state.selectedLang === "en"
                                       ? "city_name"
                                       : "city_arabic_name",
                                   valueField: "hims_d_city_id",
-                                  data: this.props.cities
+                                  data:
+                                    this.state.samechecked === true
+                                      ? this.props.present_cities
+                                      : this.props.cities
                                 },
                                 onChange: texthandle.bind(this, this, context),
                                 others: {
@@ -958,8 +751,12 @@ function mapStateToProps(state) {
   return {
     titles: state.titles,
     cities: state.cities,
+    nationalities: state.nationalities,
     countries: state.countries,
     countrystates: state.countrystates,
+    present_countrystates: state.present_countrystates,
+    present_cities: state.present_cities,
+    relegions: state.relegions,
     patients: state.patients,
     services: state.services,
     designations: state.designations
@@ -972,9 +769,11 @@ function mapDispatchToProps(dispatch) {
       getTitles: AlgaehActions,
       getCities: AlgaehActions,
       getCountries: AlgaehActions,
+      getNationalities: AlgaehActions,
       getStates: AlgaehActions,
       getServices: AlgaehActions,
-      getDesignations: AlgaehActions
+      getDesignations: AlgaehActions,
+      getRelegion: AlgaehActions
     },
     dispatch
   );

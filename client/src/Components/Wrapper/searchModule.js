@@ -2,9 +2,6 @@ import React, { Component } from "react";
 import "../Wrapper/spotlight.css";
 import { AlgaehDataGrid } from "../Wrapper/algaehWrapper";
 import { algaehApiCall, getCookie } from "../../utils/algaehApiCall";
-import IconButton from "@material-ui/core/IconButton";
-import MicOff from "@material-ui/icons/MicOff";
-import Mic from "@material-ui/icons/Mic";
 import ReactDOM from "react-dom";
 var intervalId;
 window.SpeechRecognition =
@@ -14,7 +11,7 @@ class SearchModule extends Component {
     super(props);
     this.state = {
       open: false,
-      title: "Algaeh Search",
+      title: "Search by ",
       searchBy: "",
       searchName: "",
       contains: "",
@@ -48,15 +45,19 @@ class SearchModule extends Component {
     this.getUserSelectedValue(
       { searchName: this.props.searchName },
       response => {
+        //debugger;
         let _searchBy = this.props.searchGrid.columns[0]["fieldName"];
+        let _name = this.props.searchGrid.columns[0]["label"];
         if (response.data.success === true) {
           if (response.data.records !== undefined) {
             _searchBy = response.data.records.selectedValue;
+            _name = response.data.records.name;
           }
         }
         this.handleOnchnageSearchBy({
           target: {
-            value: _searchBy
+            value: _searchBy,
+            title: _name
           }
         });
         this.setState({
@@ -65,7 +66,7 @@ class SearchModule extends Component {
           searchBy: _searchBy,
           isSpeakEnable: false,
           stop: false,
-          contains: " "
+          contains: ""
         });
       }
     );
@@ -91,9 +92,11 @@ class SearchModule extends Component {
   componentWillReceiveProps(nextProps) {
     this.getUserSelectedValue(nextProps, response => {
       let _searchBy = nextProps.searchGrid.columns[0]["fieldName"];
+      let _title = nextProps.searchGrid.columns[0]["label"];
       if (response.data.success === true) {
         if (response.data.records !== undefined) {
           _searchBy = response.data.records.selectedValue;
+          _title = response.data.records.name;
         }
       }
       this.setState({
@@ -102,32 +105,43 @@ class SearchModule extends Component {
         searchBy: _searchBy,
         isSpeakEnable: false,
         stop: false,
-        contains: ""
+        contains: "",
+        title: _title
       });
     });
   }
 
-  setUserSelectedValue(identifier, value, callBack) {
+  setUserSelectedValue(jsonObj, callBack) {
     let _screenName = getCookie("ScreenName").replace("/", "");
     algaehApiCall({
       uri: "/userPreferences/save",
       data: {
         screenName: _screenName,
-        identifier: identifier,
-        value: value
+        ...jsonObj
       },
       method: "POST",
       onSuccess: response => {
+        //debugger;
         if (typeof callBack === "function") callBack(response);
       }
     });
   }
 
   handleOnchnageSearchBy(e) {
+    //debugger;
+
     let _value = e.target.value;
-    this.setUserSelectedValue(this.props.searchName, _value, response => {
-      this.setState({ searchBy: _value });
-    });
+    let _name =
+      e.target.children !== undefined
+        ? e.target.children[e.target.selectedIndex].text
+        : e.target.title;
+    const _title = "Search by " + _name;
+    this.setUserSelectedValue(
+      { identifier: this.props.searchName, value: _value, name: _name },
+      response => {
+        this.setState({ searchBy: _value, title: _title });
+      }
+    );
   }
   /*
        function handle onchange when user start typing a interval starts and
@@ -154,43 +168,50 @@ class SearchModule extends Component {
  */
   loadContentDivision = () => {
     return (
-      <div id="spotlightResultArea" className="animated  fadeIn">
-        <AlgaehDataGrid
-          columns={this.props.searchGrid.columns}
-          dataSource={{
-            uri: this.props.uri,
-            inputParam: {
-              inputs: this.props.inputs,
-              fieldName: this.state.searchBy,
-              fieldContains: this.state.contains,
-              searchName: this.state.searchName
-            },
-            method: "GET",
-            responseSchema: {
-              data: "records.data",
-              totalPages: "records.totalPages"
-            },
-            validateBeforeServiceCall: $this => {
-              if (
-                $this.props.dataSource.inputParam.searchName === undefined ||
-                $this.props.dataSource.inputParam.searchName === ""
-              ) {
-                return false;
-              } else return true;
-            }
-          }}
-          paging={{
-            page: 0,
-            rowsPerPage:
-              this.props.rowsPerPage !== undefined ? this.props.rowsPerPage : 10
-          }}
-          algaehSearch={true}
-          onRowSelect={row => {
-            this.props.onRowSelect(row);
-            //   this.setState({ open: false });
-            this.handleClose();
-          }}
-        />
+      <div className="col-12">
+        <div className="row">
+          <div id="spotlightResultArea" className="col-12">
+            <AlgaehDataGrid
+              columns={this.props.searchGrid.columns}
+              dataSource={{
+                uri: this.props.uri,
+                inputParam: {
+                  inputs: this.props.inputs,
+                  fieldName: this.state.searchBy,
+                  fieldContains: this.state.contains,
+                  searchName: this.state.searchName
+                },
+                method: "GET",
+                responseSchema: {
+                  data: "records.data",
+                  totalPages: "records.totalPages"
+                },
+                validateBeforeServiceCall: $this => {
+                  if (
+                    $this.props.dataSource.inputParam.searchName ===
+                      undefined ||
+                    $this.props.dataSource.inputParam.searchName === ""
+                  ) {
+                    return false;
+                  } else return true;
+                }
+              }}
+              paging={{
+                page: 0,
+                rowsPerPage:
+                  this.props.rowsPerPage !== undefined
+                    ? this.props.rowsPerPage
+                    : 10
+              }}
+              algaehSearch={true}
+              onRowSelect={row => {
+                this.props.onRowSelect(row);
+                //   this.setState({ open: false });
+                this.handleClose();
+              }}
+            />
+          </div>
+        </div>
       </div>
     );
   };
@@ -248,52 +269,68 @@ class SearchModule extends Component {
           </span>
         </div>
 
-        <div className="row spotlightContainer ">
-          {/* <input
-            id="spotlightInput"
-            type="text"
-            placeholder={this.state.title}
-            value={this.state.contains}
-            onChange={this.handleSpotLightContains.bind(this)}
-          /> */}
-          <input
-            type="text"
-            id="spotlightInput"
-            tabIndex="1"
-            placeholder={this.state.title}
-            value={this.state.contains}
-            onChange={this.handleSpotLightContains.bind(this)}
-          />
-          <div id="spotlightFilterBy">
-            <IconButton title="Speak" onClick={this.speakInput.bind(this)}>
-              {this.state.isSpeakEnable ? (
-                <React.Fragment>
-                  <Mic color="secondary" className="animated  flash" />
-                </React.Fragment>
-              ) : (
-                <MicOff />
-              )}
-            </IconButton>
-            <select
-              onChange={this.handleOnchnageSearchBy.bind(this)}
-              value={this.state.searchBy}
-            >
-              {this.props.searchGrid.columns.map((row, index) => (
-                <option
-                  key={index}
-                  datafieldtype={row.fieldType}
-                  value={row["fieldName"]}
-                >
-                  {row["label"]}
-                </option>
-              ))}
-            </select>
-            <select>
-              <option>Starts with</option>
-              <option>contains</option>
-            </select>
+        <div className="spotlightContainer">
+          <div className="col-12">
+            <div className="row">
+              <div className="col">
+                <div className="row">
+                  <div className="col">
+                    <div className="label">Filter by</div>
+                    <select className="filterBySelect">
+                      <option>Starts with</option>
+                      <option>contains</option>
+                    </select>
+                  </div>
+                  <div className="col">
+                    <div className="label">Search by</div>
+                    <select
+                      className="searchBySelect"
+                      onChange={this.handleOnchnageSearchBy.bind(this)}
+                      value={this.state.searchBy}
+                    >
+                      {this.props.searchGrid.columns.map((row, index) => (
+                        <option
+                          key={index}
+                          datafieldtype={row.fieldType}
+                          value={row["fieldName"]}
+                        >
+                          {row["label"]}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div className="col-8" id="spotlightFilterBy">
+                <div className="row">
+                  <div className="col">
+                    <input
+                      type="text"
+                      id="spotlightInput"
+                      tabIndex="1"
+                      placeholder={this.state.title}
+                      value={this.state.contains}
+                      onChange={this.handleSpotLightContains.bind(this)}
+                    />
+                  </div>
+                  <div
+                    className="col-1 speckCntr"
+                    title="Speak"
+                    onClick={this.speakInput.bind(this)}
+                  >
+                    {this.state.isSpeakEnable ? (
+                      <React.Fragment>
+                        <i className="fas fa-microphone animated flash" />
+                      </React.Fragment>
+                    ) : (
+                      <i className="fas fa-microphone" />
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          {this.loadContentDivision()}
+          <div className="row">{this.loadContentDivision()}</div>
         </div>
       </div>
     );
