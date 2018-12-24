@@ -294,7 +294,7 @@ export default class FormGroup extends PureComponent {
             <input
               type="text"
               name={this.props.textBox.name}
-              autocomplete="new-password"
+              autoComplete="new-password"
               value={_value}
               {..._onChange}
               {..._disabled}
@@ -312,7 +312,7 @@ export default class FormGroup extends PureComponent {
           return (
             <textarea
               name={this.props.textBox.name}
-              autocomplete="new-password"
+              autoComplete="new-password"
               value={_value}
               {..._onChange}
               {..._disabled}

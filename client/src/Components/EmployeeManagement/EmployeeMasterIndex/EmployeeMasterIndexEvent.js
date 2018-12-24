@@ -7,6 +7,7 @@ const getEmployeeDetails = $this => {
     method: "GET",
 
     onSuccess: response => {
+      debugger;
       if (response.data.success) {
         let data = response.data.records;
         if (data.length > 0) {
@@ -52,6 +53,7 @@ const getEmployeeDetails = $this => {
       }
     },
     onFailure: error => {
+      debugger;
       swalMessage({
         title: error.message,
         type: "error"
