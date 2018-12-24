@@ -2,8 +2,12 @@ const cryptr = require("cryptr");
 const jwt = require("jsonwebtoken");
 const winston = require("winston");
 const path = require("path");
-const keys = require("../keys/keys");
+const config = require("../keys/keys");
+const moment = require("moment");
+require("winston-daily-rotate-file");
+const fs = require("fs");
 exports.AlgaehUtilities = options => {
+  let keys = config.default;
   return {
     encryption: data => {
       const stringData = JSON.stringify({
@@ -15,6 +19,14 @@ exports.AlgaehUtilities = options => {
     decryption: data => {
       const stringData = new cryptr(keys.SECRETKey).decrypt(data);
       return JSON.parse(stringData);
+    },
+    getTokenData: token => {
+      try {
+        const _details = jwt.decode(token, keys.SECRETKey);
+        return _details;
+      } catch (e) {
+        return {};
+      }
     },
     tokenVerify: token => {
       try {
@@ -48,58 +60,66 @@ exports.AlgaehUtilities = options => {
         }
       };
     },
-    logger: (modeuleName, reqTracker) => {
+    logger: reqTracker => {
       reqTracker = reqTracker || "";
-      if (modeuleName == null || modeuleName == "") {
-        modeuleName = "No_Module_Name";
+
+      let _logPath = path.join(process.cwd(), "/LOGS");
+      if (!fs.existsSync(_logPath)) {
+        fs.mkdirSync(_logPath);
       }
-      const _logPath = path.join(__dirname, "../../" + modeuleName);
-      const tsFormat = moment(new Date()).format("DD-MM-YYYY HH:mm:ss");
-      let logging = new winston.Logger({
-        transports: [
-          new rotatingDate({
-            filename: `${_logPath}/hims-app-${reqTracker}-%DATE%.log`,
-            timestamp: tsFormat,
-            datePattern: keys.logFileDatePatter,
-            prepend: true,
-            maxSize: keys.logFileSize,
-            level: keys.logLevel,
-            showLevel: true,
-            timestamp: false,
-            eol: "\r\n"
+
+      const _levels = process.env.NODE_ENV == "production" ? "info" : "debug";
+      var transport = new winston.transports.DailyRotateFile({
+        filename: `${_logPath}/%DATE%.log`,
+        datePattern: "YYYY-MM-DD-HH",
+        zippedArchive: true,
+        maxSize: "20m",
+        maxFiles: "14d",
+        level: _levels,
+        eol: "\r\n"
+      });
+      const colorizer = winston.format.colorize();
+      colorizer.addColors({
+        error: "red",
+        warn: "yellow",
+        info: "cyan",
+        debug: "green"
+      });
+      let logger = winston.createLogger({
+        handleExceptions: true,
+        format: winston.format.combine(
+          winston.format.timestamp(),
+
+          // winston.format.prettyPrint(),
+          // winston.format.colorize(),
+          winston.format.json(),
+          winston.format.printf(msg => {
+            const _data = colorizer.colorize(
+              msg.level,
+              `{${new Date(msg.timestamp).toLocaleString()} - ${
+                msg.level
+              }:   -${msg.message} , data -${msg.data} } `
+            );
+            return _data;
           })
-        ]
+        ),
+        transports: [transport]
       });
 
       return {
         log: (message, obj, logtype) => {
-          obj = obj || null;
-          logging = logtype || "debug";
-          if (obj == null) {
-            if (typeof message != "object")
-              logging.log(
-                logtype,
-                "%s",
-                message + " - createdDateTime :" + new Date().toLocaleString()
-              );
-            else
-              logging.log(logtype, "%j", {
-                ...message,
-                ...{ createdDateTime: new Date().toLocaleString() }
-              });
-          } else {
-            if (typeof obj != "object")
-              logging.log(
-                logtype,
-                message + "%s",
-                obj + " - createdDateTime :" + new Date().toLocaleString()
-              );
-            else
-              logging.log(logtype, message + "%j", {
-                ...obj,
-                ...{ createdDateTime: new Date().toLocaleString() }
-              });
-          }
+          logtype = logtype || "debug";
+          const _data =
+            obj != null
+              ? { data: typeof obj == "string" ? obj : JSON.stringify(obj) }
+              : {};
+
+          logger.log({
+            level: logtype,
+            message: message,
+            ..._data
+          });
+          return this;
         }
       };
     }

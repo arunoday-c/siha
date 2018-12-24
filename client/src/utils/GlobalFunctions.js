@@ -172,6 +172,7 @@ export function displayFileFromServer(options) {
         let reader = new FileReader();
 
         reader.onloadend = () => {
+          console.log("image ", reader.result);
           if (typeof options.onFileSuccess === "function") {
             options.onFileSuccess(reader.result);
           }

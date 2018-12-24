@@ -176,7 +176,7 @@ export default class AlgaehFileUploader extends Component {
 
     // const _dataU = elem.toDataURL("image/webp", 0.95);
     // this.SavingImageOnServer(_dataU);
-    this.SavingImageOnServer();
+
     this.setState(
       {
         showCropper: false,
@@ -275,6 +275,7 @@ export default class AlgaehFileUploader extends Component {
 
     // reader.onloadend = () => {
     //console.log("Render result", reader.result);
+    console.log("my image ", _splitter[1]);
     algaehApiCall({
       uri: "/Document/save",
       method: "POST",

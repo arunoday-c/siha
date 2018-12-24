@@ -6,6 +6,7 @@ import keys from "../../keys/keys";
 import utliites from "../../AlgaehUtilities";
 import routes from "./routes";
 import compression from "compression";
+import { utils } from "mocha";
 const app = exxpress();
 app.server = http.createServer(app);
 app.use(cors());
@@ -19,31 +20,41 @@ app.use(compression());
 app.use((req, res, next) => {
   const reqH = req.headers;
   const _token = reqH["x-api-key"];
+
+  utliites
+    .AlgaehUtilities()
+    .logger()
+    .log("Xapi", _token, "debug");
   const _verify = utliites.AlgaehUtilities().tokenVerify(_token);
   if (_verify) {
     let header = reqH["x-app-user-identity"];
     if (header != null && header != "" && header != "null") {
       header = utliites.AlgaehUtilities().decryption(header);
       req.userIdentity = header;
+      let reqUser = utliites.AlgaehUtilities().getTokenData(_token).id;
       utliites
         .AlgaehUtilities()
-        .logger("HR MANAGEMENT", "req-track")
-        .log("", {
-          dateTime: new Date().toLocaleString(),
-          requestIdentity: {
-            requestClient: reqH["x-client-ip"],
-            requestAPIUser: reqUser,
-            reqUserIdentity: req.userIdentity
+        .logger("res-tracking")
+        .log(
+          "",
+          {
+            dateTime: new Date().toLocaleString(),
+            requestIdentity: {
+              requestClient: reqH["x-client-ip"],
+              requestAPIUser: reqUser,
+              reqUserIdentity: req.userIdentity
+            },
+            requestUrl: req.originalUrl,
+            requestHeader: {
+              host: reqH.host,
+              "user-agent": reqH["user-agent"],
+              "cache-control": reqH["cache-control"],
+              origin: reqH.origin
+            },
+            requestMethod: req.method
           },
-          requestUrl: req.originalUrl,
-          requestHeader: {
-            host: reqH.host,
-            "user-agent": reqH["user-agent"],
-            "cache-control": reqH["cache-control"],
-            origin: reqH.origin
-          },
-          requestMethod: req.method
-        });
+          "info"
+        );
     }
 
     res.setHeader("connection", "keep-alive");
@@ -61,19 +72,19 @@ app.use("/api/v1", routes);
 process.on("warning", warning => {
   utliites
     .AlgaehUtilities()
-    .logger("HR MANAGEMENT")
-    .log("warn", warning);
+    .logger()
+    .log("warn", warning, "warn");
 });
 process.on("uncaughtException", error => {
   utliites
     .AlgaehUtilities()
-    .logger("HR MANAGEMENT")
+    .logger()
     .log("uncatched Exception", error, "error");
 });
 process.on("unhandledRejection", (reason, promise) => {
   utliites
     .AlgaehUtilities()
-    .logger("HR MANAGEMENT")
+    .logger()
     .log("Unhandled rejection", { reason: reason, promise: promise }, "error");
 });
 app.use((error, req, res, next) => {

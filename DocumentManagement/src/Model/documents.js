@@ -14,7 +14,9 @@ module.exports = db => {
         const _headerFile = JSON.parse(req.headers["x-file-details"]);
 
         const _utf =
-          _headerFile.needConvertion == true ? new Buffer.from(buffer) : buffer;
+          _headerFile.needConvertion == true
+            ? new Buffer.from(buffer, "base64")
+            : buffer;
         // const _utf = buffer;
         const _clientID = req.headers["x-client-ip"];
         if (_headerFile.fileType == "Employees") {
@@ -121,8 +123,9 @@ module.exports = db => {
               if (result != null) {
                 res.setHeader("content-type", result.fileExtention);
                 res.status(200);
+
                 let bufferStream = new stream.PassThrough();
-                bufferStream.end(result.image);
+                bufferStream.end(result.image, "base64");
                 bufferStream.pipe(res);
                 // res.status(200).json({
                 //   success: true,
