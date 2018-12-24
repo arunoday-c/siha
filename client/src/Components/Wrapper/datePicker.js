@@ -106,7 +106,7 @@ export default class DateHandler extends PureComponent {
           : {}
         : {};
     const _isHijri = this.props.textBox.hijri !== undefined ? true : false;
-    const _type = this.props.type !==undefined?this.props.type?"date";
+    const _type = this.props.type !== undefined ? this.props.type : "date";
     return (
       <div className="algaeh-datePicker">
         {!_isHijri ? (
