@@ -588,5 +588,10 @@
   "OT_PAYMENT": [
     { "name": "% of Component", "value": "PC" },
     { "name": "Rate per Hour", "value": "RT" }
+  ],
+  "LOAN_LMT_TYP": [
+    { "name": "Loan Limit", "value": "L" },
+    { "name": "Basic", "value": "B" },
+    { "name": "Gratuity", "value": "G" }
   ]
 }
