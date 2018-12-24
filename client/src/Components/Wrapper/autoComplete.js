@@ -442,7 +442,7 @@ class AutoComplete extends PureComponent {
             onBlur={this.bluringEvent.bind(this)}
             {...this.props.selector.others}
             // autoComplete="off"
-            autocomplete="new-password"
+            autoComplete="new-password"
             {..._required}
             data_role="dropdownlist"
           />

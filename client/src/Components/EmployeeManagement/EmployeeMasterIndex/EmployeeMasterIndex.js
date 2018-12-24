@@ -160,6 +160,7 @@ class EmployeeMasterIndex extends Component {
                   columns={[
                     {
                       fieldName: "action",
+
                       label: <AlgaehLabel label={{ fieldName: "action" }} />,
                       displayTemplate: row => {
                         return (
@@ -174,6 +175,7 @@ class EmployeeMasterIndex extends Component {
                       others: {
                         maxWidth: 65,
                         resizable: false,
+                        filterable: false,
                         style: { textAlign: "center" }
                       }
                     },
