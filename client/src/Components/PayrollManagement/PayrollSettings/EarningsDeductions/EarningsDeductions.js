@@ -708,6 +708,49 @@ class EarningsDeductions extends Component {
                 }}
               />
             </div>
+            <div className="col-3">
+              {" "}
+              <label>Allow Round off</label>
+              <div className="customCheckbox">
+                <label className="checkbox inline">
+                  <input type="checkbox" value="yes" />
+                  <span>Yes</span>
+                </label>
+              </div>
+            </div>
+            <AlagehAutoComplete
+              div={{ className: "col-3" }}
+              label={{
+                forceLabel: "Round Off Type",
+                isImp: true
+              }}
+              selector={{
+                name: "component_type",
+                className: "select-fld",
+                value: this.state.component_type,
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: GlobalVariables.COMP_TYPE
+                },
+                onChange: this.dropDownHandler.bind(this)
+              }}
+            />{" "}
+            <AlagehFormGroup
+              div={{ className: "col-3" }}
+              label={{
+                forceLabel: "Round Off Amt.",
+                isImp: true
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "earning_deduction_description",
+                value: this.state.earning_deduction_description,
+                events: {
+                  onChange: this.changeTexts.bind(this)
+                }
+              }}
+            />
             {/*
             <AlagehAutoComplete
               div={{ className: "col-3" }}
@@ -909,6 +952,7 @@ class EarningsDeductions extends Component {
             />*/}
             <div className="col form-group">
               <button
+                style={{ marginTop: 21 }}
                 className="btn btn-primary"
                 id="srch-sch"
                 onClick={this.addEarningsDeductions.bind(this)}
