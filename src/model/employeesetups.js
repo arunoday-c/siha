@@ -218,11 +218,11 @@ let getOvertimeGroups = (req, res, next) => {
         db: req.db,
         query:
           "SELECT hims_d_overtime_group_id, overtime_group_code, overtime_group_description, overtime_group_status,\
-          working_day_hour, weekoff_day_hour, holiday_hour, working_day_rate , weekoff_day_rate, holiday_rate\
+          working_day_hour, weekoff_day_hour, holiday_hour, working_day_rate , weekoff_day_rate, holiday_rate,\
           payment_type\
           FROM `hims_d_overtime_group` WHERE `record_status`='A' AND " +
           condition.condition +
-          " order by hims_employee_category_id desc ",
+          " order by hims_d_overtime_group_id desc ",
         values: condition.values
       },
       result => {
@@ -254,14 +254,13 @@ let addOvertimeGroups = (req, res, next) => {
       }
 
       connection.query(
-        "INSERT  INTO hims_d_overtime_group (overtime_group_code, overtime_group_description, overtime_group_status\
+        "INSERT  INTO hims_d_overtime_group (overtime_group_code, overtime_group_description,\
           working_day_hour, weekoff_day_hour, holiday_hour, working_day_rate , weekoff_day_rate, holiday_rate, payment_type,\
           created_date,created_by,updated_date,updated_by) values(\
-          ?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          ?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
           input.overtime_group_code,
           input.overtime_group_description,
-          input.overtime_group_status,
           input.working_day_hour,
           input.weekoff_day_hour,
           input.holiday_hour,
@@ -336,6 +335,65 @@ let deleteOvertimeGroups = (req, res, next) => {
   }
 };
 
+let updateOvertimeGroups = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.body);
+
+    if (
+      input.hims_d_overtime_group_id != "null" &&
+      input.hims_d_overtime_group_id != undefined
+    ) {
+      db.getConnection((error, connection) => {
+        connection.query(
+          "UPDATE hims_d_overtime_group SET overtime_group_code = ?,\
+          overtime_group_description = ?, working_day_hour = ?, weekoff_day_hour = ?, holiday_hour = ? , working_day_rate = ?,\
+          weekoff_day_rate = ?, holiday_rate = ?, payment_type = ?,\
+            updated_date=?, updated_by=?  WHERE record_status='A' and  hims_d_overtime_group_id = ?",
+
+          [
+            input.overtime_group_code,
+            input.overtime_group_description,
+            input.working_day_hour,
+            input.weekoff_day_hour,
+            input.holiday_hour,
+            input.working_day_rate,
+            input.weekoff_day_rate,
+            input.holiday_rate,
+            input.payment_type,
+            new Date(),
+            input.updated_by,
+            input.hims_d_overtime_group_id
+          ],
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+
+            if (result.affectedRows > 0) {
+              req.records = result;
+              next();
+            } else {
+              req.records = { invalid_input: true };
+              next();
+            }
+          }
+        );
+      });
+    } else {
+      req.records = { invalid_input: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getDesignations,
   getEmpSpeciality,
@@ -344,5 +402,6 @@ module.exports = {
   deleteDesignation,
   getOvertimeGroups,
   addOvertimeGroups,
-  deleteOvertimeGroups
+  deleteOvertimeGroups,
+  updateOvertimeGroups
 };
