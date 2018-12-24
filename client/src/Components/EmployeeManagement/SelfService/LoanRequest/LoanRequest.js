@@ -35,6 +35,32 @@ class LoanRequest extends Component {
               </div>
               <div className="portlet-body">
                 <div className="row">
+                  <AlagehAutoComplete
+                    div={{ className: "col-6" }}
+                    label={{
+                      forceLabel: "Loan Type",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "component_type",
+                      className: "select-fld",
+                      value: this.state.component_type,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: ""
+                      }
+                      //  onChange: this.dropDownHandler.bind(this)
+                    }}
+                  />
+                  <div className="col">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Max-Limit"
+                      }}
+                    />
+                    <h6>5000 SAR</h6>
+                  </div>
                   <AlagehFormGroup
                     div={{ className: "col-6" }}
                     label={{
@@ -120,6 +146,11 @@ class LoanRequest extends Component {
                         {
                           fieldName: "",
                           label: "Loan Requested On"
+                          //disabled: true
+                        },
+                        {
+                          fieldName: "",
+                          label: "Loan Type"
                           //disabled: true
                         },
                         {
