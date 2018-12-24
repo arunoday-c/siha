@@ -4,7 +4,7 @@
   "description": "Algaeh HR Management services",
   "main": "dist",
   "scripts": {
-    "hr_server": "cross-env  PORT=3004  NODE_ENV=development nodemon -w  src --exec \"babel-node src/hr_server.js \"",
+    "hr_server": "cross-env   PORT=3004  NODE_ENV=development nodemon -w  src --exec \" babel-node src/hr_server.js \"",
     "build": "babel src -s -D -d dist ",
     "dev": "npm run hr_server",
     "api": "npm run hr_server",
@@ -27,7 +27,7 @@
     }
   },
   "dependencies": {
-    "algaeh-mysql": "^1.1.2",
+    "algaeh-mysql": "^1.1.6",
     "body-parser": "^1.18.2",
     "compression": "^1.7.3",
     "concurrently": "^3.5.1",

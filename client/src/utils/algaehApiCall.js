@@ -454,9 +454,15 @@ export function getLocalIP(callback) {
       if (ice && ice.candidate && ice.candidate.candidate) {
         let myIP = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(
           ice.candidate.candidate
-        )[1];
-
-        pc.onicecandidate = noop(myIP);
+        );
+  if(myIP===null){
+    const generator = new IDGenerator();
+      const _IdGen = generator.generate();
+      window.myIP = _IdGen;
+      callback(_IdGen);
+  }else{
+    pc.onicecandidate = noop(myIP[1])  }
+       
       }
     };
   })
