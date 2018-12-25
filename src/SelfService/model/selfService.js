@@ -121,8 +121,61 @@ let getEmployeeIdentificationDetails = (req, res, next) => {
   }
 };
 
+//created by irfan:
+let updateEmployeeIdentificationDetails = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    if (
+      input.hims_d_employee_identification_id != "null" &&
+      input.hims_d_employee_identification_id != undefined
+    ) {
+      db.getConnection((error, connection) => {
+        if (error) {
+          next(error);
+        }
+
+        connection.query(
+          " update hims_d_employee_identification set \
+        identity_documents_id=?, identity_number=?, valid_upto=?, \
+        issue_date=?, alert_required=?, alert_date=?,  updated_date=?, updated_by=?\
+        where record_status='A' and hims_d_employee_identification_id=?;",
+          [
+            input.identity_documents_id,
+            input.identity_number,
+            input.valid_upto,
+            input.issue_date,
+            input.alert_required,
+            input.alert_date,
+            new Date(),
+            input.updated_by,
+            input.hims_d_employee_identification_id
+          ],
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+            req.records = result;
+            next();
+          }
+        );
+      });
+    } else {
+      req.records = { invalid_input: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
 module.exports = {
   getEmployeeBasicDetails,
   getEmployeeDependentDetails,
-  getEmployeeIdentificationDetails
+  getEmployeeIdentificationDetails,
+  updateEmployeeIdentificationDetails
 };
