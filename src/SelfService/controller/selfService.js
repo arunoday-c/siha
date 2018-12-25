@@ -7,7 +7,8 @@ import {
   getEmployeeIdentificationDetails,
   updateEmployeeIdentificationDetails,
   updateEmployeeDependentDetails,
-  updateEmployeeBasicDetails
+  updateEmployeeBasicDetails,
+  getLeaveMaster
 } from "../model/selfService";
 
 export default ({ config, db }) => {
@@ -120,6 +121,21 @@ export default ({ config, db }) => {
       }
       next();
     }
+  );
+
+  // created by Adnan :
+  api.get(
+    "/getLeaveMaster",
+    getLeaveMaster,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
   );
 
   return api;

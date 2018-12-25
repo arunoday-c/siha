@@ -293,11 +293,40 @@ let updateEmployeeBasicDetails = (req, res, next) => {
     next(e);
   }
 };
+
+let getLeaveMaster = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    //, , , , , , ,
+    //, , , , , , created_by, created_date, updated_date, updated_by, record_status
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_d_leave_id, leave_code,  leave_description, leave_type, include_weekoff, religion_required\
+      include_holiday,  leave_mode, leave_accrual, leave_encash, leave_carry_forward, leave_status, religion_id \
+       from hims_d_leave where record_status='A' and leave_status='A'",
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
 module.exports = {
   getEmployeeBasicDetails,
   getEmployeeDependentDetails,
   getEmployeeIdentificationDetails,
   updateEmployeeIdentificationDetails,
   updateEmployeeDependentDetails,
-  updateEmployeeBasicDetails
+  updateEmployeeBasicDetails,
+  getLeaveMaster
 };

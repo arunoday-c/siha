@@ -12,6 +12,7 @@ import ReactTable from "react-table";
 
 import "react-table/react-table.css";
 import treeTableHOC from "react-table/lib/hoc/treeTable";
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 const TreeTable = treeTableHOC(ReactTable);
 
 class ApplyLeave extends Component {
@@ -20,6 +21,56 @@ class ApplyLeave extends Component {
     this.state = {
       selectedLang: this.props.SelectLanguage
     };
+
+    this.getLeaveTypes();
+    this.getEmployees();
+  }
+
+  componentDidMount() {
+    this.setState({
+      employee_id: this.props.empData.hims_d_employee_id
+    });
+  }
+
+  getLeaveTypes() {
+    algaehApiCall({
+      uri: "/selfService/getLeaveMaster",
+      method: "GET",
+      onSuccess: res => {
+        this.setState({
+          leave_types: res.data.records
+        });
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+  getEmployees() {
+    algaehApiCall({
+      uri: "/employee/get",
+      method: "GET",
+      onSuccess: res => {
+        this.setState({
+          employees: res.data.records
+        });
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  dropDownHandler(value) {
+    this.setState({
+      [value.name]: value.value
+    });
   }
 
   render() {
@@ -38,19 +89,22 @@ class ApplyLeave extends Component {
                   <AlagehAutoComplete
                     div={{ className: "col-12" }}
                     label={{
-                      forceLabel: "Select a Employee",
+                      forceLabel: "Employee",
                       isImp: true
                     }}
                     selector={{
-                      name: "component_type",
+                      name: "employee_id",
                       className: "select-fld",
-                      value: this.state.component_type,
+                      value: this.state.employee_id,
                       dataSource: {
-                        textField: "name",
-                        valueField: "value",
-                        data: ""
+                        textField: "full_name",
+                        valueField: "hims_d_employee_id",
+                        data: this.state.employees
+                      },
+                      onChange: this.dropDownHandler.bind(this),
+                      others: {
+                        disabled: true
                       }
-                      //  onChange: this.dropDownHandler.bind(this)
                     }}
                   />
                   <AlagehAutoComplete
@@ -64,11 +118,11 @@ class ApplyLeave extends Component {
                       className: "select-fld",
                       value: this.state.component_type,
                       dataSource: {
-                        textField: "name",
-                        valueField: "value",
-                        data: ""
-                      }
-                      //  onChange: this.dropDownHandler.bind(this)
+                        textField: "leave_description",
+                        valueField: "hims_d_leave_id",
+                        data: this.state.leave_types
+                      },
+                      onChange: this.dropDownHandler.bind(this)
                     }}
                   />
                   <div className="col-6">
