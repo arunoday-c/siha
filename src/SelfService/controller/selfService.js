@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { releaseConnection } from "../../utils";
 import httpStatus from "../../utils/httpStatus";
-import { aaaaaaa } from "../model/selfService";
+import {} from "../model/selfService";
 
 export default ({ config, db }) => {
   let api = Router();
@@ -10,7 +10,7 @@ export default ({ config, db }) => {
   // created by irfan :
   api.get(
     "/aaaaaaaaa",
-    aaaaaaaaaaaaaa,
+
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
