@@ -67,7 +67,7 @@ let getEmployeeDependentDetails = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_d_employee_id, employee_code,  full_name ,ED.dependent_type,ED.dependent_name,\
+        "select hims_d_employee_id, employee_code, hims_d_employee_dependents_id, ED.dependent_type,ED.dependent_name,\
         ED.dependent_identity_no,ED.dependent_identity_type,ID.identity_document_name\
         from hims_d_employee E left join hims_d_employee_dependents ED on\
         E.hims_d_employee_id=ED.employee_id and ED.record_status='A'\
@@ -88,4 +88,41 @@ let getEmployeeDependentDetails = (req, res, next) => {
     next(e);
   }
 };
-module.exports = { getEmployeeBasicDetails, getEmployeeDependentDetails };
+
+//created by irfan: to get
+let getEmployeeIdentificationDetails = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_d_employee_id, employee_code,  full_name ,\
+        hims_d_employee_identification_id,  identity_documents_id, \
+        identity_number, valid_upto, issue_date ,ID.identity_document_name from hims_d_employee E \
+        left join hims_d_employee_identification EI on E.hims_d_employee_id=EI.employee_id and  EI.record_status='A'\
+        left join hims_d_identity_document ID on EI.identity_documents_id=ID.hims_d_identity_document_id \
+        and  ID.record_status='A' where  E.record_status='A' and E.hims_d_employee_id=?",
+        req.userIdentity.employee_id,
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports = {
+  getEmployeeBasicDetails,
+  getEmployeeDependentDetails,
+  getEmployeeIdentificationDetails
+};
