@@ -169,11 +169,11 @@ export default class SelfService extends Component {
           {this.state.pageDisplay === "Dashboard" ? (
             <Dashboard empData={this.state.employee_details} />
           ) : this.state.pageDisplay === "AttendanceRegularization" ? (
-            <AttendanceRegularization />
+            <AttendanceRegularization empData={this.state.employee_details} />
           ) : this.state.pageDisplay === "ApplyLeave" ? (
-            <ApplyLeave />
+            <ApplyLeave empData={this.state.employee_details} />
           ) : this.state.pageDisplay === "LoanRequest" ? (
-            <LoanRequest />
+            <LoanRequest empData={this.state.employee_details} />
           ) : //   : this.state.pageDisplay === "AppointmentRooms" ? (
           //     <AppointmentRooms />
           //   ) : this.state.pageDisplay === "AppointmentClinics" ? (
