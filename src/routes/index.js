@@ -68,6 +68,7 @@ import algaehMasters from "../controller/algaehMasters";
 import dental from "../controller/dental";
 
 import attendance from "../Payroll/controller/attendance";
+import selfService from "../selfService/controller/selfService";
 let router = express();
 
 //connect to DB
@@ -144,6 +145,8 @@ initializedDb(db => {
   router.use("/dental", dental({ config, db }));
   router.use("/opCreditSettlement", opCreditSettlement({ config, db }));
   router.use("/POSCreditSettlement", POSCreditSettlement({ config, db }));
+  router.use("/attendance", attendance({ config, db }));
+  router.use("/selfService", selfService({ config, db }));
 });
 
 export default router;

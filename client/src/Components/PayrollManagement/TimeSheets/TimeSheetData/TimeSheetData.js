@@ -235,6 +235,9 @@ class EarningsDeductions extends Component {
                 // }
               }
             }
+            others={{
+              type: "month"
+            }}
             value={this.state.date_of_recall}
           />
           <AlagehAutoComplete

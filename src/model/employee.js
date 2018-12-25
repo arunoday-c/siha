@@ -279,8 +279,8 @@ let addEmployeeMaster = (req, res, next) => {
           permanent_city_id,permanent_state_id,permanent_country_id,isdoctor,license_number, \
           date_of_joining,appointment_type,employee_type,reliving_date,notice_period,date_of_resignation,\
           company_bank_id,employee_bank_name,employee_bank_ifsc_code,employee_account_number,mode_of_payment,\
-          accomodation_provided,created_date,created_by,updated_date,updated_by) values(\
-            ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          accomodation_provided,hospital_id,created_date,created_by,updated_date,updated_by) values(\
+            ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
           input.employee_code,
           input.full_name,
@@ -319,6 +319,7 @@ let addEmployeeMaster = (req, res, next) => {
           input.employee_account_number,
           input.mode_of_payment,
           input.accomodation_provided,
+          input.hospital_id,
           new Date(),
           input.created_by,
           new Date(),
