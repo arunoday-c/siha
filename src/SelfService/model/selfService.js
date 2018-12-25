@@ -160,8 +160,13 @@ let updateEmployeeIdentificationDetails = (req, res, next) => {
             if (error) {
               next(error);
             }
-            req.records = result;
-            next();
+            if (result.affectedRows > 0) {
+              req.records = result;
+              next();
+            } else {
+              req.records = { invalid_input: true };
+              next();
+            }
           }
         );
       });
@@ -210,8 +215,13 @@ let updateEmployeeDependentDetails = (req, res, next) => {
             if (error) {
               next(error);
             }
-            req.records = result;
-            next();
+            if (result.affectedRows > 0) {
+              req.records = result;
+              next();
+            } else {
+              req.records = { invalid_input: true };
+              next();
+            }
           }
         );
       });
@@ -224,10 +234,70 @@ let updateEmployeeDependentDetails = (req, res, next) => {
   }
 };
 
+//created by irfan:
+let updateEmployeeBasicDetails = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    if (
+      input.hims_d_employee_id != "null" &&
+      input.hims_d_employee_id != undefined
+    ) {
+      db.getConnection((error, connection) => {
+        if (error) {
+          next(error);
+        }
+
+        connection.query(
+          " update hims_d_employee set full_name=?,arabic_name=?,\
+          date_of_birth=?,sex=?,present_address=?,permanent_address=?,primary_contact_no=?,email=?,\
+           updated_date=?, updated_by=?\
+        where record_status='A' and hims_d_employee_id=?;",
+          [
+            input.full_name,
+            input.arabic_name,
+            input.date_of_birth,
+            input.sex,
+            input.present_address,
+            input.permanent_address,
+            input.primary_contact_no,
+            input.email,
+            new Date(),
+            input.updated_by,
+            input.hims_d_employee_id
+          ],
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+            if (result.affectedRows > 0) {
+              req.records = result;
+              next();
+            } else {
+              req.records = { invalid_input: true };
+              next();
+            }
+          }
+        );
+      });
+    } else {
+      req.records = { invalid_input: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
 module.exports = {
   getEmployeeBasicDetails,
   getEmployeeDependentDetails,
   getEmployeeIdentificationDetails,
   updateEmployeeIdentificationDetails,
-  updateEmployeeDependentDetails
+  updateEmployeeDependentDetails,
+  updateEmployeeBasicDetails
 };
