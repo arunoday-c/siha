@@ -7,6 +7,8 @@ import {
   AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
 import "./dashboard.css";
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+import GlobalVariables from "../../../../utils/GlobalVariables.json";
 
 class Dashboard extends Component {
   constructor(props) {
@@ -14,6 +16,9 @@ class Dashboard extends Component {
     this.state = {
       editContainer: false
     };
+
+    this.getFamilyDetails();
+    this.getIdDetails();
   }
   scrollToPosition(e) {
     const selectedId = e.target.parentElement.id;
@@ -24,14 +29,60 @@ class Dashboard extends Component {
       _scrollDiv.scrollTop = _element.offsetTop;
     }
   }
+
+  changeGridEditors(row, e) {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    row[name] = value;
+    row.update();
+  }
+
   showEditCntr(e) {
-    debugger;
     this.setState({ editContainer: !this.state.editContainer });
-    // e.target.parentElement.parentElement;
-    // e.target.parentElement.parentElement.nextElementSibling.classList.contains("editFloatCntr")
+  }
+
+  getFamilyDetails() {
+    algaehApiCall({
+      uri: "/selfService/getEmployeeDependentDetails",
+      method: "GET",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            family_details: res.data.records
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+  getIdDetails() {
+    algaehApiCall({
+      uri: "/selfService/getEmployeeIdentificationDetails",
+      method: "GET",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            id_details: res.data.records
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   render() {
+    let empDetails = this.props.empData ? this.props.empData : {};
+
     return (
       <div className="dashboard">
         <div className="row">
@@ -44,7 +95,7 @@ class Dashboard extends Component {
                 <span>Offical Details</span>
               </li>
               <li id="basicDetails">
-                <span />
+                <span>Basic Details</span>
               </li>
               <li id="familyDetails">
                 <span>Family Details</span>
@@ -81,7 +132,7 @@ class Dashboard extends Component {
                         forceLabel: "Employee Code"
                       }}
                     />
-                    <h6>EMP0000123</h6>
+                    <h6>{empDetails.employee_code}</h6>
                   </div>
                   <div className="col">
                     <AlgaehLabel
@@ -89,7 +140,7 @@ class Dashboard extends Component {
                         forceLabel: "Designation"
                       }}
                     />
-                    <h6>Specialist</h6>
+                    <h6>{empDetails.designation}</h6>
                   </div>
                   <div className="col">
                     <AlgaehLabel
@@ -97,7 +148,7 @@ class Dashboard extends Component {
                         forceLabel: "Department"
                       }}
                     />
-                    <h6>General Medicine</h6>
+                    <h6>{empDetails.sub_department_name}</h6>
                   </div>
                   <div className="col">
                     <AlgaehLabel
@@ -105,7 +156,11 @@ class Dashboard extends Component {
                         forceLabel: "Reporting To"
                       }}
                     />
-                    <h6>Abdulrahman Fahmy</h6>
+                    <h6>
+                      {empDetails.reporting_to_name !== null
+                        ? empDetails.reporting_to_name
+                        : "----------"}
+                    </h6>
                   </div>
                 </div>
               </div>
@@ -141,7 +196,7 @@ class Dashboard extends Component {
                     " faster"
                   }
                 >
-                  <h5>Edit </h5>
+                  <h5>Edit Basic Details</h5>
                   <div className="row">
                     <AlagehFormGroup
                       div={{ className: "col" }}
@@ -318,7 +373,7 @@ class Dashboard extends Component {
                         forceLabel: "Name"
                       }}
                     />
-                    <h6>Syed Adil</h6>
+                    <h6>{empDetails.full_name}</h6>
                   </div>
                   <div className="col-3">
                     <AlgaehLabel
@@ -326,7 +381,7 @@ class Dashboard extends Component {
                         forceLabel: "Arabic Full Name"
                       }}
                     />
-                    <h6>سيد عادل فواد نيزامى</h6>
+                    <h6>{empDetails.arabic_name}</h6>
                   </div>
                 </div>
                 <hr />
@@ -337,7 +392,7 @@ class Dashboard extends Component {
                         forceLabel: "Date of Birth"
                       }}
                     />
-                    <h6>22/09/1985</h6>
+                    <h6>{empDetails.date_of_birth}</h6>
                   </div>
                   <div className="col-2">
                     <AlgaehLabel
@@ -345,7 +400,7 @@ class Dashboard extends Component {
                         forceLabel: "Gender"
                       }}
                     />
-                    <h6>Male</h6>
+                    <h6>{empDetails.sex}</h6>
                   </div>{" "}
                   <div className="col-3">
                     <AlgaehLabel
@@ -353,7 +408,7 @@ class Dashboard extends Component {
                         forceLabel: "Mobile"
                       }}
                     />
-                    <h6>+971 78345633</h6>
+                    <h6>{empDetails.primary_contact_no}</h6>
                   </div>{" "}
                   <div className="col-4 employeeEmail">
                     <AlgaehLabel
@@ -361,7 +416,7 @@ class Dashboard extends Component {
                         forceLabel: "Personal Email"
                       }}
                     />
-                    <h6>fawadnizami898@gmail.com</h6>
+                    <h6>{empDetails.email}</h6>
                   </div>
                 </div>
                 <hr />
@@ -372,10 +427,7 @@ class Dashboard extends Component {
                         forceLabel: "Present Address"
                       }}
                     />
-                    <h6>
-                      Sheikh Mohammed Bin Rashed Boulevard Downtown Dubai, PO
-                      Box 123234 Dubai, UAE
-                    </h6>
+                    <h6>{empDetails.present_address}</h6>
                   </div>
                   <div className="col-6">
                     <AlgaehLabel
@@ -383,10 +435,7 @@ class Dashboard extends Component {
                         forceLabel: "Permenet Address"
                       }}
                     />
-                    <h6>
-                      No.136/1, 8th Cross Rd, N Block, Govindapura, Nagawara,
-                      Bengaluru, Karnataka 560045
-                    </h6>
+                    <h6>{empDetails.permanent_address}</h6>
                   </div>
                 </div>
               </div>
@@ -423,25 +472,83 @@ class Dashboard extends Component {
                     <AlgaehDataGrid
                       columns={[
                         {
-                          fieldName: "",
+                          fieldName: "dependent_type",
                           label: (
                             <AlgaehLabel
-                              label={{ forceLabel: "Memeber Name" }}
+                              label={{ forceLabel: "Dependent Type" }}
+                            />
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {row.dependent_type === "SP"
+                                  ? "Spouse"
+                                  : row.dependent_type === "FT"
+                                  ? "Father"
+                                  : row.dependent_type === "MT"
+                                  ? "Mother"
+                                  : row.dependent_type === "GU"
+                                  ? "Guardian"
+                                  : row.dependent_type === "SO"
+                                  ? "Son"
+                                  : row.dependent_type === "DG"
+                                  ? "Daughter"
+                                  : "------"}
+                              </span>
+                            );
+                          },
+                          editorTemplate: row => {
+                            return (
+                              <AlagehAutoComplete
+                                div={{ className: "col" }}
+                                selector={{
+                                  name: "dependent_type",
+                                  className: "select-fld",
+                                  value: row.dependent_type,
+                                  dataSource: {
+                                    textField: "name",
+                                    valueField: "value",
+                                    data: GlobalVariables.DEPENDENT_TYPE
+                                  },
+                                  others: {
+                                    errormessage: "Field cannot be blank",
+                                    required: true
+                                  },
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                }}
+                              />
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "dependent_name",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Dependent Name" }}
                             />
                           )
                         },
                         {
-                          fieldName: "",
+                          fieldName: "identity_document_name",
                           label: (
                             <AlgaehLabel
-                              label={{ forceLabel: "Relationship Type" }}
+                              label={{ forceLabel: "ID Card Type" }}
                             />
+                          )
+                        },
+                        {
+                          fieldName: "dependent_identity_no",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "ID Number" }} />
                           )
                         }
                       ]}
-                      keyId="hims_d_employee_group_id"
+                      keyId="hims_d_employee_dependents_id"
                       dataSource={{
-                        data: []
+                        data: this.state.family_details
                       }}
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 10 }}
@@ -480,21 +587,42 @@ class Dashboard extends Component {
                     <AlgaehDataGrid
                       columns={[
                         {
-                          fieldName: "",
+                          fieldName: "identity_document_name",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "ID Type" }} />
                           )
                         },
                         {
-                          fieldName: "",
+                          fieldName: "identity_number",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "ID No." }} />
                           )
+                        },
+                        {
+                          fieldName: "issue_date",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Issue Date" }} />
+                          )
+                        },
+                        {
+                          fieldName: "valid_upto",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Valid Upto" }} />
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {row.valid_upto !== null
+                                  ? row.valid_upto
+                                  : "------"}
+                              </span>
+                            );
+                          }
                         }
                       ]}
-                      keyId="hims_d_employee_group_id"
+                      keyId="hims_d_employee_identification_id"
                       dataSource={{
-                        data: []
+                        data: this.state.id_details
                       }}
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 10 }}
