@@ -8,7 +8,6 @@ import {
   jsonArrayToObject
 } from "../utils";
 import httpStatus from "../utils/httpStatus";
-
 import { debugLog } from "../utils/logging";
 import Promise from "bluebird";
 import department from "../controller/department";
@@ -1327,17 +1326,18 @@ let addEarningDeduction = (req, res, next) => {
 
       connection.query(
         "INSERT  INTO hims_d_earning_deduction (earning_deduction_code,earning_deduction_description,short_desc,\
-          component_category,calculation_method,component_frequency,calculation_type,component_type,\
+          component_category,calculation_method, formula,component_frequency,calculation_type,component_type,\
           shortage_deduction_applicable,overtime_applicable,limit_applicable,limit_amount,\
           process_limit_required,process_limit_days,general_ledger,allow_round_off,round_off_type,\
           round_off_amount, created_date,created_by,updated_date,updated_by) values(\
-            ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
           input.earning_deduction_code,
           input.earning_deduction_description,
           input.short_desc,
           input.component_category,
           input.calculation_method,
+          input.formula,
           input.component_frequency,
           input.calculation_type,
           input.component_type,
@@ -1351,7 +1351,6 @@ let addEarningDeduction = (req, res, next) => {
           input.allow_round_off,
           input.round_off_type,
           input.round_off_amount,
-
           new Date(),
           input.created_by,
           new Date(),
@@ -1694,6 +1693,172 @@ let deleteEmployeeIdentification = (req, res, next) => {
   }
 };
 
+//created by Adnan
+let addLoanMaster = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT  INTO hims_d_loan (loan_code,loan_description,\
+          loan_account,loan_limit_type,loan_maximum_amount,\
+          created_date,created_by,updated_date,updated_by) values(\
+            ?,?,?,?,?,?,?,?,?)",
+        [
+          input.loan_code,
+          input.loan_description,
+          input.loan_account,
+          input.loan_limit_type,
+          input.loan_maximum_amount,
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by Adnan
+let getLoanMaster = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_d_loan_id,loan_code,\
+          loan_description,loan_account,loan_limit_type,loan_maximum_amount,loan_status from hims_d_loan\
+        where record_status='A' order by hims_d_loan_id desc",
+
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by Adnan
+let updateLoanMaster = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.body);
+
+    if (input.hims_d_loan_id != "null" && input.hims_d_loan_id != undefined) {
+      db.getConnection((error, connection) => {
+        connection.query(
+          "update hims_d_loan set  hims_d_loan_id=?,\
+          loan_code=?,loan_description=?,loan_account=?,loan_limit_type=?,loan_maximum_amount=?,\
+            updated_date=?, updated_by=?  WHERE record_status='A' and  hims_d_loan_id = ?",
+
+          [
+            input.hims_d_loan_id,
+            input.loan_code,
+            input.loan_description,
+            input.loan_account,
+            input.loan_limit_type,
+            input.loan_maximum_amount,
+            new Date(),
+            input.updated_by,
+            input.hims_d_loan_id
+          ],
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+
+            if (result.affectedRows > 0) {
+              req.records = result;
+              next();
+            } else {
+              req.records = { invalid_input: true };
+              next();
+            }
+          }
+        );
+      });
+    } else {
+      req.records = { invalid_input: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by Adnan
+let deleteLoanMaster = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let input = extend({}, req.body);
+    if (input.hims_d_loan_id != "null" && input.hims_d_loan_id != undefined) {
+      deleteRecord(
+        {
+          db: req.db,
+          tableName: "hims_d_loan",
+          id: req.body.hims_d_loan_id,
+          query:
+            "UPDATE hims_d_loan SET  record_status='I' WHERE hims_d_loan_id=?",
+          values: [req.body.hims_d_loan_id]
+        },
+        result => {
+          if (result.records.affectedRows > 0) {
+            req.records = result;
+            next();
+          } else {
+            req.records = { invalid_input: true };
+            next();
+          }
+        },
+        error => {
+          next(error);
+        },
+        true
+      );
+    } else {
+      req.records = { invalid_input: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addEmployee,
   addEmployeeMaster,
@@ -1715,5 +1880,9 @@ module.exports = {
   getEmployeeIdentification,
   updateEmployeeIdentification,
   deleteEmployeeIdentification,
-  addEmployeeInfo
+  addEmployeeInfo,
+  addLoanMaster,
+  getLoanMaster,
+  updateLoanMaster,
+  deleteLoanMaster
 };

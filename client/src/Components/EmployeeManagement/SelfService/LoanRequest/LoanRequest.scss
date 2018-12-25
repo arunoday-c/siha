@@ -1,4 +1,4 @@
-.hptl-SelfService-form {
+.loan_request {
   h5 {
     margin: 0 0 10px;
     padding-bottom: 2px;
@@ -10,9 +10,9 @@
       line-height: 0;
     }
   }
-  #attendanceReg_Cntr {
+  #LoanRequestList_cntr {
     .ReactTable {
-      max-height: 57vh !important;
+      max-height: 42vh !important;
     }
   }
 }

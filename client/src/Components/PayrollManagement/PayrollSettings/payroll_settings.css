@@ -1,6 +1,2 @@
-.payroll_settings .payroll-setion {
-  padding-top: 15px;
-  padding-bottom: 15px;
-  border-radius: 5px;
-  border: 1px solid #d3d3d3;
-  background: #ffff; }
+.payroll_settings .tabMaster {
+  margin-bottom: 0; }
