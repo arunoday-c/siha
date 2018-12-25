@@ -57,4 +57,35 @@ let getEmployeeBasicDetails = (req, res, next) => {
   }
 };
 
-module.exports = { getEmployeeBasicDetails };
+//created by irfan: to get
+let getEmployeeDependentDetails = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_d_employee_id, employee_code,  full_name ,ED.dependent_type,ED.dependent_name,\
+        ED.dependent_identity_no,ED.dependent_identity_type,ID.identity_document_name\
+        from hims_d_employee E left join hims_d_employee_dependents ED on\
+        E.hims_d_employee_id=ED.employee_id and ED.record_status='A'\
+        left join hims_d_identity_document ID on ED.dependent_identity_type=ID.hims_d_identity_document_id \
+        and ID.record_status='A' where E.record_status='A' and E.hims_d_employee_id=?",
+        req.userIdentity.employee_id,
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+module.exports = { getEmployeeBasicDetails, getEmployeeDependentDetails };
