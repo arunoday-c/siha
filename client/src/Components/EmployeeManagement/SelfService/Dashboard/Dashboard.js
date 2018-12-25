@@ -118,7 +118,7 @@ class Dashboard extends Component {
                     this.basicDetails = c;
                   }}
                 >
-                  <h3 className="caption-subject" />
+                  <h3 className="caption-subject">Basic Details</h3>
                 </div>
                 <div className="actions">
                   <a
