@@ -48,8 +48,21 @@ export default class AlgaehFileUploader extends Component {
       this.props.onref(undefined);
   }
   getDisplayImage(propsP) {
+    let _call = true;
+    if (typeof propsP.validateBeforeCall === "function") {
+      _call = propsP.validateBeforeCall();
+    }
+    if (typeof _call !== "boolean") {
+      _call = true;
+    }
+    if (!_call) {
+      this.setState({
+        filePreview: noImage,
+        showLoader: false
+      });
+      return;
+    }
     const that = this;
-
     if (
       propsP.serviceParameters.uniqueID !== null &&
       propsP.serviceParameters.uniqueID !== ""

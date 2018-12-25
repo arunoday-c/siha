@@ -23,7 +23,8 @@ class EmployeeMasterIndex extends Component {
       isOpen: false,
       employeeDetailsPop: {},
       Employeedetails: [],
-      selectedLang: "en"
+      selectedLang: "en",
+      editEmployee: false
     };
   }
 
@@ -55,7 +56,8 @@ class EmployeeMasterIndex extends Component {
     this.setState({
       ...this.state,
       isOpen: !this.state.isOpen,
-      employeeDetailsPop: {}
+      employeeDetailsPop: {},
+      editEmployee: false
     });
   }
 
@@ -148,6 +150,7 @@ class EmployeeMasterIndex extends Component {
                 }
                 open={this.state.isOpen}
                 onClose={this.CloseModel.bind(this)}
+                editEmployee={this.state.editEmployee}
                 employeeDetailsPop={this.state.employeeDetailsPop}
               />
             </div>

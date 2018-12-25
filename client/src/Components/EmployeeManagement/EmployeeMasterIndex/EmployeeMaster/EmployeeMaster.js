@@ -13,10 +13,10 @@ import RulesDetails from "./RulesDetails/RulesDetails";
 
 import { AlgaehLabel, Modal } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
-import MyContext from "../../../../utils/MyContext";
+// import MyContext from "../../../../utils/MyContext";
 
 import EmpMasterIOputs from "../../../../Models/EmployeeMaster";
-import { getCookie, swalMessage } from "../../../../utils/algaehApiCall";
+import { getCookie } from "../../../../utils/algaehApiCall";
 import { InsertUpdateEmployee, ClearEmployee } from "./EmployeeMasterEvents";
 
 class EmployeeMaster extends Component {
@@ -24,13 +24,9 @@ class EmployeeMaster extends Component {
     super(props);
 
     this.state = {
-      pageDisplay: "PersonalDetails"
+      pageDisplay: "PersonalDetails",
+      personalDetails: {}
     };
-  }
-
-  componentWillMount() {
-    let IOputs = EmpMasterIOputs.inputParam();
-    this.setState(IOputs);
   }
 
   openTab(e) {
@@ -75,11 +71,20 @@ class EmployeeMaster extends Component {
   };
 
   componentDidMount() {
+    debugger;
+    // let IOputs = EmpMasterIOputs.inputParam();
+    // this.setState(IOputs);
     let prevLang = getCookie("Language");
 
     let IOputs = EmpMasterIOputs.inputParam();
     IOputs.selectedLang = prevLang;
-    this.setState(IOputs);
+
+    this.setState({
+      personalDetails: {
+        ...IOputs,
+        ...this.props.employeeDetailsPop
+      }
+    });
 
     if (
       this.props.subdepartment === undefined ||
@@ -154,17 +159,53 @@ class EmployeeMaster extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    if (
-      newProps.employeeDetailsPop.hims_d_employee_id !== undefined &&
-      this.state.full_name !== null
-    ) {
+    debugger;
+    if (newProps.editEmployee) {
       let IOputs = newProps.employeeDetailsPop;
       IOputs.Applicable = IOputs.isdoctor === "Y" ? true : false;
       IOputs.samechecked = IOputs.same_address === "Y" ? true : false;
-      this.setState({ ...this.state, ...IOputs });
+      this.setState({
+        personalDetails: { ...this.state.personalDetails, ...IOputs }
+      });
     } else {
-      let IOputs = EmpMasterIOputs.inputParam();
-      this.setState(IOputs);
+      this.setState({
+        personalDetails: { ...EmpMasterIOputs.inputParam() }
+      });
+    }
+
+    // if (
+    //   newProps.employeeDetailsPop.hims_d_employee_id !== undefined &&
+    //   this.state.full_name !== null
+    // ) {
+    //   let IOputs = newProps.employeeDetailsPop;
+    //   IOputs.Applicable = IOputs.isdoctor === "Y" ? true : false;
+    //   IOputs.samechecked = IOputs.same_address === "Y" ? true : false;
+    //   this.setState({
+    //     personalDetails: { ...this.state.personalDetails, ...IOputs }
+    //   });
+    // } else {
+    //   let IOputs = EmpMasterIOputs.inputParam();
+    //   // this.setState(IOputs);
+    //   this.setState({
+    //     personalDetails: {
+    //       ...IOputs,
+    //       ...this.props.employeeDetailsPop
+    //     }
+    //   });
+    // }
+  }
+  updateEmployeeTabs(options) {
+    debugger;
+    if (
+      this.state.pageDisplay === "PersonalDetails" ||
+      this.state.pageDisplay === "DeptUserDetails"
+    ) {
+      this.setState({
+        personalDetails: {
+          ...this.state.personalDetails,
+          ...options
+        }
+      });
     }
   }
 
@@ -294,32 +335,32 @@ class EmployeeMaster extends Component {
                     </li>
                   </ul>
                 </div>
-                <MyContext.Provider
+                {/* <MyContext.Provider
                   value={{
                     state: this.state,
                     updateState: obj => {
                       this.setState({ ...obj });
                     }
                   }}
-                >
-                  <div className="employee-section">
-                    {this.state.pageDisplay === "PersonalDetails" ? (
-                      <PersonalDetails EmpMasterIOputs={this.state} />
-                    ) : this.state.pageDisplay === "DeptUserDetails" ? (
-                      <DeptUserDetails EmpMasterIOputs={this.state} />
-                    ) : this.state.pageDisplay === "PayRollDetails" ? (
-                      <PayRollDetails EmpMasterIOputs={this.state} />
-                    ) : this.state.pageDisplay === "CommissionSetup" ? (
-                      <CommissionSetup EmpMasterIOputs={this.state} />
-                    ) : this.state.pageDisplay === "FamilyAndIdentification" ? (
-                      <FamilyAndIdentification EmpMasterIOputs={this.state} />
-                    ) : this.state.pageDisplay === "OfficalDetails" ? (
-                      <OfficalDetails EmpMasterIOputs={this.state} />
-                    ) : this.state.pageDisplay === "RulesDetails" ? (
-                      <RulesDetails EmpMasterIOputs={this.state} />
-                    ) : null}
-                  </div>
-                </MyContext.Provider>
+                > */}
+                <div className="employee-section">
+                  {this.state.pageDisplay === "PersonalDetails" ? (
+                    <PersonalDetails EmpMasterIOputs={this} />
+                  ) : this.state.pageDisplay === "DeptUserDetails" ? (
+                    <DeptUserDetails EmpMasterIOputs={this} />
+                  ) : this.state.pageDisplay === "PayRollDetails" ? (
+                    <PayRollDetails EmpMasterIOputs={this.state} />
+                  ) : this.state.pageDisplay === "CommissionSetup" ? (
+                    <CommissionSetup EmpMasterIOputs={this.state} />
+                  ) : this.state.pageDisplay === "FamilyAndIdentification" ? (
+                    <FamilyAndIdentification EmpMasterIOputs={this.state} />
+                  ) : this.state.pageDisplay === "OfficalDetails" ? (
+                    <OfficalDetails EmpMasterIOputs={this} />
+                  ) : this.state.pageDisplay === "RulesDetails" ? (
+                    <RulesDetails EmpMasterIOputs={this.state} />
+                  ) : null}
+                </div>
+                {/* </MyContext.Provider> */}
               </div>
 
               <div className="popupFooter">
@@ -334,10 +375,10 @@ class EmployeeMaster extends Component {
                         type="button"
                         className="btn btn-primary"
                       >
-                        {this.state.hims_d_employee_id === null ? (
-                          <AlgaehLabel label={{ fieldName: "btnSave" }} />
-                        ) : (
+                        {this.props.editEmployee ? (
                           <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
+                        ) : (
+                          <AlgaehLabel label={{ fieldName: "btnSave" }} />
                         )}
                       </button>
                       <button

@@ -43,44 +43,53 @@ const texthandle = ($this, context, e) => {
   }
 };
 
-const accomodationProvided = ($this, context, e) => {
-  let accomodation_provided = false;
-  let value = "N";
-  let name = e.target.name;
-
-  if ($this.state.accomodation_provided === true) {
-    accomodation_provided = false;
-    value = "N";
-  } else if ($this.state.accomodation_provided === false) {
-    accomodation_provided = true;
-    value = "Y";
-  }
+const accomodationProvided = ($this, e) => {
   $this.setState({
-    [name]: value,
-    accomodation_provided: accomodation_provided
+    [e.target.name]: e.target.cheked ? "Y" : "N"
+  });
+  $this.props.EmpMasterIOputs.updateEmployeeTabs({
+    [e.target.name]: e.target.cheked ? "Y" : "N"
   });
 
-  clearInterval(texthandlerInterval);
-  texthandlerInterval = setInterval(() => {
-    if (context !== undefined) {
-      context.updateState({ [name]: value });
-    }
-    clearInterval(texthandlerInterval);
-  }, 500);
+  // let accomodation_provided = false;
+  // let value = "N";
+  // let name = e.target.name;
+
+  // if ($this.state.accomodation_provided === true) {
+  //   accomodation_provided = false;
+  //   value = "N";
+  // } else if ($this.state.accomodation_provided === false) {
+  //   accomodation_provided = true;
+  //   value = "Y";
+  // }
+  // $this.setState({
+  //   [name]: value,
+  //   accomodation_provided: accomodation_provided
+  // });
+
+  // clearInterval(texthandlerInterval);
+  // texthandlerInterval = setInterval(() => {
+  //   if (context !== undefined) {
+  //     context.updateState({ [name]: value });
+  //   }
+  //   clearInterval(texthandlerInterval);
+  // }, 500);
 };
 
-const datehandle = ($this, context, ctrl, e) => {
+const datehandle = ($this, ctrl, e) => {
   $this.setState({
     [e]: ctrl
   });
-
-  clearInterval(texthandlerInterval);
-  texthandlerInterval = setInterval(() => {
-    if (context !== undefined) {
-      context.updateState({ [e]: moment(ctrl)._d });
-    }
-    clearInterval(texthandlerInterval);
-  }, 500);
+  $this.props.EmpMasterIOputs.updateEmployeeTabs({
+    [e]: ctrl
+  });
+  // clearInterval(texthandlerInterval);
+  // texthandlerInterval = setInterval(() => {
+  //   if (context !== undefined) {
+  //     context.updateState({ [e]: moment(ctrl)._d });
+  //   }
+  //   clearInterval(texthandlerInterval);
+  // }, 500);
 };
 
 export { texthandle, datehandle, accomodationProvided };

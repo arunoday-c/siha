@@ -2,113 +2,164 @@ import moment from "moment";
 import { saveImageOnServer } from "../../../../../utils/GlobalFunctions";
 let texthandlerInterval = null;
 
-const texthandle = ($this, context, e) => {
+const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
   $this.setState({
     [name]: value
   });
-
-  clearInterval(texthandlerInterval);
-  texthandlerInterval = setInterval(() => {
-    if (context !== undefined) {
-      context.updateState({ [name]: value });
-    }
-    clearInterval(texthandlerInterval);
-  }, 500);
-};
-
-const countryStatehandle = ($this, context, e) => {
-  let name;
-  let value;
-  if (e.name !== undefined) {
-    if (e.name === "present_country_id") {
-      name = e.name;
-      value = e.value;
-      $this.setState({
-        present_state_id: 0,
-        present_city_id: 0
-      });
-      if (context !== undefined) {
-        context.updateState({
-          present_state_id: null,
-          present_city_id: null
-        });
-      }
-      $this.props.getStates({
-        redux: {
-          data: e.selected.states,
-          type: "STATE_GET_DATA",
-          mappingName: "present_countrystates"
-        }
-      });
-    } else if (e.name === "present_state_id") {
-      name = e.name;
-      value = e.value;
-      $this.setState({
-        present_city_id: null
-      });
-      if (context !== undefined) {
-        context.updateState({
-          present_city_id: null
-        });
-      }
-      $this.props.getCities({
-        redux: {
-          data: e.selected.cities,
-          type: "CITY_GET_DATA",
-          mappingName: "present_cities"
-        }
-      });
-    } else if (e.name === "permanent_country_id") {
-      name = e.name;
-      value = e.value;
-      $this.setState({
-        permanent_state_id: 0,
-        permanent_city_id: 0
-      });
-      if (context !== undefined) {
-        context.updateState({
-          permanent_state_id: null,
-          permanent_city_id: null
-        });
-      }
-      $this.props.getStates({
-        redux: {
-          data: e.selected.states,
-          type: "STATE_GET_DATA",
-          mappingName: "countrystates"
-        }
-      });
-    } else if (e.name === "permanent_state_id") {
-      debugger;
-      name = e.name;
-      value = e.value;
-      $this.setState({
-        permanent_city_id: null
-      });
-      if (context !== undefined) {
-        context.updateState({
-          permanent_city_id: null
-        });
-      }
-      $this.props.getCities({
-        redux: {
-          data: e.selected.cities,
-          type: "CITY_GET_DATA",
-          mappingName: "cities"
-        }
-      });
-    }
-  }
-  $this.setState({
+  $this.props.EmpMasterIOputs.updateEmployeeTabs({
     [name]: value
   });
+  // clearInterval(texthandlerInterval);
+  // texthandlerInterval = setInterval(() => {
 
-  if (context !== undefined) {
-    context.updateState({ [name]: value });
+  //   // if (context !== undefined) {
+  //   //   console.log("Here it is");
+  //   //   context.updateState({ [name]: value });
+  //   // }
+  //   clearInterval(texthandlerInterval);
+  // }, 500);
+};
+
+const countryStatehandle = ($this, e) => {
+  let name = e.name;
+  let value = e.value;
+  let otherValues = {};
+  if (e.name === "present_country_id") {
+    otherValues["present_state_id"] = 0;
+    otherValues["present_city_id"] = 0;
+    $this.props.getStates({
+      redux: {
+        data: e.selected.states,
+        type: "STATE_GET_DATA",
+        mappingName: "present_countrystates"
+      }
+    });
+  } else if (e.name === "present_state_id") {
+    otherValues["present_city_id"] = null;
+    $this.props.getCities({
+      redux: {
+        data: e.selected.cities,
+        type: "CITY_GET_DATA",
+        mappingName: "present_cities"
+      }
+    });
+  } else if (e.name === "permanent_country_id") {
+    otherValues["permanent_state_id"] = 0;
+    otherValues["permanent_city_id"] = 0;
+    $this.props.getStates({
+      redux: {
+        data: e.selected.states,
+        type: "STATE_GET_DATA",
+        mappingName: "countrystates"
+      }
+    });
+  } else if (e.name === "permanent_state_id") {
+    otherValues["permanent_city_id"] = null;
+    $this.props.getCities({
+      redux: {
+        data: e.selected.cities,
+        type: "CITY_GET_DATA",
+        mappingName: "cities"
+      }
+    });
   }
+  $this.setState({
+    [name]: value,
+    ...otherValues
+  });
+  $this.props.EmpMasterIOputs.updateEmployeeTabs({
+    [name]: value
+  });
+  // if (e.name !== undefined) {
+  //   if (e.name === "present_country_id") {
+  //     name = e.name;
+  //     value = e.value;
+  //     $this.setState({
+  //       present_state_id: 0,
+  //       present_city_id: 0
+  //     });
+  //     if (context !== undefined) {
+  //       context.updateState({
+  //         present_state_id: null,
+  //         present_city_id: null
+  //       });
+  //     }
+  //     $this.props.getStates({
+  //       redux: {
+  //         data: e.selected.states,
+  //         type: "STATE_GET_DATA",
+  //         mappingName: "present_countrystates"
+  //       }
+  //     });
+  //   } else if (e.name === "present_state_id") {
+  //     name = e.name;
+  //     value = e.value;
+  //     $this.setState({
+  //       present_city_id: null
+  //     });
+  //     if (context !== undefined) {
+  //       context.updateState({
+  //         present_city_id: null
+  //       });
+  //     }
+  //     $this.props.getCities({
+  //       redux: {
+  //         data: e.selected.cities,
+  //         type: "CITY_GET_DATA",
+  //         mappingName: "present_cities"
+  //       }
+  //     });
+  //   } else if (e.name === "permanent_country_id") {
+  //     name = e.name;
+  //     value = e.value;
+  //     $this.setState({
+  //       permanent_state_id: 0,
+  //       permanent_city_id: 0
+  //     });
+  //     if (context !== undefined) {
+  //       context.updateState({
+  //         permanent_state_id: null,
+  //         permanent_city_id: null
+  //       });
+  //     }
+  //     $this.props.getStates({
+  //       redux: {
+  //         data: e.selected.states,
+  //         type: "STATE_GET_DATA",
+  //         mappingName: "countrystates"
+  //       }
+  //     });
+  //   } else if (e.name === "permanent_state_id") {
+  //     debugger;
+  //     name = e.name;
+  //     value = e.value;
+  //     $this.setState({
+  //       permanent_city_id: null
+  //     });
+  //     if (context !== undefined) {
+  //       context.updateState({
+  //         permanent_city_id: null
+  //       });
+  //     }
+  //     $this.props.getCities({
+  //       redux: {
+  //         data: e.selected.cities,
+  //         type: "CITY_GET_DATA",
+  //         mappingName: "cities"
+  //       }
+  //     });
+  //   }
+  // }
+  // $this.setState({
+  //   [name]: value
+  // });
+
+  // if (context !== undefined) {
+  //   context.updateState({ [name]: value });
+  // }
 };
 
 //Todo title and gender related chnage need to do
@@ -163,77 +214,91 @@ const onDrop = ($this, file, context, fileType) => {
   });
 };
 
-const datehandle = ($this, context, ctrl, e) => {
+const datehandle = ($this, ctrl, e) => {
   $this.setState({
     [e]: ctrl
   });
-
-  clearInterval(texthandlerInterval);
-  texthandlerInterval = setInterval(() => {
-    if (context !== undefined) {
-      context.updateState({ [e]: moment(ctrl)._d });
-    }
-    clearInterval(texthandlerInterval);
-  }, 500);
+  $this.props.EmpMasterIOputs.updateEmployeeTabs({
+    [e]: ctrl
+  });
+  // clearInterval(texthandlerInterval);
+  // texthandlerInterval = setInterval(() => {
+  //   if (context !== undefined) {
+  //     context.updateState({ [e]: moment(ctrl)._d });
+  //   }
+  //   clearInterval(texthandlerInterval);
+  // }, 500);
 };
 
-const sameAsPresent = ($this, context, e) => {
-  //Handle here
-  let samechecked = false;
-  let value = "N";
+const sameAsPresent = ($this, e) => {
   let name = e.target.name;
-
-  if ($this.state.samechecked === true) {
-    samechecked = false;
-    value = "N";
-  } else if ($this.state.samechecked === false) {
-    samechecked = true;
-    value = "Y";
-  }
+  const _value = e.target.checked ? "Y" : "N";
   $this.setState({
-    [name]: value,
-    samechecked: samechecked
+    [name]: _value
+  });
+  $this.props.EmpMasterIOputs.updateEmployeeTabs({
+    [name]: _value
   });
 
-  clearInterval(texthandlerInterval);
-  texthandlerInterval = setInterval(() => {
-    if (context !== undefined) {
-      context.updateState({
-        [name]: value,
-        samechecked: samechecked
-      });
-    }
-    clearInterval(texthandlerInterval);
-  }, 500);
+  // if ($this.state.samechecked === true) {
+  //   samechecked = false;
+  //   value = "N";
+  // } else if ($this.state.samechecked === false) {
+  //   samechecked = true;
+  //   value = "Y";
+  // }
+  // $this.setState({
+  //   [name]: value,
+  //   samechecked: samechecked
+  // });
+
+  // clearInterval(texthandlerInterval);
+  // texthandlerInterval = setInterval(() => {
+  //   if (context !== undefined) {
+  //     context.updateState({
+  //       [name]: value,
+  //       samechecked: samechecked
+  //     });
+  //   }
+  //   clearInterval(texthandlerInterval);
+  // }, 500);
 };
 
-const isDoctorChange = ($this, context, e) => {
-  let Applicable = false;
-  let Value = "N";
+const isDoctorChange = ($this, e) => {
   let name = e.target.name;
-
-  if ($this.state.Applicable === true) {
-    Applicable = false;
-    Value = "N";
-  } else if ($this.state.Applicable === false) {
-    Applicable = true;
-    Value = "Y";
-  }
+  let _value = e.target.checked ? "Y" : "N";
   $this.setState({
-    [name]: Value,
-    Applicable: Applicable
+    [name]: _value
   });
+  $this.props.EmpMasterIOputs.updateEmployeeTabs({
+    [name]: _value
+  });
+  // let Applicable = false;
+  // let Value = "N";
+  // let name = e.target.name;
 
-  clearInterval(texthandlerInterval);
-  texthandlerInterval = setInterval(() => {
-    if (context !== undefined) {
-      context.updateState({
-        [name]: Value,
-        Applicable: Applicable
-      });
-    }
-    clearInterval(texthandlerInterval);
-  }, 500);
+  // if ($this.state.Applicable === true) {
+  //   Applicable = false;
+  //   Value = "N";
+  // } else if ($this.state.Applicable === false) {
+  //   Applicable = true;
+  //   Value = "Y";
+  // }
+  // $this.setState({
+  //   [name]: Value,
+  //   Applicable: Applicable
+  // });
+
+  // clearInterval(texthandlerInterval);
+  // texthandlerInterval = setInterval(() => {
+  //   if (context !== undefined) {
+  //     context.updateState({
+  //       [name]: Value,
+  //       Applicable: Applicable
+  //     });
+  //   }
+  //   clearInterval(texthandlerInterval);
+  // }, 500);
 };
 
 export {

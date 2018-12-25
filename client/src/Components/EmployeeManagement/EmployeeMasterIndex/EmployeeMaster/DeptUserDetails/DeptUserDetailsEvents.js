@@ -2,22 +2,23 @@ import { swalMessage } from "../../../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../../../utils/GlobalFunctions";
 import extend from "extend";
 let texthandlerInterval = null;
-const texthandle = ($this, context, ctrl, e) => {
-  e = e || ctrl;
+const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-
+  debugger;
   $this.setState({
     [name]: value
   });
-
-  clearInterval(texthandlerInterval);
-  texthandlerInterval = setInterval(() => {
-    if (context !== undefined) {
-      context.updateState({ [name]: value });
-    }
-    clearInterval(texthandlerInterval);
-  }, 500);
+  $this.props.EmpMasterIOputs.updateEmployeeTabs({
+    [name]: value
+  });
+  // clearInterval(texthandlerInterval);
+  // texthandlerInterval = setInterval(() => {
+  //   if (context !== undefined) {
+  //     context.updateState({ [name]: value });
+  //   }
+  //   clearInterval(texthandlerInterval);
+  // }, 500);
 };
 
 const departmenttexthandle = ($this, ctrl, e) => {
@@ -83,7 +84,7 @@ const categorytexthandle = ($this, ctrl, e) => {
   });
 };
 
-const AddDeptUser = ($this, context, e) => {
+const AddDeptUser = ($this, e) => {
   e.preventDefault();
 
   AlgaehValidation({
@@ -147,12 +148,23 @@ const AddDeptUser = ($this, context, e) => {
             hims_d_designation_id: null
           });
 
-          if (context !== undefined) {
-            context.updateState({
-              deptDetails: deptDetails,
-              insertdeptDetails: insertdeptDetails
-            });
-          }
+          // if (context !== undefined) {
+          //   context.updateState({
+          //     deptDetails: deptDetails,
+          //     insertdeptDetails: insertdeptDetails
+          //   });
+          // }
+          $this.props.EmpMasterIOputs.updateEmployeeTabs({
+            deptDetails: deptDetails,
+            sub_department_id: null,
+            insertdeptDetails: insertdeptDetails,
+            user_id: null,
+            speciality_id: null,
+            category_id: null,
+            services_id: null,
+            reporting_to: null,
+            hims_d_designation_id: null
+          });
         } else {
           swalMessage({
             title: "Invalid Input. Selected Department already defined",
@@ -166,7 +178,7 @@ const AddDeptUser = ($this, context, e) => {
 
 // getEmpSpeciality
 
-const updateDeptUser = ($this, context, row) => {
+const updateDeptUser = ($this, row) => {
   let deptDetails = $this.state.deptDetails;
   let updatedeptDetails = $this.state.updatedeptDetails;
   let insertdeptDetails = $this.state.insertdeptDetails;
@@ -206,16 +218,21 @@ const updateDeptUser = ($this, context, row) => {
     updatedeptDetails: updatedeptDetails,
     insertdeptDetails: insertdeptDetails
   });
-  if (context !== undefined) {
-    context.updateState({
-      deptDetails: deptDetails,
-      updatedeptDetails: updatedeptDetails,
-      insertdeptDetails: insertdeptDetails
-    });
-  }
+  $this.props.EmpMasterIOputs.updateEmployeeTabs({
+    deptDetails: deptDetails,
+    updatedeptDetails: updatedeptDetails,
+    insertdeptDetails: insertdeptDetails
+  });
+  // if (context !== undefined) {
+  //   context.updateState({
+  //     deptDetails: deptDetails,
+  //     updatedeptDetails: updatedeptDetails,
+  //     insertdeptDetails: insertdeptDetails
+  //   });
+  // }
 };
 
-const deleteDeptUser = ($this, context, row) => {
+const deleteDeptUser = ($this, row) => {
   let deptDetails = $this.state.deptDetails;
   let updatedeptDetails = $this.state.updatedeptDetails;
   let insertdeptDetails = $this.state.insertdeptDetails;
@@ -249,13 +266,13 @@ const deleteDeptUser = ($this, context, row) => {
     updatedeptDetails: updatedeptDetails,
     insertdeptDetails: insertdeptDetails
   });
-  if (context !== undefined) {
-    context.updateState({
-      deptDetails: deptDetails,
-      updatedeptDetails: updatedeptDetails,
-      insertdeptDetails: insertdeptDetails
-    });
-  }
+  // if (context !== undefined) {
+  //   context.updateState({
+  //     deptDetails: deptDetails,
+  //     updatedeptDetails: updatedeptDetails,
+  //     insertdeptDetails: insertdeptDetails
+  //   });
+  // }
 };
 
 const colgridtexthandle = ($this, row, e) => {
