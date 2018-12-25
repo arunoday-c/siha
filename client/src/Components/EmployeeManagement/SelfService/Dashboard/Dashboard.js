@@ -445,7 +445,7 @@ class Dashboard extends Component {
               ) : null}
               <div className="portlet-body">
                 <div className="row">
-                  <div className="col-3">
+                  <div className="col">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Name"
@@ -453,7 +453,7 @@ class Dashboard extends Component {
                     />
                     <h6>{empDetails.full_name}</h6>
                   </div>
-                  <div className="col-3">
+                  <div className="col">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Arabic Full Name"
@@ -461,10 +461,7 @@ class Dashboard extends Component {
                     />
                     <h6>{empDetails.arabic_name}</h6>
                   </div>
-                </div>
-                <hr />
-                <div className="row">
-                  <div className="col-3">
+                  <div className="col">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Date of Birth"
@@ -472,7 +469,10 @@ class Dashboard extends Component {
                     />
                     <h6>{empDetails.date_of_birth}</h6>
                   </div>
-                  <div className="col-2">
+                </div>
+                <hr />
+                <div className="row">
+                  <div className="col">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Gender"
@@ -480,7 +480,7 @@ class Dashboard extends Component {
                     />
                     <h6>{empDetails.sex}</h6>
                   </div>{" "}
-                  <div className="col-3">
+                  <div className="col">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Mobile"
@@ -488,7 +488,7 @@ class Dashboard extends Component {
                     />
                     <h6>{empDetails.primary_contact_no}</h6>
                   </div>{" "}
-                  <div className="col-4 employeeEmail">
+                  <div className="col employeeEmail">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Personal Email"
@@ -531,7 +531,7 @@ class Dashboard extends Component {
                 <div className="actions">
                   <a
                     className="btn btn-other btn-circle active"
-                    onClick={this.showEditCntr.bind(this)}
+                    // onClick={this.showEditCntr.bind(this)}
                   >
                     <i
                       className={
