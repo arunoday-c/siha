@@ -36,7 +36,7 @@ class ApplyLeave extends Component {
               <div className="portlet-body">
                 <div className="row">
                   <AlagehAutoComplete
-                    div={{ className: "col-12" }}
+                    div={{ className: "col-12 margin-bottom-15" }}
                     label={{
                       forceLabel: "Select a Employee",
                       isImp: true
@@ -54,7 +54,7 @@ class ApplyLeave extends Component {
                     }}
                   />
                   <AlagehAutoComplete
-                    div={{ className: "col-6" }}
+                    div={{ className: "col-6 margin-bottom-15" }}
                     label={{
                       forceLabel: "Leave Type",
                       isImp: true
@@ -71,7 +71,7 @@ class ApplyLeave extends Component {
                       //  onChange: this.dropDownHandler.bind(this)
                     }}
                   />
-                  <div className="col-6">
+                  <div className="col-6 margin-bottom-15">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Avialable Balance"
@@ -110,7 +110,7 @@ class ApplyLeave extends Component {
                     maxDate={new Date()}
                   />{" "}
                   <AlagehAutoComplete
-                    div={{ className: "col-6" }}
+                    div={{ className: "col-6 margin-bottom-15" }}
                     label={{
                       forceLabel: "Leave Session",
                       isImp: true
@@ -128,7 +128,7 @@ class ApplyLeave extends Component {
                     }}
                   />
                   <AlagehAutoComplete
-                    div={{ className: "col-6" }}
+                    div={{ className: "col-6 margin-bottom-15" }}
                     label={{
                       forceLabel: "Leave Session",
                       isImp: true
@@ -145,7 +145,7 @@ class ApplyLeave extends Component {
                       //  onChange: this.dropDownHandler.bind(this)
                     }}
                   />
-                  <div className="col-12">
+                  <div className="col-12 margin-bottom-15">
                     <AlgaehLabel
                       label={{
                         forceLabel: "No. of Days"
@@ -154,7 +154,7 @@ class ApplyLeave extends Component {
                     <h6>0.0 days</h6>
                   </div>
                   <AlagehFormGroup
-                    div={{ className: "col-12" }}
+                    div={{ className: "col-12 margin-bottom-15" }}
                     label={{
                       forceLabel: "Reason for Leave",
                       isImp: true
@@ -172,12 +172,8 @@ class ApplyLeave extends Component {
                       }
                     }}
                   />
-                  <div className="col-3 margin-bottom-15">
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      style={{ marginTop: 21 }}
-                    >
+                  <div className="col-3">
+                    <button type="button" className="btn btn-primary">
                       Request
                     </button>
                   </div>
