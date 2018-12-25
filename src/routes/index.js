@@ -68,7 +68,7 @@ import algaehMasters from "../controller/algaehMasters";
 import dental from "../controller/dental";
 
 import attendance from "../Payroll/controller/attendance";
-import attendance from "../selfService/controller/selfService";
+import selfService from "../selfService/controller/selfService";
 let router = express();
 
 //connect to DB
