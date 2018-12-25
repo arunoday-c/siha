@@ -4,6 +4,7 @@ import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import EmployeeGroups from "./EmployeeGroups/EmployeeGroups";
 import EmployeeDesignations from "./EmployeeDesignations/EmployeeDesignations";
 import OvertimeGroups from "./OvertimeGroups/OvertimeGroups";
+import LeaveMaster from "./LeaveMaster/LeaveMaster";
 
 class HRSettings extends Component {
   constructor(props) {
@@ -70,6 +71,19 @@ class HRSettings extends Component {
                   />
                 }
               </li>
+              <li
+                algaehtabs={"LeaveMaster"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Leave Master"
+                    }}
+                  />
+                }
+              </li>
             </ul>
           </div>
         </div>
@@ -80,6 +94,8 @@ class HRSettings extends Component {
             <EmployeeDesignations />
           ) : this.state.pageDisplay === "OvertimeGroups" ? (
             <OvertimeGroups />
+          ) : this.state.pageDisplay === "LeaveMaster" ? (
+            <LeaveMaster />
           ) : //)
           //   : this.state.pageDisplay === "AppointmentRooms" ? (
           //     <AppointmentRooms />

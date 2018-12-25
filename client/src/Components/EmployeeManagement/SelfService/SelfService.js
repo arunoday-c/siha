@@ -6,6 +6,7 @@ import AttendanceRegularization from "./AttendanceRegularization/AttendanceRegul
 import ApplyLeave from "./ApplyLeave/ApplyLeave";
 import LoanRequest from "./LoanRequest/LoanRequest";
 import employeeProfileImg from "../../../assets/images/employee_profile_img.webp";
+import { algaehApiCall } from "../../../utils/algaehApiCall";
 
 export default class SelfService extends Component {
   constructor(props) {
@@ -13,6 +14,23 @@ export default class SelfService extends Component {
     this.state = {
       pageDisplay: "Dashboard"
     };
+    this.getEmployeeDetails();
+  }
+
+  getEmployeeDetails() {
+    algaehApiCall({
+      uri: "/selfService/getEmployeeBasicDetails",
+      method: "GET",
+      onSuccess: res => {
+        debugger;
+        if (res.data.success) {
+          this.setState({
+            employee_details: res.data.records[0]
+          });
+        }
+      },
+      onFailure: err => {}
+    });
   }
 
   openTab(e) {
@@ -27,6 +45,10 @@ export default class SelfService extends Component {
     });
   }
   render() {
+    let empDetails =
+      this.state.employee_details !== undefined
+        ? this.state.employee_details
+        : {};
     return (
       <div className="selfServiceModule">
         <div className="row EmployeeProfile">
@@ -35,32 +57,54 @@ export default class SelfService extends Component {
               <img alt="Algaeh-HIS" src={employeeProfileImg} />
             </div>
             <div className="EmployeeName">
-              <h6>SYED ADIL FAWAD NIZAMI</h6>
+              {/* <h6>SYED ADIL FAWAD NIZAMI</h6> */}
+              <h6>{empDetails.full_name}</h6>
               <p>
                 {" "}
-                <b>Specialist</b>
+                <b>{empDetails.designation}</b>
               </p>
-              <p>General Medicine</p>
+              <p>{empDetails.sub_department_name}</p>
             </div>
             <div className="EmployeeDemographic">
               <span>
-                <i className="fas fa-user-tie" /> <b>EMP378456</b>
+                {/* <i className="fas fa-user-tie" /> <b>EMP378456</b> */}
+                <i className="fas fa-user-tie" />{" "}
+                <b>{empDetails.employee_code}</b>
               </span>
               <span>
-                <i className="fas fa-mobile" /> <b>+96 34765738465</b>
+                {/* <i className="fas fa-mobile" /> <b>+96 34765738465</b> */}
+                <i className="fas fa-mobile" />{" "}
+                <b>{empDetails.primary_contact_no}</b>
               </span>
               <span>
                 <i className="fas fa-envelope" />{" "}
-                <b>fawad.nizami@hospital.com</b>
+                {/* <b>fawad.nizami@hospital.com</b> */}
+                <b>{empDetails.email}</b>
               </span>
               <span>
-                <i className="fas fa-globe-asia" /> <b>India</b>
+                <i className="fas fa-globe-asia" />{" "}
+                <b>{empDetails.present_country_name}</b>
               </span>
             </div>
             <div className="EmployeeDemographic">
               <span>
-                Reporting to: <b>Abdulrahman Fahmy</b>
+                Reporting to:{" "}
+                <b>
+                  {empDetails.reporting_to_name !== null
+                    ? empDetails.reporting_to_name
+                    : "------"}
+                </b>
               </span>
+              {empDetails.license_number !== null ? (
+                <span>
+                  License No.:{" "}
+                  <b>
+                    {empDetails.license_number !== null
+                      ? empDetails.license_number
+                      : "------"}
+                  </b>
+                </span>
+              ) : null}
             </div>
           </div>
         </div>
@@ -124,7 +168,7 @@ export default class SelfService extends Component {
         </div>
         <div className="selfService-setion">
           {this.state.pageDisplay === "Dashboard" ? (
-            <Dashboard />
+            <Dashboard empData={this.state.employee_details} />
           ) : this.state.pageDisplay === "AttendanceRegularization" ? (
             <AttendanceRegularization />
           ) : this.state.pageDisplay === "ApplyLeave" ? (

@@ -593,5 +593,14 @@
     { "name": "Loan Limit", "value": "L" },
     { "name": "Basic", "value": "B" },
     { "name": "Gratuity", "value": "G" }
+  ],
+  "LEAVE_TYPE": [
+    { "name": "Paid", "value": "P" },
+    { "name": "Unpaid", "value": "U" }
+  ],
+  "LEAVE_MODE": [
+    { "name": "Regular", "value": "REG" },
+    { "name": "Loss of Pay", "value": "LOP" },
+    { "name": "Comp Off", "value": "COM" }
   ]
 }

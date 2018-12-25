@@ -36,6 +36,24 @@ class ApplyLeave extends Component {
               <div className="portlet-body">
                 <div className="row">
                   <AlagehAutoComplete
+                    div={{ className: "col-12" }}
+                    label={{
+                      forceLabel: "Select a Employee",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "component_type",
+                      className: "select-fld",
+                      value: this.state.component_type,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: ""
+                      }
+                      //  onChange: this.dropDownHandler.bind(this)
+                    }}
+                  />
+                  <AlagehAutoComplete
                     div={{ className: "col-6" }}
                     label={{
                       forceLabel: "Leave Type",
@@ -91,6 +109,42 @@ class ApplyLeave extends Component {
                     }}
                     maxDate={new Date()}
                   />{" "}
+                  <AlagehAutoComplete
+                    div={{ className: "col-6" }}
+                    label={{
+                      forceLabel: "Leave Session",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "component_type",
+                      className: "select-fld",
+                      value: this.state.component_type,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: ""
+                      }
+                      //  onChange: this.dropDownHandler.bind(this)
+                    }}
+                  />
+                  <AlagehAutoComplete
+                    div={{ className: "col-6" }}
+                    label={{
+                      forceLabel: "Leave Session",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "component_type",
+                      className: "select-fld",
+                      value: this.state.component_type,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: ""
+                      }
+                      //  onChange: this.dropDownHandler.bind(this)
+                    }}
+                  />
                   <div className="col-12">
                     <AlgaehLabel
                       label={{
@@ -196,73 +250,81 @@ class ApplyLeave extends Component {
                 </div>
               </div>
             </div>
-          </div>{" "}
-        </div>
-        <div className="col-12">
-          <div className="row leaveBalanceCntr box-shadow-normal">
-            <div className="col">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Total Abscent"
-                }}
-              />
-              <h6>0/0 Day (s)</h6>
-            </div>
-            <div className="col">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Sick Leave"
-                }}
-              />
-              <h6>0/3 Day (s)</h6>
-            </div>
-            <div className="col">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Casual Leave"
-                }}
-              />
-              <h6>0/3 Day (s)</h6>
-            </div>
-            <div className="col">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Commpensatory Off"
-                }}
-              />
-              <h6>0/0 Day (s)</h6>
-            </div>{" "}
-            <div className="col">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Earned Leave"
-                }}
-              />
-              <h6>0/7 Day (s)</h6>
-            </div>{" "}
-            <div className="col">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Paternity Leave"
-                }}
-              />
-              <h6>0/5 Day (s)</h6>
-            </div>{" "}
-            <div className="col">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Loss of Pay"
-                }}
-              />
-              <h6>0/0 Day (s)</h6>
-            </div>
-            <div className="col">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Hajj Leave"
-                }}
-              />
-              <h6>0/15 Day (s)</h6>
+
+            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+              {/* <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Leave Request List</h3>
+                </div>
+              </div> */}
+              <div className="portlet-body">
+                <div className="row leaveBalanceCntr">
+                  <div className="col">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Total Abscent"
+                      }}
+                    />
+                    <h6>0/0 Day (s)</h6>
+                  </div>
+                  <div className="col">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Sick Leave"
+                      }}
+                    />
+                    <h6>0/3 Day (s)</h6>
+                  </div>
+                  <div className="col">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Casual Leave"
+                      }}
+                    />
+                    <h6>0/3 Day (s)</h6>
+                  </div>
+                  <div className="col">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Commpensatory Off"
+                      }}
+                    />
+                    <h6>0/0 Day (s)</h6>
+                  </div>{" "}
+                  <div className="col">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Earned Leave"
+                      }}
+                    />
+                    <h6>0/7 Day (s)</h6>
+                  </div>{" "}
+                  <div className="col">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Paternity Leave"
+                      }}
+                    />
+                    <h6>0/5 Day (s)</h6>
+                  </div>{" "}
+                  <div className="col">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Loss of Pay"
+                      }}
+                    />
+                    <h6>0/0 Day (s)</h6>
+                  </div>
+                  <div className="col">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Hajj Leave"
+                      }}
+                    />
+                    <h6>0/15 Day (s)</h6>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
