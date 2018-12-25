@@ -7,7 +7,7 @@ export default {
   bodyLimit: "900kb",
 
   mysqlDb: {
-    connectionLimit: 20,
+    connectionLimit: 100,
     // host: "166.62.10.184",
     host: "49.206.18.38",
     port: 3306,
