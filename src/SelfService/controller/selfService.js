@@ -6,7 +6,11 @@ import {
   getEmployeeDependentDetails,
   getEmployeeIdentificationDetails,
   updateEmployeeIdentificationDetails,
-  updateEmployeeDependentDetails
+  updateEmployeeDependentDetails,
+  updateEmployeeBasicDetails,
+  getLeaveMaster,
+  addEmployeeDependentDetails,
+  deleteEmployeeDependentDetails
 } from "../model/selfService";
 
 export default ({ config, db }) => {
@@ -98,6 +102,70 @@ export default ({ config, db }) => {
       }
       next();
     }
+  );
+
+  // created by irfan
+  api.put(
+    "/updateEmployeeBasicDetails",
+    updateEmployeeBasicDetails,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.invalid_input == true) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: "please provide valid input"
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    }
+  );
+
+  // created by Adnan :
+  api.get(
+    "/getLeaveMaster",
+    getLeaveMaster,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+  // created by IRFAN :
+  api.post(
+    "/addEmployeeDependentDetails",
+    addEmployeeDependentDetails,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+  // created by IRFAN :
+  api.delete(
+    "/deleteEmployeeDependentDetails",
+    deleteEmployeeDependentDetails,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
   );
 
   return api;

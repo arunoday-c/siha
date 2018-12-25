@@ -22,7 +22,6 @@ export default class SelfService extends Component {
       uri: "/selfService/getEmployeeBasicDetails",
       method: "GET",
       onSuccess: res => {
-        debugger;
         if (res.data.success) {
           this.setState({
             employee_details: res.data.records[0]
@@ -170,11 +169,11 @@ export default class SelfService extends Component {
           {this.state.pageDisplay === "Dashboard" ? (
             <Dashboard empData={this.state.employee_details} />
           ) : this.state.pageDisplay === "AttendanceRegularization" ? (
-            <AttendanceRegularization />
+            <AttendanceRegularization empData={this.state.employee_details} />
           ) : this.state.pageDisplay === "ApplyLeave" ? (
-            <ApplyLeave />
+            <ApplyLeave empData={this.state.employee_details} />
           ) : this.state.pageDisplay === "LoanRequest" ? (
-            <LoanRequest />
+            <LoanRequest empData={this.state.employee_details} />
           ) : //   : this.state.pageDisplay === "AppointmentRooms" ? (
           //     <AppointmentRooms />
           //   ) : this.state.pageDisplay === "AppointmentClinics" ? (

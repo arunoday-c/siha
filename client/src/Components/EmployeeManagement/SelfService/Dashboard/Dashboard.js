@@ -7,18 +7,25 @@ import {
   AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
 import "./dashboard.css";
-import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+import {
+  algaehApiCall,
+  swalMessage,
+  dateFomater
+} from "../../../../utils/algaehApiCall";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
+import moment from "moment";
 
 class Dashboard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      editContainer: false
+      editContainer: false,
+      idTypes: []
     };
 
     this.getFamilyDetails();
     this.getIdDetails();
+    this.getIdTypes();
   }
   scrollToPosition(e) {
     const selectedId = e.target.parentElement.id;
@@ -69,6 +76,83 @@ class Dashboard extends Component {
           this.setState({
             id_details: res.data.records
           });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  getIdTypes() {
+    algaehApiCall({
+      uri: "/identity/get",
+      method: "GET",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            idTypes: res.data.records
+          });
+        }
+      },
+      onFailure: err => {}
+    });
+  }
+
+  editDependentDetails(data) {
+    algaehApiCall({
+      uri: "/selfService/updateEmployeeDependentDetails",
+      data: {
+        dependent_type: data.dependent_type,
+        dependent_name: data.dependent_name,
+        dependent_identity_type: data.dependent_identity_type,
+        dependent_identity_no: data.dependent_identity_no,
+        hims_d_employee_dependents_id: data.hims_d_employee_dependents_id
+      },
+      method: "PUT",
+      onSuccess: res => {
+        if (res.data.success) {
+          swalMessage({
+            title: "Record updated Successfully",
+            type: "success"
+          });
+          this.getFamilyDetails();
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  updateIdDetails(data) {
+    debugger;
+    algaehApiCall({
+      uri: "/selfService/updateEmployeeIdentificationDetails",
+      data: {
+        identity_documents_id: data.identity_documents_id,
+        identity_number: data.identity_number,
+        valid_upto: data.valid_upto,
+        issue_date: data.issue_date,
+        alert_required: data.alert_required,
+        alert_date: data.alert_date,
+        hims_d_employee_identification_id:
+          data.hims_d_employee_identification_id
+      },
+      method: "PUT",
+      onSuccess: res => {
+        if (res.data.success) {
+          swalMessage({
+            title: "Record updated Successfully",
+            type: "success"
+          });
+          this.getIdDetails();
         }
       },
       onFailure: err => {
@@ -332,7 +416,7 @@ class Dashboard extends Component {
                     <AlagehFormGroup
                       div={{ className: "col" }}
                       label={{
-                        forceLabel: "Permenet Address",
+                        forceLabel: "Permanent Address",
                         isImp: true
                       }}
                       textBox={{
@@ -537,13 +621,59 @@ class Dashboard extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "ID Card Type" }}
                             />
-                          )
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehAutoComplete
+                                selector={{
+                                  name: "dependent_identity_type",
+                                  className: "select-fld",
+                                  value: row.dependent_identity_type,
+                                  dataSource: {
+                                    textField: "identity_document_name",
+                                    valueField: "hims_d_identity_document_id",
+                                    data: this.state.idTypes
+                                  },
+                                  others: {
+                                    errormessage: "Field cannot be blank",
+                                    required: true
+                                  },
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                }}
+                              />
+                            );
+                          }
                         },
                         {
                           fieldName: "dependent_identity_no",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "ID Number" }} />
-                          )
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                div={{ className: "col" }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "dependent_identity_no",
+                                  value: row.dependent_identity_no,
+                                  events: {
+                                    onChange: this.changeGridEditors.bind(
+                                      this,
+                                      row
+                                    )
+                                  },
+                                  others: {
+                                    errormessage: "Field cannot be blank",
+                                    required: true
+                                  }
+                                }}
+                              />
+                            );
+                          }
                         }
                       ]}
                       keyId="hims_d_employee_dependents_id"
@@ -555,7 +685,7 @@ class Dashboard extends Component {
                       events={{
                         onEdit: () => {},
                         onDelete: () => {},
-                        onDone: () => {}
+                        onDone: this.editDependentDetails.bind(this)
                       }}
                     />
                   </div>
@@ -585,24 +715,97 @@ class Dashboard extends Component {
                     id="selfService_IdentificationTable_Cntr"
                   >
                     <AlgaehDataGrid
+                      id="identification_grid"
                       columns={[
                         {
                           fieldName: "identity_document_name",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "ID Type" }} />
-                          )
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehAutoComplete
+                                selector={{
+                                  name: "identity_documents_id",
+                                  className: "select-fld",
+                                  value: row.identity_documents_id,
+                                  dataSource: {
+                                    textField: "identity_document_name",
+                                    valueField: "hims_d_identity_document_id",
+                                    data: this.state.idTypes
+                                  },
+                                  others: {
+                                    errormessage: "Field cannot be blank",
+                                    required: true
+                                  },
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                }}
+                              />
+                            );
+                          }
                         },
                         {
                           fieldName: "identity_number",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "ID No." }} />
-                          )
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                div={{ className: "col" }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "identity_number",
+                                  value: row.identity_number,
+                                  events: {
+                                    onChange: this.changeGridEditors.bind(
+                                      this,
+                                      row
+                                    )
+                                  },
+                                  others: {
+                                    errormessage: "Field cannot be blank",
+                                    required: true
+                                  }
+                                }}
+                              />
+                            );
+                          }
                         },
                         {
                           fieldName: "issue_date",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Issue Date" }} />
-                          )
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlgaehDateHandler
+                                textBox={{
+                                  className: "txt-fld hidden",
+                                  name: "issue_date"
+                                }}
+                                events={{
+                                  onChange: selDate => {
+                                    row["issue_date"] = dateFomater(selDate);
+                                    row.update();
+                                  }
+                                }}
+                                value={row.issue_date}
+                              />
+                            );
+                          },
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {row.issue_date !== null
+                                  ? row.issue_date
+                                  : "------"}
+                              </span>
+                            );
+                          }
                         },
                         {
                           fieldName: "valid_upto",
@@ -629,7 +832,7 @@ class Dashboard extends Component {
                       events={{
                         onEdit: () => {},
                         onDelete: () => {},
-                        onDone: () => {}
+                        onDone: this.updateIdDetails.bind(this)
                       }}
                     />
                   </div>
@@ -726,7 +929,7 @@ class Dashboard extends Component {
                           fieldName: "",
                           label: (
                             <AlgaehLabel
-                              label={{ forceLabel: "Instituation Name" }}
+                              label={{ forceLabel: "Institution Name" }}
                             />
                           )
                         },
