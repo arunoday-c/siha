@@ -321,6 +321,94 @@ let getLeaveMaster = (req, res, next) => {
     next(e);
   }
 };
+
+//created by irfan:api to
+let addEmployeeDependentDetails = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT  INTO hims_d_employee_dependents ( employee_id, dependent_type, dependent_name, \
+          dependent_identity_type, dependent_identity_no,\
+          created_date,created_by,updated_date,updated_by) values(\
+            ?,?,?,?,?,?,?,?,?)",
+        [
+          input.employee_id,
+          input.dependent_type,
+          input.dependent_name,
+          input.dependent_identity_type,
+          input.dependent_identity_no,
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by:irfan to delete
+let deleteEmployeeDependentDetails = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let input = extend({}, req.body);
+    if (
+      input.hims_d_employee_dependents_id != "null" &&
+      input.hims_d_employee_dependents_id != undefined
+    ) {
+      deleteRecord(
+        {
+          db: req.db,
+          tableName: "hims_d_employee_dependents",
+          id: req.body.hims_d_employee_dependents_id,
+          query:
+            "UPDATE hims_d_employee_dependents SET  record_status='I' WHERE  record_status='A' and hims_d_employee_dependents_id=?",
+          values: [req.body.hims_d_employee_dependents_id]
+        },
+        result => {
+          if (result.records.affectedRows > 0) {
+            req.records = result;
+            next();
+          } else {
+            req.records = { invalid_input: true };
+            next();
+          }
+        },
+        error => {
+          next(error);
+        },
+        true
+      );
+    } else {
+      req.records = { invalid_input: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getEmployeeBasicDetails,
   getEmployeeDependentDetails,
@@ -328,5 +416,7 @@ module.exports = {
   updateEmployeeIdentificationDetails,
   updateEmployeeDependentDetails,
   updateEmployeeBasicDetails,
-  getLeaveMaster
+  getLeaveMaster,
+  addEmployeeDependentDetails,
+  deleteEmployeeDependentDetails
 };
