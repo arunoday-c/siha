@@ -14,11 +14,13 @@ class Dashboard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      editContainer: false
+      editContainer: false,
+      idTypes: []
     };
 
     this.getFamilyDetails();
     this.getIdDetails();
+    this.getIdTypes();
   }
   scrollToPosition(e) {
     const selectedId = e.target.parentElement.id;
@@ -69,6 +71,82 @@ class Dashboard extends Component {
           this.setState({
             id_details: res.data.records
           });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  getIdTypes() {
+    algaehApiCall({
+      uri: "/identity/get",
+      method: "GET",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            idTypes: res.data.records
+          });
+        }
+      },
+      onFailure: err => {}
+    });
+  }
+
+  editDependentDetails(data) {
+    algaehApiCall({
+      uri: "/selfService/updateEmployeeDependentDetails",
+      data: {
+        dependent_type: data.dependent_type,
+        dependent_name: data.dependent_name,
+        dependent_identity_type: data.dependent_identity_type,
+        dependent_identity_no: data.dependent_identity_no,
+        hims_d_employee_dependents_id: data.hims_d_employee_dependents_id
+      },
+      method: "PUT",
+      onSuccess: res => {
+        if (res.data.success) {
+          swalMessage({
+            title: "Record updated Successfully",
+            type: "success"
+          });
+          this.getFamilyDetails();
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  editIdDetails(data) {
+    algaehApiCall({
+      uri: "/selfService/updateEmployeeIdentificationDetails",
+      data: {
+        identity_documents_id: data.identity_documents_id,
+        identity_number: data.identity_number,
+        valid_upto: data.valid_upto,
+        issue_date: data.issue_date,
+        alert_required: data.alert_required,
+        alert_date: data.alert_date,
+        hims_d_employee_identification_id:
+          data.hims_d_employee_identification_id
+      },
+      method: "PUT",
+      onSuccess: res => {
+        if (res.data.success) {
+          swalMessage({
+            title: "Record updated Successfully",
+            type: "success"
+          });
+          this.getIdDetails();
         }
       },
       onFailure: err => {
@@ -332,7 +410,7 @@ class Dashboard extends Component {
                     <AlagehFormGroup
                       div={{ className: "col" }}
                       label={{
-                        forceLabel: "Permenet Address",
+                        forceLabel: "Permanent Address",
                         isImp: true
                       }}
                       textBox={{
@@ -537,13 +615,40 @@ class Dashboard extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "ID Card Type" }}
                             />
-                          )
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehAutoComplete
+                                selector={{
+                                  name: "dependent_identity_type",
+                                  className: "select-fld",
+                                  value: row.dependent_identity_type,
+                                  dataSource: {
+                                    textField: "identity_document_name",
+                                    valueField: "hims_d_identity_document_id",
+                                    data: this.state.idTypes
+                                  },
+                                  others: {
+                                    errormessage: "Field cannot be blank",
+                                    required: true
+                                  },
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                }}
+                              />
+                            );
+                          }
                         },
                         {
                           fieldName: "dependent_identity_no",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "ID Number" }} />
-                          )
+                          ),
+                          editorTemplate: row => {
+                            return <span />;
+                          }
                         }
                       ]}
                       keyId="hims_d_employee_dependents_id"
@@ -555,7 +660,7 @@ class Dashboard extends Component {
                       events={{
                         onEdit: () => {},
                         onDelete: () => {},
-                        onDone: () => {}
+                        onDone: this.editDependentDetails.bind(this)
                       }}
                     />
                   </div>
