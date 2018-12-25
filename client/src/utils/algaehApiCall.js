@@ -344,48 +344,9 @@ export function SelectFiledData(options) {
   return Data;
 }
 
-export function isDateFormat(options, isSend) {
-  isSend = isSend || false;
-  var returnString = "";
-  var defOpt = defaultOptions();
-  var settings = extend(
-    {
-      date: null,
-      isTime: false,
-      usedefaultFarmats: true,
-      format: !isSend ? defOpt.clientDateFormat : defOpt.serverDateFromat,
-      existFormat: !isSend ? defOpt.serverDateFromat : defOpt.clientDateFormat
-    },
-    options
-  );
-  if (settings.isTime && settings.usedefaultFarmats) {
-    settings.format = !isSend
-      ? defOpt.ClientTimeFormat
-      : defOpt.serverTimeFormat;
-    settings.existFormat = !isSend
-      ? defOpt.ClientTimeFormat
-      : defOpt.serverTimeFormat;
-  }
-  if (settings.date !== null && settings.date !== "") {
-    var dateasString = String(settings.date);
-    if (dateasString !== "0") {
-      returnString = moment(settings.date, settings.existFormat).format(
-        settings.format
-      );
-    }
-  }
-
-  return returnString;
-}
-
-export function defaultOptions() {
-  var output = {
-    clientDateFormat: "YYYY-MM-DD",
-    ClientTimeFormat: "HH:mm",
-    serverDateFromat: "YYYYMMDD",
-    serverTimeFormat: "HHmmss"
-  };
-  return output;
+export function dateFomater(date) {
+  if (moment(date).isValid) return moment(date).format(config.formators.date);
+  else return date;
 }
 
 export function getToken() {
@@ -455,14 +416,14 @@ export function getLocalIP(callback) {
         let myIP = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(
           ice.candidate.candidate
         );
-  if(myIP===null){
-    const generator = new IDGenerator();
-      const _IdGen = generator.generate();
-      window.myIP = _IdGen;
-      callback(_IdGen);
-  }else{
-    pc.onicecandidate = noop(myIP[1])  }
-       
+        if (myIP === null) {
+          const generator = new IDGenerator();
+          const _IdGen = generator.generate();
+          window.myIP = _IdGen;
+          callback(_IdGen);
+        } else {
+          pc.onicecandidate = noop(myIP[1]);
+        }
       }
     };
   })

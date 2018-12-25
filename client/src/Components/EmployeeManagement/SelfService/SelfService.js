@@ -22,7 +22,6 @@ export default class SelfService extends Component {
       uri: "/selfService/getEmployeeBasicDetails",
       method: "GET",
       onSuccess: res => {
-        debugger;
         if (res.data.success) {
           this.setState({
             employee_details: res.data.records[0]

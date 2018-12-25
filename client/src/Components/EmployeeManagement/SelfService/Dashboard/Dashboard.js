@@ -7,8 +7,13 @@ import {
   AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
 import "./dashboard.css";
-import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+import {
+  algaehApiCall,
+  swalMessage,
+  dateFomater
+} from "../../../../utils/algaehApiCall";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
+import moment from "moment";
 
 class Dashboard extends Component {
   constructor(props) {
@@ -126,7 +131,8 @@ class Dashboard extends Component {
     });
   }
 
-  editIdDetails(data) {
+  updateIdDetails(data) {
+    debugger;
     algaehApiCall({
       uri: "/selfService/updateEmployeeIdentificationDetails",
       data: {
@@ -647,7 +653,26 @@ class Dashboard extends Component {
                             <AlgaehLabel label={{ forceLabel: "ID Number" }} />
                           ),
                           editorTemplate: row => {
-                            return <span />;
+                            return (
+                              <AlagehFormGroup
+                                div={{ className: "col" }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "dependent_identity_no",
+                                  value: row.dependent_identity_no,
+                                  events: {
+                                    onChange: this.changeGridEditors.bind(
+                                      this,
+                                      row
+                                    )
+                                  },
+                                  others: {
+                                    errormessage: "Field cannot be blank",
+                                    required: true
+                                  }
+                                }}
+                              />
+                            );
                           }
                         }
                       ]}
@@ -690,24 +715,97 @@ class Dashboard extends Component {
                     id="selfService_IdentificationTable_Cntr"
                   >
                     <AlgaehDataGrid
+                      id="identification_grid"
                       columns={[
                         {
                           fieldName: "identity_document_name",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "ID Type" }} />
-                          )
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehAutoComplete
+                                selector={{
+                                  name: "identity_documents_id",
+                                  className: "select-fld",
+                                  value: row.identity_documents_id,
+                                  dataSource: {
+                                    textField: "identity_document_name",
+                                    valueField: "hims_d_identity_document_id",
+                                    data: this.state.idTypes
+                                  },
+                                  others: {
+                                    errormessage: "Field cannot be blank",
+                                    required: true
+                                  },
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                }}
+                              />
+                            );
+                          }
                         },
                         {
                           fieldName: "identity_number",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "ID No." }} />
-                          )
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                div={{ className: "col" }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "identity_number",
+                                  value: row.identity_number,
+                                  events: {
+                                    onChange: this.changeGridEditors.bind(
+                                      this,
+                                      row
+                                    )
+                                  },
+                                  others: {
+                                    errormessage: "Field cannot be blank",
+                                    required: true
+                                  }
+                                }}
+                              />
+                            );
+                          }
                         },
                         {
                           fieldName: "issue_date",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Issue Date" }} />
-                          )
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlgaehDateHandler
+                                textBox={{
+                                  className: "txt-fld hidden",
+                                  name: "issue_date"
+                                }}
+                                events={{
+                                  onChange: selDate => {
+                                    row["issue_date"] = dateFomater(selDate);
+                                    row.update();
+                                  }
+                                }}
+                                value={row.issue_date}
+                              />
+                            );
+                          },
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {row.issue_date !== null
+                                  ? row.issue_date
+                                  : "------"}
+                              </span>
+                            );
+                          }
                         },
                         {
                           fieldName: "valid_upto",
@@ -734,7 +832,7 @@ class Dashboard extends Component {
                       events={{
                         onEdit: () => {},
                         onDelete: () => {},
-                        onDone: () => {}
+                        onDone: this.updateIdDetails.bind(this)
                       }}
                     />
                   </div>
@@ -831,7 +929,7 @@ class Dashboard extends Component {
                           fieldName: "",
                           label: (
                             <AlgaehLabel
-                              label={{ forceLabel: "Instituation Name" }}
+                              label={{ forceLabel: "Institution Name" }}
                             />
                           )
                         },
