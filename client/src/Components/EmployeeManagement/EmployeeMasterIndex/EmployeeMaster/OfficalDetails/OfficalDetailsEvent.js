@@ -1,46 +1,48 @@
 import moment from "moment";
 let texthandlerInterval = null;
 
-const texthandle = ($this, context, e) => {
+const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
+  $this.props.EmpMasterIOputs.updateEmployeeTabs({
+    [name]: value
+  });
+  // switch (name) {
+  //   case "notice_period":
+  //     debugger;
+  //     $this.setState({
+  //       [name]: value
+  //       //Calculate Releiving date here
+  //       // releiving_date: moment($this.state.date_of_leaving).add(
+  //       //   parseInt(value, 10),
+  //       //   "days"
+  //       // )._d
+  //     });
 
-  switch (name) {
-    case "notice_period":
-      debugger;
-      $this.setState({
-        [name]: value
-        //Calculate Releiving date here
-        // releiving_date: moment($this.state.date_of_leaving).add(
-        //   parseInt(value, 10),
-        //   "days"
-        // )._d
-      });
+  //     clearInterval(texthandlerInterval);
+  //     texthandlerInterval = setInterval(() => {
+  //       if (context !== undefined) {
+  //         context.updateState({ [name]: value });
+  //       }
+  //       clearInterval(texthandlerInterval);
+  //     }, 500);
 
-      clearInterval(texthandlerInterval);
-      texthandlerInterval = setInterval(() => {
-        if (context !== undefined) {
-          context.updateState({ [name]: value });
-        }
-        clearInterval(texthandlerInterval);
-      }, 500);
+  //     break;
 
-      break;
+  //   default:
+  //     $this.setState({
+  //       [name]: value
+  //     });
 
-    default:
-      $this.setState({
-        [name]: value
-      });
-
-      clearInterval(texthandlerInterval);
-      texthandlerInterval = setInterval(() => {
-        if (context !== undefined) {
-          context.updateState({ [name]: value });
-        }
-        clearInterval(texthandlerInterval);
-      }, 500);
-      break;
-  }
+  //     clearInterval(texthandlerInterval);
+  //     texthandlerInterval = setInterval(() => {
+  //       if (context !== undefined) {
+  //         context.updateState({ [name]: value });
+  //       }
+  //       clearInterval(texthandlerInterval);
+  //     }, 500);
+  //     break;
+  // }
 };
 
 const accomodationProvided = ($this, e) => {

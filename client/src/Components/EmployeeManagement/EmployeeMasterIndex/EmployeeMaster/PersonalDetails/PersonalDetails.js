@@ -32,7 +32,6 @@ class PersonalDetails extends PureComponent {
   }
 
   componentDidMount() {
-    debugger;
     let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
     this.setState({ ...this.state, ...InputOutput });
     if (this.props.titles === undefined || this.props.titles.length === 0) {

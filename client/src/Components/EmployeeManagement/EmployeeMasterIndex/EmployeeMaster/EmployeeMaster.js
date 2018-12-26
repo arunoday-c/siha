@@ -198,7 +198,7 @@ class EmployeeMaster extends Component {
     debugger;
     if (
       this.state.pageDisplay === "PersonalDetails" ||
-      this.state.pageDisplay === "DeptUserDetails"
+      this.state.pageDisplay === "OfficalDetails"
     ) {
       this.setState({
         personalDetails: {

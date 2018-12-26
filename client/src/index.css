@@ -694,13 +694,20 @@
         -moz-transition: all 0.2s ease-in-out;
         -o-transition: all 0.2s ease-in-out;
         -webkit-transition: all 0.2s ease-in-out;
-        transition: all 0.2s ease-in-out; }
+        transition: all 0.2s ease-in-out;
+        min-height: 31px;
+        min-width: 52px;
+        -webkit-transition: width 2s;
+        /* Safari */
+        transition: width 2s; }
         :global .algaeh-modal .popupFooter .btn:hover {
           background-position: 100% 0;
           -moz-transition: all 0.2s ease-in-out;
           -o-transition: all 0.2s ease-in-out;
           -webkit-transition: all 0.2s ease-in-out;
           transition: all 0.2s ease-in-out; }
+        :global .algaeh-modal .popupFooter .btn i {
+          text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5); }
       :global .algaeh-modal .popupFooter .btn-primary {
         color: #fff;
         background-color: none;

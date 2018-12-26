@@ -543,6 +543,7 @@ class DataGrid extends Component {
         isEditable: props.isEditable
       });
     }
+
     if (props.algaehSearch !== undefined) {
       if (props.columns !== undefined && props.columns.length !== 0) {
         let _columns = Enumerable.from(props.columns)
@@ -664,9 +665,7 @@ class DataGrid extends Component {
           : 0 / props.paging.rowsPerPage
       );
       const _loading =
-        this.props.loading !== undefined
-          ? { showLoading: this.props.loading }
-          : {};
+        props.loading !== undefined ? { showLoading: props.loading } : {};
       this.setState({
         data: props.dataSource.data,
         totalPages: _total,

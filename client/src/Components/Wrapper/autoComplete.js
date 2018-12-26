@@ -417,15 +417,19 @@ class AutoComplete extends PureComponent {
       this.props.selector.placeholder === undefined
         ? "Select..."
         : this.props.selector.placeholder;
+    const _showLoader =
+      this.props.showLoading !== undefined ? this.props.showLoading : false;
     return (
       <div
         id={"internal_" + this.props.selector.name}
         className="autoselect-Div"
         ref={autoComp => (this.autoComp = autoComp)}
       >
-        <span className="loadingSelect">
-          <i className="fas fa-sync fa-spin" />
-        </span>
+        {_showLoader === true ? (
+          <span className="loadingSelect">
+            <i className="fas fa-sync fa-spin" />
+          </span>
+        ) : null}
         <div className="auto-suggestCntr">
           <input
             type="text"
