@@ -13,6 +13,8 @@ import { LINQ } from "node-linq";
 
 import { debugLog } from "../../utils/logging";
 import moment from "moment";
+
+//created by irfan:
 let getEmployeeLeaveData = (req, res, next) => {
   // let selectWhere = {
   //   employee_id: "ALL"
@@ -49,7 +51,7 @@ let getEmployeeLeaveData = (req, res, next) => {
   }
 };
 
-//created by irfan: to add appointment_status
+//created by irfan:
 let applyEmployeeLeave = (req, res, next) => {
   try {
     if (req.db == null) {
@@ -123,7 +125,7 @@ let applyEmployeeLeave = (req, res, next) => {
                       next(error);
                     });
                   }
-
+                  releaseDBConnection(db, connection);
                   req.records = result;
                   next();
                 });
@@ -143,4 +145,44 @@ let applyEmployeeLeave = (req, res, next) => {
   }
 };
 
-module.exports = { getEmployeeLeaveData, applyEmployeeLeave };
+//created by irfan:
+let getEmployeeLeaveHistory = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    if (req.query.employee_id != "null" && req.query.employee_id != undefined) {
+      db.getConnection((error, connection) => {
+        connection.query(
+          "select hims_f_leave_application_id,leave_application_code,employee_id,application_date,\
+        leave_id,from_date,to_date,from_leave_session,to_leave_session,\
+        leave_applied_from,total_applied_days,total_approved_days,status,authorized,remarks,L.leave_code,\
+        L.leave_description from hims_f_leave_application LA inner join hims_d_leave L on\
+         LA.leave_id=L.hims_d_leave_id and L.record_status='A'\
+         where LA.record_status='A' and LA.employee_id=? order by hims_f_leave_application_id desc",
+          [req.query.employee_id],
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+            req.records = result;
+            next();
+          }
+        );
+      });
+    } else {
+      req.records = { invalid_input: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports = {
+  getEmployeeLeaveData,
+  applyEmployeeLeave,
+  getEmployeeLeaveHistory
+};
