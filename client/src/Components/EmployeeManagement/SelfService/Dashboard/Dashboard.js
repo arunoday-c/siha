@@ -13,7 +13,7 @@ import {
   dateFomater
 } from "../../../../utils/algaehApiCall";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import moment from "moment";
+import swal from "sweetalert2";
 
 class Dashboard extends Component {
   constructor(props) {
@@ -44,8 +44,231 @@ class Dashboard extends Component {
     row.update();
   }
 
-  showEditCntr(e) {
-    this.setState({ editContainer: !this.state.editContainer });
+  componentDidMount() {
+    let data = this.props.empData !== null ? this.props.empData : {};
+    this.setState(data);
+  }
+
+  changeTexts(e) {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  }
+
+  dropDownHandle(value) {
+    this.setState({
+      [value.name]: value.value
+    });
+  }
+
+  showEditCntr(type, empData, e) {
+    debugger;
+    switch (type) {
+      case "basicDetails":
+        this.setState({ editBasic: !this.state.editBasic, ...empData });
+        //console.log("EMp Data:", empData);
+        break;
+      case "familyDetails":
+        this.setState({ addFamily: !this.state.addFamily, ...empData });
+        break;
+
+      default:
+        null;
+        break;
+    }
+  }
+
+  addEmployeeDependents(type) {
+    algaehApiCall({
+      uri: "/selfService/addEmployeeDependentDetails",
+      method: "POST",
+      data: {
+        employee_id: this.state.hims_d_employee_id,
+        dependent_type: this.state.dependent_type,
+        dependent_name: this.state.dependent_name,
+        dependent_identity_type: this.state.dependent_identity_type,
+        dependent_identity_no: this.state.dependent_identity_no
+      },
+      onSuccess: res => {
+        if (res.data.success) {
+          swalMessage({
+            title: "Records Added Successfully",
+            type: "success"
+          });
+          if (type === "SC") {
+            this.setState({
+              addFamily: false,
+              dependent_type: null,
+              dependent_name: null,
+              dependent_identity_type: null,
+              dependent_identity_no: null
+            });
+          }
+          this.getFamilyDetails();
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  deleteEmployeeDependentDetails(data) {
+    swal({
+      title:
+        "Are you sure you want to remove " +
+        data.dependent_name +
+        " from the dependents ?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        algaehApiCall({
+          uri: "/selfService/deleteEmployeeDependentDetails",
+          data: {
+            hims_d_employee_dependents_id: data.hims_d_employee_dependents_id
+          },
+          method: "DELETE",
+          onSuccess: response => {
+            if (response.data.records.success) {
+              swalMessage({
+                title: "Record deleted successfully . .",
+                type: "success"
+              });
+              this.getFamilyDetails();
+            } else if (!response.data.records.success) {
+              swalMessage({
+                title: response.data.records.message,
+                type: "error"
+              });
+            }
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
+        });
+      } else {
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "error"
+        });
+      }
+    });
+  }
+  deleteIdDetails(data) {
+    swal({
+      title:
+        "Are you sure you want to delete " + data.identity_document_name + " ?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        algaehApiCall({
+          uri: "/employee/deleteEmployeeIdentification",
+          data: {
+            hims_d_employee_identification_id:
+              data.hims_d_employee_identification_id
+          },
+          method: "DELETE",
+          onSuccess: response => {
+            if (response.data.records.success) {
+              swalMessage({
+                title: "Record deleted successfully . .",
+                type: "success"
+              });
+              this.getIdDetails();
+            } else if (!response.data.records.success) {
+              swalMessage({
+                title: response.data.records.message,
+                type: "error"
+              });
+            }
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
+        });
+      } else {
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "error"
+        });
+      }
+    });
+  }
+
+  updateFamilyDetails() {
+    // algaehApiCall({
+    //   uri: "/selfService/updateEmployeeBasicDetails",
+    //   method: "PUT",
+    //   data: {
+    //     full_name: this.state.full_name,
+    //     arabic_name: this.state.arabic_name,
+    //     date_of_birth: this.state.date_of_birth,
+    //     sex: this.state.sex,
+    //     present_address: this.state.present_address,
+    //     permanent_address: this.state.permanent_address,
+    //     primary_contact_no: this.state.primary_contact_no,
+    //     email: this.state.email,
+    //     hims_d_employee_id: this.state.hims_d_employee_id
+    //   },
+    //   onSuccess: res => {
+    //     if (res.data.success) {
+    //       swalMessage({
+    //         title: "Record updated successfully",
+    //         type: "success"
+    //       });
+    //     }
+    //   },
+    //   onFailure: err => {}
+    // });
+  }
+  updateEmployeeBasicDetails() {
+    algaehApiCall({
+      uri: "/selfService/updateEmployeeBasicDetails",
+      method: "PUT",
+      data: {
+        full_name: this.state.full_name,
+        arabic_name: this.state.arabic_name,
+        date_of_birth: this.state.date_of_birth,
+        sex: this.state.sex,
+        present_address: this.state.present_address,
+        permanent_address: this.state.permanent_address,
+        primary_contact_no: this.state.primary_contact_no,
+        email: this.state.email,
+        hims_d_employee_id: this.state.hims_d_employee_id
+      },
+      onSuccess: res => {
+        if (res.data.success) {
+          document.getElementById("ep-dl").click();
+          this.setState({
+            editBasic: false
+          });
+          swalMessage({
+            title: "Record updated successfully",
+            type: "success"
+          });
+        }
+      },
+      onFailure: err => {}
+    });
   }
 
   getFamilyDetails() {
@@ -132,7 +355,6 @@ class Dashboard extends Component {
   }
 
   updateIdDetails(data) {
-    debugger;
     algaehApiCall({
       uri: "/selfService/updateEmployeeIdentificationDetails",
       data: {
@@ -262,21 +484,25 @@ class Dashboard extends Component {
                 <div className="actions">
                   <a
                     className="btn btn-other btn-circle active"
-                    onClick={this.showEditCntr.bind(this)}
+                    onClick={this.showEditCntr.bind(
+                      this,
+                      "basicDetails",
+                      empDetails
+                    )}
                   >
                     <i
                       className={
-                        this.state.editContainer ? "fas fa-times" : "fas fa-pen"
+                        this.state.editBasic ? "fas fa-times" : "fas fa-pen"
                       }
                     />
                   </a>
                 </div>
               </div>
-              {this.state.editContainer ? (
+              {this.state.editBasic ? (
                 <div
                   className={
                     "col-12 editFloatCntr animated  " +
-                    (this.state.editContainer ? "slideInUp" : "slideInDown") +
+                    (this.state.editBasic ? "slideInUp" : "slideInDown") +
                     " faster"
                   }
                 >
@@ -285,19 +511,18 @@ class Dashboard extends Component {
                     <AlagehFormGroup
                       div={{ className: "col" }}
                       label={{
-                        forceLabel: "First Name",
+                        forceLabel: "Full Name",
                         isImp: true
                       }}
                       textBox={{
                         className: "txt-fld",
-                        //decimal: { allowNegative: false },
-                        name: "",
-                        value: "",
+                        name: "full_name",
+                        value: this.state.full_name,
                         events: {
-                          //  onChange: this.changeTexts.bind(this)
+                          onChange: this.changeTexts.bind(this)
                         },
                         others: {
-                          // type: "number"
+                          tabIndex: "1"
                         }
                       }}
                     />
@@ -309,14 +534,13 @@ class Dashboard extends Component {
                       }}
                       textBox={{
                         className: "txt-fld",
-                        //decimal: { allowNegative: false },
-                        name: "",
-                        value: "",
+                        name: "arabic_name",
+                        value: this.state.arabic_name,
                         events: {
-                          //  onChange: this.changeTexts.bind(this)
+                          onChange: this.changeTexts.bind(this)
                         },
                         others: {
-                          // type: "number"
+                          tabIndex: "2"
                         }
                       }}
                     />
@@ -328,11 +552,19 @@ class Dashboard extends Component {
                       }}
                       textBox={{
                         className: "txt-fld",
-                        name: "date_of_joining",
+                        name: "date_of_birth",
                         others: {
-                          tabIndex: "6"
+                          tabIndex: "3"
                         }
                       }}
+                      events={{
+                        onChange: selDate => {
+                          this.setState({
+                            date_of_birth: selDate
+                          });
+                        }
+                      }}
+                      value={this.state.date_of_birth}
                       maxDate={new Date()}
                     />
                     <AlagehAutoComplete
@@ -342,13 +574,13 @@ class Dashboard extends Component {
                         isImp: true
                       }}
                       selector={{
-                        name: "",
+                        name: "sex",
                         className: "select-fld",
-                        value: "",
+                        value: this.state.sex,
                         dataSource: {
                           textField: "name",
                           valueField: "value",
-                          data: ""
+                          data: GlobalVariables.EMP_FORMAT_GENDER
                         }
                         //  onChange: this.dropDownHandler.bind(this)
                       }}
@@ -361,14 +593,13 @@ class Dashboard extends Component {
                       }}
                       textBox={{
                         className: "txt-fld",
-                        //decimal: { allowNegative: false },
-                        name: "",
-                        value: "",
+                        name: "primary_contact_no",
+                        value: this.state.primary_contact_no,
                         events: {
-                          //  onChange: this.changeTexts.bind(this)
+                          onChange: this.changeTexts.bind(this)
                         },
                         others: {
-                          // type: "number"
+                          type: "number"
                         }
                       }}
                     />
@@ -383,14 +614,10 @@ class Dashboard extends Component {
                       }}
                       textBox={{
                         className: "txt-fld",
-                        //decimal: { allowNegative: false },
-                        name: "",
-                        value: "",
+                        name: "email",
+                        value: this.state.email,
                         events: {
-                          //  onChange: this.changeTexts.bind(this)
-                        },
-                        others: {
-                          // type: "number"
+                          onChange: this.changeTexts.bind(this)
                         }
                       }}
                     />
@@ -402,14 +629,10 @@ class Dashboard extends Component {
                       }}
                       textBox={{
                         className: "txt-fld",
-                        //decimal: { allowNegative: false },
-                        name: "",
-                        value: "",
+                        name: "present_address",
+                        value: this.state.present_address,
                         events: {
-                          //  onChange: this.changeTexts.bind(this)
-                        },
-                        others: {
-                          // type: "number"
+                          onChange: this.changeTexts.bind(this)
                         }
                       }}
                     />
@@ -421,27 +644,27 @@ class Dashboard extends Component {
                       }}
                       textBox={{
                         className: "txt-fld",
-                        //decimal: { allowNegative: false },
-                        name: "",
-                        value: "",
+                        name: "permanent_address",
+                        value: this.state.permanent_address,
                         events: {
-                          //  onChange: this.changeTexts.bind(this)
-                        },
-                        others: {
-                          // type: "number"
+                          onChange: this.changeTexts.bind(this)
                         }
                       }}
                     />
                   </div>
                   <div className="row">
                     <div className="col">
-                      <button type="button" className="btn btn-primary">
+                      <button
+                        onClick={this.updateEmployeeBasicDetails.bind(this)}
+                        type="button"
+                        className="btn btn-primary"
+                      >
                         Update
                       </button>
                       <button
                         type="button"
                         className="btn btn-default"
-                        onClick={this.showEditCntr.bind(this)}
+                        onClick={this.showEditCntr.bind(this, "basicDetails")}
                       >
                         Cancel
                       </button>
@@ -449,6 +672,7 @@ class Dashboard extends Component {
                   </div>
                 </div>
               ) : null}
+
               <div className="portlet-body">
                 <div className="row">
                   <div className="col">
@@ -537,18 +761,138 @@ class Dashboard extends Component {
                 <div className="actions">
                   <a
                     className="btn btn-other btn-circle active"
-                    // onClick={this.showEditCntr.bind(this)}
+                    onClick={this.showEditCntr.bind(
+                      this,
+                      "familyDetails",
+                      empDetails
+                    )}
                   >
                     <i
                       className={
-                        this.state.editContainer
-                          ? "fas fa-times"
-                          : "fas fa-plus"
+                        this.state.addFamily ? "fas fa-times" : "fas fa-plus"
                       }
                     />
                   </a>
                 </div>
               </div>
+              {this.state.addFamily ? (
+                <div
+                  className={
+                    "col-12 editFloatCntr animated  " +
+                    (this.state.addFamily ? "slideInUp" : "slideInDown") +
+                    " faster"
+                  }
+                >
+                  <h5>Add Family Details</h5>
+                  <div className="row">
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      label={{
+                        forceLabel: "Dependent Type",
+                        isImp: false
+                      }}
+                      selector={{
+                        name: "dependent_type",
+                        className: "select-fld",
+                        value: this.state.dependent_type,
+                        dataSource: {
+                          textField: "name",
+                          valueField: "value",
+                          data: GlobalVariables.DEPENDENT_TYPE
+                        },
+                        onChange: this.dropDownHandle.bind(this),
+                        others: {
+                          // tabIndex: "10"
+                        }
+                      }}
+                    />
+                    <AlagehFormGroup
+                      div={{ className: "col" }}
+                      label={{
+                        forceLabel: "Dependent Name",
+                        isImp: true
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "dependent_name",
+                        value: this.state.dependent_name,
+                        events: {
+                          onChange: this.changeTexts.bind(this)
+                        },
+                        others: {
+                          //tabIndex: "1"
+                        }
+                      }}
+                    />
+
+                    <AlagehAutoComplete
+                      div={{ className: "col-2" }}
+                      label={{
+                        forceLabel: "Id Type",
+                        isImp: false
+                      }}
+                      selector={{
+                        name: "dependent_identity_type",
+                        className: "select-fld",
+                        value: this.state.dependent_identity_type,
+                        dataSource: {
+                          textField: "identity_document_name",
+                          valueField: "hims_d_identity_document_id",
+                          data: this.state.idTypes
+                        },
+                        onChange: this.dropDownHandle.bind(this),
+                        others: {
+                          //tabIndex: "1"
+                        }
+                      }}
+                    />
+                    <AlagehFormGroup
+                      div={{ className: "col" }}
+                      label={{
+                        forceLabel: "Id Number",
+                        isImp: false
+                      }}
+                      textBox={{
+                        value: this.state.dependent_identity_no,
+                        className: "txt-fld",
+                        name: "dependent_identity_no",
+
+                        events: {
+                          onChange: this.changeTexts.bind(this)
+                        },
+                        others: {
+                          //   tabIndex: "7"
+                        }
+                      }}
+                    />
+                  </div>
+                  <div className="row">
+                    <div className="col">
+                      <button
+                        onClick={this.addEmployeeDependents.bind(this, "S")}
+                        type="button"
+                        className="btn btn-primary"
+                      >
+                        Save
+                      </button>
+                      <button
+                        onClick={this.addEmployeeDependents.bind(this, "SC")}
+                        type="button"
+                        className="btn btn-primary"
+                      >
+                        Save and Close
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-default"
+                        onClick={this.showEditCntr.bind(this, "familyDetails")}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ) : null}
 
               <div className="portlet-body">
                 <div className="row">
@@ -684,7 +1028,9 @@ class Dashboard extends Component {
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         onEdit: () => {},
-                        onDelete: () => {},
+                        onDelete: this.deleteEmployeeDependentDetails.bind(
+                          this
+                        ),
                         onDone: this.editDependentDetails.bind(this)
                       }}
                     />
@@ -812,6 +1158,23 @@ class Dashboard extends Component {
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Valid Upto" }} />
                           ),
+                          editorTemplate: row => {
+                            return (
+                              <AlgaehDateHandler
+                                textBox={{
+                                  className: "txt-fld hidden",
+                                  name: "issue_date"
+                                }}
+                                events={{
+                                  onChange: selDate => {
+                                    row["valid_upto"] = dateFomater(selDate);
+                                    row.update();
+                                  }
+                                }}
+                                value={row.valid_upto}
+                              />
+                            );
+                          },
                           displayTemplate: row => {
                             return (
                               <span>
@@ -831,7 +1194,7 @@ class Dashboard extends Component {
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         onEdit: () => {},
-                        onDelete: () => {},
+                        onDelete: this.deleteIdDetails.bind(this),
                         onDone: this.updateIdDetails.bind(this)
                       }}
                     />

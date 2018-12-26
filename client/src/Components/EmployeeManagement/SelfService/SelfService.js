@@ -50,6 +50,11 @@ export default class SelfService extends Component {
         : {};
     return (
       <div className="selfServiceModule">
+        <button
+          className="d-none"
+          id="ep-dl"
+          onClick={this.getEmployeeDetails.bind(this)}
+        />
         <div className="row EmployeeProfile">
           <div className="EmployeeInfo-Top box-shadow-normal">
             <div className="EmployeeImg box-shadow">
