@@ -25,7 +25,15 @@ import {
   addLoanMaster,
   getLoanMaster,
   updateLoanMaster,
-  deleteLoanMaster
+  deleteLoanMaster,
+  getEmployeeWorkExperience,
+  addEmployeeWorkExperience,
+  deleteEmployeeWorkExperience,
+  updateEmployeeWorkExperience,
+  updateEmployeeEducation,
+  deleteEmployeeEducation,
+  addEmployeeEducation,
+  getEmployeeEducation
 } from "../model/employee";
 import httpStatus from "../utils/httpStatus";
 export default ({ config, db }) => {
@@ -445,6 +453,158 @@ export default ({ config, db }) => {
       next();
     },
     releaseConnection
+  );
+
+  // created by Adnan
+  api.get(
+    "/getEmployeeWorkExperience",
+    getEmployeeWorkExperience,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.invalid_input == true) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: "please provide valid input"
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    }
+  );
+
+  // created by Adnan
+  api.delete(
+    "/deleteEmployeeWorkExperience",
+    deleteEmployeeWorkExperience,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.invalid_input == true) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: "please provide valid input"
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    }
+  );
+
+  // created by Adnan
+  api.post(
+    "/addEmployeeWorkExperience",
+    addEmployeeWorkExperience,
+    (req, res, next) => {
+      let resultBack = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: resultBack
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by Adnan
+  api.put(
+    "/updateEmployeeWorkExperience",
+    updateEmployeeWorkExperience,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.invalid_input == true) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: "please provide valid input"
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    }
+  );
+
+  // created by Adnan
+  api.get("/getEmployeeEducation", getEmployeeEducation, (req, res, next) => {
+    let result = req.records;
+    if (result.invalid_input == true) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: "please provide valid input"
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
+
+  // created by Adnan
+  api.delete(
+    "/deleteEmployeeEducation",
+    deleteEmployeeEducation,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.invalid_input == true) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: "please provide valid input"
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    }
+  );
+
+  // created by Adnan
+  api.post(
+    "/addEmployeeEducation",
+    addEmployeeEducation,
+    (req, res, next) => {
+      let resultBack = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: resultBack
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by Adnan
+  api.put(
+    "/updateEmployeeEducation",
+    updateEmployeeEducation,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.invalid_input == true) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: "please provide valid input"
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    }
   );
 
   return api;
