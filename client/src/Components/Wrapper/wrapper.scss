@@ -28,6 +28,9 @@
       overflow: inherit !important;
       white-space: inherit !important;
     }
+    .textCapitalize {
+      text-transform: capitalize;
+    }
   }
   .-btn {
     background: #34b8bc !important;

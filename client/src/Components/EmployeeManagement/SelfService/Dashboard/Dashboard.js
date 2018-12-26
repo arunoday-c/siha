@@ -854,7 +854,7 @@ class Dashboard extends Component {
                 <div
                   className={
                     "col-12 editFloatCntr animated  " +
-                    (this.state.editBasic ? "slideInUp" : "slideInDown") +
+                    (this.state.editBasic ? "slideInUp" : "slideOutDown") +
                     " faster"
                   }
                 >
@@ -1131,7 +1131,7 @@ class Dashboard extends Component {
                 <div
                   className={
                     "col-12 editFloatCntr animated  " +
-                    (this.state.addFamily ? "slideInUp" : "slideInDown") +
+                    (this.state.addFamily ? "slideInUp" : "slideOutDown") +
                     " faster"
                   }
                 >
@@ -1422,7 +1422,7 @@ class Dashboard extends Component {
                 <div
                   className={
                     "col-12 editFloatCntr animated  " +
-                    (this.state.addIdDetails ? "slideInUp" : "slideInDown") +
+                    (this.state.addIdDetails ? "slideInUp" : "slideOutDown") +
                     " faster"
                   }
                 >
@@ -1726,7 +1726,7 @@ class Dashboard extends Component {
                 <div
                   className={
                     "col-12 editFloatCntr animated  " +
-                    (this.state.addWorkExp ? "slideInUp" : "slideInDown") +
+                    (this.state.addWorkExp ? "slideInUp" : "slideOutDown") +
                     " faster"
                   }
                   data-validate="wrk-exp-grid"
@@ -2005,7 +2005,7 @@ class Dashboard extends Component {
                 <div
                   className={
                     "col-12 editFloatCntr animated  " +
-                    (this.state.addEdu ? "slideInUp" : "slideInDown") +
+                    (this.state.addEdu ? "slideInUp" : "slideOutDown") +
                     " faster"
                   }
                   data-validate="edu-grid"
@@ -2193,7 +2193,47 @@ class Dashboard extends Component {
                   </a>
                 </div>
               </div>
-              <div className="portlet-body" />
+              <div className="portlet-body">
+                <div className="row">
+                  <div className="col-12" id="selfService_AttachmentTable_Cntr">
+                    <AlgaehDataGrid
+                      columns={[
+                        {
+                          fieldName: "documentName",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Document Name" }}
+                            />
+                          )
+                        },
+                        {
+                          fieldName: "download_open_file",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Open Attachment" }}
+                            />
+                          )
+                        }
+                      ]}
+                      //  keyId="hims_d_employee_attachment_id"
+                      dataSource={
+                        {
+                          //    data: this.state.employee_attach
+                        }
+                      }
+                      isEditable={true}
+                      paging={{ page: 0, rowsPerPage: 10 }}
+                      events={
+                        {
+                          //onEdit: () => {},
+                          // onDelete: this.deleteEmployeeAttach.bind(this),
+                          // onDone: this.updateEmployeeAttach.bind(this)
+                        }
+                      }
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
