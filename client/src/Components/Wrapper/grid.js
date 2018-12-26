@@ -94,28 +94,50 @@ class DataGrid extends Component {
       this.state.isEditable !== undefined ? this.state.isEditable : false;
     const _disabled =
       cellInfo.column.disabled !== undefined ? cellInfo.column.disabled : false;
+    const _capitalize =
+      cellInfo.column.capitalize === undefined
+        ? false
+        : cellInfo.column.capitalize;
+    let _value = rowDetail[cellInfo.column.id];
+    let _calss = {};
+    if (_capitalize && typeof _value === "string") {
+      _value = _value.toLowerCase();
+      _calss = { className: "textCapitalize" };
+    }
     if (editable === undefined || editable === false) {
       if (templates.displayTemp !== undefined) {
-        return <div data_role="grid">{templates.displayTemp(rowDetail)}</div>;
+        if (_calss.className !== undefined) {
+          rowDetail[cellInfo.column.id] = _value;
+        }
+        return (
+          <div data_role="grid" {..._calss}>
+            {templates.displayTemp(rowDetail)}
+          </div>
+        );
       } else {
-        const _value = rowDetail[cellInfo.column.id];
-        //const _width = this.getTextWidth(_value);
-        return <span>{_value}</span>; // style={{ width: _width }}
+        return <span {..._calss}>{_value}</span>;
       }
     } else {
       if (_disabled || !_fullNonEditor) {
-        const _value = rowDetail[cellInfo.column.id];
+        // const _value = rowDetail[cellInfo.column.id];
         //const _width = this.getTextWidth(_value);
-        return <span>{_value}</span>; //style={{ width: _width }}
+        return <span {..._calss}>{_value}</span>; //style={{ width: _width }}
         // return <span>{rowDetail[cellInfo.column.id]}</span>;
       } else {
         if (templates.editorTemp !== undefined) {
           rowDetail["update"] = () => {
             this.updateStateVariables();
           };
-          return <div data_role="grid">{templates.editorTemp(rowDetail)}</div>;
+          if (_calss.className !== undefined) {
+            rowDetail[cellInfo.column.id] = _value;
+          }
+          return (
+            <div data_role="grid" {..._calss}>
+              {templates.editorTemp(rowDetail)}
+            </div>
+          );
         } else {
-          const _value = rowDetail[cellInfo.column.id];
+          // const _value = rowDetail[cellInfo.column.id];
           const _date = moment(_value).isValid();
           if (_date && typeof _value !== "number") {
             return (
@@ -141,7 +163,10 @@ class DataGrid extends Component {
             return (
               <AlagehFormGroup
                 textBox={{
-                  className: "txt-fld",
+                  className:
+                    "txt-fld " + isnumber.number === undefined
+                      ? "textCapitalize"
+                      : "",
                   value: _value,
                   events: {
                     onChange: this.onTextHandleEditChange.bind(this)

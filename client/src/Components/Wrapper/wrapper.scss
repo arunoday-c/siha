@@ -30,6 +30,9 @@
     }
     .textCapitalize {
       text-transform: capitalize;
+      input {
+        text-transform: capitalize;
+      }
     }
   }
   .-btn {

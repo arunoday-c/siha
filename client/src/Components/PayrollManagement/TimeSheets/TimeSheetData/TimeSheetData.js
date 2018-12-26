@@ -299,15 +299,17 @@ class TimeSheetData extends PureComponent {
                 columns={[
                   {
                     fieldName: "employee_name",
+
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Employee Name" }} />
-                    )
-                    // others: {
-                    //   filterable: true
-                    // }
+                    ),
+                    others: {
+                      capitalize: true
+                    }
                   },
                   {
                     fieldName: "employee_code",
+
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Employee Code" }} />
                     )
