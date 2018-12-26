@@ -175,7 +175,7 @@ let processAttendance = async (req, res, next) => {
                             //WEEK OFF CALCULATION---------------------------------------------
                             total_week_off = new LINQ(holidayResult)
                               .Where(
-                                w => (w.weekoff = "Y" && w.holiday_type == "RE")
+                                w => w.weekoff == "Y" && w.holiday_type == "RE"
                               )
                               .Select(s => {
                                 return {
