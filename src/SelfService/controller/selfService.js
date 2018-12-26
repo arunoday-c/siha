@@ -8,7 +8,9 @@ import {
   updateEmployeeIdentificationDetails,
   updateEmployeeDependentDetails,
   updateEmployeeBasicDetails,
-  getLeaveMaster
+  getLeaveMaster,
+  addEmployeeDependentDetails,
+  deleteEmployeeDependentDetails
 } from "../model/selfService";
 
 export default ({ config, db }) => {
@@ -127,6 +129,34 @@ export default ({ config, db }) => {
   api.get(
     "/getLeaveMaster",
     getLeaveMaster,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+  // created by IRFAN :
+  api.post(
+    "/addEmployeeDependentDetails",
+    addEmployeeDependentDetails,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+  // created by IRFAN :
+  api.delete(
+    "/deleteEmployeeDependentDetails",
+    deleteEmployeeDependentDetails,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

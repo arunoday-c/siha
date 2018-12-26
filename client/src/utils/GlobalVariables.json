@@ -602,5 +602,9 @@
     { "name": "Regular", "value": "REG" },
     { "name": "Loss of Pay", "value": "LOP" },
     { "name": "Comp Off", "value": "COM" }
+  ],
+  "QULFN_TYP": [
+    { "name": "Full Time", "value": "FT" },
+    { "name": "Part Time", "value": "PT" }
   ]
 }

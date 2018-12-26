@@ -8,18 +8,16 @@ import {
   AlagehAutoComplete,
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
-import ReactTable from "react-table";
 
 import "react-table/react-table.css";
-import treeTableHOC from "react-table/lib/hoc/treeTable";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
-const TreeTable = treeTableHOC(ReactTable);
 
 class ApplyLeave extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedLang: this.props.SelectLanguage
+      selectedLang: this.props.SelectLanguage,
+      emp_leaves_data: []
     };
 
     this.getLeaveTypes();
@@ -27,8 +25,34 @@ class ApplyLeave extends Component {
   }
 
   componentDidMount() {
-    this.setState({
-      employee_id: this.props.empData.hims_d_employee_id
+    this.setState(
+      {
+        employee_id: this.props.empData.hims_d_employee_id
+      },
+      () => {
+        this.getEmployeeLeaveData();
+      }
+    );
+  }
+
+  getEmployeeLeaveData() {
+    algaehApiCall({
+      uri: "/leave/getEmployeeLeaveData",
+      method: "GET",
+      data: {
+        //employee_id: this.state.employee_id
+        employee_id: 94
+      },
+      onSuccess: res => {
+        if (res.data.succes) {
+          this.setState({
+            emp_leaves_data: res.data.records
+          });
+
+          console.log("Emp Leave Data:", this.state.emp_leaves);
+        }
+      },
+      onFailure: err => {}
     });
   }
 
@@ -87,7 +111,7 @@ class ApplyLeave extends Component {
               <div className="portlet-body">
                 <div className="row">
                   <AlagehAutoComplete
-                    div={{ className: "col-12" }}
+                    div={{ className: "col-12 margin-bottom-15" }}
                     label={{
                       forceLabel: "Employee",
                       isImp: true
@@ -108,7 +132,7 @@ class ApplyLeave extends Component {
                     }}
                   />
                   <AlagehAutoComplete
-                    div={{ className: "col-6" }}
+                    div={{ className: "col-6 margin-bottom-15" }}
                     label={{
                       forceLabel: "Leave Type",
                       isImp: true
@@ -125,7 +149,7 @@ class ApplyLeave extends Component {
                       onChange: this.dropDownHandler.bind(this)
                     }}
                   />
-                  <div className="col-6">
+                  <div className="col-6 margin-bottom-15">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Avialable Balance"
@@ -164,7 +188,7 @@ class ApplyLeave extends Component {
                     maxDate={new Date()}
                   />{" "}
                   <AlagehAutoComplete
-                    div={{ className: "col-6" }}
+                    div={{ className: "col-6 margin-bottom-15" }}
                     label={{
                       forceLabel: "Leave Session",
                       isImp: true
@@ -182,7 +206,7 @@ class ApplyLeave extends Component {
                     }}
                   />
                   <AlagehAutoComplete
-                    div={{ className: "col-6" }}
+                    div={{ className: "col-6 margin-bottom-15" }}
                     label={{
                       forceLabel: "Leave Session",
                       isImp: true
@@ -199,7 +223,7 @@ class ApplyLeave extends Component {
                       //  onChange: this.dropDownHandler.bind(this)
                     }}
                   />
-                  <div className="col-12">
+                  <div className="col-12 margin-bottom-15">
                     <AlgaehLabel
                       label={{
                         forceLabel: "No. of Days"
@@ -208,7 +232,7 @@ class ApplyLeave extends Component {
                     <h6>0.0 days</h6>
                   </div>
                   <AlagehFormGroup
-                    div={{ className: "col-12" }}
+                    div={{ className: "col-12 margin-bottom-15" }}
                     label={{
                       forceLabel: "Reason for Leave",
                       isImp: true
@@ -226,12 +250,8 @@ class ApplyLeave extends Component {
                       }
                     }}
                   />
-                  <div className="col-3 margin-bottom-15">
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      style={{ marginTop: 21 }}
-                    >
+                  <div className="col-3">
+                    <button type="button" className="btn btn-primary">
                       Request
                     </button>
                   </div>
@@ -313,15 +333,20 @@ class ApplyLeave extends Component {
               </div> */}
               <div className="portlet-body">
                 <div className="row leaveBalanceCntr">
-                  <div className="col">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Total Abscent"
-                      }}
-                    />
-                    <h6>0/0 Day (s)</h6>
-                  </div>
-                  <div className="col">
+                  {this.state.emp_leaves_data.map((data, index) => (
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: data.leave_description
+                        }}
+                      />
+                      <h6>
+                        {data.close_balance}/{data.total_eligible} Day (s)
+                      </h6>
+                    </div>
+                  ))}
+
+                  {/* <div className="col">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Sick Leave"
@@ -376,7 +401,7 @@ class ApplyLeave extends Component {
                       }}
                     />
                     <h6>0/15 Day (s)</h6>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
