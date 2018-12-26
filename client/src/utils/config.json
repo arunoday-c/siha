@@ -12,6 +12,10 @@
     "documentManagement": {
       "port": 3006,
       "url": "http://localhost:"
+    },
+    "hrManagement": {
+      "port": 3004,
+      "url": "http://localhost:"
     }
   },
   "apiAuth": {

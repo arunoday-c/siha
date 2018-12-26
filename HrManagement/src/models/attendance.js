@@ -1,6 +1,8 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
 import moment from "moment";
+//import { LINQ } from "node-linq";
+
 module.exports = {
   //created by irfan: to
   processAttendance: (req, res, next) => {
@@ -64,6 +66,7 @@ module.exports = {
             })
             .then(holidayResult => {
               try {
+                const _holidayResult = holidayResult;
                 for (let i = 0; i < empResult.length; i++) {
                   empResult[i]["defaults"] = {
                     emp_absent_days: 0,
@@ -104,27 +107,27 @@ module.exports = {
                       }
 
                       //HOLIDAYS CALCULATION------------------------------------------
-                      let other_religion_holidays = _.filter(
-                        holidayResult,
-                        obj => {
-                          if (
+                      let other_religion_holidays = _.chain(_holidayResult)
+                        .filter(obj => {
+                          return (
                             obj.weekoff == "N" &&
                             obj.holiday == "Y" &&
                             obj.holiday_type == "RS" &&
                             obj.religion_id != empResult[i]["religion_id"]
-                          )
-                            return obj;
-                        }
-                      ).length;
+                          );
+                        })
+                        .value();
 
                       empResult[i]["defaults"].emp_total_holidays =
-                        holidayResult.length - other_religion_holidays;
+                        _holidayResult.length - other_religion_holidays.length;
+
                       //WEEK OFF CALCULATION---------------------------------------------
                       empResult[i]["defaults"].total_week_off = _.filter(
-                        holidayResult,
+                        _holidayResult,
                         obj => {
-                          if ((obj.weekoff = "Y" && obj.holiday_type == "RE"))
-                            return obj;
+                          return (
+                            obj.weekoff === "Y" && obj.holiday_type === "RE"
+                          );
                         }
                       ).length;
                       absentResult = empResult[i]["defaults"].emp_absent_days;
@@ -171,25 +174,31 @@ module.exports = {
                                   const _paid_leave = _.chain(
                                     monthlyLeaveResult
                                   )
-                                    .map(obj => {
-                                      if (obj.leave_type == "P")
-                                        return obj.present_month;
+                                    .filter(obj => {
+                                      return obj.leave_type == "P";
                                     })
                                     .first()
                                     .value();
                                   empResult[i]["defaults"].paid_leave =
-                                    _paid_leave == null ? 0 : _paid_leave;
-                                  const _unpaid_leave = _.chain(
+                                    _paid_leave == null
+                                      ? 0
+                                      : _paid_leave.present_month;
+                                  //-------------------------------------------------------------------
+                                  let _unpaid_leave = _.chain(
                                     monthlyLeaveResult
                                   )
-                                    .map(obj => {
-                                      if (obj.leave_type == "U")
-                                        return obj.present_month;
+                                    .filter(obj => {
+                                      return obj.leave_type == "U";
                                     })
                                     .first()
                                     .value();
+
+                                  //---------------
+
                                   empResult[i]["defaults"].unpaid_leave =
-                                    _unpaid_leave == null ? 0 : _unpaid_leave;
+                                    _unpaid_leave == null
+                                      ? 0
+                                      : _unpaid_leave.present_month;
                                   empResult[i]["defaults"].total_leaves =
                                     empResult[i]["defaults"].paid_leave +
                                     empResult[i]["defaults"].unpaid_leave;
@@ -214,22 +223,20 @@ module.exports = {
                                   parseFloat(
                                     empResult[i]["defaults"].total_week_off
                                   );
+                                // _mysql.mysqlQueryFormat("UPDATE ?",{total_days:totalMonthDays,
+                                //   present_days: empResult[i]["defaults"].present_days,
+                                //   absent_days:,
+                                //   created_date:,
+                                //   created_by:,
 
-                                console.log(
-                                  "Employee Id :" +
-                                    empResult[i]["hims_d_employee_id"] +
-                                    " - present_days :" +
-                                    empResult[i]["defaults"].present_days +
-                                    " - paid_days :" +
-                                    empResult[i]["defaults"].paid_days
-                                );
-
+                                // })
                                 _mysql
                                   .executeQuery({
                                     query:
                                       "INSERT INTO `hims_f_attendance_monthly` (employee_id,year,month,hospital_id,sub_department_id,total_days,present_days,absent_days,\
-                                    total_work_days,total_weekoff_days,total_holidays,total_leave,paid_leave,unpaid_leave)\
-                                    VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                                    total_work_days,total_weekoff_days,total_holidays,total_leave,paid_leave,unpaid_leave,total_paid_days,created_date,created_by,updated_date,updated_by)\
+                                    VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE total_days=?,present_days=?,absent_days=?,\
+                                    total_work_days=?,total_weekoff_days=?,total_holidays=?,total_leave=?,paid_leave=?,unpaid_leave=?,total_paid_days=?,updated_date=?,updated_by=? ",
                                     values: [
                                       empResult[i]["hims_d_employee_id"],
                                       year,
@@ -245,17 +252,52 @@ module.exports = {
                                         .emp_total_holidays,
                                       empResult[i]["defaults"].total_leaves,
                                       empResult[i]["defaults"].paid_leave,
-                                      empResult[i]["defaults"].unpaid_leave
-                                    ],
-                                    printQuery: true
+                                      empResult[i]["defaults"].unpaid_leave,
+                                      empResult[i]["defaults"].paid_days,
+
+                                      new Date(),
+                                      req.userIdentity.algaeh_d_app_user_id,
+                                      new Date(),
+
+                                      req.userIdentity.algaeh_d_app_user_id,
+                                      totalMonthDays,
+                                      empResult[i]["defaults"].present_days,
+                                      empResult[i]["defaults"].emp_absent_days,
+                                      empResult[i]["defaults"].present_days,
+                                      empResult[i]["defaults"].total_week_off,
+                                      empResult[i]["defaults"]
+                                        .emp_total_holidays,
+                                      empResult[i]["defaults"].total_leaves,
+                                      empResult[i]["defaults"].paid_leave,
+                                      empResult[i]["defaults"].unpaid_leave,
+                                      empResult[i]["defaults"].paid_days,
+                                      new Date(),
+                                      req.userIdentity.algaeh_d_app_user_id
+                                    ]
                                   })
                                   .then(finalFesult => {
                                     if (i == empResult.length - 1) {
-                                      _mysql.commitTransaction(() => {
-                                        _mysql.releaseConnection();
-                                        req.records = finalFesult;
-                                        next();
-                                      });
+                                      _mysql
+                                        .executeQuery({
+                                          query:
+                                            "select hims_f_attendance_monthly_id,employee_id,E.employee_code,E.full_name as employee_name,\
+                                            year,month,AM.hospital_id,AM.sub_department_id,\
+                                            total_days,present_days,absent_days,total_work_days,total_weekoff_days,total_holidays,\
+                                            total_leave,paid_leave,unpaid_leave,total_paid_days  from hims_f_attendance_monthly AM \
+                                            inner join hims_d_employee E on AM.employee_id=E.hims_d_employee_id \
+                                            where AM.record_status='A' and AM.`year`= ? and AM.`month`=?",
+                                          values: [year, month_number]
+                                        })
+                                        .then(attDataResult => {
+                                          _mysql.commitTransaction(() => {
+                                            _mysql.releaseConnection();
+                                            req.records = attDataResult;
+                                            next();
+                                          });
+                                        })
+                                        .catch(e => {
+                                          next(e);
+                                        });
                                     }
                                   })
                                   .catch(e => {
@@ -266,12 +308,37 @@ module.exports = {
                                 next(e);
                               });
                           } else {
+                            empResult[i]["defaults"].unpaid_leave = 0;
+                            empResult[i]["defaults"].total_leaves =
+                              empResult[i]["defaults"].paid_leave +
+                              empResult[i]["defaults"].unpaid_leave;
+
+                            empResult[i]["defaults"].present_days =
+                              totalMonthDays -
+                              empResult[i]["defaults"].emp_absent_days -
+                              empResult[i]["defaults"].total_leaves -
+                              empResult[i]["defaults"].total_week_off -
+                              empResult[i]["defaults"].emp_total_holidays;
+
+                            empResult[i]["defaults"].paid_days =
+                              parseFloat(
+                                empResult[i]["defaults"].present_days
+                              ) +
+                              parseFloat(empResult[i]["defaults"].paid_leave) +
+                              parseFloat(
+                                empResult[i]["defaults"].emp_total_holidays
+                              ) +
+                              parseFloat(
+                                empResult[i]["defaults"].total_week_off
+                              );
+
                             _mysql
                               .executeQuery({
                                 query:
                                   "INSERT INTO `hims_f_attendance_monthly` (employee_id,year,month,hospital_id,sub_department_id,total_days,present_days,absent_days,\
-                              total_work_days,total_weekoff_days,total_holidays,total_leave,paid_leave,unpaid_leave)\
-                              VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                              total_work_days,total_weekoff_days,total_holidays,total_leave,paid_leave,unpaid_leave,total_paid_days,created_date,created_by,updated_date,updated_by)\
+                              VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE total_days=?,present_days=?,absent_days=?,\
+                              total_work_days=?,total_weekoff_days=?,total_holidays=?,total_leave=?,paid_leave=?,unpaid_leave=?,total_paid_days=?,updated_date=?,updated_by=? ",
                                 values: [
                                   empResult[i]["hims_d_employee_id"],
                                   year,
@@ -286,16 +353,51 @@ module.exports = {
                                   empResult[i]["defaults"].emp_total_holidays,
                                   empResult[i]["defaults"].total_leaves,
                                   empResult[i]["defaults"].paid_leave,
-                                  empResult[i]["defaults"].unpaid_leave
+                                  empResult[i]["defaults"].unpaid_leave,
+                                  empResult[i]["defaults"].paid_days,
+
+                                  new Date(),
+                                  req.userIdentity.algaeh_d_app_user_id,
+                                  new Date(),
+
+                                  req.userIdentity.algaeh_d_app_user_id,
+                                  totalMonthDays,
+                                  empResult[i]["defaults"].present_days,
+                                  empResult[i]["defaults"].emp_absent_days,
+                                  empResult[i]["defaults"].present_days,
+                                  empResult[i]["defaults"].total_week_off,
+                                  empResult[i]["defaults"].emp_total_holidays,
+                                  empResult[i]["defaults"].total_leaves,
+                                  empResult[i]["defaults"].paid_leave,
+                                  empResult[i]["defaults"].unpaid_leave,
+                                  empResult[i]["defaults"].paid_days,
+                                  new Date(),
+                                  req.userIdentity.algaeh_d_app_user_id
                                 ]
                               })
                               .then(finalFesult => {
                                 if (i == empResult.length - 1) {
-                                  _mysql.commitTransaction(() => {
-                                    _mysql.releaseConnection();
-                                    req.records = finalFesult;
-                                    next();
-                                  });
+                                  _mysql
+                                    .executeQuery({
+                                      query:
+                                        "select hims_f_attendance_monthly_id,employee_id,E.employee_code,E.full_name as employee_name,\
+                                      year,month,AM.hospital_id,AM.sub_department_id,\
+                                      total_days,present_days,absent_days,total_work_days,total_weekoff_days,total_holidays,\
+                                      total_leave,paid_leave,unpaid_leave,total_paid_days  from hims_f_attendance_monthly AM \
+                                      inner join hims_d_employee E on AM.employee_id=E.hims_d_employee_id \
+                                      where AM.record_status='A' and AM.`year`= ? and AM.`month`=?",
+                                      values: [year, month_number]
+                                    })
+                                    .then(attDataResult => {
+                                      _mysql.commitTransaction(() => {
+                                        _mysql.releaseConnection();
+                                        req.records = attDataResult;
+                                        next();
+                                      });
+                                    })
+                                    .catch(e => {
+                                      next(e);
+                                    });
                                 }
                               })
                               .catch(e => {
@@ -318,6 +420,12 @@ module.exports = {
             .catch(e => {
               next(e);
             });
+        } else {
+          _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            req.records = empResult;
+            next();
+          });
         }
       })
       .catch(e => {

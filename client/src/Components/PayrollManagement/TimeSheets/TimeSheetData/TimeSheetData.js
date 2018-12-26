@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import "./TimeSheetData.css";
 import {
   AlagehAutoComplete,
@@ -6,79 +6,72 @@ import {
   AlgaehDataGrid,
   AlgaehDateHandler
 } from "../../../Wrapper/algaehWrapper";
-import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
-import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
-import swal from "sweetalert2";
-
-class EarningsDeductions extends Component {
+import {
+  algaehApiCall,
+  swalMessage,
+  dateFomater
+} from "../../../../utils/algaehApiCall";
+import moment from "moment";
+// import AlgaehSearch from "../../../Wrapper/globalSearch"
+class TimeSheetData extends PureComponent {
   constructor(props) {
     super(props);
+
     this.state = {
-      earning_deductions: []
-    };
-
-    this.getEarningDeductions();
-  }
-
-  clearState() {
-    this.setState({
-      earning_deduction_code: "",
-      earning_deduction_description: "",
-      short_desc: this.state.short_desc,
-      component_category: "",
-      calculation_method: "",
-      component_frequency: "",
-      calculation_type: "",
-      component_type: "",
-      shortage_deduction_applicable: "",
-      overtime_applicable: "",
-      limit_applicable: "",
-      limit_amount: "",
-      process_limit_required: "",
-      process_limit_days: "",
-      general_ledger: "",
-      allow_round_off: "",
-      round_off_type: "",
-      round_off_amount: ""
-    });
-  }
-
-  updateEarningsDeductions(data) {
-    algaehApiCall({
-      uri: "/employee/updateEarningDeduction",
-      method: "PUT",
-      data: {
-        hims_d_earning_deduction_id: data.hims_d_earning_deduction_id,
-        earning_deduction_code: data.earning_deduction_code,
-        earning_deduction_description: data.earning_deduction_description,
-        short_desc: data.short_desc,
-        component_category: data.component_category,
-        calculation_method: data.calculation_method,
-        component_frequency: data.component_frequency,
-        calculation_type: data.calculation_type,
-        component_type: data.component_type,
-        shortage_deduction_applicable: data.shortage_deduction_applicable,
-        overtime_applicable: data.overtime_applicable,
-        limit_applicable: data.limit_applicable,
-        limit_amount: data.limit_amount,
-        process_limit_required: data.process_limit_required,
-        process_limit_days: data.process_limit_days,
-        general_ledger: data.general_ledger,
-        allow_round_off: data.allow_round_off,
-        round_off_type: data.round_off_type,
-        round_off_amount: data.round_off_amount
+      department: {
+        loader: false,
+        sub_department_id: null,
+        data: []
       },
+      branch: {
+        hospital_id: null,
+        loader: false,
+        data: []
+      },
+      attandance: {
+        loader: false,
+        data: []
+      },
+      hims_d_employee_id: null,
+      yearAndMonth: moment().startOf("month")._d,
+      formatingString: this.monthFormatorString(moment().startOf("month"))
+    };
+  }
+  monthFormatorString(yearAndMonth) {
+    const _start = moment(yearAndMonth)
+      .startOf("month")
+      .format("MMM DD YYYY");
+    const _end = moment(yearAndMonth)
+      .endOf("month")
+      .format("MMM DD YYYY");
+    return _start + " - " + _end;
+  }
+  componentDidMount() {
+    this.getDepartment();
+    this.getOrganization();
+  }
+  getDepartment() {
+    const that = this;
+    that.setState({ department: { loader: true } });
+    algaehApiCall({
+      uri: "/department/get",
+      method: "GET",
       onSuccess: response => {
         if (response.data.success) {
-          swalMessage({
-            title: "Record updated successfully",
-            type: "success"
+          that.setState({
+            department: {
+              loader: false,
+              data: response.data.records
+            }
           });
-          this.getEarningDeductions();
         }
       },
       onFailure: error => {
+        that.setState({
+          department: {
+            loader: false
+          }
+        });
         swalMessage({
           title: error.message,
           type: "error"
@@ -87,131 +80,116 @@ class EarningsDeductions extends Component {
     });
   }
 
-  deleteEarningsDeductions(data) {
-    swal({
-      title: "Are you sure you want to delete " + data.short_desc + " ?",
-      type: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes!",
-      confirmButtonColor: "#44b8bd",
-      cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
-      if (willDelete.value) {
-        algaehApiCall({
-          uri: "/employee/deleteEarningDeduction",
-          data: {
-            hims_d_earning_deduction_id: data.hims_d_earning_deduction_id
-          },
-          method: "DELETE",
-          onSuccess: response => {
-            if (response.data.records.success) {
-              swalMessage({
-                title: "Record deleted successfully . .",
-                type: "success"
-              });
-
-              this.getEarningDeductions();
-            } else if (!response.data.records.success) {
-              swalMessage({
-                title: response.data.records.message,
-                type: "error"
-              });
+  getOrganization() {
+    const that = this;
+    that.setState({ branch: { loader: true } });
+    algaehApiCall({
+      uri: "/organization/getOrganization",
+      method: "GET",
+      onSuccess: response => {
+        if (response.data.success) {
+          that.setState({
+            branch: {
+              loader: false,
+              data: response.data.records
             }
-          },
-          onFailure: error => {
-            swalMessage({
-              title: error.message,
-              type: "error"
-            });
+          });
+        }
+      },
+      onFailure: error => {
+        that.setState({
+          branch: {
+            loader: false
           }
         });
-      } else {
         swalMessage({
-          title: "Delete request cancelled",
+          title: error.message,
           type: "error"
         });
       }
     });
   }
 
-  addEarningsDeductions() {
-    AlgaehValidation({
-      alertTypeIcon: "warning",
-      onSuccess: () => {
-        algaehApiCall({
-          uri: "/employee/addEarningDeduction",
-          method: "POST",
-          data: {
-            earning_deduction_code: this.state.earning_deduction_code,
-            earning_deduction_description: this.state
-              .earning_deduction_description,
-            short_desc: this.state.short_desc,
-            component_category: this.state.component_category,
-            calculation_method: this.state.calculation_method,
-            component_frequency: this.state.component_frequency,
-            calculation_type: this.state.calculation_type,
-            component_type: this.state.component_type,
-            shortage_deduction_applicable: this.state
-              .shortage_deduction_applicable,
-            overtime_applicable: this.state.overtime_applicable,
-            limit_applicable: this.state.limit_applicable,
-            limit_amount: this.state.limit_amount,
-            process_limit_required: this.state.process_limit_required,
-            process_limit_days: this.state.process_limit_days,
-            general_ledger: this.state.general_ledger,
-            allow_round_off: this.state.allow_round_off,
-            round_off_type: this.state.round_off_type,
-            round_off_amount: this.state.round_off_amount
-          },
-          onSuccess: res => {
-            if (res.data.success) {
-              this.clearState();
-              swalMessage({
-                title: "Record added successfully",
-                type: "success"
-              });
-            }
-          },
-          onFailure: err => {}
-        });
+  monthSelectionHandler(e) {
+    this.setState({
+      yearAndMonth: moment(e).startOf("month")._d
+    });
+  }
+  onDropDownClearHandler(e) {
+    const _stateOf = this["ref_" + e];
+    const _getType = _stateOf.getAttribute("stateof");
+
+    this.setState({
+      [_getType]: {
+        ...this.state[_getType],
+        [e]: null
       }
     });
   }
 
-  getEarningDeductions() {
+  dropDownHandle(e) {
+    const _stateOf = this["ref_" + e.name];
+    const _getType = _stateOf.getAttribute("stateof");
+
+    this.setState({
+      [_getType]: {
+        [e.name]: e.value,
+        ...this.state[_getType]
+      }
+    });
+  }
+  processAttandance() {
+    const that = this;
+    const _empdtl =
+      that.state.hims_d_employee_id !== null &&
+      that.state.hims_d_employee_id !== ""
+        ? { hims_d_employee_id: that.state.hims_d_employee_id }
+        : {};
+    const _branch =
+      that.state.branch.hospital_id !== null &&
+      that.state.branch.hospital_id !== ""
+        ? { hospital_id: that.state.branch.hospital_id }
+        : {};
+
+    const _depatment =
+      that.state.department.sub_department_id !== null &&
+      that.state.department.sub_department_id !== ""
+        ? { sub_department_id: that.state.department.sub_department_id }
+        : {};
+
+    that.setState({ attandance: { loader: true } });
     algaehApiCall({
-      uri: "/employee/getEarningDeduction",
+      uri: "/attendance/processAttendance",
       method: "GET",
-      onSuccess: res => {
-        if (res.data.success) {
-          this.setState({
-            earning_deductions: res.data.records
+      module: "hrManagement",
+      data: {
+        yearAndMonth: that.state.yearAndMonth,
+        ..._empdtl,
+        ..._branch,
+        ..._depatment
+      },
+      onSuccess: response => {
+        if (response.data.success) {
+          that.setState({
+            attandance: {
+              loader: false,
+              data: response.data.result
+            }
           });
         }
       },
-
-      onFailure: err => {}
+      onFailure: error => {
+        that.setState({
+          attandance: {
+            loader: false
+          }
+        });
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
     });
-  }
-
-  dropDownHandler(value) {
-    this.setState({
-      [value.name]: value.value
-    });
-  }
-
-  changeTexts(e) {
-    this.setState({
-      [e.target.name]: e.target.value
-    });
-  }
-
-  changeGridEditors(row, e) {
-    let name = e.name || e.target.name;
-    let value = e.value || e.target.value;
-    row[name] = value;
-    row.update();
   }
 
   render() {
@@ -223,22 +201,16 @@ class EarningsDeductions extends Component {
             label={{ forceLabel: "Select Month & Year", isImp: true }}
             textBox={{
               className: "txt-fld",
-              name: "date_of_recall"
+              name: "yearAndMonth"
             }}
-            minDate={new Date()}
-            events={
-              {
-                // onChange: selectedDate => {
-                //   this.setState({
-                //     date_of_recall: selectedDate
-                //   });
-                // }
-              }
-            }
+            maxDate={new Date()}
+            events={{
+              onChange: this.monthSelectionHandler.bind(this)
+            }}
             others={{
               type: "month"
             }}
-            value={this.state.date_of_recall}
+            value={dateFomater(this.state.yearAndMonth)}
           />
           <AlagehAutoComplete
             div={{ className: "col " }}
@@ -249,14 +221,22 @@ class EarningsDeductions extends Component {
             selector={{
               name: "sub_department_id",
               className: "select-fld",
-              value: this.state.sub_department_id,
+              value: this.state.department.sub_department_id,
               dataSource: {
-                textField: "sub_department_name",
-                valueField: "sub_department_id",
-                data: this.state.departments
-              }
-              // onChange: this.dropDownHandle.bind(this)
+                textField: "department_name",
+                valueField: "hims_d_department_id",
+                data: this.state.department.data
+              },
+              others: {
+                ref: c => {
+                  this.ref_sub_department_id = c;
+                },
+                stateof: "department"
+              },
+              onChange: this.dropDownHandle.bind(this),
+              onClear: this.onDropDownClearHandler.bind(this)
             }}
+            showLoading={this.state.department.loader}
           />
 
           <AlagehAutoComplete
@@ -266,44 +246,38 @@ class EarningsDeductions extends Component {
               isImp: false
             }}
             selector={{
-              name: "provider_id",
+              name: "hospital_id",
               className: "select-fld",
-              value: this.state.provider_id,
+              value: this.state.branch.hospital_id,
               dataSource: {
-                textField: "full_name",
-                valueField: "employee_id",
-                data: this.state.doctors
-              }
-              //onChange: this.dropDownHandle.bind(this)
+                textField: "hospital_name",
+                valueField: "organization_id",
+                data: this.state.branch.data
+              },
+              others: {
+                ref: c => {
+                  this.ref_hospital_id = c;
+                },
+                stateof: "branch"
+              },
+              onChange: this.dropDownHandle.bind(this),
+              onClear: this.onDropDownClearHandler.bind(this)
             }}
-          />
-
-          <AlagehAutoComplete
-            div={{ className: "col" }}
-            label={{
-              forceLabel: "Filter by Employee",
-              isImp: false
-            }}
-            selector={{
-              name: "provider_id",
-              className: "select-fld",
-              value: this.state.provider_id,
-              dataSource: {
-                textField: "full_name",
-                valueField: "employee_id",
-                data: this.state.doctors
-              }
-              //onChange: this.dropDownHandle.bind(this)
-            }}
+            showLoading={this.state.branch.loader}
           />
 
           <div className="col form-group">
             <button
-              // onClick={this.loadPatients.bind(this)}
+              onClick={this.processAttandance.bind(this)}
               style={{ marginTop: 21 }}
+              disabled={this.state.attandance.loader}
               className="btn btn-primary"
             >
-              LOAD
+              {!this.state.attandance.loader ? (
+                <span>Process Attendance</span>
+              ) : (
+                <i className="fas fa-spinner fa-spin" />
+              )}
             </button>
           </div>
         </div>
@@ -313,18 +287,18 @@ class EarningsDeductions extends Component {
             <div className="caption">
               <h3 className="caption-subject">
                 Employee Time Sheet:{" "}
-                <b style={{ color: "#33b8bc" }}>Dec 01 2018 - Dec 31 2018</b>
+                <b style={{ color: "#33b8bc" }}>{this.state.formatingString}</b>
               </h3>
             </div>
           </div>
           <div className="portlet-body">
             <div data-validate="erngsDdctnsGrid" id="TimeSheetGrid_Cntr">
               <AlgaehDataGrid
-                id="erngs-ddctns-grid"
-                datavalidate="data-validate='erngsDdctnsGrid'"
+                id="employee-attandance-grid"
+                noDataText="Attendance process has no records"
                 columns={[
                   {
-                    fieldName: "earning_deduction_code",
+                    fieldName: "employee_name",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Employee Name" }} />
                     )
@@ -333,37 +307,37 @@ class EarningsDeductions extends Component {
                     // }
                   },
                   {
-                    fieldName: "earning_deduction_description",
+                    fieldName: "employee_code",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Employee Code" }} />
                     )
                   },
                   {
-                    fieldName: "short_desc",
+                    fieldName: "total_days",
                     label: <AlgaehLabel label={{ forceLabel: "Total Days" }} />
                   },
                   {
-                    fieldName: "component_category",
+                    fieldName: "present_days",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Present Days" }} />
                     )
                   },
                   {
-                    fieldName: "calculation_method",
+                    fieldName: "absent_days",
                     label: <AlgaehLabel label={{ forceLabel: "Absent Days" }} />
                   },
                   {
-                    fieldName: "component_frequency",
+                    fieldName: "paid_leave",
                     label: <AlgaehLabel label={{ forceLabel: "Paid Leaves" }} />
                   },
                   {
-                    fieldName: "calculation_type",
+                    fieldName: "unpaid_leave",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Unpaid Leaves" }} />
                     )
                   },
                   {
-                    fieldName: "component_type",
+                    fieldName: "pending_unpaid_leaves",
                     label: (
                       <AlgaehLabel
                         label={{ forceLabel: "Pending Unpaid Leaves" }}
@@ -371,18 +345,12 @@ class EarningsDeductions extends Component {
                     )
                   }
                 ]}
-                keyId="hims_d_employee_group_id"
                 dataSource={{
-                  data: this.state.earning_deductions
+                  data: this.state.attandance.data
                 }}
-                isEditable={false}
                 filterable
                 paging={{ page: 0, rowsPerPage: 10 }}
-                events={{
-                  onEdit: () => {},
-                  onDelete: this.deleteEarningsDeductions.bind(this),
-                  onDone: this.updateEarningsDeductions.bind(this)
-                }}
+                loading={this.state.attandance.loader}
               />
             </div>
           </div>
@@ -446,11 +414,6 @@ class EarningsDeductions extends Component {
                 }}
                 isEditable={false}
                 paging={{ page: 0, rowsPerPage: 10 }}
-                events={{
-                  onEdit: () => {},
-                  onDelete: this.deleteEarningsDeductions.bind(this),
-                  onDone: this.updateEarningsDeductions.bind(this)
-                }}
               />
             </div>
           </div>
@@ -460,4 +423,4 @@ class EarningsDeductions extends Component {
   }
 }
 
-export default EarningsDeductions;
+export default TimeSheetData;
