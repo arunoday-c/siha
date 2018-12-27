@@ -15,6 +15,21 @@ export default class LeaveAuthorization extends Component {
       <div className="row">
         <div className="col-12">
           <div className="row inner-top-search">
+            <AlagehAutoComplete
+              div={{ className: "col form-group mandatory" }}
+              label={{
+                forceLabel: "Authorization Level",
+                isImp: true
+              }}
+              selector={{
+                name: "",
+                className: "select-fld",
+
+                dataSource: {},
+                others: {}
+              }}
+            />
+
             <AlgaehDateHandler
               div={{ className: "col mandatory" }}
               label={{ forceLabel: "From Date", isImp: true }}
