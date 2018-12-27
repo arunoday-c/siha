@@ -297,7 +297,6 @@ export default class LeaveAuthorization extends Component {
                     isEditable={false}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{}}
-                    others={{}}
                   />
                 </div>
               </div>
