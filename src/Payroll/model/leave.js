@@ -59,7 +59,7 @@ let applyEmployeeLeave = (req, res, next) => {
     }
     let db = req.db;
     let input = extend({}, req.body);
-
+    debugLog("input:", input);
     db.getConnection((error, connection) => {
       if (error) {
         next(error);
@@ -75,56 +75,150 @@ let applyEmployeeLeave = (req, res, next) => {
         connection.query(
           "select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,from_date,to_leave_session,\
           to_date from hims_f_leave_application\
-           where cancelled='N' and (('2018-12-15'>=from_date and '2018-12-15'<=to_date) or ('2018-12-20'>=from_date and\
-           '2018-12-20'<=to_date) ) and employee_id=94",
+          where cancelled='N' and ((  date(?)>=date(from_date) and date(?)<=date(to_date)) or\
+          ( date(?)>=date(from_date) and\
+          date(?)<=date(to_date)) ) and employee_id=?",
+          [
+            input.from_date,
+            input.from_date,
+            input.to_date,
+            input.to_date,
+            input.employee_id
+          ],
           (error, result) => {
+            releaseDBConnection(db, connection);
             if (error) {
-              releaseDBConnection(db, connection);
               next(error);
             }
-
-            let curr_from_session = "FH";
-
             debugLog("result:", result);
-            //fetch all previous to_leave_sessions
+            // DISCARDING LEAVE APPLICATION
+            if (result.length > 0) {
+              let clashing_dates = new LINQ(result)
+                .Where(
+                  w =>
+                    w.to_date == input.from_date || w.from_date == input.to_date
+                )
+                .Select(s => {
+                  return {
+                    hims_f_leave_application_id: s.hims_f_leave_application_id,
+                    employee_id: s.employee_id,
+                    leave_application_code: s.leave_application_code,
+                    from_leave_session: s.from_leave_session,
+                    from_date: s.from_date,
+                    to_leave_session: s.to_leave_session,
 
-            let prev_to_leave_session_FH = new LINQ(result)
-              .Where(w => w.to_leave_session == "FH")
-              .Select(s => s.to_leave_session)
-              .FirstOrDefault();
+                    to_date: s.to_date
+                  };
+                })
+                .ToArray();
 
-            debugLog("prev_to_leave_session_FH:", prev_to_leave_session_FH);
+              debugLog("clashing_dates:", clashing_dates);
 
-            let prev_to_leave_session_FD = new LINQ(result)
-              .Where(w => w.to_leave_session == "FD")
-              .Select(s => s.to_leave_session)
-              .FirstOrDefault();
+              if (clashing_dates.length > 0) {
+                let curr_from_session = input.from_leave_session;
 
-            debugLog("prev_to_leave_session_FD:", prev_to_leave_session_FD);
+                debugLog("result:", result);
+                //fetch all previous to_leave_sessions
 
-            let prev_to_leave_session_SH = new LINQ(result)
-              .Where(w => w.to_leave_session == "SH")
-              .Select(s => s.to_leave_session)
-              .FirstOrDefault();
+                let prev_to_leave_session_FH = new LINQ(clashing_dates)
+                  .Where(w => w.to_leave_session == "FH")
+                  .Select(s => s.to_leave_session)
+                  .FirstOrDefault();
 
-            debugLog("prev_to_leave_session_SH:", prev_to_leave_session_SH);
-            //rejection of to_leave_sessions
+                debugLog("prev_to_leave_session_FH:", prev_to_leave_session_FH);
 
-            if (
-              (prev_to_leave_session_FH == "FH" && curr_from_session == "FH") ||
-              (prev_to_leave_session_FD == "FD" && curr_from_session == "FH") ||
-              (prev_to_leave_session_SH == "SH" && curr_from_session == "FH") ||
-              ((prev_to_leave_session_FD == "FD" &&
-                curr_from_session == "SH") ||
-                (prev_to_leave_session_SH == "SH" &&
-                  curr_from_session == "SH")) ||
-              ((prev_to_leave_session_FH == "FH" &&
-                curr_from_session == "FD") ||
-                (prev_to_leave_session_FD == "FD" &&
-                  curr_from_session == "FD") ||
-                (prev_to_leave_session_SH == "SH" && curr_from_session == "FD"))
-            ) {
-              debugLog("rejction_one:");
+                let prev_to_leave_session_FD = new LINQ(clashing_dates)
+                  .Where(w => w.to_leave_session == "FD")
+                  .Select(s => s.to_leave_session)
+                  .FirstOrDefault();
+
+                debugLog("prev_to_leave_session_FD:", prev_to_leave_session_FD);
+
+                let prev_to_leave_session_SH = new LINQ(clashing_dates)
+                  .Where(w => w.to_leave_session == "SH")
+                  .Select(s => s.to_leave_session)
+                  .FirstOrDefault();
+
+                debugLog("prev_to_leave_session_SH:", prev_to_leave_session_SH);
+                //rejection of to_leave_sessions
+
+                if (
+                  (prev_to_leave_session_FH == "FH" &&
+                    curr_from_session == "FH") ||
+                  (prev_to_leave_session_FD == "FD" &&
+                    curr_from_session == "FH") ||
+                  (prev_to_leave_session_SH == "SH" &&
+                    curr_from_session == "FH") ||
+                  ((prev_to_leave_session_FD == "FD" &&
+                    curr_from_session == "SH") ||
+                    (prev_to_leave_session_SH == "SH" &&
+                      curr_from_session == "SH")) ||
+                  ((prev_to_leave_session_FH == "FH" &&
+                    curr_from_session == "FD") ||
+                    (prev_to_leave_session_FD == "FD" &&
+                      curr_from_session == "FD") ||
+                    (prev_to_leave_session_SH == "SH" &&
+                      curr_from_session == "FD"))
+                ) {
+                  debugLog("rejction_one:");
+                }
+                //-----------------------------------------------------------------------------------------------------
+
+                let curr_to_session = input.to_leave_session;
+
+                let prev_from_leave_session_FH = new LINQ(clashing_dates)
+                  .Where(w => w.from_leave_session == "FH")
+                  .Select(s => s.from_leave_session)
+                  .FirstOrDefault();
+
+                debugLog(
+                  "prev_from_leave_session_FH:",
+                  prev_from_leave_session_FH
+                );
+
+                let prev_from_leave_session_SH = new LINQ(clashing_dates)
+                  .Where(w => w.from_leave_session == "SH")
+                  .Select(s => s.from_leave_session)
+                  .FirstOrDefault();
+                debugLog(
+                  "prev_from_leave_session_SH:",
+                  prev_from_leave_session_SH
+                );
+
+                let prev_from_leave_session_FD = new LINQ(clashing_dates)
+                  .Where(w => w.from_leave_session == "FD")
+                  .Select(s => s.from_leave_session)
+                  .FirstOrDefault();
+                debugLog(
+                  "prev_from_leave_session_FD:",
+                  prev_from_leave_session_FD
+                );
+
+                if (
+                  (prev_from_leave_session_FH == "FH" &&
+                    curr_to_session == "FD") ||
+                  (prev_from_leave_session_SH == "SH" &&
+                    curr_to_session == "FD") ||
+                  (prev_from_leave_session_FD == "FD" &&
+                    curr_to_session == "FD") ||
+                  (prev_from_leave_session_FD == "FD" &&
+                    curr_to_session == "FH") ||
+                  (prev_from_leave_session_FH == "FH" &&
+                    curr_to_session == "FH") ||
+                  (prev_from_leave_session_FH == "FH" &&
+                    curr_to_session == "SH") ||
+                  (prev_from_leave_session_FD == "FD" &&
+                    curr_to_session == "SH") ||
+                  (prev_from_leave_session_SH == "SH" &&
+                    curr_to_session == "SH")
+                ) {
+                  debugLog("rejction two:");
+                }
+              } else {
+                debugLog("Application DISCARDED");
+              }
+            } else {
+              debugLog("Accept leave application here  with Num gen");
             }
 
             // new Promise((resolve, reject) => {
