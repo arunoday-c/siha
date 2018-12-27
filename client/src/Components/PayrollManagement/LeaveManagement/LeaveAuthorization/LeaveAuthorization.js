@@ -157,41 +157,67 @@ export default class LeaveAuthorization extends Component {
             </div>
           </div>
         </div>
-        <div className="col-6">
+        <div className="col-12">
           <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
                 <h3 className="caption-subject">Current Leave Application</h3>
               </div>
-              <div className="actions">
-                <a className="btn btn-primary btn-circle active">
-                  <i className="fas fa-pen" />
-                </a>
-              </div>
+              <div className="actions" />
             </div>
             <div className="portlet-body">
               <div className="row">
-                <div className="col-12" id=" currentLeaveAppGrid_Cntr">
+                <div className="col-12" id="currentLeaveAppGrid_Cntr">
                   <AlgaehDataGrid
                     id="currentLeaveAppGrid"
                     datavalidate="currentLeaveAppGrid"
                     columns={[
                       {
-                        fieldName: "Column_1",
+                        fieldName: "fromDate",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Column 1" }} />
+                          <AlgaehLabel label={{ forceLabel: "From Date" }} />
                         )
                       },
                       {
-                        fieldName: "Column_2",
+                        fieldName: "fromSession",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Column 2" }} />
+                          <AlgaehLabel label={{ forceLabel: "From Session" }} />
+                        )
+                      },
+                      {
+                        fieldName: "toDate",
+                        label: <AlgaehLabel label={{ forceLabel: "To Date" }} />
+                      },
+                      {
+                        fieldName: "toSession",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "To Session" }} />
+                        )
+                      },
+                      {
+                        fieldName: "totalPeriod",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Total Period" }} />
+                        )
+                      },
+                      {
+                        fieldName: "LeaveDescription",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Description" }} />
+                        )
+                      },
+                      {
+                        fieldName: "ModeLeave",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Mode of Leave" }}
+                          />
                         )
                       }
                     ]}
                     keyId=""
                     dataSource={{ data: [] }}
-                    isEditable={true}
+                    isEditable={false}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{}}
                     others={{}}
@@ -201,41 +227,59 @@ export default class LeaveAuthorization extends Component {
             </div>
           </div>
         </div>
-        <div className="col-6">
+        <div className="col-12">
           <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
                 <h3 className="caption-subject">Previous Leave Application</h3>
               </div>
-              <div className="actions">
-                <a className="btn btn-primary btn-circle active">
-                  <i className="fas fa-pen" />
-                </a>
-              </div>
+              <div className="actions" />
             </div>
             <div className="portlet-body">
               <div className="row">
-                <div className="col-12" id=" previousLeaveAppGrid_Cntr">
+                <div className="col-12" id="previousLeaveAppGrid_Cntr">
                   <AlgaehDataGrid
                     id="previousLeaveAppGrid"
                     datavalidate="previousLeaveAppGrid"
                     columns={[
                       {
-                        fieldName: "Column_1",
+                        fieldName: "fromDate",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Column 1" }} />
+                          <AlgaehLabel label={{ forceLabel: "From Date" }} />
                         )
                       },
                       {
-                        fieldName: "Column_2",
+                        fieldName: "toDate",
+                        label: <AlgaehLabel label={{ forceLabel: "To Date" }} />
+                      },
+                      {
+                        fieldName: "totalPeriod",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Column 2" }} />
+                          <AlgaehLabel label={{ forceLabel: "Total Period" }} />
                         )
+                      },
+                      {
+                        fieldName: "",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Approved Period" }}
+                          />
+                        )
+                      },
+                      {
+                        fieldName: "description",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Description" }} />
+                        )
+                      },
+                      {
+                        fieldName: "status",
+                        label: <AlgaehLabel label={{ forceLabel: "Status" }} />
                       }
                     ]}
                     keyId=""
                     dataSource={{ data: [] }}
-                    isEditable={true}
+                    isEditable={false}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{}}
                     others={{}}

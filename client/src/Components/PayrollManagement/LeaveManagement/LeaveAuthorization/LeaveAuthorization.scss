@@ -1,11 +1,20 @@
 #leaveAuthGrid_Cntr {
   .ReactTable {
-    max-height: 30vh !important;
+    max-height: 23vh !important;
   }
 }
-#currentLeaveAppGrid_Cntr,
+#currentLeaveAppGrid_Cntr {
+  .ReactTable {
+    min-height: 10vh !important;
+    max-height: 10vh !important;
+    .rt-table {
+      overflow: hidden;
+    }
+  }
+}
 #previousLeaveAppGrid_Cntr {
   .ReactTable {
-    max-height: 20vh !important;
+    min-height: 14vh !important;
+    max-height: 14vh !important;
   }
 }
