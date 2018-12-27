@@ -606,5 +606,10 @@
   "QULFN_TYP": [
     { "name": "Full Time", "value": "FT" },
     { "name": "Part Time", "value": "PT" }
+  ],
+  "LEAVE_SESSIONS": [
+    { "name": "Full Day", "value": "FD", "day": 1 },
+    { "name": "First Half", "value": "FH", "day": 0.5 },
+    { "name": "Second Half", "value": "SH", "day": 0.5 }
   ]
 }
