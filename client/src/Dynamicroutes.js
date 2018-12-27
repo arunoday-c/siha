@@ -92,6 +92,7 @@ import ExitManagement from "./Components/PayrollManagement/ExitManagement/ExitMa
 import LoanManagement from "./Components/PayrollManagement/LoanManagement/LoanManagement";
 import PayrollWorkbench from "./Components/PayrollManagement/PayrollWorkbench/PayrollWorkbench";
 import PerformanceManagement from "./Components/PayrollManagement/PerformanceManagement/PerformanceManagement";
+import EmployeeDocuments from "./Components/EmployeeManagement/EmployeeDocuments/EmployeeDocuments";
 
 const componts = (selectedLang, breadStyle) => {
   return {
@@ -204,7 +205,10 @@ const componts = (selectedLang, breadStyle) => {
     ExitManagement: <ExitManagement selectedLang={selectedLang} />,
     LoanManagement: <LoanManagement selectedLang={selectedLang} />,
     PayrollWorkBench: <PayrollWorkbench selectedLang={selectedLang} />,
-    PerformanceManagement: <PerformanceManagement selectedLang={selectedLang} />
+    PerformanceManagement: (
+      <PerformanceManagement selectedLang={selectedLang} />
+    ),
+    EmployeeDocuments: <EmployeeDocuments selectedLang={selectedLang} />
   };
 };
 
