@@ -87,6 +87,8 @@ import SalaryManagement from "./Components/PayrollManagement/SalaryManagement/Sa
 import HolidayMgmnt from "./Components/PayrollManagement/HolidayManagement/HolidayMgmnt";
 import LeaveManagement from "./Components/PayrollManagement/LeaveManagement/LeaveManagement";
 import HRSettings from "./Components/EmployeeManagement/HRSettings/HRSettings";
+import AttendanceManagement from "./Components/PayrollManagement/AttendanceMgmt/AttendanceMgmt";
+import ExitManagement from "./Components/PayrollManagement/ExitManagement/ExitManagement";
 
 const componts = (selectedLang, breadStyle) => {
   return {
@@ -194,7 +196,9 @@ const componts = (selectedLang, breadStyle) => {
     SalaryManagement: <SalaryManagement SelectLanguage={selectedLang} />,
     HolidayMgmnt: <HolidayMgmnt SelectLanguage={selectedLang} />,
     HRSettings: <HRSettings SelectLanguage={selectedLang} />,
-    LeaveManagement: <LeaveManagement selectedLang={selectedLang} />
+    LeaveManagement: <LeaveManagement selectedLang={selectedLang} />,
+    AttendanceManagement: <AttendanceManagement selectedLang={selectedLang} />,
+    ExitManagement: <ExitManagement selectedLang={selectedLang} />
   };
 };
 
