@@ -26,7 +26,7 @@ export default class LeaveManagement extends Component {
 
   render() {
     return (
-      <div className="leave_mgmt">
+      <div className="row leave_mgmt">
         <div className="tabMaster toggle-section">
           <ul className="nav">
             <li
@@ -71,7 +71,7 @@ export default class LeaveManagement extends Component {
           </ul>
         </div>
 
-        <div className="leave-section">
+        <div className="col-12 leave-section">
           {this.state.pageDisplay === "LeaveAuth" ? (
             <LeaveAuth />
           ) : this.state.pageDisplay === "LeaveEncashAuth" ? (

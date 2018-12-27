@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+
+import "./MonthlyAttendance.css";
 import {
   AlagehAutoComplete,
   AlgaehLabel,
@@ -285,15 +287,15 @@ export default class MonthlyAttendance extends Component {
           <div className="portlet-title">
             <div className="caption">
               <h3 className="caption-subject">
-                Employee Time Sheet:{" "}
+                Employee Monthly Attendance:{" "}
                 <b style={{ color: "#33b8bc" }}>{this.state.formatingString}</b>
               </h3>
             </div>
           </div>
           <div className="portlet-body">
-            <div data-validate="erngsDdctnsGrid" id="TimeSheetGrid_Cntr">
+            <div id="monthlyAttendenceGrid_Cntr">
               <AlgaehDataGrid
-                id="employee-attandance-grid"
+                id="monthlyAttendenceGrid"
                 noDataText="Attendance process has no records"
                 columns={[
                   {
@@ -365,8 +367,9 @@ export default class MonthlyAttendance extends Component {
             </div>
           </div>
           <div className="portlet-body">
-            <div data-validate="erngsDdctnsGrid" id="EmployeeLeaveBalance_Cntr">
+            <div id="EmployeeLeaveBalance_Cntr">
               <AlgaehDataGrid
+                data-validate="EmployeeLeaveBalance_Cntr"
                 columns={[
                   {
                     fieldName: "earning_deduction_code",

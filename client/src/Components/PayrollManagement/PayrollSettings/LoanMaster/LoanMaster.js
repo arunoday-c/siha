@@ -284,7 +284,7 @@ class LoanMaster extends Component {
           <div className="portlet-body">
             <div className="row">
               <div
-                className="col-lg-12"
+                className="col-12"
                 id="loanMasterList_cntr"
                 data-validate="loanGrid"
               >
