@@ -1,15 +1,13 @@
 import React, { Component } from "react";
-import "./SalaryManagement.css";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
-import SalaryPayments from "./SalaryPayments/SalaryPayments";
-import SalaryProcessing from "./SalaryProcessing/SalaryProcessing";
-import MiscEarningsDeductions from "./MiscEarningsDeductions/MiscEarningsDeductions";
+import DailyAttendance from "./DailyAttendance/DailyAttendance";
+import MonthlyAttendance from "./MonthlyAttendance/MonthlyAttendance";
 
-export default class SalaryManagement extends Component {
+export default class AttendanceMgmt extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageDisplay: "SalaryProcessing"
+      pageDisplay: "DailyAttendance"
     };
   }
 
@@ -27,46 +25,32 @@ export default class SalaryManagement extends Component {
 
   render() {
     return (
-      <div className="salary_management">
+      <div className="attendance_mgmt">
         <div className="row">
           <div className="tabMaster toggle-section">
             <ul className="nav">
               <li
-                algaehtabs={"SalaryProcessing"}
+                algaehtabs={"DailyAttendance"}
                 className={"nav-item tab-button active"}
                 onClick={this.openTab.bind(this)}
               >
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Salary Processing"
+                      forceLabel: "Daily Attendance"
                     }}
                   />
                 }
               </li>
-
               <li
-                algaehtabs={"SalaryPayments"}
+                algaehtabs={"MonthlyAttendance"}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
               >
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Salary Payments"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"MiscEarningsDeductions"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "miscellaneous Earnings & Deductions"
+                      forceLabel: "Monthly Attendance"
                     }}
                   />
                 }
@@ -74,13 +58,11 @@ export default class SalaryManagement extends Component {
             </ul>
           </div>
         </div>
-        <div className="salary-setion">
-          {this.state.pageDisplay === "SalaryPayments" ? (
-            <SalaryPayments />
-          ) : this.state.pageDisplay === "SalaryProcessing" ? (
-            <SalaryProcessing />
-          ) : this.state.pageDisplay === "MiscEarningsDeductions" ? (
-            <MiscEarningsDeductions />
+        <div className="attendance-setion">
+          {this.state.pageDisplay === "DailyAttendance" ? (
+            <DailyAttendance />
+          ) : this.state.pageDisplay === "MonthlyAttendance" ? (
+            <MonthlyAttendance />
           ) : null}
         </div>
       </div>

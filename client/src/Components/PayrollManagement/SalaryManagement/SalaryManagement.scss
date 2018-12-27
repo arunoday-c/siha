@@ -1,15 +1,17 @@
-.hptl-AttendanceRegularization-form {
-  margin: 0 0 15px;
-}
-#Salary_Management_Cntr {
-  .ReactTable {
-    max-height: 30vh !important;
+.salary_management {
+  .hptl-AttendanceRegularization-form {
+    margin: 0 0 15px;
   }
-}
-#Employer_Contribution_Cntr,
-#Employee_Deductions_Cntr,
-#Salary_Earning_Cntr {
-  .ReactTable {
-    max-height: 20vh !important;
+  #Salary_Management_Cntr {
+    .ReactTable {
+      max-height: 30vh !important;
+    }
+  }
+  #Employer_Contribution_Cntr,
+  #Employee_Deductions_Cntr,
+  #Salary_Earning_Cntr {
+    .ReactTable {
+      max-height: 20vh !important;
+    }
   }
 }
