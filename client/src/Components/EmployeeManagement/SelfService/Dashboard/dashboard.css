@@ -35,7 +35,8 @@
 .dashboard #selfService_FamilyTable_Cntr .ReactTable,
 .dashboard #selfService_IdentificationTable_Cntr .ReactTable,
 .dashboard #selfService_WorkExpTable_Cntr .ReactTable,
-.dashboard #selfService_EducationTable_Cntr .ReactTable {
+.dashboard #selfService_EducationTable_Cntr .ReactTable,
+.dashboard #selfService_AttachmentTable_Cntr .ReactTable {
   max-height: 20vh !important; }
 
 .dashboard .editFloatCntr {

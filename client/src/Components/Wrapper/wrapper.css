@@ -21,6 +21,10 @@
     font-size: 0.8rem !important;
     overflow: inherit !important;
     white-space: inherit !important; }
+  .ReactTable .rt-tbody .textCapitalize {
+    text-transform: capitalize; }
+    .ReactTable .rt-tbody .textCapitalize input {
+      text-transform: capitalize; }
 
 .ReactTable .-btn {
   background: #34b8bc !important;
