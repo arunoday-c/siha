@@ -106,7 +106,11 @@ class Dashboard extends Component {
         break;
 
       case "addEdu":
-        this.setState({ addEdu: !this.state.addEdu, ...empData });
+        this.setState({ addEdu: !this.state.slideOutDown, ...empData });
+        break;
+
+      case "addAttach":
+        this.setState({ addAttach: !this.state.addAttach, ...empData });
         break;
 
       default:
@@ -139,7 +143,7 @@ class Dashboard extends Component {
 
               if (type === "SC") {
                 this.setState({
-                  addEdu: false,
+                  slideOutDown: false,
                   qualification: null,
                   qualitfication_type: null,
                   pass_out_year: null,
@@ -2188,11 +2192,104 @@ class Dashboard extends Component {
                   <h3 className="caption-subject">Attachments Details</h3>
                 </div>
                 <div className="actions">
-                  <a className="btn btn-other btn-circle active">
-                    <i className="fas fa-pen" />
+                  <a
+                    onClick={this.showEditCntr.bind(
+                      this,
+                      "addAttach",
+                      empDetails
+                    )}
+                    className="btn btn-other btn-circle active"
+                  >
+                    <i
+                      className={
+                        this.state.addAttach ? "fas fa-times" : "fas fa-plus"
+                      }
+                    />
                   </a>
                 </div>
               </div>
+
+              {this.state.addAttach ? (
+                <div
+                  className={
+                    "col-12 editFloatCntr animated  " +
+                    (this.state.addAttach ? "slideInUp" : "slideOutDown") +
+                    " faster"
+                  }
+                  data-validate="attach-grid"
+                >
+                  <h5>Upload Attachment</h5>
+                  <div className="row">
+                    <AlagehFormGroup
+                      div={{ className: "col-2" }}
+                      label={{
+                        forceLabel: "Attachment Name",
+                        isImp: true
+                      }}
+                      textBox={{
+                        value: this.state.qualification,
+                        className: "txt-fld",
+                        name: "AttachmentName",
+                        events: {
+                          onChange: this.changeTexts.bind(this)
+                        },
+                        others: {
+                          tabIndex: "1"
+                        }
+                      }}
+                    />{" "}
+                    <AlagehFormGroup
+                      div={{ className: "col-2" }}
+                      label={{
+                        forceLabel: "Attachment File",
+                        isImp: true
+                      }}
+                      textBox={{
+                        value: this.state.attachment,
+                        className: "txt-fld",
+                        name: "AttachmentFile",
+                        events: {
+                          onChange: this.changeTexts.bind(this)
+                        },
+                        others: {
+                          tabIndex: "2",
+                          type: "file"
+                        }
+                      }}
+                    />
+                  </div>
+                  <div className="row">
+                    <div className="col">
+                      <button
+                        // onClick={this.addEmployeeEducation.bind(this, "S")}
+                        type="button"
+                        className="btn btn-primary"
+                      >
+                        Save
+                      </button>
+                      <button
+                        //   onClick={this.addEmployeeEducation.bind(this, "SC")}
+                        type="button"
+                        className="btn btn-primary"
+                      >
+                        Save and Close
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-default"
+                        onClick={this.showEditCntr.bind(
+                          this,
+                          "addAttach",
+                          empDetails
+                        )}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+
               <div className="portlet-body">
                 <div className="row">
                   <div className="col-12" id="selfService_AttachmentTable_Cntr">
