@@ -1,15 +1,16 @@
 import React, { Component } from "react";
-import "./SalaryManagement.css";
+import "./payroll_wb.css";
+import OverTimeMgmt from "./OvertimeManagement/OvertimeManagement";
+import LeaveSalaryAirfareAccrual from "./LeaveSalaryAirfareAccrual/LeaveSalaryAirfareAccrual";
+import EmployeeReceipts from "./EmployeeReceipts/EmployeeReceipts";
+import EmployeePayments from "./EmployeePayments/EmployeePayments";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
-import SalaryPayments from "./SalaryPayments/SalaryPayments";
-import SalaryProcessing from "./SalaryProcessing/SalaryProcessing";
-import MiscEarningsDeductions from "./MiscEarningsDeductions/MiscEarningsDeductions";
 
-export default class SalaryManagement extends Component {
+class PayrollWorkbench extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageDisplay: "SalaryProcessing"
+      pageDisplay: "EmployeePayments"
     };
   }
 
@@ -27,46 +28,58 @@ export default class SalaryManagement extends Component {
 
   render() {
     return (
-      <div className="salary_management">
+      <div className="payroll_wb">
         <div className="row">
           <div className="tabMaster toggle-section">
             <ul className="nav">
               <li
-                algaehtabs={"SalaryProcessing"}
+                algaehtabs={"EmployeePayments"}
                 className={"nav-item tab-button active"}
                 onClick={this.openTab.bind(this)}
               >
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Salary Processing"
+                      forceLabel: "Employee Payments"
                     }}
                   />
                 }
               </li>
-
               <li
-                algaehtabs={"SalaryPayments"}
+                algaehtabs={"EmployeeReceipts"}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
               >
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Salary Payments"
+                      forceLabel: "Employee Receipts"
                     }}
                   />
                 }
               </li>
               <li
-                algaehtabs={"MiscEarningsDeductions"}
+                algaehtabs={"OverTimeMgmt"}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
               >
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "miscellaneous Earnings & Deductions"
+                      forceLabel: "OverTime Management"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"LeaveSalaryAirfareAccrual"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Leave Salary Airfare Accrual"
                     }}
                   />
                 }
@@ -74,16 +87,20 @@ export default class SalaryManagement extends Component {
             </ul>
           </div>
         </div>
-        <div className="salary-setion">
-          {this.state.pageDisplay === "SalaryPayments" ? (
-            <SalaryPayments />
-          ) : this.state.pageDisplay === "SalaryProcessing" ? (
-            <SalaryProcessing />
-          ) : this.state.pageDisplay === "MiscEarningsDeductions" ? (
-            <MiscEarningsDeductions />
+        <div className="payroll-setion">
+          {this.state.pageDisplay === "OverTimeMgmt" ? (
+            <OverTimeMgmt />
+          ) : this.state.pageDisplay === "LeaveSalaryAirfareAccrual" ? (
+            <LeaveSalaryAirfareAccrual />
+          ) : this.state.pageDisplay === "EmployeeReceipts" ? (
+            <EmployeeReceipts />
+          ) : this.state.pageDisplay === "EmployeePayments" ? (
+            <EmployeePayments />
           ) : null}
         </div>
       </div>
     );
   }
 }
+
+export default PayrollWorkbench;

@@ -85,8 +85,13 @@ import PayrollSettings from "./Components/PayrollManagement/PayrollSettings/Payr
 import TimeSheet from "./Components/PayrollManagement/TimeSheets/TimeSheets";
 import SalaryManagement from "./Components/PayrollManagement/SalaryManagement/SalaryManagement";
 import HolidayMgmnt from "./Components/PayrollManagement/HolidayManagement/HolidayMgmnt";
-
+import LeaveManagement from "./Components/PayrollManagement/LeaveManagement/LeaveManagement";
 import HRSettings from "./Components/EmployeeManagement/HRSettings/HRSettings";
+import AttendanceManagement from "./Components/PayrollManagement/AttendanceMgmt/AttendanceMgmt";
+import ExitManagement from "./Components/PayrollManagement/ExitManagement/ExitManagement";
+import LoanManagement from "./Components/PayrollManagement/LoanManagement/LoanManagement";
+import PayrollWorkbench from "./Components/PayrollManagement/PayrollWorkbench/PayrollWorkbench";
+import PerformanceManagement from "./Components/PayrollManagement/PerformanceManagement/PerformanceManagement";
 
 const componts = (selectedLang, breadStyle) => {
   return {
@@ -193,7 +198,13 @@ const componts = (selectedLang, breadStyle) => {
     TimeSheet: <TimeSheet SelectLanguage={selectedLang} />,
     SalaryManagement: <SalaryManagement SelectLanguage={selectedLang} />,
     HolidayMgmnt: <HolidayMgmnt SelectLanguage={selectedLang} />,
-    HRSettings: <HRSettings SelectLanguage={selectedLang} />
+    HRSettings: <HRSettings SelectLanguage={selectedLang} />,
+    LeaveManagement: <LeaveManagement selectedLang={selectedLang} />,
+    AttendanceManagement: <AttendanceManagement selectedLang={selectedLang} />,
+    ExitManagement: <ExitManagement selectedLang={selectedLang} />,
+    LoanManagement: <LoanManagement selectedLang={selectedLang} />,
+    PayrollWorkBench: <PayrollWorkbench selectedLang={selectedLang} />,
+    PerformanceManagement: <PerformanceManagement selectedLang={selectedLang} />
   };
 };
 

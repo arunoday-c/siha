@@ -44,7 +44,8 @@ class Appointment extends PureComponent {
       activeDateHeader: moment()._d,
       outerStyles: {},
       byPassValidation: false,
-      width: 0
+      width: 0,
+      byPassValidation : true
     };
   }
 
