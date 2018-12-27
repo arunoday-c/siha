@@ -85,7 +85,7 @@ import PayrollSettings from "./Components/PayrollManagement/PayrollSettings/Payr
 import TimeSheet from "./Components/PayrollManagement/TimeSheets/TimeSheets";
 import SalaryManagement from "./Components/PayrollManagement/SalaryManagement/SalaryManagement";
 import HolidayMgmnt from "./Components/PayrollManagement/HolidayManagement/HolidayMgmnt";
-
+import LeaveManagement from "./Components/PayrollManagement/LeaveManagement/LeaveManagement";
 import HRSettings from "./Components/EmployeeManagement/HRSettings/HRSettings";
 
 const componts = (selectedLang, breadStyle) => {
@@ -193,7 +193,8 @@ const componts = (selectedLang, breadStyle) => {
     TimeSheet: <TimeSheet SelectLanguage={selectedLang} />,
     SalaryManagement: <SalaryManagement SelectLanguage={selectedLang} />,
     HolidayMgmnt: <HolidayMgmnt SelectLanguage={selectedLang} />,
-    HRSettings: <HRSettings SelectLanguage={selectedLang} />
+    HRSettings: <HRSettings SelectLanguage={selectedLang} />,
+    LeaveManagement: <LeaveManagement selectedLang={selectedLang} />
   };
 };
 

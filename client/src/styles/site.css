@@ -583,7 +583,8 @@ input[type="number"],
 input[type="tel"],
 input[type="email"],
 input[type="password"],
-input[type="time"] {
+input[type="time"],
+input[type="type"] {
   font-size: 0.85rem;
   padding: 4px 6px 4px;
   border: 1px solid #d3d3d3;
@@ -710,6 +711,7 @@ textarea {
 .mandatory input[type="tel"],
 .mandatory input[type="email"],
 .mandatory input[type="password"],
+.mandatory input[type="type"],
 .mandatory input.autoselect-input,
 .mandatory .algaeh-datePicker input[type="date"],
 .mandatory .algaeh-datePicker input[type="month"],
@@ -722,7 +724,8 @@ input[type="number"]:disabled,
 input[type="tel"]:disabled,
 input[type="email"]:disabled,
 input[type="time"]:disabled,
-input[type="password"]:disabled {
+input[type="password"]:disabled,
+input[type="type"]:disabled {
   background: #fffdfa;
   border: 1px dashed #d3d3d3;
   color: #000;
@@ -907,6 +910,13 @@ th {
     border: 1px solid #d3d3d3;
     border-radius: 4px;
     overflow: hidden;
+    text-align: right; }
+  .algaeh_Arabic_Version input[type="file"] {
+    font-size: 0.85rem;
+    padding: 4px 6px 4px;
+    border: 1px solid #d3d3d3;
+    border-radius: 4px;
+    background: #fff;
     text-align: right; }
   .algaeh_Arabic_Version input[type="color"]::-webkit-color-swatch-wrapper {
     padding: 0; }
