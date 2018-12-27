@@ -748,32 +748,7 @@ class Dashboard extends Component {
     return (
       <div className="dashboard">
         <div className="row">
-          <div className="col">
-            <ul
-              className="selfServiceProfileMenu box-shadow-normal"
-              onClick={this.scrollToPosition.bind(this)}
-            >
-              <li id="offcialDetails">
-                <span>Offical Details</span>
-              </li>
-              <li id="basicDetails">
-                <span>Basic Details</span>
-              </li>
-              <li id="familyDetails">
-                <span>Family Details</span>
-              </li>
-              <li id="identificationDetails">
-                <span>Identification Details</span>
-              </li>
-              <li id="workExperianceDetails">
-                <span>Work Experience</span>
-              </li>
-              <li id="educationDetails">
-                <span>Education Details</span>
-              </li>
-            </ul>
-          </div>
-          <div className="col-6">
+          <div className="col-7">
             <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
               <div className="portlet-title">
                 <div
@@ -2180,7 +2155,7 @@ class Dashboard extends Component {
               </div>
             </div>
           </div>
-          <div className="col-4">
+          <div className="col-5">
             <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
               <div className="portlet-title">
                 <div
@@ -2239,7 +2214,7 @@ class Dashboard extends Component {
                       }}
                     />{" "}
                     <AlagehFormGroup
-                      div={{ className: "col-2" }}
+                      div={{ className: "col-4" }}
                       label={{
                         forceLabel: "Attachment File",
                         isImp: true
