@@ -1,97 +1,96 @@
 import moment from "moment";
+import { swalMessage } from "../../../../../utils/algaehApiCall";
 let texthandlerInterval = null;
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  $this.props.EmpMasterIOputs.updateEmployeeTabs({
-    [name]: value
+  let _notice = {};
+
+  if (name === "notice_period") {
+    if (
+      $this.state.date_of_leaving === null ||
+      $this.state.date_of_leaving === ""
+    ) {
+      swalMessage({
+        type: "error",
+        title: $this.state.date_of_releaving_label + " can not blank"
+      });
+      return;
+    }
+    _notice = {
+      reliving_date: moment($this.state.date_of_leaving).add(value, "days")._d
+    };
+  }
+
+  $this.setState({
+    [name]: value,
+    ..._notice
   });
-  // switch (name) {
-  //   case "notice_period":
-  //     debugger;
-  //     $this.setState({
-  //       [name]: value
-  //       //Calculate Releiving date here
-  //       // releiving_date: moment($this.state.date_of_leaving).add(
-  //       //   parseInt(value, 10),
-  //       //   "days"
-  //       // )._d
-  //     });
-
-  //     clearInterval(texthandlerInterval);
-  //     texthandlerInterval = setInterval(() => {
-  //       if (context !== undefined) {
-  //         context.updateState({ [name]: value });
-  //       }
-  //       clearInterval(texthandlerInterval);
-  //     }, 500);
-
-  //     break;
-
-  //   default:
-  //     $this.setState({
-  //       [name]: value
-  //     });
-
-  //     clearInterval(texthandlerInterval);
-  //     texthandlerInterval = setInterval(() => {
-  //       if (context !== undefined) {
-  //         context.updateState({ [name]: value });
-  //       }
-  //       clearInterval(texthandlerInterval);
-  //     }, 500);
-  //     break;
-  // }
+  $this.props.EmpMasterIOputs.updateEmployeeTabs({
+    [name]: value,
+    ..._notice
+  });
 };
 
 const accomodationProvided = ($this, e) => {
   $this.setState({
-    [e.target.name]: e.target.cheked ? "Y" : "N"
+    [e.target.name]: e.target.checked ? "Y" : "N"
   });
   $this.props.EmpMasterIOputs.updateEmployeeTabs({
-    [e.target.name]: e.target.cheked ? "Y" : "N"
+    [e.target.name]: e.target.checked ? "Y" : "N"
   });
-
-  // let accomodation_provided = false;
-  // let value = "N";
-  // let name = e.target.name;
-
-  // if ($this.state.accomodation_provided === true) {
-  //   accomodation_provided = false;
-  //   value = "N";
-  // } else if ($this.state.accomodation_provided === false) {
-  //   accomodation_provided = true;
-  //   value = "Y";
-  // }
-  // $this.setState({
-  //   [name]: value,
-  //   accomodation_provided: accomodation_provided
-  // });
-
-  // clearInterval(texthandlerInterval);
-  // texthandlerInterval = setInterval(() => {
-  //   if (context !== undefined) {
-  //     context.updateState({ [name]: value });
-  //   }
-  //   clearInterval(texthandlerInterval);
-  // }, 500);
 };
 
 const datehandle = ($this, ctrl, e) => {
+  let _notice = {};
+  if (e === "date_of_leaving") {
+    if ($this.state.notice_period !== null) {
+      _notice = {
+        reliving_date: moment(ctrl).add(
+          parseFloat($this.state.notice_period),
+          "days"
+        )._d
+      };
+    }
+  }
   $this.setState({
-    [e]: ctrl
+    [e]: ctrl,
+    ..._notice
   });
   $this.props.EmpMasterIOputs.updateEmployeeTabs({
-    [e]: ctrl
+    [e]: ctrl,
+    ..._notice
   });
-  // clearInterval(texthandlerInterval);
-  // texthandlerInterval = setInterval(() => {
-  //   if (context !== undefined) {
-  //     context.updateState({ [e]: moment(ctrl)._d });
-  //   }
-  //   clearInterval(texthandlerInterval);
-  // }, 500);
+};
+const employeeStatusHandler = ($this, e) => {
+  let _enable_active_status = "";
+  let _date_of_releaving = "";
+  let _other = {};
+  if (e.value === "A") {
+    _enable_active_status = "A";
+    _date_of_releaving = "Date of leaving";
+  } else if (e.value === "I") {
+    _enable_active_status = "I";
+    _date_of_releaving = "Date of leaving";
+    _other = { inactive_date: new Date() };
+  } else if (e.value === "R") {
+    _enable_active_status = "R";
+    _date_of_releaving = "Date of Reliving";
+  } else if (e.value === "T") {
+    _enable_active_status = "T";
+    _date_of_releaving = "Date of Terminating";
+  }
+  $this.setState({
+    enable_active_status: _enable_active_status,
+    date_of_releaving_label: _date_of_releaving,
+    employee_status: e.value,
+    ..._other
+  });
+  $this.props.EmpMasterIOputs.updateEmployeeTabs({
+    employee_status: e.value,
+    ..._other
+  });
 };
 
-export { texthandle, datehandle, accomodationProvided };
+export { texthandle, datehandle, accomodationProvided, employeeStatusHandler };

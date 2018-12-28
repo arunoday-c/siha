@@ -445,7 +445,7 @@ class AutoComplete extends PureComponent {
             onKeyDown={this.handleKeyDownNavigation.bind(this)}
             onBlur={this.bluringEvent.bind(this)}
             {...this.props.selector.others}
-            autoComplete="off"
+            autoComplete="nope"
             // autoComplete="new-password"
             {..._required}
             data_role="dropdownlist"

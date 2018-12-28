@@ -25,7 +25,8 @@ class EmployeeMaster extends Component {
 
     this.state = {
       pageDisplay: "PersonalDetails",
-      personalDetails: {}
+      personalDetails: {},
+      department_and_other: {}
     };
   }
 
@@ -203,6 +204,14 @@ class EmployeeMaster extends Component {
       this.setState({
         personalDetails: {
           ...this.state.personalDetails,
+          ...options
+        }
+      });
+    } else if (this.state.pageDisplay === "DeptUserDetails") {
+      debugger;
+      this.setState({
+        department_and_other: {
+          ...this.state.department_and_other,
           ...options
         }
       });

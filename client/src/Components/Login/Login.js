@@ -176,6 +176,7 @@ export default class Login extends Component {
                     <form
                       onSubmit={this.handleLogin.bind(this)}
                       className="row"
+                      autoComplete="none"
                     >
                       <AlagehFormGroup
                         div={{ className: "col-12" }}

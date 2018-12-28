@@ -120,20 +120,38 @@ const InsertUpdateEmployee = $this => {
       ...$this.state.personalDetails
     };
     console.log("_payload", _payload);
+    // return;
     algaehApiCall({
       uri: "/employee/addEmployeeMaster",
       data: _payload,
       onSuccess: response => {
         if (response.data.success === true) {
-          $this.setState({
-            personalDetails: {
-              ...$this.state.personalDetails,
-              hims_d_employee_id: response.data.records.insertId
+          let _h = response.data.records.insertId;
+          const _payloadDepart = {
+            hospital_id: hospital.hims_d_hospital_id,
+            hims_d_employee_id: _h,
+            ...$this.state.department_and_other
+          };
+
+          console.log("Depart ment Payload", JSON.stringify(_payloadDepart));
+          algaehApiCall({
+            uri: "/employee/addEmployeeInfo",
+            data: _payloadDepart,
+            method: "POST",
+            onSuccess: response => {
+              if (response.data.success === true) {
+                $this.setState({
+                  personalDetails: {
+                    ...$this.state.personalDetails,
+                    hims_d_employee_id: _h
+                  }
+                });
+                swalMessage({
+                  title: "Saved successfully . .",
+                  type: "success"
+                });
+              }
             }
-          });
-          swalMessage({
-            title: "Saved successfully . .",
-            type: "success"
           });
         }
       }
@@ -206,7 +224,7 @@ const InsertUpdateEmployee = $this => {
     //   }
     // });
     // } else if ($this.state.hims_d_employee_id !== null) {
-    //   debugger;
+    //
     // algaehApiCall({
     //   uri: "/employee/addEmployeeInfo",
     //   data: $this.state,

@@ -12,23 +12,31 @@ import variableJson from "../../../../../utils/GlobalVariables.json";
 import {
   texthandle,
   datehandle,
-  accomodationProvided
+  accomodationProvided,
+  employeeStatusHandler
 } from "./OfficalDetailsEvent.js";
 import { AlgaehActions } from "../../../../../actions/algaehActions";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-
+import { getCookie } from "../../../../../utils/algaehApiCall";
 class OfficalDetails extends PureComponent {
   constructor(props) {
     super(props);
-
     this.state = {
-      accomodation_provided: false
+      enable_active_status: "",
+      date_of_releaving_label: "Date of leaving",
+      accomodation_provided: false,
+      reliving_date: undefined,
+      employee_status: null,
+      inactive_date: undefined,
+      selectedLang: getCookie("Language")
     };
   }
 
   componentDidMount() {
+    let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
+    this.setState({ ...this.state, ...InputOutput });
     if (this.props.banks === undefined || this.props.banks.length === 0) {
       this.props.getBanks({
         uri: "/masters/getBank",
@@ -66,7 +74,6 @@ class OfficalDetails extends PureComponent {
                       tabIndex: "1"
                     }
                   }}
-                  maxDate={new Date()}
                   events={{
                     onChange: datehandle.bind(this, this)
                   }}
@@ -122,12 +129,19 @@ class OfficalDetails extends PureComponent {
               <div className="row paddin-bottom-5">
                 <AlgaehDateHandler
                   div={{ className: "col" }}
-                  label={{ forceLabel: "Date of Resignation" }}
+                  label={{ forceLabel: this.state.date_of_releaving_label }}
                   textBox={{
                     className: "txt-fld",
-                    name: "date_of_leaving"
+                    name: "date_of_leaving",
+                    others: {
+                      disabled:
+                        this.state.enable_active_status === "I" ||
+                        this.state.enable_active_status === "T"
+                          ? true
+                          : false
+                    }
                   }}
-                  maxDate={new Date()}
+                  minDate={new Date()}
                   events={{
                     onChange: datehandle.bind(this, this)
                   }}
@@ -159,7 +173,12 @@ class OfficalDetails extends PureComponent {
                       forceLabel: "Relieving Date"
                     }}
                   />
-                  <h6>{this.state.releiving_date}</h6>
+                  <h6>
+                    {this.state.reliving_date !== undefined &&
+                    this.state.reliving_date !== ""
+                      ? this.state.reliving_date.toLocaleDateString()
+                      : ""}
+                  </h6>
                 </div>
                 <AlgaehDateHandler
                   div={{ className: "col" }}
@@ -168,7 +187,7 @@ class OfficalDetails extends PureComponent {
                     className: "txt-fld",
                     name: "exit_date"
                   }}
-                  maxDate={new Date()}
+                  minDate={this.state.date_of_leaving}
                   events={{
                     onChange: datehandle.bind(this, this)
                   }}
@@ -183,21 +202,31 @@ class OfficalDetails extends PureComponent {
                   selector={{
                     name: "title_id",
                     className: "select-fld",
-                    value: this.state.title_id,
+                    value: this.state.employee_status,
                     dataSource: {
                       textField:
                         this.state.selectedLang === "en"
-                          ? "title"
-                          : "arabic_title",
-                      valueField: "his_d_title_id",
-                      data: this.props.titles
+                          ? "name"
+                          : "arabic_name",
+                      valueField: "value",
+                      data: variableJson.EMPLOYEE_STATUS
                     },
-                    onChange: null,
-                    others: {
-                      tabIndex: "2"
-                    }
+                    onChange: employeeStatusHandler.bind(this, this)
                   }}
-                />
+                />{" "}
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Inactive Date"
+                    }}
+                  />
+                  <h6>
+                    {this.state.inactive_date !== undefined &&
+                    this.state.inactive_date !== ""
+                      ? this.state.inactive_date.toLocaleDateString()
+                      : ""}
+                  </h6>
+                </div>
               </div>
               <h5>
                 <span>Accomodation Details</span>
@@ -239,9 +268,6 @@ class OfficalDetails extends PureComponent {
                     value: this.state.employee_bank_name,
                     events: {
                       onChange: texthandle.bind(this, this)
-                    },
-                    others: {
-                      tabIndex: "2"
                     }
                   }}
                 />
@@ -300,10 +326,7 @@ class OfficalDetails extends PureComponent {
                       valueField: "hims_d_bank_id",
                       data: this.props.banks
                     },
-                    onChange: texthandle.bind(this, this),
-                    others: {
-                      tabIndex: "2"
-                    }
+                    onChange: texthandle.bind(this, this)
                   }}
                 />
 
@@ -322,10 +345,7 @@ class OfficalDetails extends PureComponent {
                       valueField: "value",
                       data: variableJson.MODE_OF_PAYMENT
                     },
-                    onChange: texthandle.bind(this, this),
-                    others: {
-                      tabIndex: "2"
-                    }
+                    onChange: texthandle.bind(this, this)
                   }}
                 />
               </div>
