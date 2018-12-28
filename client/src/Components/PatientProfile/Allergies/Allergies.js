@@ -686,13 +686,7 @@ class Allergies extends Component {
                   {tables.allergyList.map((rows, rIndex) => (
                     <tr key={rIndex}>
                       <td> {rows.allergy_name} </td>
-                      <td>
-                        {
-                          Enumerable.from(GlobalVariables.ALLERGY_ONSET)
-                            .where(w => w.value === rows.onset)
-                            .firstOrDefault().name
-                        }
-                      </td>
+                      <td>{this.decissionAllergyOnset(rows)}</td>
                       <td>{rows.comment}</td>
                       <td>{rows.allergy_inactive === "Y" ? "Yes" : "No"}</td>
                     </tr>
@@ -705,6 +699,14 @@ class Allergies extends Component {
         {/* END Portlet PORTLET */}
       </React.Fragment>
     );
+  }
+  decissionAllergyOnset(row) {
+    const _onSet = Enumerable.from(GlobalVariables.ALLERGY_ONSET)
+      .where(w => w.value === row.onset)
+      .firstOrDefault();
+    if (_onSet) {
+      return _onSet.name;
+    } else return "";
   }
 }
 
