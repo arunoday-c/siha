@@ -227,6 +227,7 @@ export default class Login extends Component {
                           name: "item_id",
                           className: "select-fld",
                           value: this.state.item_id,
+                          autoComplete: "off",
                           dataSource: {
                             textField: "hospital_name",
                             valueField: "hims_d_hospital_id",
