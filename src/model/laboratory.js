@@ -66,7 +66,7 @@ let getLabOrderedServices = (req, res, next) => {
       db.query(
         "select hims_f_lab_order_id,LO.patient_id, entered_by, confirmed_by, validated_by,visit_id,V.visit_code, provider_id, E.full_name as doctor_name, billed, service_id,S.service_code,S.service_name,LO.status,\
         cancelled, provider_id, ordered_date, test_type, lab_id_number, run_type, P.patient_code,P.full_name,P.date_of_birth, P.gender,\
-        LS.sample_id,LS.collected,LS.collected_by, LS.collected_date,LS.hims_d_lab_sample_id,LS.status as sample_status\
+        LS.sample_id,LS.collected,LS.collected_by, LS.remarks,LS.collected_date,LS.hims_d_lab_sample_id,LS.status as sample_status\
         from hims_f_lab_order LO inner join hims_d_services S on LO.service_id=S.hims_d_services_id and S.record_status='A'\
         inner join hims_f_patient_visit V on LO.visit_id=V.hims_f_patient_visit_id and  V.record_status='A'\
         inner join hims_d_employee E on LO.provider_id=E.hims_d_employee_id and  E.record_status='A'\
@@ -556,11 +556,12 @@ let updateLabSampleStatus = (req, res, next) => {
         let queryBuilder =
           "update hims_f_lab_sample set `status`=?" +
           collected +
-          "updated_date=?,updated_by=? where hims_d_lab_sample_id=?;";
+          "remarks=?,updated_date=?,updated_by=? where hims_d_lab_sample_id=?;";
 
         debugLog("queryBuilder: ", queryBuilder);
         let inputs = [
           input.status,
+          input.remarks,
           new Date(),
           input.updated_by,
           input.hims_d_lab_sample_id

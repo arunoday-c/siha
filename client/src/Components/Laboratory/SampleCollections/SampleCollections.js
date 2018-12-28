@@ -388,6 +388,19 @@ class SampleCollectionPatient extends PureComponent {
                                   resizable: false,
                                   style: { textAlign: "center" }
                                 }
+                              },
+                              {
+                                fieldName: "remarks",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ forceLabel: "Remarks" }}
+                                  />
+                                ),
+                                others: {
+                                  maxWidth: 200,
+                                  resizable: false,
+                                  style: { textAlign: "center" }
+                                }
                               }
                             ]}
                             keyId="service_code"

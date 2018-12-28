@@ -125,28 +125,35 @@ const AcceptandRejectSample = ($this, row, AccRej) => {
       let inputobj = {
         hims_d_lab_sample_id: row.hims_d_lab_sample_id,
         order_id: row.hims_f_lab_order_id,
+        remarks: $this.state.remarks,
         status: AccRej
       };
-      algaehApiCall({
-        uri: "/laboratory/updateLabSampleStatus",
-        data: inputobj,
-        method: "PUT",
-        onSuccess: response => {
-          if (response.data.success === true) {
-            getSampleCollectionDetails($this);
-            swalMessage({
-              title: "Record Updated",
-              type: "success"
-            });
-          }
-        },
-        onFailure: error => {
-          swalMessage({
-            title: error.message,
-            type: "error"
+
+      $this.state.remarks.length > 0
+        ? algaehApiCall({
+            uri: "/laboratory/updateLabSampleStatus",
+            data: inputobj,
+            method: "PUT",
+            onSuccess: response => {
+              if (response.data.success === true) {
+                getSampleCollectionDetails($this);
+                swalMessage({
+                  title: "Record Updated",
+                  type: "success"
+                });
+              }
+            },
+            onFailure: error => {
+              swalMessage({
+                title: error.message,
+                type: "error"
+              });
+            }
+          })
+        : swalMessage({
+            title: "Please enter the remarks",
+            type: "warning"
           });
-        }
-      });
     } else {
       swalMessage({
         title: "Invalid Input. Already Accecpted/Rejected.",
