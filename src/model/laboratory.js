@@ -734,20 +734,20 @@ let updateLabResultEntry = (req, res, next) => {
             "',entered_by='" +
             user_id.updated_by +
             "',entered_date='" +
-            new Date().toLocaleString() +
+            moment().format("YYYY-MM-DD HH:mm") +
             "',validate_by='" +
             user_id.updated_by +
             "',validated_date='" +
-            new Date().toLocaleString() +
+            moment().format("YYYY-MM-DD HH:mm") +
             "',confirm_by='" +
             user_id.updated_by +
             "',confirmed_date='" +
-            new Date().toLocaleString() +
+            moment().format("YYYY-MM-DD HH:mm") +
             "',amended='" +
             inputParam[i].amended +
             amended +
             "',updated_date='" +
-            new Date().toLocaleString() +
+            moment().format("YYYY-MM-DD HH:mm") +
             "',updated_by='" +
             user_id.updated_by +
             "' WHERE order_id='" +
@@ -770,19 +770,19 @@ let updateLabResultEntry = (req, res, next) => {
               "update hims_f_lab_order set `status`='" +
                 ref +
                 "',entered_date= '" +
-                new Date().toLocaleString() +
+                moment().format("YYYY-MM-DD HH:mm") +
                 "',entered_by= '" +
                 user_id.updated_by +
                 "',confirmed_date= '" +
-                new Date().toLocaleString() +
+                moment().format("YYYY-MM-DD HH:mm") +
                 "',confirmed_by= '" +
                 user_id.updated_by +
                 "',validated_date= '" +
-                new Date().toLocaleString() +
+                moment().format("YYYY-MM-DD HH:mm") +
                 "',validated_by= '" +
                 user_id.updated_by +
                 "',updated_date= '" +
-                new Date().toLocaleString() +
+                moment().format("YYYY-MM-DD HH:mm") +
                 "',run_type='" +
                 runtype[0] +
                 "',updated_by='" +
