@@ -419,6 +419,10 @@ class AutoComplete extends PureComponent {
         : this.props.selector.placeholder;
     const _showLoader =
       this.props.showLoading !== undefined ? this.props.showLoading : false;
+    const _autocomplete =
+      this.props.selector.autoComplete !== undefined
+        ? this.props.selector.autoComplete
+        : "nope";
     return (
       <div
         id={"internal_" + this.props.selector.name}
@@ -445,7 +449,8 @@ class AutoComplete extends PureComponent {
             onKeyDown={this.handleKeyDownNavigation.bind(this)}
             onBlur={this.bluringEvent.bind(this)}
             {...this.props.selector.others}
-            autoComplete="nope"
+            autoCorrect="off"
+            autoComplete={_autocomplete}
             // autoComplete="new-password"
             {..._required}
             data_role="dropdownlist"
