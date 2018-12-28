@@ -332,11 +332,11 @@ class AccessionAcknowledgement extends Component {
                         ),
                         displayTemplate: row => {
                           return row.sample_status === "N" ? (
-                            <span class="badge badge-light">Not Done</span>
+                            <span className="badge badge-light">Not Done</span>
                           ) : row.sample_status === "A" ? (
-                            <span class="badge badge-success">Accepted</span>
+                            <span className="badge badge-success">Accepted</span>
                           ) : row.sample_status === "R" ? (
-                            <span class="badge badge-danger">Rejected</span>
+                            <span className="badge badge-danger">Rejected</span>
                           ) : null;
                         },
                         disabled: true,
@@ -435,15 +435,15 @@ class AccessionAcknowledgement extends Component {
                         label: <AlgaehLabel label={{ fieldName: "status" }} />,
                         displayTemplate: row => {
                           return row.status === "O" ? (
-                            <span class="badge badge-light">Ordered</span>
+                            <span className="badge badge-light">Ordered</span>
                           ) : row.status === "CL" ? (
-                            <span class="badge badge-primary">Collected</span>
+                            <span className="badge badge-primary">Collected</span>
                           ) : row.status === "CN" ? (
-                            <span class="badge badge-danger">Cancelled</span>
+                            <span className="badge badge-danger">Cancelled</span>
                           ) : row.status === "CF" ? (
-                            <span class="badge badge-success">Confirmed</span>
+                            <span className="badge badge-success">Confirmed</span>
                           ) : (
-                            <span class="badge badge-success">Validated</span>
+                            <span className="badge badge-success">Validated</span>
                           );
                         },
                         disabled: true,

@@ -288,15 +288,23 @@ class SampleCollection extends Component {
                         label: <AlgaehLabel label={{ fieldName: "status" }} />,
                         displayTemplate: row => {
                           return row.status === "O" ? (
-                            <span class="badge badge-light">Ordered</span>
+                            <span className="badge badge-light">Ordered</span>
                           ) : row.status === "CL" ? (
-                            <span class="badge badge-primary">Collected</span>
+                            <span className="badge badge-primary">
+                              Collected
+                            </span>
                           ) : row.status === "CN" ? (
-                            <span class="badge badge-danger">Cancelled</span>
+                            <span className="badge badge-danger">
+                              Cancelled
+                            </span>
                           ) : row.status === "CF" ? (
-                            <span class="badge badge-success">Confirmed</span>
+                            <span className="badge badge-success">
+                              Confirmed
+                            </span>
                           ) : (
-                            <span class="badge badge-success">Validated</span>
+                            <span className="badge badge-success">
+                              Validated
+                            </span>
                           );
                         },
                         disabled: true,
@@ -363,13 +371,13 @@ class SampleCollection extends Component {
                         label: (
                           <AlgaehLabel label={{ fieldName: "ordered_date" }} />
                         ),
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {this.changeDateFormat(row.ordered_date)}
-                            </span>
-                          );
-                        },
+                        // displayTemplate: row => {
+                        //   return (
+                        //     <span>
+                        //       {this.changeDateFormat(row.ordered_date)}
+                        //     </span>
+                        //   );
+                        // },
                         disabled: true,
                         others: {
                           maxWidth: 200,

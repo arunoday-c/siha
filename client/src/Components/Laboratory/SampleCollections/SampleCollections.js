@@ -2,7 +2,7 @@ import React, { PureComponent } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-
+import moment from "moment";
 import MyContext from "../../../utils/MyContext.js";
 import "./SampleCollections.css";
 import "../../../styles/site.css";
@@ -174,9 +174,10 @@ class SampleCollectionPatient extends PureComponent {
                                   />
                                 ),
                                 displayTemplate: row => {
+                                  debugger;
                                   return (
                                     <span>
-                                      {row.collected === "N" ? (
+                                      {row.collected !== "Y" ? (
                                         <i
                                           style={{
                                             pointerEvents:
@@ -320,13 +321,15 @@ class SampleCollectionPatient extends PureComponent {
                                 displayTemplate: row => {
                                   return row.collected === "Y" ? (
                                     <span
-                                      class="badge badge-success
+                                      className="badge badge-success
                                     "
                                     >
                                       Yes
                                     </span>
                                   ) : (
-                                    <span class="badge badge-danger">No</span>
+                                    <span className="badge badge-danger">
+                                      No
+                                    </span>
                                   );
                                 }
                                 // others: {
@@ -374,7 +377,10 @@ class SampleCollectionPatient extends PureComponent {
                                 displayTemplate: row => {
                                   return (
                                     <span>
-                                      {dateFormater(this, row.collected_date)}
+                                      {/* {dateFormater(this, row.collected_date)} */}
+                                      {moment(row.collected_date).format(
+                                        "DD-MM-YYYY hh:mm"
+                                      )}
                                     </span>
                                   );
                                 },
