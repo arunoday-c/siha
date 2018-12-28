@@ -23,3 +23,12 @@
 .badge {
   font-size: 0.7rem;
   margin-top: 5px; }
+
+.accessionRemarkPopUp .algaeh-modal {
+  max-width: 30vw !important; }
+  .accessionRemarkPopUp .algaeh-modal .popupInner {
+    padding-top: 5px; }
+    .accessionRemarkPopUp .algaeh-modal .popupInner .textArea input {
+      height: 15vh !important;
+      width: 100%;
+      margin-bottom: 15px; }

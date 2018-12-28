@@ -33,3 +33,18 @@
   font-size: 0.7rem;
   margin-top: 5px;
 }
+.accessionRemarkPopUp {
+  .algaeh-modal {
+    max-width: 30vw !important;
+    .popupInner {
+      padding-top: 5px;
+      .textArea {
+        input {
+          height: 15vh !important;
+          width: 100%;
+          margin-bottom: 15px;
+        }
+      }
+    }
+  }
+}

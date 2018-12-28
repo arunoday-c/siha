@@ -21,7 +21,8 @@ import {
   AlgaehLabel,
   AlagehFormGroup,
   AlagehAutoComplete,
-  AlgaehDateHandler
+  AlgaehDateHandler,
+  AlgaehModalPopUp
 } from "../../Wrapper/algaehWrapper";
 
 import {
@@ -32,6 +33,7 @@ import {
 import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../Options.json";
+import { swalMessage } from "../../../utils/algaehApiCall";
 
 class AccessionAcknowledgement extends Component {
   constructor(props) {
@@ -46,7 +48,10 @@ class AccessionAcknowledgement extends Component {
       patient_id: null,
       sample_collection: [],
       selected_patient: null,
-      isOpen: false
+      isOpen: false,
+      reject_popup: false,
+      selectedRow: {},
+      remarks: ""
     };
   }
 
@@ -83,6 +88,93 @@ class AccessionAcknowledgement extends Component {
     //   this.state.billdetails === null ? [{}] : this.state.billdetails;
     return (
       <React.Fragment>
+        <AlgaehModalPopUp
+          title="Remarks"
+          openPopup={this.state.reject_popup}
+          class="accessionRemarkPopUp"
+          events={{
+            onClose: () => {
+              this.setState({
+                reject_popup: false
+              });
+            }
+          }}
+        >
+          {/* <AlagehFormGroup
+           div={{ className: "col form-group" }}
+           label={{
+           forceLabel: "Enter Label Here",
+          isImp: false
+            }}
+           textBox={{ 
+          className: "txt-fld",
+          name: "remarks" ,
+          value: this.state.remarks,
+          events: {},
+          others:{{
+          type:"text"
+           }}
+          }}
+          /> */}
+          <div className="popupInner">
+            {/* <AlagehFormGroup
+              div={{ className: "col-12 textArea" }}
+              label={{
+                forceLabel: "Reason for Rejection",
+                isImp: true
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "remarks",
+                value: this.state.remarks,
+                others: {
+                  multiline: true
+                },
+                events: {
+                  onChange: texthandle.bind(this, this)
+                }
+              }}
+            /> */}
+
+            <div className="col-12">
+              <label>Reason for Rejection</label>
+              <textarea
+                className="textArea"
+                name="remarks"
+                value={this.state.remarks}
+                onChange={texthandle.bind(this, this)}
+              />
+            </div>
+          </div>
+          <div className="popupFooter">
+            <div className="col-12">
+              <button
+                onClick={AcceptandRejectSample.bind(
+                  this,
+                  this,
+                  this.state.selectedRow,
+                  "R"
+                )}
+                type="button"
+                className="btn btn-primary"
+              >
+                Save
+              </button>
+              <button
+                onClick={() => {
+                  this.setState({
+                    reject_popup: false
+                  });
+                }}
+                type="button"
+                className="btn btn-default"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </AlgaehModalPopUp>
+
         <div className="hptl-phase1-accession-acknowledgement-form">
           <BreadCrumb
             title={
@@ -293,18 +385,42 @@ class AccessionAcknowledgement extends Component {
                                 }}
                                 className="fa fa-times"
                                 aria-hidden="true"
-                                onClick={AcceptandRejectSample.bind(
-                                  this,
-                                  this,
-                                  row,
-                                  "R"
-                                )}
+                                onClick={() => {
+                                  this.setState({
+                                    reject_popup: true,
+                                    selectedRow: row
+                                  });
+                                }}
                               />
                             </span>
                           );
                         },
                         others: {
                           maxWidth: 120,
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
+                      {
+                        fieldName: "sample_status",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Sample Status" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          return row.sample_status === "N" ? (
+                            <span className="badge badge-warning">Pending</span>
+                          ) : row.sample_status === "A" ? (
+                            <span className="badge badge-success">
+                              Accepted
+                            </span>
+                          ) : row.sample_status === "R" ? (
+                            <span className="badge badge-danger">Rejected</span>
+                          ) : null;
+                        },
+                        disabled: true,
+                        others: {
                           resizable: false,
                           style: { textAlign: "center" }
                         }
@@ -323,28 +439,7 @@ class AccessionAcknowledgement extends Component {
                           style: { textAlign: "center" }
                         }
                       },
-                      {
-                        fieldName: "sample_status",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Sample Status" }}
-                          />
-                        ),
-                        displayTemplate: row => {
-                          return row.sample_status === "N" ? (
-                            <span className="badge badge-light">Not Done</span>
-                          ) : row.sample_status === "A" ? (
-                            <span className="badge badge-success">Accepted</span>
-                          ) : row.sample_status === "R" ? (
-                            <span className="badge badge-danger">Rejected</span>
-                          ) : null;
-                        },
-                        disabled: true,
-                        others: {
-                          resizable: false,
-                          style: { textAlign: "center" }
-                        }
-                      },
+
                       {
                         fieldName: "lab_id_number",
                         label: (
@@ -403,13 +498,13 @@ class AccessionAcknowledgement extends Component {
                         label: (
                           <AlgaehLabel label={{ fieldName: "ordered_date" }} />
                         ),
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {this.changeDateFormat(row.ordered_date)}
-                            </span>
-                          );
-                        },
+                        // displayTemplate: row => {
+                        //   return (
+                        //     <span>
+                        //       {this.changeDateFormat(row.ordered_date)}
+                        //     </span>
+                        //   );
+                        // },
                         disabled: true,
                         others: {
                           resizable: false,
@@ -432,18 +527,28 @@ class AccessionAcknowledgement extends Component {
                       // },
                       {
                         fieldName: "status",
-                        label: <AlgaehLabel label={{ fieldName: "status" }} />,
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Test Status" }} />
+                        ),
                         displayTemplate: row => {
                           return row.status === "O" ? (
                             <span className="badge badge-light">Ordered</span>
                           ) : row.status === "CL" ? (
-                            <span className="badge badge-primary">Collected</span>
+                            <span className="badge badge-primary">
+                              Collected
+                            </span>
                           ) : row.status === "CN" ? (
-                            <span className="badge badge-danger">Cancelled</span>
+                            <span className="badge badge-danger">
+                              Cancelled
+                            </span>
                           ) : row.status === "CF" ? (
-                            <span className="badge badge-success">Confirmed</span>
+                            <span className="badge badge-success">
+                              Confirmed
+                            </span>
                           ) : (
-                            <span className="badge badge-success">Validated</span>
+                            <span className="badge badge-success">
+                              Validated
+                            </span>
                           );
                         },
                         disabled: true,
