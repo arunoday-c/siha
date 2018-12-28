@@ -363,15 +363,17 @@ class ResultEntryList extends Component {
                         fieldName: "status",
                         label: <AlgaehLabel label={{ fieldName: "status" }} />,
                         displayTemplate: row => {
-                          return row.status === "O"
-                            ? "Ordered"
-                            : row.status === "CL"
-                            ? "Collected"
-                            : row.status === "CN"
-                            ? "Cancelled"
-                            : row.status === "CF"
-                            ? "Confirmed"
-                            : "Validated";
+                          return row.status === "O" ? (
+                            <span class="badge badge-light">Ordered</span>
+                          ) : row.status === "CL" ? (
+                            <span class="badge badge-primary">Collected</span>
+                          ) : row.status === "CN" ? (
+                            <span class="badge badge-danger">Cancelled</span>
+                          ) : row.status === "CF" ? (
+                            <span class="badge badge-success">Confirmed</span>
+                          ) : (
+                            <span class="badge badge-success">Validated</span>
+                          );
                         },
                         disabled: true,
                         others: {
@@ -400,13 +402,13 @@ class ResultEntryList extends Component {
                           />
                         ),
                         displayTemplate: row => {
-                          return row.sample_status === "N"
-                            ? "Not Done"
-                            : row.sample_status === "A"
-                            ? "Accepted"
-                            : row.sample_status === "R"
-                            ? "Rejected"
-                            : null;
+                          return row.sample_status === "N" ? (
+                            <span class="badge badge-light">Not Done</span>
+                          ) : row.sample_status === "A" ? (
+                            <span class="badge badge-success">Accepted</span>
+                          ) : row.sample_status === "R" ? (
+                            <span class="badge badge-danger">Rejected</span>
+                          ) : null;
                         },
                         disabled: true,
                         others: {

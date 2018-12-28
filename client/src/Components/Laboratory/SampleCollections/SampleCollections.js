@@ -253,7 +253,7 @@ class SampleCollectionPatient extends PureComponent {
                                 disabled: true,
                                 others: {
                                   resizable: false,
-                                  style: { textAlign: "left" }
+                                  style: { textAlign: "center" }
                                 }
                               },
                               {
@@ -318,7 +318,16 @@ class SampleCollectionPatient extends PureComponent {
                                   />
                                 ),
                                 displayTemplate: row => {
-                                  return row.collected === "Y" ? "Yes" : "No";
+                                  return row.collected === "Y" ? (
+                                    <span
+                                      class="badge badge-success
+                                    "
+                                    >
+                                      Yes
+                                    </span>
+                                  ) : (
+                                    <span class="badge badge-danger">No</span>
+                                  );
                                 }
                                 // others: {
                                 //   resizable: false,

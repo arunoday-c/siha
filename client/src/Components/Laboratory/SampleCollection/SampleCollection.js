@@ -251,9 +251,13 @@ class SampleCollection extends Component {
           <div className="row">
             <div className="col-lg-12">
               <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
-                {/* <div className="portlet-title"><div className="caption"><h3 className="caption-subject"></h3></div></div>
-                 */}
-                <div className="portlet-body">
+                <div className="portlet-title">
+                  <div className="caption">
+                    <h3 className="caption-subject">Sample Collection List</h3>
+                  </div>
+                </div>
+
+                <div className="portlet-body" id="samplecollectionGrid_cntr">
                   <AlgaehDataGrid
                     id="samplecollection_grid"
                     columns={[
@@ -283,15 +287,17 @@ class SampleCollection extends Component {
                         fieldName: "status",
                         label: <AlgaehLabel label={{ fieldName: "status" }} />,
                         displayTemplate: row => {
-                          return row.status === "O"
-                            ? "Ordered"
-                            : row.status === "CL"
-                            ? "Collected"
-                            : row.status === "CN"
-                            ? "Cancelled"
-                            : row.status === "CF"
-                            ? "Confirmed"
-                            : "Validated";
+                          return row.status === "O" ? (
+                            <span class="badge badge-light">Ordered</span>
+                          ) : row.status === "CL" ? (
+                            <span class="badge badge-primary">Collected</span>
+                          ) : row.status === "CN" ? (
+                            <span class="badge badge-danger">Cancelled</span>
+                          ) : row.status === "CF" ? (
+                            <span class="badge badge-success">Confirmed</span>
+                          ) : (
+                            <span class="badge badge-success">Validated</span>
+                          );
                         },
                         disabled: true,
                         others: {
@@ -349,7 +355,7 @@ class SampleCollection extends Component {
                         disabled: true,
                         others: {
                           resizable: false,
-                          style: { textAlign: "left" }
+                          style: { textAlign: "center" }
                         }
                       },
                       {
