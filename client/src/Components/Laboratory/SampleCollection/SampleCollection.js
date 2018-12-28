@@ -251,9 +251,13 @@ class SampleCollection extends Component {
           <div className="row">
             <div className="col-lg-12">
               <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
-                {/* <div className="portlet-title"><div className="caption"><h3 className="caption-subject"></h3></div></div>
-                 */}
-                <div className="portlet-body">
+                <div className="portlet-title">
+                  <div className="caption">
+                    <h3 className="caption-subject">Sample Collection List</h3>
+                  </div>
+                </div>
+
+                <div className="portlet-body" id="samplecollectionGrid_cntr">
                   <AlgaehDataGrid
                     id="samplecollection_grid"
                     columns={[
@@ -283,15 +287,25 @@ class SampleCollection extends Component {
                         fieldName: "status",
                         label: <AlgaehLabel label={{ fieldName: "status" }} />,
                         displayTemplate: row => {
-                          return row.status === "O"
-                            ? "Ordered"
-                            : row.status === "CL"
-                            ? "Collected"
-                            : row.status === "CN"
-                            ? "Cancelled"
-                            : row.status === "CF"
-                            ? "Confirmed"
-                            : "Validated";
+                          return row.status === "O" ? (
+                            <span className="badge badge-light">Ordered</span>
+                          ) : row.status === "CL" ? (
+                            <span className="badge badge-primary">
+                              Collected
+                            </span>
+                          ) : row.status === "CN" ? (
+                            <span className="badge badge-danger">
+                              Cancelled
+                            </span>
+                          ) : row.status === "CF" ? (
+                            <span className="badge badge-success">
+                              Confirmed
+                            </span>
+                          ) : (
+                            <span className="badge badge-success">
+                              Validated
+                            </span>
+                          );
                         },
                         disabled: true,
                         others: {
@@ -349,7 +363,7 @@ class SampleCollection extends Component {
                         disabled: true,
                         others: {
                           resizable: false,
-                          style: { textAlign: "left" }
+                          style: { textAlign: "center" }
                         }
                       },
                       {
@@ -357,13 +371,13 @@ class SampleCollection extends Component {
                         label: (
                           <AlgaehLabel label={{ fieldName: "ordered_date" }} />
                         ),
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {this.changeDateFormat(row.ordered_date)}
-                            </span>
-                          );
-                        },
+                        // displayTemplate: row => {
+                        //   return (
+                        //     <span>
+                        //       {this.changeDateFormat(row.ordered_date)}
+                        //     </span>
+                        //   );
+                        // },
                         disabled: true,
                         others: {
                           maxWidth: 200,

@@ -9,40 +9,71 @@ const services = [
   { service_name: "Procedure", sl_no: 2 }
 ];
 
+const myArray = [
+  {
+    hims_f_leave_application_id: 2,
+    employee_id: 94,
+    leave_application_code: "leav00000002",
+    from_leave_session: "FD",
+    from_date: "2018-12-10",
+    to_leave_session: "FH",
+    to_date: "2018-12-20"
+  },
+  {
+    hims_f_leave_application_id: 9,
+    employee_id: 94,
+    leave_application_code: "leav00000003",
+    from_leave_session: "FD",
+    from_date: "2018-12-24",
+    to_leave_session: "FH",
+    to_date: "2018-12-25"
+  }
+];
+
 class Experiment extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       patImg: "",
-      openModal: false
+      openModal: false,
+      name: "i"
     };
+    console.log("Im Constructor");
+  }
 
-    // displayFileFromServer({
-    //   uri: "/masters/getFile",
-    //   fileType: "PAT-A-0000530",
-    //   destinationName: "PAT-A-0000530",
-    //   fileName: "PAT-A-0000530.webp",
-    //   resize: { width: 100, height: 100 },
-    //   onFileSuccess: data => {
-    //     this.setState({ patImg: data });
-    //   }
-    // });
+  componentWillMount() {
+    console.log("I'm Will Mount");
+  }
+
+  componentDidMount() {
+    console.log("Did Mount");
+  }
+
+  componentWillReceiveProps(props) {
+    console.log("Will Receive Props");
+  }
+
+  componentWillUnmount() {
+    console.log("Un Mount");
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    console.log("Will Update");
+    if (this.state.name === "i" && nextState === "i") {
+      console.log("Same Input");
+    }
+  }
+
+  texthandle(e) {
+    this.setState({
+      name: e.target.value
+    });
   }
 
   render() {
-    // const _groupData = Enumerable.from(_data)
-    //   .groupBy("$.prov_date", null, (k, g) => {
-    //     const _get = Enumerable.from(g.getSource()).firstOrDefault();
-    //     return {
-    //       bill_date: _get.bill_date,
-    //       provider_name: _get.provider_name,
-    //       list: g.getSource()
-    //     };
-    //   })
-    //   .toArray();
     return (
       <div style={{ textAlign: "center" }}>
+        <input value={this.state.name} onChange={this.texthandle.bind(this)} />
         <AlgaehModalPopUp title="Test" openPopup={this.state.openModal}>
           <div>Hello I'm Modal</div>
         </AlgaehModalPopUp>

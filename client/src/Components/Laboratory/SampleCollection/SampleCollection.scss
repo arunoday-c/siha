@@ -1,5 +1,4 @@
 .hptl-phase1-speciman-collection-form {
-
   .go-button {
     cursor: pointer;
     margin-bottom: -9px;
@@ -17,5 +16,14 @@
   th,
   td {
     border-right: 1px solid #e6e6e6;
+  }
+  #samplecollectionGrid_cntr {
+    .ReactTable {
+      max-height: 60vh !important;
+    }
+  }
+  .badge {
+    font-size: 0.7rem;
+    margin-top: 5px;
   }
 }

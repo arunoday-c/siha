@@ -2,7 +2,7 @@ import React, { PureComponent } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-
+import moment from "moment";
 import MyContext from "../../../utils/MyContext.js";
 import "./SampleCollections.css";
 import "../../../styles/site.css";
@@ -159,7 +159,10 @@ class SampleCollectionPatient extends PureComponent {
 
                     <div className="row grid-details">
                       <div className="col-lg-12">
-                        <div className="">
+                        <div
+                          id="sampleCollectionGrid_Cntr"
+                          className="margin-bottom-15"
+                        >
                           <AlgaehDataGrid
                             id="update_order_grid"
                             columns={[
@@ -171,9 +174,10 @@ class SampleCollectionPatient extends PureComponent {
                                   />
                                 ),
                                 displayTemplate: row => {
+                                  debugger;
                                   return (
                                     <span>
-                                      {row.collected === "N" ? (
+                                      {row.collected !== "Y" ? (
                                         <i
                                           style={{
                                             pointerEvents:
@@ -250,7 +254,7 @@ class SampleCollectionPatient extends PureComponent {
                                 disabled: true,
                                 others: {
                                   resizable: false,
-                                  style: { textAlign: "left" }
+                                  style: { textAlign: "center" }
                                 }
                               },
                               {
@@ -315,7 +319,18 @@ class SampleCollectionPatient extends PureComponent {
                                   />
                                 ),
                                 displayTemplate: row => {
-                                  return row.collected === "Y" ? "Yes" : "No";
+                                  return row.collected === "Y" ? (
+                                    <span
+                                      className="badge badge-success
+                                    "
+                                    >
+                                      Yes
+                                    </span>
+                                  ) : (
+                                    <span className="badge badge-danger">
+                                      No
+                                    </span>
+                                  );
                                 }
                                 // others: {
                                 //   resizable: false,
@@ -362,7 +377,10 @@ class SampleCollectionPatient extends PureComponent {
                                 displayTemplate: row => {
                                   return (
                                     <span>
-                                      {dateFormater(this, row.collected_date)}
+                                      {/* {dateFormater(this, row.collected_date)} */}
+                                      {moment(row.collected_date).format(
+                                        "DD-MM-YYYY hh:mm"
+                                      )}
                                     </span>
                                   );
                                 },
@@ -390,7 +408,7 @@ class SampleCollectionPatient extends PureComponent {
                       <div className="row">
                         <div className="col-lg-12">
                           <button
-                            className="htpl1-phase1-btn-secondary"
+                            className="btn btn-default"
                             onClick={e => {
                               this.onClose(e);
                             }}

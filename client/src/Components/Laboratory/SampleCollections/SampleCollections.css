@@ -5,3 +5,9 @@
   .hptl-sample-coll-details .grid-details {
     padding-top: 10px;
     padding-bottom: 10px; }
+  .hptl-sample-coll-details #sampleCollectionGrid_Cntr .ReactTable {
+    max-height: 30vh; }
+
+.badge {
+  font-size: 0.7rem;
+  margin-top: 5px; }
