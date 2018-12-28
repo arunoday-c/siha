@@ -131,13 +131,7 @@ class PatientProfile extends Component {
                   {tables.allergyList.map((rows, rIndex) => (
                     <tr key={rIndex}>
                       <td> {rows.allergy_name} </td>
-                      <td>
-                        {
-                          Enumerable.from(GlobalVariables.ALLERGY_ONSET)
-                            .where(w => w.value === rows.onset)
-                            .firstOrDefault().name
-                        }
-                      </td>
+                      <td>{this.decissionAllergyOnSet(rows)}</td>
                       <td>{rows.comment}</td>
                       <td>{rows.allergy_inactive === "Y" ? "Yes" : "No"}</td>
                     </tr>
@@ -151,7 +145,14 @@ class PatientProfile extends Component {
     }
     return null;
   }
-
+  decissionAllergyOnSet(row) {
+    const _onSet = Enumerable.from(GlobalVariables.ALLERGY_ONSET)
+      .where(w => w.value === row.onset)
+      .firstOrDefault();
+    if (_onSet !== undefined) {
+      return _onSet.name;
+    } else return "";
+  }
   renderBackButton(e) {
     setGlobal({ "EHR-STD": "DoctorsWorkbench" });
     document.getElementById("ehr-router").click();
@@ -477,9 +478,7 @@ class PatientProfile extends Component {
           ) : this.state.pageDisplay === "phy_exam" ? (
             <PhysicalExamination />
           ) : this.state.pageDisplay === "assesment" ? (
-            <Assesment
-              vat_applicable={this.props.patient_profile[0].vat_applicable}
-            />
+            <Assesment vat_applicable={this.vatApplicable()} />
           ) : this.state.pageDisplay === "plan" ? (
             <Plan />
           ) : this.state.pageDisplay === "summary" ? (
@@ -490,6 +489,14 @@ class PatientProfile extends Component {
         </div>
       </div>
     );
+  }
+
+  vatApplicable() {
+    const _atApplicable = Enumerable.from(
+      this.props.patient_profile
+    ).firstOrDefault();
+    if (_atApplicable !== undefined) return _atApplicable.vat_applicable;
+    else return "";
   }
 }
 

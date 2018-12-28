@@ -249,7 +249,6 @@ let getRoleBaseActiveModules = (req, res, next) => {
             (req.userIdentity.role_type == "AD" &&
               req.userIdentity.user_type == "AD")
           ) {
-            debugLog("ADMIN  if concondition");
             debugLog("role type:", req.userIdentity);
 
             connection.query(
@@ -302,7 +301,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
           reject(e);
         }
       }).then(modifyRes => {
-        debugLog("genreal  if concondition");
+        debugLog("genreal  if ");
         connection.query(
           " select algaeh_m_module_role_privilage_mapping_id, module_id,module_code,module_name, icons,module_code,other_language,role_id, view_privilege\
         from algaeh_m_module_role_privilage_mapping MRP\
@@ -316,7 +315,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
             }
             let outputArray = [];
 
-            debugLog("roolo:", req.userIdentity);
+            debugLog("userIdentity:", req.userIdentity);
             if (result.length > 0) {
               for (let i = 0; i < result.length; i++) {
                 connection.query(
