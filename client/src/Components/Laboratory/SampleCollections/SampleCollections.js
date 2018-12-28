@@ -159,7 +159,10 @@ class SampleCollectionPatient extends PureComponent {
 
                     <div className="row grid-details">
                       <div className="col-lg-12">
-                        <div className="">
+                        <div
+                          id="sampleCollectionGrid_Cntr"
+                          className="margin-bottom-15"
+                        >
                           <AlgaehDataGrid
                             id="update_order_grid"
                             columns={[
@@ -390,7 +393,7 @@ class SampleCollectionPatient extends PureComponent {
                       <div className="row">
                         <div className="col-lg-12">
                           <button
-                            className="htpl1-phase1-btn-secondary"
+                            className="btn btn-default"
                             onClick={e => {
                               this.onClose(e);
                             }}
