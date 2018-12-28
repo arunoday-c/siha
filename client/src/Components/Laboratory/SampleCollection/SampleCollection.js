@@ -397,6 +397,17 @@ class SampleCollection extends Component {
                           resizable: false,
                           style: { textAlign: "center" }
                         }
+                      },
+                      {
+                        fieldName: "remarks",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Remarks" }} />
+                        ),
+                        others: {
+                          maxWidth: 200,
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
                       }
                     ]}
                     keyId="patient_code"
