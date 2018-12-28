@@ -6,7 +6,7 @@ import {
   applyEmployeeLeave,
   getEmployeeLeaveHistory
 } from "../model/leave";
-
+import { debugLog } from "../../utils/logging";
 export default ({ config, db }) => {
   let api = Router();
   //code
@@ -32,10 +32,21 @@ export default ({ config, db }) => {
     applyEmployeeLeave,
     (req, res, next) => {
       let result = req.records;
-      res.status(httpStatus.ok).json({
-        success: true,
-        records: result
-      });
+
+      if (result.leave_already_exist == true) {
+        debugLog("erooooo");
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        debugLog("Suuuuuuuuccc");
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+
       next();
     },
     releaseConnection
