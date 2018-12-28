@@ -127,6 +127,8 @@ let applyEmployeeLeave = (req, res, next) => {
                   };
                 })
                 .ToArray();
+
+              debugLog("clashing_sessions:", clashing_sessions);
               //clashing only  new from_leave_session  with existing  to_leave_session
               const clashing_to_leave_session = new LINQ(result)
                 .Where(w => w.to_date == m_fromDate)
@@ -142,6 +144,8 @@ let applyEmployeeLeave = (req, res, next) => {
                   };
                 })
                 .ToArray();
+
+              debugLog("clashing_to_leave_session:", clashing_to_leave_session);
 
               //clashing only  new to_leave_session with existing  from_leave_session
               const clashing_from_leave_session = new LINQ(result)
@@ -159,7 +163,10 @@ let applyEmployeeLeave = (req, res, next) => {
                 })
                 .ToArray();
 
-              debugLog("clashing_sessions:", clashing_sessions);
+              debugLog(
+                "clashing_from_leave_session:",
+                clashing_from_leave_session
+              );
               //----------------------------------
 
               let not_clashing_sessions = _.xorBy(
@@ -248,7 +255,8 @@ let applyEmployeeLeave = (req, res, next) => {
                               (prev_from_leave_session_FH == "FH" &&
                                 curr_to_session == "FH") ||
                               (prev_from_leave_session_FH == "FH" &&
-                                curr_to_session == "SH") ||
+                                curr_to_session == "SH" &&
+                                curr_from_session == "FH") ||
                               (prev_from_leave_session_FD == "FD" &&
                                 curr_to_session == "SH") ||
                               (prev_from_leave_session_SH == "SH" &&
@@ -328,6 +336,18 @@ let applyEmployeeLeave = (req, res, next) => {
                             "prev_to_leave_session_SH:",
                             prev_to_leave_session_SH
                           );
+
+                          let prev2_from_leave_session_FH = new LINQ([
+                            clashing_to_leave_session[i]
+                          ])
+                            .Where(w => w.from_leave_session == "FH")
+                            .Select(s => s.from_leave_session)
+                            .FirstOrDefault();
+
+                          debugLog(
+                            "2nd time prev_to_leave_session_SH:",
+                            prev2_from_leave_session_FH
+                          );
                           //rejection of to_leave_sessions
 
                           if (
@@ -335,7 +355,8 @@ let applyEmployeeLeave = (req, res, next) => {
                               curr_from_session == "FH") ||
                             (prev_to_leave_session_FD == "FD" &&
                               curr_from_session == "FH") ||
-                            (prev_to_leave_session_SH == "SH" &&
+                            (prev2_from_leave_session_FH == "FH" &&
+                              prev_to_leave_session_SH == "SH" &&
                               curr_from_session == "FH") ||
                             ((prev_to_leave_session_FD == "FD" &&
                               curr_from_session == "SH") ||

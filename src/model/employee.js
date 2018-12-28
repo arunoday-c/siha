@@ -341,7 +341,7 @@ let addEmployeeMaster = (req, res, next) => {
 };
 
 //created by irfan:api to
-let addEmployeeInfo = (req, res, next) => {
+let addEmployeeInfoBAckup28_december = (req, res, next) => {
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -573,6 +573,134 @@ let addEmployeeInfo = (req, res, next) => {
               });
             }
           });
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan:api to
+let addEmployeeInfo = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        }
+        new Promise((resolve, reject) => {
+          try {
+            debugLog("first");
+            if (input.deptDetails.length > 0) {
+              const insurtColumns = [
+                "services_id",
+                "sub_department_id",
+                "category_speciality_id",
+                "employee_designation_id",
+                "reporting_to_id",
+                "created_by",
+                "updated_by"
+              ];
+
+              connection.query(
+                "INSERT INTO hims_m_employee_department_mappings(" +
+                  insurtColumns.join(",") +
+                  ",`employee_id`,created_date,updated_date) VALUES ?",
+                [
+                  jsonArrayToObject({
+                    sampleInputObject: insurtColumns,
+                    arrayObj: input.deptDetails,
+                    newFieldToInsert: [
+                      input.hims_d_employee_id,
+                      new Date(),
+                      new Date()
+                    ],
+                    req: req
+                  })
+                ],
+                (error, result) => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+                  if (result.length > 0) {
+                    resolve(result);
+                  } else {
+                    resolve({});
+                  }
+                }
+              );
+            } else {
+              resolve({});
+            }
+          } catch (e) {
+            reject(e);
+          }
+        }).then(departmntResult => {
+          debugLog("second");
+          if (input != "null" && input != undefined) {
+            connection.query(
+              " UPDATE hims_d_employee SET employee_group_id=?,employee_designation_id=?,\
+                reporting_to_id=?,sub_department_id=?,\
+              updated_date=?, updated_by=?  WHERE record_status='A' and  hims_d_employee_id=?",
+
+              [
+                input.employee_group_id,
+                input.employee_designation_id,
+                input.reporting_to_id,
+                input.sub_department_id,
+                new Date(),
+                input.updated_by,
+                input.hims_d_employee_id
+              ],
+              (error, empResult) => {
+                if (error) {
+                  connection.rollback(() => {
+                    releaseDBConnection(db, connection);
+                    next(error);
+                  });
+                }
+                connection.commit(error => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+                  releaseDBConnection(db, connection);
+                  req.records = departmntResult;
+                  next();
+                });
+              }
+            );
+          } else {
+            connection.commit(error => {
+              if (error) {
+                connection.rollback(() => {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                });
+              }
+              releaseDBConnection(db, connection);
+              req.records = departmntResult;
+              next();
+            });
+          }
+        });
       });
     });
   } catch (e) {
