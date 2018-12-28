@@ -5,6 +5,7 @@ import Dashboard from "./Dashboard/Dashboard";
 import AttendanceRegularization from "./AttendanceRegularization/AttendanceRegularization";
 import ApplyLeave from "./ApplyLeave/ApplyLeave";
 import LoanRequest from "./LoanRequest/LoanRequest";
+import LeaveEncashment from "./LeaveEncashmemnt/LeaveEncashment";
 import employeeProfileImg from "../../../assets/images/employee_profile_img.webp";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 
@@ -167,6 +168,19 @@ export default class SelfService extends Component {
                   />
                 }
               </li>
+              <li
+                algaehtabs={"LeaveEncashment"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Leave Encashment"
+                    }}
+                  />
+                }
+              </li>
             </ul>
           </div>
         </div>
@@ -179,11 +193,9 @@ export default class SelfService extends Component {
             <ApplyLeave empData={this.state.employee_details} />
           ) : this.state.pageDisplay === "LoanRequest" ? (
             <LoanRequest empData={this.state.employee_details} />
-          ) : //   : this.state.pageDisplay === "AppointmentRooms" ? (
-          //     <AppointmentRooms />
-          //   ) : this.state.pageDisplay === "AppointmentClinics" ? (
-          //     <AppointmentClinics />
-          null}
+          ) : this.state.pageDisplay === "LeaveEncashment" ? (
+            <LeaveEncashment />
+          ) : null}
         </div>
       </div>
     );

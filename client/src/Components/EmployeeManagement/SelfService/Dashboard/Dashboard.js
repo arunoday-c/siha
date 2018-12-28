@@ -106,7 +106,7 @@ class Dashboard extends Component {
         break;
 
       case "addEdu":
-        this.setState({ addEdu: !this.state.slideOutDown, ...empData });
+        this.setState({ addEdu: !this.state.addEdu, ...empData });
         break;
 
       case "addAttach":
@@ -143,7 +143,7 @@ class Dashboard extends Component {
 
               if (type === "SC") {
                 this.setState({
-                  slideOutDown: false,
+                  addEdu: false,
                   qualification: null,
                   qualitfication_type: null,
                   pass_out_year: null,
@@ -408,91 +408,106 @@ class Dashboard extends Component {
   }
 
   addEmployeeIdentification(type) {
-    algaehApiCall({
-      uri: "/employee/addEmployeeIdentification",
-      method: "POST",
-      data: {
-        employee_id: this.state.hims_d_employee_id,
-        identity_documents_id: this.state.identity_documents_id,
-        identity_number: this.state.identity_number,
-        valid_upto: this.state.valid_upto,
-        issue_date: this.state.issue_date,
-        alert_required: this.state.alert_required,
-        alert_date: this.state.alert_date
-      },
-      onSuccess: res => {
-        if (res.data.success) {
-          swalMessage({
-            title: "Records Added Successfully",
-            type: "success"
-          });
-          if (type === "SC") {
-            this.setState({
-              addIdDetails: false,
-              identity_documents_id: null,
-              identity_number: null,
-              valid_upto: null,
-              issue_date: null
-            });
-          } else if (type === "S") {
-            this.setState({
-              identity_documents_id: null,
-              identity_number: null,
-              valid_upto: null,
-              issue_date: null
+    //emp-idnfn-div
+
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      querySelector: "data-validate='emp-idnfn-div'",
+      onSuccess: () => {
+        algaehApiCall({
+          uri: "/employee/addEmployeeIdentification",
+          method: "POST",
+          data: {
+            employee_id: this.state.hims_d_employee_id,
+            identity_documents_id: this.state.identity_documents_id,
+            identity_number: this.state.identity_number,
+            valid_upto: this.state.valid_upto,
+            issue_date: this.state.issue_date,
+            alert_required: this.state.alert_required,
+            alert_date: this.state.alert_date
+          },
+          onSuccess: res => {
+            if (res.data.success) {
+              swalMessage({
+                title: "Records Added Successfully",
+                type: "success"
+              });
+              if (type === "SC") {
+                this.setState({
+                  addIdDetails: false,
+                  identity_documents_id: null,
+                  identity_number: null,
+                  valid_upto: null,
+                  issue_date: null
+                });
+              } else if (type === "S") {
+                this.setState({
+                  identity_documents_id: null,
+                  identity_number: null,
+                  valid_upto: null,
+                  issue_date: null
+                });
+              }
+              this.getIdDetails();
+            }
+          },
+          onFailure: err => {
+            swalMessage({
+              title: err.message,
+              type: "error"
             });
           }
-          this.getIdDetails();
-        }
-      },
-      onFailure: err => {
-        swalMessage({
-          title: err.message,
-          type: "error"
         });
       }
     });
   }
+
   addEmployeeDependents(type) {
-    algaehApiCall({
-      uri: "/selfService/addEmployeeDependentDetails",
-      method: "POST",
-      data: {
-        employee_id: this.state.hims_d_employee_id,
-        dependent_type: this.state.dependent_type,
-        dependent_name: this.state.dependent_name,
-        dependent_identity_type: this.state.dependent_identity_type,
-        dependent_identity_no: this.state.dependent_identity_no
-      },
-      onSuccess: res => {
-        if (res.data.success) {
-          swalMessage({
-            title: "Records Added Successfully",
-            type: "success"
-          });
-          if (type === "SC") {
-            this.setState({
-              addFamily: false,
-              dependent_type: null,
-              dependent_name: null,
-              dependent_identity_type: null,
-              dependent_identity_no: null
-            });
-          } else if (type === "S") {
-            this.setState({
-              dependent_type: null,
-              dependent_name: null,
-              dependent_identity_type: null,
-              dependent_identity_no: null
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      querySelector: "data-validate='emp-dep-div'",
+      onSuccess: () => {
+        algaehApiCall({
+          uri: "/selfService/addEmployeeDependentDetails",
+          method: "POST",
+          data: {
+            employee_id: this.state.hims_d_employee_id,
+            dependent_type: this.state.dependent_type,
+            dependent_name: this.state.dependent_name,
+            dependent_identity_type: this.state.dependent_identity_type,
+            dependent_identity_no: this.state.dependent_identity_no
+          },
+          onSuccess: res => {
+            if (res.data.success) {
+              swalMessage({
+                title: "Records Added Successfully",
+                type: "success"
+              });
+              if (type === "SC") {
+                this.setState({
+                  addFamily: false,
+                  dependent_type: null,
+                  dependent_name: null,
+                  dependent_identity_type: null,
+                  dependent_identity_no: null
+                });
+              } else if (type === "S") {
+                this.setState({
+                  dependent_type: null,
+                  dependent_name: null,
+                  dependent_identity_type: null,
+                  dependent_identity_no: null
+                });
+              }
+              this.getFamilyDetails();
+            }
+          },
+          onFailure: err => {
+            swalMessage({
+              title: err.message,
+              type: "error"
             });
           }
-          this.getFamilyDetails();
-        }
-      },
-      onFailure: err => {
-        swalMessage({
-          title: err.message,
-          type: "error"
         });
       }
     });
@@ -597,33 +612,39 @@ class Dashboard extends Component {
   }
 
   updateEmployeeBasicDetails() {
-    algaehApiCall({
-      uri: "/selfService/updateEmployeeBasicDetails",
-      method: "PUT",
-      data: {
-        full_name: this.state.full_name,
-        arabic_name: this.state.arabic_name,
-        date_of_birth: this.state.date_of_birth,
-        sex: this.state.sex,
-        present_address: this.state.present_address,
-        permanent_address: this.state.permanent_address,
-        primary_contact_no: this.state.primary_contact_no,
-        email: this.state.email,
-        hims_d_employee_id: this.state.hims_d_employee_id
-      },
-      onSuccess: res => {
-        if (res.data.success) {
-          document.getElementById("ep-dl").click();
-          this.setState({
-            editBasic: false
-          });
-          swalMessage({
-            title: "Record updated successfully",
-            type: "success"
-          });
-        }
-      },
-      onFailure: err => {}
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      querySelector: "data-validate='emp-basic-div'",
+      onSuccess: () => {
+        algaehApiCall({
+          uri: "/selfService/updateEmployeeBasicDetails",
+          method: "PUT",
+          data: {
+            full_name: this.state.full_name,
+            arabic_name: this.state.arabic_name,
+            date_of_birth: this.state.date_of_birth,
+            sex: this.state.sex,
+            present_address: this.state.present_address,
+            permanent_address: this.state.permanent_address,
+            primary_contact_no: this.state.primary_contact_no,
+            email: this.state.email,
+            hims_d_employee_id: this.state.hims_d_employee_id
+          },
+          onSuccess: res => {
+            if (res.data.success) {
+              document.getElementById("ep-dl").click();
+              this.setState({
+                editBasic: false
+              });
+              swalMessage({
+                title: "Record updated successfully",
+                type: "success"
+              });
+            }
+          },
+          onFailure: err => {}
+        });
+      }
     });
   }
 
@@ -836,6 +857,7 @@ class Dashboard extends Component {
                     (this.state.editBasic ? "slideInUp" : "slideOutDown") +
                     " faster"
                   }
+                  data-validate="emp-basic-div"
                 >
                   <h5>Edit Basic Details</h5>
                   <div className="row">
@@ -1113,6 +1135,7 @@ class Dashboard extends Component {
                     (this.state.addFamily ? "slideInUp" : "slideOutDown") +
                     " faster"
                   }
+                  data-validate="emp-dep-div"
                 >
                   <h5>Add Family Details</h5>
                   <div className="row">
@@ -1120,7 +1143,7 @@ class Dashboard extends Component {
                       div={{ className: "col" }}
                       label={{
                         forceLabel: "Dependent Type",
-                        isImp: false
+                        isImp: true
                       }}
                       selector={{
                         name: "dependent_type",
@@ -1160,7 +1183,7 @@ class Dashboard extends Component {
                       div={{ className: "col-2" }}
                       label={{
                         forceLabel: "Id Type",
-                        isImp: false
+                        isImp: true
                       }}
                       selector={{
                         name: "dependent_identity_type",
@@ -1181,7 +1204,7 @@ class Dashboard extends Component {
                       div={{ className: "col" }}
                       label={{
                         forceLabel: "Id Number",
-                        isImp: false
+                        isImp: true
                       }}
                       textBox={{
                         value: this.state.dependent_identity_no,
@@ -1404,6 +1427,7 @@ class Dashboard extends Component {
                     (this.state.addIdDetails ? "slideInUp" : "slideOutDown") +
                     " faster"
                   }
+                  data-validate="emp-idnfn-div"
                 >
                   <h5>Add ID Details</h5>
                   <div className="row">
@@ -1411,7 +1435,7 @@ class Dashboard extends Component {
                       div={{ className: "col-2" }}
                       label={{
                         forceLabel: "Id Type",
-                        isImp: false
+                        isImp: true
                       }}
                       selector={{
                         name: "identity_documents_id",
@@ -1432,7 +1456,7 @@ class Dashboard extends Component {
                       div={{ className: "col-2" }}
                       label={{
                         forceLabel: "Id Number",
-                        isImp: false
+                        isImp: true
                       }}
                       textBox={{
                         value: this.state.identity_number,
@@ -2104,7 +2128,11 @@ class Dashboard extends Component {
               ) : null}
               <div className="portlet-body">
                 <div className="row">
-                  <div className="col-12" id="selfService_EducationTable_Cntr">
+                  <div
+                    className="col-12"
+                    id="selfService_EducationTable_Cntr"
+                    data-validate="qual-grid"
+                  >
                     <AlgaehDataGrid
                       columns={[
                         {
@@ -2121,7 +2149,43 @@ class Dashboard extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Qualitfication Type" }}
                             />
-                          )
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {row.qualitfication_type === "FT"
+                                  ? "Full Time"
+                                  : row.qualitfication_type === "PT"
+                                  ? "Part Time"
+                                  : null}
+                              </span>
+                            );
+                          },
+                          editorTemplate: row => {
+                            return (
+                              <AlagehAutoComplete
+                                div={{ className: "col" }}
+                                selector={{
+                                  name: "qualitfication_type",
+                                  className: "select-fld",
+                                  value: row.qualitfication_type,
+                                  dataSource: {
+                                    textField: "name",
+                                    valueField: "value",
+                                    data: GlobalVariables.QULFN_TYP
+                                  },
+                                  others: {
+                                    errormessage: "Field cannot be blank",
+                                    required: true
+                                  },
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                }}
+                              />
+                            );
+                          }
                         },
                         {
                           fieldName: "year",

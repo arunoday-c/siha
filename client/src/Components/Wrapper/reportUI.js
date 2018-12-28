@@ -420,12 +420,19 @@ export default class ReportUI extends Component {
   }
 
   render() {
+    const _isBarcodeReport = this.props.isbarcodereport;
     if (this.state.hasError) {
       return null;
     }
     if (this.state.openPopup)
       return (
-        <div className="algaehModalWrapper">
+        <div
+          className={
+            _isBarcodeReport
+              ? "algaehModalWrapper barcodePopup"
+              : "algaehModalWrapper"
+          }
+        >
           <div className="algaeh-modal">
             <div className="popupHeader">
               <div className="row">

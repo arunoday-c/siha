@@ -150,7 +150,25 @@ export default class LeaveAuthorization extends Component {
                       {
                         fieldName: "EmployeeCode",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "EmployeeCode" }} />
+                          <AlgaehLabel
+                            label={{ forceLabel: "Employee Code" }}
+                          />
+                        )
+                      },
+                      {
+                        fieldName: "ReplacementIfAny",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Replacement If Any" }}
+                          />
+                        )
+                      },
+                      {
+                        fieldName: "LeaveRemarks",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Leave Remarks" }}
+                          />
                         )
                       },
                       {

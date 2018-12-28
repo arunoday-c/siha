@@ -26,8 +26,12 @@ export function accessReport(options) {
     }
   });
   if (options.getRaw === undefined) {
+    const _isBarCodeRepot =
+      options.report !== undefined && options.report.barcode !== undefined
+        ? true
+        : false;
     ReactDOM.render(
-      <ReportUI>
+      <ReportUI isbarcodereport={_isBarCodeRepot}>
         <div
           dangerouslySetInnerHTML={{
             __html: _modifiedTemplate //_html.firstElementChild.innerHTML

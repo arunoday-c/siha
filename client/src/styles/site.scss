@@ -1468,6 +1468,21 @@ th {
   background: rgba(0, 0, 0, 0.4);
   height: 100%;
 }
+.barcodePopup {
+  .algaeh-modal {
+    margin-top: 20vh !important;
+    max-width: 50vw !important;
+    .popRightDiv {
+      min-height: 20vh !important;
+      max-height: 25vh !important;
+      img {
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+      }
+    }
+  }
+}
 
 .tab-container {
   .tab-button {
