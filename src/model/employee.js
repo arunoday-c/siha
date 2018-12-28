@@ -262,7 +262,11 @@ let addEmployeeMaster = (req, res, next) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    if (req.body.license_number == "null") {
+    if (
+      req.body.license_number == "null" ||
+      req.body.license_number == "" ||
+      req.body.license_number == null
+    ) {
       delete req.body.license_number;
     }
     let input = extend({}, req.body);
