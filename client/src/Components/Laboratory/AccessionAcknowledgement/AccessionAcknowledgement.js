@@ -339,23 +339,16 @@ class AccessionAcknowledgement extends Component {
                         fieldName: "action",
                         label: <AlgaehLabel label={{ fieldName: "action" }} />,
                         displayTemplate: row => {
+                          debugger;
                           return (
                             <span>
                               <i
                                 style={{
                                   pointerEvents:
-                                    row.status === "O"
-                                      ? ""
-                                      : row.sample_status !== "N"
-                                      ? "none"
-                                      : "",
+                                    row.sample_status === "A" ? "none" : "",
 
                                   opacity:
-                                    row.status === "O"
-                                      ? ""
-                                      : row.sample_status !== "N"
-                                      ? "0.1"
-                                      : ""
+                                    row.sample_status === "A" ? "0.1" : ""
                                 }}
                                 className="fa fa-check"
                                 aria-hidden="true"
@@ -370,18 +363,10 @@ class AccessionAcknowledgement extends Component {
                               <i
                                 style={{
                                   pointerEvents:
-                                    row.status === "O"
-                                      ? ""
-                                      : row.sample_status !== "N"
-                                      ? "none"
-                                      : "",
+                                    row.sample_status === "A" ? "none" : "",
 
                                   opacity:
-                                    row.status === "O"
-                                      ? ""
-                                      : row.sample_status !== "N"
-                                      ? "0.1"
-                                      : ""
+                                    row.sample_status === "A" ? "0.1" : ""
                                 }}
                                 className="fa fa-times"
                                 aria-hidden="true"

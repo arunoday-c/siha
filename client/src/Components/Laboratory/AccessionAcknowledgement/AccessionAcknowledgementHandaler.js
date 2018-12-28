@@ -115,6 +115,7 @@ const getSampleCollectionDetails = $this => {
 };
 
 const AcceptandRejectSample = ($this, row, AccRej) => {
+  debugger;
   if (row.status === "O") {
     swalMessage({
       title: "Invalid Input. Please collect the sample.",
@@ -129,32 +130,32 @@ const AcceptandRejectSample = ($this, row, AccRej) => {
         status: AccRej
       };
 
-      $this.state.remarks.length > 0
-        ? algaehApiCall({
-            uri: "/laboratory/updateLabSampleStatus",
-            data: inputobj,
-            method: "PUT",
-            onSuccess: response => {
-              if (response.data.success === true) {
-                getSampleCollectionDetails($this);
-                swalMessage({
-                  title: "Record Updated",
-                  type: "success"
-                });
-              }
-            },
-            onFailure: error => {
-              swalMessage({
-                title: error.message,
-                type: "error"
-              });
-            }
-          })
-        : swalMessage({
-            title: "Please enter the remarks",
-            type: "warning"
+      algaehApiCall({
+        uri: "/laboratory/updateLabSampleStatus",
+        data: inputobj,
+        method: "PUT",
+        onSuccess: response => {
+          if (response.data.success === true) {
+            getSampleCollectionDetails($this);
+            $this.setState({
+              remarks: "",
+              reject_popup: false
+            });
+            swalMessage({
+              title: "Record Updated",
+              type: "success"
+            });
+          }
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
           });
+        }
+      });
     } else {
+      debugger;
       swalMessage({
         title: "Invalid Input. Already Accecpted/Rejected.",
         type: "warning"

@@ -10,6 +10,7 @@ const CollectSample = ($this, context, row) => {
     order_id: row.hims_f_lab_order_id,
     sample_id: row.sample_id,
     collected: "Y",
+    status: "N",
     hims_d_hospital_id: 1,
     service_id: row.service_id
   };

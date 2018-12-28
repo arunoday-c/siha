@@ -357,7 +357,7 @@ let updateLabOrderServices = (req, res, next) => {
 
       return new Promise((resolve, reject) => {
         connection.query(
-          "UPDATE hims_f_lab_sample SET `collected`=?,`collected_by`=?,\
+          "UPDATE hims_f_lab_sample SET `collected`=?,`status`=?, `collected_by`=?,\
 `collected_date` =now() WHERE hims_d_lab_sample_id=?;\
 SELECT distinct container_id,container_code FROM hims_m_lab_specimen,hims_d_investigation_test \
 where hims_d_investigation_test.hims_d_investigation_test_id =hims_m_lab_specimen.test_id \
@@ -365,6 +365,7 @@ and hims_d_investigation_test.services_id=?;\
 SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?",
           [
             req.body.collected,
+            req.body.status,
             req.userIdentity.algaeh_d_app_user_id,
             req.body.hims_d_lab_sample_id,
             req.body.service_id,
