@@ -71,9 +71,11 @@ let getLabOrderedServices = (req, res, next) => {
         inner join hims_f_patient_visit V on LO.visit_id=V.hims_f_patient_visit_id and  V.record_status='A'\
         inner join hims_d_employee E on LO.provider_id=E.hims_d_employee_id and  E.record_status='A'\
         inner join hims_f_patient P on LO.patient_id=P.hims_d_patient_id and  P.record_status='A'\
-        left outer join hims_f_lab_sample LS on  LO.hims_f_lab_order_id = LS.order_id  and LS.record_status='A' WHERE " +
+        left outer join hims_f_lab_sample LS on  LO.hims_f_lab_order_id = LS.order_id  and LS.record_status='A'  WHERE " +
           whereOrder +
-          (where.condition == "" ? "" : " AND " + where.condition),
+          (where.condition == ""
+            ? "" + " order by hims_f_lab_order_id desc"
+            : " AND " + where.condition),
         where.values,
 
         (error, result) => {
@@ -403,7 +405,7 @@ SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?",
               let padNum = "";
               let _newNumber = 1;
               if (record != null && record.length > 0) {
-                _newNumber = parseInt(record[1][0].number,10);
+                _newNumber = parseInt(record[1][0].number, 10);
                 _newNumber = _newNumber + 1;
                 padNum = pad(String(_newNumber), 3, "LEFT", "0");
                 condition = [

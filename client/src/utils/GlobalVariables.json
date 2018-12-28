@@ -611,5 +611,11 @@
     { "name": "Full Day", "value": "FD", "day": 1 },
     { "name": "First Half", "value": "FH", "day": 0.5 },
     { "name": "Second Half", "value": "SH", "day": 0.5 }
+  ],
+  "EMPLOYEE_STATUS": [
+    { "name": "Active", "value": "A", "arabic_name": "نشيط" },
+    { "name": "Inactive", "value": "I", "arabic_name": "غير نشط" },
+    { "name": "Resigned", "value": "R", "arabic_name": "استقال" },
+    { "name": "Terminated", "value": "T", "arabic_name": "إنهاء" }
   ]
 }

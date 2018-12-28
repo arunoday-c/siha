@@ -10,7 +10,7 @@ import {
   AlgaehDataGrid,
   AlgaehLabel
 } from "../../../../Wrapper/algaehWrapper";
-import MyContext from "../../../../../utils/MyContext.js";
+import { getCookie } from "../../../../../utils/algaehApiCall";
 import {
   texthandle,
   AddDeptUser,
@@ -28,19 +28,19 @@ class DeptUserDetails extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      selectedLang: getCookie("Language"),
+      hims_d_employee_group_id: null,
+      hims_d_hospital_id: null,
       sub_department_id: null,
       user_id: null,
-      category_speciality_id: null
+      category_speciality_id: null,
+      deptDetails: []
     };
   }
 
-  componentWillMount() {
-    debugger;
-    let InputOutput = this.props.EmpMasterIOputs;
-    this.setState({ ...this.state, ...InputOutput });
-  }
-
   componentDidMount() {
+    let InputOutput = this.props.EmpMasterIOputs.state.department_and_other;
+    this.setState({ ...this.state, ...InputOutput });
     if (
       this.props.depservices === undefined ||
       this.props.depservices.length === 0
@@ -136,7 +136,7 @@ class DeptUserDetails extends Component {
     const _depservices = Enumerable.from(this.props.depservices)
       .where(w => w.service_type_id === 1)
       .toArray();
-
+    const _isDoctor = this.props.EmpMasterIOputs.state.personalDetails.isdoctor;
     return (
       <React.Fragment>
         {/* <MyContext.Consumer>
@@ -219,7 +219,8 @@ class DeptUserDetails extends Component {
                     }
                   }}
                 />{" "}
-                <AlagehAutoComplete
+                {/*  TODO : incomplete
+                 <AlagehAutoComplete
                   div={{ className: "col" }}
                   label={{
                     forceLabel: "Overtime Group",
@@ -242,7 +243,7 @@ class DeptUserDetails extends Component {
                       tabIndex: "2"
                     }
                   }}
-                />
+                /> */}
                 <AlagehAutoComplete
                   div={{ className: "col" }}
                   label={{
@@ -417,12 +418,7 @@ class DeptUserDetails extends Component {
                       data: _depservices
                     },
                     others: {
-                      disabled:
-                        this.state.Billexists === true
-                          ? true
-                          : this.state.isdoctor === "Y"
-                          ? false
-                          : true
+                      disabled: _isDoctor === "Y" ? false : true
                     },
                     onChange: texthandle.bind(this, this)
                   }}

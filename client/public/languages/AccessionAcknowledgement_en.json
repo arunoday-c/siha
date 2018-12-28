@@ -10,7 +10,7 @@
   "investigation_name": "Investigation Name",
   "specimen_name": "Specimen",
   "ordered_by": "Ordered By",
-  "ordered_date": "Ordered Date",
+  "ordered_date": "Ordered Date & Time",
   "ordered_time": "Ordered Time",
   "test_status": "Test Status",
   "case_type": "Case Type",
@@ -18,7 +18,7 @@
   "number_of_tests": "Number of Tests",
   "sample_collection": "Accession Acknowledgement",
   "collected_by": "Collected By",
-  "collected_date": "Collected Date",
+  "collected_date": "Collected Date & Time",
   "collected": "Collect",
 
   "btnclose": "Close",

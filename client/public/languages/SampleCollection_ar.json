@@ -8,7 +8,7 @@
 
   "investigation_code": "تحقيق",
   "investigation_name": "اسم التحقيق",
-  "ordered_date": "تاريخ أمر",
+  "ordered_date": "أمر التاريخ والوقت",
   "ordered_time": "أمر زمن",
   "test_status": "حالة الاختبار",
   "case_type": "نوع القضية"

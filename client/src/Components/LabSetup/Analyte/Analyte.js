@@ -317,6 +317,7 @@ class LabAnalyte extends Component {
                       : this.props.labanalytes
                 }}
                 isEditable={true}
+                filter={true}
                 paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
                   onDelete: deleteLabAnalytes.bind(this, this),

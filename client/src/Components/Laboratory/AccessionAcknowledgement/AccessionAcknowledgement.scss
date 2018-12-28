@@ -17,8 +17,19 @@
   td {
     border-right: 1px solid #e6e6e6;
   }
+
+  #accessionAcknoweldgeGrid_Cntr {
+    .ReactTable {
+      max-height: 60vh !important;
+    }
+  }
 }
 .hdg_bredcrump {
   max-width: 50% !important;
   flex: 0 0 35% !important;
+}
+
+.badge {
+  font-size: 0.7rem;
+  margin-top: 5px;
 }

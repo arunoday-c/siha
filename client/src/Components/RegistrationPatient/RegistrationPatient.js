@@ -643,7 +643,7 @@ class RegistrationPatient extends PureComponent {
                 />
 
                 <ConsultationDetails PatRegIOputs={this.state} />
-                {/* <InsuranceDetails PatRegIOputs={this.state} /> */}
+                <InsuranceDetails PatRegIOputs={this.state} />
               </div>
               <div className="algaeh-md-12 algaeh-lg-12 algaeh-xl-4">
                 <Billing PatRegIOputs={this.state} loader={true} />

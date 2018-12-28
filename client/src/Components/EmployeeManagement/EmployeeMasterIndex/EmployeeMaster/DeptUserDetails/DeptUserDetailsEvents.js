@@ -1,6 +1,7 @@
 import { swalMessage } from "../../../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../../../utils/GlobalFunctions";
 import extend from "extend";
+import Enumerable from "linq";
 let texthandlerInterval = null;
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -107,70 +108,56 @@ const AddDeptUser = ($this, e) => {
           type: "warning"
         });
       } else {
+        debugger;
         let deptDetails = $this.state.deptDetails;
-        let insertdeptDetails = $this.state.insertdeptDetails;
 
-        let intExists = false;
-        for (let x = 0; x < deptDetails.length; x++) {
-          if (
-            deptDetails[x].sub_department_id === $this.state.sub_department_id
-          ) {
-            intExists = true;
-          }
-        }
-        if (intExists === false) {
-          let inpObj = {
-            sub_department_id: $this.state.sub_department_id,
-            category_speciality_id: $this.state.category_speciality_id,
-            user_id: $this.state.user_id,
-            category_id: $this.state.category_id,
-            speciality_id: $this.state.speciality_id,
-            services_id: $this.state.services_id,
-            reporting_to: $this.state.reporting_to,
-            hims_d_designation_id: $this.state.hims_d_designation_id
-          };
-
-          if ($this.state.hims_d_employee_id !== null) {
-            inpObj.employee_id = $this.state.hims_d_employee_id;
-            insertdeptDetails.push(inpObj);
-          }
-          deptDetails.push(inpObj);
-
-          $this.setState({
-            deptDetails: deptDetails,
-            sub_department_id: null,
-            insertdeptDetails: insertdeptDetails,
-            user_id: null,
-            speciality_id: null,
-            category_id: null,
-            services_id: null,
-            reporting_to: null,
-            hims_d_designation_id: null
-          });
-
-          // if (context !== undefined) {
-          //   context.updateState({
-          //     deptDetails: deptDetails,
-          //     insertdeptDetails: insertdeptDetails
-          //   });
-          // }
-          $this.props.EmpMasterIOputs.updateEmployeeTabs({
-            deptDetails: deptDetails,
-            sub_department_id: null,
-            insertdeptDetails: insertdeptDetails,
-            user_id: null,
-            speciality_id: null,
-            category_id: null,
-            services_id: null,
-            reporting_to: null,
-            hims_d_designation_id: null
-          });
+        if (deptDetails === undefined) {
+          deptDetails = [];
         } else {
-          swalMessage({
-            title: "Invalid Input. Selected Department already defined",
-            type: "warning"
-          });
+          const _departs = Enumerable.from(deptDetails)
+            .where(w => w.sub_department_id === $this.state.sub_department_id)
+            .any();
+          if (_departs) {
+            swalMessage({
+              title: "Same department is already added.",
+              type: "warning"
+            });
+            return;
+          }
         }
+        deptDetails.push({
+          sub_department_id: $this.state.sub_department_id,
+          category_speciality_id: $this.state.category_speciality_id,
+          user_id: $this.state.user_id,
+          category_id: $this.state.category_id,
+          speciality_id: $this.state.speciality_id,
+          services_id: $this.state.services_id,
+          reporting_to: $this.state.reporting_to,
+          hims_d_designation_id: $this.state.hims_d_designation_id
+        });
+
+        $this.setState({
+          deptDetails: deptDetails,
+          sub_department_id: null,
+          category_speciality_id: null,
+          user_id: null,
+          category_id: null,
+          speciality_id: null,
+          services_id: null,
+          reporting_to: null,
+          hims_d_designation_id: null
+        });
+        $this.props.EmpMasterIOputs.updateEmployeeTabs({
+          deptDetails: deptDetails,
+          sub_department_id: $this.state.sub_department_id,
+          category_speciality_id: $this.state.category_speciality_id,
+          user_id: $this.state.user_id,
+          category_id: $this.state.category_id,
+          speciality_id: $this.state.speciality_id,
+          services_id: $this.state.services_id,
+          reporting_to: $this.state.reporting_to,
+          hims_d_designation_id: $this.state.hims_d_designation_id
+        });
       }
     }
   });
@@ -179,50 +166,61 @@ const AddDeptUser = ($this, e) => {
 // getEmpSpeciality
 
 const updateDeptUser = ($this, row) => {
-  let deptDetails = $this.state.deptDetails;
-  let updatedeptDetails = $this.state.updatedeptDetails;
-  let insertdeptDetails = $this.state.insertdeptDetails;
-
-  if (row.hims_d_employee_department_id !== undefined) {
-    let Updateobj = {
-      hims_d_employee_department_id: row.hims_d_employee_department_id,
-      employee_id: row.employee_id,
-      services_id: row.services_id,
-      sub_department_id: row.sub_department_id,
-      category_speciality_id: row.category_speciality_id,
-      user_id: row.user_id,
-      record_status: "A"
-    };
-    updatedeptDetails.push(Updateobj);
-    extend(deptDetails[row.rowIdx], Updateobj);
-
-    // deptDetails[row.rowIdx] = Updateobj;
-  } else {
-    {
-      let Updateobj = {
-        employee_id: row.employee_id,
-        services_id: row.services_id,
-        sub_department_id: row.sub_department_id,
-        category_speciality_id: row.category_speciality_id,
-        user_id: row.user_id,
-        record_status: "A"
-      };
-      insertdeptDetails.push(Updateobj);
-      // deptDetails[row.rowIdx] = Updateobj;
-      extend(deptDetails[row.rowIdx], Updateobj);
-    }
-  }
+  let deptDetails = Enumerable.from($this.state.deptDetails)
+    .where(w => w.sub_department_id !== row.sub_department_id)
+    .toArray();
+  deptDetails.push(row);
 
   $this.setState({
-    deptDetails: deptDetails,
-    updatedeptDetails: updatedeptDetails,
-    insertdeptDetails: insertdeptDetails
+    deptDetails: deptDetails
   });
   $this.props.EmpMasterIOputs.updateEmployeeTabs({
-    deptDetails: deptDetails,
-    updatedeptDetails: updatedeptDetails,
-    insertdeptDetails: insertdeptDetails
+    deptDetails: deptDetails
   });
+
+  // let updatedeptDetails = $this.state.updatedeptDetails;
+  // let insertdeptDetails = $this.state.insertdeptDetails;
+
+  // if (row.hims_d_employee_department_id !== undefined) {
+  //   let Updateobj = {
+  //     hims_d_employee_department_id: row.hims_d_employee_department_id,
+  //     employee_id: row.employee_id,
+  //     services_id: row.services_id,
+  //     sub_department_id: row.sub_department_id,
+  //     category_speciality_id: row.category_speciality_id,
+  //     user_id: row.user_id,
+  //     record_status: "A"
+  //   };
+  //   updatedeptDetails.push(Updateobj);
+  //   extend(deptDetails[row.rowIdx], Updateobj);
+
+  //   // deptDetails[row.rowIdx] = Updateobj;
+  // } else {
+  //   {
+  //     let Updateobj = {
+  //       employee_id: row.employee_id,
+  //       services_id: row.services_id,
+  //       sub_department_id: row.sub_department_id,
+  //       category_speciality_id: row.category_speciality_id,
+  //       user_id: row.user_id,
+  //       record_status: "A"
+  //     };
+  //     insertdeptDetails.push(Updateobj);
+  //     // deptDetails[row.rowIdx] = Updateobj;
+  //     extend(deptDetails[row.rowIdx], Updateobj);
+  //   }
+  // }
+
+  // $this.setState({
+  //   deptDetails: deptDetails,
+  //   updatedeptDetails: updatedeptDetails,
+  //   insertdeptDetails: insertdeptDetails
+  // });
+  // $this.props.EmpMasterIOputs.updateEmployeeTabs({
+  //   deptDetails: deptDetails,
+  //   updatedeptDetails: updatedeptDetails,
+  //   insertdeptDetails: insertdeptDetails
+  // });
   // if (context !== undefined) {
   //   context.updateState({
   //     deptDetails: deptDetails,
@@ -233,46 +231,17 @@ const updateDeptUser = ($this, row) => {
 };
 
 const deleteDeptUser = ($this, row) => {
-  let deptDetails = $this.state.deptDetails;
-  let updatedeptDetails = $this.state.updatedeptDetails;
-  let insertdeptDetails = $this.state.insertdeptDetails;
-  if ($this.state.hims_d_employee_id !== null) {
-    if (row.hims_d_employee_department_id !== undefined) {
-      let Updateobj = {
-        hims_d_employee_department_id: row.hims_d_employee_department_id,
-        employee_id: row.employee_id,
-        services_id: row.services_id,
-        sub_department_id: row.sub_department_id,
-        category_speciality_id: row.category_speciality_id,
-        user_id: row.user_id,
-        record_status: "I"
-      };
-      updatedeptDetails.push(Updateobj);
-    } else {
-      for (let k = 0; k < insertdeptDetails.length; k++) {
-        if (insertdeptDetails[k].sub_department_id === row.sub_department_id) {
-          insertdeptDetails.splice(k, 1);
-        }
-      }
-    }
-  }
-  for (let x = 0; x < deptDetails.length; x++) {
-    if (deptDetails[x].sub_department_id === row.sub_department_id) {
-      deptDetails.splice(x, 1);
-    }
-  }
+  let deptDetails = Enumerable.from($this.state.deptDetails)
+    .where(w => w.sub_department_id !== row.sub_department_id)
+    .toArray();
+
   $this.setState({
-    deptDetails: deptDetails,
-    updatedeptDetails: updatedeptDetails,
-    insertdeptDetails: insertdeptDetails
+    deptDetails: deptDetails
   });
-  // if (context !== undefined) {
-  //   context.updateState({
-  //     deptDetails: deptDetails,
-  //     updatedeptDetails: updatedeptDetails,
-  //     insertdeptDetails: insertdeptDetails
-  //   });
-  // }
+
+  $this.props.EmpMasterIOputs.updateEmployeeTabs({
+    deptDetails: deptDetails
+  });
 };
 
 const colgridtexthandle = ($this, row, e) => {
