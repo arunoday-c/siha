@@ -395,7 +395,7 @@ class AccessionAcknowledgement extends Component {
                         disabled: true,
                         others: {
                           resizable: false,
-                          style: { textAlign: "left" }
+                          style: { textAlign: "center" }
                         }
                       },
                       {
@@ -416,20 +416,20 @@ class AccessionAcknowledgement extends Component {
                           style: { textAlign: "center" }
                         }
                       },
-                      {
-                        fieldName: "test_type",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "proiorty" }} />
-                        ),
-                        displayTemplate: row => {
-                          return row.test_type === "S" ? "Stat" : "Rotuine";
-                        },
-                        disabled: true,
-                        others: {
-                          resizable: false,
-                          style: { textAlign: "center" }
-                        }
-                      },
+                      // {
+                      //   fieldName: "test_type",
+                      //   label: (
+                      //     <AlgaehLabel label={{ fieldName: "proiorty" }} />
+                      //   ),
+                      //   displayTemplate: row => {
+                      //     return row.test_type === "S" ? "Stat" : "Rotuine";
+                      //   },
+                      //   disabled: true,
+                      //   others: {
+                      //     resizable: false,
+                      //     style: { textAlign: "center" }
+                      //   }
+                      // },
                       {
                         fieldName: "status",
                         label: <AlgaehLabel label={{ fieldName: "status" }} />,
