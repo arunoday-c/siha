@@ -224,8 +224,7 @@ class ResultEntryList extends Component {
                     <h3 className="caption-subject">Result Entry List</h3>
                   </div>
 
-                  <div className="actions">
-                    {/* <span> Status: </span> */}
+                  {/* <div className="actions">
                     <ul className="ul-legend">
                       {FORMAT_TEST_STATUS.map((data, index) => (
                         <li key={index}>
@@ -238,7 +237,7 @@ class ResultEntryList extends Component {
                         </li>
                       ))}
                     </ul>
-                  </div>
+                  </div> */}
                 </div>
 
                 <div className="portlet-body" id="resultListEntryCntr">
@@ -366,13 +365,21 @@ class ResultEntryList extends Component {
                           return row.status === "O" ? (
                             <span className="badge badge-light">Ordered</span>
                           ) : row.status === "CL" ? (
-                            <span className="badge badge-primary">Collected</span>
+                            <span className="badge badge-primary">
+                              Collected
+                            </span>
                           ) : row.status === "CN" ? (
-                            <span className="badge badge-danger">Cancelled</span>
+                            <span className="badge badge-danger">
+                              Cancelled
+                            </span>
                           ) : row.status === "CF" ? (
-                            <span className="badge badge-success">Confirmed</span>
+                            <span className="badge badge-success">
+                              Confirmed
+                            </span>
                           ) : (
-                            <span className="badge badge-success">Validated</span>
+                            <span className="badge badge-success">
+                              Validated
+                            </span>
                           );
                         },
                         disabled: true,
@@ -405,7 +412,9 @@ class ResultEntryList extends Component {
                           return row.sample_status === "N" ? (
                             <span className="badge badge-light">Not Done</span>
                           ) : row.sample_status === "A" ? (
-                            <span className="badge badge-success">Accepted</span>
+                            <span className="badge badge-success">
+                              Accepted
+                            </span>
                           ) : row.sample_status === "R" ? (
                             <span className="badge badge-danger">Rejected</span>
                           ) : null;
@@ -417,17 +426,17 @@ class ResultEntryList extends Component {
                         }
                       }
                     ]}
-                    rowClassName={row => {
-                      return row.status === "CF"
-                        ? "confirmedClass"
-                        : row.status === "CL"
-                        ? "collectedClass"
-                        : row.status === "CN"
-                        ? "cancelledClass"
-                        : row.status === "V"
-                        ? "validateClass"
-                        : null;
-                    }}
+                    // rowClassName={row => {
+                    //   return row.status === "CF"
+                    //     ? "confirmedClass"
+                    //     : row.status === "CL"
+                    //     ? "collectedClass"
+                    //     : row.status === "CN"
+                    //     ? "cancelledClass"
+                    //     : row.status === "V"
+                    //     ? "validateClass"
+                    //     : null;
+                    // }}
                     keyId="patient_code"
                     dataSource={{
                       data: this.state.sample_collection
