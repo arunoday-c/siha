@@ -534,7 +534,7 @@ class ResultEntry extends Component {
                           ),
                           displayTemplate: row => {
                             return row.critical_type === "N"
-                              ? "None"
+                              ? "Normal"
                               : row.critical_type === "CL"
                               ? "Critical Low"
                               : row.critical_type === "CH"
