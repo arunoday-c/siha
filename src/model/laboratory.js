@@ -12,6 +12,7 @@ import { debugFunction, debugLog } from "../utils/logging";
 import Promise from "bluebird";
 import moment from "moment";
 import extend from "extend";
+import mysql from "mysql";
 //created by nowshad: to get lad orders for sample collection
 let getLabOrderedServices = (req, res, next) => {
   try {
@@ -707,54 +708,88 @@ let updateLabResultEntry = (req, res, next) => {
         let qry = "";
 
         for (let i = 0; i < req.body.length; i++) {
-          if (inputParam[i].amended === "Y") {
-            amended =
-              "',amended_by='" +
-              user_id.updated_by +
-              "',amended_date='" +
-              new Date().toLocaleString();
-          } else {
-            amended = "";
-          }
-          qry +=
-            " UPDATE `hims_f_ord_analytes` SET result='" +
-            inputParam[i].result +
-            "',`status`='" +
-            inputParam[i].status +
-            "',`remarks`='" +
-            inputParam[i].remarks +
-            "',`run1`='" +
-            inputParam[i].run1 +
-            "',`run2`='" +
-            inputParam[i].run2 +
-            "',`run3`='" +
-            inputParam[i].run3 +
-            "',`critical_type`='" +
-            inputParam[i].critical_type +
-            "',entered_by='" +
-            user_id.updated_by +
-            "',entered_date='" +
-            moment().format("YYYY-MM-DD HH:mm") +
-            "',validate_by='" +
-            user_id.updated_by +
-            "',validated_date='" +
-            moment().format("YYYY-MM-DD HH:mm") +
-            "',confirm_by='" +
-            user_id.updated_by +
-            "',confirmed_date='" +
-            moment().format("YYYY-MM-DD HH:mm") +
-            "',amended='" +
-            inputParam[i].amended +
-            amended +
-            "',updated_date='" +
-            moment().format("YYYY-MM-DD HH:mm") +
-            "',updated_by='" +
-            user_id.updated_by +
-            "' WHERE order_id='" +
-            inputParam[i].order_id +
-            "'AND hims_f_ord_analytes_id='" +
-            inputParam[i].hims_f_ord_analytes_id +
-            "';";
+          // if (inputParam[i].amended === "Y") {
+          //   amended =
+          //     "',amended_by='" +
+          //     user_id.updated_by +
+          //     "',amended_date='" +
+          //     moment().format("YYYY-MM-DD HH:mm");
+          // } else {
+          //   amended = "";
+          // }
+          qry += mysql.format(
+            "UPDATE `hims_f_ord_analytes` SET result=?,\
+          `status`=?,`remarks`=?,`run1`=?,`run2`=?,`run3`=?,`critical_type`=?,\
+          entered_by=?,entered_date=?,validate_by=?,validated_date=?,\
+          confirm_by=?,confirmed_date=?,amended=?,amended_date=?,\
+          updated_date=?,updated_by=? where order_id=? AND hims_f_ord_analytes_id=?;",
+            [
+              inputParam[i].result,
+              inputParam[i].status,
+              inputParam[i].remarks,
+              inputParam[i].run1,
+              inputParam[i].run2,
+              inputParam[i].run3,
+              inputParam[i].critical_type,
+              user_id.updated_by,
+              moment().format("YYYY-MM-DD HH:mm"),
+              inputParam[i].validate == "N" ? null : user_id.updated_by,
+              inputParam[i].validate == "N"
+                ? null
+                : moment().format("YYYY-MM-DD HH:mm"),
+              inputParam[i].confirm == "N" ? null : user_id.updated_by,
+              inputParam[i].confirm == "N"
+                ? null
+                : moment().format("YYYY-MM-DD HH:mm"),
+              inputParam[i].amended,
+              inputParam[i].amended === "Y"
+                ? moment().format("YYYY-MM-DD HH:mm")
+                : null,
+              moment().format("YYYY-MM-DD HH:mm"),
+              user_id.updated_by,
+              inputParam[i].order_id,
+              inputParam[i].hims_f_ord_analytes_id
+            ]
+          );
+          // qry +=
+          //   " UPDATE `hims_f_ord_analytes` SET result='" +
+          //   inputParam[i].result +
+          //   "',`status`='" +
+          //   inputParam[i].status +
+          //   "',`remarks`='" +
+          //   inputParam[i].remarks +
+          //   "',`run1`='" +
+          //   inputParam[i].run1 +
+          //   "',`run2`='" +
+          //   inputParam[i].run2 +
+          //   "',`run3`='" +
+          //   inputParam[i].run3 +
+          //   "',`critical_type`='" +
+          //   inputParam[i].critical_type +
+          //   "',entered_by='" +
+          //   user_id.updated_by +
+          //   "',entered_date='" +
+          //   moment().format("YYYY-MM-DD HH:mm") +
+          //   "',validate_by='" +
+          //   user_id.updated_by +
+          //   "',validated_date='" +
+          //   moment().format("YYYY-MM-DD HH:mm") +
+          //   "',confirm_by='" +
+          //   user_id.updated_by +
+          //   "',confirmed_date='" +
+          //   moment().format("YYYY-MM-DD HH:mm") +
+          //   "',amended='" +
+          //   inputParam[i].amended +
+          //   amended +
+          //   "',updated_date='" +
+          //   moment().format("YYYY-MM-DD HH:mm") +
+          //   "',updated_by='" +
+          //   user_id.updated_by +
+          //   "' WHERE order_id='" +
+          //   inputParam[i].order_id +
+          //   "'AND hims_f_ord_analytes_id='" +
+          //   inputParam[i].hims_f_ord_analytes_id +
+          //   "';";
         }
 
         connection.query(qry, (error, results) => {
