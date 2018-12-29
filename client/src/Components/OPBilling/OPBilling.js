@@ -46,7 +46,8 @@ class OPBilling extends Component {
       cheque_number: "",
       cheque_date: null,
       cheque_amount: 0,
-      advance: 0
+      advance: 0,
+      addNewService: false
     };
   }
 
@@ -324,6 +325,9 @@ class OPBilling extends Component {
                   receipt_number: response.data.records.receipt_number,
                   saveEnable: true
                 });
+                this.setState({
+                  addNewService: true
+                });
                 successfulMessage({
                   message: "Done Successfully",
                   title: "Success",
@@ -468,7 +472,6 @@ class OPBilling extends Component {
                 <AlgaehLabel
                   label={{ fieldName: "btn_save", returnText: true }}
                 />
-                {/* Save */}
               </button>
 
               <button
@@ -479,7 +482,6 @@ class OPBilling extends Component {
                 <AlgaehLabel
                   label={{ fieldName: "btn_clear", returnText: true }}
                 />
-                {/* Clear */}
               </button>
             </div>
           </div>

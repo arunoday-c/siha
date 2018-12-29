@@ -458,16 +458,38 @@ class ResultEntry extends Component {
                                 forceLabel: "Run1"
                               }}
                             />
-                          )
+                          ),
+                          displayTemplate: row => {
+                            debugger;
+                            return (
+                              <span>
+                                {row.run1 !== "null" ? row.run1 : "----"}
+                              </span>
+                            );
+                          }
                         },
 
                         {
                           fieldName: "run2",
-                          label: <AlgaehLabel label={{ forceLabel: "Run2" }} />
+                          label: <AlgaehLabel label={{ forceLabel: "Run2" }} />,
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {row.run2 !== "null" ? row.run2 : "----"}
+                              </span>
+                            );
+                          }
                         },
                         {
                           fieldName: "run3",
-                          label: <AlgaehLabel label={{ forceLabel: "Run3" }} />
+                          label: <AlgaehLabel label={{ forceLabel: "Run3" }} />,
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {row.run3 !== "null" ? row.run3 : "----"}
+                              </span>
+                            );
+                          }
                         },
                         {
                           fieldName: "normal_low",
@@ -599,8 +621,10 @@ class ResultEntry extends Component {
                                       }
                                     }}
                                   />
-                                ) : (
+                                ) : row.remarks !== "null" ? (
                                   row.remarks
+                                ) : (
+                                  ""
                                 )}
                               </span>
                             );
