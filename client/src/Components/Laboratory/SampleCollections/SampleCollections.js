@@ -372,9 +372,11 @@ class SampleCollectionPatient extends PureComponent {
                                   return (
                                     <span>
                                       {/* {dateFormater(this, row.collected_date)} */}
-                                      {moment(row.collected_date).format(
-                                        "DD-MM-YYYY hh:mm"
-                                      )}
+                                      {moment(row.collected_date).isValid()
+                                        ? moment(row.collected_date).format(
+                                            "DD-MM-YYYY hh:mm"
+                                          )
+                                        : "------"}
                                     </span>
                                   );
                                 },
