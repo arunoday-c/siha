@@ -38,7 +38,7 @@ class ResultEntry extends Component {
     };
   }
 
-  showReport() {
+  showReport(refBy) {
     // console.log("test_analytes:", this.state.test_analytes);
 
     AlgaehReport({
@@ -53,7 +53,7 @@ class ResultEntry extends Component {
         advance_amount: "PAT-00000asdfadsf",
         receipt_number: "123456",
         receipt_date: this.state.ordered_date,
-        doctor_name: "Dr. Norman John",
+        doctor_name: refBy,
         test_name: this.state.service_name,
         specimen: this.state.specimen
       }
@@ -646,7 +646,12 @@ class ResultEntry extends Component {
               <div className="col-lg-12">
                 <button
                   className="btn btn-primary"
-                  onClick={this.showReport.bind(this)}
+                  onClick={this.showReport.bind(
+                    this,
+                    display !== null && display.length !== 0
+                      ? display[0].full_name
+                      : ""
+                  )}
                   disabled={this.state.status === "V" ? false : true}
                 >
                   Print
