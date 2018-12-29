@@ -130,6 +130,7 @@ const getSampleCollectionDetails = $this => {
 };
 
 const ResultEntryModel = ($this, row) => {
+  debugger;
   if (row.status === "O") {
     swalMessage({
       title: "Invalid Input. Please collect the sample.",

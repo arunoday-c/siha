@@ -11,19 +11,17 @@ const texthandle = ($this, e) => {
 };
 
 const UpdateLabOrder = ($this, value, status) => {
-  
   algaehApiCall({
     uri: "/laboratory/updateLabResultEntry",
     data: value,
     method: "PUT",
     onSuccess: response => {
-      
       if (response.data.success === true) {
         swalMessage({
           type: "success",
           title: "Done successfully . ."
         });
-
+        debugger;
         for (let k = 0; k < value.length; k++) {
           if (value[k].run_type !== null && value[k].run_type !== undefined) {
             value.splice(k, 1);
@@ -64,6 +62,7 @@ const onvalidate = $this => {
     } else {
       test_analytes[k].status = "V";
       test_analytes[k].validate = "Y";
+      test_analytes[k].isre_run = false;
     }
   }
   if (success === true) {
@@ -176,7 +175,6 @@ const onchangegridcol = ($this, row, e) => {
 };
 
 const resultEntryUpdate = $this => {
-  
   let test_analytes = $this.state.test_analytes;
   let enterResult = true;
   let enterRemarks = true;
@@ -200,6 +198,7 @@ const resultEntryUpdate = $this => {
     } else {
       enterResult = false;
     }
+    test_analytes[k].isre_run = false;
   }
   if (enterResult === true && enterRemarks === true) {
     test_analytes.push({ run_type: $this.state.run_type });
@@ -233,6 +232,7 @@ const onconfirm = $this => {
     } else {
       test_analytes[k].status = "C";
       test_analytes[k].confirm = "Y";
+      test_analytes[k].isre_run = false;
     }
   }
   if (success === true) {
@@ -246,7 +246,6 @@ const onconfirm = $this => {
       cancelButtonText: "No"
     }).then(willProceed => {
       if (willProceed.value) {
-        
         test_analytes.push({ run_type: $this.state.run_type });
         UpdateLabOrder($this, test_analytes, "CF");
       }
@@ -255,26 +254,39 @@ const onconfirm = $this => {
 };
 
 const onReRun = $this => {
-  
   let test_analytes = $this.state.test_analytes;
   let success = true;
   let runtype = [];
+  debugger;
   for (let k = 0; k < test_analytes.length; k++) {
     if ($this.state.run_type === "N") {
-      test_analytes[k].run1 = test_analytes[k].result;
+      // test_analytes[k].run1 = test_analytes[k].result;
       runtype = { run_type: "1" };
     } else if ($this.state.run_type === "1") {
-      test_analytes[k].run2 = test_analytes[k].result;
+      // test_analytes[k].run2 = test_analytes[k].result;
       runtype = { run_type: "2" };
     } else if ($this.state.run_type === "2") {
-      test_analytes[k].run3 = test_analytes[k].result;
+      // test_analytes[k].run3 = test_analytes[k].result;
       runtype = { run_type: "3" };
     }
 
+    // test_analytes[k].result = "";
+
+    //Noor
+    if (test_analytes[k].run1 === null) {
+      test_analytes[k].run1 = test_analytes[k].result;
+    } else if (test_analytes[k].run2 === null) {
+      test_analytes[k].run2 = test_analytes[k].result;
+    } else if (test_analytes[k].run3 === null) {
+      test_analytes[k].run3 = test_analytes[k].result;
+    }
+
+    //end noor
     test_analytes[k].result = "";
     test_analytes[k].confirm = "N";
     test_analytes[k].validate = "N";
     test_analytes[k].status = "N";
+    test_analytes[k].isre_run = true;
   }
   test_analytes.push(runtype);
 
