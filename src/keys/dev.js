@@ -8,12 +8,13 @@ export default {
 
   mysqlDb: {
     connectionLimit: 20,
-    //host: "192.168.0.169",
+    //host: "localhost",
     host: "49.206.18.38",
-    // host: "localhost",
+    //host: "127.0.0.1",
     port: 3306,
     user: "algaeh_root",
     password: "medteam2013",
+
     //database: "security_algaeh_hims_db",
     database: "algaeh_hims_db",
     // database: "hims_test_db",

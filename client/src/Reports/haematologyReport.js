@@ -27,7 +27,7 @@ export function printReport(data) {
                     <td><label>اسم الطبيب / Doctor</label></td>
                     <td>: <span>${data.doctor_name}</span></td>
                     <td><label>Department / القسم</label></td>
-                    <td>: <span>Cardiology</span></td>
+                    <td>: <span>Laboratory</span></td>
                 </tr>
 
                
