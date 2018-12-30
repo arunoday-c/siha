@@ -168,11 +168,11 @@ export function displayFileFromServer(options) {
     },
     others: { responseType: "blob" },
     onSuccess: response => {
+      debugger;
       if (response.data) {
         let reader = new FileReader();
 
         reader.onloadend = () => {
-          console.log("image ", reader.result);
           if (typeof options.onFileSuccess === "function") {
             options.onFileSuccess(reader.result);
           }

@@ -20,10 +20,17 @@ export default class AlgaehFileUploader extends Component {
       progressPercentage: 0,
       fileExtention: "",
       openWebCam: false,
-      showLoader: true
+      showLoader: true,
+      croppingDone: false
     };
   }
   componentWillReceiveProps(nextProps) {
+    if (this.state.croppingDone === true && nextProps.saveFile !== undefined) {
+      this.setState({
+        croppingDone: false
+      });
+      this.SavingImageOnServer();
+    }
     if (
       nextProps.serviceParameters.uniqueID !==
       this.props.serviceParameters.uniqueID
@@ -154,14 +161,16 @@ export default class AlgaehFileUploader extends Component {
           this.setState({
             showCropper: true,
             filePreview: _dataURL, //this.resizingAndCompressImage(_file),
-            fileExtention: "image/webp"
+            fileExtention: "image/webp",
+            croppingDone: false
           });
         };
       };
       //---End compression
     } else {
       this.setState({
-        fileExtention: _fileExtention[_fileExtention.length - 1]
+        fileExtention: _fileExtention[_fileExtention.length - 1],
+        croppingDone: false
       });
     }
   }
@@ -172,31 +181,14 @@ export default class AlgaehFileUploader extends Component {
     if (_from === "zoom") this.setState({ showZoom: false });
   }
   onCroppedHandler(e) {
-    //debugger;
-    // const _values = this.cropperImage.values();
-
-    // const elem = document.createElement("canvas");
-    // elem.height = _values.original.imgHeight;
-    // elem.width = _values.original.imgWidth;
-    // const ctx = elem.getContext("2d");
-    // ctx.drawImage(
-    //   this.cropperImage.img,
-    //   _values.display.x,
-    //   _values.display.y,
-    //   _values.original.imgWidth,
-    //   _values.original.imgHeight
-    // );
-
-    // const _dataU = elem.toDataURL("image/webp", 0.95);
-    // this.SavingImageOnServer(_dataU);
-
     this.setState(
       {
         showCropper: false,
-        filePreview: this.cropperImage.crop()
+        filePreview: this.cropperImage.crop(),
+        croppingDone: true
       },
       () => {
-        this.SavingImageOnServer();
+        if (this.props.saveFile === undefined) this.SavingImageOnServer();
       }
     );
   }
@@ -288,7 +280,6 @@ export default class AlgaehFileUploader extends Component {
 
     // reader.onloadend = () => {
     //console.log("Render result", reader.result);
-    console.log("my image ", _splitter[1]);
     algaehApiCall({
       uri: "/Document/save",
       method: "POST",
@@ -326,11 +317,13 @@ export default class AlgaehFileUploader extends Component {
       onSuccess: result => {
         if (result.data.success) {
           swalMessage({
+            croppingDone: false,
             title: "Image Uploaded Successfully",
             type: "success"
           });
         } else {
           swalMessage({
+            croppingDone: false,
             title: "Image Uploding failure",
             type: "Error"
           });

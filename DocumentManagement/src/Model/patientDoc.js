@@ -3,7 +3,7 @@ let Schema = mongoose.Schema;
 let patientSchema = new Schema({
   pageName: String,
   clientID: String,
-  image: Buffer,
+  image: String,
   destinationName: Object,
   fileExtention: String,
   updatedDate: Date
