@@ -227,8 +227,10 @@ let applyEmployeeLeave = (req, res, next) => {
                             releaseDBConnection(db, connection);
                             req.records = {
                               leave_already_exist: true,
+                              location:
+                                "inside not_clashing_sessions: date clash not session",
                               message:
-                                " inside only direct date : leave is already there between this dates " +
+                                " leave is already there between this dates " +
                                 not_clashing_sessions[0]["from_date"] +
                                 " AND " +
                                 not_clashing_sessions[0]["to_date"]
@@ -306,10 +308,12 @@ let applyEmployeeLeave = (req, res, next) => {
                                         curr_to_session == "SH")
                                     ) {
                                       debugLog("rejction two:");
-
+                                      //clashing only  new to_leave_session with existing  from_leave_session
                                       releaseDBConnection(db, connection);
                                       req.records = {
                                         leave_already_exist: true,
+                                        location:
+                                          "inside clashing_from_leave_session: session error: comparing prev_from_leave_session with  current:to_leave_session ",
                                         message:
                                           "leave is already there between this dates " +
                                           clashing_from_leave_session[i][
@@ -420,10 +424,12 @@ let applyEmployeeLeave = (req, res, next) => {
                                         curr_from_session == "FD"))
                                   ) {
                                     debugLog("rejction_one:");
-
+                                    //clashing only  new from_leave_session  with existing  to_leave_session
                                     releaseDBConnection(db, connection);
                                     req.records = {
                                       leave_already_exist: true,
+                                      location:
+                                        " inside clashing_to_leave_session:session error: comparing prev_to_leave_session with  current: from_leave_session ",
                                       message:
                                         "leave is already there between this dates " +
                                         clashing_to_leave_session[i][
