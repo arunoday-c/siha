@@ -38,7 +38,7 @@ class ResultEntry extends Component {
     };
   }
 
-  showReport() {
+  showReport(refBy) {
     // console.log("test_analytes:", this.state.test_analytes);
 
     AlgaehReport({
@@ -53,7 +53,7 @@ class ResultEntry extends Component {
         advance_amount: "PAT-00000asdfadsf",
         receipt_number: "123456",
         receipt_date: this.state.ordered_date,
-        doctor_name: "Dr. Norman John",
+        doctor_name: refBy,
         test_name: this.state.service_name,
         specimen: this.state.specimen
       }
@@ -162,7 +162,7 @@ class ResultEntry extends Component {
                     </div>
                     <div className="patientDemographic">
                       <span>
-                        DOB:
+                        DOB:&nbsp;
                         <b>
                           {moment(this.state.date_of_birth).format(
                             Options.dateFormat
@@ -170,12 +170,12 @@ class ResultEntry extends Component {
                         </b>
                       </span>
                       <span>
-                        MRN: <b>{this.state.patient_code}</b>
+                        MRN:&nbsp;<b>{this.state.patient_code}</b>
                       </span>
                     </div>
                     <div className="patientDemographic">
                       <span>
-                        Ref by:
+                        Ref by:&nbsp;
                         <b>
                           {display !== null && display.length !== 0
                             ? display[0].full_name
@@ -183,7 +183,7 @@ class ResultEntry extends Component {
                         </b>
                       </span>
                       <span>
-                        Ordered Date:
+                        Ordered Date:&nbsp;
                         <b>
                           {moment(this.state.ordered_date).format(
                             Options.dateFormat
@@ -232,6 +232,7 @@ class ResultEntry extends Component {
                           }
                         }}
                       />
+
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
@@ -458,16 +459,38 @@ class ResultEntry extends Component {
                                 forceLabel: "Run1"
                               }}
                             />
-                          )
+                          ),
+                          displayTemplate: row => {
+                            debugger;
+                            return (
+                              <span>
+                                {row.run1 !== "null" ? row.run1 : "----"}
+                              </span>
+                            );
+                          }
                         },
 
                         {
                           fieldName: "run2",
-                          label: <AlgaehLabel label={{ forceLabel: "Run2" }} />
+                          label: <AlgaehLabel label={{ forceLabel: "Run2" }} />,
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {row.run2 !== "null" ? row.run2 : "----"}
+                              </span>
+                            );
+                          }
                         },
                         {
                           fieldName: "run3",
-                          label: <AlgaehLabel label={{ forceLabel: "Run3" }} />
+                          label: <AlgaehLabel label={{ forceLabel: "Run3" }} />,
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {row.run3 !== "null" ? row.run3 : "----"}
+                              </span>
+                            );
+                          }
                         },
                         {
                           fieldName: "normal_low",
@@ -512,7 +535,7 @@ class ResultEntry extends Component {
                           ),
                           displayTemplate: row => {
                             return row.critical_type === "N"
-                              ? "None"
+                              ? "Normal"
                               : row.critical_type === "CL"
                               ? "Critical Low"
                               : row.critical_type === "CH"
@@ -599,8 +622,10 @@ class ResultEntry extends Component {
                                       }
                                     }}
                                   />
-                                ) : (
+                                ) : row.remarks !== "null" ? (
                                   row.remarks
+                                ) : (
+                                  ""
                                 )}
                               </span>
                             );
@@ -622,7 +647,12 @@ class ResultEntry extends Component {
               <div className="col-lg-12">
                 <button
                   className="btn btn-primary"
-                  onClick={this.showReport.bind(this)}
+                  onClick={this.showReport.bind(
+                    this,
+                    display !== null && display.length !== 0
+                      ? display[0].full_name
+                      : ""
+                  )}
                   disabled={this.state.status === "V" ? false : true}
                 >
                   Print

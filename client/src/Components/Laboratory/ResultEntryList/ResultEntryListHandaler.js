@@ -130,16 +130,17 @@ const getSampleCollectionDetails = $this => {
 };
 
 const ResultEntryModel = ($this, row) => {
+  debugger;
   if (row.status === "O") {
     swalMessage({
       title: "Invalid Input. Please collect the sample.",
-      type: "Warning"
+      type: "warning"
     });
   } else {
     if (row.sample_status === "N") {
       swalMessage({
         title: "Invalid Input. Please accept the sample.",
-        type: "Warning"
+        type: "warning"
       });
     } else {
       row.open = true;
