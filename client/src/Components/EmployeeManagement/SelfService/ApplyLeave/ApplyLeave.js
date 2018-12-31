@@ -20,7 +20,8 @@ class ApplyLeave extends Component {
       selectedLang: this.props.SelectLanguage,
       emp_leaves_data: [],
       leave_his: [],
-      available_balance: 0.0
+      available_balance: 0.0,
+      total_applied_days: 0.0
     };
 
     this.getLeaveTypes();
@@ -47,6 +48,37 @@ class ApplyLeave extends Component {
     });
   }
 
+  getAppliedDays() {
+    var startdateMoment = moment(this.state.from_date);
+    var enddateMoment = moment(this.state.to_date);
+
+    if (
+      startdateMoment.isValid() === true &&
+      enddateMoment.isValid() === true
+    ) {
+      var days = enddateMoment.diff(startdateMoment, "days");
+
+      if (
+        this.state.from_leave_session === "FH" ||
+        this.state.from_leave_session === "SH" ||
+        this.state.to_leave_session === "FH" ||
+        this.state.to_leave_session === "SH"
+      ) {
+        this.setState({
+          total_applied_days: Math.abs(days - 1 + 0.5)
+        });
+      } else {
+        this.setState({
+          total_applied_days: Math.abs(days)
+        });
+      }
+    } else {
+      this.setState({
+        total_applied_days: 0
+      });
+    }
+  }
+
   dropDownHandler(value) {
     switch (value.name) {
       case "to_leave_session":
@@ -63,19 +95,29 @@ class ApplyLeave extends Component {
               moment(this.state.from_date).format("YYYYMMDD") &&
             value.value === "SH"
           ) {
-            this.setState({
-              [value.name]: "FD"
-            });
+            this.setState(
+              {
+                [value.name]: "FD"
+              },
+              () => {
+                this.getAppliedDays();
+              }
+            );
           } else if (
             moment(this.state.to_date).format("YYYYMMDD") ===
               moment(this.state.from_date).format("YYYYMMDD") &&
             this.state.from_leave_session === "FH" &&
             value.value === "SH"
           ) {
-            this.setState({
-              from_leave_session: "FD",
-              to_leave_session: "FD"
-            });
+            this.setState(
+              {
+                from_leave_session: "FD",
+                to_leave_session: "FD"
+              },
+              () => {
+                this.getAppliedDays();
+              }
+            );
           } else if (
             moment(this.state.to_date).format("YYYYMMDD") ===
               moment(this.state.from_date).format("YYYYMMDD") &&
@@ -87,13 +129,23 @@ class ApplyLeave extends Component {
               type: "warning"
             });
 
-            this.setState({
-              [value.name]: null
-            });
+            this.setState(
+              {
+                [value.name]: null
+              },
+              () => {
+                this.getAppliedDays();
+              }
+            );
           } else {
-            this.setState({
-              [value.name]: value.value
-            });
+            this.setState(
+              {
+                [value.name]: value.value
+              },
+              () => {
+                this.getAppliedDays();
+              }
+            );
           }
         }
         break;
@@ -172,7 +224,7 @@ class ApplyLeave extends Component {
             from_leave_session: this.state.from_leave_session,
             to_leave_session: this.state.to_leave_session,
             leave_applied_from: "D",
-            total_applied_days: 1
+            total_applied_days: this.state.total_applied_days
           },
           onSuccess: res => {
             if (res.data.success) {
@@ -472,7 +524,7 @@ class ApplyLeave extends Component {
                         forceLabel: "No. of Days"
                       }}
                     />
-                    <h6>0.0 days</h6>
+                    <h6>{this.state.total_applied_days} days</h6>
                   </div>
                   <AlagehFormGroup
                     div={{ className: "col-12 margin-bottom-15" }}
