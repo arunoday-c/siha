@@ -111,6 +111,7 @@ export default class DateHandler extends PureComponent {
       <div className="algaeh-datePicker">
         {!_isHijri ? (
           <input
+            data_role="datepicker"
             type={_type}
             value={value}
             {...name}

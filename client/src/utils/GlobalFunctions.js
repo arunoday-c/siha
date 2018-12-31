@@ -278,32 +278,40 @@ export function AlgaehValidation(options) {
 
       if (_title === null) {
         let _lable = null;
-        if (_Validateerror[i].previousSibling !== null) {
-          if (_Validateerror[i].previousSibling.tagName === "LABEL") {
-            _lable = _Validateerror[i].previousSibling;
-          }
+        const _role = _Validateerror[i].getAttribute("data_role");
+        if (_role === "dropdownlist" || _role === "datepicker") {
+          _lable = _Validateerror[i].offsetParent.offsetParent.innerText;
         } else {
-          if (
-            _Validateerror[i].parentElement.previousElementSibling.tagName ===
-            "LABEL"
-          ) {
-            _lable = _Validateerror[i].parentElement.previousElementSibling;
-          } else {
-            _lable =
-              _Validateerror[i].parentElement.parentElement
-                .previousElementSibling;
-          }
+          _lable = _Validateerror[i].offsetParent.innerText;
         }
+
+        // if (_Validateerror[i].previousSibling !== null) {
+        //   if (_Validateerror[i].previousSibling.tagName === "LABEL") {
+        //     _lable = _Validateerror[i].previousSibling;
+        //   }
+        // } else {
+        //   debugger;
+        //   if (
+        //     _Validateerror[i].parentElement.previousElementSibling.tagName ===
+        //     "LABEL"
+        //   ) {
+        //     _lable = _Validateerror[i].parentElement.previousElementSibling;
+        //   } else {
+        //     _lable =
+        //       _Validateerror[i].parentElement.parentElement
+        //         .previousElementSibling;
+        //   }
+        // }
 
         _title =
           _langua === "en"
-            ? _lable.innerText
+            ? _lable
                 .replace("*", "")
                 .toLowerCase()
                 .replace(/^\w/, c => {
                   return c.toUpperCase();
                 }) + "-cannot be blank"
-            : _lable.innerText.replace("*", "") + "- لا يمكن أن يكون فارغا";
+            : _lable.replace("*", "") + "- لا يمكن أن يكون فارغا";
       }
       swalMessage({
         title: _title,
