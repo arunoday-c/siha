@@ -75,10 +75,10 @@ export default class SalaryManagement extends Component {
           </div>
         </div>
         <div className="salary-setion">
-          {this.state.pageDisplay === "SalaryPayments" ? (
-            <SalaryPayments />
-          ) : this.state.pageDisplay === "SalaryProcessing" ? (
+          {this.state.pageDisplay === "SalaryProcessing" ? (
             <SalaryProcessing />
+          ) : this.state.pageDisplay === "SalaryPayments" ? (
+            <SalaryPayments />
           ) : this.state.pageDisplay === "MiscEarningsDeductions" ? (
             <MiscEarningsDeductions />
           ) : null}
