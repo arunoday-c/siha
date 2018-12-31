@@ -117,7 +117,7 @@ module.exports = db => {
             if (error) {
               res.status(400).json({
                 success: false,
-                records: err
+                records: error
               });
             } else {
               if (result != null) {
@@ -143,7 +143,7 @@ module.exports = db => {
             if (error) {
               res.status(400).json({
                 success: false,
-                records: err
+                records: error
               });
             } else {
               if (result != null) {
