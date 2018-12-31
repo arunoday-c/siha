@@ -425,7 +425,7 @@ class AutoComplete extends PureComponent {
         : "nope";
     return (
       <div
-        id={"internal_" + this.props.selector.name}
+        // id={"internal_" + this.props.selector.name}
         className="autoselect-Div"
         ref={autoComp => (this.autoComp = autoComp)}
       >

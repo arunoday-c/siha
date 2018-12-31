@@ -398,7 +398,7 @@ export default class HolidayMaster extends Component {
                               />
                               <span>Yes</span>
                             </label>
-                          </div>{" "}
+                          </div>
                         </div>
                         <AlagehAutoComplete
                           div={{ className: "col-6 ApplicableSelect" }}
@@ -421,7 +421,7 @@ export default class HolidayMaster extends Component {
                         <AlagehFormGroup
                           div={{ className: "col-12" }}
                           label={{
-                            forceLabel: "Enter Reason",
+                            forceLabel: "Holiday Description",
                             isImp: false
                           }}
                           textBox={{
