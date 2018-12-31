@@ -162,7 +162,7 @@ class ResultEntry extends Component {
                     </div>
                     <div className="patientDemographic">
                       <span>
-                        DOB:
+                        DOB:&nbsp;
                         <b>
                           {moment(this.state.date_of_birth).format(
                             Options.dateFormat
@@ -170,12 +170,12 @@ class ResultEntry extends Component {
                         </b>
                       </span>
                       <span>
-                        MRN: <b>{this.state.patient_code}</b>
+                        MRN:&nbsp;<b>{this.state.patient_code}</b>
                       </span>
                     </div>
                     <div className="patientDemographic">
                       <span>
-                        Ref by:
+                        Ref by:&nbsp;
                         <b>
                           {display !== null && display.length !== 0
                             ? display[0].full_name
@@ -183,7 +183,7 @@ class ResultEntry extends Component {
                         </b>
                       </span>
                       <span>
-                        Ordered Date:
+                        Ordered Date:&nbsp;
                         <b>
                           {moment(this.state.ordered_date).format(
                             Options.dateFormat
@@ -232,6 +232,7 @@ class ResultEntry extends Component {
                           }
                         }}
                       />
+
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
