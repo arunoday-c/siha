@@ -19,6 +19,7 @@ import { decryption } from "./utils/cryptography";
 
 let app = express();
 const _port = keys.port;
+
 app.use(compression());
 if (process.env.NODE_ENV == "production") {
   console.log("Running prod...." + _port);
@@ -27,7 +28,26 @@ if (process.env.NODE_ENV == "production") {
 }
 
 // app.server = http.createServer(app);
-app.use(cors());
+
+// app.options(
+//   "*",
+//   cors({
+//     origin: "*",
+//     optionsSuccessStatus: 200
+//   })
+// );
+// app.use(
+//   cors({
+//     origin: "*",
+//     optionsSuccessStatus: 200
+//   })
+// );
+app.use(
+  cors({
+    origin: "*",
+    optionsSuccessStatus: 200
+  })
+);
 app.server = http.createServer(app);
 
 //parse application json
