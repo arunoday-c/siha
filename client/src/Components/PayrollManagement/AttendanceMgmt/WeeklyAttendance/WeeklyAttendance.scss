@@ -1,0 +1,48 @@
+.weekdaysDiv {
+  i {
+    cursor: pointer;
+    &:hover {
+      color: #34b8bc;
+    }
+  }
+  span {
+    font-size: 0.8rem;
+    margin: 0 10px;
+  }
+}
+.WeeklyTimeProgress {
+  .dailyTimeProgress {
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.2);
+    padding-top: 10px;
+    padding-bottom: 10px;
+    .progress {
+      height: 0.5rem;
+      margin-top: 0.6rem;
+    }
+    .week-off {
+      height: 0.3rem;
+      .progress-bar {
+        background-color: #ffeba0 !important;
+        span {
+          background: #ffffff;
+          width: auto;
+          display: inline-block;
+          padding: 2px 10px;
+          font-size: 0.7rem;
+          margin: auto;
+          position: absolute;
+          left: 39.5vw;
+          border: 1px solid #c3c3c3;
+          color: #202429;
+          border-radius: 5px;
+        }
+      }
+    }
+    .bg-default {
+      background-color: #e7ecef !important;
+    }
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
