@@ -291,4 +291,44 @@ let addHoliday = (req, res, next) => {
   }
 };
 
-module.exports = { addWeekOffs, getAllHolidays, addHoliday };
+//created by irfan:
+let deleteHoliday = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    if (
+      req.body.hims_d_holiday_id != "null" &&
+      req.body.hims_d_holiday_id != undefined
+    ) {
+      db.getConnection((error, connection) => {
+        connection.query(
+          " DELETE FROM hims_d_holiday WHERE hims_d_holiday_id = ?; ",
+          [req.body.hims_d_holiday_id],
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+
+            if (result.affectedRows > 0) {
+              req.records = result;
+              next();
+            } else {
+              req.records = { invalid_input: true };
+              next();
+            }
+          }
+        );
+      });
+    } else {
+      req.records = { invalid_input: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports = { addWeekOffs, getAllHolidays, addHoliday, deleteHoliday };
