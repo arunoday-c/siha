@@ -13,7 +13,6 @@ import { LINQ } from "node-linq";
 
 import { debugLog } from "../../utils/logging";
 import moment from "moment";
-import _ from "lodash";
 
 //created by irfan:
 let addLoanApplication = (req, res, next) => {
@@ -114,4 +113,70 @@ let addLoanApplication = (req, res, next) => {
     next(e);
   }
 };
-module.exports = { addLoanApplication };
+
+//created by irfan:
+let getLoanApplication = (req, res, next) => {
+  // let selectWhere = {
+  //   hims_f_loan_application_id: "ALL"
+  // };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    // let where = whereCondition(extend(selectWhere, req.query));
+
+    let employee = "";
+    let range = "";
+
+    if (
+      req.query.employee_id != "" &&
+      req.query.employee_id != null &&
+      req.query.employee_id != "null"
+    ) {
+      employee = ` and employee_id=${req.query.employee_id} `;
+    }
+
+    if (
+      req.query.from_date != "null" &&
+      req.query.from_date != "" &&
+      req.query.from_date != null &&
+      req.query.to_date != "null" &&
+      req.query.to_date != "" &&
+      req.query.to_date != null
+    ) {
+      range = ` and date(loan_application_date)
+between date('${req.query.from_date}') and date('${req.query.to_date}') `;
+    }
+
+    debugLog("range :", range);
+    debugLog("employee :", employee);
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_f_loan_application_id,loan_application_number,employee_id,loan_id,L.loan_code,L.loan_description,\
+        L.loan_account,L.loan_limit_type,L.loan_maximum_amount,LA.loan_description,\
+        loan_application_date,loan_authorized,authorized_date,authorized_by,loan_closed,loan_amount,\
+        start_month,start_year,loan_tenure,installment_amount,pending_loan,authorized1_by,authorized1_date,\
+        authorized1,authorized2_by,authorized2_date,authorized2 from hims_f_loan_application LA  inner join \
+        hims_d_loan L on LA.loan_id=L.hims_d_loan_id  where L.record_status='A' " +
+          employee +
+          "" +
+          range,
+
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports = { addLoanApplication, getLoanApplication };

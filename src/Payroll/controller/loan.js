@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { releaseConnection } from "../../utils";
 import httpStatus from "../../utils/httpStatus";
-import { addLoanApplication } from "../model/loan";
+import { addLoanApplication, getLoanApplication } from "../model/loan";
 
 export default ({ config, db }) => {
   let api = Router();
@@ -10,6 +10,21 @@ export default ({ config, db }) => {
   api.post(
     "/addLoanApplication",
     addLoanApplication,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :
+  api.get(
+    "/getLoanApplication",
+    getLoanApplication,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
