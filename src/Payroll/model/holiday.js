@@ -16,7 +16,7 @@ import moment from "moment";
 import _ from "lodash";
 
 //created by irfan:
-let addWeakOffs = (req, res, next) => {
+let addWeekOffs = (req, res, next) => {
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -25,7 +25,7 @@ let addWeakOffs = (req, res, next) => {
     let input = extend({}, req.body);
     debugLog("input:", input);
 
-    const year = moment(input.year).format("YYYY");
+    const year = moment("'" + input.year + "'").format("YYYY");
 
     debugLog("year:", year);
     const today = moment().format("YYYY-MM-DD");
@@ -121,7 +121,7 @@ let addWeakOffs = (req, res, next) => {
                   arrayObj: newDateList,
                   newFieldToInsert: [
                     input.hospital_id,
-                    input.holiday_descritpion,
+                    "Week Off",
                     "Y",
                     "N",
                     "RE",
@@ -169,8 +169,49 @@ function getDaysArray(start, end, days) {
       arr.push({ holiday_date: dat });
     }
   }
-  debugLog("newDatesList tt:", arr);
+
   return arr;
 }
 
-module.exports = { addWeakOffs };
+//created by irfan:
+let getAllHolidays = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    const start_of_year = moment()
+      .startOf("year")
+      .format("YYYY-MM-DD");
+
+    debugLog("start_of_year:", start_of_year);
+
+    const end_of_year = moment()
+      .endOf("year")
+      .format("YYYY-MM-DD");
+    debugLog("end_of_year:", end_of_year);
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_d_holiday_id,hospital_id,holiday_date,holiday_descritpion,weekoff,holiday,\
+        holiday_type,religion_id,R.religion_name,R.arabic_religion_name from  hims_d_holiday  H left join\
+        hims_d_religion R on H.religion_id=R.hims_d_religion_id where H.record_status='A' and date(holiday_date) \
+        between date(?) and date(?) and hospital_id=? ",
+        [start_of_year, end_of_year, req.query.hospital_id],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports = { addWeekOffs, getAllHolidays };

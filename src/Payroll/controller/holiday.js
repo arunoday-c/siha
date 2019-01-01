@@ -1,15 +1,15 @@
 import { Router } from "express";
 import { releaseConnection } from "../../utils";
 import httpStatus from "../../utils/httpStatus";
-import { addWeakOffs } from "../model/holiday";
+import { addWeekOffs, getAllHolidays } from "../model/holiday";
 import { debugLog } from "../../utils/logging";
 export default ({ config, db }) => {
   let api = Router();
 
   // created by irfan :
   api.post(
-    "/addWeakOffs",
-    addWeakOffs,
+    "/addWeekOffs",
+    addWeekOffs,
     (req, res, next) => {
       let result = req.records;
 
@@ -24,6 +24,23 @@ export default ({ config, db }) => {
           records: result
         });
       }
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :
+  api.get(
+    "/getAllHolidays",
+    getAllHolidays,
+    (req, res, next) => {
+      let result = req.records;
+
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+
       next();
     },
     releaseConnection
