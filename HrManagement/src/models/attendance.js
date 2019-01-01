@@ -57,7 +57,7 @@ module.exports = {
           _mysql
             .executeQuery({
               query:
-                "select hims_d_holiday_id, hospital_id, holiday_date, holiday_descritpion,\
+                "select hims_d_holiday_id, hospital_id, holiday_date, holiday_description,\
           weekoff, holiday, holiday_type, religion_id from \
        hims_d_holiday where record_status='A' and  \
           date(holiday_date) between date(?) and date(?) \

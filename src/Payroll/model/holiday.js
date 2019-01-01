@@ -89,7 +89,7 @@ let addWeekOffs = (req, res, next) => {
 
       connection.query(
         "select hims_d_holiday_id,hospital_id,holiday_date,\
-        holiday_descritpion,weekoff,holiday,holiday_type\
+        holiday_description,weekoff,holiday,holiday_type\
         from  hims_d_holiday  where record_status='A' and date(holiday_date) \
         between date(?) and date(?) and hospital_id=? ",
         [start_of_year, end_of_year, input.hospital_id],
@@ -114,7 +114,7 @@ let addWeekOffs = (req, res, next) => {
             connection.query(
               "INSERT INTO hims_d_holiday(" +
                 insurtColumns.join(",") +
-                ",hospital_id, holiday_descritpion ,weekoff,holiday,holiday_type,created_date,updated_date) VALUES ?",
+                ",hospital_id, holiday_description ,weekoff,holiday,holiday_type,created_date,updated_date) VALUES ?",
               [
                 jsonArrayToObject({
                   sampleInputObject: insurtColumns,
@@ -194,7 +194,7 @@ let getAllHolidays = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_d_holiday_id,hospital_id,holiday_date,holiday_descritpion,weekoff,holiday,\
+        "select hims_d_holiday_id,hospital_id,holiday_date,holiday_description,weekoff,holiday,\
         holiday_type,religion_id,R.religion_name,R.arabic_religion_name from  hims_d_holiday  H left join\
         hims_d_religion R on H.religion_id=R.hims_d_religion_id where H.record_status='A' and date(holiday_date) \
         between date(?) and date(?) and hospital_id=? ",

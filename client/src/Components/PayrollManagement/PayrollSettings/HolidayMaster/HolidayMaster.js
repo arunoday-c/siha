@@ -8,7 +8,6 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
-import swal from "sweetalert2";
 import moment from "moment";
 
 export default class HolidayMaster extends Component {
@@ -22,12 +21,12 @@ export default class HolidayMaster extends Component {
       wednesday: false,
       thursday: false,
       friday: false,
-      saturday: false,
-      sunday: false,
+      saturday: true,
+      sunday: true,
       year: moment().year()
     };
 
-    this.getHolidayMaster();
+    //  this.getHolidayMaster();
     this.getReligionsMaster();
     this.getHospitals();
   }
@@ -64,46 +63,42 @@ export default class HolidayMaster extends Component {
   }
 
   dropDownHandle(value) {
+    switch (value.name) {
+      case "hospital_id":
+        this.getHolidayMaster(value.value);
+        break;
+    }
+
     this.setState({
       [value.name]: value.value
     });
   }
 
   clearWeekoffState() {
-    this.setState({});
+    this.setState({
+      year: moment().year(),
+      hospital_id: null,
+      monday: false,
+      tuesday: false,
+      wednesday: false,
+      thursday: false,
+      friday: false,
+      saturday: true,
+      sunday: true
+    });
   }
 
   clearHolidayState() {
     this.setState({});
   }
 
-  addHoliday() {
-    AlgaehValidation({
-      alertTypeIcon: "warning",
-      onSuccess: () => {
-        algaehApiCall({
-          uri: "/employee/addEarningDeduction",
-          method: "POST",
-          data: {},
-          onSuccess: res => {
-            if (res.data.success) {
-              this.clearState();
-              swalMessage({
-                title: "Record added successfully",
-                type: "success"
-              });
-            }
-          },
-          onFailure: err => {}
-        });
-      }
-    });
-  }
-
-  getHolidayMaster() {
+  getHolidayMaster(id) {
     algaehApiCall({
-      uri: "/employee/get",
+      uri: "/holiday/getAllHolidays",
       method: "GET",
+      data: {
+        hospital_id: id
+      },
       onSuccess: res => {
         if (res.data.success) {
           this.setState({
@@ -111,7 +106,6 @@ export default class HolidayMaster extends Component {
           });
         }
       },
-
       onFailure: err => {}
     });
   }
@@ -141,12 +135,40 @@ export default class HolidayMaster extends Component {
     row.update();
   }
 
+  addHoliday() {
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      querySelector: "data-validate='holDiv'",
+      onSuccess: () => {
+        algaehApiCall({
+          uri: "/payroll/addLeave",
+          method: "POST",
+          data: {
+            date: this.state.date,
+            holiday_type: this.state.holiday_type ? "RS" : "RE"
+          },
+          onSuccess: res => {
+            if (res.data.success) {
+              this.clearState();
+              swalMessage({
+                title: "Record added successfully",
+                type: "success"
+              });
+            }
+          },
+          onFailure: err => {}
+        });
+      }
+    });
+  }
+
   addWeekoffs() {
     AlgaehValidation({
       alertTypeIcon: "warning",
+      querySelector: "data-validate='weekoff-div'",
       onSuccess: () => {
         algaehApiCall({
-          uri: "/payroll/addWeekOffs",
+          uri: "/holiday/addWeekOffs",
           method: "POST",
           data: {
             year: this.state.year,
@@ -161,10 +183,15 @@ export default class HolidayMaster extends Component {
           },
           onSuccess: res => {
             if (res.data.success) {
-              this.clearState();
+              this.clearWeekoffState();
               swalMessage({
-                title: "Record added successfully",
+                title: "Records added successfully",
                 type: "success"
+              });
+            } else if (!res.data.success) {
+              swalMessage({
+                title: res.data.records.message,
+                type: "error"
               });
             }
           },
@@ -188,228 +215,234 @@ export default class HolidayMaster extends Component {
               <div className="portlet-body">
                 <div className="col-12">
                   <div className="row">
-                    <div className="col slctYearBranchSec">
-                      <div className="row">
-                        <AlagehFormGroup
-                          div={{ className: "col mandatory" }}
-                          label={{
-                            forceLabel: "Year",
-                            isImp: true
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "year",
-                            value: this.state.year,
-                            events: {
-                              onChange: this.changeTexts.bind(this)
-                            },
-                            others: {
-                              type: "number",
-                              min: moment().year()
-                            }
-                          }}
-                        />
-
-                        <AlagehAutoComplete
-                          div={{ className: "col mandatory" }}
-                          label={{
-                            forceLabel: "Filter by Branch",
-                            isImp: false
-                          }}
-                          selector={{
-                            name: "hospital_id",
-                            className: "select-fld",
-                            value: this.state.hospital_id,
-                            dataSource: {
-                              textField: "hospital_name",
-                              valueField: "hims_d_hospital_id",
-                              data: this.state.hospitals
-                            },
-                            onChange: this.dropDownHandle.bind(this)
-                          }}
-                        />
-                      </div>
-                    </div>
-                    <hr />
-                    <div
-                      className="col-12 algaehLabelFormGroup"
-                      style={{ marginBottom: 25 }}
-                    >
-                      <label className="algaehLabelGroup">Week off</label>
-                      <div className="row">
-                        <div className="col-12">
-                          {/* <label>Calculation Method</label> */}
-                          <div className="customCheckbox">
-                            <label className="checkbox inline">
-                              <input
-                                type="checkbox"
-                                name="sunday"
-                                checked={this.state.sunday}
-                                onChange={this.changeChecks.bind(this)}
-                              />
-                              <span>Sunday</span>
-                            </label>
-                            <label className="checkbox inline">
-                              <input
-                                type="checkbox"
-                                name="monday"
-                                checked={this.state.monday}
-                                onChange={this.changeChecks.bind(this)}
-                              />
-                              <span>Monday</span>
-                            </label>
-                            <label className="checkbox inline">
-                              <input
-                                type="checkbox"
-                                name="tuesday"
-                                checked={this.state.tuesday}
-                                onChange={this.changeChecks.bind(this)}
-                              />
-                              <span>Tuesday</span>
-                            </label>
-
-                            <label className="checkbox inline">
-                              <input
-                                type="checkbox"
-                                name="wednesday"
-                                checked={this.state.wednesday}
-                                onChange={this.changeChecks.bind(this)}
-                              />
-                              <span>Wednesday</span>
-                            </label>
-                            <label className="checkbox inline">
-                              <input
-                                type="checkbox"
-                                name="thursday"
-                                checked={this.state.thursday}
-                                onChange={this.changeChecks.bind(this)}
-                              />
-                              <span>Thursday</span>
-                            </label>
-                            <label className="checkbox inline">
-                              <input
-                                type="checkbox"
-                                name="friday"
-                                checked={this.state.friday}
-                                onChange={this.changeChecks.bind(this)}
-                              />
-                              <span>Friday</span>
-                            </label>
-                            <label className="checkbox inline">
-                              <input
-                                type="checkbox"
-                                name="saturday"
-                                checked={this.state.saturday}
-                                onChange={this.changeChecks.bind(this)}
-                              />
-                              <span>Saturday</span>
-                            </label>
-                          </div>
-                        </div>
-                        <div className="col-12">
-                          <button
-                            onClick={this.addWeekoffs.bind(this)}
-                            className="btn btn-primary"
-                            style={{
-                              float: "right",
-                              marginTop: 10,
-                              marginBottom: 10
+                    <div data-validate="weekoff-div">
+                      <div className="col slctYearBranchSec">
+                        <div className="row">
+                          <AlagehFormGroup
+                            div={{ className: "col mandatory" }}
+                            label={{
+                              forceLabel: "Year",
+                              isImp: true
                             }}
-                          >
-                            Apply
-                          </button>
+                            textBox={{
+                              className: "txt-fld",
+                              name: "year",
+                              value: this.state.year,
+                              events: {
+                                onChange: this.changeTexts.bind(this)
+                              },
+                              others: {
+                                type: "number",
+                                min: moment().year()
+                              }
+                            }}
+                          />
+
+                          <AlagehAutoComplete
+                            div={{ className: "col mandatory" }}
+                            label={{
+                              forceLabel: "Filter by Branch",
+                              isImp: true
+                            }}
+                            selector={{
+                              name: "hospital_id",
+                              className: "select-fld",
+                              value: this.state.hospital_id,
+                              dataSource: {
+                                textField: "hospital_name",
+                                valueField: "hims_d_hospital_id",
+                                data: this.state.hospitals
+                              },
+                              onChange: this.dropDownHandle.bind(this)
+                            }}
+                          />
                         </div>
                       </div>
-                    </div>
-                    <div
-                      className="col-12 algaehLabelFormGroup"
-                      style={{ marginBottom: 0, paddingBottom: 10 }}
-                    >
-                      <label className="algaehLabelGroup">Other Holidays</label>
-                      <div className="row">
-                        <AlgaehDateHandler
-                          div={{ className: "col-12" }}
-                          label={{
-                            forceLabel: "Select a Date",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "date"
-                          }}
-                          events={{
-                            onChange: selectedDate => {
-                              this.setState({
-                                date: selectedDate
-                              });
-                            }
-                          }}
-                          value={this.state.date}
-                        />
+                      <hr />
+                      <div
+                        className="col-12 algaehLabelFormGroup"
+                        style={{ marginBottom: 25 }}
+                      >
+                        <label className="algaehLabelGroup">Week off</label>
+                        <div className="row">
+                          <div className="col-12">
+                            <div className="customCheckbox">
+                              <label className="checkbox inline">
+                                <input
+                                  type="checkbox"
+                                  name="sunday"
+                                  checked={this.state.sunday}
+                                  onChange={this.changeChecks.bind(this)}
+                                />
+                                <span>Sunday</span>
+                              </label>
+                              <label className="checkbox inline">
+                                <input
+                                  type="checkbox"
+                                  name="monday"
+                                  checked={this.state.monday}
+                                  onChange={this.changeChecks.bind(this)}
+                                />
+                                <span>Monday</span>
+                              </label>
+                              <label className="checkbox inline">
+                                <input
+                                  type="checkbox"
+                                  name="tuesday"
+                                  checked={this.state.tuesday}
+                                  onChange={this.changeChecks.bind(this)}
+                                />
+                                <span>Tuesday</span>
+                              </label>
 
-                        <div className="col-6 restrictedCntr">
-                          <label>Restricted Holiday</label>
-                          <div className="customCheckbox">
-                            <label className="checkbox inline">
-                              <input
-                                type="checkbox"
-                                checked={this.state.holiday_type}
-                                name="holiday_type"
-                                onChange={this.changeChecks.bind(this)}
-                              />
-                              <span>Yes</span>
-                            </label>
+                              <label className="checkbox inline">
+                                <input
+                                  type="checkbox"
+                                  name="wednesday"
+                                  checked={this.state.wednesday}
+                                  onChange={this.changeChecks.bind(this)}
+                                />
+                                <span>Wednesday</span>
+                              </label>
+                              <label className="checkbox inline">
+                                <input
+                                  type="checkbox"
+                                  name="thursday"
+                                  checked={this.state.thursday}
+                                  onChange={this.changeChecks.bind(this)}
+                                />
+                                <span>Thursday</span>
+                              </label>
+                              <label className="checkbox inline">
+                                <input
+                                  type="checkbox"
+                                  name="friday"
+                                  checked={this.state.friday}
+                                  onChange={this.changeChecks.bind(this)}
+                                />
+                                <span>Friday</span>
+                              </label>
+                              <label className="checkbox inline">
+                                <input
+                                  type="checkbox"
+                                  name="saturday"
+                                  checked={this.state.saturday}
+                                  onChange={this.changeChecks.bind(this)}
+                                />
+                                <span>Saturday</span>
+                              </label>
+                            </div>
+                          </div>
+                          <div className="col-12">
+                            <button
+                              onClick={this.addWeekoffs.bind(this)}
+                              className="btn btn-primary"
+                              style={{
+                                float: "right",
+                                marginTop: 10,
+                                marginBottom: 10
+                              }}
+                            >
+                              Apply
+                            </button>
                           </div>
                         </div>
-                        <AlagehAutoComplete
-                          div={{ className: "col-6 ApplicableSelect" }}
-                          label={{
-                            forceLabel: "Applicable for",
-                            isImp: false
-                          }}
-                          selector={{
-                            name: "religion_id",
-                            className: "select-fld",
-                            value: this.state.religion_id,
-                            dataSource: {
-                              textField: "religion_name",
-                              valueField: "hims_d_religion_id",
-                              data: this.state.religions
-                            },
-                            onChange: this.dropDownHandle.bind(this),
-                            others: {
-                              disabled: !this.state.holiday_type
-                            }
-                          }}
-                        />
-                        <AlagehFormGroup
-                          div={{ className: "col-12" }}
-                          label={{
-                            forceLabel: "Holiday Description",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "holiday_description",
-                            value: this.state.holiday_description,
-                            events: {
-                              onChange: this.changeTexts.bind(this)
-                            }
-                          }}
-                        />
-                        <div className="col-12">
-                          <button
-                            style={{
-                              float: "right",
-                              marginTop: 10,
-                              marginBottom: 10
+                      </div>
+                    </div>
+
+                    <div className="holDiv">
+                      <div
+                        className="col-12 algaehLabelFormGroup"
+                        style={{ marginBottom: 0, paddingBottom: 10 }}
+                      >
+                        <label className="algaehLabelGroup">
+                          Other Holidays
+                        </label>
+                        <div className="row">
+                          <AlgaehDateHandler
+                            div={{ className: "col-12" }}
+                            label={{
+                              forceLabel: "Select a Date",
+                              isImp: false
                             }}
-                            onClick={this.addHoliday.bind(this)}
-                            className="btn btn-primary"
-                          >
-                            {" "}
-                            Add
-                          </button>
+                            textBox={{
+                              className: "txt-fld",
+                              name: "date"
+                            }}
+                            events={{
+                              onChange: selectedDate => {
+                                this.setState({
+                                  date: selectedDate
+                                });
+                              }
+                            }}
+                            value={this.state.date}
+                          />
+
+                          <div className="col-6 restrictedCntr">
+                            <label>Restricted Holiday</label>
+                            <div className="customCheckbox">
+                              <label className="checkbox inline">
+                                <input
+                                  type="checkbox"
+                                  checked={this.state.holiday_type}
+                                  name="holiday_type"
+                                  onChange={this.changeChecks.bind(this)}
+                                />
+                                <span>Yes</span>
+                              </label>
+                            </div>
+                          </div>
+                          <AlagehAutoComplete
+                            div={{ className: "col-6 ApplicableSelect" }}
+                            label={{
+                              forceLabel: "Applicable for",
+                              isImp: false
+                            }}
+                            selector={{
+                              name: "religion_id",
+                              className: "select-fld",
+                              value: this.state.religion_id,
+                              dataSource: {
+                                textField: "religion_name",
+                                valueField: "hims_d_religion_id",
+                                data: this.state.religions
+                              },
+                              onChange: this.dropDownHandle.bind(this),
+                              others: {
+                                disabled: !this.state.holiday_type
+                              }
+                            }}
+                          />
+                          <AlagehFormGroup
+                            div={{ className: "col-12" }}
+                            label={{
+                              forceLabel: "Holiday Description",
+                              isImp: false
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "holiday_description",
+                              value: this.state.holiday_description,
+                              events: {
+                                onChange: this.changeTexts.bind(this)
+                              }
+                            }}
+                          />
+                          <div className="col-12">
+                            <button
+                              style={{
+                                float: "right",
+                                marginTop: 10,
+                                marginBottom: 10
+                              }}
+                              onClick={this.addHoliday.bind(this)}
+                              className="btn btn-primary"
+                            >
+                              {" "}
+                              Add
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -418,6 +451,12 @@ export default class HolidayMaster extends Component {
               </div>
             </div>
           </div>
+
+          {/* 
+          hims_d_holiday_id, hospital_id, holiday_date,
+           holiday_description, weekoff,
+           holiday, holiday_type, religion_id */}
+
           <div className="col-8">
             <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15 margin-top-15">
               <div className="portlet-title">
@@ -446,13 +485,10 @@ export default class HolidayMaster extends Component {
                         }
                       },
                       {
-                        fieldName: "HolidayDate",
+                        fieldName: "holiday_date",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Holiday Date" }} />
                         )
-                        // others: {
-                        //   filterable: true
-                        // }
                       },
                       {
                         fieldName: "holiday_description",
@@ -463,16 +499,38 @@ export default class HolidayMaster extends Component {
                         )
                       },
                       {
-                        fieldName: "short_desc",
+                        fieldName: "weekoff",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Total Days" }} />
-                        )
+                          <AlgaehLabel label={{ forceLabel: "Week Off" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.weekoff === "Y"
+                                ? "Yes"
+                                : row.weekoff === "N"
+                                ? "No"
+                                : "------"}
+                            </span>
+                          );
+                        }
                       },
                       {
                         fieldName: "holiday_type",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Holiday Type" }} />
-                        )
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.holiday_type === "RE"
+                                ? "Regular"
+                                : row.holiday_type === "RS"
+                                ? "Restricted"
+                                : "------"}
+                            </span>
+                          );
+                        }
                       }
                     ]}
                     keyId="hims_d_holiday_id"
