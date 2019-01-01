@@ -15,7 +15,7 @@ import { debugLog } from "../../utils/logging";
 import moment from "moment";
 import _ from "lodash";
 
-//created by irfan:
+//created by irfan: to define all week off's for particular year
 let addWeekOffs = (req, res, next) => {
   try {
     if (req.db == null) {
@@ -173,7 +173,7 @@ function getDaysArray(start, end, days) {
   return arr;
 }
 
-//created by irfan:
+//created by irfan: fetch all holidays
 let getAllHolidays = (req, res, next) => {
   try {
     if (req.db == null) {
@@ -214,4 +214,81 @@ let getAllHolidays = (req, res, next) => {
   }
 };
 
-module.exports = { addWeekOffs, getAllHolidays };
+//created by irfan: define a holiday
+let addHoliday = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    if (
+      req.body.religion_id == "null" ||
+      req.body.religion_id == "" ||
+      req.body.religion_id == null
+    ) {
+      delete req.body.religion_id;
+    }
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "select hims_d_holiday_id,hospital_id,holiday_date,holiday_description,weekoff,holiday,\
+        holiday_type from  hims_d_holiday  where \
+        record_status='A' and date(holiday_date) = date(?) and hospital_id=?",
+        [input.holiday_date, input.hospital_id],
+        (error, existResult) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+
+          if (existResult.length > 0) {
+            releaseDBConnection(db, connection);
+            req.records = {
+              holiday_exist: true,
+              message:
+                "holiday is already defind for this :" + input.holiday_date
+            };
+            next();
+            return;
+          } else {
+            connection.query(
+              "INSERT INTO `hims_d_holiday` (hospital_id,holiday_date,holiday_description,\
+          weekoff,holiday,holiday_type,religion_id, created_date, created_by, updated_date, updated_by)\
+          VALUE(?,date(?),?,?,?,?,?,?,?,?,?)",
+              [
+                input.hospital_id,
+                input.holiday_date,
+                input.holiday_description,
+                "N",
+                "Y",
+                input.holiday_type,
+                input.religion_id,
+                new Date(),
+                input.created_by,
+                new Date(),
+                input.updated_by
+              ],
+              (error, result) => {
+                releaseDBConnection(db, connection);
+                if (error) {
+                  next(error);
+                }
+                req.records = result;
+                next();
+              }
+            );
+          }
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports = { addWeekOffs, getAllHolidays, addHoliday };
