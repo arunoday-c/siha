@@ -70,6 +70,7 @@ import dental from "../controller/dental";
 import selfService from "../selfService/controller/selfService";
 let router = express();
 import leave from "../Payroll/controller/leave";
+import holiday from "../Payroll/controller/holiday";
 //connect to DB
 //function(db)
 initializedDb(db => {
@@ -147,6 +148,7 @@ initializedDb(db => {
 
   router.use("/selfService", selfService({ config, db }));
   router.use("/leave", leave({ config, db }));
+  router.use("/holiday", holiday({ config, db }));
 });
 
 export default router;
