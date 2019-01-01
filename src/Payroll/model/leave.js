@@ -84,7 +84,7 @@ let applyEmployeeLeave = (req, res, next) => {
         leave_already_exist: true,
         message: "select proper sessions"
       };
-      releaseDBConnection(db, connection);
+
       next();
       return;
     }
@@ -501,7 +501,7 @@ let applyEmployeeLeave = (req, res, next) => {
         leave_already_exist: true,
         message: "cannot apply leave for next year "
       };
-      releaseDBConnection(db, connection);
+
       next();
       return;
     }
