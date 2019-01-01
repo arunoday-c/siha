@@ -10,6 +10,8 @@ import {
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
+import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
+import Enumerable from "linq";
 
 class ApplyLeave extends Component {
   constructor(props) {
@@ -17,7 +19,9 @@ class ApplyLeave extends Component {
     this.state = {
       selectedLang: this.props.SelectLanguage,
       emp_leaves_data: [],
-      leave_his: []
+      leave_his: [],
+      available_balance: 0.0,
+      total_applied_days: 0.0
     };
 
     this.getLeaveTypes();
@@ -44,43 +48,41 @@ class ApplyLeave extends Component {
     });
   }
 
-  validateRange(to_leave_session) {
+  getAppliedDays() {
+    var startdateMoment = moment(this.state.from_date);
+    var enddateMoment = moment(this.state.to_date);
+
     if (
-      moment(this.state.to_date).format("YYYYMMDD") >
-        moment(this.state.from_date).format("YYYYMMDD") &&
-      this.state.from_leave_session === "FH"
+      startdateMoment.isValid() === true &&
+      enddateMoment.isValid() === true
     ) {
-      this.setState({
-        from_leave_session: "FD"
-      });
-      return true;
-    } else if (
-      moment(this.state.to_date).format("YYYYMMDD") >
-        moment(this.state.from_date).format("YYYYMMDD") &&
-      to_leave_session === "SH"
-    ) {
-      this.setState({
-        to_leave_session: "FD"
-      });
+      var days = enddateMoment.diff(startdateMoment, "days");
 
-      return true;
+      if (
+        this.state.from_leave_session === "FH" ||
+        this.state.from_leave_session === "SH" ||
+        this.state.to_leave_session === "FH" ||
+        this.state.to_leave_session === "SH"
+      ) {
+        this.setState({
+          total_applied_days: Math.abs(days - 1 + 0.5)
+        });
+      } else {
+        this.setState({
+          total_applied_days: Math.abs(days)
+        });
+      }
+    } else {
+      this.setState({
+        total_applied_days: 0
+      });
     }
-
-    return true;
-    //else if (
-    //   moment(this.state.to_date).format("YYYYMMDD") ===
-    //     moment(this.state.from_date).format("YYYYMMDD") &&
-    //   this.state.from_leave_session === "SH" &&
-    //   to_leave_session === "FH"
-    // ) {
-    //   return false;
-    // }
   }
 
   dropDownHandler(value) {
     switch (value.name) {
       case "to_leave_session":
-        console.log("From Session", this.state.from_leave_session);
+        debugger;
         if (this.state.from_leave_session === undefined) {
           document.getElementById("frm-lv-ssn").focus();
           swalMessage({
@@ -88,19 +90,101 @@ class ApplyLeave extends Component {
             type: "warning"
           });
         } else {
-          let success = this.validateRange(value.value);
-
-          if (success) {
-            this.setState({
-              [value.name]: value.value
-            });
-          } else {
+          if (
+            moment(this.state.to_date).format("YYYYMMDD") >
+              moment(this.state.from_date).format("YYYYMMDD") &&
+            value.value === "SH"
+          ) {
+            this.setState(
+              {
+                [value.name]: "FD"
+              },
+              () => {
+                this.getAppliedDays();
+              }
+            );
+          } else if (
+            moment(this.state.to_date).format("YYYYMMDD") ===
+              moment(this.state.from_date).format("YYYYMMDD") &&
+            this.state.from_leave_session === "FH" &&
+            value.value === "SH"
+          ) {
+            this.setState(
+              {
+                from_leave_session: "FD",
+                to_leave_session: "FD"
+              },
+              () => {
+                this.getAppliedDays();
+              }
+            );
+          } else if (
+            moment(this.state.to_date).format("YYYYMMDD") ===
+              moment(this.state.from_date).format("YYYYMMDD") &&
+            this.state.from_leave_session === "SH" &&
+            value.value === "FH"
+          ) {
             swalMessage({
-              title: "Please Select a proper range",
+              title: "Please select a proper range",
               type: "warning"
             });
+
+            this.setState(
+              {
+                [value.name]: null
+              },
+              () => {
+                this.getAppliedDays();
+              }
+            );
+          } else {
+            this.setState(
+              {
+                [value.name]: value.value
+              },
+              () => {
+                this.getAppliedDays();
+              }
+            );
           }
         }
+        break;
+
+      case "from_leave_session":
+        if (
+          this.state.to_date !== undefined &&
+          this.state.from_date !== undefined
+        ) {
+          moment(this.state.to_date).format("YYYYMMDD") >
+          moment(this.state.from_date).format("YYYYMMDD")
+            ? this.setState({
+                [value.name]: "FD"
+              })
+            : null;
+        } else {
+          this.setState({
+            [value.name]: value.value
+          });
+        }
+        break;
+
+      case "leave_id":
+        this.setState(
+          {
+            [value.name]: value.value
+          },
+          () => {
+            let myObj = Enumerable.from(this.state.leave_types)
+              .where(w => w.hims_d_leave_id === value.value)
+              .firstOrDefault();
+
+            this.setState({
+              available_balance: value.selected.close_balance,
+              leave_type: myObj !== undefined ? myObj.leave_type : null
+            });
+          }
+        );
+
         break;
 
       default:
@@ -110,39 +194,60 @@ class ApplyLeave extends Component {
         break;
     }
   }
-  clearState() {}
+
+  clearState() {
+    this.setState({
+      leave_id: null,
+      from_date: null,
+      from_leave_session: null,
+      to_date: null,
+      to_leave_session: null,
+      remarks: null
+    });
+  }
 
   applyLeave() {
-    algaehApiCall({
-      uri: "/leave/applyEmployeeLeave",
-      method: "POST",
-      data: {
-        employee_id: this.state.employee_id,
-        sub_department_id: this.state.sub_department_id,
-        leave_id: this.state.leave_id,
-        leave_type: "P",
-        from_date: this.state.from_date,
-        to_date: this.state.to_date,
-        from_leave_session: this.state.from_leave_session,
-        to_leave_session: this.state.to_leave_session,
-        leave_applied_from: "D",
-        total_applied_days: 1
-      },
-      onSuccess: res => {
-        if (res.data.success) {
-          swalMessage({
-            title: "Leave Applied Successfully",
-            type: "success"
-          });
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      querySelector: "data-validate='apply-leave-div'",
+      onSuccess: () => {
+        algaehApiCall({
+          uri: "/leave/applyEmployeeLeave",
+          method: "POST",
+          data: {
+            employee_id: this.state.employee_id,
+            sub_department_id: this.state.sub_department_id,
+            leave_id: this.state.leave_id,
+            leave_type: this.state.leave_type,
+            from_date: this.state.from_date,
+            to_date: this.state.to_date,
+            from_leave_session: this.state.from_leave_session,
+            to_leave_session: this.state.to_leave_session,
+            leave_applied_from: "D",
+            total_applied_days: this.state.total_applied_days
+          },
+          onSuccess: res => {
+            if (res.data.success) {
+              swalMessage({
+                title: "Leave Applied Successfully",
+                type: "success"
+              });
 
-          this.getEmployeeLeaveHistory();
-          this.clearState();
-        }
-      },
-      onFailure: err => {
-        swalMessage({
-          title: err.message,
-          type: "error"
+              this.getEmployeeLeaveHistory();
+              this.clearState();
+            } else if (!res.data.success) {
+              swalMessage({
+                title: res.data.records.message,
+                type: "error"
+              });
+            }
+          },
+          onFailure: err => {
+            swalMessage({
+              title: err.message,
+              type: "error"
+            });
+          }
         });
       }
     });
@@ -160,27 +265,25 @@ class ApplyLeave extends Component {
           this.setState({
             leave_his: res.data.records
           });
-
-          // console.log("Emp Leave Data:", this.state.leave_his);
         }
       },
       onFailure: err => {}
     });
   }
+
   getEmployeeLeaveData() {
     algaehApiCall({
       uri: "/leave/getEmployeeLeaveData",
       method: "GET",
       data: {
         employee_id: this.state.employee_id
+        //employee_id: 94
       },
       onSuccess: res => {
         if (res.data.success) {
           this.setState({
             emp_leaves_data: res.data.records
           });
-
-          console.log("Emp Leave Data:", this.state.emp_leaves);
         }
       },
       onFailure: err => {}
@@ -226,7 +329,7 @@ class ApplyLeave extends Component {
     return (
       <React.Fragment>
         <div className="row apply_leave">
-          <div className="col-3">
+          <div data-validate="apply-leave-div" className="col-3">
             <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
@@ -268,8 +371,8 @@ class ApplyLeave extends Component {
                       value: this.state.leave_id,
                       dataSource: {
                         textField: "leave_description",
-                        valueField: "hims_d_leave_id",
-                        data: this.state.leave_types
+                        valueField: "leave_id",
+                        data: this.state.emp_leaves_data
                       },
                       onChange: this.dropDownHandler.bind(this)
                     }}
@@ -277,10 +380,10 @@ class ApplyLeave extends Component {
                   <div className="col-6 margin-bottom-15">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Avialable Balance"
+                        forceLabel: "Available Balance"
                       }}
                     />
-                    <h6>0.0 days</h6>
+                    <h6>{this.state.available_balance} days</h6>
                   </div>
                   <AlgaehDateHandler
                     div={{ className: "col-6 margin-bottom-15" }}
@@ -293,7 +396,22 @@ class ApplyLeave extends Component {
                       name: "from_date",
                       others: {
                         tabIndex: "6",
-                        id: "leave-frm-dt"
+                        id: "leave-frm-dt",
+                        onBlur: () => {
+                          debugger;
+                          if (
+                            moment(this.state.from_date).format("YYYYMMDD") <
+                            moment(new Date()).format("YYYYMMDD")
+                          ) {
+                            swalMessage({
+                              title: "Cannot Apply leaves for past dates",
+                              type: "warning"
+                            });
+                            this.setState({
+                              from_date: null
+                            });
+                          }
+                        }
                       }
                     }}
                     events={{
@@ -337,12 +455,35 @@ class ApplyLeave extends Component {
                       className: "txt-fld",
                       name: "to_date",
                       others: {
-                        tabIndex: "6"
+                        tabIndex: "6",
+                        onBlur: () => {
+                          if (this.state.from_date !== undefined) {
+                            if (
+                              moment(this.state.from_date).format("YYYYMMDD") >
+                              moment(this.state.to_date).format("YYYYMMDD")
+                            ) {
+                              swalMessage({
+                                title:
+                                  "To Date should be greater than from Date",
+                                type: "warning"
+                              });
+                              this.setState({
+                                to_date: null
+                              });
+                            } else if (
+                              moment(this.state.from_date).format("YYYYMMDD") <
+                              moment(this.state.to_date).format("YYYYMMDD")
+                            ) {
+                              this.setState({
+                                from_leave_session: "FD"
+                              });
+                            }
+                          }
+                        }
                       }
                     }}
                     events={{
                       onChange: selDate => {
-                        console.log("From date:", this.state.from_date);
                         if (this.state.from_date === undefined) {
                           document.getElementById("leave-frm-dt").focus();
                           swalMessage({
@@ -358,7 +499,7 @@ class ApplyLeave extends Component {
                     }}
                     value={this.state.to_date}
                     minDate={this.state.from_date}
-                  />{" "}
+                  />
                   <AlagehAutoComplete
                     div={{ className: "col-6 margin-bottom-15" }}
                     label={{
@@ -383,7 +524,7 @@ class ApplyLeave extends Component {
                         forceLabel: "No. of Days"
                       }}
                     />
-                    <h6>0.0 days</h6>
+                    <h6>{this.state.total_applied_days} days</h6>
                   </div>
                   <AlagehFormGroup
                     div={{ className: "col-12 margin-bottom-15" }}
@@ -413,6 +554,7 @@ class ApplyLeave extends Component {
               </div>
             </div>
           </div>
+
           <div className="col-9">
             <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
               <div className="portlet-title">
@@ -429,52 +571,104 @@ class ApplyLeave extends Component {
                         {
                           fieldName: "leave_application_code",
                           label: "Leave Code"
-                          //disabled: true
                         },
                         {
                           fieldName: "application_date",
                           label: "Leave Requested On"
-                          //disabled: true
                         },
                         {
                           fieldName: "leave_description",
                           label: "Leave Type"
-                          //disabled: true
                         },
                         {
                           fieldName: "from_date",
                           label: "Leave From"
-                          //disabled: true
                         },
                         {
                           fieldName: "to_date",
                           label: "Leave To"
-                          //disabled: true
                         },
                         {
                           fieldName: "total_applied_days",
                           label: "Applied Days"
-                          //disabled: true
                         },
                         {
                           fieldName: "total_approved_days",
-                          label: "Approved Days"
-                          //disabled: true
+                          label: "Approved Days",
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {row.total_approved_days !== null
+                                  ? row.total_approved_days
+                                  : 0}
+                              </span>
+                            );
+                          }
                         },
                         {
                           fieldName: "remarks",
-                          label: "Leave Reason"
-                          //disabled: true
+                          label: "Leave Reason",
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {row.remarks !== null
+                                  ? row.remarks
+                                  : "Not Specified"}
+                              </span>
+                            );
+                          }
                         },
                         {
                           fieldName: "authorized",
-                          label: "Authorized"
-                          //disabled: true
+                          label: "Authorized",
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {row.authorized === "Y" ? "Yes" : "No"}
+                              </span>
+                            );
+                          },
+                          editorTemplate: row => {
+                            return (
+                              <span>
+                                {row.authorized === "Y" ? "Yes" : "No"}
+                              </span>
+                            );
+                          }
                         },
                         {
                           fieldName: "status",
-                          label: "Status"
-                          //disabled: true
+                          label: "Status",
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {row.status === "PEN"
+                                  ? "Pending"
+                                  : row.status === "APR"
+                                  ? "Approved"
+                                  : row.status === "REJ"
+                                  ? "Rejected"
+                                  : row.status === "PRO"
+                                  ? "Processed"
+                                  : "------"}
+                              </span>
+                            );
+                          },
+                          editorTemplate: row => {
+                            return (
+                              <span>
+                                {row.status === "PEN"
+                                  ? "Pending"
+                                  : row.status === "APR"
+                                  ? "Approved"
+                                  : row.status === "REJ"
+                                  ? "Rejected"
+                                  : row.status === "PRO"
+                                  ? "Processed"
+                                  : "------"}
+                              </span>
+                            );
+                          }
                         }
                       ]}
                       keyId="algaeh_d_module_id"
@@ -495,11 +689,6 @@ class ApplyLeave extends Component {
             </div>
 
             <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
-              {/* <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">Leave Request List</h3>
-                </div>
-              </div> */}
               <div className="portlet-body">
                 <div className="row leaveBalanceCntr">
                   {leaveData.map((data, index) => (
@@ -513,67 +702,10 @@ class ApplyLeave extends Component {
                         }}
                       />
                       <h6>
-                        {data.close_balance}/{data.total_eligible} Day (s)
+                        {data.availed_till_date}/{data.total_eligible} Day (s)
                       </h6>
                     </div>
                   ))}
-
-                  {/* <div className="col">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Sick Leave"
-                      }}
-                    />
-                    <h6>0/3 Day (s)</h6>
-                  </div>
-                  <div className="col">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Casual Leave"
-                      }}
-                    />
-                    <h6>0/3 Day (s)</h6>
-                  </div>
-                  <div className="col">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Commpensatory Off"
-                      }}
-                    />
-                    <h6>0/0 Day (s)</h6>
-                  </div>{" "}
-                  <div className="col">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Earned Leave"
-                      }}
-                    />
-                    <h6>0/7 Day (s)</h6>
-                  </div>{" "}
-                  <div className="col">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Paternity Leave"
-                      }}
-                    />
-                    <h6>0/5 Day (s)</h6>
-                  </div>{" "}
-                  <div className="col">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Loss of Pay"
-                      }}
-                    />
-                    <h6>0/0 Day (s)</h6>
-                  </div>
-                  <div className="col">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Hajj Leave"
-                      }}
-                    />
-                    <h6>0/15 Day (s)</h6>
-                  </div> */}
                 </div>
               </div>
             </div>

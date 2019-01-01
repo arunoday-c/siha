@@ -9,160 +9,82 @@ import {
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
+import moment from "moment";
 
 export default class HolidayMaster extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      earning_deductions: []
+      holiday_type: false,
+      holidays: [],
+      monday: false,
+      tuesday: false,
+      wednesday: false,
+      thursday: false,
+      friday: false,
+      saturday: false,
+      sunday: false,
+      year: moment().year()
     };
 
-    this.getEarningDeductions();
+    this.getHolidayMaster();
+    this.getReligionsMaster();
+    this.getHospitals();
   }
 
-  clearState() {
-    this.setState({
-      earning_deduction_code: "",
-      earning_deduction_description: "",
-      short_desc: this.state.short_desc,
-      component_category: "",
-      calculation_method: "",
-      component_frequency: "",
-      calculation_type: "",
-      component_type: "",
-      shortage_deduction_applicable: "",
-      overtime_applicable: "",
-      limit_applicable: "",
-      limit_amount: "",
-      process_limit_required: "",
-      process_limit_days: "",
-      general_ledger: "",
-      allow_round_off: "",
-      round_off_type: "",
-      round_off_amount: ""
-    });
-  }
-
-  updateEarningsDeductions(data) {
+  getHospitals() {
     algaehApiCall({
-      uri: "/employee/updateEarningDeduction",
-      method: "PUT",
-      data: {
-        hims_d_earning_deduction_id: data.hims_d_earning_deduction_id,
-        earning_deduction_code: data.earning_deduction_code,
-        earning_deduction_description: data.earning_deduction_description,
-        short_desc: data.short_desc,
-        component_category: data.component_category,
-        calculation_method: data.calculation_method,
-        component_frequency: data.component_frequency,
-        calculation_type: data.calculation_type,
-        component_type: data.component_type,
-        shortage_deduction_applicable: data.shortage_deduction_applicable,
-        overtime_applicable: data.overtime_applicable,
-        limit_applicable: data.limit_applicable,
-        limit_amount: data.limit_amount,
-        process_limit_required: data.process_limit_required,
-        process_limit_days: data.process_limit_days,
-        general_ledger: data.general_ledger,
-        allow_round_off: data.allow_round_off,
-        round_off_type: data.round_off_type,
-        round_off_amount: data.round_off_amount
-      },
-      onSuccess: response => {
-        if (response.data.success) {
-          swalMessage({
-            title: "Record updated successfully",
-            type: "success"
+      uri: "/organization/getOrganization",
+      method: "GET",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            hospitals: res.data.records
           });
-          this.getEarningDeductions();
         }
       },
-      onFailure: error => {
-        swalMessage({
-          title: error.message,
-          type: "error"
-        });
-      }
+
+      onFailure: err => {}
+    });
+  }
+  getReligionsMaster() {
+    algaehApiCall({
+      uri: "/masters/get/relegion",
+      method: "GET",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            religions: res.data.records
+          });
+        }
+      },
+
+      onFailure: err => {}
     });
   }
 
-  deleteEarningsDeductions(data) {
-    swal({
-      title: "Are you sure you want to delete " + data.short_desc + " ?",
-      type: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes!",
-      confirmButtonColor: "#44b8bd",
-      cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
-      if (willDelete.value) {
-        algaehApiCall({
-          uri: "/employee/deleteEarningDeduction",
-          data: {
-            hims_d_earning_deduction_id: data.hims_d_earning_deduction_id
-          },
-          method: "DELETE",
-          onSuccess: response => {
-            if (response.data.records.success) {
-              swalMessage({
-                title: "Record deleted successfully . .",
-                type: "success"
-              });
-
-              this.getEarningDeductions();
-            } else if (!response.data.records.success) {
-              swalMessage({
-                title: response.data.records.message,
-                type: "error"
-              });
-            }
-          },
-          onFailure: error => {
-            swalMessage({
-              title: error.message,
-              type: "error"
-            });
-          }
-        });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
-      }
+  dropDownHandle(value) {
+    this.setState({
+      [value.name]: value.value
     });
   }
 
-  addEarningsDeductions() {
+  clearWeekoffState() {
+    this.setState({});
+  }
+
+  clearHolidayState() {
+    this.setState({});
+  }
+
+  addHoliday() {
     AlgaehValidation({
       alertTypeIcon: "warning",
       onSuccess: () => {
         algaehApiCall({
           uri: "/employee/addEarningDeduction",
           method: "POST",
-          data: {
-            earning_deduction_code: this.state.earning_deduction_code,
-            earning_deduction_description: this.state
-              .earning_deduction_description,
-            short_desc: this.state.short_desc,
-            component_category: this.state.component_category,
-            calculation_method: this.state.calculation_method,
-            component_frequency: this.state.component_frequency,
-            calculation_type: this.state.calculation_type,
-            component_type: this.state.component_type,
-            shortage_deduction_applicable: this.state
-              .shortage_deduction_applicable,
-            overtime_applicable: this.state.overtime_applicable,
-            limit_applicable: this.state.limit_applicable,
-            limit_amount: this.state.limit_amount,
-            process_limit_required: this.state.process_limit_required,
-            process_limit_days: this.state.process_limit_days,
-            general_ledger: this.state.general_ledger,
-            allow_round_off: this.state.allow_round_off,
-            round_off_type: this.state.round_off_type,
-            round_off_amount: this.state.round_off_amount
-          },
+          data: {},
           onSuccess: res => {
             if (res.data.success) {
               this.clearState();
@@ -178,14 +100,14 @@ export default class HolidayMaster extends Component {
     });
   }
 
-  getEarningDeductions() {
+  getHolidayMaster() {
     algaehApiCall({
-      uri: "/employee/getEarningDeduction",
+      uri: "/employee/get",
       method: "GET",
       onSuccess: res => {
         if (res.data.success) {
           this.setState({
-            earning_deductions: res.data.records
+            holidays: res.data.records
           });
         }
       },
@@ -200,6 +122,12 @@ export default class HolidayMaster extends Component {
     });
   }
 
+  changeChecks(e) {
+    this.setState({
+      [e.target.name]: e.target.checked
+    });
+  }
+
   changeTexts(e) {
     this.setState({
       [e.target.name]: e.target.value
@@ -211,6 +139,39 @@ export default class HolidayMaster extends Component {
     let value = e.value || e.target.value;
     row[name] = value;
     row.update();
+  }
+
+  addWeekoffs() {
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      onSuccess: () => {
+        algaehApiCall({
+          uri: "/payroll/addWeekOffs",
+          method: "POST",
+          data: {
+            year: this.state.year,
+            hospital_id: this.state.hospital_id,
+            sunday: this.state.sunday ? "Y" : "N",
+            monday: this.state.monday ? "Y" : "N",
+            tuesday: this.state.tuesday ? "Y" : "N",
+            wednesday: this.state.wednesday ? "Y" : "N",
+            thursday: this.state.thursday ? "Y" : "N",
+            friday: this.state.friday ? "Y" : "N",
+            saturday: this.state.saturday ? "Y" : "N"
+          },
+          onSuccess: res => {
+            if (res.data.success) {
+              this.clearState();
+              swalMessage({
+                title: "Record added successfully",
+                type: "success"
+              });
+            }
+          },
+          onFailure: err => {}
+        });
+      }
+    });
   }
 
   render() {
@@ -229,31 +190,26 @@ export default class HolidayMaster extends Component {
                   <div className="row">
                     <div className="col slctYearBranchSec">
                       <div className="row">
-                        <AlgaehDateHandler
+                        <AlagehFormGroup
                           div={{ className: "col mandatory" }}
                           label={{
-                            forceLabel: "Select a Year",
+                            forceLabel: "Year",
                             isImp: true
                           }}
                           textBox={{
                             className: "txt-fld",
-                            name: "date_of_recall",
-                            other: {
-                              type: "year"
+                            name: "year",
+                            value: this.state.year,
+                            events: {
+                              onChange: this.changeTexts.bind(this)
+                            },
+                            others: {
+                              type: "number",
+                              min: moment().year()
                             }
                           }}
-                          minDate={new Date()}
-                          events={
-                            {
-                              // onChange: selectedDate => {
-                              //   this.setState({
-                              //     date_of_recall: selectedDate
-                              //   });
-                              // }
-                            }
-                          }
-                          value={this.state.date_of_recall}
                         />
+
                         <AlagehAutoComplete
                           div={{ className: "col mandatory" }}
                           label={{
@@ -261,15 +217,15 @@ export default class HolidayMaster extends Component {
                             isImp: false
                           }}
                           selector={{
-                            name: "provider_id",
+                            name: "hospital_id",
                             className: "select-fld",
-                            value: this.state.provider_id,
+                            value: this.state.hospital_id,
                             dataSource: {
-                              textField: "full_name",
-                              valueField: "employee_id",
-                              data: this.state.doctors
-                            }
-                            //onChange: this.dropDownHandle.bind(this)
+                              textField: "hospital_name",
+                              valueField: "hims_d_hospital_id",
+                              data: this.state.hospitals
+                            },
+                            onChange: this.dropDownHandle.bind(this)
                           }}
                         />
                       </div>
@@ -287,57 +243,64 @@ export default class HolidayMaster extends Component {
                             <label className="checkbox inline">
                               <input
                                 type="checkbox"
-                                value="fixed"
-                                name="weekOffDays"
-                                checked
+                                name="sunday"
+                                checked={this.state.sunday}
+                                onChange={this.changeChecks.bind(this)}
                               />
                               <span>Sunday</span>
                             </label>
                             <label className="checkbox inline">
                               <input
                                 type="checkbox"
-                                value="formula"
-                                name="weekOffDays"
+                                name="monday"
+                                checked={this.state.monday}
+                                onChange={this.changeChecks.bind(this)}
                               />
                               <span>Monday</span>
                             </label>
                             <label className="checkbox inline">
                               <input
                                 type="checkbox"
-                                value="formula"
-                                name="weekOffDays"
+                                name="tuesday"
+                                checked={this.state.tuesday}
+                                onChange={this.changeChecks.bind(this)}
                               />
                               <span>Tuesday</span>
                             </label>
+
                             <label className="checkbox inline">
                               <input
                                 type="checkbox"
-                                value="formula"
-                                name="weekOffDays"
+                                name="wednesday"
+                                checked={this.state.wednesday}
+                                onChange={this.changeChecks.bind(this)}
                               />
                               <span>Wednesday</span>
                             </label>
                             <label className="checkbox inline">
                               <input
                                 type="checkbox"
-                                value="formula"
-                                name="weekOffDays"
+                                name="thursday"
+                                checked={this.state.thursday}
+                                onChange={this.changeChecks.bind(this)}
                               />
                               <span>Thursday</span>
                             </label>
                             <label className="checkbox inline">
                               <input
                                 type="checkbox"
-                                value="formula"
-                                name="weekOffDays"
+                                name="friday"
+                                checked={this.state.friday}
+                                onChange={this.changeChecks.bind(this)}
                               />
                               <span>Friday</span>
                             </label>
                             <label className="checkbox inline">
                               <input
                                 type="checkbox"
-                                value="formula"
-                                name="weekOffDays"
+                                name="saturday"
+                                checked={this.state.saturday}
+                                onChange={this.changeChecks.bind(this)}
                               />
                               <span>Saturday</span>
                             </label>
@@ -345,7 +308,7 @@ export default class HolidayMaster extends Component {
                         </div>
                         <div className="col-12">
                           <button
-                            // onClick={this.loadPatients.bind(this)}
+                            onClick={this.addWeekoffs.bind(this)}
                             className="btn btn-primary"
                             style={{
                               float: "right",
@@ -372,19 +335,16 @@ export default class HolidayMaster extends Component {
                           }}
                           textBox={{
                             className: "txt-fld",
-                            name: "date_of_recall"
+                            name: "date"
                           }}
-                          minDate={new Date()}
-                          events={
-                            {
-                              // onChange: selectedDate => {
-                              //   this.setState({
-                              //     date_of_recall: selectedDate
-                              //   });
-                              // }
+                          events={{
+                            onChange: selectedDate => {
+                              this.setState({
+                                date: selectedDate
+                              });
                             }
-                          }
-                          value={this.state.date_of_recall}
+                          }}
+                          value={this.state.date}
                         />
 
                         <div className="col-6 restrictedCntr">
@@ -393,12 +353,13 @@ export default class HolidayMaster extends Component {
                             <label className="checkbox inline">
                               <input
                                 type="checkbox"
-                                value="Restricted"
-                                name="restricted"
+                                checked={this.state.holiday_type}
+                                name="holiday_type"
+                                onChange={this.changeChecks.bind(this)}
                               />
                               <span>Yes</span>
                             </label>
-                          </div>{" "}
+                          </div>
                         </div>
                         <AlagehAutoComplete
                           div={{ className: "col-6 ApplicableSelect" }}
@@ -407,29 +368,32 @@ export default class HolidayMaster extends Component {
                             isImp: false
                           }}
                           selector={{
-                            name: "provider_id",
+                            name: "religion_id",
                             className: "select-fld",
-                            value: this.state.provider_id,
+                            value: this.state.religion_id,
                             dataSource: {
-                              textField: "full_name",
-                              valueField: "employee_id",
-                              data: this.state.doctors
+                              textField: "religion_name",
+                              valueField: "hims_d_religion_id",
+                              data: this.state.religions
+                            },
+                            onChange: this.dropDownHandle.bind(this),
+                            others: {
+                              disabled: !this.state.holiday_type
                             }
-                            //onChange: this.dropDownHandle.bind(this)
                           }}
                         />
                         <AlagehFormGroup
                           div={{ className: "col-12" }}
                           label={{
-                            forceLabel: "Enter Reason",
+                            forceLabel: "Holiday Description",
                             isImp: false
                           }}
                           textBox={{
                             className: "txt-fld",
-                            name: "earning_deduction_code",
-                            value: "",
+                            name: "holiday_description",
+                            value: this.state.holiday_description,
                             events: {
-                              //onChange: this.changeTexts.bind(this)
+                              onChange: this.changeTexts.bind(this)
                             }
                           }}
                         />
@@ -440,7 +404,7 @@ export default class HolidayMaster extends Component {
                               marginTop: 10,
                               marginBottom: 10
                             }}
-                            // onClick={this.loadPatients.bind(this)}
+                            onClick={this.addHoliday.bind(this)}
                             className="btn btn-primary"
                           >
                             {" "}
@@ -454,15 +418,6 @@ export default class HolidayMaster extends Component {
               </div>
             </div>
           </div>
-          {/* <div className="col form-group">
-            <button
-              // onClick={this.loadPatients.bind(this)}
-              style={{ marginTop: 21 }}
-              className="btn btn-primary"
-            >
-              LOAD
-            </button>
-          </div> */}
           <div className="col-8">
             <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15 margin-top-15">
               <div className="portlet-title">
@@ -471,9 +426,25 @@ export default class HolidayMaster extends Component {
                 </div>
               </div>
               <div className="portlet-body">
-                <div data-validate="erngsDdctnsGrid" id="HolidayListGrid_Cntr">
+                <div data-validate="HolidayListGrid" id="HolidayListGrid_Cntr">
                   <AlgaehDataGrid
+                    data-validate="HolidayListGrid"
                     columns={[
+                      {
+                        fieldName: "actions",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Actions" }} />
+                        ),
+                        displayTemplate: row => {
+                          return <i className="fas fa-trash-alt" />;
+                        },
+                        others: {
+                          maxWidth: 65,
+                          resizable: false,
+                          filterable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
                       {
                         fieldName: "HolidayDate",
                         label: (
@@ -504,18 +475,13 @@ export default class HolidayMaster extends Component {
                         )
                       }
                     ]}
-                    keyId="hims_d_employee_group_id"
+                    keyId="hims_d_holiday_id"
                     dataSource={{
-                      data: this.state.earning_deductions
+                      data: this.state.holidays
                     }}
                     isEditable={false}
                     filterable
                     paging={{ page: 0, rowsPerPage: 10 }}
-                    events={{
-                      onEdit: () => {},
-                      onDelete: this.deleteEarningsDeductions.bind(this),
-                      onDone: this.updateEarningsDeductions.bind(this)
-                    }}
                   />
                 </div>
               </div>

@@ -336,6 +336,7 @@ class AddPatientForm extends PureComponent {
                         div={{ className: "col-lg-3 mandatory", tabIndex: "6" }}
                         label={{ fieldName: "hijiri_date", isImp: true }}
                         textBox={{ className: "txt-fld" }}
+                        maxDate={new Date()}
                         //maxDate={this.state.CurrentDate}
                         disabled={this.state.existingPatient}
                         // events={{onChange: AddPatientHandlers(this,context).CalculateAge.bind(this)}}
