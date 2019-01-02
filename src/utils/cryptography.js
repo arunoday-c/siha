@@ -12,9 +12,10 @@ let encryption = data => {
       role_type: data["role_type"],
       app_group_id: data["app_group_id"],
       group_type: data["group_type"],
-
       username: data["username"],
-      user_type: data["user_type"]
+      user_type: data["user_type"],
+      loan_authorize_privilege: data["loan_authorize_privilege"],
+      leave_authorize_privilege: data["leave_authorize_privilege"]
     }
   });
   return new cryptr(keys.SECRETKey).encrypt(stringData);
