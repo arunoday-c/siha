@@ -89,13 +89,53 @@ export default class WeeklyAttendance extends Component {
                     aria-valuemin="0"
                     aria-valuemax="100"
                     style={{ width: "75%" }}
-                  />
+                  >
+                    <div className="tooltipDetails">
+                      <span className="checkIn animated bounceIn faster">
+                        Check In <b>07:55 AM</b>
+                      </span>
+                      <span className="totalHr animated bounceIn faster">
+                        Late time by<b className="lateTime">55 min</b>
+                      </span>
+                      <span className="checkOut animated bounceIn faster">
+                        Check Out <b>06:15 PM</b>
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div className="col-auto">08.45 Hrs</div>
             </div>
             <div className="row dailyTimeProgress">
               <div className="col-auto">Tue, 01</div>
+              <div className="col">
+                <div className="progress">
+                  <div
+                    className="progress-bar"
+                    role="progressbar"
+                    aria-valuenow="75"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                    style={{ width: "75%" }}
+                  >
+                    <div className="tooltipDetails">
+                      <span className="checkIn animated bounceIn faster">
+                        Check In <b>08:55 AM</b>
+                      </span>
+                      <span className="totalHr animated bounceIn faster">
+                        Over time by<b className="OverTime">20 min</b>
+                      </span>
+                      <span className="checkOut animated bounceIn faster">
+                        Check Out <b>07:45 PM</b>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-auto">08.45 Hrs</div>
+            </div>
+            <div className="row dailyTimeProgress">
+              <div className="col-auto">Wed, 02</div>
               <div className="col">
                 <div className="progress">
                   <div
@@ -109,22 +149,6 @@ export default class WeeklyAttendance extends Component {
                 </div>
               </div>
               <div className="col-auto">05.15 Hrs</div>
-            </div>
-            <div className="row dailyTimeProgress">
-              <div className="col-auto">Wed, 02</div>
-              <div className="col">
-                <div className="progress ">
-                  <div
-                    className="progress-bar bg-default "
-                    role="progressbar"
-                    aria-valuenow="75"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    style={{ width: "100%" }}
-                  />
-                </div>
-              </div>
-              <div className="col-auto">00.00 Hrs</div>
             </div>
             <div className="row dailyTimeProgress">
               <div className="col-auto">Thu, 03</div>
