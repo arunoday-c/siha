@@ -70,7 +70,8 @@ class LoanModal extends Component {
       loan_tenure: this.state.loan_tenure,
       installment_amount: this.state.installment_amount,
       authorized: type,
-      auth_level: "L" + this.props.auth_level
+      auth_level: "L" + this.props.auth_level,
+      approved_amount: this.state.approved_amount
     };
     algaehApiCall({
       uri: "/loan/authorizeLoan",
@@ -78,10 +79,19 @@ class LoanModal extends Component {
       data: data,
       onSuccess: res => {
         if (res.data.success) {
-          swalMessage({
-            title: "Loan Authorized Successfully",
-            type: "success"
-          });
+          type === "A"
+            ? swalMessage({
+                title: "Loan Authorized Successfully",
+                type: "success"
+              })
+            : type === "R"
+            ? swalMessage({
+                title: "Loan Rejected",
+                type: "success"
+              })
+            : null;
+
+          document.getElementById("loan-reload").click();
         }
       },
       onFailure: err => {

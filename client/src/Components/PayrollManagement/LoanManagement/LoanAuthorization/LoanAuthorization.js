@@ -9,6 +9,7 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import LoanModal from "./LoanModal/LoanModal";
 import Enumerable from "linq";
+import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 
 class LoanAuthorization extends Component {
   constructor(props) {
@@ -60,6 +61,10 @@ class LoanAuthorization extends Component {
   }
 
   getLoanApplications() {
+    AlgaehLoader({
+      show: true
+    });
+
     algaehApiCall({
       uri: "/loan/getLoanApplication",
       method: "GET",
@@ -74,12 +79,18 @@ class LoanAuthorization extends Component {
           this.setState({
             loan_applns: res.data.records
           });
+          AlgaehLoader({
+            show: false
+          });
         }
       },
       onFailure: err => {
         swalMessage({
           title: err.message,
           type: "error"
+        });
+        AlgaehLoader({
+          show: false
         });
       }
     });
@@ -129,9 +140,21 @@ class LoanAuthorization extends Component {
     });
   }
 
+  reloadAuths() {
+    this.setState({
+      openAuth: false
+    });
+    this.getLoanApplications();
+  }
+
   render() {
     return (
       <div className="row loanAuthScreen">
+        <button
+          id="loan-reload"
+          className="d-none"
+          onClick={this.reloadAuths.bind(this)}
+        />
         <LoanModal
           open={this.state.openAuth}
           data={this.state.selRow}

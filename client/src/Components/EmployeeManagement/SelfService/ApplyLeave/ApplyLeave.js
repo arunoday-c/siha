@@ -65,11 +65,11 @@ class ApplyLeave extends Component {
         this.state.to_leave_session === "SH"
       ) {
         this.setState({
-          total_applied_days: Math.abs(days - 1 + 0.5)
+          total_applied_days: Math.abs(days + 1 + 0.5)
         });
       } else {
         this.setState({
-          total_applied_days: Math.abs(days)
+          total_applied_days: Math.abs(days + 1)
         });
       }
     } else {
