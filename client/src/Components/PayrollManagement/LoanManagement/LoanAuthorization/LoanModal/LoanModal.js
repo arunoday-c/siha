@@ -123,7 +123,7 @@ class LoanModal extends Component {
               </div>
 
               <div className="col form-group">
-                <AlgaehLabel label={{ forceLabel: "Loan Amount" }} />
+                <AlgaehLabel label={{ forceLabel: "Requested Amount" }} />
                 <h6>{this.state.loan_amount}</h6>
               </div>
             </div>
@@ -164,6 +164,24 @@ class LoanModal extends Component {
                   }
                 }}
               />
+              <AlagehFormGroup
+                div={{ className: "col form-group" }}
+                label={{
+                  forceLabel: "Approved Amount",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "approved_amount",
+                  value: this.state.approved_amount,
+                  events: {
+                    onChange: this.textHandle.bind(this)
+                  },
+                  others: {
+                    type: "number"
+                  }
+                }}
+              />
               <AlagehAutoComplete
                 div={{ className: "col form-group" }}
                 label={{
@@ -192,25 +210,6 @@ class LoanModal extends Component {
                   className: "txt-fld",
                   name: "installment_amount",
                   value: this.state.installment_amount,
-                  events: {
-                    onChange: this.textHandle.bind(this)
-                  },
-                  others: {
-                    type: "number"
-                  }
-                }}
-              />
-
-              <AlagehFormGroup
-                div={{ className: "col form-group" }}
-                label={{
-                  forceLabel: "Approved Amount",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "approved_amount",
-                  value: this.state.approved_amount,
                   events: {
                     onChange: this.textHandle.bind(this)
                   },
