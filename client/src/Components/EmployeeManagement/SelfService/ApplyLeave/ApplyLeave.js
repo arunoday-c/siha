@@ -39,7 +39,6 @@ class ApplyLeave extends Component {
         this.getEmployeeLeaveHistory();
       }
     );
-    //console.log("Data:", this.props.empData);
   }
 
   changeTexts(e) {
@@ -398,7 +397,6 @@ class ApplyLeave extends Component {
                         tabIndex: "6",
                         id: "leave-frm-dt",
                         onBlur: () => {
-                          debugger;
                           if (
                             moment(this.state.from_date).format("YYYYMMDD") <
                             moment(new Date()).format("YYYYMMDD")
@@ -421,7 +419,6 @@ class ApplyLeave extends Component {
                         });
                       }
                     }}
-                    minDate={new Date()}
                     value={this.state.from_date}
                   />
                   <AlagehAutoComplete
