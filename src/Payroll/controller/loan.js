@@ -4,7 +4,7 @@ import httpStatus from "../../utils/httpStatus";
 import {
   addLoanApplication,
   getLoanApplication,
-  getLoanLeavels
+  getLoanLevels
 } from "../model/loan";
 
 export default ({ config, db }) => {
@@ -41,7 +41,7 @@ export default ({ config, db }) => {
   );
 
   // created by irfan :
-  api.get("/getLoanLeavels", getLoanLeavels, (req, res, next) => {
+  api.get("/getLoanLevels", getLoanLevels, (req, res, next) => {
     let result = req.records;
     res.status(httpStatus.ok).json({
       success: true,

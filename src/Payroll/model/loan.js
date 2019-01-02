@@ -190,17 +190,20 @@ between date('${req.query.from_date}') and date('${req.query.to_date}') `;
 };
 
 //created by irfan:
-let getLoanLeavels = (req, res, next) => {
+let getLoanLevels = (req, res, next) => {
   try {
     let userPrivilege = req.userIdentity.loan_authorize_privilege;
 
     let auth_levels = [];
     switch (userPrivilege) {
       case "AL1":
-        auth_levels.push("L1");
+        auth_levels.push({ name: "Level 1", value: 1 });
         break;
       case "AL2":
-        auth_levels.push("L2", "L1");
+        auth_levels.push(
+          { name: "Level 2", value: 2 },
+          { name: "Level 1", value: 1 }
+        );
         break;
     }
 
@@ -213,4 +216,4 @@ let getLoanLeavels = (req, res, next) => {
   }
 };
 
-module.exports = { addLoanApplication, getLoanApplication, getLoanLeavels };
+module.exports = { addLoanApplication, getLoanApplication, getLoanLevels };
