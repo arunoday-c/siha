@@ -150,6 +150,13 @@ let getLoanApplication = (req, res, next) => {
 between date('${req.query.from_date}') and date('${req.query.to_date}') `;
     }
 
+    let auth_level = "";
+    if (req.query.auth_level == "L1") {
+      auth_level = " and authorized1='P' ";
+    } else if (req.query.auth_level == "L2") {
+      auth_level = " and authorized1='A' and authorized2='P' ";
+    }
+    debugLog("level:", auth_level);
     db.getConnection((error, connection) => {
       connection.query(
         "select hims_f_loan_application_id,loan_application_number,employee_id,loan_id,L.loan_code,L.loan_description,\
@@ -161,13 +168,17 @@ between date('${req.query.from_date}') and date('${req.query.to_date}') `;
          and E.record_status='A' where L.record_status='A' " +
           employee +
           "" +
-          range,
+          range +
+          "" +
+          auth_level,
 
         (error, result) => {
           releaseDBConnection(db, connection);
           if (error) {
             next(error);
           }
+
+          debugLog("user iden:", req.userIdentity);
           req.records = result;
           next();
         }
@@ -178,4 +189,28 @@ between date('${req.query.from_date}') and date('${req.query.to_date}') `;
   }
 };
 
-module.exports = { addLoanApplication, getLoanApplication };
+//created by irfan:
+let getLoanLeavels = (req, res, next) => {
+  try {
+    let userPrivilege = req.userIdentity.loan_authorize_privilege;
+
+    let auth_levels = [];
+    switch (userPrivilege) {
+      case "AL1":
+        auth_levels.push("L1");
+        break;
+      case "AL2":
+        auth_levels.push("L2", "L1");
+        break;
+    }
+
+    debugLog("auth_levels:", auth_levels);
+    debugLog("user iden:", req.userIdentity);
+    req.records = { auth_levels };
+    next();
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports = { addLoanApplication, getLoanApplication, getLoanLeavels };
