@@ -28,29 +28,13 @@ class LeaveMaster extends Component {
     });
   }
 
-  componentDidMount() {
-    this.setState({
-      open: this.props.open
-    });
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      open: nextProps.open
-    });
-  }
-
   render() {
     return (
       <div className="hims_leave_master">
         <AlgaehModalPopUp
-          openPopup={this.state.open}
+          openPopup={this.props.open}
           events={{
-            onClose: () => {
-              this.setState({
-                open: false
-              });
-            }
+            onClose: this.props.onClose
           }}
         >
           <div className=" leaveMasterMainPage">

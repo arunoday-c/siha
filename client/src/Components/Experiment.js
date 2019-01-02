@@ -1,5 +1,10 @@
 import React, { Component } from "react";
-import { AlgaehErrorBoundary, AlgaehModalPopUp } from "./Wrapper/algaehWrapper";
+import {
+  AlgaehErrorBoundary,
+  AlgaehModalPopUp,
+  AlgaehDataGrid,
+  AlgaehLabel
+} from "./Wrapper/algaehWrapper";
 import "react-table/react-table.css";
 import { algaehApiCall } from "../utils/algaehApiCall";
 import AlgaehReport from "./Wrapper/printReports";
@@ -35,7 +40,7 @@ class Experiment extends Component {
     super(props);
     this.state = {
       patImg: "",
-      openModal: false,
+      openAuth: false,
       name: "i"
     };
     console.log("Im Constructor");
@@ -74,8 +79,110 @@ class Experiment extends Component {
     return (
       <div style={{ textAlign: "center" }}>
         <input value={this.state.name} onChange={this.texthandle.bind(this)} />
-        <AlgaehModalPopUp title="Test" openPopup={this.state.openModal}>
-          <div>Hello I'm Modal</div>
+        <AlgaehModalPopUp
+          openPopup={this.state.openAuth}
+          events={{
+            onClose: () => {
+              this.setState({
+                openAuth: false
+              });
+            }
+          }}
+        >
+          <div className="row">
+            <div className="col-lg-2">
+              <AlgaehLabel label={{ forceLabel: "Application No." }} />
+              <h6>{"LOAN-123"}</h6>
+            </div>
+
+            <div className="col-lg-2">
+              <AlgaehLabel label={{ forceLabel: "Employee Name" }} />
+              <h6>{"Adnan"}</h6>
+            </div>
+
+            <div className="col-lg-2">
+              <AlgaehLabel label={{ forceLabel: "Loan Type" }} />
+              <h6>{"loan_description"}</h6>
+            </div>
+
+            <div className="col-lg-2">
+              <AlgaehLabel label={{ forceLabel: "Loan Amount" }} />
+              <h6>{"loan_amount"}</h6>
+            </div>
+
+            <div className="col-lg-2">
+              <AlgaehLabel label={{ forceLabel: "Start Month" }} />
+              <h6>{"start_month"}</h6>
+            </div>
+
+            <div className="col-lg-2">
+              <AlgaehLabel label={{ forceLabel: "Start Year" }} />
+              <h6>{"start_year"}</h6>
+            </div>
+          </div>
+          <div className="col-12" id="requestedLoanAppGrid_Cntr">
+            <AlgaehDataGrid
+              id="requestedLoanAppGrid"
+              datavalidate="requestedLoanAppGrid"
+              columns={[
+                {
+                  fieldName: "Amount",
+                  label: (
+                    <AlgaehLabel label={{ forceLabel: "Requested Amount" }} />
+                  )
+                },
+                {
+                  fieldName: "InterestPercentage",
+                  label: (
+                    <AlgaehLabel
+                      label={{ forceLabel: "Interest Percentage" }}
+                    />
+                  )
+                },
+                {
+                  fieldName: "loan_tenure",
+                  label: <AlgaehLabel label={{ forceLabel: "No. of EMI" }} />
+                },
+                {
+                  fieldName: "installment_amount",
+                  label: (
+                    <AlgaehLabel label={{ forceLabel: "Installment Amount" }} />
+                  )
+                },
+                {
+                  fieldName: "balance_due",
+                  label: (
+                    <AlgaehLabel label={{ forceLabel: "Pending Amount" }} />
+                  )
+                },
+                {
+                  fieldName: "start_year",
+                  label: <AlgaehLabel label={{ forceLabel: "Start Year" }} />
+                },
+                {
+                  fieldName: "start_month",
+                  label: <AlgaehLabel label={{ forceLabel: "Start Month" }} />
+                },
+                {
+                  fieldName: "remarks",
+                  label: <AlgaehLabel label={{ forceLabel: "Remakrs" }} />
+                },
+                {
+                  fieldName: "loan_authorized",
+                  label: <AlgaehLabel label={{ forceLabel: "Loan Status" }} />
+                }
+              ]}
+              keyId=""
+              dataSource={{ data: [] }}
+              isEditable={false}
+              paging={{ page: 0, rowsPerPage: 10 }}
+              events={{}}
+              others={{}}
+            />
+          </div>
+          <div className="popupFooter">
+            <button>SAVE</button>
+          </div>
         </AlgaehModalPopUp>
         <br />
         <br />
@@ -156,7 +263,7 @@ class Experiment extends Component {
             className="btn btn-primary"
             onClick={() => {
               this.setState({
-                openModal: true
+                openAuth: true
               });
             }}
           >
