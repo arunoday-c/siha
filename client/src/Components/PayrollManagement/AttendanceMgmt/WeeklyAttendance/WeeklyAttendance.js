@@ -83,19 +83,19 @@ export default class WeeklyAttendance extends Component {
               <div className="col">
                 <div className="progress">
                   <div
-                    className="progress-bar"
+                    className="progress-bar  bg-danger"
                     role="progressbar"
                     aria-valuenow="75"
                     aria-valuemin="0"
                     aria-valuemax="100"
-                    style={{ width: "75%" }}
+                    style={{ width: "45%" }}
                   >
                     <div className="tooltipDetails">
                       <span className="checkIn animated bounceIn faster">
                         Check In <b>07:55 AM</b>
                       </span>
                       <span className="totalHr animated bounceIn faster">
-                        Late time by<b className="lateTime">55 min</b>
+                        Late time by <b className="lateTime">55 min</b>
                       </span>
                       <span className="checkOut animated bounceIn faster">
                         Check Out <b>06:15 PM</b>
@@ -111,12 +111,12 @@ export default class WeeklyAttendance extends Component {
               <div className="col">
                 <div className="progress">
                   <div
-                    className="progress-bar"
+                    className="progress-bar bg-success"
                     role="progressbar"
                     aria-valuenow="75"
                     aria-valuemin="0"
                     aria-valuemax="100"
-                    style={{ width: "75%" }}
+                    style={{ width: "90%" }}
                   >
                     <div className="tooltipDetails">
                       <span className="checkIn animated bounceIn faster">
@@ -139,7 +139,7 @@ export default class WeeklyAttendance extends Component {
               <div className="col">
                 <div className="progress">
                   <div
-                    className="progress-bar progress-bar-striped bg-success progress-bar-animated"
+                    className="progress-bar progress-bar-striped  progress-bar-animated"
                     role="progressbar"
                     aria-valuenow="75"
                     aria-valuemin="0"
