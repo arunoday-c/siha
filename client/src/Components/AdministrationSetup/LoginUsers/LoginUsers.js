@@ -156,237 +156,267 @@ class LoginUsers extends Component {
   render() {
     return (
       <div className="login_users">
-        <div className="col-lg-12">
-          <div className="row">
-            <AlagehFormGroup
-              div={{ className: "col" }}
-              label={{
-                fieldName: "username",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "username",
-                value: this.state.username,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                }
-              }}
-            />
-            <AlagehFormGroup
-              div={{ className: "col" }}
-              label={{
-                fieldName: "password",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "password",
-                value: this.state.password,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                },
-                others: {
-                  type: "password"
-                }
-              }}
-            />
-            <AlagehFormGroup
-              div={{ className: "col" }}
-              label={{
-                fieldName: "confirm_password",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "confirm_password",
-                value: this.state.confirm_password,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                },
-                others: {
-                  checkvalidation: "'$value' !=='" + this.state.password + "'",
-                  errormessage: "Passwords doesn't match",
-                  type: "Password"
-                }
-              }}
-            />
+        <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+          <div className="portlet-body">
+            <div className="row">
+              <AlagehFormGroup
+                div={{ className: "col" }}
+                label={{
+                  fieldName: "username",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "username",
+                  value: this.state.username,
+                  events: {
+                    onChange: this.changeTexts.bind(this)
+                  }
+                }}
+              />
+              <AlagehFormGroup
+                div={{ className: "col" }}
+                label={{
+                  fieldName: "password",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "password",
+                  value: this.state.password,
+                  events: {
+                    onChange: this.changeTexts.bind(this)
+                  },
+                  others: {
+                    type: "password"
+                  }
+                }}
+              />
+              <AlagehFormGroup
+                div={{ className: "col" }}
+                label={{
+                  fieldName: "confirm_password",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "confirm_password",
+                  value: this.state.confirm_password,
+                  events: {
+                    onChange: this.changeTexts.bind(this)
+                  },
+                  others: {
+                    checkvalidation:
+                      "'$value' !=='" + this.state.password + "'",
+                    errormessage: "Passwords doesn't match",
+                    type: "Password"
+                  }
+                }}
+              />
 
-            <AlagehFormGroup
-              div={{ className: "col" }}
-              label={{
-                fieldName: "display_name",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "display_name",
-                value: this.state.display_name,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                }
-              }}
-            />
+              <AlagehFormGroup
+                div={{ className: "col" }}
+                label={{
+                  fieldName: "display_name",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "display_name",
+                  value: this.state.display_name,
+                  events: {
+                    onChange: this.changeTexts.bind(this)
+                  }
+                }}
+              />
 
-            <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{
-                fieldName: "group",
-                isImp: true
-              }}
-              selector={{
-                name: "app_group_id",
-                className: "select-fld",
-                value: this.state.app_group_id,
-                dataSource: {
-                  textField: "app_group_name",
-                  valueField: "algaeh_d_app_group_id",
-                  data: this.state.groups
-                },
-                onChange: this.dropDownHandler.bind(this)
-              }}
-            />
+              <AlagehAutoComplete
+                div={{ className: "col" }}
+                label={{
+                  fieldName: "group",
+                  isImp: true
+                }}
+                selector={{
+                  name: "app_group_id",
+                  className: "select-fld",
+                  value: this.state.app_group_id,
+                  dataSource: {
+                    textField: "app_group_name",
+                    valueField: "algaeh_d_app_group_id",
+                    data: this.state.groups
+                  },
+                  onChange: this.dropDownHandler.bind(this)
+                }}
+              />
 
-            <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{
-                fieldName: "role",
-                isImp: true
-              }}
-              selector={{
-                name: "role_id",
-                className: "select-fld",
-                value: this.state.role_id,
-                dataSource: {
-                  textField: "role_name",
-                  valueField: "app_d_app_roles_id",
-                  data: this.state.roles
-                },
-                onChange: this.dropDownHandler.bind(this)
-              }}
-            />
+              <AlagehAutoComplete
+                div={{ className: "col" }}
+                label={{
+                  fieldName: "role",
+                  isImp: true
+                }}
+                selector={{
+                  name: "role_id",
+                  className: "select-fld",
+                  value: this.state.role_id,
+                  dataSource: {
+                    textField: "role_name",
+                    valueField: "app_d_app_roles_id",
+                    data: this.state.roles
+                  },
+                  onChange: this.dropDownHandler.bind(this)
+                }}
+              />
 
-            <AlgaehDateHandler
-              div={{ className: "col" }}
-              label={{
-                fieldName: "effective_start_date",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "effective_start_date"
-              }}
-              // maxDate={new Date()}
-              events={{
-                onChange: selDate => {
-                  this.setState({
-                    effective_start_date: selDate
-                  });
-                }
-              }}
-              value={this.state.effective_start_date}
-            />
+              <AlgaehDateHandler
+                div={{ className: "col" }}
+                label={{
+                  fieldName: "effective_start_date",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "effective_start_date"
+                }}
+                // maxDate={new Date()}
+                events={{
+                  onChange: selDate => {
+                    this.setState({
+                      effective_start_date: selDate
+                    });
+                  }
+                }}
+                value={this.state.effective_start_date}
+              />
 
-            <div className="col">
-              <button
-                style={{ marginTop: 21 }}
-                onClick={this.addLoginUser.bind(this)}
-                type="button"
-                className="btn btn-primary"
-              >
-                <AlgaehLabel
-                  label={{
-                    fieldName: "add_to_list"
-                  }}
-                />
-              </button>
+              <div className="col">
+                <button
+                  style={{ marginTop: 21 }}
+                  onClick={this.addLoginUser.bind(this)}
+                  type="button"
+                  className="btn btn-primary"
+                >
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "add_to_list"
+                    }}
+                  />
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
-        <div
-          className="col-lg-12"
-          data-validate="apptClinicsDiv"
-          id="adminGrid_Cntr"
-        >
-          <AlgaehDataGrid
-            id="login-grid"
-            datavalidate="data-validate='apptClinicsDiv'"
-            columns={[
-              {
-                fieldName: "username",
-                label: <AlgaehLabel label={{ fieldName: "username" }} />
-              },
-              {
-                fieldName: "user_display_name",
-                label: <AlgaehLabel label={{ fieldName: "display_name" }} />
-              },
-              {
-                fieldName: "app_group_name",
-                label: <AlgaehLabel label={{ fieldName: "group" }} />,
-                editorTemplate: row => {
-                  return (
-                    <AlagehAutoComplete
-                      div={{ className: "col" }}
-                      selector={{
-                        name: "app_group_id",
-                        className: "select-fld",
-                        value: row.app_group_id,
-                        dataSource: {
-                          textField: "app_group_name",
-                          valueField: "algaeh_d_app_group_id",
-                          data: this.state.groups
+        <div className="row">
+          <div className="col-12">
+            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Login User List</h3>
+                </div>
+              </div>
+              <div className="portlet-body">
+                <div className="row">
+                  <div
+                    className="col-lg-12"
+                    data-validate="apptClinicsDiv"
+                    id="adminGrid_Cntr"
+                  >
+                    <AlgaehDataGrid
+                      id="login-grid"
+                      datavalidate="data-validate='apptClinicsDiv'"
+                      columns={[
+                        {
+                          fieldName: "username",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "username" }} />
+                          )
                         },
-                        others: {
-                          errormessage: "Groups cannot be blank",
-                          required: true
+                        {
+                          fieldName: "user_display_name",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "display_name" }}
+                            />
+                          )
                         },
-                        onChange: this.changeGridEditors.bind(this, row)
-                      }}
-                    />
-                  );
-                }
-              },
-              {
-                fieldName: "role_name",
-                label: <AlgaehLabel label={{ fieldName: "role" }} />,
+                        {
+                          fieldName: "app_group_name",
+                          label: <AlgaehLabel label={{ fieldName: "group" }} />,
+                          editorTemplate: row => {
+                            return (
+                              <AlagehAutoComplete
+                                div={{ className: "col" }}
+                                selector={{
+                                  name: "app_group_id",
+                                  className: "select-fld",
+                                  value: row.app_group_id,
+                                  dataSource: {
+                                    textField: "app_group_name",
+                                    valueField: "algaeh_d_app_group_id",
+                                    data: this.state.groups
+                                  },
+                                  others: {
+                                    errormessage: "Groups cannot be blank",
+                                    required: true
+                                  },
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                }}
+                              />
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "role_name",
+                          label: <AlgaehLabel label={{ fieldName: "role" }} />,
 
-                editorTemplate: row => {
-                  return (
-                    <AlagehAutoComplete
-                      div={{ className: "col" }}
-                      selector={{
-                        name: "role_id",
-                        className: "select-fld",
-                        value: row.role_id,
-                        dataSource: {
-                          textField: "role_name",
-                          valueField: "app_d_app_roles_id",
-                          data: this.state.roles
-                        },
-                        others: {
-                          errormessage: "Role cannot be blank",
-                          required: true
-                        },
-                        onChange: this.changeGridEditors.bind(this, row)
+                          editorTemplate: row => {
+                            return (
+                              <AlagehAutoComplete
+                                div={{ className: "col" }}
+                                selector={{
+                                  name: "role_id",
+                                  className: "select-fld",
+                                  value: row.role_id,
+                                  dataSource: {
+                                    textField: "role_name",
+                                    valueField: "app_d_app_roles_id",
+                                    data: this.state.roles
+                                  },
+                                  others: {
+                                    errormessage: "Role cannot be blank",
+                                    required: true
+                                  },
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                }}
+                              />
+                            );
+                          }
+                        }
+                      ]}
+                      keyId="hims_d_login_user_id"
+                      dataSource={{
+                        data: this.state.login_users
+                      }}
+                      isEditable={true}
+                      paging={{ page: 0, rowsPerPage: 10 }}
+                      events={{
+                        onEdit: () => {},
+                        onDelete: this.deleteLoginUser.bind(this),
+                        onDone: this.updateLoginUser.bind(this)
                       }}
                     />
-                  );
-                }
-              }
-            ]}
-            keyId="hims_d_login_user_id"
-            dataSource={{
-              data: this.state.login_users
-            }}
-            isEditable={true}
-            paging={{ page: 0, rowsPerPage: 10 }}
-            events={{
-              onEdit: () => {},
-              onDelete: this.deleteLoginUser.bind(this),
-              onDone: this.updateLoginUser.bind(this)
-            }}
-          />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
