@@ -513,13 +513,15 @@ $forntSize: 0.7rem;
     min-height: 35px;
     border-bottom: 1px dashed #eee;
     margin-bottom: 5px;
-  }
-
-  .caption {
-    float: left;
-    display: inline-block;
-    font-size: 18px;
-    line-height: 18px;
+    .caption {
+      float: left;
+      display: inline-block;
+      font-size: 18px;
+      line-height: 18px;
+    }
+    .center {
+      text-align: center;
+    }
   }
 
   .caption.caption-green .caption-subject,
