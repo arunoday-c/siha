@@ -247,7 +247,7 @@ let authorizeLoan = (req, res, next) => {
             [
               input.updated_by,
               new Date(),
-              input.authorized1,
+              input.authorized,
               input.approved_amount,
               input.start_year,
               input.start_month,
@@ -265,10 +265,10 @@ let authorizeLoan = (req, res, next) => {
                 });
               }
               debugLog("L1 result:", result);
-              if (result.affectedRows > 0 && input.authorized1 == "R") {
+              if (result.affectedRows > 0 && input.authorized == "R") {
                 connection.query(
                   "update hims_f_loan_application set loan_authorized='REJ'\
-                  where record_status='A' and hims_f_loan_application_id=?",
+                  where record_status='A' and loan_authorized='PEN' and hims_f_loan_application_id=?",
                   [input.hims_f_loan_application_id],
                   (error, rejResult) => {
                     if (error) {
@@ -332,7 +332,7 @@ let authorizeLoan = (req, res, next) => {
             [
               input.updated_by,
               new Date(),
-              input.authorized2,
+              input.authorized,
               input.approved_amount,
               input.start_year,
               input.start_month,
@@ -352,18 +352,18 @@ let authorizeLoan = (req, res, next) => {
               debugLog("L2 result:", result);
               if (
                 result.affectedRows > 0 &&
-                (input.authorized2 == "R" || input.authorized2 == "A")
+                (input.authorized == "R" || input.authorized == "A")
               ) {
                 let qry = "";
 
-                if (input.authorized2 == "R") {
+                if (input.authorized == "R") {
                   qry = `update hims_f_loan_application set loan_authorized='REJ'\
-                  where record_status='A' and hims_f_loan_application_id=${
+                  where record_status='A' and loan_authorized='PEN' and hims_f_loan_application_id=${
                     input.hims_f_loan_application_id
                   }`;
-                } else if (input.authorized2 == "A") {
+                } else if (input.authorized == "A") {
                   qry = `update hims_f_loan_application set loan_authorized='APR'\
-                  where record_status='A' and hims_f_loan_application_id=${
+                  where record_status='A' and loan_authorized='PEN' and hims_f_loan_application_id=${
                     input.hims_f_loan_application_id
                   }`;
                 }
