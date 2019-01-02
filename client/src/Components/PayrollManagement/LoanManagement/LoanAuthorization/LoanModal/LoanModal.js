@@ -9,6 +9,7 @@ import {
 import { MONTHS, NO_OF_EMI } from "../../../../../utils/GlobalVariables.json";
 import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
 import moment from "moment";
+import { AlgaehValidation } from "../../../../../utils/GlobalFunctions";
 
 class LoanModal extends Component {
   constructor(props) {
@@ -50,54 +51,90 @@ class LoanModal extends Component {
   }
 
   textHandle(e) {
-    this.setState({
-      [e.target.name]: e.target.value
-    });
+    switch (e.target.name) {
+      case "approved_amount":
+        if (e.target.value <= this.state.loan_maximum_amount) {
+          debugger;
+          this.setState({
+            [e.target.name]: e.target.value,
+            installment_amount: e.target.value / this.state.loan_tenure
+          });
+        } else {
+          swalMessage({
+            title: "Approved Amount cannot be greater than requested amount",
+            type: "warning"
+          });
+        }
+        break;
+
+      default:
+        this.setState({
+          [e.target.name]: e.target.value
+        });
+        break;
+    }
   }
 
   dropDownHandler(value) {
-    this.setState({
-      [value.name]: value.value
-    });
+    switch (value.name) {
+      case "loan_tenure":
+        this.setState({
+          [value.name]: value.value,
+          installment_amount: this.state.approved_amount / value.value
+        });
+        break;
+
+      default:
+        this.setState({
+          [value.name]: value.value
+        });
+        break;
+    }
   }
 
   authorizeLoan(type) {
-    let data = {
-      hims_f_loan_application_id: this.state.hims_f_loan_application_id,
-      loan_amount: this.state.loan_amount,
-      start_month: this.state.start_month,
-      start_year: this.state.start_year,
-      loan_tenure: this.state.loan_tenure,
-      installment_amount: this.state.installment_amount,
-      authorized: type,
-      auth_level: "L" + this.props.auth_level,
-      approved_amount: this.state.approved_amount
-    };
-    algaehApiCall({
-      uri: "/loan/authorizeLoan",
-      method: "PUT",
-      data: data,
-      onSuccess: res => {
-        if (res.data.success) {
-          type === "A"
-            ? swalMessage({
-                title: "Loan Authorized Successfully",
-                type: "success"
-              })
-            : type === "R"
-            ? swalMessage({
-                title: "Loan Rejected",
-                type: "success"
-              })
-            : null;
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      querySelector: "data-validate='loanModalDiv'",
+      onSuccess: () => {
+        let data = {
+          hims_f_loan_application_id: this.state.hims_f_loan_application_id,
+          loan_amount: this.state.loan_amount,
+          start_month: this.state.start_month,
+          start_year: this.state.start_year,
+          loan_tenure: this.state.loan_tenure,
+          installment_amount: this.state.installment_amount,
+          authorized: type,
+          auth_level: "L" + this.props.auth_level,
+          approved_amount: this.state.approved_amount
+        };
+        algaehApiCall({
+          uri: "/loan/authorizeLoan",
+          method: "PUT",
+          data: data,
+          onSuccess: res => {
+            if (res.data.success) {
+              type === "A"
+                ? swalMessage({
+                    title: "Loan Authorized Successfully",
+                    type: "success"
+                  })
+                : type === "R"
+                ? swalMessage({
+                    title: "Loan Rejected",
+                    type: "success"
+                  })
+                : null;
 
-          document.getElementById("loan-reload").click();
-        }
-      },
-      onFailure: err => {
-        swalMessage({
-          title: err.message,
-          type: "error"
+              document.getElementById("loan-reload").click();
+            }
+          },
+          onFailure: err => {
+            swalMessage({
+              title: err.message,
+              type: "error"
+            });
+          }
         });
       }
     });
@@ -136,8 +173,13 @@ class LoanModal extends Component {
                 <AlgaehLabel label={{ forceLabel: "Requested Amount" }} />
                 <h6>{this.state.loan_amount}</h6>
               </div>
+
+              <div className="col form-group">
+                <AlgaehLabel label={{ forceLabel: "Authorization Level" }} />
+                <h6>{"Level " + this.props.auth_level}</h6>
+              </div>
             </div>
-            <div className="row">
+            <div className="row" data-validate="loanModalDiv">
               <AlagehAutoComplete
                 div={{ className: "col form-group" }}
                 label={{
@@ -224,7 +266,8 @@ class LoanModal extends Component {
                     onChange: this.textHandle.bind(this)
                   },
                   others: {
-                    type: "number"
+                    type: "number",
+                    disabled: true
                   }
                 }}
               />
@@ -384,7 +427,7 @@ class LoanModal extends Component {
             <div className="row">
               <div className="col-12">
                 <button
-                  //onClick={this.authorizeLoan.bind(this, "R")}
+                  onClick={this.props.onClose}
                   type="button"
                   className="btn btn-default"
                 >
