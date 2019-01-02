@@ -9,10 +9,10 @@ import {
   jsonArrayToObject
 } from "../../utils";
 import httpStatus from "../../utils/httpStatus";
-import { LINQ } from "node-linq";
+//import { LINQ } from "node-linq";
 
 import { debugLog } from "../../utils/logging";
-import moment from "moment";
+//import moment from "moment";
 
 //created by irfan:
 let addLoanApplication = (req, res, next) => {
@@ -58,8 +58,8 @@ let addLoanApplication = (req, res, next) => {
           connection.query(
             "INSERT INTO `hims_f_loan_application` (loan_application_number,employee_id,loan_id,\
               application_reason,loan_application_date,loan_amount,start_month,start_year,loan_tenure,\
-              installment_amount, created_date, created_by, updated_date, updated_by)\
-        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              installment_amount, pending_loan,created_date, created_by, updated_date, updated_by)\
+        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             [
               numGenLoan[0]["completeNumber"],
               input.employee_id,
@@ -71,6 +71,7 @@ let addLoanApplication = (req, res, next) => {
               input.start_year,
               input.loan_tenure,
               input.installment_amount,
+              input.loan_amount,
               new Date(),
               input.created_by,
               new Date(),
