@@ -57,14 +57,14 @@ let addLoanApplication = (req, res, next) => {
         }).then(numGenLoan => {
           connection.query(
             "INSERT INTO `hims_f_loan_application` (loan_application_number,employee_id,loan_id,\
-              loan_description,loan_application_date,loan_amount,start_month,start_year,loan_tenure,\
+              application_reason,loan_application_date,loan_amount,start_month,start_year,loan_tenure,\
               installment_amount, created_date, created_by, updated_date, updated_by)\
         VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             [
               numGenLoan[0]["completeNumber"],
               input.employee_id,
               input.loan_id,
-              input.loan_description,
+              input.application_reason,
               new Date(),
               input.loan_amount,
               input.start_month,
@@ -153,7 +153,7 @@ between date('${req.query.from_date}') and date('${req.query.to_date}') `;
     db.getConnection((error, connection) => {
       connection.query(
         "select hims_f_loan_application_id,loan_application_number,employee_id,loan_id,L.loan_code,L.loan_description,\
-        L.loan_account,L.loan_limit_type,L.loan_maximum_amount,LA.loan_description,\
+        L.loan_account,L.loan_limit_type,L.loan_maximum_amount,LA.application_reason,\
         loan_application_date,loan_authorized,authorized_date,authorized_by,loan_closed,loan_amount,\
         start_month,start_year,loan_tenure,installment_amount,pending_loan,authorized1_by,authorized1_date,\
         authorized1,authorized2_by,authorized2_date,authorized2 ,E.full_name as employee_name ,E.employee_code from hims_f_loan_application LA  inner join \
