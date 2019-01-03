@@ -137,7 +137,7 @@ export default class EmployeeDocuments extends Component {
             </div>
             <div className="portlet-body">
               <div className="row">
-                <AlagehAutoComplete
+                {/* <AlagehAutoComplete
                   div={{ className: "col form-group mandatory" }}
                   label={{
                     forceLabel: "Documents For",
@@ -165,7 +165,7 @@ export default class EmployeeDocuments extends Component {
                     dataSource: {},
                     others: {}
                   }}
-                />
+                /> */}
 
                 <AlagehFormGroup
                   div={{ className: "col form-group mandatory" }}

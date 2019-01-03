@@ -161,9 +161,16 @@ export default class MiscEarningsDeductions extends Component {
                         </h3>
                       </div>
                       <div className="actions">
-                        {/*    <a className="btn btn-primary btn-circle active">
-                       <i className="fas fa-calculator" /> 
-                      </a>*/}
+                        <input
+                          type="number"
+                          placeholder="Enter Bulk Amount"
+                          style={{
+                            display: " inline-block",
+                            width: "67%",
+                            marginRight: 10
+                          }}
+                        />
+                        <button className="btn btn-default">Apply</button>
                       </div>
                     </div>
 
