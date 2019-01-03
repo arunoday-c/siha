@@ -21,12 +21,42 @@ export default class MiscEarningsDeductions extends Component {
       selectedLang: this.props.SelectLanguage,
       component_category: "E",
       earn_deds: [],
+      data: [
+        {
+          hospital: "Hosp 1",
+          sub_dept: "Cardio",
+          code: "EMP-A-000098",
+          name: "Norman John",
+          amount: 0
+        },
+        {
+          hospital: "Hosp 1",
+          sub_dept: "General",
+          code: "EMP-A-000099",
+          name: "John Morgan",
+          amount: 0
+        },
+        {
+          hospital: "Hosp 1",
+          sub_dept: "Cardio",
+          code: "EMP-A-000100",
+          name: "Noor",
+          amount: 0
+        }
+      ],
       yearAndMonth: new Date(),
       hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
         .hims_d_hospital_id
     };
     this.getEarnDed("E");
     this.getHospitals();
+  }
+
+  changeGridEditors(row, e) {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    row[name] = value;
+    row.update();
   }
 
   getHospitals() {
@@ -55,6 +85,8 @@ export default class MiscEarningsDeductions extends Component {
       [value.name]: value.value
     });
   }
+
+  applyAmount() {}
 
   getEarnDed(type) {
     algaehApiCall({
@@ -266,7 +298,12 @@ export default class MiscEarningsDeductions extends Component {
                             marginRight: 10
                           }}
                         />
-                        <button className="btn btn-default">Apply</button>
+                        <button
+                          onClick={this.applyAmount.bind(this)}
+                          className="btn btn-default"
+                        >
+                          Apply
+                        </button>
                       </div>
                     </div>
 
@@ -277,46 +314,73 @@ export default class MiscEarningsDeductions extends Component {
                             id="SalaryPayment_Cntr_grid"
                             columns={[
                               {
-                                fieldName: "",
+                                fieldName: "hospital",
                                 label: "Branch",
                                 others: {
                                   minWidth: 150,
                                   maxWidth: 250
-                                }
+                                },
+                                disabled: true
                               },
                               {
-                                fieldName: "",
+                                fieldName: "sub_dept",
                                 label: "Department",
                                 others: {
                                   minWidth: 150,
                                   maxWidth: 250
-                                }
+                                },
+                                disabled: true
                               },
                               {
-                                fieldName: "",
+                                fieldName: "code",
                                 label: "Employee Code",
                                 others: {
                                   minWidth: 150,
                                   maxWidth: 250
-                                }
+                                },
+                                disabled: true
                               },
                               {
-                                fieldName: "",
+                                fieldName: "name",
                                 label: "Employee Name",
                                 others: {
                                   minWidth: 150,
                                   maxWidth: 250
-                                }
+                                },
+                                disabled: true
                               },
                               {
-                                fieldName: "",
-                                label: "Amount"
-                                //disabled: true
+                                fieldName: "amount",
+                                label: "Amount",
+                                editorTemplate: row => {
+                                  return (
+                                    <AlagehFormGroup
+                                      div={{ className: "col" }}
+                                      textBox={{
+                                        className: "txt-fld",
+                                        name: "amount",
+                                        value: row.amount,
+                                        events: {
+                                          onChange: this.changeGridEditors.bind(
+                                            this,
+                                            row
+                                          )
+                                        },
+                                        others: {
+                                          type: "number",
+                                          errormessage:
+                                            "Amount - cannot be blank",
+                                          required: true
+                                        }
+                                      }}
+                                    />
+                                  );
+                                }
                               }
                             ]}
                             keyId="algaeh_d_module_id"
                             dataSource={{
-                              data: []
+                              data: this.state.data
                             }}
                             isEditable={true}
                             filter={true}

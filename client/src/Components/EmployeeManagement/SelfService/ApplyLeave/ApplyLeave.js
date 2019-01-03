@@ -110,6 +110,7 @@ class ApplyLeave extends Component {
               from_leave_session: "FD"
             },
             () => {
+              console.log("here in FD");
               this.getAppliedDays();
             }
           );
@@ -160,6 +161,8 @@ class ApplyLeave extends Component {
   getAppliedDays() {
     var startdateMoment = moment(this.state.from_date);
     var enddateMoment = moment(this.state.to_date);
+
+    debugger;
 
     if (
       startdateMoment.isValid() === true &&
@@ -274,6 +277,7 @@ class ApplyLeave extends Component {
               .where(w => w.hims_d_leave_id === value.value)
               .firstOrDefault();
 
+            debugger;
             this.setState({
               available_balance: value.selected.close_balance,
               leave_type: myObj !== undefined ? myObj.leave_type : null
