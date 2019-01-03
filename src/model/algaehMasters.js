@@ -1010,6 +1010,150 @@ let deleteFormula = (req, res, next) => {
 };
 
 //--------ROLE BASE SCREEN ASSIGNMENT---------------
+//created by irfan:
+let deleteScreenForRole = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    if (req.userIdentity.role_type != "GN") {
+      db.getConnection((error, connection) => {
+        if (error) {
+          next(error);
+        }
+        connection.query(
+          "delete from algaeh_m_screen_role_privilage_mapping where\
+           algaeh_m_screen_role_privilage_mapping_id=?",
+          [input.algaeh_m_screen_role_privilage_mapping_id],
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+            if (result.affectedRows > 0) {
+              req.records = result;
+              next();
+            } else {
+              req.records = {
+                validUser: false,
+                message: "invalid input"
+              };
+              next();
+            }
+          }
+        );
+      });
+    } else {
+      req.records = {
+        validUser: false,
+        message: "you dont have admin privilege"
+      };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan:
+let deleteModuleForRole = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    if (req.userIdentity.role_type != "GN") {
+      db.getConnection((error, connection) => {
+        if (error) {
+          next(error);
+        }
+
+        connection.beginTransaction(error => {
+          if (error) {
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(error);
+            });
+          }
+          connection.query(
+            "delete from algaeh_m_screen_role_privilage_mapping where module_role_map_id=?",
+            [input.algaeh_m_module_role_privilage_mapping_id],
+            (error, result) => {
+              if (error) {
+                connection.rollback(() => {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                });
+              }
+              // req.records = result;
+              // next();
+              if (result.affectedRows > 0) {
+                connection.query(
+                  "delete from algaeh_m_module_role_privilage_mapping where\
+                   algaeh_m_module_role_privilage_mapping_id=?",
+                  [input.algaeh_m_module_role_privilage_mapping_id],
+                  (error, moduleResult) => {
+                    if (error) {
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      });
+                    }
+                    if (moduleResult.affectedRows > 0) {
+                      connection.commit(error => {
+                        if (error) {
+                          connection.rollback(() => {
+                            releaseDBConnection(db, connection);
+                            next(error);
+                          });
+                        }
+
+                        releaseDBConnection(db, connection);
+                        req.records = moduleResult;
+                        next();
+                      });
+                    } else {
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                      });
+                      req.records = {
+                        validUser: false,
+                        message: "invalid input"
+                      };
+                      next();
+                    }
+                  }
+                );
+              } else {
+                connection.rollback(() => {
+                  releaseDBConnection(db, connection);
+                });
+                req.records = {
+                  validUser: false,
+                  message: "invalid input"
+                };
+                next();
+              }
+            }
+          );
+        });
+      });
+    } else {
+      req.records = {
+        validUser: false,
+        message: "you dont have admin privilege"
+      };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
 
 module.exports = {
   addAlgaehGroupMAster,
@@ -1027,5 +1171,7 @@ module.exports = {
   getFormulas,
   addFormula,
   updateFormula,
-  deleteFormula
+  deleteFormula,
+  deleteScreenForRole,
+  deleteModuleForRole
 };

@@ -18,7 +18,9 @@ import {
   getFormulas,
   addFormula,
   updateFormula,
-  deleteFormula
+  deleteFormula,
+  deleteScreenForRole,
+  deleteModuleForRole
 } from "../model/algaehMasters";
 
 export default ({ config, db }) => {
@@ -339,6 +341,50 @@ export default ({ config, db }) => {
         records: result
       });
 
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :to delete a screen for a role
+  api.delete(
+    "/deleteScreenForRole",
+    deleteScreenForRole,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.validUser == false) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :to delete a module with all secreens for a role
+  api.delete(
+    "/deleteModuleForRole",
+    deleteModuleForRole,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.validUser == false) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
       next();
     },
     releaseConnection
