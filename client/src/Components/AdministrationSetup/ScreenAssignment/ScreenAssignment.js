@@ -152,7 +152,7 @@ class ScreenAssignment extends Component {
             </div>
           </div>
 
-          <div className="col-4">
+          <div className="col-12">
             <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
@@ -193,115 +193,6 @@ class ScreenAssignment extends Component {
                 </div>
 
                 <button className="btn btn-primary">APPLY</button>
-              </div>
-            </div>
-          </div>
-
-          <div className="col-8">
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">Define Component/Elements</h3>
-                </div>
-              </div>
-              <div className="portlet-body">
-                <div className="row">
-                  <AlagehAutoComplete
-                    div={{ className: "col-12 form-group" }}
-                    label={{ forceLabel: "Select Module", isImp: false }}
-                    selector={{
-                      name: "",
-                      className: "select-fld",
-                      dataSource: {},
-                      others: {}
-                    }}
-                  />
-                  <div className="col-6">
-                    <div className="moduleList list-group-check">
-                      <ul className="mainmenu">
-                        <li className="activeLi">
-                          <input type="checkbox" checked />
-                          <a>Patient Details</a>
-                        </li>
-                        <li>
-                          <input type="checkbox" />
-                          <a>Other Details</a>
-                        </li>
-                        <li>
-                          <input type="checkbox" />
-                          <a>Consultation Details</a>
-                        </li>
-                        <li>
-                          <input type="checkbox" />
-                          <a>MLC Details</a>
-                        </li>
-                        <li>
-                          <input type="checkbox" />
-                          <a>Primary Insurance</a>
-                        </li>
-                        <li>
-                          <input type="checkbox" />
-                          <a>Secondary Details</a>
-                        </li>
-                        <li>
-                          <input type="checkbox" />
-                          <a>Copay Details</a>
-                        </li>
-                        <li>
-                          <input type="checkbox" />
-                          <a>Billing Details</a>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div className="col-6">
-                    <div id="AlgaehElementsGrid_Cntr">
-                      <AlgaehDataGrid
-                        id="AlgaehElementsGrid"
-                        datavalidate="AlgaehElementsGrid"
-                        columns={[
-                          {
-                            fieldName: "selectElement",
-                            label: (
-                              <AlgaehLabel label={{ forceLabel: "Select" }} />
-                            ),
-                            others: {
-                              maxWidth: 50
-                            }
-                          },
-                          {
-                            fieldName: "elementname",
-                            label: (
-                              <AlgaehLabel
-                                label={{ forceLabel: "Element Name" }}
-                              />
-                            ),
-                            others: {
-                              textAlign: "left"
-                            }
-                          },
-                          {
-                            fieldName: "mandatoryFld",
-                            label: (
-                              <AlgaehLabel
-                                label={{ forceLabel: "Mandatory" }}
-                              />
-                            ),
-                            others: {
-                              maxWidth: 80
-                            }
-                          }
-                        ]}
-                        keyId=""
-                        dataSource={{ data: [] }}
-                        isEditable={false}
-                        paging={{ page: 0, rowsPerPage: 10 }}
-                        events={{}}
-                        others={{}}
-                      />
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           </div>

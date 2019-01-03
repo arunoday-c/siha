@@ -207,6 +207,61 @@ export default class LeaveSalaryProcess extends Component {
             </div>
           </div>
         </div>
+        <div className="col">
+          <div className="row">
+            <div className="col">
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Leave Days to be Paid"
+                }}
+              />
+              <h6>
+                <span>21</span> Days
+              </h6>
+            </div>
+            <div className="col">
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Leave Salary"
+                }}
+              />
+              <h6>263,364.00</h6>
+            </div>
+            <div className="col">
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Airfare"
+                }}
+              />
+              <h6>0.00</h6>
+            </div>
+            <div className="col">
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Extra Airfare Allowance"
+                }}
+              />
+              <h6>0.00</h6>
+            </div>
+            <div className="col">
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Net Salary"
+                }}
+              />
+              <h6>8,364.00</h6>
+            </div>
+            <div className="col">
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Total Salary"
+                }}
+              />
+              <h6>270,364.00</h6>
+            </div>
+          </div>
+        </div>
+        {/* <div className="col-6">skjgfhkdjgfkd</div> */}
         <div className="hptl-phase1-footer">
           <div className="row">
             <div className="col-lg-12">
