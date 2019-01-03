@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 
+import "./MiscEarningsDeductions.css";
+
 import {
   AlgaehDateHandler,
   AlagehFormGroup,
@@ -289,13 +291,21 @@ export default class MiscEarningsDeductions extends Component {
                         </h3>
                       </div>
                       <div className="actions">
-                        <input
-                          type="number"
-                          placeholder="Enter Bulk Amount"
-                          style={{
-                            display: " inline-block",
-                            width: "67%",
-                            marginRight: 10
+                        <AlagehFormGroup
+                          div={{
+                            className: "col form-group bulkAmountStyle"
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "",
+                            value: "",
+                            events: {},
+                            option: {
+                              type: "number"
+                            },
+                            others: {
+                              placeHolder: "Enter Bulk Amount"
+                            }
                           }}
                         />
                         <button
