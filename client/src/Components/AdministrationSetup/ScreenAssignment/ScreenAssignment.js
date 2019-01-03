@@ -12,9 +12,33 @@ class ScreenAssignment extends Component {
     super(props);
     this.state = {
       groups: [],
-      roles: []
+      roles: [],
+      modules: [],
+      op_modules: []
     };
     this.getGroups();
+    this.getRoleBaseActiveModules();
+  }
+
+  getRoleBaseActiveModules() {
+    algaehApiCall({
+      uri: "/algaehMasters/getRoleBaseActiveModules",
+      method: "GET",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            modules: res.data.records
+          });
+          console.log("Records:", res.data.records);
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   getGroups() {
@@ -73,7 +97,15 @@ class ScreenAssignment extends Component {
     }
   }
 
-  loadModulesandScreens() {}
+  changeModules(e) {
+    let val = parseInt(e.target.value, 10);
+
+    this.state.op_modules.includes(val)
+      ? this.state.op_modules.pop(val)
+      : this.state.op_modules.push(val);
+
+    this.setState(...this.state);
+  }
 
   render() {
     return (
@@ -132,46 +164,35 @@ class ScreenAssignment extends Component {
                   <div className="col">
                     <div className="moduleList list-group-check">
                       <ul className="mainmenu" style={{ minHeight: "59vh" }}>
-                        <li>
-                          <input type="checkbox" />
-                          <a>General</a>{" "}
-                          <ul className="submenu">
-                            <li>
-                              <input type="checkbox" />
-                              <a>Dashboard</a>
-                            </li>
-                          </ul>
-                        </li>
-                        <li>
-                          <input type="checkbox" />
-                          <a>Front Desk</a>
-                          <ul className="submenu">
-                            <li>
-                              <input type="checkbox" />
-                              <a>Doctor Appointent</a>
-                            </li>{" "}
-                            <li className="activeLi">
-                              <input type="checkbox" checked />
-                              <a>Front Desk</a>
-                            </li>{" "}
-                            <li>
-                              <input type="checkbox" />
-                              <a>Patient Recall</a>
-                            </li>{" "}
-                            <li>
-                              <input type="checkbox" />
-                              <a>Physician Schedule Setup</a>
-                            </li>{" "}
-                            <li>
-                              <input type="checkbox" />
-                              <a>Staff Cash Collection</a>
-                            </li>
-                          </ul>
-                        </li>
+                        {this.state.modules.map((data, index) => (
+                          <li key={data.algaeh_d_module_id}>
+                            <input
+                              type="checkbox"
+                              onChange={this.changeModules.bind(this)}
+                              name="modules"
+                              checked={this.state.op_modules.includes(
+                                data.algaeh_d_module_id
+                              )}
+                              value={data.algaeh_d_module_id}
+                            />
+                            <a>{data.module_name}</a>
+
+                            <ul className="submenu">
+                              {data.ScreenList.map((sub_menu, index) => (
+                                <li key={sub_menu.algaeh_app_screens_id}>
+                                  <input type="checkbox" />
+                                  <a>{sub_menu.screen_name}</a>
+                                </li>
+                              ))}
+                            </ul>
+                          </li>
+                        ))}
                       </ul>
                     </div>
                   </div>
                 </div>
+
+                <button className="btn btn-primary">APPLY</button>
               </div>
             </div>
           </div>
