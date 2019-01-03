@@ -168,7 +168,7 @@ export default class SelfService extends Component {
                   />
                 }
               </li>
-              <li
+              {/* <li
                 algaehtabs={"LeaveEncashment"}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
@@ -180,7 +180,7 @@ export default class SelfService extends Component {
                     }}
                   />
                 }
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>
