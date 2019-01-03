@@ -7,17 +7,94 @@ import {
   AlagehAutoComplete,
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
+import {
+  algaehApiCall,
+  swalMessage,
+  dateFomater
+} from "../../../../utils/algaehApiCall";
+import moment from "moment";
 
 export default class MiscEarningsDeductions extends Component {
   constructor(props) {
     super(props);
     this.state = {
       selectedLang: this.props.SelectLanguage,
-      fromMonth: new Date()
+      component_category: "E",
+      earn_deds: [],
+      yearAndMonth: new Date(),
+      hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
+        .hims_d_hospital_id
     };
+    this.getEarnDed("E");
+    this.getHospitals();
   }
-  fromMonthHandler(date, name) {
-    this.setState({ fromMonth: date });
+
+  getHospitals() {
+    algaehApiCall({
+      uri: "/organization/getOrganization",
+      method: "GET",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            hospitals: res.data.records
+          });
+        }
+      },
+
+      onFailure: err => {}
+    });
+  }
+  monthSelectionHandler(e) {
+    this.setState({
+      yearAndMonth: moment(e).startOf("month")._d
+    });
+  }
+
+  dropDownHandler(value) {
+    this.setState({
+      [value.name]: value.value
+    });
+  }
+
+  getEarnDed(type) {
+    algaehApiCall({
+      uri: "/payrollSettings/getMiscEarningDeductions",
+      method: "GET",
+      data: {
+        component_category: type,
+        miscellaneous_component: "Y"
+      },
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            earn_deds: res.data.records
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  textHandler(e) {
+    switch (e.target.name) {
+      case "component_category":
+        this.setState({
+          [e.target.name]: e.target.value,
+          earn_ded_code: null
+        });
+        this.getEarnDed(e.target.value);
+        break;
+      default:
+        this.setState({
+          [e.target.name]: e.target.value
+        });
+        break;
+    }
   }
 
   render() {
@@ -33,8 +110,10 @@ export default class MiscEarningsDeductions extends Component {
                 <label className="radio inline">
                   <input
                     type="radio"
-                    value="Earnings"
-                    name="EarningsDeduction"
+                    value="E"
+                    name="component_category"
+                    checked={this.state.component_category === "E"}
+                    onChange={this.textHandler.bind(this)}
                   />
                   <span>Earnings</span>
                 </label>
@@ -42,8 +121,10 @@ export default class MiscEarningsDeductions extends Component {
                 <label className="radio inline">
                   <input
                     type="radio"
-                    value="Deductions"
-                    name="EarningsDeduction"
+                    value="D"
+                    name="component_category"
+                    checked={this.state.component_category === "D"}
+                    onChange={this.textHandler.bind(this)}
                   />
                   <span>Deductions</span>
                 </label>
@@ -57,13 +138,22 @@ export default class MiscEarningsDeductions extends Component {
                 isImp: false
               }}
               selector={{
-                name: "",
+                name: "earn_ded_code",
                 className: "select-fld",
-                value: "",
-                dataSource: {},
-                onChange: null,
+                value: this.state.earn_ded_code,
+                dataSource: {
+                  textField: "earning_deduction_description",
+                  valueField: "hims_d_earning_deduction_id",
+                  data: this.state.earn_deds
+                },
+                onChange: this.dropDownHandler.bind(this),
+                onClear: () => {
+                  this.setState({
+                    earn_ded_code: null
+                  });
+                },
                 others: {
-                  tabIndex: "2"
+                  tabIndex: "1"
                 }
               }}
             />
@@ -76,18 +166,18 @@ export default class MiscEarningsDeductions extends Component {
               }}
               textBox={{
                 className: "txt-fld",
-                name: "date_of_joining",
-                others: {
-                  tabIndex: "6",
-                  type: "month"
-                }
-              }}
-              events={{
-                onchange: this.fromMonthHandler.bind(this)
+                name: "yearAndMonth"
               }}
               maxDate={new Date()}
-              value={this.state.fromMonth}
+              events={{
+                onChange: this.monthSelectionHandler.bind(this)
+              }}
+              others={{
+                type: "month"
+              }}
+              value={dateFomater(this.state.yearAndMonth)}
             />
+
             <AlagehAutoComplete
               div={{ className: "col" }}
               label={{
@@ -95,17 +185,23 @@ export default class MiscEarningsDeductions extends Component {
                 isImp: false
               }}
               selector={{
-                name: "",
+                name: "hospital_id",
                 className: "select-fld",
-                value: "",
-                dataSource: {},
-                onChange: null,
-                others: {
-                  tabIndex: "2"
+                value: this.state.hospital_id,
+                dataSource: {
+                  textField: "hospital_name",
+                  valueField: "hims_d_hospital_id",
+                  data: this.state.hospitals
+                },
+                onChange: this.dropDownHandler.bind(this),
+                onClear: () => {
+                  this.setState({
+                    hospital_id: null
+                  });
                 }
               }}
             />
-            <AlagehAutoComplete
+            {/* <AlagehAutoComplete
               div={{ className: "col" }}
               label={{
                 forceLabel: "Select a Dept..",
@@ -138,7 +234,7 @@ export default class MiscEarningsDeductions extends Component {
                   tabIndex: "2"
                 }
               }}
-            />
+            /> */}
             <div className="col margin-bottom-15">
               <button
                 type="button"
@@ -161,9 +257,16 @@ export default class MiscEarningsDeductions extends Component {
                         </h3>
                       </div>
                       <div className="actions">
-                        {/*    <a className="btn btn-primary btn-circle active">
-                       <i className="fas fa-calculator" /> 
-                      </a>*/}
+                        <input
+                          type="number"
+                          placeholder="Enter Bulk Amount"
+                          style={{
+                            display: " inline-block",
+                            width: "67%",
+                            marginRight: 10
+                          }}
+                        />
+                        <button className="btn btn-default">Apply</button>
                       </div>
                     </div>
 

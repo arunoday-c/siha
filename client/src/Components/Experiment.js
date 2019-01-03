@@ -73,6 +73,10 @@ class Experiment extends Component {
     this.setState({
       name: e.target.value
     });
+
+    // this.setState((prevState, props) => ({
+    //   to_leave_session: prevState.to_leave_session + 1
+    // }));
   }
 
   render() {
