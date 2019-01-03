@@ -95,10 +95,15 @@ class ApplyLeave extends Component {
             }
           );
         } else if (from_leave_session === "FD" || to_leave_session === "FD") {
-          this.setState({
-            to_leave_session: "FD",
-            from_leave_session: "FD"
-          });
+          this.setState(
+            {
+              to_leave_session: "FD",
+              from_leave_session: "FD"
+            },
+            () => {
+              this.getAppliedDays();
+            }
+          );
         }
       } else if (
         moment(from_date).format("YYYYMMDD") <
@@ -110,14 +115,18 @@ class ApplyLeave extends Component {
               from_leave_session: "FD"
             },
             () => {
-              console.log("here in FD");
               this.getAppliedDays();
             }
           );
         } else if (to_leave_session === "SH") {
-          this.setState({
-            to_leave_session: "FD"
-          });
+          this.setState(
+            {
+              to_leave_session: "FD"
+            },
+            () => {
+              this.getAppliedDays();
+            }
+          );
         } else if (from_leave_session === "FH" && to_leave_session === "SH") {
           this.setState(
             {
@@ -150,6 +159,7 @@ class ApplyLeave extends Component {
         }
       }
     }
+    this.getAppliedDays();
   }
 
   changeTexts(e) {
@@ -159,16 +169,17 @@ class ApplyLeave extends Component {
   }
 
   getAppliedDays() {
+    console.log("Inside get days");
+
     var startdateMoment = moment(this.state.from_date);
     var enddateMoment = moment(this.state.to_date);
-
-    debugger;
 
     if (
       startdateMoment.isValid() === true &&
       enddateMoment.isValid() === true
     ) {
       var days = enddateMoment.diff(startdateMoment, "days");
+      debugger;
 
       if (
         moment(this.state.from_date).format("YYYYMMDD") ===
@@ -181,25 +192,51 @@ class ApplyLeave extends Component {
           this.state.to_leave_session === "SH"
         ) {
           this.setState({
-            total_applied_days: Math.abs(days + 0.5)
+            total_applied_days: 0.5
+          });
+        } else if (
+          this.state.from_leave_session === "FD" ||
+          this.state.to_leave_session === "FD"
+        ) {
+          this.setState({
+            total_applied_days: 1
           });
         }
-        return;
+        //return;
       }
 
       if (
-        this.state.from_leave_session === "FH" ||
-        this.state.from_leave_session === "SH" ||
-        this.state.to_leave_session === "FH" ||
-        this.state.to_leave_session === "SH"
+        moment(this.state.from_date).format("YYYYMMDD") <
+        moment(this.state.to_date).format("YYYYMMDD")
       ) {
-        this.setState({
-          total_applied_days: Math.abs(days + 0.5)
-        });
-      } else {
-        this.setState({
-          total_applied_days: Math.abs(days + 1)
-        });
+        if (
+          this.state.from_leave_session === "SH" &&
+          this.state.to_leave_session === "FH"
+        ) {
+          this.setState({
+            total_applied_days: 1
+          });
+        } else if (
+          this.state.from_leave_session === "FH" ||
+          this.state.from_leave_session === "SH" ||
+          this.state.to_leave_session === "FH" ||
+          this.state.to_leave_session === "SH"
+        ) {
+          this.setState({
+            total_applied_days: Math.abs(days + 0.5)
+          });
+        } else if (
+          this.state.from_leave_session === "FD" &&
+          this.state.to_leave_session === "FD"
+        ) {
+          this.setState({
+            total_applied_days: Math.abs(days + 1)
+          });
+        } else {
+          this.setState({
+            total_applied_days: Math.abs(days + 1)
+          });
+        }
       }
     } else {
       this.setState({
@@ -694,7 +731,16 @@ class ApplyLeave extends Component {
                         },
                         {
                           fieldName: "application_date",
-                          label: "Leave Requested On"
+                          label: "Leave Requested On",
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {moment(row.application_date).format(
+                                  "MM-DD-YYYY"
+                                )}
+                              </span>
+                            );
+                          }
                         },
                         {
                           fieldName: "leave_description",
@@ -702,11 +748,25 @@ class ApplyLeave extends Component {
                         },
                         {
                           fieldName: "from_date",
-                          label: "Leave From"
+                          label: "Leave From",
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {moment(row.from_date).format("MM-DD-YYYY")}
+                              </span>
+                            );
+                          }
                         },
                         {
                           fieldName: "to_date",
-                          label: "Leave To"
+                          label: "Leave To",
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {moment(row.to_date).format("MM-DD-YYYY")}
+                              </span>
+                            );
+                          }
                         },
                         {
                           fieldName: "total_applied_days",
