@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./screen_assignment.css";
+import "./ComponentElementAssignment.css";
 import {
   AlgaehLabel,
   AlagehAutoComplete,
@@ -7,7 +7,7 @@ import {
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
-class ScreenAssignment extends Component {
+class ComponentElementAssignment extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -77,7 +77,7 @@ class ScreenAssignment extends Component {
 
   render() {
     return (
-      <div className="screen_assignment">
+      <div className="ComponentElementAssignment">
         <div className="row">
           <div className="col-12">
             <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
@@ -124,51 +124,104 @@ class ScreenAssignment extends Component {
             <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">Define Module/Screen</h3>
+                  <h3 className="caption-subject">Define Component/Elements</h3>
                 </div>
               </div>
               <div className="portlet-body">
                 <div className="row">
-                  <div className="col">
+                  <AlagehAutoComplete
+                    div={{ className: "col-12 form-group" }}
+                    label={{ forceLabel: "Select Module", isImp: false }}
+                    selector={{
+                      name: "",
+                      className: "select-fld",
+                      dataSource: {},
+                      others: {}
+                    }}
+                  />
+                  <div className="col-6">
                     <div className="moduleList list-group-check">
-                      <ul className="mainmenu" style={{ minHeight: "59vh" }}>
-                        <li>
-                          <input type="checkbox" />
-                          <a>General</a>{" "}
-                          <ul className="submenu">
-                            <li>
-                              <input type="checkbox" />
-                              <a>Dashboard</a>
-                            </li>
-                          </ul>
+                      <ul className="mainmenu">
+                        <li className="activeLi">
+                          <input type="checkbox" checked />
+                          <a>Patient Details</a>
                         </li>
                         <li>
                           <input type="checkbox" />
-                          <a>Front Desk</a>
-                          <ul className="submenu">
-                            <li>
-                              <input type="checkbox" />
-                              <a>Doctor Appointent</a>
-                            </li>{" "}
-                            <li className="activeLi">
-                              <input type="checkbox" checked />
-                              <a>Front Desk</a>
-                            </li>{" "}
-                            <li>
-                              <input type="checkbox" />
-                              <a>Patient Recall</a>
-                            </li>{" "}
-                            <li>
-                              <input type="checkbox" />
-                              <a>Physician Schedule Setup</a>
-                            </li>{" "}
-                            <li>
-                              <input type="checkbox" />
-                              <a>Staff Cash Collection</a>
-                            </li>
-                          </ul>
+                          <a>Other Details</a>
+                        </li>
+                        <li>
+                          <input type="checkbox" />
+                          <a>Consultation Details</a>
+                        </li>
+                        <li>
+                          <input type="checkbox" />
+                          <a>MLC Details</a>
+                        </li>
+                        <li>
+                          <input type="checkbox" />
+                          <a>Primary Insurance</a>
+                        </li>
+                        <li>
+                          <input type="checkbox" />
+                          <a>Secondary Details</a>
+                        </li>
+                        <li>
+                          <input type="checkbox" />
+                          <a>Copay Details</a>
+                        </li>
+                        <li>
+                          <input type="checkbox" />
+                          <a>Billing Details</a>
                         </li>
                       </ul>
+                    </div>
+                  </div>
+                  <div className="col-6">
+                    <div id="AlgaehElementsGrid_Cntr">
+                      <AlgaehDataGrid
+                        id="AlgaehElementsGrid"
+                        datavalidate="AlgaehElementsGrid"
+                        columns={[
+                          {
+                            fieldName: "selectElement",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Select" }} />
+                            ),
+                            others: {
+                              maxWidth: 50
+                            }
+                          },
+                          {
+                            fieldName: "elementname",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Element Name" }}
+                              />
+                            ),
+                            others: {
+                              textAlign: "left"
+                            }
+                          },
+                          {
+                            fieldName: "mandatoryFld",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Mandatory" }}
+                              />
+                            ),
+                            others: {
+                              maxWidth: 80
+                            }
+                          }
+                        ]}
+                        keyId=""
+                        dataSource={{ data: [] }}
+                        isEditable={false}
+                        paging={{ page: 0, rowsPerPage: 10 }}
+                        events={{}}
+                        others={{}}
+                      />
                     </div>
                   </div>
                 </div>
@@ -181,4 +234,4 @@ class ScreenAssignment extends Component {
   }
 }
 
-export default ScreenAssignment;
+export default ComponentElementAssignment;
