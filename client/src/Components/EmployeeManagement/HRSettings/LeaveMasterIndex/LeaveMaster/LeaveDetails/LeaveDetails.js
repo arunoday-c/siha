@@ -52,66 +52,6 @@ export default class LeaveDetails extends Component {
               dataSource: {}
             }}
           />
-          <div className="col-2">
-            <label>Include Holiday</label>
-            <div className="customCheckbox">
-              <label className="checkbox inline">
-                <input
-                  type="checkbox"
-                  name="allow_round_off"
-                  //checked={this.state.allow_round_off}
-                  //onChange={this.changeChecks.bind(this)}
-                />
-                <span>Yes</span>
-              </label>
-            </div>
-          </div>
-          <div className="col-2">
-            <label>Include Weekoff</label>
-            <div className="customCheckbox">
-              <label className="checkbox inline">
-                <input
-                  type="checkbox"
-                  name="allow_round_off"
-                  //checked={this.state.allow_round_off}
-                  //onChange={this.changeChecks.bind(this)}
-                />
-                <span>Yes</span>
-              </label>
-            </div>
-          </div>
-
-          <AlagehFormGroup
-            div={{ className: "col-2" }}
-            label={{
-              forceLabel: "Encashment Percentage",
-              isImp: true
-            }}
-            textBox={{
-              className: "txt-fld",
-              name: "",
-              events: {},
-              others: {
-                type: "number"
-              }
-            }}
-          />
-
-          <AlagehFormGroup
-            div={{ className: "col-2" }}
-            label={{
-              forceLabel: "Carry Forward Percentage",
-              isImp: true
-            }}
-            textBox={{
-              className: "txt-fld",
-              name: "",
-              events: {},
-              others: {
-                type: "number"
-              }
-            }}
-          />
 
           <AlagehFormGroup
             div={{ className: "col-2" }}
@@ -132,39 +72,7 @@ export default class LeaveDetails extends Component {
           <AlagehFormGroup
             div={{ className: "col-2" }}
             label={{
-              forceLabel: "Calendar Days",
-              isImp: true
-            }}
-            textBox={{
-              className: "txt-fld",
-              name: "",
-              events: {},
-              others: {
-                type: "number"
-              }
-            }}
-          />
-
-          <AlagehFormGroup
-            div={{ className: "col-2" }}
-            label={{
               forceLabel: "Maximum Limit",
-              isImp: true
-            }}
-            textBox={{
-              className: "txt-fld",
-              name: "",
-              events: {},
-              others: {
-                type: "number"
-              }
-            }}
-          />
-
-          <AlagehFormGroup
-            div={{ className: "col-2" }}
-            label={{
-              forceLabel: "Max days of C/F",
               isImp: true
             }}
             textBox={{
@@ -238,21 +146,6 @@ export default class LeaveDetails extends Component {
           </div>
 
           <div className="col-2">
-            <label>Extend the Probation</label>
-            <div className="customCheckbox">
-              <label className="checkbox inline">
-                <input
-                  type="checkbox"
-                  name="allow_round_off"
-                  //checked={this.state.allow_round_off}
-                  //onChange={this.changeChecks.bind(this)}
-                />
-                <span>Yes</span>
-              </label>
-            </div>
-          </div>
-
-          <div className="col-2">
             <label>Min. Service Required</label>
             <div className="customCheckbox">
               <label className="checkbox inline">
@@ -266,51 +159,6 @@ export default class LeaveDetails extends Component {
               </label>
             </div>
           </div>
-
-          <AlagehAutoComplete
-            div={{ className: "col-2" }}
-            label={{
-              forceLabel: "Calc. Type",
-              isImp: true
-            }}
-            selector={{
-              name: "",
-              className: "select-fld",
-              dataSource: {}
-            }}
-          />
-
-          <AlagehFormGroup
-            div={{ className: "col-2" }}
-            label={{
-              forceLabel: "Reset Closing balance in 1 year",
-              isImp: true
-            }}
-            textBox={{
-              className: "txt-fld",
-              name: "",
-              events: {},
-              others: {
-                type: "number"
-              }
-            }}
-          />
-
-          <AlagehFormGroup
-            div={{ className: "col-2" }}
-            label={{
-              forceLabel: "Min. Unpaid days allowed",
-              isImp: true
-            }}
-            textBox={{
-              className: "txt-fld",
-              name: "",
-              events: {},
-              others: {
-                type: "number"
-              }
-            }}
-          />
 
           <AlagehFormGroup
             div={{ className: "col-2" }}
