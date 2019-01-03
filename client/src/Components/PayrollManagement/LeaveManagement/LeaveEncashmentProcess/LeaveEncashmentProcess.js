@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import "./LeaveEncashmentAuth.css";
+import "./LeaveEncashmentProcess.css";
 
 import {
   AlagehAutoComplete,
@@ -9,7 +9,7 @@ import {
   AlgaehDateHandler
 } from "../../../Wrapper/algaehWrapper";
 
-export default class LeaveEncashmentAuth extends Component {
+export default class LeaveEncashmentProcess extends Component {
   render() {
     return (
       <div className="leave_en_auth row">
@@ -19,20 +19,6 @@ export default class LeaveEncashmentAuth extends Component {
               div={{ className: "col form-group mandatory" }}
               label={{
                 forceLabel: "Selected Year",
-                isImp: true
-              }}
-              selector={{
-                name: "",
-                className: "select-fld",
-
-                dataSource: {},
-                others: {}
-              }}
-            />
-            <AlagehAutoComplete
-              div={{ className: "col form-group mandatory" }}
-              label={{
-                forceLabel: "Authorization Level",
                 isImp: true
               }}
               selector={{
@@ -76,7 +62,21 @@ export default class LeaveEncashmentAuth extends Component {
             <AlagehAutoComplete
               div={{ className: "col form-group" }}
               label={{
-                forceLabel: "Filter by Employee",
+                forceLabel: "Select an Employee",
+                isImp: true
+              }}
+              selector={{
+                name: "",
+                className: "select-fld",
+
+                dataSource: {},
+                others: {}
+              }}
+            />
+            <AlagehAutoComplete
+              div={{ className: "col form-group" }}
+              label={{
+                forceLabel: "Encashment Type",
                 isImp: false
               }}
               selector={{
@@ -99,7 +99,7 @@ export default class LeaveEncashmentAuth extends Component {
           <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
-                <h3 className="caption-subject">Encashment Requests</h3>
+                <h3 className="caption-subject">Encashment Details</h3>
               </div>
               <div className="actions">
                 {/* <a className="btn btn-primary btn-circle active">
@@ -109,17 +109,11 @@ export default class LeaveEncashmentAuth extends Component {
             </div>
             <div className="portlet-body">
               <div className="row">
-                <div className="col-12" id="leaveEncashGrid_Cntr">
+                <div className="col-12" id="leaveEncashProcessGrid_Cntr">
                   <AlgaehDataGrid
-                    id="leaveEncashGrid"
-                    datavalidate="leaveEncashGrid"
+                    id="leaveEncashProcessGrid"
+                    datavalidate="leaveEncashProcessGrid"
                     columns={[
-                      {
-                        fieldName: "EncashmentRequestNo",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Request No." }} />
-                        )
-                      },
                       {
                         fieldName: "leaveType",
                         label: (
@@ -152,7 +146,7 @@ export default class LeaveEncashmentAuth extends Component {
                         fieldName: "Airfare Amount",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Airfare Amount" }}
+                            label={{ forceLabel: "AirfareAmount" }}
                           />
                         )
                       },
@@ -177,78 +171,20 @@ export default class LeaveEncashmentAuth extends Component {
             </div>
           </div>
         </div>
+        <div className="hptl-phase1-footer">
+          <div className="row">
+            <div className="col-lg-12">
+              <button type="button" className="btn btn-primary">
+                <AlgaehLabel
+                  label={{ forceLabel: "Process", returnText: true }}
+                />
+              </button>
 
-        <div className="col-12">
-          <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
-            <div className="portlet-title">
-              <div className="caption">
-                <h3 className="caption-subject">
-                  Encashment Details of: <b>Employee Name</b>
-                </h3>
-              </div>
-              <div className="actions" />
-            </div>
-            <div className="portlet-body">
-              <div className="row">
-                <div className="col-12" id="previousLeaveAppGrid_Cntr">
-                  <AlgaehDataGrid
-                    id="previousLeaveAppGrid"
-                    datavalidate="previousLeaveAppGrid"
-                    columns={[
-                      {
-                        fieldName: "leaveType",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Leave Type" }} />
-                        )
-                      },
-                      {
-                        fieldName: "LeaveDesc",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Leave Description" }}
-                          />
-                        )
-                      },
-                      {
-                        fieldName: "NoOfLeave",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "No. of Leave" }} />
-                        )
-                      },
-                      {
-                        fieldName: "EncashmentAmount",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Encashment Amount" }}
-                          />
-                        )
-                      },
-                      {
-                        fieldName: "Airfare Amount",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Airfare Amount" }}
-                          />
-                        )
-                      },
-                      {
-                        fieldName: "BalanceLeaveInDays",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Balance Leave In Days" }}
-                          />
-                        )
-                      }
-                    ]}
-                    keyId=""
-                    dataSource={{ data: [] }}
-                    isEditable={false}
-                    paging={{ page: 0, rowsPerPage: 10 }}
-                    events={{}}
-                    others={{}}
-                  />
-                </div>
-              </div>
+              <button type="button" className="btn btn-default">
+                <AlgaehLabel
+                  label={{ forceLabel: "Clear", returnText: true }}
+                />
+              </button>
             </div>
           </div>
         </div>
