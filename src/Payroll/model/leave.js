@@ -810,11 +810,17 @@ let addLeaveMaster = (req, res, next) => {
                 next(error);
               });
             }
-            if (leaveHeadResult.insertid > 0) {
+
+            debugLog("leaveHeadResult:", leaveHeadResult);
+            if (leaveHeadResult.insertId > 0) {
+              debugLog("inside encahsh");
               new Promise((resolve, reject) => {
                 try {
                   //==============
-                  if (input.leaveEncash.length > 0) {
+                  if (
+                    input.leaveEncash != undefined &&
+                    input.leaveEncash.length > 0
+                  ) {
                     const insurtColumns = [
                       "earnings_id",
                       "percent",
@@ -846,10 +852,11 @@ let addLeaveMaster = (req, res, next) => {
                           });
                         }
 
-                        if (encashResult.insertid > 0) {
+                        if (encashResult.insertId > 0) {
                           resolve({ encashResult });
                         } else {
                           connection.rollback(() => {
+                            debugLog("BBBBBB");
                             releaseDBConnection(db, connection);
                             req.records = {
                               invalid_data: true,
@@ -862,15 +869,20 @@ let addLeaveMaster = (req, res, next) => {
                       }
                     );
                   } else {
-                    resolve({});
+                    debugLog("else resole:1");
+                    resolve({ leaveHeadResult });
                   }
                 } catch (e) {
                   reject(e);
                 }
               }).then(leaveEncashRes => {
+                debugLog("inside rule");
                 new Promise((resolve, reject) => {
                   try {
-                    if (input.leaveRules.length > 0) {
+                    if (
+                      input.leaveRules != undefined &&
+                      input.leaveRules.length > 0
+                    ) {
                       const insurtColumnsRules = [
                         "calculation_type",
                         "earning_id",
@@ -884,16 +896,12 @@ let addLeaveMaster = (req, res, next) => {
                       connection.query(
                         "INSERT INTO hims_d_leave_rule (" +
                           insurtColumnsRules.join(",") +
-                          ",`leave_header_id`,created_date,updated_date) VALUES ?",
+                          ",`leave_header_id`) VALUES ?",
                         [
                           jsonArrayToObject({
                             sampleInputObject: insurtColumnsRules,
                             arrayObj: input.leaveRules,
-                            newFieldToInsert: [
-                              leaveHeadResult.insertId,
-                              new Date(),
-                              new Date()
-                            ],
+                            newFieldToInsert: [leaveHeadResult.insertId],
                             req: req
                           })
                         ],
@@ -905,9 +913,10 @@ let addLeaveMaster = (req, res, next) => {
                             });
                           }
 
-                          if (ruleResult.insertid > 0) {
+                          if (ruleResult.insertId > 0) {
                             resolve({ ruleResult });
                           } else {
+                            debugLog("CCCCCCCC");
                             connection.rollback(() => {
                               releaseDBConnection(db, connection);
                               req.records = {
@@ -921,15 +930,20 @@ let addLeaveMaster = (req, res, next) => {
                         }
                       );
                     } else {
-                      resolve({});
+                      debugLog("else resole:2");
+                      resolve({ leaveEncashRes });
                     }
                   } catch (e) {
                     reject(e);
                   }
                 }).then(leaveRulesRes => {
+                  debugLog("inside details");
                   new Promise((resolve, reject) => {
                     try {
-                      if (input.leaveDetails.length > 0) {
+                      if (
+                        input.leaveDetails != undefined &&
+                        input.leaveDetails.length > 0
+                      ) {
                         const insurtColumnsdetails = [
                           "employee_type",
                           "gender",
@@ -968,10 +982,11 @@ let addLeaveMaster = (req, res, next) => {
                               });
                             }
 
-                            if (detailResult.insertid > 0) {
+                            if (detailResult.insertId > 0) {
                               resolve({ detailResult });
                             } else {
                               connection.rollback(() => {
+                                debugLog("WWWWWWWWWWWWWWW");
                                 releaseDBConnection(db, connection);
                                 req.records = {
                                   invalid_data: true,
@@ -984,7 +999,7 @@ let addLeaveMaster = (req, res, next) => {
                           }
                         );
                       } else {
-                        resolve({});
+                        resolve({ leaveRulesRes });
                       }
                     } catch (e) {
                       reject(e);
@@ -1005,6 +1020,7 @@ let addLeaveMaster = (req, res, next) => {
                 });
               });
             } else {
+              debugLog("AAAAAA");
               connection.rollback(() => {
                 releaseDBConnection(db, connection);
                 req.records = {
