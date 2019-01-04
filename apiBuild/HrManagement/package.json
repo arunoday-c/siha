@@ -1,0 +1,55 @@
+{
+  "name": "hr_management",
+  "version": "1.0.0",
+  "description": "Algaeh HR Management services",
+  "main": "dist",
+  "scripts": {
+    "hr_server": "cross-env PORT=3004  NODE_ENV=development nodemon -w  src --exec \" babel-node src/hr_server.js \"",
+    "build": "babel src -s -D -d ../apiBuild/HrManagement ",
+    "dev": "npm run hr_server",
+    "api": "npm run hr_server",
+    "lint": "eslint src && eslint test",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "cross-env PORT=3004 NODE_ENV=production pm2 start  -i 1 hr_server.js"
+  },
+  "eslintConfig": {
+    "parserOptions": {
+      "ecmaVersion": 7,
+      "sourceType": "module"
+    },
+    "env": {
+      "node": true
+    },
+    "rules": {
+      "no-eval": 0,
+      "no-console": 0,
+      "no-unused-vars": 1,
+      "no-script-url": 0
+    }
+  },
+  "dependencies": {
+    "algaeh-mysql": "^1.1.9",
+    "body-parser": "^1.18.2",
+    "compression": "^1.7.3",
+    "concurrently": "^3.5.1",
+    "cors": "^2.8.4",
+    "cross-env": "^5.1.4",
+    "express": "^4.16.3",
+    "moment": "^2.22.1",
+    "node-linq": "0.0.5",
+    "winston": "^2.4.2",
+    "winston-daily-rotate-file": "^3.1.4"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^8.2.3",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-stage-0": "^6.24.1",
+    "eslint": "^4.19.1",
+    "nodemon": "^1.17.3"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
