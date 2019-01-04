@@ -19,9 +19,15 @@ export function getTokenDetals(that) {
     });
   }).then(myIP => {
     const _myRoute = config.routersAndPorts.default;
+    const _localaddress =
+      window.location.protocol + "//" + window.location.hostname + ":";
+    const _routingUrl =
+      _myRoute.url === undefined || _myRoute.url === ""
+        ? _localaddress
+        : _myRoute.url;
     axios({
       method: "GET",
-      url: _myRoute.url + _myRoute.port + auth_url,
+      url: _routingUrl + _myRoute.port + auth_url,
       headers: {
         Authorization: basicAuth,
         "x-client-ip": myIP

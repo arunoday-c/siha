@@ -15,13 +15,13 @@ module.exports = {
       })
       .then(result => {
         _mysql.releaseConnection();
-        console.log("_leaveDetails.from_date", _leaveDetails.from_date);
-        const _from_date = moment(_leaveDetails.from_date);
-        const _to_date = moment(_leaveDetails.to_date);
-        utiliites
-          .AlgaehUtilities()
-          .logger()
-          .log("_from_date", _from_date + " ; " + _to_date);
+
+        const _from_date = moment(_leaveDetails.from_date, "YYYY-MM-DD");
+        const _to_date = moment(_leaveDetails.to_date, "YYYY-MM-DD");
+        // utiliites
+        //   .AlgaehUtilities()
+        //   .logger()
+        //   .log("_from_date", _from_date + " ; " + _to_date);
         let _generateDate = [];
         var current = new Date(_from_date);
         while (_from_date <= _to_date) {
