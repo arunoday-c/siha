@@ -1,17 +1,9 @@
 .admin_setup {
   .admin-section {
-    background: #fff;
-    border-radius: 5px;
-    border: 1px solid #d3d3d3;
-    background: #ffff;
-    padding-top: 10px;
-
     #adminGrid_Cntr {
-      margin-top: 10px;
-      margin-bottom: 10px;
       .ReactTable {
         max-width: 98vw !important;
-        max-height: 70vh !important;
+        max-height: 57vh !important;
       }
     }
   }

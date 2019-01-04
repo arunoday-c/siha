@@ -72,6 +72,8 @@ let router = express();
 import leave from "../Payroll/controller/leave";
 import holiday from "../Payroll/controller/holiday";
 import loan from "../Payroll/controller/loan";
+import salary from "../Payroll/controller/salary";
+import payrollSettings from "../Payroll/controller/payrollSettings";
 //connect to DB
 //function(db)
 initializedDb(db => {
@@ -151,6 +153,8 @@ initializedDb(db => {
   router.use("/leave", leave({ config, db }));
   router.use("/holiday", holiday({ config, db }));
   router.use("/loan", loan({ config, db }));
+  router.use("/salary", salary({ config, db }));
+  router.use("/payrollSettings", payrollSettings({ config, db }));
 });
 
 export default router;

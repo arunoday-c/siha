@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 import "./screen_assignment.css";
-import { AlgaehLabel, AlagehAutoComplete } from "../../Wrapper/algaehWrapper";
+import {
+  AlgaehLabel,
+  AlagehAutoComplete,
+  AlgaehDataGrid
+} from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 class ScreenAssignment extends Component {
@@ -8,9 +12,33 @@ class ScreenAssignment extends Component {
     super(props);
     this.state = {
       groups: [],
-      roles: []
+      roles: [],
+      modules: [],
+      op_modules: []
     };
     this.getGroups();
+    this.getRoleBaseActiveModules();
+  }
+
+  getRoleBaseActiveModules() {
+    algaehApiCall({
+      uri: "/algaehMasters/getRoleBaseActiveModules",
+      method: "GET",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            modules: res.data.records
+          });
+          console.log("Records:", res.data.records);
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   getGroups() {
@@ -69,108 +97,104 @@ class ScreenAssignment extends Component {
     }
   }
 
-  loadModulesandScreens() {}
+  changeModules(e) {
+    let val = parseInt(e.target.value, 10);
+
+    this.state.op_modules.includes(val)
+      ? this.state.op_modules.pop(val)
+      : this.state.op_modules.push(val);
+
+    this.setState(...this.state);
+  }
 
   render() {
     return (
       <div className="screen_assignment">
         <div className="row">
-          <div className="col-lg-4">
-            <div className="row">
-              <AlagehAutoComplete
-                div={{ className: "col-12" }}
-                label={{
-                  fieldName: "group",
-                  isImp: true
-                }}
-                selector={{
-                  name: "app_group_id",
-                  className: "select-fld",
-                  value: this.state.app_group_id,
-                  dataSource: {
-                    textField: "app_group_name",
-                    valueField: "algaeh_d_app_group_id",
-                    data: this.state.groups
-                  },
-                  onChange: this.dropDownHandler.bind(this)
-                }}
-              />
+          <div className="col-12">
+            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+              <div className="portlet-body">
+                <div className="row">
+                  <AlagehAutoComplete
+                    div={{ className: "col" }}
+                    label={{ forceLabel: "Select a Group", isImp: true }}
+                    selector={{
+                      name: "app_group_id",
+                      className: "select-fld",
+                      value: this.state.app_group_id,
+                      dataSource: {
+                        textField: "app_group_name",
+                        valueField: "algaeh_d_app_group_id",
+                        data: this.state.groups
+                      },
+                      onChange: this.dropDownHandler.bind(this),
+                      others: {}
+                    }}
+                  />
 
-              <AlagehAutoComplete
-                div={{ className: "col-12" }}
-                label={{
-                  fieldName: "role",
-                  isImp: true
-                }}
-                selector={{
-                  name: "role_id",
-                  className: "select-fld",
-                  value: this.state.role_id,
-                  dataSource: {
-                    textField: "role_name",
-                    valueField: "app_d_app_roles_id",
-                    data: this.state.roles
-                  },
-                  onChange: this.dropDownHandler.bind(this)
-                }}
-              />
-
-              {/* <div className="col">
-              <button
-                style={{ marginTop: 21 }}
-                onClick={this.loadModulesandScreens.bind(this)}
-                type="button"
-                className="btn btn-primary"
-              >
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Load"
-                  }}
-                />
-              </button>
-            </div> */}
+                  <AlagehAutoComplete
+                    div={{ className: "col" }}
+                    label={{ forceLabel: "Select a Role", isImp: true }}
+                    selector={{
+                      name: "role_id",
+                      className: "select-fld",
+                      value: this.state.role_id,
+                      dataSource: {
+                        textField: "role_name",
+                        valueField: "app_d_app_roles_id",
+                        data: this.state.roles
+                      },
+                      onChange: this.dropDownHandler.bind(this)
+                    }}
+                  />
+                </div>
+              </div>
             </div>
           </div>
-          <div className="col-lg-4">
-            <h6>Modules</h6>
-            <div className="moduleList list-group-check">
-              <ul className="mainmenu">
-                <li>
-                  <input type="checkbox" />
-                  <a>Home</a>
-                </li>
-                <li>
-                  <input type="checkbox" />
-                  <a>About</a>
-                </li>
-                <li>
-                  <input type="checkbox" />
-                  <a>Products</a>
-                  <ul className="submenu">
-                    <li>
-                      <input type="checkbox" />
-                      <a>Tops</a>
-                    </li>
-                    <li>
-                      <input type="checkbox" />
-                      <a>Bottoms</a>
-                    </li>
-                    <li>
-                      <input type="checkbox" />
-                      <a>Footwear</a>
-                    </li>
-                  </ul>
-                </li>
-                <li>
-                  <input type="checkbox" />
-                  <a>Contact us</a>
-                </li>
-              </ul>
+
+          <div className="col-12">
+            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Define Module/Screen</h3>
+                </div>
+              </div>
+              <div className="portlet-body">
+                <div className="row">
+                  <div className="col">
+                    <div className="moduleList list-group-check">
+                      <ul className="mainmenu" style={{ minHeight: "59vh" }}>
+                        {this.state.modules.map((data, index) => (
+                          <li key={data.algaeh_d_module_id}>
+                            <input
+                              type="checkbox"
+                              onChange={this.changeModules.bind(this)}
+                              name="modules"
+                              checked={this.state.op_modules.includes(
+                                data.algaeh_d_module_id
+                              )}
+                              value={data.algaeh_d_module_id}
+                            />
+                            <a>{data.module_name}</a>
+
+                            <ul className="submenu">
+                              {data.ScreenList.map((sub_menu, index) => (
+                                <li key={sub_menu.algaeh_app_screens_id}>
+                                  <input type="checkbox" />
+                                  <a>{sub_menu.screen_name}</a>
+                                </li>
+                              ))}
+                            </ul>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                <button className="btn btn-primary">APPLY</button>
+              </div>
             </div>
-          </div>
-          <div className="col-lg-4">2346987265</div>
-          <div className="col-lg-12">
-            <button className="btn btn-primary">SAVE</button>
           </div>
         </div>
       </div>

@@ -80,7 +80,6 @@ export default class HolidayMaster extends Component {
   clearWeekoffState() {
     this.setState({
       year: moment().year(),
-      hospital_id: null,
       monday: false,
       tuesday: false,
       wednesday: false,
@@ -245,6 +244,7 @@ export default class HolidayMaster extends Component {
                 title: "Records added successfully",
                 type: "success"
               });
+              this.getHolidayMaster(this.state.hospital_id);
             } else if (!res.data.success) {
               swalMessage({
                 title: res.data.records.message,

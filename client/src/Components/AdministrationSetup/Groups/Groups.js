@@ -63,118 +63,132 @@ class Groups extends Component {
   render() {
     return (
       <div className="groups">
-        <div className="col-lg-12">
-          <div className="row">
-            <AlagehFormGroup
-              div={{ className: "col-lg-2" }}
-              label={{
-                forceLabel: "Group Code",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "app_group_code",
-                value: this.state.app_group_code,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                }
-              }}
-            />
-            <AlagehFormGroup
-              div={{ className: "col-lg-2" }}
-              label={{
-                forceLabel: "Group Name",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "app_group_name",
-                value: this.state.app_group_name,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                }
-              }}
-            />
-            <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
-              label={{
-                forceLabel: "Group Description",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "app_group_desc",
-                value: this.state.app_group_desc,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                }
-              }}
-            />
-            <AlagehFormGroup
-              div={{ className: "col-lg-2" }}
-              label={{
-                forceLabel: "Group Type",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "app_group_type",
-                value: this.state.app_group_type,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                }
-              }}
-            />
+        <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+          <div className="portlet-body">
+            <div className="row">
+              <AlagehFormGroup
+                div={{ className: "col-lg-2" }}
+                label={{
+                  forceLabel: "Group Code",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "app_group_code",
+                  value: this.state.app_group_code,
+                  events: {
+                    onChange: this.changeTexts.bind(this)
+                  }
+                }}
+              />
+              <AlagehFormGroup
+                div={{ className: "col-lg-2" }}
+                label={{
+                  forceLabel: "Group Name",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "app_group_name",
+                  value: this.state.app_group_name,
+                  events: {
+                    onChange: this.changeTexts.bind(this)
+                  }
+                }}
+              />
+              <AlagehFormGroup
+                div={{ className: "col-lg-3" }}
+                label={{
+                  forceLabel: "Group Description",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "app_group_desc",
+                  value: this.state.app_group_desc,
+                  events: {
+                    onChange: this.changeTexts.bind(this)
+                  }
+                }}
+              />
+              <AlagehFormGroup
+                div={{ className: "col-lg-2" }}
+                label={{
+                  forceLabel: "Group Type",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "app_group_type",
+                  value: this.state.app_group_type,
+                  events: {
+                    onChange: this.changeTexts.bind(this)
+                  }
+                }}
+              />
 
-            <div className="col-lg-3">
-              <button
-                type="submit"
-                style={{ marginTop: 21 }}
-                onClick={this.addGroups.bind(this)}
-                className="btn btn-primary"
-              >
-                Add to List
-              </button>
+              <div className="col-lg-3">
+                <button
+                  type="submit"
+                  style={{ marginTop: 21 }}
+                  onClick={this.addGroups.bind(this)}
+                  className="btn btn-primary"
+                >
+                  Add to List
+                </button>
+              </div>
             </div>
           </div>
-
-          <div data-validate="groupDiv" id="adminGrid_Cntr">
-            <AlgaehDataGrid
-              id="group-grid"
-              datavalidate="data-validate='groupDiv'"
-              columns={[
-                {
-                  fieldName: "app_group_code",
-                  label: "Group Code",
-                  disabled: true
-                },
-                {
-                  fieldName: "app_group_name",
-                  label: "Group Name"
-                },
-                {
-                  fieldName: "app_group_desc",
-                  label: "Group Description",
-                  disabled: true
-                },
-                {
-                  fieldName: "app_group_type",
-                  label: "Group Type",
-                  disabled: true
-                }
-              ]}
-              keyId="algaeh_d_module_id"
-              dataSource={{
-                data: this.state.groups
-              }}
-              isEditable={true}
-              paging={{ page: 0, rowsPerPage: 10 }}
-              events={{
-                onEdit: () => {},
-                onDelete: this.deleteGroups.bind(this),
-                onDone: this.updateGroups.bind(this)
-              }}
-            />
+        </div>
+        <div className="row">
+          <div className="col-12">
+            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Group List</h3>
+                </div>
+              </div>
+              <div className="portlet-body">
+                <div data-validate="groupDiv" id="GroupGrid_Cntr">
+                  <AlgaehDataGrid
+                    id="group-grid"
+                    datavalidate="data-validate='groupDiv'"
+                    columns={[
+                      {
+                        fieldName: "app_group_code",
+                        label: "Group Code",
+                        disabled: true
+                      },
+                      {
+                        fieldName: "app_group_name",
+                        label: "Group Name"
+                      },
+                      {
+                        fieldName: "app_group_desc",
+                        label: "Group Description",
+                        disabled: true
+                      },
+                      {
+                        fieldName: "app_group_type",
+                        label: "Group Type",
+                        disabled: true
+                      }
+                    ]}
+                    keyId="algaeh_d_module_id"
+                    dataSource={{
+                      data: this.state.groups
+                    }}
+                    isEditable={true}
+                    paging={{ page: 0, rowsPerPage: 10 }}
+                    events={{
+                      onEdit: () => {},
+                      onDelete: this.deleteGroups.bind(this),
+                      onDone: this.updateGroups.bind(this)
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

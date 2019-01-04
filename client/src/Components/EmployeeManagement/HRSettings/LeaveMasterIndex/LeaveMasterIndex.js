@@ -11,16 +11,24 @@ import {
 export default class LeaveMasterIndex extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       open: false
     };
   }
 
+  closeModal() {
+    this.setState({
+      open: false
+    });
+  }
+
   render() {
     return (
       <div className="row leave_master_index">
-        <LeaveMaster open={this.state.open} />
+        <LeaveMaster
+          open={this.state.open}
+          onClose={this.closeModal.bind(this)}
+        />
 
         <div className="col-12">
           <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">

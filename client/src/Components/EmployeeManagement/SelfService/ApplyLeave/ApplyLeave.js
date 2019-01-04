@@ -23,9 +23,46 @@ class ApplyLeave extends Component {
       available_balance: 0.0,
       total_applied_days: 0.0
     };
-
+    this.getHolidayMaster();
     this.getLeaveTypes();
     this.getEmployees();
+  }
+
+  getHolidayMaster() {
+    algaehApiCall({
+      uri: "/holiday/getAllHolidays",
+      method: "GET",
+      data: {
+        hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
+          .hims_d_hospital_id
+      },
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            holidays: res.data.records
+          });
+          console.table(res.data.records);
+        }
+      },
+      onFailure: err => {}
+    });
+  }
+
+  getDateRange(startDate, endDate) {
+    var dates = [];
+
+    var currDate = moment(startDate).startOf("day");
+    var lastDate = moment(endDate).startOf("day");
+
+    var now = currDate.clone(),
+      dates = [];
+
+    while (now.isSameOrBefore(lastDate)) {
+      console.log(now.format("YYYYMMDD"));
+      dates.push(now.format("YYYYMMDD"));
+      now.add(1, "days");
+    }
+    return dates;
   }
 
   componentDidMount() {
@@ -39,7 +76,128 @@ class ApplyLeave extends Component {
         this.getEmployeeLeaveHistory();
       }
     );
-    //console.log("Data:", this.props.empData);
+  }
+
+  validate() {
+    let from_date = this.state.from_date;
+    let to_date = this.state.to_date;
+    let from_leave_session = this.state.from_leave_session;
+    let to_leave_session = this.state.to_leave_session;
+
+    if (
+      from_date !== null &&
+      from_date !== undefined &&
+      to_date !== null &&
+      to_date !== undefined &&
+      from_leave_session !== null &&
+      from_leave_session !== undefined &&
+      to_leave_session !== null &&
+      to_leave_session !== undefined
+    ) {
+      if (
+        moment(from_date).format("YYYYMMDD") ===
+        moment(to_date).format("YYYYMMDD")
+      ) {
+        if (from_leave_session === "SH" && to_leave_session === "FH") {
+          swalMessage({
+            title: "Please Select a proper range",
+            type: "warning"
+          });
+          this.setState({
+            from_leave_session: null,
+            to_leave_session: null
+          });
+        } else if (from_leave_session === "FH" && to_leave_session === "SH") {
+          this.setState(
+            {
+              from_leave_session: "FD",
+              to_leave_session: "FD"
+            },
+            () => {
+              this.getAppliedDays();
+            }
+          );
+        } else if (from_leave_session === "SH" && to_leave_session === "FD") {
+          swalMessage({
+            title: "Please Select a proper range",
+            type: "warning"
+          });
+          this.setState(
+            {
+              from_leave_session: null,
+              to_leave_session: null
+            },
+            () => {
+              this.getAppliedDays();
+            }
+          );
+        } else if (from_leave_session === "FD" || to_leave_session === "FD") {
+          this.setState(
+            {
+              to_leave_session: "FD",
+              from_leave_session: "FD"
+            },
+            () => {
+              this.getAppliedDays();
+            }
+          );
+        }
+      } else if (
+        moment(from_date).format("YYYYMMDD") <
+        moment(to_date).format("YYYYMMDD")
+      ) {
+        if (from_leave_session === "FH" && to_leave_session === "FH") {
+          this.setState(
+            {
+              from_leave_session: "FD"
+            },
+            () => {
+              this.getAppliedDays();
+            }
+          );
+        } else if (to_leave_session === "SH") {
+          this.setState(
+            {
+              to_leave_session: "FD"
+            },
+            () => {
+              this.getAppliedDays();
+            }
+          );
+        } else if (from_leave_session === "FH" && to_leave_session === "SH") {
+          this.setState(
+            {
+              from_leave_session: "FD",
+              to_leave_session: "FD"
+            },
+            () => {
+              this.getAppliedDays();
+            }
+          );
+        } else if (from_leave_session === "FH" && to_leave_session === "FD") {
+          this.setState(
+            {
+              from_leave_session: "FD",
+              to_leave_session: "FD"
+            },
+            () => {
+              this.getAppliedDays();
+            }
+          );
+        } else if (from_leave_session === "SH" && to_leave_session === "SH") {
+          this.setState(
+            {
+              to_leave_session: "FD"
+            },
+            () => {
+              this.getAppliedDays();
+            }
+          );
+        } else if (from_leave_session === "SH" && to_leave_session === "FH") {
+          this.getAppliedDays();
+        }
+      }
+    }
   }
 
   changeTexts(e) {
@@ -57,20 +215,64 @@ class ApplyLeave extends Component {
       enddateMoment.isValid() === true
     ) {
       var days = enddateMoment.diff(startdateMoment, "days");
+      debugger;
 
       if (
-        this.state.from_leave_session === "FH" ||
-        this.state.from_leave_session === "SH" ||
-        this.state.to_leave_session === "FH" ||
-        this.state.to_leave_session === "SH"
+        moment(this.state.from_date).format("YYYYMMDD") ===
+        moment(this.state.to_date).format("YYYYMMDD")
       ) {
-        this.setState({
-          total_applied_days: Math.abs(days - 1 + 0.5)
-        });
-      } else {
-        this.setState({
-          total_applied_days: Math.abs(days)
-        });
+        if (
+          this.state.from_leave_session === "FH" ||
+          this.state.from_leave_session === "SH" ||
+          this.state.to_leave_session === "FH" ||
+          this.state.to_leave_session === "SH"
+        ) {
+          this.setState({
+            total_applied_days: 0.5
+          });
+        } else if (
+          this.state.from_leave_session === "FD" ||
+          this.state.to_leave_session === "FD"
+        ) {
+          this.setState({
+            total_applied_days: 1
+          });
+        }
+        //return;
+      }
+
+      if (
+        moment(this.state.from_date).format("YYYYMMDD") <
+        moment(this.state.to_date).format("YYYYMMDD")
+      ) {
+        if (
+          this.state.from_leave_session === "SH" &&
+          this.state.to_leave_session === "FH"
+        ) {
+          this.setState({
+            total_applied_days: Math.abs(days)
+          });
+        } else if (
+          this.state.from_leave_session === "FH" ||
+          this.state.from_leave_session === "SH" ||
+          this.state.to_leave_session === "FH" ||
+          this.state.to_leave_session === "SH"
+        ) {
+          this.setState({
+            total_applied_days: Math.abs(days + 0.5)
+          });
+        } else if (
+          this.state.from_leave_session === "FD" &&
+          this.state.to_leave_session === "FD"
+        ) {
+          this.setState({
+            total_applied_days: Math.abs(days + 1)
+          });
+        } else {
+          this.setState({
+            total_applied_days: Math.abs(days + 1)
+          });
+        }
       }
     } else {
       this.setState({
@@ -82,89 +284,58 @@ class ApplyLeave extends Component {
   dropDownHandler(value) {
     switch (value.name) {
       case "to_leave_session":
-        debugger;
-        if (this.state.from_leave_session === undefined) {
+        if (this.state.to_date === undefined || this.state.to_date === null) {
+          document.getElementById("toLvDt").focus();
+          swalMessage({
+            title: "Please select the to leave session",
+            type: "warning"
+          });
+          this.setState({
+            to_leave_session: null
+          });
+        } else if (this.state.from_leave_session === undefined) {
           document.getElementById("frm-lv-ssn").focus();
           swalMessage({
             title: "Please Select the from session first",
             type: "warning"
           });
+          this.setState({
+            to_leave_session: null
+          });
         } else {
-          if (
-            moment(this.state.to_date).format("YYYYMMDD") >
-              moment(this.state.from_date).format("YYYYMMDD") &&
-            value.value === "SH"
-          ) {
-            this.setState(
-              {
-                [value.name]: "FD"
-              },
-              () => {
-                this.getAppliedDays();
-              }
-            );
-          } else if (
-            moment(this.state.to_date).format("YYYYMMDD") ===
-              moment(this.state.from_date).format("YYYYMMDD") &&
-            this.state.from_leave_session === "FH" &&
-            value.value === "SH"
-          ) {
-            this.setState(
-              {
-                from_leave_session: "FD",
-                to_leave_session: "FD"
-              },
-              () => {
-                this.getAppliedDays();
-              }
-            );
-          } else if (
-            moment(this.state.to_date).format("YYYYMMDD") ===
-              moment(this.state.from_date).format("YYYYMMDD") &&
-            this.state.from_leave_session === "SH" &&
-            value.value === "FH"
-          ) {
-            swalMessage({
-              title: "Please select a proper range",
-              type: "warning"
-            });
-
-            this.setState(
-              {
-                [value.name]: null
-              },
-              () => {
-                this.getAppliedDays();
-              }
-            );
-          } else {
-            this.setState(
-              {
-                [value.name]: value.value
-              },
-              () => {
-                this.getAppliedDays();
-              }
-            );
-          }
+          this.setState(
+            {
+              [value.name]: value.value
+            },
+            () => {
+              this.validate();
+            }
+          );
         }
         break;
 
       case "from_leave_session":
         if (
-          this.state.to_date !== undefined &&
-          this.state.from_date !== undefined
+          this.state.from_date === undefined ||
+          this.state.from_date === null
         ) {
-          moment(this.state.to_date).format("YYYYMMDD") >
-          moment(this.state.from_date).format("YYYYMMDD")
-            ? this.setState({
-                [value.name]: "FD"
-              })
-            : null;
-        } else {
-          this.setState({
-            [value.name]: value.value
+          document.getElementById("leave-frm-dt").focus();
+          swalMessage({
+            title: "Please Select the from Date first",
+            type: "warning"
           });
+          this.setState({
+            from_leave_session: null
+          });
+        } else {
+          this.setState(
+            {
+              [value.name]: value.value
+            },
+            () => {
+              this.validate();
+            }
+          );
         }
         break;
 
@@ -202,7 +373,9 @@ class ApplyLeave extends Component {
       from_leave_session: null,
       to_date: null,
       to_leave_session: null,
-      remarks: null
+      remarks: null,
+      total_applied_days: 0.0,
+      available_balance: 0.0
     });
   }
 
@@ -277,7 +450,6 @@ class ApplyLeave extends Component {
       method: "GET",
       data: {
         employee_id: this.state.employee_id
-        //employee_id: 94
       },
       onSuccess: res => {
         if (res.data.success) {
@@ -374,7 +546,15 @@ class ApplyLeave extends Component {
                         valueField: "leave_id",
                         data: this.state.emp_leaves_data
                       },
-                      onChange: this.dropDownHandler.bind(this)
+                      onChange: this.dropDownHandler.bind(this),
+                      onClear: () => {
+                        this.setState({
+                          leave_id: null
+                        });
+                      },
+                      others: {
+                        id: "leaveTyp"
+                      }
                     }}
                   />
                   <div className="col-6 margin-bottom-15">
@@ -398,30 +578,33 @@ class ApplyLeave extends Component {
                         tabIndex: "6",
                         id: "leave-frm-dt",
                         onBlur: () => {
-                          debugger;
-                          if (
-                            moment(this.state.from_date).format("YYYYMMDD") <
-                            moment(new Date()).format("YYYYMMDD")
-                          ) {
-                            swalMessage({
-                              title: "Cannot Apply leaves for past dates",
-                              type: "warning"
-                            });
-                            this.setState({
-                              from_date: null
-                            });
-                          }
+                          //Blurr Here
                         }
                       }
                     }}
                     events={{
                       onChange: selDate => {
-                        this.setState({
-                          from_date: selDate
-                        });
+                        if (
+                          this.state.leave_id === null ||
+                          this.state.leave_id === undefined
+                        ) {
+                          document.getElementById("leaveTyp").focus();
+                          swalMessage({
+                            title: "Please Select the leave type first",
+                            type: "warning"
+                          });
+                        } else {
+                          this.setState(
+                            {
+                              from_date: selDate
+                            },
+                            () => {
+                              this.validate();
+                            }
+                          );
+                        }
                       }
                     }}
-                    minDate={new Date()}
                     value={this.state.from_date}
                   />
                   <AlagehAutoComplete
@@ -442,7 +625,12 @@ class ApplyLeave extends Component {
                       others: {
                         id: "frm-lv-ssn"
                       },
-                      onChange: this.dropDownHandler.bind(this)
+                      onChange: this.dropDownHandler.bind(this),
+                      onClear: () => {
+                        this.setState({
+                          from_leave_session: null
+                        });
+                      }
                     }}
                   />
                   <AlgaehDateHandler
@@ -455,6 +643,7 @@ class ApplyLeave extends Component {
                       className: "txt-fld",
                       name: "to_date",
                       others: {
+                        id: "toLvDt",
                         tabIndex: "6",
                         onBlur: () => {
                           if (this.state.from_date !== undefined) {
@@ -470,13 +659,6 @@ class ApplyLeave extends Component {
                               this.setState({
                                 to_date: null
                               });
-                            } else if (
-                              moment(this.state.from_date).format("YYYYMMDD") <
-                              moment(this.state.to_date).format("YYYYMMDD")
-                            ) {
-                              this.setState({
-                                from_leave_session: "FD"
-                              });
                             }
                           }
                         }
@@ -491,9 +673,18 @@ class ApplyLeave extends Component {
                             type: "warning"
                           });
                         } else {
-                          this.setState({
-                            to_date: selDate
-                          });
+                          this.setState(
+                            {
+                              to_date: selDate
+                            },
+                            () => {
+                              this.getDateRange(
+                                this.state.from_date,
+                                this.state.to_date
+                              );
+                              this.validate();
+                            }
+                          );
                         }
                       }
                     }}
@@ -515,7 +706,12 @@ class ApplyLeave extends Component {
                         valueField: "value",
                         data: GlobalVariables.LEAVE_SESSIONS
                       },
-                      onChange: this.dropDownHandler.bind(this)
+                      onChange: this.dropDownHandler.bind(this),
+                      onClear: () => {
+                        this.setState({
+                          to_leave_session: null
+                        });
+                      }
                     }}
                   />
                   <div className="col-12 margin-bottom-15">
@@ -524,7 +720,7 @@ class ApplyLeave extends Component {
                         forceLabel: "No. of Days"
                       }}
                     />
-                    <h6>{this.state.total_applied_days} days</h6>
+                    <h6>{this.state.total_applied_days} day(s)</h6>
                   </div>
                   <AlagehFormGroup
                     div={{ className: "col-12 margin-bottom-15" }}
@@ -574,7 +770,16 @@ class ApplyLeave extends Component {
                         },
                         {
                           fieldName: "application_date",
-                          label: "Leave Requested On"
+                          label: "Leave Requested On",
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {moment(row.application_date).format(
+                                  "MM-DD-YYYY"
+                                )}
+                              </span>
+                            );
+                          }
                         },
                         {
                           fieldName: "leave_description",
@@ -582,11 +787,25 @@ class ApplyLeave extends Component {
                         },
                         {
                           fieldName: "from_date",
-                          label: "Leave From"
+                          label: "Leave From",
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {moment(row.from_date).format("MM-DD-YYYY")}
+                              </span>
+                            );
+                          }
                         },
                         {
                           fieldName: "to_date",
-                          label: "Leave To"
+                          label: "Leave To",
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {moment(row.to_date).format("MM-DD-YYYY")}
+                              </span>
+                            );
+                          }
                         },
                         {
                           fieldName: "total_applied_days",

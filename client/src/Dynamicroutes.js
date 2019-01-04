@@ -82,7 +82,6 @@ import SelfService from "./Components/EmployeeManagement/SelfService/SelfService
 import AttendanceRegularization from "./Components/EmployeeManagement/AttendanceRegularization/AttendanceRegularization";
 //import EmployeeGroups from "./Components/EmployeeManagement/EmployeeGroups/EmployeeGroups";
 import PayrollSettings from "./Components/PayrollManagement/PayrollSettings/PayrollSettings";
-import TimeSheet from "./Components/PayrollManagement/TimeSheets/TimeSheets";
 import SalaryManagement from "./Components/PayrollManagement/SalaryManagement/SalaryManagement";
 import HolidayMgmnt from "./Components/PayrollManagement/HolidayManagement/HolidayMgmnt";
 import LeaveManagement from "./Components/PayrollManagement/LeaveManagement/LeaveManagement";
@@ -196,7 +195,6 @@ const componts = (selectedLang, breadStyle) => {
     ),
     //EmployeeGroup: <EmployeeGroups SelectLanguage={selectedLang} />,
     PayrollSettings: <PayrollSettings SelectLanguage={selectedLang} />,
-    TimeSheet: <TimeSheet SelectLanguage={selectedLang} />,
     SalaryManagement: <SalaryManagement SelectLanguage={selectedLang} />,
     HolidayMgmnt: <HolidayMgmnt SelectLanguage={selectedLang} />,
     HRSettings: <HRSettings SelectLanguage={selectedLang} />,

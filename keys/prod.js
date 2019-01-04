@@ -1,4 +1,4 @@
-export default {
+exports.default = {
   // API token key
   SECRETKey: "ALGAEH Technologies PVT Ltd HIMSv1",
   TOKENTIME: 2592000, // 60 * 60 * 30 ,
@@ -33,7 +33,8 @@ export default {
   },
 
   mongoDb: {
-    connectionURI: "mongodb://49.206.18.38:27017/dbname"
+    connectionURI:
+      "mongodb://algaeh_root:medteam2013@49.206.18.38:27017/algaeh_hims_mongo_db"
   },
 
   //Db Date format

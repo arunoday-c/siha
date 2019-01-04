@@ -30,7 +30,7 @@ export default class LeaveEntitlement extends Component {
       <div className="popRightDiv leave_entitlement">
         <div className="row">
           <AlagehFormGroup
-            div={{ className: "col-2" }}
+            div={{ className: "col  form-group" }}
             label={{
               forceLabel: "Leave Type Code",
               isImp: true
@@ -45,7 +45,7 @@ export default class LeaveEntitlement extends Component {
             }}
           />
           <AlagehFormGroup
-            div={{ className: "col-2" }}
+            div={{ className: "col  form-group" }}
             label={{
               forceLabel: "Description",
               isImp: true
@@ -60,7 +60,7 @@ export default class LeaveEntitlement extends Component {
             }}
           />
           <AlagehFormGroup
-            div={{ className: "col-2" }}
+            div={{ className: "col  form-group" }}
             label={{
               forceLabel: "Short Description",
               isImp: true
@@ -75,80 +75,55 @@ export default class LeaveEntitlement extends Component {
             }}
           />
           <AlagehAutoComplete
-            div={{ className: "col-2" }}
-            label={{
-              forceLabel: "Leave Mode",
-              isImp: true
-            }}
+            div={{ className: "col form-group" }}
+            label={{ forceLabel: "Leave Mode", isImp: false }}
             selector={{
-              name: "component_category",
+              name: "",
               className: "select-fld",
-              // value: this.state.component_category,
-              dataSource: {
-                textField: "name",
-                valueField: "value",
-                data: GlobalVariables.COMPONENT_CATEGORY
-              }
-              //onChange: this.dropDownHandler.bind(this)
+              dataSource: {},
+              others: {}
             }}
           />
           <AlagehAutoComplete
-            div={{ className: "col-2" }}
-            label={{
-              forceLabel: "Leave Frequency",
-              isImp: true
-            }}
+            div={{ className: "col form-group" }}
+            label={{ forceLabel: "Leave Frequency", isImp: false }}
             selector={{
-              name: "component_frequency",
+              name: "",
               className: "select-fld",
-              // value: this.state.component_frequency,
-              dataSource: {
-                textField: "name",
-                valueField: "value",
-                data: GlobalVariables.COMP_FREQ
-              }
-              //onChange: this.dropDownHandler.bind(this)
-            }}
-          />
-          <AlagehAutoComplete
-            div={{ className: "col-2" }}
-            label={{
-              forceLabel: "Leave Details",
-              isImp: true
-            }}
-            selector={{
-              name: "component_type",
-              className: "select-fld",
-              // value: this.state.component_type,
-              dataSource: {
-                textField: "name",
-                valueField: "value",
-                data: GlobalVariables.COMP_TYPE
-              }
-              //onChange: this.dropDownHandler.bind(this)
+              dataSource: {},
+              others: {}
             }}
           />
 
           <AlagehAutoComplete
-            div={{ className: "col-2" }}
-            label={{
-              forceLabel: "Leave Type",
-              isImp: true
-            }}
+            div={{ className: "col form-group" }}
+            label={{ forceLabel: "Leave Details", isImp: false }}
             selector={{
-              name: "component_frequency",
+              name: "",
               className: "select-fld",
-              // value: this.state.component_frequency,
-              dataSource: {
-                textField: "name",
-                valueField: "value",
-                data: GlobalVariables.COMP_FREQ
-              }
-              //onChange: this.dropDownHandler.bind(this)
+              dataSource: {},
+              others: {}
             }}
           />
-
-          <div className="col-2">
+        </div>
+        <div className="row">
+          <AlagehFormGroup
+            div={{ className: "col form-group" }}
+            label={{
+              forceLabel: "Max Leave Litmit",
+              isImp: false
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "",
+              value: "",
+              events: {},
+              option: {
+                type: "number"
+              }
+            }}
+          />
+          <div className="col  form-group">
             <label>Is Encashment</label>
             <div className="customCheckbox">
               <label className="checkbox inline">
@@ -163,39 +138,23 @@ export default class LeaveEntitlement extends Component {
             </div>
           </div>
 
-          <AlagehAutoComplete
-            div={{ className: "col-2" }}
+          <AlagehFormGroup
+            div={{ className: "col  form-group" }}
             label={{
-              forceLabel: "Encashment Type",
+              forceLabel: "Encashment Percentage",
               isImp: true
             }}
-            selector={{
-              name: "component_frequency",
-              className: "select-fld",
-              // value: this.state.component_frequency,
-              dataSource: {
-                textField: "name",
-                valueField: "value",
-                data: GlobalVariables.COMP_FREQ
+            textBox={{
+              className: "txt-fld",
+              name: "",
+              events: {},
+              others: {
+                type: "number",
+                disabled: "disabled"
               }
-              //onChange: this.dropDownHandler.bind(this)
             }}
           />
-          <div className="col-2">
-            <label>Include Weekoff/Holidays</label>
-            <div className="customCheckbox">
-              <label className="checkbox inline">
-                <input
-                  type="checkbox"
-                  name="allow_round_off"
-                  checked={this.state.allow_round_off}
-                  //onChange={this.changeChecks.bind(this)}
-                />
-                <span>Yes</span>
-              </label>
-            </div>
-          </div>
-          <div className="col-2">
+          <div className="col  form-group">
             <label>Is Carry Forward</label>
             <div className="customCheckbox">
               <label className="checkbox inline">
@@ -209,8 +168,68 @@ export default class LeaveEntitlement extends Component {
               </label>
             </div>
           </div>
+          <AlagehFormGroup
+            div={{ className: "col  form-group" }}
+            label={{
+              forceLabel: "Carry Forward Percentage",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "",
+              events: {},
+              others: {
+                type: "number",
+                disabled: "disabled"
+              }
+            }}
+          />
+          <div className="col  form-group">
+            <label>Include Weekoff/Holidays</label>
+            <div className="customCheckbox">
+              <label className="checkbox inline">
+                <input
+                  type="checkbox"
+                  name="allow_round_off"
+                  checked={this.state.allow_round_off}
+                  //onChange={this.changeChecks.bind(this)}
+                />
+                <span>Yes</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col  form-group">
+            <label>Include Holiday</label>
+            <div className="customCheckbox">
+              <label className="checkbox inline">
+                <input
+                  type="checkbox"
+                  name="allow_round_off"
+                  //checked={this.state.allow_round_off}
+                  //onChange={this.changeChecks.bind(this)}
+                />
+                <span>Yes</span>
+              </label>
+            </div>
+          </div>
+          <div className="col  form-group">
+            <label>Include Weekoff</label>
+            <div className="customCheckbox">
+              <label className="checkbox inline">
+                <input
+                  type="checkbox"
+                  name="allow_round_off"
+                  //checked={this.state.allow_round_off}
+                  //onChange={this.changeChecks.bind(this)}
+                />
+                <span>Yes</span>
+              </label>
+            </div>
+          </div>
 
-          <div className="col-2">
+          <div className="col  form-group">
             <label>Process Leave Monthly</label>
             <div className="customCheckbox">
               <label className="checkbox inline">
@@ -225,21 +244,7 @@ export default class LeaveEntitlement extends Component {
             </div>
           </div>
 
-          <div className="col-2">
-            <label>Special Sabbatical Leave</label>
-            <div className="customCheckbox">
-              <label className="checkbox inline">
-                <input
-                  type="checkbox"
-                  name="allow_round_off"
-                  checked={this.state.allow_round_off}
-                  //onChange={this.changeChecks.bind(this)}
-                />
-                <span>Yes</span>
-              </label>
-            </div>
-          </div>
-          <div className="col-2">
+          <div className="col  form-group">
             <label>Is Document Mandatory</label>
             <div className="customCheckbox">
               <label className="checkbox inline">
@@ -254,7 +259,7 @@ export default class LeaveEntitlement extends Component {
             </div>
           </div>
 
-          <div className="col-2">
+          <div className="col  form-group">
             <label>Exit Permit Required</label>
             <div className="customCheckbox">
               <label className="checkbox inline">
@@ -269,7 +274,7 @@ export default class LeaveEntitlement extends Component {
             </div>
           </div>
 
-          <div className="col-2">
+          <div className="col  form-group">
             <label>Is Holiday Reimbursement</label>
             <div className="customCheckbox">
               <label className="checkbox inline">
@@ -283,7 +288,9 @@ export default class LeaveEntitlement extends Component {
               </label>
             </div>
           </div>
-          <div className="col-2">
+        </div>
+        <div className="row">
+          <div className="col  form-group">
             <label>Is Yearly Leave Booking</label>
             <div className="customCheckbox">
               <label className="checkbox inline">
@@ -297,26 +304,7 @@ export default class LeaveEntitlement extends Component {
               </label>
             </div>
           </div>
-          <AlagehFormGroup
-            div={{ className: "col-2" }}
-            label={{
-              forceLabel: "Max Leave Litmit",
-              isImp: true
-            }}
-            textBox={{
-              className: "txt-fld",
-              name: "earning_deduction_description",
-              // value: this.state.earning_deduction_description,
-              events: {
-                //onChange: this.changeTexts.bind(this)
-              },
-              others: {
-                type: "number"
-              }
-            }}
-          />
-
-          <div className="col-3">
+          <div className="col  form-group">
             <label>Allow Round off</label>
             <div className="customCheckbox">
               <label className="checkbox inline">
@@ -329,57 +317,38 @@ export default class LeaveEntitlement extends Component {
                 <span>Yes</span>
               </label>
             </div>
-            <div className="row">
-              <AlagehAutoComplete
-                div={{ className: "col-8" }}
-                label={{
-                  forceLabel: "Type",
-                  isImp: this.state.allow_round_off
-                }}
-                selector={{
-                  name: "round_off_type",
-                  className: "select-fld",
-                  // value: this.state.allow_round_off
-                  //   ? this.state.round_off_type
-                  //   : null,
-                  dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: GlobalVariables.ROUND_OFF_TYPE
-                  },
-                  //onChange: this.dropDownHandler.bind(this),
-                  others: {
-                    disabled: !this.state.allow_round_off
-                  }
-                }}
-              />{" "}
-              <AlagehAutoComplete
-                div={{ className: "col-4" }}
-                label={{
-                  forceLabel: "Amount",
-                  isImp: this.state.allow_round_off
-                }}
-                selector={{
-                  name: "round_off_type",
-                  className: "select-fld",
-                  // value: this.state.allow_round_off
-                  //   ? this.state.round_off_type
-                  //   : null,
-                  dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: GlobalVariables.ROUND_OFF_TYPE
-                  },
-                  //onChange: this.dropDownHandler.bind(this),
-                  others: {
-                    disabled: !this.state.allow_round_off
-                  }
-                }}
-              />{" "}
-            </div>
           </div>
 
-          <div className="col-3">
+          <AlagehAutoComplete
+            div={{ className: "col form-group" }}
+            label={{ forceLabel: "Type", isImp: false }}
+            selector={{
+              name: "",
+              className: "select-fld",
+              dataSource: {},
+              others: {
+                disabled: "disabled"
+              }
+            }}
+          />
+
+          <AlagehFormGroup
+            div={{ className: "col  form-group" }}
+            label={{
+              forceLabel: "Amount",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "",
+              events: {},
+              others: {
+                type: "number",
+                disabled: "disabled"
+              }
+            }}
+          />
+          <div className="col  form-group">
             <label>Religion Mandatory</label>
             <div className="customCheckbox">
               <label className="checkbox inline">
@@ -392,34 +361,21 @@ export default class LeaveEntitlement extends Component {
                 <span>Yes</span>
               </label>
             </div>
-            <div className="row">
-              <AlagehAutoComplete
-                div={{ className: "col" }}
-                label={{
-                  forceLabel: "Select Religion",
-                  isImp: this.state.allow_round_off
-                }}
-                selector={{
-                  name: "round_off_type",
-                  className: "select-fld",
-                  // value: this.state.allow_round_off
-                  //   ? this.state.round_off_type
-                  //   : null,
-                  dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: GlobalVariables.ROUND_OFF_TYPE
-                  },
-                  //onChange: this.dropDownHandler.bind(this),
-                  others: {
-                    disabled: !this.state.allow_round_off
-                  }
-                }}
-              />{" "}
-            </div>
           </div>
+          <AlagehAutoComplete
+            div={{ className: "col form-group" }}
+            label={{ forceLabel: "Select Religion", isImp: false }}
+            selector={{
+              name: "",
+              className: "select-fld",
+              dataSource: {},
+              others: {
+                disabled: "disabled"
+              }
+            }}
+          />
 
-          {/* <div className="col-2 form-group">
+          {/* <div className="col form-group">
             <button
               style={{ marginTop: 21 }}
               className="btn btn-primary"

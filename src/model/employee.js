@@ -1676,17 +1676,18 @@ let addEarningDeduction = (req, res, next) => {
 
       connection.query(
         "INSERT  INTO hims_d_earning_deduction (earning_deduction_code,earning_deduction_description,short_desc,\
-          component_category,calculation_method, formula,component_frequency,calculation_type,component_type,\
+          component_category,calculation_method, miscellaneous_component, formula,component_frequency,calculation_type,component_type,\
           shortage_deduction_applicable,overtime_applicable,limit_applicable,limit_amount,\
           process_limit_required,process_limit_days,general_ledger,allow_round_off,round_off_type,\
           round_off_amount, created_date,created_by,updated_date,updated_by) values(\
-            ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
           input.earning_deduction_code,
           input.earning_deduction_description,
           input.short_desc,
           input.component_category,
           input.calculation_method,
+          input.miscellaneous_component,
           input.formula,
           input.component_frequency,
           input.calculation_type,
@@ -1733,7 +1734,7 @@ let getEarningDeduction = (req, res, next) => {
       connection.query(
         "select hims_d_earning_deduction_id,earning_deduction_code,earning_deduction_description,\
         short_desc,component_category,calculation_method,component_frequency,calculation_type,\
-        component_type,shortage_deduction_applicable,overtime_applicable,limit_applicable,limit_amount,\
+        component_type,shortage_deduction_applicable, miscellaneous_component, overtime_applicable,limit_applicable,limit_amount,\
         process_limit_required,process_limit_days,general_ledger,allow_round_off,round_off_type,\
         round_off_amount from hims_d_earning_deduction\
         where record_status='A'  order by hims_d_earning_deduction_id desc",

@@ -26,8 +26,8 @@ export function printReport(data) {
                 <tr>
                     <td><label>اسم الطبيب / Doctor</label></td>
                     <td>: <span>${data.doctor_name}</span></td>
-                    <td><label>Department / القسم</label></td>
-                    <td>: <span>Laboratory</span></td>
+                    <td><label>Investigation Name / اسم التحقيق</label></td>
+                    <td>: <span>${data.investigation_name}</span></td>
                 </tr>
 
                

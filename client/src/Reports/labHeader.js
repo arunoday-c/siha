@@ -8,7 +8,7 @@ export function header(data) {
                 <p>Date:${moment(data.receipt_date).format("DD-MM-YYYY")}</p>
             </div>
             <div class="hospitalAddress">
-                <h4>Lab Report</h4>
+                <h4>Haematology Report</h4>
                 <p># 301A, Curzon Square, Lady Curzon Road Opposite State Bank of India Bangalore Karnataka 560001 IN, Lady Curzon Rd, Shivaji Nagar, Bengaluru, Karnataka 560001</p>
             </div>
     `;

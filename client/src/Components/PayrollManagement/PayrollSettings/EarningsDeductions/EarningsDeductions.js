@@ -29,24 +29,25 @@ class EarningsDeductions extends Component {
 
   clearState() {
     this.setState({
-      earning_deduction_code: "",
-      earning_deduction_description: "",
-      short_desc: this.state.short_desc,
-      component_category: "",
+      miscellaneous_component : false,
+      earning_deduction_code: null,
+      earning_deduction_description: null,
+      short_desc: null,
+      component_category: null,
       calculation_method: "FI",
-      component_frequency: "",
+      component_frequency: null,
       calculation_type: "F",
-      component_type: "",
+      component_type: null,
       shortage_deduction_applicable: false,
       overtime_applicable: false,
       limit_applicable: false,
-      limit_amount: "",
+      limit_amount: null,
       process_limit_required: false,
-      process_limit_days: "",
-      general_ledger: "",
+      process_limit_days: null,
+      general_ledger: null,
       allow_round_off: false,
-      round_off_type: "",
-      round_off_amount: ""
+      round_off_type: null,
+      round_off_amount: null
     });
   }
 
@@ -149,6 +150,9 @@ class EarningsDeductions extends Component {
           uri: "/employee/addEarningDeduction",
           method: "POST",
           data: {
+            miscellaneous_component: this.state.miscellaneous_component
+              ? "Y"
+              : "N",
             earning_deduction_code: this.state.earning_deduction_code,
             earning_deduction_description: this.state
               .earning_deduction_description,
@@ -222,6 +226,11 @@ class EarningsDeductions extends Component {
         this.setState({
           shortage_deduction_applicable: !this.state
             .shortage_deduction_applicable
+        });
+        break;
+      case "miscellaneous_component":
+        this.setState({
+          miscellaneous_component: !this.state.miscellaneous_component
         });
         break;
 
@@ -780,6 +789,21 @@ class EarningsDeductions extends Component {
                       value="yes"
                       name="overtime_applicable"
                       checked={this.state.overtime_applicable}
+                      onChange={this.changeChecks.bind(this)}
+                    />
+                    <span>Yes</span>
+                  </label>
+                </div>
+              </div>
+              <div className="col-3">
+                <label>Miscellaneous Component</label>
+                <div className="customCheckbox">
+                  <label className="checkbox inline">
+                    <input
+                      type="checkbox"
+                      value="yes"
+                      name="miscellaneous_component"
+                      checked={this.state.miscellaneous_component}
                       onChange={this.changeChecks.bind(this)}
                     />
                     <span>Yes</span>

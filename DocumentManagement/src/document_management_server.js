@@ -2,7 +2,7 @@ import http from "http";
 import cors from "cors";
 import bodyParser from "body-parser";
 import exxpress from "express";
-import keys from "../../keys/keys";
+import keys from "algaeh-keys";
 import router from "./routes";
 import { logger } from "./utils/logging";
 const app = exxpress();

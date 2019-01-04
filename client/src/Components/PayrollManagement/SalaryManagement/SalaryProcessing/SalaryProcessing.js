@@ -6,16 +6,18 @@ import {
   AlagehAutoComplete,
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
+import moment from "moment";
 
 export default class SalaryProcessing extends Component {
   constructor(props) {
     super(props);
     this.state = {
       selectedLang: this.props.SelectLanguage,
-      fromMonth: new Date()
+      fromMonth: moment(new Date()).format("YYYY-MM")
     };
   }
   fromMonthHandler(date, name) {
+    debugger;
     this.setState({ fromMonth: date });
   }
 
@@ -42,7 +44,7 @@ export default class SalaryProcessing extends Component {
                 onchange: this.fromMonthHandler.bind(this)
               }}
               maxDate={new Date()}
-              value={this.state.fromMonth}
+              value={moment(this.state.fromMonth).format("YYYY-MM-DD")}
             />
             <AlagehAutoComplete
               div={{ className: "col" }}

@@ -343,11 +343,13 @@
     min-height: 35px;
     border-bottom: 1px dashed #eee;
     margin-bottom: 5px; }
-  :global .caption {
-    float: left;
-    display: inline-block;
-    font-size: 18px;
-    line-height: 18px; }
+    :global .portlet-title .caption {
+      float: left;
+      display: inline-block;
+      font-size: 18px;
+      line-height: 18px; }
+    :global .portlet-title .center {
+      text-align: center; }
   :global .caption.caption-green .caption-subject,
   :global .caption.caption-green i {
     color: #4db3a2;
