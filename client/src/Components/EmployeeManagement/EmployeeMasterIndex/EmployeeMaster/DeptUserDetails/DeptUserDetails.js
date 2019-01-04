@@ -20,9 +20,10 @@ import {
   specialitytexthandle,
   categorytexthandle,
   updateDeptUser,
-  colgridtexthandle,
+  // colgridtexthandle,
   dateFormater,
-  datehandle
+  // datehandle,
+  getEmployeeDepartments
 } from "./DeptUserDetailsEvents";
 import Enumerable from "linq";
 // import GlobalVariables from "../../../../../utils/GlobalVariables.json";
@@ -45,8 +46,13 @@ class DeptUserDetails extends Component {
   }
 
   componentDidMount() {
+    debugger;
     let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
-    this.setState({ ...this.state, ...InputOutput });
+    this.setState({ ...this.state, ...InputOutput }, () => {
+      if (this.state.hims_d_employee_id !== null) {
+        getEmployeeDepartments(this);
+      }
+    });
     if (
       this.props.depservices === undefined ||
       this.props.depservices.length === 0

@@ -23,7 +23,14 @@ import {
   AddEarnComponent,
   AddDeductionComponent,
   AddContributionComponent,
-  onchangegridcol
+  onchangegridcol,
+  deleteEarningComponent,
+  updateEarningComponent,
+  deleteDeductionComponent,
+  updateDeductionComponent,
+  deleteContibuteComponent,
+  updateContibuteComponent,
+  getPayrollComponents
 } from "./PayRollDetailsEvent.js";
 import Enumerable from "linq";
 
@@ -48,7 +55,11 @@ class PayRollDetails extends PureComponent {
 
   componentDidMount() {
     let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
-    this.setState({ ...this.state, ...InputOutput });
+    this.setState({ ...this.state, ...InputOutput }, () => {
+      if (this.state.hims_d_employee_id !== null) {
+        getPayrollComponents(this);
+      }
+    });
     if (
       this.props.payrollcomponents === undefined ||
       this.props.payrollcomponents.length === 0
@@ -65,8 +76,6 @@ class PayRollDetails extends PureComponent {
   }
 
   render() {
-    // const earnings = this.props.payrollcomponents;
-    debugger;
     const earnings = Enumerable.from(this.props.payrollcomponents)
       .where(w => w.component_category === "E")
       .toArray();
@@ -93,7 +102,6 @@ class PayRollDetails extends PureComponent {
                     <input
                       type="checkbox"
                       name="isdoctor"
-                      value="Y"
                       checked={this.state.Applicable}
                     />
                     <span>
@@ -132,7 +140,7 @@ class PayRollDetails extends PureComponent {
                     className: "txt-fld",
                     name: "earn_amount",
                     value: this.state.earn_amount,
-                    number: {
+                    decimal: {
                       allowNegative: false,
                       thousandSeparator: ","
                     },
@@ -170,7 +178,24 @@ class PayRollDetails extends PureComponent {
                           <AlgaehLabel label={{ forceLabel: "Earnings" }} />
                         ),
                         displayTemplate: row => {
-                          debugger;
+                          let display =
+                            this.props.payrollcomponents === undefined
+                              ? []
+                              : this.props.payrollcomponents.filter(
+                                  f =>
+                                    f.hims_d_earning_deduction_id ===
+                                    row.earnings_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== null && display.length !== 0
+                                ? display[0].earning_deduction_description
+                                : ""}
+                            </span>
+                          );
+                        },
+                        editorTemplate: row => {
                           let display =
                             this.props.payrollcomponents === undefined
                               ? []
@@ -191,7 +216,33 @@ class PayRollDetails extends PureComponent {
                       },
                       {
                         fieldName: "amount",
-                        label: <AlgaehLabel label={{ forceLabel: "Amount" }} />
+                        label: <AlgaehLabel label={{ forceLabel: "Amount" }} />,
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{}}
+                              textBox={{
+                                number: {
+                                  allowNegative: false,
+                                  thousandSeparator: ","
+                                },
+                                value: row.amount,
+                                className: "txt-fld",
+                                name: "amount",
+                                events: {
+                                  onChange: onchangegridcol.bind(
+                                    this,
+                                    this,
+                                    row
+                                  )
+                                },
+                                others: {
+                                  placeholder: "0.00"
+                                }
+                              }}
+                            />
+                          );
+                        }
                       },
                       {
                         fieldName: "allocate",
@@ -225,12 +276,15 @@ class PayRollDetails extends PureComponent {
                         }
                       }
                     ]}
-                    keyId=""
+                    keyId="hims_d_employee_earnings_id"
                     dataSource={{ data: this.state.earningComponents }}
                     isEditable={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
-                    events={{}}
-                    others={{}}
+                    events={{
+                      onDelete: deleteEarningComponent.bind(this, this),
+                      onEdit: row => {},
+                      onDone: updateEarningComponent.bind(this, this)
+                    }}
                   />
                 </div>
               </div>
@@ -327,8 +381,11 @@ class PayRollDetails extends PureComponent {
                     dataSource={{ data: this.state.deductioncomponents }}
                     isEditable={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
-                    events={{}}
-                    others={{}}
+                    events={{
+                      onDelete: deleteDeductionComponent.bind(this, this),
+                      onEdit: row => {},
+                      onDone: updateDeductionComponent.bind(this, this)
+                    }}
                   />
                 </div>
               </div>
@@ -426,8 +483,11 @@ class PayRollDetails extends PureComponent {
                     dataSource={{ data: this.state.contributioncomponents }}
                     isEditable={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
-                    events={{}}
-                    others={{}}
+                    events={{
+                      onDelete: deleteContibuteComponent.bind(this, this),
+                      onEdit: row => {},
+                      onDone: updateContibuteComponent.bind(this, this)
+                    }}
                   />
                 </div>
               </div>

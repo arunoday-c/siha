@@ -1,5 +1,6 @@
 // import moment from "moment";
 import { AlgaehValidation } from "../../../../../utils/GlobalFunctions";
+import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -97,4 +98,37 @@ const addDependentType = ($this, e) => {
   });
 };
 
-export { texthandle, datehandle, addDependentType, AddEmpId };
+const getFamilyIdentification = $this => {
+  debugger;
+  algaehApiCall({
+    uri: "/employee/getFamilyIdentification",
+    method: "GET",
+    data: { employee_id: $this.state.hims_d_employee_id },
+    onSuccess: response => {
+      if (response.data.success) {
+        let data = response.data.records;
+        if (data.length > 0) {
+          debugger;
+          $this.setState({
+            idDetails: data[0],
+            dependentDetails: data[1]
+          });
+        }
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+};
+
+export {
+  texthandle,
+  datehandle,
+  addDependentType,
+  AddEmpId,
+  getFamilyIdentification
+};
