@@ -39,6 +39,9 @@
   "isdoctor": "Is Doctor",
   "sub_department_id": "Department",
   "user_id": "Login User",
+  "from_date": "From Date",
+  "end_date": "End Date",
+  "dep_status": "Status",
 
   "btn_addnew": "Add New",
   "btn_clear": "Clear",

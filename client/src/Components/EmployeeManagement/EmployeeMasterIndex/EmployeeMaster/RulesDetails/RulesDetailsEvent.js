@@ -1,114 +1,96 @@
-let texthandlerInterval = null;
-
-const changeChecks = ($this, context, e) => {
+const changeChecks = ($this, e) => {
   let name = e.target.name;
-
+  debugger;
   switch (e.target.name) {
     case "leave_salary_process":
       $this.setState(
         {
-          leave_salary_process: !$this.state.leave_salary_process
+          LeaveSalaryProcess: !$this.state.LeaveSalaryProcess
         },
         () => {
-          clearInterval(texthandlerInterval);
-          texthandlerInterval = setInterval(() => {
-            if (context !== undefined) {
-              context.updateState({
-                [name]: $this.state.leave_salary_process ? "Y" : "N"
-              });
-            }
-            clearInterval(texthandlerInterval);
-          }, 500);
+          $this.props.EmpMasterIOputs.updateEmployeeTabs({
+            [name]: $this.state.LeaveSalaryProcess ? "Y" : "N"
+          });
         }
       );
-
+      break;
     case "late_coming_rule":
       $this.setState(
         {
-          late_coming_rule: !$this.state.late_coming_rule
+          LateComingRule: !$this.state.LateComingRule
         },
         () => {
-          clearInterval(texthandlerInterval);
-          texthandlerInterval = setInterval(() => {
-            if (context !== undefined) {
-              context.updateState({
-                [name]: $this.state.late_coming_rule ? "Y" : "N"
-              });
-            }
-            clearInterval(texthandlerInterval);
-          }, 500);
+          $this.props.EmpMasterIOputs.updateEmployeeTabs({
+            [name]: $this.state.LateComingRule ? "Y" : "N"
+          });
         }
       );
-
+      break;
     case "airfare_process":
       $this.setState(
         {
-          airfare_process: !$this.state.airfare_process
+          AirfareProcess: !$this.state.AirfareProcess
         },
         () => {
-          clearInterval(texthandlerInterval);
-          texthandlerInterval = setInterval(() => {
-            if (context !== undefined) {
-              context.updateState({
-                [name]: $this.state.airfare_process ? "Y" : "N"
-              });
-            }
-            clearInterval(texthandlerInterval);
-          }, 500);
+          $this.props.EmpMasterIOputs.updateEmployeeTabs({
+            [name]: $this.state.AirfareProcess ? "Y" : "N"
+          });
         }
       );
-
+      break;
     case "exclude_machine_data":
       $this.setState(
         {
-          exclude_machine_data: !$this.state.exclude_machine_data
+          ExcludeMachineData: !$this.state.ExcludeMachineData
         },
         () => {
-          clearInterval(texthandlerInterval);
-          texthandlerInterval = setInterval(() => {
-            if (context !== undefined) {
-              context.updateState({
-                [name]: $this.state.exclude_machine_data ? "Y" : "N"
-              });
-            }
-            clearInterval(texthandlerInterval);
-          }, 500);
+          $this.props.EmpMasterIOputs.updateEmployeeTabs({
+            [name]: $this.state.ExcludeMachineData ? "Y" : "N"
+          });
         }
       );
+      break;
     case "gratuity_applicable":
       $this.setState(
         {
-          gratuity_applicable: !$this.state.gratuity_applicable
+          GratuityApplicable: !$this.state.GratuityApplicable
         },
         () => {
-          clearInterval(texthandlerInterval);
-          texthandlerInterval = setInterval(() => {
-            if (context !== undefined) {
-              context.updateState({
-                [name]: $this.state.gratuity_applicable ? "Y" : "N"
-              });
-            }
-            clearInterval(texthandlerInterval);
-          }, 500);
+          $this.props.EmpMasterIOputs.updateEmployeeTabs({
+            [name]: $this.state.GratuityApplicable ? "Y" : "N"
+          });
         }
       );
+      break;
     case "suspend_salary":
       $this.setState(
         {
-          suspend_salary: !$this.state.suspend_salary
+          SuspendSalary: !$this.state.SuspendSalary
         },
         () => {
-          clearInterval(texthandlerInterval);
-          texthandlerInterval = setInterval(() => {
-            if (context !== undefined) {
-              context.updateState({
-                [name]: $this.state.suspend_salary ? "Y" : "N"
-              });
-            }
-            clearInterval(texthandlerInterval);
-          }, 500);
+          $this.props.EmpMasterIOputs.updateEmployeeTabs({
+            [name]: $this.state.SuspendSalary ? "Y" : "N"
+          });
         }
       );
+      break;
+    case "pf_applicable":
+      $this.setState(
+        {
+          PfApplicable: !$this.state.PfApplicable
+        },
+        () => {
+          $this.props.EmpMasterIOputs.updateEmployeeTabs({
+            [name]: $this.state.PfApplicable ? "Y" : "N"
+          });
+        }
+      );
+      break;
+
+    default:
+      this.setState({
+        [name]: "Y"
+      });
   }
 };
 

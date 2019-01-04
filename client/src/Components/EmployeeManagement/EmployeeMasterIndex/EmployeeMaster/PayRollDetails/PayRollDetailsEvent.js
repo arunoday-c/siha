@@ -1,179 +1,181 @@
-import moment from "moment";
-import { saveImageOnServer } from "../../../../../utils/GlobalFunctions";
-let texthandlerInterval = null;
-const texthandle = ($this, context, e) => {
+import Enumerable from "linq";
+
+const earntexthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
+  let amount = e.selected.calculation_method === "FO" ? 0 : null;
   $this.setState({
-    [name]: value
+    [name]: value,
+    earn_amount: amount,
+    earn_disable: e.selected.calculation_method === "FO" ? true : false,
+    earn_calculation_method: e.selected.calculation_method
   });
-
-  clearInterval(texthandlerInterval);
-  texthandlerInterval = setInterval(() => {
-    if (context !== undefined) {
-      context.updateState({ [name]: value });
-    }
-    clearInterval(texthandlerInterval);
-  }, 500);
 };
 
-const countryStatehandle = ($this, context, e) => {
-  let name;
-  let value;
-  if (e.name !== undefined) {
-    if (e.name === "country_id") {
-      name = e.name;
-      value = e.value;
-      $this.setState({
-        state_id: 0,
-        city_id: 0
-      });
-      if (context !== undefined) {
-        context.updateState({
-          state_id: null,
-          city_id: null
-        });
-      }
+const deducttexthandle = ($this, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
 
-      $this.props.getStates({
-        redux: {
-          data: e.selected.states,
-          type: "STATE_GET_DATA",
-          mappingName: "countrystates"
-        }
-      });
-    } else if (e.name === "state_id") {
-      name = e.name;
-      value = e.value;
-      $this.setState({
-        city_id: null
-      });
-      if (context !== undefined) {
-        context.updateState({
-          city_id: null
-        });
-      }
-      $this.props.getCities({
-        redux: {
-          data: e.selected.cities,
-          type: "CITY_GET_DATA",
-          mappingName: "cities"
-        }
-      });
-    }
-  }
-
+  let amount = e.selected.calculation_method === "FO" ? 0 : null;
   $this.setState({
-    [name]: value
+    [name]: value,
+    dedection_amount: amount,
+    deduct_calculation_method: e.selected.calculation_method
   });
-
-  if (context !== undefined) {
-    context.updateState({ [name]: value });
-  }
 };
 
-//Todo title and gender related chnage need to do
-const titlehandle = ($this, context, e) => {
-  let setGender;
-  if (e.value === 1) {
-    setGender = "Male";
-  } else if (e.value === 2) {
-    setGender = "Female";
-  }
-  $this.setState({
-    gender: setGender,
-    [e.name]: e.value
-  });
+const contributtexthandle = ($this, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
 
-  if (context !== undefined) {
-    context.updateState({ gender: setGender, [e.name]: e.value });
-  }
+  let amount = e.selected.calculation_method === "FO" ? 0 : null;
+  $this.setState({
+    [name]: value,
+    contribution_amount: amount,
+    contribut_calculation_method: e.selected.calculation_method
+  });
 };
 
-const numberSet = ($this, context, cntrl, e) => {
+const numberSet = ($this, e) => {
   $this.setState({
     [e.target.name]: e.target.value
   });
-  if (context !== undefined) {
-    context.updateState({ [e.target.name]: e.target.value });
-  }
 };
 
-const onDrop = ($this, file, context, fileType) => {
-  saveImageOnServer({
-    fileControl: fileType,
-    thisState: {
-      stateName: $this,
-      stateProgressName: "percent",
-      filePreview: file
+const AddEarnComponent = ($this, e) => {
+  debugger;
+  let earningComponents = $this.state.earningComponents;
+
+  earningComponents.push({
+    employee_id: $this.state.hims_d_employee_id,
+    earnings_id: $this.state.earning_id,
+    amount: $this.state.earn_amount,
+    allocate: $this.state.allocate,
+    calculation_method: $this.state.earn_calculation_method
+  });
+
+  $this.setState(
+    {
+      earningComponents: earningComponents,
+      earning_id: null,
+      earn_amount: null
     },
-    fileName: $this.state.employee_code,
-    pageName: "EmployeeMasterIndex",
-    destinationName: $this.state.employee_code,
-    saveDirectly: true,
-    fileType: "Employees",
-    onSuccess: ImageObj => {
-      $this.setState({
-        [ImageObj.fileName]: ImageObj.preview
-      });
-
-      if (context !== undefined) {
-        context.updateState({ [ImageObj.fileName]: ImageObj.preview });
-      }
+    () => {
+      calculationTotals($this);
     }
+  );
+  $this.props.EmpMasterIOputs.updateEmployeeTabs({
+    earningComponents: earningComponents,
+    insertearnComp: earningComponents
   });
 };
 
-const datehandle = ($this, ctrl, e) => {
-  $this.setState({
-    [e]: ctrl
+const AddDeductionComponent = ($this, e) => {
+  let deductioncomponents = $this.state.deductioncomponents;
+
+  deductioncomponents.push({
+    employee_id: $this.state.hims_d_employee_id,
+    deductions_id: $this.state.deducation_id,
+    amount: $this.state.dedection_amount,
+    allocate: $this.state.allocate,
+    calculation_method: $this.state.deduct_calculation_method
   });
 
-  //   clearInterval(texthandlerInterval);
-  //   texthandlerInterval = setInterval(() => {
-  //     if (context !== undefined) {
-  //       context.updateState({ [e]: moment(ctrl)._d });
-  //     }
-  //     clearInterval(texthandlerInterval);
-  //   }, 500);
+  $this.setState(
+    {
+      deductioncomponents: deductioncomponents,
+      deducation_id: null,
+      dedection_amount: null
+    },
+    () => {
+      calculationTotals($this);
+    }
+  );
+  $this.props.EmpMasterIOputs.updateEmployeeTabs({
+    deductioncomponents: deductioncomponents,
+    insertDeductionComp: deductioncomponents
+  });
 };
 
-const isDoctorChange = ($this, context, e) => {
-  let Applicable = false;
-  let Value = "N";
-  let name = e.target.name;
+const AddContributionComponent = ($this, e) => {
+  let contributioncomponents = $this.state.contributioncomponents;
 
-  if ($this.state.Applicable === true) {
-    Applicable = false;
-    Value = "N";
-  } else if ($this.state.Applicable === false) {
-    Applicable = true;
-    Value = "Y";
-  }
-  $this.setState({
-    [name]: Value,
-    Applicable: Applicable
+  contributioncomponents.push({
+    employee_id: $this.state.hims_d_employee_id,
+    contributions_id: $this.state.contribution_id,
+    amount: $this.state.contribution_amount,
+    allocate: $this.state.allocate,
+    calculation_method: $this.state.contribut_calculation_method
   });
 
-  clearInterval(texthandlerInterval);
-  texthandlerInterval = setInterval(() => {
-    if (context !== undefined) {
-      context.updateState({
-        [name]: Value,
-        Applicable: Applicable
-      });
+  $this.setState(
+    {
+      contributioncomponents: contributioncomponents,
+      contribution_id: null,
+      contribution_amount: null
+    },
+    () => {
+      calculationTotals($this);
     }
-    clearInterval(texthandlerInterval);
-  }, 500);
+  );
+
+  $this.props.EmpMasterIOputs.updateEmployeeTabs({
+    contributioncomponents: contributioncomponents,
+    insertContributeComp: contributioncomponents
+  });
+};
+
+const onchangegridcol = ($this, row, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  row[name] = value;
+  row.update();
+};
+
+const calculationTotals = $this => {
+  let gross_salary = Enumerable.from($this.state.earningComponents).sum(w =>
+    parseFloat(w.amount)
+  );
+  let total_earnings = Enumerable.from($this.state.earningComponents).sum(w =>
+    parseFloat(w.amount)
+  );
+
+  let total_deductions = Enumerable.from($this.state.deductioncomponents).sum(
+    w => parseFloat(w.amount)
+  );
+  let total_contributions = Enumerable.from(
+    $this.state.contributioncomponents
+  ).sum(w => parseFloat(w.amount));
+
+  $this.setState({
+    gross_salary: gross_salary,
+    yearly_gross_salary: gross_salary * 12,
+    total_earnings: total_earnings,
+    total_deductions: total_deductions,
+    total_contributions: total_contributions,
+    net_salary: total_earnings - total_deductions,
+    cost_to_company: total_earnings + total_contributions
+  });
+
+  $this.props.EmpMasterIOputs.updateEmployeeTabs({
+    gross_salary: gross_salary,
+    yearly_gross_salary: gross_salary * 12,
+    total_earnings: total_earnings,
+    total_deductions: total_deductions,
+    total_contributions: total_contributions,
+    net_salary: total_earnings - total_deductions,
+    cost_to_company: total_earnings + total_contributions
+  });
 };
 
 export {
-  texthandle,
-  titlehandle,
+  earntexthandle,
+  deducttexthandle,
+  contributtexthandle,
   numberSet,
-  onDrop,
-  countryStatehandle,
-  datehandle,
-  isDoctorChange
+  AddEarnComponent,
+  AddDeductionComponent,
+  AddContributionComponent,
+  onchangegridcol
 };

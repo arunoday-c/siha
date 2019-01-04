@@ -1,29 +1,81 @@
 import React, { PureComponent } from "react";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { AlgaehActions } from "../../../../../actions/algaehActions";
+import GlobalVariables from "../../../../../utils/GlobalVariables";
+import { getAmountFormart } from "../../../../../utils/GlobalFunctions";
+
 import "./PayRollDetails.css";
 
 import {
-  AlgaehDateHandler,
   AlagehFormGroup,
   AlgaehLabel,
-  AlagehAutoComplete
+  AlagehAutoComplete,
+  AlgaehDataGrid
 } from "../../../../Wrapper/algaehWrapper";
-import variableJson from "../../../../../utils/GlobalVariables.json";
+
 import {
-  texthandle,
-  titlehandle,
-  onDrop,
-  countryStatehandle,
-  datehandle,
-  isDoctorChange
+  earntexthandle,
+  deducttexthandle,
+  contributtexthandle,
+  numberSet,
+  AddEarnComponent,
+  AddDeductionComponent,
+  AddContributionComponent,
+  onchangegridcol
 } from "./PayRollDetailsEvent.js";
+import Enumerable from "linq";
+
 class PayRollDetails extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      earning_id: null,
+      deducation_id: null,
+      contribution_id: null,
+      earn_disable: false,
+      earningComponents: [],
+      deductioncomponents: [],
+      contributioncomponents: [],
+      allocate: "N",
+      earn_calculation_method: null,
+      deduct_calculation_method: null,
+      contribut_calculation_method: null
+    };
+  }
+
+  componentDidMount() {
+    let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
+    this.setState({ ...this.state, ...InputOutput });
+    if (
+      this.props.payrollcomponents === undefined ||
+      this.props.payrollcomponents.length === 0
+    ) {
+      this.props.getEarningDeduction({
+        uri: "/employee/getEarningDeduction",
+        method: "GET",
+        redux: {
+          type: "PAYROLL_COMPONENT_DATA",
+          mappingName: "payrollcomponents"
+        }
+      });
+    }
   }
 
   render() {
+    // const earnings = this.props.payrollcomponents;
+    debugger;
+    const earnings = Enumerable.from(this.props.payrollcomponents)
+      .where(w => w.component_category === "E")
+      .toArray();
+    const deducation = Enumerable.from(this.props.payrollcomponents)
+      .where(w => w.component_category === "D")
+      .toArray();
+    const contribution = Enumerable.from(this.props.payrollcomponents)
+      .where(w => w.component_category === "C")
+      .toArray();
     return (
       <React.Fragment>
         <div className="hptl-phase1-add-employee-form popRightDiv">
@@ -58,21 +110,15 @@ class PayRollDetails extends PureComponent {
                     isImp: true
                   }}
                   selector={{
-                    name: "title_id",
+                    name: "earning_id",
                     className: "select-fld",
-                    value: this.state.title_id,
+                    value: this.state.earning_id,
                     dataSource: {
-                      textField:
-                        this.state.selectedLang === "en"
-                          ? "title"
-                          : "arabic_title",
-                      valueField: "his_d_title_id",
-                      data: this.props.titles
+                      textField: "earning_deduction_description",
+                      valueField: "hims_d_earning_deduction_id",
+                      data: earnings
                     },
-                    onChange: null,
-                    others: {
-                      tabIndex: "2"
-                    }
+                    onChange: earntexthandle.bind(this, this)
                   }}
                 />
 
@@ -84,44 +130,109 @@ class PayRollDetails extends PureComponent {
                   }}
                   textBox={{
                     className: "txt-fld",
-                    name: "full_name",
-                    value: this.state.full_name,
+                    name: "earn_amount",
+                    value: this.state.earn_amount,
+                    number: {
+                      allowNegative: false,
+                      thousandSeparator: ","
+                    },
                     events: {
-                      onChange: null
+                      onChange: numberSet.bind(this, this)
                     },
                     others: {
-                      tabIndex: "2"
+                      disabled:
+                        this.state.earn_calculation_method === "FO"
+                          ? true
+                          : false
                     }
                   }}
                 />
-                <AlagehAutoComplete
-                  div={{ className: "col" }}
-                  label={{
-                    forceLabel: "Allocate to",
-                    isImp: true
-                  }}
-                  selector={{
-                    name: "title_id",
-                    className: "select-fld",
-                    value: this.state.title_id,
-                    dataSource: {
-                      textField:
-                        this.state.selectedLang === "en"
-                          ? "title"
-                          : "arabic_title",
-                      valueField: "his_d_title_id",
-                      data: this.props.titles
-                    },
-                    onChange: null,
-                    others: {
-                      tabIndex: "2"
-                    }
-                  }}
-                />
-              </div>{" "}
+
+                <div className="col-1" style={{ paddingTop: "21px" }}>
+                  <button
+                    className="btn btn-primary"
+                    onClick={AddEarnComponent.bind(this, this)}
+                  >
+                    Add
+                  </button>
+                </div>
+              </div>
               <hr />
               <div className="row paddin-bottom-5">
-                <div className="col">Tables Come Here</div>
+                <div className="col-12" id="EarningComponent_Cntr">
+                  <AlgaehDataGrid
+                    id="EarningComponent"
+                    datavalidate="EarningComponent"
+                    columns={[
+                      {
+                        fieldName: "earnings_id",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Earnings" }} />
+                        ),
+                        displayTemplate: row => {
+                          debugger;
+                          let display =
+                            this.props.payrollcomponents === undefined
+                              ? []
+                              : this.props.payrollcomponents.filter(
+                                  f =>
+                                    f.hims_d_earning_deduction_id ===
+                                    row.earnings_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== null && display.length !== 0
+                                ? display[0].earning_deduction_description
+                                : ""}
+                            </span>
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "amount",
+                        label: <AlgaehLabel label={{ forceLabel: "Amount" }} />
+                      },
+                      {
+                        fieldName: "allocate",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Allocate" }} />
+                        ),
+                        displayTemplate: row => {
+                          return row.allocate === "Y" ? "Yes" : "No";
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{}}
+                              selector={{
+                                name: "allocate",
+                                className: "select-fld",
+                                value: row.allocate,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: GlobalVariables.FORMAT_YESNO
+                                },
+                                onChange: onchangegridcol.bind(this, this, row),
+                                others: {
+                                  errormessage: "Status - cannot be blank",
+                                  required: true
+                                }
+                              }}
+                            />
+                          );
+                        }
+                      }
+                    ]}
+                    keyId=""
+                    dataSource={{ data: this.state.earningComponents }}
+                    isEditable={true}
+                    paging={{ page: 0, rowsPerPage: 10 }}
+                    events={{}}
+                    others={{}}
+                  />
+                </div>
               </div>
             </div>
             <div className="col-lg-6 secondary-details">
@@ -136,21 +247,15 @@ class PayRollDetails extends PureComponent {
                     isImp: true
                   }}
                   selector={{
-                    name: "title_id",
+                    name: "deducation_id",
                     className: "select-fld",
-                    value: this.state.title_id,
+                    value: this.state.deducation_id,
                     dataSource: {
-                      textField:
-                        this.state.selectedLang === "en"
-                          ? "title"
-                          : "arabic_title",
-                      valueField: "his_d_title_id",
-                      data: this.props.titles
+                      textField: "earning_deduction_description",
+                      valueField: "hims_d_earning_deduction_id",
+                      data: deducation
                     },
-                    onChange: null,
-                    others: {
-                      tabIndex: "2"
-                    }
+                    onChange: deducttexthandle.bind(this, this)
                   }}
                 />
 
@@ -162,19 +267,70 @@ class PayRollDetails extends PureComponent {
                   }}
                   textBox={{
                     className: "txt-fld",
-                    name: "full_name",
-                    value: this.state.full_name,
-                    events: {
-                      onChange: null
+                    name: "dedection_amount",
+                    value: this.state.dedection_amount,
+                    number: {
+                      allowNegative: false,
+                      thousandSeparator: ","
                     },
-                    others: {
-                      tabIndex: "2"
+                    events: {
+                      onChange: numberSet.bind(this, this)
                     }
                   }}
                 />
+                <div className="col-1" style={{ paddingTop: "21px" }}>
+                  <button
+                    className="btn btn-primary"
+                    onClick={AddDeductionComponent.bind(this, this)}
+                  >
+                    Add
+                  </button>
+                </div>
               </div>
               <div className="row paddin-bottom-5">
-                <div className="col">Tables Come Here</div>
+                <div className="col-12" id="DeductionComponent_Cntr">
+                  <AlgaehDataGrid
+                    id="DeductionComponent"
+                    datavalidate="DeductionComponent"
+                    columns={[
+                      {
+                        fieldName: "deductions_id",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Deductions" }} />
+                        ),
+                        displayTemplate: row => {
+                          debugger;
+                          let display =
+                            this.props.payrollcomponents === undefined
+                              ? []
+                              : this.props.payrollcomponents.filter(
+                                  f =>
+                                    f.hims_d_earning_deduction_id ===
+                                    row.deductions_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== null && display.length !== 0
+                                ? display[0].earning_deduction_description
+                                : ""}
+                            </span>
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "amount",
+                        label: <AlgaehLabel label={{ forceLabel: "Amount" }} />
+                      }
+                    ]}
+                    keyId=""
+                    dataSource={{ data: this.state.deductioncomponents }}
+                    isEditable={true}
+                    paging={{ page: 0, rowsPerPage: 10 }}
+                    events={{}}
+                    others={{}}
+                  />
+                </div>
               </div>
               <h5>
                 <span>Employee Contribution Breakup</span>
@@ -187,21 +343,15 @@ class PayRollDetails extends PureComponent {
                     isImp: true
                   }}
                   selector={{
-                    name: "title_id",
+                    name: "contribution_id",
                     className: "select-fld",
-                    value: this.state.title_id,
+                    value: this.state.contribution_id,
                     dataSource: {
-                      textField:
-                        this.state.selectedLang === "en"
-                          ? "title"
-                          : "arabic_title",
-                      valueField: "his_d_title_id",
-                      data: this.props.titles
+                      textField: "earning_deduction_description",
+                      valueField: "hims_d_earning_deduction_id",
+                      data: contribution
                     },
-                    onChange: null,
-                    others: {
-                      tabIndex: "2"
-                    }
+                    onChange: contributtexthandle.bind(this, this)
                   }}
                 />
 
@@ -213,19 +363,73 @@ class PayRollDetails extends PureComponent {
                   }}
                   textBox={{
                     className: "txt-fld",
-                    name: "full_name",
-                    value: this.state.full_name,
-                    events: {
-                      onChange: null
+                    name: "contribution_amount",
+                    value: this.state.contribution_amount,
+                    number: {
+                      allowNegative: false,
+                      thousandSeparator: ","
                     },
-                    others: {
-                      tabIndex: "2"
+                    events: {
+                      onChange: numberSet.bind(this, this)
                     }
                   }}
                 />
+                <div className="col-1" style={{ paddingTop: "21px" }}>
+                  <button
+                    className="btn btn-primary"
+                    onClick={AddContributionComponent.bind(this, this)}
+                  >
+                    Add
+                  </button>
+                </div>
               </div>
               <div className="row paddin-bottom-5">
-                <div className="col">Tables Come Here</div>
+                <div className="col-12" id="ContributionComponent_Cntr">
+                  <AlgaehDataGrid
+                    id="ContributionComponent"
+                    datavalidate="ContributionComponent"
+                    columns={[
+                      {
+                        fieldName: "contributions_id",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Contributions" }}
+                          />
+                        ),
+
+                        displayTemplate: row => {
+                          debugger;
+                          let display =
+                            this.props.payrollcomponents === undefined
+                              ? []
+                              : this.props.payrollcomponents.filter(
+                                  f =>
+                                    f.hims_d_earning_deduction_id ===
+                                    row.contributions_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== null && display.length !== 0
+                                ? display[0].earning_deduction_description
+                                : ""}
+                            </span>
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "amount",
+                        label: <AlgaehLabel label={{ forceLabel: "Amount" }} />
+                      }
+                    ]}
+                    keyId=""
+                    dataSource={{ data: this.state.contributioncomponents }}
+                    isEditable={true}
+                    paging={{ page: 0, rowsPerPage: 10 }}
+                    events={{}}
+                    others={{}}
+                  />
+                </div>
               </div>
             </div>
             <div className="col-lg-12 secondary-details">
@@ -237,60 +441,53 @@ class PayRollDetails extends PureComponent {
                       forceLabel: "Gross Salary"
                     }}
                   />
-                  <h6>0.00</h6>
-                </div>{" "}
+                  <h6>{getAmountFormart(this.state.gross_salary)}</h6>
+                </div>
                 <div className="col-2">
                   <AlgaehLabel
                     label={{
                       forceLabel: "Total Earning"
                     }}
                   />
-                  <h6>0.00</h6>
-                </div>{" "}
+                  <h6>{getAmountFormart(this.state.total_earnings)}</h6>
+                </div>
                 <div className="col-2">
                   <AlgaehLabel
                     label={{
                       forceLabel: "Total Deduction"
                     }}
                   />
-                  <h6>0.00</h6>
-                </div>{" "}
+                  <h6>{getAmountFormart(this.state.total_deductions)}</h6>
+                </div>
                 <div className="col-2">
                   <AlgaehLabel
                     label={{
                       forceLabel: "Total Emp. Contribution"
                     }}
                   />
-                  <h6>0.00</h6>
-                </div>{" "}
+                  <h6>{getAmountFormart(this.state.total_contributions)}</h6>
+                </div>
                 <div className="col-2">
                   <AlgaehLabel
                     label={{
                       forceLabel: "Net Salary"
                     }}
                   />
-                  <h6>0.00</h6>
+                  <h6>{getAmountFormart(this.state.net_salary)}</h6>
                 </div>
-                <div className="col-2">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Perks"
-                    }}
-                  />
-                  <h6>0.00</h6>
-                </div>{" "}
-              </div>
-              <div className="row paddin-bottom-5">
-                <div className="col-10" />
                 <div className="col-2">
                   <AlgaehLabel
                     label={{
                       forceLabel: "Cost to Company"
                     }}
                   />
-                  <h6>0.00</h6>
+                  <h6>{getAmountFormart(this.state.cost_to_company)}</h6>
                 </div>
               </div>
+              {/* <div className="row paddin-bottom-5">
+                <div className="col-10" />
+                
+              </div> */}
             </div>
           </div>
         </div>
@@ -299,4 +496,24 @@ class PayRollDetails extends PureComponent {
   }
 }
 
-export default PayRollDetails;
+function mapStateToProps(state) {
+  return {
+    payrollcomponents: state.payrollcomponents
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getEarningDeduction: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(PayRollDetails)
+);

@@ -1,40 +1,23 @@
-import moment from "moment";
+// import moment from "moment";
 import { AlgaehValidation } from "../../../../../utils/GlobalFunctions";
 
-let texthandlerInterval = null;
-
-const texthandle = ($this, context, e) => {
+const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
   $this.setState({
     [name]: value
   });
-
-  clearInterval(texthandlerInterval);
-  texthandlerInterval = setInterval(() => {
-    if (context !== undefined) {
-      context.updateState({ [name]: value });
-    }
-    clearInterval(texthandlerInterval);
-  }, 500);
 };
 
-const datehandle = ($this, context, ctrl, e) => {
+const datehandle = ($this, ctrl, e) => {
   $this.setState({
     [e]: ctrl
   });
-
-  clearInterval(texthandlerInterval);
-  texthandlerInterval = setInterval(() => {
-    if (context !== undefined) {
-      context.updateState({ [e]: moment(ctrl)._d });
-    }
-    clearInterval(texthandlerInterval);
-  }, 500);
 };
 
-const AddEmpId = ($this, context, e) => {
+const AddEmpId = ($this, e) => {
+  debugger;
   AlgaehValidation({
     alertTypeIcon: "warning",
     querySelector: "data-validate='empIdGrid'",
@@ -43,6 +26,7 @@ const AddEmpId = ($this, context, e) => {
       let insertIdDetails = $this.state.insertIdDetails;
 
       let inpObj = {
+        employee_id: $this.state.hims_d_employee_id,
         identity_documents_id: $this.state.identity_documents_id,
         identity_number: $this.state.identity_number,
         valid_upto: $this.state.valid_upto,
@@ -51,16 +35,11 @@ const AddEmpId = ($this, context, e) => {
         alert_date: $this.state.alert_date
       };
 
-      // if ($this.state.hims_d_employee_id !== null) {
-      //   inpObj.employee_id = $this.state.hims_d_employee_id;
-      //   insertIdDetails.push(inpObj);
-      // }
-
       idDetails.push(inpObj);
 
       $this.setState({
         idDetails: idDetails,
-        insertIdDetails: insertIdDetails,
+        insertIdDetails: idDetails,
         identity_documents_id: null,
         identity_number: null,
         valid_upto: null,
@@ -68,26 +47,26 @@ const AddEmpId = ($this, context, e) => {
         alert_required: null,
         alert_date: null
       });
-      if (context !== undefined) {
-        context.updateState({
-          idDetails: idDetails,
-          insertIdDetails: insertIdDetails
-        });
-      }
+
+      $this.props.EmpMasterIOputs.updateEmployeeTabs({
+        idDetails: idDetails,
+        insertIdDetails: idDetails
+      });
     }
   });
 };
-const addDependentType = ($this, context, e) => {
-  e.preventDefault();
+const addDependentType = ($this, e) => {
+  debugger;
 
   AlgaehValidation({
     alertTypeIcon: "warning",
-    querySelector: "data-validate='empIdGrid'",
+    querySelector: "data-validate='dependentGrid'",
     onSuccess: () => {
       let dependentDetails = $this.state.dependentDetails;
       let insertDependentDetails = $this.state.insertDependentDetails;
 
       let inpObj = {
+        employee_id: $this.state.hims_d_employee_id,
         dependent_type: $this.state.dependent_type,
         dependent_name: $this.state.dependent_name,
         dependent_identity_no: $this.state.dependent_identity_no,
@@ -109,12 +88,11 @@ const addDependentType = ($this, context, e) => {
         dependent_identity_no: null,
         dependent_identity_type: null
       });
-      if (context !== undefined) {
-        context.updateState({
-          dependentDetails: dependentDetails,
-          insertDependentDetails: insertDependentDetails
-        });
-      }
+
+      $this.props.EmpMasterIOputs.updateEmployeeTabs({
+        dependentDetails: dependentDetails,
+        insertDependentDetails: dependentDetails
+      });
     }
   });
 };

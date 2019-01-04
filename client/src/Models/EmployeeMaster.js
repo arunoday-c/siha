@@ -35,17 +35,26 @@ export default {
       emergancy_contact_person: null,
       emergancy_contact_no: 0,
       blood_group: null,
+
+      appointment_type: null,
+      employee_type: null,
+      employee_bank_name: null,
+      employee_bank_ifsc_code: null,
+      employee_account_number: null,
+      company_bank_id: null,
+      mode_of_payment: null,
+
       isdoctor: "N",
       employee_status: "A",
 
       servTypeCommission: [],
       serviceComm: [],
       dependentDetails: [],
+      idDetails: [],
+      insertIdDetails: [],
 
       updateservTypeCommission: [],
       insertservTypeCommission: [],
-
-      dependentDetails: [],
 
       updateserviceComm: [],
       insertserviceComm: [],
@@ -61,6 +70,17 @@ export default {
       dependentDetails: [],
       insertDependentDetails: [],
       updateDependentDetails: [],
+
+      insertearnComp: [],
+      insertDeductionComp: [],
+      insertContributeComp: [],
+
+      leave_salary_process: "N",
+      late_coming_rule: "N",
+      airfare_process: "N",
+      exclude_machine_data: "N",
+      gratuity_applicable: "N",
+      suspend_salary: "N",
 
       selectedLang: "en"
     };

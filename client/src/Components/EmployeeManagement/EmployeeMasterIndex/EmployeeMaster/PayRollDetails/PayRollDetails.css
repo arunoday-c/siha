@@ -1,0 +1,8 @@
+#EarningComponent_Cntr .ReactTable {
+  max-height: 35vh !important; }
+
+#DeductionComponent_Cntr .ReactTable {
+  max-height: 10vh !important; }
+
+#ContributionComponent_Cntr .ReactTable {
+  max-height: 10vh !important; }

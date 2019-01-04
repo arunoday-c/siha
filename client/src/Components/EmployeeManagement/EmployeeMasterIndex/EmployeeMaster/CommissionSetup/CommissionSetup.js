@@ -44,8 +44,8 @@ class CommissionSetup extends Component {
   }
 
   componentWillMount() {
-    let InputOutput = this.props.EmpMasterIOputs;
-    this.setState({ ...this.state, ...InputOutput });
+    // let InputOutput = this.props.EmpMasterIOputs;
+    // this.setState({ ...this.state, ...InputOutput });
   }
 
   componentDidMount() {

@@ -1325,3 +1325,7 @@ th {
         background: #68b5b9; }
       .image-area-cntr .videoActions i:hover {
         background: rgba(0, 0, 0, 0.1); }
+
+.disableLi {
+  pointer-events: none;
+  opacity: 0.5; }
