@@ -136,62 +136,6 @@ export default class MiscEarningsDeductions extends Component {
       <React.Fragment>
         <div className="misc_earn_dedc">
           <div className="row  inner-top-search">
-            <div className="col">
-              <label>
-                Components<span class="imp">&nbsp;*</span>
-              </label>
-              <div className="customRadio">
-                <label className="radio inline">
-                  <input
-                    type="radio"
-                    value="E"
-                    name="component_category"
-                    checked={this.state.component_category === "E"}
-                    onChange={this.textHandler.bind(this)}
-                  />
-                  <span>Earnings</span>
-                </label>
-
-                <label className="radio inline">
-                  <input
-                    type="radio"
-                    value="D"
-                    name="component_category"
-                    checked={this.state.component_category === "D"}
-                    onChange={this.textHandler.bind(this)}
-                  />
-                  <span>Deductions</span>
-                </label>
-              </div>
-            </div>
-
-            <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{
-                forceLabel: "Earning/ Deduction Code",
-                isImp: false
-              }}
-              selector={{
-                name: "earn_ded_code",
-                className: "select-fld",
-                value: this.state.earn_ded_code,
-                dataSource: {
-                  textField: "earning_deduction_description",
-                  valueField: "hims_d_earning_deduction_id",
-                  data: this.state.earn_deds
-                },
-                onChange: this.dropDownHandler.bind(this),
-                onClear: () => {
-                  this.setState({
-                    earn_ded_code: null
-                  });
-                },
-                others: {
-                  tabIndex: "1"
-                }
-              }}
-            />
-
             <AlgaehDateHandler
               div={{ className: "col margin-bottom-15" }}
               label={{
@@ -278,6 +222,107 @@ export default class MiscEarningsDeductions extends Component {
                 Load
               </button>
             </div>
+
+            <div className="col-2">
+              <label>
+                Components<span class="imp">&nbsp;*</span>
+              </label>
+              <div className="customRadio">
+                <label className="radio inline">
+                  <input
+                    type="radio"
+                    value="E"
+                    name="component_category"
+                    checked={this.state.component_category === "E"}
+                    onChange={this.textHandler.bind(this)}
+                  />
+                  <span>Earnings</span>
+                </label>
+
+                <label className="radio inline">
+                  <input
+                    type="radio"
+                    value="D"
+                    name="component_category"
+                    checked={this.state.component_category === "D"}
+                    onChange={this.textHandler.bind(this)}
+                  />
+                  <span>Deductions</span>
+                </label>
+              </div>
+            </div>
+
+            <AlagehAutoComplete
+              div={{ className: "col" }}
+              label={{
+                forceLabel: "Earning/ Deduction Code",
+                isImp: false
+              }}
+              selector={{
+                name: "earn_ded_code",
+                className: "select-fld",
+                value: this.state.earn_ded_code,
+                dataSource: {
+                  textField: "earning_deduction_description",
+                  valueField: "hims_d_earning_deduction_id",
+                  data: this.state.earn_deds
+                },
+                onChange: this.dropDownHandler.bind(this),
+                onClear: () => {
+                  this.setState({
+                    earn_ded_code: null
+                  });
+                },
+                others: {
+                  tabIndex: "1"
+                }
+              }}
+            />
+
+            <div className="col">
+              <label>
+                Apply as Bulk<span class="imp">&nbsp;*</span>
+              </label>
+              <div className="customCheckbox">
+                <label className="checkbox inline">
+                  <input
+                    type="checkbox"
+                    value="E"
+                    name="bulkAmount"
+                    // checked={this.state.component_category === "E"}
+                    // onChange={this.textHandler.bind(this)}
+                  />
+                  <span>Yes</span>
+                </label>
+              </div>
+            </div>
+
+            <AlagehFormGroup
+              div={{ className: "col form-group" }}
+              label={{
+                forceLabel: "Enter Bulk Amount",
+                isImp: false
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "",
+                value: "",
+                events: {},
+                option: {
+                  type: "number"
+                }
+              }}
+            />
+            <div className="col margin-bottom-15">
+              <button
+                type="button"
+                className="btn btn-default"
+                style={{ marginTop: 21 }}
+                onClick={this.applyAmount.bind(this)}
+              >
+                Apply
+              </button>
+            </div>
           </div>
           <div className="row">
             <div className="col-12">
@@ -289,31 +334,6 @@ export default class MiscEarningsDeductions extends Component {
                         <h3 className="caption-subject">
                           Miscellaneous - <span>Earning</span> List
                         </h3>
-                      </div>
-                      <div className="actions">
-                        <AlagehFormGroup
-                          div={{
-                            className: "col form-group bulkAmountStyle"
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "",
-                            value: "",
-                            events: {},
-                            option: {
-                              type: "number"
-                            },
-                            others: {
-                              placeHolder: "Enter Bulk Amount"
-                            }
-                          }}
-                        />
-                        <button
-                          onClick={this.applyAmount.bind(this)}
-                          className="btn btn-default"
-                        >
-                          Apply
-                        </button>
                       </div>
                     </div>
 
