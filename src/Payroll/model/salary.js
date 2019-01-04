@@ -211,13 +211,64 @@ let processSalary = (req, res, next) => {
                             empResult[i]["employee_id"],
                           contributionResult
                         );
+
+                        for (let m = 0; m < contributionResult.length; m++) {
+                          let current_contribution_amt = 0;
+                          let current_contribution_per_day_salary = 0;
+
+                          if (
+                            contributionResult[m]["calculation_type"] == "F"
+                          ) {
+                            current_contribution_amt =
+                              contributionResult[m]["amount"];
+                            current_contribution_per_day_salary = parseFloat(
+                              contributionResult[m]["amount"] /
+                                parseFloat(empResult[i]["total_days"])
+                            );
+                          } else if (
+                            contributionResult[m]["calculation_type"] == "V"
+                          ) {
+                            current_contribution_per_day_salary = parseFloat(
+                              contributionResult[m]["amount"] /
+                                parseFloat(empResult[i]["total_days"])
+                            );
+
+                            current_contribution_amt =
+                              current_contribution_per_day_salary *
+                              parseFloat(empResult[i]["total_paid_days"]);
+                          }
+
+                          current_contribution_amt_array.push({
+                            deductions_id:
+                              contributionResult[m]["deductions_id"],
+                            amount: current_contribution_amt,
+                            per_day_salary: current_contribution_per_day_salary
+                          });
+                          final_contribution_amount += parseFloat(
+                            current_contribution_amt
+                          );
+
+                          if (m == contributionResult.length - 1) {
+                            debugLog(
+                              "current_contribution_amt_array:",
+                              current_contribution_amt_array
+                            );
+                            debugLog(
+                              "final_contribution_amount:",
+                              final_contribution_amount
+                            );
+                            resolve({});
+                          }
+                        }
                       }
                     );
                   } catch (e) {
                     reject(e);
                   }
-                }).then(deductionCalcResult => {
+                }).then(contributionCalcResult => {
                   //3 then
+
+                  debugLog("");
                 });
               });
             });

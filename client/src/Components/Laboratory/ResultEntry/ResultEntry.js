@@ -46,6 +46,7 @@ class ResultEntry extends Component {
         fileName: "haematologyReport"
       },
       data: {
+        investigation_name: this.state.service_name,
         test_analytes: this.state.test_analytes,
         payment_type: "cash",
         patient_code: this.state.patient_code,

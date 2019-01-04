@@ -23,9 +23,46 @@ class ApplyLeave extends Component {
       available_balance: 0.0,
       total_applied_days: 0.0
     };
-
+    this.getHolidayMaster();
     this.getLeaveTypes();
     this.getEmployees();
+  }
+
+  getHolidayMaster() {
+    algaehApiCall({
+      uri: "/holiday/getAllHolidays",
+      method: "GET",
+      data: {
+        hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
+          .hims_d_hospital_id
+      },
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            holidays: res.data.records
+          });
+          console.table(res.data.records);
+        }
+      },
+      onFailure: err => {}
+    });
+  }
+
+  getDateRange(startDate, endDate) {
+    var dates = [];
+
+    var currDate = moment(startDate).startOf("day");
+    var lastDate = moment(endDate).startOf("day");
+
+    var now = currDate.clone(),
+      dates = [];
+
+    while (now.isSameOrBefore(lastDate)) {
+      console.log(now.format("YYYYMMDD"));
+      dates.push(now.format("YYYYMMDD"));
+      now.add(1, "days");
+    }
+    return dates;
   }
 
   componentDidMount() {
@@ -156,10 +193,11 @@ class ApplyLeave extends Component {
               this.getAppliedDays();
             }
           );
+        } else if (from_leave_session === "SH" && to_leave_session === "FH") {
+          this.getAppliedDays();
         }
       }
     }
-    this.getAppliedDays();
   }
 
   changeTexts(e) {
@@ -169,8 +207,6 @@ class ApplyLeave extends Component {
   }
 
   getAppliedDays() {
-    console.log("Inside get days");
-
     var startdateMoment = moment(this.state.from_date);
     var enddateMoment = moment(this.state.to_date);
 
@@ -214,7 +250,7 @@ class ApplyLeave extends Component {
           this.state.to_leave_session === "FH"
         ) {
           this.setState({
-            total_applied_days: 1
+            total_applied_days: Math.abs(days)
           });
         } else if (
           this.state.from_leave_session === "FH" ||
@@ -276,7 +312,6 @@ class ApplyLeave extends Component {
             }
           );
         }
-
         break;
 
       case "from_leave_session":
@@ -314,7 +349,6 @@ class ApplyLeave extends Component {
               .where(w => w.hims_d_leave_id === value.value)
               .firstOrDefault();
 
-            debugger;
             this.setState({
               available_balance: value.selected.close_balance,
               leave_type: myObj !== undefined ? myObj.leave_type : null
@@ -339,7 +373,9 @@ class ApplyLeave extends Component {
       from_leave_session: null,
       to_date: null,
       to_leave_session: null,
-      remarks: null
+      remarks: null,
+      total_applied_days: 0.0,
+      available_balance: 0.0
     });
   }
 
@@ -414,7 +450,6 @@ class ApplyLeave extends Component {
       method: "GET",
       data: {
         employee_id: this.state.employee_id
-        //employee_id: 94
       },
       onSuccess: res => {
         if (res.data.success) {
@@ -643,6 +678,10 @@ class ApplyLeave extends Component {
                               to_date: selDate
                             },
                             () => {
+                              this.getDateRange(
+                                this.state.from_date,
+                                this.state.to_date
+                              );
                               this.validate();
                             }
                           );
