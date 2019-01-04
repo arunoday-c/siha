@@ -16,7 +16,9 @@
     "prod_build": "npm run build --prefix client && npm run build",
     "lint": "eslint src && eslint test",
     "pm2": "concurrently --kill-others  cross-env NODE_ENV=development  pm2 start  --max-memory-restart 850M \"babel-node src/internal_server.js \"  \"npm run client\"",
-    "test": "export NODE_ENV=test npm run build && mocha --require babel-core/register --timeout=10000000"
+    "test": "export NODE_ENV=test npm run build && mocha --require babel-core/register --timeout=10000000",
+    "complete-build": "concurrently \"babel src -s -D -d ../algaeh_erp_live/Core \" \"babel HrManagement/src -s -D -d ../algaeh_erp_live/HrManagement\" \"babel DocumentManagement/src -s -D -d ../algaeh_erp_live/DocumentManagement\"",
+    "start-core": "cross-env NODE_ENV=production pm2 start  -i 4 internal_server.js"
   },
   "eslintConfig": {
     "parserOptions": {
