@@ -1,5 +1,7 @@
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import EmpMasterIOputs from "../../../../Models/EmployeeMaster";
+import Enumerable from "linq";
+import moment from "moment";
 
 const Validations = $this => {
   let isError = false;
@@ -136,6 +138,19 @@ const Validations = $this => {
     });
 
     return isError;
+  } else if ($this.state.personalDetails.deptDetails !== 0) {
+    const activeDept = Enumerable.from($this.state.personalDetails.deptDetails)
+      .where(w => w.dep_status === "A")
+      .toArray();
+
+    if (activeDept.length > 1) {
+      isError = true;
+      swalMessage({
+        type: "warning",
+        title: "Only one Department can be Active."
+      });
+    }
+    return isError;
   }
 
   return false;
@@ -146,6 +161,47 @@ const InsertUpdateEmployee = $this => {
   console.log("Input:", $this.state);
   debugger;
   if (!err) {
+    if ($this.state.personalDetails.insertdeptDetails.length > 0) {
+      for (
+        var i = 0;
+        i < $this.state.personalDetails.insertdeptDetails.length;
+        i++
+      ) {
+        $this.state.personalDetails.insertdeptDetails[i].from_date === null
+          ? null
+          : moment(
+              $this.state.personalDetails.insertdeptDetails[i].from_date
+            ).format("YYYY-MM-DD");
+
+        $this.state.personalDetails.insertdeptDetails[i].to_date === null
+          ? null
+          : moment(
+              $this.state.personalDetails.insertdeptDetails[i].to_date
+            ).format("YYYY-MM-DD");
+      }
+    }
+
+    if ($this.state.personalDetails.updatedeptDetails.length > 0) {
+      for (
+        var i = 0;
+        i < $this.state.personalDetails.updatedeptDetails.length;
+        i++
+      ) {
+        $this.state.personalDetails.updatedeptDetails[i].from_date === null
+          ? null
+          : moment(
+              $this.state.personalDetails.updatedeptDetails[i].from_date
+            ).format("YYYY-MM-DD");
+
+        $this.state.personalDetails.updatedeptDetails[i].to_date === null
+          ? null
+          : moment(
+              $this.state.personalDetails.updatedeptDetails[i].to_date
+            ).format("YYYY-MM-DD");
+      }
+    }
+
+    debugger;
     if ($this.state.personalDetails.company_bank_id === null) {
       const hospital = JSON.parse(sessionStorage.getItem("CurrencyDetail"));
       const _payload = {
@@ -171,6 +227,8 @@ const InsertUpdateEmployee = $this => {
         }
       });
     } else {
+      // $this.state.personalDetails
+
       const hospital = JSON.parse(sessionStorage.getItem("CurrencyDetail"));
       const _payload = {
         hospital_id: hospital.hims_d_hospital_id,

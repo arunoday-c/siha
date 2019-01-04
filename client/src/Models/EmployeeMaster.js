@@ -43,6 +43,8 @@ export default {
       employee_account_number: null,
       company_bank_id: null,
       mode_of_payment: null,
+      inactive_date: null,
+      employee_group_id: null,
 
       isdoctor: "N",
       employee_status: "A",
@@ -74,6 +76,12 @@ export default {
       insertearnComp: [],
       insertDeductionComp: [],
       insertContributeComp: [],
+
+      updateearnComp: [],
+      updateDeductionComp: [],
+      updateContributeComp: [],
+
+      deleteearnComp: [],
 
       leave_salary_process: "N",
       late_coming_rule: "N",

@@ -10,6 +10,7 @@ import {
 import httpStatus from "../utils/httpStatus";
 import { debugLog } from "../utils/logging";
 import Promise from "bluebird";
+import mysql from "mysql";
 import department from "../controller/department";
 
 //api to add employee
@@ -963,7 +964,8 @@ let updateEmployee = (req, res, next) => {
           company_bank_id=?,employee_bank_name=?,employee_bank_ifsc_code=?,employee_account_number=?,mode_of_payment=?,\
           accomodation_provided=?,hospital_id=?,gross_salary=?,total_earnings=?,total_deductions=?,total_contributions=?,\
           net_salary=?,cost_to_company=?,leave_salary_process=?,late_coming_rule=?,airfare_process=?,\
-          exclude_machine_data=?,gratuity_applicable=?,suspend_salary=?,pf_applicable=?,updated_date=?,updated_by=?\
+          exclude_machine_data=?,gratuity_applicable=?,suspend_salary=?,pf_applicable=?,employee_group_id=?, \
+          reporting_to_id=?,sub_department_id=?,employee_designation_id=?,updated_date=?,updated_by=?\
           WHERE record_status='A' and  hims_d_employee_id=?",
           [
             input.employee_code,
@@ -1020,6 +1022,11 @@ let updateEmployee = (req, res, next) => {
             input.suspend_salary,
             input.pf_applicable,
 
+            input.employee_group_id,
+            input.reporting_to_id,
+            input.sub_department_id,
+            input.employee_designation_id,
+
             new Date(),
             input.updated_by,
             input.hims_d_employee_id
@@ -1074,35 +1081,38 @@ let updateEmployee = (req, res, next) => {
                 }
               })
                 .then(resultFrmInsertDept => {
-                  debugLog("inside 1 then");
+                  debugLog("inside One then");
 
                   if (input.updatedeptDetails.length > 0) {
                     debugLog("inside updatedeptDetails");
                     let inputParam = extend([], req.body.updatedeptDetails);
                     let qry = "";
 
-                    for (
-                      let i = 0;
-                      i < req.body.updatedeptDetails.length;
-                      i++
-                    ) {
+                    for (let i = 0; i < input.updatedeptDetails.length; i++) {
+                      debugLog("qry: ", qry);
                       qry += mysql.format(
                         "UPDATE `hims_m_employee_department_mappings` SET services_id=?,`sub_department_id`=?,\
-                        `category_speciality_id`=?,`to_date`=?,`dep_status`=?, `record_status`=?,\
-                      updated_date=?,updated_by=? where record_status='A' and hims_d_employee_department_id=?;",
+                        `category_speciality_id`=?,`employee_designation_id`=?,`reporting_to_id`=?,`to_date`=?,\
+                        `dep_status`=?, `record_status`=?,`updated_date`=?,`updated_by`=? \
+                        where record_status='A' and hims_d_employee_department_id=?;",
                         [
                           inputParam[i].services_id,
                           inputParam[i].sub_department_id,
                           inputParam[i].category_speciality_id,
+                          inputParam[i].employee_designation_id,
+                          inputParam[i].reporting_to_id,
                           inputParam[i].to_date,
                           inputParam[i].dep_status,
                           inputParam[i].record_status,
-                          moment().format("YYYY-MM-DD HH:mm"),
-                          user_id.updated_by,
+                          new Date(),
+                          req.userIdentity.algaeh_d_app_user_id,
                           inputParam[i].hims_d_employee_department_id
                         ]
                       );
+                      debugLog("qry: ", qry);
                     }
+
+                    debugLog("qry: ", qry);
 
                     connection.query(qry, (error, updateDeptDetailResult) => {
                       if (error) {
@@ -1114,7 +1124,7 @@ let updateEmployee = (req, res, next) => {
                     });
                   }
                 })
-                .then(updateDeptResult => {
+                .then(updateDeptDetailResult => {
                   debugLog("inside 2 then");
 
                   if (input.insertserviceComm.length > 0) {
@@ -1181,8 +1191,8 @@ let updateEmployee = (req, res, next) => {
                           inputParam[i].ip_cash_commission_percent,
                           inputParam[i].ip_credit_commission_percent,
                           inputParam[i].record_status,
-                          moment().format("YYYY-MM-DD HH:mm"),
-                          user_id.updated_by,
+                          new Date(),
+                          req.userIdentity.algaeh_d_app_user_id,
                           inputParam[i].hims_m_doctor_service_commission_id
                         ]
                       );
@@ -1264,8 +1274,8 @@ let updateEmployee = (req, res, next) => {
                           inputParam[i].ip_cash_commission_percent,
                           inputParam[i].ip_credit_commission_percent,
                           inputParam[i].record_status,
-                          moment().format("YYYY-MM-DD HH:mm"),
-                          user_id.updated_by,
+                          new Date(),
+                          req.userIdentity.algaeh_d_app_user_id,
                           inputParam[i].hims_m_doctor_service_type_commission_id
                         ]
                       );
@@ -1323,6 +1333,37 @@ let updateEmployee = (req, res, next) => {
                   }
                 })
                 .then(insertearncomponent => {
+                  debugLog("inside insertearncomponent then");
+                  if (input.updateearnComp.length > 0) {
+                    debugLog("inside updateearnComp");
+                    let inputParam = extend([], req.body.updateearnComp);
+                    let qry = "";
+
+                    for (let i = 0; i < req.body.updateearnComp.length; i++) {
+                      qry += mysql.format(
+                        "UPDATE `hims_d_employee_earnings` SET \
+                          `amount`=?,`allocate`=? where hims_d_employee_earnings_id=?;",
+                        [
+                          inputParam[i].amount,
+                          inputParam[i].allocate,                          
+                          inputParam[i].hims_d_employee_earnings_id
+                        ]
+                      );
+                    }
+
+                    debugLog("qry: ", qry);
+
+                    connection.query(qry, (error, updateearncomponent) => {
+                      if (error) {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                      }
+                    });
+                  }
+                })
+                .then(updateearncomponent => {
                   debugLog("inside insertDeductionComp then");
 
                   if (input.insertDeductionComp.length > 0) {
@@ -1402,6 +1443,7 @@ let updateEmployee = (req, res, next) => {
                     );
                   }
                 })
+
                 .then(insertContributeComp => {
                   debugLog("inside insertIdDetails then");
 
@@ -1513,6 +1555,64 @@ let updateEmployee = (req, res, next) => {
 };
 
 //created by irfan: to get eployee details
+// let getEmployeeDetails = (req, res, next) => {
+//   let employeeWhereCondition = {
+//     employee_code: "ALL",
+//     sex: "ALL",
+//     blood_group: "ALL",
+//     employee_status: "ALL",
+//     date_of_joining: "ALL",
+//     date_of_resignation: "ALL",
+//     primary_contact_no: "ALL",
+//     email: "ALL"
+//   };
+//   try {
+//     if (req.db == null) {
+//       next(httpStatus.dataBaseNotInitilizedError());
+//     }
+//     let db = req.db;
+
+//     let where = whereCondition(extend(employeeWhereCondition, req.query));
+
+//     db.getConnection((error, connection) => {
+//       connection.query(
+//         "SELECT E.hims_d_employee_id,E.employee_code,E.title_id,E.full_name,E.arabic_name,E.employee_designation_id,\
+//         E.license_number,E.sex,E.religion_id,E.marital_status,E.date_of_birth,E.date_of_joining,E.date_of_resignation,E.present_address,E.present_address2,\
+//         E.present_pincode,E.present_state_id,E.present_country_id,\
+//         E.permanent_address , E.permanent_address2, E.permanent_pincode, E.permanent_city_id, E.permanent_state_id,\
+//         E.permanent_country_id, E.primary_contact_no, E.secondary_contact_no,E.email,\
+//         E.emergency_contact_person,E.emergency_contact_no,E.blood_group,\
+//         E.isdoctor,E.employee_status,E.exclude_machine_data ,E.company_bank_id ,E.employee_bank_name , E.effective_start_date,E.effective_end_date,\
+//         E.employee_bank_ifsc_code , E.employee_account_number, E.mode_of_payment, E.accomodation_provided,\
+//          E.late_coming_rule, E.leave_salary_process, E.entitled_daily_ot, E.suspend_salary, E.gratuity_applicable, E.contract_type, E.employee_group_id,\
+//          E.weekoff_from,E.overtime_group_id, E.reporting_to_id, E.hospital_id,\
+//         ED.hims_d_employee_department_id,ED.employee_id,ED.sub_department_id,ED.category_speciality_id,ED.user_id,\
+//          ED.services_id,ED.employee_designation_id,ED.reporting_to_id,ED.from_date,ED.end_date,ED.dep_status,\
+//          CS.hims_m_category_speciality_mappings_id,CS.category_id,CS.speciality_id,\
+//         CS.category_speciality_status,CS.effective_start_date,CS.effective_end_date\
+//         from hims_d_employee E,hims_m_employee_department_mappings ED,hims_m_category_speciality_mappings CS\
+//          Where E.record_status='A' and ED.record_status='A' and CS.record_status='A' and E.hims_d_employee_id=ED.employee_id\
+//           and ED.category_speciality_id=CS.hims_m_category_speciality_mappings_id AND " +
+//           where.condition +
+//           "order by E.hims_d_employee_id desc ",
+//         where.values,
+//         (error, result) => {
+//           releaseDBConnection(db, connection);
+//           if (error) {
+//             next(error);
+//           }
+
+//           req.records = result;
+//           next();
+//         }
+//       );
+//     });
+//   } catch (e) {
+//     next(e);
+//   }
+// };
+
+//created by Nowshad: to get eployee details
 let getEmployeeDetails = (req, res, next) => {
   let employeeWhereCondition = {
     employee_code: "ALL",
@@ -1534,23 +1634,7 @@ let getEmployeeDetails = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "SELECT E.hims_d_employee_id,E.employee_code,E.title_id,E.full_name,E.arabic_name,E.employee_designation_id,\
-        E.license_number,E.sex,E.religion_id,E.marital_status,E.date_of_birth,E.date_of_joining,E.date_of_resignation,E.present_address,E.present_address2,\
-        E.present_pincode,E.present_state_id,E.present_country_id,\
-        E.permanent_address , E.permanent_address2, E.permanent_pincode, E.permanent_city_id, E.permanent_state_id,\
-        E.permanent_country_id, E.primary_contact_no, E.secondary_contact_no,E.email,\
-        E.emergency_contact_person,E.emergency_contact_no,E.blood_group,\
-        E.isdoctor,E.employee_status,E.exclude_machine_data ,E.company_bank_id ,E.employee_bank_name , E.effective_start_date,E.effective_end_date,\
-        E.employee_bank_ifsc_code , E.employee_account_number, E.mode_of_payment, E.accomodation_provided,\
-         E.late_coming_rule, E.leave_salary_process, E.entitled_daily_ot, E.suspend_salary, E.gratuity_applicable, E.contract_type, E.employee_group_id,\
-         E.weekoff_from,E.overtime_group_id, E.reporting_to_id, E.hospital_id,\
-        ED.hims_d_employee_department_id,ED.employee_id,ED.sub_department_id,ED.category_speciality_id,ED.user_id,\
-         ED.services_id,ED.employee_designation_id,ED.reporting_to_id,ED.from_date,ED.end_date,ED.dep_status,\
-         CS.hims_m_category_speciality_mappings_id,CS.category_id,CS.speciality_id,\
-        CS.category_speciality_status,CS.effective_start_date,CS.effective_end_date\
-        from hims_d_employee E,hims_m_employee_department_mappings ED,hims_m_category_speciality_mappings CS\
-         Where E.record_status='A' and ED.record_status='A' and CS.record_status='A' and E.hims_d_employee_id=ED.employee_id\
-          and ED.category_speciality_id=CS.hims_m_category_speciality_mappings_id AND " +
+        "SELECT * from hims_d_employee Where record_status='A' AND " +
           where.condition +
           "order by E.hims_d_employee_id desc ",
         where.values,
@@ -2589,6 +2673,105 @@ let updateEmployeeEducation = (req, res, next) => {
   }
 };
 
+let getEmployeeDepartments = (req, res, next) => {
+  let employeeWhereCondition = {
+    employee_id: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let where = whereCondition(extend(employeeWhereCondition, req.query));
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "SELECT ED.hims_d_employee_department_id,ED.employee_id,ED.sub_department_id,ED.category_speciality_id,ED.user_id,\
+         ED.services_id,ED.employee_designation_id,ED.reporting_to_id,ED.from_date,ED.to_date,ED.dep_status,\
+         CS.hims_m_category_speciality_mappings_id,CS.category_id,CS.speciality_id,\
+        CS.category_speciality_status,CS.effective_start_date,CS.effective_end_date \
+        from hims_m_employee_department_mappings ED,hims_m_category_speciality_mappings CS\
+         Where ED.record_status='A' and CS.record_status='A' \
+          and ED.category_speciality_id=CS.hims_m_category_speciality_mappings_id AND " +
+          where.condition,
+        where.values,
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+let getPayrollComponents = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.query);
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "SELECT * from hims_d_employee_earnings where employee_id = ?; SELECT * from hims_d_employee_deductions where employee_id = ?; \
+        SELECT * from hims_d_employee_contributions where employee_id = ?;",
+        [input.employee_id, input.employee_id, input.employee_id],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          debugLog("result: ", result);
+
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+let getFamilyIdentification = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.query);
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "SELECT * from hims_d_employee_identification where employee_id = ?; \
+        SELECT * from hims_d_employee_dependents where employee_id = ?;",
+        [input.employee_id, input.employee_id, input.employee_id],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addEmployee,
   addEmployeeMaster,
@@ -2622,5 +2805,8 @@ module.exports = {
   updateEmployeeEducation,
   deleteEmployeeEducation,
   addEmployeeEducation,
-  getEmployeeEducation
+  getEmployeeEducation,
+  getEmployeeDepartments,
+  getPayrollComponents,
+  getFamilyIdentification
 };

@@ -20,6 +20,21 @@ class RulesDetails extends PureComponent {
 
   componentDidMount() {
     let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
+    InputOutput.LeaveSalaryProcess =
+      InputOutput.leave_salary_process === "Y" ? true : false;
+
+    InputOutput.LateComingRule =
+      InputOutput.late_coming_rule === "Y" ? true : false;
+    InputOutput.AirfareProcess =
+      InputOutput.airfare_process === "Y" ? true : false;
+    InputOutput.ExcludeMachineData =
+      InputOutput.exclude_machine_data === "Y" ? true : false;
+    InputOutput.GratuityApplicable =
+      InputOutput.gratuity_applicable === "Y" ? true : false;
+    InputOutput.SuspendSalary =
+      InputOutput.suspend_salary === "Y" ? true : false;
+    InputOutput.PfApplicable = InputOutput.pf_applicable === "Y" ? true : false;
+
     this.setState({ ...this.state, ...InputOutput });
   }
 

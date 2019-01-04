@@ -62,17 +62,24 @@ export function algaehApiCall(options) {
       options
     );
     let _baseUrl = settings.baseUrl;
+    const _localaddress =
+      window.location.protocol + "//" + window.location.hostname + ":";
+
     if (settings.module === null || settings.module === "") {
       const _defRoute = config.routersAndPorts.default;
       const _url =
-        _defRoute.url === undefined ? "http://localhost:" : _defRoute.url;
+        _defRoute.url === undefined || _defRoute.url === ""
+          ? _localaddress
+          : _defRoute.url;
       const _baseurlInner =
         _defRoute.baseUrl === undefined ? _baseUrl : _defRoute.baseUrl;
       settings.baseUrl = _url + _defRoute.port + _baseurlInner;
     } else {
       const _myRouter = config.routersAndPorts[settings.module];
       const _url =
-        _myRouter.url === undefined ? "http://localhost:" : _myRouter.url;
+        _myRouter.url === undefined || _myRouter.url === ""
+          ? _localaddress
+          : _myRouter.url;
       const _baseurlInner =
         _myRouter.baseUrl === undefined ? _baseUrl : _myRouter.baseUrl;
       settings.baseUrl = _url + _myRouter.port + _baseurlInner;

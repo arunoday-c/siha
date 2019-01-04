@@ -1,4 +1,4 @@
-import { swalMessage } from "../../../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import moment from "moment";
@@ -30,7 +30,7 @@ const departmenttexthandle = ($this, ctrl, e) => {
         uri: "/specialityAndCategory/getEmployeeSpecialityMaster",
         method: "GET",
         data: {
-          sub_department_id: $this.state.sub_department_id,
+          sub_department_id: $this.state.sub_department,
           speciality_status: "A"
         },
         redux: {
@@ -86,7 +86,7 @@ const AddDeptUser = ($this, e) => {
     alertTypeIcon: "warning",
     querySelector: "data-validate='deptUserdtl'",
     onSuccess: () => {
-      if ($this.state.sub_department_id === null) {
+      if ($this.state.sub_department === null) {
         swalMessage({
           title: "Department. cannot be blank",
           type: "warning"
@@ -106,7 +106,7 @@ const AddDeptUser = ($this, e) => {
           title: "Designation. cannot be blank",
           type: "warning"
         });
-      } else if ($this.state.reporting_to_id === null) {
+      } else if ($this.state.reporting_to === null) {
         swalMessage({
           title: "Reporting To. cannot be blank",
           type: "warning"
@@ -119,7 +119,7 @@ const AddDeptUser = ($this, e) => {
           deptDetails = [];
         } else {
           const _departs = Enumerable.from(deptDetails)
-            .where(w => w.sub_department_id === $this.state.sub_department_id)
+            .where(w => w.sub_department_id === $this.state.sub_department)
             .any();
           if (_departs) {
             swalMessage({
@@ -129,38 +129,43 @@ const AddDeptUser = ($this, e) => {
             return;
           }
         }
+
         deptDetails.push({
           employee_id: $this.state.hims_d_employee_id,
-          sub_department_id: $this.state.sub_department_id,
+          sub_department_id: $this.state.sub_department,
           category_speciality_id: $this.state.category_speciality_id,
           user_id: $this.state.user_id,
           category_id: $this.state.category_id,
           speciality_id: $this.state.speciality_id,
           services_id: $this.state.services_id,
-          reporting_to_id: $this.state.reporting_to_id,
+          reporting_to_id: $this.state.reporting_to,
           employee_designation_id: $this.state.designation_id,
           from_date: $this.state.from_date,
-          dep_status: "A",
-          hims_d_designation_id: $this.state.hims_d_designation_id
+          dep_status: "A"
         });
 
         debugger;
         $this.setState({
           deptDetails: deptDetails,
-          sub_department_id: null,
+          sub_department: null,
           category_speciality_id: null,
           user_id: null,
           category_id: null,
           speciality_id: null,
           services_id: null,
-          reporting_to_id: null,
+          reporting_to: null,
           designation_id: null,
           from_date: null,
-          hims_d_designation_id: null
+          reporting_to_id: $this.state.reporting_to,
+          sub_department_id: $this.state.sub_department,
+          employee_designation_id: $this.state.designation_id
         });
         $this.props.EmpMasterIOputs.updateEmployeeTabs({
           deptDetails: deptDetails,
-          insertdeptDetails: deptDetails
+          insertdeptDetails: deptDetails,
+          reporting_to_id: $this.state.reporting_to,
+          sub_department_id: $this.state.sub_department,
+          employee_designation_id: $this.state.designation_id
         });
       }
     }
@@ -170,63 +175,78 @@ const AddDeptUser = ($this, e) => {
 // getEmpSpeciality
 
 const updateDeptUser = ($this, row) => {
-  let deptDetails = Enumerable.from($this.state.deptDetails)
-    .where(w => w.sub_department_id !== row.sub_department_id)
-    .toArray();
-  deptDetails.push(row);
-  $this.setState({
-    deptDetails: deptDetails
-  });
-  $this.props.EmpMasterIOputs.updateEmployeeTabs({
-    deptDetails: deptDetails
-  });
-  // let updatedeptDetails = $this.state.updatedeptDetails;
-  // let insertdeptDetails = $this.state.insertdeptDetails;
-  // if (row.hims_d_employee_department_id !== undefined) {
-  //   let Updateobj = {
-  //     hims_d_employee_department_id: row.hims_d_employee_department_id,
-  //     employee_id: row.employee_id,
-  //     services_id: row.services_id,
-  //     sub_department_id: row.sub_department_id,
-  //     category_speciality_id: row.category_speciality_id,
-  //     user_id: row.user_id,
-  //     record_status: "A"
-  //   };
-  //   updatedeptDetails.push(Updateobj);
-  //   extend(deptDetails[row.rowIdx], Updateobj);
-  //   // deptDetails[row.rowIdx] = Updateobj;
-  // } else {
-  //   {
-  //     let Updateobj = {
-  //       employee_id: row.employee_id,
-  //       services_id: row.services_id,
-  //       sub_department_id: row.sub_department_id,
-  //       category_speciality_id: row.category_speciality_id,
-  //       user_id: row.user_id,
-  //       record_status: "A"
-  //     };
-  //     insertdeptDetails.push(Updateobj);
-  //     // deptDetails[row.rowIdx] = Updateobj;
-  //     extend(deptDetails[row.rowIdx], Updateobj);
-  //   }
-  // }
+  // let deptDetails = Enumerable.from($this.state.deptDetails)
+  //   .where(w => w.sub_department_id !== row.sub_department_id)
+  //   .toArray();
+  // deptDetails.push(row);
   // $this.setState({
-  //   deptDetails: deptDetails,
-  //   updatedeptDetails: updatedeptDetails,
-  //   insertdeptDetails: insertdeptDetails
+  //   deptDetails: deptDetails
   // });
   // $this.props.EmpMasterIOputs.updateEmployeeTabs({
-  //   deptDetails: deptDetails,
-  //   updatedeptDetails: updatedeptDetails,
-  //   insertdeptDetails: insertdeptDetails
+  //   deptDetails: deptDetails
   // });
-  // if (context !== undefined) {
-  //   context.updateState({
-  //     deptDetails: deptDetails,
-  //     updatedeptDetails: updatedeptDetails,
-  //     insertdeptDetails: insertdeptDetails
-  //   });
-  // }
+  debugger;
+  let deptDetails = $this.state.deptDetails;
+  let updatedeptDetails = $this.state.updatedeptDetails;
+  let insertdeptDetails = $this.state.insertdeptDetails;
+  if (row.hims_d_employee_department_id !== undefined) {
+    let Updateobj = {
+      hims_d_employee_department_id: row.hims_d_employee_department_id,
+      employee_id: row.employee_id,
+      services_id: row.services_id,
+      sub_department_id: row.sub_department_id,
+      category_speciality_id: row.category_speciality_id,
+      speciality_id: row.speciality_id,
+      category_id: row.category_id,
+      reporting_to_id: row.reporting_to_id,
+      from_date: row.from_date,
+      to_date: row.to_date,
+      employee_designation_id: row.employee_designation_id,
+      user_id: row.user_id,
+      dep_status: row.dep_status,
+      record_status: "A"
+    };
+    updatedeptDetails.push(Updateobj);
+    deptDetails[row.rowIdx] = Updateobj;
+    // deptDetails[row.rowIdx] = Updateobj;
+  } else {
+    {
+      let Updateobj = {
+        employee_id: row.employee_id,
+        services_id: row.services_id,
+        sub_department_id: row.sub_department_id,
+        category_speciality_id: row.category_speciality_id,
+        speciality_id: row.speciality_id,
+        category_id: row.category_id,
+        reporting_to_id: row.reporting_to_id,
+        employee_designation_id: row.employee_designation_id,
+        from_date: row.from_date,
+        to_date: row.to_date,
+        user_id: row.user_id,
+        dep_status: row.dep_status,
+        record_status: "A"
+      };
+      insertdeptDetails.push(Updateobj);
+      deptDetails[row.rowIdx] = Updateobj;
+      // extend(deptDetails[row.rowIdx], Updateobj);
+    }
+  }
+  $this.setState({
+    deptDetails: deptDetails,
+    updatedeptDetails: updatedeptDetails,
+    insertdeptDetails: insertdeptDetails,
+    reporting_to_id: row.reporting_to_id,
+    sub_department_id: row.sub_department_id,
+    employee_designation_id: row.employee_designation_id
+  });
+  $this.props.EmpMasterIOputs.updateEmployeeTabs({
+    deptDetails: deptDetails,
+    updatedeptDetails: updatedeptDetails,
+    insertdeptDetails: insertdeptDetails,
+    reporting_to_id: row.reporting_to_id,
+    sub_department_id: row.sub_department_id,
+    employee_designation_id: row.employee_designation_id
+  });
 };
 
 const deleteDeptUser = ($this, row) => {
@@ -258,9 +278,59 @@ const dateFormater = value => {
 
 const datehandle = ($this, ctrl, e) => {
   $this.setState({
-    [e]: ctrl
+    [e]: moment(ctrl)._d
   });
 };
+
+const getEmployeeDepartments = $this => {
+  debugger;
+  algaehApiCall({
+    uri: "/employee/getEmployeeDepartments",
+    method: "GET",
+    data: { employee_id: $this.state.hims_d_employee_id },
+    onSuccess: response => {
+      if (response.data.success) {
+        let data = response.data.records;
+        if (data.length > 0) {
+          debugger;
+          $this.setState({ deptDetails: data }, () => {
+            $this.props.EmpMasterIOputs.updateEmployeeTabs({
+              deptDetails: $this.state.deptDetails
+            });
+          });
+        }
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+};
+
+const onchangegridcol = ($this, row, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  row[name] = value;
+  row.update();
+  //this.resetState();
+};
+
+const onchangegridcolstatus = ($this, row, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  row[name] = value;
+  if (value === "I") {
+    row["to_date"] = new Date();
+  } else {
+    row["to_date"] = null;
+  }
+  row.update();
+  //this.resetState();
+};
+
 export {
   texthandle,
   AddDeptUser,
@@ -271,5 +341,8 @@ export {
   updateDeptUser,
   colgridtexthandle,
   dateFormater,
-  datehandle
+  datehandle,
+  getEmployeeDepartments,
+  onchangegridcol,
+  onchangegridcolstatus
 };

@@ -337,7 +337,7 @@ class RegistrationPatient extends PureComponent {
       onSuccess: response => {
         if (response.data.success) {
           let data = response.data.records;
-
+          debugger;
           data.patientRegistration.visitDetails = data.visitDetails;
           data.patientRegistration.patient_id =
             data.patientRegistration.hims_d_patient_id;
@@ -365,6 +365,10 @@ class RegistrationPatient extends PureComponent {
             "data:image/png;base64, " + data.patient_Image;
           data.patientRegistration.arabic_name =
             data.patientRegistration.arabic_name || "No Name";
+
+          data.patientRegistration.date_of_birth = moment(
+            data.patientRegistration.date_of_birth
+          )._d;
           $this.setState(data.patientRegistration, () => {
             if (fromAppoinment === true) {
               generateBillDetails(this, this);

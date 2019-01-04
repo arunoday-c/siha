@@ -33,7 +33,10 @@ import {
   updateEmployeeEducation,
   deleteEmployeeEducation,
   addEmployeeEducation,
-  getEmployeeEducation
+  getEmployeeEducation,
+  getEmployeeDepartments,
+  getPayrollComponents,
+  getFamilyIdentification
 } from "../model/employee";
 import httpStatus from "../utils/httpStatus";
 export default ({ config, db }) => {
@@ -605,6 +608,51 @@ export default ({ config, db }) => {
       }
       next();
     }
+  );
+
+  // created by Nowshad
+  api.get(
+    "/getEmployeeDepartments",
+    getEmployeeDepartments,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by Nowshad
+  api.get(
+    "/getPayrollComponents",
+    getPayrollComponents,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by Nowshad
+  api.get(
+    "/getFamilyIdentification",
+    getFamilyIdentification,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
   );
 
   return api;

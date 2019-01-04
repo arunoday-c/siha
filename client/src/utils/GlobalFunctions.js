@@ -2,6 +2,7 @@ import extend from "extend";
 import { swalMessage, algaehApiCall, getCookie } from "../utils/algaehApiCall";
 import crypto from "crypto";
 import Enumerable from "linq";
+import moment from "moment";
 
 export function successfulMessage(options) {
   options.icon = options.icon || "error";
@@ -425,12 +426,20 @@ export function SetBulkState(options) {
 
       if (_name !== null) {
         const _type = _allControls[i].getAttribute("type");
+
         if (_type === "checkbox") {
           _objectCreation[_name] = _allControls[i].checked ? "Y" : "N";
         } else if (_type === "radio") {
           _objectCreation[_name] = _allControls[i].checked
             ? _allControls[i].value
             : "N";
+        } else if (_type === "date") {
+          _objectCreation[_name] = moment(_allControls[i].value).format(
+            "DD/MM/YYYY"
+          );
+          // _dataRole !== null
+          //   ? _allControls[i].getAttribute("referencevalue")
+          //   : moment(_allControls[i].value).format("DD/MM/YYYY");
         } else {
           _objectCreation[_name] =
             _dataRole !== null
@@ -442,6 +451,7 @@ export function SetBulkState(options) {
   }
 
   if (options.state !== undefined) {
+    debugger;
     const _object = { ...options.state.state, ..._objectCreation };
     options.state.setState(_object, () => {
       if (

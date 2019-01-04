@@ -1,4 +1,7 @@
 import Enumerable from "linq";
+// import extend from "extend";
+import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
+import swal from "sweetalert2";
 
 const earntexthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -58,6 +61,7 @@ const AddEarnComponent = ($this, e) => {
   $this.setState(
     {
       earningComponents: earningComponents,
+      insertearnComp: earningComponents,
       earning_id: null,
       earn_amount: null
     },
@@ -85,6 +89,7 @@ const AddDeductionComponent = ($this, e) => {
   $this.setState(
     {
       deductioncomponents: deductioncomponents,
+      insertDeductionComp: deductioncomponents,
       deducation_id: null,
       dedection_amount: null
     },
@@ -112,6 +117,7 @@ const AddContributionComponent = ($this, e) => {
   $this.setState(
     {
       contributioncomponents: contributioncomponents,
+      insertContributeComp: contributioncomponents,
       contribution_id: null,
       contribution_amount: null
     },
@@ -169,6 +175,143 @@ const calculationTotals = $this => {
   });
 };
 
+const deleteEarningComponent = ($this, row) => {
+  swal({
+    title: "Are you sure you want to delete Earning Component?",
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes!",
+    confirmButtonColor: "#44b8bd",
+    cancelButtonColor: "#d33",
+    cancelButtonText: "No"
+  }).then(willDelete => {
+    debugger;
+    if (willDelete.value) {
+      let deleteearnComp = $this.state.deleteearnComp;
+      let insertearnComp = $this.state.insertearnComp;
+      let earningComponents = $this.state.earningComponents;
+
+      if (row.hims_d_employee_earnings_id !== undefined) {
+        for (let x = 0; x < deleteearnComp.length; x++) {
+          if (deleteearnComp[x].earnings_id === row.earnings_id) {
+            deleteearnComp.splice(x, 1);
+          }
+        }
+
+        earningComponents.splice(row.rowIdx, 1);
+      } else {
+        for (let x = 0; x < insertearnComp.length; x++) {
+          if (insertearnComp[x].earnings_id === row.earnings_id) {
+            insertearnComp.splice(x, 1);
+          }
+        }
+
+        earningComponents.splice(row.rowIdx, 1);
+      }
+      $this.setState(
+        {
+          earningComponents: earningComponents,
+          deleteearnComp: deleteearnComp,
+          insertearnComp: insertearnComp
+        },
+        () => {
+          calculationTotals($this);
+        }
+      );
+      $this.props.EmpMasterIOputs.updateEmployeeTabs({
+        earningComponents: earningComponents,
+        deleteearnComp: deleteearnComp,
+        insertearnComp: insertearnComp
+      });
+    } else {
+      swalMessage({
+        title: "Delete request cancelled",
+        type: "error"
+      });
+    }
+  });
+};
+
+const updateEarningComponent = ($this, row) => {
+  let updateearnComp = $this.state.updateearnComp;
+  let insertearnComp = $this.state.insertearnComp;
+  let earningComponents = $this.state.earningComponents;
+
+  if (row.hims_d_employee_earnings_id !== undefined) {
+    let Updateobj = {
+      hims_d_employee_earnings_id: row.hims_d_employee_earnings_id,
+      earnings_id: row.earnings_id,
+      amount: row.amount,
+      allocate: row.allocate,
+      record_status: "A"
+    };
+    updateearnComp.push(Updateobj);
+    earningComponents[row.rowIdx] = Updateobj;
+    // earningComponents[row.rowIdx] = Updateobj;
+  } else {
+    {
+      let Updateobj = {
+        earnings_id: row.earnings_id,
+        amount: row.amount,
+        allocate: row.allocate
+      };
+      insertearnComp[row.rowIdx] = Updateobj;
+      earningComponents[row.rowIdx] = Updateobj;
+    }
+  }
+  $this.setState(
+    {
+      earningComponents: earningComponents,
+      updateearnComp: updateearnComp,
+      insertearnComp: insertearnComp
+    },
+    () => {
+      calculationTotals($this);
+    }
+  );
+  $this.props.EmpMasterIOputs.updateEmployeeTabs({
+    earningComponents: earningComponents,
+    updateearnComp: updateearnComp,
+    insertearnComp: insertearnComp
+  });
+};
+
+const deleteDeductionComponent = ($this, e) => {};
+
+const updateDeductionComponent = ($this, e) => {};
+
+const deleteContibuteComponent = ($this, e) => {};
+
+const updateContibuteComponent = ($this, e) => {};
+
+const getPayrollComponents = $this => {
+  debugger;
+  algaehApiCall({
+    uri: "/employee/getPayrollComponents",
+    method: "GET",
+    data: { employee_id: $this.state.hims_d_employee_id },
+    onSuccess: response => {
+      if (response.data.success) {
+        let data = response.data.records;
+        if (data.length > 0) {
+          debugger;
+          $this.setState({
+            earningComponents: data[0],
+            deductioncomponents: data[1],
+            contributioncomponents: data[2]
+          });
+        }
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+};
+
 export {
   earntexthandle,
   deducttexthandle,
@@ -177,5 +320,12 @@ export {
   AddEarnComponent,
   AddDeductionComponent,
   AddContributionComponent,
-  onchangegridcol
+  onchangegridcol,
+  deleteEarningComponent,
+  updateEarningComponent,
+  deleteDeductionComponent,
+  updateDeductionComponent,
+  deleteContibuteComponent,
+  updateContibuteComponent,
+  getPayrollComponents
 };
