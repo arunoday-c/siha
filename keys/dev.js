@@ -1,4 +1,4 @@
-export default {
+exports.default = {
   // API token key
   SECRETKey: "ALGAEH Technologies PVT Ltd HIMSv1",
   TOKENTIME: 2592000, // 60 * 60 * 30 ,

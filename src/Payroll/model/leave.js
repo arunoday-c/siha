@@ -712,6 +712,40 @@ let getLeaveBalance = (req, res, next) => {
   }
 };
 
+//created by irfan:
+let getLeaveLevels = (req, res, next) => {
+  try {
+    let userPrivilege = req.userIdentity.leave_authorize_privilege;
+
+    let auth_levels = [];
+    switch (userPrivilege) {
+      case "AL1":
+        auth_levels.push({ name: "Level 1", value: 1 });
+        break;
+      case "AL2":
+        auth_levels.push(
+          { name: "Level 2", value: 2 },
+          { name: "Level 1", value: 1 }
+        );
+        break;
+      case "AL3":
+        auth_levels.push(
+          { name: "Level 3", value: 3 },
+          { name: "Level 2", value: 2 },
+          { name: "Level 1", value: 1 }
+        );
+        break;
+    }
+
+    debugLog("auth_levels:", auth_levels);
+    debugLog("user iden:", req.userIdentity);
+    req.records = { auth_levels };
+    next();
+  } catch (e) {
+    next(e);
+  }
+};
+
 //only DATE validation
 // select hims_f_leave_application_id,employee_id,leave_application_code,from_date,to_date from hims_f_leave_application
 // where cancelled='N' and (('2018-12-01'>=from_date and '2018-12-01'<=to_date) or ('2018-12-04'>=from_date and
@@ -720,5 +754,6 @@ module.exports = {
   getEmployeeLeaveData,
   applyEmployeeLeave,
   getEmployeeLeaveHistory,
-  getLeaveBalance
+  getLeaveBalance,
+  getLeaveLevels
 };

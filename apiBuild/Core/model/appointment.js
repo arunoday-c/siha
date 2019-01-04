@@ -1,0 +1,2119 @@
+"use strict";
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _extend = require("extend");
+
+var _extend2 = _interopRequireDefault(_extend);
+
+var _utils = require("../utils");
+
+var _moment = require("moment");
+
+var _moment2 = _interopRequireDefault(_moment);
+
+var _httpStatus = require("../utils/httpStatus");
+
+var _httpStatus2 = _interopRequireDefault(_httpStatus);
+
+var _nodeLinq = require("node-linq");
+
+var _logging = require("../utils/logging");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+//created by irfan: to add appointment_status
+var addAppointmentStatus = function addAppointmentStatus(req, res, next) {
+  try {
+    if (req.db == null) {
+      next(_httpStatus2.default.dataBaseNotInitilizedError());
+    }
+    var db = req.db;
+    var input = (0, _extend2.default)({}, req.body);
+
+    db.getConnection(function (error, connection) {
+      if (error) {
+        next(error);
+      }
+      connection.beginTransaction(function (error) {
+        if (error) {
+          connection.rollback(function () {
+            (0, _utils.releaseDBConnection)(db, connection);
+            next(error);
+          });
+        }
+        connection.query("INSERT INTO `hims_d_appointment_status` (color_code, description, default_status,steps, created_date, created_by, updated_date, updated_by)\
+          VALUE(?,?,?,?,?,?,?,?)", [input.color_code, input.description, input.default_status, input.steps, new Date(), input.created_by, new Date(), input.updated_by], function (error, result) {
+          if (error) {
+            connection.rollback(function () {
+              (0, _utils.releaseDBConnection)(db, connection);
+              next(error);
+            });
+          }
+
+          //update hims_d_appointment_status  set steps=1 where hims_d_appointment_status_id=? and record_status='A';
+          if (input.default_status == "Y") {
+            connection.query("UPDATE `hims_d_appointment_status` SET  default_status='N'   WHERE default_status='Y' and record_status='A' and  hims_d_appointment_status_id <> ?;\
+                ", [result.insertId, result.insertId], function (error, defStatusRsult) {
+              if (error) {
+                connection.rollback(function () {
+                  (0, _utils.releaseDBConnection)(db, connection);
+                  next(error);
+                });
+              }
+
+              connection.commit(function (error) {
+                if (error) {
+                  connection.rollback(function () {
+                    (0, _utils.releaseDBConnection)(db, connection);
+                    next(error);
+                  });
+                }
+                (0, _utils.releaseDBConnection)(db, connection);
+                req.records = result;
+                next();
+              });
+            });
+          } else if (input.default_status == "C") {
+            connection.query("update hims_d_appointment_status set default_status='N' where default_status='C' and record_status='A' and hims_d_appointment_status_id <>? ", [result.insertId], function (error, crtRsult) {
+              if (error) {
+                connection.rollback(function () {
+                  (0, _utils.releaseDBConnection)(db, connection);
+                  next(error);
+                });
+              }
+
+              connection.commit(function (error) {
+                if (error) {
+                  connection.rollback(function () {
+                    (0, _utils.releaseDBConnection)(db, connection);
+                    next(error);
+                  });
+                }
+                (0, _utils.releaseDBConnection)(db, connection);
+                req.records = crtRsult;
+                next();
+              });
+            });
+          } else {
+            connection.commit(function (error) {
+              if (error) {
+                connection.rollback(function () {
+                  (0, _utils.releaseDBConnection)(db, connection);
+                  next(error);
+                });
+              }
+              (0, _utils.releaseDBConnection)(db, connection);
+              req.records = result;
+              next();
+            });
+          }
+        });
+        // req.records = result;
+        // next();
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to add appointment_room
+var addAppointmentRoom = function addAppointmentRoom(req, res, next) {
+  try {
+    if (req.db == null) {
+      next(_httpStatus2.default.dataBaseNotInitilizedError());
+    }
+    var db = req.db;
+    var input = (0, _extend2.default)({}, req.body);
+
+    db.getConnection(function (error, connection) {
+      if (error) {
+        next(error);
+      }
+
+      connection.query("INSERT INTO `hims_d_appointment_room` (description, created_date, created_by, updated_date, updated_by)\
+          VALUE(?,?,?,?,?)", [input.description, new Date(), input.created_by, new Date(), input.updated_by], function (error, result) {
+        (0, _utils.releaseDBConnection)(db, connection);
+        if (error) {
+          next(error);
+        }
+        req.records = result;
+        next();
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to add appointment_clinic
+var addAppointmentClinic = function addAppointmentClinic(req, res, next) {
+  try {
+    if (req.db == null) {
+      next(_httpStatus2.default.dataBaseNotInitilizedError());
+    }
+    var db = req.db;
+    var input = (0, _extend2.default)({}, req.body);
+
+    db.getConnection(function (error, connection) {
+      if (error) {
+        next(error);
+      }
+
+      connection.query("INSERT INTO `hims_d_appointment_clinic` (description, sub_department_id, provider_id, room_id, created_date, created_by, updated_date, updated_by)\
+          VALUE(?,?,?,?,?,?,?,?)", [input.description, input.sub_department_id, input.provider_id, input.room_id, new Date(), input.created_by, new Date(), input.updated_by], function (error, result) {
+        (0, _utils.releaseDBConnection)(db, connection);
+        if (error) {
+          next(error);
+        }
+        req.records = result;
+        next();
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to get Appointment Status
+var getAppointmentStatus = function getAppointmentStatus(req, res, next) {
+  try {
+    if (req.db == null) {
+      next(_httpStatus2.default.dataBaseNotInitilizedError());
+    }
+    var db = req.db;
+    db.getConnection(function (error, connection) {
+      connection.query("select hims_d_appointment_status_id, color_code, description, default_status,steps,authorized FROM hims_d_appointment_status where record_status='A'  order by steps ", function (error, result) {
+        (0, _utils.releaseDBConnection)(db, connection);
+        if (error) {
+          next(error);
+        }
+        req.records = result;
+        next();
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to get Appointment Room
+var getAppointmentRoom = function getAppointmentRoom(req, res, next) {
+  var selectWhere = {
+    hims_d_appointment_room_id: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(_httpStatus2.default.dataBaseNotInitilizedError());
+    }
+    var db = req.db;
+
+    var where = (0, _utils.whereCondition)((0, _extend2.default)(selectWhere, req.query));
+
+    db.getConnection(function (error, connection) {
+      connection.query("select hims_d_appointment_room_id, description, room_active FROM hims_d_appointment_room where record_status='A' AND" + where.condition + " order by hims_d_appointment_room_id desc", where.values, function (error, result) {
+        (0, _utils.releaseDBConnection)(db, connection);
+        if (error) {
+          next(error);
+        }
+        req.records = result;
+        next();
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to get Appointment Clinic
+var getAppointmentClinic = function getAppointmentClinic(req, res, next) {
+  var selectWhere = {
+    hims_d_appointment_clinic_id: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(_httpStatus2.default.dataBaseNotInitilizedError());
+    }
+    var db = req.db;
+
+    var where = (0, _utils.whereCondition)((0, _extend2.default)(selectWhere, req.query));
+
+    db.getConnection(function (error, connection) {
+      connection.query("select hims_d_appointment_clinic_id,description, sub_department_id, provider_id, room_id FROM hims_d_appointment_clinic where record_status='A' AND" + where.condition + " order by hims_d_appointment_clinic_id desc", where.values, function (error, result) {
+        (0, _utils.releaseDBConnection)(db, connection);
+        if (error) {
+          next(error);
+        }
+        req.records = result;
+        next();
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to update Appointment Status
+var updateAppointmentStatus = function updateAppointmentStatus(req, res, next) {
+  try {
+    if (req.db == null) {
+      next(_httpStatus2.default.dataBaseNotInitilizedError());
+    }
+    var db = req.db;
+    var input = (0, _extend2.default)({}, req.body);
+    db.getConnection(function (error, connection) {
+      if (error) {
+        next(error);
+      }
+
+      connection.beginTransaction(function (error) {
+        if (error) {
+          connection.rollback(function () {
+            (0, _utils.releaseDBConnection)(db, connection);
+            next(error);
+          });
+        }
+        connection.query("UPDATE `hims_d_appointment_status` SET color_code=?, description=?, default_status=?,steps=?,\
+           updated_date=?, updated_by=? ,`record_status`=? WHERE  `record_status`='A' and `hims_d_appointment_status_id`=?;", [input.color_code, input.description, input.default_status, input.steps, new Date(), input.updated_by, input.record_status, input.hims_d_appointment_status_id], function (error, result) {
+          if (error) {
+            connection.rollback(function () {
+              (0, _utils.releaseDBConnection)(db, connection);
+              next(error);
+            });
+          }
+
+          if (input.default_status == "Y" && input.record_status == "A") {
+            connection.query("UPDATE `hims_d_appointment_status` SET  default_status='N'\
+            WHERE  record_status='A' and default_status!='C' and  hims_d_appointment_status_id <> ?; \
+            update hims_d_appointment_status  set steps=null where hims_d_appointment_status_id>0;\
+            update hims_d_appointment_status  set steps=1 where hims_d_appointment_status_id=? and record_status='A';", [input.hims_d_appointment_status_id, input.hims_d_appointment_status_id], function (error, defStatusRsult) {
+              if (error) {
+                connection.rollback(function () {
+                  (0, _utils.releaseDBConnection)(db, connection);
+                  next(error);
+                });
+              }
+
+              connection.commit(function (error) {
+                if (error) {
+                  connection.rollback(function () {
+                    (0, _utils.releaseDBConnection)(db, connection);
+                    next(error);
+                  });
+                }
+
+                req.records = result;
+                next();
+              });
+            });
+          } else if (input.default_status == "C" && input.record_status == "A") {
+            connection.query("update hims_d_appointment_status set default_status='N' where default_status='C' and record_status='A' and hims_d_appointment_status_id <>? ", [input.hims_d_appointment_status_id], function (error, crtRsult) {
+              if (error) {
+                connection.rollback(function () {
+                  (0, _utils.releaseDBConnection)(db, connection);
+                  next(error);
+                });
+              }
+
+              connection.commit(function (error) {
+                if (error) {
+                  connection.rollback(function () {
+                    (0, _utils.releaseDBConnection)(db, connection);
+                    next(error);
+                  });
+                }
+
+                req.records = crtRsult;
+                next();
+              });
+            });
+          } else if (input.record_status == "I") {
+            connection.query("update hims_d_appointment_status  set steps=null where hims_d_appointment_status_id=?; ", [input.hims_d_appointment_status_id], function (error, deleteRsult) {
+              if (error) {
+                connection.rollback(function () {
+                  (0, _utils.releaseDBConnection)(db, connection);
+                  next(error);
+                });
+              }
+
+              connection.commit(function (error) {
+                if (error) {
+                  connection.rollback(function () {
+                    (0, _utils.releaseDBConnection)(db, connection);
+                    next(error);
+                  });
+                }
+
+                req.records = deleteRsult;
+                next();
+              });
+            });
+          } else {
+            connection.commit(function (error) {
+              if (error) {
+                connection.rollback(function () {
+                  (0, _utils.releaseDBConnection)(db, connection);
+                  next(error);
+                });
+              }
+              (0, _utils.releaseDBConnection)(db, connection);
+              req.records = result;
+              next();
+            });
+          }
+        });
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+//created by irfan: to apointment status Authorized
+var appointmentStatusAuthorized = function appointmentStatusAuthorized(req, res, next) {
+  try {
+    if (req.db == null) {
+      next(_httpStatus2.default.dataBaseNotInitilizedError());
+    }
+    var db = req.db;
+    var input = (0, _extend2.default)({}, req.body);
+    db.getConnection(function (error, connection) {
+      if (error) {
+        next(error);
+      }
+
+      connection.query("update hims_d_appointment_status  set authorized='Y',updated_date=?, updated_by=? where record_status='A' and hims_d_appointment_status_id>0 ;", [new Date(), input.updated_by], function (error, result) {
+        (0, _utils.releaseDBConnection)(db, connection);
+        if (error) {
+          next(error);
+        }
+        req.records = result;
+        next();
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to update Appointment Room
+var updateAppointmentRoom = function updateAppointmentRoom(req, res, next) {
+  try {
+    if (req.db == null) {
+      next(_httpStatus2.default.dataBaseNotInitilizedError());
+    }
+    var db = req.db;
+    var input = (0, _extend2.default)({}, req.body);
+    db.getConnection(function (error, connection) {
+      if (error) {
+        next(error);
+      }
+
+      connection.query("UPDATE `hims_d_appointment_room` SET  description=?,room_active=?,\
+           updated_date=?, updated_by=?  WHERE  `record_status`='A' and `hims_d_appointment_room_id`=?;", [input.description, input.room_active, new Date(), input.updated_by, input.hims_d_appointment_room_id], function (error, result) {
+        (0, _utils.releaseDBConnection)(db, connection);
+        if (error) {
+          next(error);
+        }
+        req.records = result;
+        next();
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to delete Appointment Room
+var deleteAppointmentRoom = function deleteAppointmentRoom(req, res, next) {
+  try {
+    if (req.db == null) {
+      next(_httpStatus2.default.dataBaseNotInitilizedError());
+    }
+
+    (0, _logging.debugLog)("delete rom");
+    (0, _utils.deleteRecord)({
+      db: req.db,
+      tableName: "hims_d_appointment_room",
+      id: req.body.hims_d_appointment_room_id,
+      query: "UPDATE hims_d_appointment_room SET  record_status='I' WHERE hims_d_appointment_room_id=?",
+      values: [req.body.hims_d_appointment_room_id]
+    }, function (result) {
+      req.records = result;
+      next();
+    }, function (error) {
+      next(error);
+    }, true);
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to  update Appointment Clinic
+var updateAppointmentClinic = function updateAppointmentClinic(req, res, next) {
+  try {
+    if (req.db == null) {
+      next(_httpStatus2.default.dataBaseNotInitilizedError());
+    }
+    var db = req.db;
+    var input = (0, _extend2.default)({}, req.body);
+    db.getConnection(function (error, connection) {
+      if (error) {
+        next(error);
+      }
+      connection.query("UPDATE `hims_d_appointment_clinic` SET  description=?,sub_department_id=?, provider_id=?, room_id=?,\
+           updated_date=?, updated_by=? ,`record_status`=? WHERE  `record_status`='A' and `hims_d_appointment_clinic_id`=?;", [input.description, input.sub_department_id, input.provider_id, input.room_id, new Date(), input.updated_by, input.record_status, input.hims_d_appointment_clinic_id], function (error, result) {
+        (0, _utils.releaseDBConnection)(db, connection);
+        if (error) {
+          next(error);
+        }
+        req.records = result;
+        next();
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to create new schedule and add doctors in this schedule
+var BACKUPaddDoctorsSchedule = function BACKUPaddDoctorsSchedule(req, res, next) {
+  try {
+    if (req.db == null) {
+      next(_httpStatus2.default.dataBaseNotInitilizedError());
+    }
+    var db = req.db;
+    var input = (0, _extend2.default)({}, req.body);
+    (0, _logging.debugLog)("input:", input);
+    (0, _logging.debugLog)("from_Date:", new Date(input.from_date));
+    db.getConnection(function (error, connection) {
+      if (error) {
+        next(error);
+      }
+      connection.beginTransaction(function (error) {
+        if (error) {
+          connection.rollback(function () {
+            (0, _utils.releaseDBConnection)(db, connection);
+            next(error);
+          });
+        }
+        //creating schedule
+        connection.query("INSERT INTO `hims_d_appointment_schedule_header` (sub_dept_id,schedule_description,`month`,`year`,from_date,to_date,\
+          from_work_hr,to_work_hr,work_break1,from_break_hr1,to_break_hr1,work_break2,from_break_hr2,to_break_hr2,monday,tuesday,wednesday,\
+          thursday,friday,saturday,sunday,created_by,created_date,updated_by,updated_date)\
+          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [input.sub_dept_id, input.schedule_description, input.month, input.year, input.from_date, input.to_date, input.from_work_hr, input.to_work_hr, input.work_break1, input.from_break_hr1, input.to_break_hr1, input.work_break2, input.from_break_hr2, input.to_break_hr2, input.monday, input.tuesday, input.wednesday, input.thursday, input.friday, input.saturday, input.sunday, req.body.created_by, new Date(), req.body.updated_by, new Date()], function (error, result) {
+          if (error) {
+            connection.rollback(function () {
+              (0, _utils.releaseDBConnection)(db, connection);
+              next(error);
+            });
+          }
+
+          var working_days = [];
+
+          var inputDays = [req.body.sunday, req.body.monday, req.body.tuesday, req.body.wednesday, req.body.thursday, req.body.friday, req.body.saturday];
+
+          for (var d = 0; d < 7; d++) {
+            if (inputDays[d] == "Y") {
+              working_days.push(d);
+            }
+          }
+
+          var daylist = getDaysArray(new Date(input.from_date), new Date(input.to_date), working_days);
+          daylist.map(function (v) {
+            return v.toLocaleString();
+          });
+          //.slice(0, 10)).join("");
+
+          (0, _logging.debugLog)("daylist:", daylist.length);
+          if (input.schedule_detail.length != 0) {
+            if (result.insertId != null) {
+              for (var doc = 0; doc < input.schedule_detail.length; doc++) {
+                var doctorSchedule = [];
+
+                for (var i = 0; i < daylist.length; i++) {
+                  doctorSchedule.push(_extends({}, input.schedule_detail[doc], { schedule_date: daylist[i] }));
+                }
+                // adding doctors to created schedule
+                var insurtColumns = ["provider_id", "clinic_id", "slot", "schedule_date", "created_by", "updated_by"];
+
+                connection.query("INSERT INTO hims_d_appointment_schedule_detail(" + insurtColumns.join(",") + ",`appointment_schedule_header_id`,created_date,updated_date) VALUES ?", [(0, _utils.jsonArrayToObject)({
+                  sampleInputObject: insurtColumns,
+                  arrayObj: doctorSchedule,
+                  newFieldToInsert: [result.insertId, new Date(), new Date()],
+                  req: req
+                })], function (error, schedule_detailResult) {
+                  if (error) {
+                    connection.rollback(function () {
+                      (0, _utils.releaseDBConnection)(db, connection);
+                      next(error);
+                    });
+                  }
+
+                  connection.commit(function (error) {
+                    if (error) {
+                      connection.rollback(function () {
+                        (0, _utils.releaseDBConnection)(db, connection);
+                        next(error);
+                      });
+                    }
+                    (0, _utils.releaseDBConnection)(db, connection);
+                    req.records = schedule_detailResult;
+                    next();
+                  });
+                });
+              }
+            }
+          } else {
+            (0, _utils.releaseDBConnection)(db, connection);
+            req.records = { message: "please select doctors" };
+            next();
+          }
+        });
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+//created by irfan: to create new schedule and add doctors in this schedule
+var addDoctorsSchedule = function addDoctorsSchedule(req, res, next) {
+  try {
+    if (req.db == null) {
+      next(_httpStatus2.default.dataBaseNotInitilizedError());
+    }
+    var db = req.db;
+    var input = (0, _extend2.default)({}, req.body);
+    (0, _logging.debugLog)("input:", input);
+    (0, _logging.debugLog)("from_Date:", new Date(input.from_date));
+    db.getConnection(function (error, connection) {
+      if (error) {
+        next(error);
+      }
+      connection.beginTransaction(function (error) {
+        if (error) {
+          connection.rollback(function () {
+            (0, _utils.releaseDBConnection)(db, connection);
+            next(error);
+          });
+        }
+        //creating schedule
+        connection.query("INSERT INTO `hims_d_appointment_schedule_header` (sub_dept_id,schedule_description,`month`,`year`,from_date,to_date,\
+          from_work_hr,to_work_hr,work_break1,from_break_hr1,to_break_hr1,work_break2,from_break_hr2,to_break_hr2,monday,tuesday,wednesday,\
+          thursday,friday,saturday,sunday,created_by,created_date,updated_by,updated_date)\
+          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [input.sub_dept_id, input.schedule_description, input.month, input.year, input.from_date, input.to_date, input.from_work_hr, input.to_work_hr, input.work_break1, input.from_break_hr1, input.to_break_hr1, input.work_break2, input.from_break_hr2, input.to_break_hr2, input.monday, input.tuesday, input.wednesday, input.thursday, input.friday, input.saturday, input.sunday, req.body.created_by, new Date(), req.body.updated_by, new Date()], function (error, result) {
+          if (error) {
+            connection.rollback(function () {
+              (0, _utils.releaseDBConnection)(db, connection);
+              next(error);
+            });
+          }
+
+          var working_days = [];
+
+          var inputDays = [req.body.sunday, req.body.monday, req.body.tuesday, req.body.wednesday, req.body.thursday, req.body.friday, req.body.saturday];
+
+          for (var d = 0; d < 7; d++) {
+            if (inputDays[d] == "Y") {
+              working_days.push(d);
+            }
+          }
+          var nightShift = "";
+
+          if (input.from_work_hr > input.to_work_hr) {
+            nightShift = 1;
+
+            (0, _logging.debugLog)("nightShift:", nightShift);
+          }
+
+          var newDateList = getDaysArray(new Date(input.from_date), new Date(input.to_date), working_days, nightShift);
+          newDateList.map(function (v) {
+            return v.toLocaleString();
+          });
+          //.slice(0, 10)).join("");
+
+          (0, _logging.debugLog)("newDateList:", newDateList.length);
+
+          // adding doctors to created schedule
+          if (input.schedule_detail.length != 0) {
+            if (result.insertId != null) {
+              var _loop = function _loop(doc) {
+                var doctorSchedule = [];
+
+                for (var i = 0; i < newDateList.length; i++) {
+                  doctorSchedule.push(_extends({}, input.schedule_detail[doc], { schedule_date: newDateList[i] }));
+                }
+
+                //get list of dates which are already scheduled for this doctor
+                connection.query("select hims_d_appointment_schedule_detail_id,appointment_schedule_header_id,schedule_date from hims_d_appointment_schedule_detail  where provider_id=? and schedule_date>?;", [input.schedule_detail[doc].provider_id, new Date()], function (error, occupiedDoctorDates) {
+                  if (error) {
+                    connection.rollback(function () {
+                      (0, _utils.releaseDBConnection)(db, connection);
+                      next(error);
+                    });
+                  }
+
+                  var OccupiedDoctorDatesList = new _nodeLinq.LINQ(occupiedDoctorDates).Select(function (s) {
+                    return s.schedule_date;
+                  }).ToArray();
+
+                  var clashingDate = [];
+                  new _nodeLinq.LINQ(newDateList).Select(function (s) {
+                    var index = OccupiedDoctorDatesList.indexOf((0, _moment2.default)(s).format("YYYY-MM-DD"));
+                    if (index > -1) {
+                      clashingDate.push(OccupiedDoctorDatesList[index]);
+                    }
+                  });
+
+                  (0, _logging.debugLog)("clashingDate: ", clashingDate);
+
+                  //if date clashes check for time else add
+                  if (clashingDate.length > 0) {
+                    (0, _logging.debugLog)("functionality after clash");
+                    var appointment_schedule_header_idS = new _nodeLinq.LINQ(occupiedDoctorDates).Where(function (w) {
+                      return w.schedule_date == clashingDate[0];
+                    }).Select(function (s) {
+                      return s.appointment_schedule_header_id;
+                    }).ToArray();
+                    //obtain existing schedule time
+
+                    (0, _logging.debugLog)("appointment_schedule_header_idS: ", appointment_schedule_header_idS);
+
+                    // SELECT  hims_d_appointment_schedule_header_id,from_work_hr,to_work_hr from hims_d_appointment_schedule_header where ((? BETWEEN time(from_work_hr) AND time(to_work_hr))\
+                    //    or  (? BETWEEN time(from_work_hr) AND time(to_work_hr)))\
+                    //   and hims_d_appointment_schedule_header_id=?
+                    // SELECT  hims_d_appointment_schedule_header_id,from_work_hr,to_work_hr from hims_d_appointment_schedule_header where  ((time(from_work_hr) BETWEEN time(?) AND time(?))\
+                    //   or  (to_work_hr BETWEEN time(?) AND time(?))) and hims_d_appointment_schedule_header_id=?
+                    for (var j = 0; j < appointment_schedule_header_idS.length; j++) {
+                      connection.query("SELECT  hims_d_appointment_schedule_header_id,from_work_hr,to_work_hr from hims_d_appointment_schedule_header where\
+                            ((time(from_work_hr)<=?   AND time(to_work_hr)>?) or (time(from_work_hr)<=?   AND time(to_work_hr)>?))  and hims_d_appointment_schedule_header_id=?;\
+                            SELECT  hims_d_appointment_schedule_header_id,from_work_hr,to_work_hr from hims_d_appointment_schedule_header\
+                            where ((time(from_work_hr) >=? AND   time(from_work_hr) <?) or \
+                            (time(to_work_hr) >=? AND   time(to_work_hr) <?))\
+                             and hims_d_appointment_schedule_header_id=?;", [input.from_work_hr, input.from_work_hr, input.to_work_hr, input.to_work_hr, appointment_schedule_header_idS[j], input.from_work_hr, input.to_work_hr, input.from_work_hr, input.to_work_hr, appointment_schedule_header_idS[j]], function (error, timeChecking) {
+                        if (error) {
+                          connection.rollback(function () {
+                            (0, _utils.releaseDBConnection)(db, connection);
+                            next(error);
+                          });
+                        }
+
+                        if (timeChecking[0].length > 0 || timeChecking[1].length > 0) {
+                          //reject adding to schedule
+                          if (timeChecking[0].length > 0) {
+                            (0, _logging.debugLog)("timeChecking inside:", timeChecking[0]);
+
+                            connection.rollback(function () {
+                              (0, _utils.releaseDBConnection)(db, connection);
+                            });
+                            req.records = {
+                              message: "schedule already exist on " + clashingDate[0] + " for doctor_id:" + input.schedule_detail[doc].provider_id + " from " + timeChecking[0][0].from_work_hr + " to \n                                 " + timeChecking[0][0].to_work_hr,
+                              schedule_exist: true
+                            };
+                            next();
+                          } else {
+                            if (timeChecking[1].length > 0) {
+                              (0, _logging.debugLog)("timeChecking outside ", timeChecking[1]);
+
+                              connection.rollback(function () {
+                                (0, _utils.releaseDBConnection)(db, connection);
+                              });
+                              req.records = {
+                                message: "schedule already exist on " + clashingDate[0] + " for doctor_id:" + input.schedule_detail[doc].provider_id + " from " + timeChecking[1][0].from_work_hr + " to \n                                   " + timeChecking[1][0].to_work_hr,
+                                schedule_exist: true
+                              };
+                              next();
+                            }
+                          }
+                        } else {
+                          //adding records for single doctor at one time
+                          var insurtColumns = ["provider_id", "clinic_id", "slot", "schedule_date", "created_by", "updated_by"];
+
+                          connection.query("INSERT INTO hims_d_appointment_schedule_detail(" + insurtColumns.join(",") + ",`appointment_schedule_header_id`,created_date,updated_date) VALUES ?", [(0, _utils.jsonArrayToObject)({
+                            sampleInputObject: insurtColumns,
+                            arrayObj: doctorSchedule,
+                            newFieldToInsert: [result.insertId, new Date(), new Date()],
+                            req: req
+                          })], function (error, schedule_detailResult) {
+                            if (error) {
+                              connection.rollback(function () {
+                                (0, _utils.releaseDBConnection)(db, connection);
+                                next(error);
+                              });
+                            }
+                            if (doc == input.schedule_detail.length - 1) {
+                              connection.commit(function (error) {
+                                if (error) {
+                                  connection.rollback(function () {
+                                    (0, _utils.releaseDBConnection)(db, connection);
+                                    next(error);
+                                  });
+                                }
+                                (0, _utils.releaseDBConnection)(db, connection);
+                                req.records = schedule_detailResult;
+                                next();
+                              });
+                            }
+                          });
+                        }
+                      });
+                    }
+                  }
+
+                  //if no clashing dates
+                  else {
+                      //adding records for single doctor at one time
+                      var insurtColumns = ["provider_id", "clinic_id", "slot", "schedule_date", "created_by", "updated_by"];
+
+                      connection.query("INSERT INTO hims_d_appointment_schedule_detail(" + insurtColumns.join(",") + ",`appointment_schedule_header_id`,created_date,updated_date) VALUES ?", [(0, _utils.jsonArrayToObject)({
+                        sampleInputObject: insurtColumns,
+                        arrayObj: doctorSchedule,
+                        newFieldToInsert: [result.insertId, new Date(), new Date()],
+                        req: req
+                      })], function (error, schedule_detailResult) {
+                        if (error) {
+                          connection.rollback(function () {
+                            (0, _utils.releaseDBConnection)(db, connection);
+                            next(error);
+                          });
+                        }
+                        if (doc == input.schedule_detail.length - 1) {
+                          connection.commit(function (error) {
+                            if (error) {
+                              connection.rollback(function () {
+                                (0, _utils.releaseDBConnection)(db, connection);
+                                next(error);
+                              });
+                            }
+                            (0, _utils.releaseDBConnection)(db, connection);
+                            req.records = schedule_detailResult;
+                            next();
+                          });
+                        }
+                      });
+                    }
+                });
+              };
+
+              //foreach doctor perfom below functionality
+              for (var doc = 0; doc < input.schedule_detail.length; doc++) {
+                _loop(doc);
+              }
+            }
+          } else {
+            req.records = { message: "please select doctors" };
+            connection.rollback(function () {
+              (0, _utils.releaseDBConnection)(db, connection);
+            });
+            next();
+          }
+        });
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//[0,1,2,3,4,5,6]
+function getDaysArray(start, end, days, nightShift) {
+  for (var arr = [], dt = start; dt <= end; dt.setDate(dt.getDate() + 1)) {
+    var dat = new Date(dt);
+    var day = new Date(dat).getDay();
+    if (nightShift == 1) {
+      if (days.indexOf(day) > -1) {
+        arr.push(dat);
+        (0, _logging.debugLog)("dat:", dat);
+
+        dat.setDate(dat.getDate() + 1);
+        arr.push(dat);
+        (0, _logging.debugLog)("dat:", dat);
+      }
+    } else {
+      if (days.indexOf(day) > -1) {
+        arr.push(dat);
+      }
+    }
+  }
+  (0, _logging.debugLog)("newDatesList:", arr);
+  return arr;
+}
+
+//[0,1,2,3,4,5,6]
+function BackupgetDaysArray(start, end, days) {
+  for (var arr = [], dt = start; dt <= end; dt.setDate(dt.getDate() + 1)) {
+    var dat = new Date(dt);
+    var day = new Date(dat).getDay();
+
+    if (days.indexOf(day) > -1) {
+      arr.push(dat);
+    }
+  }
+  (0, _logging.debugLog)("dates:", arr);
+  return arr;
+}
+
+//created by irfan: to add appointment leave
+var addLeaveOrModifySchedule = function addLeaveOrModifySchedule(req, res, next) {
+  try {
+    if (req.db == null) {
+      next(_httpStatus2.default.dataBaseNotInitilizedError());
+    }
+    var db = req.db;
+    var input = (0, _extend2.default)({}, req.body);
+
+    db.getConnection(function (error, connection) {
+      if (error) {
+        next(error);
+      }
+
+      connection.query("INSERT INTO `hims_d_appointment_schedule_leave` ( provider_id, sub_dept_id, clinic_id, to_date,\
+           from_time, to_time, modified, created_date, created_by, updated_date, updated_by)\
+          VALUE(?,?,?,?,?,?,?,?,?,?,?)", [input.provider_id, input.sub_dept_id, input.clinic_id, input.to_date, input.from_time, input.to_time, input.modified, new Date(), input.created_by, new Date(), input.updated_by], function (error, result) {
+        (0, _utils.releaseDBConnection)(db, connection);
+        if (error) {
+          next(error);
+        }
+        req.records = result;
+        next();
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to get doctors Schedule list
+var getDoctorsScheduledList = function getDoctorsScheduledList(req, res, next) {
+  var selectWhere = {
+    sub_dept_id: "ALL",
+    month: "ALL",
+    year: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(_httpStatus2.default.dataBaseNotInitilizedError());
+    }
+    var db = req.db;
+    var outputArray = [];
+    var selectDoctor = "";
+    if (req.query.provider_id != "null" && req.query.provider_id != null) {
+      selectDoctor = "and ASD.provider_id=" + req.query.provider_id;
+    }
+    delete req.query.provider_id;
+
+    var where = (0, _utils.whereCondition)((0, _extend2.default)(selectWhere, req.query));
+
+    db.getConnection(function (error, connection) {
+      connection.query("select hims_d_appointment_schedule_header_id, sub_dept_id, schedule_status, schedule_description, month, year,from_date,to_date, from_work_hr, to_work_hr, work_break1, from_break_hr1, to_break_hr1, work_break2, from_break_hr2,\
+         to_break_hr2, monday, tuesday, wednesday, thursday, friday, saturday, sunday from hims_d_appointment_schedule_header where record_status='A' AND " + where.condition, where.values, function (error, result) {
+        if (error) {
+          (0, _utils.releaseDBConnection)(db, connection);
+          next(error);
+        }
+        var schedule_header_id_all = new _nodeLinq.LINQ(result).Where(function (w) {
+          return w.hims_d_appointment_schedule_header_id != null;
+        }).Select(function (s) {
+          return s.hims_d_appointment_schedule_header_id;
+        }).ToArray();
+
+        if (result.length != 0) {
+          var _loop2 = function _loop2(i) {
+            connection.query("SELECT hims_d_appointment_schedule_detail_id,appointment_schedule_header_id,SH.schedule_description ,\
+                SH.schedule_status deprt_schedule_status,ASD.provider_id,E.full_name,\
+                clinic_id,AC.description as clinic_description,slot,schedule_date,from_work_hr,\
+                 to_work_hr,work_break1,work_break2,\
+                 from_break_hr1,to_break_hr1,from_break_hr2,to_break_hr2  ,ASD.schedule_status doctor_schedule_status\
+                 from hims_d_appointment_schedule_detail ASD ,hims_d_employee E, hims_d_appointment_clinic AC,hims_d_appointment_schedule_header SH\
+                  where ASD.record_status='A' and E.record_status='A' and AC.record_status='A'and SH.record_status='A' and ASD.provider_id=E.hims_d_employee_id\
+                  and ASD.clinic_id=AC.hims_d_appointment_clinic_id and ASD.appointment_schedule_header_id=SH.hims_d_appointment_schedule_header_id and\
+                  appointment_schedule_header_id in (" + schedule_header_id_all + ")" + selectDoctor + " group by  provider_id;", function (error, results) {
+              if (error) {
+                (0, _utils.releaseDBConnection)(db, connection);
+                next(error);
+              }
+
+              result[i]["doctorsList"] = results;
+              outputArray.push(result[i]);
+              if (i == result.length - 1) {
+                req.records = outputArray;
+                (0, _utils.releaseDBConnection)(db, connection);
+                next();
+              }
+            });
+          };
+
+          for (var i = 0; i < result.length; i++) {
+            _loop2(i);
+          }
+        } else {
+          (0, _utils.releaseDBConnection)(db, connection);
+          req.records = result;
+          next();
+        }
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to get Doctor Schedule Date Wise
+var getDoctorScheduleDateWise = function getDoctorScheduleDateWise(req, res, next) {
+  var selectWhere = {
+    sub_dept_id: "ALL",
+    schedule_date: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(_httpStatus2.default.dataBaseNotInitilizedError());
+    }
+    var db = req.db;
+    var selectDoctor = "";
+    // let provider_id = "";
+    if (req.query.provider_id != "null" && req.query.provider_id != null) {
+      selectDoctor = "ASD.provider_id=" + req.query.provider_id + " and ";
+      //provider_id = req.query.provider_id;
+    }
+    delete req.query.provider_id;
+
+    var where = (0, _utils.whereCondition)((0, _extend2.default)(selectWhere, req.query));
+
+    (0, _logging.debugLog)("where:", where);
+    db.getConnection(function (error, connection) {
+      connection.query("select hims_d_appointment_schedule_header_id, sub_dept_id,SD.sub_department_name, SH.schedule_status as schedule_status, schedule_description, month, year,\
+        from_date,to_date,from_work_hr, to_work_hr, work_break1, from_break_hr1, to_break_hr1, work_break2, from_break_hr2,\
+        to_break_hr2, monday, tuesday, wednesday, thursday, friday, saturday, sunday,\
+         hims_d_appointment_schedule_detail_id, ASD.provider_id,E.full_name as doctor_name,clinic_id,C.description as clinic_name,R.description as  room_name,\
+         ASD.schedule_status as todays_schedule_status, slot,schedule_date, modified \
+         from hims_d_appointment_schedule_header SH, hims_d_appointment_schedule_detail ASD,hims_d_employee E ,\
+         hims_d_appointment_clinic C,hims_d_appointment_room R,hims_d_sub_department SD where \
+         SH.record_status='A' and E.record_status='A' and C.record_status='A' and  SD.record_status='A'\
+     and ASD.record_status='A' and R.record_status='A' and ASD.provider_id=E.hims_d_employee_id and \
+         SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id \
+         and ASD.clinic_id=C.hims_d_appointment_clinic_id and C.room_id=R.hims_d_appointment_room_id \
+          and sub_dept_id= SD.hims_d_sub_department_id  and " + selectDoctor + "" + where.condition, where.values, function (error, result) {
+        if (error) {
+          (0, _utils.releaseDBConnection)(db, connection);
+          next(error);
+        }
+
+        if (result.length > 0) {
+          new Promise(function (resolve, reject) {
+            try {
+              var _loop3 = function _loop3(j) {
+                if (result[j]["modified"] == "M") {
+                  connection.query("select hims_d_appointment_schedule_modify_id, appointment_schedule_detail_id, ASM.to_date as schedule_date, ASM.slot, ASM.from_work_hr,\
+                ASM.to_work_hr, ASM.work_break1, ASM.from_break_hr1,ASM.to_break_hr1, ASM.work_break2, ASM.from_break_hr2, ASM.to_break_hr2  \
+                hims_d_appointment_schedule_header_id, sub_dept_id,SD.sub_department_name, SH.schedule_status, schedule_description, month, year,  \
+               monday, tuesday, wednesday, thursday, friday, saturday, sunday, ASD.provider_id,E.full_name as doctor_name,clinic_id,C.description as clinic_name,R.description as  room_name,\
+                ASD.schedule_status as todays_schedule_status, modified\
+               from hims_d_appointment_schedule_header SH,hims_d_appointment_schedule_modify ASM , hims_d_appointment_schedule_detail ASD,hims_d_employee E, hims_d_appointment_clinic C,hims_d_appointment_room R,\
+               hims_d_sub_department SD  where SH.record_status='A' and E.record_status='A' \
+               and ASD.record_status='A' and C.record_status='A' and SD.record_status='A' and R.record_status='A'and ASD.provider_id=E.hims_d_employee_id and  SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id  \
+               and ASM.appointment_schedule_detail_id=ASD.hims_d_appointment_schedule_detail_id and ASM.record_status='A'\
+               and ASD.clinic_id=C.hims_d_appointment_clinic_id and C.room_id=R.hims_d_appointment_room_id and C.sub_department_id=SD.hims_d_sub_department_id and appointment_schedule_detail_id=?", [result[j]["hims_d_appointment_schedule_detail_id"]], function (error, modifyResult) {
+                    if (error) {
+                      (0, _utils.releaseDBConnection)(db, connection);
+                      next(error);
+                    }
+
+                    result[j] = modifyResult[0];
+                  });
+                }
+                if (j == result.length - 1) {
+                  resolve({});
+                }
+              };
+
+              for (var j = 0; j < result.length; j++) {
+                _loop3(j);
+              }
+            } catch (e) {
+              reject(e);
+            }
+          }).then(function (modifyRes) {
+            var outputArray = [];
+            if (result.length > 0) {
+              var _loop4 = function _loop4(i) {
+                connection.query("select hims_f_patient_appointment_id, patient_id, title_id, patient_code, provider_id, sub_department_id,number_of_slot, appointment_date, appointment_from_time,\
+    appointment_to_time, appointment_status_id, patient_name, arabic_name, date_of_birth, age, contact_number, email, send_to_provider,\
+    gender, confirmed, confirmed_by,comfirmed_date, cancelled, cancelled_by, cancelled_date, cancel_reason,\
+    appointment_remarks, visit_created,is_stand_by  from hims_f_patient_appointment where record_status='A' and   cancelled<>'Y' and sub_department_id=?\
+    and appointment_date=? and provider_id=? ", [result[i].sub_dept_id, result[i].schedule_date, result[i].provider_id], function (error, appResult) {
+                  if (error) {
+                    (0, _utils.releaseDBConnection)(db, connection);
+                    next(error);
+                  }
+                  var obj = _extends({}, result[i], { patientList: appResult });
+
+                  outputArray.push(obj);
+                  if (i == result.length - 1) {
+                    req.records = outputArray;
+                    (0, _utils.releaseDBConnection)(db, connection);
+                    next();
+                  }
+                });
+              };
+
+              for (var i = 0; i < result.length; i++) {
+                _loop4(i);
+              }
+            } else {
+              (0, _utils.releaseDBConnection)(db, connection);
+              req.records = result;
+              next();
+            }
+          });
+        } else {
+          (0, _utils.releaseDBConnection)(db, connection);
+          req.records = result;
+          next();
+        }
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to get Doctor Schedule Date Wise
+var getDoctorScheduleDateWiseBACKup3_nov = function getDoctorScheduleDateWiseBACKup3_nov(req, res, next) {
+  var selectWhere = {
+    sub_dept_id: "ALL",
+    schedule_date: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(_httpStatus2.default.dataBaseNotInitilizedError());
+    }
+    var db = req.db;
+    var selectDoctor = "";
+    // let provider_id = "";
+    if (req.query.provider_id != "null" && req.query.provider_id != null) {
+      selectDoctor = "ASD.provider_id=" + req.query.provider_id + " and ";
+      //provider_id = req.query.provider_id;
+    }
+    delete req.query.provider_id;
+
+    var where = (0, _utils.whereCondition)((0, _extend2.default)(selectWhere, req.query));
+
+    // select hims_d_appointment_schedule_header_id, sub_dept_id, SH.schedule_status as schedule_status, schedule_description, month, year,\
+    // from_date,to_date,from_work_hr, to_work_hr, work_break1, from_break_hr1, to_break_hr1, work_break2, from_break_hr2,\
+    // to_break_hr2, monday, tuesday, wednesday, thursday, friday, saturday, sunday,\
+    //  hims_d_appointment_schedule_detail_id, provider_id,E.first_name,E.last_name,clinic_id, ASD.schedule_status as todays_schedule_status, slot,schedule_date, modified \
+    //  from hims_d_appointment_schedule_header SH, hims_d_appointment_schedule_detail ASD,hims_d_employee E  where SH.record_status='A' and E.record_status='A'\
+    //  and ASD.record_status='A' and ASD.provider_id=E.hims_d_employee_id and  SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id
+
+    db.getConnection(function (error, connection) {
+      connection.query("select hims_d_appointment_schedule_header_id, sub_dept_id, SH.schedule_status as schedule_status, schedule_description, month, year,\
+        from_date,to_date,from_work_hr, to_work_hr, work_break1, from_break_hr1, to_break_hr1, work_break2, from_break_hr2,\
+        to_break_hr2, monday, tuesday, wednesday, thursday, friday, saturday, sunday,\
+         hims_d_appointment_schedule_detail_id, ASD.provider_id,E.first_name,E.last_name,clinic_id,C.description as clinic_name,R.description as  room_name,\
+         ASD.schedule_status as todays_schedule_status, slot,schedule_date, modified \
+         from hims_d_appointment_schedule_header SH, hims_d_appointment_schedule_detail ASD,hims_d_employee E ,\
+         hims_d_appointment_clinic C,hims_d_appointment_room R where \
+         SH.record_status='A' and E.record_status='A' and C.record_status='A'\
+         and ASD.record_status='A' and R.record_status='A' and ASD.provider_id=E.hims_d_employee_id and \
+         SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id \
+         and ASD.clinic_id=C.hims_d_appointment_clinic_id and C.room_id=R.hims_d_appointment_room_id and " + selectDoctor + "" + where.condition, where.values, function (error, result) {
+        if (error) {
+          (0, _utils.releaseDBConnection)(db, connection);
+          next(error);
+        }
+
+        (0, _logging.debugLog)("result:", result);
+
+        if (result.length > 0) {
+          new Promise(function (resolve, reject) {
+            try {
+              var _loop5 = function _loop5(j) {
+                if (result[j]["modified"] == "M") {
+                  //     select hims_d_appointment_schedule_modify_id, appointment_schedule_detail_id, ASM.to_date as schedule_date, ASM.slot, ASM.from_work_hr,\
+                  //   ASM.to_work_hr, ASM.work_break1, ASM.from_break_hr1,ASM.to_break_hr1, ASM.work_break2, ASM.from_break_hr2, ASM.to_break_hr2  \
+                  //   hims_d_appointment_schedule_header_id, sub_dept_id, SH.schedule_status, schedule_description, month, year,  \
+                  //  monday, tuesday, wednesday, thursday, friday, saturday, sunday, provider_id,E.first_name,E.last_name,clinic_id,\
+                  //   ASD.schedule_status as todays_schedule_status, modified  \
+                  //  from hims_d_appointment_schedule_header SH,hims_d_appointment_schedule_modify ASM , hims_d_appointment_schedule_detail ASD,hims_d_employee E\
+                  //    where SH.record_status='A' and E.record_status='A'\
+                  //  and ASD.record_status='A' and ASD.provider_id=E.hims_d_employee_id and  SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id  \
+                  //  and ASM.appointment_schedule_detail_id=ASD.hims_d_appointment_schedule_detail_id and ASM.record_status='A'\
+                  //   and appointment_schedule_detail_id=?
+
+                  connection.query("select hims_d_appointment_schedule_modify_id, appointment_schedule_detail_id, ASM.to_date as schedule_date, ASM.slot, ASM.from_work_hr,\
+                ASM.to_work_hr, ASM.work_break1, ASM.from_break_hr1,ASM.to_break_hr1, ASM.work_break2, ASM.from_break_hr2, ASM.to_break_hr2  \
+                hims_d_appointment_schedule_header_id, sub_dept_id, SH.schedule_status, schedule_description, month, year,  \
+               monday, tuesday, wednesday, thursday, friday, saturday, sunday, ASD.provider_id,E.first_name,E.last_name,clinic_id,C.description as clinic_name,R.description as  room_name,\
+                ASD.schedule_status as todays_schedule_status, modified\
+               from hims_d_appointment_schedule_header SH,hims_d_appointment_schedule_modify ASM , hims_d_appointment_schedule_detail ASD,hims_d_employee E, hims_d_appointment_clinic C,hims_d_appointment_room R\
+                 where SH.record_status='A' and E.record_status='A' \
+               and ASD.record_status='A' and C.record_status='A' and R.record_status='A'and ASD.provider_id=E.hims_d_employee_id and  SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id  \
+               and ASM.appointment_schedule_detail_id=ASD.hims_d_appointment_schedule_detail_id and ASM.record_status='A'\
+               and ASD.clinic_id=C.hims_d_appointment_clinic_id and C.room_id=R.hims_d_appointment_room_id and appointment_schedule_detail_id=?", [result[j]["hims_d_appointment_schedule_detail_id"]], function (error, modifyResult) {
+                    if (error) {
+                      (0, _utils.releaseDBConnection)(db, connection);
+                      next(error);
+                    }
+                    (0, _logging.debugLog)("modifyResult:", modifyResult);
+
+                    result[j] = modifyResult[0];
+                    resolve(modifyResult);
+                  });
+                } else {
+                  resolve({});
+                }
+              };
+
+              for (var j = 0; j < result.length; j++) {
+                _loop5(j);
+              }
+            } catch (e) {
+              reject(e);
+            }
+          }).then(function (modifyRes) {
+            var outputArray = [];
+            if (result.length > 0) {
+              var _loop6 = function _loop6(i) {
+                connection.query("select hims_f_patient_appointment_id, patient_id,title_id,patient_code, provider_id, sub_department_id,number_of_slot, appointment_date, appointment_from_time,\
+    appointment_to_time, appointment_status_id, patient_name, arabic_name, date_of_birth, age, contact_number, email, send_to_provider,\
+    gender, confirmed, confirmed_by,comfirmed_date, cancelled, cancelled_by, cancelled_date, cancel_reason,\
+    appointment_remarks, is_stand_by  from hims_f_patient_appointment where record_status='A' and sub_department_id=?\
+    and appointment_date=? and provider_id=? ", [result[i].sub_dept_id, result[i].schedule_date, result[i].provider_id], function (error, appResult) {
+                  if (error) {
+                    (0, _utils.releaseDBConnection)(db, connection);
+                    next(error);
+                  }
+                  var obj = _extends({}, result[i], { patientList: appResult });
+                  (0, _logging.debugLog)("appResult:", appResult);
+                  outputArray.push(obj);
+                  if (i == result.length - 1) {
+                    req.records = outputArray;
+                    (0, _utils.releaseDBConnection)(db, connection);
+                    next();
+                  }
+                });
+              };
+
+              for (var i = 0; i < result.length; i++) {
+                _loop6(i);
+              }
+            } else {
+              (0, _utils.releaseDBConnection)(db, connection);
+              req.records = result;
+              next();
+            }
+          });
+        } else {
+          (0, _utils.releaseDBConnection)(db, connection);
+          req.records = result;
+          next();
+        }
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to get Doctor Schedule to Modify
+var getDoctorScheduleToModify = function getDoctorScheduleToModify(req, res, next) {
+  var selectWhere = {
+    appointment_schedule_header_id: "ALL",
+    provider_id: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(_httpStatus2.default.dataBaseNotInitilizedError());
+    }
+    var db = req.db;
+
+    var where = (0, _utils.whereCondition)((0, _extend2.default)(selectWhere, req.query));
+
+    db.getConnection(function (error, connection) {
+      connection.query("select hims_d_appointment_schedule_header_id, sub_dept_id, SH.schedule_status as deprt_schedule_status, schedule_description, month, year,\
+        from_date,to_date,from_work_hr, to_work_hr, work_break1, from_break_hr1, to_break_hr1, work_break2, from_break_hr2, \
+        to_break_hr2, monday, tuesday, wednesday, thursday, friday, saturday, sunday,\
+        hims_d_appointment_schedule_detail_id, provider_id,clinic_id, ASD.schedule_status as doctor_schedule_status, slot,schedule_date, modified  \
+       from hims_d_appointment_schedule_header SH, hims_d_appointment_schedule_detail ASD \
+       where SH.record_status='A' and ASD.record_status='A' and  SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id\
+       and " + where.condition, where.values, function (error, result) {
+        if (error) {
+          (0, _utils.releaseDBConnection)(db, connection);
+          next(error);
+        }
+
+        var activeSchedule = new _nodeLinq.LINQ(result).Where(function (w) {
+          return w.modified != "M";
+        }).Select(function (s) {
+          return s;
+        }).ToArray();
+
+        var ids = new _nodeLinq.LINQ(result).Where(function (w) {
+          return w.modified == "M";
+        }).Select(function (s) {
+          return s.hims_d_appointment_schedule_detail_id;
+        }).ToArray();
+
+        if (ids.length > 0) {
+          connection.query("SELECT hims_d_appointment_schedule_modify_id, SD.provider_id, SD.clinic_id, SD.schedule_status,appointment_schedule_detail_id, to_date as schedule_date, SM.slot,\
+              from_work_hr, to_work_hr,work_break1, from_break_hr1, to_break_hr1, work_break2, from_break_hr2, to_break_hr2 \
+              from hims_d_appointment_schedule_modify SM, hims_d_appointment_schedule_detail SD where SM.record_status='A' and SM.record_status='A' and SM.appointment_schedule_detail_id=SD.hims_d_appointment_schedule_detail_id and\
+              appointment_schedule_detail_id in (" + ids + ")", function (error, modResult) {
+            if (error) {
+              (0, _utils.releaseDBConnection)(db, connection);
+              next(error);
+            }
+            if (modResult.length > 0) {
+              var mergeResult = [].concat(_toConsumableArray(activeSchedule), _toConsumableArray(modResult));
+
+              var finResult = new _nodeLinq.LINQ(mergeResult).OrderBy(function (w) {
+                return w.schedule_date;
+              }).ToArray();
+
+              req.records = finResult;
+              (0, _utils.releaseDBConnection)(db, connection);
+              next();
+            } else {
+              (0, _utils.releaseDBConnection)(db, connection);
+              req.records = result;
+              next();
+            }
+          });
+        } else {
+          (0, _utils.releaseDBConnection)(db, connection);
+          req.records = result;
+          next();
+        }
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to update Doctor Schedule DateWise
+var updateDoctorScheduleDateWise = function updateDoctorScheduleDateWise(req, res, next) {
+  try {
+    if (req.db == null) {
+      next(_httpStatus2.default.dataBaseNotInitilizedError());
+    }
+    var db = req.db;
+
+    var input = (0, _extend2.default)({}, req.body);
+    (0, _logging.debugLog)("Input Data", input);
+
+    db.getConnection(function (error, connection) {
+      if (error) {
+        next(error);
+      }
+      connection.beginTransaction(function (error) {
+        if (error) {
+          connection.rollback(function () {
+            (0, _utils.releaseDBConnection)(db, connection);
+            next(error);
+          });
+        }
+
+        connection.query("UPDATE `hims_d_appointment_schedule_detail` SET `modified`=?,\
+              `updated_by`=?, `updated_date`=? WHERE `record_status`='A' and \
+         `hims_d_appointment_schedule_detail_id`=?;", [input.modified, input.updated_by, new Date(), input.hims_d_appointment_schedule_detail_id], function (error, result) {
+          if (error) {
+            connection.rollback(function () {
+              (0, _utils.releaseDBConnection)(db, connection);
+              next(error);
+            });
+          }
+
+          if (input.hims_d_appointment_schedule_modify_id != null && input.modified == "M") {
+            connection.query("UPDATE `hims_d_appointment_schedule_modify` SET appointment_schedule_detail_id=?,to_date=?,slot=?,\
+    from_work_hr=?,to_work_hr=?,work_break1=?,from_break_hr1=?,to_break_hr1=?,work_break2=?,from_break_hr2=?,to_break_hr2=?,\
+        `updated_by`=?, `updated_date`=? WHERE `record_status`='A' and \
+   `hims_d_appointment_schedule_modify_id`=?;", [input.hims_d_appointment_schedule_detail_id, input.to_date, input.slot, input.from_work_hr, input.to_work_hr, input.work_break1, input.from_break_hr1, input.to_break_hr1, input.work_break2, input.from_break_hr2, input.to_break_hr2, input.updated_by, new Date(), input.hims_d_appointment_schedule_modify_id], function (error, updateModResult) {
+              if (error) {
+                connection.rollback(function () {
+                  (0, _utils.releaseDBConnection)(db, connection);
+                  next(error);
+                });
+              }
+              connection.commit(function (error) {
+                if (error) {
+                  connection.rollback(function () {
+                    (0, _utils.releaseDBConnection)(db, connection);
+                    next(error);
+                  });
+                }
+                (0, _utils.releaseDBConnection)(db, connection);
+                req.records = updateModResult;
+                next();
+              });
+            });
+          } else {
+            if (result.length != 0 && input.modified == "M") {
+              connection.query("INSERT INTO `hims_d_appointment_schedule_modify` ( appointment_schedule_detail_id, to_date, slot, from_work_hr, to_work_hr, work_break1, from_break_hr1,\
+       to_break_hr1, work_break2, from_break_hr2, to_break_hr2,created_date, created_by, updated_date, updated_by)\
+      VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [input.hims_d_appointment_schedule_detail_id, input.to_date, input.slot, input.from_work_hr, input.to_work_hr, input.work_break1, input.from_break_hr1, input.to_break_hr1, input.work_break2, input.from_break_hr2, input.to_break_hr2, new Date(), input.created_by, new Date(), input.updated_by], function (error, results) {
+                if (error) {
+                  (0, _utils.releaseDBConnection)(db, connection);
+                  next(error);
+                }
+
+                connection.commit(function (error) {
+                  if (error) {
+                    connection.rollback(function () {
+                      (0, _utils.releaseDBConnection)(db, connection);
+                      next(error);
+                    });
+                  }
+                  (0, _utils.releaseDBConnection)(db, connection);
+                  req.records = results;
+                  next();
+                });
+              });
+            } else {
+              connection.commit(function (error) {
+                if (error) {
+                  connection.rollback(function () {
+                    (0, _utils.releaseDBConnection)(db, connection);
+                    next(error);
+                  });
+                }
+                (0, _utils.releaseDBConnection)(db, connection);
+                req.records = result;
+                next();
+              });
+            }
+          }
+        });
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to delete Doctor From Schedule
+var deleteDoctorFromSchedule = function deleteDoctorFromSchedule(req, res, next) {
+  try {
+    if (req.db == null) {
+      next(_httpStatus2.default.dataBaseNotInitilizedError());
+    }
+    var db = req.db;
+
+    var input = (0, _extend2.default)({}, req.body);
+    (0, _logging.debugLog)("Input Data", input);
+
+    db.getConnection(function (error, connection) {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(" update hims_d_appointment_schedule_detail set record_status='I',updated_by=?,updated_date=?\
+         where record_status='A' and appointment_schedule_header_id=? and provider_id=?;", [input.updated_by, new Date(), input.appointment_schedule_header_id, input.provider_id], function (error, result) {
+        if (error) {
+          connection.rollback(function () {
+            next(error);
+          });
+        }
+        (0, _utils.releaseDBConnection)(db, connection);
+        req.records = result;
+        next();
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+//created by irfan: to delete Doctor From Schedule
+var deleteDoctorFromScheduleBACkUP03_nov = function deleteDoctorFromScheduleBACkUP03_nov(req, res, next) {
+  try {
+    if (req.db == null) {
+      next(_httpStatus2.default.dataBaseNotInitilizedError());
+    }
+    var db = req.db;
+
+    var input = (0, _extend2.default)({}, req.body);
+    (0, _logging.debugLog)("Input Data", input);
+
+    db.getConnection(function (error, connection) {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(" update hims_d_appointment_schedule_detail set record_status='I',updated_by=?,updated_date=?\
+         where record_status='A' and appointment_schedule_header_id=? and provider_id=?;", [input.updated_by, new Date(), input.appointment_schedule_header_id, input.provider_id], function (error, result) {
+        if (error) {
+          connection.rollback(function () {
+            next(error);
+          });
+        }
+        (0, _utils.releaseDBConnection)(db, connection);
+        req.records = result;
+        next();
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to update Schedule
+var updateSchedule = function updateSchedule(req, res, next) {
+  try {
+    if (req.db == null) {
+      next(_httpStatus2.default.dataBaseNotInitilizedError());
+    }
+    var db = req.db;
+
+    var input = (0, _extend2.default)({}, req.body);
+    (0, _logging.debugLog)("Input Data", input);
+
+    db.getConnection(function (error, connection) {
+      if (error) {
+        next(error);
+      }
+
+      connection.query("UPDATE `hims_d_appointment_schedule_header` SET `sub_dept_id`=?, `schedule_status`=?,\
+        `schedule_description`=?, `month`=?, `year`=?, `from_date`=?, `to_date`=?, \
+        `from_work_hr`=?, `to_work_hr`=?, `work_break1`=?, `from_break_hr1`=?, \
+        `to_break_hr1`=?, `work_break2`=?, `from_break_hr2`=?, `to_break_hr2`=?,\
+               `monday`=?, `tuesday`=?, `wednesday`=?, `thursday`=?, `friday`=?, `saturday`=?,\
+         `sunday`=?, `updated_by`=?, `updated_date`=?, `record_status`=? \
+         WHERE record_status='A' and `hims_d_appointment_schedule_header_id`=? ;", [input.sub_dept_id, input.schedule_status, input.schedule_description, input.month, input.year, input.from_date, input.to_date, input.from_work_hr, input.to_work_hr, input.work_break1, input.from_break_hr1, input.to_break_hr1, input.work_break2, input.from_break_hr2, input.to_break_hr2, input.monday, input.tuesday, input.wednesday, input.thursday, input.friday, input.saturday, input.sunday, input.updated_by, new Date(), input.record_status, input.hims_d_appointment_schedule_header_id], function (error, result) {
+        if (error) {
+          connection.rollback(function () {
+            next(error);
+          });
+        }
+        (0, _utils.releaseDBConnection)(db, connection);
+        (0, _logging.debugLog)("result:", result);
+        req.records = result;
+        next();
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to add Doctor To Existing Schedule
+var addDoctorToExistingSchedule = function addDoctorToExistingSchedule(req, res, next) {
+  try {
+    if (req.db == null) {
+      next(_httpStatus2.default.dataBaseNotInitilizedError());
+    }
+    var db = req.db;
+    var input = (0, _extend2.default)({}, req.body);
+    (0, _logging.debugLog)("input:", input);
+
+    db.getConnection(function (error, connection) {
+      if (error) {
+        next(error);
+      }
+      connection.beginTransaction(function (error) {
+        if (error) {
+          connection.rollback(function () {
+            (0, _utils.releaseDBConnection)(db, connection);
+            next(error);
+          });
+        }
+
+        //generating list of dates by date range ie.(from_time and  to_time)
+        connection.query("SELECT from_work_hr,to_work_hr,from_date, to_date, monday, tuesday, wednesday, thursday, friday, saturday, sunday\
+          from hims_d_appointment_schedule_header where  record_status='A' and hims_d_appointment_schedule_header_id=?", [input.hims_d_appointment_schedule_header_id], function (error, result) {
+          if (error) {
+            connection.rollback(function () {
+              (0, _utils.releaseDBConnection)(db, connection);
+              next(error);
+            });
+          }
+
+          var working_days = [];
+
+          var inputDays = [result[0].sunday, result[0].monday, result[0].tuesday, result[0].wednesday, result[0].thursday, result[0].friday, result[0].saturday];
+
+          for (var d = 0; d < 7; d++) {
+            if (inputDays[d] == "Y") {
+              working_days.push(d);
+            }
+          }
+
+          var newDateList = getDaysArray(new Date(result[0].from_date), new Date(result[0].to_date), working_days);
+          newDateList.map(function (v) {
+            return v.toLocaleString();
+          });
+          //.slice(0, 10)).join("");
+
+          (0, _logging.debugLog)("newDateList:", newDateList.length);
+          //get list of dates which are already scheduled for this doctor
+          connection.query("select hims_d_appointment_schedule_detail_id,appointment_schedule_header_id,schedule_date from hims_d_appointment_schedule_detail  where provider_id=? and schedule_date>?;", [input.provider_id, new Date()], function (error, occupiedDoctorDates) {
+            if (error) {
+              connection.rollback(function () {
+                (0, _utils.releaseDBConnection)(db, connection);
+                next(error);
+              });
+            }
+
+            var OccupiedDoctorDatesList = new _nodeLinq.LINQ(occupiedDoctorDates).Select(function (s) {
+              return s.schedule_date;
+            }).ToArray();
+
+            var clashingDate = [];
+            new _nodeLinq.LINQ(newDateList).Select(function (s) {
+              var index = OccupiedDoctorDatesList.indexOf((0, _moment2.default)(s).format("YYYY-MM-DD"));
+              if (index > -1) {
+                clashingDate.push(OccupiedDoctorDatesList[index]);
+              }
+            });
+
+            (0, _logging.debugLog)("clashingDate: ", clashingDate);
+
+            //if date clashes check for time else add
+            if (clashingDate.length > 0) {
+              var appointment_schedule_header_id = new _nodeLinq.LINQ(occupiedDoctorDates).Where(function (w) {
+                return w.schedule_date == clashingDate[0];
+              }).Select(function (s) {
+                return s.appointment_schedule_header_id;
+              }).ToArray();
+              //obtain existing schedule time
+              connection.query("select * from hims_d_appointment_schedule_header where time(from_work_hr)<=?  and time(to_work_hr)> ?\
+                    and hims_d_appointment_schedule_header_id=?", [result[0].from_work_hr, result[0].from_work_hr, appointment_schedule_header_id[0]], function (error, timeChecking) {
+                if (error) {
+                  connection.rollback(function () {
+                    (0, _utils.releaseDBConnection)(db, connection);
+                    next(error);
+                  });
+                }
+
+                if (timeChecking.length > 0) {
+                  //reject adding to schedule
+                  (0, _logging.debugLog)("timeChecking", timeChecking);
+                  req.records = {
+                    message: "schedule already exist",
+                    schedule_exist: true
+                  };
+                  (0, _utils.releaseDBConnection)(db, connection);
+                  next();
+                } else {
+                  //add to schedule
+
+                  if (input.schedule_detail.length != 0) {
+                    if (input.hims_d_appointment_schedule_header_id != null) {
+                      for (var doc = 0; doc < input.schedule_detail.length; doc++) {
+                        var _doctorSchedule = [];
+
+                        for (var i = 0; i < newDateList.length; i++) {
+                          _doctorSchedule.push(_extends({}, input.schedule_detail[doc], { schedule_date: newDateList[i] }));
+                        }
+
+                        var insurtColumns = ["provider_id", "clinic_id", "slot", "schedule_date", "created_by", "updated_by"];
+
+                        connection.query("INSERT INTO hims_d_appointment_schedule_detail(" + insurtColumns.join(",") + ",`appointment_schedule_header_id`,created_date,updated_date) VALUES ?", [(0, _utils.jsonArrayToObject)({
+                          sampleInputObject: insurtColumns,
+                          arrayObj: _doctorSchedule,
+                          newFieldToInsert: [input.hims_d_appointment_schedule_header_id, new Date(), new Date()],
+                          req: req
+                        })], function (error, schedule_detailResult) {
+                          if (error) {
+                            connection.rollback(function () {
+                              (0, _utils.releaseDBConnection)(db, connection);
+                              next(error);
+                            });
+                          }
+
+                          connection.commit(function (error) {
+                            if (error) {
+                              connection.rollback(function () {
+                                (0, _utils.releaseDBConnection)(db, connection);
+                                next(error);
+                              });
+                            }
+                            (0, _utils.releaseDBConnection)(db, connection);
+                            req.records = schedule_detailResult;
+                            next();
+                          });
+                        });
+                      }
+                    }
+                  } else {
+                    (0, _utils.releaseDBConnection)(db, connection);
+                    req.records = { message: "please select doctors" };
+                    next();
+                  }
+                }
+              });
+            } else {
+              //else add doctor to schedule
+              if (input.schedule_detail.length != 0) {
+                if (input.hims_d_appointment_schedule_header_id != null) {
+                  for (var doc = 0; doc < input.schedule_detail.length; doc++) {
+                    var _doctorSchedule2 = [];
+
+                    for (var i = 0; i < newDateList.length; i++) {
+                      _doctorSchedule2.push(_extends({}, input.schedule_detail[doc], { schedule_date: newDateList[i] }));
+                    }
+
+                    var insurtColumns = ["provider_id", "clinic_id", "slot", "schedule_date", "created_by", "updated_by"];
+
+                    connection.query("INSERT INTO hims_d_appointment_schedule_detail(" + insurtColumns.join(",") + ",`appointment_schedule_header_id`,created_date,updated_date) VALUES ?", [(0, _utils.jsonArrayToObject)({
+                      sampleInputObject: insurtColumns,
+                      arrayObj: _doctorSchedule2,
+                      newFieldToInsert: [input.hims_d_appointment_schedule_header_id, new Date(), new Date()],
+                      req: req
+                    })], function (error, schedule_detailResult) {
+                      if (error) {
+                        connection.rollback(function () {
+                          (0, _utils.releaseDBConnection)(db, connection);
+                          next(error);
+                        });
+                      }
+
+                      connection.commit(function (error) {
+                        if (error) {
+                          connection.rollback(function () {
+                            (0, _utils.releaseDBConnection)(db, connection);
+                            next(error);
+                          });
+                        }
+                        (0, _utils.releaseDBConnection)(db, connection);
+                        req.records = schedule_detailResult;
+                        next();
+                      });
+                    });
+                  }
+                }
+              }
+            }
+          });
+        });
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to add Doctor To Existing Schedule
+var BAckupaddDoctorToExistingSchedule = function BAckupaddDoctorToExistingSchedule(req, res, next) {
+  try {
+    if (req.db == null) {
+      next(_httpStatus2.default.dataBaseNotInitilizedError());
+    }
+    var db = req.db;
+    var input = (0, _extend2.default)({}, req.body);
+    (0, _logging.debugLog)("input:", input);
+
+    db.getConnection(function (error, connection) {
+      if (error) {
+        next(error);
+      }
+      connection.beginTransaction(function (error) {
+        if (error) {
+          connection.rollback(function () {
+            (0, _utils.releaseDBConnection)(db, connection);
+            next(error);
+          });
+        }
+
+        var newDates = ["2018-10-01T00:00:00.000Z", "2018-10-02T00:00:00.000Z", "2018-10-03T00:00:00.000Z", "2018-10-04T00:00:00.000Z", "2018-10-05T00:00:00.000Z", "2018-10-06T00:00:00.000Z", "2018-10-07T00:00:00.000Z", "2018-10-08T00:00:00.000Z", "2018-10-09T00:00:00.000Z", "2018-10-10T00:00:00.000Z"];
+
+        var providrDates = ["2018-10-01", "2018-10-02", "2018-10-27", "2018-10-28", "2018-10-29"];
+
+        var existingDates = [];
+        new _nodeLinq.LINQ(newDates).Select(function (s) {
+          var index = providrDates.indexOf((0, _moment2.default)(s).format("YYYY-MM-DD"));
+
+          if (index > -1) {
+            existingDates.push(providrDates[index]);
+          }
+        });
+        (0, _logging.debugLog)("existingDates: ", existingDates);
+        if (existingDates.length > 0) {}
+        //-----------------
+        connection.query("SELECT from_date, to_date, monday, tuesday, wednesday, thursday, friday, saturday, sunday\
+          from hims_d_appointment_schedule_header where  record_status='A' and hims_d_appointment_schedule_header_id=?", [input.hims_d_appointment_schedule_header_id], function (error, result) {
+          if (error) {
+            connection.rollback(function () {
+              (0, _utils.releaseDBConnection)(db, connection);
+              next(error);
+            });
+          }
+
+          var working_days = [];
+
+          var inputDays = [result[0].sunday, result[0].monday, result[0].tuesday, result[0].wednesday, result[0].thursday, result[0].friday, result[0].saturday];
+
+          for (var d = 0; d < 7; d++) {
+            if (inputDays[d] == "Y") {
+              working_days.push(d);
+            }
+          }
+
+          var daylist = getDaysArray(new Date(result[0].from_date), new Date(result[0].to_date), working_days);
+          daylist.map(function (v) {
+            return v.toLocaleString();
+          });
+          //.slice(0, 10)).join("");
+
+          (0, _logging.debugLog)("daylist:", daylist.length);
+          if (input.schedule_detail.length != 0) {
+            if (input.hims_d_appointment_schedule_header_id != null) {
+              for (var doc = 0; doc < input.schedule_detail.length; doc++) {
+                var _doctorSchedule3 = [];
+
+                for (var i = 0; i < daylist.length; i++) {
+                  _doctorSchedule3.push(_extends({}, input.schedule_detail[doc], { schedule_date: daylist[i] }));
+                }
+
+                var insurtColumns = ["provider_id", "clinic_id", "slot", "schedule_date", "created_by", "updated_by"];
+
+                connection.query("INSERT INTO hims_d_appointment_schedule_detail(" + insurtColumns.join(",") + ",`appointment_schedule_header_id`,created_date,updated_date) VALUES ?", [(0, _utils.jsonArrayToObject)({
+                  sampleInputObject: insurtColumns,
+                  arrayObj: _doctorSchedule3,
+                  newFieldToInsert: [input.hims_d_appointment_schedule_header_id, new Date(), new Date()],
+                  req: req
+                })], function (error, schedule_detailResult) {
+                  if (error) {
+                    connection.rollback(function () {
+                      (0, _utils.releaseDBConnection)(db, connection);
+                      next(error);
+                    });
+                  }
+                  (0, _utils.releaseDBConnection)(db, connection);
+                  req.records = schedule_detailResult;
+                  next();
+                  // connection.commit(error => {
+                  //   if (error) {
+                  //     connection.rollback(() => {
+                  //       releaseDBConnection(db, connection);
+                  //       next(error);
+                  //     });
+                  //   }
+                  //   req.records = schedule_detailResult;
+                  //   next();
+                  // });
+                });
+              }
+            }
+          } else {
+            (0, _utils.releaseDBConnection)(db, connection);
+            req.records = { message: "please select doctors" };
+            next();
+          }
+        });
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to add patient appointment
+var addPatientAppointmentBACKUP_20_nov = function addPatientAppointmentBACKUP_20_nov(req, res, next) {
+  try {
+    if (req.db == null) {
+      next(_httpStatus2.default.dataBaseNotInitilizedError());
+    }
+    var db = req.db;
+    var input = (0, _extend2.default)({}, req.body);
+
+    db.getConnection(function (error, connection) {
+      if (error) {
+        next(error);
+      }
+
+      connection.query("INSERT INTO `hims_f_patient_appointment` (title_id,patient_id,patient_code,provider_id,sub_department_id,number_of_slot,appointment_date,appointment_from_time,appointment_to_time,\
+          appointment_status_id,patient_name,arabic_name,date_of_birth,age,contact_number,email,send_to_provider,gender,appointment_remarks,is_stand_by,\
+          created_date, created_by, updated_date, updated_by)\
+          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [input.title_id, input.patient_id, input.patient_code, input.provider_id, input.sub_department_id, input.number_of_slot, input.appointment_date, input.appointment_from_time, input.appointment_to_time, input.appointment_status_id, input.patient_name, input.arabic_name, input.date_of_birth, input.age, input.contact_number, input.email, input.send_to_provider, input.gender, input.appointment_remarks, input.is_stand_by, new Date(), input.created_by, new Date(), input.updated_by], function (error, result) {
+        (0, _utils.releaseDBConnection)(db, connection);
+        if (error) {
+          next(error);
+        }
+        req.records = result;
+        next();
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to add patient appointment
+var addPatientAppointment = function addPatientAppointment(req, res, next) {
+  try {
+    if (req.db == null) {
+      next(_httpStatus2.default.dataBaseNotInitilizedError());
+    }
+    var db = req.db;
+    var input = (0, _extend2.default)({}, req.body);
+
+    db.getConnection(function (error, connection) {
+      if (error) {
+        next(error);
+      }
+
+      //       select hims_f_patient_appointment_id,provider_id,patient_name,appointment_date,appointment_from_time,
+      // appointment_to_time from hims_f_patient_appointment where record_status='A'
+      // and date(appointment_date)=date('2018-11-21') and provider_id=2 and cancelled='N' and
+      // (('08:20:00'>=appointment_from_time and '08:20:00'<appointment_to_time)
+      // or('08:30:00'>appointment_from_time and '08:30:00'<=appointment_to_time))
+
+      // SELECT hims_f_patient_appointment_id,patient_id,sub_department_id FROM hims_f_patient_appointment
+      // where record_status='A' and cancelled='N' and is_stand_by='N' and contact_number='9901968745'
+      // and sub_department_id=39 and provider_id=2 and appointment_date
+
+      connection.query("select hims_f_patient_appointment_id,provider_id,title_id,patient_name,appointment_date,appointment_from_time,\
+        appointment_to_time from hims_f_patient_appointment where record_status='A'\
+        and date(appointment_date)=date(?) and provider_id=? and cancelled='N' and is_stand_by='N' and sub_department_id=? and\
+        ((?>=appointment_from_time and ?<appointment_to_time)\
+        or(?>appointment_from_time and ?<=appointment_to_time));\
+        SELECT hims_f_patient_appointment_id,patient_id,sub_department_id,patient_name FROM hims_f_patient_appointment\
+        where record_status='A' and cancelled='N' and is_stand_by='N' and contact_number=?\
+        and sub_department_id=? and provider_id=? and appointment_date=?", [input.appointment_date, input.provider_id, input.sub_department_id, input.appointment_from_time, input.appointment_from_time, input.appointment_to_time, input.appointment_to_time, input.contact_number, input.sub_department_id, input.provider_id, input.appointment_date], function (error, slotResult) {
+        if (error) {
+          connection.rollback(function () {
+            (0, _utils.releaseDBConnection)(db, connection);
+            next(error);
+          });
+        }
+
+        (0, _logging.debugLog)("slotResult:", slotResult);
+        (0, _logging.debugLog)("slotResult len:", slotResult[1].length);
+        if (slotResult[0].length > 0 && input.is_stand_by != "Y") {
+          (0, _utils.releaseDBConnection)(db, connection);
+          req.records = { slotExist: true };
+          next();
+        } else if (slotResult[1].length >= 2 && input.is_stand_by != "Y") {
+          (0, _utils.releaseDBConnection)(db, connection);
+          req.records = { bookedtwice: true };
+          next();
+        } else {
+          connection.query("INSERT INTO `hims_f_patient_appointment` (patient_id,title_id,patient_code,provider_id,sub_department_id,number_of_slot,appointment_date,appointment_from_time,appointment_to_time,\
+          appointment_status_id,patient_name,arabic_name,date_of_birth,age,contact_number,email,send_to_provider,gender,appointment_remarks,is_stand_by,\
+          created_date, created_by, updated_date, updated_by)\
+          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [input.patient_id, input.title_id, input.patient_code, input.provider_id, input.sub_department_id, input.number_of_slot, input.appointment_date, input.appointment_from_time, input.appointment_to_time, input.appointment_status_id, input.patient_name, input.arabic_name, input.date_of_birth, input.age, input.contact_number, input.email, input.send_to_provider, input.gender, input.appointment_remarks, input.is_stand_by, new Date(), input.created_by, new Date(), input.updated_by], function (error, result) {
+            (0, _utils.releaseDBConnection)(db, connection);
+            if (error) {
+              next(error);
+            }
+            req.records = result;
+            next();
+          });
+        }
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to update Patient Appointment
+var updatePatientAppointmentBACKUP_20_nov = function updatePatientAppointmentBACKUP_20_nov(req, res, next) {
+  try {
+    if (req.db == null) {
+      next(_httpStatus2.default.dataBaseNotInitilizedError());
+    }
+    var db = req.db;
+    var input = (0, _extend2.default)({}, req.body);
+    (0, _logging.debugLog)("input: ", input);
+    db.getConnection(function (error, connection) {
+      if (error) {
+        next(error);
+      }
+      connection.query("UPDATE `hims_f_patient_appointment` SET patient_id=?, title_id=?,provider_id=?,sub_department_id=?,number_of_slot=?,appointment_date=?,appointment_from_time=?,appointment_to_time=?,\
+        appointment_status_id=?,patient_name=?,arabic_name=?,date_of_birth=?,age=?,contact_number=?,email=?,\
+        send_to_provider=?,gender=?,confirmed=?,confirmed_by=?,comfirmed_date=?,cancelled=?,cancelled_by=?,\
+        cancelled_date=?,cancel_reason=?,appointment_remarks=?,is_stand_by=?,\
+           updated_date=?, updated_by=? ,`record_status`=? WHERE  `record_status`='A' and `hims_f_patient_appointment_id`=?;", [input.patient_id, input.title_id, input.provider_id, input.sub_department_id, input.number_of_slot, input.appointment_date, input.appointment_from_time, input.appointment_to_time, input.appointment_status_id, input.patient_name, input.arabic_name, input.date_of_birth, input.age, input.contact_number, input.email, input.send_to_provider, input.gender, input.confirmed, input.confirmed_by, input.comfirmed_date, input.cancelled, input.cancelled_by, input.cancelled_date, input.cancel_reason, input.appointment_remarks, input.is_stand_by, new Date(), input.updated_by, input.record_status, input.hims_f_patient_appointment_id], function (error, results) {
+        (0, _utils.releaseDBConnection)(db, connection);
+        if (error) {
+          next(error);
+        }
+        req.records = results;
+        next();
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+//created by irfan: to update Patient Appointment
+var updatePatientAppointment = function updatePatientAppointment(req, res, next) {
+  try {
+    if (req.db == null) {
+      next(_httpStatus2.default.dataBaseNotInitilizedError());
+    }
+    var db = req.db;
+    var input = (0, _extend2.default)({}, req.body);
+    db.getConnection(function (error, connection) {
+      if (error) {
+        next(error);
+      }
+
+      connection.query("select hims_f_patient_appointment_id,provider_id,title_id,patient_name,appointment_date,appointment_from_time,\
+        appointment_to_time from hims_f_patient_appointment where record_status='A'\
+        and date(appointment_date)=date(?) and provider_id=? and cancelled='N' and is_stand_by='N' and sub_department_id=? and\
+        ((?>=appointment_from_time and ?<appointment_to_time)\
+        or(?>appointment_from_time and ?<=appointment_to_time)) and hims_f_patient_appointment_id!=?;", [input.appointment_date, input.provider_id, input.sub_department_id, input.appointment_from_time, input.appointment_from_time, input.appointment_to_time, input.appointment_to_time, input.hims_f_patient_appointment_id], function (error, slotResult) {
+        if (error) {
+          connection.rollback(function () {
+            (0, _utils.releaseDBConnection)(db, connection);
+            next(error);
+          });
+        }
+
+        if (slotResult.length > 0 && input.is_stand_by != "Y") {
+          (0, _utils.releaseDBConnection)(db, connection);
+          req.records = { slotExist: true };
+          next();
+        } else {
+          connection.query("UPDATE `hims_f_patient_appointment` SET patient_id=?, title_id=? ,provider_id=?,sub_department_id=?,number_of_slot=?,appointment_date=?,appointment_from_time=?,appointment_to_time=?,\
+        appointment_status_id=?,patient_name=?,arabic_name=?,date_of_birth=?,age=?,contact_number=?,email=?,\
+        send_to_provider=?,gender=?,confirmed=?,confirmed_by=?,comfirmed_date=?,cancelled=?,cancelled_by=?,\
+        cancelled_date=?,cancel_reason=?,appointment_remarks=?,is_stand_by=?,\
+           updated_date=?, updated_by=? ,`record_status`=? WHERE  `record_status`='A' and  cancelled<>'Y' and `hims_f_patient_appointment_id`=?;", [input.patient_id, input.title_id, input.provider_id, input.sub_department_id, input.number_of_slot, input.appointment_date, input.appointment_from_time, input.appointment_to_time, input.appointment_status_id, input.patient_name, input.arabic_name, input.date_of_birth, input.age, input.contact_number, input.email, input.send_to_provider, input.gender, input.confirmed, input.confirmed_by, input.comfirmed_date, input.cancelled, input.cancelled_by, input.cancelled_date, input.cancel_reason, input.appointment_remarks, input.is_stand_by, new Date(), input.updated_by, input.record_status, input.hims_f_patient_appointment_id], function (error, results) {
+            (0, _utils.releaseDBConnection)(db, connection);
+            if (error) {
+              next(error);
+            }
+            req.records = results;
+            next();
+          });
+        }
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to get Patient Appointment
+var getPatientAppointment = function getPatientAppointment(req, res, next) {
+  var selectWhere = {
+    sub_department_id: "ALL",
+    appointment_to_time: "ALL",
+    provider_id: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(_httpStatus2.default.dataBaseNotInitilizedError());
+    }
+    var db = req.db;
+    var selectDoctor = "";
+    if (req.query.provider_id != "null" && req.query.provider_id != null) {
+      selectDoctor = "provider_id=" + req.query.provider_id + " and ";
+    }
+    delete req.query.provider_id;
+
+    var where = (0, _utils.whereCondition)((0, _extend2.default)(selectWhere, req.query));
+
+    db.getConnection(function (error, connection) {
+      connection.query("select hims_f_patient_appointment_id,patient_id,title_id,patient_code,provider_id,sub_department_id,number_of_slot,appointment_date,\
+            appointment_from_time,appointment_to_time,appointment_status_id,patient_name,arabic_name,date_of_birth,age,\
+        contact_number,email,send_to_provider,gender,confirmed,visit_created,\
+        confirmed_by,comfirmed_date,cancelled,cancelled_by,cancelled_date,appointment_remarks,cancel_reason,is_stand_by\
+        from hims_f_patient_appointment where record_status='A'  and " + selectDoctor + "" + where.condition, where.values, function (error, result) {
+        (0, _utils.releaseDBConnection)(db, connection);
+        if (error) {
+          next(error);
+        }
+        req.records = result;
+        next();
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to get
+var getEmployeeServiceID = function getEmployeeServiceID(req, res, next) {
+  var selectWhere = {
+    employee_id: "ALL",
+    sub_department_id: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(_httpStatus2.default.dataBaseNotInitilizedError());
+    }
+    var db = req.db;
+
+    //delete req.query.provider_id;
+
+    var where = (0, _utils.whereCondition)((0, _extend2.default)(selectWhere, req.query));
+
+    db.getConnection(function (error, connection) {
+      connection.query("select  hims_d_employee_department_id, employee_id, services_id,\
+         sub_department_id, category_speciality_id, user_id from hims_m_employee_department_mappings\
+          where record_status='A' and " + where.condition, where.values, function (error, result) {
+        (0, _utils.releaseDBConnection)(db, connection);
+        if (error) {
+          next(error);
+        }
+        req.records = result;
+        next();
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to cancel patient appointment
+var cancelPatientAppointment = function cancelPatientAppointment(req, res, next) {
+  try {
+    if (req.db == null) {
+      next(_httpStatus2.default.dataBaseNotInitilizedError());
+    }
+    var db = req.db;
+    var input = (0, _extend2.default)({}, req.body);
+    db.getConnection(function (error, connection) {
+      if (error) {
+        next(error);
+      }
+
+      connection.query("update hims_f_patient_appointment set cancelled='Y',cancelled_by=?,cancelled_date=?,cancel_reason=?,\
+        updated_by=?,updated_date=? where record_status='A' and hims_f_patient_appointment_id=?;", [input.updated_by, new Date(), input.cancel_reason, input.updated_by, new Date(), input.hims_f_patient_appointment_id], function (error, result) {
+        (0, _utils.releaseDBConnection)(db, connection);
+        if (error) {
+          next(error);
+        }
+        req.records = result;
+        next();
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports = {
+  addAppointmentStatus: addAppointmentStatus,
+  addAppointmentRoom: addAppointmentRoom,
+  addAppointmentClinic: addAppointmentClinic,
+  getAppointmentStatus: getAppointmentStatus,
+  getAppointmentRoom: getAppointmentRoom,
+  getAppointmentClinic: getAppointmentClinic,
+  updateAppointmentStatus: updateAppointmentStatus,
+  updateAppointmentRoom: updateAppointmentRoom,
+  updateAppointmentClinic: updateAppointmentClinic,
+  addDoctorsSchedule: addDoctorsSchedule,
+  getDoctorsScheduledList: getDoctorsScheduledList,
+  addLeaveOrModifySchedule: addLeaveOrModifySchedule,
+  getDoctorScheduleDateWise: getDoctorScheduleDateWise,
+  getDoctorScheduleToModify: getDoctorScheduleToModify,
+  updateDoctorScheduleDateWise: updateDoctorScheduleDateWise,
+  deleteDoctorFromSchedule: deleteDoctorFromSchedule,
+  updateSchedule: updateSchedule,
+  addDoctorToExistingSchedule: addDoctorToExistingSchedule,
+  addPatientAppointment: addPatientAppointment,
+  getPatientAppointment: getPatientAppointment,
+  updatePatientAppointment: updatePatientAppointment,
+  getEmployeeServiceID: getEmployeeServiceID,
+  appointmentStatusAuthorized: appointmentStatusAuthorized,
+  deleteAppointmentRoom: deleteAppointmentRoom,
+  cancelPatientAppointment: cancelPatientAppointment
+};
+//# sourceMappingURL=appointment.js.map
