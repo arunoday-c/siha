@@ -1,6 +1,5 @@
 import moment from "moment";
 import { swalMessage } from "../../../../../utils/algaehApiCall";
-let texthandlerInterval = null;
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;

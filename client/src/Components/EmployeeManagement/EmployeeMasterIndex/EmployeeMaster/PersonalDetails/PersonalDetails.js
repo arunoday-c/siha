@@ -147,7 +147,10 @@ class PersonalDetails extends PureComponent {
       <React.Fragment>
         {/* <MyContext.Consumer>
           {context => ( */}
-        <div className="hptl-phase1-add-employee-form popRightDiv">
+        <div
+          className="hptl-phase1-add-employee-form popRightDiv"
+          data-validate="empPersonal"
+        >
           <div className="row">
             <div className="col-lg-12">
               <div className="row">
@@ -258,10 +261,10 @@ class PersonalDetails extends PureComponent {
                   </h5>
                   <div className="row paddin-bottom-5">
                     <AlagehFormGroup
-                      div={{ className: "col-4" }}
+                      div={{ className: "col-4 mandatory" }}
                       label={{
                         fieldName: "contact_no",
-                        isImp: false
+                        isImp: true
                       }}
                       textBox={{
                         value: this.state.primary_contact_no,
@@ -373,7 +376,7 @@ class PersonalDetails extends PureComponent {
                       div={{ className: "col-lg-3" }}
                       label={{
                         forceLabel: "Nationality",
-                        isImp: true
+                        isImp: false
                       }}
                       selector={{
                         name: "nationality_id",
@@ -686,7 +689,7 @@ class PersonalDetails extends PureComponent {
                       div={{ className: "col-12" }}
                       label={{
                         fieldName: "license_number",
-                        isImp: true
+                        isImp: this.state.isdoctor === "Y" ? true : false
                       }}
                       textBox={{
                         value: this.state.license_number,
@@ -697,8 +700,7 @@ class PersonalDetails extends PureComponent {
                           onChange: texthandle.bind(this, this)
                         },
                         others: {
-                          disabled: this.state.isdoctor === "Y" ? false : true,
-                          tabIndex: "6"
+                          disabled: this.state.isdoctor === "Y" ? false : true
                         }
                       }}
                     />

@@ -954,44 +954,74 @@ let updateEmployee = (req, res, next) => {
         }
 
         connection.query(
-          "UPDATE hims_d_employee SET employee_code=?,title_id=?,first_name=?,middle_name=?,last_name=?,\
-        full_name=?,arabic_name=?,employee_designation_id=?,license_number=?,sex=?,date_of_birth=?,date_of_joining=?\
-        ,date_of_resignation=?,address=?,address2=?,pincode=?,city_id=?,state_id=?,country_id=?,primary_contact_no=?,\
-        secondary_contact_no=?,email=?,emergancy_contact_person=?,emergancy_contact_no=?,blood_group=?,isdoctor=?,\
-        employee_status=?,effective_start_date=?,effective_end_date=?,updated_date=?,updated_by=?,record_status=? WHERE record_status='A' and  hims_d_employee_id=?",
+          "UPDATE hims_d_employee SET employee_code=?,full_name=?,arabic_name=?,\
+          date_of_birth=?,sex=?,primary_contact_no=?,email=?,blood_group=?,nationality=?,religion_id=?,\
+          marital_status=?,present_address=?,present_address2=?,present_pincode=?,present_city_id=?,\
+          present_state_id=?,present_country_id=?,permanent_address=?,permanent_address2=?,permanent_pincode=?,\
+          permanent_city_id=?,permanent_state_id=?,permanent_country_id=?,isdoctor=?,license_number=?, \
+          date_of_joining=?,appointment_type=?,employee_type=?,reliving_date=?,notice_period=?,date_of_resignation=?,\
+          company_bank_id=?,employee_bank_name=?,employee_bank_ifsc_code=?,employee_account_number=?,mode_of_payment=?,\
+          accomodation_provided=?,hospital_id=?,gross_salary=?,total_earnings=?,total_deductions=?,total_contributions=?,\
+          net_salary=?,cost_to_company=?,leave_salary_process=?,late_coming_rule=?,airfare_process=?,\
+          exclude_machine_data=?,gratuity_applicable=?,suspend_salary=?,pf_applicable=?,updated_date=?,updated_by=?\
+          WHERE record_status='A' and  hims_d_employee_id=?",
           [
             input.employee_code,
-            input.title_id,
-            input.first_name,
-            input.middle_name,
-            input.last_name,
             input.full_name,
             input.arabic_name,
-            input.employee_designation_id,
-            input.license_number,
-            input.sex,
             input.date_of_birth,
-            input.date_of_joining,
-            input.date_of_resignation,
-            input.address,
-            input.address2,
-            input.pincode,
-            input.city_id,
-            input.state_id,
-            input.country_id,
+            input.sex,
             input.primary_contact_no,
-            input.secondary_contact_no,
             input.email,
-            input.emergancy_contact_person,
-            input.emergancy_contact_no,
             input.blood_group,
+            input.nationality,
+            input.religion_id,
+            input.marital_status,
+            input.present_address,
+            input.present_address2,
+            input.present_pincode,
+            input.present_city_id,
+            input.present_state_id,
+            input.present_country_id,
+            input.permanent_address,
+            input.permanent_address2,
+            input.permanent_pincode,
+            input.permanent_city_id,
+            input.permanent_state_id,
+            input.permanent_country_id,
             input.isdoctor,
-            input.employee_status,
-            input.effective_start_date,
-            input.effective_end_date,
+            input.license_number,
+            input.date_of_joining,
+            input.appointment_type,
+            input.employee_type,
+            input.reliving_date,
+            input.notice_period,
+            input.date_of_resignation,
+            input.company_bank_id,
+            input.employee_bank_name,
+            input.employee_bank_ifsc_code,
+            input.employee_account_number,
+            input.mode_of_payment,
+            input.accomodation_provided,
+            input.hospital_id,
+
+            input.gross_salary,
+            input.total_earnings,
+            input.total_deductions,
+            input.total_contributions,
+            input.net_salary,
+            input.cost_to_company,
+
+            input.leave_salary_process,
+            input.late_coming_rule,
+            input.airfare_process,
+            input.exclude_machine_data,
+            input.gratuity_applicable,
+            input.suspend_salary,
+            input.pf_applicable,
+
             new Date(),
             input.updated_by,
-            input.record_status,
             input.hims_d_employee_id
           ],
           (error, result) => {
@@ -1010,6 +1040,9 @@ let updateEmployee = (req, res, next) => {
                     "sub_department_id",
                     "category_speciality_id",
                     "user_id",
+                    "employee_designation_id",
+                    "reporting_to_id",
+                    "from_date",
                     "created_by",
                     "updated_by"
                   ];
@@ -1053,27 +1086,22 @@ let updateEmployee = (req, res, next) => {
                       i < req.body.updatedeptDetails.length;
                       i++
                     ) {
-                      qry +=
-                        "UPDATE `hims_m_employee_department_mappings` SET employee_id='" +
-                        inputParam[i].employee_id +
-                        "', services_id='" +
-                        inputParam[i].services_id +
-                        "', sub_department_id='" +
-                        inputParam[i].sub_department_id +
-                        "', category_speciality_id='" +
-                        inputParam[i].category_speciality_id +
-                        "', user_id='" +
-                        inputParam[i].user_id +
-                        "', record_status='" +
-                        inputParam[i].record_status +
-                        "', updated_date='" +
-                        new Date().toLocaleString() +
-                        "',updated_by=\
-'" +
-                        req.body.updated_by +
-                        "' WHERE record_status='A' and hims_d_employee_department_id='" +
-                        inputParam[i].hims_d_employee_department_id +
-                        "';";
+                      qry += mysql.format(
+                        "UPDATE `hims_m_employee_department_mappings` SET services_id=?,`sub_department_id`=?,\
+                        `category_speciality_id`=?,`to_date`=?,`dep_status`=?, `record_status`=?,\
+                      updated_date=?,updated_by=? where record_status='A' and hims_d_employee_department_id=?;",
+                        [
+                          inputParam[i].services_id,
+                          inputParam[i].sub_department_id,
+                          inputParam[i].category_speciality_id,
+                          inputParam[i].to_date,
+                          inputParam[i].dep_status,
+                          inputParam[i].record_status,
+                          moment().format("YYYY-MM-DD HH:mm"),
+                          user_id.updated_by,
+                          inputParam[i].hims_d_employee_department_id
+                        ]
+                      );
                     }
 
                     connection.query(qry, (error, updateDeptDetailResult) => {
@@ -1140,31 +1168,24 @@ let updateEmployee = (req, res, next) => {
                       i < req.body.updateserviceComm.length;
                       i++
                     ) {
-                      qry +=
-                        "UPDATE `hims_m_doctor_service_commission` SET provider_id='" +
-                        inputParam[i].provider_id +
-                        "', services_id='" +
-                        inputParam[i].services_id +
-                        "', service_type_id='" +
-                        inputParam[i].service_type_id +
-                        "', op_cash_commission_percent='" +
-                        inputParam[i].op_cash_commission_percent +
-                        "', op_credit_commission_percent='" +
-                        inputParam[i].op_credit_commission_percent +
-                        "', ip_cash_commission_percent='" +
-                        inputParam[i].ip_cash_commission_percent +
-                        "', ip_credit_commission_percent='" +
-                        inputParam[i].ip_credit_commission_percent +
-                        "', record_status='" +
-                        inputParam[i].record_status +
-                        "', updated_date='" +
-                        new Date().toLocaleString() +
-                        "',updated_by=\
-'" +
-                        req.body.updated_by +
-                        "' WHERE record_status='A' and hims_m_doctor_service_commission_id='" +
-                        inputParam[i].hims_m_doctor_service_commission_id +
-                        "';";
+                      qry += mysql.format(
+                        "UPDATE `hims_m_doctor_service_commission` SET services_id=?,\
+                      `service_type_id`=?,`op_cash_commission_percent`=?,`op_credit_commission_percent`=?,`ip_cash_commission_percent`=?,\
+                      `ip_credit_commission_percent`=?,record_status`=?,\
+                      updated_date=?,updated_by=? where record_status='A' and hims_m_doctor_service_commission_id=?;",
+                        [
+                          inputParam[i].services_id,
+                          inputParam[i].service_type_id,
+                          inputParam[i].op_cash_commission_percent,
+                          inputParam[i].op_credit_commission_percent,
+                          inputParam[i].ip_cash_commission_percent,
+                          inputParam[i].ip_credit_commission_percent,
+                          inputParam[i].record_status,
+                          moment().format("YYYY-MM-DD HH:mm"),
+                          user_id.updated_by,
+                          inputParam[i].hims_m_doctor_service_commission_id
+                        ]
+                      );
                     }
 
                     connection.query(qry, (error, updateServiceCommResult) => {
@@ -1231,29 +1252,23 @@ let updateEmployee = (req, res, next) => {
                       i < req.body.updateservTypeCommission.length;
                       i++
                     ) {
-                      qry +=
-                        "UPDATE `hims_m_doctor_service_type_commission` SET provider_id='" +
-                        inputParam[i].provider_id +
-                        "', service_type_id='" +
-                        inputParam[i].service_type_id +
-                        "', op_cash_comission_percent='" +
-                        inputParam[i].op_cash_comission_percent +
-                        "', op_credit_comission_percent='" +
-                        inputParam[i].op_credit_comission_percent +
-                        "', ip_cash_commission_percent='" +
-                        inputParam[i].ip_cash_commission_percent +
-                        "', ip_credit_commission_percent='" +
-                        inputParam[i].ip_credit_commission_percent +
-                        "', record_status='" +
-                        inputParam[i].record_status +
-                        "', updated_date='" +
-                        new Date().toLocaleString() +
-                        "',updated_by=\
-'" +
-                        req.body.updated_by +
-                        "' WHERE record_status='A' and hims_m_doctor_service_type_commission_id='" +
-                        inputParam[i].hims_m_doctor_service_type_commission_id +
-                        "';";
+                      qry += mysql.format(
+                        "UPDATE `hims_m_doctor_service_type_commission` SET \
+                      `service_type_id`=?,`op_cash_comission_percent`=?,`op_credit_comission_percent`=?,`ip_cash_commission_percent`=?,\
+                      `ip_credit_commission_percent`=?,record_status`=?,\
+                      updated_date=?,updated_by=? where record_status='A' and hims_m_doctor_service_type_commission_id=?;",
+                        [
+                          inputParam[i].service_type_id,
+                          inputParam[i].op_cash_comission_percent,
+                          inputParam[i].op_credit_comission_percent,
+                          inputParam[i].ip_cash_commission_percent,
+                          inputParam[i].ip_credit_commission_percent,
+                          inputParam[i].record_status,
+                          moment().format("YYYY-MM-DD HH:mm"),
+                          user_id.updated_by,
+                          inputParam[i].hims_m_doctor_service_type_commission_id
+                        ]
+                      );
                     }
 
                     connection.query(qry, (error, updateServiceCommResult) => {
@@ -1266,7 +1281,209 @@ let updateEmployee = (req, res, next) => {
                     });
                   }
                 })
+                .then(updateServiceCommResult => {
+                  debugLog("inside insertearnComp then");
 
+                  if (input.insertearnComp.length > 0) {
+                    const insurtColumns = [
+                      "employee_id",
+                      "earnings_id",
+                      "amount",
+                      "formula",
+                      "allocate",
+                      "calculation_method",
+                      "calculation_type",
+                      "revision_type",
+                      "revision_date",
+                      "revised_amount",
+                      "applicable_annual_leave"
+                    ];
+
+                    connection.query(
+                      "INSERT INTO hims_d_employee_earnings(" +
+                        insurtColumns.join(",") +
+                        ") VALUES ?",
+                      [
+                        jsonArrayToObject({
+                          sampleInputObject: insurtColumns,
+                          arrayObj: req.body.insertearnComp,
+                          req: req
+                        })
+                      ],
+                      (error, insertearncomponent) => {
+                        if (error) {
+                          connection.rollback(() => {
+                            releaseDBConnection(db, connection);
+                            next(error);
+                          });
+                        }
+                        //--
+                      }
+                    );
+                  }
+                })
+                .then(insertearncomponent => {
+                  debugLog("inside insertDeductionComp then");
+
+                  if (input.insertDeductionComp.length > 0) {
+                    const insurtColumns = [
+                      "employee_id",
+                      "deductions_id",
+                      "amount",
+                      "formula",
+                      "allocate",
+                      "calculation_method",
+                      "calculation_type",
+                      "revision_type",
+                      "revision_date",
+                      "revised_amount"
+                    ];
+
+                    connection.query(
+                      "INSERT INTO hims_d_employee_deductions(" +
+                        insurtColumns.join(",") +
+                        ") VALUES ?",
+                      [
+                        jsonArrayToObject({
+                          sampleInputObject: insurtColumns,
+                          arrayObj: req.body.insertDeductionComp,
+                          req: req
+                        })
+                      ],
+                      (error, insertDeductionComp) => {
+                        if (error) {
+                          connection.rollback(() => {
+                            releaseDBConnection(db, connection);
+                            next(error);
+                          });
+                        }
+                        //--
+                      }
+                    );
+                  }
+                })
+                .then(insertDeductionComp => {
+                  debugLog("inside insertContributeComp then");
+
+                  if (input.insertContributeComp.length > 0) {
+                    const insurtColumns = [
+                      "employee_id",
+                      "contributions_id",
+                      "amount",
+                      "formula",
+                      "allocate",
+                      "calculation_method",
+                      "calculation_type",
+                      "revision_type",
+                      "revision_date",
+                      "revised_amount"
+                    ];
+
+                    connection.query(
+                      "INSERT INTO hims_d_employee_contributions(" +
+                        insurtColumns.join(",") +
+                        ") VALUES ?",
+                      [
+                        jsonArrayToObject({
+                          sampleInputObject: insurtColumns,
+                          arrayObj: req.body.insertContributeComp,
+                          req: req
+                        })
+                      ],
+                      (error, insertContributeComp) => {
+                        if (error) {
+                          connection.rollback(() => {
+                            releaseDBConnection(db, connection);
+                            next(error);
+                          });
+                        }
+                        //--
+                      }
+                    );
+                  }
+                })
+                .then(insertContributeComp => {
+                  debugLog("inside insertIdDetails then");
+
+                  if (input.insertIdDetails.length > 0) {
+                    const insurtColumns = [
+                      "employee_id",
+                      "identity_documents_id",
+                      "identity_number",
+                      "valid_upto",
+                      "issue_date",
+                      "alert_required",
+                      "alert_date"
+                    ];
+
+                    connection.query(
+                      "INSERT INTO hims_d_employee_identification(" +
+                        insurtColumns.join(",") +
+                        ",created_date,created_by,updated_date,updated_by) VALUES ?",
+                      [
+                        jsonArrayToObject({
+                          sampleInputObject: insurtColumns,
+                          arrayObj: req.body.insertIdDetails,
+                          req: req,
+                          newFieldToInsert: [
+                            new Date(),
+                            req.userIdentity.algaeh_d_app_user_id,
+                            new Date(),
+                            req.userIdentity.algaeh_d_app_user_id
+                          ]
+                        })
+                      ],
+                      (error, insertIdDetails) => {
+                        if (error) {
+                          connection.rollback(() => {
+                            releaseDBConnection(db, connection);
+                            next(error);
+                          });
+                        }
+                      }
+                    );
+                  }
+                })
+                .then(insertIdDetails => {
+                  debugLog("inside insertDependentDetails then");
+
+                  if (input.insertDependentDetails.length > 0) {
+                    const insurtColumns = [
+                      "employee_id",
+                      "dependent_type",
+                      "dependent_name",
+                      "dependent_identity_type",
+                      "dependent_identity_no"
+                    ];
+
+                    connection.query(
+                      "INSERT INTO hims_d_employee_dependents(" +
+                        insurtColumns.join(",") +
+                        ",created_date,created_by,updated_date,updated_by) VALUES ?",
+                      [
+                        jsonArrayToObject({
+                          sampleInputObject: insurtColumns,
+                          arrayObj: req.body.insertDependentDetails,
+                          req: req,
+                          newFieldToInsert: [
+                            new Date(),
+                            req.userIdentity.algaeh_d_app_user_id,
+                            new Date(),
+                            req.userIdentity.algaeh_d_app_user_id
+                          ]
+                        })
+                      ],
+                      (error, insertDependentDetails) => {
+                        if (error) {
+                          connection.rollback(() => {
+                            releaseDBConnection(db, connection);
+                            next(error);
+                          });
+                        }
+                      }
+                    );
+                  }
+                })
                 .finally(allResult => {
                   debugLog("inside finally");
                   connection.commit(error => {
@@ -1296,6 +1513,64 @@ let updateEmployee = (req, res, next) => {
 };
 
 //created by irfan: to get eployee details
+// let getEmployeeDetails = (req, res, next) => {
+//   let employeeWhereCondition = {
+//     employee_code: "ALL",
+//     sex: "ALL",
+//     blood_group: "ALL",
+//     employee_status: "ALL",
+//     date_of_joining: "ALL",
+//     date_of_resignation: "ALL",
+//     primary_contact_no: "ALL",
+//     email: "ALL"
+//   };
+//   try {
+//     if (req.db == null) {
+//       next(httpStatus.dataBaseNotInitilizedError());
+//     }
+//     let db = req.db;
+
+//     let where = whereCondition(extend(employeeWhereCondition, req.query));
+
+//     db.getConnection((error, connection) => {
+//       connection.query(
+//         "SELECT E.hims_d_employee_id,E.employee_code,E.title_id,E.full_name,E.arabic_name,E.employee_designation_id,\
+//         E.license_number,E.sex,E.religion_id,E.marital_status,E.date_of_birth,E.date_of_joining,E.date_of_resignation,E.present_address,E.present_address2,\
+//         E.present_pincode,E.present_state_id,E.present_country_id,\
+//         E.permanent_address , E.permanent_address2, E.permanent_pincode, E.permanent_city_id, E.permanent_state_id,\
+//         E.permanent_country_id, E.primary_contact_no, E.secondary_contact_no,E.email,\
+//         E.emergency_contact_person,E.emergency_contact_no,E.blood_group,\
+//         E.isdoctor,E.employee_status,E.exclude_machine_data ,E.company_bank_id ,E.employee_bank_name , E.effective_start_date,E.effective_end_date,\
+//         E.employee_bank_ifsc_code , E.employee_account_number, E.mode_of_payment, E.accomodation_provided,\
+//          E.late_coming_rule, E.leave_salary_process, E.entitled_daily_ot, E.suspend_salary, E.gratuity_applicable, E.contract_type, E.employee_group_id,\
+//          E.weekoff_from,E.overtime_group_id, E.reporting_to_id, E.hospital_id,\
+//         ED.hims_d_employee_department_id,ED.employee_id,ED.sub_department_id,ED.category_speciality_id,ED.user_id,\
+//          ED.services_id,ED.employee_designation_id,ED.reporting_to_id,ED.from_date,ED.end_date,ED.dep_status,\
+//          CS.hims_m_category_speciality_mappings_id,CS.category_id,CS.speciality_id,\
+//         CS.category_speciality_status,CS.effective_start_date,CS.effective_end_date\
+//         from hims_d_employee E,hims_m_employee_department_mappings ED,hims_m_category_speciality_mappings CS\
+//          Where E.record_status='A' and ED.record_status='A' and CS.record_status='A' and E.hims_d_employee_id=ED.employee_id\
+//           and ED.category_speciality_id=CS.hims_m_category_speciality_mappings_id AND " +
+//           where.condition +
+//           "order by E.hims_d_employee_id desc ",
+//         where.values,
+//         (error, result) => {
+//           releaseDBConnection(db, connection);
+//           if (error) {
+//             next(error);
+//           }
+
+//           req.records = result;
+//           next();
+//         }
+//       );
+//     });
+//   } catch (e) {
+//     next(e);
+//   }
+// };
+
+//created by Nowshad: to get eployee details
 let getEmployeeDetails = (req, res, next) => {
   let employeeWhereCondition = {
     employee_code: "ALL",
@@ -1317,22 +1592,7 @@ let getEmployeeDetails = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "SELECT E.hims_d_employee_id,E.employee_code,E.title_id,E.full_name,E.arabic_name,E.employee_designation_id,\
-        E.license_number,E.sex,E.date_of_birth,E.date_of_joining,E.date_of_resignation,E.present_address,E.present_address2,\
-        E.present_pincode,E.present_pincode,E.present_state_id,E.present_country_id,\
-        E.permanent_address , E.permanent_address2, E.permanent_pincode, E.permanent_city_id, E.permanent_state_id,\
-        E.permanent_country_id, E.primary_contact_no, E.secondary_contact_no,E.email,\
-        E.emergency_contact_person,E.emergency_contact_no,E.blood_group,\
-        E.isdoctor,E.employee_status,E.exclude_machine_data ,E.company_bank_id ,E.employee_bank_name , E.effective_start_date,E.effective_end_date,\
-        E.employee_bank_ifsc_code , E.employee_account_number, E.mode_of_payment, E.accomodation_provided,\
-         E.late_coming_rule, E.leave_salary_process, E.entitled_daily_ot, E.suspend_salary, E.gratuity_applicable, E.contract_type, E.employee_group_id,\
-         E.weekoff_from,E.overtime_group_id, E.reporting_to_id, E.hospital_id,\
-        ED.hims_d_employee_department_id,ED.employee_id,ED.sub_department_id,ED.category_speciality_id,ED.user_id,\
-         ED.services_id,CS.hims_m_category_speciality_mappings_id,CS.category_id,CS.speciality_id,\
-        CS.category_speciality_status,CS.effective_start_date,CS.effective_end_date\
-        from hims_d_employee E,hims_m_employee_department_mappings ED,hims_m_category_speciality_mappings CS\
-         Where E.record_status='A' and ED.record_status='A' and CS.record_status='A' and E.hims_d_employee_id=ED.employee_id\
-          and ED.category_speciality_id=CS.hims_m_category_speciality_mappings_id AND " +
+        "SELECT * from hims_d_employee Where record_status='A' AND " +
           where.condition +
           "order by E.hims_d_employee_id desc ",
         where.values,
@@ -2371,6 +2631,105 @@ let updateEmployeeEducation = (req, res, next) => {
   }
 };
 
+let getEmployeeDepartments = (req, res, next) => {
+  let employeeWhereCondition = {
+    employee_id: "ALL"
+  };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let where = whereCondition(extend(employeeWhereCondition, req.query));
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "SELECT ED.hims_d_employee_department_id,ED.employee_id,ED.sub_department_id,ED.category_speciality_id,ED.user_id,\
+         ED.services_id,ED.employee_designation_id,ED.reporting_to_id,ED.from_date,ED.to_date,ED.dep_status,\
+         CS.hims_m_category_speciality_mappings_id,CS.category_id,CS.speciality_id,\
+        CS.category_speciality_status,CS.effective_start_date,CS.effective_end_date \
+        from hims_m_employee_department_mappings ED,hims_m_category_speciality_mappings CS\
+         Where ED.record_status='A' and CS.record_status='A' \
+          and ED.category_speciality_id=CS.hims_m_category_speciality_mappings_id AND " +
+          where.condition,
+        where.values,
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+let getPayrollComponents = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.query);
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "SELECT * from hims_d_employee_earnings where employee_id = ?; SELECT * from hims_d_employee_deductions where employee_id = ?; \
+        SELECT * from hims_d_employee_contributions where employee_id = ?;",
+        [input.employee_id, input.employee_id, input.employee_id],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          debugLog("result: ", result);
+
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+let getFamilyIdentification = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.query);
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "SELECT * from hims_d_employee_identification where employee_id = ?; \
+        SELECT * from hims_d_employee_dependents where employee_id = ?;",
+        [input.employee_id, input.employee_id, input.employee_id],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addEmployee,
   addEmployeeMaster,
@@ -2404,5 +2763,8 @@ module.exports = {
   updateEmployeeEducation,
   deleteEmployeeEducation,
   addEmployeeEducation,
-  getEmployeeEducation
+  getEmployeeEducation,
+  getEmployeeDepartments,
+  getPayrollComponents,
+  getFamilyIdentification
 };

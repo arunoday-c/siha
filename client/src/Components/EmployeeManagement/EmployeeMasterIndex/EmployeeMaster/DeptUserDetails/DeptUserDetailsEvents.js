@@ -1,8 +1,9 @@
-import { swalMessage } from "../../../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../../../utils/GlobalFunctions";
-import extend from "extend";
 import Enumerable from "linq";
-let texthandlerInterval = null;
+import moment from "moment";
+import Options from "../../../../../Options.json";
+
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -13,13 +14,6 @@ const texthandle = ($this, e) => {
   $this.props.EmpMasterIOputs.updateEmployeeTabs({
     [name]: value
   });
-  // clearInterval(texthandlerInterval);
-  // texthandlerInterval = setInterval(() => {
-  //   if (context !== undefined) {
-  //     context.updateState({ [name]: value });
-  //   }
-  //   clearInterval(texthandlerInterval);
-  // }, 500);
 };
 
 const departmenttexthandle = ($this, ctrl, e) => {
@@ -40,7 +34,7 @@ const departmenttexthandle = ($this, ctrl, e) => {
           speciality_status: "A"
         },
         redux: {
-          type: "EMP_SPECILITY_GET_DATA",
+          type: "EMP_DEP_SPECILITY_GET_DATA",
           mappingName: "empdepspeciality"
         }
       });
@@ -94,17 +88,27 @@ const AddDeptUser = ($this, e) => {
     onSuccess: () => {
       if ($this.state.sub_department_id === null) {
         swalMessage({
-          title: "Invalid Input. Department cannot be blank",
+          title: "Department. cannot be blank",
           type: "warning"
         });
       } else if ($this.state.speciality_id === null) {
         swalMessage({
-          title: "Invalid Input. Speciality cannot be blank",
+          title: "Speciality. cannot be blank",
           type: "warning"
         });
-      } else if ($this.state.specimapcategory === null) {
+      } else if ($this.state.category_id === null) {
         swalMessage({
-          title: "Invalid Input. Category cannot be blank",
+          title: "Category. cannot be blank",
+          type: "warning"
+        });
+      } else if ($this.state.designation_id === null) {
+        swalMessage({
+          title: "Designation. cannot be blank",
+          type: "warning"
+        });
+      } else if ($this.state.reporting_to_id === null) {
+        swalMessage({
+          title: "Reporting To. cannot be blank",
           type: "warning"
         });
       } else {
@@ -126,16 +130,21 @@ const AddDeptUser = ($this, e) => {
           }
         }
         deptDetails.push({
+          employee_id: $this.state.hims_d_employee_id,
           sub_department_id: $this.state.sub_department_id,
           category_speciality_id: $this.state.category_speciality_id,
           user_id: $this.state.user_id,
           category_id: $this.state.category_id,
           speciality_id: $this.state.speciality_id,
           services_id: $this.state.services_id,
-          reporting_to: $this.state.reporting_to,
+          reporting_to_id: $this.state.reporting_to_id,
+          employee_designation_id: $this.state.designation_id,
+          from_date: $this.state.from_date,
+          dep_status: "A",
           hims_d_designation_id: $this.state.hims_d_designation_id
         });
 
+        debugger;
         $this.setState({
           deptDetails: deptDetails,
           sub_department_id: null,
@@ -144,19 +153,14 @@ const AddDeptUser = ($this, e) => {
           category_id: null,
           speciality_id: null,
           services_id: null,
-          reporting_to: null,
+          reporting_to_id: null,
+          designation_id: null,
+          from_date: null,
           hims_d_designation_id: null
         });
         $this.props.EmpMasterIOputs.updateEmployeeTabs({
           deptDetails: deptDetails,
-          sub_department_id: $this.state.sub_department_id,
-          category_speciality_id: $this.state.category_speciality_id,
-          user_id: $this.state.user_id,
-          category_id: $this.state.category_id,
-          speciality_id: $this.state.speciality_id,
-          services_id: $this.state.services_id,
-          reporting_to: $this.state.reporting_to,
-          hims_d_designation_id: $this.state.hims_d_designation_id
+          insertdeptDetails: deptDetails
         });
       }
     }
@@ -170,17 +174,14 @@ const updateDeptUser = ($this, row) => {
     .where(w => w.sub_department_id !== row.sub_department_id)
     .toArray();
   deptDetails.push(row);
-
   $this.setState({
     deptDetails: deptDetails
   });
   $this.props.EmpMasterIOputs.updateEmployeeTabs({
     deptDetails: deptDetails
   });
-
   // let updatedeptDetails = $this.state.updatedeptDetails;
   // let insertdeptDetails = $this.state.insertdeptDetails;
-
   // if (row.hims_d_employee_department_id !== undefined) {
   //   let Updateobj = {
   //     hims_d_employee_department_id: row.hims_d_employee_department_id,
@@ -193,7 +194,6 @@ const updateDeptUser = ($this, row) => {
   //   };
   //   updatedeptDetails.push(Updateobj);
   //   extend(deptDetails[row.rowIdx], Updateobj);
-
   //   // deptDetails[row.rowIdx] = Updateobj;
   // } else {
   //   {
@@ -210,7 +210,6 @@ const updateDeptUser = ($this, row) => {
   //     extend(deptDetails[row.rowIdx], Updateobj);
   //   }
   // }
-
   // $this.setState({
   //   deptDetails: deptDetails,
   //   updatedeptDetails: updatedeptDetails,
@@ -251,6 +250,42 @@ const colgridtexthandle = ($this, row, e) => {
   row.update();
 };
 
+const dateFormater = value => {
+  if (value !== null) {
+    return String(moment(value).format(Options.dateFormat));
+  }
+};
+
+const datehandle = ($this, ctrl, e) => {
+  $this.setState({
+    [e]: ctrl
+  });
+};
+
+const getEmployeeDepartments = $this => {
+  debugger;
+  algaehApiCall({
+    uri: "/employee/getEmployeeDepartments",
+    method: "GET",
+    data: { employee_id: $this.state.hims_d_employee_id },
+    onSuccess: response => {
+      if (response.data.success) {
+        let data = response.data.records;
+        if (data.length > 0) {
+          debugger;
+          $this.setState({ deptDetails: data });
+        }
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+};
+
 export {
   texthandle,
   AddDeptUser,
@@ -259,5 +294,8 @@ export {
   specialitytexthandle,
   categorytexthandle,
   updateDeptUser,
-  colgridtexthandle
+  colgridtexthandle,
+  dateFormater,
+  datehandle,
+  getEmployeeDepartments
 };

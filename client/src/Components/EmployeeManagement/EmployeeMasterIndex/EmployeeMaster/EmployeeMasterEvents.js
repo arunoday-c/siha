@@ -3,107 +3,140 @@ import EmpMasterIOputs from "../../../../Models/EmployeeMaster";
 
 const Validations = $this => {
   let isError = false;
+  debugger;
+  if ($this.state.personalDetails.employee_code.length <= 0) {
+    isError = true;
+    swalMessage({
+      type: "warning",
+      title: "Employee Code. Cannot be blank."
+    });
 
-  // if ($this.state.employee_code.length <= 0) {
-  //   isError = true;
-  //   swalMessage({
-  //     type: "warning",
-  //     title: "Invalid Input. Employee Code Cannot be blank."
-  //   });
+    return isError;
+  } else if ($this.state.personalDetails.full_name.length <= 0) {
+    isError = true;
+    swalMessage({
+      type: "warning",
+      title: "Name. Cannot be blank."
+    });
 
-  //   return isError;
-  //   // } else if ($this.state.title_id === null) {
-  //   //   isError = true;
-  //   //   swalMessage({
-  //   //     type: "warning",
-  //   //     title: "Invalid Input. Please Select Title."
-  //   //   });
+    return isError;
+  } else if ($this.state.personalDetails.arabic_name.length <= 0) {
+    isError = true;
 
-  //   //   return isError;
-  // } else if ($this.state.full_name.length <= 0) {
-  //   isError = true;
-  //   swalMessage({
-  //     type: "warning",
-  //     title: "Invalid Input. Name Cannot be blank."
-  //   });
+    swalMessage({
+      type: "warning",
+      title: "Arabic Name. Cannot be blank."
+    });
 
-  //   return isError;
-  // } else if ($this.state.arabic_name.length <= 0) {
-  //   isError = true;
+    return isError;
+  } else if (
+    $this.state.personalDetails.license_number === null &&
+    $this.state.personalDetails.isdoctor === "Y"
+  ) {
+    isError = true;
+    swalMessage({
+      type: "warning",
+      title: "License Number. Cannot be blank."
+    });
 
-  //   swalMessage({
-  //     type: "warning",
-  //     title: "Invalid Input. Arabic Name Cannot be blank."
-  //   });
+    return isError;
+  } else if ($this.state.personalDetails.sex === null) {
+    isError = true;
+    swalMessage({
+      type: "warning",
+      title: "Gender. cannot be blank"
+    });
 
-  //   return isError;
-  // } else if ($this.state.employee_designation_id === null) {
-  //   isError = true;
-  //   swalMessage({
-  //     type: "warning",
-  //     title: "Invalid Input. Please Select Designation."
-  //   });
+    return isError;
+  } else if ($this.state.personalDetails.date_of_birth === null) {
+    isError = true;
+    swalMessage({
+      type: "warning",
+      title: "Date Of Birth. Cannot be blank."
+    });
 
-  //   return isError;
-  // } else if (
-  //   $this.state.license_number.length <= 0 &&
-  //   $this.state.isdoctor === "Y"
-  // ) {
-  //   isError = true;
-  //   swalMessage({
-  //     type: "warning",
-  //     title: "IInvalid Input. License Number Cannot be blank."
-  //   });
+    return isError;
+  } else if ($this.state.personalDetails.primary_contact_no === 0) {
+    isError = true;
+    swalMessage({
+      type: "warning",
+      title: "Mobile No. Cannot be blank."
+    });
 
-  //   return isError;
-  // } else if ($this.state.sex === null) {
-  //   isError = true;
-  //   swalMessage({
-  //     type: "warning",
-  //     title: "Invalid Input. Please Select Gender."
-  //   });
+    return isError;
+  } else if ($this.state.personalDetails.date_of_joining === null) {
+    isError = true;
+    swalMessage({
+      type: "warning",
+      title: "Date of Joining. Cannot be blank."
+    });
 
-  //   return isError;
-  // } else if ($this.state.date_of_birth === null) {
-  //   isError = true;
-  //   swalMessage({
-  //     type: "warning",
-  //     title: "Invalid Input. Date Of Birth Cannot be blank."
-  //   });
+    return isError;
+  } else if ($this.state.personalDetails.appointment_type === null) {
+    isError = true;
+    swalMessage({
+      type: "warning",
+      title: "Appointment Type. Cannot be blank."
+    });
 
-  //   return isError;
-  // } else if ($this.state.country_id === null) {
-  //   isError = true;
-  //   swalMessage({
-  //     type: "warning",
-  //     title: "Invalid Input. Please Select Country."
-  //   });
+    return isError;
+  } else if ($this.state.personalDetails.employee_type === null) {
+    isError = true;
+    swalMessage({
+      type: "warning",
+      title: "Employee Type. Cannot be blank."
+    });
 
-  //   return isError;
-  // } else if ($this.state.email.length <= 0) {
-  //   isError = true;
-  //   swalMessage({
-  //     type: "warning",
-  //     title: "Invalid Input. Email Cannot be blank."
-  //   });
+    return isError;
+  } else if ($this.state.personalDetails.employee_status === null) {
+    isError = true;
+    swalMessage({
+      type: "warning",
+      title: "Employee Status. Cannot be blank."
+    });
 
-  //   return isError;
-  // } else if ($this.state.primary_contact_no === 0) {
-  //   isError = true;
-  //   swalMessage({
-  //     type: "warning",
-  //     title: "Invalid Input. Mobile No. Cannot be blank."
-  //   });
+    return isError;
+  } else if ($this.state.personalDetails.employee_bank_name === null) {
+    isError = true;
+    swalMessage({
+      type: "warning",
+      title: "Bank Name. Cannot be blank."
+    });
 
-  //   return isError;
-  // } else if ($this.state.deptDetails.length <= 0) {
-  //   isError = true;
-  //   swalMessage({
-  //     type: "warning",
-  //     title: "Add atleast one department to the list"
-  //   });
-  //   return isError;
-  // }
+    return isError;
+  } else if ($this.state.personalDetails.employee_bank_ifsc_code === null) {
+    isError = true;
+    swalMessage({
+      type: "warning",
+      title: "SWIFT Code. Cannot be blank."
+    });
+
+    return isError;
+  } else if ($this.state.personalDetails.employee_account_number === null) {
+    isError = true;
+    swalMessage({
+      type: "warning",
+      title: "Account Number. Cannot be blank."
+    });
+
+    return isError;
+  } else if ($this.state.personalDetails.company_bank_id === null) {
+    isError = true;
+    swalMessage({
+      type: "warning",
+      title: "Select A Bank. Cannot be blank."
+    });
+
+    return isError;
+  } else if ($this.state.personalDetails.mode_of_payment === null) {
+    isError = true;
+    swalMessage({
+      type: "warning",
+      title: "Mode of Payment. Cannot be blank."
+    });
+
+    return isError;
+  }
 
   return false;
 };
@@ -111,182 +144,55 @@ const Validations = $this => {
 const InsertUpdateEmployee = $this => {
   const err = Validations($this);
   console.log("Input:", $this.state);
-
+  debugger;
   if (!err) {
-    //if(this.props/)
-    const hospital = JSON.parse(sessionStorage.getItem("CurrencyDetail"));
-    const _payload = {
-      hospital_id: hospital.hims_d_hospital_id,
-      ...$this.state.personalDetails
-    };
-    console.log("_payload", _payload);
-    // return;
-    algaehApiCall({
-      uri: "/employee/addEmployeeMaster",
-      data: _payload,
-      onSuccess: response => {
-        if (response.data.success === true) {
-          let _h = response.data.records.insertId;
-          const _payloadDepart = {
-            hospital_id: hospital.hims_d_hospital_id,
-            hims_d_employee_id: _h,
-            ...$this.state.department_and_other
-          };
+    if ($this.state.personalDetails.company_bank_id === null) {
+      const hospital = JSON.parse(sessionStorage.getItem("CurrencyDetail"));
+      const _payload = {
+        hospital_id: hospital.hims_d_hospital_id,
+        ...$this.state.personalDetails
+      };
+      console.log("_payload", _payload);
 
-          console.log("Depart ment Payload", JSON.stringify(_payloadDepart));
-          algaehApiCall({
-            uri: "/employee/addEmployeeInfo",
-            data: _payloadDepart,
-            method: "POST",
-            onSuccess: response => {
-              if (response.data.success === true) {
-                $this.setState({
-                  personalDetails: {
-                    ...$this.state.personalDetails,
-                    hims_d_employee_id: _h
-                  }
-                });
-                swalMessage({
-                  title: "Saved successfully . .",
-                  type: "success"
-                });
-              }
-            }
-          });
+      algaehApiCall({
+        uri: "/employee/addEmployeeMaster",
+        data: _payload,
+        onSuccess: response => {
+          if (response.data.success === true) {
+            $this.setState({
+              hims_d_employee_id: response.data.records.insertId
+            });
+
+            swalMessage({
+              type: "success",
+              title: "Saved Successfully..."
+            });
+          }
         }
-      }
-    });
+      });
+    } else {
+      const hospital = JSON.parse(sessionStorage.getItem("CurrencyDetail"));
+      const _payload = {
+        hospital_id: hospital.hims_d_hospital_id,
+        ...$this.state.personalDetails
+      };
+      console.log("_payload", _payload);
 
-    // if ($this.state.hims_d_employee_id === null) {
-    // let data = {
-    //   employee_code: $this.state.employee_code,
-    //   full_name: $this.state.full_name,
-    //   arabic_name: $this.state.arabic_name,
-    //   date_of_birth: $this.state.date_of_birth,
-    //   sex: $this.state.sex,
-    //   primary_contact_no: $this.state.primary_contact_no,
-    //   email: $this.state.email,
-    //   blood_group: $this.state.blood_group,
-    //   nationality: $this.state.nationality,
-    //   religion_id: $this.state.religion_id,
-    //   marital_status: $this.state.marital_status,
-    //   present_address: $this.state.present_address,
-    //   present_address2: $this.state.present_address2,
-    //   present_pincode: $this.state.present_pincode,
-    //   present_city_id: $this.state.present_city_id,
-    //   present_state_id: $this.state.present_state_id,
-    //   present_country_id: $this.state.present_country_id,
-    //   permanent_address: $this.state.same_address
-    //     ? $this.state.present_address
-    //     : $this.state.permanent_address,
-    //   permanent_address2: $this.state.same_address
-    //     ? $this.state.present_address2
-    //     : $this.state.permanent_address2,
-    //   permanent_pincode: $this.state.same_address
-    //     ? $this.state.present_pincode
-    //     : $this.state.permanent_pincode,
-    //   permanent_city_id: $this.state.same_address
-    //     ? $this.state.present_city_id
-    //     : $this.state.permanent_city_id,
-    //   permanent_state_id: $this.state.same_address
-    //     ? $this.state.present_state_id
-    //     : $this.state.permanent_state_id,
-    //   permanent_country_id: $this.state.same_address
-    //     ? $this.state.present_country_id
-    //     : $this.state.permanent_country_id,
-    //   isdoctor: $this.state.isdoctor,
-    //   license_number: $this.state.license_number,
-    //   date_of_joining: $this.state.date_of_joining,
-    //   appointment_type: $this.state.appointment_type,
-    //   employee_type: $this.state.employee_type,
-    //   reliving_date: $this.state.reliving_date,
-    //   notice_period: $this.state.notice_period,
-    //   date_of_leaving: $this.state.date_of_leaving,
-    //   company_bank_id: $this.state.company_bank_id,
-    //   employee_bank_name: $this.state.employee_bank_name,
-    //   employee_bank_ifsc_code: $this.state.employee_bank_ifsc_code,
-    //   employee_account_number: $this.state.employee_account_number,
-    //   mode_of_payment: $this.state.mode_of_payment
-    // };
-    // algaehApiCall({
-    //   uri: "/employee/addEmployeeMaster",
-    //   data: $this.state.personalDetails,
-    //   onSuccess: response => {
-    //     if (response.data.success === true) {
-    //       $this.setState({
-    //         hims_d_employee_id: response.data.records.insertId
-    //       });
-    //       swalMessage({
-    //         title: "Saved successfully . .",
-    //         type: "success"
-    //       });
-    //     }
-    //   }
-    // });
-    // } else if ($this.state.hims_d_employee_id !== null) {
-    //
-    // algaehApiCall({
-    //   uri: "/employee/addEmployeeInfo",
-    //   data: $this.state,
-    //   method: "POST",
-    //   onSuccess: res => {
-    //     if (res.data.success) {
-    //       swalMessage({
-    //         title: "Saved successfully . .",
-    //         type: "success"
-    //       });
-    //     }
-    //   },
-    //   onFailure: err => {}
-    // });
-    // $this.state.record_status = "A";
-    // algaehApiCall({
-    //   uri: "/employee/updateEmployee",
-    //   data: $this.state,
-    //   method: "PUT",
-    //   onSuccess: response => {
-    //     if (response.data.success === true) {
-    //       swalMessage({
-    //         title: "Updated successfully . .",
-    //         type: "success"
-    //       });
-    //     }
-    //   }
-    // });
-    // }
+      algaehApiCall({
+        uri: "/employee/updateEmployee",
+        data: _payload,
+        method: "PUT",
+        onSuccess: response => {
+          if (response.data.success === true) {
+            swalMessage({
+              type: "success",
+              title: "Updated Successfully..."
+            });
+          }
+        }
+      });
+    }
   }
-
-  // if (!err) {
-  //   if ($this.state.hims_d_employee_id === null) {
-  //     algaehApiCall({
-  //       uri: "/employee/addEmployee",
-  //       data: $this.state,
-  //       onSuccess: response => {
-  //         if (response.data.success === true) {
-  //           swalMessage({
-  //             title: "Saved successfully . .",
-  //             type: "success"
-  //           });
-  //         }
-  //       }
-  //     });
-  //   } else {
-  //     $this.state.record_status = "A";
-  //     algaehApiCall({
-  //       uri: "/employee/updateEmployee",
-  //       data: $this.state,
-  //       method: "PUT",
-  //       onSuccess: response => {
-  //         if (response.data.success === true) {
-  //           swalMessage({
-  //             title: "Updated successfully . .",
-  //             type: "success"
-  //           });
-  //         }
-  //       }
-  //     });
-  //   }
-  // }
 };
 
 const ClearEmployee = $this => {

@@ -7,7 +7,7 @@ import {
   AlgaehLabel,
   AlagehAutoComplete
 } from "../../../../Wrapper/algaehWrapper";
-import MyContext from "../../../../../utils/MyContext.js";
+
 import variableJson from "../../../../../utils/GlobalVariables.json";
 import {
   texthandle,
@@ -35,6 +35,7 @@ class OfficalDetails extends PureComponent {
   }
 
   componentDidMount() {
+    debugger;
     let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
     this.setState({ ...this.state, ...InputOutput });
     if (this.props.banks === undefined || this.props.banks.length === 0) {
@@ -50,11 +51,13 @@ class OfficalDetails extends PureComponent {
   }
 
   render() {
+    debugger;
     return (
       <React.Fragment>
-        {/* <MyContext.Consumer>
-          {context => ( */}
-        <div className="hptl-phase1-add-employee-form popRightDiv">
+        <div
+          className="hptl-phase1-add-employee-form popRightDiv"
+          data-validate="empOffical"
+        >
           <div className="row">
             <div className="col-lg-8 primary-details">
               <h5>
@@ -62,7 +65,7 @@ class OfficalDetails extends PureComponent {
               </h5>
               <div className="row paddin-bottom-5">
                 <AlgaehDateHandler
-                  div={{ className: "col" }}
+                  div={{ className: "col mandatory" }}
                   label={{
                     fieldName: "date_of_joining",
                     isImp: true
@@ -80,7 +83,7 @@ class OfficalDetails extends PureComponent {
                   value={this.state.date_of_joining}
                 />
                 <AlagehAutoComplete
-                  div={{ className: "col" }}
+                  div={{ className: "col mandatory" }}
                   label={{
                     forceLabel: "Appointemt Type",
                     isImp: true
@@ -101,7 +104,7 @@ class OfficalDetails extends PureComponent {
                   }}
                 />
                 <AlagehAutoComplete
-                  div={{ className: "col" }}
+                  div={{ className: "col mandatory" }}
                   label={{
                     forceLabel: "Employee Type",
                     isImp: true
@@ -148,7 +151,7 @@ class OfficalDetails extends PureComponent {
                   value={this.state.date_of_leaving}
                 />
                 <AlagehFormGroup
-                  div={{ className: "col-2" }}
+                  div={{ className: "col" }}
                   label={{
                     forceLabel: "Notice Period",
                     isImp: false
@@ -174,10 +177,10 @@ class OfficalDetails extends PureComponent {
                     }}
                   />
                   <h6>
-                    {this.state.reliving_date !== undefined &&
-                    this.state.reliving_date !== ""
-                      ? this.state.reliving_date.toLocaleDateString()
-                      : ""}
+                    {this.state.reliving_date === undefined ||
+                    this.state.reliving_date === null
+                      ? "DD/MM/YYYY"
+                      : this.state.reliving_date.toLocaleDateString()}
                   </h6>
                 </div>
                 <AlgaehDateHandler
@@ -194,7 +197,7 @@ class OfficalDetails extends PureComponent {
                   value={this.state.exit_date}
                 />
                 <AlagehAutoComplete
-                  div={{ className: "col" }}
+                  div={{ className: "col mandatory" }}
                   label={{
                     forceLabel: "Employee Status",
                     isImp: true
@@ -213,7 +216,7 @@ class OfficalDetails extends PureComponent {
                     },
                     onChange: employeeStatusHandler.bind(this, this)
                   }}
-                />{" "}
+                />
                 <div className="col">
                   <AlgaehLabel
                     label={{
@@ -221,10 +224,10 @@ class OfficalDetails extends PureComponent {
                     }}
                   />
                   <h6>
-                    {this.state.inactive_date !== undefined &&
-                    this.state.inactive_date !== ""
-                      ? this.state.inactive_date.toLocaleDateString()
-                      : ""}
+                    {this.state.inactive_date === undefined ||
+                    this.state.inactive_date === null
+                      ? "DD/MM/YYYY"
+                      : this.state.inactive_date.toLocaleDateString()}
                   </h6>
                 </div>
               </div>
@@ -257,7 +260,7 @@ class OfficalDetails extends PureComponent {
               </h5>
               <div className="row paddin-bottom-5">
                 <AlagehFormGroup
-                  div={{ className: "col-6" }}
+                  div={{ className: "col-6 mandatory" }}
                   label={{
                     forceLabel: "Bank Name",
                     isImp: true
@@ -272,7 +275,7 @@ class OfficalDetails extends PureComponent {
                   }}
                 />
                 <AlagehFormGroup
-                  div={{ className: "col-6" }}
+                  div={{ className: "col-6 mandatory" }}
                   label={{
                     forceLabel: "SWIFT Code",
                     isImp: true
@@ -288,7 +291,7 @@ class OfficalDetails extends PureComponent {
                 />
 
                 <AlagehFormGroup
-                  div={{ className: "col-12" }}
+                  div={{ className: "col-12 mandatory" }}
                   label={{
                     forceLabel: "Account No.",
                     isImp: true
@@ -312,15 +315,15 @@ class OfficalDetails extends PureComponent {
               </h5>
               <div className="row paddin-bottom-5">
                 <AlagehAutoComplete
-                  div={{ className: "col" }}
+                  div={{ className: "col mandatory" }}
                   label={{
                     forceLabel: "Select a Bank",
                     isImp: true
                   }}
                   selector={{
-                    name: "hims_d_bank_id",
+                    name: "company_bank_id",
                     className: "select-fld",
-                    value: this.state.hims_d_bank_id,
+                    value: this.state.company_bank_id,
                     dataSource: {
                       textField: "bank_name",
                       valueField: "hims_d_bank_id",
@@ -331,7 +334,7 @@ class OfficalDetails extends PureComponent {
                 />
 
                 <AlagehAutoComplete
-                  div={{ className: "col" }}
+                  div={{ className: "col mandatory" }}
                   label={{
                     forceLabel: "Mode of Payment",
                     isImp: true
@@ -352,8 +355,6 @@ class OfficalDetails extends PureComponent {
             </div>
           </div>
         </div>
-        {/* )}
-        </MyContext.Consumer> */}
       </React.Fragment>
     );
   }

@@ -9,18 +9,18 @@ import {
 } from "../../../../Wrapper/algaehWrapper";
 import variableJson from "../../../../../utils/GlobalVariables.json";
 import { algaehApiCall } from "../../../../../utils/algaehApiCall";
-import MyContext from "../../../../../utils/MyContext.js";
+
 import {
   texthandle,
-  datehandle,
+  // datehandle,
   AddEmpId,
-  addDependentType
+  addDependentType,
+  getFamilyIdentification
 } from "./FamilyAndIdentificationEvent";
 import { AlgaehActions } from "../../../../../actions/algaehActions";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { swalMessage } from "../../../../../utils/algaehApiCall";
 import moment from "moment";
 
 class FamilyAndIdentification extends PureComponent {
@@ -48,21 +48,17 @@ class FamilyAndIdentification extends PureComponent {
   }
 
   componentWillMount() {
-    let InputOutput = this.props.EmpMasterIOputs;
+    let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
     this.setState({ ...this.state, ...InputOutput });
   }
 
   componentDidMount() {
-    let InputOutput = this.props.EmpMasterIOputs;
-    this.setState(
-      { ...this.state, ...InputOutput }
-
-      //   , () => {
-      //   this.state.hims_d_employee_id !== null
-      //     ? this.getEmployeeIdentification()
-      //     : null;
-      // }
-    );
+    let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
+    this.setState({ ...this.state, ...InputOutput }, () => {
+      if (this.state.hims_d_employee_id !== null) {
+        getFamilyIdentification(this);
+      }
+    });
 
     if (this.props.idtypes === undefined || this.props.idtypes.length === 0) {
       this.props.getIDTypes({
@@ -76,351 +72,320 @@ class FamilyAndIdentification extends PureComponent {
     }
   }
 
-  // addEmployeeIdentification() {
-  //   algaehApiCall({
-  //     uri: "/employee/addEmployeeIdentification",
-  //     method: "POST",
-  //     data: {
-  //       employee_id: this.state.hims_d_employee_id,
-  //       identity_documents_id: this.state.identity_documents_id,
-  //       identity_number: this.state.identity_number,
-  //       valid_upto: this.state.valid_upto,
-  //       issue_date: this.state.issue_date
-  //       // alert_required : this.state.alert_required,
-  //       // alert_date : this.state.alert_date
-  //     },
-  //     onSuccess: res => {
-  //       if (res.data.success) {
-  //         this.getEmployeeIdentification();
-  //         swalMessage({
-  //           title: "Record added successfully",
-  //           type: "success"
-  //         });
-  //       }
-  //     },
-  //     onFailure: err => {
-  //       swalMessage({
-  //         title: err.message,
-  //         type: "error"
-  //       });
-  //     }
-  //   });
-  // }
-
   render() {
     return (
       <React.Fragment>
-        <MyContext.Consumer>
-          {context => (
-            <div className="hptl-phase1-add-employee-form popRightDiv">
-              <div className="row">
-                <div className="col-12">
-                  <h5>
-                    <span>Identification Details</span>
-                  </h5>
-                  <div className="row paddin-bottom-5">
-                    <AlagehAutoComplete
-                      div={{ className: "col-2" }}
-                      label={{
-                        forceLabel: "Id Type",
-                        isImp: false
-                      }}
-                      selector={{
-                        name: "identity_documents_id",
-                        className: "select-fld",
-                        value: this.state.identity_documents_id,
-                        dataSource: {
-                          textField:
-                            this.state.selectedLang === "en"
-                              ? "identity_document_name"
-                              : "arabic_identity_document_name",
-                          valueField: "hims_d_identity_document_id",
-                          data: this.props.idtypes
-                        },
-                        onChange: texthandle.bind(this, this, context),
-                        others: {
-                          tabIndex: "1"
-                        }
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col-2" }}
-                      label={{
-                        forceLabel: "Id Number",
-                        isImp: false
-                      }}
-                      textBox={{
-                        value: this.state.identity_number,
-                        className: "txt-fld",
-                        name: "identity_number",
+        <div className="hptl-phase1-add-employee-form popRightDiv">
+          <div className="row">
+            <div className="col-12" data-validate="empIdGrid">
+              <h5>
+                <span>Identification Details</span>
+              </h5>
+              <div className="row paddin-bottom-5">
+                <AlagehAutoComplete
+                  div={{ className: "col-2" }}
+                  label={{
+                    forceLabel: "Id Type",
+                    isImp: true
+                  }}
+                  selector={{
+                    name: "identity_documents_id",
+                    className: "select-fld",
+                    value: this.state.identity_documents_id,
+                    dataSource: {
+                      textField: "identity_document_name",
+                      valueField: "hims_d_identity_document_id",
+                      data: this.props.idtypes
+                    },
+                    onChange: texthandle.bind(this, this),
+                    others: {
+                      tabIndex: "1"
+                    }
+                  }}
+                />
+                <AlagehFormGroup
+                  div={{ className: "col-2" }}
+                  label={{
+                    forceLabel: "Id Number",
+                    isImp: true
+                  }}
+                  textBox={{
+                    value: this.state.identity_number,
+                    className: "txt-fld",
+                    name: "identity_number",
 
-                        events: {
-                          onChange: texthandle.bind(this, this, context)
-                        },
-                        others: {
-                          tabIndex: "2",
-                          placeholder: "",
-                          type: "number"
-                        }
-                      }}
-                    />
-                    <AlgaehDateHandler
-                      div={{ className: "col-3" }}
-                      label={{
-                        forceLabel: "Issue Date",
-                        isImp: true
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "issue_date",
-                        others: {
-                          tabIndex: "3"
-                        }
-                      }}
-                      maxDate={new Date()}
-                      events={{
-                        //onChange: datehandle.bind(this, this, context)
-                        onChange: selDate => {
-                          this.setState({
-                            issue_date: moment(selDate).format("YYYY-MM-DD")
-                          });
-                        }
-                      }}
-                      value={this.state.issue_date}
-                    />
-                    <AlgaehDateHandler
-                      div={{ className: "col-3" }}
-                      label={{
-                        forceLabel: "Expiry Date",
-                        isImp: true
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "valid_upto",
-                        others: {
-                          tabIndex: "4"
-                        }
-                      }}
-                      //maxDate={new Date()}
-                      events={{
-                        //onChange: datehandle.bind(this, this, context)
-                        onChange: selDate => {
-                          this.setState({
-                            valid_upto: moment(selDate).format("YYYY-MM-DD")
-                          });
-                        }
-                      }}
-                      value={this.state.valid_upto}
-                    />
-                    <div className="col">
-                      <button
-                        type="button"
-                        className="btn btn-primary"
-                        style={{ marginTop: 21 }}
-                        onClick={AddEmpId.bind(this, this, context)}
-                      >
-                        Add
-                      </button>
-                    </div>
-
-                    <div className="col-lg-12 margin-top-15">
-                      <AlgaehDataGrid
-                        data-validate="empIdGrid"
-                        id="employee-ids-grid"
-                        columns={[
-                          {
-                            fieldName: "identity_documents_id",
-                            label: (
-                              <AlgaehLabel label={{ forceLabel: "ID Type" }} />
-                            )
-                          },
-                          {
-                            fieldName: "identity_number",
-                            label: (
-                              <AlgaehLabel
-                                label={{ forceLabel: "ID Number" }}
-                              />
-                            )
-                          },
-                          {
-                            fieldName: "issue_date",
-                            label: (
-                              <AlgaehLabel
-                                label={{ forceLabel: "Issue Date" }}
-                              />
-                            )
-                          },
-                          {
-                            fieldName: "valid_upto",
-                            label: (
-                              <AlgaehLabel
-                                label={{ forceLabel: "Valid Upto" }}
-                              />
-                            )
-                          }
-                        ]}
-                        keyId="service_code"
-                        dataSource={{
-                          data: this.state.idDetails
-                          //data: []
-                        }}
-                        isEditable={true}
-                        paging={{ page: 0, rowsPerPage: 5 }}
-                      />
-                    </div>
-                  </div>
+                    events: {
+                      onChange: texthandle.bind(this, this)
+                    },
+                    others: {
+                      tabIndex: "2",
+                      placeholder: "",
+                      type: "number"
+                    }
+                  }}
+                />
+                <AlgaehDateHandler
+                  div={{ className: "col-3" }}
+                  label={{
+                    forceLabel: "Issue Date",
+                    isImp: true
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "issue_date",
+                    others: {
+                      tabIndex: "3"
+                    }
+                  }}
+                  maxDate={new Date()}
+                  events={{
+                    onChange: selDate => {
+                      this.setState({
+                        issue_date: moment(selDate).format("YYYY-MM-DD")
+                      });
+                    }
+                  }}
+                  value={this.state.issue_date}
+                />
+                <AlgaehDateHandler
+                  div={{ className: "col-3" }}
+                  label={{
+                    forceLabel: "Expiry Date",
+                    isImp: true
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "valid_upto",
+                    others: {
+                      tabIndex: "4"
+                    }
+                  }}
+                  //maxDate={new Date()}
+                  events={{
+                    onChange: selDate => {
+                      this.setState({
+                        valid_upto: moment(selDate).format("YYYY-MM-DD")
+                      });
+                    }
+                  }}
+                  value={this.state.valid_upto}
+                />
+                <div className="col">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    style={{ marginTop: 21 }}
+                    onClick={AddEmpId.bind(this, this)}
+                  >
+                    Add
+                  </button>
                 </div>
 
-                <div className="col-12">
-                  <h5>
-                    <span>Family Details</span>
-                  </h5>
-                  <div className="row paddin-bottom-5">
-                    <AlagehAutoComplete
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Dependent Type",
-                        isImp: false
-                      }}
-                      selector={{
-                        name: "dependent_type",
-                        className: "select-fld",
-                        value: this.state.dependent_type,
-                        dataSource: {
-                          textField: "name",
-                          valueField: "value",
-                          data: variableJson.DEPENDENT_TYPE
-                        },
-                        onChange: texthandle.bind(this, this, context),
-                        others: {
-                          // tabIndex: "10"
-                        }
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Dependent Name",
-                        isImp: true
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "dependent_name",
-                        value: this.state.dependent_name,
-                        events: {
-                          onChange: texthandle.bind(this, this, context)
-                        },
-                        others: {
-                          //tabIndex: "1"
-                        }
-                      }}
-                    />
+                <div className="col-lg-12 margin-top-15">
+                  <AlgaehDataGrid
+                    id="employee-ids-grid"
+                    columns={[
+                      {
+                        fieldName: "identity_documents_id",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "ID Type" }} />
+                        ),
+                        displayTemplate: row => {
+                          let display =
+                            this.props.idtypes === undefined
+                              ? []
+                              : this.props.idtypes.filter(
+                                  f =>
+                                    f.hims_d_identity_document_id ===
+                                    row.identity_documents_id
+                                );
 
-                    <AlagehAutoComplete
-                      div={{ className: "col-2" }}
-                      label={{
-                        forceLabel: "Id Type",
-                        isImp: false
-                      }}
-                      selector={{
-                        name: "dependent_identity_type",
-                        className: "select-fld",
-                        value: this.state.dependent_identity_type,
-                        dataSource: {
-                          textField:
-                            this.state.selectedLang === "en"
-                              ? "identity_document_name"
-                              : "arabic_identity_document_name",
-                          valueField: "hims_d_identity_document_id",
-                          data: this.props.idtypes
-                        },
-                        onChange: texthandle.bind(this, this, context),
-                        others: {
-                          //tabIndex: "1"
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? display[0].identity_document_name
+                                : ""}
+                            </span>
+                          );
                         }
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Id Number",
-                        isImp: false
-                      }}
-                      textBox={{
-                        value: this.state.dependent_identity_no,
-                        className: "txt-fld",
-                        name: "dependent_identity_no",
-
-                        events: {
-                          onChange: texthandle.bind(this, this, context)
-                        },
-                        others: {
-                          //   tabIndex: "7"
-                        }
-                      }}
-                    />
-                    <div className="col">
-                      <button
-                        type="button"
-                        className="btn btn-primary"
-                        style={{ marginTop: 21 }}
-                        onClick={addDependentType.bind(this, this, context)}
-                      >
-                        Add
-                      </button>
-                    </div>
-                    <div className="col-lg-12 margin-top-15">
-                      <AlgaehDataGrid
-                        data-validate="dependentGrid"
-                        id="dep-ids-grid"
-                        columns={[
-                          {
-                            fieldName: "dependent_type",
-                            label: (
-                              <AlgaehLabel
-                                label={{ forceLabel: "Dependent Type" }}
-                              />
-                            )
-                          },
-                          {
-                            fieldName: "dependent_name",
-                            label: (
-                              <AlgaehLabel
-                                label={{ forceLabel: "Dependent Name" }}
-                              />
-                            )
-                          },
-                          {
-                            fieldName: "dependent_identity_type",
-                            label: (
-                              <AlgaehLabel
-                                label={{ forceLabel: "ID Card Type" }}
-                              />
-                            )
-                          },
-                          {
-                            fieldName: "dependent_identity_no",
-                            label: (
-                              <AlgaehLabel
-                                label={{ forceLabel: "ID Number" }}
-                              />
-                            )
-                          }
-                        ]}
-                        keyId="dependent_identity_no"
-                        dataSource={{
-                          data: this.state.dependentDetails
-                        }}
-                        isEditable={true}
-                        paging={{ page: 0, rowsPerPage: 5 }}
-                      />
-                    </div>
-                  </div>
+                      },
+                      {
+                        fieldName: "identity_number",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "ID Number" }} />
+                        )
+                      },
+                      {
+                        fieldName: "issue_date",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Issue Date" }} />
+                        )
+                      },
+                      {
+                        fieldName: "valid_upto",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Valid Upto" }} />
+                        )
+                      }
+                    ]}
+                    keyId="service_code"
+                    dataSource={{
+                      data: this.state.idDetails
+                      //data: []
+                    }}
+                    isEditable={true}
+                    paging={{ page: 0, rowsPerPage: 5 }}
+                  />
                 </div>
               </div>
             </div>
-          )}
-        </MyContext.Consumer>
+
+            <div className="col-12" data-validate="dependentGrid">
+              <h5>
+                <span>Family Details</span>
+              </h5>
+              <div className="row paddin-bottom-5">
+                <AlagehAutoComplete
+                  div={{ className: "col" }}
+                  label={{
+                    forceLabel: "Dependent Type",
+                    isImp: true
+                  }}
+                  selector={{
+                    name: "dependent_type",
+                    className: "select-fld",
+                    value: this.state.dependent_type,
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: variableJson.DEPENDENT_TYPE
+                    },
+                    onChange: texthandle.bind(this, this)
+                  }}
+                />
+                <AlagehFormGroup
+                  div={{ className: "col" }}
+                  label={{
+                    forceLabel: "Dependent Name",
+                    isImp: true
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "dependent_name",
+                    value: this.state.dependent_name,
+                    events: {
+                      onChange: texthandle.bind(this, this)
+                    }
+                  }}
+                />
+
+                <AlagehAutoComplete
+                  div={{ className: "col-2" }}
+                  label={{
+                    forceLabel: "Id Type",
+                    isImp: true
+                  }}
+                  selector={{
+                    name: "dependent_identity_type",
+                    className: "select-fld",
+                    value: this.state.dependent_identity_type,
+                    dataSource: {
+                      textField: "identity_document_name",
+                      valueField: "hims_d_identity_document_id",
+                      data: this.props.idtypes
+                    },
+                    onChange: texthandle.bind(this, this)
+                  }}
+                />
+                <AlagehFormGroup
+                  div={{ className: "col" }}
+                  label={{
+                    forceLabel: "Id Number",
+                    isImp: true
+                  }}
+                  textBox={{
+                    value: this.state.dependent_identity_no,
+                    className: "txt-fld",
+                    name: "dependent_identity_no",
+
+                    events: {
+                      onChange: texthandle.bind(this, this)
+                    }
+                  }}
+                />
+                <div className="col">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    style={{ marginTop: 21 }}
+                    onClick={addDependentType.bind(this, this)}
+                  >
+                    Add
+                  </button>
+                </div>
+                <div className="col-lg-12 margin-top-15">
+                  <AlgaehDataGrid
+                    id="dep-ids-grid"
+                    columns={[
+                      {
+                        fieldName: "dependent_type",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Dependent Type" }}
+                          />
+                        )
+                      },
+                      {
+                        fieldName: "dependent_name",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Dependent Name" }}
+                          />
+                        )
+                      },
+                      {
+                        fieldName: "dependent_identity_type",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "ID Card Type" }} />
+                        ),
+                        displayTemplate: row => {
+                          let display =
+                            this.props.idtypes === undefined
+                              ? []
+                              : this.props.idtypes.filter(
+                                  f =>
+                                    f.hims_d_identity_document_id ===
+                                    row.dependent_identity_type
+                                );
+
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? display[0].identity_document_name
+                                : ""}
+                            </span>
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "dependent_identity_no",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "ID Number" }} />
+                        )
+                      }
+                    ]}
+                    keyId="dependent_identity_no"
+                    dataSource={{
+                      data: this.state.dependentDetails
+                    }}
+                    isEditable={true}
+                    paging={{ page: 0, rowsPerPage: 5 }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </React.Fragment>
     );
   }
