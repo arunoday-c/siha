@@ -35,6 +35,7 @@ class OfficalDetails extends PureComponent {
   }
 
   componentDidMount() {
+    debugger;
     let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
     this.setState({ ...this.state, ...InputOutput });
     if (this.props.banks === undefined || this.props.banks.length === 0) {
@@ -223,10 +224,10 @@ class OfficalDetails extends PureComponent {
                     }}
                   />
                   <h6>
-                    {this.state.inactive_date !== undefined &&
-                    this.state.inactive_date !== ""
-                      ? this.state.inactive_date.toLocaleDateString()
-                      : "DD/MM/YYYY"}
+                    {this.state.inactive_date === undefined ||
+                    this.state.inactive_date === null
+                      ? "DD/MM/YYYY"
+                      : this.state.inactive_date.toLocaleDateString()}
                   </h6>
                 </div>
               </div>

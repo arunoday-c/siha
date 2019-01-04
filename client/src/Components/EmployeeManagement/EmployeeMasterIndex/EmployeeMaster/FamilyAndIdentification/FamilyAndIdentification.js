@@ -12,9 +12,10 @@ import { algaehApiCall } from "../../../../../utils/algaehApiCall";
 
 import {
   texthandle,
-  datehandle,
+  // datehandle,
   AddEmpId,
-  addDependentType
+  addDependentType,
+  getFamilyIdentification
 } from "./FamilyAndIdentificationEvent";
 import { AlgaehActions } from "../../../../../actions/algaehActions";
 import { withRouter } from "react-router-dom";
@@ -53,7 +54,11 @@ class FamilyAndIdentification extends PureComponent {
 
   componentDidMount() {
     let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
-    this.setState({ ...this.state, ...InputOutput });
+    this.setState({ ...this.state, ...InputOutput }, () => {
+      if (this.state.hims_d_employee_id !== null) {
+        getFamilyIdentification(this);
+      }
+    });
 
     if (this.props.idtypes === undefined || this.props.idtypes.length === 0) {
       this.props.getIDTypes({

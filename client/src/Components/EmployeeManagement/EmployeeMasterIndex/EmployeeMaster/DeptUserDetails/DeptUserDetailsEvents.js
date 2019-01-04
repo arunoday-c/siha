@@ -1,4 +1,4 @@
-import { swalMessage } from "../../../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import moment from "moment";
@@ -261,6 +261,31 @@ const datehandle = ($this, ctrl, e) => {
     [e]: ctrl
   });
 };
+
+const getEmployeeDepartments = $this => {
+  debugger;
+  algaehApiCall({
+    uri: "/employee/getEmployeeDepartments",
+    method: "GET",
+    data: { employee_id: $this.state.hims_d_employee_id },
+    onSuccess: response => {
+      if (response.data.success) {
+        let data = response.data.records;
+        if (data.length > 0) {
+          debugger;
+          $this.setState({ deptDetails: data });
+        }
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+};
+
 export {
   texthandle,
   AddDeptUser,
@@ -271,5 +296,6 @@ export {
   updateDeptUser,
   colgridtexthandle,
   dateFormater,
-  datehandle
+  datehandle,
+  getEmployeeDepartments
 };
