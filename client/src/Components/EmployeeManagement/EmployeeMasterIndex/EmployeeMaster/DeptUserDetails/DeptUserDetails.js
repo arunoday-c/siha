@@ -20,13 +20,14 @@ import {
   specialitytexthandle,
   categorytexthandle,
   updateDeptUser,
-  // colgridtexthandle,
+  onchangegridcol,
   dateFormater,
-  // datehandle,
+  datehandle,
+  onchangegridcolstatus,
   getEmployeeDepartments
 } from "./DeptUserDetailsEvents";
 import Enumerable from "linq";
-// import GlobalVariables from "../../../../../utils/GlobalVariables.json";
+import GlobalVariables from "../../../../../utils/GlobalVariables.json";
 
 class DeptUserDetails extends Component {
   constructor(props) {
@@ -35,13 +36,13 @@ class DeptUserDetails extends Component {
       selectedLang: getCookie("Language"),
       hims_d_employee_group_id: null,
       hims_d_hospital_id: null,
-      sub_department_id: null,
+      sub_department: null,
       user_id: null,
       category_speciality_id: null,
       deptDetails: [],
-      from_date: null,
+      from_date: new Date(),
       designation_id: null,
-      reporting_to_id: null
+      reporting_to: null
     };
   }
 
@@ -175,7 +176,11 @@ class DeptUserDetails extends Component {
                       forceLabel: "Employee Department"
                     }}
                   />
-                  <h6>Not Defined</h6>
+                  <h6>
+                    {this.state.sub_department_id === null
+                      ? "Not Defined"
+                      : this.state.sub_department_id}
+                  </h6>
                 </div>
                 <div className="col">
                   <AlgaehLabel
@@ -183,7 +188,11 @@ class DeptUserDetails extends Component {
                       forceLabel: "Employee Designation"
                     }}
                   />
-                  <h6>Not Defined</h6>
+                  <h6>
+                    {this.state.employee_designation_id === null
+                      ? "Not Defined"
+                      : this.state.employee_designation_id}
+                  </h6>
                 </div>
                 <div className="col">
                   <AlgaehLabel
@@ -191,7 +200,11 @@ class DeptUserDetails extends Component {
                       forceLabel: "Reporting to"
                     }}
                   />
-                  <h6>Not Defined</h6>
+                  <h6>
+                    {this.state.reporting_to_id === null
+                      ? "Not Defined"
+                      : this.state.reporting_to_id}
+                  </h6>
                 </div>
                 <div className="col">
                   <AlgaehLabel
@@ -229,9 +242,9 @@ class DeptUserDetails extends Component {
                     isImp: true
                   }}
                   selector={{
-                    name: "hims_d_employee_group_id",
+                    name: "employee_group_id",
                     className: "select-fld",
-                    value: this.state.hims_d_employee_group_id,
+                    value: this.state.employee_group_id,
                     dataSource: {
                       textField: "group_description",
                       valueField: "hims_d_employee_group_id",
@@ -301,9 +314,9 @@ class DeptUserDetails extends Component {
                     isImp: true
                   }}
                   selector={{
-                    name: "sub_department_id",
+                    name: "sub_department",
                     className: "select-fld",
-                    value: this.state.sub_department_id,
+                    value: this.state.sub_department,
 
                     dataSource: {
                       textField:
@@ -388,9 +401,9 @@ class DeptUserDetails extends Component {
                     isImp: true
                   }}
                   selector={{
-                    name: "reporting_to_id",
+                    name: "reporting_to",
                     className: "select-fld",
-                    value: this.state.reporting_to_id,
+                    value: this.state.reporting_to,
                     dataSource: {
                       textField:
                         this.state.selectedLang === "en"
@@ -459,13 +472,9 @@ class DeptUserDetails extends Component {
                     name: "from_date"
                   }}
                   events={{
-                    onChange: selDate => {
-                      this.setState({
-                        from_date: moment(selDate).format("DD/MM/YYYY")
-                      });
-                    }
+                    onChange: datehandle.bind(this, this)
                   }}
-                  value={this.state.date_of_joining}
+                  value={this.state.from_date}
                 />
 
                 <div className="col-1" style={{ paddingTop: "21px" }}>
@@ -486,6 +495,56 @@ class DeptUserDetails extends Component {
                   <AlgaehDataGrid
                     id="dpet_user_grid"
                     columns={[
+                      {
+                        fieldName: "from_date",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "from_date" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.from_date === null ||
+                              row.from_date === undefined
+                                ? "DD/MM/YYYY"
+                                : dateFormater(this, row.from_date)}
+                            </span>
+                          );
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <span>
+                              {row.from_date === null ||
+                              row.from_date === undefined
+                                ? "DD/MM/YYYY"
+                                : dateFormater(this, row.from_date)}
+                            </span>
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "to_date",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "end_date" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.to_date === null || row.to_date === undefined
+                                ? "DD/MM/YYYY"
+                                : dateFormater(this, row.to_date)}
+                            </span>
+                          );
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <span>
+                              {row.to_date === null || row.to_date === undefined
+                                ? "DD/MM/YYYY"
+                                : dateFormater(this, row.to_date)}
+                            </span>
+                          );
+                        }
+                      },
                       {
                         fieldName: "sub_department_id",
                         label: (
@@ -732,20 +791,21 @@ class DeptUserDetails extends Component {
                           );
                         },
                         editorTemplate: row => {
-                          let display =
-                            this.props.all_employees === undefined
-                              ? []
-                              : this.props.all_employees.filter(
-                                  f =>
-                                    f.hims_d_employee_id === row.reporting_to_id
-                                );
-
                           return (
-                            <span>
-                              {display !== undefined && display.length !== 0
-                                ? display[0].full_name
-                                : ""}
-                            </span>
+                            <AlagehAutoComplete
+                              div={{}}
+                              selector={{
+                                name: "reporting_to_id",
+                                className: "select-fld",
+                                value: row.reporting_to_id,
+                                dataSource: {
+                                  textField: "full_name",
+                                  valueField: "hims_d_employee_id",
+                                  data: this.props.all_employees
+                                },
+                                onChange: onchangegridcol.bind(this, this, row)
+                              }}
+                            />
                           );
                         }
                       },
@@ -791,58 +851,7 @@ class DeptUserDetails extends Component {
                           );
                         }
                       },
-                      {
-                        fieldName: "from_date",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "from_date" }} />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {row.from_date === null ||
-                              row.from_date === undefined
-                                ? "DD/MM/YYYY"
-                                : dateFormater(this, row.from_date)}
-                            </span>
-                          );
-                        },
-                        editorTemplate: row => {
-                          return (
-                            <span>
-                              {row.from_date === null ||
-                              row.from_date === undefined
-                                ? "DD/MM/YYYY"
-                                : dateFormater(this, row.from_date)}
-                            </span>
-                          );
-                        }
-                      },
-                      {
-                        fieldName: "end_date",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "end_date" }} />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {row.end_date === null ||
-                              row.end_date === undefined
-                                ? "DD/MM/YYYY"
-                                : dateFormater(this, row.end_date)}
-                            </span>
-                          );
-                        },
-                        editorTemplate: row => {
-                          return (
-                            <span>
-                              {row.end_date === null ||
-                              row.end_date === undefined
-                                ? "DD/MM/YYYY"
-                                : dateFormater(this, row.end_date)}
-                            </span>
-                          );
-                        }
-                      },
+
                       {
                         fieldName: "dep_status",
                         label: (
@@ -852,7 +861,30 @@ class DeptUserDetails extends Component {
                           return row.dep_status === "A" ? "Active" : "Inactive";
                         },
                         editorTemplate: row => {
-                          return row.dep_status === "A" ? "Active" : "Inactive";
+                          return (
+                            <AlagehAutoComplete
+                              div={{}}
+                              selector={{
+                                name: "dep_status",
+                                className: "select-fld",
+                                value: row.dep_status,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: GlobalVariables.FORMAT_STATUS
+                                },
+                                onChange: onchangegridcolstatus.bind(
+                                  this,
+                                  this,
+                                  row
+                                ),
+                                others: {
+                                  errormessage: "Status - cannot be blank",
+                                  required: true
+                                }
+                              }}
+                            />
+                          );
                         }
                       }
                     ]}

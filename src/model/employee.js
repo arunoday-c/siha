@@ -10,6 +10,7 @@ import {
 import httpStatus from "../utils/httpStatus";
 import { debugLog } from "../utils/logging";
 import Promise from "bluebird";
+import mysql from "mysql";
 import department from "../controller/department";
 
 //api to add employee
@@ -963,7 +964,8 @@ let updateEmployee = (req, res, next) => {
           company_bank_id=?,employee_bank_name=?,employee_bank_ifsc_code=?,employee_account_number=?,mode_of_payment=?,\
           accomodation_provided=?,hospital_id=?,gross_salary=?,total_earnings=?,total_deductions=?,total_contributions=?,\
           net_salary=?,cost_to_company=?,leave_salary_process=?,late_coming_rule=?,airfare_process=?,\
-          exclude_machine_data=?,gratuity_applicable=?,suspend_salary=?,pf_applicable=?,updated_date=?,updated_by=?\
+          exclude_machine_data=?,gratuity_applicable=?,suspend_salary=?,pf_applicable=?,employee_group_id=?, \
+          reporting_to_id=?,sub_department_id=?,employee_designation_id=?,updated_date=?,updated_by=?\
           WHERE record_status='A' and  hims_d_employee_id=?",
           [
             input.employee_code,
@@ -1020,6 +1022,11 @@ let updateEmployee = (req, res, next) => {
             input.suspend_salary,
             input.pf_applicable,
 
+            input.employee_group_id,
+            input.reporting_to_id,
+            input.sub_department_id,
+            input.employee_designation_id,
+
             new Date(),
             input.updated_by,
             input.hims_d_employee_id
@@ -1074,35 +1081,38 @@ let updateEmployee = (req, res, next) => {
                 }
               })
                 .then(resultFrmInsertDept => {
-                  debugLog("inside 1 then");
+                  debugLog("inside One then");
 
                   if (input.updatedeptDetails.length > 0) {
                     debugLog("inside updatedeptDetails");
                     let inputParam = extend([], req.body.updatedeptDetails);
                     let qry = "";
 
-                    for (
-                      let i = 0;
-                      i < req.body.updatedeptDetails.length;
-                      i++
-                    ) {
+                    for (let i = 0; i < input.updatedeptDetails.length; i++) {
+                      debugLog("qry: ", qry);
                       qry += mysql.format(
                         "UPDATE `hims_m_employee_department_mappings` SET services_id=?,`sub_department_id`=?,\
-                        `category_speciality_id`=?,`to_date`=?,`dep_status`=?, `record_status`=?,\
-                      updated_date=?,updated_by=? where record_status='A' and hims_d_employee_department_id=?;",
+                        `category_speciality_id`=?,`employee_designation_id`=?,`reporting_to_id`=?,`to_date`=?,\
+                        `dep_status`=?, `record_status`=?,`updated_date`=?,`updated_by`=? \
+                        where record_status='A' and hims_d_employee_department_id=?;",
                         [
                           inputParam[i].services_id,
                           inputParam[i].sub_department_id,
                           inputParam[i].category_speciality_id,
+                          inputParam[i].employee_designation_id,
+                          inputParam[i].reporting_to_id,
                           inputParam[i].to_date,
                           inputParam[i].dep_status,
                           inputParam[i].record_status,
-                          moment().format("YYYY-MM-DD HH:mm"),
-                          user_id.updated_by,
+                          new Date(),
+                          req.userIdentity.algaeh_d_app_user_id,
                           inputParam[i].hims_d_employee_department_id
                         ]
                       );
+                      debugLog("qry: ", qry);
                     }
+
+                    debugLog("qry: ", qry);
 
                     connection.query(qry, (error, updateDeptDetailResult) => {
                       if (error) {
@@ -1114,7 +1124,7 @@ let updateEmployee = (req, res, next) => {
                     });
                   }
                 })
-                .then(updateDeptResult => {
+                .then(updateDeptDetailResult => {
                   debugLog("inside 2 then");
 
                   if (input.insertserviceComm.length > 0) {
@@ -1181,8 +1191,8 @@ let updateEmployee = (req, res, next) => {
                           inputParam[i].ip_cash_commission_percent,
                           inputParam[i].ip_credit_commission_percent,
                           inputParam[i].record_status,
-                          moment().format("YYYY-MM-DD HH:mm"),
-                          user_id.updated_by,
+                          new Date(),
+                          req.userIdentity.algaeh_d_app_user_id,
                           inputParam[i].hims_m_doctor_service_commission_id
                         ]
                       );
@@ -1264,8 +1274,8 @@ let updateEmployee = (req, res, next) => {
                           inputParam[i].ip_cash_commission_percent,
                           inputParam[i].ip_credit_commission_percent,
                           inputParam[i].record_status,
-                          moment().format("YYYY-MM-DD HH:mm"),
-                          user_id.updated_by,
+                          new Date(),
+                          req.userIdentity.algaeh_d_app_user_id,
                           inputParam[i].hims_m_doctor_service_type_commission_id
                         ]
                       );

@@ -44,6 +44,7 @@ export default {
       company_bank_id: null,
       mode_of_payment: null,
       inactive_date: null,
+      employee_group_id: null,
 
       isdoctor: "N",
       employee_status: "A",

@@ -30,13 +30,14 @@ const selectedHandeler = ($this, context, e) => {
   SetBulkState({
     state: $this,
     callback: () => {
+      debugger;
       if (
         $this.state.full_name !== "" &&
         ($this.state.title_id !== null && $this.state.title_id !== "") &&
         $this.state.arabic_name !== "" &&
         ($this.state.gender !== null && $this.state.gender !== "") &&
-        ($this.state.date_of_birth !== null &&
-          $this.state.date_of_birth !== "") &&
+        // ($this.state.date_of_birth !== null &&
+        //   $this.state.date_of_birth !== "") &&
         $this.state.age !== 0 &&
         ($this.state.contact_number !== null &&
           $this.state.contact_number !== "") &&
