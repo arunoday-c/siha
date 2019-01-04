@@ -81,6 +81,8 @@ export default {
       updateDeductionComp: [],
       updateContributeComp: [],
 
+      deleteearnComp: [],
+
       leave_salary_process: "N",
       late_coming_rule: "N",
       airfare_process: "N",

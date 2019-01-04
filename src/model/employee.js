@@ -1333,6 +1333,37 @@ let updateEmployee = (req, res, next) => {
                   }
                 })
                 .then(insertearncomponent => {
+                  debugLog("inside insertearncomponent then");
+                  if (input.updateearnComp.length > 0) {
+                    debugLog("inside updateearnComp");
+                    let inputParam = extend([], req.body.updateearnComp);
+                    let qry = "";
+
+                    for (let i = 0; i < req.body.updateearnComp.length; i++) {
+                      qry += mysql.format(
+                        "UPDATE `hims_d_employee_earnings` SET \
+                          `amount`=?,`allocate`=? where hims_d_employee_earnings_id=?;",
+                        [
+                          inputParam[i].amount,
+                          inputParam[i].allocate,                          
+                          inputParam[i].hims_d_employee_earnings_id
+                        ]
+                      );
+                    }
+
+                    debugLog("qry: ", qry);
+
+                    connection.query(qry, (error, updateearncomponent) => {
+                      if (error) {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                      }
+                    });
+                  }
+                })
+                .then(updateearncomponent => {
                   debugLog("inside insertDeductionComp then");
 
                   if (input.insertDeductionComp.length > 0) {
@@ -1412,6 +1443,7 @@ let updateEmployee = (req, res, next) => {
                     );
                   }
                 })
+
                 .then(insertContributeComp => {
                   debugLog("inside insertIdDetails then");
 

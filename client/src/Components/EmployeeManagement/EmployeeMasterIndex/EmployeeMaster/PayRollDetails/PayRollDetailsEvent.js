@@ -187,14 +187,14 @@ const deleteEarningComponent = ($this, row) => {
   }).then(willDelete => {
     debugger;
     if (willDelete.value) {
-      let updateearnComp = $this.state.updateearnComp;
+      let deleteearnComp = $this.state.deleteearnComp;
       let insertearnComp = $this.state.insertearnComp;
       let earningComponents = $this.state.earningComponents;
 
       if (row.hims_d_employee_earnings_id !== undefined) {
-        for (let x = 0; x < updateearnComp.length; x++) {
-          if (updateearnComp[x].earnings_id === row.earnings_id) {
-            updateearnComp.splice(x, 1);
+        for (let x = 0; x < deleteearnComp.length; x++) {
+          if (deleteearnComp[x].earnings_id === row.earnings_id) {
+            deleteearnComp.splice(x, 1);
           }
         }
 
@@ -211,7 +211,7 @@ const deleteEarningComponent = ($this, row) => {
       $this.setState(
         {
           earningComponents: earningComponents,
-          updateearnComp: updateearnComp,
+          deleteearnComp: deleteearnComp,
           insertearnComp: insertearnComp
         },
         () => {
@@ -220,7 +220,7 @@ const deleteEarningComponent = ($this, row) => {
       );
       $this.props.EmpMasterIOputs.updateEmployeeTabs({
         earningComponents: earningComponents,
-        updateearnComp: updateearnComp,
+        deleteearnComp: deleteearnComp,
         insertearnComp: insertearnComp
       });
     } else {
@@ -239,8 +239,9 @@ const updateEarningComponent = ($this, row) => {
 
   if (row.hims_d_employee_earnings_id !== undefined) {
     let Updateobj = {
-      earnings_id: row.earning_id,
-      amount: row.earn_amount,
+      hims_d_employee_earnings_id: row.hims_d_employee_earnings_id,
+      earnings_id: row.earnings_id,
+      amount: row.amount,
       allocate: row.allocate,
       record_status: "A"
     };
