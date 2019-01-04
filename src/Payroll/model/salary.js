@@ -37,6 +37,7 @@ let processSalary = (req, res, next) => {
         (error, empResult) => {
           if (error) {
             releaseDBConnection(db, connection);
+            debugLog("erro ");
             next(error);
           }
           debugLog("empResult:", empResult);
@@ -63,6 +64,7 @@ let processSalary = (req, res, next) => {
                   (error, earningResult) => {
                     if (error) {
                       releaseDBConnection(db, connection);
+                      debugLog("erro ");
                       next(error);
                     }
                     debugLog(
@@ -128,6 +130,7 @@ let processSalary = (req, res, next) => {
                     (error, deductionResult) => {
                       if (error) {
                         releaseDBConnection(db, connection);
+                        debugLog("erro ");
                         next(error);
                       }
 
@@ -203,6 +206,7 @@ let processSalary = (req, res, next) => {
                       (error, contributionResult) => {
                         if (error) {
                           releaseDBConnection(db, connection);
+                          debugLog("erro ");
                           next(error);
                         }
 
@@ -239,8 +243,8 @@ let processSalary = (req, res, next) => {
                           }
 
                           current_contribution_amt_array.push({
-                            deductions_id:
-                              contributionResult[m]["deductions_id"],
+                            contributions_id:
+                              contributionResult[m]["contributions_id"],
                             amount: current_contribution_amt,
                             per_day_salary: current_contribution_per_day_salary
                           });
@@ -266,9 +270,278 @@ let processSalary = (req, res, next) => {
                     reject(e);
                   }
                 }).then(contributionCalcResult => {
-                  //3 then
+                  //for  each employee this is loan calculation
 
-                  debugLog("");
+                  debugLog("third then ", "contribution result");
+
+                  new Promise((resolve, reject) => {
+                    try {
+                      connection.query(
+                        "select hims_f_loan_application_id, loan_application_number, employee_id, loan_id, application_reason,\
+                        loan_application_date, loan_authorized ,loan_closed, start_month,start_year,installment_amount,pending_loan\
+                        from  hims_f_loan_application where loan_authorized='IS' and loan_closed='N' and pending_loan>0\
+                        and ((start_year <=? and start_month<=?)||(start_year <?)) and loan_skip_months=0 and employee_id=? ",
+                        [year, month_number, year, empResult[i]["employee_id"]],
+                        (error, loanResult) => {
+                          if (error) {
+                            releaseDBConnection(db, connection);
+                            debugLog("erro ");
+                            next(error);
+                          }
+
+                          let current_loan_array = new LINQ(loanResult)
+                            .Select(s => {
+                              return {
+                                loan_application_id:
+                                  s.hims_f_loan_application_id,
+                                loan_due_amount: s.installment_amount,
+                                balance_amount: s.pending_loan
+                              };
+                            })
+                            .ToArray();
+
+                          let total_loan_due_amount = new LINQ(
+                            current_loan_array
+                          ).Sum(s => s.loan_due_amount);
+
+                          let total_loan_payable_amount = new LINQ(
+                            current_loan_array
+                          ).Sum(s => s.balance_amount);
+
+                          debugLog(
+                            "total_loan_due_amount ",
+                            total_loan_due_amount
+                          );
+                          debugLog(
+                            "total_loan_payable_amount ",
+                            total_loan_payable_amount
+                          );
+
+                          debugLog("current_loan_array ", current_loan_array);
+                          debugLog("loanResult ", loanResult);
+                          resolve({ connection, db });
+                        }
+                      );
+                    } catch (e) {
+                      reject(e);
+                    }
+                  }).then(loanCalcResult => {
+                    debugLog("salary header ");
+                    let db = loanCalcResult.db;
+                    let connection = loanCalcResult.connection;
+                    new Promise((resolve, reject) => {
+                      try {
+                        connection.beginTransaction(error => {
+                          if (error) {
+                            connection.rollback(() => {
+                              releaseDBConnection(db, connection);
+                              debugLog("erro ");
+                              next(error);
+                            });
+                          }
+                          debugLog("salary header begin ");
+                          let per_day_sal =
+                            final_earning_amount +
+                            final_deduction_amount +
+                            final_contribution_amount;
+                          debugLog("per_day_sal ", per_day_sal);
+                          debugLog("connection ", connection.query);
+                          resolve("");
+                          //               next();
+                          //   connection.query(
+                          //     "INSERT INTO `hims_f_salary` (salary_number,month,year,employee_id,salary_date,per_day_sal,total_days,\
+                          //    present_days,absent_days,total_work_days,total_weekoff_days,total_holidays,total_leave,paid_leave,\
+                          // unpaid_leave,loan_payable_amount,loan_due_amount,gross_salary,total_earnings,total_deductions,\
+                          //   total_contributions,net_salary) \
+                          // VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                          //     [
+                          //       25,
+                          //       month_number,
+                          //       year,
+                          //       empResult[i]["employee_id"],
+                          //       new Date(),
+                          //       per_day_sal,
+
+                          //       empResult[i]["total_days"],
+                          //       empResult[i]["present_days"],
+                          //       empResult[i]["absent_days"],
+                          //       empResult[i]["total_work_days"],
+                          //       empResult[i]["total_weekoff_days"],
+                          //       empResult[i]["total_holidays"],
+                          //       empResult[i]["total_leave"],
+                          //       empResult[i]["paid_leave"],
+                          //       empResult[i]["unpaid_leave"],
+
+                          //       total_loan_payable_amount,
+                          //       total_loan_due_amount,
+                          //       total_loan_due_amount,
+
+                          //       final_earning_amount,
+                          //       final_deduction_amount,
+                          //       final_contribution_amount,
+                          //       "50"
+                          //     ],
+
+                          // connection.query(
+                          //   "INSERT INTO `hims_f_salary` (salary_number) value(?)",
+                          //   ["50"],
+                          //   (error, salaryHeaderResult) => {
+                          //     if (error) {
+                          //       connection.rollback(() => {
+                          //         releaseDBConnection(db, connection);
+                          //         debugLog("erro ");
+                          //         next(error);
+                          //       });
+                          //     }
+                          //     debugLog("salaryHeaderResult: ");
+                          //     if (salaryHeaderResult.insertId > 0) {
+                          //       new Promise((resolve, reject) => {
+                          //         try {
+                          //           const insurtColumnsEarning = [
+                          //             "earnings_id",
+                          //             "amount",
+                          //             "per_day_salary"
+                          //           ];
+
+                          //           connection.query(
+                          //             "INSERT INTO hims_f_salary_earnings(" +
+                          //               insurtColumnsEarning.join(",") +
+                          //               ",`salary_header_id`) VALUES ?",
+                          //             [
+                          //               jsonArrayToObject({
+                          //                 sampleInputObject: insurtColumnsEarning,
+                          //                 arrayObj: current_earning_amt_array,
+                          //                 newFieldToInsert: [
+                          //                   salaryHeaderResult.insertId
+                          //                 ]
+                          //               })
+                          //             ],
+                          //             (error, earningInsert) => {
+                          //               if (error) {
+                          //                 connection.rollback(() => {
+                          //                   releaseDBConnection(db, connection);
+                          //                   debugLog("erro ");
+                          //                   next(error);
+                          //                 });
+                          //               }
+
+                          //               resolve({});
+                          //             }
+                          //           );
+                          //         } catch (e) {
+                          //           reject(e);
+                          //         }
+                          //       }).then(earningInsert => {
+                          //         new Promise((resolve, reject) => {
+                          //           try {
+                          //             const insurtColumnsDeduction = [
+                          //               "deductions_id",
+                          //               "amount",
+                          //               "per_day_salary"
+                          //             ];
+
+                          //             connection.query(
+                          //               "INSERT INTO hims_f_salary_deductions(" +
+                          //                 insurtColumnsDeduction.join(",") +
+                          //                 ",`salary_header_id`) VALUES ?",
+                          //               [
+                          //                 jsonArrayToObject({
+                          //                   sampleInputObject: insurtColumnsDeduction,
+                          //                   arrayObj: current_deduction_amt_array,
+                          //                   newFieldToInsert: [
+                          //                     salaryHeaderResult.insertId
+                          //                   ]
+                          //                 })
+                          //               ],
+                          //               (error, deductionInsert) => {
+                          //                 if (error) {
+                          //                   connection.rollback(() => {
+                          //                     releaseDBConnection(
+                          //                       db,
+                          //                       connection
+                          //                     );
+                          //                     next(error);
+                          //                   });
+                          //                 }
+
+                          //                 resolve({});
+                          //               }
+                          //             );
+                          //           } catch (e) {
+                          //             reject(e);
+                          //           }
+                          //         }).then(deductionInsert => {
+                          //           new Promise((resolve, reject) => {
+                          //             try {
+                          //               const insurtColumnsContribution = [
+                          //                 "contributions_id",
+                          //                 "amount"
+                          //               ];
+
+                          //               connection.query(
+                          //                 "INSERT INTO hims_f_salary_contributions(" +
+                          //                   insurtColumnsContribution.join(
+                          //                     ","
+                          //                   ) +
+                          //                   ",`salary_header_id`) VALUES ?",
+                          //                 [
+                          //                   jsonArrayToObject({
+                          //                     sampleInputObject: insurtColumnsContribution,
+                          //                     arrayObj: current_contribution_amt_array,
+                          //                     newFieldToInsert: [
+                          //                       salaryHeaderResult.insertId
+                          //                     ]
+                          //                   })
+                          //                 ],
+                          //                 (error, contributionInsert) => {
+                          //                   if (error) {
+                          //                     connection.rollback(() => {
+                          //                       releaseDBConnection(
+                          //                         db,
+                          //                         connection
+                          //                       );
+                          //                       next(error);
+                          //                     });
+                          //                   }
+
+                          //                   resolve({});
+                          //                 }
+                          //               );
+                          //             } catch (e) {
+                          //               reject(e);
+                          //             }
+                          //           }).then(final => {
+                          //             connection.commit(error => {
+                          //               if (error) {
+                          //                 connection.rollback(() => {
+                          //                   releaseDBConnection(db, connection);
+                          //                   next(error);
+                          //                 });
+                          //               }
+                          //               releaseDBConnection(db, connection);
+                          //               req.records = contributionInsert;
+                          //               next();
+                          //             });
+                          //           });
+                          //         });
+                          //       });
+                          //     }
+                          //   }
+                          // );
+                        });
+                      } catch (e) {
+                        reject(e);
+                      }
+                    })
+                      .then(modifyRes => {
+                        //pppppppppppp
+                        req.records = "Hello";
+                        next();
+                      })
+                      .catch(error => {
+                        next(error);
+                      });
+                  });
                 });
               });
             });

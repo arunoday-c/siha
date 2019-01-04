@@ -750,10 +750,285 @@ let getLeaveLevels = (req, res, next) => {
 // select hims_f_leave_application_id,employee_id,leave_application_code,from_date,to_date from hims_f_leave_application
 // where cancelled='N' and (('2018-12-01'>=from_date and '2018-12-01'<=to_date) or ('2018-12-04'>=from_date and
 // '2018-12-04'<=to_date) ) and employee_id=94
+
+//created by irfan:
+let addLeaveMaster = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        }
+        connection.query(
+          "INSERT INTO `hims_d_leave` (leave_code,leave_description,annual_maternity_leave,\
+          include_weekoff,include_holiday,leave_mode,leave_status,leave_accrual,leave_encash,leave_type,\
+          encashment_percentage,leave_carry_forward,carry_forward_percentage,\
+          religion_required,religion_id,holiday_reimbursement,exit_permit_required,\
+          proportionate_leave,document_mandatory,created_by,created_date,updated_by,updated_date)\
+          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          [
+            input.leave_code,
+            input.leave_description,
+            input.annual_maternity_leave,
+            input.include_weekoff,
+            input.include_holiday,
+            input.leave_mode,
+            input.leave_status,
+            input.leave_accrual,
+            input.leave_encash,
+            input.leave_type,
+            input.encashment_percentage,
+            input.leave_carry_forward,
+            input.carry_forward_percentage,
+            input.religion_required,
+            input.religion_id,
+            input.holiday_reimbursement,
+            input.exit_permit_required,
+            input.proportionate_leave,
+            input.document_mandatory,
+            input.created_by,
+            new Date(),
+            input.updated_by,
+            new Date()
+          ],
+          (error, leaveHeadResult) => {
+            if (error) {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
+            if (leaveHeadResult.insertid > 0) {
+              new Promise((resolve, reject) => {
+                try {
+                  //==============
+                  if (input.leaveEncash.length > 0) {
+                    const insurtColumns = [
+                      "earnings_id",
+                      "percent",
+                      "created_by",
+                      "updated_by"
+                    ];
+
+                    connection.query(
+                      "INSERT INTO hims_d_leave_encashment (" +
+                        insurtColumns.join(",") +
+                        ",`leave_header_id`,created_date,updated_date) VALUES ?",
+                      [
+                        jsonArrayToObject({
+                          sampleInputObject: insurtColumns,
+                          arrayObj: input.leaveEncash,
+                          newFieldToInsert: [
+                            leaveHeadResult.insertId,
+                            new Date(),
+                            new Date()
+                          ],
+                          req: req
+                        })
+                      ],
+                      (error, encashResult) => {
+                        if (error) {
+                          connection.rollback(() => {
+                            releaseDBConnection(db, connection);
+                            next(error);
+                          });
+                        }
+
+                        if (encashResult.insertid > 0) {
+                          resolve({ encashResult });
+                        } else {
+                          connection.rollback(() => {
+                            releaseDBConnection(db, connection);
+                            req.records = {
+                              invalid_data: true,
+                              message: "please send correct data"
+                            };
+                            next();
+                            return;
+                          });
+                        }
+                      }
+                    );
+                  } else {
+                    resolve({});
+                  }
+                } catch (e) {
+                  reject(e);
+                }
+              }).then(leaveEncashRes => {
+                new Promise((resolve, reject) => {
+                  try {
+                    if (input.leaveRules.length > 0) {
+                      const insurtColumnsRules = [
+                        "calculation_type",
+                        "earning_id",
+                        "paytype",
+                        "from_value",
+                        "to_value",
+                        "value_type",
+                        "total_days"
+                      ];
+
+                      connection.query(
+                        "INSERT INTO hims_d_leave_rule (" +
+                          insurtColumnsRules.join(",") +
+                          ",`leave_header_id`,created_date,updated_date) VALUES ?",
+                        [
+                          jsonArrayToObject({
+                            sampleInputObject: insurtColumnsRules,
+                            arrayObj: input.leaveRules,
+                            newFieldToInsert: [
+                              leaveHeadResult.insertId,
+                              new Date(),
+                              new Date()
+                            ],
+                            req: req
+                          })
+                        ],
+                        (error, ruleResult) => {
+                          if (error) {
+                            connection.rollback(() => {
+                              releaseDBConnection(db, connection);
+                              next(error);
+                            });
+                          }
+
+                          if (ruleResult.insertid > 0) {
+                            resolve({ ruleResult });
+                          } else {
+                            connection.rollback(() => {
+                              releaseDBConnection(db, connection);
+                              req.records = {
+                                invalid_data: true,
+                                message: "please send correct data"
+                              };
+                              next();
+                              return;
+                            });
+                          }
+                        }
+                      );
+                    } else {
+                      resolve({});
+                    }
+                  } catch (e) {
+                    reject(e);
+                  }
+                }).then(leaveRulesRes => {
+                  new Promise((resolve, reject) => {
+                    try {
+                      if (input.leaveDetails.length > 0) {
+                        const insurtColumnsdetails = [
+                          "employee_type",
+                          "gender",
+                          "eligible_days",
+                          "min_service_required",
+                          "service_years",
+                          "once_life_term",
+                          "allow_probation",
+                          "max_number_days",
+                          "mandatory_utilize_days",
+                          "created_by",
+                          "updated_by"
+                        ];
+
+                        connection.query(
+                          "INSERT INTO hims_d_leave_detail (" +
+                            insurtColumnsdetails.join(",") +
+                            ",`leave_header_id`,created_date,updated_date) VALUES ?",
+                          [
+                            jsonArrayToObject({
+                              sampleInputObject: insurtColumnsdetails,
+                              arrayObj: input.leaveDetails,
+                              newFieldToInsert: [
+                                leaveHeadResult.insertId,
+                                new Date(),
+                                new Date()
+                              ],
+                              req: req
+                            })
+                          ],
+                          (error, detailResult) => {
+                            if (error) {
+                              connection.rollback(() => {
+                                releaseDBConnection(db, connection);
+                                next(error);
+                              });
+                            }
+
+                            if (detailResult.insertid > 0) {
+                              resolve({ detailResult });
+                            } else {
+                              connection.rollback(() => {
+                                releaseDBConnection(db, connection);
+                                req.records = {
+                                  invalid_data: true,
+                                  message: "please send correct data"
+                                };
+                                next();
+                                return;
+                              });
+                            }
+                          }
+                        );
+                      } else {
+                        resolve({});
+                      }
+                    } catch (e) {
+                      reject(e);
+                    }
+                  }).then(finalResult => {
+                    connection.commit(error => {
+                      if (error) {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                      }
+                      releaseDBConnection(db, connection);
+                      req.records = finalResult;
+                      next();
+                    });
+                  });
+                });
+              });
+            } else {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                req.records = {
+                  invalid_data: true,
+                  message: "please send correct data"
+                };
+                next();
+                return;
+              });
+            }
+          }
+        );
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getEmployeeLeaveData,
   applyEmployeeLeave,
   getEmployeeLeaveHistory,
   getLeaveBalance,
-  getLeaveLevels
+  getLeaveLevels,
+  addLeaveMaster
 };
