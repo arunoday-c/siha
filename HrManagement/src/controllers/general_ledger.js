@@ -1,5 +1,5 @@
 import { Router } from "express";
-import utlities from "../../../AlgaehUtilities";
+import utlities from "algaeh-utilities";
 import { generalLedgerGet } from "../models/general_ledger";
 export default () => {
   const api = Router();

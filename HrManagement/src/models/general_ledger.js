@@ -1,4 +1,4 @@
-import utlities from "../../../AlgaehUtilities";
+import utlities from "algaeh-utilities";
 import algaehMysql from "algaeh-mysql";
 // import keys from "../../../keys/keys";
 module.exports = {

@@ -1,5 +1,5 @@
 import winston from "winston";
-import keys from "../../../keys/keys";
+import keys from "algaeh-keys";
 import path from "path";
 import moment from "moment";
 const rotatingDate = require("winston-daily-rotate-file");

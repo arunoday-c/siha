@@ -33,7 +33,8 @@ exports.default = {
   },
 
   mongoDb: {
-    connectionURI: "mongodb://49.206.18.38:27017/dbname"
+    connectionURI:
+      "mongodb://algaeh_root:medteam2013@49.206.18.38:27017/algaeh_hims_mongo_db"
   },
 
   //Db Date format

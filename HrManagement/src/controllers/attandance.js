@@ -1,5 +1,5 @@
 import { Router } from "express";
-import utlities from "../../../AlgaehUtilities";
+import utlities from "algaeh-utilities";
 import { processAttendance } from "../models/attendance";
 export default () => {
   const api = Router();
