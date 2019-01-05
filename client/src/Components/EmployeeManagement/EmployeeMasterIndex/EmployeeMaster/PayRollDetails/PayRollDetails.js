@@ -353,7 +353,24 @@ class PayRollDetails extends PureComponent {
                           <AlgaehLabel label={{ forceLabel: "Deductions" }} />
                         ),
                         displayTemplate: row => {
-                          debugger;
+                          let display =
+                            this.props.payrollcomponents === undefined
+                              ? []
+                              : this.props.payrollcomponents.filter(
+                                  f =>
+                                    f.hims_d_earning_deduction_id ===
+                                    row.deductions_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== null && display.length !== 0
+                                ? display[0].earning_deduction_description
+                                : ""}
+                            </span>
+                          );
+                        },
+                        editorTemplate: row => {
                           let display =
                             this.props.payrollcomponents === undefined
                               ? []
@@ -455,7 +472,24 @@ class PayRollDetails extends PureComponent {
                         ),
 
                         displayTemplate: row => {
-                          debugger;
+                          let display =
+                            this.props.payrollcomponents === undefined
+                              ? []
+                              : this.props.payrollcomponents.filter(
+                                  f =>
+                                    f.hims_d_earning_deduction_id ===
+                                    row.contributions_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== null && display.length !== 0
+                                ? display[0].earning_deduction_description
+                                : ""}
+                            </span>
+                          );
+                        },
+                        editorTemplate: row => {
                           let display =
                             this.props.payrollcomponents === undefined
                               ? []

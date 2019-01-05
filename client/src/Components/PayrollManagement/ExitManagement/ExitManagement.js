@@ -7,7 +7,8 @@ class ExitManagement extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageDisplay: "EOSGratuity"
+      pageDisplay: "EOSGratuity",
+      testHello: " Hello Functional Component"
     };
   }
 
@@ -20,6 +21,12 @@ class ExitManagement extends Component {
     var specified = e.currentTarget.getAttribute("algaehtabs");
     this.setState({
       pageDisplay: specified
+    });
+  }
+
+  textHandle(e) {
+    this.setState({
+      [e.target.name]: e.target.value
     });
   }
 
@@ -60,7 +67,7 @@ class ExitManagement extends Component {
         </div>
         <div className="payroll-setion">
           {this.state.pageDisplay === "EOSGratuity" ? (
-            <EOSGratuity />
+            <EOSGratuity parent={this} />
           ) : this.state.pageDisplay === "FinalSettlement" ? (
             <FinalSettlement />
           ) : null}

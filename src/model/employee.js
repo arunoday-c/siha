@@ -11,7 +11,9 @@ import httpStatus from "../utils/httpStatus";
 import { debugLog } from "../utils/logging";
 import Promise from "bluebird";
 import mysql from "mysql";
+import moment from "moment";
 import department from "../controller/department";
+import { InsertUpdateEmployee } from "../../client/src/Components/EmployeeManagement/EmployeeMasterIndex/EmployeeMaster/EmployeeMasterEvents";
 
 //api to add employee
 let addEmployee = (req, res, next) => {
@@ -954,6 +956,7 @@ let updateEmployee = (req, res, next) => {
           });
         }
 
+        //Employee Master
         connection.query(
           "UPDATE hims_d_employee SET employee_code=?,full_name=?,arabic_name=?,\
           date_of_birth=?,sex=?,primary_contact_no=?,email=?,blood_group=?,nationality=?,religion_id=?,\
@@ -1039,507 +1042,846 @@ let updateEmployee = (req, res, next) => {
               });
             }
             if (result.length != 0) {
-              return new Promise((resolve, reject) => {
-                if (input.insertdeptDetails.length > 0) {
-                  const insurtColumns = [
-                    "employee_id",
-                    "services_id",
-                    "sub_department_id",
-                    "category_speciality_id",
-                    "user_id",
-                    "employee_designation_id",
-                    "reporting_to_id",
-                    "from_date",
-                    "created_by",
-                    "updated_by"
-                  ];
+              return (
+                new Promise((resolve, reject) => {
+                  // Department Insert/Update
+                  // Start
+                  if (input.insertdeptDetails.length > 0) {
+                    const insurtColumns = [
+                      "employee_id",
+                      "services_id",
+                      "sub_department_id",
+                      "category_speciality_id",
+                      "user_id",
+                      "employee_designation_id",
+                      "reporting_to_id",
+                      "from_date",
+                      "created_by",
+                      "updated_by"
+                    ];
 
-                  connection.query(
-                    "INSERT INTO hims_m_employee_department_mappings(" +
-                      insurtColumns.join(",") +
-                      ",created_date,updated_date) VALUES ?",
-                    [
-                      jsonArrayToObject({
-                        sampleInputObject: insurtColumns,
-                        arrayObj: req.body.insertdeptDetails,
-                        newFieldToInsert: [new Date(), new Date()],
-                        req: req
-                      })
-                    ],
-                    (error, insertDepartResult) => {
-                      if (error) {
-                        connection.rollback(() => {
-                          releaseDBConnection(db, connection);
-                          next(error);
-                        });
+                    connection.query(
+                      "INSERT INTO hims_m_employee_department_mappings(" +
+                        insurtColumns.join(",") +
+                        ",created_date,updated_date) VALUES ?",
+                      [
+                        jsonArrayToObject({
+                          sampleInputObject: insurtColumns,
+                          arrayObj: req.body.insertdeptDetails,
+                          newFieldToInsert: [new Date(), new Date()],
+                          req: req
+                        })
+                      ],
+                      (error, insertDepartResult) => {
+                        if (error) {
+                          connection.rollback(() => {
+                            releaseDBConnection(db, connection);
+                            next(error);
+                          });
+                        }
+                        return resolve(insertDepartResult);
                       }
-                      return resolve(insertDepartResult);
-                    }
-                  );
-                } else {
-                  resolve(result);
-                }
-              })
-                .then(resultFrmInsertDept => {
-                  debugLog("inside One then");
+                    );
+                  } else {
+                    resolve(result);
+                  }
+                })
+                  .then(resultFrmInsertDept => {
+                    debugLog("inside One then");
 
-                  if (input.updatedeptDetails.length > 0) {
-                    debugLog("inside updatedeptDetails");
-                    let inputParam = extend([], req.body.updatedeptDetails);
-                    let qry = "";
+                    if (input.updatedeptDetails.length > 0) {
+                      debugLog("inside updatedeptDetails");
+                      let inputParam = extend([], req.body.updatedeptDetails);
+                      let qry = "";
 
-                    for (let i = 0; i < input.updatedeptDetails.length; i++) {
-                      debugLog("qry: ", qry);
-                      qry += mysql.format(
-                        "UPDATE `hims_m_employee_department_mappings` SET services_id=?,`sub_department_id`=?,\
+                      for (let i = 0; i < input.updatedeptDetails.length; i++) {
+                        debugLog("qry: ", qry);
+                        qry += mysql.format(
+                          "UPDATE `hims_m_employee_department_mappings` SET services_id=?,`sub_department_id`=?,\
                         `category_speciality_id`=?,`employee_designation_id`=?,`reporting_to_id`=?,`to_date`=?,\
                         `dep_status`=?, `record_status`=?,`updated_date`=?,`updated_by`=? \
                         where record_status='A' and hims_d_employee_department_id=?;",
-                        [
-                          inputParam[i].services_id,
-                          inputParam[i].sub_department_id,
-                          inputParam[i].category_speciality_id,
-                          inputParam[i].employee_designation_id,
-                          inputParam[i].reporting_to_id,
-                          inputParam[i].to_date,
-                          inputParam[i].dep_status,
-                          inputParam[i].record_status,
-                          new Date(),
-                          req.userIdentity.algaeh_d_app_user_id,
-                          inputParam[i].hims_d_employee_department_id
-                        ]
-                      );
-                      debugLog("qry: ", qry);
-                    }
-
-                    debugLog("qry: ", qry);
-
-                    connection.query(qry, (error, updateDeptDetailResult) => {
-                      if (error) {
-                        connection.rollback(() => {
-                          releaseDBConnection(db, connection);
-                          next(error);
-                        });
+                          [
+                            inputParam[i].services_id,
+                            inputParam[i].sub_department_id,
+                            inputParam[i].category_speciality_id,
+                            inputParam[i].employee_designation_id,
+                            inputParam[i].reporting_to_id,
+                            inputParam[i].to_date,
+                            inputParam[i].dep_status,
+                            inputParam[i].record_status,
+                            new Date(),
+                            req.userIdentity.algaeh_d_app_user_id,
+                            inputParam[i].hims_d_employee_department_id
+                          ]
+                        );
+                        debugLog("qry: ", qry);
                       }
-                    });
-                  }
-                })
-                .then(updateDeptDetailResult => {
-                  debugLog("inside 2 then");
 
-                  if (input.insertserviceComm.length > 0) {
-                    debugLog("inside insertserviceComm");
-                    const insurtColumns = [
-                      "provider_id",
-                      "services_id",
-                      "service_type_id",
-                      "op_cash_commission_percent",
-                      "op_credit_commission_percent",
-                      "ip_cash_commission_percent",
-                      "ip_credit_commission_percent",
-                      "created_by",
-                      "updated_by"
-                    ];
+                      debugLog("qry: ", qry);
 
-                    connection.query(
-                      "INSERT INTO hims_m_doctor_service_commission(" +
-                        insurtColumns.join(",") +
-                        ",created_date,updated_date) VALUES ?",
-                      [
-                        jsonArrayToObject({
-                          sampleInputObject: insurtColumns,
-                          arrayObj: req.body.insertserviceComm,
-                          newFieldToInsert: [new Date(), new Date()],
-                          req: req
-                        })
-                      ],
-                      (error, serviceCommResult) => {
+                      connection.query(qry, (error, updateDeptDetailResult) => {
                         if (error) {
                           connection.rollback(() => {
                             releaseDBConnection(db, connection);
                             next(error);
                           });
                         }
-                        //--
-                      }
-                    );
-                  }
-                })
-                .then(serviceCommResult => {
-                  debugLog("inside 3 then");
+                      });
+                    }
+                  })
+                  // Department Insert/Update
+                  // End
+                  .then(updateDeptDetailResult => {
+                    debugLog("inside 2 then");
+                    // Doctor Service Commission Insert/Update
+                    // Start
+                    if (input.insertserviceComm.length > 0) {
+                      debugLog("inside insertserviceComm");
+                      const insurtColumns = [
+                        "provider_id",
+                        "services_id",
+                        "service_type_id",
+                        "op_cash_commission_percent",
+                        "op_credit_commission_percent",
+                        "ip_cash_commission_percent",
+                        "ip_credit_commission_percent",
+                        "created_by",
+                        "updated_by"
+                      ];
 
-                  if (input.updateserviceComm.length > 0) {
-                    debugLog("inside updateserviceComm");
-                    let inputParam = extend([], req.body.updateserviceComm);
-                    let qry = "";
+                      connection.query(
+                        "INSERT INTO hims_m_doctor_service_commission(" +
+                          insurtColumns.join(",") +
+                          ",created_date,updated_date) VALUES ?",
+                        [
+                          jsonArrayToObject({
+                            sampleInputObject: insurtColumns,
+                            arrayObj: req.body.insertserviceComm,
+                            newFieldToInsert: [new Date(), new Date()],
+                            req: req
+                          })
+                        ],
+                        (error, serviceCommResult) => {
+                          if (error) {
+                            connection.rollback(() => {
+                              releaseDBConnection(db, connection);
+                              next(error);
+                            });
+                          }
+                          //--
+                        }
+                      );
+                    }
+                  })
+                  .then(serviceCommResult => {
+                    debugLog("inside 3 then");
 
-                    for (
-                      let i = 0;
-                      i < req.body.updateserviceComm.length;
-                      i++
-                    ) {
-                      qry += mysql.format(
-                        "UPDATE `hims_m_doctor_service_commission` SET services_id=?,\
+                    if (input.updateserviceComm.length > 0) {
+                      debugLog("inside updateserviceComm");
+                      let inputParam = extend([], req.body.updateserviceComm);
+                      let qry = "";
+
+                      for (
+                        let i = 0;
+                        i < req.body.updateserviceComm.length;
+                        i++
+                      ) {
+                        qry += mysql.format(
+                          "UPDATE `hims_m_doctor_service_commission` SET services_id=?,\
                       `service_type_id`=?,`op_cash_commission_percent`=?,`op_credit_commission_percent`=?,`ip_cash_commission_percent`=?,\
                       `ip_credit_commission_percent`=?,record_status`=?,\
                       updated_date=?,updated_by=? where record_status='A' and hims_m_doctor_service_commission_id=?;",
-                        [
-                          inputParam[i].services_id,
-                          inputParam[i].service_type_id,
-                          inputParam[i].op_cash_commission_percent,
-                          inputParam[i].op_credit_commission_percent,
-                          inputParam[i].ip_cash_commission_percent,
-                          inputParam[i].ip_credit_commission_percent,
-                          inputParam[i].record_status,
-                          new Date(),
-                          req.userIdentity.algaeh_d_app_user_id,
-                          inputParam[i].hims_m_doctor_service_commission_id
-                        ]
+                          [
+                            inputParam[i].services_id,
+                            inputParam[i].service_type_id,
+                            inputParam[i].op_cash_commission_percent,
+                            inputParam[i].op_credit_commission_percent,
+                            inputParam[i].ip_cash_commission_percent,
+                            inputParam[i].ip_credit_commission_percent,
+                            inputParam[i].record_status,
+                            new Date(),
+                            req.userIdentity.algaeh_d_app_user_id,
+                            inputParam[i].hims_m_doctor_service_commission_id
+                          ]
+                        );
+                      }
+
+                      connection.query(
+                        qry,
+                        (error, updateServiceCommResult) => {
+                          if (error) {
+                            connection.rollback(() => {
+                              releaseDBConnection(db, connection);
+                              next(error);
+                            });
+                          }
+                        }
                       );
                     }
+                  })
+                  // Doctor Service Commission Insert/Update
+                  // End
+                  .then(updateServiceCommResult => {
+                    // Doctor Service Type Commission Insert/Update
+                    // Start
+                    debugLog("inside 4 then");
+                    if (input.insertservTypeCommission.length > 0) {
+                      debugLog("inside insertservTypeCommission");
+                      const insurtColumns = [
+                        "provider_id",
+                        "service_type_id",
+                        "op_cash_comission_percent",
+                        "op_credit_comission_percent",
+                        "ip_cash_commission_percent",
+                        "ip_credit_commission_percent",
+                        "created_by",
+                        "updated_by"
+                      ];
 
-                    connection.query(qry, (error, updateServiceCommResult) => {
-                      if (error) {
-                        connection.rollback(() => {
-                          releaseDBConnection(db, connection);
-                          next(error);
-                        });
-                      }
-                    });
-                  }
-                })
-                .then(updateServiceCommResult => {
-                  debugLog("inside 4 then");
-                  if (input.insertservTypeCommission.length > 0) {
-                    debugLog("inside insertservTypeCommission");
-                    const insurtColumns = [
-                      "provider_id",
-                      "service_type_id",
-                      "op_cash_comission_percent",
-                      "op_credit_comission_percent",
-                      "ip_cash_commission_percent",
-                      "ip_credit_commission_percent",
-                      "created_by",
-                      "updated_by"
-                    ];
-
-                    connection.query(
-                      "INSERT INTO hims_m_doctor_service_type_commission(" +
-                        insurtColumns.join(",") +
-                        ",created_date,updated_date) VALUES ?",
-                      [
-                        jsonArrayToObject({
-                          sampleInputObject: insurtColumns,
-                          arrayObj: req.body.insertservTypeCommission,
-                          newFieldToInsert: [new Date(), new Date()],
-                          req: req
-                        })
-                      ],
-                      (error, insrtServiceTypeCommResult) => {
-                        if (error) {
-                          connection.rollback(() => {
-                            releaseDBConnection(db, connection);
-                            next(error);
-                          });
+                      connection.query(
+                        "INSERT INTO hims_m_doctor_service_type_commission(" +
+                          insurtColumns.join(",") +
+                          ",created_date,updated_date) VALUES ?",
+                        [
+                          jsonArrayToObject({
+                            sampleInputObject: insurtColumns,
+                            arrayObj: req.body.insertservTypeCommission,
+                            newFieldToInsert: [new Date(), new Date()],
+                            req: req
+                          })
+                        ],
+                        (error, insrtServiceTypeCommResult) => {
+                          if (error) {
+                            connection.rollback(() => {
+                              releaseDBConnection(db, connection);
+                              next(error);
+                            });
+                          }
+                          //-
                         }
-                        //-
-                      }
-                    );
-                  }
-                })
-                .then(insrtServiceTypeCommResult => {
-                  debugLog("inside 5 then");
-                  if (input.updateservTypeCommission.length > 0) {
-                    debugLog("inside updateservTypeCommission");
-                    let inputParam = extend(
-                      [],
-                      req.body.updateservTypeCommission
-                    );
-                    let qry = "";
+                      );
+                    }
+                  })
+                  .then(insrtServiceTypeCommResult => {
+                    debugLog("inside 5 then");
+                    if (input.updateservTypeCommission.length > 0) {
+                      debugLog("inside updateservTypeCommission");
+                      let inputParam = extend(
+                        [],
+                        req.body.updateservTypeCommission
+                      );
+                      let qry = "";
 
-                    for (
-                      let i = 0;
-                      i < req.body.updateservTypeCommission.length;
-                      i++
-                    ) {
-                      qry += mysql.format(
-                        "UPDATE `hims_m_doctor_service_type_commission` SET \
+                      for (
+                        let i = 0;
+                        i < req.body.updateservTypeCommission.length;
+                        i++
+                      ) {
+                        qry += mysql.format(
+                          "UPDATE `hims_m_doctor_service_type_commission` SET \
                       `service_type_id`=?,`op_cash_comission_percent`=?,`op_credit_comission_percent`=?,`ip_cash_commission_percent`=?,\
                       `ip_credit_commission_percent`=?,record_status`=?,\
                       updated_date=?,updated_by=? where record_status='A' and hims_m_doctor_service_type_commission_id=?;",
-                        [
-                          inputParam[i].service_type_id,
-                          inputParam[i].op_cash_comission_percent,
-                          inputParam[i].op_credit_comission_percent,
-                          inputParam[i].ip_cash_commission_percent,
-                          inputParam[i].ip_credit_commission_percent,
-                          inputParam[i].record_status,
-                          new Date(),
-                          req.userIdentity.algaeh_d_app_user_id,
-                          inputParam[i].hims_m_doctor_service_type_commission_id
-                        ]
+                          [
+                            inputParam[i].service_type_id,
+                            inputParam[i].op_cash_comission_percent,
+                            inputParam[i].op_credit_comission_percent,
+                            inputParam[i].ip_cash_commission_percent,
+                            inputParam[i].ip_credit_commission_percent,
+                            inputParam[i].record_status,
+                            new Date(),
+                            req.userIdentity.algaeh_d_app_user_id,
+                            inputParam[i]
+                              .hims_m_doctor_service_type_commission_id
+                          ]
+                        );
+                      }
+
+                      connection.query(
+                        qry,
+                        (error, updateServiceCommResult) => {
+                          if (error) {
+                            connection.rollback(() => {
+                              releaseDBConnection(db, connection);
+                              next(error);
+                            });
+                          }
+                        }
                       );
                     }
+                  })
+                  // Doctor Service Type Commission Insert/Update
+                  // End
+                  .then(updateServiceCommResult => {
+                    debugLog("inside insertearnComp then");
 
-                    connection.query(qry, (error, updateServiceCommResult) => {
-                      if (error) {
-                        connection.rollback(() => {
-                          releaseDBConnection(db, connection);
-                          next(error);
-                        });
-                      }
-                    });
-                  }
-                })
-                .then(updateServiceCommResult => {
-                  debugLog("inside insertearnComp then");
+                    // Earning Insert/Update
+                    // Start
+                    if (input.insertearnComp.length > 0) {
+                      const insurtColumns = [
+                        "employee_id",
+                        "earnings_id",
+                        "amount",
+                        "formula",
+                        "allocate",
+                        "calculation_method",
+                        "calculation_type",
+                        "revision_type",
+                        "revision_date",
+                        "revised_amount",
+                        "applicable_annual_leave"
+                      ];
 
-                  if (input.insertearnComp.length > 0) {
-                    const insurtColumns = [
-                      "employee_id",
-                      "earnings_id",
-                      "amount",
-                      "formula",
-                      "allocate",
-                      "calculation_method",
-                      "calculation_type",
-                      "revision_type",
-                      "revision_date",
-                      "revised_amount",
-                      "applicable_annual_leave"
-                    ];
-
-                    connection.query(
-                      "INSERT INTO hims_d_employee_earnings(" +
-                        insurtColumns.join(",") +
-                        ") VALUES ?",
-                      [
-                        jsonArrayToObject({
-                          sampleInputObject: insurtColumns,
-                          arrayObj: req.body.insertearnComp,
-                          req: req
-                        })
-                      ],
-                      (error, insertearncomponent) => {
-                        if (error) {
-                          connection.rollback(() => {
-                            releaseDBConnection(db, connection);
-                            next(error);
-                          });
+                      connection.query(
+                        "INSERT INTO hims_d_employee_earnings(" +
+                          insurtColumns.join(",") +
+                          ") VALUES ?",
+                        [
+                          jsonArrayToObject({
+                            sampleInputObject: insurtColumns,
+                            arrayObj: req.body.insertearnComp,
+                            req: req
+                          })
+                        ],
+                        (error, insertearncomponent) => {
+                          if (error) {
+                            connection.rollback(() => {
+                              releaseDBConnection(db, connection);
+                              next(error);
+                            });
+                          }
+                          //--
                         }
-                        //--
-                      }
-                    );
-                  }
-                })
-                .then(insertearncomponent => {
-                  debugLog("inside insertearncomponent then");
-                  if (input.updateearnComp.length > 0) {
-                    debugLog("inside updateearnComp");
-                    let inputParam = extend([], req.body.updateearnComp);
-                    let qry = "";
+                      );
+                    }
+                  })
+                  .then(insertearncomponent => {
+                    debugLog("inside insertearncomponent then");
+                    if (input.updateearnComp.length > 0) {
+                      debugLog("inside updateearnComp");
+                      let inputParam = extend([], req.body.updateearnComp);
+                      let qry = "";
 
-                    for (let i = 0; i < req.body.updateearnComp.length; i++) {
-                      qry += mysql.format(
-                        "UPDATE `hims_d_employee_earnings` SET \
+                      for (let i = 0; i < req.body.updateearnComp.length; i++) {
+                        qry += mysql.format(
+                          "UPDATE `hims_d_employee_earnings` SET \
                           `amount`=?,`allocate`=? where hims_d_employee_earnings_id=?;",
-                        [
-                          inputParam[i].amount,
-                          inputParam[i].allocate,
-                          inputParam[i].hims_d_employee_earnings_id
-                        ]
-                      );
-                    }
-
-                    debugLog("qry: ", qry);
-
-                    connection.query(qry, (error, updateearncomponent) => {
-                      if (error) {
-                        connection.rollback(() => {
-                          releaseDBConnection(db, connection);
-                          next(error);
-                        });
-                      }
-                    });
-                  }
-                })
-                .then(updateearncomponent => {
-                  debugLog("inside insertDeductionComp then");
-
-                  if (input.insertDeductionComp.length > 0) {
-                    const insurtColumns = [
-                      "employee_id",
-                      "deductions_id",
-                      "amount",
-                      "formula",
-                      "allocate",
-                      "calculation_method",
-                      "calculation_type",
-                      "revision_type",
-                      "revision_date",
-                      "revised_amount"
-                    ];
-
-                    connection.query(
-                      "INSERT INTO hims_d_employee_deductions(" +
-                        insurtColumns.join(",") +
-                        ") VALUES ?",
-                      [
-                        jsonArrayToObject({
-                          sampleInputObject: insurtColumns,
-                          arrayObj: req.body.insertDeductionComp,
-                          req: req
-                        })
-                      ],
-                      (error, insertDeductionComp) => {
-                        if (error) {
-                          connection.rollback(() => {
-                            releaseDBConnection(db, connection);
-                            next(error);
-                          });
-                        }
-                        //--
-                      }
-                    );
-                  }
-                })
-                .then(insertDeductionComp => {
-                  debugLog("inside insertContributeComp then");
-
-                  if (input.insertContributeComp.length > 0) {
-                    const insurtColumns = [
-                      "employee_id",
-                      "contributions_id",
-                      "amount",
-                      "formula",
-                      "allocate",
-                      "calculation_method",
-                      "calculation_type",
-                      "revision_type",
-                      "revision_date",
-                      "revised_amount"
-                    ];
-
-                    connection.query(
-                      "INSERT INTO hims_d_employee_contributions(" +
-                        insurtColumns.join(",") +
-                        ") VALUES ?",
-                      [
-                        jsonArrayToObject({
-                          sampleInputObject: insurtColumns,
-                          arrayObj: req.body.insertContributeComp,
-                          req: req
-                        })
-                      ],
-                      (error, insertContributeComp) => {
-                        if (error) {
-                          connection.rollback(() => {
-                            releaseDBConnection(db, connection);
-                            next(error);
-                          });
-                        }
-                        //--
-                      }
-                    );
-                  }
-                })
-
-                .then(insertContributeComp => {
-                  debugLog("inside insertIdDetails then");
-
-                  if (input.insertIdDetails.length > 0) {
-                    const insurtColumns = [
-                      "employee_id",
-                      "identity_documents_id",
-                      "identity_number",
-                      "valid_upto",
-                      "issue_date",
-                      "alert_required",
-                      "alert_date"
-                    ];
-
-                    connection.query(
-                      "INSERT INTO hims_d_employee_identification(" +
-                        insurtColumns.join(",") +
-                        ",created_date,created_by,updated_date,updated_by) VALUES ?",
-                      [
-                        jsonArrayToObject({
-                          sampleInputObject: insurtColumns,
-                          arrayObj: req.body.insertIdDetails,
-                          req: req,
-                          newFieldToInsert: [
-                            new Date(),
-                            req.userIdentity.algaeh_d_app_user_id,
-                            new Date(),
-                            req.userIdentity.algaeh_d_app_user_id
+                          [
+                            inputParam[i].amount,
+                            inputParam[i].allocate,
+                            inputParam[i].hims_d_employee_earnings_id
                           ]
-                        })
-                      ],
-                      (error, insertIdDetails) => {
+                        );
+                      }
+
+                      debugLog("qry: ", qry);
+
+                      connection.query(qry, (error, updateearncomponent) => {
                         if (error) {
                           connection.rollback(() => {
                             releaseDBConnection(db, connection);
                             next(error);
                           });
                         }
-                      }
-                    );
-                  }
-                })
-                .then(insertIdDetails => {
-                  debugLog("inside insertDependentDetails then");
-
-                  if (input.insertDependentDetails.length > 0) {
-                    const insurtColumns = [
-                      "employee_id",
-                      "dependent_type",
-                      "dependent_name",
-                      "dependent_identity_type",
-                      "dependent_identity_no"
-                    ];
-
-                    connection.query(
-                      "INSERT INTO hims_d_employee_dependents(" +
-                        insurtColumns.join(",") +
-                        ",created_date,created_by,updated_date,updated_by) VALUES ?",
-                      [
-                        jsonArrayToObject({
-                          sampleInputObject: insurtColumns,
-                          arrayObj: req.body.insertDependentDetails,
-                          req: req,
-                          newFieldToInsert: [
-                            new Date(),
-                            req.userIdentity.algaeh_d_app_user_id,
-                            new Date(),
-                            req.userIdentity.algaeh_d_app_user_id
-                          ]
-                        })
-                      ],
-                      (error, insertDependentDetails) => {
-                        if (error) {
-                          connection.rollback(() => {
-                            releaseDBConnection(db, connection);
-                            next(error);
-                          });
-                        }
-                      }
-                    );
-                  }
-                })
-                .finally(allResult => {
-                  debugLog("inside finally");
-                  connection.commit(error => {
-                    if (error) {
-                      connection.rollback(() => {
-                        releaseDBConnection(db, connection);
-                        next(error);
                       });
                     }
-                    releaseDBConnection(db, connection);
-                    req.records = result;
-                    next();
-                  });
-                });
+                  })
+                  .then(updateearncomponent => {
+                    debugLog("inside updateearncomponent then");
+                    if (input.deleteearnComp.length > 0) {
+                      debugLog("inside deleteearnComp");
+                      let inputParam = extend([], req.body.deleteearnComp);
+                      let qry = "";
+
+                      for (let i = 0; i < req.body.deleteearnComp.length; i++) {
+                        qry += mysql.format(
+                          "DELETE FROM `hims_d_employee_earnings` where hims_d_employee_earnings_id=?;",
+                          [inputParam[i].hims_d_employee_earnings_id]
+                        );
+                      }
+
+                      debugLog("qry: ", qry);
+
+                      connection.query(qry, (error, deleteearnComp) => {
+                        if (error) {
+                          connection.rollback(() => {
+                            releaseDBConnection(db, connection);
+                            next(error);
+                          });
+                        }
+                      });
+                    }
+                  })
+                  // Earning Insert/Update
+                  // End
+                  .then(deleteearnComp => {
+                    // Deduction Insert/Update
+                    // Start
+                    debugLog("inside insertDeductionComp then");
+
+                    if (input.insertDeductionComp.length > 0) {
+                      const insurtColumns = [
+                        "employee_id",
+                        "deductions_id",
+                        "amount",
+                        "formula",
+                        "allocate",
+                        "calculation_method",
+                        "calculation_type",
+                        "revision_type",
+                        "revision_date",
+                        "revised_amount"
+                      ];
+
+                      connection.query(
+                        "INSERT INTO hims_d_employee_deductions(" +
+                          insurtColumns.join(",") +
+                          ") VALUES ?",
+                        [
+                          jsonArrayToObject({
+                            sampleInputObject: insurtColumns,
+                            arrayObj: req.body.insertDeductionComp,
+                            req: req
+                          })
+                        ],
+                        (error, insertDeductionComp) => {
+                          if (error) {
+                            connection.rollback(() => {
+                              releaseDBConnection(db, connection);
+                              next(error);
+                            });
+                          }
+                          //--
+                        }
+                      );
+                    }
+                  })
+
+                  .then(insertDeductionComp => {
+                    debugLog("inside insertDeductionComp then");
+                    if (input.updateDeductionComp.length > 0) {
+                      debugLog("inside updateDeductionComp");
+                      let inputParam = extend([], req.body.updateDeductionComp);
+                      let qry = "";
+
+                      for (
+                        let i = 0;
+                        i < req.body.updateDeductionComp.length;
+                        i++
+                      ) {
+                        qry += mysql.format(
+                          "UPDATE `hims_d_employee_deductions` SET \
+                          `amount`=?,`allocate`=? where hims_d_employee_deductions_id=?;",
+                          [
+                            inputParam[i].amount,
+                            inputParam[i].allocate,
+                            inputParam[i].hims_d_employee_deductions_id
+                          ]
+                        );
+                      }
+
+                      debugLog("qry: ", qry);
+
+                      connection.query(qry, (error, updateDeductionComp) => {
+                        if (error) {
+                          connection.rollback(() => {
+                            releaseDBConnection(db, connection);
+                            next(error);
+                          });
+                        }
+                      });
+                    }
+                  })
+                  .then(updateDeductionComp => {
+                    debugLog("inside updateDeductionComp then");
+                    if (input.deleteDeductionComp.length > 0) {
+                      debugLog("inside deleteDeductionComp");
+                      let inputParam = extend([], req.body.deleteDeductionComp);
+                      let qry = "";
+
+                      for (
+                        let i = 0;
+                        i < req.body.deleteDeductionComp.length;
+                        i++
+                      ) {
+                        qry += mysql.format(
+                          "DELETE FROM `hims_d_employee_deductions` where hims_d_employee_deductions_id=?;",
+                          [inputParam[i].hims_d_employee_deductions_id]
+                        );
+                      }
+
+                      debugLog("qry: ", qry);
+
+                      connection.query(qry, (error, deleteDeductionComp) => {
+                        if (error) {
+                          connection.rollback(() => {
+                            releaseDBConnection(db, connection);
+                            next(error);
+                          });
+                        }
+                      });
+                    }
+                  })
+                  // Deduction Insert/Update
+                  // End
+                  .then(deleteDeductionComp => {
+                    // Contributions Insert/Update
+                    // Start
+                    debugLog("inside deleteDeductionComp then");
+
+                    if (input.insertContributeComp.length > 0) {
+                      debugLog("inside insertContributeComp");
+                      const insurtColumns = [
+                        "employee_id",
+                        "contributions_id",
+                        "amount",
+                        "formula",
+                        "allocate",
+                        "calculation_method",
+                        "calculation_type",
+                        "revision_type",
+                        "revision_date",
+                        "revised_amount"
+                      ];
+
+                      connection.query(
+                        "INSERT INTO hims_d_employee_contributions(" +
+                          insurtColumns.join(",") +
+                          ") VALUES ?",
+                        [
+                          jsonArrayToObject({
+                            sampleInputObject: insurtColumns,
+                            arrayObj: req.body.insertContributeComp,
+                            req: req
+                          })
+                        ],
+                        (error, insertContributeComp) => {
+                          if (error) {
+                            connection.rollback(() => {
+                              releaseDBConnection(db, connection);
+                              next(error);
+                            });
+                          }
+                          //--
+                        }
+                      );
+                    }
+                  })
+
+                  .then(insertContributeComp => {
+                    debugLog("inside insertContributeComp then");
+                    if (input.updateContributeComp.length > 0) {
+                      debugLog("inside updateContributeComp");
+                      let inputParam = extend(
+                        [],
+                        req.body.updateContributeComp
+                      );
+                      let qry = "";
+
+                      for (
+                        let i = 0;
+                        i < req.body.updateContributeComp.length;
+                        i++
+                      ) {
+                        qry += mysql.format(
+                          "UPDATE `hims_d_employee_contributions` SET \
+                          `amount`=?,`allocate`=? where hims_d_employee_contributions_id=?;",
+                          [
+                            inputParam[i].amount,
+                            inputParam[i].allocate,
+                            inputParam[i].hims_d_employee_contributions_id
+                          ]
+                        );
+                      }
+
+                      connection.query(qry, (error, updateContributeComp) => {
+                        if (error) {
+                          connection.rollback(() => {
+                            releaseDBConnection(db, connection);
+                            next(error);
+                          });
+                        }
+                      });
+                    }
+                  })
+                  .then(updateContributeComp => {
+                    debugLog("inside updateContributeComp then");
+                    if (input.deleteContributeComp.length > 0) {
+                      debugLog("inside deleteContributeComp");
+                      let inputParam = extend(
+                        [],
+                        req.body.deleteContributeComp
+                      );
+                      let qry = "";
+
+                      for (
+                        let i = 0;
+                        i < req.body.deleteContributeComp.length;
+                        i++
+                      ) {
+                        qry += mysql.format(
+                          "DELETE FROM `hims_d_employee_contributions` where hims_d_employee_contributions_id=?;",
+                          [inputParam[i].hims_d_employee_contributions_id]
+                        );
+                      }
+
+                      connection.query(qry, (error, deleteContributeComp) => {
+                        if (error) {
+                          connection.rollback(() => {
+                            releaseDBConnection(db, connection);
+                            next(error);
+                          });
+                        }
+                      });
+                    }
+                  })
+                  // Contributions Insert/Update
+                  // End
+                  .then(deleteContributeComp => {
+                    debugLog("inside deleteContributeComp then");
+                    // Employee Identification Insert/Update
+                    // Start
+                    if (input.insertIdDetails.length > 0) {
+                      const insurtColumns = [
+                        "employee_id",
+                        "identity_documents_id",
+                        "identity_number",
+                        "valid_upto",
+                        "issue_date",
+                        "alert_required",
+                        "alert_date"
+                      ];
+
+                      connection.query(
+                        "INSERT INTO hims_d_employee_identification(" +
+                          insurtColumns.join(",") +
+                          ",created_date,created_by,updated_date,updated_by) VALUES ?",
+                        [
+                          jsonArrayToObject({
+                            sampleInputObject: insurtColumns,
+                            arrayObj: req.body.insertIdDetails,
+                            req: req,
+                            newFieldToInsert: [
+                              new Date(),
+                              req.userIdentity.algaeh_d_app_user_id,
+                              new Date(),
+                              req.userIdentity.algaeh_d_app_user_id
+                            ]
+                          })
+                        ],
+                        (error, insertIdDetails) => {
+                          if (error) {
+                            connection.rollback(() => {
+                              releaseDBConnection(db, connection);
+                              next(error);
+                            });
+                          }
+                        }
+                      );
+                    }
+                  })
+
+                  .then(insertIdDetails => {
+                    debugLog("inside insertIdDetails then");
+                    if (input.updateIdDetails.length > 0) {
+                      debugLog("inside updateIdDetails");
+                      let inputParam = extend([], req.body.updateIdDetails);
+                      let qry = "";
+
+                      for (
+                        let i = 0;
+                        i < req.body.updateIdDetails.length;
+                        i++
+                      ) {
+                        qry += mysql.format(
+                          "UPDATE `hims_d_employee_identification` SET \
+                          `identity_number`=?,`issue_date`=?, `valid_upto`=? where hims_d_employee_identification_id=?;",
+                          [
+                            inputParam[i].identity_number,
+                            moment(inputParam[i].issue_date).format(
+                              "YYYY-MM-DD"
+                            ),
+                            moment(inputParam[i].valid_upto).format(
+                              "YYYY-MM-DD"
+                            ),
+                            inputParam[i].hims_d_employee_identification_id
+                          ]
+                        );
+
+                        debugLog("qry: ", qry);
+                      }
+
+                      connection.query(qry, (error, updateIdDetails) => {
+                        if (error) {
+                          connection.rollback(() => {
+                            releaseDBConnection(db, connection);
+                            next(error);
+                          });
+                        }
+                      });
+                    }
+                  })
+                  .then(updateIdDetails => {
+                    debugLog("inside updateIdDetails then");
+                    if (input.deleteIdDetails.length > 0) {
+                      debugLog("inside deleteIdDetails");
+                      let inputParam = extend([], req.body.deleteIdDetails);
+                      let qry = "";
+
+                      for (
+                        let i = 0;
+                        i < req.body.deleteIdDetails.length;
+                        i++
+                      ) {
+                        qry += mysql.format(
+                          "DELETE FROM `hims_d_employee_identification` where hims_d_employee_identification_id=?;",
+                          [inputParam[i].hims_d_employee_identification_id]
+                        );
+                      }
+
+                      connection.query(qry, (error, deleteIdDetails) => {
+                        if (error) {
+                          connection.rollback(() => {
+                            releaseDBConnection(db, connection);
+                            next(error);
+                          });
+                        }
+                      });
+                    }
+                  })
+                  // Employee Identification Insert/Update
+                  // End
+                  .then(deleteIdDetails => {
+                    debugLog("inside deleteIdDetails then");
+                    // Employee Dependents Insert/Update
+                    // Start
+                    if (input.insertDependentDetails.length > 0) {
+                      const insurtColumns = [
+                        "employee_id",
+                        "dependent_type",
+                        "dependent_name",
+                        "dependent_identity_type",
+                        "dependent_identity_no"
+                      ];
+
+                      connection.query(
+                        "INSERT INTO hims_d_employee_dependents(" +
+                          insurtColumns.join(",") +
+                          ",created_date,created_by,updated_date,updated_by) VALUES ?",
+                        [
+                          jsonArrayToObject({
+                            sampleInputObject: insurtColumns,
+                            arrayObj: req.body.insertDependentDetails,
+                            req: req,
+                            newFieldToInsert: [
+                              new Date(),
+                              req.userIdentity.algaeh_d_app_user_id,
+                              new Date(),
+                              req.userIdentity.algaeh_d_app_user_id
+                            ]
+                          })
+                        ],
+                        (error, insertDependentDetails) => {
+                          if (error) {
+                            connection.rollback(() => {
+                              releaseDBConnection(db, connection);
+                              next(error);
+                            });
+                          }
+                        }
+                      );
+                    }
+                  })
+
+                  .then(insertDependentDetails => {
+                    debugLog("inside insertDependentDetails then");
+                    if (input.updateDependentDetails.length > 0) {
+                      debugLog("inside updateDependentDetails");
+                      let inputParam = extend(
+                        [],
+                        req.body.updateDependentDetails
+                      );
+                      let qry = "";
+
+                      for (
+                        let i = 0;
+                        i < req.body.updateDependentDetails.length;
+                        i++
+                      ) {
+                        qry += mysql.format(
+                          "UPDATE `hims_d_employee_dependents` SET `dependent_type`=?,`dependent_name`=?, \
+                          `dependent_identity_type`=?, `dependent_identity_no`=? where hims_d_employee_dependents_id=?;",
+                          [
+                            inputParam[i].dependent_type,
+                            inputParam[i].dependent_name,
+                            inputParam[i].dependent_identity_type,
+                            inputParam[i].dependent_identity_no,
+                            inputParam[i].hims_d_employee_dependents_id
+                          ]
+                        );
+
+                        debugLog("qry: ", qry);
+                      }
+
+                      connection.query(qry, (error, updateDependentDetails) => {
+                        if (error) {
+                          connection.rollback(() => {
+                            releaseDBConnection(db, connection);
+                            next(error);
+                          });
+                        }
+                      });
+                    }
+                  })
+                  .then(updateDependentDetails => {
+                    debugLog("inside updateDependentDetails then");
+                    if (input.deleteDependentDetails.length > 0) {
+                      debugLog("inside deleteDependentDetails");
+                      let inputParam = extend(
+                        [],
+                        req.body.deleteDependentDetails
+                      );
+                      let qry = "";
+
+                      for (
+                        let i = 0;
+                        i < req.body.deleteDependentDetails.length;
+                        i++
+                      ) {
+                        qry += mysql.format(
+                          "DELETE FROM `hims_d_employee_dependents` where hims_d_employee_dependents_id=?;",
+                          [inputParam[i].hims_d_employee_dependents_id]
+                        );
+                      }
+
+                      connection.query(qry, (error, deleteDependentDetails) => {
+                        if (error) {
+                          connection.rollback(() => {
+                            releaseDBConnection(db, connection);
+                            next(error);
+                          });
+                        }
+                      });
+                    }
+                  })
+                  // Employee Dependents Insert/Update
+                  // Ends
+                  .finally(allResult => {
+                    debugLog("inside finally");
+                    connection.commit(error => {
+                      if (error) {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                      }
+                      releaseDBConnection(db, connection);
+                      req.records = result;
+                      next();
+                    });
+                  })
+              );
             } else {
               req.records = result;
               releaseDBConnection(db, connection);

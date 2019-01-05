@@ -5,6 +5,12 @@
     { "name": "Others", "arabic_name": "الآخرين", "value": "Others" }
   ],
 
+  "LEAVE_GENDER": [
+    { "name": "Male", "arabic_name": "الذكر", "value": "Male" },
+    { "name": "Female", "arabic_name": "إناثا", "value": "Female" },
+    { "name": "Both", "arabic_name": "الآخرين", "value": "Both" }
+  ],
+
   "EMP_FORMAT_GENDER": [
     { "name": "Male", "arabic_name": "الذكر", "value": "MALE" },
     { "name": "Female", "arabic_name": "إناثا", "value": "FEMALE" },
@@ -562,6 +568,13 @@
     { "name": "Ceiling", "value": "CL" },
     { "name": "Round", "value": "RD" }
   ],
+  "EMP_TYPE": [
+    { "name": "Permanent", "value": "PE" },
+    { "name": "Contract", "value": "CO" },
+    { "name": "Probation", "value": "PB" },
+    { "name": "Locum", "value": "LC" },
+    { "name": "Visiting Consultant", "value": "VC" }
+  ],
   "EMPLOYEE_TYPE": [
     { "name": "Permanent", "value": "PE" },
     { "name": "Contract", "value": "CO" }
@@ -611,6 +624,10 @@
     { "name": "Full Day", "value": "FD" },
     { "name": "First Half", "value": "FH" },
     { "name": "Second Half", "value": "SH" }
+  ],
+  "LEAVE_FREQUENCY": [
+    { "name": "Yearly", "value": "Y" },
+    { "name": "Monthly", "value": "M" }
   ],
   "EMPLOYEE_STATUS": [
     { "name": "Active", "value": "A", "arabic_name": "نشيط" },
@@ -719,5 +736,21 @@
   "AUTH_LEVEL": [
     { "name": "Level 1", "value": "1" },
     { "name": "Level 2", "value": "2" }
+  ],
+  "LEAVE_CALC_TYPE": [
+    { "name": "Component", "value": "CO" },
+    { "name": "Slab", "value": "SL" }
+  ],
+  "LEAVE_PAY_TYPE": [
+    { "name": "None", "value": "NO" },
+    { "name": "Full Day (1)", "value": "FD" },
+    { "name": "Half Day (1/2)", "value": "HD" },
+    { "name": "Unpaid", "value": "UN" },
+    { "name": "Quarter (1/4)", "value": "QD" },
+    { "name": "Three Quarter Day (3/4)", "value": "TQ" }
+  ],
+  "LEAVE_VALUE_TYP" : [
+    { "name": "Over This Value", "value": "OV" },
+    { "name": "Between the From and To", "value": "RA" }
   ]
 }
