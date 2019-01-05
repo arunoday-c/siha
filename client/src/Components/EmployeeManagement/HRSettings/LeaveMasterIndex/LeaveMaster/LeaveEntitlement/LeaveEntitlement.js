@@ -195,7 +195,7 @@ function LeaveEntitlement(props) {
               <input
                 type="checkbox"
                 name="include_holiday"
-                checked={myParent.state.include_holiday}
+                //checked={myParent.state.include_holiday}
                 onChange={e => myParent.changeChecks(e)}
               />
               <span>Yes</span>

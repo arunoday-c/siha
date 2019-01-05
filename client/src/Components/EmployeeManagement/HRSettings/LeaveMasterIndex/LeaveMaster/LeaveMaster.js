@@ -21,6 +21,28 @@ class LeaveMaster extends Component {
     };
   }
 
+  saveLeaveMaster() {
+    algaehApiCall({
+      uri: "/leave/addLeaveMaster",
+      method: "POST",
+      data: this.state,
+      onSuccess: res => {
+        if (res.data.success) {
+          swalMessage({
+            title: "Leave Added Successfully",
+            type: "success"
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
   addLeaveRules() {
     let details = this.state.leaveRules;
 
@@ -181,6 +203,7 @@ class LeaveMaster extends Component {
         this.setState({
           [e.target.name]: e.target.checked
         });
+        console.log(e.target.name + " : " + e.target.checked);
         break;
     }
   }
@@ -279,7 +302,7 @@ class LeaveMaster extends Component {
                   <div className="col-lg-8">
                     <button
                       // onClick={() => {}}
-                      // onClick={InsertUpdateEmployee.bind(this, this)}
+                      onClick={this.saveLeaveMaster.bind(this)}
                       type="button"
                       className="btn btn-primary"
                     >
