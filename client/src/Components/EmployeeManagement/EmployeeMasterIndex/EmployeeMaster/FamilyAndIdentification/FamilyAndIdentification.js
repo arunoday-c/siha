@@ -12,10 +12,16 @@ import { algaehApiCall } from "../../../../../utils/algaehApiCall";
 
 import {
   texthandle,
-  // datehandle,
+  datehandlegrid,
   AddEmpId,
   addDependentType,
-  getFamilyIdentification
+  getFamilyIdentification,
+  onchangegridcol,
+  deleteIdentifications,
+  updateIdentifications,
+  deleteDependencies,
+  updateDependencies,
+  dateFormater
 } from "./FamilyAndIdentificationEvent";
 import { AlgaehActions } from "../../../../../actions/algaehActions";
 import { withRouter } from "react-router-dom";
@@ -26,7 +32,10 @@ import moment from "moment";
 class FamilyAndIdentification extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      idDetails: [],
+      dependentDetails: []
+    };
   }
 
   getEmployeeIdentification() {
@@ -207,25 +216,100 @@ class FamilyAndIdentification extends PureComponent {
                                 : ""}
                             </span>
                           );
+                        },
+                        editorTemplate: row => {
+                          let display =
+                            this.props.idtypes === undefined
+                              ? []
+                              : this.props.idtypes.filter(
+                                  f =>
+                                    f.hims_d_identity_document_id ===
+                                    row.identity_documents_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? display[0].identity_document_name
+                                : ""}
+                            </span>
+                          );
                         }
                       },
                       {
                         fieldName: "identity_number",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "ID Number" }} />
-                        )
+                        ),
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{}}
+                              textBox={{
+                                value: row.identity_number,
+                                className: "txt-fld",
+                                name: "identity_number",
+                                events: {
+                                  onChange: onchangegridcol.bind(
+                                    this,
+                                    this,
+                                    row
+                                  )
+                                }
+                              }}
+                            />
+                          );
+                        }
                       },
                       {
                         fieldName: "issue_date",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Issue Date" }} />
-                        )
+                        ),
+                        displayTemplate: row => {
+                          return <span>{dateFormater(row.issue_date)}</span>;
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <AlgaehDateHandler
+                              div={{ className: "" }}
+                              textBox={{
+                                className: "txt-fld hidden",
+                                name: "issue_date"
+                              }}
+                              minDate={new Date()}
+                              events={{
+                                onChange: datehandlegrid.bind(this, this, row)
+                              }}
+                              value={row.issue_date}
+                            />
+                          );
+                        }
                       },
                       {
                         fieldName: "valid_upto",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Valid Upto" }} />
-                        )
+                        ),
+                        displayTemplate: row => {
+                          return <span>{dateFormater(row.valid_upto)}</span>;
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <AlgaehDateHandler
+                              div={{ className: "" }}
+                              textBox={{
+                                className: "txt-fld hidden",
+                                name: "valid_upto"
+                              }}
+                              minDate={new Date()}
+                              events={{
+                                onChange: datehandlegrid.bind(this, this, row)
+                              }}
+                              value={row.valid_upto}
+                            />
+                          );
+                        }
                       }
                     ]}
                     keyId="service_code"
@@ -235,6 +319,11 @@ class FamilyAndIdentification extends PureComponent {
                     }}
                     isEditable={true}
                     paging={{ page: 0, rowsPerPage: 5 }}
+                    events={{
+                      onDelete: deleteIdentifications.bind(this, this),
+                      onEdit: row => {},
+                      onDone: updateIdentifications.bind(this, this)
+                    }}
                   />
                 </div>
               </div>
@@ -328,12 +417,41 @@ class FamilyAndIdentification extends PureComponent {
                     id="dep-ids-grid"
                     columns={[
                       {
+                        //   textField: "name",
+                        // valueField: "value",
+                        // data: variableJson.DEPENDENT_TYPE
                         fieldName: "dependent_type",
                         label: (
                           <AlgaehLabel
                             label={{ forceLabel: "Dependent Type" }}
                           />
-                        )
+                        ),
+                        displayTemplate: row => {
+                          let display = variableJson.DEPENDENT_TYPE.filter(
+                            f => f.value === row.dependent_type
+                          );
+
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? display[0].name
+                                : ""}
+                            </span>
+                          );
+                        },
+                        editorTemplate: row => {
+                          let display = variableJson.DEPENDENT_TYPE.filter(
+                            f => f.value === row.dependent_type
+                          );
+
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? display[0].name
+                                : ""}
+                            </span>
+                          );
+                        }
                       },
                       {
                         fieldName: "dependent_name",
@@ -341,7 +459,26 @@ class FamilyAndIdentification extends PureComponent {
                           <AlgaehLabel
                             label={{ forceLabel: "Dependent Name" }}
                           />
-                        )
+                        ),
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{}}
+                              textBox={{
+                                value: row.dependent_name,
+                                className: "txt-fld",
+                                name: "dependent_name",
+                                events: {
+                                  onChange: onchangegridcol.bind(
+                                    this,
+                                    this,
+                                    row
+                                  )
+                                }
+                              }}
+                            />
+                          );
+                        }
                       },
                       {
                         fieldName: "dependent_identity_type",
@@ -365,13 +502,50 @@ class FamilyAndIdentification extends PureComponent {
                                 : ""}
                             </span>
                           );
+                        },
+                        editorTemplate: row => {
+                          let display =
+                            this.props.idtypes === undefined
+                              ? []
+                              : this.props.idtypes.filter(
+                                  f =>
+                                    f.hims_d_identity_document_id ===
+                                    row.dependent_identity_type
+                                );
+
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? display[0].identity_document_name
+                                : ""}
+                            </span>
+                          );
                         }
                       },
                       {
                         fieldName: "dependent_identity_no",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "ID Number" }} />
-                        )
+                        ),
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{}}
+                              textBox={{
+                                value: row.dependent_identity_no,
+                                className: "txt-fld",
+                                name: "dependent_identity_no",
+                                events: {
+                                  onChange: onchangegridcol.bind(
+                                    this,
+                                    this,
+                                    row
+                                  )
+                                }
+                              }}
+                            />
+                          );
+                        }
                       }
                     ]}
                     keyId="dependent_identity_no"
@@ -380,6 +554,11 @@ class FamilyAndIdentification extends PureComponent {
                     }}
                     isEditable={true}
                     paging={{ page: 0, rowsPerPage: 5 }}
+                    events={{
+                      onDelete: deleteDependencies.bind(this, this),
+                      onEdit: row => {},
+                      onDone: updateDependencies.bind(this, this)
+                    }}
                   />
                 </div>
               </div>

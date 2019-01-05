@@ -1,6 +1,8 @@
-// import moment from "moment";
+import moment from "moment";
 import { AlgaehValidation } from "../../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
+import swal from "sweetalert2";
+import Options from "../../../../../Options.json";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -8,12 +10,6 @@ const texthandle = ($this, e) => {
 
   $this.setState({
     [name]: value
-  });
-};
-
-const datehandle = ($this, ctrl, e) => {
-  $this.setState({
-    [e]: ctrl
   });
 };
 
@@ -37,10 +33,11 @@ const AddEmpId = ($this, e) => {
       };
 
       idDetails.push(inpObj);
+      insertIdDetails.push(inpObj);
 
       $this.setState({
         idDetails: idDetails,
-        insertIdDetails: idDetails,
+        insertIdDetails: insertIdDetails,
         identity_documents_id: null,
         identity_number: null,
         valid_upto: null,
@@ -51,7 +48,7 @@ const AddEmpId = ($this, e) => {
 
       $this.props.EmpMasterIOputs.updateEmployeeTabs({
         idDetails: idDetails,
-        insertIdDetails: idDetails
+        insertIdDetails: insertIdDetails
       });
     }
   });
@@ -74,12 +71,8 @@ const addDependentType = ($this, e) => {
         dependent_identity_type: $this.state.dependent_identity_type
       };
 
-      // if ($this.state.hims_d_employee_id !== null) {
-      //   inpObj.employee_id = $this.state.hims_d_employee_id;
-      //   insertIdDetails.push(inpObj);
-      // }
-
       dependentDetails.push(inpObj);
+      insertDependentDetails.push(inpObj);
 
       $this.setState({
         dependentDetails: dependentDetails,
@@ -92,7 +85,7 @@ const addDependentType = ($this, e) => {
 
       $this.props.EmpMasterIOputs.updateEmployeeTabs({
         dependentDetails: dependentDetails,
-        insertDependentDetails: dependentDetails
+        insertDependentDetails: insertDependentDetails
       });
     }
   });
@@ -125,10 +118,206 @@ const getFamilyIdentification = $this => {
   });
 };
 
+const onchangegridcol = ($this, row, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  row[name] = value;
+  row.update();
+};
+
+const deleteIdentifications = ($this, row) => {
+  swal({
+    title: "Are you sure you want to delete Identification Component?",
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes!",
+    confirmButtonColor: "#44b8bd",
+    cancelButtonColor: "#d33",
+    cancelButtonText: "No"
+  }).then(willDelete => {
+    debugger;
+    if (willDelete.value) {
+      let idDetails = $this.state.idDetails;
+      let insertIdDetails = $this.state.insertIdDetails;
+      let deleteIdDetails = $this.state.deleteIdDetails;
+
+      if (row.hims_d_employee_identification_id !== undefined) {
+        deleteIdDetails.push(row);
+        idDetails.splice(row.rowIdx, 1);
+      } else {
+        for (let x = 0; x < insertIdDetails.length; x++) {
+          if (insertIdDetails[x].deductions_id === row.deductions_id) {
+            insertIdDetails.splice(x, 1);
+          }
+        }
+
+        idDetails.splice(row.rowIdx, 1);
+      }
+      $this.setState({
+        idDetails: idDetails,
+        deleteIdDetails: deleteIdDetails,
+        insertIdDetails: insertIdDetails
+      });
+      $this.props.EmpMasterIOputs.updateEmployeeTabs({
+        idDetails: idDetails,
+        deleteIdDetails: deleteIdDetails,
+        insertIdDetails: insertIdDetails
+      });
+    } else {
+      swalMessage({
+        title: "Delete request cancelled",
+        type: "error"
+      });
+    }
+  });
+};
+
+const updateIdentifications = ($this, row) => {
+  let idDetails = $this.state.idDetails;
+  let insertIdDetails = $this.state.insertIdDetails;
+  let updateIdDetails = $this.state.updateIdDetails;
+
+  if (row.hims_d_employee_identification_id !== undefined) {
+    let Updateobj = {
+      hims_d_employee_identification_id: row.hims_d_employee_identification_id,
+      identity_documents_id: row.identity_documents_id,
+      identity_number: row.identity_number,
+      issue_date: row.issue_date,
+      valid_upto: row.valid_upto
+    };
+    updateIdDetails.push(Updateobj);
+    idDetails[row.rowIdx] = Updateobj;
+  } else {
+    {
+      let Updateobj = {
+        identity_documents_id: row.identity_documents_id,
+        identity_number: row.identity_number,
+        issue_date: row.issue_date,
+        valid_upto: row.valid_upto
+      };
+      insertIdDetails[row.rowIdx] = Updateobj;
+      idDetails[row.rowIdx] = Updateobj;
+    }
+  }
+  $this.setState({
+    idDetails: idDetails,
+    updateIdDetails: updateIdDetails,
+    insertIdDetails: insertIdDetails
+  });
+  $this.props.EmpMasterIOputs.updateEmployeeTabs({
+    idDetails: idDetails,
+    updateIdDetails: updateIdDetails,
+    insertIdDetails: insertIdDetails
+  });
+};
+
+const deleteDependencies = ($this, row) => {
+  swal({
+    title: "Are you sure you want to delete Dependenties Component?",
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes!",
+    confirmButtonColor: "#44b8bd",
+    cancelButtonColor: "#d33",
+    cancelButtonText: "No"
+  }).then(willDelete => {
+    debugger;
+    if (willDelete.value) {
+      let dependentDetails = $this.state.dependentDetails;
+      let insertDependentDetails = $this.state.insertDependentDetails;
+      let deleteDependentDetails = $this.state.deleteDependentDetails;
+
+      if (row.hims_d_employee_dependents_id !== undefined) {
+        deleteDependentDetails.push(row);
+        dependentDetails.splice(row.rowIdx, 1);
+      } else {
+        for (let x = 0; x < insertDependentDetails.length; x++) {
+          if (insertDependentDetails[x].deductions_id === row.deductions_id) {
+            insertDependentDetails.splice(x, 1);
+          }
+        }
+
+        dependentDetails.splice(row.rowIdx, 1);
+      }
+      $this.setState({
+        dependentDetails: dependentDetails,
+        deleteDependentDetails: deleteDependentDetails,
+        insertDependentDetails: insertDependentDetails
+      });
+      $this.props.EmpMasterIOputs.updateEmployeeTabs({
+        dependentDetails: dependentDetails,
+        deleteDependentDetails: deleteDependentDetails,
+        insertDependentDetails: insertDependentDetails
+      });
+    } else {
+      swalMessage({
+        title: "Delete request cancelled",
+        type: "error"
+      });
+    }
+  });
+};
+
+const updateDependencies = ($this, row) => {
+  let dependentDetails = $this.state.dependentDetails;
+  let insertDependentDetails = $this.state.insertDependentDetails;
+  let updateDependentDetails = $this.state.updateDependentDetails;
+
+  if (row.hims_d_employee_dependents_id !== undefined) {
+    let Updateobj = {
+      hims_d_employee_dependents_id: row.hims_d_employee_dependents_id,
+      dependent_type: row.dependent_type,
+      dependent_name: row.dependent_name,
+      dependent_identity_type: row.dependent_identity_type,
+      dependent_identity_no: row.dependent_identity_no
+    };
+    updateDependentDetails.push(Updateobj);
+    dependentDetails[row.rowIdx] = Updateobj;
+  } else {
+    {
+      let Updateobj = {
+        dependent_type: row.dependent_type,
+        dependent_name: row.dependent_name,
+        dependent_identity_type: row.dependent_identity_type,
+        dependent_identity_no: row.dependent_identity_no
+      };
+      insertDependentDetails[row.rowIdx] = Updateobj;
+      dependentDetails[row.rowIdx] = Updateobj;
+    }
+  }
+  $this.setState({
+    dependentDetails: dependentDetails,
+    updateDependentDetails: updateDependentDetails,
+    insertDependentDetails: insertDependentDetails
+  });
+  $this.props.EmpMasterIOputs.updateEmployeeTabs({
+    dependentDetails: dependentDetails,
+    updateDependentDetails: updateDependentDetails,
+    insertDependentDetails: insertDependentDetails
+  });
+};
+
+const dateFormater = value => {
+  if (value !== null) {
+    return String(moment(value).format(Options.dateFormat));
+  }
+};
+
+const datehandlegrid = ($this, row, ctrl, e) => {
+  row[e] = moment(ctrl)._d;
+  $this.setState({ append: !$this.state.append });
+};
+
 export {
   texthandle,
-  datehandle,
+  datehandlegrid,
   addDependentType,
   AddEmpId,
-  getFamilyIdentification
+  getFamilyIdentification,
+  onchangegridcol,
+  deleteIdentifications,
+  updateIdentifications,
+  deleteDependencies,
+  updateDependencies,
+  dateFormater
 };

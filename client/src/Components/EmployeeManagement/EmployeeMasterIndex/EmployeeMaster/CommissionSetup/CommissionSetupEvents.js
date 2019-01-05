@@ -1,6 +1,6 @@
 import { swalMessage } from "../../../../../utils/algaehApiCall";
 
-const texthandle = ($this, context, ctrl, e) => {
+const texthandle = ($this, ctrl, e) => {
   e = e || ctrl;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -10,16 +10,16 @@ const texthandle = ($this, context, ctrl, e) => {
   });
 };
 
-const numberSet = ($this, context, e) => {
+const numberSet = ($this, e) => {
   $this.setState({
     [e.target.name]: e.target.value
   });
-  if (context !== undefined) {
-    context.updateState({ [e.target.name]: e.target.value });
-  }
+  $this.props.EmpMasterIOputs.updateEmployeeTabs({
+    [e.target.name]: e.target.value
+  });
 };
 
-const AddSeviceTypeComm = ($this, context) => {
+const AddSeviceTypeComm = $this => {
   if ($this.state.service_type_typ_id === null) {
     swalMessage({
       title: "Invalid Input. Selected the Service Type .",
@@ -65,12 +65,10 @@ const AddSeviceTypeComm = ($this, context) => {
         ip_credit_servtyp_percent: 0
       });
 
-      if (context !== undefined) {
-        context.updateState({
-          servTypeCommission: servTypeCommission,
-          insertservTypeCommission: insertservTypeCommission
-        });
-      }
+      $this.props.EmpMasterIOputs.updateEmployeeTabs({
+        servTypeCommission: servTypeCommission,
+        insertservTypeCommission: insertservTypeCommission
+      });
     } else {
       swalMessage({
         title: "Invalid Input. Selected Service Type already defined.",
@@ -80,7 +78,7 @@ const AddSeviceTypeComm = ($this, context) => {
   }
 };
 
-const AddServiceComm = ($this, context) => {
+const AddServiceComm = $this => {
   if ($this.state.service_type_id === null) {
   } else if ($this.state.service_type_id === null) {
   } else {
@@ -118,12 +116,10 @@ const AddServiceComm = ($this, context) => {
         ip_credit_commission_percent: 0
       });
 
-      if (context !== undefined) {
-        context.updateState({
-          serviceComm: serviceComm,
-          insertserviceComm: insertserviceComm
-        });
-      }
+      $this.props.EmpMasterIOputs.updateEmployeeTabs({
+        serviceComm: serviceComm,
+        insertserviceComm: insertserviceComm
+      });
     } else {
       swalMessage({
         title: "Invalid Input. Selected Service already defined",
@@ -133,7 +129,7 @@ const AddServiceComm = ($this, context) => {
   }
 };
 
-const deleteServiceComm = ($this, context, row) => {
+const deleteServiceComm = ($this, row) => {
   let serviceComm = $this.state.serviceComm;
   let updateserviceComm = $this.state.updateserviceComm;
   let insertserviceComm = $this.state.insertserviceComm;
@@ -171,16 +167,15 @@ const deleteServiceComm = ($this, context, row) => {
     updateserviceComm: updateserviceComm,
     insertserviceComm: insertserviceComm
   });
-  if (context !== undefined) {
-    context.updateState({
-      serviceComm: serviceComm,
-      updateserviceComm: updateserviceComm,
-      insertserviceComm: insertserviceComm
-    });
-  }
+
+  $this.props.EmpMasterIOputs.updateEmployeeTabs({
+    serviceComm: serviceComm,
+    updateserviceComm: updateserviceComm,
+    insertserviceComm: insertserviceComm
+  });
 };
 
-const deleteSeviceTypeComm = ($this, context, row) => {
+const deleteSeviceTypeComm = ($this, row) => {
   let servTypeCommission = $this.state.servTypeCommission;
   let updateservTypeCommission = $this.state.updateservTypeCommission;
   let insertservTypeCommission = $this.state.insertservTypeCommission;
@@ -219,25 +214,25 @@ const deleteSeviceTypeComm = ($this, context, row) => {
     updateservTypeCommission: updateservTypeCommission,
     insertservTypeCommission: insertservTypeCommission
   });
-  if (context !== undefined) {
-    context.updateState({
-      servTypeCommission: servTypeCommission,
-      updateservTypeCommission: updateservTypeCommission,
-      insertservTypeCommission: insertservTypeCommission
-    });
-  }
+
+  $this.props.EmpMasterIOputs.updateEmployeeTabs({
+    servTypeCommission: servTypeCommission,
+    updateservTypeCommission: updateservTypeCommission,
+    insertservTypeCommission: insertservTypeCommission
+  });
 };
 
-const serviceTypeHandeler = ($this, context, e) => {
+const serviceTypeHandeler = ($this, e) => {
   $this.setState({
     [e.name]: e.value
   });
-  if (context !== null) {
-    context.updateState({ [e.name]: e.value });
-  }
+
+  $this.props.EmpMasterIOputs.updateEmployeeTabs({
+    [e.name]: e.value
+  });
 };
 
-const serviceServTypeHandeler = ($this, context, e) => {
+const serviceServTypeHandeler = ($this, e) => {
   $this.setState(
     {
       [e.name]: e.value,
@@ -255,9 +250,10 @@ const serviceServTypeHandeler = ($this, context, e) => {
       });
     }
   );
-  if (context !== null) {
-    context.updateState({ [e.name]: e.value });
-  }
+
+  $this.props.EmpMasterIOputs.updateEmployeeTabs({
+    [e.name]: e.value
+  });
 };
 
 export {

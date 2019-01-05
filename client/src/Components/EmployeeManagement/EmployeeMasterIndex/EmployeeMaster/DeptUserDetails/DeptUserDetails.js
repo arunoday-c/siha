@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import moment from "moment";
+
 import { AlgaehActions } from "../../../../../actions/algaehActions";
 import "./DeptUserDetails.css";
 import {
@@ -164,6 +164,14 @@ class DeptUserDetails extends Component {
       .where(w => w.service_type_id === 1)
       .toArray();
     const _isDoctor = this.props.EmpMasterIOputs.state.personalDetails.isdoctor;
+    debugger;
+    const sub_dept_name =
+      this.props.subdepartment === undefined
+        ? []
+        : this.props.subdepartment.filter(
+            f => f.hims_d_sub_department_id === this.state.sub_department_id
+          );
+
     return (
       <React.Fragment>
         <div className="hptl-phase1-dept-user-form popRightDiv">
@@ -177,9 +185,10 @@ class DeptUserDetails extends Component {
                     }}
                   />
                   <h6>
-                    {this.state.sub_department_id === null
+                    {this.state.sub_department_id === null //sub_dept_name.length !== 0
                       ? "Not Defined"
                       : this.state.sub_department_id}
+                    {/* this.state.sub_department_id */}
                   </h6>
                 </div>
                 <div className="col">
@@ -206,7 +215,7 @@ class DeptUserDetails extends Component {
                       : this.state.reporting_to_id}
                   </h6>
                 </div>
-                <div className="col">
+                {/* <div className="col">
                   <AlgaehLabel
                     label={{
                       forceLabel: "Speciality"
@@ -229,7 +238,7 @@ class DeptUserDetails extends Component {
                     }}
                   />
                   <h6>Not Defined</h6>
-                </div>
+                </div> */}
               </div>
               <h5>
                 <span>Define Group & Hospital</span>

@@ -7,7 +7,7 @@ import Options from "../../../../../Options.json";
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  debugger;
+
   $this.setState({
     [name]: value
   });
@@ -112,7 +112,6 @@ const AddDeptUser = ($this, e) => {
           type: "warning"
         });
       } else {
-        debugger;
         let deptDetails = $this.state.deptDetails;
 
         if (deptDetails === undefined) {
@@ -144,7 +143,6 @@ const AddDeptUser = ($this, e) => {
           dep_status: "A"
         });
 
-        debugger;
         $this.setState({
           deptDetails: deptDetails,
           sub_department: null,
@@ -185,7 +183,7 @@ const updateDeptUser = ($this, row) => {
   // $this.props.EmpMasterIOputs.updateEmployeeTabs({
   //   deptDetails: deptDetails
   // });
-  debugger;
+
   let deptDetails = $this.state.deptDetails;
   let updatedeptDetails = $this.state.updatedeptDetails;
   let insertdeptDetails = $this.state.insertdeptDetails;
@@ -283,7 +281,6 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const getEmployeeDepartments = $this => {
-  debugger;
   algaehApiCall({
     uri: "/employee/getEmployeeDepartments",
     method: "GET",
@@ -292,7 +289,6 @@ const getEmployeeDepartments = $this => {
       if (response.data.success) {
         let data = response.data.records;
         if (data.length > 0) {
-          debugger;
           $this.setState({ deptDetails: data }, () => {
             $this.props.EmpMasterIOputs.updateEmployeeTabs({
               deptDetails: $this.state.deptDetails

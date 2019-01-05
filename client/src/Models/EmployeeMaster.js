@@ -51,37 +51,34 @@ export default {
 
       servTypeCommission: [],
       serviceComm: [],
-      dependentDetails: [],
-      idDetails: [],
-      insertIdDetails: [],
-
-      updateservTypeCommission: [],
-      insertservTypeCommission: [],
-
-      updateserviceComm: [],
-      insertserviceComm: [],
 
       deptDetails: [],
-      updatedeptDetails: [],
-      insertdeptDetails: [],
-
-      idDetails: [],
-      insertIdDetails: [],
-      updateIdDetails: [],
-
-      dependentDetails: [],
-      insertDependentDetails: [],
-      updateDependentDetails: [],
+      // idDetails: [],
+      // dependentDetails: [],
 
       insertearnComp: [],
       insertDeductionComp: [],
       insertContributeComp: [],
+      insertDependentDetails: [],
+      insertdeptDetails: [],
+      insertIdDetails: [],
+      insertserviceComm: [],
+      insertservTypeCommission: [],
 
       updateearnComp: [],
       updateDeductionComp: [],
       updateContributeComp: [],
+      updateDependentDetails: [],
+      updatedeptDetails: [],
+      updateIdDetails: [],
+      updateserviceComm: [],
+      updateservTypeCommission: [],
 
       deleteearnComp: [],
+      deleteDeductionComp: [],
+      deleteContributeComp: [],
+      deleteIdDetails: [],
+      deleteDependentDetails: [],
 
       leave_salary_process: "N",
       late_coming_rule: "N",
