@@ -1,0 +1,26 @@
+{
+  "Lab_setup": "إعداد مختبر",
+  "lab_settings": "إعدادات",
+  "lab_section": "قسم المختبر",
+  "lab_container": "حاوية معمل",
+  "lab_specimen": "عينة مختبر",
+  "lab_equipment": "الرجعية",
+  "lab_analyte": "المحللة",
+  "test_category": "فئة الاختبار",
+
+  "Addbutton": "أضف إلى القائمة",
+
+  "inv_status": "الحالة",
+
+  "type_code": "الشفرة",
+  "type_desc": "لاسم",
+  "arabic_type_desc": "الاسم العربي",
+  "created_by": "صنع من قبل",
+  "created_date": "الإنشاءخ تاريخ",
+
+  "storage_type": "تخزين اكتب",
+  "machine_analyte_code": "محللة الشفرة",
+  "analyte_type": "نوع الحليلة",
+  "result_unit": "وحدة النتيجة",
+  "category_name": "الفئة اسم"
+}

@@ -1,0 +1,138 @@
+{
+  "form_opbilling": "الفواتير OP",
+  "form_name": "الفواتير OP",
+  "form_home": "الصفحة الرئيسية",
+  "form_create": "خلق جديد إبداع جديد",
+
+  "bill_number": "رقم الفاتوره",
+  "bill_date": "تاريخ الفاتورة",
+  "patient_code": "رمز المريض",
+  "visit_code": "زيارة الرمز",
+  "visit_date": "تاريخ الزيارة",
+  "visit_type": "زيارة النوع",
+  "incharge_or_provider": "مزود",
+  "department_id": "قسم، أقسام",
+  "mode_of_pay": "طريقة الدفع",
+  "patient_type": "نوع المريض",
+  "full_name": "اسم المريض",
+
+  "responsibility": "المسئولية",
+  "tax_details": "ضريبة",
+  "payable": "تدفع",
+
+  "select_service": "اختر الخدمة",
+  "select_service_type": "اختر نوع الخدمة",
+
+  "gross_total": "المجموع الكلي",
+  "advance_adjust": "يعدل",
+  "sheet_discount_amount": "كمية",
+  "bill_amount": "مبلغ الفاتورة",
+  "sheet_discount": "خصم ورقة المستوى",
+  "net_amount": "شبكة",
+  "credit_amount": "ائتمان",
+  "balance_due": "الرصيد المستحق",
+  "receiveable_amount": "ذمم مدينة",
+  "sub_total_amount": "المجموع الفرعي",
+  "discount_amount": "خصم",
+  "net_total": "صافي المجموع",
+
+  "sheet_discount_percentage": "مستوى الورقة٪",
+
+  "service_type_id": "نوع الخدمة",
+  "services_id": "الخدمات",
+  "quantity": "كمية",
+  "unit_cost": "تكلفة الوحدة",
+  "gross_amount": "المبلغ الإجمالي",
+  "discount_percentage": "خصم ٪",
+  "discount_amout": "مقدار الخصم",
+  "net_amout": "كمية الشبكة",
+  "insurance": "تأمين",
+  "copay_percentage": "كوباي٪",
+  "copay_amount": "مبلغ التعويض",
+
+  "deductable_percentage": "خصم ٪",
+  "deductable_amount": "مقدار الخصم",
+
+  "tax_inclusive": "الضرائب شاملة",
+  "patient_tax": "ضريبة المرضى",
+  "company_tax": "ضريبة الشركات",
+  "sec_company_tax": "ضريبة الشركات الثانوية",
+  "total_tax": "مجموع الضريبة",
+
+  "patient_resp": "المريض المسؤول",
+  "patient_payable": "حصة المريض",
+  "comapany_resp": "شركة مسؤولة",
+  "company_payble": "شركة حصة",
+
+  "sec_company": "التأمين الثانوي",
+  "sec_deductable_percentage": "خصم ٪",
+  "sec_deductable_amount": "مقدار الخصم",
+
+  "sec_company_res": "شركة مسؤولة",
+  "sec_company_paybale": "شركة ثانوية",
+
+  "sec_copay_percntage": "كوباي٪",
+  "sec_copay_amount": "مبلغ التعويض",
+
+  "tax_Detsils": "تفاصيل الضريبة",
+  "prim-insurance": "تأمين ابتدائي",
+  "present-bill-services": "خدمات الفواتير الحالية",
+
+  "advance_amount": "تقدم مقدما",
+  "advance_caption": "تقدم",
+  "refund_caption": "إعادة مال",
+
+  "payment_number": "رقم الدفع",
+  "payment_date": "تاريخ الدفع",
+
+  "receipt_number": "عدد إيصال",
+  "receipt_date": "تاريخ استلام",
+  "counter_id": "عداد",
+  "shift_id": "تحول",
+  "total_amount": "المبلغ الإجمالي",
+  "sl_no": "SL. لا.",
+  "pay_type": "نوع الدفع",
+  "card_check_number": "رقم",
+  "expiry_date": "تاريخ الانتهاء",
+  "amount": "كمية",
+  "unbalanced_amount": "المبلغ غير المتوازن",
+
+  "responsibility_lbl": "المسئولية",
+  "tax_lbl": "ضريبة",
+  "payable_lbl": "تدفع",
+
+  "patient_lbl": "صبور",
+  "company_lbl": "الشركة الرئيسية",
+  "sec_comp_lbl": "شركة ثانوية",
+
+  "insurance_company": "شركة التأمين",
+  "sub_insurance_company": "شركة التأمين الفرعية",
+  "plan_desc": "خطة",
+  "policy_no": "رقم مركز الشرطه",
+  "card_no": "رقم البطاقة",
+  "ins_expiry_date": "تاريخ الانتهاء",
+
+  "consultation": "تشاور",
+
+  "bill_details": "تفاصيل الفاتورة",
+  "insurance_details": "تفاصيل التأمين",
+
+  "services": "خدمات",
+  "percentage": "النسبة المئوية",
+  "max_limit": "ماكس الحد",
+  "laboratory": "مختبر",
+  "radiology": "طب إشعاعي",
+  "procedure": "إجراء",
+  "dental": "الأسنان",
+  "medicine": "دواء",
+  "co_insurance": "شركة التأمين",
+
+  "btn_save": "حفظ",
+  "btn_clear": "واضح",
+
+  "payby_cash": "الدفع نقدا",
+  "payby_card": "الدفع عن طريق البطاقة",
+  "payby_check": "الدفع عن طريق شيك",
+  "NotGenerated": "غير منشأ",
+  "add_new_service": "أضف خدمات جديدة"
+}

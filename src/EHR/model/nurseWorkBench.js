@@ -12,7 +12,7 @@ import moment from "moment";
 import formater from "../../keys/keys";
 
 // created by : irfan to
-let addPatientNurseChiefComplaints = (req, res, next) => {
+let addPatientNurseChiefComplaintsBackup = (req, res, next) => {
   debugFunction("addPatientNurseChiefComplaints");
 
   try {
@@ -157,6 +157,225 @@ let addPatientNurseChiefComplaints = (req, res, next) => {
             }
           }
         );
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+// created by : irfan to
+let addPatientNurseChiefComplaints = (req, res, next) => {
+  debugFunction("addPatientNurseChiefComplaints");
+
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        releaseDBConnection(db, connection);
+        next(error);
+      }
+
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        }
+
+        new Promise((resolve, reject) => {
+          try {
+            if (
+              input.chief_complaints != undefined &&
+              input.chief_complaints.length > 0
+            ) {
+              const insurtColumns = [
+                "episode_id",
+                "patient_id",
+                "chief_complaint_id",
+                "onset_date",
+                "duration",
+                "interval",
+                "severity",
+                "score",
+                "pain",
+                "comment",
+                "created_by",
+                "updated_by"
+              ];
+
+              connection.query(
+                "INSERT INTO hims_f_nurse_episode_chief_complaint(`" +
+                  insurtColumns.join("`,`") +
+                  "`,created_date,updated_date) VALUES ?",
+                [
+                  jsonArrayToObject({
+                    sampleInputObject: insurtColumns,
+                    arrayObj: req.body.chief_complaints,
+                    newFieldToInsert: [new Date(), new Date()],
+                    req: req
+                  })
+                ],
+                (error, Result) => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+                  if (Result.insertId > 0) {
+                    resolve({ Result });
+                  } else {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      req.records = {
+                        invalid_data: true,
+                        message: "please send correct data"
+                      };
+                      next();
+                      return;
+                    });
+                  }
+                }
+              );
+            } else {
+              resolve({});
+            }
+          } catch (e) {
+            reject(e);
+          }
+        }).then(NCCResult => {
+          new Promise((resolve, reject) => {
+            try {
+              if (
+                input.patient_vitals != undefined &&
+                input.patient_vitals.length > 0
+              ) {
+                const insurtColumns = [
+                  "patient_id",
+                  "visit_id",
+                  "visit_date",
+                  "visit_time",
+                  "case_type",
+                  "vital_id",
+                  "vital_value",
+                  "vital_value_one",
+                  "vital_value_two",
+                  "formula_value",
+                  "created_by",
+                  "updated_by"
+                ];
+
+                connection.query(
+                  "INSERT INTO hims_f_patient_vitals(" +
+                    insurtColumns.join(",") +
+                    ",created_date,updated_date) VALUES ?",
+                  [
+                    jsonArrayToObject({
+                      sampleInputObject: insurtColumns,
+                      arrayObj: req.body.patient_vitals,
+                      newFieldToInsert: [new Date(), new Date()],
+                      req: req
+                    })
+                  ],
+
+                  (error, results) => {
+                    if (error) {
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      });
+                    }
+
+                    if (results.insertId > 0) {
+                      resolve({ results });
+                    } else {
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        req.records = {
+                          invalid_data: true,
+                          message: "please send correct data"
+                        };
+                        next();
+                        return;
+                      });
+                    }
+                  }
+                );
+              } else {
+                resolve({ NCCResult });
+              }
+            } catch (e) {
+              reject(e);
+            }
+          }).then(patientVitalRes => {
+            new Promise((resolve, reject) => {
+              try {
+                if (
+                  input.nurse_notes != undefined &&
+                  input.nurse_notes != null &&
+                  input.nurse_notes != "null"
+                ) {
+                  connection.query(
+                    "UPDATE `hims_f_patient_encounter` SET nurse_examine='Y', nurse_notes=?,\
+                 updated_date=?, updated_by=? WHERE  `record_status`='A' and `hims_f_patient_encounter_id`=?;",
+                    [
+                      req.body.nurse_notes,
+                      new Date(),
+                      req.body.updated_by,
+                      req.body.hims_f_patient_encounter_id
+                    ],
+                    (error, updateResult) => {
+                      if (error) {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                      }
+
+                      if (updateResult.affectedRows > 0) {
+                        resolve({ updateResult });
+                      } else {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          req.records = {
+                            invalid_data: true,
+                            message: "please send correct data"
+                          };
+                          next();
+                          return;
+                        });
+                      }
+                    }
+                  );
+                } else {
+                  resolve({ patientVitalRes });
+                }
+              } catch (e) {
+                reject(e);
+              }
+            }).then(notesResult => {
+              connection.commit(error => {
+                if (error) {
+                  connection.rollback(() => {
+                    releaseDBConnection(db, connection);
+                    next(error);
+                  });
+                }
+                releaseDBConnection(db, connection);
+                req.records = notesResult;
+                next();
+              });
+            });
+          });
+        });
+
+        //-----------------------------------------------
       });
     });
   } catch (e) {

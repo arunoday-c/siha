@@ -1,0 +1,31 @@
+{
+  "patient_code": "رمز المريض",
+  "patient_name": "اسم المريض",
+  "gender": "الجنس",
+  "date_of_birth": "تاريخ الميلاد",
+  "age": "العمر",
+
+  "ordered_date": "أمر التاريخ والوقت",
+  "ordered_by": "أمر بواسطة",
+
+  "collect": "مجموعة",
+  "reject": "الرفض",
+
+  "specimen_status": "عينة الحالة",
+  "specimen": "عينة",
+  "specimen_instruction": "تعليمات عينة",
+  "container": "حاوية",
+  "collected_by": "جمع بواسطة",
+  "collected_date": "أمر التاريخ والوقت",
+  "collected_time": "الوقت الذي تم جمعه",
+  "required_volume": "حجم المطلوب",
+  "no_of_tubes": "Number of pipes",
+
+  "sidn": "SIDN",
+  "bc": "BC #",
+
+  "rejected_by": "مرفوض من طر",
+  "rejected_date": "تاريخ رفض",
+  "rejected_time": "الوقت المرفوض",
+  "rejected_reason": "سبب رفض"
+}

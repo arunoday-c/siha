@@ -1,0 +1,22 @@
+[
+  {
+    "fieldName": "patient_code",
+    "label": "Patient Code"
+  },
+  {
+    "fieldName": "full_name",
+    "label": "Name"
+  },
+  {
+    "fieldName": "arabic_name",
+    "label": "Arabic Name"
+  },
+  {
+    "fieldName": "gender",
+    "label": "Gender"
+  },
+  {
+    "fieldName": "contact_number",
+    "label": "Contact Number"
+  }
+]

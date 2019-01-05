@@ -1,0 +1,16 @@
+{
+  "from_date": "من التاريخ",
+  "to_date": "حتى الآن",
+  "from_time": "من وقت",
+  "to_time": "الى وقت",
+  "doctor": "طبيب",
+  "provider_id": "طبيب",
+  "department": "اسم القسم",
+  "appointment_type": "نوع المواعيد",
+  "patient_code": "رمز المريض",
+  "all_departments": "جميع الإدارات",
+  "all_doctors": "جميع الاطباء",
+  "office_branch": "مكتب / فرع",
+  "appt_status": "حالة التعيين",
+  "appt_type": "نوع المواعيد"
+}
