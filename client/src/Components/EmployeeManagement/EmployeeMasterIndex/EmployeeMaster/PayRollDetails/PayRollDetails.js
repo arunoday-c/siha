@@ -49,7 +49,10 @@ class PayRollDetails extends PureComponent {
       allocate: "N",
       earn_calculation_method: null,
       deduct_calculation_method: null,
-      contribut_calculation_method: null
+      contribut_calculation_method: null,
+      earn_calculation_type: null,
+      deduct_calculation_type: null,
+      contribut_calculation_type: null
     };
   }
 

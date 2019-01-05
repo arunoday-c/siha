@@ -166,11 +166,29 @@ class DeptUserDetails extends Component {
     const _isDoctor = this.props.EmpMasterIOputs.state.personalDetails.isdoctor;
     debugger;
     const sub_dept_name =
-      this.props.subdepartment === undefined
-        ? []
-        : this.props.subdepartment.filter(
-            f => f.hims_d_sub_department_id === this.state.sub_department_id
-          );
+      this.state.sub_department_id === undefined
+        ? ""
+        : Enumerable.from(this.props.subdepartment)
+            .where(
+              w => w.hims_d_sub_department_id === this.state.sub_department_id
+            )
+            .firstOrDefault({});
+
+    const employee_designation =
+      this.state.employee_designation_id === undefined
+        ? ""
+        : Enumerable.from(this.props.designations)
+            .where(
+              w =>
+                w.hims_d_designation_id === this.state.employee_designation_id
+            )
+            .firstOrDefault({});
+    const reporting_to =
+      this.state.reporting_to_id === undefined
+        ? ""
+        : Enumerable.from(this.props.all_employees)
+            .where(w => w.hims_d_employee_id === this.state.reporting_to_id)
+            .firstOrDefault({});
 
     return (
       <React.Fragment>
@@ -187,7 +205,7 @@ class DeptUserDetails extends Component {
                   <h6>
                     {this.state.sub_department_id === null //sub_dept_name.length !== 0
                       ? "Not Defined"
-                      : this.state.sub_department_id}
+                      : sub_dept_name.sub_department_name}
                     {/* this.state.sub_department_id */}
                   </h6>
                 </div>
@@ -200,7 +218,7 @@ class DeptUserDetails extends Component {
                   <h6>
                     {this.state.employee_designation_id === null
                       ? "Not Defined"
-                      : this.state.employee_designation_id}
+                      : employee_designation.designation}
                   </h6>
                 </div>
                 <div className="col">
@@ -212,7 +230,7 @@ class DeptUserDetails extends Component {
                   <h6>
                     {this.state.reporting_to_id === null
                       ? "Not Defined"
-                      : this.state.reporting_to_id}
+                      : reporting_to.full_name}
                   </h6>
                 </div>
                 {/* <div className="col">

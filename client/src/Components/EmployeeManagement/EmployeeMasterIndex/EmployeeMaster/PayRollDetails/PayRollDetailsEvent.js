@@ -12,7 +12,8 @@ const earntexthandle = ($this, e) => {
     [name]: value,
     earn_amount: amount,
     earn_disable: e.selected.calculation_method === "FO" ? true : false,
-    earn_calculation_method: e.selected.calculation_method
+    earn_calculation_method: e.selected.calculation_method,
+    earn_calculation_type: e.selected.calculation_type
   });
 };
 
@@ -24,7 +25,8 @@ const deducttexthandle = ($this, e) => {
   $this.setState({
     [name]: value,
     dedection_amount: amount,
-    deduct_calculation_method: e.selected.calculation_method
+    deduct_calculation_method: e.selected.calculation_method,
+    deduct_calculation_type: e.selected.calculation_type
   });
 };
 
@@ -36,7 +38,8 @@ const contributtexthandle = ($this, e) => {
   $this.setState({
     [name]: value,
     contribution_amount: amount,
-    contribut_calculation_method: e.selected.calculation_method
+    contribut_calculation_method: e.selected.calculation_method,
+    contribut_calculation_type: e.selected.calculation_type
   });
 };
 
@@ -56,7 +59,8 @@ const AddEarnComponent = ($this, e) => {
     earnings_id: $this.state.earning_id,
     amount: $this.state.earn_amount,
     allocate: $this.state.allocate,
-    calculation_method: $this.state.earn_calculation_method
+    calculation_method: $this.state.earn_calculation_method,
+    calculation_type: $this.state.earn_calculation_type
   });
 
   insertearnComp.push({
@@ -64,7 +68,8 @@ const AddEarnComponent = ($this, e) => {
     earnings_id: $this.state.earning_id,
     amount: $this.state.earn_amount,
     allocate: $this.state.allocate,
-    calculation_method: $this.state.earn_calculation_method
+    calculation_method: $this.state.earn_calculation_method,
+    calculation_type: $this.state.earn_calculation_type
   });
 
   $this.setState(
@@ -93,7 +98,8 @@ const AddDeductionComponent = ($this, e) => {
     deductions_id: $this.state.deducation_id,
     amount: $this.state.dedection_amount,
     allocate: $this.state.allocate,
-    calculation_method: $this.state.deduct_calculation_method
+    calculation_method: $this.state.deduct_calculation_method,
+    calculation_type: $this.state.deduct_calculation_type
   });
 
   insertDeductionComp.push({
@@ -101,7 +107,8 @@ const AddDeductionComponent = ($this, e) => {
     deductions_id: $this.state.deducation_id,
     amount: $this.state.dedection_amount,
     allocate: $this.state.allocate,
-    calculation_method: $this.state.deduct_calculation_method
+    calculation_method: $this.state.deduct_calculation_method,
+    calculation_type: $this.state.deduct_calculation_type
   });
 
   $this.setState(
@@ -130,7 +137,8 @@ const AddContributionComponent = ($this, e) => {
     contributions_id: $this.state.contribution_id,
     amount: $this.state.contribution_amount,
     allocate: $this.state.allocate,
-    calculation_method: $this.state.contribut_calculation_method
+    calculation_method: $this.state.contribut_calculation_method,
+    calculation_type: $this.state.contribut_calculation_type
   });
 
   insertContributeComp.push({
@@ -138,7 +146,8 @@ const AddContributionComponent = ($this, e) => {
     contributions_id: $this.state.contribution_id,
     amount: $this.state.contribution_amount,
     allocate: $this.state.allocate,
-    calculation_method: $this.state.contribut_calculation_method
+    calculation_method: $this.state.contribut_calculation_method,
+    calculation_type: $this.state.contribut_calculation_type
   });
 
   $this.setState(

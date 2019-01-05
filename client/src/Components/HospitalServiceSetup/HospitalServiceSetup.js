@@ -149,6 +149,7 @@ class HospitalServiceSetup extends Component {
   }
 
   EditItemMaster(row) {
+    debugger;
     if (row.cpt_code !== null) {
       algaehApiCall({
         uri: "/icdcptcodes/selectCptCodes",
@@ -176,10 +177,19 @@ class HospitalServiceSetup extends Component {
           }
         },
         onFailure: error => {
-          swalMessage({
-            title: error.message,
-            type: "error"
-          });
+          debugger;
+          if (error.response.data.message === "No records found") {
+            this.setState({
+              isOpen: !this.state.isOpen,
+              servicePop: row,
+              addNew: false
+            });
+          } else {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
         }
       });
 
