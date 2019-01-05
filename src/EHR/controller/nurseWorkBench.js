@@ -17,10 +17,17 @@ export default ({ config, db }) => {
     addPatientNurseChiefComplaints,
     (req, res, next) => {
       let result = req.records;
-      res.status(httpStatus.ok).json({
-        success: true,
-        records: result
-      });
+      if (result.invalid_data == true) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
       next();
     },
     releaseConnection

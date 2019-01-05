@@ -36,8 +36,10 @@ import {
   getEmployeeEducation,
   getEmployeeDepartments,
   getPayrollComponents,
-  getFamilyIdentification
+  getFamilyIdentification,
+  getEmployeesForMisED
 } from "../model/employee";
+import { debugLog } from "../utils/logging";
 import httpStatus from "../utils/httpStatus";
 export default ({ config, db }) => {
   let api = Router();
@@ -655,5 +657,26 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
+  // created by irfan :
+  api.get(
+    "/getEmployeesForMisED",
+    getEmployeesForMisED,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.invalid_input == true) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    },
+    releaseConnection
+  );
   return api;
 };

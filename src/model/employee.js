@@ -1345,7 +1345,7 @@ let updateEmployee = (req, res, next) => {
                           `amount`=?,`allocate`=? where hims_d_employee_earnings_id=?;",
                         [
                           inputParam[i].amount,
-                          inputParam[i].allocate,                          
+                          inputParam[i].allocate,
                           inputParam[i].hims_d_employee_earnings_id
                         ]
                       );
@@ -2772,6 +2772,62 @@ let getFamilyIdentification = (req, res, next) => {
   }
 };
 
+//created by irfan:
+let getEmployeesForMisED = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.query);
+
+    let sub_department = "";
+    if (
+      input.sub_department_id != "null" &&
+      input.sub_department_id != undefined &&
+      input.sub_department_id != "null"
+    ) {
+      sub_department = ` and AM.sub_department_id=${input.sub_department_id}`;
+    }
+
+    if (
+      input.year != "null" &&
+      input.year != undefined &&
+      input.year != "null" &&
+      input.month != "null" &&
+      input.month != undefined &&
+      input.month != "null"
+    ) {
+      db.getConnection((error, connection) => {
+        connection.query(
+          "select hims_f_attendance_monthly_id,employee_id,E.employee_code,E.full_name as employee_name,\
+        `year`,`month`,AM.hospital_id,H.hospital_name,AM.sub_department_id,SD.sub_department_name\
+        from hims_f_attendance_monthly AM \
+        inner join  hims_d_employee E on AM.employee_id=E.hims_d_employee_id and E.record_status='A'\
+        inner join hims_d_hospital H on AM.hospital_id=H.hims_d_hospital_id  and H.record_status='A'\
+        left join hims_d_sub_department SD on AM.sub_department_id=SD.hims_d_sub_department_id \
+        and SD.record_status='A' where AM.record_status='A' and AM.`year`=? and AM.`hospital_id`=? and AM.`month`=? " +
+            sub_department,
+          [input.year, input.hospital_id, input.month],
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+            req.records = result;
+            next();
+          }
+        );
+      });
+    } else {
+      req.records = { invalid_input: true, message: "invalid input" };
+      next();
+      return;
+    }
+  } catch (e) {
+    next(e);
+  }
+};
 module.exports = {
   addEmployee,
   addEmployeeMaster,
@@ -2808,5 +2864,6 @@ module.exports = {
   getEmployeeEducation,
   getEmployeeDepartments,
   getPayrollComponents,
-  getFamilyIdentification
+  getFamilyIdentification,
+  getEmployeesForMisED
 };
