@@ -282,7 +282,12 @@ class NurseWorkbench extends Component {
             this.loadListofData();
           }
         },
-        onError: error => {}
+        onError: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
       });
     }
 

@@ -1,0 +1,39 @@
+{
+  "item_setup": "Item Setup",
+
+  "item_settings": "Settings",
+
+  "item_description": "Item Name",
+  "generic_id": "Generic",
+  "category_id": "Category",
+  "action": "Action",
+
+  "group_id": "Group",
+  "item_code": "Item Code",
+  "item_uom_id": "Material Requisition UOM",
+  "purchase_uom_id": "Purchase UOM",
+  "sales_uom_id": "Sales UOM",
+  "stocking_uom_id": "Stocking UOM",
+  "item_status": "Status",
+  "uom_id": "UOM",
+  "conversion_factor": "Conversion Factor",
+  "stocking_uom": "Stocking UOM",
+  "form_id": "Form",
+  "storage_id": "Storage",
+  "active": "Active",
+  "inactive": "Inactive",
+  "service_id": "Services",
+
+  "price": "Price of Sales UOM",
+  "cpt_code": "CPT Code",
+  "vat_applicable": "Vat Applicable",
+  "vat_percent": "Vat Percent",
+
+  "purchase_cost": "Purchase Cost",
+  "markup_percent": "Markup Percentage",
+  "sales_price": "Sales Price",
+  "decimal": "Decimals",
+
+  "btnSave": "Save",
+  "btnUpdate": "Update"
+}

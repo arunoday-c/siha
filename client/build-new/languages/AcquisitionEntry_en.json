@@ -1,0 +1,23 @@
+{
+  "acquisition_entry": "Acquisition Entry",
+  "acquisition_number": "Acquisition Number",
+  "acquisition_date": "Acquisition Date",
+  "transaction_type": "Transaction Type",
+  "home": "Home",
+  "location": "Location",
+  "department": "Department",
+  "deprctn_cat": "Depreciation Category",
+  "transaction_date": "Transaction Date",
+  "acquistn_account": "Acquisition Account",
+  "acquistn_type": "Acquisition Type",
+  "asset_desc": "Asset Desc.",
+  "asset_group": "Asset Group",
+  "item_name": "Item Name",
+  "deprictn_catgry": "Depreciation Category",
+  "asset_code": "Asset Code",
+  "barcode": "Barcode",
+  "account_set": "Account Set",
+  "asset_type_code": "Asset Type Code",
+  "category": "Category",
+  "group": "Group"
+}

@@ -1,0 +1,28 @@
+{
+  "patient_code": "Patient Code",
+  "from_date": "From Date",
+  "to_date": "To Date",
+  "patient_name": "Patient Name",
+  "proiorty": "Priority",
+  "status": "Status",
+
+  "investigation_code": "Investigation Code",
+  "investigation_name": "Investigation Name",
+  "specimen_name": "Specimen",
+  "ordered_by": "Ordered By",
+  "ordered_date": "Ordered Date & Time",
+  "ordered_time": "Ordered Time",
+  "test_status": "Test Status",
+  "case_type": "Case Type",
+  "action": "Actions",
+  "number_of_tests": "Number of Tests",
+  "sample_collection": "Accession Acknowledgement",
+  "collected_by": "Collected By",
+  "collected_date": "Collected Date & Time",
+  "collected": "Collect",
+
+  "btnclose": "Close",
+  "form_name": "Accession Acknowledgement",
+  "form_home": "Home",
+  "location_id": "Lab Location"
+}

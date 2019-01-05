@@ -10,7 +10,7 @@ class HRSettings extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageDisplay: "EmployeeGroups"
+      pageDisplay: "LeaveMasterIndex"
     };
   }
 
@@ -33,8 +33,22 @@ class HRSettings extends Component {
           <div className="tabMaster toggle-section">
             <ul className="nav">
               <li
-                algaehtabs={"EmployeeGroups"}
+                algaehtabs={"LeaveMasterIndex"}
                 className={"nav-item tab-button active"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Leave Master"
+                    }}
+                  />
+                }
+              </li>
+
+              <li
+                algaehtabs={"EmployeeGroups"}
+                className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
               >
                 {
@@ -67,19 +81,6 @@ class HRSettings extends Component {
                   <AlgaehLabel
                     label={{
                       forceLabel: "Overtime Groups"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"LeaveMasterIndex"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Leave Master"
                     }}
                   />
                 }

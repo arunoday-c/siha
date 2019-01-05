@@ -1,0 +1,26 @@
+{
+  "Inventory_setup": "Inventory Setup",
+  "Inventory_settings": "Settings",
+  "item_category": "Item Category",
+  "item_group": "Item Group",
+  "item_uom": "Item UOM",
+  "location": "Location",
+  "location_permission": "Location Permission",
+
+  "Addbutton": "Add to list",
+
+  "type_code": "Code",
+  "type_desc": "Description",
+  "inv_status": "Status",
+  "arabic_type_desc": "Arabic Name",
+  "created_by": "Created By",
+  "created_date": "Created Date",
+
+  "category_id": "Category",
+  "location_type": "Location Type",
+  "allow_pos": "Allow POS",
+
+  "user_id": "User",
+  "from_location": "Location",
+  "to_location": "To Location"
+}
