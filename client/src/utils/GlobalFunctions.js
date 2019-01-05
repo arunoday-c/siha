@@ -434,12 +434,7 @@ export function SetBulkState(options) {
             ? _allControls[i].value
             : "N";
         } else if (_type === "date") {
-          _objectCreation[_name] = moment(_allControls[i].value).format(
-            "DD/MM/YYYY"
-          );
-          // _dataRole !== null
-          //   ? _allControls[i].getAttribute("referencevalue")
-          //   : moment(_allControls[i].value).format("DD/MM/YYYY");
+          _objectCreation[_name] = new Date(_allControls[i].value);
         } else {
           _objectCreation[_name] =
             _dataRole !== null
