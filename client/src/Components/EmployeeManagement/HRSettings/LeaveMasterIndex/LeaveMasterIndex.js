@@ -121,18 +121,78 @@ export default class LeaveMasterIndex extends Component {
                         )
                       },
                       {
-                        fieldName: "leave_description",
+                        fieldName: "include_holiday",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Leave Description" }}
+                            label={{ forceLabel: "Includes Holidays" }}
                           />
-                        )
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.include_holiday === "Y"
+                                ? "Yes"
+                                : row.include_holiday === "N"
+                                ? "No"
+                                : "Not Specified"}
+                            </span>
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "include_weekoff",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Includes Weekoff" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.include_weekoff === "Y"
+                                ? "Yes"
+                                : row.include_weekoff === "N"
+                                ? "No"
+                                : "Not Specified"}
+                            </span>
+                          );
+                        }
                       },
                       {
                         fieldName: "leave_type",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Leave Type" }} />
-                        )
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.leave_type === "P"
+                                ? "Paid"
+                                : row.leave_type === "U"
+                                ? "Unpaid"
+                                : "Not Specified"}
+                            </span>
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "leave_mode",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Leave Mode" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.leave_mode === "REG"
+                                ? "Regular"
+                                : row.leave_mode === "LOP"
+                                ? "Loss of Pay"
+                                : row.leave_mode === "COM"
+                                ? "Comp Off"
+                                : "Not Specified"}
+                            </span>
+                          );
+                        }
                       }
                     ]}
                     keyId="hims_d_leave_id"

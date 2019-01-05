@@ -7,6 +7,7 @@ import LeaveEncashment from "./LeaveEncashment/LeaveEncashment";
 import LeaveRules from "./LeaveRules/LeaveRules";
 import { AlgaehLabel } from "../../../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
+import { AlgaehValidation } from "../../../../../utils/GlobalFunctions";
 
 class LeaveMaster extends Component {
   constructor(props) {
@@ -22,22 +23,53 @@ class LeaveMaster extends Component {
   }
 
   saveLeaveMaster() {
-    algaehApiCall({
-      uri: "/leave/addLeaveMaster",
-      method: "POST",
-      data: this.state,
-      onSuccess: res => {
-        if (res.data.success) {
-          swalMessage({
-            title: "Leave Added Successfully",
-            type: "success"
-          });
-        }
-      },
-      onFailure: err => {
-        swalMessage({
-          title: err.message,
-          type: "error"
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      querySelector: "data-validate='leaveMasterValidateDiv'",
+      onSuccess: () => {
+        let send_data = {
+          leave_code: this.state.leave_code,
+          leave_description: this.state.leave_description,
+          annual_maternity_leave: this.state.annual_maternity_leave,
+          include_weekoff: this.state.include_weekoff ? "Y" : "N",
+          include_holiday: this.state.include_holiday ? "Y" : "N",
+          leave_mode: this.state.leave_mode,
+          leave_status: this.state.leave_status,
+          leave_accrual: this.state.leave_accrual,
+          leave_encash: this.state.leave_encash ? "Y" : "N",
+          leave_type: this.state.leave_type,
+          encashment_percentage: this.state.encashment_percentage,
+          leave_carry_forward: this.state.leave_carry_forward ? "Y" : "N",
+          carry_forward_percentage: this.state.carry_forward_percentage,
+          religion_required: this.state.religion_required ? "Y" : "N",
+          religion_id: this.state.religion_id,
+          holiday_reimbursement: this.state.holiday_reimbursement ? "Y" : "N",
+          exit_permit_required: this.state.exit_permit_required ? "Y" : "N",
+          proportionate_leave: this.state.proportionate_leave ? "Y" : "N",
+          document_mandatory: this.state.document_mandatory ? "Y" : "N",
+          leaveEncash: this.state.leaveEncash,
+          leaveRules: this.state.leaveRules,
+          leaveDetails: this.state.leaveDetails
+        };
+
+        algaehApiCall({
+          uri: "/leave/addLeaveMaster",
+          method: "POST",
+          data: send_data,
+          onSuccess: res => {
+            if (res.data.success) {
+              swalMessage({
+                title: "Leave Added Successfully",
+                type: "success"
+              });
+            }
+          },
+          onFailure: err => {
+            swalMessage({
+              title: err.message,
+              type: "error"
+            });
+          }
         });
       }
     });
@@ -78,10 +110,10 @@ class LeaveMaster extends Component {
       employee_type: this.state.employee_type,
       gender: this.state.gender,
       eligible_days: this.state.eligible_days,
-      min_service_required: this.state.min_service_required,
+      min_service_required: this.state.min_service_required ? "Y" : "N",
       service_years: this.state.service_years,
-      once_life_term: this.state.once_life_term,
-      allow_probation: this.state.allow_probation,
+      once_life_term: this.state.once_life_term ? "Y" : "N",
+      allow_probation: this.state.allow_probation ? "Y" : "N",
       max_number_days: this.state.max_number_days,
       mandatory_utilize_days: this.state.mandatory_utilize_days
     });
@@ -282,7 +314,7 @@ class LeaveMaster extends Component {
               </ul>
             </div>
 
-            <div className="popupInner">
+            <div className="popupInner" data-validate="leaveMasterValidateDiv">
               {this.state.pageDisplay === "LeaveEntitlement" ? (
                 <LeaveEntitlement parent={this} />
               ) : this.state.pageDisplay === "LeaveDetails" ? (
@@ -301,7 +333,6 @@ class LeaveMaster extends Component {
 
                   <div className="col-lg-8">
                     <button
-                      // onClick={() => {}}
                       onClick={this.saveLeaveMaster.bind(this)}
                       type="button"
                       className="btn btn-primary"
