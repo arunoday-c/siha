@@ -1,6 +1,7 @@
 import { header } from "./labHeader";
 import { signature_footer } from "./signature_footer";
 import "../../src/index.css";
+import moment from "moment";
 
 export function printReport(data) {
   return `
@@ -20,7 +21,9 @@ export function printReport(data) {
                     <td><label>اسم المريض / Patient Name</label></td>
                     <td>: <span>${data.full_name}</span></td>
                     <td><label>اريخ الفاتورة / Report Date</label></td>
-                    <td>: <span>04-11-2018</span></td>
+                    <td>: <span>${moment(data.receipt_date).format(
+                      "DD-MM-YYYY"
+                    )}</span></td>
                 </tr>
 
                 <tr>

@@ -326,7 +326,7 @@ class RegistrationPatient extends PureComponent {
     let department_id = this.props.department_id || null;
     let hims_f_patient_appointment_id =
       this.props.hims_f_patient_appointment_id || null;
-    let title_id = this.props.title_id || null;
+    let title_id = Window.global["appt-title-id"] || null;
 
     AlgaehLoader({ show: true });
 
@@ -337,7 +337,7 @@ class RegistrationPatient extends PureComponent {
       onSuccess: response => {
         if (response.data.success) {
           let data = response.data.records;
-          debugger;
+
           data.patientRegistration.visitDetails = data.visitDetails;
           data.patientRegistration.patient_id =
             data.patientRegistration.hims_d_patient_id;

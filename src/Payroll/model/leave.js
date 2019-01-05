@@ -773,11 +773,11 @@ let addLeaveMaster = (req, res, next) => {
         }
         connection.query(
           "INSERT INTO `hims_d_leave` (leave_code,leave_description,annual_maternity_leave,\
-          include_weekoff,include_holiday,leave_mode,leave_status,leave_accrual,leave_encash,leave_type,\
+          include_weekoff,include_holiday,leave_mode,leave_accrual,leave_encash,leave_type,\
           encashment_percentage,leave_carry_forward,carry_forward_percentage,\
           religion_required,religion_id,holiday_reimbursement,exit_permit_required,\
           proportionate_leave,document_mandatory,created_by,created_date,updated_by,updated_date)\
-          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           [
             input.leave_code,
             input.leave_description,
@@ -785,7 +785,7 @@ let addLeaveMaster = (req, res, next) => {
             input.include_weekoff,
             input.include_holiday,
             input.leave_mode,
-            input.leave_status,
+
             input.leave_accrual,
             input.leave_encash,
             input.leave_type,
