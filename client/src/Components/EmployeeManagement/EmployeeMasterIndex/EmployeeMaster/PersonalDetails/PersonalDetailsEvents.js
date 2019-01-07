@@ -33,11 +33,11 @@ const countryStatehandle = ($this, e) => {
       value = e.value;
       $this.setState({
         present_city_id: null,
-        cities: e.selected.cities
+        precities: e.selected.cities
       });
       $this.props.EmpMasterIOputs.updateEmployeeTabs({
         present_city_id: null,
-        cities: e.selected.cities
+        precities: e.selected.cities
       });
     }
 

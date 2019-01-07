@@ -138,6 +138,7 @@ class PersonalDetails extends PureComponent {
   }
 
   render() {
+    debugger;
     return (
       <React.Fragment>
         {/* <MyContext.Consumer>
@@ -482,7 +483,7 @@ class PersonalDetails extends PureComponent {
                                   ? "city_name"
                                   : "city_arabic_name",
                               valueField: "hims_d_city_id",
-                              data: this.state.cities
+                              data: this.state.precities
                             },
                             onChange: texthandle.bind(this, this),
                             others: {
