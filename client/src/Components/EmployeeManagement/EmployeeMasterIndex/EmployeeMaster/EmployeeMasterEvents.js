@@ -206,13 +206,16 @@ const InsertUpdateEmployee = $this => {
       .where(w => w.dep_status === "A")
       .toArray();
 
-    $this.state.personalDetails.reporting_to_id = activeDept[0].reporting_to_id;
-    $this.state.personalDetails.sub_department_id =
-      activeDept[0].sub_department_id;
-    $this.state.personalDetails.employee_designation_id =
-      activeDept[0].employee_designation_id;
+    if (activeDept.length !== 0) {
+      $this.state.personalDetails.reporting_to_id =
+        activeDept[0].reporting_to_id;
+      $this.state.personalDetails.sub_department_id =
+        activeDept[0].sub_department_id;
+      $this.state.personalDetails.employee_designation_id =
+        activeDept[0].employee_designation_id;
+    }
 
-    if ($this.state.personalDetails.company_bank_id === null) {
+    if ($this.state.personalDetails.hims_d_employee_id === null) {
       const hospital = JSON.parse(sessionStorage.getItem("CurrencyDetail"));
       const _payload = {
         hospital_id: hospital.hims_d_hospital_id,

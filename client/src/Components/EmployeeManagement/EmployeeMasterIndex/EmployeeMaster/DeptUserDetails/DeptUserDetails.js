@@ -333,7 +333,7 @@ class DeptUserDetails extends Component {
               <h5>
                 <span>Define Department</span>
               </h5>
-              <div className="row">
+              <div className="row" data-validate="deptUserdtl">
                 <AlagehAutoComplete
                   div={{ className: "col mandatory" }}
                   label={{
