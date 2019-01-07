@@ -1,2 +1,10 @@
 #employeeIndexGrid .ReactTable {
   max-height: 70vh !important; }
+  #employeeIndexGrid .ReactTable .image-drop-area {
+    margin: auto;
+    min-height: 80px !important;
+    height: 80px !important;
+    width: 80px !important; }
+    #employeeIndexGrid .ReactTable .image-drop-area .dropzone img {
+      width: 100%;
+      height: 78px; }

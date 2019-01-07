@@ -89,56 +89,51 @@ class PersonalDetails extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState(nextProps.EmpMasterIOputs, () => {
-      if (this.state.country_id === null) return;
-      if (this.state.country_id !== nextProps.country_id) {
-        let country = Enumerable.from(this.props.countries)
-          .where(w => w.hims_d_country_id === this.state.country_id)
-          .firstOrDefault();
-        let states = country !== undefined ? country.states : [];
-        if (this.props.countries !== undefined && states.length !== 0) {
-          if (nextProps.state_id !== this.state.state_id) {
-            let cities = Enumerable.from(states)
-              .where(w => w.hims_d_state_id === this.state.state_id)
-              .firstOrDefault();
-            if (cities !== undefined) {
-              this.setState({
-                countrystates: states,
-                cities: cities.cities,
-                state_id: this.state.state_id,
-                city_id: this.state.city_id
-              });
-            } else {
-              this.setState({
-                countrystates: states,
-                state_id: this.state.state_id
-              });
-            }
-          }
-        }
-        // if (nextProps.state_id !== this.state.state_id) {
-        //   let cities = Enumerable.from(states)
-        //     .where(w => w.hims_d_state_id === this.state.state_id)
-        //     .firstOrDefault();
-
-        //   this.props.getStates({
-        //     redux: {
-        //       data: states,
-        //       type: "STATE_GET_DATA",
-        //       mappingName: "countrystates"
-        //     }
-        //   });
-        //   if (cities !== undefined) {
-        //     this.props.getCities({
-        //       redux: {
-        //         data: cities.cities,
-        //         type: "CITY_GET_DATA",
-        //         mappingName: "cities"
-        //       }
-        //     });
-        //   }
-        // }
-      }
+    debugger;
+    this.setState(nextProps.EmpMasterIOputs.state.personalDetails, () => {
+      // if (this.state.present_country_id === null) return;
+      // if (
+      //   this.state.present_country_id ===
+      //   nextProps.EmpMasterIOputs.state.personalDetails.present_country_id
+      // ) {
+      //   let country = Enumerable.from(this.props.countries)
+      //     .where(w => w.hims_d_country_id === this.state.present_country_id)
+      //     .firstOrDefault();
+      //   let states = country !== undefined ? country.states : [];
+      //   if (this.props.countries !== undefined && states.length !== 0) {
+      //     if (
+      //       nextProps.EmpMasterIOputs.state.personalDetails.present_state_id ===
+      //       this.state.present_state_id
+      //     ) {
+      //       let cities = Enumerable.from(states)
+      //         .where(w => w.hims_d_state_id === this.state.present_state_id)
+      //         .firstOrDefault();
+      //       if (cities !== undefined) {
+      //         this.setState({
+      //           countrystates: states,
+      //           cities: cities.cities,
+      //           present_state_id: this.state.present_state_id,
+      //           present_city_id: this.state.present_city_id
+      //         });
+      //         this.props.EmpMasterIOputs.updateEmployeeTabs({
+      //           countrystates: states,
+      //           cities: cities.cities,
+      //           present_state_id: this.state.present_state_id,
+      //           present_city_id: this.state.present_city_id
+      //         });
+      //       } else {
+      //         this.setState({
+      //           countrystates: states,
+      //           present_state_id: this.state.present_state_id
+      //         });
+      //         this.props.EmpMasterIOputs.updateEmployeeTabs({
+      //           countrystates: states,
+      //           present_state_id: this.state.present_state_id
+      //         });
+      //       }
+      //     }
+      //   }
+      // }
     });
   }
 
@@ -462,7 +457,7 @@ class PersonalDetails extends PureComponent {
                                   ? "state_name"
                                   : "arabic_state_name",
                               valueField: "hims_d_state_id",
-                              data: this.props.present_countrystates
+                              data: this.state.countrystates
                             },
                             onChange: countryStatehandle.bind(this, this),
                             others: {
@@ -487,7 +482,7 @@ class PersonalDetails extends PureComponent {
                                   ? "city_name"
                                   : "city_arabic_name",
                               valueField: "hims_d_city_id",
-                              data: this.props.present_cities
+                              data: this.state.cities
                             },
                             onChange: texthandle.bind(this, this),
                             others: {
@@ -594,12 +589,11 @@ class PersonalDetails extends PureComponent {
                               data:
                                 this.state.samechecked === "Y"
                                   ? this.props.present_countrystates
-                                  : this.props.countrystates
+                                  : this.state.precountrystates
                             },
                             onChange: countryStatehandle.bind(this, this),
                             others: {
-                              tabIndex: "11",
-                              disabled: this.state.existingPatient
+                              tabIndex: "11"
                             }
                           }}
                         />
@@ -625,7 +619,7 @@ class PersonalDetails extends PureComponent {
                               data:
                                 this.state.samechecked === "Y"
                                   ? this.props.present_cities
-                                  : this.props.cities
+                                  : this.state.precities
                             },
                             onChange: texthandle.bind(this, this),
                             others: {

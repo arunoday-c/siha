@@ -42,15 +42,18 @@ class CommissionSetup extends Component {
       ip_credit_commission_percent: 0,
       service_type_typ_id: null
     };
+    AlgaehLoader({ show: true });
   }
 
   componentWillMount() {
+    debugger;
     let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
     this.setState({ ...this.state, ...InputOutput });
   }
 
   componentDidMount() {
-    AlgaehLoader({ show: true });
+    debugger;
+    // AlgaehLoader({ show: true });
 
     let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
     this.setState({ ...this.state, ...InputOutput });

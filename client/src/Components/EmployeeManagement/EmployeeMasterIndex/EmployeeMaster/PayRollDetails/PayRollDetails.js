@@ -52,14 +52,18 @@ class PayRollDetails extends PureComponent {
       contribut_calculation_method: null,
       earn_calculation_type: null,
       deduct_calculation_type: null,
-      contribut_calculation_type: null
+      contribut_calculation_type: null,
+      dataExists: false
     };
   }
 
   componentDidMount() {
     let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
     this.setState({ ...this.state, ...InputOutput }, () => {
-      if (this.state.hims_d_employee_id !== null) {
+      if (
+        this.state.hims_d_employee_id !== null &&
+        this.state.dataPayrolExists === false
+      ) {
         getPayrollComponents(this);
       }
     });
@@ -79,6 +83,7 @@ class PayRollDetails extends PureComponent {
   }
 
   render() {
+    debugger;
     const earnings = Enumerable.from(this.props.payrollcomponents)
       .where(w => w.component_category === "E")
       .toArray();

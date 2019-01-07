@@ -14,7 +14,6 @@ const texthandle = ($this, e) => {
 };
 
 const AddEmpId = ($this, e) => {
-  debugger;
   AlgaehValidation({
     alertTypeIcon: "warning",
     querySelector: "data-validate='empIdGrid'",
@@ -102,9 +101,11 @@ const getFamilyIdentification = $this => {
         let data = response.data.records;
         if (data.length > 0) {
           debugger;
-          $this.setState({
+          $this.setState({ idDetails: data[0], dependentDetails: data[1] });
+          $this.props.EmpMasterIOputs.updateEmployeeTabs({
             idDetails: data[0],
-            dependentDetails: data[1]
+            dependentDetails: data[1],
+            dataFamIdsExists: true
           });
         }
       }
@@ -153,16 +154,28 @@ const deleteIdentifications = ($this, row) => {
 
         idDetails.splice(row.rowIdx, 1);
       }
-      $this.setState({
-        idDetails: idDetails,
-        deleteIdDetails: deleteIdDetails,
-        insertIdDetails: insertIdDetails
-      });
+      $this.setState(
+        {
+          idDetails: idDetails,
+          deleteIdDetails: deleteIdDetails,
+          insertIdDetails: insertIdDetails
+        },
+        () => {
+          debugger;
+        }
+      );
+
       $this.props.EmpMasterIOputs.updateEmployeeTabs({
         idDetails: idDetails,
         deleteIdDetails: deleteIdDetails,
         insertIdDetails: insertIdDetails
       });
+
+      // $this.props.EmpMasterIOputs.updateEmployeeTabs({
+      //   idDetails: idDetails,
+      //   deleteIdDetails: deleteIdDetails,
+      //   insertIdDetails: insertIdDetails
+      // });
     } else {
       swalMessage({
         title: "Delete request cancelled",

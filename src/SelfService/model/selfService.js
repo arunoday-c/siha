@@ -22,24 +22,30 @@ let getEmployeeBasicDetails = (req, res, next) => {
     db.getConnection((error, connection) => {
       connection.query(
         "SELECT E.hims_d_employee_id,E.employee_code,E.title_id,E.full_name,E.arabic_name,E.employee_designation_id,\
-         D.designation_code,D.designation,\
-            E.license_number,E.sex,E.date_of_birth,E.date_of_joining,E.date_of_resignation,E.present_address,E.present_address2,\
-            E.present_pincode,E.present_pincode,E.present_state_id,S.state_name as present_state_name ,E.present_country_id,C.country_name present_country_name,\
-            E.permanent_address , E.permanent_address2, E.permanent_pincode, E.permanent_city_id, E.permanent_state_id,\
-            E.permanent_country_id, E.primary_contact_no, E.secondary_contact_no,E.email,\
-            E.emergency_contact_person,E.emergency_contact_no,E.blood_group,\
-            E.isdoctor,E.employee_status,E.exclude_machine_data ,E.company_bank_id ,E.employee_bank_name , E.effective_start_date,E.effective_end_date,\
-            E.employee_bank_ifsc_code , E.employee_account_number, E.mode_of_payment, E.accomodation_provided,\
-            E.late_coming_rule, E.leave_salary_process, E.entitled_daily_ot, E.suspend_salary, E.gratuity_applicable, E.contract_type, E.employee_group_id,\
-            E.weekoff_from,E.overtime_group_id, E.reporting_to_id,REP.full_name as reporting_to_name, E.hospital_id ,\
-            H.hospital_code,H.hospital_name ,E.sub_department_id  ,DEP.sub_department_name \
-            from hims_d_employee E left join hims_d_designation D on E.employee_designation_id=D.hims_d_designation_id\
-            left join hims_d_country C on E.present_country_id=C.hims_d_country_id  \
-            left join hims_d_state S on  E.present_state_id=S.hims_d_state_id\
-            left join hims_d_employee REP on E.reporting_to_id=REP.hims_d_employee_id and REP.record_status='A'\
-            left join hims_d_hospital H on  E.hospital_id  =H.hims_d_hospital_id and H.record_status='A'\
-            left join hims_d_sub_department DEP on E.sub_department_id=DEP.hims_d_sub_department_id and DEP.record_status='A'\
-        where E.record_status='A' and E.hims_d_employee_id=?",
+        D.designation_code,D.designation,\
+           E.license_number,E.sex,E.date_of_birth,E.date_of_joining,E.date_of_resignation,E.present_address,E.present_address2,\
+           E.present_pincode,E.present_pincode,E.present_city_id,CITY.city_name as present_city_name ,\
+           E.present_state_id,S.state_name as present_state_name ,\
+           E.present_country_id,C.country_name present_country_name,\
+           E.permanent_address , E.permanent_address2, E.permanent_pincode, E.permanent_city_id, E.permanent_state_id,\
+           E.permanent_country_id, E.primary_contact_no, E.secondary_contact_no,E.email,\
+           E.emergency_contact_person,E.emergency_contact_no,E.blood_group,\
+           E.isdoctor,E.employee_status,E.exclude_machine_data ,E.company_bank_id ,E.employee_bank_name ,\
+            E.effective_start_date,E.effective_end_date, E.employee_bank_ifsc_code ,\
+             E.employee_account_number, E.mode_of_payment, E.accomodation_provided,\
+           E.late_coming_rule, E.leave_salary_process, E.entitled_daily_ot,\
+            E.suspend_salary, E.gratuity_applicable, E.contract_type, E.employee_group_id,\
+           E.weekoff_from,E.overtime_group_id, E.reporting_to_id,REP.full_name as reporting_to_name,\
+            E.hospital_id , H.hospital_code,H.hospital_name ,E.sub_department_id ,\
+            DEP.sub_department_name  from hims_d_employee E left join hims_d_designation D\
+             on E.employee_designation_id=D.hims_d_designation_id  left join hims_d_country C on\
+              E.present_country_id=C.hims_d_country_id   left join hims_d_city CITY on\
+               E.present_city_id=CITY.hims_d_city_id left join hims_d_state S on \
+         E.present_state_id=S.hims_d_state_id left join hims_d_employee REP on\
+        E.reporting_to_id=REP.hims_d_employee_id and REP.record_status='A'\
+          left join hims_d_hospital H on  E.hospital_id  =H.hims_d_hospital_id and H.record_status='A'\
+           left join hims_d_sub_department DEP on E.sub_department_id=DEP.hims_d_sub_department_id and DEP.record_status='A'\
+       where E.record_status='A'  and E.hims_d_employee_id=?",
         req.userIdentity.employee_id,
         (error, result) => {
           releaseDBConnection(db, connection);
