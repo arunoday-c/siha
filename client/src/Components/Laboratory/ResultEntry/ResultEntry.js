@@ -442,9 +442,9 @@ class ResultEntry extends Component {
                                 Critical High
                               </span>
                             ) : row.critical_type === "L" ? (
-                              <span className="badge badge-Warning">Low</span>
+                              <span className="badge badge-warning">Low</span>
                             ) : row.critical_type === "H" ? (
-                              <span className="badge badge-Warning">High</span>
+                              <span className="badge badge-warning">High</span>
                             ) : null;
                           }
                         },
