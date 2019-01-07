@@ -410,7 +410,9 @@ export default class AlgaehFileUploader extends Component {
         : "No File Preview";
     const _showControl =
       this.props.showControl === undefined ? true : this.props.showControl;
-
+    const _showActions =
+      this.props.showActions === undefined ? true : this.props.showActions;
+    const _disabled = { disabled: !_showActions };
     if (_showControl) {
       return (
         <React.Fragment>
@@ -423,6 +425,7 @@ export default class AlgaehFileUploader extends Component {
               name={this.props.name + "_DropZone"}
               onDrop={this.dropZoneHandlerOnDrop.bind(this)}
               {..._accept}
+              {..._disabled}
             >
               <img
                 src={this.state.filePreview}
@@ -434,20 +437,23 @@ export default class AlgaehFileUploader extends Component {
               {this.implementProgressBar()}
             </Dropzone>
             {this.implementLoader()}
-            <div className="img-upload-actions">
-              <i
-                className="fas fa-paperclip"
-                onClick={this.showAttachmentHandler.bind(this)}
-              />
-              <i
-                className="fas fa-camera"
-                onClick={this.webCamHandler.bind(this)}
-              />
-              <i
-                className="fas fa-search-plus"
-                onClick={this.zoomHandler.bind(this)}
-              />
-            </div>
+
+            {_showActions ? (
+              <div className="img-upload-actions">
+                <i
+                  className="fas fa-paperclip"
+                  onClick={this.showAttachmentHandler.bind(this)}
+                />
+                <i
+                  className="fas fa-camera"
+                  onClick={this.webCamHandler.bind(this)}
+                />
+                <i
+                  className="fas fa-search-plus"
+                  onClick={this.zoomHandler.bind(this)}
+                />
+              </div>
+            ) : null}
           </div>
         </React.Fragment>
       );

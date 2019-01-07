@@ -7,7 +7,8 @@
   z-index: 999; }
   .selfServiceModule .EmployeeProfile .EmployeeInfo-Top div {
     float: left;
-    color: #858585; }
+    color: #858585;
+    overflow: hidden; }
   .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .backBtn {
     border-right: 1px solid #e1e1e1;
     padding-right: 10px;
@@ -20,13 +21,13 @@
       display: block;
       margin-bottom: 5px; }
   .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .EmployeeImg {
-    margin: 1px 10px;
-    border-radius: 4px;
-    border: 1px solid #e1e1e1; }
-    .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .EmployeeImg img {
-      height: 95px;
-      border-radius: 4px;
-      overflow: hidden; }
+    margin: 1px 10px; }
+    .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .EmployeeImg .image-drop-area {
+      min-height: 100px;
+      max-height: 100px; }
+      .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .EmployeeImg .image-drop-area img {
+        height: 100px;
+        width: auto; }
   .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .EmployeeName {
     max-width: 30%;
     margin-top: 2px;

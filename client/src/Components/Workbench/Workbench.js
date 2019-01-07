@@ -6,7 +6,7 @@ import PatientProfile from "../PatientProfile/PatientProfile";
 import { removeGlobal } from "../../utils/GlobalFunctions";
 import { setCookie } from "../../utils/algaehApiCall";
 
-class Workbench extends Component {
+class Desk extends Component {
   constructor(props) {
     super(props);
     setCookie("ScreenName", props.type);
@@ -70,4 +70,4 @@ class Workbench extends Component {
   }
 }
 
-export default Workbench;
+export default Desk;
