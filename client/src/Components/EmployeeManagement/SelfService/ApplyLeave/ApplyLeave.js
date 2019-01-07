@@ -41,7 +41,7 @@ class ApplyLeave extends Component {
           this.setState({
             holidays: res.data.records
           });
-          console.table(res.data.records);
+          //console.table(res.data.records);
         }
       },
       onFailure: err => {}
@@ -58,7 +58,7 @@ class ApplyLeave extends Component {
       dates = [];
 
     while (now.isSameOrBefore(lastDate)) {
-      console.log(now.format("YYYYMMDD"));
+      //console.log(now.format("YYYYMMDD"));
       dates.push(now.format("YYYYMMDD"));
       now.add(1, "days");
     }
@@ -910,21 +910,24 @@ class ApplyLeave extends Component {
             <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
               <div className="portlet-body">
                 <div className="row leaveBalanceCntr">
-                  {leaveData.map((data, index) => (
-                    <div
-                      key={data.hims_f_employee_monthly_leave_id}
-                      className="col"
-                    >
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: data.leave_description
-                        }}
-                      />
-                      <h6>
-                        {data.availed_till_date}/{data.total_eligible} Day (s)
-                      </h6>
-                    </div>
-                  ))}
+                  {leaveData.length > 0
+                    ? leaveData.map((data, index) => (
+                        <div
+                          key={data.hims_f_employee_monthly_leave_id}
+                          className="col"
+                        >
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: data.leave_description
+                            }}
+                          />
+                          <h6>
+                            {data.availed_till_date}/{data.total_eligible} Day
+                            (s)
+                          </h6>
+                        </div>
+                      ))
+                    : "Not Eligible for any Leaves . . "}
                 </div>
               </div>
             </div>

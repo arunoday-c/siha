@@ -138,6 +138,7 @@ class PersonalDetails extends PureComponent {
   }
 
   render() {
+    debugger;
     return (
       <React.Fragment>
         {/* <MyContext.Consumer>
@@ -374,9 +375,9 @@ class PersonalDetails extends PureComponent {
                         isImp: false
                       }}
                       selector={{
-                        name: "nationality_id",
+                        name: "nationality",
                         className: "select-fld",
-                        value: this.state.nationality_id,
+                        value: this.state.nationality,
                         dataSource: {
                           textField:
                             this.state.selectedLang === "en"
@@ -482,7 +483,7 @@ class PersonalDetails extends PureComponent {
                                   ? "city_name"
                                   : "city_arabic_name",
                               valueField: "hims_d_city_id",
-                              data: this.state.cities
+                              data: this.state.precities
                             },
                             onChange: texthandle.bind(this, this),
                             others: {

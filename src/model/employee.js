@@ -1030,7 +1030,7 @@ let updateEmployee = (req, res, next) => {
             input.sub_department_id,
             input.employee_designation_id,
             input.employee_status,
-            moment(input.inactive_date).format("YYYY-MM-DD"),
+            input.inactive_date,
 
             new Date(),
             input.updated_by,

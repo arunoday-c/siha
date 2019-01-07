@@ -12,13 +12,15 @@ export default class SalaryProcessing extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedLang: this.props.SelectLanguage,
-      fromMonth: moment(new Date()).format("YYYY-MM")
+      selectedLang: this.props.SelectLanguage
     };
   }
   fromMonthHandler(date, name) {
     debugger;
-    this.setState({ fromMonth: date });
+
+    // let setDate = moment(date).format("YYYY-MM");
+
+    this.setState({ [name]: date });
   }
 
   render() {
@@ -34,17 +36,17 @@ export default class SalaryProcessing extends Component {
               }}
               textBox={{
                 className: "txt-fld",
-                name: "date_of_joining",
+                name: "month_date",
                 others: {
                   tabIndex: "6",
                   type: "month"
                 }
               }}
               events={{
-                onchange: this.fromMonthHandler.bind(this)
+                onChange: this.fromMonthHandler.bind(this)
               }}
               maxDate={new Date()}
-              value={moment(this.state.fromMonth).format("YYYY-MM-DD")}
+              value={this.state.month_date}
             />
             <AlagehAutoComplete
               div={{ className: "col" }}

@@ -16,7 +16,8 @@ import { debugLog } from "../../utils/logging";
 let getMiscEarningDeductions = (req, res, next) => {
   let selectWhere = {
     component_category: "ALL",
-    miscellaneous_component: "ALL"
+    miscellaneous_component: "ALL",
+    component_type: "ALL"
   };
   try {
     if (req.db == null) {

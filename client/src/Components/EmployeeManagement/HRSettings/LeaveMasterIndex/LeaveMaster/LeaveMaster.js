@@ -266,7 +266,7 @@ class LeaveMaster extends Component {
                   {
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Leave Entitlement"
+                        forceLabel: "Leave"
                       }}
                     />
                   }
