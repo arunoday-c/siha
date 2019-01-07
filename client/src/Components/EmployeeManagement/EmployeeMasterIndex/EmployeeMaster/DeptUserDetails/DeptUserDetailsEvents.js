@@ -234,16 +234,60 @@ const updateDeptUser = ($this, row) => {
 };
 
 const deleteDeptUser = ($this, row) => {
-  let deptDetails = Enumerable.from($this.state.deptDetails)
-    .where(w => w.sub_department_id !== row.sub_department_id)
-    .toArray();
+  // let deptDetails = Enumerable.from($this.state.deptDetails)
+  //   .where(w => w.sub_department_id !== row.sub_department_id)
+  //   .toArray();
 
+  // $this.setState({
+  //   deptDetails: deptDetails
+  // });
+
+  // $this.props.EmpMasterIOputs.updateEmployeeTabs({
+  //   deptDetails: deptDetails
+  // });
+
+  let deptDetails = $this.state.deptDetails;
+  let updatedeptDetails = $this.state.updatedeptDetails;
+  let insertdeptDetails = $this.state.insertdeptDetails;
+  if (row.hims_d_employee_department_id !== undefined) {
+    let Updateobj = {
+      hims_d_employee_department_id: row.hims_d_employee_department_id,
+      employee_id: row.employee_id,
+      services_id: row.services_id,
+      sub_department_id: row.sub_department_id,
+      category_speciality_id: row.category_speciality_id,
+      speciality_id: row.speciality_id,
+      category_id: row.category_id,
+      reporting_to_id: row.reporting_to_id,
+      from_date: row.from_date,
+      to_date: row.to_date,
+      employee_designation_id: row.employee_designation_id,
+      user_id: row.user_id,
+      dep_status: row.dep_status,
+      record_status: "I"
+    };
+    updatedeptDetails.push(Updateobj);
+    deptDetails[row.rowIdx] = Updateobj;
+    deptDetails.splice(row.rowIdx, 1);
+  } else {
+    {
+      for (let x = 0; x < insertdeptDetails.length; x++) {
+        if (insertdeptDetails[x].earnings_id === row.earnings_id) {
+          insertdeptDetails.splice(x, 1);
+        }
+      }
+      deptDetails.splice(row.rowIdx, 1);
+    }
+  }
   $this.setState({
-    deptDetails: deptDetails
+    deptDetails: deptDetails,
+    updatedeptDetails: updatedeptDetails,
+    insertdeptDetails: insertdeptDetails
   });
-
   $this.props.EmpMasterIOputs.updateEmployeeTabs({
-    deptDetails: deptDetails
+    deptDetails: deptDetails,
+    updatedeptDetails: updatedeptDetails,
+    insertdeptDetails: insertdeptDetails
   });
 };
 
