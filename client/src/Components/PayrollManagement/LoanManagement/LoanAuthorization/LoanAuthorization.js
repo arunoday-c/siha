@@ -18,6 +18,7 @@ class LoanAuthorization extends Component {
       from_date: "",
       to_date: "",
       selRow: {},
+      loading: false,
       hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
         .hims_d_hospital_id,
       openAuth: false
@@ -61,8 +62,12 @@ class LoanAuthorization extends Component {
   }
 
   getLoanApplications() {
-    AlgaehLoader({
-      show: true
+    // AlgaehLoader({
+    //   show: true
+    // });
+
+    this.setState({
+      loading: true
     });
 
     algaehApiCall({
@@ -79,8 +84,8 @@ class LoanAuthorization extends Component {
           this.setState({
             loan_applns: res.data.records
           });
-          AlgaehLoader({
-            show: false
+          this.setState({
+            loading: false
           });
         }
       },
@@ -89,8 +94,8 @@ class LoanAuthorization extends Component {
           title: err.message,
           type: "error"
         });
-        AlgaehLoader({
-          show: false
+        this.setState({
+          loading: false
         });
       }
     });
@@ -261,7 +266,11 @@ class LoanAuthorization extends Component {
                 style={{ marginTop: 21 }}
                 className="btn btn-primary"
               >
-                Load
+                {!this.state.loading ? (
+                  <span>Load</span>
+                ) : (
+                  <i className="fas fa-spinner fa-spin" />
+                )}
               </button>
             </div>
           </div>
@@ -378,6 +387,7 @@ class LoanAuthorization extends Component {
                     dataSource={{ data: this.state.loan_applns }}
                     isEditable={false}
                     filter={true}
+                    loading={this.state.loading}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{}}
                     others={{}}
