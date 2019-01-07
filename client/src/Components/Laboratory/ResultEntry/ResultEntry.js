@@ -422,6 +422,33 @@ class ResultEntry extends Component {
                           }
                         },
                         {
+                          fieldName: "critical_type",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Critical Type" }}
+                            />
+                          ),
+                          displayTemplate: row => {
+                            return row.critical_type === "N" ? (
+                              <span className="badge badge-success">
+                                Normal
+                              </span>
+                            ) : row.critical_type === "CL" ? (
+                              <span className="badge badge-danger">
+                                Critical Low
+                              </span>
+                            ) : row.critical_type === "CH" ? (
+                              <span className="badge badge-danger">
+                                Critical High
+                              </span>
+                            ) : row.critical_type === "L" ? (
+                              <span className="badge badge-Warning">Low</span>
+                            ) : row.critical_type === "H" ? (
+                              <span className="badge badge-Warning">High</span>
+                            ) : null;
+                          }
+                        },
+                        {
                           fieldName: "normal_low",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Normal Low" }} />
@@ -455,27 +482,6 @@ class ResultEntry extends Component {
                           )
                         },
                         //TODO
-                        {
-                          fieldName: "critical_type",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Critical Type" }}
-                            />
-                          ),
-                          displayTemplate: row => {
-                            return row.critical_type === "N"
-                              ? "Normal"
-                              : row.critical_type === "CL"
-                              ? "Critical Low"
-                              : row.critical_type === "CH"
-                              ? "Critical High"
-                              : row.critical_type === "L"
-                              ? "Low"
-                              : row.critical_type === "H"
-                              ? "High"
-                              : null;
-                          }
-                        },
                         {
                           fieldName: "confirm",
                           label: (
