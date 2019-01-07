@@ -265,7 +265,7 @@
     { "name": "Under Process", "value": "UP", "color": "#cea6fc" },
     { "name": "Cancelled", "value": "CN", "color": "#ff4000" },
     { "name": "Result  Confirmed ", "value": "RC", "color": "#ff99ff80" },
-    { "name": "Result Avaiable", "value": "RA", "color": "#56ce7480" }
+    { "name": "Result Available", "value": "RA", "color": "#56ce7480" }
   ],
   "ALLERGY_TYPES": [
     {
@@ -749,7 +749,7 @@
     { "name": "Quarter (1/4)", "value": "QD" },
     { "name": "Three Quarter Day (3/4)", "value": "TQ" }
   ],
-  "LEAVE_VALUE_TYP" : [
+  "LEAVE_VALUE_TYP": [
     { "name": "Over This Value", "value": "OV" },
     { "name": "Between the From and To", "value": "RA" }
   ]

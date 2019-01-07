@@ -284,7 +284,6 @@ class RadOrderedList extends Component {
                         fieldName: "billed",
                         label: <AlgaehLabel label={{ fieldName: "billed" }} />,
                         displayTemplate: row => {
-                          
                           return row.billed === "N" ? "Not Billed" : "Billed";
                         },
                         others: {
@@ -368,7 +367,7 @@ class RadOrderedList extends Component {
                             ? "Cancelled"
                             : row.status === "RC"
                             ? "Result Confirmed"
-                            : "Result Avaiable";
+                            : "Result Available";
                         },
                         others: {
                           maxWidth: 200,

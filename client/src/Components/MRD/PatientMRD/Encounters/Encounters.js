@@ -493,7 +493,7 @@ class Encounters extends Component {
                                         : row.rad_ord_status === "RC"
                                         ? "Result Confirmed"
                                         : row.rad_ord_status === "RA"
-                                        ? "Result Avaiable"
+                                        ? "Result Available"
                                         : "----"}
                                     </span>
                                   );

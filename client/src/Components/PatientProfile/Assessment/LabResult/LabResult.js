@@ -77,7 +77,6 @@ class LabResult extends Component {
                       fieldName: "services_id",
                       label: <AlgaehLabel label={{ forceLabel: "Test" }} />,
                       displayTemplate: row => {
-                        
                         let display =
                           this.props.assservices === undefined
                             ? []
@@ -104,12 +103,12 @@ class LabResult extends Component {
                         return row.status === "O"
                           ? "Ordered"
                           : row.status === "CL"
-                            ? "Collected"
-                            : row.status === "CN"
-                              ? "Cancelled"
-                              : row.status === "CF"
-                                ? "Confirmed"
-                                : "Result Avaiable";
+                          ? "Collected"
+                          : row.status === "CN"
+                          ? "Cancelled"
+                          : row.status === "CF"
+                          ? "Confirmed"
+                          : "Result Available";
                       }
                     },
                     {
@@ -221,14 +220,14 @@ class LabResult extends Component {
                         return row.critical_type === "N"
                           ? "None"
                           : row.critical_type === "CL"
-                            ? "Critical Low"
-                            : row.critical_type === "CH"
-                              ? "Critical High"
-                              : row.critical_type === "L"
-                                ? "Low"
-                                : row.critical_type === "H"
-                                  ? "High"
-                                  : null;
+                          ? "Critical Low"
+                          : row.critical_type === "CH"
+                          ? "Critical High"
+                          : row.critical_type === "L"
+                          ? "Low"
+                          : row.critical_type === "H"
+                          ? "High"
+                          : null;
                       }
                     },
                     {
@@ -252,10 +251,10 @@ class LabResult extends Component {
                         return row.status === "E"
                           ? "Entered"
                           : row.status === "C"
-                            ? "Confirmed"
-                            : row.status === "V"
-                              ? "Validated"
-                              : "Not Entered";
+                          ? "Confirmed"
+                          : row.status === "V"
+                          ? "Validated"
+                          : "Not Entered";
                       }
                     }
                   ]}
