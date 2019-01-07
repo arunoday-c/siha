@@ -5,6 +5,7 @@ import { bindActionCreators } from "redux";
 import "./employee_master_index.css";
 import "../../../styles/site.css";
 import { AlgaehLabel, AlgaehDataGrid } from "../../Wrapper/algaehWrapper";
+import AlgaehFile from "../../Wrapper/algaehFileUpload";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import EmployeeMaster from "./EmployeeMaster/EmployeeMaster";
 import moment from "moment";
@@ -179,6 +180,29 @@ class EmployeeMasterIndex extends Component {
                         maxWidth: 65,
                         resizable: false,
                         filterable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+                    {
+                      fieldName: "employee_img",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Profile Image" }} />
+                      ),
+                      displayTemplate: row => (
+                        <AlgaehFile
+                          name="attach_photo"
+                          accept="image/*"
+                          textAltMessage={row.full_name}
+                          showActions={false}
+                          serviceParameters={{
+                            uniqueID: row.employee_code,
+                            destinationName: row.employee_code,
+                            fileType: "Employees"
+                          }}
+                        />
+                      ),
+                      others: {
+                        resizable: false,
                         style: { textAlign: "center" }
                       }
                     },

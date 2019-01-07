@@ -107,6 +107,14 @@ export default class SelfService extends Component {
             </div>
             <div className="EmployeeDemographic">
               <span>
+                Joining Date:{" "}
+                <b>
+                  {empDetails.date_of_joining !== null
+                    ? empDetails.date_of_joining
+                    : "------"}
+                </b>
+              </span>
+              <span>
                 Reporting to:{" "}
                 <b>
                   {empDetails.reporting_to_name !== null
