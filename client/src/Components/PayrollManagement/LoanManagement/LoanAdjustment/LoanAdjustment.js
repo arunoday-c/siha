@@ -43,25 +43,29 @@ class LoanAdjustment extends Component {
   }
 
   adjustLoan(data) {
-    // algaehApiCall({
-    // uri: "/loan/updateLoan",
-    // method: "PUT",
-    // data ; {
-    // },
-    // onSuccess: res => {
-    //  if (res.data.success) {
-    //   swalMessage({
-    //     title : "Record Updated Successfully",
-    //   type : "success"
-    //   })
-    // }
-    // },
-    // onFailure: err => {
-    //  swalMessage({
-    // title : err.message,
-    // type : "error"
-    // })}
-    // });
+    algaehApiCall({
+      uri: "/loan/adjustLoanApplication",
+      method: "PUT",
+      data: {
+        hims_f_loan_application_id: data.hims_f_loan_application_id,
+        loan_skip_months: data.loan_skip_months
+      },
+      onSuccess: res => {
+        if (res.data.success) {
+          swalMessage({
+            title: "Record Updated Successfully",
+            type: "success"
+          });
+          this.getEmployeeLoans();
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   clearState() {
@@ -96,7 +100,8 @@ class LoanAdjustment extends Component {
         uri: "/loan/getLoanApplication",
         method: "GET",
         data: {
-          employee_id: this.state.hims_d_employee_id
+          employee_id: this.state.hims_d_employee_id,
+          loan_issued: "Y"
         },
         onSuccess: res => {
           if (res.data.success) {
@@ -217,22 +222,22 @@ class LoanAdjustment extends Component {
                       datavalidate="LoanAdjustGrid"
                       columns={[
                         {
-                          fieldName: "skip_months",
+                          fieldName: "loan_skip_months",
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Skipping Months" }}
                             />
                           ),
                           displayTemplate: row => {
-                            return <span>{row.skip_months}</span>;
+                            return <span>{row.loan_skip_months}</span>;
                           },
                           editorTemplate: row => {
                             return (
                               <AlagehFormGroup
                                 textBox={{
-                                  value: row.skip_months,
+                                  value: row.loan_skip_months,
                                   className: "txt-fld",
-                                  name: "skip_months",
+                                  name: "loan_skip_months",
                                   events: {
                                     onChange: this.changeGridEditors.bind(
                                       this,
@@ -250,141 +255,141 @@ class LoanAdjustment extends Component {
                             );
                           }
                         },
-                        {
-                          fieldName: "pay_months",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Pay Month Togther" }}
-                            />
-                          ),
-                          displayTemplate: row => {
-                            return <span>{row.pay_months}</span>;
-                          },
-                          editorTemplate: row => {
-                            return (
-                              <AlagehFormGroup
-                                textBox={{
-                                  value: row.pay_months,
-                                  className: "txt-fld",
-                                  name: "pay_months",
-                                  events: {
-                                    onChange: this.changeGridEditors.bind(
-                                      this,
-                                      row
-                                    )
-                                  },
-                                  others: {
-                                    errormessage:
-                                      "Pay Months - cannot be blank",
-                                    required: true,
-                                    type: "number"
-                                  }
-                                }}
-                              />
-                            );
-                          }
-                        },
-                        {
-                          fieldName: "skip_year",
-                          label: (
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Start Year of Skip/ Pay Loan"
-                              }}
-                            />
-                          ),
-                          displayTemplate: row => {
-                            return <span>{row.skip_year}</span>;
-                          },
-                          editorTemplate: row => {
-                            return (
-                              <AlagehFormGroup
-                                textBox={{
-                                  value: row.skip_year,
-                                  className: "txt-fld",
-                                  name: "skip_year",
-                                  events: {
-                                    onChange: this.changeGridEditors.bind(
-                                      this,
-                                      row
-                                    )
-                                  },
-                                  others: {
-                                    errormessage: "Skip Year - cannot be blank",
-                                    required: true,
-                                    type: "number"
-                                  }
-                                }}
-                              />
-                            );
-                          }
-                        },
-                        {
-                          fieldName: "skip_month_start",
-                          label: (
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Start Month of Skip/ Pay Loan"
-                              }}
-                            />
-                          ),
-                          displayTemplate: row => {
-                            debugger;
-                            return (
-                              <span>
-                                {row.skip_month_start === "1"
-                                  ? "January"
-                                  : row.skip_month_start === "2"
-                                  ? "February"
-                                  : row.skip_month_start === "3"
-                                  ? "March"
-                                  : row.skip_month_start === "4"
-                                  ? "April"
-                                  : row.skip_month_start === "5"
-                                  ? "May"
-                                  : row.skip_month_start === "6"
-                                  ? "June"
-                                  : row.skip_month_start === "7"
-                                  ? "July"
-                                  : row.skip_month_start === "8"
-                                  ? "August"
-                                  : row.skip_month_start === "9"
-                                  ? "September"
-                                  : row.skip_month_start === "10"
-                                  ? "October"
-                                  : row.skip_month_start === "11"
-                                  ? "November"
-                                  : row.skip_month_start === "12"
-                                  ? "December"
-                                  : null}
-                              </span>
-                            );
-                          },
-                          editorTemplate: row => {
-                            return (
-                              <AlagehAutoComplete
-                                selector={{
-                                  name: "skip_month_start",
-                                  className: "select-fld",
-                                  value: row.skip_month_start,
-                                  dataSource: {
-                                    textField: "name",
-                                    valueField: "value",
-                                    data: GlobalVariables.MONTHS
-                                  },
-                                  others: {
-                                    errormessage: "Months - cannot be blank",
-                                    required: true
-                                  },
-                                  onChange: this.changeGridEditors.bind(
-                                    this,
-                                    row
-                                  )
-                                }}
-                              />
-                            );
-                          }
-                        },
+                        // {
+                        //   fieldName: "pay_months",
+                        //   label: (
+                        //     <AlgaehLabel
+                        //       label={{ forceLabel: "Pay Month Togther" }}
+                        //     />
+                        //   ),
+                        //   displayTemplate: row => {
+                        //     return <span>{row.pay_months}</span>;
+                        //   },
+                        //   editorTemplate: row => {
+                        //     return (
+                        //       <AlagehFormGroup
+                        //         textBox={{
+                        //           value: row.pay_months,
+                        //           className: "txt-fld",
+                        //           name: "pay_months",
+                        //           events: {
+                        //             onChange: this.changeGridEditors.bind(
+                        //               this,
+                        //               row
+                        //             )
+                        //           },
+                        //           others: {
+                        //             errormessage:
+                        //               "Pay Months - cannot be blank",
+                        //             required: true,
+                        //             type: "number"
+                        //           }
+                        //         }}
+                        //       />
+                        //     );
+                        //   }
+                        // },
+                        // {
+                        //   fieldName: "skip_year",
+                        //   label: (
+                        //     <AlgaehLabel
+                        //       label={{
+                        //         forceLabel: "Start Year of Skip/ Pay Loan"
+                        //       }}
+                        //     />
+                        //   ),
+                        //   displayTemplate: row => {
+                        //     return <span>{row.skip_year}</span>;
+                        //   },
+                        //   editorTemplate: row => {
+                        //     return (
+                        //       <AlagehFormGroup
+                        //         textBox={{
+                        //           value: row.skip_year,
+                        //           className: "txt-fld",
+                        //           name: "skip_year",
+                        //           events: {
+                        //             onChange: this.changeGridEditors.bind(
+                        //               this,
+                        //               row
+                        //             )
+                        //           },
+                        //           others: {
+                        //             errormessage: "Skip Year - cannot be blank",
+                        //             required: true,
+                        //             type: "number"
+                        //           }
+                        //         }}
+                        //       />
+                        //     );
+                        //   }
+                        // },
+                        // {
+                        //   fieldName: "skip_month_start",
+                        //   label: (
+                        //     <AlgaehLabel
+                        //       label={{
+                        //         forceLabel: "Start Month of Skip/ Pay Loan"
+                        //       }}
+                        //     />
+                        //   ),
+                        //   displayTemplate: row => {
+                        //     debugger;
+                        //     return (
+                        //       <span>
+                        //         {row.skip_month_start === "1"
+                        //           ? "January"
+                        //           : row.skip_month_start === "2"
+                        //           ? "February"
+                        //           : row.skip_month_start === "3"
+                        //           ? "March"
+                        //           : row.skip_month_start === "4"
+                        //           ? "April"
+                        //           : row.skip_month_start === "5"
+                        //           ? "May"
+                        //           : row.skip_month_start === "6"
+                        //           ? "June"
+                        //           : row.skip_month_start === "7"
+                        //           ? "July"
+                        //           : row.skip_month_start === "8"
+                        //           ? "August"
+                        //           : row.skip_month_start === "9"
+                        //           ? "September"
+                        //           : row.skip_month_start === "10"
+                        //           ? "October"
+                        //           : row.skip_month_start === "11"
+                        //           ? "November"
+                        //           : row.skip_month_start === "12"
+                        //           ? "December"
+                        //           : null}
+                        //       </span>
+                        //     );
+                        //   },
+                        //   editorTemplate: row => {
+                        //     return (
+                        //       <AlagehAutoComplete
+                        //         selector={{
+                        //           name: "skip_month_start",
+                        //           className: "select-fld",
+                        //           value: row.skip_month_start,
+                        //           dataSource: {
+                        //             textField: "name",
+                        //             valueField: "value",
+                        //             data: GlobalVariables.MONTHS
+                        //           },
+                        //           others: {
+                        //             errormessage: "Months - cannot be blank",
+                        //             required: true
+                        //           },
+                        //           onChange: this.changeGridEditors.bind(
+                        //             this,
+                        //             row
+                        //           )
+                        //         }}
+                        //       />
+                        //     );
+                        //   }
+                        // },
                         {
                           fieldName: "employee_code",
                           label: (
