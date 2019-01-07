@@ -573,6 +573,41 @@ class DeptUserDetails extends Component {
                         }
                       },
                       {
+                        fieldName: "dep_status",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "dep_status" }} />
+                        ),
+                        displayTemplate: row => {
+                          return row.dep_status === "A" ? "Active" : "Inactive";
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{}}
+                              selector={{
+                                name: "dep_status",
+                                className: "select-fld",
+                                value: row.dep_status,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: GlobalVariables.FORMAT_STATUS
+                                },
+                                onChange: onchangegridcolstatus.bind(
+                                  this,
+                                  this,
+                                  row
+                                ),
+                                others: {
+                                  errormessage: "Status - cannot be blank",
+                                  required: true
+                                }
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
                         fieldName: "sub_department_id",
                         label: (
                           <AlgaehLabel
@@ -793,23 +828,6 @@ class DeptUserDetails extends Component {
                               }}
                             />
                           );
-
-                          // let display =
-                          //   this.props.designations === undefined
-                          //     ? []
-                          //     : this.props.designations.filter(
-                          //         f =>
-                          //           f.hims_d_designation_id ===
-                          //           row.employee_designation_id
-                          //       );
-
-                          // return (
-                          //   <span>
-                          //     {display !== undefined && display.length !== 0
-                          //       ? display[0].designation
-                          //       : ""}
-                          //   </span>
-                          // );
                         }
                       },
                       {
@@ -892,42 +910,6 @@ class DeptUserDetails extends Component {
                                   : display[0].arabic_service_name
                                 : ""}
                             </span>
-                          );
-                        }
-                      },
-
-                      {
-                        fieldName: "dep_status",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "dep_status" }} />
-                        ),
-                        displayTemplate: row => {
-                          return row.dep_status === "A" ? "Active" : "Inactive";
-                        },
-                        editorTemplate: row => {
-                          return (
-                            <AlagehAutoComplete
-                              div={{}}
-                              selector={{
-                                name: "dep_status",
-                                className: "select-fld",
-                                value: row.dep_status,
-                                dataSource: {
-                                  textField: "name",
-                                  valueField: "value",
-                                  data: GlobalVariables.FORMAT_STATUS
-                                },
-                                onChange: onchangegridcolstatus.bind(
-                                  this,
-                                  this,
-                                  row
-                                ),
-                                others: {
-                                  errormessage: "Status - cannot be blank",
-                                  required: true
-                                }
-                              }}
-                            />
                           );
                         }
                       }

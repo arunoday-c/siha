@@ -193,6 +193,8 @@ class EmployeeMaster extends Component {
                   this.updateEmployeeTabs({
                     countrystates: states,
                     cities: cities.cities,
+                    precountrystates: states,
+                    precities: cities.cities,
                     present_state_id: this.state.personalDetails
                       .present_state_id,
                     present_city_id: this.state.personalDetails.present_city_id
@@ -200,6 +202,7 @@ class EmployeeMaster extends Component {
                 } else {
                   this.updateEmployeeTabs({
                     countrystates: states,
+                    precountrystates: states,
                     present_state_id: this.state.personalDetails
                       .present_state_id
                   });

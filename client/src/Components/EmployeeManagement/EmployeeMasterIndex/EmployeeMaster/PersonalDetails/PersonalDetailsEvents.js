@@ -188,11 +188,35 @@ const datehandle = ($this, ctrl, e) => {
 const sameAsPresent = ($this, e) => {
   let name = e.target.name;
   const _value = e.target.checked ? "Y" : "N";
+
+  let permanent_address = "";
+  let permanent_country_id = "";
+  let permanent_state_id = "";
+  let permanent_city_id = "";
+  if (_value === "Y") {
+    permanent_address = $this.state.present_address;
+    permanent_country_id = $this.state.present_country_id;
+    permanent_state_id = $this.state.present_state_id;
+    permanent_city_id = $this.state.present_city_id;
+  } else {
+    permanent_address = "";
+    permanent_country_id = "";
+    permanent_state_id = "";
+    permanent_city_id = "";
+  }
   $this.setState({
-    [name]: _value
+    [name]: _value,
+    permanent_address: permanent_address,
+    permanent_country_id: permanent_country_id,
+    permanent_state_id: permanent_state_id,
+    permanent_city_id: permanent_city_id
   });
   $this.props.EmpMasterIOputs.updateEmployeeTabs({
-    [name]: _value
+    [name]: _value,
+    permanent_address: permanent_address,
+    permanent_country_id: permanent_country_id,
+    permanent_state_id: permanent_state_id,
+    permanent_city_id: permanent_city_id
   });
 };
 
