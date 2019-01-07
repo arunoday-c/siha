@@ -14,6 +14,7 @@ export default class AlgaehFileUploader extends Component {
     super(props);
     this.state = {
       filePreview: noImage,
+      oldImage: undefined,
       showCropper: false,
       showProgress: false,
       showZoom: false,
@@ -139,6 +140,9 @@ export default class AlgaehFileUploader extends Component {
   // }
 
   dropZoneHandlerOnDrop(file) {
+    if (file.length === 0) {
+      return;
+    }
     const _file = file[0];
 
     const _fileExtention = _file.name.split(".");
@@ -177,12 +181,17 @@ export default class AlgaehFileUploader extends Component {
   onCloseCropperHandler(e) {
     const _from = e.target.getAttribute("from");
     if (_from === "crop")
-      this.setState({ showCropper: false, filePreview: "" });
+      this.setState({
+        showCropper: false,
+        filePreview: this.state.oldImage,
+        oldImage: undefined
+      });
     if (_from === "zoom") this.setState({ showZoom: false });
   }
   onCroppedHandler(e) {
     this.setState(
       {
+        oldImage: this.state.filePreview,
         showCropper: false,
         filePreview: this.cropperImage.crop(),
         croppingDone: true
@@ -265,7 +274,7 @@ export default class AlgaehFileUploader extends Component {
     const that = this;
     dataToSave = dataToSave || that.state.filePreview;
     fileExtention = fileExtention || that.state.fileExtention;
-    //debugger;
+    //
 
     const _pageName = getCookie("ScreenName").replace("/", "");
     const _needConvertion =
@@ -309,7 +318,8 @@ export default class AlgaehFileUploader extends Component {
           } else {
             that.setState({
               progressPercentage: percentCompleted,
-              showProgress: true
+              showProgress: true,
+              oldImage: undefined
             });
           }
         }
@@ -358,7 +368,12 @@ export default class AlgaehFileUploader extends Component {
   }
   webcamCaptureImage(e) {
     const short = this.webCam.getScreenshot();
-    this.setState({ filePreview: short, openWebCam: false, showCropper: true });
+    this.setState({
+      oldImage: this.state.filePreview,
+      filePreview: short,
+      openWebCam: false,
+      showCropper: true
+    });
   }
   implementWebCam() {
     if (this.state.openWebCam) {

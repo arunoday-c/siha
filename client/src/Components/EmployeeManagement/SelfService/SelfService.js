@@ -102,7 +102,10 @@ export default class SelfService extends Component {
               </span>
               <span>
                 <i className="fas fa-globe-asia" />{" "}
-                <b>{empDetails.present_country_name}</b>
+                <b>
+                  {empDetails.present_city_name},{empDetails.present_state_name}
+                  ,{empDetails.present_country_name}
+                </b>
               </span>
             </div>
             <div className="EmployeeDemographic">

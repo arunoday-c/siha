@@ -202,7 +202,9 @@ class EmployeeMasterIndex extends Component {
                         />
                       ),
                       others: {
+                        maxWidth: 90,
                         resizable: false,
+                        filterable: false,
                         style: { textAlign: "center" }
                       }
                     },
