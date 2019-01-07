@@ -24,7 +24,7 @@ app.use(compression());
 if (process.env.NODE_ENV == "production") {
   console.log("Running prod...." + _port);
   console.log(process.env.NODE_ENV);
-  app.use(express.static("client/build"));
+  app.use(express.static("build"));
 }
 
 // app.server = http.createServer(app);
