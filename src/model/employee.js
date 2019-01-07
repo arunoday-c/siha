@@ -3172,6 +3172,67 @@ let getEmployeesForMisED = (req, res, next) => {
     next(e);
   }
 };
+
+//created by irfan:
+let addMisEarnDedcToEmployees = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    if (input.employees != undefined && input.employees.length > 0) {
+      db.getConnection((error, connection) => {
+        if (error) {
+          next(error);
+        }
+
+        const insurtColumns = [
+          "employee_id",
+          "amount",
+          "created_by",
+          "updated_by"
+        ];
+
+        connection.query(
+          "INSERT INTO hims_f_miscellaneous_earning_deduction(" +
+            insurtColumns.join(",") +
+            ",`earning_deductions_id`,year,month,category,created_date,updated_date) VALUES ?",
+          [
+            jsonArrayToObject({
+              sampleInputObject: insurtColumns,
+              arrayObj: input.employees,
+              newFieldToInsert: [
+                input.earning_deduction_id,
+                input.year,
+                input.month,
+                input.category,
+                new Date(),
+                new Date()
+              ],
+              req: req
+            })
+          ],
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+            req.records = result;
+            next();
+          }
+        );
+      });
+    } else {
+      req.records = { invalid_input: true, message: "invalid input" };
+      next();
+      return;
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addEmployee,
   addEmployeeMaster,
@@ -3209,5 +3270,6 @@ module.exports = {
   getEmployeeDepartments,
   getPayrollComponents,
   getFamilyIdentification,
-  getEmployeesForMisED
+  getEmployeesForMisED,
+  addMisEarnDedcToEmployees
 };

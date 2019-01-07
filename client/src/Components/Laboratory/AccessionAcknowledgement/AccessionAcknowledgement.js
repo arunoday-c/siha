@@ -323,7 +323,7 @@ class AccessionAcknowledgement extends Component {
                 <div className="portlet-title">
                   <div className="caption">
                     <h3 className="caption-subject">
-                      Accession Acknowledgement List
+                      Specimen Acknowledgement List
                     </h3>
                   </div>
                 </div>

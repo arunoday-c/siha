@@ -10,7 +10,7 @@ import BillDetails from "./Components/BillDetails/BillDetails";
 import InsuranceSetup from "./Components/InsuranceSetup/InsuranceSetup";
 import SampleCollection from "./Components/Laboratory/SampleCollection/SampleCollection";
 import MedicalWorkbenchSetup from "./Components/MedicalWorkbenchSetup/MedicalWorkbenchSetup";
-import Workbench from "./Components/Workbench/Workbench";
+import Desk from "./Components/Workbench/Workbench";
 // import OrderingServices from "./Components/DoctorsWorkbench/OrderingServices/OrderingServices";
 import AccessionAcknowledgement from "./Components/Laboratory/AccessionAcknowledgement/AccessionAcknowledgement";
 import AdministrationSetup from "./Components/AdministrationSetup/AdminSetup";
@@ -105,10 +105,10 @@ const componts = (selectedLang, breadStyle) => {
     InsuranceSetup: <InsuranceSetup SelectLanguage={selectedLang} />,
     SampleCollection: <SampleCollection SelectLanguage={selectedLang} />,
     DoctorsWorkbench: (
-      <Workbench SelectLanguage={selectedLang} type="DoctorsWorkbench" />
+      <Desk SelectLanguage={selectedLang} type="DoctorsWorkbench" />
     ),
     NurseWorkbench: (
-      <Workbench SelectLanguage={selectedLang} type="NurseWorkbench" />
+      <Desk SelectLanguage={selectedLang} type="NurseWorkbench" />
     ),
     // OrderingServices: <OrderingServices SelectLanguage={selectedLang} />,
 

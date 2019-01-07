@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import "./SelfService.css";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
+import AlgaehFile from "../../Wrapper/algaehFileUpload";
+
 import Dashboard from "./Dashboard/Dashboard";
 import AttendanceRegularization from "./AttendanceRegularization/AttendanceRegularization";
 import ApplyLeave from "./ApplyLeave/ApplyLeave";
@@ -58,8 +60,20 @@ export default class SelfService extends Component {
         />
         <div className="row EmployeeProfile">
           <div className="EmployeeInfo-Top box-shadow-normal">
-            <div className="EmployeeImg box-shadow">
-              <img alt="Algaeh-HIS" src={employeeProfileImg} />
+            <div className="EmployeeImg">
+              {/* <img alt="Algaeh-HIS" src={employeeProfileImg} /> */}
+
+              <AlgaehFile
+                name="attach_photo"
+                accept="image/*"
+                textAltMessage={empDetails.full_name}
+                showActions={false}
+                serviceParameters={{
+                  uniqueID: empDetails.employee_code,
+                  destinationName: empDetails.employee_code,
+                  fileType: "Employees"
+                }}
+              />
             </div>
             <div className="EmployeeName">
               {/* <h6>SYED ADIL FAWAD NIZAMI</h6> */}
@@ -88,10 +102,21 @@ export default class SelfService extends Component {
               </span>
               <span>
                 <i className="fas fa-globe-asia" />{" "}
-                <b>{empDetails.present_country_name}</b>
+                <b>
+                  {empDetails.present_city_name},{empDetails.present_state_name}
+                  ,{empDetails.present_country_name}
+                </b>
               </span>
             </div>
             <div className="EmployeeDemographic">
+              <span>
+                Joining Date:{" "}
+                <b>
+                  {empDetails.date_of_joining !== null
+                    ? empDetails.date_of_joining
+                    : "------"}
+                </b>
+              </span>
               <span>
                 Reporting to:{" "}
                 <b>

@@ -14,6 +14,7 @@ export default class AlgaehFileUploader extends Component {
     super(props);
     this.state = {
       filePreview: noImage,
+      oldImage: undefined,
       showCropper: false,
       showProgress: false,
       showZoom: false,
@@ -139,6 +140,9 @@ export default class AlgaehFileUploader extends Component {
   // }
 
   dropZoneHandlerOnDrop(file) {
+    if (file.length === 0) {
+      return;
+    }
     const _file = file[0];
 
     const _fileExtention = _file.name.split(".");
@@ -177,12 +181,17 @@ export default class AlgaehFileUploader extends Component {
   onCloseCropperHandler(e) {
     const _from = e.target.getAttribute("from");
     if (_from === "crop")
-      this.setState({ showCropper: false, filePreview: "" });
+      this.setState({
+        showCropper: false,
+        filePreview: this.state.oldImage,
+        oldImage: undefined
+      });
     if (_from === "zoom") this.setState({ showZoom: false });
   }
   onCroppedHandler(e) {
     this.setState(
       {
+        oldImage: this.state.filePreview,
         showCropper: false,
         filePreview: this.cropperImage.crop(),
         croppingDone: true
@@ -265,7 +274,7 @@ export default class AlgaehFileUploader extends Component {
     const that = this;
     dataToSave = dataToSave || that.state.filePreview;
     fileExtention = fileExtention || that.state.fileExtention;
-    //debugger;
+    //
 
     const _pageName = getCookie("ScreenName").replace("/", "");
     const _needConvertion =
@@ -309,7 +318,8 @@ export default class AlgaehFileUploader extends Component {
           } else {
             that.setState({
               progressPercentage: percentCompleted,
-              showProgress: true
+              showProgress: true,
+              oldImage: undefined
             });
           }
         }
@@ -358,7 +368,12 @@ export default class AlgaehFileUploader extends Component {
   }
   webcamCaptureImage(e) {
     const short = this.webCam.getScreenshot();
-    this.setState({ filePreview: short, openWebCam: false, showCropper: true });
+    this.setState({
+      oldImage: this.state.filePreview,
+      filePreview: short,
+      openWebCam: false,
+      showCropper: true
+    });
   }
   implementWebCam() {
     if (this.state.openWebCam) {
@@ -410,7 +425,9 @@ export default class AlgaehFileUploader extends Component {
         : "No File Preview";
     const _showControl =
       this.props.showControl === undefined ? true : this.props.showControl;
-
+    const _showActions =
+      this.props.showActions === undefined ? true : this.props.showActions;
+    const _disabled = { disabled: !_showActions };
     if (_showControl) {
       return (
         <React.Fragment>
@@ -423,6 +440,7 @@ export default class AlgaehFileUploader extends Component {
               name={this.props.name + "_DropZone"}
               onDrop={this.dropZoneHandlerOnDrop.bind(this)}
               {..._accept}
+              {..._disabled}
             >
               <img
                 src={this.state.filePreview}
@@ -434,20 +452,23 @@ export default class AlgaehFileUploader extends Component {
               {this.implementProgressBar()}
             </Dropzone>
             {this.implementLoader()}
-            <div className="img-upload-actions">
-              <i
-                className="fas fa-paperclip"
-                onClick={this.showAttachmentHandler.bind(this)}
-              />
-              <i
-                className="fas fa-camera"
-                onClick={this.webCamHandler.bind(this)}
-              />
-              <i
-                className="fas fa-search-plus"
-                onClick={this.zoomHandler.bind(this)}
-              />
-            </div>
+
+            {_showActions ? (
+              <div className="img-upload-actions">
+                <i
+                  className="fas fa-paperclip"
+                  onClick={this.showAttachmentHandler.bind(this)}
+                />
+                <i
+                  className="fas fa-camera"
+                  onClick={this.webCamHandler.bind(this)}
+                />
+                <i
+                  className="fas fa-search-plus"
+                  onClick={this.zoomHandler.bind(this)}
+                />
+              </div>
+            ) : null}
           </div>
         </React.Fragment>
       );
