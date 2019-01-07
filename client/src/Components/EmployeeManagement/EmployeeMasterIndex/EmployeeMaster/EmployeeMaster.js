@@ -35,15 +35,15 @@ class EmployeeMaster extends Component {
   openTab(e) {
     var specified = e.currentTarget.getAttribute("algaehtabs");
 
+    if (specified === "CommissionSetup") {
+      AlgaehLoader({ show: true });
+    }
     var element = document.querySelectorAll("[algaehtabs]");
     for (var i = 0; i < element.length; i++) {
       element[i].classList.remove("active");
     }
     e.currentTarget.classList.add("active");
 
-    if (specified === "CommissionSetup") {
-      AlgaehLoader({ show: true });
-    }
     this.setState({
       pageDisplay: specified
     });
@@ -216,18 +216,12 @@ class EmployeeMaster extends Component {
     }
   }
   updateEmployeeTabs(options) {
-    debugger;
-    this.setState(
-      {
-        personalDetails: {
-          ...this.state.personalDetails,
-          ...options
-        }
-      },
-      () => {
-        debugger;
+    this.setState({
+      personalDetails: {
+        ...this.state.personalDetails,
+        ...options
       }
-    );
+    });
   }
 
   render() {

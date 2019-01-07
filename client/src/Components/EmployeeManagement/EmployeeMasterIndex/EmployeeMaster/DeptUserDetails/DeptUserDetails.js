@@ -777,22 +777,39 @@ class DeptUserDetails extends Component {
                           );
                         },
                         editorTemplate: row => {
-                          let display =
-                            this.props.designations === undefined
-                              ? []
-                              : this.props.designations.filter(
-                                  f =>
-                                    f.hims_d_designation_id ===
-                                    row.employee_designation_id
-                                );
-
                           return (
-                            <span>
-                              {display !== undefined && display.length !== 0
-                                ? display[0].designation
-                                : ""}
-                            </span>
+                            <AlagehAutoComplete
+                              div={{}}
+                              selector={{
+                                name: "employee_designation_id",
+                                className: "select-fld",
+                                value: row.employee_designation_id,
+                                dataSource: {
+                                  textField: "designation",
+                                  valueField: "hims_d_designation_id",
+                                  data: this.props.designations
+                                },
+                                onChange: onchangegridcol.bind(this, this, row)
+                              }}
+                            />
                           );
+
+                          // let display =
+                          //   this.props.designations === undefined
+                          //     ? []
+                          //     : this.props.designations.filter(
+                          //         f =>
+                          //           f.hims_d_designation_id ===
+                          //           row.employee_designation_id
+                          //       );
+
+                          // return (
+                          //   <span>
+                          //     {display !== undefined && display.length !== 0
+                          //       ? display[0].designation
+                          //       : ""}
+                          //   </span>
+                          // );
                         }
                       },
                       {
