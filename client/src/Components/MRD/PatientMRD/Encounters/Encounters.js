@@ -453,7 +453,7 @@ class Encounters extends Component {
                                       {row.lab_ord_status === "O"
                                         ? "Ordered"
                                         : row.lab_ord_status === "CL"
-                                        ? "Sample Collected"
+                                        ? "Specimen Collected"
                                         : row.lab_ord_status === "CN"
                                         ? "Test Cancelled"
                                         : row.lab_ord_status === "CF"

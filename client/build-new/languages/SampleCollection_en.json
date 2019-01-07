@@ -16,7 +16,7 @@
   "case_type": "Case Type",
   "action": "Actions",
   "number_of_tests": "Number of Tests",
-  "sample_collection": "Sample Collection",
+  "sample_collection": "Specimen Collection",
   "collected_by": "Collected By",
   "collected_date": "Collected Date & Time",
   "collected": "Collect",
@@ -24,7 +24,7 @@
   "billed": "Billed/Not Billed",
 
   "btnclose": "Close",
-  "form_name": "Sample Collection",
+  "form_name": "Specimen Collection",
   "form_home": "Home",
   "location_id": "Lab Location"
 }

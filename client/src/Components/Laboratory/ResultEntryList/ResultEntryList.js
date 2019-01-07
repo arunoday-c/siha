@@ -405,7 +405,7 @@ class ResultEntryList extends Component {
                         fieldName: "sample_status",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Sample Status" }}
+                            label={{ forceLabel: "Specimen Status" }}
                           />
                         ),
                         displayTemplate: row => {

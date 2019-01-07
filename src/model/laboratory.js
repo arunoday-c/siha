@@ -528,7 +528,7 @@ let getTestAnalytes = (req, res, next) => {
   }
 };
 
-//created by irfan: to update Lab Sample Status updateLabSampleStatus
+//created by irfan: to update Lab Specimen Status updateLabSampleStatus
 let updateLabSampleStatus = (req, res, next) => {
   try {
     debugFunction("updateLabSampleStatus");

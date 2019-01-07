@@ -89,7 +89,7 @@ class SampleCollectionPatient extends PureComponent {
                   <div className="popupHeader">
                     <div className="row">
                       <div className="col-lg-8">
-                        <h4>Sample Collections</h4>
+                        <h4>Specimen Collections</h4>
                       </div>
                       <div className="col-lg-4">
                         <button
