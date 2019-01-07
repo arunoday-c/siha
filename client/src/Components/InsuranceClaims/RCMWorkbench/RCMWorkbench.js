@@ -228,7 +228,7 @@ class RCMWorkbench extends Component {
         <BreadCrumb
           title={
             <AlgaehLabel
-              label={{ forceLabel: "RCM Workbench", align: "ltr" }}
+              label={{ forceLabel: "RCM Desk", align: "ltr" }}
             />
           }
           breadStyle={this.props.breadStyle}
@@ -237,7 +237,7 @@ class RCMWorkbench extends Component {
               pageName: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "RCM Workbench",
+                    forceLabel: "RCM Desk",
                     align: "ltr"
                   }}
                 />

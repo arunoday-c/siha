@@ -24,7 +24,7 @@ import {
   AlgaehDateHandler,
   AlgaehModalPopUp
 } from "../../Wrapper/algaehWrapper";
-
+import Enumerable from "linq";
 import {
   FORMAT_PRIORITY,
   FORMAT_TEST_STATUS
@@ -323,7 +323,7 @@ class AccessionAcknowledgement extends Component {
                 <div className="portlet-title">
                   <div className="caption">
                     <h3 className="caption-subject">
-                      Accession Acknowledgement List
+                      Specimen Acknowledgement List
                     </h3>
                   </div>
                 </div>
@@ -545,7 +545,9 @@ class AccessionAcknowledgement extends Component {
                     ]}
                     keyId="patient_code"
                     dataSource={{
-                      data: this.state.sample_collection
+                      data: Enumerable.from(this.state.sample_collection)
+                        .where(w => w.status !== "O")
+                        .toArray()
                     }}
                     noDataText="No data available for selected period"
                     paging={{ page: 0, rowsPerPage: 10 }}

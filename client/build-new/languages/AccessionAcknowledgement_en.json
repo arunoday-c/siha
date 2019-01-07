@@ -16,13 +16,13 @@
   "case_type": "Case Type",
   "action": "Actions",
   "number_of_tests": "Number of Tests",
-  "sample_collection": "Accession Acknowledgement",
+  "sample_collection": "Specimen Acknowledgement",
   "collected_by": "Collected By",
   "collected_date": "Collected Date & Time",
   "collected": "Collect",
 
   "btnclose": "Close",
-  "form_name": "Accession Acknowledgement",
+  "form_name": "Specimen Acknowledgement",
   "form_home": "Home",
   "location_id": "Lab Location"
 }

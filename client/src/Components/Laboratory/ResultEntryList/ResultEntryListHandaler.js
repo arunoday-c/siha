@@ -124,6 +124,7 @@ const getSampleCollectionDetails = $this => {
       //   })
       //   .toArray();
 
+      debugger;
       $this.setState({ sample_collection: data });
     }
   });
