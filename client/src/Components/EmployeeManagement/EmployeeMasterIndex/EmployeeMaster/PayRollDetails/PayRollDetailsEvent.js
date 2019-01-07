@@ -1,6 +1,7 @@
 import Enumerable from "linq";
 // import extend from "extend";
 import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
+import { AlgaehValidation } from "../../../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
 
 const earntexthandle = ($this, e) => {
@@ -51,120 +52,139 @@ const numberSet = ($this, e) => {
 
 const AddEarnComponent = ($this, e) => {
   debugger;
-  let earningComponents = $this.state.earningComponents;
-  let insertearnComp = $this.state.insertearnComp;
 
-  earningComponents.push({
-    employee_id: $this.state.hims_d_employee_id,
-    earnings_id: $this.state.earning_id,
-    amount: $this.state.earn_amount,
-    allocate: $this.state.allocate,
-    calculation_method: $this.state.earn_calculation_method,
-    calculation_type: $this.state.earn_calculation_type
-  });
+  AlgaehValidation({
+    alertTypeIcon: "warning",
+    querySelector: "data-validate='EarnComponent'",
+    onSuccess: () => {
+      let earningComponents = $this.state.earningComponents;
+      let insertearnComp = $this.state.insertearnComp;
 
-  insertearnComp.push({
-    employee_id: $this.state.hims_d_employee_id,
-    earnings_id: $this.state.earning_id,
-    amount: $this.state.earn_amount,
-    allocate: $this.state.allocate,
-    calculation_method: $this.state.earn_calculation_method,
-    calculation_type: $this.state.earn_calculation_type
-  });
+      earningComponents.push({
+        employee_id: $this.state.hims_d_employee_id,
+        earnings_id: $this.state.earning_id,
+        amount: $this.state.earn_amount,
+        allocate: $this.state.allocate,
+        calculation_method: $this.state.earn_calculation_method,
+        calculation_type: $this.state.earn_calculation_type
+      });
 
-  $this.setState(
-    {
-      earningComponents: earningComponents,
-      insertearnComp: insertearnComp,
-      earning_id: null,
-      earn_amount: null
-    },
-    () => {
-      calculationTotals($this);
+      insertearnComp.push({
+        employee_id: $this.state.hims_d_employee_id,
+        earnings_id: $this.state.earning_id,
+        amount: $this.state.earn_amount,
+        allocate: $this.state.allocate,
+        calculation_method: $this.state.earn_calculation_method,
+        calculation_type: $this.state.earn_calculation_type
+      });
+
+      $this.setState(
+        {
+          earningComponents: earningComponents,
+          insertearnComp: insertearnComp,
+          earning_id: null,
+          earn_amount: null
+        },
+        () => {
+          calculationTotals($this);
+        }
+      );
+      $this.props.EmpMasterIOputs.updateEmployeeTabs({
+        earningComponents: earningComponents,
+        insertearnComp: insertearnComp
+      });
     }
-  );
-  $this.props.EmpMasterIOputs.updateEmployeeTabs({
-    earningComponents: earningComponents,
-    insertearnComp: insertearnComp
   });
 };
 
 const AddDeductionComponent = ($this, e) => {
-  let deductioncomponents = $this.state.deductioncomponents;
-  let insertDeductionComp = $this.state.insertDeductionComp;
+  AlgaehValidation({
+    alertTypeIcon: "warning",
+    querySelector: "data-validate='DeductionComponent'",
+    onSuccess: () => {
+      let deductioncomponents = $this.state.deductioncomponents;
+      let insertDeductionComp = $this.state.insertDeductionComp;
 
-  deductioncomponents.push({
-    employee_id: $this.state.hims_d_employee_id,
-    deductions_id: $this.state.deducation_id,
-    amount: $this.state.dedection_amount,
-    allocate: $this.state.allocate,
-    calculation_method: $this.state.deduct_calculation_method,
-    calculation_type: $this.state.deduct_calculation_type
-  });
+      deductioncomponents.push({
+        employee_id: $this.state.hims_d_employee_id,
+        deductions_id: $this.state.deducation_id,
+        amount: $this.state.dedection_amount,
+        allocate: $this.state.allocate,
+        calculation_method: $this.state.deduct_calculation_method,
+        calculation_type: $this.state.deduct_calculation_type
+      });
 
-  insertDeductionComp.push({
-    employee_id: $this.state.hims_d_employee_id,
-    deductions_id: $this.state.deducation_id,
-    amount: $this.state.dedection_amount,
-    allocate: $this.state.allocate,
-    calculation_method: $this.state.deduct_calculation_method,
-    calculation_type: $this.state.deduct_calculation_type
-  });
+      insertDeductionComp.push({
+        employee_id: $this.state.hims_d_employee_id,
+        deductions_id: $this.state.deducation_id,
+        amount: $this.state.dedection_amount,
+        allocate: $this.state.allocate,
+        calculation_method: $this.state.deduct_calculation_method,
+        calculation_type: $this.state.deduct_calculation_type
+      });
 
-  $this.setState(
-    {
-      deductioncomponents: deductioncomponents,
-      insertDeductionComp: insertDeductionComp,
-      deducation_id: null,
-      dedection_amount: null
-    },
-    () => {
-      calculationTotals($this);
+      $this.setState(
+        {
+          deductioncomponents: deductioncomponents,
+          insertDeductionComp: insertDeductionComp,
+          deducation_id: null,
+          dedection_amount: null
+        },
+        () => {
+          calculationTotals($this);
+        }
+      );
+      $this.props.EmpMasterIOputs.updateEmployeeTabs({
+        deductioncomponents: deductioncomponents,
+        insertDeductionComp: insertDeductionComp
+      });
     }
-  );
-  $this.props.EmpMasterIOputs.updateEmployeeTabs({
-    deductioncomponents: deductioncomponents,
-    insertDeductionComp: insertDeductionComp
   });
 };
 
 const AddContributionComponent = ($this, e) => {
-  let contributioncomponents = $this.state.contributioncomponents;
-  let insertContributeComp = $this.state.insertContributeComp;
+  AlgaehValidation({
+    alertTypeIcon: "warning",
+    querySelector: "data-validate='ContributeComponent'",
+    onSuccess: () => {
+      let contributioncomponents = $this.state.contributioncomponents;
+      let insertContributeComp = $this.state.insertContributeComp;
 
-  contributioncomponents.push({
-    employee_id: $this.state.hims_d_employee_id,
-    contributions_id: $this.state.contribution_id,
-    amount: $this.state.contribution_amount,
-    allocate: $this.state.allocate,
-    calculation_method: $this.state.contribut_calculation_method,
-    calculation_type: $this.state.contribut_calculation_type
-  });
+      contributioncomponents.push({
+        employee_id: $this.state.hims_d_employee_id,
+        contributions_id: $this.state.contribution_id,
+        amount: $this.state.contribution_amount,
+        allocate: $this.state.allocate,
+        calculation_method: $this.state.contribut_calculation_method,
+        calculation_type: $this.state.contribut_calculation_type
+      });
 
-  insertContributeComp.push({
-    employee_id: $this.state.hims_d_employee_id,
-    contributions_id: $this.state.contribution_id,
-    amount: $this.state.contribution_amount,
-    allocate: $this.state.allocate,
-    calculation_method: $this.state.contribut_calculation_method,
-    calculation_type: $this.state.contribut_calculation_type
-  });
+      insertContributeComp.push({
+        employee_id: $this.state.hims_d_employee_id,
+        contributions_id: $this.state.contribution_id,
+        amount: $this.state.contribution_amount,
+        allocate: $this.state.allocate,
+        calculation_method: $this.state.contribut_calculation_method,
+        calculation_type: $this.state.contribut_calculation_type
+      });
 
-  $this.setState(
-    {
-      contributioncomponents: contributioncomponents,
-      insertContributeComp: insertContributeComp,
-      contribution_id: null,
-      contribution_amount: null
-    },
-    () => {
-      calculationTotals($this);
+      $this.setState(
+        {
+          contributioncomponents: contributioncomponents,
+          insertContributeComp: insertContributeComp,
+          contribution_id: null,
+          contribution_amount: null
+        },
+        () => {
+          calculationTotals($this);
+        }
+      );
+
+      $this.props.EmpMasterIOputs.updateEmployeeTabs({
+        contributioncomponents: contributioncomponents,
+        insertContributeComp: insertContributeComp
+      });
     }
-  );
-
-  $this.props.EmpMasterIOputs.updateEmployeeTabs({
-    contributioncomponents: contributioncomponents,
-    insertContributeComp: insertContributeComp
   });
 };
 

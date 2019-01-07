@@ -35,15 +35,15 @@ class EmployeeMaster extends Component {
   openTab(e) {
     var specified = e.currentTarget.getAttribute("algaehtabs");
 
+    if (specified === "CommissionSetup") {
+      AlgaehLoader({ show: true });
+    }
     var element = document.querySelectorAll("[algaehtabs]");
     for (var i = 0; i < element.length; i++) {
       element[i].classList.remove("active");
     }
     e.currentTarget.classList.add("active");
 
-    if (specified === "CommissionSetup") {
-      AlgaehLoader({ show: true });
-    }
     this.setState({
       pageDisplay: specified
     });
@@ -193,6 +193,8 @@ class EmployeeMaster extends Component {
                   this.updateEmployeeTabs({
                     countrystates: states,
                     cities: cities.cities,
+                    precountrystates: states,
+                    precities: cities.cities,
                     present_state_id: this.state.personalDetails
                       .present_state_id,
                     present_city_id: this.state.personalDetails.present_city_id
@@ -200,6 +202,7 @@ class EmployeeMaster extends Component {
                 } else {
                   this.updateEmployeeTabs({
                     countrystates: states,
+                    precountrystates: states,
                     present_state_id: this.state.personalDetails
                       .present_state_id
                   });
@@ -216,18 +219,12 @@ class EmployeeMaster extends Component {
     }
   }
   updateEmployeeTabs(options) {
-    debugger;
-    this.setState(
-      {
-        personalDetails: {
-          ...this.state.personalDetails,
-          ...options
-        }
-      },
-      () => {
-        debugger;
+    this.setState({
+      personalDetails: {
+        ...this.state.personalDetails,
+        ...options
       }
-    );
+    });
   }
 
   render() {

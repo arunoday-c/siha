@@ -374,9 +374,9 @@ class PersonalDetails extends PureComponent {
                         isImp: false
                       }}
                       selector={{
-                        name: "nationality_id",
+                        name: "nationality",
                         className: "select-fld",
-                        value: this.state.nationality_id,
+                        value: this.state.nationality,
                         dataSource: {
                           textField:
                             this.state.selectedLang === "en"
