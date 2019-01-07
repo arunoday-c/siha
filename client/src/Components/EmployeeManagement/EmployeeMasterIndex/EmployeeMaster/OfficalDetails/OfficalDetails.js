@@ -13,7 +13,8 @@ import {
   texthandle,
   datehandle,
   accomodationProvided,
-  employeeStatusHandler
+  employeeStatusHandler,
+  dateFormater
 } from "./OfficalDetailsEvent.js";
 import { AlgaehActions } from "../../../../../actions/algaehActions";
 import { withRouter } from "react-router-dom";
@@ -177,10 +178,10 @@ class OfficalDetails extends PureComponent {
                     }}
                   />
                   <h6>
-                    {this.state.reliving_date === undefined ||
-                    this.state.reliving_date === null
+                    {this.state.reliving_date === null ||
+                    this.state.reliving_date === undefined
                       ? "DD/MM/YYYY"
-                      : this.state.reliving_date.toLocaleDateString()}
+                      : dateFormater(this, this.state.reliving_date)}
                   </h6>
                 </div>
                 <AlgaehDateHandler
@@ -224,10 +225,10 @@ class OfficalDetails extends PureComponent {
                     }}
                   />
                   <h6>
-                    {this.state.inactive_date === undefined ||
-                    this.state.inactive_date === null
+                    {this.state.inactive_date === null ||
+                    this.state.inactive_date === undefined
                       ? "DD/MM/YYYY"
-                      : this.state.inactive_date.toLocaleDateString()}
+                      : dateFormater(this, this.state.inactive_date)}
                   </h6>
                 </div>
               </div>

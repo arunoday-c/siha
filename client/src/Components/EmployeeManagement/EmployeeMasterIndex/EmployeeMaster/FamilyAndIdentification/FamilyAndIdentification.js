@@ -34,37 +34,19 @@ class FamilyAndIdentification extends PureComponent {
     super(props);
     this.state = {
       idDetails: [],
+      deleteIdDetails: [],
       dependentDetails: []
     };
   }
 
-  getEmployeeIdentification() {
-    algaehApiCall({
-      uri: "/employee/getEmployeeIdentification",
-      method: "GET",
-      data: {
-        employee_id: this.state.hims_d_employee_id
-      },
-      onSuccess: res => {
-        if (res.data.success) {
-          this.setState({
-            employee_ids: res.data.records
-          });
-        }
-      },
-      onFailure: err => {}
-    });
-  }
-
-  componentWillMount() {
-    let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
-    this.setState({ ...this.state, ...InputOutput });
-  }
-
   componentDidMount() {
+    debugger;
     let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
     this.setState({ ...this.state, ...InputOutput }, () => {
-      if (this.state.hims_d_employee_id !== null) {
+      if (
+        this.state.hims_d_employee_id !== null &&
+        this.state.dataFamIdsExists === false
+      ) {
         getFamilyIdentification(this);
       }
     });
@@ -81,7 +63,12 @@ class FamilyAndIdentification extends PureComponent {
     }
   }
 
+  componentWillReceiveProps() {
+    debugger;
+  }
+
   render() {
+    debugger;
     return (
       <React.Fragment>
         <div className="hptl-phase1-add-employee-form popRightDiv">
@@ -312,11 +299,8 @@ class FamilyAndIdentification extends PureComponent {
                         }
                       }
                     ]}
-                    keyId="service_code"
-                    dataSource={{
-                      data: this.state.idDetails
-                      //data: []
-                    }}
+                    keyId=""
+                    dataSource={{ data: this.state.idDetails }}
                     isEditable={true}
                     paging={{ page: 0, rowsPerPage: 5 }}
                     events={{
@@ -548,10 +532,8 @@ class FamilyAndIdentification extends PureComponent {
                         }
                       }
                     ]}
-                    keyId="dependent_identity_no"
-                    dataSource={{
-                      data: this.state.dependentDetails
-                    }}
+                    keyId="dependent_type"
+                    dataSource={{ data: this.state.dependentDetails }}
                     isEditable={true}
                     paging={{ page: 0, rowsPerPage: 5 }}
                     events={{

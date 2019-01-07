@@ -155,9 +155,9 @@ class DeptUserDetails extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.setState(nextProps.EmpMasterIOputs);
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   this.setState(nextProps.EmpMasterIOputs.state.personalDetails);
+  // }
 
   render() {
     const _depservices = Enumerable.from(this.props.depservices)
@@ -315,9 +315,9 @@ class DeptUserDetails extends Component {
                     isImp: true
                   }}
                   selector={{
-                    name: "hims_d_hospital_id",
+                    name: "hospital_id",
                     className: "select-fld",
-                    value: this.state.hims_d_hospital_id,
+                    value: this.state.hospital_id,
                     dataSource: {
                       textField: "hospital_name",
                       valueField: "hims_d_hospital_id",

@@ -14,10 +14,11 @@ import RulesDetails from "./RulesDetails/RulesDetails";
 import { AlgaehLabel, Modal } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 // import MyContext from "../../../../utils/MyContext";
-
+import Enumerable from "linq";
 import EmpMasterIOputs from "../../../../Models/EmployeeMaster";
 import { getCookie } from "../../../../utils/algaehApiCall";
 import { InsertUpdateEmployee, ClearEmployee } from "./EmployeeMasterEvents";
+import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 
 class EmployeeMaster extends Component {
   constructor(props) {
@@ -34,26 +35,18 @@ class EmployeeMaster extends Component {
   openTab(e) {
     var specified = e.currentTarget.getAttribute("algaehtabs");
 
-    // if (
-    //   this.state.hims_d_employee_id === null &&
-    //   specified !== "OfficalDetails" &&
-    //   specified !== "PersonalDetails"
-    // ) {
-    // swalMessage({
-    //   title: "Please fill the basic details to proceed",
-    //   type: "warning"
-    // });
-    //  } else {
     var element = document.querySelectorAll("[algaehtabs]");
     for (var i = 0; i < element.length; i++) {
       element[i].classList.remove("active");
     }
     e.currentTarget.classList.add("active");
 
+    if (specified === "CommissionSetup") {
+      AlgaehLoader({ show: true });
+    }
     this.setState({
       pageDisplay: specified
     });
-    //}
   }
 
   SideMenuBarOpen(sidOpen) {
@@ -160,13 +153,62 @@ class EmployeeMaster extends Component {
   }
 
   componentWillReceiveProps(newProps) {
+    debugger;
     if (newProps.editEmployee) {
       let IOputs = newProps.employeeDetailsPop;
       IOputs.Applicable = IOputs.isdoctor === "Y" ? true : false;
       IOputs.samechecked = IOputs.same_address === "Y" ? true : false;
-      this.setState({
-        personalDetails: { ...this.state.personalDetails, ...IOputs }
-      });
+      this.setState(
+        {
+          personalDetails: { ...this.state.personalDetails, ...IOputs }
+        },
+        () => {
+          if (this.state.personalDetails.present_country_id === null) return;
+          if (
+            this.state.personalDetails.present_country_id !==
+            newProps.present_country_id
+          ) {
+            let country = Enumerable.from(this.props.countries)
+              .where(
+                w =>
+                  w.hims_d_country_id ===
+                  this.state.personalDetails.present_country_id
+              )
+              .firstOrDefault();
+
+            let states = country !== undefined ? country.states : [];
+            if (this.props.countries !== undefined && states.length !== 0) {
+              if (
+                newProps.present_state_id !==
+                this.state.personalDetails.present_state_id
+              ) {
+                let cities = Enumerable.from(states)
+                  .where(
+                    w =>
+                      w.hims_d_state_id ===
+                      this.state.personalDetails.present_state_id
+                  )
+                  .firstOrDefault();
+                if (cities !== undefined) {
+                  this.updateEmployeeTabs({
+                    countrystates: states,
+                    cities: cities.cities,
+                    present_state_id: this.state.personalDetails
+                      .present_state_id,
+                    present_city_id: this.state.personalDetails.present_city_id
+                  });
+                } else {
+                  this.updateEmployeeTabs({
+                    countrystates: states,
+                    present_state_id: this.state.personalDetails
+                      .present_state_id
+                  });
+                }
+              }
+            }
+          }
+        }
+      );
     } else {
       this.setState({
         personalDetails: { ...EmpMasterIOputs.inputParam() }
@@ -175,37 +217,17 @@ class EmployeeMaster extends Component {
   }
   updateEmployeeTabs(options) {
     debugger;
-    // if (
-    //   this.state.pageDisplay === "PersonalDetails" ||
-    //   this.state.pageDisplay === "OfficalDetails"
-    // ) {
-
-    // }
-
-    this.setState({
-      personalDetails: {
-        ...this.state.personalDetails,
-        ...options
+    this.setState(
+      {
+        personalDetails: {
+          ...this.state.personalDetails,
+          ...options
+        }
+      },
+      () => {
+        debugger;
       }
-    });
-
-    // else if (this.state.pageDisplay === "DeptUserDetails") {
-    //   debugger;
-    //   this.setState({
-    //     department_and_other: {
-    //       ...this.state.department_and_other,
-    //       ...options
-    //     }
-    //   });
-    // } else if (this.state.pageDisplay === "PayRollDetails") {
-    //   debugger;
-    //   this.setState({
-    //     payroll: {
-    //       ...this.state.payroll,
-    //       ...options
-    //     }
-    //   });
-    // }
+    );
   }
 
   render() {
