@@ -52,14 +52,18 @@ class PayRollDetails extends PureComponent {
       contribut_calculation_method: null,
       earn_calculation_type: null,
       deduct_calculation_type: null,
-      contribut_calculation_type: null
+      contribut_calculation_type: null,
+      dataExists: false
     };
   }
 
   componentDidMount() {
     let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
     this.setState({ ...this.state, ...InputOutput }, () => {
-      if (this.state.hims_d_employee_id !== null) {
+      if (
+        this.state.hims_d_employee_id !== null &&
+        this.state.dataPayrolExists === false
+      ) {
         getPayrollComponents(this);
       }
     });
@@ -79,6 +83,7 @@ class PayRollDetails extends PureComponent {
   }
 
   render() {
+    debugger;
     const earnings = Enumerable.from(this.props.payrollcomponents)
       .where(w => w.component_category === "E")
       .toArray();
@@ -113,7 +118,10 @@ class PayRollDetails extends PureComponent {
                   </label>
                 </div>
               </div>
-              <div className="row paddin-bottom-5">
+              <div
+                className="row paddin-bottom-5"
+                data-validate="EarnComponent"
+              >
                 <AlagehAutoComplete
                   div={{ className: "col" }}
                   label={{
@@ -137,7 +145,8 @@ class PayRollDetails extends PureComponent {
                   div={{ className: "col" }}
                   label={{
                     forceLabel: "Amount",
-                    isImp: true
+                    isImp:
+                      this.state.earn_calculation_method === "FO" ? false : true
                   }}
                   textBox={{
                     className: "txt-fld",
@@ -296,7 +305,10 @@ class PayRollDetails extends PureComponent {
               <h5>
                 <span>Salary Dedection Breakup</span>
               </h5>
-              <div className="row paddin-bottom-5">
+              <div
+                className="row paddin-bottom-5"
+                data-validate="DeductionComponent"
+              >
                 <AlagehAutoComplete
                   div={{ className: "col" }}
                   label={{
@@ -320,10 +332,17 @@ class PayRollDetails extends PureComponent {
                   div={{ className: "col" }}
                   label={{
                     forceLabel: "Amount",
-                    isImp: true
+                    isImp:
+                      this.state.deduct_calculation_method === "FO"
+                        ? false
+                        : true
                   }}
                   textBox={{
                     className: "txt-fld",
+                    decimal: {
+                      allowNegative: false,
+                      thousandSeparator: ","
+                    },
                     name: "dedection_amount",
                     value: this.state.dedection_amount,
                     number: {
@@ -394,7 +413,30 @@ class PayRollDetails extends PureComponent {
                       },
                       {
                         fieldName: "amount",
-                        label: <AlgaehLabel label={{ forceLabel: "Amount" }} />
+                        label: <AlgaehLabel label={{ forceLabel: "Amount" }} />,
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{}}
+                              textBox={{
+                                number: {
+                                  allowNegative: false,
+                                  thousandSeparator: ","
+                                },
+                                value: row.amount,
+                                className: "txt-fld",
+                                name: "amount",
+                                events: {
+                                  onChange: onchangegridcol.bind(
+                                    this,
+                                    this,
+                                    row
+                                  )
+                                }
+                              }}
+                            />
+                          );
+                        }
                       }
                     ]}
                     keyId=""
@@ -412,7 +454,10 @@ class PayRollDetails extends PureComponent {
               <h5>
                 <span>Employee Contribution Breakup</span>
               </h5>
-              <div className="row paddin-bottom-5">
+              <div
+                className="row paddin-bottom-5"
+                data-validate="ContributeComponent"
+              >
                 <AlagehAutoComplete
                   div={{ className: "col" }}
                   label={{
@@ -436,11 +481,18 @@ class PayRollDetails extends PureComponent {
                   div={{ className: "col" }}
                   label={{
                     forceLabel: "Amount",
-                    isImp: true
+                    isImp:
+                      this.state.contribut_calculation_method === "FO"
+                        ? false
+                        : true
                   }}
                   textBox={{
                     className: "txt-fld",
                     name: "contribution_amount",
+                    decimal: {
+                      allowNegative: false,
+                      thousandSeparator: ","
+                    },
                     value: this.state.contribution_amount,
                     number: {
                       allowNegative: false,
@@ -513,7 +565,30 @@ class PayRollDetails extends PureComponent {
                       },
                       {
                         fieldName: "amount",
-                        label: <AlgaehLabel label={{ forceLabel: "Amount" }} />
+                        label: <AlgaehLabel label={{ forceLabel: "Amount" }} />,
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{}}
+                              textBox={{
+                                number: {
+                                  allowNegative: false,
+                                  thousandSeparator: ","
+                                },
+                                value: row.amount,
+                                className: "txt-fld",
+                                name: "amount",
+                                events: {
+                                  onChange: onchangegridcol.bind(
+                                    this,
+                                    this,
+                                    row
+                                  )
+                                }
+                              }}
+                            />
+                          );
+                        }
                       }
                     ]}
                     keyId=""

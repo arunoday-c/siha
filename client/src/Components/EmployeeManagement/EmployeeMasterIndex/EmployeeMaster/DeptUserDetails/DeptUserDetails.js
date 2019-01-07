@@ -155,9 +155,9 @@ class DeptUserDetails extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.setState(nextProps.EmpMasterIOputs);
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   this.setState(nextProps.EmpMasterIOputs.state.personalDetails);
+  // }
 
   render() {
     const _depservices = Enumerable.from(this.props.depservices)
@@ -315,9 +315,9 @@ class DeptUserDetails extends Component {
                     isImp: true
                   }}
                   selector={{
-                    name: "hims_d_hospital_id",
+                    name: "hospital_id",
                     className: "select-fld",
-                    value: this.state.hims_d_hospital_id,
+                    value: this.state.hospital_id,
                     dataSource: {
                       textField: "hospital_name",
                       valueField: "hims_d_hospital_id",
@@ -573,6 +573,41 @@ class DeptUserDetails extends Component {
                         }
                       },
                       {
+                        fieldName: "dep_status",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "dep_status" }} />
+                        ),
+                        displayTemplate: row => {
+                          return row.dep_status === "A" ? "Active" : "Inactive";
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{}}
+                              selector={{
+                                name: "dep_status",
+                                className: "select-fld",
+                                value: row.dep_status,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: GlobalVariables.FORMAT_STATUS
+                                },
+                                onChange: onchangegridcolstatus.bind(
+                                  this,
+                                  this,
+                                  row
+                                ),
+                                others: {
+                                  errormessage: "Status - cannot be blank",
+                                  required: true
+                                }
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
                         fieldName: "sub_department_id",
                         label: (
                           <AlgaehLabel
@@ -777,21 +812,21 @@ class DeptUserDetails extends Component {
                           );
                         },
                         editorTemplate: row => {
-                          let display =
-                            this.props.designations === undefined
-                              ? []
-                              : this.props.designations.filter(
-                                  f =>
-                                    f.hims_d_designation_id ===
-                                    row.employee_designation_id
-                                );
-
                           return (
-                            <span>
-                              {display !== undefined && display.length !== 0
-                                ? display[0].designation
-                                : ""}
-                            </span>
+                            <AlagehAutoComplete
+                              div={{}}
+                              selector={{
+                                name: "employee_designation_id",
+                                className: "select-fld",
+                                value: row.employee_designation_id,
+                                dataSource: {
+                                  textField: "designation",
+                                  valueField: "hims_d_designation_id",
+                                  data: this.props.designations
+                                },
+                                onChange: onchangegridcol.bind(this, this, row)
+                              }}
+                            />
                           );
                         }
                       },
@@ -875,42 +910,6 @@ class DeptUserDetails extends Component {
                                   : display[0].arabic_service_name
                                 : ""}
                             </span>
-                          );
-                        }
-                      },
-
-                      {
-                        fieldName: "dep_status",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "dep_status" }} />
-                        ),
-                        displayTemplate: row => {
-                          return row.dep_status === "A" ? "Active" : "Inactive";
-                        },
-                        editorTemplate: row => {
-                          return (
-                            <AlagehAutoComplete
-                              div={{}}
-                              selector={{
-                                name: "dep_status",
-                                className: "select-fld",
-                                value: row.dep_status,
-                                dataSource: {
-                                  textField: "name",
-                                  valueField: "value",
-                                  data: GlobalVariables.FORMAT_STATUS
-                                },
-                                onChange: onchangegridcolstatus.bind(
-                                  this,
-                                  this,
-                                  row
-                                ),
-                                others: {
-                                  errormessage: "Status - cannot be blank",
-                                  required: true
-                                }
-                              }}
-                            />
                           );
                         }
                       }

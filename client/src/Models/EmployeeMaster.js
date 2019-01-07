@@ -53,8 +53,11 @@ export default {
       serviceComm: [],
 
       deptDetails: [],
-      // idDetails: [],
-      // dependentDetails: [],
+      dataPayrolExists: false,
+      dataFamIdsExists: false,
+
+      idDetails: [],
+      dependentDetails: [],
 
       insertearnComp: [],
       insertDeductionComp: [],

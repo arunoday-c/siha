@@ -5,6 +5,7 @@ import { bindActionCreators } from "redux";
 import "./employee_master_index.css";
 import "../../../styles/site.css";
 import { AlgaehLabel, AlgaehDataGrid } from "../../Wrapper/algaehWrapper";
+import AlgaehFile from "../../Wrapper/algaehFileUpload";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import EmployeeMaster from "./EmployeeMaster/EmployeeMaster";
 import moment from "moment";
@@ -50,6 +51,23 @@ class EmployeeMasterIndex extends Component {
     }
 
     getEmployeeDetails(this, this);
+
+    if (
+      this.props.subdepartment === undefined ||
+      this.props.subdepartment.length === 0
+    ) {
+      this.props.getSubDepartment({
+        uri: "/department/get/subdepartment",
+        data: {
+          sub_department_status: "A"
+        },
+        method: "GET",
+        redux: {
+          type: "SUB_DEPT_GET_DATA",
+          mappingName: "subdepartment"
+        }
+      });
+    }
   }
 
   ShowModel(e) {
@@ -183,6 +201,31 @@ class EmployeeMasterIndex extends Component {
                       }
                     },
                     {
+                      fieldName: "employee_img",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Profile Image" }} />
+                      ),
+                      displayTemplate: row => (
+                        <AlgaehFile
+                          name="attach_photo"
+                          accept="image/*"
+                          textAltMessage={row.full_name}
+                          showActions={false}
+                          serviceParameters={{
+                            uniqueID: row.employee_code,
+                            destinationName: row.employee_code,
+                            fileType: "Employees"
+                          }}
+                        />
+                      ),
+                      others: {
+                        maxWidth: 90,
+                        resizable: false,
+                        filterable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+                    {
                       fieldName: "employee_code",
                       label: (
                         <AlgaehLabel label={{ fieldName: "employee_code" }} />
@@ -221,6 +264,36 @@ class EmployeeMasterIndex extends Component {
                           <span>
                             {display !== null && display.length !== 0
                               ? display[0].designation
+                              : ""}
+                          </span>
+                        );
+                      },
+                      others: {
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+                    {
+                      fieldName: "sub_department_id",
+                      label: (
+                        <AlgaehLabel
+                          label={{ fieldName: "sub_department_id" }}
+                        />
+                      ),
+                      displayTemplate: row => {
+                        let display =
+                          this.props.subdepartment === undefined
+                            ? []
+                            : this.props.subdepartment.filter(
+                                f =>
+                                  f.hims_d_sub_department_id ===
+                                  row.sub_department_id
+                              );
+
+                        return (
+                          <span>
+                            {display !== undefined && display.length !== 0
+                              ? display[0].sub_department_name
                               : ""}
                           </span>
                         );
@@ -280,7 +353,7 @@ function mapStateToProps(state) {
   return {
     hospitalservices: state.hospitalservices,
     servicetype: state.servicetype,
-    subdepartments: state.subdepartments,
+    subdepartment: state.subdepartment,
     employeedetails: state.employeedetails,
     designations: state.designations
   };
@@ -291,7 +364,7 @@ function mapDispatchToProps(dispatch) {
     {
       getServices: AlgaehActions,
       getServiceTypes: AlgaehActions,
-      getSubDepatments: AlgaehActions,
+      getSubDepartment: AlgaehActions,
       getEmployeeDetails: AlgaehActions,
       getDesignations: AlgaehActions
     },

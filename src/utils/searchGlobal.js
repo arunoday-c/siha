@@ -227,9 +227,25 @@ let algaehSearchConfig = searchName => {
           PAT.patient_code from hims_f_pos_credit_header BH inner join hims_f_patient as PAT on  \
           BH.patient_id = PAT.hims_d_patient_id",
         orderBy: "hims_f_pos_credit_header_id desc"
+      },
+      {
+        searchName: "employee",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS hims_d_employee_id, employee_code, title_id, full_name, arabic_name, employee_designation_id,\
+           sex, religion_id, marital_status, date_of_birth, date_of_joining, date_of_resignation, reliving_date,\
+            notice_period, exit_date, employe_exit_type, appointment_type, employee_type, present_address, present_address2,\
+             present_pincode, present_city_id, present_state_id, present_country_id, permanent_address, permanent_address2,\
+              permanent_pincode, permanent_city_id, permanent_state_id, permanent_country_id, primary_contact_no, secondary_contact_no,\
+               email, nationality, emergency_contact_person, emergency_contact_no, blood_group, isdoctor, license_number, employee_status,\
+                inactive_date, exclude_machine_data, company_bank_id, employee_bank_name, employee_bank_ifsc_code, employee_account_number,\
+                 mode_of_payment, accomodation_provided, late_coming_rule, leave_salary_process, pf_applicable,\
+                  airfare_process, entitled_daily_ot, suspend_salary, last_salary_process_date, gratuity_applicable,\
+                   contract_type, employee_group_id, weekoff_from, overtime_group_id, reporting_to_id, sub_department_id,\
+                    hospital_id, gross_salary, yearly_gross_salary, total_earnings, total_deductions, total_contributions,\
+                     net_salary, cost_to_company, effective_start_date, effective_end_date, created_date, created_by, updated_date, updated_by from hims_d_employee\
+                     where record_status='A'",
+        orderBy: "hims_d_employee_id desc"
       }
-
-      // visit
     ]
   };
 

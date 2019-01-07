@@ -138,6 +138,24 @@ const Validations = $this => {
     });
 
     return isError;
+  } else if ($this.state.personalDetails.hims_d_employee_id !== null) {
+    if ($this.state.personalDetails.employee_group_id === null) {
+      isError = true;
+      swalMessage({
+        type: "warning",
+        title: "Employee Group. Cannot be blank."
+      });
+
+      return isError;
+    } else if ($this.state.personalDetails.hospital_id === null) {
+      isError = true;
+      swalMessage({
+        type: "warning",
+        title: "Hospital. Cannot be blank."
+      });
+
+      return isError;
+    }
   } else if ($this.state.personalDetails.deptDetails !== 0) {
     const activeDept = Enumerable.from($this.state.personalDetails.deptDetails)
       .where(w => w.dep_status === "A")
@@ -215,14 +233,24 @@ const InsertUpdateEmployee = $this => {
         activeDept[0].employee_designation_id;
     }
 
-    if ($this.state.personalDetails.hims_d_employee_id === null) {
-      const hospital = JSON.parse(sessionStorage.getItem("CurrencyDetail"));
-      const _payload = {
-        hospital_id: hospital.hims_d_hospital_id,
-        ...$this.state.personalDetails
-      };
-      console.log("_payload", _payload);
+    const hospital = JSON.parse(sessionStorage.getItem("CurrencyDetail"));
+    let inputObj = $this.state.personalDetails;
+    inputObj.inactive_date =
+      inputObj.inactive_date !== null
+        ? moment(inputObj.inactive_date).format("YYYY-MM-DD")
+        : null;
+    delete inputObj.countrystates;
+    delete inputObj.cities;
+    delete inputObj.precountrystates;
+    delete inputObj.precities;
 
+    const _payload = {
+      hospital_id: hospital.hims_d_hospital_id,
+      ...inputObj
+    };
+    console.log("_payload", _payload);
+
+    if (inputObj.hims_d_employee_id === null) {
       algaehApiCall({
         uri: "/employee/addEmployeeMaster",
         data: _payload,
@@ -240,15 +268,6 @@ const InsertUpdateEmployee = $this => {
         }
       });
     } else {
-      // $this.state.personalDetails
-
-      const hospital = JSON.parse(sessionStorage.getItem("CurrencyDetail"));
-      const _payload = {
-        hospital_id: hospital.hims_d_hospital_id,
-        ...$this.state.personalDetails
-      };
-      console.log("_payload", _payload);
-
       algaehApiCall({
         uri: "/employee/updateEmployee",
         data: _payload,

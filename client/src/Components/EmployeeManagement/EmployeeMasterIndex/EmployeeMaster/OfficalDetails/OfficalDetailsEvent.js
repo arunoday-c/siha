@@ -1,4 +1,5 @@
 import moment from "moment";
+import Options from "../../../../../Options.json";
 import { swalMessage } from "../../../../../utils/algaehApiCall";
 
 const texthandle = ($this, e) => {
@@ -92,4 +93,16 @@ const employeeStatusHandler = ($this, e) => {
   });
 };
 
-export { texthandle, datehandle, accomodationProvided, employeeStatusHandler };
+const dateFormater = ($this, value) => {
+  if (value !== null) {
+    return String(moment(value).format(Options.dateFormat));
+  }
+};
+
+export {
+  texthandle,
+  datehandle,
+  accomodationProvided,
+  employeeStatusHandler,
+  dateFormater
+};

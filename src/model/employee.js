@@ -968,7 +968,7 @@ let updateEmployee = (req, res, next) => {
           accomodation_provided=?,hospital_id=?,gross_salary=?,total_earnings=?,total_deductions=?,total_contributions=?,\
           net_salary=?,cost_to_company=?,leave_salary_process=?,late_coming_rule=?,airfare_process=?,\
           exclude_machine_data=?,gratuity_applicable=?,suspend_salary=?,pf_applicable=?,employee_group_id=?, \
-          reporting_to_id=?,sub_department_id=?,employee_designation_id=?,updated_date=?,updated_by=?\
+          reporting_to_id=?,sub_department_id=?,employee_designation_id=?,employee_status=?,inactive_date=?,updated_date=?,updated_by=?\
           WHERE record_status='A' and  hims_d_employee_id=?",
           [
             input.employee_code,
@@ -1029,6 +1029,8 @@ let updateEmployee = (req, res, next) => {
             input.reporting_to_id,
             input.sub_department_id,
             input.employee_designation_id,
+            input.employee_status,
+            input.inactive_date,
 
             new Date(),
             input.updated_by,
