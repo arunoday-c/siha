@@ -80,92 +80,78 @@ const categorytexthandle = ($this, ctrl, e) => {
 };
 
 const AddDeptUser = ($this, e) => {
-  e.preventDefault();
-
   AlgaehValidation({
     alertTypeIcon: "warning",
     querySelector: "data-validate='deptUserdtl'",
     onSuccess: () => {
-      if ($this.state.sub_department === null) {
-        swalMessage({
-          title: "Department. cannot be blank",
-          type: "warning"
-        });
-      } else if ($this.state.speciality_id === null) {
-        swalMessage({
-          title: "Speciality. cannot be blank",
-          type: "warning"
-        });
-      } else if ($this.state.category_id === null) {
-        swalMessage({
-          title: "Category. cannot be blank",
-          type: "warning"
-        });
-      } else if ($this.state.designation_id === null) {
-        swalMessage({
-          title: "Designation. cannot be blank",
-          type: "warning"
-        });
-      } else if ($this.state.reporting_to === null) {
-        swalMessage({
-          title: "Reporting To. cannot be blank",
-          type: "warning"
-        });
+      let deptDetails = $this.state.deptDetails;
+      let insertdeptDetails = $this.state.insertdeptDetails;
+
+      if (deptDetails === undefined) {
+        deptDetails = [];
       } else {
-        let deptDetails = $this.state.deptDetails;
-
-        if (deptDetails === undefined) {
-          deptDetails = [];
-        } else {
-          const _departs = Enumerable.from(deptDetails)
-            .where(w => w.sub_department_id === $this.state.sub_department)
-            .any();
-          if (_departs) {
-            swalMessage({
-              title: "Same department is already added.",
-              type: "warning"
-            });
-            return;
-          }
+        const _departs = Enumerable.from(deptDetails)
+          .where(w => w.sub_department_id === $this.state.sub_department)
+          .any();
+        if (_departs) {
+          swalMessage({
+            title: "Same department is already added.",
+            type: "warning"
+          });
+          return;
         }
-
-        deptDetails.push({
-          employee_id: $this.state.hims_d_employee_id,
-          sub_department_id: $this.state.sub_department,
-          category_speciality_id: $this.state.category_speciality_id,
-          user_id: $this.state.user_id,
-          category_id: $this.state.category_id,
-          speciality_id: $this.state.speciality_id,
-          services_id: $this.state.services_id,
-          reporting_to_id: $this.state.reporting_to,
-          employee_designation_id: $this.state.designation_id,
-          from_date: $this.state.from_date,
-          dep_status: "A"
-        });
-
-        $this.setState({
-          deptDetails: deptDetails,
-          sub_department: null,
-          category_speciality_id: null,
-          user_id: null,
-          category_id: null,
-          speciality_id: null,
-          services_id: null,
-          reporting_to: null,
-          designation_id: null,
-          from_date: null,
-          reporting_to_id: $this.state.reporting_to,
-          sub_department_id: $this.state.sub_department,
-          employee_designation_id: $this.state.designation_id
-        });
-        $this.props.EmpMasterIOputs.updateEmployeeTabs({
-          deptDetails: deptDetails,
-          insertdeptDetails: deptDetails,
-          reporting_to_id: $this.state.reporting_to,
-          sub_department_id: $this.state.sub_department,
-          employee_designation_id: $this.state.designation_id
-        });
       }
+
+      deptDetails.push({
+        employee_id: $this.state.hims_d_employee_id,
+        sub_department_id: $this.state.sub_department,
+        category_speciality_id: $this.state.category_speciality_id,
+        user_id: $this.state.user_id,
+        category_id: $this.state.category_id,
+        speciality_id: $this.state.speciality_id,
+        services_id: $this.state.services_id,
+        reporting_to_id: $this.state.reporting_to,
+        employee_designation_id: $this.state.designation_id,
+        from_date: $this.state.from_date,
+        dep_status: "A"
+      });
+
+      insertdeptDetails.push({
+        employee_id: $this.state.hims_d_employee_id,
+        sub_department_id: $this.state.sub_department,
+        category_speciality_id: $this.state.category_speciality_id,
+        user_id: $this.state.user_id,
+        category_id: $this.state.category_id,
+        speciality_id: $this.state.speciality_id,
+        services_id: $this.state.services_id,
+        reporting_to_id: $this.state.reporting_to,
+        employee_designation_id: $this.state.designation_id,
+        from_date: $this.state.from_date,
+        dep_status: "A"
+      });
+
+      $this.setState({
+        deptDetails: deptDetails,
+        sub_department: null,
+        category_speciality_id: null,
+        user_id: null,
+        category_id: null,
+        speciality_id: null,
+        services_id: null,
+        reporting_to: null,
+        designation_id: null,
+        from_date: null,
+        reporting_to_id: $this.state.reporting_to,
+        sub_department_id: $this.state.sub_department,
+        employee_designation_id: $this.state.designation_id
+      });
+      $this.props.EmpMasterIOputs.updateEmployeeTabs({
+        deptDetails: deptDetails,
+        insertdeptDetails: deptDetails,
+        reporting_to_id: $this.state.reporting_to,
+        sub_department_id: $this.state.sub_department,
+        employee_designation_id: $this.state.designation_id
+      });
     }
   });
 };
@@ -268,7 +254,7 @@ const colgridtexthandle = ($this, row, e) => {
   row.update();
 };
 
-const dateFormater = value => {
+const dateFormater = ($this, value) => {
   if (value !== null) {
     return String(moment(value).format(Options.dateFormat));
   }
