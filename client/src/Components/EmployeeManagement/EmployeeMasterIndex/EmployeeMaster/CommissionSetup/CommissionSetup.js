@@ -11,7 +11,7 @@ import {
   AlgaehDataGrid,
   AlgaehLabel
 } from "../../../../Wrapper/algaehWrapper";
-import MyContext from "../../../../../utils/MyContext.js";
+
 import {
   texthandle,
   AddSeviceTypeComm,
@@ -23,6 +23,7 @@ import {
   deleteServiceComm
 } from "./CommissionSetupEvents";
 import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
+import AlgaehLoader from "../../../../Wrapper/fullPageLoader";
 
 class CommissionSetup extends Component {
   constructor(props) {
@@ -49,6 +50,8 @@ class CommissionSetup extends Component {
   }
 
   componentDidMount() {
+    AlgaehLoader({ show: true });
+
     let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
     this.setState({ ...this.state, ...InputOutput });
 
@@ -80,14 +83,18 @@ class CommissionSetup extends Component {
           if (response.data.success) {
             this.setState({ serviceComm: response.data.records });
           }
+          AlgaehLoader({ show: false });
         },
         onFailure: error => {
+          AlgaehLoader({ show: false });
           swalMessage({
             title: error.message,
             type: "error"
           });
         }
       });
+    } else {
+      AlgaehLoader({ show: false });
     }
   }
 

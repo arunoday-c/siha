@@ -109,7 +109,7 @@ class LabResult extends Component {
                           ? "Cancelled"
                           : row.status === "CF"
                           ? "Result Confirmed"
-                          : "Result Avaiable";
+                          : "Result Available";
                       }
                     },
                     {

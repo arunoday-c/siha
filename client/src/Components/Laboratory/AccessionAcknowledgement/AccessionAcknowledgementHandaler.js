@@ -2,7 +2,7 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 import FrontDesk from "../../../Search/FrontDesk.json";
 import moment from "moment";
 import Options from "../../../Options.json";
-// import Enumerable from "linq";
+import Enumerable from "linq";
 import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 
 const texthandle = ($this, e) => {
@@ -109,7 +109,15 @@ const getSampleCollectionDetails = $this => {
       mappingName: "samplecollection"
     },
     afterSuccess: data => {
-      $this.setState({ sample_collection: data });
+      debugger;
+
+      if (data.length > 0) {
+        // let sample_collection = Enumerable.from(data)
+        //   .Where(w => w.status !== "O")
+        //   .ToArray();
+
+        $this.setState({ sample_collection: data });
+      }
     }
   });
 };
