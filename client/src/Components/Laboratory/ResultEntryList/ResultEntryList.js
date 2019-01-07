@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-
+import Enumerable from "linq";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 
 import "./ResultEntryList.css";
@@ -439,7 +439,10 @@ class ResultEntryList extends Component {
                     // }}
                     keyId="patient_code"
                     dataSource={{
-                      data: this.state.sample_collection
+                      data: Enumerable.from(this.state.sample_collection)
+                        .where(w => w.sample_status === "A")
+                        .toArray()
+                      // data: this.state.sample_collection
                     }}
                     noDataText="No data available for selected period"
                     paging={{ page: 0, rowsPerPage: 10 }}
