@@ -381,78 +381,6 @@ class ResultEntry extends Component {
                           label: <AlgaehLabel label={{ forceLabel: "Units" }} />
                         },
                         {
-                          fieldName: "confirm",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Confirm" }} />
-                          ),
-                          displayTemplate: row => {
-                            return (
-                              <span>
-                                {row.validate === "N" ? (
-                                  <AlagehAutoComplete
-                                    div={{}}
-                                    selector={{
-                                      name: "confirm",
-                                      className: "select-fld",
-                                      value: row.confirm,
-                                      dataSource: {
-                                        textField: "name",
-                                        valueField: "value",
-                                        data: FORMAT_YESNO
-                                      },
-                                      onChange: confirmedgridcol.bind(
-                                        this,
-                                        this,
-                                        row
-                                      )
-                                    }}
-                                  />
-                                ) : row.confirm === "N" ? (
-                                  "No"
-                                ) : (
-                                  "Yes"
-                                )}
-                              </span>
-                            );
-                          }
-                        },
-                        {
-                          fieldName: "validate",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Validate" }} />
-                          ),
-                          displayTemplate: row => {
-                            return (
-                              <span>
-                                {row.validate === "N" ? (
-                                  <AlagehAutoComplete
-                                    div={{}}
-                                    selector={{
-                                      name: "validate",
-                                      className: "select-fld",
-                                      value: row.validate,
-                                      dataSource: {
-                                        textField: "name",
-                                        valueField: "value",
-                                        data: FORMAT_YESNO
-                                      },
-                                      onChange: onchangegridcol.bind(
-                                        this,
-                                        this,
-                                        row
-                                      )
-                                    }}
-                                  />
-                                ) : row.confirm === "N" ? (
-                                  "No"
-                                ) : (
-                                  "Yes"
-                                )}
-                              </span>
-                            );
-                          }
-                        },
-                        {
                           fieldName: "run1",
                           label: (
                             <AlgaehLabel
@@ -546,6 +474,78 @@ class ResultEntry extends Component {
                               : row.critical_type === "H"
                               ? "High"
                               : null;
+                          }
+                        },
+                        {
+                          fieldName: "confirm",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Confirm" }} />
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {row.validate === "N" ? (
+                                  <AlagehAutoComplete
+                                    div={{}}
+                                    selector={{
+                                      name: "confirm",
+                                      className: "select-fld",
+                                      value: row.confirm,
+                                      dataSource: {
+                                        textField: "name",
+                                        valueField: "value",
+                                        data: FORMAT_YESNO
+                                      },
+                                      onChange: confirmedgridcol.bind(
+                                        this,
+                                        this,
+                                        row
+                                      )
+                                    }}
+                                  />
+                                ) : row.confirm === "N" ? (
+                                  "No"
+                                ) : (
+                                  "Yes"
+                                )}
+                              </span>
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "validate",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Validate" }} />
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {row.validate === "N" ? (
+                                  <AlagehAutoComplete
+                                    div={{}}
+                                    selector={{
+                                      name: "validate",
+                                      className: "select-fld",
+                                      value: row.validate,
+                                      dataSource: {
+                                        textField: "name",
+                                        valueField: "value",
+                                        data: FORMAT_YESNO
+                                      },
+                                      onChange: onchangegridcol.bind(
+                                        this,
+                                        this,
+                                        row
+                                      )
+                                    }}
+                                  />
+                                ) : row.confirm === "N" ? (
+                                  "No"
+                                ) : (
+                                  "Yes"
+                                )}
+                              </span>
+                            );
                           }
                         },
                         //TODO

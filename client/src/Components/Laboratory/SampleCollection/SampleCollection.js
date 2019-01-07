@@ -253,7 +253,9 @@ class SampleCollection extends Component {
               <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
                 <div className="portlet-title">
                   <div className="caption">
-                    <h3 className="caption-subject">Sample Collection List</h3>
+                    <h3 className="caption-subject">
+                      Specimen Collection List
+                    </h3>
                   </div>
                 </div>
 

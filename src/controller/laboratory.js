@@ -73,7 +73,7 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-  //created by irfan: to update Lab Sample Status
+  //created by irfan: to update Lab Specimen Status
   api.put(
     "/updateLabSampleStatus",
     updateLabSampleStatus,
