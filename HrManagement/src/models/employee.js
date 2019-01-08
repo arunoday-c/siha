@@ -21,7 +21,12 @@ module.exports = {
           updated_by: req.userIdentity.algaeh_d_app_user_id,
           updated_date: new Date()
         },
-
+        onDuplicateKeyUpdate: [
+          "earning_deductions_id",
+          "year",
+          "month",
+          "employee_id"
+        ],
         query:
           "insert into  hims_f_miscellaneous_earning_deduction (??) values ? ON DUPLICATE KEY UPDATE ?",
         printQuery: query => {
