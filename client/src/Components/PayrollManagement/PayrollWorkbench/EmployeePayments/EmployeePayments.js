@@ -8,6 +8,7 @@ import {
   AlagehAutoComplete,
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
+import GlobalVariables from "../../../../utils/GlobalVariables.json";
 
 export default class EmployeePayment extends Component {
   constructor(props) {
@@ -53,10 +54,14 @@ export default class EmployeePayment extends Component {
                 isImp: true
               }}
               selector={{
-                name: "",
+                name: "payment_type",
                 className: "select-fld",
-                value: "",
-                dataSource: {},
+                value: this.state.payment_type,
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: GlobalVariables.EMPLOYEE_PAYMENT_TYPE
+                },
                 onChange: null,
                 others: {
                   tabIndex: "2"
@@ -265,9 +270,14 @@ export default class EmployeePayment extends Component {
                             isImp: false
                           }}
                           selector={{
-                            name: "",
+                            name: "payment_mode",
+                            value: this.state.payment_mode,
                             className: "select-fld",
-                            dataSource: {},
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: GlobalVariables.EMP_PAYMENT_MODE
+                            },
                             others: {}
                           }}
                         />

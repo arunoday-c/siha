@@ -752,5 +752,17 @@
   "LEAVE_VALUE_TYP": [
     { "name": "Over This Value", "value": "OV" },
     { "name": "Between the From and To", "value": "RA" }
+  ],
+  "EMPLOYEE_PAYMENT_TYPE": [
+    { "name": "Advance", "value": "AD" },
+    { "name": "Loan", "value": "LN" },
+    { "name": "Encashment", "value": "EN" },
+    { "name": "Gratuity", "value": "GR" },
+    { "name": "Final Settlement", "value": "FS" },
+    { "name": "Leave Settlement", "value": "LS" }
+  ],
+  "EMP_PAYMENT_MODE": [
+    { "name": "Cash", "value": "CS" },
+    { "name": "Cheque", "value": "CH" }
   ]
 }
