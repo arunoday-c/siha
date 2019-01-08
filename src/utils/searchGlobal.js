@@ -245,6 +245,15 @@ let algaehSearchConfig = searchName => {
                      net_salary, cost_to_company, effective_start_date, effective_end_date, created_date, created_by, updated_date, updated_by from hims_d_employee\
                      where record_status='A'",
         orderBy: "hims_d_employee_id desc"
+      },
+
+      {
+        searchName: "loan_apply",
+        searchQuery:
+          "select  hims_f_loan_application_id,loan_application_number,employee_id, loan_application_date,approved_amount, \
+          start_month, start_year, emp.employee_code, emp.full_name from hims_f_loan_application, hims_d_employee emp \
+          where hims_f_loan_application.employee_id = emp.hims_d_employee_id",
+        orderBy: "hims_f_loan_application_id desc"
       }
     ]
   };
