@@ -1,20 +1,14 @@
 import React, { Component } from "react";
 import "./MiscEarningsDeductions.css";
 import {
-  AlgaehDateHandler,
   AlagehFormGroup,
   AlgaehLabel,
   AlagehAutoComplete,
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
-import {
-  algaehApiCall,
-  swalMessage,
-  dateFomater
-} from "../../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 
 export default class MiscEarningsDeductions extends Component {
   constructor(props) {

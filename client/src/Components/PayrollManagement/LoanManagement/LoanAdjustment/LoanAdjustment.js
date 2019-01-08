@@ -4,15 +4,12 @@ import "./loan-adjustment.css";
 import {
   AlagehFormGroup,
   AlgaehLabel,
-  AlgaehDataGrid,
-  AlagehAutoComplete,
-  AlgaehDateHandler
+  AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import Employee from "../../../../Search/Employee.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
-import GlobalVariables from "../../../../utils/GlobalVariables.json";
 
 class LoanAdjustment extends Component {
   constructor(props) {

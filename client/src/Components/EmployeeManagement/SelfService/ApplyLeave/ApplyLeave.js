@@ -54,8 +54,7 @@ class ApplyLeave extends Component {
     var currDate = moment(startDate).startOf("day");
     var lastDate = moment(endDate).startOf("day");
 
-    var now = currDate.clone(),
-      dates = [];
+    var now = currDate.clone();
 
     while (now.isSameOrBefore(lastDate)) {
       //console.log(now.format("YYYYMMDD"));

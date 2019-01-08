@@ -752,5 +752,9 @@
   "LEAVE_VALUE_TYP": [
     { "name": "Over This Value", "value": "OV" },
     { "name": "Between the From and To", "value": "RA" }
+  ],
+  "RECEIPTS_TYPE": [
+    { "name": "Loan", "value": "LO" },
+    { "name": "Final Settlement", "value": "FS" }
   ]
 }

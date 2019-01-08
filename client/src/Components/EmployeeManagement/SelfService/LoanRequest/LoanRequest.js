@@ -423,7 +423,6 @@ class LoanRequest extends Component {
                         },
                         {
                           fieldName: "loan_tenure",
-                          label: "No. of EMI Pending",
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "No. of EMI Pending" }}
