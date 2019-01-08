@@ -181,6 +181,18 @@ class EmployeePayment extends Component {
                 }
               }}
             />
+            <div
+              className="col"
+              style={{
+                paddingLeft: 0,
+                paddingTop: 25,
+                paddingRight: 0
+              }}
+            >
+              <span onClick="" style={{ cursor: "pointer" }}>
+                <i className="fas fa-search" />
+              </span>
+            </div>
 
             <AlagehAutoComplete
               div={{ className: "col" }}
@@ -516,9 +528,7 @@ class EmployeePayment extends Component {
               <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
                 <div className="portlet-title">
                   <div className="caption">
-                    <h3 className="caption-subject">
-                      Previous Payment Request List
-                    </h3>
+                    <h3 className="caption-subject">Previous Payment List</h3>
                   </div>
                   <div className="actions">
                     {/*    <a className="btn btn-primary btn-circle active">
@@ -560,6 +570,62 @@ class EmployeePayment extends Component {
                             fieldName: "",
                             label: "Requested Amount"
                             //disabled: true
+                          },
+                          {
+                            fieldName: "",
+                            label: "Document No."
+                            // others: {
+                            //   minWidth: 150,
+                            //   maxWidth: 250
+                            // }
+                          },
+                          {
+                            fieldName: "",
+                            label: "Process Date"
+                            // others: {
+                            //   minWidth: 150,
+                            //   maxWidth: 250
+                            // }
+                          },
+                          {
+                            fieldName: "",
+                            label: "Process Amount"
+                            // others: {
+                            //   minWidth: 150,
+                            //   maxWidth: 250
+                            // }
+                          },
+                          {
+                            fieldName: "",
+                            label: "Mode of Payment"
+                            // others: {
+                            //   minWidth: 150,
+                            //   maxWidth: 250
+                            // }
+                          },
+                          {
+                            fieldName: "",
+                            label: "Bank Details"
+                            // others: {
+                            //   minWidth: 150,
+                            //   maxWidth: 250
+                            // }
+                          },
+                          {
+                            fieldName: "",
+                            label: "Cheque/ Transaction No."
+                            // others: {
+                            //   minWidth: 150,
+                            //   maxWidth: 250
+                            // }
+                          },
+                          {
+                            fieldName: "",
+                            label: "Deduct in the Month of"
+                            // others: {
+                            //   minWidth: 150,
+                            //   maxWidth: 250
+                            // }
                           }
                         ]}
                         keyId="algaeh_d_module_id"

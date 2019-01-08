@@ -200,15 +200,34 @@ class LoanRequest extends Component {
             <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">Request loan</h3>
+                  <h3 className="caption-subject">Request Loan/ Advance</h3>
                 </div>
               </div>
               <div className="portlet-body" data-validate="loanApplyDiv">
                 <div className="row">
+                  <div className="col">
+                    <label>Request Type</label>
+                    <div className="customRadio">
+                      <label className="radio inline">
+                        <input type="radio" name="once_life_term" />
+                        <span>Loan</span>
+                      </label>
+                      <label className="radio inline">
+                        <input
+                          type="radio"
+                          name="once_life_term"
+                          checked="checked"
+                        />
+                        <span>Advance</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
                   <AlagehAutoComplete
                     div={{ className: "col-6" }}
                     label={{
-                      forceLabel: "Loan Type",
+                      forceLabel: "Request Type",
                       isImp: true
                     }}
                     selector={{
@@ -250,6 +269,7 @@ class LoanRequest extends Component {
                       }
                     }}
                   />
+
                   <AlagehAutoComplete
                     div={{ className: "col-6" }}
                     label={{
@@ -341,6 +361,89 @@ class LoanRequest extends Component {
                     </button>
                   </div>
                 </div>
+                <div className="row">
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    label={{
+                      forceLabel: "Advance Amount",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "loan_amount",
+                      // value: this.state.loan_amount,
+                      events: {
+                        //  onChange: this.textHandle.bind(this)
+                      },
+                      others: {
+                        type: "number"
+                      }
+                    }}
+                  />
+                  <AlagehAutoComplete
+                    div={{ className: "col-6" }}
+                    label={{
+                      forceLabel: "Start Month",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "start_month",
+                      className: "select-fld",
+                      value: this.state.start_month,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: MONTHS
+                      }
+                      //  onChange: this.dropDownHandler.bind(this)
+                    }}
+                  />
+
+                  <AlagehFormGroup
+                    div={{ className: "col-6" }}
+                    label={{
+                      forceLabel: "Start Year",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "start_year",
+                      value: this.state.start_year,
+                      events: {
+                        // onChange: this.textHandle.bind(this)
+                      },
+                      others: {
+                        type: "number"
+                      }
+                    }}
+                  />
+                  <AlagehFormGroup
+                    div={{ className: "col-12" }}
+                    label={{
+                      forceLabel: "Reason for Advance",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "loan_description",
+                      value: this.state.loan_description,
+                      events: {
+                        onChange: this.textHandle.bind(this)
+                      }
+                    }}
+                  />
+
+                  <div className="col-12 margin-bottom-15">
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      style={{ marginTop: 21 }}
+                      onClick={this.applyLoan.bind(this)}
+                    >
+                      Request
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -353,7 +456,7 @@ class LoanRequest extends Component {
               </div>
               <div className="portlet-body">
                 <div className="row">
-                  <div className="col-lg-12" id="LoanRequestList_cntr">
+                  <div className="col-12" id="LoanRequestList_cntr">
                     <AlgaehDataGrid
                       id="LoanRequestList_grid"
                       columns={[
@@ -493,7 +596,78 @@ class LoanRequest extends Component {
                 </div>
               </div>
             </div>
-          </div>{" "}
+
+            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Advance Request List</h3>
+                </div>
+                {/* <div className="actions">
+                    <a className="btn btn-primary btn-circle active">
+                      <i className="fas fa-pen" />
+                    </a>
+                  </div> */}
+              </div>
+              <div className="portlet-body">
+                <div className="row">
+                  <div className="col-12" id="AdvanceRequestGrid_Cntr">
+                    <AlgaehDataGrid
+                      id="AdvanceRequestGrid"
+                      datavalidate="AdvanceRequestGrid"
+                      columns={[
+                        {
+                          fieldName: "ApplicationNo",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Application No" }}
+                            />
+                          )
+                        },
+                        {
+                          fieldName: "AdvanceRequestedDate",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Advance Requested Date" }}
+                            />
+                          )
+                        },
+                        {
+                          fieldName: "AdvanceAmount",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Advance Amount" }}
+                            />
+                          )
+                        },
+                        {
+                          fieldName: "ProcessStatus",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Process Status" }}
+                            />
+                          )
+                        },
+                        {
+                          fieldName: "ProcessDate",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Processed Date" }}
+                            />
+                          )
+                        }
+                      ]}
+                      keyId=""
+                      dataSource={{ data: [] }}
+                      isEditable={false}
+                      paging={{ page: 0, rowsPerPage: 10 }}
+                      events={{}}
+                      others={{}}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </React.Fragment>
     );
