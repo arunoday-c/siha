@@ -200,7 +200,7 @@ class LoanRequest extends Component {
             <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">Request loan</h3>
+                  <h3 className="caption-subject">Request Loan/ Advance</h3>
                 </div>
               </div>
               <div className="portlet-body" data-validate="loanApplyDiv">
@@ -208,7 +208,7 @@ class LoanRequest extends Component {
                   <AlagehAutoComplete
                     div={{ className: "col-6" }}
                     label={{
-                      forceLabel: "Loan Type",
+                      forceLabel: "Request Type",
                       isImp: true
                     }}
                     selector={{
@@ -250,6 +250,26 @@ class LoanRequest extends Component {
                       }
                     }}
                   />
+
+                  <AlagehFormGroup
+                    div={{ className: "col-6" }}
+                    label={{
+                      forceLabel: "Advance Amount",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "loan_amount",
+                      value: this.state.loan_amount,
+                      events: {
+                        onChange: this.textHandle.bind(this)
+                      },
+                      others: {
+                        type: "number"
+                      }
+                    }}
+                  />
+
                   <AlagehAutoComplete
                     div={{ className: "col-6" }}
                     label={{
@@ -353,7 +373,7 @@ class LoanRequest extends Component {
               </div>
               <div className="portlet-body">
                 <div className="row">
-                  <div className="col-lg-12" id="LoanRequestList_cntr">
+                  <div className="col-12" id="LoanRequestList_cntr">
                     <AlgaehDataGrid
                       id="LoanRequestList_grid"
                       columns={[
@@ -492,7 +512,78 @@ class LoanRequest extends Component {
                 </div>
               </div>
             </div>
-          </div>{" "}
+
+            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Advance Request List</h3>
+                </div>
+                {/* <div className="actions">
+                    <a className="btn btn-primary btn-circle active">
+                      <i className="fas fa-pen" />
+                    </a>
+                  </div> */}
+              </div>
+              <div className="portlet-body">
+                <div className="row">
+                  <div className="col-12" id="AdvanceRequestGrid_Cntr">
+                    <AlgaehDataGrid
+                      id="AdvanceRequestGrid"
+                      datavalidate="AdvanceRequestGrid"
+                      columns={[
+                        {
+                          fieldName: "ApplicationNo",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Application No" }}
+                            />
+                          )
+                        },
+                        {
+                          fieldName: "AdvanceRequestedDate",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Advance Requested Date" }}
+                            />
+                          )
+                        },
+                        {
+                          fieldName: "AdvanceAmount",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Advance Amount" }}
+                            />
+                          )
+                        },
+                        {
+                          fieldName: "ProcessStatus",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Process Status" }}
+                            />
+                          )
+                        },
+                        {
+                          fieldName: "ProcessDate",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Processed Date" }}
+                            />
+                          )
+                        }
+                      ]}
+                      keyId=""
+                      dataSource={{ data: [] }}
+                      isEditable={false}
+                      paging={{ page: 0, rowsPerPage: 10 }}
+                      events={{}}
+                      others={{}}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </React.Fragment>
     );

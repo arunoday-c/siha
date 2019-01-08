@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import "./emp_receipts.css";
+import "./EmployeeReceipts.css";
+
 import {
   AlagehAutoComplete,
   AlgaehLabel,
@@ -19,14 +20,16 @@ class EmployeeReceipts extends Component {
       current_loan: {},
       reciepts_type: "LO"
     };
-    this.getLoans();
+    // this.getLoans();
   }
 
   clearState() {
     this.setState({
       hims_f_loan_application_id: null,
       current_loan: {},
-      reciepts_type: null
+      reciepts_type: null,
+      hims_d_employee_id: null,
+      employee_name: null
     });
   }
 
@@ -41,10 +44,15 @@ class EmployeeReceipts extends Component {
         callBack(text);
       },
       onRowSelect: row => {
-        this.setState({
-          employee_name: row.full_name,
-          hims_d_employee_id: row.hims_d_employee_id
-        });
+        this.setState(
+          {
+            employee_name: row.full_name,
+            hims_d_employee_id: row.hims_d_employee_id
+          },
+          () => {
+            this.getLoans();
+          }
+        );
       }
     });
   }
@@ -54,6 +62,7 @@ class EmployeeReceipts extends Component {
       uri: "/loan/getLoanApplication",
       method: "GET",
       data: {
+        employee_id: this.state.hims_d_employee_id,
         loan_issued: "Y"
       },
       onSuccess: res => {
@@ -238,9 +247,9 @@ class EmployeeReceipts extends Component {
             />
           ) : null}
           <div className="col form-group">
-            <button style={{ marginTop: 21 }} className="btn btn-primary">
+            {/* <button style={{ marginTop: 21 }} className="btn btn-primary">
               Load
-            </button>{" "}
+            </button>{" "} */}
             <button
               onClick={this.clearState.bind(this)}
               style={{ marginTop: 21, marginLeft: 10 }}
@@ -277,6 +286,18 @@ class EmployeeReceipts extends Component {
                     <h6>
                       {currentLoan.employee_name
                         ? currentLoan.employee_name
+                        : "------"}
+                    </h6>
+                  </div>
+                  <div className="col">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Application No."
+                      }}
+                    />
+                    <h6>
+                      {currentLoan.loan_application_number
+                        ? currentLoan.loan_application_number
                         : "------"}
                     </h6>
                   </div>

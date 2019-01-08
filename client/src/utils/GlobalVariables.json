@@ -756,5 +756,17 @@
   "RECEIPTS_TYPE": [
     { "name": "Loan", "value": "LO" },
     { "name": "Final Settlement", "value": "FS" }
+  ],
+  "EMPLOYEE_PAYMENT_TYPE": [
+    { "name": "Advance", "value": "AD" },
+    { "name": "Loan", "value": "LN" },
+    { "name": "Encashment", "value": "EN" },
+    { "name": "Gratuity", "value": "GR" },
+    { "name": "Final Settlement", "value": "FS" },
+    { "name": "Leave Settlement", "value": "LS" }
+  ],
+  "EMP_PAYMENT_MODE": [
+    { "name": "Cash", "value": "CS" },
+    { "name": "Cheque", "value": "CH" }
   ]
 }

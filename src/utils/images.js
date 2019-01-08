@@ -5,7 +5,7 @@ import multer from "multer";
 import httpStatus from "../utils/httpStatus";
 import mkdirp from "mkdirp";
 import { LINQ } from "node-linq";
-import sharp from "sharp";
+//import sharp from "sharp";
 import mime from "mime/lite";
 import config from "../keys/keys";
 let logDirectory = path.join(__dirname, "../../Documents");
@@ -153,7 +153,7 @@ let showFile = (req, res, next) => {
 };
 const resizeImage = (_filepath, format, width, height) => {
   const readStream = fs.createReadStream(_filepath);
-  let transform = sharp();
+  //let transform = sharp();
   let _format = "";
   if (format === undefined || format === null || format === "") {
     _format = path.extname(_filepath);
@@ -164,7 +164,7 @@ const resizeImage = (_filepath, format, width, height) => {
   transform = transform.toFormat(_format);
   if (width || height) {
     transform = transform.resize(width, height, {
-      fit: sharp.fit.fill
+      // fit: sharp.fit.fill
     });
   }
   return readStream.pipe(transform);
