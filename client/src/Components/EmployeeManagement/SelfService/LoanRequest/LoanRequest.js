@@ -371,23 +371,52 @@ class LoanRequest extends Component {
                     textBox={{
                       className: "txt-fld",
                       name: "loan_amount",
-                      value: this.state.loan_amount,
+                      // value: this.state.loan_amount,
                       events: {
-                        onChange: this.textHandle.bind(this)
+                        //  onChange: this.textHandle.bind(this)
                       },
                       others: {
                         type: "number"
                       }
                     }}
                   />
-                  <div className="col">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Deducting Month & Year "
-                      }}
-                    />
-                    <h6>FEB 2019</h6>
-                  </div>
+                  <AlagehAutoComplete
+                    div={{ className: "col-6" }}
+                    label={{
+                      forceLabel: "Start Month",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "start_month",
+                      className: "select-fld",
+                      value: this.state.start_month,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: MONTHS
+                      }
+                      //  onChange: this.dropDownHandler.bind(this)
+                    }}
+                  />
+
+                  <AlagehFormGroup
+                    div={{ className: "col-6" }}
+                    label={{
+                      forceLabel: "Start Year",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "start_year",
+                      value: this.state.start_year,
+                      events: {
+                        // onChange: this.textHandle.bind(this)
+                      },
+                      others: {
+                        type: "number"
+                      }
+                    }}
+                  />
                   <AlagehFormGroup
                     div={{ className: "col-12" }}
                     label={{
