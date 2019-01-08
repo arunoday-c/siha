@@ -115,6 +115,57 @@ let addLoanApplication = (req, res, next) => {
   }
 };
 
+//created by Adnan
+let adjustLoanApplication = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.body);
+
+    if (
+      input.hims_f_loan_application_id != "null" &&
+      input.hims_f_loan_application_id != undefined &&
+      input.loan_skip_months != "null" &&
+      input.loan_skip_months != undefined
+    ) {
+      db.getConnection((error, connection) => {
+        connection.query(
+          "UPDATE hims_f_loan_application SET loan_skip_months = ?,\
+            updated_date=?, updated_by=?  WHERE record_status='A' and  hims_f_loan_application_id = ?",
+          [
+            input.loan_skip_months,
+            new Date(),
+            input.updated_by,
+            input.hims_f_loan_application_id
+          ],
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+
+            if (result.affectedRows > 0) {
+              req.records = result;
+              next();
+            } else {
+              req.records = { invalid_input: true };
+              next();
+            }
+          }
+        );
+      });
+    } else {
+      req.records = { invalid_input: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
 //created by irfan:
 let getLoanApplication = (req, res, next) => {
   // let selectWhere = {
@@ -157,10 +208,16 @@ between date('${req.query.from_date}') and date('${req.query.to_date}') `;
     } else if (req.query.auth_level == "L2") {
       auth_level = " and authorized1='A' and authorized2='P' ";
     }
-    debugLog("level:", auth_level);
+
+    let loan_issued = "";
+
+    if (req.query.loan_issued == "Y") {
+      loan_issued = " and loan_authorized='IS' ";
+    }
+
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_f_loan_application_id,loan_application_number,employee_id,loan_id,L.loan_code,L.loan_description,\
+        "select hims_f_loan_application_id,loan_application_number, loan_skip_months , employee_id,loan_id,L.loan_code,L.loan_description,\
         L.loan_account,L.loan_limit_type,L.loan_maximum_amount,LA.application_reason,\
         loan_application_date,loan_authorized,authorized_date,authorized_by,loan_closed,loan_amount,approved_amount,\
         start_month,start_year,loan_tenure,installment_amount,pending_loan,authorized1_by,authorized1_date,\
@@ -171,7 +228,9 @@ between date('${req.query.from_date}') and date('${req.query.to_date}') `;
           "" +
           range +
           "" +
-          auth_level,
+          auth_level +
+          "" +
+          loan_issued,
 
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -425,5 +484,6 @@ module.exports = {
   addLoanApplication,
   getLoanApplication,
   getLoanLevels,
-  authorizeLoan
+  authorizeLoan,
+  adjustLoanApplication
 };
