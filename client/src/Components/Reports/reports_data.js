@@ -5,7 +5,7 @@ import { APPT_TYPE } from "../../utils/GlobalVariables.json";
 
 export default [
   {
-    name: "APPOINTMENTS",
+    name: "APPOINTMENT",
     submenu: [
       {
         subitem: "Appointment Availability Report",
@@ -84,7 +84,7 @@ export default [
         ]
       },
       {
-        subitem: "Appointment Details Patient Wise",
+        subitem: "Patient Wise Appointment Details",
         template_name: "appt_availability",
         reportParameters: [
           {
@@ -104,19 +104,20 @@ export default [
         ////reportParameters: () => <Appointment ui="appt_list" />
       },
       {
-        subitem: "Appointment List - Cancellations",
+        subitem: "Cancelled Appointments",
         template_name: "appt_availability"
         ////reportParameters: () => <Appointment ui="appt_cancellations" />
       },
       {
-        subitem: "Appointment List - Detailed",
+        subitem: "Pending Appointments",
         template_name: "appt_availability"
         ////reportParameters: () => <Appointment ui="appt_list_detailed" />
       },
-      // {
-      //   subitem: "Appointment List - Resources",
-      //   ////reportParameters: () => <Appointment ui="appt_list_resources" />
-      // },
+      {
+        subitem: "Confirmed Appointments",
+        template_name: "appt_availability"
+        ////reportParameters: () => <Appointment ui="appt_list_detailed" />
+      },
       {
         subitem: "Patient Recall Report",
         template_name: "appt_availability"
@@ -130,60 +131,51 @@ export default [
   },
 
   {
-    name: "ASSET",
+    name: "INCOME",
     submenu: [
       {
-        subitem: "Asset Warranty Expiry Report",
-        template_name: "asset_war_exp"
-        ////reportParameters: () => <Asset ui="asset_warty_exp_rep" />
-      }
-    ]
-  },
-  {
-    name: "COLLECTION/REVENUE",
-    submenu: [
-      {
-        subitem: "Adjusted Advance Details",
+        subitem: "Outstanding Advances",
         template_name: "asset_war_exp"
         ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
       {
-        subitem: "Daily Billing Summary",
+        subitem: "OP Billing Summary",
         template_name: "asset_war_exp"
         ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
       {
-        subitem: "Daily Transaction Register - Consolidated",
+        subitem: "OP Billing Detail",
         template_name: "asset_war_exp"
         ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
       {
-        subitem: "Doctorwise Revenue Report",
+        subitem: "Daily Cash Collection",
         template_name: "asset_war_exp"
         ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
       {
-        subitem: "DSR Report",
+        subitem: "Service wise Income",
         template_name: "asset_war_exp"
         ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
       {
-        subitem: "List of Advance Payments",
+        subitem: "Doctor wise Income",
+        template_name: "asset_war_exp"
+        ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
+      },
+      
+      {
+        subitem: "Daily Bill List",
         template_name: "asset_war_exp"
         ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
       {
-        subitem: "List of Bills",
+        subitem: "List of Credit Bills",
         template_name: "asset_war_exp"
         ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
       {
-        subitem: "List of Credit Notes/ Refunds",
-        template_name: "asset_war_exp"
-        ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "List of Credit Notes/ Refunds - Detailed",
+        subitem: "Refunds List",
         template_name: "asset_war_exp"
         ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
@@ -289,16 +281,6 @@ export default [
     name: "FINANCE",
     submenu: [
       {
-        subitem: "Accounts Statement Report - PatientWise",
-        template_name: "asset_war_exp"
-        //reportParameters: () => <Finance ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Ageing Report-Direct Sale",
-        template_name: "asset_war_exp"
-        //reportParameters: () => <Finance ui="asset_warty_exp_rep" />
-      },
-      {
         subitem: "Balance Sheet Report",
         template_name: "asset_war_exp"
         //reportParameters: () => <Finance ui="asset_warty_exp_rep" />
@@ -359,16 +341,6 @@ export default [
         //reportParameters: () => <Finance ui="asset_warty_exp_rep" />
       },
       {
-        subitem: "PDC Issued",
-        template_name: "asset_war_exp"
-        //reportParameters: () => <Finance ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "PDC Received",
-        template_name: "asset_war_exp"
-        //reportParameters: () => <Finance ui="asset_warty_exp_rep" />
-      },
-      {
         subitem: "Profit and Loss",
         template_name: "asset_war_exp"
         //reportParameters: () => <Finance ui="asset_warty_exp_rep" />
@@ -379,12 +351,12 @@ export default [
         //reportParameters: () => <Finance ui="asset_warty_exp_rep" />
       },
       {
-        subitem: "Reconciliation Report",
+        subitem: "Reconciliation",
         template_name: "asset_war_exp"
         //reportParameters: () => <Finance ui="asset_warty_exp_rep" />
       },
       {
-        subitem: "Revenue Ledger Report - Detailed",
+        subitem: "Revenue Ledger- Detailed",
         template_name: "asset_war_exp"
         //reportParameters: () => <Finance ui="asset_warty_exp_rep" />
       },
@@ -397,7 +369,7 @@ export default [
   },
 
   {
-    name: "GENERAL",
+    name: "MIS",
     submenu: [
       {
         subitem: " Count Of Medications - By Trade Name",
@@ -568,7 +540,7 @@ export default [
   },
 
   {
-    name: "INVENTORY REPORTS",
+    name: "INVENTORY",
     submenu: [
       {
         subitem: " Inventory of Retail Products",
@@ -863,7 +835,7 @@ export default [
     ]
   },
   {
-    name: "REFERRAL",
+    name: "INCENTIVES",
     submenu: [
       {
         subitem: "Clinic - Doctor Invoices Summary",
@@ -1180,49 +1152,18 @@ export default [
   },
 
   {
-    name: "PACKAGE",
-    submenu: [
-      {
-        subitem: "Package Advance-List of Receipts",
-        template_name: "asset_war_exp"
-        //reportParameters: () => <Package ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Package History of a Patient",
-        template_name: "asset_war_exp"
-        //reportParameters: () => <Package ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Package Outstanding",
-        template_name: "asset_war_exp"
-        //reportParameters: () => <Package ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Wellness Package Report",
-        template_name: "asset_war_exp"
-        //reportParameters: () => <Package ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Package Item List of Reports",
-        template_name: "asset_war_exp"
-        //reportParameters: () => <Package ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Wellness Package Report-Biannually Statistics",
-        template_name: "asset_war_exp"
-        //reportParameters: () => <Package ui="asset_warty_exp_rep" />
-      }
-    ]
-  },
-
-  {
-    name: "VAT REPORTS",
-    submenu: [
-      {
-        subitem: "VAT Report Detailed : Period Wise / Nationality Wise",
-        template_name: "vat_report_detailed"
-        //reportParameters: () => <VatReports ui="vat_report_detailed" />
-      }
-    ]
+  name: "TAX REPORTS",
+  submenu: [
+    {
+      subitem: "Tax Report Summary",
+      template_name: "tax_report_summary"
+      //reportParameters: () => <VatReports ui="vat_report_detailed" />
+    },
+    {
+      subitem: "Tax Report Detail",
+      template_name: "tax_report_detailed"
+      //reportParameters: () => <VatReports ui="vat_report_detailed" />
+    }
+  ]
   }
 ];
