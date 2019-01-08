@@ -3233,6 +3233,88 @@ let addMisEarnDedcToEmployees = (req, res, next) => {
   }
 };
 
+//created by Adnan
+let addEmployeeAdvance = (req , res , next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT  INTO hims_f_employee_advance (employee_id,advance_amount, deducting_month,\
+          deducting_year, advance_reason,created_date,created_by,updated_date,updated_by) values(\
+            ?,?,?,?,?,?,?)",
+        [
+          input.employee_id,
+          input.advance_amount,
+          input.deducting_month,
+          input.deducting_year,
+          input.advance_reason,
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+
+}
+
+//created by Adnan
+let getEmployeeAdvance = (req , res , next) =>{
+
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "Select hims_f_employee_advance_id, employee_id, advance_amount, advance_reason, deducting_month,\
+         deducting_year, advance_status, created_by, created_date, updated_by, updated_date where record_status='A'" ,
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+
+
+
+
+  }
+  catch(e) {
+    next(e)
+  }
+
+
+
+}
+
+
+
 module.exports = {
   addEmployee,
   addEmployeeMaster,
@@ -3271,5 +3353,7 @@ module.exports = {
   getPayrollComponents,
   getFamilyIdentification,
   getEmployeesForMisED,
-  addMisEarnDedcToEmployees
+  addMisEarnDedcToEmployees,
+  addEmployeeAdvance,
+  getEmployeeAdvance
 };

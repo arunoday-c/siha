@@ -315,51 +315,59 @@ class EmployeeReceipts extends Component {
                     </h6>
                   </div>
                 </div>
-                <div className="row">
+                <div className="row" data-validate="writeOffDiv">
                   <AlagehFormGroup
                     div={{ className: "col form-group" }}
                     label={{
                       forceLabel: "Loan Write Off Amount",
-                      isImp: false
+                      isImp: true
                     }}
                     textBox={{
                       className: "txt-fld",
-                      name: "",
-                      value: "",
-                      events: {},
+                      name: "write_off_amount",
+                      value: this.state.write_off_amount,
+                      events: {
+                        onChange: this.textHandler.bind(this)
+                      },
                       option: {
-                        type: "text"
+                        type: "number"
                       }
                     }}
                   />
 
                   <AlagehAutoComplete
                     div={{ className: "col form-group" }}
-                    label={{ forceLabel: "Mode of Recipt", isImp: false }}
+                    label={{ forceLabel: "Mode of Recipt", isImp: true }}
                     selector={{
-                      name: "",
+                      name: "reciepts_mode",
+                      value: this.state.reciepts_mode,
                       className: "select-fld",
-                      dataSource: {},
-                      others: {}
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: GlobalVariables.RECIEPTS_MODE
+                      },
+                      onChange: this.dropDownHandler.bind(this)
                     }}
                   />
 
-                  <AlagehFormGroup
-                    div={{ className: "col form-group" }}
-                    label={{
-                      forceLabel: "Cheque No.",
-                      isImp: false
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "",
-                      value: "",
-                      events: {},
-                      option: {
-                        type: "text"
-                      }
-                    }}
-                  />
+                  {this.state.reciepts_mode === "CH" ? (
+                    <AlagehFormGroup
+                      div={{ className: "col form-group" }}
+                      label={{
+                        forceLabel: "Cheque No.",
+                        isImp: true
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "cheque_number",
+                        value: this.state.cheque_number,
+                        events: {
+                          onChange: this.textHandler.bind(this)
+                        }
+                      }}
+                    />
+                  ) : null}
 
                   <AlagehFormGroup
                     div={{ className: "col form-group" }}
@@ -369,9 +377,11 @@ class EmployeeReceipts extends Component {
                     }}
                     textBox={{
                       className: "txt-fld",
-                      name: "",
-                      value: "",
-                      events: {},
+                      name: "recievable_amount",
+                      value: this.state.recievable_amount,
+                      events: {
+                        onChange: this.textHandler.bind(this)
+                      },
                       option: {
                         type: "number"
                       }

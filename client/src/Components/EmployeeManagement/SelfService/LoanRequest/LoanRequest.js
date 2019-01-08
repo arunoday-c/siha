@@ -227,7 +227,7 @@ class LoanRequest extends Component {
                   <AlagehAutoComplete
                     div={{ className: "col-6" }}
                     label={{
-                      forceLabel: "Request Type",
+                      forceLabel: "Loan Type",
                       isImp: true
                     }}
                     selector={{
