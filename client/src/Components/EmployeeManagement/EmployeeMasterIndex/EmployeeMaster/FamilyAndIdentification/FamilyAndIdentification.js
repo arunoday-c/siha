@@ -115,8 +115,8 @@ class FamilyAndIdentification extends PureComponent {
                     },
                     others: {
                       tabIndex: "2",
-                      placeholder: "",
-                      type: "number"
+                      placeholder: ""
+                      // type: "number"
                     }
                   }}
                 />

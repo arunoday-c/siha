@@ -249,7 +249,7 @@ function LeaveDetails(props) {
             dataSource={{
               data: myParent.state.leaveDetails
             }}
-            isEditable={false}
+            isEditable={true}
             paging={{ page: 0, rowsPerPage: 10 }}
             events={{
               onEdit: () => {},

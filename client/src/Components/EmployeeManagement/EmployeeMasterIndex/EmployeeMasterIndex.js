@@ -51,6 +51,23 @@ class EmployeeMasterIndex extends Component {
     }
 
     getEmployeeDetails(this, this);
+
+    if (
+      this.props.subdepartment === undefined ||
+      this.props.subdepartment.length === 0
+    ) {
+      this.props.getSubDepartment({
+        uri: "/department/get/subdepartment",
+        data: {
+          sub_department_status: "A"
+        },
+        method: "GET",
+        redux: {
+          type: "SUB_DEPT_GET_DATA",
+          mappingName: "subdepartment"
+        }
+      });
+    }
   }
 
   ShowModel(e) {
@@ -257,6 +274,36 @@ class EmployeeMasterIndex extends Component {
                       }
                     },
                     {
+                      fieldName: "sub_department_id",
+                      label: (
+                        <AlgaehLabel
+                          label={{ fieldName: "sub_department_id" }}
+                        />
+                      ),
+                      displayTemplate: row => {
+                        let display =
+                          this.props.subdepartment === undefined
+                            ? []
+                            : this.props.subdepartment.filter(
+                                f =>
+                                  f.hims_d_sub_department_id ===
+                                  row.sub_department_id
+                              );
+
+                        return (
+                          <span>
+                            {display !== undefined && display.length !== 0
+                              ? display[0].sub_department_name
+                              : ""}
+                          </span>
+                        );
+                      },
+                      others: {
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+                    {
                       fieldName: "license_number",
                       label: (
                         <AlgaehLabel label={{ fieldName: "license_number" }} />
@@ -306,7 +353,7 @@ function mapStateToProps(state) {
   return {
     hospitalservices: state.hospitalservices,
     servicetype: state.servicetype,
-    subdepartments: state.subdepartments,
+    subdepartment: state.subdepartment,
     employeedetails: state.employeedetails,
     designations: state.designations
   };
@@ -317,7 +364,7 @@ function mapDispatchToProps(dispatch) {
     {
       getServices: AlgaehActions,
       getServiceTypes: AlgaehActions,
-      getSubDepatments: AlgaehActions,
+      getSubDepartment: AlgaehActions,
       getEmployeeDetails: AlgaehActions,
       getDesignations: AlgaehActions
     },

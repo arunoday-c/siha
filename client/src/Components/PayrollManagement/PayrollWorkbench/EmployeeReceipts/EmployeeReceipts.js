@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./emp_receipts.css";
+import "./EmployeeReceipts.css";
 
 import {
   AlagehAutoComplete,

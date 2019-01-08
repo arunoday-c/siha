@@ -13,7 +13,7 @@ class LeaveMaster extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageDisplay: "LeaveEntitlement",
+      pageDisplay: "Leave",
       religions: [],
       earning_deductions: [],
       leaveDetails: [],
@@ -23,83 +23,89 @@ class LeaveMaster extends Component {
   }
 
   saveLeaveMaster() {
+    // AlgaehValidation({
+    //   alertTypeIcon: "warning",
+    //   querySelector: "data-validate='leaveMasterValidateDiv'",
+    //   onSuccess: () => {
+    let send_data = {
+      leave_code: this.state.leave_code,
+      leave_description: this.state.leave_description,
+      annual_maternity_leave: this.state.annual_maternity_leave,
+      include_weekoff: this.state.include_weekoff ? "Y" : "N",
+      include_holiday: this.state.include_holiday ? "Y" : "N",
+      leave_mode: this.state.leave_mode,
+      leave_status: this.state.leave_status,
+      leave_accrual: this.state.leave_accrual,
+      leave_encash: this.state.leave_encash ? "Y" : "N",
+      leave_type: this.state.leave_type,
+      encashment_percentage: this.state.encashment_percentage,
+      leave_carry_forward: this.state.leave_carry_forward ? "Y" : "N",
+      carry_forward_percentage: this.state.carry_forward_percentage,
+      religion_required: this.state.religion_required ? "Y" : "N",
+      religion_id: this.state.religion_id,
+      holiday_reimbursement: this.state.holiday_reimbursement ? "Y" : "N",
+      exit_permit_required: this.state.exit_permit_required ? "Y" : "N",
+      proportionate_leave: this.state.proportionate_leave ? "Y" : "N",
+      document_mandatory: this.state.document_mandatory ? "Y" : "N",
+      leaveEncash: this.state.leaveEncash,
+      leaveRules: this.state.leaveRules,
+      leaveDetails: this.state.leaveDetails
+    };
+
+    algaehApiCall({
+      uri: "/leave/addLeaveMaster",
+      method: "POST",
+      data: send_data,
+      onSuccess: res => {
+        if (res.data.success) {
+          swalMessage({
+            title: "Leave Added Successfully",
+            type: "success"
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+    //}
+    //});
+  }
+
+  addLeaveRules() {
     AlgaehValidation({
       alertTypeIcon: "warning",
       querySelector: "data-validate='leaveMasterValidateDiv'",
       onSuccess: () => {
-        let send_data = {
-          leave_code: this.state.leave_code,
-          leave_description: this.state.leave_description,
-          annual_maternity_leave: this.state.annual_maternity_leave,
-          include_weekoff: this.state.include_weekoff ? "Y" : "N",
-          include_holiday: this.state.include_holiday ? "Y" : "N",
-          leave_mode: this.state.leave_mode,
-          leave_status: this.state.leave_status,
-          leave_accrual: this.state.leave_accrual,
-          leave_encash: this.state.leave_encash ? "Y" : "N",
-          leave_type: this.state.leave_type,
-          encashment_percentage: this.state.encashment_percentage,
-          leave_carry_forward: this.state.leave_carry_forward ? "Y" : "N",
-          carry_forward_percentage: this.state.carry_forward_percentage,
-          religion_required: this.state.religion_required ? "Y" : "N",
-          religion_id: this.state.religion_id,
-          holiday_reimbursement: this.state.holiday_reimbursement ? "Y" : "N",
-          exit_permit_required: this.state.exit_permit_required ? "Y" : "N",
-          proportionate_leave: this.state.proportionate_leave ? "Y" : "N",
-          document_mandatory: this.state.document_mandatory ? "Y" : "N",
-          leaveEncash: this.state.leaveEncash,
-          leaveRules: this.state.leaveRules,
-          leaveDetails: this.state.leaveDetails
-        };
+        let details = this.state.leaveRules;
 
-        algaehApiCall({
-          uri: "/leave/addLeaveMaster",
-          method: "POST",
-          data: send_data,
-          onSuccess: res => {
-            if (res.data.success) {
-              swalMessage({
-                title: "Leave Added Successfully",
-                type: "success"
-              });
-            }
-          },
-          onFailure: err => {
-            swalMessage({
-              title: err.message,
-              type: "error"
-            });
-          }
+        details.push({
+          calculation_type: this.state.calculation_type,
+          earning_id: this.state.rule_earning_id,
+          paytype: this.state.paytype,
+          from_value: this.state.from_value,
+          to_value: this.state.to_value,
+          value_type: this.state.value_type,
+          total_days: this.state.total_days
+        });
+
+        this.setState({
+          leaveRules: details
+        });
+
+        this.setState({
+          calculation_type: null,
+          rule_earning_id: null,
+          paytype: null,
+          from_value: null,
+          to_value: null,
+          value_type: null,
+          total_days: null
         });
       }
-    });
-  }
-
-  addLeaveRules() {
-    let details = this.state.leaveRules;
-
-    details.push({
-      calculation_type: this.state.calculation_type,
-      earning_id: this.state.rule_earning_id,
-      paytype: this.state.paytype,
-      from_value: this.state.from_value,
-      to_value: this.state.to_value,
-      value_type: this.state.value_type,
-      total_days: this.state.total_days
-    });
-
-    this.setState({
-      leaveRules: details
-    });
-
-    this.setState({
-      calculation_type: null,
-      rule_earning_id: null,
-      paytype: null,
-      from_value: null,
-      to_value: null,
-      value_type: null,
-      total_days: null
     });
   }
 
@@ -156,19 +162,37 @@ class LeaveMaster extends Component {
   openTab(e) {
     var specified = e.currentTarget.getAttribute("leavetabs");
     var element = document.querySelectorAll("[leavetabs]");
-    for (var i = 0; i < element.length; i++) {
-      element[i].classList.remove("active");
+
+    if (specified !== "Leave") {
+      e.preventDefault();
+      AlgaehValidation({
+        alertTypeIcon: "warning",
+        querySelector: "data-validate='levDv'",
+        onSuccess: () => {
+          for (var i = 0; i < element.length; i++) {
+            element[i].classList.remove("active");
+          }
+          e.currentTarget.classList.add("active");
+
+          specified === "LeaveEncashment" &&
+          this.state.earning_deductions.length === 0
+            ? this.getEarningsDeds()
+            : null;
+
+          this.setState({
+            pageDisplay: specified
+          });
+        }
+      });
+    } else {
+      for (var i = 0; i < element.length; i++) {
+        element[i].classList.remove("active");
+      }
+      e.currentTarget.classList.add("active");
+      this.setState({
+        pageDisplay: specified
+      });
     }
-    e.currentTarget.classList.add("active");
-
-    specified === "LeaveEncashment" &&
-    this.state.earning_deductions.length === 0
-      ? this.getEarningsDeds()
-      : null;
-
-    this.setState({
-      pageDisplay: specified
-    });
   }
 
   getEarningsDeds() {
@@ -259,14 +283,14 @@ class LeaveMaster extends Component {
             <div className="tab-container toggle-section">
               <ul className="nav">
                 <li
-                  leavetabs={"LeaveEntitlement"}
+                  leavetabs={"Leave"}
                   className={"nav-item tab-button active"}
                   onClick={this.openTab.bind(this)}
                 >
                   {
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Leave Entitlement"
+                        forceLabel: "Leave"
                       }}
                     />
                   }
@@ -315,7 +339,7 @@ class LeaveMaster extends Component {
             </div>
 
             <div className="popupInner" data-validate="leaveMasterValidateDiv">
-              {this.state.pageDisplay === "LeaveEntitlement" ? (
+              {this.state.pageDisplay === "Leave" ? (
                 <LeaveEntitlement parent={this} />
               ) : this.state.pageDisplay === "LeaveDetails" ? (
                 <LeaveDetails parent={this} />

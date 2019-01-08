@@ -11,7 +11,7 @@ function LeaveEntitlement(props) {
   let myParent = props.parent;
 
   return (
-    <div className="popRightDiv leave_entitlement">
+    <div className="popRightDiv leave_entitlement" data-validate="levDv">
       <div className="row">
         <AlagehFormGroup
           div={{ className: "col  form-group" }}

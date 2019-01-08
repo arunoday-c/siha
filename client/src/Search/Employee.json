@@ -1,0 +1,22 @@
+[
+  {
+    "fieldName": "employee_code",
+    "label": "Employee Code"
+  },
+  {
+    "fieldName": "full_name",
+    "label": "Name"
+  },
+  {
+    "fieldName": "arabic_name",
+    "label": "Arabic Name"
+  },
+  {
+    "fieldName": "sex",
+    "label": "Gender"
+  },
+  {
+    "fieldName": "primary_contact_no",
+    "label": "Contact Number"
+  }
+]

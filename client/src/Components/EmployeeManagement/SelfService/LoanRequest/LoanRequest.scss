@@ -12,7 +12,12 @@
   }
   #LoanRequestList_cntr {
     .ReactTable {
-      max-height: 42vh !important;
+      max-height: 21.5vh !important;
+    }
+  }
+  #AdvanceRequestGrid_Cntr {
+    .ReactTable {
+      max-height: 21.5vh !important;
     }
   }
 }
