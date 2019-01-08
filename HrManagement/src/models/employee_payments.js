@@ -7,10 +7,13 @@ module.exports = {
     const _loanDetails = req.query;
 
     let _stringData =
-      _loanDetails.employee_id != null ? " and employee_id=? " : "";
+      _loanDetails.employee_id != null ? " and loan.employee_id=? " : "";
+
     _stringData +=
-      _loanDetails.document_num != null
-        ? " and loan_application_number=? "
+      _loanDetails.hospital_id != null ? " and emp.hospital_id=? " : "";
+    _stringData +=
+      _loanDetails.loan_application_number != null
+        ? " and loan.loan_application_number=? "
         : "";
 
     /* Select statemwnt  */
@@ -20,8 +23,8 @@ module.exports = {
       .executeQueryWithTransaction({
         query:
           "select loan.hims_f_loan_application_id, loan.loan_application_number, loan.approved_amount,emp.employee_code, \
-          emp.full_name from hims_f_loan_application loan, hims_d_employee emp where  start_month=? and start_year=? \
-          and loan_authorized =? and loan.employee_id = emp.hims_d_employee_id" +
+          emp.full_name from hims_f_loan_application loan, hims_d_employee emp where loan.loan_authorized = ? and \
+          loan.employee_id = emp.hims_d_employee_id " +
           _stringData,
         values: _.valuesIn(_loanDetails),
         printQuery: true

@@ -12,23 +12,25 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import moment from "moment";
-import { texthandle, LoadData } from "./EmployeePaymentEvents.js";
+import {
+  texthandle,
+  LoadData,
+  RequestPaySearch,
+  getPaymentDetails
+} from "./EmployeePaymentEvents.js";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import Enumerable from "linq";
+import EmployeePaymentIOputs from "../../../../Models/EmployeePayment";
 
 class EmployeePayment extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      selectedLang: this.props.SelectLanguage,
-      fromMonth: new Date(),
-      department_id: null,
-      year: moment().year(),
-      select_employee_id: null,
-      document_num: null,
-      month: moment(new Date()).format("M"),
-      requestPayment: []
-    };
+    this.state = {};
+  }
+
+  componentWillMount() {
+    let IOputs = EmployeePaymentIOputs.inputParam();
+    this.setState(IOputs);
   }
 
   componentDidMount() {
@@ -82,13 +84,13 @@ class EmployeePayment extends Component {
   render() {
     debugger;
     const depEmployee = Enumerable.from(this.props.all_employees)
-      .where(w => w.sub_department_id === this.state.department_id)
+      .where(w => w.hospital_id === this.state.hospital_id)
       .toArray();
     return (
       <React.Fragment>
         <div className="hptl-EmployeePayment-form">
           <div className="row  inner-top-search">
-            <AlagehAutoComplete
+            {/* <AlagehAutoComplete
               div={{ className: "col" }}
               label={{
                 forceLabel: "Select a Month.",
@@ -105,7 +107,7 @@ class EmployeePayment extends Component {
                 },
                 onChange: texthandle.bind(this, this),
                 others: {
-                  tabIndex: "1"
+                  tabIndex: "0"
                 },
                 onClear: () => {
                   this.setState({
@@ -131,10 +133,10 @@ class EmployeePayment extends Component {
                 others: {
                   type: "number",
                   min: moment().year(),
-                  tabIndex: "2"
+                  tabIndex: "1"
                 }
               }}
-            />
+            /> */}
             <AlagehAutoComplete
               div={{ className: "col" }}
               label={{
@@ -142,9 +144,9 @@ class EmployeePayment extends Component {
                 isImp: true
               }}
               selector={{
-                name: "payment_type",
+                name: "sel_payment_type",
                 className: "select-fld",
-                value: this.state.payment_type,
+                value: this.state.sel_payment_type,
                 dataSource: {
                   textField: "name",
                   valueField: "value",
@@ -152,11 +154,11 @@ class EmployeePayment extends Component {
                 },
                 onChange: texthandle.bind(this, this),
                 others: {
-                  tabIndex: "3"
+                  tabIndex: "2"
                 },
                 onClear: () => {
                   this.setState({
-                    payment_type: null
+                    sel_payment_type: null
                   });
                 }
               }}
@@ -189,7 +191,10 @@ class EmployeePayment extends Component {
                 paddingRight: 0
               }}
             >
-              <span onClick="" style={{ cursor: "pointer" }}>
+              <span
+                onClick={RequestPaySearch.bind(this, this)}
+                style={{ cursor: "pointer" }}
+              >
                 <i className="fas fa-search" />
               </span>
             </div>
@@ -217,30 +222,7 @@ class EmployeePayment extends Component {
                 }
               }}
             />
-            <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{
-                forceLabel: "Select a Dept..",
-                isImp: false
-              }}
-              selector={{
-                name: "department_id",
-                className: "select-fld",
-                value: this.state.department_id,
 
-                dataSource: {
-                  textField: "sub_department_name",
-                  valueField: "hims_d_sub_department_id",
-                  data: this.props.subdepartment
-                },
-                onChange: texthandle.bind(this, this),
-                onClear: () => {
-                  this.setState({
-                    department_id: null
-                  });
-                }
-              }}
-            />
             <AlagehAutoComplete
               div={{ className: "col" }}
               label={{
@@ -260,8 +242,10 @@ class EmployeePayment extends Component {
                       : depEmployee
                 },
                 onChange: texthandle.bind(this, this),
-                others: {
-                  tabIndex: "2"
+                onClear: () => {
+                  this.setState({
+                    select_employee_id: null
+                  });
                 }
               }}
             />
@@ -302,7 +286,6 @@ class EmployeePayment extends Component {
                             columns={[
                               {
                                 fieldName: "payment_type",
-
                                 label: (
                                   <AlgaehLabel
                                     label={{ forceLabel: "Request Type" }}
@@ -322,43 +305,53 @@ class EmployeePayment extends Component {
                                     </span>
                                   );
                                 }
-                                //disabled: true
                               },
                               {
                                 fieldName: "loan_application_number",
-                                label: "Request No."
-                                // others: {
-                                //   minWidth: 150,
-                                //   maxWidth: 250
-                                // }
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ forceLabel: "Request No." }}
+                                  />
+                                )
                               },
                               {
                                 fieldName: "employee_code",
-                                label: "Employee Code"
-                                //disabled: true
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ forceLabel: "Employee Code" }}
+                                  />
+                                )
                               },
                               {
                                 fieldName: "full_name",
-                                label: "Employee Name"
-                                //disabled: true
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ forceLabel: "Employee Name" }}
+                                  />
+                                )
                               },
                               {
                                 fieldName: "approved_amount",
-                                label: "Requested Amount"
-                                //disabled: true
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ forceLabel: "Requested Amount" }}
+                                  />
+                                )
                               }
                             ]}
                             keyId="requested_application_id"
                             dataSource={{
                               data: this.state.requestPayment
                             }}
-                            isEditable={false}
                             paging={{ page: 0, rowsPerPage: 10 }}
                             filter={true}
                             events={{
                               onEdit: () => {},
                               onDelete: () => {},
                               onDone: () => {}
+                            }}
+                            onRowSelect={row => {
+                              getPaymentDetails(this, row);
                             }}
                           />
                         </div>
@@ -389,7 +382,6 @@ class EmployeePayment extends Component {
                           />
                           <h6>*** NEW ***</h6>
                         </div>
-
                         <div className="col-6">
                           <AlgaehLabel
                             label={{
@@ -398,7 +390,6 @@ class EmployeePayment extends Component {
                           />
                           <h6>DD/MM/YYYY</h6>
                         </div>
-
                         <AlagehAutoComplete
                           div={{ className: "col-6 form-group" }}
                           label={{
@@ -417,19 +408,26 @@ class EmployeePayment extends Component {
                             others: {}
                           }}
                         />
-                        <AlagehAutoComplete
-                          div={{ className: "col-6 form-group" }}
+                        <AlagehFormGroup
+                          div={{ className: "col-4 form-group" }}
                           label={{
-                            forceLabel: "Mode of Payment",
+                            forceLabel: "Payment Amount",
                             isImp: false
                           }}
-                          selector={{
-                            name: "",
-                            className: "select-fld",
-                            dataSource: {},
-                            others: {}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "payment_amount",
+                            value: this.state.payment_amount,
+                            others: {
+                              disabled: true
+                            },
+                            option: {
+                              type: "text"
+                            }
                           }}
                         />
+                        {this.state.payment_mode === "CH" ? "" : null}
+
                         <AlagehAutoComplete
                           div={{ className: "col-6  form-group" }}
                           label={{ forceLabel: "Select a Bank", isImp: false }}
@@ -444,7 +442,6 @@ class EmployeePayment extends Component {
                             }
                           }}
                         />
-
                         <AlagehFormGroup
                           div={{ className: "col-6 form-group" }}
                           label={{
@@ -462,22 +459,6 @@ class EmployeePayment extends Component {
                           }}
                         />
 
-                        <AlagehFormGroup
-                          div={{ className: "col-4 form-group" }}
-                          label={{
-                            forceLabel: "Payment Amount",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "",
-                            value: "",
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />
                         <AlagehAutoComplete
                           div={{ className: "col-4 form-group" }}
                           label={{
