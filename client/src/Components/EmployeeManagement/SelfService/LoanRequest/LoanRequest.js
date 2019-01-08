@@ -200,7 +200,7 @@ class LoanRequest extends Component {
             <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">Request loan</h3>
+                  <h3 className="caption-subject">Request Loan/ Advance</h3>
                 </div>
               </div>
               <div className="portlet-body" data-validate="loanApplyDiv">
@@ -208,7 +208,7 @@ class LoanRequest extends Component {
                   <AlagehAutoComplete
                     div={{ className: "col-6" }}
                     label={{
-                      forceLabel: "Loan Type",
+                      forceLabel: "Request Type",
                       isImp: true
                     }}
                     selector={{
@@ -250,6 +250,26 @@ class LoanRequest extends Component {
                       }
                     }}
                   />
+
+                  <AlagehFormGroup
+                    div={{ className: "col-6" }}
+                    label={{
+                      forceLabel: "Advance Amount",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "loan_amount",
+                      value: this.state.loan_amount,
+                      events: {
+                        onChange: this.textHandle.bind(this)
+                      },
+                      others: {
+                        type: "number"
+                      }
+                    }}
+                  />
+
                   <AlagehAutoComplete
                     div={{ className: "col-6" }}
                     label={{
@@ -345,150 +365,197 @@ class LoanRequest extends Component {
             </div>
           </div>
           <div className="col-9">
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">Loan Request List</h3>
+            <div className="row">
+              <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+                <div className="portlet-title">
+                  <div className="caption">
+                    <h3 className="caption-subject">Loan Request List</h3>
+                  </div>
+                </div>
+                <div className="portlet-body">
+                  <div className="row">
+                    <div className="col-lg-12" id="LoanRequestList_cntr">
+                      <AlgaehDataGrid
+                        id="LoanRequestList_grid"
+                        columns={[
+                          {
+                            fieldName: "loan_application_number",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Application No." }}
+                              />
+                            )
+                          },
+                          {
+                            fieldName: "loan_application_date",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Loan Requested On" }}
+                              />
+                            ),
+                            displayTemplate: row => {
+                              return (
+                                <span>
+                                  {moment(row.loan_application_date).format(
+                                    "MM-DD-YYYY"
+                                  )}
+                                </span>
+                              );
+                            }
+                          },
+                          {
+                            fieldName: "loan_description",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Loan Type" }}
+                              />
+                            )
+                          },
+                          {
+                            fieldName: "loan_amount",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Loan Amount" }}
+                              />
+                            )
+                            //disabled: true
+                          },
+                          {
+                            fieldName: "loan_tenure",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Total No. of EMI" }}
+                              />
+                            )
+                          },
+                          {
+                            fieldName: "installment_amount",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Installment Amount" }}
+                              />
+                            )
+                          },
+                          {
+                            fieldName: "loan_description",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Reason For Loan" }}
+                              />
+                            )
+                          },
+                          {
+                            fieldName: "loan_tenure",
+                            label: "No. of EMI Pending",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "No. of EMI Pending" }}
+                              />
+                            ),
+                            displayTemplate: row => {
+                              return (
+                                <span>
+                                  {row.pending_loan / row.installment_amount}
+                                </span>
+                              );
+                            }
+                          },
+                          {
+                            fieldName: "pending_loan",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Balance Due" }}
+                              />
+                            )
+                          },
+                          {
+                            fieldName: "loan_authorized",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Status" }} />
+                            ),
+                            displayTemplate: row => {
+                              return (
+                                <span>
+                                  {row.loan_authorized === "PEN" ? (
+                                    <span className="badge badge-warning">
+                                      Pending
+                                    </span>
+                                  ) : row.loan_authorized === "APR" ? (
+                                    <span className="badge badge-success">
+                                      Approved
+                                    </span>
+                                  ) : row.loan_authorized === "REJ" ? (
+                                    <span className="badge badge-danger">
+                                      Rejected
+                                    </span>
+                                  ) : row.loan_authorized === "IS" ? (
+                                    <span className="badge badge-success">
+                                      Issued
+                                    </span>
+                                  ) : (
+                                    "------"
+                                  )}
+                                </span>
+                              );
+                            }
+                          }
+                        ]}
+                        keyId="hims_f_loan_application_id"
+                        dataSource={{
+                          data: this.state.employee_loans
+                        }}
+                        isEditable={false}
+                        paging={{ page: 0, rowsPerPage: 10 }}
+                        events={{
+                          onEdit: () => {},
+                          onDelete: () => {},
+                          onDone: () => {}
+                        }}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className="portlet-body">
-                <div className="row">
-                  <div className="col-lg-12" id="LoanRequestList_cntr">
-                    <AlgaehDataGrid
-                      id="LoanRequestList_grid"
-                      columns={[
-                        {
-                          fieldName: "loan_application_number",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Application No." }}
-                            />
-                          )
-                        },
-                        {
-                          fieldName: "loan_application_date",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Loan Requested On" }}
-                            />
-                          ),
-                          displayTemplate: row => {
-                            return (
-                              <span>
-                                {moment(row.loan_application_date).format(
-                                  "MM-DD-YYYY"
-                                )}
-                              </span>
-                            );
+
+              <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+                <div className="portlet-title">
+                  <div className="caption">
+                    <h3 className="caption-subject">Enter Grid Name Here</h3>
+                  </div>
+                  <div className="actions">
+                    <a className="btn btn-primary btn-circle active">
+                      <i className="fas fa-pen" />
+                    </a>
+                  </div>
+                </div>
+                <div className="portlet-body">
+                  <div className="row">
+                    <div className="col-12" id="EnterGridIdHere_Cntr">
+                      <AlgaehDataGrid
+                        id="EnterGridIdHere"
+                        datavalidate="EnterGridIdHere"
+                        columns={[
+                          {
+                            fieldName: "Column_1",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Column 1" }} />
+                            )
+                          },
+                          {
+                            fieldName: "Column_2",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Column 2" }} />
+                            )
                           }
-                        },
-                        {
-                          fieldName: "loan_description",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Loan Type" }} />
-                          )
-                        },
-                        {
-                          fieldName: "loan_amount",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Loan Amount" }}
-                            />
-                          )
-                          //disabled: true
-                        },
-                        {
-                          fieldName: "loan_tenure",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Total No. of EMI" }}
-                            />
-                          )
-                        },
-                        {
-                          fieldName: "installment_amount",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Installment Amount" }}
-                            />
-                          )
-                        },
-                        {
-                          fieldName: "loan_description",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Reason For Loan" }}
-                            />
-                          )
-                        },
-                        {
-                          fieldName: "loan_tenure",
-                          label: "No. of EMI Pending",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "No. of EMI Pending" }}
-                            />
-                          ),
-                          displayTemplate: row => {
-                            return (
-                              <span>
-                                {row.pending_loan / row.installment_amount}
-                              </span>
-                            );
-                          }
-                        },
-                        {
-                          fieldName: "pending_loan",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Balance Due" }}
-                            />
-                          )
-                        },
-                        {
-                          fieldName: "loan_authorized",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Status" }} />
-                          ),
-                          displayTemplate: row => {
-                            return (
-                              <span>
-                                {row.loan_authorized === "PEN" ? (
-                                  <span className="badge badge-warning">
-                                    Pending
-                                  </span>
-                                ) : row.loan_authorized === "APR" ? (
-                                  <span className="badge badge-success">
-                                    Approved
-                                  </span>
-                                ) : row.loan_authorized === "REJ" ? (
-                                  <span className="badge badge-danger">
-                                    Rejected
-                                  </span>
-                                ) : row.loan_authorized === "IS" ? (
-                                  <span className="badge badge-success">
-                                    Issued
-                                  </span>
-                                ) : (
-                                  "------"
-                                )}
-                              </span>
-                            );
-                          }
-                        }
-                      ]}
-                      keyId="hims_f_loan_application_id"
-                      dataSource={{
-                        data: this.state.employee_loans
-                      }}
-                      isEditable={false}
-                      paging={{ page: 0, rowsPerPage: 10 }}
-                      events={{
-                        onEdit: () => {},
-                        onDelete: () => {},
-                        onDone: () => {}
-                      }}
-                    />
+                        ]}
+                        keyId=""
+                        dataSource={{ data: [] }}
+                        isEditable={true}
+                        paging={{ page: 0, rowsPerPage: 10 }}
+                        events={{}}
+                        others={{}}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
