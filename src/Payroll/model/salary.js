@@ -346,14 +346,13 @@ let processSalary = (req, res, next) => {
                             final_contribution_amount;
                           debugLog("per_day_sal ", per_day_sal);
                           debugLog("connection ", connection.query);
-                          resolve("");
-                          //               next();
+
                           //   connection.query(
                           //     "INSERT INTO `hims_f_salary` (salary_number,month,year,employee_id,salary_date,per_day_sal,total_days,\
                           //    present_days,absent_days,total_work_days,total_weekoff_days,total_holidays,total_leave,paid_leave,\
                           // unpaid_leave,loan_payable_amount,loan_due_amount,gross_salary,total_earnings,total_deductions,\
                           //   total_contributions,net_salary) \
-                          // VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                          //  VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                           //     [
                           //       25,
                           //       month_number,
