@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+
+import "./EmployeePayments.css";
 import {
   AlgaehDateHandler,
   AlagehFormGroup,
@@ -225,7 +227,25 @@ export default class EmployeePayment extends Component {
                     </div>
 
                     <div className="portlet-body">
-                      <div className="row">
+                      <div className="row" style={{ minHeight: "43vh" }}>
+                        <div className="col-6">
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Generate Document No."
+                            }}
+                          />
+                          <h6>*** NEW ***</h6>
+                        </div>
+
+                        <div className="col-6">
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Date"
+                            }}
+                          />
+                          <h6>DD/MM/YYYY</h6>
+                        </div>
+
                         <AlagehAutoComplete
                           div={{ className: "col-6 form-group" }}
                           label={{
@@ -241,7 +261,10 @@ export default class EmployeePayment extends Component {
                         />
                         <AlagehAutoComplete
                           div={{ className: "col-6 form-group" }}
-                          label={{ forceLabel: "Pay Component", isImp: false }}
+                          label={{
+                            forceLabel: "Mode of Payment",
+                            isImp: false
+                          }}
                           selector={{
                             name: "",
                             className: "select-fld",
@@ -249,8 +272,36 @@ export default class EmployeePayment extends Component {
                             others: {}
                           }}
                         />
+                        <AlagehAutoComplete
+                          div={{ className: "col-6  form-group" }}
+                          label={{ forceLabel: "Select a Bank", isImp: false }}
+                          selector={{
+                            name: "",
+                            className: "select-fld",
+                            dataSource: {},
+                            others: {}
+                          }}
+                        />
+
                         <AlagehFormGroup
                           div={{ className: "col-6 form-group" }}
+                          label={{
+                            forceLabel: "Cheque No.",
+                            isImp: false
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "",
+                            value: "",
+                            events: {},
+                            option: {
+                              type: "text"
+                            }
+                          }}
+                        />
+
+                        <AlagehFormGroup
+                          div={{ className: "col-4 form-group" }}
                           label={{
                             forceLabel: "Payment Amount",
                             isImp: false
@@ -266,7 +317,7 @@ export default class EmployeePayment extends Component {
                           }}
                         />
                         <AlagehAutoComplete
-                          div={{ className: "col form-group" }}
+                          div={{ className: "col-4 form-group" }}
                           label={{
                             forceLabel: "Deduct in Month",
                             isImp: false
@@ -279,7 +330,7 @@ export default class EmployeePayment extends Component {
                           }}
                         />
                         <AlagehFormGroup
-                          div={{ className: "col form-group" }}
+                          div={{ className: "col-4 form-group" }}
                           label={{
                             forceLabel: "Year",
                             isImp: false
@@ -303,6 +354,77 @@ export default class EmployeePayment extends Component {
                           </button>
                         </div>
                       </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="row">
+            <div className="col-12">
+              <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+                <div className="portlet-title">
+                  <div className="caption">
+                    <h3 className="caption-subject">
+                      Previous Payment Request List
+                    </h3>
+                  </div>
+                  <div className="actions">
+                    {/*    <a className="btn btn-primary btn-circle active">
+                       <i className="fas fa-calculator" /> 
+                      </a>*/}
+                  </div>
+                </div>
+
+                <div className="portlet-body">
+                  <div className="row">
+                    <div className="col-lg-12" id="Employee_Payment_Cntr">
+                      <AlgaehDataGrid
+                        id="All_trans_Employee_Payment_Cntr"
+                        columns={[
+                          {
+                            fieldName: "",
+                            label: "Request Type"
+                            //disabled: true
+                          },
+                          {
+                            fieldName: "",
+                            label: "Request No."
+                            // others: {
+                            //   minWidth: 150,
+                            //   maxWidth: 250
+                            // }
+                          },
+                          {
+                            fieldName: "",
+                            label: "Employee Code"
+                            //disabled: true
+                          },
+                          {
+                            fieldName: "",
+                            label: "Employee Name"
+                            //disabled: true
+                          },
+                          {
+                            fieldName: "",
+                            label: "Requested Amount"
+                            //disabled: true
+                          }
+                        ]}
+                        keyId="algaeh_d_module_id"
+                        dataSource={{
+                          data: []
+                        }}
+                        isEditable={true}
+                        paging={{ page: 0, rowsPerPage: 10 }}
+                        filter={true}
+                        events={{
+                          onEdit: () => {},
+                          onDelete: () => {},
+                          onDone: () => {}
+                        }}
+                      />
                     </div>
                   </div>
                 </div>

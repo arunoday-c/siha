@@ -92,11 +92,16 @@
 
 .appointment .tg {
   display: inline-block;
-  margin-right: 5px;
-  vertical-align: top;
+  padding: 8px;
+  padding-bottom: 0;
+  padding-right: 0;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   margin-bottom: 10px;
-  border-bottom: 1px solid #d3d3d3; }
+  border-bottom: 1px solid #d3d3d3;
+  background: #fff;
+  margin-right: 10px;
+  border-radius: 5px; }
   .appointment .tg thead tr {
     text-align: center; }
     .appointment .tg thead tr .tg-amwm {
