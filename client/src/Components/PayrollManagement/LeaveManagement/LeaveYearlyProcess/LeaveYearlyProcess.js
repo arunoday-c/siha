@@ -31,38 +31,9 @@ export default class LeaveYearlyProcess extends Component {
             />
 
             <AlagehAutoComplete
-              div={{ className: "col form-group" }}
+              div={{ className: "col form-group mandatory" }}
               label={{
                 forceLabel: "Filter by Branch",
-                isImp: false
-              }}
-              selector={{
-                name: "",
-                className: "select-fld",
-
-                dataSource: {},
-                others: {}
-              }}
-            />
-
-            <AlagehAutoComplete
-              div={{ className: "col form-group" }}
-              label={{
-                forceLabel: "Filter by Departement",
-                isImp: false
-              }}
-              selector={{
-                name: "",
-                className: "select-fld",
-
-                dataSource: {},
-                others: {}
-              }}
-            />
-            <AlagehAutoComplete
-              div={{ className: "col form-group" }}
-              label={{
-                forceLabel: "Select an Employee",
                 isImp: true
               }}
               selector={{
@@ -73,15 +44,38 @@ export default class LeaveYearlyProcess extends Component {
                 others: {}
               }}
             />
+
             <AlagehAutoComplete
-              div={{ className: "col form-group" }}
+              div={{ className: "col form-group mandatory" }}
               label={{
-                forceLabel: "Encashment Type",
-                isImp: false
+                forceLabel: "Select an Employee Type",
+                isImp: true
               }}
               selector={{
                 name: "",
                 className: "select-fld",
+
+                dataSource: {},
+                others: {}
+              }}
+            />
+
+            <div className="col form-group">
+              <button style={{ marginTop: 21 }} className="btn btn-default">
+                Load
+              </button>
+            </div>
+
+            <AlagehAutoComplete
+              div={{ className: "col form-group mandatory" }}
+              label={{
+                forceLabel: "Select an Leave Type",
+                isImp: true
+              }}
+              selector={{
+                name: "",
+                className: "select-fld",
+
                 dataSource: {},
                 others: {}
               }}
@@ -89,7 +83,7 @@ export default class LeaveYearlyProcess extends Component {
 
             <div className="col form-group">
               <button style={{ marginTop: 21 }} className="btn btn-primary">
-                Load
+                Process
               </button>
             </div>
           </div>
@@ -99,7 +93,7 @@ export default class LeaveYearlyProcess extends Component {
           <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
-                <h3 className="caption-subject">Encashment Details</h3>
+                <h3 className="caption-subject">Leave Process Details</h3>
               </div>
               <div className="actions">
                 {/* <a className="btn btn-primary btn-circle active">
@@ -119,10 +113,6 @@ export default class LeaveYearlyProcess extends Component {
                         label: <AlgaehLabel label={{ forceLabel: "Year" }} />
                       },
                       {
-                        fieldName: "Month",
-                        label: <AlgaehLabel label={{ forceLabel: "Month" }} />
-                      },
-                      {
                         fieldName: "EmployeeCode",
                         label: (
                           <AlgaehLabel
@@ -131,67 +121,11 @@ export default class LeaveYearlyProcess extends Component {
                         )
                       },
                       {
-                        fieldName: "SalaryNo",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Salary No" }} />
-                        )
-                      },
-                      {
-                        fieldName: "SalaryDate",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Salary Date" }} />
-                        )
-                      },
-                      {
-                        fieldName: "GrossSalary",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Gross Salary" }} />
-                        )
-                      },
-                      {
-                        fieldName: "NetSalary",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Net Salary" }} />
-                        )
-                      },
-                      {
-                        fieldName: "StartDate",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Start Date" }} />
-                        )
-                      },
-                      {
-                        fieldName: "EndDate",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "End Date" }} />
-                        )
-                      },
-                      {
-                        fieldName: "LeaveStartDate",
+                        fieldName: "EmployeeName",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Leave Start Date" }}
+                            label={{ forceLabel: "Employee Name" }}
                           />
-                        )
-                      },
-                      {
-                        fieldName: "LeaveEndDate",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Leave End Date" }}
-                          />
-                        )
-                      },
-                      {
-                        fieldName: "Leave Type",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Leave Type" }} />
-                        )
-                      },
-                      {
-                        fieldName: "LeavePeriod",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Leave Period" }} />
                         )
                       }
                     ]}
@@ -204,78 +138,6 @@ export default class LeaveYearlyProcess extends Component {
                   />
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-        <div className="col">
-          <div className="row">
-            <div className="col">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Leave Days to be Paid"
-                }}
-              />
-              <h6>
-                <span>21</span> Days
-              </h6>
-            </div>
-            <div className="col">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Leave Salary"
-                }}
-              />
-              <h6>263,364.00</h6>
-            </div>
-            <div className="col">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Airfare"
-                }}
-              />
-              <h6>0.00</h6>
-            </div>
-            <div className="col">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Extra Airfare Allowance"
-                }}
-              />
-              <h6>0.00</h6>
-            </div>
-            <div className="col">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Net Salary"
-                }}
-              />
-              <h6>8,364.00</h6>
-            </div>
-            <div className="col">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Total Salary"
-                }}
-              />
-              <h6>270,364.00</h6>
-            </div>
-          </div>
-        </div>
-        {/* <div className="col-6">skjgfhkdjgfkd</div> */}
-        <div className="hptl-phase1-footer">
-          <div className="row">
-            <div className="col-lg-12">
-              <button type="button" className="btn btn-primary">
-                <AlgaehLabel
-                  label={{ forceLabel: "Process", returnText: true }}
-                />
-              </button>
-
-              <button type="button" className="btn btn-default">
-                <AlgaehLabel
-                  label={{ forceLabel: "Clear", returnText: true }}
-                />
-              </button>
             </div>
           </div>
         </div>
