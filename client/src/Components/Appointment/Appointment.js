@@ -45,7 +45,7 @@ class Appointment extends PureComponent {
       outerStyles: {},
       byPassValidation: false,
       width: 0,
-      byPassValidation : true
+      byPassValidation: true
     };
   }
 
@@ -456,7 +456,6 @@ class Appointment extends PureComponent {
               this.setState(
                 { appointmentSchedule: response.data.records },
                 () => {
-                  
                   this.setState({
                     slot:
                       this.state.appointmentSchedule !== undefined
@@ -678,7 +677,6 @@ class Appointment extends PureComponent {
         openPatEdit = true;
       }
       this.setState({ patToEdit: patient, openPatEdit: openPatEdit }, () => {
-        
         let pat_edit = this.state.patToEdit;
 
         this.setState(
@@ -717,10 +715,9 @@ class Appointment extends PureComponent {
 
   updatePatientAppointment(data) {
     if (data !== null) {
-      
       this.setState({
-        edit_appointment_status_id : data.hims_d_appointment_status_id
-      })
+        edit_appointment_status_id: data.hims_d_appointment_status_id
+      });
     }
     AlgaehValidation({
       querySelector: "data-validate='editApptDiv'",
@@ -783,7 +780,6 @@ class Appointment extends PureComponent {
                 title_id: this.state.edit_title_id
               };
 
-              
               algaehApiCall({
                 uri: "/appointment/updatePatientAppointment",
                 method: "PUT",
@@ -1107,7 +1103,6 @@ class Appointment extends PureComponent {
     }
   }
   plotAddIcon(patient, data) {
-    
     const _isstandby =
       patient === null || patient === undefined
         ? "N"
@@ -1417,7 +1412,6 @@ class Appointment extends PureComponent {
   }
 
   generateTimeslots(data) {
-  
     const clinic_id = data.clinic_id;
     const provider_id = data.provider_id;
     const sch_header_id = data.hims_d_appointment_schedule_header_id;
@@ -2338,7 +2332,15 @@ class Appointment extends PureComponent {
 
               {/* Filter Bar End */}
 
-              <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+              <div
+                className="portlet portlet-bordered box-shadow-normal margin-bottom-15"
+                style={{
+                  padding: 0,
+                  background: "none",
+                  boxShadow: "none",
+                  border: "none"
+                }}
+              >
                 {/* Portlet Top Bar Start */}
                 <div className="portlet-title">
                   <div className="caption">

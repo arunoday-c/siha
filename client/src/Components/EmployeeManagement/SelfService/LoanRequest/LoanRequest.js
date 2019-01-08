@@ -205,6 +205,25 @@ class LoanRequest extends Component {
               </div>
               <div className="portlet-body" data-validate="loanApplyDiv">
                 <div className="row">
+                  <div className="col">
+                    <label>Request Type</label>
+                    <div className="customRadio">
+                      <label className="radio inline">
+                        <input type="radio" name="once_life_term" />
+                        <span>Loan</span>
+                      </label>
+                      <label className="radio inline">
+                        <input
+                          type="radio"
+                          name="once_life_term"
+                          checked="checked"
+                        />
+                        <span>Advance</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
                   <AlagehAutoComplete
                     div={{ className: "col-6" }}
                     label={{
@@ -236,25 +255,6 @@ class LoanRequest extends Component {
                     div={{ className: "col-6" }}
                     label={{
                       forceLabel: "Loan Amount",
-                      isImp: true
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "loan_amount",
-                      value: this.state.loan_amount,
-                      events: {
-                        onChange: this.textHandle.bind(this)
-                      },
-                      others: {
-                        type: "number"
-                      }
-                    }}
-                  />
-
-                  <AlagehFormGroup
-                    div={{ className: "col-6" }}
-                    label={{
-                      forceLabel: "Advance Amount",
                       isImp: true
                     }}
                     textBox={{
@@ -351,6 +351,60 @@ class LoanRequest extends Component {
                     }}
                   />
                   <div className="col-3 margin-bottom-15">
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      style={{ marginTop: 21 }}
+                      onClick={this.applyLoan.bind(this)}
+                    >
+                      Request
+                    </button>
+                  </div>
+                </div>
+                <div className="row">
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    label={{
+                      forceLabel: "Advance Amount",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "loan_amount",
+                      value: this.state.loan_amount,
+                      events: {
+                        onChange: this.textHandle.bind(this)
+                      },
+                      others: {
+                        type: "number"
+                      }
+                    }}
+                  />
+                  <div className="col">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Deducting Month & Year "
+                      }}
+                    />
+                    <h6>FEB 2019</h6>
+                  </div>
+                  <AlagehFormGroup
+                    div={{ className: "col-12" }}
+                    label={{
+                      forceLabel: "Reason for Advance",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "loan_description",
+                      value: this.state.loan_description,
+                      events: {
+                        onChange: this.textHandle.bind(this)
+                      }
+                    }}
+                  />
+
+                  <div className="col-12 margin-bottom-15">
                     <button
                       type="button"
                       className="btn btn-primary"
