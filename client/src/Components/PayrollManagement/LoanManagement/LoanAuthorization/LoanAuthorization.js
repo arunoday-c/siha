@@ -9,7 +9,6 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import LoanModal from "./LoanModal/LoanModal";
 import Enumerable from "linq";
-import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 
 class LoanAuthorization extends Component {
   constructor(props) {

@@ -23,10 +23,6 @@ class LeaveMaster extends Component {
   }
 
   saveLeaveMaster() {
-    // AlgaehValidation({
-    //   alertTypeIcon: "warning",
-    //   querySelector: "data-validate='leaveMasterValidateDiv'",
-    //   onSuccess: () => {
     let send_data = {
       leave_code: this.state.leave_code,
       leave_description: this.state.leave_description,
@@ -71,8 +67,6 @@ class LeaveMaster extends Component {
         });
       }
     });
-    //}
-    //});
   }
 
   addLeaveRules() {

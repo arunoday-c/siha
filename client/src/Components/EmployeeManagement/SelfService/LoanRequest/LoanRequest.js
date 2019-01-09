@@ -95,13 +95,20 @@ class LoanRequest extends Component {
       start_month: null
     });
   }
+  clearAdvanceState() {
+    this.setState({
+      deducting_year: moment().year(),
+      deducting_month: parseInt(moment(new Date()).format("M"), 10) + 1,
+      advance_amount: null,
+      advance_reason: null
+    });
+  }
 
   applyAdvance() {
     AlgaehValidation({
       alertTypeIcon: "warning",
       querySelector: "data-validate='loanApplyDiv'",
       onSuccess: () => {
-        debugger;
         if (this.state.deducting_year < moment(new Date()).format("YYYY")) {
           swalMessage({
             title: "Cannot Request advance for past year",
@@ -110,7 +117,6 @@ class LoanRequest extends Component {
         } else if (
           this.state.deducting_month < moment(new Date()).format("M")
         ) {
-          debugger;
           swalMessage({
             title: "Cannot Request advance for past month",
             type: "warning"
@@ -132,6 +138,8 @@ class LoanRequest extends Component {
                   title: "Record Added Successfully",
                   type: "success"
                 });
+                this.clearAdvanceState();
+                this.getEmployeeAdvances();
               }
             },
             onFailure: err => {
@@ -584,7 +592,18 @@ class LoanRequest extends Component {
                       {
                         fieldName: "loan_amount",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Loan Amount" }} />
+                          <AlgaehLabel
+                            label={{ forceLabel: "Requested Loan Amount" }}
+                          />
+                        )
+                        //disabled: true
+                      },
+                      {
+                        fieldName: "approved_amount",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Approved Loan Amount" }}
+                          />
                         )
                         //disabled: true
                       },
@@ -698,6 +717,15 @@ class LoanRequest extends Component {
                     id="AdvanceRequestGrid"
                     datavalidate="AdvanceRequestGrid"
                     columns={[
+                      {
+                        fieldName: "advance_number",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Advance Request Number" }}
+                          />
+                        )
+                      },
+
                       {
                         fieldName: "created_date",
                         label: (
