@@ -1,72 +1,13 @@
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
-import EmpMasterIOputs from "../../../../Models/EmployeeMaster";
+// import EmpMasterIOputs from "../../../../Models/EmployeeMaster";
+import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import moment from "moment";
 
 const Validations = $this => {
   let isError = false;
   debugger;
-  if ($this.state.personalDetails.employee_code.length <= 0) {
-    isError = true;
-    swalMessage({
-      type: "warning",
-      title: "Employee Code. Cannot be blank."
-    });
-
-    return isError;
-  } else if ($this.state.personalDetails.full_name.length <= 0) {
-    isError = true;
-    swalMessage({
-      type: "warning",
-      title: "Name. Cannot be blank."
-    });
-
-    return isError;
-  } else if ($this.state.personalDetails.arabic_name.length <= 0) {
-    isError = true;
-
-    swalMessage({
-      type: "warning",
-      title: "Arabic Name. Cannot be blank."
-    });
-
-    return isError;
-  } else if (
-    $this.state.personalDetails.license_number === null &&
-    $this.state.personalDetails.isdoctor === "Y"
-  ) {
-    isError = true;
-    swalMessage({
-      type: "warning",
-      title: "License Number. Cannot be blank."
-    });
-
-    return isError;
-  } else if ($this.state.personalDetails.sex === null) {
-    isError = true;
-    swalMessage({
-      type: "warning",
-      title: "Gender. cannot be blank"
-    });
-
-    return isError;
-  } else if ($this.state.personalDetails.date_of_birth === null) {
-    isError = true;
-    swalMessage({
-      type: "warning",
-      title: "Date Of Birth. Cannot be blank."
-    });
-
-    return isError;
-  } else if ($this.state.personalDetails.primary_contact_no === 0) {
-    isError = true;
-    swalMessage({
-      type: "warning",
-      title: "Mobile No. Cannot be blank."
-    });
-
-    return isError;
-  } else if ($this.state.personalDetails.date_of_joining === null) {
+  if ($this.state.personalDetails.date_of_joining === null) {
     isError = true;
     swalMessage({
       type: "warning",
@@ -175,114 +116,122 @@ const Validations = $this => {
 };
 
 const InsertUpdateEmployee = $this => {
-  const err = Validations($this);
-  console.log("Input:", $this.state);
-  debugger;
-  if (!err) {
-    if ($this.state.personalDetails.insertdeptDetails.length > 0) {
-      for (
-        var i = 0;
-        i < $this.state.personalDetails.insertdeptDetails.length;
-        i++
-      ) {
-        $this.state.personalDetails.insertdeptDetails[i].from_date === null
-          ? null
-          : moment(
-              $this.state.personalDetails.insertdeptDetails[i].from_date
-            ).format("YYYY-MM-DD");
+  AlgaehValidation({
+    alertTypeIcon: "warning",
+    querySelector: "data-validate='empPersonal'",
+    onSuccess: () => {
+      const err = Validations($this);
+      console.log("Input:", $this.state);
+      debugger;
+      if (!err) {
+        if ($this.state.personalDetails.insertdeptDetails.length > 0) {
+          for (
+            var i = 0;
+            i < $this.state.personalDetails.insertdeptDetails.length;
+            i++
+          ) {
+            $this.state.personalDetails.insertdeptDetails[i].from_date === null
+              ? null
+              : moment(
+                  $this.state.personalDetails.insertdeptDetails[i].from_date
+                ).format("YYYY-MM-DD");
 
-        $this.state.personalDetails.insertdeptDetails[i].to_date === null
-          ? null
-          : moment(
-              $this.state.personalDetails.insertdeptDetails[i].to_date
-            ).format("YYYY-MM-DD");
-      }
-    }
-
-    if ($this.state.personalDetails.updatedeptDetails.length > 0) {
-      for (
-        var i = 0;
-        i < $this.state.personalDetails.updatedeptDetails.length;
-        i++
-      ) {
-        $this.state.personalDetails.updatedeptDetails[i].from_date === null
-          ? null
-          : moment(
-              $this.state.personalDetails.updatedeptDetails[i].from_date
-            ).format("YYYY-MM-DD");
-
-        $this.state.personalDetails.updatedeptDetails[i].to_date === null
-          ? null
-          : moment(
-              $this.state.personalDetails.updatedeptDetails[i].to_date
-            ).format("YYYY-MM-DD");
-      }
-    }
-
-    debugger;
-    const activeDept = Enumerable.from($this.state.personalDetails.deptDetails)
-      .where(w => w.dep_status === "A")
-      .toArray();
-
-    if (activeDept.length !== 0) {
-      $this.state.personalDetails.reporting_to_id =
-        activeDept[0].reporting_to_id;
-      $this.state.personalDetails.sub_department_id =
-        activeDept[0].sub_department_id;
-      $this.state.personalDetails.employee_designation_id =
-        activeDept[0].employee_designation_id;
-    }
-
-    const hospital = JSON.parse(sessionStorage.getItem("CurrencyDetail"));
-    let inputObj = $this.state.personalDetails;
-    inputObj.inactive_date =
-      inputObj.inactive_date !== null
-        ? moment(inputObj.inactive_date).format("YYYY-MM-DD")
-        : null;
-    delete inputObj.countrystates;
-    delete inputObj.cities;
-    delete inputObj.precountrystates;
-    delete inputObj.precities;
-
-    const _payload = {
-      hospital_id: hospital.hims_d_hospital_id,
-      ...inputObj
-    };
-    console.log("_payload", _payload);
-
-    if (inputObj.hims_d_employee_id === null) {
-      algaehApiCall({
-        uri: "/employee/addEmployeeMaster",
-        data: _payload,
-        onSuccess: response => {
-          if (response.data.success === true) {
-            $this.setState({
-              hims_d_employee_id: response.data.records.insertId
-            });
-
-            swalMessage({
-              type: "success",
-              title: "Saved Successfully..."
-            });
+            $this.state.personalDetails.insertdeptDetails[i].to_date === null
+              ? null
+              : moment(
+                  $this.state.personalDetails.insertdeptDetails[i].to_date
+                ).format("YYYY-MM-DD");
           }
         }
-      });
-    } else {
-      algaehApiCall({
-        uri: "/employee/updateEmployee",
-        data: _payload,
-        method: "PUT",
-        onSuccess: response => {
-          if (response.data.success === true) {
-            swalMessage({
-              type: "success",
-              title: "Updated Successfully..."
-            });
+
+        if ($this.state.personalDetails.updatedeptDetails.length > 0) {
+          for (
+            var i = 0;
+            i < $this.state.personalDetails.updatedeptDetails.length;
+            i++
+          ) {
+            $this.state.personalDetails.updatedeptDetails[i].from_date === null
+              ? null
+              : moment(
+                  $this.state.personalDetails.updatedeptDetails[i].from_date
+                ).format("YYYY-MM-DD");
+
+            $this.state.personalDetails.updatedeptDetails[i].to_date === null
+              ? null
+              : moment(
+                  $this.state.personalDetails.updatedeptDetails[i].to_date
+                ).format("YYYY-MM-DD");
           }
         }
-      });
+
+        debugger;
+        const activeDept = Enumerable.from(
+          $this.state.personalDetails.deptDetails
+        )
+          .where(w => w.dep_status === "A")
+          .toArray();
+
+        if (activeDept.length !== 0) {
+          $this.state.personalDetails.reporting_to_id =
+            activeDept[0].reporting_to_id;
+          $this.state.personalDetails.sub_department_id =
+            activeDept[0].sub_department_id;
+          $this.state.personalDetails.employee_designation_id =
+            activeDept[0].employee_designation_id;
+        }
+
+        const hospital = JSON.parse(sessionStorage.getItem("CurrencyDetail"));
+        let inputObj = $this.state.personalDetails;
+        inputObj.inactive_date =
+          inputObj.inactive_date !== null
+            ? moment(inputObj.inactive_date).format("YYYY-MM-DD")
+            : null;
+        delete inputObj.countrystates;
+        delete inputObj.cities;
+        delete inputObj.precountrystates;
+        delete inputObj.precities;
+
+        const _payload = {
+          hospital_id: hospital.hims_d_hospital_id,
+          ...inputObj
+        };
+        console.log("_payload", _payload);
+
+        if (inputObj.hims_d_employee_id === null) {
+          algaehApiCall({
+            uri: "/employee/addEmployeeMaster",
+            data: _payload,
+            onSuccess: response => {
+              if (response.data.success === true) {
+                $this.setState({
+                  hims_d_employee_id: response.data.records.insertId
+                });
+
+                swalMessage({
+                  type: "success",
+                  title: "Saved Successfully..."
+                });
+              }
+            }
+          });
+        } else {
+          algaehApiCall({
+            uri: "/employee/updateEmployee",
+            data: _payload,
+            method: "PUT",
+            onSuccess: response => {
+              if (response.data.success === true) {
+                swalMessage({
+                  type: "success",
+                  title: "Updated Successfully..."
+                });
+              }
+            }
+          });
+        }
+      }
     }
-  }
+  });
 };
 
 // const ClearEmployee = $this => {
