@@ -1151,19 +1151,49 @@ let getEmployeeAttendReg = (req, res, next) => {
     }
     let db = req.db;
 
+    let dateRange = "";
+    let employee = "";
+    if (
+      req.query.from_date != "" &&
+      req.query.from_date != null &&
+      req.query.from_date != "null" &&
+      req.query.to_date != "" &&
+      req.query.to_date != null &&
+      req.query.to_date != "null"
+    ) {
+      dateRange = ` date(attendance_date)
+      between date('${req.query.from_date}') and date('${req.query.to_date}') `;
+    }
+    debugLog("dd:", dateRange);
     if (
       req.query.employee_id != "" &&
       req.query.employee_id != null &&
       req.query.employee_id != "null"
     ) {
+      employee = ` employee_id=${req.query.employee_id} `;
+    }
+
+    if (dateRange == "" && employee == "") {
+      req.records = {
+        invalid_input: true,
+        message: "please provide valid input"
+      };
+      next();
+      return;
+    } else {
       db.getConnection((error, connection) => {
         connection.query(
-          "select hims_f_attendance_regularize_id,regularization_code,employee_id,attendance_date,\
+          "select hims_f_attendance_regularize_id,regularization_code,employee_id,\
+          E.employee_code,E.full_name as employee_name ,attendance_date,\
           regularize_status,login_date,logout_date,punch_in_time,punch_out_time,\
           regularize_in_time,regularize_out_time,regularization_reason\
-          from hims_f_attendance_regularize where employee_id=? order by\
+          from hims_f_attendance_regularize   AR inner join hims_d_employee E  on\
+           AR.employee_id=E.hims_d_employee_id and record_status='A' where" +
+            employee +
+            "" +
+            dateRange +
+            " order by\
           hims_f_attendance_regularize_id desc ",
-          req.query.employee_id,
 
           (error, result) => {
             releaseDBConnection(db, connection);
@@ -1176,13 +1206,6 @@ let getEmployeeAttendReg = (req, res, next) => {
           }
         );
       });
-    } else {
-      req.records = {
-        invalid_input: true,
-        message: "please provide valid input"
-      };
-      next();
-      return;
     }
   } catch (e) {
     next(e);
