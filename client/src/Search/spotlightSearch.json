@@ -307,5 +307,29 @@
         "label": "Patient Code"
       }
     ]
+  },
+  "hr_loan_apply": {
+    "loan_apply": [
+      {
+        "fieldName": "loan_application_number",
+        "label": "Loan Application Number"
+      },
+      {
+        "fieldName": "loan_application_date",
+        "label": "Loan Date"
+      },
+      {
+        "fieldName": "employee_code",
+        "label": "Employee Code"
+      },
+      {
+        "fieldName": "full_name",
+        "label": "Employee Name"
+      },
+      {
+        "fieldName": "approved_amount",
+        "label": "Approved Amount"
+      }
+    ]
   }
 }
