@@ -51,7 +51,9 @@ class DeptUserDetails extends Component {
     let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
     this.setState({ ...this.state, ...InputOutput }, () => {
       if (this.state.hims_d_employee_id !== null) {
-        getEmployeeDepartments(this);
+        if (this.state.deptDetails === 0) {
+          getEmployeeDepartments(this);
+        }
       }
     });
     if (
