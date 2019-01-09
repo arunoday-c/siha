@@ -43,7 +43,8 @@ class Reports extends Component {
           <form action="none" style={{ width: "100%" }}>
             <div className="row padding-10">
               <AlagehAutoComplete
-                div={{ className: "col" }}
+                div={{ className: "col form-group" }}
+                label={{ forceLabel: "Report Category", isImp: false }}
                 selector={{
                   name: "module",
                   className: "select-fld",
@@ -53,13 +54,50 @@ class Reports extends Component {
                     valueField: "name",
                     data: data
                   },
-                  others: {
-                    style: { padding: 10 }
-                  },
+                  others: {},
                   onChange: this.dropDownHandler.bind(this)
                 }}
               />
+
+              {/* <AlagehAutoComplete
+                div={{ className: "col form-group" }}
+                label={{ forceLabel: "Report Category", isImp: false }}
+                selector={{
+                  name: "module",
+                  className: "select-fld",
+                  value: this.state.module,
+                  dataSource: {
+                    textField: "name",
+                    valueField: "name",
+                    data: data
+                  },
+                  others: {},
+                  onChange: this.dropDownHandler.bind(this)
+                }}
+              /> */}
+
               <AlagehFormGroup
+                div={{ className: "col form-group" }}
+                label={{
+                  forceLabel: "Filter by Reports",
+                  isImp: false
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "",
+                  value: "",
+                  events: {},
+                  others: {
+                    type: "text",
+                    placeholder: "Search for reports"
+                  },
+                  events: {
+                    onChange: () => {}
+                  }
+                }}
+              />
+
+              {/* <AlagehFormGroup
                 div={{ className: "col" }}
                 textBox={{
                   className: "txt-fld",
@@ -73,7 +111,7 @@ class Reports extends Component {
                     onChange: () => {}
                   }
                 }}
-              />
+              /> */}
             </div>
           </form>
         </div>
