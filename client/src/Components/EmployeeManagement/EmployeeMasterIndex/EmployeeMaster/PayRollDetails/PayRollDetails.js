@@ -60,10 +60,7 @@ class PayRollDetails extends PureComponent {
   componentDidMount() {
     let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
     this.setState({ ...this.state, ...InputOutput }, () => {
-      if (
-        this.state.hims_d_employee_id !== null &&
-        this.state.dataPayrolExists === false
-      ) {
+      if (this.state.hims_d_employee_id !== null) {
         getPayrollComponents(this);
       }
     });

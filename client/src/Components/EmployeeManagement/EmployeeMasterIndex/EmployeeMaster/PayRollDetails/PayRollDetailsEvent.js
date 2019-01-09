@@ -530,15 +530,27 @@ const getPayrollComponents = $this => {
           $this.setState({
             earningComponents: data[0],
             deductioncomponents: data[1],
-            contributioncomponents: data[2],
-            dataPayrolExists: true
+            contributioncomponents: data[2]
+            // dataPayrolExists: true
           });
 
           $this.props.EmpMasterIOputs.updateEmployeeTabs({
             earningComponents: data[0],
             deductioncomponents: data[1],
-            contributioncomponents: data[2],
-            dataPayrolExists: true
+            contributioncomponents: data[2]
+            // dataPayrolExists: true
+          });
+        } else {
+          $this.setState({
+            earningComponents: [],
+            deductioncomponents: [],
+            contributioncomponents: []
+          });
+
+          $this.props.EmpMasterIOputs.updateEmployeeTabs({
+            earningComponents: [],
+            deductioncomponents: [],
+            contributioncomponents: []
           });
         }
       }
