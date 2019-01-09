@@ -351,7 +351,8 @@ class EmployeePayment extends Component {
                               onDone: () => {}
                             }}
                             onRowSelect={row => {
-                              getPaymentDetails(this, row);
+                              debugger;
+                              getPaymentDetails(this, this, row);
                             }}
                           />
                         </div>
@@ -372,8 +373,8 @@ class EmployeePayment extends Component {
                       </div>
                     </div>
 
-                    <div className="portlet-body">
-                      <div className="row" style={{ minHeight: "43vh" }}>
+                    <div className="portlet-body" style={{ minHeight: "43vh" }}>
+                      <div className="row">
                         <div className="col-6">
                           <AlgaehLabel
                             label={{
@@ -390,6 +391,8 @@ class EmployeePayment extends Component {
                           />
                           <h6>DD/MM/YYYY</h6>
                         </div>
+                      </div>
+                      <div className="row">
                         <AlagehAutoComplete
                           div={{ className: "col-6 form-group" }}
                           label={{
@@ -405,7 +408,7 @@ class EmployeePayment extends Component {
                               valueField: "value",
                               data: GlobalVariables.EMP_PAYMENT_MODE
                             },
-                            others: {}
+                            onChange: texthandle.bind(this, this)
                           }}
                         />
                         <AlagehFormGroup
@@ -426,68 +429,84 @@ class EmployeePayment extends Component {
                             }
                           }}
                         />
-                        {this.state.payment_mode === "CH" ? "" : null}
+                      </div>
 
-                        <AlagehAutoComplete
-                          div={{ className: "col-6  form-group" }}
-                          label={{ forceLabel: "Select a Bank", isImp: false }}
-                          selector={{
-                            name: "hospital_id",
-                            className: "select-fld",
-                            value: this.state.hospital_id,
-                            dataSource: {
-                              textField: "hospital_name",
-                              valueField: "hims_d_hospital_id",
-                              data: this.props.organizations
-                            }
-                          }}
-                        />
-                        <AlagehFormGroup
-                          div={{ className: "col-6 form-group" }}
-                          label={{
-                            forceLabel: "Cheque No.",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "",
-                            value: "",
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />
-
-                        <AlagehAutoComplete
-                          div={{ className: "col-4 form-group" }}
-                          label={{
-                            forceLabel: "Deduct in Month",
-                            isImp: false
-                          }}
-                          selector={{
-                            name: "",
-                            className: "select-fld",
-                            dataSource: {},
-                            others: {}
-                          }}
-                        />
-                        <AlagehFormGroup
-                          div={{ className: "col-4 form-group" }}
-                          label={{
-                            forceLabel: "Year",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "",
-                            value: "",
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />
+                      {this.state.payment_mode === "CH" ? (
+                        <div className="row">
+                          <AlagehAutoComplete
+                            div={{ className: "col-6  form-group" }}
+                            label={{
+                              forceLabel: "Select a Bank",
+                              isImp: false
+                            }}
+                            selector={{
+                              name: "hospital_id",
+                              className: "select-fld",
+                              value: this.state.hospital_id,
+                              dataSource: {
+                                textField: "hospital_name",
+                                valueField: "hims_d_hospital_id",
+                                data: this.props.organizations
+                              }
+                            }}
+                          />
+                          <AlagehFormGroup
+                            div={{ className: "col-6 form-group" }}
+                            label={{
+                              forceLabel: "Cheque No.",
+                              isImp: false
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "",
+                              value: "",
+                              events: {},
+                              option: {
+                                type: "text"
+                              }
+                            }}
+                          />
+                        </div>
+                      ) : null}
+                      {this.state.sel_payment_type === "AD" ? (
+                        <div className="row">
+                          <AlagehAutoComplete
+                            div={{ className: "col-4 form-group" }}
+                            label={{
+                              forceLabel: "Deduct in Month",
+                              isImp: false
+                            }}
+                            selector={{
+                              name: "deduction_month",
+                              value: this.state.deduction_month,
+                              className: "select-fld",
+                              dataSource: {
+                                textField: "name",
+                                valueField: "value",
+                                data: GlobalVariables.MONTHS
+                              },
+                              onChange: texthandle.bind(this, this)
+                            }}
+                          />
+                          <AlagehFormGroup
+                            div={{ className: "col-4 form-group" }}
+                            label={{
+                              forceLabel: "Year",
+                              isImp: false
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "year",
+                              value: this.state.year,
+                              onChange: texthandle.bind(this, this),
+                              option: {
+                                type: "text"
+                              }
+                            }}
+                          />
+                        </div>
+                      ) : null}
+                      <div className="row">
                         <div className="col-12">
                           <button
                             type="button"

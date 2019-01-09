@@ -100,27 +100,30 @@ export default [
       },
       {
         subitem: "Appointment List",
-        template_name: "appt_availability"
-        ////reportParameters: () => <Appointment ui="appt_list" />
+        template_name: "appt_availability",
+        reportParameters: []
       },
       {
         subitem: "Cancelled Appointments",
-        template_name: "appt_availability"
-        ////reportParameters: () => <Appointment ui="appt_cancellations" />
+        template_name: "appt_availability",
+        reportParameters: []
       },
       {
         subitem: "Pending Appointments",
-        template_name: "appt_availability"
+        template_name: "appt_availability",
+        reportParameters: []
         ////reportParameters: () => <Appointment ui="appt_list_detailed" />
       },
       {
         subitem: "Confirmed Appointments",
-        template_name: "appt_availability"
+        template_name: "appt_availability",
+        reportParameters: []
         ////reportParameters: () => <Appointment ui="appt_list_detailed" />
       },
       {
         subitem: "Patient Recall Report",
-        template_name: "appt_availability"
+        template_name: "appt_availability",
+        reportParameters: []
         ////reportParameters: () => <Appointment ui="pat_recall_report" />
       }
       // {
@@ -135,143 +138,190 @@ export default [
     submenu: [
       {
         subitem: "Outstanding Advances",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
       {
         subitem: "OP Billing Summary",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: [
+          {
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          }
+        ]
         ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
       {
         subitem: "OP Billing Detail",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Daily Cash Collection",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Service wise Income",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Doctor wise Income",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
-      
+
       {
         subitem: "Daily Bill List",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
       {
         subitem: "List of Credit Bills",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Refunds List",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
       {
         subitem: "List of Discount Given",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
       {
         subitem: "List of Discount Given - Invoice Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
       {
         subitem: "List of Invoices - Cash/Credit",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
       {
         subitem: "List of Reciepts",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
       {
         subitem: "List of Sponsor Bills",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Outstanding Report - Patientwise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Patient Outstanding",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Patient Outstanding Ageing Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Patient Outstanding Ageing Report - Department Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Revenue Analysis - Accumulated Summary",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Revenue Analysis - Category Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Revenue Analysis - Day Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Revenue Analysis - Doctor Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Revenue Analysis - Doctor Wise - Detailed",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Service Wise Income",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Service Wise Income - Detailed",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Service Wise Revenue - Doctor Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Total Collection - Month - Doctor Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
       {
         subitem: "WriteOff Details Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       }
     ]
@@ -282,87 +332,104 @@ export default [
     submenu: [
       {
         subitem: "Balance Sheet Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Finance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Cash Flow Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Finance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Cost Analysis - Monthly Summary",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Finance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Cost Analysis Consumables - Doctor Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Finance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Cost Analysis Summary - Doctor Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Finance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Day Book",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Finance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Ledger",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Finance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Ledger - Bank Reconciliation",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Finance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Ledger Consolidated",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Finance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Ledger Consolidated",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Finance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "List Of Payment Received Invoices",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Finance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "List Of Payment Received Invoices - Detailed",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Finance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Profit and Loss",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Finance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Profit And Loss MonthWise Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Finance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Reconciliation",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Finance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Revenue Ledger- Detailed",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Finance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Trial Balance",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Finance ui="asset_warty_exp_rep" />
       }
     ]
@@ -373,167 +440,200 @@ export default [
     submenu: [
       {
         subitem: " Count Of Medications - By Trade Name",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Doctor Wise Patient Statistics",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
         subitem: "File Tracking Report ",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Growth Chart - Doctor Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Investigations Doing Outside",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
         subitem: "List of Discharged Patients - Day Care",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
         subitem: " List of Discharged Patients - Day Care ",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
         subitem: " List Of Encounter Reopen",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
         subitem: "List of Insurance Providers ",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
         subitem: "List of Invoices - Specific Patient",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
         subitem: "List of Patients",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
         subitem: " List Of Patients - Demography Details",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
         subitem: "List of Surgery Patients - Day Care",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
         subitem: " Marketing - Sources Report Detailed",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
         subitem: " Purchase Order Report - Supplier Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
         subitem: " Medical Service Illustrative Report ",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
         subitem: "No of Consultations - Doctor Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
         subitem: " Patient Encounter Status Report ",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Patient Encounter Type Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Patient Per Day Analysis - Doctor Wise ",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Patient Wise Payment History",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Patient Wise Vital Signs Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Period Wise Consultations",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Period Wise Investigations",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Period Wise Treatments",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
         subitem: " Preapproval Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Price List - Investigations",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Price List - Treatments ",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
         subitem: " Salary Calculation - Doctors",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Sick Leave Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
         subitem: "TAT - Doctor Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
         subitem: "TAT - Nurse Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
         subitem: " TestResult Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       }
     ]
@@ -544,152 +644,182 @@ export default [
     submenu: [
       {
         subitem: " Inventory of Retail Products",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Item Opening Stock Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Items Consumption Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Items Expiry Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Items Issued Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Items Received Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Material Request Report ",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Material Request Report - Item Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Material Request Report - Office Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Pending Purchase Order Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Pending Purchase Order Report - Item Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Product List",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Purchase Order Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Purchase Order Report - Item Wise  ",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Purchase Order Report - Supplier Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Purchase Register Itemwise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Purchase Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Purchase Report - Item Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Stock Adjustments Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Stock Register",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Stock Register Report - Category Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Stock Register Report - Department Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Stock Remaining - Category Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Stock Remaining - Department Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Stock Transaction",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Supplier Discount Received - Invoice Wise ",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Supplier List",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Supplier Overdue - Ageing Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Supplier Wise Invoices",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Supplier Wise Invoices - Pending",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       }
     ]
@@ -699,137 +829,164 @@ export default [
     submenu: [
       {
         subitem: "Daily Collection - Consolidated",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
         subitem: "GP Statement - Bill Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
         subitem: "GP Statement - Date Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
         subitem: "GP Statment Item wise Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Item Sales Report - Category Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Item Sales Report - Customer Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Item Sales Report - User Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
         subitem: "List Of Claims Generated",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
         subitem: "List Of Receipts",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
         subitem: "List Of Sales Invoice",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Outstanding Invoices",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Prescribed/Dispensed Medicines Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Product Movement Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Sale Register - Date Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Sales Collection Summary Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Sales Report - Bill Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Sales Report - Credit Customer",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Sales Report - Date Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Sales Report - Detailed",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Sales Report - Doctor Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Sales Report - Product/Supplier Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Sales Report - Summary",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Sales Report Detailed - Item Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Sales Report Yearly - Month Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Sales Return Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Stock Register - Item Stock Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Stock Summary - MRP/Purchase Rate",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       }
     ]
@@ -839,52 +996,62 @@ export default [
     submenu: [
       {
         subitem: "Clinic - Doctor Invoices Summary",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Referral ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Clinic / Doctor Invoices",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Referral ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Doctor's Incentives",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Referral ui="asset_warty_exp_rep" />
       },
       {
         subitem: "List of Incentives",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Referral ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Monthly Summary - Referred Cases",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Referral ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Outside Referrals",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Referral ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Referral Clinics - Overdue Payments",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Referral ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Referral Clinics - Overdue Receipts",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Referral ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Referrals External",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Referral ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Referrals Internal",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Referral ui="asset_warty_exp_rep" />
       }
     ]
@@ -894,112 +1061,134 @@ export default [
     submenu: [
       {
         subitem: "Claim Rejection Reports",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Claims Outstanding",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Claims Outstanding - Remittence Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Claims Received",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Claims Received - Remittence Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Claims Rejected - Reason Count",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Claims Summary - Monthly",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Company wise Claim Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Insurance Consolidated",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Insurance Overdue",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Insurance Revenue Received - Ageing Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Insurance Revenue Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Insurance Revenue Report - Consolidated",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Insurance Status Report - Invoice Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "List of Claims Generated",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "List of Claims Write Off",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Services Report -Undelivered",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Summary Of Claims Generated - Formats",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Summary of Insurance Consolidated - Company Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Summary of Insurance Consolidated - Year Wise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Summary of Insurance Overdue and Outstanding",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Write Off Claims List-Servicewise",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
       }
     ]
@@ -1010,160 +1199,190 @@ export default [
     submenu: [
       {
         subitem: " Accession TAT",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Laboratory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "  Antimicrobial Resistence Surveillance Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Laboratory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Clinic wise Net Sale Report  ",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Laboratory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Collection Summary - Investigations",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Laboratory ui="asset_warty_exp_rep" />
       },
       {
         subitem: " Delete Bill Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Laboratory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Doctor wise Test Register",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Laboratory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Email Delivery Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Laboratory ui="asset_warty_exp_rep" />
       },
       {
         subitem: " Email Log",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Laboratory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Equipment Wise Test Details  ",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Laboratory ui="asset_warty_exp_rep" />
       },
       {
         subitem: " Equipment Wise Test Param Details",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Laboratory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Incentive Payable Report ",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Laboratory ui="asset_warty_exp_rep" />
       },
       {
         subitem: " Incentive Receivable Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Laboratory ui="asset_warty_exp_rep" />
       },
       {
         subitem: " Lab Result Statistics Report     ",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Laboratory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "List of Credit Bills ",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Laboratory ui="asset_warty_exp_rep" />
       },
       {
         subitem: " Office Wise Clinic Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Laboratory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Pending Reports  ",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Laboratory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Price List - Lab Test",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Laboratory ui="asset_warty_exp_rep" />
       },
       {
         subitem: " Print TRF   ",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Laboratory ui="asset_warty_exp_rep" />
       },
       {
         subitem: " Problem Samples Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Laboratory ui="asset_warty_exp_rep" />
       },
       {
         subitem: " Revenue Summary ",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Laboratory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Reverse Authentication Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Laboratory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "SMS Log",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Laboratory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "TAT",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Laboratory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "TAT- Analytical Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Laboratory ui="asset_warty_exp_rep" />
       },
       {
         subitem: " Test Wise Income",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Laboratory ui="asset_warty_exp_rep" />
       },
       {
         subitem: " TRF List",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Laboratory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Unpaid Bill Report",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Laboratory ui="asset_warty_exp_rep" />
       },
       {
         subitem: " Workload Register",
-        template_name: "asset_war_exp"
+        template_name: "asset_war_exp",
+        reportParameters: []
         //reportParameters: () => <Laboratory ui="asset_warty_exp_rep" />
       }
     ]
   },
 
   {
-  name: "TAX REPORTS",
-  submenu: [
-    {
-      subitem: "Tax Report Summary",
-      template_name: "tax_report_summary"
-      //reportParameters: () => <VatReports ui="vat_report_detailed" />
-    },
-    {
-      subitem: "Tax Report Detail",
-      template_name: "tax_report_detailed"
-      //reportParameters: () => <VatReports ui="vat_report_detailed" />
-    }
-  ]
+    name: "TAX REPORTS",
+    submenu: [
+      {
+        subitem: "Tax Report Summary",
+        template_name: "tax_report_summary",
+        reportParameters: []
+        //reportParameters: () => <VatReports ui="vat_report_detailed" />
+      },
+      {
+        subitem: "Tax Report Detail",
+        template_name: "tax_report_detailed",
+        reportParameters: []
+        //reportParameters: () => <VatReports ui="vat_report_detailed" />
+      }
+    ]
   }
 ];
