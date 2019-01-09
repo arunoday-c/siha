@@ -3,6 +3,8 @@ import { releaseConnection } from "../utils";
 import {
   addEmployee,
   getEmployee,
+  addEmployeeAdvance,
+  getEmployeeAdvance,
   updateEmployee,
   getEmployeeDetails,
   getDoctorServiceCommission,
@@ -701,5 +703,50 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+
+  // created by Adnan :
+  api.post(
+    "/addEmployeeAdvance",
+    addEmployeeAdvance,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.invalid_input == true) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by Adnan :
+  api.get(
+    "/getEmployeeAdvance",
+    getEmployeeAdvance,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.invalid_input == true) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    },
+    releaseConnection
+  );
+
   return api;
 };

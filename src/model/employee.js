@@ -3233,6 +3233,138 @@ let addMisEarnDedcToEmployees = (req, res, next) => {
   }
 };
 
+//created by Adnan
+let addEmployeeAdvance = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        }
+
+        new Promise((resolve, reject) => {
+          try {
+            runningNumberGen({
+              db: connection,
+              module_desc: ["EMPLOYEE_ADVANCE"],
+              onFailure: error => {
+                reject(error);
+              },
+              onSuccess: result => {
+                resolve(result);
+              }
+            });
+          } catch (e) {
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              reject(e);
+            });
+          }
+        }).then(numGenAdv => {
+          connection.query(
+            "INSERT  INTO `hims_f_employee_advance` (advance_number, employee_id,advance_amount, deducting_month,\
+              deducting_year, advance_reason,created_date,created_by,updated_date,updated_by)\
+              VALUE(?,?,?,?,?,?,?,?,?,?)",
+            [
+              numGenAdv[0]["completeNumber"],
+              input.employee_id,
+              input.advance_amount,
+              input.deducting_month,
+              input.deducting_year,
+              input.advance_reason,
+              new Date(),
+              input.created_by,
+              new Date(),
+              input.updated_by
+            ],
+            (error, results) => {
+              if (error) {
+                connection.rollback(() => {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                });
+              }
+              debugLog("inside employee advance");
+              if (results.affectedRows > 0) {
+                connection.commit(error => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+
+                  debugLog("commit");
+                  releaseDBConnection(db, connection);
+                  req.records = results;
+                  next();
+                });
+              } else {
+                connection.rollback(() => {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                });
+              }
+            }
+          );
+        });
+      });
+      });
+      
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by Adnan
+let getEmployeeAdvance = (req, res, next) => {
+  let employeeWhereCondition = {
+    employee_id: "ALL"
+  };
+
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    //let where = whereCondition(extend(employeeWhereCondition, req.query));
+    let whereCon =
+      req.query.employee_id != null
+        ? " AND employee_id='" + req.query.employee_id + "'"
+        : "";
+    db.getConnection((error, connection) => {
+      connection.query(
+        "Select hims_f_employee_advance_id, employee_id, advance_amount, advance_reason, deducting_month,\
+         deducting_year, advance_status, created_by, created_date, updated_by, updated_date from hims_f_employee_advance where record_status='A' " +
+          whereCon,
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addEmployee,
   addEmployeeMaster,
@@ -3271,5 +3403,7 @@ module.exports = {
   getPayrollComponents,
   getFamilyIdentification,
   getEmployeesForMisED,
-  addMisEarnDedcToEmployees
+  addMisEarnDedcToEmployees,
+  addEmployeeAdvance,
+  getEmployeeAdvance
 };
