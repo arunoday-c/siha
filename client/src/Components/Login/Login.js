@@ -191,6 +191,10 @@ export default class Login extends Component {
                           events: {
                             onChange: this.texthandle.bind(this)
                           },
+                          others: {
+                            tabIndex: "1",
+                            placeHolder: "Enter Username"
+                          },
                           error: this.state.userError,
                           helperText: this.state.userErrorText
                         }}
@@ -210,7 +214,9 @@ export default class Login extends Component {
                             onChange: this.texthandle.bind(this)
                           },
                           others: {
-                            type: "password"
+                            type: "password",
+                            tabIndex: "2",
+                            placeHolder: "Enter Password"
                           },
                           error: this.state.pwdError,
                           helperText: this.state.pwdErrorText
@@ -233,6 +239,7 @@ export default class Login extends Component {
                             valueField: "hims_d_hospital_id",
                             data: this.state.hospitalList
                           },
+                          others: { tabIndex: "3" },
                           onChange: this.onHospitalChange.bind(this),
                           onClear: this.onHospitalClear.bind(this)
                         }}
@@ -247,6 +254,7 @@ export default class Login extends Component {
                         <button
                           className="btn btn-lg btn-primary btn-block sign-btn"
                           type="submit"
+                          tabIndex="4"
                         >
                           Log In
                         </button>

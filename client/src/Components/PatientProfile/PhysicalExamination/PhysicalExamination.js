@@ -41,8 +41,12 @@ class PhysicalExamination extends Component {
                       value: this.state.examination_notes,
                       others: {
                         multiline: true,
-                        rows: "6"
+                        rows: "6",
+                        style: {
+                          height: "25vh"
+                        }
                       },
+                      options: {},
                       events: {
                         onChange: this.textHandle.bind(this)
                       }

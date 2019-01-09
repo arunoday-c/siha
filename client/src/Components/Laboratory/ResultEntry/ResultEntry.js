@@ -643,7 +643,7 @@ class ResultEntry extends Component {
                       dataSource={{
                         data: this.state.test_analytes
                       }}
-                      paging={{ page: 0, rowsPerPage: 10 }}
+                      paging={{ page: 0, rowsPerPage: 20 }}
                     />
                   </div>
                 </div>
