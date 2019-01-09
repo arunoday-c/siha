@@ -319,6 +319,16 @@ class EmployeePayment extends Component {
                     <div className="portlet-title">
                       <div className="caption">
                         <h3 className="caption-subject">Payment Form</h3>
+
+                        {this.state.request_number === null ? (
+                          ""
+                        ) : (
+                          <h3>
+                            {this.state.request_number +
+                              "/" +
+                              this.state.full_name}
+                          </h3>
+                        )}
                       </div>
                       <div className="actions">
                         {/* <a className="btn btn-primary btn-circle active">

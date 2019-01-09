@@ -151,6 +151,8 @@ const getPaymentDetails = ($this, row) => {
       employee_id: row.employee_id,
       payment_type: row.payment_type,
       payment_amount: row.payment_amount,
+      request_number: row.request_number,
+      full_name: row.full_name,
       employee_advance_id: row.hims_f_employee_advance_id,
       deduction_month: row.deducting_month,
       year: row.deducting_year
@@ -160,6 +162,8 @@ const getPaymentDetails = ($this, row) => {
       employee_id: row.employee_id,
       payment_type: row.payment_type,
       payment_amount: row.payment_amount,
+      request_number: row.request_number,
+      full_name: row.full_name,
       employee_loan_id: row.hims_f_loan_application_id
     });
   } else if (row.payment_type === "EN") {
@@ -167,6 +171,8 @@ const getPaymentDetails = ($this, row) => {
       employee_id: row.employee_id,
       payment_type: row.payment_type,
       payment_amount: row.payment_amount,
+      request_number: row.request_number,
+      full_name: row.full_name,
       employee_leave_encash_id: row.hims_f_loan_application_id
     });
   } else if (row.payment_type === "GR") {
@@ -174,6 +180,8 @@ const getPaymentDetails = ($this, row) => {
       employee_id: row.employee_id,
       payment_type: row.payment_type,
       payment_amount: row.payment_amount,
+      request_number: row.request_number,
+      full_name: row.full_name,
       employee_end_of_service_id: row.hims_f_loan_application_id
     });
   } else if (row.payment_type === "FS") {
@@ -181,7 +189,8 @@ const getPaymentDetails = ($this, row) => {
       employee_id: row.employee_id,
       payment_type: row.payment_type,
       payment_amount: row.payment_amount,
-
+      request_number: row.request_number,
+      full_name: row.full_name,
       employee_final_settlement_id: row.hims_f_loan_application_id
     });
   } else if (row.payment_type === "LS") {
@@ -189,6 +198,8 @@ const getPaymentDetails = ($this, row) => {
       employee_id: row.employee_id,
       payment_type: row.payment_type,
       payment_amount: row.payment_amount,
+      request_number: row.request_number,
+      full_name: row.full_name,
       employee_leave_settlement_id: row.hims_f_loan_application_id
     });
   }
