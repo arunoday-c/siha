@@ -45,7 +45,7 @@ class LeaveEncashmentProcess extends Component {
     return (
       <div className="leave_en_auth row">
         <div className="col-12">
-          <div className="row inner-top-search">
+          <div className="row inner-top-search" data-validate="loadEncash">
             <AlagehFormGroup
               div={{ className: "col" }}
               label={{
