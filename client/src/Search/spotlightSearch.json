@@ -308,7 +308,25 @@
       }
     ]
   },
-  "hr_loan_apply": {
+  "emp_payment_apply": {
+    "advance_apply": [
+      {
+        "fieldName": "advance_number",
+        "label": "Advance Number"
+      },
+      {
+        "fieldName": "employee_code",
+        "label": "Employee Code"
+      },
+      {
+        "fieldName": "full_name",
+        "label": "Employee Name"
+      },
+      {
+        "fieldName": "advance_amount",
+        "label": "Advance Amount"
+      }
+    ],
     "loan_apply": [
       {
         "fieldName": "loan_application_number",

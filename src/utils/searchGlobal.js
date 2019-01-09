@@ -254,6 +254,14 @@ let algaehSearchConfig = searchName => {
           start_month, start_year, emp.employee_code, emp.full_name from hims_f_loan_application, hims_d_employee emp \
           where hims_f_loan_application.employee_id = emp.hims_d_employee_id",
         orderBy: "hims_f_loan_application_id desc"
+      },
+      {
+        searchName: "advance_apply",
+        searchQuery:
+          "select  hims_f_employee_advance_id,advance_number,employee_id,advance_amount, \
+          emp.employee_code, emp.full_name from hims_f_employee_advance, hims_d_employee emp \
+          where hims_f_employee_advance.employee_id = emp.hims_d_employee_id",
+        orderBy: "hims_f_employee_advance_id desc"
       }
     ]
   };

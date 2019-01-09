@@ -40,7 +40,10 @@ export default {
       document_num: null,
       sel_payment_type: null,
       requestPayment: [],
-      hospital_id: null
+      hospital_id: null,
+
+      request_number: null,
+      full_name: null
     };
     return output;
   }

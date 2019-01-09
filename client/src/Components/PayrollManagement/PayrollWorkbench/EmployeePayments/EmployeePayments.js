@@ -11,12 +11,13 @@ import {
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import moment from "moment";
 import {
   texthandle,
   LoadData,
   RequestPaySearch,
-  getPaymentDetails
+  getPaymentDetails,
+  Paymenttexthandle,
+  ProessEmpPayment
 } from "./EmployeePaymentEvents.js";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import Enumerable from "linq";
@@ -89,54 +90,7 @@ class EmployeePayment extends Component {
     return (
       <React.Fragment>
         <div className="hptl-EmployeePayment-form">
-          <div className="row  inner-top-search">
-            {/* <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{
-                forceLabel: "Select a Month.",
-                isImp: true
-              }}
-              selector={{
-                name: "month",
-                className: "select-fld",
-                value: this.state.month,
-                dataSource: {
-                  textField: "name",
-                  valueField: "value",
-                  data: GlobalVariables.MONTHS
-                },
-                onChange: texthandle.bind(this, this),
-                others: {
-                  tabIndex: "0"
-                },
-                onClear: () => {
-                  this.setState({
-                    month: null
-                  });
-                }
-              }}
-            />
-
-            <AlagehFormGroup
-              div={{ className: "col" }}
-              label={{
-                forceLabel: "Year",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "year",
-                value: this.state.year,
-                events: {
-                  onChange: texthandle.bind(this, this)
-                },
-                others: {
-                  type: "number",
-                  min: moment().year(),
-                  tabIndex: "1"
-                }
-              }}
-            /> */}
+          <div className="row  inner-top-search" data-validate="loadData">
             <AlagehAutoComplete
               div={{ className: "col" }}
               label={{
@@ -152,7 +106,7 @@ class EmployeePayment extends Component {
                   valueField: "value",
                   data: GlobalVariables.EMPLOYEE_PAYMENT_TYPE
                 },
-                onChange: texthandle.bind(this, this),
+                onChange: Paymenttexthandle.bind(this, this),
                 others: {
                   tabIndex: "2"
                 },
@@ -307,7 +261,7 @@ class EmployeePayment extends Component {
                                 }
                               },
                               {
-                                fieldName: "loan_application_number",
+                                fieldName: "request_number",
                                 label: (
                                   <AlgaehLabel
                                     label={{ forceLabel: "Request No." }}
@@ -331,7 +285,7 @@ class EmployeePayment extends Component {
                                 )
                               },
                               {
-                                fieldName: "approved_amount",
+                                fieldName: "payment_amount",
                                 label: (
                                   <AlgaehLabel
                                     label={{ forceLabel: "Requested Amount" }}
@@ -351,8 +305,7 @@ class EmployeePayment extends Component {
                               onDone: () => {}
                             }}
                             onRowSelect={row => {
-                              debugger;
-                              getPaymentDetails(this, this, row);
+                              getPaymentDetails(this, row);
                             }}
                           />
                         </div>
@@ -360,11 +313,21 @@ class EmployeePayment extends Component {
                     </div>
                   </div>
                 </div>
-                <div className="col-5">
+                <div className="col-5" data-validate="processData">
                   <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
                     <div className="portlet-title">
                       <div className="caption">
                         <h3 className="caption-subject">Payment Form</h3>
+
+                        {this.state.request_number === null ? (
+                          ""
+                        ) : (
+                          <h3>
+                            {this.state.request_number +
+                              "/" +
+                              this.state.full_name}
+                          </h3>
+                        )}
                       </div>
                       <div className="actions">
                         {/* <a className="btn btn-primary btn-circle active">
@@ -397,7 +360,7 @@ class EmployeePayment extends Component {
                           div={{ className: "col-6 form-group" }}
                           label={{
                             forceLabel: "Mode of Payment",
-                            isImp: false
+                            isImp: true
                           }}
                           selector={{
                             name: "payment_mode",
@@ -415,7 +378,7 @@ class EmployeePayment extends Component {
                           div={{ className: "col-4 form-group" }}
                           label={{
                             forceLabel: "Payment Amount",
-                            isImp: false
+                            isImp: true
                           }}
                           textBox={{
                             className: "txt-fld",
@@ -437,7 +400,8 @@ class EmployeePayment extends Component {
                             div={{ className: "col-6  form-group" }}
                             label={{
                               forceLabel: "Select a Bank",
-                              isImp: false
+                              isImp:
+                                this.state.payment_mode === "CH" ? true : false
                             }}
                             selector={{
                               name: "hospital_id",
@@ -454,13 +418,14 @@ class EmployeePayment extends Component {
                             div={{ className: "col-6 form-group" }}
                             label={{
                               forceLabel: "Cheque No.",
-                              isImp: false
+                              isImp:
+                                this.state.payment_mode === "CH" ? true : false
                             }}
                             textBox={{
                               className: "txt-fld",
-                              name: "",
-                              value: "",
-                              events: {},
+                              name: "cheque_number",
+                              value: this.state.cheque_number,
+                              onChange: texthandle.bind(this, this),
                               option: {
                                 type: "text"
                               }
@@ -474,7 +439,10 @@ class EmployeePayment extends Component {
                             div={{ className: "col-4 form-group" }}
                             label={{
                               forceLabel: "Deduct in Month",
-                              isImp: false
+                              isImp:
+                                this.state.sel_payment_type === "AD"
+                                  ? true
+                                  : false
                             }}
                             selector={{
                               name: "deduction_month",
@@ -492,7 +460,10 @@ class EmployeePayment extends Component {
                             div={{ className: "col-4 form-group" }}
                             label={{
                               forceLabel: "Year",
-                              isImp: false
+                              isImp:
+                                this.state.sel_payment_type === "AD"
+                                  ? true
+                                  : false
                             }}
                             textBox={{
                               className: "txt-fld",
@@ -511,6 +482,7 @@ class EmployeePayment extends Component {
                           <button
                             type="button"
                             className="btn btn-primary float-right"
+                            onClick={ProessEmpPayment.bind(this, this)}
                           >
                             Process
                           </button>
@@ -546,86 +518,50 @@ class EmployeePayment extends Component {
                           {
                             fieldName: "",
                             label: "Request Type"
-                            //disabled: true
                           },
                           {
                             fieldName: "",
                             label: "Request No."
-                            // others: {
-                            //   minWidth: 150,
-                            //   maxWidth: 250
-                            // }
                           },
                           {
                             fieldName: "",
                             label: "Employee Code"
-                            //disabled: true
                           },
                           {
                             fieldName: "",
                             label: "Employee Name"
-                            //disabled: true
                           },
                           {
                             fieldName: "",
                             label: "Requested Amount"
-                            //disabled: true
                           },
                           {
                             fieldName: "",
                             label: "Document No."
-                            // others: {
-                            //   minWidth: 150,
-                            //   maxWidth: 250
-                            // }
                           },
                           {
                             fieldName: "",
                             label: "Process Date"
-                            // others: {
-                            //   minWidth: 150,
-                            //   maxWidth: 250
-                            // }
                           },
                           {
                             fieldName: "",
                             label: "Process Amount"
-                            // others: {
-                            //   minWidth: 150,
-                            //   maxWidth: 250
-                            // }
                           },
                           {
                             fieldName: "",
                             label: "Mode of Payment"
-                            // others: {
-                            //   minWidth: 150,
-                            //   maxWidth: 250
-                            // }
                           },
                           {
                             fieldName: "",
                             label: "Bank Details"
-                            // others: {
-                            //   minWidth: 150,
-                            //   maxWidth: 250
-                            // }
                           },
                           {
                             fieldName: "",
                             label: "Cheque/ Transaction No."
-                            // others: {
-                            //   minWidth: 150,
-                            //   maxWidth: 250
-                            // }
                           },
                           {
                             fieldName: "",
                             label: "Deduct in the Month of"
-                            // others: {
-                            //   minWidth: 150,
-                            //   maxWidth: 250
-                            // }
                           }
                         ]}
                         keyId="algaeh_d_module_id"

@@ -24,6 +24,25 @@ const getEmployeeDetails = $this => {
 };
 
 const EditEmployeeMaster = ($this, row) => {
+  row.deptDetails = [];
+  row.contributioncomponents = [];
+  row.deductioncomponents = [];
+  row.earningComponents = [];
+  row.idDetails = [];
+  row.dependentDetails = [];
+
+  row.insertearnComp = [];
+  row.insertDeductionComp = [];
+  row.insertContributeComp = [];
+
+  row.deleteearnComp = [];
+  row.deleteDeductionComp = [];
+  row.deleteContributeComp = [];
+
+  row.updateearnComp = [];
+  row.updateDeductionComp = [];
+  row.updateContributeComp = [];
+
   $this.setState({
     isOpen: !$this.state.isOpen,
     employeeDetailsPop: row,

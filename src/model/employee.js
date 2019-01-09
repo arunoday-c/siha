@@ -3056,7 +3056,7 @@ let getEmployeeDepartments = (req, res, next) => {
   }
 };
 
-let getPayrollComponents = (req, res, next) => {
+let getEmpEarningComponents = (req, res, next) => {
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -3067,9 +3067,68 @@ let getPayrollComponents = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "SELECT * from hims_d_employee_earnings where employee_id = ?; SELECT * from hims_d_employee_deductions where employee_id = ?; \
-        SELECT * from hims_d_employee_contributions where employee_id = ?;",
+        "SELECT * from hims_d_employee_earnings where employee_id = ?;",
         [input.employee_id, input.employee_id, input.employee_id],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          debugLog("result: ", result);
+
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+let getEmpDeductionComponents = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.query);
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "SELECT * from hims_d_employee_deductions where employee_id = ?;",
+        [input.employee_id],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          debugLog("result: ", result);
+
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+let getEmpContibuteComponents = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.query);
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "SELECT * from hims_d_employee_contributions where employee_id = ?;",
+        [input.employee_id],
         (error, result) => {
           releaseDBConnection(db, connection);
           if (error) {
@@ -3322,8 +3381,7 @@ let addEmployeeAdvance = (req, res, next) => {
           );
         });
       });
-      });
-      
+    });
   } catch (e) {
     next(e);
   }
@@ -3400,7 +3458,9 @@ module.exports = {
   addEmployeeEducation,
   getEmployeeEducation,
   getEmployeeDepartments,
-  getPayrollComponents,
+  getEmpEarningComponents,
+  getEmpDeductionComponents,
+  getEmpContibuteComponents,
   getFamilyIdentification,
   getEmployeesForMisED,
   addMisEarnDedcToEmployees,

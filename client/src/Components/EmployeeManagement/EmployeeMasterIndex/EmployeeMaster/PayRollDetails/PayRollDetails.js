@@ -30,7 +30,9 @@ import {
   updateDeductionComponent,
   deleteContibuteComponent,
   updateContibuteComponent,
-  getPayrollComponents
+  getEmpEarningComponents,
+  getEmpDeductionComponents,
+  getEmpContibuteComponents
 } from "./PayRollDetailsEvent.js";
 import Enumerable from "linq";
 
@@ -60,11 +62,18 @@ class PayRollDetails extends PureComponent {
   componentDidMount() {
     let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
     this.setState({ ...this.state, ...InputOutput }, () => {
-      if (
-        this.state.hims_d_employee_id !== null &&
-        this.state.dataPayrolExists === false
-      ) {
-        getPayrollComponents(this);
+      if (this.state.hims_d_employee_id !== null) {
+        // getPayrollComponents(this);
+
+        if (this.state.earningComponents.length === 0) {
+          getEmpEarningComponents(this);
+        }
+        if (this.state.deductioncomponents.length === 0) {
+          getEmpDeductionComponents(this);
+        }
+        if (this.state.contributioncomponents.length === 0) {
+          getEmpContibuteComponents(this);
+        }
       }
     });
     if (
