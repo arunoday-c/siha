@@ -90,51 +90,7 @@ class PersonalDetails extends PureComponent {
 
   componentWillReceiveProps(nextProps) {
     debugger;
-    this.setState(nextProps.EmpMasterIOputs.state.personalDetails, () => {
-      // if (this.state.present_country_id === null) return;
-      // if (
-      //   this.state.present_country_id ===
-      //   nextProps.EmpMasterIOputs.state.personalDetails.present_country_id
-      // ) {
-      //   let country = Enumerable.from(this.props.countries)
-      //     .where(w => w.hims_d_country_id === this.state.present_country_id)
-      //     .firstOrDefault();
-      //   let states = country !== undefined ? country.states : [];
-      //   if (this.props.countries !== undefined && states.length !== 0) {
-      //     if (
-      //       nextProps.EmpMasterIOputs.state.personalDetails.present_state_id ===
-      //       this.state.present_state_id
-      //     ) {
-      //       let cities = Enumerable.from(states)
-      //         .where(w => w.hims_d_state_id === this.state.present_state_id)
-      //         .firstOrDefault();
-      //       if (cities !== undefined) {
-      //         this.setState({
-      //           countrystates: states,
-      //           cities: cities.cities,
-      //           present_state_id: this.state.present_state_id,
-      //           present_city_id: this.state.present_city_id
-      //         });
-      //         this.props.EmpMasterIOputs.updateEmployeeTabs({
-      //           countrystates: states,
-      //           cities: cities.cities,
-      //           present_state_id: this.state.present_state_id,
-      //           present_city_id: this.state.present_city_id
-      //         });
-      //       } else {
-      //         this.setState({
-      //           countrystates: states,
-      //           present_state_id: this.state.present_state_id
-      //         });
-      //         this.props.EmpMasterIOputs.updateEmployeeTabs({
-      //           countrystates: states,
-      //           present_state_id: this.state.present_state_id
-      //         });
-      //       }
-      //     }
-      //   }
-      // }
-    });
+    this.setState(nextProps.EmpMasterIOputs.state.personalDetails);
   }
 
   render() {
