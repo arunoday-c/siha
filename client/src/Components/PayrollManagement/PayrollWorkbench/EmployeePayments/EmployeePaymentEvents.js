@@ -101,6 +101,7 @@ const RequestPaySearch = $this => {
 };
 
 const getPaymentDetails = ($this, row) => {
+  debugger;
   $this.setState({
     employee_id: row.employee_id,
     payment_type: row.payment_type,

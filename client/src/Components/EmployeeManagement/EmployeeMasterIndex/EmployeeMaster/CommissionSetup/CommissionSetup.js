@@ -42,63 +42,63 @@ class CommissionSetup extends Component {
       ip_credit_commission_percent: 0,
       service_type_typ_id: null
     };
-    AlgaehLoader({ show: true });
+    // AlgaehLoader({ show: true });
   }
 
-  componentWillMount() {
-    debugger;
-    let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
-    this.setState({ ...this.state, ...InputOutput });
-  }
+  // componentWillMount() {
+  //   debugger;
+  //   let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
+  //   this.setState({ ...this.state, ...InputOutput });
+  // }
 
   componentDidMount() {
     debugger;
     // AlgaehLoader({ show: true });
 
     let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
-    this.setState({ ...this.state, ...InputOutput });
-
-    if (this.state.servTypeCommission.length === 0) {
-      algaehApiCall({
-        uri: "/employee/getDoctorServiceTypeCommission",
-        method: "GET",
-        data: { provider_id: this.state.hims_d_employee_id },
-        onSuccess: response => {
-          if (response.data.success) {
-            this.setState({ servTypeCommission: response.data.records });
+    this.setState({ ...this.state, ...InputOutput }, () => {
+      if (this.state.servTypeCommission.length === 0) {
+        algaehApiCall({
+          uri: "/employee/getDoctorServiceTypeCommission",
+          method: "GET",
+          data: { provider_id: this.state.hims_d_employee_id },
+          onSuccess: response => {
+            if (response.data.success) {
+              this.setState({ servTypeCommission: response.data.records });
+            }
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
           }
-        },
-        onFailure: error => {
-          swalMessage({
-            title: error.message,
-            type: "error"
-          });
-        }
-      });
-    }
+        });
+      }
 
-    if (this.state.serviceComm.length === 0) {
-      algaehApiCall({
-        uri: "/employee/getDoctorServiceCommission",
-        method: "GET",
-        data: { provider_id: this.state.hims_d_employee_id },
-        onSuccess: response => {
-          if (response.data.success) {
-            this.setState({ serviceComm: response.data.records });
+      if (this.state.serviceComm.length === 0) {
+        algaehApiCall({
+          uri: "/employee/getDoctorServiceCommission",
+          method: "GET",
+          data: { provider_id: this.state.hims_d_employee_id },
+          onSuccess: response => {
+            if (response.data.success) {
+              this.setState({ serviceComm: response.data.records });
+            }
+            AlgaehLoader({ show: false });
+          },
+          onFailure: error => {
+            AlgaehLoader({ show: false });
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
           }
-          AlgaehLoader({ show: false });
-        },
-        onFailure: error => {
-          AlgaehLoader({ show: false });
-          swalMessage({
-            title: error.message,
-            type: "error"
-          });
-        }
-      });
-    } else {
-      AlgaehLoader({ show: false });
-    }
+        });
+      } else {
+        AlgaehLoader({ show: false });
+      }
+    });
   }
 
   render() {
