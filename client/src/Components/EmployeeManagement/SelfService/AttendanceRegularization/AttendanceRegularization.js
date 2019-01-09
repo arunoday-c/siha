@@ -82,6 +82,16 @@ class AttendanceRegularization extends Component {
             title: "Please Select a proper Date Range",
             type: "warning"
           });
+        } else if (
+          moment(this.state.login_date).format("YYYYMMDD") ===
+            moment(this.state.logout_date).format("YYYYMMDD") &&
+          moment(this.state.regularize_in_time, "HH:mm:ss").format("HHmmss") >
+            moment(this.state.regularize_out_time, "HH:mm:ss").format("HHmmss")
+        ) {
+          swalMessage({
+            title: "Please Select a proper time range",
+            type: "warning"
+          });
         } else {
           algaehApiCall({
             uri: "/leave/addAttendanceRegularization",

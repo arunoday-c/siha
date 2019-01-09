@@ -6,168 +6,279 @@ import {
   AlgaehLabel,
   AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import ReactTable from "react-table";
-
 import "react-table/react-table.css";
 import treeTableHOC from "react-table/lib/hoc/treeTable";
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
+import moment from "moment";
 const TreeTable = treeTableHOC(ReactTable);
 
 export default class AttendanceRegularization extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedLang: this.props.SelectLanguage
+      loading: false,
+      regularization_list: []
     };
+  }
+
+  loadRegularizationList() {
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      onSuccess: () => {
+        if (
+          moment(this.state.from_date).format("YYYYMMDD") >
+          moment(this.state.to_date).format("YYYYMMDD")
+        ) {
+          swalMessage({
+            title: "Please Select a proper Date Range",
+            type: "warning"
+          });
+        } else {
+          this.setState({
+            loading: true
+          });
+
+          algaehApiCall({
+            uri: "/leave/getEmployeeAttendReg",
+            method: "GET",
+            data: {
+              from_date: this.state.from_date,
+              to_date: this.state.to_date
+            },
+            onSuccess: res => {
+              if (res.data.success) {
+                this.setState({
+                  regularization_list: res.data.records,
+                  loading: false
+                });
+              }
+            },
+            onFailure: err => {
+              swalMessage({
+                title: err.message,
+                type: "error"
+              });
+              this.setState({
+                loading: false
+              });
+            }
+          });
+        }
+      }
+    });
   }
 
   render() {
     return (
-      <React.Fragment>
-        <div className="hptl-AttendanceRegularization-form">
-          <div className="row  inner-top-search">
-            <AlgaehDateHandler
-              div={{ className: "col-3 margin-bottom-15" }}
-              label={{
-                forceLabel: "From Date",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "date_of_joining",
-                others: {
-                  tabIndex: "6"
-                }
-              }}
-              maxDate={new Date()}
-            />
-            <AlgaehDateHandler
-              div={{ className: "col-3 margin-bottom-15" }}
-              label={{
-                forceLabel: "To Date",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "date_of_joining",
-                others: {
-                  tabIndex: "6"
-                }
-              }}
-              maxDate={new Date()}
-            />
-            <div className="col-3 margin-bottom-15">
-              <button
-                type="button"
-                className="btn btn-primary"
-                style={{ marginTop: 21 }}
-              >
-                Load
-              </button>
+      <div className="hptl-AttendanceRegularization-form">
+        <div className="row  inner-top-search">
+          <AlgaehDateHandler
+            div={{ className: "col-3 margin-bottom-15" }}
+            label={{
+              forceLabel: "From Date",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "from_date",
+              others: {
+                tabIndex: "6"
+              }
+            }}
+            events={{
+              onChange: selDate => {
+                this.setState({
+                  from_date: selDate
+                });
+              }
+            }}
+            maxDate={new Date()}
+            value={this.state.from_date}
+          />
+          <AlgaehDateHandler
+            div={{ className: "col-3 margin-bottom-15" }}
+            label={{
+              forceLabel: "To Date",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "to_date",
+              others: {
+                tabIndex: "6"
+              }
+            }}
+            events={{
+              onChange: selDate => {
+                this.setState({
+                  to_date: selDate
+                });
+              }
+            }}
+            maxDate={new Date()}
+            value={this.state.to_date}
+          />
+          <div className="col-3 margin-bottom-15">
+            <button
+              onClick={this.loadRegularizationList.bind(this)}
+              type="button"
+              className="btn btn-primary"
+              style={{ marginTop: 21 }}
+            >
+              {!this.state.loading ? (
+                <span>Load</span>
+              ) : (
+                <i className="fas fa-spinner fa-spin" />
+              )}
+            </button>
+          </div>
+        </div>
+        <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+          <div className="portlet-title">
+            <div className="caption">
+              <h3 className="caption-subject">
+                Attendance Regularization Status
+              </h3>
             </div>
           </div>
-          <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
-            <div className="portlet-title">
-              <div className="caption">
-                <h3 className="caption-subject">
-                  Attendance Regularization Status
-                </h3>
-              </div>
-              <div className="actions">
-                <a className="btn btn-primary btn-circle active">
-                  {/* <i className="fas fa-calculator" /> */}
-                </a>
-              </div>
-            </div>
 
-            <div className="portlet-body">
-              <div className="row">
-                <div className="col-lg-12" id="Attendance_Regularization_Cntr">
-                  <TreeTable
-                    id="Attendance_Regularization_grid"
-                    columns={[
-                      {
-                        Header: "Employee",
-                        accessor: "Employee",
-                        columns: [
-                          {
-                            Header: "Code",
-                            accessor: "EmployeeCode"
-                          },
-                          {
-                            Header: "Name",
-                            accessor: "EmployeeName"
-                          }
-                        ]
-                      },
-                      {
-                        Header: "Attendance",
-                        accessor: "Attendance",
-                        columns: [
-                          {
-                            Header: "Date",
-                            accessor: "AttendanceDate"
-                          }
-                        ]
-                      },
-                      {
-                        Header: "Login Time",
-                        accessor: "LoginTime",
+          <div className="portlet-body">
+            <div className="row">
+              <div className="col-lg-12" id="Attendance_Regularization_Cntr">
+                <TreeTable
+                  id="Attendance_Regularization_grid"
+                  data={this.state.regularization_list}
+                  columns={[
+                    {
+                      Header: "Actions",
+                      id: "hims_f_attendance_regularize_id",
+                      accessor: d => (
+                        <span>
+                          <i className="fa fa-check" />
+                          <i className="fa fa-times" />
+                        </span>
+                      )
+                    },
+                    {
+                      Header: "Regularization",
+                      accessor: "regularization_code",
+                      columns: [
+                        {
+                          Header: "Code",
+                          accessor: "regularization_code"
+                        },
+                        {
+                          Header: "Reason",
+                          accessor: "regularization_reason"
+                        }
+                      ]
+                    },
+                    {
+                      Header: "Employee",
+                      accessor: "Employee",
+                      columns: [
+                        {
+                          Header: "Code",
+                          accessor: "employee_code"
+                        },
+                        {
+                          Header: "Name",
+                          accessor: "employee_name"
+                        }
+                      ]
+                    },
+                    {
+                      Header: "Attendance",
+                      accessor: "Attendance",
+                      columns: [
+                        {
+                          Header: "Date",
+                          id: "attendance_date",
+                          accessor: d =>
+                            moment(d.attendance_date).format("DD-MM-YYYY")
+                        }
+                      ]
+                    },
+                    {
+                      Header: "Login Time",
+                      accessor: "LoginTime",
 
-                        columns: [
-                          {
-                            Header: "Old",
-                            accessor: "LoginTimeOld",
-                            filterable: false
-                          },
-                          {
-                            Header: "New",
-                            accessor: "LoginTimeNew",
-                            filterable: false
-                          }
-                        ]
-                      },
-                      {
-                        Header: "Login Out",
-                        accessor: "LoginOut",
-                        columns: [
-                          {
-                            Header: "Old",
-                            accessor: "LoginOutOld",
-                            filterable: false
-                          },
-                          {
-                            Header: "New",
-                            accessor: "LoginOutNew",
-                            filterable: false
-                          }
-                        ]
-                      },
-                      {
-                        Header: "Regularization",
-                        accessor: "Regularization",
-                        columns: [
-                          {
-                            Header: "Status",
-                            accessor: "RegularizationStatus"
-                          }
-                        ]
-                      }
-                    ]}
-                    keyId="algaeh_d_module_id"
-                    dataSource={{
-                      data: []
-                    }}
-                    isEditable={false}
-                    filterable
-                    defaultPageSize={10}
-                    className="-striped -highlight"
-                  />
-                </div>
+                      columns: [
+                        {
+                          Header: "Old",
+                          id: "punch_in_time",
+                          accessor: d =>
+                            d.punch_in_time ? d.punch_in_time : "------"
+                        },
+                        {
+                          Header: "New",
+                          id: "regularize_in_time",
+                          accessor: d =>
+                            moment(d.regularize_in_time, "HH:mm:ss").format(
+                              "HH:mm A"
+                            )
+                        }
+                      ]
+                    },
+                    {
+                      Header: "Login Out",
+                      accessor: "LoginOut",
+                      columns: [
+                        {
+                          Header: "Old",
+                          id: "punch_out_time",
+                          accessor: d =>
+                            d.punch_out_time ? d.punch_out_time : "------"
+                        },
+                        {
+                          Header: "New",
+                          id: "regularize_out_time",
+                          accessor: d =>
+                            moment(d.regularize_out_time, "HH:mm:ss").format(
+                              "HH:mm A"
+                            )
+                        }
+                      ]
+                    },
+                    {
+                      Header: "Regularization",
+                      accessor: "Regularization",
+                      columns: [
+                        {
+                          id: "regularize_status",
+                          Header: "Status",
+                          accessor: d =>
+                            d.regularize_status === "PEN" ? (
+                              <span className="badge badge-warning">
+                                Pending
+                              </span>
+                            ) : d.regularize_status === "APR" ? (
+                              <span className="badge badge-success">
+                                Approved
+                              </span>
+                            ) : d.regularize_status === "REJ" ? (
+                              <span className="badge badge-danger">
+                                Rejected
+                              </span>
+                            ) : (
+                              "------"
+                            )
+                        }
+                      ]
+                    }
+                  ]}
+                  loading={this.state.loading}
+                  filterable
+                  defaultPageSize={10}
+                  className="-striped -highlight"
+                />
               </div>
             </div>
           </div>
         </div>
-      </React.Fragment>
+      </div>
     );
   }
 }

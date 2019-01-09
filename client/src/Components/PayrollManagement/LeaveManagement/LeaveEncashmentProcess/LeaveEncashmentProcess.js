@@ -1,32 +1,69 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 
 import "./LeaveEncashmentProcess.css";
-
+import { texthandler, LoadEncashment } from "./EncashmentProcessEvents.js";
+import moment from "moment";
 import {
   AlagehAutoComplete,
   AlgaehLabel,
   AlgaehDataGrid,
-  AlgaehDateHandler
+  AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
+import { AlgaehActions } from "../../../../actions/algaehActions";
+import GlobalVariables from "../../../../utils/GlobalVariables.json";
 
-export default class LeaveEncashmentProcess extends Component {
+class LeaveEncashmentProcess extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      year: moment().year(),
+      encash_type: null,
+      sel_employee_id: null
+    };
+  }
+
+  componentDidMount() {
+    if (
+      this.props.all_employees === undefined ||
+      this.props.all_employees.length === 0
+    ) {
+      this.props.getEmployees({
+        uri: "/employee/get",
+        method: "GET",
+
+        redux: {
+          type: "EMPLY_GET_DATA",
+          mappingName: "all_employees"
+        }
+      });
+    }
+  }
   render() {
     return (
       <div className="leave_en_auth row">
         <div className="col-12">
-          <div className="row inner-top-search">
-            <AlagehAutoComplete
-              div={{ className: "col form-group mandatory" }}
+          <div className="row inner-top-search" data-validate="loadEncash">
+            <AlagehFormGroup
+              div={{ className: "col" }}
               label={{
-                forceLabel: "Selected Year",
+                forceLabel: "Year",
                 isImp: true
               }}
-              selector={{
-                name: "",
-                className: "select-fld",
-
-                dataSource: {},
-                others: {}
+              textBox={{
+                className: "txt-fld",
+                name: "year",
+                value: this.state.year,
+                events: {
+                  onChange: texthandler.bind(this, this)
+                },
+                others: {
+                  type: "number",
+                  min: moment().year(),
+                  disabled: this.state.lockEarnings
+                }
               }}
             />
             <AlagehAutoComplete
@@ -36,11 +73,20 @@ export default class LeaveEncashmentProcess extends Component {
                 isImp: true
               }}
               selector={{
-                name: "",
+                name: "sel_employee_id",
                 className: "select-fld",
-
-                dataSource: {},
-                others: {}
+                value: this.state.sel_employee_id,
+                dataSource: {
+                  textField: "full_name",
+                  valueField: "hims_d_employee_id",
+                  data: this.props.all_employees
+                },
+                onChange: texthandler.bind(this, this),
+                onClear: () => {
+                  this.setState({
+                    sel_employee_id: null
+                  });
+                }
               }}
             />
             <AlagehAutoComplete
@@ -50,15 +96,30 @@ export default class LeaveEncashmentProcess extends Component {
                 isImp: false
               }}
               selector={{
-                name: "",
+                name: "encash_type",
                 className: "select-fld",
-                dataSource: {},
-                others: {}
+                value: this.state.encash_type,
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: GlobalVariables.ENCASH_TYPE
+                },
+                onChange: texthandler.bind(this, this),
+
+                onClear: () => {
+                  this.setState({
+                    sel_payment_type: null
+                  });
+                }
               }}
             />
 
             <div className="col form-group">
-              <button style={{ marginTop: 21 }} className="btn btn-primary">
+              <button
+                style={{ marginTop: 21 }}
+                className="btn btn-primary"
+                onClick={LoadEncashment.bind(this, this)}
+              >
                 Load
               </button>
             </div>
@@ -162,3 +223,25 @@ export default class LeaveEncashmentProcess extends Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    all_employees: state.all_employees
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getEmployees: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(LeaveEncashmentProcess)
+);
