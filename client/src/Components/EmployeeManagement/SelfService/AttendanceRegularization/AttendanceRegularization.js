@@ -48,7 +48,7 @@ class AttendanceRegularization extends Component {
 
   getRegularizationRequests() {
     algaehApiCall({
-      uri: "/",
+      uri: "/leave/getEmployeeAttendReg",
       method: "GET",
       data: {
         employee_id: this.state.hims_d_employee_id
@@ -87,6 +87,7 @@ class AttendanceRegularization extends Component {
             uri: "/leave/addAttendanceRegularization",
             method: "POST",
             data: {
+              attendance_date: this.state.login_date,
               employee_id: this.state.hims_d_employee_id,
               login_date: this.state.login_date,
               logout_date: this.state.logout_date,
@@ -276,14 +277,17 @@ class AttendanceRegularization extends Component {
                 <div className="col-lg-12" id="attendanceReg_Cntr">
                   <TreeTable
                     id="attendanceReg_Cntr"
+                    data={this.state.regularization_list}
                     columns={[
                       {
                         Header: "Applied",
                         accessor: "Applied",
                         columns: [
                           {
+                            id: "created_date",
                             Header: "Date",
-                            accessor: "created_date"
+                            accessor: d =>
+                              moment(d.created_date).format("DD-MM-YYYY")
                           },
                           {
                             Header: "Reason",
@@ -297,7 +301,9 @@ class AttendanceRegularization extends Component {
                         columns: [
                           {
                             Header: "Date",
-                            accessor: "attendance_date"
+                            id: "attendance_date",
+                            accessor: d =>
+                              moment(d.attendance_date).format("DD-MM-YYYY")
                           }
                         ]
                       },
@@ -308,25 +314,37 @@ class AttendanceRegularization extends Component {
                         columns: [
                           {
                             Header: "Old",
-                            accessor: "punch_in_time"
+                            id: "punch_in_time",
+                            accessor: d =>
+                              d.punch_in_time ? d.punch_in_time : "------"
                           },
                           {
                             Header: "New",
-                            accessor: "regularize_in_time"
+                            id: "regularize_in_time",
+                            accessor: d =>
+                              moment(d.regularize_in_time, "HH:mm:ss").format(
+                                "HH:mm A"
+                              )
                           }
                         ]
                       },
                       {
-                        Header: "Login Out",
+                        Header: "Logout Time",
                         accessor: "punch_out_time",
                         columns: [
                           {
                             Header: "Old",
-                            accessor: "punch_out_time"
+                            id: "punch_out_time",
+                            accessor: d =>
+                              d.punch_out_time ? d.punch_out_time : "------"
                           },
                           {
                             Header: "New",
-                            accessor: "regularize_out_time"
+                            id: "regularize_out_time",
+                            accessor: d =>
+                              moment(d.regularize_out_time, "HH:mm:ss").format(
+                                "HH:mm A"
+                              )
                           }
                         ]
                       },
@@ -335,18 +353,28 @@ class AttendanceRegularization extends Component {
                         accessor: "Regularization",
                         columns: [
                           {
+                            id: "regularize_status",
                             Header: "Status",
-                            accessor: "regularize_status"
+                            accessor: d =>
+                              d.regularize_status === "PEN" ? (
+                                <span className="badge badge-warning">
+                                  Pending
+                                </span>
+                              ) : d.regularize_status === "APR" ? (
+                                <span className="badge badge-success">
+                                  Approved
+                                </span>
+                              ) : d.regularize_status === "REJ" ? (
+                                <span className="badge badge-danger">
+                                  Rejected
+                                </span>
+                              ) : (
+                                "------"
+                              )
                           }
                         ]
                       }
                     ]}
-                    keyId="algaeh_d_module_id"
-                    dataSource={{
-                      data: this.state.regularization_list
-                    }}
-                    isEditable={false}
-                    //filterable
                     defaultPageSize={10}
                     className="-striped -highlight"
                   />
