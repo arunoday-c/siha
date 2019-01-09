@@ -4,6 +4,7 @@ import {
   paging,
   whereCondition,
   releaseDBConnection,
+  runningNumberGen,
   deleteRecord,
   jsonArrayToObject
 } from "../utils";
@@ -3322,8 +3323,7 @@ let addEmployeeAdvance = (req, res, next) => {
           );
         });
       });
-      });
-      
+    });
   } catch (e) {
     next(e);
   }
@@ -3347,7 +3347,7 @@ let getEmployeeAdvance = (req, res, next) => {
         : "";
     db.getConnection((error, connection) => {
       connection.query(
-        "Select hims_f_employee_advance_id, employee_id, advance_amount, advance_reason, deducting_month,\
+        "Select hims_f_employee_advance_id, advance_number,employee_id, advance_amount, advance_reason, deducting_month,\
          deducting_year, advance_status, created_by, created_date, updated_by, updated_date from hims_f_employee_advance where record_status='A' " +
           whereCon,
         (error, result) => {

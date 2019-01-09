@@ -84,8 +84,18 @@ class AttendanceRegularization extends Component {
           });
         } else {
           algaehApiCall({
-            uri: "",
-            method: "",
+            uri: "/leave/addAttendanceRegularization",
+            method: "POST",
+            data: {
+              employee_id: this.state.hims_d_employee_id,
+              login_date: this.state.login_date,
+              logout_date: this.state.logout_date,
+              punch_in_time: this.state.punch_in_time,
+              punch_out_time: this.state.punch_out_time,
+              regularize_in_time: this.state.regularize_in_time,
+              regularize_out_time: this.state.regularize_out_time,
+              regularization_reason: this.state.regularization_reason
+            },
             onSuccess: res => {
               if (res.data.success) {
                 swalMessage({
@@ -134,11 +144,14 @@ class AttendanceRegularization extends Component {
                     }
                   }}
                   maxDate={new Date()}
-                  onChange={selDate => {
-                    this.setState({
-                      login_date: selDate
-                    });
+                  events={{
+                    onChange: selDate => {
+                      this.setState({
+                        login_date: selDate
+                      });
+                    }
                   }}
+                  value={this.state.login_date}
                 />
                 <AlgaehDateHandler
                   div={{ className: "col-6 margin-bottom-15" }}
@@ -154,11 +167,14 @@ class AttendanceRegularization extends Component {
                     }
                   }}
                   minDate={this.state.login_date}
-                  onChange={selDate => {
-                    this.setState({
-                      logout_date: selDate
-                    });
+                  events={{
+                    onChange: selDate => {
+                      this.setState({
+                        logout_date: selDate
+                      });
+                    }
                   }}
+                  value={this.state.logout_date}
                 />
                 {/* Need to fetch the old in time and old out time from API */}
                 <div className="col-6">
@@ -178,7 +194,7 @@ class AttendanceRegularization extends Component {
                   <h6>00.00</h6>
                 </div>
                 {/* Need to fetch the old in time and old out time from API */}
-                <AlgaehDateHandler
+                <AlagehFormGroup
                   div={{ className: "col-6 margin-bottom-15" }}
                   label={{
                     forceLabel: "New In-Time",
@@ -187,14 +203,18 @@ class AttendanceRegularization extends Component {
                   textBox={{
                     className: "txt-fld",
                     name: "regularize_in_time",
+                    value: this.state.regularize_in_time,
                     others: {
                       tabIndex: "3",
                       type: "time"
                     },
-                    onChange: this.textHandler.bind(this)
+
+                    events: {
+                      onChange: this.textHandler.bind(this)
+                    }
                   }}
                 />
-                <AlgaehDateHandler
+                <AlagehFormGroup
                   div={{ className: "col-6 margin-bottom-15" }}
                   label={{
                     forceLabel: "New Out-Time",
@@ -203,11 +223,14 @@ class AttendanceRegularization extends Component {
                   textBox={{
                     className: "txt-fld",
                     name: "regularize_out_time",
+                    value: this.state.regularize_out_time,
                     others: {
                       tabIndex: "4",
                       type: "time"
                     },
-                    onChange: this.textHandler.bind(this)
+                    events: {
+                      onChange: this.textHandler.bind(this)
+                    }
                   }}
                 />
                 <AlagehFormGroup
