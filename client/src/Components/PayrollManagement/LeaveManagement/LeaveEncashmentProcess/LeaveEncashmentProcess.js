@@ -29,36 +29,6 @@ export default class LeaveEncashmentProcess extends Component {
                 others: {}
               }}
             />
-
-            <AlagehAutoComplete
-              div={{ className: "col form-group" }}
-              label={{
-                forceLabel: "Filter by Branch",
-                isImp: false
-              }}
-              selector={{
-                name: "",
-                className: "select-fld",
-
-                dataSource: {},
-                others: {}
-              }}
-            />
-
-            <AlagehAutoComplete
-              div={{ className: "col form-group" }}
-              label={{
-                forceLabel: "Filter by Departement",
-                isImp: false
-              }}
-              selector={{
-                name: "",
-                className: "select-fld",
-
-                dataSource: {},
-                others: {}
-              }}
-            />
             <AlagehAutoComplete
               div={{ className: "col form-group" }}
               label={{
