@@ -37,7 +37,9 @@ import {
   addEmployeeEducation,
   getEmployeeEducation,
   getEmployeeDepartments,
-  getPayrollComponents,
+  getEmpEarningComponents,
+  getEmpDeductionComponents,
+  getEmpContibuteComponents,
   getFamilyIdentification,
   getEmployeesForMisED,
   addMisEarnDedcToEmployees
@@ -632,8 +634,8 @@ export default ({ config, db }) => {
 
   // created by Nowshad
   api.get(
-    "/getPayrollComponents",
-    getPayrollComponents,
+    "/getEmpEarningComponents",
+    getEmpEarningComponents,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
@@ -645,6 +647,35 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
+  // created by Nowshad
+  api.get(
+    "/getEmpDeductionComponents",
+    getEmpDeductionComponents,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by Nowshad
+  api.get(
+    "/getEmpContibuteComponents",
+    getEmpContibuteComponents,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
   // created by Nowshad
   api.get(
     "/getFamilyIdentification",
