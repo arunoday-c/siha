@@ -1142,6 +1142,53 @@ let addAttendanceRegularization = (req, res, next) => {
     next(e);
   }
 };
+
+//created by irfan:
+let getEmployeeAttendReg = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    if (
+      req.query.employee_id != "" &&
+      req.query.employee_id != null &&
+      req.query.employee_id != "null"
+    ) {
+      db.getConnection((error, connection) => {
+        connection.query(
+          "select hims_f_attendance_regularize_id,regularization_code,employee_id,attendance_date,\
+          regularize_status,login_date,logout_date,punch_in_time,punch_out_time,\
+          regularize_in_time,regularize_out_time,regularization_reason\
+          from hims_f_attendance_regularize where employee_id=? order by\
+          hims_f_attendance_regularize_id desc ",
+          req.query.employee_id,
+
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+
+            req.records = result;
+            next();
+          }
+        );
+      });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "please provide valid input"
+      };
+      next();
+      return;
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getEmployeeLeaveData,
   applyEmployeeLeave,
@@ -1149,5 +1196,6 @@ module.exports = {
   getLeaveBalance,
   getLeaveLevels,
   addLeaveMaster,
-  addAttendanceRegularization
+  addAttendanceRegularization,
+  getEmployeeAttendReg
 };
