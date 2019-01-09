@@ -60,6 +60,17 @@ const AddEarnComponent = ($this, e) => {
       let earningComponents = $this.state.earningComponents;
       let insertearnComp = $this.state.insertearnComp;
 
+      const _earnComponent = Enumerable.from(earningComponents)
+        .where(w => w.earnings_id === $this.state.earning_id)
+        .any();
+      if (_earnComponent) {
+        swalMessage({
+          title: "Seleted component already exists.",
+          type: "warning"
+        });
+        return;
+      }
+
       earningComponents.push({
         employee_id: $this.state.hims_d_employee_id,
         earnings_id: $this.state.earning_id,
@@ -105,6 +116,17 @@ const AddDeductionComponent = ($this, e) => {
       let deductioncomponents = $this.state.deductioncomponents;
       let insertDeductionComp = $this.state.insertDeductionComp;
 
+      const _dedComponent = Enumerable.from(deductioncomponents)
+        .where(w => w.deductions_id === $this.state.deducation_id)
+        .any();
+      if (_dedComponent) {
+        swalMessage({
+          title: "Seleted component already exists.",
+          type: "warning"
+        });
+        return;
+      }
+
       deductioncomponents.push({
         employee_id: $this.state.hims_d_employee_id,
         deductions_id: $this.state.deducation_id,
@@ -149,6 +171,17 @@ const AddContributionComponent = ($this, e) => {
     onSuccess: () => {
       let contributioncomponents = $this.state.contributioncomponents;
       let insertContributeComp = $this.state.insertContributeComp;
+
+      const _contComponent = Enumerable.from(contributioncomponents)
+        .where(w => w.contributions_id === $this.state.contribution_id)
+        .any();
+      if (_contComponent) {
+        swalMessage({
+          title: "Seleted component already exists.",
+          type: "warning"
+        });
+        return;
+      }
 
       contributioncomponents.push({
         employee_id: $this.state.hims_d_employee_id,
@@ -516,10 +549,10 @@ const updateContibuteComponent = ($this, row) => {
   });
 };
 
-const getPayrollComponents = $this => {
+const getEmpEarningComponents = $this => {
   debugger;
   algaehApiCall({
-    uri: "/employee/getPayrollComponents",
+    uri: "/employee/getEmpEarningComponents",
     method: "GET",
     data: { employee_id: $this.state.hims_d_employee_id },
     onSuccess: response => {
@@ -528,28 +561,93 @@ const getPayrollComponents = $this => {
         if (data.length > 0) {
           debugger;
           $this.setState({
-            earningComponents: data[0],
-            deductioncomponents: data[1],
-            contributioncomponents: data[2]
-            // dataPayrolExists: true
+            earningComponents: data
           });
 
           $this.props.EmpMasterIOputs.updateEmployeeTabs({
-            earningComponents: data[0],
-            deductioncomponents: data[1],
-            contributioncomponents: data[2]
-            // dataPayrolExists: true
+            earningComponents: data
           });
         } else {
           $this.setState({
-            earningComponents: [],
-            deductioncomponents: [],
+            earningComponents: []
+          });
+
+          $this.props.EmpMasterIOputs.updateEmployeeTabs({
+            earningComponents: []
+          });
+        }
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+};
+
+const getEmpDeductionComponents = $this => {
+  debugger;
+  algaehApiCall({
+    uri: "/employee/getEmpDeductionComponents",
+    method: "GET",
+    data: { employee_id: $this.state.hims_d_employee_id },
+    onSuccess: response => {
+      if (response.data.success) {
+        let data = response.data.records;
+        if (data.length > 0) {
+          debugger;
+          $this.setState({
+            deductioncomponents: data
+          });
+
+          $this.props.EmpMasterIOputs.updateEmployeeTabs({
+            deductioncomponents: data
+          });
+        } else {
+          $this.setState({
+            deductioncomponents: []
+          });
+
+          $this.props.EmpMasterIOputs.updateEmployeeTabs({
+            deductioncomponents: []
+          });
+        }
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+};
+const getEmpContibuteComponents = $this => {
+  debugger;
+  algaehApiCall({
+    uri: "/employee/getEmpContibuteComponents",
+    method: "GET",
+    data: { employee_id: $this.state.hims_d_employee_id },
+    onSuccess: response => {
+      if (response.data.success) {
+        let data = response.data.records;
+        if (data.length > 0) {
+          debugger;
+          $this.setState({
+            contributioncomponents: data
+          });
+
+          $this.props.EmpMasterIOputs.updateEmployeeTabs({
+            contributioncomponents: data
+          });
+        } else {
+          $this.setState({
             contributioncomponents: []
           });
 
           $this.props.EmpMasterIOputs.updateEmployeeTabs({
-            earningComponents: [],
-            deductioncomponents: [],
             contributioncomponents: []
           });
         }
@@ -579,5 +677,7 @@ export {
   updateDeductionComponent,
   deleteContibuteComponent,
   updateContibuteComponent,
-  getPayrollComponents
+  getEmpEarningComponents,
+  getEmpDeductionComponents,
+  getEmpContibuteComponents
 };

@@ -285,10 +285,10 @@ const InsertUpdateEmployee = $this => {
   }
 };
 
-const ClearEmployee = $this => {
-  let IOputs = EmpMasterIOputs.inputParam();
-  IOputs.pageDisplay = "PersonalDetails";
-  $this.setState(IOputs);
-};
+// const ClearEmployee = $this => {
+//   let IOputs = EmpMasterIOputs.inputParam();
+//   IOputs.pageDisplay = "PersonalDetails";
+//   $this.setState(IOputs);
+// };
 
-export { InsertUpdateEmployee, ClearEmployee };
+export { InsertUpdateEmployee };

@@ -11,7 +11,6 @@ import {
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import moment from "moment";
 import {
   texthandle,
   LoadData,
@@ -519,86 +518,50 @@ class EmployeePayment extends Component {
                           {
                             fieldName: "",
                             label: "Request Type"
-                            //disabled: true
                           },
                           {
                             fieldName: "",
                             label: "Request No."
-                            // others: {
-                            //   minWidth: 150,
-                            //   maxWidth: 250
-                            // }
                           },
                           {
                             fieldName: "",
                             label: "Employee Code"
-                            //disabled: true
                           },
                           {
                             fieldName: "",
                             label: "Employee Name"
-                            //disabled: true
                           },
                           {
                             fieldName: "",
                             label: "Requested Amount"
-                            //disabled: true
                           },
                           {
                             fieldName: "",
                             label: "Document No."
-                            // others: {
-                            //   minWidth: 150,
-                            //   maxWidth: 250
-                            // }
                           },
                           {
                             fieldName: "",
                             label: "Process Date"
-                            // others: {
-                            //   minWidth: 150,
-                            //   maxWidth: 250
-                            // }
                           },
                           {
                             fieldName: "",
                             label: "Process Amount"
-                            // others: {
-                            //   minWidth: 150,
-                            //   maxWidth: 250
-                            // }
                           },
                           {
                             fieldName: "",
                             label: "Mode of Payment"
-                            // others: {
-                            //   minWidth: 150,
-                            //   maxWidth: 250
-                            // }
                           },
                           {
                             fieldName: "",
                             label: "Bank Details"
-                            // others: {
-                            //   minWidth: 150,
-                            //   maxWidth: 250
-                            // }
                           },
                           {
                             fieldName: "",
                             label: "Cheque/ Transaction No."
-                            // others: {
-                            //   minWidth: 150,
-                            //   maxWidth: 250
-                            // }
                           },
                           {
                             fieldName: "",
                             label: "Deduct in the Month of"
-                            // others: {
-                            //   minWidth: 150,
-                            //   maxWidth: 250
-                            // }
                           }
                         ]}
                         keyId="algaeh_d_module_id"

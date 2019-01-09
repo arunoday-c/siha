@@ -17,7 +17,7 @@ import { AlgaehActions } from "../../../../actions/algaehActions";
 import Enumerable from "linq";
 import EmpMasterIOputs from "../../../../Models/EmployeeMaster";
 import { getCookie } from "../../../../utils/algaehApiCall";
-import { InsertUpdateEmployee, ClearEmployee } from "./EmployeeMasterEvents";
+import { InsertUpdateEmployee } from "./EmployeeMasterEvents";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 
 class EmployeeMaster extends Component {
@@ -68,6 +68,7 @@ class EmployeeMaster extends Component {
   componentDidMount() {
     // let IOputs = EmpMasterIOputs.inputParam();
     // this.setState(IOputs);
+    debugger;
     let prevLang = getCookie("Language");
 
     let IOputs = EmpMasterIOputs.inputParam();
@@ -155,6 +156,7 @@ class EmployeeMaster extends Component {
   componentWillReceiveProps(newProps) {
     debugger;
     if (newProps.editEmployee) {
+      debugger;
       let IOputs = newProps.employeeDetailsPop;
       IOputs.Applicable = IOputs.isdoctor === "Y" ? true : false;
       IOputs.samechecked = IOputs.same_address === "Y" ? true : false;
