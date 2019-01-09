@@ -478,57 +478,68 @@ export default class MiscEarningsDeductions extends Component {
                 )}
               </button>
             </div>
+          </div>
 
-            <div className="col">
-              <label>
-                Apply to All<span className="imp">&nbsp;*</span>
-              </label>
-              <div className="customCheckbox">
-                <label className="checkbox inline">
-                  <input
-                    type="checkbox"
-                    value="E"
-                    name="isBulk"
-                    onChange={this.changeChecks.bind(this)}
-                  />
-                  <span>Yes</span>
-                </label>
+          <div className="row">
+            <div className="col-12">
+              <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+                <div className="portlet-body">
+                  <div className="row">
+                    <div className="col">
+                      <label>
+                        Apply to All<span className="imp">&nbsp;*</span>
+                      </label>
+                      <div className="customCheckbox">
+                        <label className="checkbox inline">
+                          <input
+                            type="checkbox"
+                            value="E"
+                            name="isBulk"
+                            onChange={this.changeChecks.bind(this)}
+                          />
+                          <span>Yes</span>
+                        </label>
+                      </div>
+                    </div>
+
+                    <AlagehFormGroup
+                      div={{ className: "col" }}
+                      label={{
+                        forceLabel: "Enter Bulk Amount",
+                        isImp: this.state.isBulk
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "bulk_amount",
+                        value: this.state.bulk_amount,
+                        events: {
+                          onChange: this.textHandler.bind(this)
+                        },
+                        others: {
+                          type: "number",
+                          disabled: !this.state.isBulk
+                        }
+                      }}
+                    />
+                    <div className="col">
+                      <button
+                        type="button"
+                        className="btn btn-default"
+                        style={{
+                          marginTop: 21,
+                          pointerEvents: !this.state.isBulk ? "none" : null
+                        }}
+                        onClick={this.applyAmount.bind(this)}
+                      >
+                        Apply
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-
-            <AlagehFormGroup
-              div={{ className: "col form-group" }}
-              label={{
-                forceLabel: "Enter Bulk Amount",
-                isImp: this.state.isBulk
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "bulk_amount",
-                value: this.state.bulk_amount,
-                events: {
-                  onChange: this.textHandler.bind(this)
-                },
-                others: {
-                  type: "number",
-                  disabled: !this.state.isBulk
-                }
-              }}
-            />
-            <div className="col margin-bottom-15">
-              <button
-                type="button"
-                className="btn btn-default"
-                style={{
-                  marginTop: 21,
-                  pointerEvents: !this.state.isBulk ? "none" : null
-                }}
-                onClick={this.applyAmount.bind(this)}
-              >
-                Apply
-              </button>
-            </div>
           </div>
+
           <div className="row">
             <div className="col-12">
               <div className="row">
