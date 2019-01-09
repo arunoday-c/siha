@@ -60,6 +60,17 @@ const AddEarnComponent = ($this, e) => {
       let earningComponents = $this.state.earningComponents;
       let insertearnComp = $this.state.insertearnComp;
 
+      const _earnComponent = Enumerable.from(earningComponents)
+        .where(w => w.earnings_id === $this.state.earning_id)
+        .any();
+      if (_earnComponent) {
+        swalMessage({
+          title: "Seleted component already exists.",
+          type: "warning"
+        });
+        return;
+      }
+
       earningComponents.push({
         employee_id: $this.state.hims_d_employee_id,
         earnings_id: $this.state.earning_id,
@@ -105,6 +116,17 @@ const AddDeductionComponent = ($this, e) => {
       let deductioncomponents = $this.state.deductioncomponents;
       let insertDeductionComp = $this.state.insertDeductionComp;
 
+      const _dedComponent = Enumerable.from(deductioncomponents)
+        .where(w => w.deductions_id === $this.state.deducation_id)
+        .any();
+      if (_dedComponent) {
+        swalMessage({
+          title: "Seleted component already exists.",
+          type: "warning"
+        });
+        return;
+      }
+
       deductioncomponents.push({
         employee_id: $this.state.hims_d_employee_id,
         deductions_id: $this.state.deducation_id,
@@ -149,6 +171,17 @@ const AddContributionComponent = ($this, e) => {
     onSuccess: () => {
       let contributioncomponents = $this.state.contributioncomponents;
       let insertContributeComp = $this.state.insertContributeComp;
+
+      const _contComponent = Enumerable.from(contributioncomponents)
+        .where(w => w.contributions_id === $this.state.contribution_id)
+        .any();
+      if (_contComponent) {
+        swalMessage({
+          title: "Seleted component already exists.",
+          type: "warning"
+        });
+        return;
+      }
 
       contributioncomponents.push({
         employee_id: $this.state.hims_d_employee_id,
