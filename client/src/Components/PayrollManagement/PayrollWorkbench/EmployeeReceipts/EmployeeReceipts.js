@@ -316,25 +316,6 @@ class EmployeeReceipts extends Component {
                   </div>
                 </div>
                 <div className="row" data-validate="writeOffDiv">
-                  <AlagehFormGroup
-                    div={{ className: "col form-group" }}
-                    label={{
-                      forceLabel: "Loan Write Off Amount",
-                      isImp: true
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "write_off_amount",
-                      value: this.state.write_off_amount,
-                      events: {
-                        onChange: this.textHandler.bind(this)
-                      },
-                      option: {
-                        type: "number"
-                      }
-                    }}
-                  />
-
                   <AlagehAutoComplete
                     div={{ className: "col form-group" }}
                     label={{ forceLabel: "Mode of Recipt", isImp: true }}
@@ -372,6 +353,25 @@ class EmployeeReceipts extends Component {
                   <AlagehFormGroup
                     div={{ className: "col form-group" }}
                     label={{
+                      forceLabel: "Loan Write Off Amount",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "write_off_amount",
+                      value: this.state.write_off_amount,
+                      events: {
+                        onChange: this.textHandler.bind(this)
+                      },
+                      option: {
+                        type: "number"
+                      }
+                    }}
+                  />
+
+                  <AlagehFormGroup
+                    div={{ className: "col form-group" }}
+                    label={{
                       forceLabel: "Amount Received",
                       isImp: false
                     }}
@@ -387,6 +387,7 @@ class EmployeeReceipts extends Component {
                       }
                     }}
                   />
+
                   <div className="col form-group">
                     <button
                       style={{ marginTop: 21 }}
