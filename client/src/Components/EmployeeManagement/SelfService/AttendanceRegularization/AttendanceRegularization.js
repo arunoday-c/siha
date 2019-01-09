@@ -33,9 +33,24 @@ class AttendanceRegularization extends Component {
               <div className="portlet-body">
                 <div className="row">
                   <AlgaehDateHandler
-                    div={{ className: "col-12 margin-bottom-15" }}
+                    div={{ className: "col-6 margin-bottom-15" }}
                     label={{
-                      forceLabel: "Select Date",
+                      forceLabel: "Login Date",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "date_of_joining",
+                      others: {
+                        tabIndex: "6"
+                      }
+                    }}
+                    maxDate={new Date()}
+                  />{" "}
+                  <AlgaehDateHandler
+                    div={{ className: "col-6 margin-bottom-15" }}
+                    label={{
+                      forceLabel: "Logout Date",
                       isImp: true
                     }}
                     textBox={{
