@@ -20,9 +20,11 @@ import {
   serviceTypeHandeler,
   serviceServTypeHandeler,
   numberSet,
-  deleteServiceComm
+  deleteServiceComm,
+  getServiceTypeDepartments,
+  getServiceDepartments
 } from "./CommissionSetupEvents";
-import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
+
 import AlgaehLoader from "../../../../Wrapper/fullPageLoader";
 
 class CommissionSetup extends Component {
@@ -45,60 +47,28 @@ class CommissionSetup extends Component {
     // AlgaehLoader({ show: true });
   }
 
-  // componentWillMount() {
-  //   debugger;
-  //   let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
-  //   this.setState({ ...this.state, ...InputOutput });
-  // }
+  componentWillMount() {
+    debugger;
+    let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
+    this.setState({ ...this.state, ...InputOutput });
+  }
 
   componentDidMount() {
     debugger;
-    // AlgaehLoader({ show: true });
 
-    let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
-    this.setState({ ...this.state, ...InputOutput }, () => {
+    if (this.state.hims_d_employee_id !== null) {
       if (this.state.servTypeCommission.length === 0) {
-        algaehApiCall({
-          uri: "/employee/getDoctorServiceTypeCommission",
-          method: "GET",
-          data: { provider_id: this.state.hims_d_employee_id },
-          onSuccess: response => {
-            if (response.data.success) {
-              this.setState({ servTypeCommission: response.data.records });
-            }
-          },
-          onFailure: error => {
-            swalMessage({
-              title: error.message,
-              type: "error"
-            });
-          }
-        });
+        getServiceTypeDepartments(this);
       }
 
       if (this.state.serviceComm.length === 0) {
-        algaehApiCall({
-          uri: "/employee/getDoctorServiceCommission",
-          method: "GET",
-          data: { provider_id: this.state.hims_d_employee_id },
-          onSuccess: response => {
-            if (response.data.success) {
-              this.setState({ serviceComm: response.data.records });
-            }
-            AlgaehLoader({ show: false });
-          },
-          onFailure: error => {
-            AlgaehLoader({ show: false });
-            swalMessage({
-              title: error.message,
-              type: "error"
-            });
-          }
-        });
+        getServiceDepartments(this);
       } else {
         AlgaehLoader({ show: false });
       }
-    });
+    } else {
+      AlgaehLoader({ show: false });
+    }
   }
 
   render() {

@@ -1,4 +1,5 @@
-import { swalMessage } from "../../../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
+import AlgaehLoader from "../../../../Wrapper/fullPageLoader";
 
 const texthandle = ($this, ctrl, e) => {
   e = e || ctrl;
@@ -14,9 +15,9 @@ const numberSet = ($this, e) => {
   $this.setState({
     [e.target.name]: e.target.value
   });
-  $this.props.EmpMasterIOputs.updateEmployeeTabs({
-    [e.target.name]: e.target.value
-  });
+  // $this.props.EmpMasterIOputs.updateEmployeeTabs({
+  //   [e.target.name]: e.target.value
+  // });
 };
 
 const AddSeviceTypeComm = $this => {
@@ -227,9 +228,9 @@ const serviceTypeHandeler = ($this, e) => {
     [e.name]: e.value
   });
 
-  $this.props.EmpMasterIOputs.updateEmployeeTabs({
-    [e.name]: e.value
-  });
+  // $this.props.EmpMasterIOputs.updateEmployeeTabs({
+  //   [e.name]: e.value
+  // });
 };
 
 const serviceServTypeHandeler = ($this, e) => {
@@ -251,11 +252,62 @@ const serviceServTypeHandeler = ($this, e) => {
     }
   );
 
-  $this.props.EmpMasterIOputs.updateEmployeeTabs({
-    [e.name]: e.value
+  // $this.props.EmpMasterIOputs.updateEmployeeTabs({
+  //   [e.name]: e.value
+  // });
+};
+
+const getServiceTypeDepartments = $this => {
+  algaehApiCall({
+    uri: "/employee/getDoctorServiceTypeCommission",
+    method: "GET",
+    data: { provider_id: $this.state.hims_d_employee_id },
+    onSuccess: response => {
+      if (response.data.success) {
+        if (response.data.records.length > 0) {
+          $this.setState({ servTypeCommission: response.data.records });
+
+          $this.props.EmpMasterIOputs.updateEmployeeTabs({
+            servTypeCommission: response.data.records
+          });
+        }
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
   });
 };
 
+const getServiceDepartments = $this => {
+  algaehApiCall({
+    uri: "/employee/getDoctorServiceCommission",
+    method: "GET",
+    data: { provider_id: $this.state.hims_d_employee_id },
+    onSuccess: response => {
+      if (response.data.success) {
+        if (response.data.records.length > 0) {
+          $this.setState({ serviceComm: response.data.records });
+
+          $this.props.EmpMasterIOputs.updateEmployeeTabs({
+            serviceComm: response.data.records
+          });
+        }
+      }
+      AlgaehLoader({ show: false });
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+};
 export {
   texthandle,
   AddSeviceTypeComm,
@@ -264,5 +316,7 @@ export {
   serviceServTypeHandeler,
   numberSet,
   AddServiceComm,
-  deleteServiceComm
+  deleteServiceComm,
+  getServiceTypeDepartments,
+  getServiceDepartments
 };
