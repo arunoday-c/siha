@@ -1040,11 +1040,114 @@ let addLeaveMaster = (req, res, next) => {
   }
 };
 
+//created by irfan:
+let addAttendanceRegularization = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        }
+
+        new Promise((resolve, reject) => {
+          try {
+            runningNumberGen({
+              db: connection,
+              module_desc: ["ATTENDANCE_REGULARIZE"],
+              onFailure: error => {
+                reject(error);
+              },
+              onSuccess: result => {
+                resolve(result);
+              }
+            });
+          } catch (e) {
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              reject(e);
+            });
+          }
+        }).then(numGenReg => {
+          connection.query(
+            "INSERT INTO `hims_f_attendance_regularize` (regularization_code,employee_id,attendance_date,\
+             login_date,logout_date,\
+              punch_in_time,punch_out_time,regularize_in_time,regularize_out_time,regularization_reason,\
+              created_by,created_date,updated_by,updated_date)\
+        VALUE(?,?,date(?),date(?),date(?),?,?,?,?,?,?,?,?,?)",
+            [
+              numGenReg[0]["completeNumber"],
+
+              input.employee_id,
+              input.attendance_date,
+
+              input.login_date,
+              input.logout_date,
+              input.punch_in_time,
+              input.punch_out_time,
+              input.regularize_in_time,
+              input.regularize_out_time,
+              input.regularization_reason,
+
+              req.userIdentity.algaeh_d_app_user_id,
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              new Date()
+            ],
+            (error, results) => {
+              if (error) {
+                connection.rollback(() => {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                });
+              }
+
+              if (results.affectedRows > 0) {
+                connection.commit(error => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+
+                  releaseDBConnection(db, connection);
+                  req.records = results;
+                  next();
+                });
+              } else {
+                connection.rollback(() => {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                });
+              }
+            }
+          );
+        });
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
 module.exports = {
   getEmployeeLeaveData,
   applyEmployeeLeave,
   getEmployeeLeaveHistory,
   getLeaveBalance,
   getLeaveLevels,
-  addLeaveMaster
+  addLeaveMaster,
+  addAttendanceRegularization
 };

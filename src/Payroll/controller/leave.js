@@ -7,7 +7,8 @@ import {
   getEmployeeLeaveHistory,
   getLeaveBalance,
   getLeaveLevels,
-  addLeaveMaster
+  addLeaveMaster,
+  addAttendanceRegularization
 } from "../model/leave";
 import { debugLog } from "../../utils/logging";
 export default ({ config, db }) => {
@@ -120,6 +121,21 @@ export default ({ config, db }) => {
           records: result
         });
       }
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :
+  api.post(
+    "/addAttendanceRegularization",
+    addAttendanceRegularization,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
       next();
     },
     releaseConnection

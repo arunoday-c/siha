@@ -17,7 +17,7 @@ import { AlgaehActions } from "../../../../actions/algaehActions";
 import Enumerable from "linq";
 import EmpMasterIOputs from "../../../../Models/EmployeeMaster";
 import { getCookie } from "../../../../utils/algaehApiCall";
-import { InsertUpdateEmployee, ClearEmployee } from "./EmployeeMasterEvents";
+import { InsertUpdateEmployee } from "./EmployeeMasterEvents";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 
 class EmployeeMaster extends Component {
