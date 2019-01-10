@@ -1,9 +1,7 @@
-import React, { Component } from "react";
+import React from "react";
 import "./leave_details.css";
 import {
-  AlgaehDateHandler,
   AlagehFormGroup,
-  AlgaehLabel,
   AlagehAutoComplete,
   AlgaehDataGrid
 } from "../../../../../Wrapper/algaehWrapper";
@@ -202,50 +200,264 @@ function LeaveDetails(props) {
             columns={[
               {
                 fieldName: "employee_type",
-                label: "Employee Type"
+                label: "Employee Type",
+                displayTemplate: row => {
+                  return (
+                    <span>
+                      {row.employee_type === "PE"
+                        ? "Permanent"
+                        : row.employee_type === "CO"
+                        ? "Contract"
+                        : row.employee_type === "PB"
+                        ? "Probation"
+                        : row.employee_type === "LC"
+                        ? "Locum"
+                        : row.employee_type === "VC"
+                        ? "Visiting Consultant"
+                        : null}
+                    </span>
+                  );
+                },
+                editorTemplate: row => {
+                  return (
+                    <AlagehAutoComplete
+                      selector={{
+                        name: "employee_type",
+                        value: row.employee_type,
+                        className: "select-fld",
+                        dataSource: {
+                          textField: "name",
+                          valueField: "value",
+                          data: GlobalVariables.EMP_TYPE
+                        },
+                        onChange: myParent.changeGridEditors.bind(myParent, row)
+                      }}
+                    />
+                  );
+                }
               },
               {
                 fieldName: "gender",
-                label: "Gender"
-                //disabled: true
+                label: "Gender",
+                editorTemplate: row => {
+                  return (
+                    <AlagehAutoComplete
+                      selector={{
+                        name: "gender",
+                        value: row.gender,
+                        className: "select-fld",
+                        dataSource: {
+                          textField: "name",
+                          valueField: "value",
+                          data: GlobalVariables.LEAVE_GENDER
+                        },
+                        onChange: myParent.changeGridEditors.bind(myParent, row)
+                      }}
+                    />
+                  );
+                }
               },
               {
                 fieldName: "eligible_days",
-                label: "Days of Eligibility"
-                //disabled: true
+                label: "Days of Eligibility",
+                editorTemplate: row => {
+                  return (
+                    <AlagehFormGroup
+                      textBox={{
+                        className: "txt-fld",
+                        name: "eligible_days",
+                        value: row.eligible_days,
+                        events: {
+                          onChange: myParent.changeGridEditors.bind(
+                            myParent,
+                            row
+                          )
+                        },
+                        others: {
+                          type: "number"
+                        }
+                      }}
+                    />
+                  );
+                }
               },
               {
                 fieldName: "max_number_days",
-                label: "Maximum Limit"
-                //disabled: true
+                label: "Maximum Limit",
+                editorTemplate: row => {
+                  return (
+                    <AlagehFormGroup
+                      textBox={{
+                        className: "txt-fld",
+                        name: "max_number_days",
+                        value: row.max_number_days,
+                        events: {
+                          onChange: myParent.changeGridEditors.bind(
+                            myParent,
+                            row
+                          )
+                        },
+                        others: {
+                          type: "number"
+                        }
+                      }}
+                    />
+                  );
+                }
               },
               {
                 fieldName: "min_service_required",
-                label: "Min. Service Required"
-                //disabled: true
+                label: "Min. Service Required",
+                displayTemplate: row => {
+                  return (
+                    <span>
+                      {row.min_service_required === "Y"
+                        ? "Yes"
+                        : row.min_service_required === "N"
+                        ? "No"
+                        : null}
+                    </span>
+                  );
+                },
+                editorTemplate: row => {
+                  return (
+                    <AlagehAutoComplete
+                      selector={{
+                        name: "min_service_required",
+                        value: row.min_service_required,
+                        className: "select-fld",
+                        dataSource: {
+                          textField: "name",
+                          valueField: "value",
+                          data: GlobalVariables.FORMAT_YESNO
+                        },
+                        onChange: myParent.changeGridEditors.bind(myParent, row)
+                      }}
+                    />
+                  );
+                }
               },
               {
                 fieldName: "service_years",
-                label: "Service in Years"
-                //disabled: true
+                label: "Service in Years",
+                displayTemplate: row => {
+                  return (
+                    <span>
+                      {row.service_years ? row.service_years : "Not Applicable"}
+                    </span>
+                  );
+                },
+                editorTemplate: row => {
+                  return (
+                    <AlagehFormGroup
+                      textBox={{
+                        className: "txt-fld",
+                        name: "service_years",
+                        value: row.service_years,
+                        events: {
+                          onChange: myParent.changeGridEditors.bind(
+                            myParent,
+                            row
+                          )
+                        },
+                        others: {
+                          type: "number"
+                        }
+                      }}
+                    />
+                  );
+                }
               },
               {
                 fieldName: "once_life_term",
-                label: "Once in Life Time"
-                //disabled: true
+                label: "Once in Life Time",
+                displayTemplate: row => {
+                  return (
+                    <span>
+                      {row.once_life_term === "Y"
+                        ? "Yes"
+                        : row.once_life_term === "N"
+                        ? "No"
+                        : null}
+                    </span>
+                  );
+                },
+                editorTemplate: row => {
+                  return (
+                    <AlagehAutoComplete
+                      selector={{
+                        name: "once_life_term",
+                        value: row.once_life_term,
+                        className: "select-fld",
+                        dataSource: {
+                          textField: "name",
+                          valueField: "value",
+                          data: GlobalVariables.FORMAT_YESNO
+                        },
+                        onChange: myParent.changeGridEditors.bind(myParent, row)
+                      }}
+                    />
+                  );
+                }
               },
               {
                 fieldName: "allow_probation",
-                label: "Allow during Probation"
-                //disabled: true
+                label: "Allow during Probation",
+                displayTemplate: row => {
+                  return (
+                    <span>
+                      {row.allow_probation === "Y"
+                        ? "Yes"
+                        : row.allow_probation === "N"
+                        ? "No"
+                        : null}
+                    </span>
+                  );
+                },
+                editorTemplate: row => {
+                  return (
+                    <AlagehAutoComplete
+                      selector={{
+                        name: "allow_probation",
+                        value: row.allow_probation,
+                        className: "select-fld",
+                        dataSource: {
+                          textField: "name",
+                          valueField: "value",
+                          data: GlobalVariables.FORMAT_YESNO
+                        },
+                        onChange: myParent.changeGridEditors.bind(myParent, row)
+                      }}
+                    />
+                  );
+                }
               },
               {
                 fieldName: "mandatory_utilize_days",
-                label: "Mandatory Utlilize Days"
-                //disabled: true
+                label: "Mandatory Utlilize Days",
+                editorTemplate: row => {
+                  return (
+                    <AlagehFormGroup
+                      textBox={{
+                        className: "txt-fld",
+                        name: "mandatory_utilize_days",
+                        value: row.mandatory_utilize_days,
+                        events: {
+                          onChange: myParent.changeGridEditors.bind(
+                            myParent,
+                            row
+                          )
+                        },
+                        others: {
+                          type: "number"
+                        }
+                      }}
+                    />
+                  );
+                }
               }
             ]}
-            keyId="algaeh_d_module_id"
+            keyId="hims_d_leave_detail_id"
             dataSource={{
               data: myParent.state.leaveDetails
             }}
@@ -253,7 +465,7 @@ function LeaveDetails(props) {
             paging={{ page: 0, rowsPerPage: 10 }}
             events={{
               onEdit: () => {},
-              onDelete: () => {},
+              onDelete: myParent.deleteLeaveDetail.bind(myParent),
               onDone: () => {}
             }}
           />

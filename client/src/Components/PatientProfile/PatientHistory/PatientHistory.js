@@ -136,6 +136,7 @@ class PatientHistory extends Component {
         >
           <div className="col-lg-12">
             <AlagehFormGroup
+              div={{}}
               label={{
                 isImp: false
               }}

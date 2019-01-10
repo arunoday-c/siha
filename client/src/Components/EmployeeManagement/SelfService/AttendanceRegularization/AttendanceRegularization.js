@@ -300,6 +300,10 @@ class AttendanceRegularization extends Component {
                               moment(d.created_date).format("DD-MM-YYYY")
                           },
                           {
+                            Header: "Code",
+                            accessor: "regularization_code"
+                          },
+                          {
                             Header: "Reason",
                             accessor: "regularization_reason"
                           }

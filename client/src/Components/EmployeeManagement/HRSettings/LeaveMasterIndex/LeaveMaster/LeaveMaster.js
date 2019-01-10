@@ -8,6 +8,7 @@ import LeaveRules from "./LeaveRules/LeaveRules";
 import { AlgaehLabel } from "../../../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../../../utils/GlobalFunctions";
+import swal from "sweetalert2";
 
 class LeaveMaster extends Component {
   constructor(props) {
@@ -22,51 +23,149 @@ class LeaveMaster extends Component {
     };
   }
 
-  saveLeaveMaster() {
-    let send_data = {
-      leave_code: this.state.leave_code,
-      leave_description: this.state.leave_description,
-      annual_maternity_leave: this.state.annual_maternity_leave,
-      include_weekoff: this.state.include_weekoff ? "Y" : "N",
-      include_holiday: this.state.include_holiday ? "Y" : "N",
-      leave_mode: this.state.leave_mode,
-      leave_status: this.state.leave_status,
-      leave_accrual: this.state.leave_accrual,
-      leave_encash: this.state.leave_encash ? "Y" : "N",
-      leave_type: this.state.leave_type,
-      encashment_percentage: this.state.encashment_percentage,
-      leave_carry_forward: this.state.leave_carry_forward ? "Y" : "N",
-      carry_forward_percentage: this.state.carry_forward_percentage,
-      religion_required: this.state.religion_required ? "Y" : "N",
-      religion_id: this.state.religion_id,
-      holiday_reimbursement: this.state.holiday_reimbursement ? "Y" : "N",
-      exit_permit_required: this.state.exit_permit_required ? "Y" : "N",
-      proportionate_leave: this.state.proportionate_leave ? "Y" : "N",
-      document_mandatory: this.state.document_mandatory ? "Y" : "N",
-      leaveEncash: this.state.leaveEncash,
-      leaveRules: this.state.leaveRules,
-      leaveDetails: this.state.leaveDetails
-    };
+  changeGridEditors(row, e) {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    row[name] = value;
+    row.update();
+  }
 
-    algaehApiCall({
-      uri: "/leave/addLeaveMaster",
-      method: "POST",
-      data: send_data,
-      onSuccess: res => {
-        if (res.data.success) {
-          swalMessage({
-            title: "Leave Added Successfully",
-            type: "success"
-          });
-        }
-      },
-      onFailure: err => {
+  deleteLeaveDetail(row) {
+    swal({
+      title: "Delete leave detail?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        this.state.leaveDetails.pop(row);
+
+        this.setState({
+          leaveDetails: this.state.leaveDetails
+        });
+      } else {
         swalMessage({
-          title: err.message,
+          title: "Delete request cancelled",
           type: "error"
         });
       }
     });
+  }
+
+  deleteLeaveRule(row) {
+    swal({
+      title: "Delete Leave Rule?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        this.state.leaveRules.pop(row);
+
+        this.setState({
+          leaveRules: this.state.leaveRules
+        });
+      } else {
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "error"
+        });
+      }
+    });
+  }
+  deleteLeaveEncash(row) {
+    swal({
+      title: "Delete Leave Encashment?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        this.state.leaveEncash.pop(row);
+
+        this.setState({
+          leaveEncash: this.state.leaveEncash
+        });
+      } else {
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "error"
+        });
+      }
+    });
+  }
+
+  saveLeaveMaster() {
+    if (this.state.leaveEncash.length === 0) {
+      swalMessage({
+        title: "Please Add at least one Leave Encashments",
+        type: "warning"
+      });
+    } else if (this.state.leaveRules.length === 0) {
+      swalMessage({
+        title: "Please Add at least one Leave Rule",
+        type: "warning"
+      });
+    } else if (this.state.leaveDetails.length === 0) {
+      swalMessage({
+        title: "Please Add at least one Leave Detail",
+        type: "warning"
+      });
+    } else {
+      let send_data = {
+        leave_code: this.state.leave_code,
+        leave_description: this.state.leave_description,
+        annual_maternity_leave: this.state.annual_maternity_leave,
+        include_weekoff: this.state.include_weekoff ? "Y" : "N",
+        include_holiday: this.state.include_holiday ? "Y" : "N",
+        leave_mode: this.state.leave_mode,
+        leave_status: this.state.leave_status,
+        leave_accrual: this.state.leave_accrual,
+        leave_encash: this.state.leave_encash ? "Y" : "N",
+        leave_type: this.state.leave_type,
+        encashment_percentage: this.state.encashment_percentage,
+        leave_carry_forward: this.state.leave_carry_forward ? "Y" : "N",
+        carry_forward_percentage: this.state.carry_forward_percentage,
+        religion_required: this.state.religion_required ? "Y" : "N",
+        religion_id: this.state.religion_id,
+        holiday_reimbursement: this.state.holiday_reimbursement ? "Y" : "N",
+        exit_permit_required: this.state.exit_permit_required ? "Y" : "N",
+        proportionate_leave: this.state.proportionate_leave ? "Y" : "N",
+        document_mandatory: this.state.document_mandatory ? "Y" : "N",
+        leaveEncash: this.state.leaveEncash,
+        leaveRules: this.state.leaveRules,
+        leaveDetails: this.state.leaveDetails
+      };
+
+      algaehApiCall({
+        uri: "/leave/addLeaveMaster",
+        method: "POST",
+        data: send_data,
+        onSuccess: res => {
+          if (res.data.success) {
+            swalMessage({
+              title: "Leave Added Successfully",
+              type: "success"
+            });
+          }
+        },
+        onFailure: err => {
+          swalMessage({
+            title: err.message,
+            type: "error"
+          });
+        }
+      });
+    }
   }
 
   addLeaveRules() {
@@ -104,52 +203,64 @@ class LeaveMaster extends Component {
   }
 
   addLeaveDetails() {
-    let details = this.state.leaveDetails;
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      querySelector: "data-validate='leaveMasterValidateDiv'",
+      onSuccess: () => {
+        let details = this.state.leaveDetails;
 
-    details.push({
-      employee_type: this.state.employee_type,
-      gender: this.state.gender,
-      eligible_days: this.state.eligible_days,
-      min_service_required: this.state.min_service_required ? "Y" : "N",
-      service_years: this.state.service_years,
-      once_life_term: this.state.once_life_term ? "Y" : "N",
-      allow_probation: this.state.allow_probation ? "Y" : "N",
-      max_number_days: this.state.max_number_days,
-      mandatory_utilize_days: this.state.mandatory_utilize_days
-    });
+        details.push({
+          employee_type: this.state.employee_type,
+          gender: this.state.gender,
+          eligible_days: this.state.eligible_days,
+          min_service_required: this.state.min_service_required ? "Y" : "N",
+          service_years: this.state.service_years,
+          once_life_term: this.state.once_life_term ? "Y" : "N",
+          allow_probation: this.state.allow_probation ? "Y" : "N",
+          max_number_days: this.state.max_number_days,
+          mandatory_utilize_days: this.state.mandatory_utilize_days
+        });
 
-    this.setState({
-      leaveDetails: details
-    });
+        this.setState({
+          leaveDetails: details
+        });
 
-    this.setState({
-      employee_type: null,
-      gender: null,
-      eligible_days: null,
-      min_service_required: null,
-      service_years: null,
-      once_life_term: null,
-      allow_probation: null,
-      max_number_days: null,
-      mandatory_utilize_days: null
+        this.setState({
+          employee_type: null,
+          gender: null,
+          eligible_days: null,
+          min_service_required: null,
+          service_years: null,
+          once_life_term: null,
+          allow_probation: null,
+          max_number_days: null,
+          mandatory_utilize_days: null
+        });
+      }
     });
   }
 
   addLeaveEncash() {
-    let details = this.state.leaveEncash;
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      querySelector: "data-validate='leaveMasterValidateDiv'",
+      onSuccess: () => {
+        let details = this.state.leaveEncash;
 
-    details.push({
-      earnings_id: this.state.earnings_id,
-      percent: this.state.percent
-    });
+        details.push({
+          earnings_id: this.state.earnings_id,
+          percent: this.state.percent
+        });
 
-    this.setState({
-      leaveEncash: details
-    });
+        this.setState({
+          leaveEncash: details
+        });
 
-    this.setState({
-      earnings_id: null,
-      percent: null
+        this.setState({
+          earnings_id: null,
+          percent: null
+        });
+      }
     });
   }
 

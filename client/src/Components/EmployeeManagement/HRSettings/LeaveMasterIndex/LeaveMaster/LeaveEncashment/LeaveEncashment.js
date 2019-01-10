@@ -1,15 +1,11 @@
-import React, { Component } from "react";
+import React from "react";
 import "./LeaveEncashment.css";
-
+import Enumerable from "linq";
 import {
-  AlgaehDateHandler,
   AlagehFormGroup,
-  AlgaehLabel,
   AlagehAutoComplete,
   AlgaehDataGrid
 } from "../../../../../Wrapper/algaehWrapper";
-
-//import GlobalVariables from "../../../../../utils/GlobalVariables.json";
 
 function LeaveEncashment(props) {
   let myParent = props.parent;
@@ -18,25 +14,9 @@ function LeaveEncashment(props) {
     <div className="Leave_Encashment">
       <div className="popRightDiv">
         <div className="row">
-          {/* <AlagehFormGroup
-            div={{ className: "col form-group" }}
-            label={{
-              forceLabel: "Encashment Code",
-              isImp: true
-            }}
-            textBox={{
-              className: "txt-fld",
-              name: "",
-              events: {},
-              others: {
-                type: "number"
-              }
-            }}
-          /> */}
-
           <AlagehAutoComplete
             div={{ className: "col-3 form-group" }}
-            label={{ forceLabel: "Encashment Type", isImp: false }}
+            label={{ forceLabel: "Encashment Type", isImp: true }}
             selector={{
               name: "earnings_id",
               value: myParent.state.earnings_id,
@@ -51,8 +31,7 @@ function LeaveEncashment(props) {
                 myParent.setState({
                   earnings_id: null
                 });
-              },
-              others: {}
+              }
             }}
           />
 
@@ -60,7 +39,7 @@ function LeaveEncashment(props) {
             div={{ className: "col-3 form-group" }}
             label={{
               forceLabel: "Value %",
-              isImp: false
+              isImp: true
             }}
             textBox={{
               className: "txt-fld",
@@ -74,23 +53,6 @@ function LeaveEncashment(props) {
               }
             }}
           />
-          {/* 
-          <AlagehFormGroup
-            div={{ className: "col form-group" }}
-            label={{
-              forceLabel: "Description",
-              isImp: true
-            }}
-            textBox={{
-              className: "txt-fld",
-              name: "",
-              events: {},
-              others: {
-                type: "text"
-              }
-            }}
-          /> */}
-
           <div className="col-2">
             <button
               onClick={myParent.addLeaveEncash.bind(myParent)}
@@ -109,18 +71,66 @@ function LeaveEncashment(props) {
               columns={[
                 {
                   fieldName: "earnings_id",
-                  label: "Encashment Code"
-                  //disabled: true
-                },
-                {
-                  fieldName: "earnings_id",
-                  label: "Encashment Type"
-                  //disabled: true
+                  label: "Encashment Type",
+                  displayTemplate: row => {
+                    let x = Enumerable.from(myParent.state.earning_deductions)
+                      .where(
+                        w => w.hims_d_earning_deduction_id === row.earnings_id
+                      )
+                      .firstOrDefault();
+
+                    return (
+                      <span>
+                        {x !== undefined
+                          ? x.earning_deduction_description
+                          : null}
+                      </span>
+                    );
+                  },
+                  editorTemplate: row => {
+                    return (
+                      <AlagehAutoComplete
+                        selector={{
+                          name: "earnings_id",
+                          value: row.earnings_id,
+                          className: "select-fld",
+                          dataSource: {
+                            textField: "earning_deduction_description",
+                            valueField: "hims_d_earning_deduction_id",
+                            data: myParent.state.earning_deductions
+                          },
+                          onChange: myParent.changeGridEditors.bind(
+                            myParent,
+                            row
+                          )
+                        }}
+                      />
+                    );
+                  }
                 },
                 {
                   fieldName: "percent",
-                  label: "Value %"
-                  //disabled: true
+                  label: "Value %",
+                  editorTemplate: row => {
+                    return (
+                      <AlagehFormGroup
+                        textBox={{
+                          className: "txt-fld",
+                          name: "percent",
+                          value: row.percent,
+                          events: {
+                            onChange: myParent.changeGridEditors.bind(
+                              myParent,
+                              row
+                            )
+                          },
+                          others: {
+                            type: "number"
+                          }
+                        }}
+                      />
+                    );
+                  }
                 }
               ]}
               keyId="algaeh_d_module_id"
@@ -131,7 +141,7 @@ function LeaveEncashment(props) {
               paging={{ page: 0, rowsPerPage: 10 }}
               events={{
                 onEdit: () => {},
-                onDelete: () => {},
+                onDelete: myParent.deleteLeaveEncash.bind(myParent),
                 onDone: () => {}
               }}
             />
