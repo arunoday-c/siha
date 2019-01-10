@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./patient_mrd.css";
 import { setGlobal } from "../../../utils/GlobalFunctions";
+import AlgaehFile from "../../Wrapper/algaehFileUpload";
 import Encounters from "./Encounters/Encounters";
 import HistoricalData from "./HistoricalData/HistoricalData";
 import moment from "moment";
@@ -85,10 +86,17 @@ class PatientMRD extends Component {
                 Back
               </button>
             </div>
-            <div className="patientImg box-shadow">
-              <img
-                src={require("../../../assets/images/nobody_m.original.webp")}
-                alt="Patient profile"
+            <div className="patientImg">
+              <AlgaehFile
+                name="attach_photo"
+                accept="image/*"
+                textAltMessage={Window.global["pat_name"]}
+                showActions={false}
+                serviceParameters={{
+                  uniqueID: Window.global["patient_code"],
+                  destinationName: Window.global["patient_code"],
+                  fileType: "Patients"
+                }}
               />
             </div>
             <div className="patientName">

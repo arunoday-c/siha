@@ -6,6 +6,7 @@ import PhysicalExamination from "./PhysicalExamination/PhysicalExamination";
 import Assesment from "./Assessment/Assessment";
 import Plan from "./Plan/Plan";
 import { AlgaehModalPopUp } from "../Wrapper/algaehWrapper";
+import AlgaehFile from "../Wrapper/algaehFileUpload";
 import { algaehApiCall, cancelRequest } from "../../utils/algaehApiCall";
 import moment from "moment";
 import { setGlobal } from "../../utils/GlobalFunctions";
@@ -269,14 +270,17 @@ class PatientProfile extends Component {
               Back
             </button>
           </div>
-          <div className="patientImg box-shadow">
-            <img
-              alt="Algaeh-HIS"
-              src={
-                this.state.patImg.length > 0
-                  ? this.state.patImg
-                  : "../assets/images/nobody_m.original.webp"
-              }
+          <div className="patientImg">
+            <AlgaehFile
+              name="attach_photo"
+              accept="image/*"
+              textAltMessage={_pat_profile.full_name}
+              showActions={false}
+              serviceParameters={{
+                uniqueID: _pat_profile.patient_code,
+                destinationName: _pat_profile.patient_code,
+                fileType: "Patients"
+              }}
             />
           </div>
           <div className="patientName">

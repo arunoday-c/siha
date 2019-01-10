@@ -31,10 +31,18 @@
       margin: 1px 10px;
       border-radius: 4px;
       border: 1px solid #e1e1e1;
-      img {
-        height: 55px;
-        border-radius: 4px;
-        overflow: hidden;
+      .image-drop-area {
+        border: 1px solid #93a4ad;
+        min-height: 55px;
+        position: relative;
+        background-color: #eaeaea;
+
+        img {
+          height: 55px;
+          width: auto;
+          border-radius: 4px;
+          overflow: hidden;
+        }
       }
     }
     .patientName {
