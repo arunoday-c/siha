@@ -5,238 +5,399 @@ import {
   AlagehFormGroup,
   AlgaehLabel
 } from "../../../Wrapper/algaehWrapper";
+import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import ReactTable from "react-table";
-
 import "react-table/react-table.css";
 import treeTableHOC from "react-table/lib/hoc/treeTable";
+import moment from "moment";
 const TreeTable = treeTableHOC(ReactTable);
 
 class AttendanceRegularization extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedLang: this.props.SelectLanguage
+      regularization_list: []
     };
+  }
+
+  componentDidMount() {
+    let data = this.props.empData !== null ? this.props.empData : {};
+    this.setState(data, () => {
+      this.getRegularizationRequests();
+    });
+  }
+
+  textHandler(e) {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  }
+
+  clearState() {
+    this.setState({
+      login_date: null,
+      logout_date: null,
+      punch_in_time: "00:00",
+      punch_out_time: "00:00",
+      regularize_in_time: null,
+      regularize_out_time: null,
+      regularization_reason: null
+    });
+  }
+
+  getRegularizationRequests() {
+    algaehApiCall({
+      uri: "/leave/getEmployeeAttendReg",
+      method: "GET",
+      data: {
+        employee_id: this.state.hims_d_employee_id
+      },
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            regularization_list: res.data.records
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  requestRegularization() {
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      querySelector: "data-validate='reglzDiv'",
+      onSuccess: () => {
+        if (
+          moment(this.state.login_date).format("YYYYMMDD") >
+          moment(this.state.logout_date).format("YYYYMMDD")
+        ) {
+          swalMessage({
+            title: "Please Select a proper Date Range",
+            type: "warning"
+          });
+        } else if (
+          moment(this.state.login_date).format("YYYYMMDD") ===
+            moment(this.state.logout_date).format("YYYYMMDD") &&
+          moment(this.state.regularize_in_time, "HH:mm:ss").format("HHmmss") >
+            moment(this.state.regularize_out_time, "HH:mm:ss").format("HHmmss")
+        ) {
+          swalMessage({
+            title: "Please Select a proper time range",
+            type: "warning"
+          });
+        } else {
+          algaehApiCall({
+            uri: "/leave/addAttendanceRegularization",
+            method: "POST",
+            data: {
+              attendance_date: this.state.login_date,
+              employee_id: this.state.hims_d_employee_id,
+              login_date: this.state.login_date,
+              logout_date: this.state.logout_date,
+              punch_in_time: this.state.punch_in_time,
+              punch_out_time: this.state.punch_out_time,
+              regularize_in_time: this.state.regularize_in_time,
+              regularize_out_time: this.state.regularize_out_time,
+              regularization_reason: this.state.regularization_reason
+            },
+            onSuccess: res => {
+              if (res.data.success) {
+                swalMessage({
+                  title: "Requested Successfully",
+                  type: "success"
+                });
+                this.clearState();
+                this.getRegularizationRequests();
+              }
+            },
+            onFailure: err => {
+              swalMessage({
+                title: err.message,
+                type: "error"
+              });
+            }
+          });
+        }
+      }
+    });
   }
 
   render() {
     return (
-      <React.Fragment>
-        <div className="row hptl-SelfService-form">
-          <div className="col-3">
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">Request Regularization</h3>
-                </div>
-              </div>
-              <div className="portlet-body">
-                <div className="row">
-                  <AlgaehDateHandler
-                    div={{ className: "col-6 margin-bottom-15" }}
-                    label={{
-                      forceLabel: "Login Date",
-                      isImp: true
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "date_of_joining",
-                      others: {
-                        tabIndex: "6"
-                      }
-                    }}
-                    maxDate={new Date()}
-                  />{" "}
-                  <AlgaehDateHandler
-                    div={{ className: "col-6 margin-bottom-15" }}
-                    label={{
-                      forceLabel: "Logout Date",
-                      isImp: true
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "date_of_joining",
-                      others: {
-                        tabIndex: "6"
-                      }
-                    }}
-                    maxDate={new Date()}
-                  />{" "}
-                  <div className="col-6">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Old In-Time"
-                      }}
-                    />
-                    <h6>00.00</h6>
-                  </div>{" "}
-                  <div className="col-6">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Old Out-Time"
-                      }}
-                    />
-                    <h6>00.00</h6>
-                  </div>
-                  <AlgaehDateHandler
-                    div={{ className: "col-6 margin-bottom-15" }}
-                    label={{
-                      forceLabel: "New In-Time",
-                      isImp: true
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "date_of_joining",
-                      others: {
-                        tabIndex: "6",
-                        type: "time"
-                      }
-                    }}
-                    //  maxDate={new Date()}
-                  />
-                  <AlgaehDateHandler
-                    div={{ className: "col-6 margin-bottom-15" }}
-                    label={{
-                      forceLabel: "New Out-Time",
-                      isImp: true
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "date_of_joining",
-                      others: {
-                        tabIndex: "6",
-                        type: "time"
-                      }
-                    }}
-                    // maxDate={new Date()}
-                  />
-                  <AlagehFormGroup
-                    div={{ className: "col-12" }}
-                    label={{
-                      forceLabel: "Reason for Regularization",
-                      isImp: true
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      //decimal: { allowNegative: false },
-                      name: "limit_amount",
-                      value: this.state.limit_amount,
-                      events: {
-                        //  onChange: this.changeTexts.bind(this)
-                      },
-                      others: {
-                        // type: "number"
-                      }
-                    }}
-                  />
-                  <div className="col-3 margin-bottom-15">
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      style={{ marginTop: 21 }}
-                    >
-                      Request
-                    </button>
-                  </div>
-                </div>
+      <div className="row hptl-SelfService-form">
+        <div className="col-3">
+          <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+            <div className="portlet-title">
+              <div className="caption">
+                <h3 className="caption-subject">Request Regularization</h3>
               </div>
             </div>
-          </div>
-          <div className="col-9">
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">
-                    Attendance Regularization List
-                  </h3>
+            <div className="portlet-body">
+              <div className="row" data-validate="reglzDiv">
+                <AlgaehDateHandler
+                  div={{ className: "col-6 margin-bottom-15" }}
+                  label={{
+                    forceLabel: "Login Date",
+                    isImp: true
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "login_date",
+                    others: {
+                      tabIndex: "1"
+                    }
+                  }}
+                  maxDate={new Date()}
+                  events={{
+                    onChange: selDate => {
+                      this.setState({
+                        login_date: selDate
+                      });
+                    }
+                  }}
+                  value={this.state.login_date}
+                />
+                <AlgaehDateHandler
+                  div={{ className: "col-6 margin-bottom-15" }}
+                  label={{
+                    forceLabel: "Logout Date",
+                    isImp: true
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "logout_date",
+                    others: {
+                      tabIndex: "2"
+                    }
+                  }}
+                  minDate={this.state.login_date}
+                  events={{
+                    onChange: selDate => {
+                      this.setState({
+                        logout_date: selDate
+                      });
+                    }
+                  }}
+                  value={this.state.logout_date}
+                />
+                {/* Need to fetch the old in time and old out time from API */}
+                <div className="col-6">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Old In-Time"
+                    }}
+                  />
+                  <h6>00.00</h6>
+                </div>{" "}
+                <div className="col-6">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Old Out-Time"
+                    }}
+                  />
+                  <h6>00.00</h6>
                 </div>
-              </div>
-              <div className="portlet-body">
-                <div className="row">
-                  <div className="col-lg-12" id="attendanceReg_Cntr">
-                    <TreeTable
-                      id="attendanceReg_Cntr"
-                      columns={[
-                        {
-                          Header: "Applied",
-                          accessor: "Applied",
-                          columns: [
-                            {
-                              Header: "Date",
-                              accessor: "AppliedDate"
-                            },
-                            {
-                              Header: "Reason",
-                              accessor: "AppliedReson"
-                            }
-                          ]
-                        },
-                        {
-                          Header: "Attendance",
-                          accessor: "Attendance",
-                          columns: [
-                            {
-                              Header: "Date",
-                              accessor: "AttendanceDate"
-                            }
-                          ]
-                        },
-                        {
-                          Header: "Login Time",
-                          accessor: "LoginTime",
+                {/* Need to fetch the old in time and old out time from API */}
+                <AlagehFormGroup
+                  div={{ className: "col-6 margin-bottom-15" }}
+                  label={{
+                    forceLabel: "New In-Time",
+                    isImp: true
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "regularize_in_time",
+                    value: this.state.regularize_in_time,
+                    others: {
+                      tabIndex: "3",
+                      type: "time"
+                    },
 
-                          columns: [
-                            {
-                              Header: "Old",
-                              accessor: "LoginTimeOld"
-                            },
-                            {
-                              Header: "New",
-                              accessor: "LoginTimeNew"
-                            }
-                          ]
-                        },
-                        {
-                          Header: "Login Out",
-                          accessor: "LoginOut",
-                          columns: [
-                            {
-                              Header: "Old",
-                              accessor: "LoginOutOld"
-                            },
-                            {
-                              Header: "New",
-                              accessor: "LoginOutNew"
-                            }
-                          ]
-                        },
-                        {
-                          Header: "Regularization",
-                          accessor: "Regularization",
-                          columns: [
-                            {
-                              Header: "Status",
-                              accessor: "RegularizationStatus"
-                            }
-                          ]
-                        }
-                      ]}
-                      keyId="algaeh_d_module_id"
-                      dataSource={{
-                        data: []
-                      }}
-                      isEditable={false}
-                      //filterable
-                      defaultPageSize={10}
-                      className="-striped -highlight"
-                    />
-                  </div>
+                    events: {
+                      onChange: this.textHandler.bind(this)
+                    }
+                  }}
+                />
+                <AlagehFormGroup
+                  div={{ className: "col-6 margin-bottom-15" }}
+                  label={{
+                    forceLabel: "New Out-Time",
+                    isImp: true
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "regularize_out_time",
+                    value: this.state.regularize_out_time,
+                    others: {
+                      tabIndex: "4",
+                      type: "time"
+                    },
+                    events: {
+                      onChange: this.textHandler.bind(this)
+                    }
+                  }}
+                />
+                <AlagehFormGroup
+                  div={{ className: "col-12" }}
+                  label={{
+                    forceLabel: "Reason for Regularization",
+                    isImp: true
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "regularization_reason",
+                    value: this.state.regularization_reason,
+                    events: {
+                      onChange: this.textHandler.bind(this)
+                    }
+                  }}
+                />
+                <div className="col-3 margin-bottom-15">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    style={{ marginTop: 21 }}
+                    onClick={this.requestRegularization.bind(this)}
+                  >
+                    Request
+                  </button>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </React.Fragment>
+        <div className="col-9">
+          <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+            <div className="portlet-title">
+              <div className="caption">
+                <h3 className="caption-subject">
+                  Attendance Regularization List
+                </h3>
+              </div>
+            </div>
+            <div className="portlet-body">
+              <div className="row">
+                <div className="col-lg-12" id="attendanceReg_Cntr">
+                  <TreeTable
+                    id="attendanceReg_Cntr"
+                    data={this.state.regularization_list}
+                    columns={[
+                      {
+                        Header: "Applied",
+                        accessor: "Applied",
+                        columns: [
+                          {
+                            id: "created_date",
+                            Header: "Date",
+                            accessor: d =>
+                              moment(d.created_date).format("DD-MM-YYYY")
+                          },
+                          {
+                            Header: "Code",
+                            accessor: "regularization_code"
+                          },
+                          {
+                            Header: "Reason",
+                            accessor: "regularization_reason"
+                          }
+                        ]
+                      },
+                      {
+                        Header: "Attendance",
+                        accessor: "Attendance",
+                        columns: [
+                          {
+                            Header: "Date",
+                            id: "attendance_date",
+                            accessor: d =>
+                              moment(d.attendance_date).format("DD-MM-YYYY")
+                          }
+                        ]
+                      },
+                      {
+                        Header: "Login Time",
+                        accessor: "login_time",
+
+                        columns: [
+                          {
+                            Header: "Old",
+                            id: "punch_in_time",
+                            accessor: d =>
+                              d.punch_in_time ? d.punch_in_time : "------"
+                          },
+                          {
+                            Header: "New",
+                            id: "regularize_in_time",
+                            accessor: d =>
+                              moment(d.regularize_in_time, "HH:mm:ss").format(
+                                "HH:mm A"
+                              )
+                          }
+                        ]
+                      },
+                      {
+                        Header: "Logout Time",
+                        accessor: "punch_out_time",
+                        columns: [
+                          {
+                            Header: "Old",
+                            id: "punch_out_time",
+                            accessor: d =>
+                              d.punch_out_time ? d.punch_out_time : "------"
+                          },
+                          {
+                            Header: "New",
+                            id: "regularize_out_time",
+                            accessor: d =>
+                              moment(d.regularize_out_time, "HH:mm:ss").format(
+                                "HH:mm A"
+                              )
+                          }
+                        ]
+                      },
+                      {
+                        Header: "Regularization",
+                        accessor: "Regularization",
+                        columns: [
+                          {
+                            id: "regularize_status",
+                            Header: "Status",
+                            accessor: d =>
+                              d.regularize_status === "PEN" ? (
+                                <span className="badge badge-warning">
+                                  Pending
+                                </span>
+                              ) : d.regularize_status === "APR" ? (
+                                <span className="badge badge-success">
+                                  Approved
+                                </span>
+                              ) : d.regularize_status === "REJ" ? (
+                                <span className="badge badge-danger">
+                                  Rejected
+                                </span>
+                              ) : (
+                                "------"
+                              )
+                          }
+                        ]
+                      }
+                    ]}
+                    defaultPageSize={10}
+                    className="-striped -highlight"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     );
   }
 }

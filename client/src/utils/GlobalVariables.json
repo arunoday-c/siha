@@ -774,5 +774,10 @@
   "EMP_PAYMENT_MODE": [
     { "name": "Cash", "value": "CS" },
     { "name": "Cheque", "value": "CH" }
+  ],
+  "ENCASH_TYPE": [
+    { "name": "Leave", "value": "L" },
+    { "name": "Airfare", "value": "A" },
+    { "name": "Both", "value": "B" }
   ]
 }

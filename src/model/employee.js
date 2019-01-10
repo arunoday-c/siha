@@ -4,6 +4,7 @@ import {
   paging,
   whereCondition,
   releaseDBConnection,
+  runningNumberGen,
   deleteRecord,
   jsonArrayToObject
 } from "../utils";
@@ -12,8 +13,6 @@ import { debugLog } from "../utils/logging";
 import Promise from "bluebird";
 import mysql from "mysql";
 import moment from "moment";
-import department from "../controller/department";
-import { InsertUpdateEmployee } from "../../client/src/Components/EmployeeManagement/EmployeeMasterIndex/EmployeeMaster/EmployeeMasterEvents";
 
 //api to add employee
 let addEmployee = (req, res, next) => {
@@ -3405,7 +3404,7 @@ let getEmployeeAdvance = (req, res, next) => {
         : "";
     db.getConnection((error, connection) => {
       connection.query(
-        "Select hims_f_employee_advance_id, employee_id, advance_amount, advance_reason, deducting_month,\
+        "Select hims_f_employee_advance_id, advance_number,employee_id, advance_amount, advance_reason, deducting_month,\
          deducting_year, advance_status, created_by, created_date, updated_by, updated_date from hims_f_employee_advance where record_status='A' " +
           whereCon,
         (error, result) => {

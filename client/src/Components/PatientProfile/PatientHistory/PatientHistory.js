@@ -134,32 +134,42 @@ class PatientHistory extends Component {
           openPopup={this.state.openAddModal}
           title={"Add History"}
         >
-          <div className="col-lg-12">
-            <AlagehFormGroup
-              label={{
-                isImp: false
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "history",
-                value: this.state.history,
-                others: {
-                  multiline: true,
-                  rows: "6",
-                  placeholder: "Enter History, If any"
-                },
-                events: {
-                  onChange: this.textHandle.bind(this)
-                }
-              }}
-            />
-            <div style={{ textAlign: "center" }}>
+          <div className="popupInner">
+            <div className="popRightDiv">
+              <AlagehFormGroup
+                label={{
+                  isImp: false
+                }}
+                textBox={{
+                  className: "txt-fld textArea",
+                  name: "history",
+                  value: this.state.history,
+                  others: {
+                    multiline: true,
+                    rows: "6",
+                    placeholder: "Enter History, If any"
+                  },
+                  events: {
+                    onChange: this.textHandle.bind(this)
+                  }
+                }}
+              />
+            </div>
+          </div>
+          <div className="popupFooter">
+            <div className="col-12">
               <button
                 onClick={this.savePatientHistory.bind(this)}
                 className="btn btn-primary"
               >
-                SAVE
+                Save
               </button>
+              {/* <button
+                  onClick={this.savePatientHistory.bind(this)}
+                  className="btn btn-primary"
+                >
+                  Cancel
+                </button> */}
             </div>
           </div>
         </AlgaehModalPopUp>

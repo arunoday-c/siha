@@ -1,6 +1,5 @@
 import React from "react";
 import "./leave_entitlement.css";
-
 import {
   AlagehAutoComplete,
   AlagehFormGroup

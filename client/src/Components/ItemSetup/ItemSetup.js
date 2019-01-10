@@ -143,6 +143,7 @@ class ItemSetup extends Component {
     let ItemList = Enumerable.from(this.props.itemlist)
       .groupBy("$.hims_d_item_master_id", null, (k, g) => {
         let firstRecordSet = Enumerable.from(g).firstOrDefault();
+        debugger;
         return {
           item_code: firstRecordSet.item_code,
           hims_d_item_master_id: firstRecordSet.hims_d_item_master_id,
@@ -160,7 +161,8 @@ class ItemSetup extends Component {
           radioActive: firstRecordSet.item_status === "A" ? true : false,
           radioInactive: firstRecordSet.item_status === "I" ? true : false,
           service_id: firstRecordSet.service_id,
-          detail_item_uom: g.getSource()
+          detail_item_uom:
+            firstRecordSet.hims_m_item_uom_id === null ? [] : g.getSource()
         };
       })
       .toArray();

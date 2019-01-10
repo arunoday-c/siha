@@ -128,11 +128,11 @@ class PayRollDetails extends PureComponent {
                 </div>
               </div>
               <div
-                className="row paddin-bottom-5"
+                className="row padding-bottom-5"
                 data-validate="EarnComponent"
               >
                 <AlagehAutoComplete
-                  div={{ className: "col" }}
+                  div={{ className: "col-4" }}
                   label={{
                     forceLabel: "Earnings Type",
                     isImp: true
@@ -151,7 +151,7 @@ class PayRollDetails extends PureComponent {
                 />
 
                 <AlagehFormGroup
-                  div={{ className: "col" }}
+                  div={{ className: "col-4" }}
                   label={{
                     forceLabel: "Amount",
                     isImp:
@@ -177,7 +177,7 @@ class PayRollDetails extends PureComponent {
                   }}
                 />
 
-                <div className="col-1" style={{ paddingTop: "21px" }}>
+                <div className="col" style={{ paddingTop: "21px" }}>
                   <button
                     className="btn btn-primary"
                     onClick={AddEarnComponent.bind(this, this)}
@@ -187,7 +187,7 @@ class PayRollDetails extends PureComponent {
                 </div>
               </div>
               <hr />
-              <div className="row paddin-bottom-5">
+              <div className="row padding-bottom-5">
                 <div className="col-12" id="EarningComponent_Cntr">
                   <AlgaehDataGrid
                     id="EarningComponent"
@@ -315,11 +315,11 @@ class PayRollDetails extends PureComponent {
                 <span>Salary Dedection Breakup</span>
               </h5>
               <div
-                className="row paddin-bottom-5"
+                className="row padding-bottom-5"
                 data-validate="DeductionComponent"
               >
                 <AlagehAutoComplete
-                  div={{ className: "col" }}
+                  div={{ className: "col-4" }}
                   label={{
                     forceLabel: "Deduction Type",
                     isImp: true
@@ -338,7 +338,7 @@ class PayRollDetails extends PureComponent {
                 />
 
                 <AlagehFormGroup
-                  div={{ className: "col" }}
+                  div={{ className: "col-4" }}
                   label={{
                     forceLabel: "Amount",
                     isImp:
@@ -363,7 +363,7 @@ class PayRollDetails extends PureComponent {
                     }
                   }}
                 />
-                <div className="col-1" style={{ paddingTop: "21px" }}>
+                <div className="col" style={{ paddingTop: "21px" }}>
                   <button
                     className="btn btn-primary"
                     onClick={AddDeductionComponent.bind(this, this)}
@@ -372,7 +372,7 @@ class PayRollDetails extends PureComponent {
                   </button>
                 </div>
               </div>
-              <div className="row paddin-bottom-5">
+              <div className="row padding-bottom-5">
                 <div className="col-12" id="DeductionComponent_Cntr">
                   <AlgaehDataGrid
                     id="DeductionComponent"
@@ -464,11 +464,11 @@ class PayRollDetails extends PureComponent {
                 <span>Employee Contribution Breakup</span>
               </h5>
               <div
-                className="row paddin-bottom-5"
+                className="row padding-bottom-5"
                 data-validate="ContributeComponent"
               >
                 <AlagehAutoComplete
-                  div={{ className: "col" }}
+                  div={{ className: "col-4" }}
                   label={{
                     forceLabel: "Contribution Type",
                     isImp: true
@@ -487,7 +487,7 @@ class PayRollDetails extends PureComponent {
                 />
 
                 <AlagehFormGroup
-                  div={{ className: "col" }}
+                  div={{ className: "col-4" }}
                   label={{
                     forceLabel: "Amount",
                     isImp:
@@ -512,7 +512,7 @@ class PayRollDetails extends PureComponent {
                     }
                   }}
                 />
-                <div className="col-1" style={{ paddingTop: "21px" }}>
+                <div className="col" style={{ paddingTop: "21px" }}>
                   <button
                     className="btn btn-primary"
                     onClick={AddContributionComponent.bind(this, this)}
@@ -521,7 +521,7 @@ class PayRollDetails extends PureComponent {
                   </button>
                 </div>
               </div>
-              <div className="row paddin-bottom-5">
+              <div className="row padding-bottom-5">
                 <div className="col-12" id="ContributionComponent_Cntr">
                   <AlgaehDataGrid
                     id="ContributionComponent"
@@ -615,7 +615,7 @@ class PayRollDetails extends PureComponent {
             </div>
             <div className="col-lg-12 secondary-details">
               <hr />
-              <div className="row paddin-bottom-5">
+              <div className="row padding-bottom-5">
                 <div className="col-2">
                   <AlgaehLabel
                     label={{
@@ -665,7 +665,7 @@ class PayRollDetails extends PureComponent {
                   <h6>{getAmountFormart(this.state.cost_to_company)}</h6>
                 </div>
               </div>
-              {/* <div className="row paddin-bottom-5">
+              {/* <div className="row padding-bottom-5">
                 <div className="col-10" />
                 
               </div> */}

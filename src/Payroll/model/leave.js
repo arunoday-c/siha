@@ -1186,7 +1186,7 @@ let getEmployeeAttendReg = (req, res, next) => {
           "select hims_f_attendance_regularize_id,regularization_code,employee_id,\
           E.employee_code,E.full_name as employee_name ,attendance_date,\
           regularize_status,login_date,logout_date,punch_in_time,punch_out_time,\
-          regularize_in_time,regularize_out_time,regularization_reason\
+          regularize_in_time,regularize_out_time,regularization_reason , AR.created_date\
           from hims_f_attendance_regularize   AR inner join hims_d_employee E  on\
            AR.employee_id=E.hims_d_employee_id and record_status='A' where" +
             employee +

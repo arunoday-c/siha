@@ -14,7 +14,7 @@
 
   @media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
     .accordion-btn {
-      width: 86.5%;
+      width: 86.2%;
     }
   }
 
@@ -25,7 +25,6 @@
     background: #f9f9f9 !important;
     height: 18.6vh;
   }
-
   .accordion-btn:after {
     content: "\21E9";
     color: #777;
@@ -49,8 +48,8 @@
     overflow: hidden;
     max-height: 0;
     transition: max-height 0.2s ease-out;
-    margin-left: 5px;
-    margin-right: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
   }
 
   .customTable {
@@ -85,4 +84,11 @@
       border: none;
     }
   }
+}
+
+.textArea {
+  background: #f9f9f9 !important;
+  height: 30vh;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
