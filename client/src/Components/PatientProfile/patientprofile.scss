@@ -44,8 +44,10 @@
           overflow: hidden;
           -webkit-transition: height 0.3s; /* For Safari 3.1 to 6.0 */
           transition: height 0.3s;
+          border-radius: 0;
           &:hover {
             height: 175px;
+            box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.2);
           }
         }
       }
