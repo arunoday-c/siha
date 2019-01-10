@@ -2,7 +2,12 @@ import { Router } from "express";
 import { releaseConnection, generateDbConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
 import { LINQ } from "node-linq";
-import { addOpBIlling, selectBill, getPednigBills } from "../model/opBilling";
+import {
+  addOpBIlling,
+  selectBill,
+  getPednigBills,
+  getOpBillSummary
+} from "../model/opBilling";
 import { updateOrderedServicesBilled } from "../model/orderAndPreApproval";
 import { debugFunction, debugLog } from "../utils/logging";
 import { updateRadOrderedBilled } from "../model/radiology";
@@ -62,6 +67,21 @@ export default ({ config, db }) => {
   api.get(
     "/getPednigBills",
     getPednigBills,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan:
+  api.get(
+    "/getOpBillSummary",
+    getOpBillSummary,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

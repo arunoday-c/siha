@@ -9,7 +9,8 @@ import {
   getLeaveLevels,
   addLeaveMaster,
   addAttendanceRegularization,
-  getEmployeeAttendReg
+  getEmployeeAttendReg,
+  processYearlyLeave
 } from "../model/leave";
 import { debugLog } from "../../utils/logging";
 export default ({ config, db }) => {
@@ -144,6 +145,23 @@ export default ({ config, db }) => {
 
   // created by irfan
   api.get("/getEmployeeAttendReg", getEmployeeAttendReg, (req, res, next) => {
+    let result = req.records;
+    if (result.invalid_input == true) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: result
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
+
+  // created by irfan
+  api.get("/processYearlyLeave", processYearlyLeave, (req, res, next) => {
     let result = req.records;
     if (result.invalid_input == true) {
       res.status(httpStatus.ok).json({
