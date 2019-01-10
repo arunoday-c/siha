@@ -1,4 +1,8 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+
 import {
   AlgaehDateHandler,
   AlagehFormGroup,
@@ -6,96 +10,188 @@ import {
   AlagehAutoComplete,
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
+import GlobalVariables from "../../../../utils/GlobalVariables.json";
+import { texthandle, DeptselectedHandeler } from "./SalaryProcessingEvents.js";
+import { AlgaehActions } from "../../../../actions/algaehActions";
 import moment from "moment";
+import Enumerable from "linq";
 
-export default class SalaryProcessing extends Component {
+class SalaryProcessing extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedLang: this.props.SelectLanguage
+      selectedLang: this.props.SelectLanguage,
+      year: moment().year(),
+      month: moment(new Date()).format("M")
     };
   }
-  fromMonthHandler(date, name) {
-    debugger;
 
-    // let setDate = moment(date).format("YYYY-MM");
+  componentDidMount() {
+    if (
+      this.props.organizations === undefined ||
+      this.props.organizations.length === 0
+    ) {
+      this.props.getOrganizations({
+        uri: "/organization/getOrganization",
+        method: "GET",
+        redux: {
+          type: "ORGS_GET_DATA",
+          mappingName: "organizations"
+        }
+      });
+    }
 
-    this.setState({ [name]: date });
+    if (
+      this.props.subdepartment === undefined ||
+      this.props.subdepartment.length === 0
+    ) {
+      this.props.getSubDepartment({
+        uri: "/department/get/subdepartment",
+        data: {
+          sub_department_status: "A"
+        },
+        method: "GET",
+        redux: {
+          type: "SUB_DEPT_GET_DATA",
+          mappingName: "subdepartment"
+        }
+      });
+    }
+
+    if (
+      this.props.all_employees === undefined ||
+      this.props.all_employees.length === 0
+    ) {
+      this.props.getEmployees({
+        uri: "/employee/get",
+        method: "GET",
+
+        redux: {
+          type: "EMPLY_GET_DATA",
+          mappingName: "all_employees"
+        }
+      });
+    }
   }
 
   render() {
+    const departments =
+      this.props.deptanddoctors === undefined
+        ? []
+        : this.props.deptanddoctors.departmets;
     return (
       <React.Fragment>
         <div className="hptl-SalaryManagement-form">
           <div className="row  inner-top-search">
-            <AlgaehDateHandler
-              div={{ className: "col margin-bottom-15" }}
+            <AlagehAutoComplete
+              div={{ className: "col" }}
               label={{
-                forceLabel: "Select Month & Year",
+                forceLabel: "Select a Month.",
+                isImp: true
+              }}
+              selector={{
+                name: "month",
+                className: "select-fld",
+                value: this.state.month,
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: GlobalVariables.MONTHS
+                },
+                onChange: texthandle.bind(this, this),
+                onClear: () => {
+                  this.setState({
+                    month: null
+                  });
+                },
+                others: {
+                  disabled: this.state.lockEarnings
+                }
+              }}
+            />
+
+            <AlagehFormGroup
+              div={{ className: "col" }}
+              label={{
+                forceLabel: "Year",
                 isImp: true
               }}
               textBox={{
                 className: "txt-fld",
-                name: "month_date",
+                name: "year",
+                value: this.state.year,
+                events: {
+                  onChange: texthandle.bind(this, this)
+                },
                 others: {
-                  tabIndex: "6",
-                  type: "month"
+                  type: "number",
+                  min: moment().year()
                 }
               }}
-              events={{
-                onChange: this.fromMonthHandler.bind(this)
-              }}
-              maxDate={new Date()}
-              value={this.state.month_date}
             />
             <AlagehAutoComplete
               div={{ className: "col" }}
               label={{
                 forceLabel: "Select a Branch.",
-                isImp: true
+                isImp: false
               }}
               selector={{
-                name: "",
+                name: "hospital_id",
                 className: "select-fld",
-                value: "",
-                dataSource: {},
-                onChange: null,
-                others: {
-                  tabIndex: "2"
+                value: this.state.hospital_id,
+                dataSource: {
+                  textField: "hospital_name",
+                  valueField: "hims_d_hospital_id",
+                  data: this.props.organizations
+                },
+                onChange: texthandle.bind(this, this),
+                onClear: () => {
+                  this.setState({
+                    hospital_id: null
+                  });
                 }
               }}
             />
+
             <AlagehAutoComplete
               div={{ className: "col" }}
               label={{
                 forceLabel: "Select a Dept..",
-                isImp: true
+                isImp: false
               }}
               selector={{
-                name: "",
+                name: "sub_department_id",
                 className: "select-fld",
-                value: "",
-                dataSource: {},
-                onChange: null,
-                others: {
-                  tabIndex: "2"
-                }
+                value: this.state.sub_department_id,
+                dataSource: {
+                  textField: "sub_department_name",
+                  valueField: "sub_department_id",
+                  data: this.props.subdepartment
+                },
+                onChange: DeptselectedHandeler.bind(this, this)
               }}
             />
+
             <AlagehAutoComplete
               div={{ className: "col" }}
               label={{
                 forceLabel: "Select a Employee.",
-                isImp: true
+                isImp: false
               }}
               selector={{
-                name: "",
+                name: "select_employee_id",
                 className: "select-fld",
-                value: "",
-                dataSource: {},
-                onChange: null,
-                others: {
-                  tabIndex: "2"
+                value: this.state.select_employee_id,
+                dataSource: {
+                  textField: "full_name",
+                  valueField: "hims_d_employee_id",
+                  data: this.props.all_employees
+                },
+                onChange: texthandle.bind(this, this),
+                onClear: () => {
+                  this.setState({
+                    select_employee_id: null
+                  });
                 }
               }}
             />
@@ -116,23 +212,7 @@ export default class SalaryProcessing extends Component {
                 }
               }}
             />
-            <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{
-                forceLabel: "Payment Type",
-                isImp: true
-              }}
-              selector={{
-                name: "",
-                className: "select-fld",
-                value: "",
-                dataSource: {},
-                onChange: null,
-                others: {
-                  tabIndex: "2"
-                }
-              }}
-            />
+
             <div className="col margin-bottom-15">
               <button
                 type="button"
@@ -563,3 +643,31 @@ export default class SalaryProcessing extends Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    subdepartment: state.subdepartment,
+    organizations: state.organizations,
+    all_employees: state.all_employees,
+    deptanddoctors: state.deptanddoctors
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getSubDepartment: AlgaehActions,
+      getOrganizations: AlgaehActions,
+      getEmployees: AlgaehActions,
+      getDepartmentsandDoctors: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(SalaryProcessing)
+);
