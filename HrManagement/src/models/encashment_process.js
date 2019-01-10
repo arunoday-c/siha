@@ -14,7 +14,7 @@ module.exports = {
         query:
           "select hims_f_employee_monthly_leave_id,leave_id,employee_id,`year`,close_balance,encashment_leave from \
           hims_f_employee_monthly_leave where employee_id=? and `year`=?; ",
-        values: _.valuesIn(_EncashDetails),
+        values: [_EncashDetails.employee_id, _EncashDetails.year],
         printQuery: true
       })
       .then(monthlyLeaves => {
@@ -32,23 +32,74 @@ module.exports = {
                 debugLog("leaveDetails", leaveDetails);
                 if (leaveDetails.length > 0) {
                   if (leaveDetails[0].leave_encash == "Y") {
-                    debugFunction("EncashMent");
+                    _mysql
+                      .executeQuery({
+                        query:
+                          "select hims_d_leave_encashment_id,earnings_id,percent from hims_d_leave_encashment where leave_header_id=?;",
+                        values: [monthlyLeaves[i].leave_id]
+                      })
+                      .then(leaveEancashDetails => {
+                        debugLog("leaveEancashDetails", leaveEancashDetails);
+                        if (leaveEancashDetails.length > 0) {
+                          for (let k = 0; k < leaveEancashDetails.length; k++) {
+                            let perdayAmount = 0;
+                            let EncashAmount = 0;
+                            _mysql
+                              .executeQuery({
+                                query:
+                                  "select hims_d_employee_earnings_id,amount from hims_d_employee_earnings where \
+                                employee_id=? and earnings_id=?;",
+                                values: [
+                                  _EncashDetails[i].employee_id,
+                                  leaveEancashDetails[K].earnings_id
+                                ]
+                              })
+                              .then(empEarnings => {
+                                debugLog("empEarnings", empEarnings);
+                                if (
+                                  monthlyLeaves[i].close_balance <
+                                  monthlyLeaves[i].encashment_leave
+                                ) {
+                                  EncashDays = monthlyLeaves[i].close_balance;
+                                } else {
+                                  EncashDays =
+                                    monthlyLeaves[i].encashment_leave;
+                                }
+                                perdayAmount = empEarnings[0].amount * 12;
+                                debugLog("perdayAmount", perdayAmount);
+                                perdayAmount = perdayAmount / 365;
+                                debugLog("perdayAmount", perdayAmount);
 
-                    if (
-                      monthlyLeaves[i].close_balance <
-                      monthlyLeaves[i].encashment_leave
-                    ) {
-                      EncashDays = monthlyLeaves[i].close_balance;
-                    } else {
-                      EncashDays = monthlyLeaves[i].encashment_leave;
-                    }
+                                perdayAmount =
+                                  perdayAmount *
+                                  leaveEancashDetails[K].earnings_id;
+                                debugLog("perdayAmount", perdayAmount);
+                                perdayAmount = perdayAmount / 100;
+                                debugLog("perdayAmount", perdayAmount);
+                                EncashAmount = perdayAmount * EncashDays;
 
-                    debugLog("EncashDays", EncashDays);
-                    _mysql.commitTransaction(() => {
-                      _mysql.releaseConnection();
-                      req.records = leaveDetails;
-                      next();
-                    });
+                                debugLog("EncashDays", EncashDays);
+                                debugLog("EncashAmount", EncashAmount);
+
+                                // leaveEancashDetails[0].earnings_id
+                                // leaveEancashDetails[0].percent
+
+                                _mysql.commitTransaction(() => {
+                                  _mysql.releaseConnection();
+                                  req.records = leaveEancashDetails;
+                                  next();
+                                });
+                              })
+                              .catch(e => {
+                                next(e);
+                              });
+                          }
+                        }
+                      })
+                      .catch(e => {
+                        next(e);
+                      });
+
                     // All Calculation
                   } else {
                     next();

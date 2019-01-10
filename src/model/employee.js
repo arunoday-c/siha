@@ -13,8 +13,6 @@ import { debugLog } from "../utils/logging";
 import Promise from "bluebird";
 import mysql from "mysql";
 import moment from "moment";
-import department from "../controller/department";
-import { InsertUpdateEmployee } from "../../client/src/Components/EmployeeManagement/EmployeeMasterIndex/EmployeeMaster/EmployeeMasterEvents";
 
 //api to add employee
 let addEmployee = (req, res, next) => {
