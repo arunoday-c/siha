@@ -1221,10 +1221,10 @@ let processYearlyLeave = (req, res, next) => {
     let db = req.db;
     let year = 2019;
 
-    let array1 = [50, 60, 70, 99];
-    let array2 = [90, 100, 70];
-    let final = array1.filter(val => !array2.includes(val));
-    debugLog("final:", final);
+    // let array1 = [50, 60, 70, 99];
+    // let array2 = [90, 100, 70];
+    // let final = array1.filter(val => !array2.includes(val));
+    // debugLog("final:", final);
 
     // if (
     //   req.query.from_date != "" &&
@@ -1379,26 +1379,33 @@ let processYearlyLeave = (req, res, next) => {
                                 }
 
                                 if (yearOrLeavExist[0].length < 1) {
-                                  debugLog("NOO year:");
-                                  yearArray.push();
+                                  debugLog("new year to insert:");
+                                  yearArray.push({
+                                    employee_id:
+                                      employees[i].hims_d_employee_id,
+                                    year: year
+                                  });
                                 }
 
-                                new Promise((resolve, reject) => {
-                                  try {
-                                    //==============
-                                  } catch (e) {
-                                    reject(e);
-                                  }
-                                }).then(modifyRes => {
-                                  //pppppppppppp
-                                });
+                                if (i == employees.length - 1) {
+                                  //insert in two tables
+                                  resolve(monthlyArray, yearArray);
+                                }
                               }
                             );
                           } catch (e) {
                             reject(e);
                           }
                         }).then(modifyRes => {
-                          //pppppppppppp
+                          new Promise((resolve, reject) => {
+                            try {
+                              //==============
+                            } catch (e) {
+                              reject(e);
+                            }
+                          }).then(modifyRes => {
+                            //pppppppppppp
+                          });
                         });
                       }
                     }

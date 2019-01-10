@@ -241,5 +241,41 @@ let getPednigBills = (req, res, next) => {
     next(e);
   }
 };
+//created by irfan:
+let getOpBillSummary = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
 
-module.exports = { addOpBIlling, selectBill, getPednigBills };
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "select BH.hims_f_billing_header_id,BH.bill_date,BD.hims_f_billing_details_id,BD.service_type_id,BD.net_amout,\
+        ST.service_type_code,ST.service_type, sum(BD.net_amout)as total_amount\
+        from hims_f_billing_header BH inner join hims_f_billing_details BD on  \
+        BH.hims_f_billing_header_id=BD.hims_f_billing_header_id inner join hims_d_service_type ST on \
+        BD.service_type_id=ST.hims_d_service_type_id and ST.record_status='A' \
+        where BH.record_status='A' and BD.record_status='A' and date(BH.bill_date)\
+         between date(?) and date(?)  group by BD.service_type_id",
+        [req.query.from_date, req.query.to_date],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports = { addOpBIlling, selectBill, getPednigBills, getOpBillSummary };
