@@ -38,6 +38,12 @@
           img {
             height: 100px;
             width: auto;
+            // &:hover {
+            //   height: 200px;
+            //   -webkit-transition: width 2s; /* Safari */
+            //   transition: width 2s;
+            //   position: relative;
+            // }
           }
         }
       }
