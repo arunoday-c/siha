@@ -33,9 +33,9 @@
         width: auto;
         border-radius: 4px;
         overflow: hidden;
-        -webkit-transition: height 0.2s;
+        -webkit-transition: height 0.3s;
         /* For Safari 3.1 to 6.0 */
-        transition: height 0.1s; }
+        transition: height 0.3s; }
         .patientProfile .patientInfo-Top .patientImg .image-drop-area img:hover {
           height: 175px; }
   .patientProfile .patientInfo-Top .patientName {

@@ -42,8 +42,8 @@
           width: auto;
           border-radius: 4px;
           overflow: hidden;
-          -webkit-transition: height 0.2s; /* For Safari 3.1 to 6.0 */
-          transition: height 0.1s;
+          -webkit-transition: height 0.3s; /* For Safari 3.1 to 6.0 */
+          transition: height 0.3s;
           &:hover {
             height: 175px;
           }

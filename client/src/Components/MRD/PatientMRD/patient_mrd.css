@@ -27,9 +27,9 @@
       height: 55px;
       border-radius: 4px;
       overflow: hidden;
-      -webkit-transition: height 2s;
+      -webkit-transition: height 0.3s;
       /* For Safari 3.1 to 6.0 */
-      transition: height 2s; }
+      transition: height 0.3s; }
       .patient-mrd .patientProfile .patientInfo-Top .patientImg img:hover {
         height: 175px; }
   .patient-mrd .patientProfile .patientInfo-Top .patientName {
