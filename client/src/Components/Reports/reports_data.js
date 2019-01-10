@@ -144,7 +144,8 @@ export default [
       },
       {
         subitem: "OP Billing Summary",
-        template_name: "asset_war_exp",
+        template_name: "OPBillSummary",
+        reportQuery: "OPBillSummary",
         reportParameters: [
           {
             type: "date",
