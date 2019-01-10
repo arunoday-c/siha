@@ -240,6 +240,9 @@ class RegistrationPatient extends PureComponent {
             } else {
               patientdata = $this.state;
             }
+
+            delete patientdata.countrystates;
+            delete patientdata.cities;
             algaehApiCall({
               uri: "/frontDesk/add",
               data: patientdata,
