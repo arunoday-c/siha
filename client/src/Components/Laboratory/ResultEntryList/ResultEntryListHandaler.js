@@ -124,14 +124,14 @@ const getSampleCollectionDetails = $this => {
       //   })
       //   .toArray();
 
-      debugger;
+      
       $this.setState({ sample_collection: data });
     }
   });
 };
 
 const ResultEntryModel = ($this, row) => {
-  debugger;
+  
   if (row.status === "O") {
     swalMessage({
       title: "Invalid Input. Please collect the sample.",

@@ -174,7 +174,7 @@ class SampleCollectionPatient extends PureComponent {
                                   />
                                 ),
                                 displayTemplate: row => {
-                                  debugger;
+                                  
                                   return (
                                     <span>
                                       {row.collected !== "Y" ? (

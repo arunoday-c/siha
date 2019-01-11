@@ -44,7 +44,7 @@ class AddConsultationForm extends Component {
     let InputOutput;
 
     InputOutput = this.props.PatRegIOputs;
-    debugger;
+    
     this.setState({ ...this.state, ...InputOutput });
   }
 

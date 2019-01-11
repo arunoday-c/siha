@@ -331,7 +331,7 @@ class LoanAdjustment extends Component {
                         //     />
                         //   ),
                         //   displayTemplate: row => {
-                        //     debugger;
+                        //     
                         //     return (
                         //       <span>
                         //         {row.skip_month_start === "1"

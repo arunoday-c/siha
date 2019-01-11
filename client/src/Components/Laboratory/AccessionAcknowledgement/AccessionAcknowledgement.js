@@ -339,7 +339,7 @@ class AccessionAcknowledgement extends Component {
                         fieldName: "action",
                         label: <AlgaehLabel label={{ fieldName: "action" }} />,
                         displayTemplate: row => {
-                          debugger;
+                          
                           return (
                             <span>
                               <i

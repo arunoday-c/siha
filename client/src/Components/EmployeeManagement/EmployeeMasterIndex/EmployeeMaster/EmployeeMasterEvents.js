@@ -6,7 +6,7 @@ import moment from "moment";
 
 const Validations = $this => {
   let isError = false;
-  debugger;
+  
   if ($this.state.personalDetails.date_of_joining === null) {
     isError = true;
     swalMessage({
@@ -122,7 +122,7 @@ const InsertUpdateEmployee = $this => {
     onSuccess: () => {
       const err = Validations($this);
       console.log("Input:", $this.state);
-      debugger;
+      
       if (!err) {
         if ($this.state.personalDetails.insertdeptDetails.length > 0) {
           for (
@@ -164,7 +164,7 @@ const InsertUpdateEmployee = $this => {
           }
         }
 
-        debugger;
+        
         const activeDept = Enumerable.from(
           $this.state.personalDetails.deptDetails
         )

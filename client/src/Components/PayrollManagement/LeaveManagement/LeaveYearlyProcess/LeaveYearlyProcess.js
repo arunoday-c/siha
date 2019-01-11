@@ -17,9 +17,35 @@ export default class LeaveYearlyProcess extends Component {
     this.state = {
       year: moment().year(),
       leaves: [],
+      leave_data: [],
       loading: false
     };
     this.getLeaveMaster();
+    this.getLeaveData();
+  }
+
+  getLeaveData() {
+    algaehApiCall({
+      uri: "/leave/getEmployeeLeaveData",
+      method: "GET",
+      data: {
+        year: this.state.year,
+        employee_id: this.state.employee_id
+      },
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            leave_data: res.data.records
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   processYearlyLeave() {
@@ -42,6 +68,14 @@ export default class LeaveYearlyProcess extends Component {
           this.setState({
             loading: false
           });
+        } else if (!res.data.success) {
+          swalMessage({
+            title: res.data.records.message,
+            type: "error"
+          });
+          this.setState({
+            loading: false
+          });
         }
       },
       onFailure: err => {
@@ -53,6 +87,14 @@ export default class LeaveYearlyProcess extends Component {
           loading: false
         });
       }
+    });
+  }
+
+  clearState() {
+    this.setState({
+      hims_d_employee_id: null,
+      employee_name: null,
+      year: moment().year()
     });
   }
 
@@ -113,7 +155,7 @@ export default class LeaveYearlyProcess extends Component {
         <div className="col-12">
           <div className="row inner-top-search">
             <AlagehFormGroup
-              div={{ className: "col-lg-3 form-group mandatory" }}
+              div={{ className: "col-lg-2 form-group mandatory" }}
               label={{
                 forceLabel: "Year",
                 isImp: true
@@ -199,6 +241,15 @@ export default class LeaveYearlyProcess extends Component {
                 )}
               </button>
             </div>
+            <div className="col form-group">
+              <button
+                onClick={this.clearState.bind(this)}
+                style={{ marginTop: 21 }}
+                className="btn btn-default"
+              >
+                CLEAR
+              </button>
+            </div>
           </div>
         </div>
 
@@ -222,11 +273,11 @@ export default class LeaveYearlyProcess extends Component {
                     datavalidate="LeaveYearlyProcessGrid"
                     columns={[
                       {
-                        fieldName: "Year",
+                        fieldName: "year",
                         label: <AlgaehLabel label={{ forceLabel: "Year" }} />
                       },
                       {
-                        fieldName: "EmployeeCode",
+                        fieldName: "employee_code",
                         label: (
                           <AlgaehLabel
                             label={{ forceLabel: "Employee Code" }}
@@ -234,17 +285,40 @@ export default class LeaveYearlyProcess extends Component {
                         )
                       },
                       {
-                        fieldName: "EmployeeName",
+                        fieldName: "employee_name",
                         label: (
                           <AlgaehLabel
                             label={{ forceLabel: "Employee Name" }}
                           />
                         )
+                      },
+                      {
+                        fieldName: "leave_code",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Leave Code" }} />
+                        )
+                      },
+                      {
+                        fieldName: "leave_description",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Leave Description" }}
+                          />
+                        )
+                      },
+                      {
+                        fieldName: "total_eligible",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Total Eligible" }}
+                          />
+                        )
                       }
                     ]}
-                    keyId=""
-                    dataSource={{ data: [] }}
+                    keyId="hims_f_employee_monthly_leave_id"
+                    dataSource={{ data: this.state.leave_data }}
                     isEditable={true}
+                    filter={true}
                     loading={this.state.loading}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{}}

@@ -71,7 +71,7 @@ class RadResultEntry extends Component {
     }
   }
   componentWillReceiveProps(newProps) {
-    //debugger;
+    
     if (
       newProps.selectedPatient !== undefined &&
       (newProps.radschlist === undefined || newProps.radschlist.length === 0)
@@ -421,7 +421,7 @@ class RadResultEntry extends Component {
                       }}
                       needConvertion={false}
                       addDataTag={false}
-                      //debugger
+                      ////debugger
                       serviceParameters={{
                         uniqueID: {
                           templateID: this.state.template_id,
@@ -431,10 +431,10 @@ class RadResultEntry extends Component {
                       }}
                       events={{
                         onSuccess: data => {
-                          //debugger;
+                          
                         },
                         onFileFailure: () => {
-                          //debugger;
+                          
                         }
                       }}
                     />

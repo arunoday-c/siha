@@ -1,6 +1,6 @@
 const changeChecks = ($this, e) => {
   let name = e.target.name;
-  debugger;
+  
   switch (e.target.name) {
     case "leave_salary_process":
       $this.setState(

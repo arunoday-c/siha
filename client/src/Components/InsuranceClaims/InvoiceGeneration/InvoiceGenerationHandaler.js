@@ -69,7 +69,7 @@ const getVisitWiseBillDetailS = $this => {
     method: "GET",
     data: inputobj,
     onSuccess: response => {
-      //debugger;
+      
       AlgaehLoader({ show: true });
       if (response.data.success) {
         let data = response.data.records;
@@ -259,7 +259,7 @@ const getCtrlCode = ($this, docNumber) => {
       mappingName: "invoiceGen"
     },
     afterSuccess: data => {
-      //debugger;
+      
       data.generateVoice = false;
       data.clearEnable = false;
 

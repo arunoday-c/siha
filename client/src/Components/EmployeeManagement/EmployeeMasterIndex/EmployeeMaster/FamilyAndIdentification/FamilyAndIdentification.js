@@ -40,7 +40,7 @@ class FamilyAndIdentification extends PureComponent {
   }
 
   componentDidMount() {
-    debugger;
+    
     let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
     this.setState({ ...this.state, ...InputOutput }, () => {
       if (
@@ -64,11 +64,11 @@ class FamilyAndIdentification extends PureComponent {
   }
 
   componentWillReceiveProps() {
-    debugger;
+    
   }
 
   render() {
-    debugger;
+    
     return (
       <React.Fragment>
         <div className="hptl-phase1-add-employee-form popRightDiv">
