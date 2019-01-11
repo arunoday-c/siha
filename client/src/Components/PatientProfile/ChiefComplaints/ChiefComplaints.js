@@ -1336,7 +1336,6 @@ class ChiefComplaints extends Component {
                         }}
                       />
                     ),
-
                     displayTemplate: row => {
                       const _inactive_date =
                         row.complaint_inactive_date !== null
@@ -1359,7 +1358,6 @@ class ChiefComplaints extends Component {
                         }}
                       />
                     ),
-
                     displayTemplate: row => {
                       return <span>{row.comment}</span>;
                     },

@@ -1522,7 +1522,7 @@ let processYearlyLeave = (req, res, next) => {
                                         req.records = {
                                           already_processed: true,
                                           message:
-                                            "leave is already processed for all these employees"
+                                            "Leave already processed"
                                         };
                                         next();
                                       } else {
