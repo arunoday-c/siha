@@ -214,7 +214,6 @@ class ApplyLeave extends Component {
       enddateMoment.isValid() === true
     ) {
       var days = enddateMoment.diff(startdateMoment, "days");
-      
 
       if (
         moment(this.state.from_date).format("YYYYMMDD") ===
@@ -448,7 +447,8 @@ class ApplyLeave extends Component {
       uri: "/leave/getEmployeeLeaveData",
       method: "GET",
       data: {
-        employee_id: this.state.employee_id
+        employee_id: this.state.employee_id,
+        year: moment().year()
       },
       onSuccess: res => {
         if (res.data.success) {

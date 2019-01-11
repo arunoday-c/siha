@@ -1,6 +1,3 @@
-import React from "react";
-import Appointment from "./Components/Appointment/Appointment";
-//import FrontDesk from "../../Search/FrontDesk.json";
 import { APPT_TYPE } from "../../utils/GlobalVariables.json";
 
 export default [
@@ -138,13 +135,13 @@ export default [
     submenu: [
       {
         subitem: "Outstanding Advances",
-        template_name: "asset_war_exp",
+        template_name: "opBillSummary",
         reportParameters: []
         ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
       {
         subitem: "OP Billing Summary",
-        template_name: "OPBillSummary",
+        template_name: "opBillSummary",
         reportQuery: "OPBillSummary",
         reportParameters: [
           {
