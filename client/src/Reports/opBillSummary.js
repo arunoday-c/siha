@@ -3,18 +3,20 @@ import { header } from "./header";
 import { signature_footer } from "./signature_footer";
 
 export function printReport(data) {
-  const serviceGroup = Enumerable.from(data.services)
-    .groupBy("$.service_type", null, (key, group) => {
-      return {
-        service_type: key,
-        list: group.getSource()
-      };
-    })
-    .toArray();
+  //   debugger;
+  const serviceGroup = [];
+  //   const serviceGroup = Enumerable.from(data.services)
+  //     .groupBy("$.service_type", null, (key, group) => {
+  //       return {
+  //         service_type: key,
+  //         list: group.getSource()
+  //       };
+  //     })
+  //     .toArray();
 
   return `
-    <div class="print-body">
-      <header> ${header(data)} </header> 
+    <div class="">
+      <header> ${header(data)} </header>
       <section>
       <h2><span>Patient Details</span></h2>
       <table class="tableForLabel" cell-padding="0">
@@ -33,24 +35,23 @@ export function printReport(data) {
               <td><label>رقم الفاتورة / Invoice No</label></td>
               <td>: <span>${data.invoice_number}</span></td>
           </tr>
-  
+
           <tr>
               <td><label>اسم المريض / Patient Name</label></td>
               <td>: <span>${data.full_name}</span></td>
               <td><label>اريخ الفاتورة / Invoice Date</label></td>
               <td>: <span>${data.receipt_date}</span></td>
           </tr>
-  
+
           <tr>
               <td><label>اسم الطبيب / Doctor</label></td>
               <td>: <span>${data.doctor_name}</span></td>
               <td><label>Department / القسم</label></td>
               <td>: <span>General Practioner(G.P)</span></td>
           </tr>
-  
+
       </table>
-  
-  
+
   </section>
   <section>
       <h2><span>Bill Details</span></h2>
@@ -89,12 +90,11 @@ export function printReport(data) {
       `
       )
       .join("")}
-    
+
         `
             )
-            .join("")}   
-         
-            
+            .join("")}
+
           <tr>
           <td colspan="5"></td>
           <td>SAR( المبلغ الصافي / Net Amount</td>
@@ -115,6 +115,6 @@ export function printReport(data) {
   </table>
   </section>
       <footer> ${signature_footer(data)}</footer>
-  
+
     `;
 }
