@@ -44,14 +44,25 @@ let algaehReportConfig = reportName => {
       {
         reportName: "staffCashCollection",
         reportQuery:
-          "select HH.hims_f_cash_handover_header_id,HH.shift_id,HH.daily_handover_date,\
-          hims_f_cash_handover_detail_id,\
+          "select HH.daily_handover_date,\
           sum(expected_cash+expected_card+expected_cheque) as expected_total ,\
           sum(actual_cash+actual_card+actual_cheque) as collected_total\
           from hims_f_cash_handover_header HH inner join\
           hims_f_cash_handover_detail HD on HH.hims_f_cash_handover_header_id=HD.cash_handover_header_id\
           where HH.record_status='A' and HD.record_status='A' and  date(daily_handover_date) between date(?)\
           and date(?) group by HH.daily_handover_date",
+
+        questionOrder: ["from_date", "to_date"]
+      },
+      {
+        reportName: "subDepartmentIncome",
+        reportQuery:
+          " select S.sub_department_id,SD.sub_department_code,SD.sub_department_name ,sum(BD.net_amout) as total_amount\
+          from hims_f_billing_header BH inner join hims_f_billing_details BD on \
+          BH.hims_f_billing_header_id=BD.hims_f_billing_header_id inner join hims_d_services S on\
+          BD.services_id = S.hims_d_services_id and S.record_status='A'   inner join hims_d_sub_department SD on\
+          S.sub_department_id=SD.hims_d_sub_department_id where    date(bill_date)   between    date(?)\
+          and  date(?) and   BH.record_status='A'  and BD.record_status='A'  group by S.sub_department_id",
 
         questionOrder: ["from_date", "to_date"]
       }
