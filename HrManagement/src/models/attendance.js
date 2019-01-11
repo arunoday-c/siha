@@ -2,9 +2,7 @@ import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
 import moment from "moment";
 //import { LINQ } from "node-linq";
-import utilities from "algaeh-utilities";
-import { debugLog } from "../../../src/utils/logging";
-import { runningNumberGen } from "../../../src/utils";
+
 module.exports = {
   //created by irfan: to
   processAttendance: (req, res, next) => {

@@ -112,7 +112,7 @@ class ScreenAssignment extends Component {
       <div className="screen_assignment">
         <div className="row">
           <div className="col-12">
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+            <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-body">
                 <div className="row">
                   <AlagehAutoComplete
@@ -153,7 +153,7 @@ class ScreenAssignment extends Component {
           </div>
 
           <div className="col-12">
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+            <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Define Module/Screen</h3>

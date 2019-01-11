@@ -88,7 +88,7 @@ class DepreciationReversal extends Component {
           selectedLang={this.state.selectedLang}
         />
         <div
-          className="portlet portlet-bordered box-shadow-normal margin-bottom-15"
+          className="portlet portlet-bordered margin-bottom-15"
           style={{ marginTop: 90 }}
         >
           <div className="row">
@@ -268,7 +268,7 @@ class DepreciationReversal extends Component {
 
         <div className="row">
           <div className="col-lg-12">
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+            <div className="portlet portlet-bordered margin-bottom-15">
               <div className="row">
                 <div className="col-lg-12" id="depreReversalCntr">
                   <AlgaehDataGrid

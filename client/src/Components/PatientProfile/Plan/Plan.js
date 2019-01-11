@@ -96,7 +96,7 @@ class Plan extends Component {
                   </ul>
                 </div>
                 <div
-                  className="portlet portlet-bordered box-shadow-normal margin-bottom-15"
+                  className="portlet portlet-bordered margin-bottom-15"
                   style={{ padding: 0 }}
                 >
                   {/*  {<this.state.pageDisplay />} */}
@@ -114,7 +114,7 @@ class Plan extends Component {
               </div>{" "}
               <div className="col-lg-6">
                 {/* BEGIN Portlet PORTLET */}
-                <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+                <div className="portlet portlet-bordered margin-bottom-15">
                   <div className="portlet-title">
                     <div className="caption">
                       <h3 className="caption-subject">Follow Up</h3>
@@ -128,7 +128,7 @@ class Plan extends Component {
               </div>
               <div className="col-lg-6">
                 {/* BEGIN Portlet PORTLET */}
-                <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+                <div className="portlet portlet-bordered margin-bottom-15">
                   <div className="portlet-title">
                     <div className="caption">
                       <h3 className="caption-subject">Refer To</h3>
@@ -147,7 +147,7 @@ class Plan extends Component {
             <div className="row">
               <div className="col-lg-12">
                 {/* BEGIN Portlet PORTLET */}
-                <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+                <div className="portlet portlet-bordered margin-bottom-15">
                   <div className="portlet-title">
                     <div className="caption">
                       <h3 className="caption-subject">Diet Advice</h3>
@@ -162,7 +162,7 @@ class Plan extends Component {
 
               <div className="col-lg-12">
                 {/* BEGIN Portlet PORTLET */}
-                <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+                <div className="portlet portlet-bordered margin-bottom-15">
                   <div className="portlet-title">
                     <div className="caption">
                       <h3 className="caption-subject">Patient Alert</h3>

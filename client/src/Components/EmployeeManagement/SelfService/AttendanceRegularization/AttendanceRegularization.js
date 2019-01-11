@@ -133,7 +133,7 @@ class AttendanceRegularization extends Component {
     return (
       <div className="row hptl-SelfService-form">
         <div className="col-3">
-          <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+          <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
                 <h3 className="caption-subject">Request Regularization</h3>
@@ -274,7 +274,7 @@ class AttendanceRegularization extends Component {
           </div>
         </div>
         <div className="col-9">
-          <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+          <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
                 <h3 className="caption-subject">
@@ -295,16 +295,19 @@ class AttendanceRegularization extends Component {
                         columns: [
                           {
                             id: "created_date",
-                            Header: "Date",
+                            Header: <b>Date</b>,
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Status" }} />
+                            ),
                             accessor: d =>
                               moment(d.created_date).format("DD-MM-YYYY")
                           },
                           {
-                            Header: "Code",
+                            Header: <b>Code</b>,
                             accessor: "regularization_code"
                           },
                           {
-                            Header: "Reason",
+                            Header: <b>Reason</b>,
                             accessor: "regularization_reason"
                           }
                         ]
@@ -314,7 +317,7 @@ class AttendanceRegularization extends Component {
                         accessor: "Attendance",
                         columns: [
                           {
-                            Header: "Date",
+                            Header: <b>Date</b>,
                             id: "attendance_date",
                             accessor: d =>
                               moment(d.attendance_date).format("DD-MM-YYYY")
@@ -327,13 +330,13 @@ class AttendanceRegularization extends Component {
 
                         columns: [
                           {
-                            Header: "Old",
+                            Header: <b>Old</b>,
                             id: "punch_in_time",
                             accessor: d =>
                               d.punch_in_time ? d.punch_in_time : "------"
                           },
                           {
-                            Header: "New",
+                            Header: <b>New</b>,
                             id: "regularize_in_time",
                             accessor: d =>
                               moment(d.regularize_in_time, "HH:mm:ss").format(
@@ -347,13 +350,13 @@ class AttendanceRegularization extends Component {
                         accessor: "punch_out_time",
                         columns: [
                           {
-                            Header: "Old",
+                            Header: <b>Old</b>,
                             id: "punch_out_time",
                             accessor: d =>
                               d.punch_out_time ? d.punch_out_time : "------"
                           },
                           {
-                            Header: "New",
+                            Header: <b>New</b>,
                             id: "regularize_out_time",
                             accessor: d =>
                               moment(d.regularize_out_time, "HH:mm:ss").format(
@@ -368,7 +371,7 @@ class AttendanceRegularization extends Component {
                         columns: [
                           {
                             id: "regularize_status",
-                            Header: "Status",
+                            Header: <b>Status</b>,
                             accessor: d =>
                               d.regularize_status === "PEN" ? (
                                 <span className="badge badge-warning">

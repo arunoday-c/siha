@@ -400,7 +400,7 @@ class ReviewofSystems extends Component {
         {/* ROS Modal End */}
 
         {/* BEGIN Portlet PORTLET */}
-        <div className="portlet portlet-bordered box-shadow-normal margin-bottom-30">
+        <div className="portlet portlet-bordered margin-bottom-30">
           <div className="portlet-title">
             <div className="caption">
               <h3 className="caption-subject">Review of Systems</h3>

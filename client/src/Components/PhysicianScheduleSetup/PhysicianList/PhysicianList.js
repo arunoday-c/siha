@@ -196,7 +196,7 @@ class PhysicianList extends Component {
               </div>
             </div>
 
-            <div className="col portlet portlet-bordered box-shadow-normal">
+            <div className="col portlet portlet-bordered">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Appointment Date</h3>
@@ -278,7 +278,7 @@ class PhysicianList extends Component {
           <MyContext.Consumer>
             {context => (
               <div className="row">
-                <div className="col portlet portlet-bordered box-shadow-normal">
+                <div className="col portlet portlet-bordered">
                   <div className="portlet-title">
                     <div className="caption">
                       <h3 className="caption-subject">Physician List</h3>

@@ -2333,7 +2333,7 @@ class Appointment extends PureComponent {
               {/* Filter Bar End */}
 
               <div
-                className="portlet portlet-bordered box-shadow-normal margin-bottom-15"
+                className="portlet portlet-bordered margin-bottom-15"
                 style={{
                   padding: 0,
                   background: "none",

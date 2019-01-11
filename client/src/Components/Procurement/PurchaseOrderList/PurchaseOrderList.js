@@ -126,7 +126,7 @@ class PurchaseOrderList extends Component {
 
           <div className="row">
             <div className="col-lg-12">
-              <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+              <div className="portlet portlet-bordered margin-bottom-15">
                 <div className="portlet-body" id="purchaseOrderListCntr">
                   <AlgaehDataGrid
                     id="PurchaseOrderList_grid"

@@ -491,7 +491,7 @@ class EarningsDeductions extends Component {
             </form>
           </div>
         ) : null}
-        <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15 margin-top-15">
+        <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
           <div className="portlet-body">
             <div className="row earningDeductionForms">
               <AlagehFormGroup
@@ -849,7 +849,7 @@ class EarningsDeductions extends Component {
             </div>
           </div>
         </div>
-        <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+        <div className="portlet portlet-bordered margin-bottom-15">
           <div className="portlet-title">
             <div className="caption">
               <h3 className="caption-subject">

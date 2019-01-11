@@ -505,7 +505,7 @@ class Examination extends Component {
         </Modal>
 
         {/* Examination Modal End */}
-        <div className="portlet portlet-bordered box-shadow-normal margin-top-15">
+        <div className="portlet portlet-bordered margin-top-15">
           <div className="portlet-title">
             <div className="caption">
               <h3 className="caption-subject">Physical Examination</h3>

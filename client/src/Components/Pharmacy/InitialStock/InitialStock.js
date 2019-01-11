@@ -198,7 +198,7 @@ class InitialStock extends Component {
             {/* description */}
 
             <div
-              className="portlet portlet-bordered box-shadow-normal margin-bottom-15"
+              className="portlet portlet-bordered margin-bottom-15"
               style={{ marginTop: 90 }}
             >
               {/* <div className="portlet-title">
@@ -405,7 +405,7 @@ class InitialStock extends Component {
                 </div>
               </div>
             </div>
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+            <div className="portlet portlet-bordered margin-bottom-15">
               {/* <div className="portlet-title">
             <div className="caption">
               <h3 className="caption-subject">Insurance Provider List</h3>

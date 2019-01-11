@@ -252,7 +252,7 @@ class RCMWorkbench extends Component {
         />
 
         <div
-          className="portlet portlet-bordered box-shadow-normal margin-bottom-15"
+          className="portlet portlet-bordered margin-bottom-15"
           style={{ marginTop: 60 }}
         >
           <div className="row">
@@ -384,7 +384,7 @@ class RCMWorkbench extends Component {
 
         <div className="row">
           <div className="col-12">
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+            <div className="portlet portlet-bordered margin-bottom-15">
               <div className="row">
                 <div className="col-12" id="rcm_desktop_cntr">
                   <AlgaehDataGrid

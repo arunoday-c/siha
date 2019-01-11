@@ -1,5 +1,4 @@
 import algaehMysql from "algaeh-mysql";
-import { debugLog, debugFunction } from "../../../src/utils/logging";
 import _ from "lodash";
 module.exports = {
   getLoanTopayment: (req, res, next) => {
@@ -17,8 +16,7 @@ module.exports = {
         : "";
 
     /* Select statemwnt  */
-    debugLog("_loanDetails", _loanDetails);
-    debugLog("_stringData", _stringData);
+
     _mysql
       .executeQueryWithTransaction({
         query:
@@ -60,8 +58,7 @@ module.exports = {
       _advDetails.advance_number != null ? " and adv.advance_number=? " : "";
 
     /* Select statemwnt  */
-    debugLog("_advDetails", _advDetails);
-    debugLog("_stringData", _stringData);
+
     _mysql
       .executeQueryWithTransaction({
         query:
