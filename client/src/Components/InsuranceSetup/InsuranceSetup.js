@@ -104,7 +104,7 @@ class InsuranceSetup extends Component {
   render() {
     return (
       <div>
-        <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15 margin-top-15">
+        <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
           <div className="portlet-title">
             <div className="caption">
               <h3 className="caption-subject">Insurance Provider List</h3>

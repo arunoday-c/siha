@@ -611,7 +611,7 @@ class PhySchSetup extends Component {
               </div>
             </div>
 
-            <div className="col portlet portlet-bordered box-shadow-normal">
+            <div className="col portlet portlet-bordered">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Appointment Dates</h3>
@@ -1779,7 +1779,7 @@ class PhySchSetup extends Component {
 
         <div className="row">
           <div className="col-lg-3">
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+            <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Available Schedules</h3>
@@ -1831,7 +1831,7 @@ class PhySchSetup extends Component {
             </div>
           </div>
           <div className="col-lg-9">
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+            <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">

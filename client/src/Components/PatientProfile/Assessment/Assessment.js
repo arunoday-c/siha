@@ -120,7 +120,7 @@ class Assessment extends Component {
       <div className="hptl-ehr-assetment-details">
         <div className="row margin-top-15">
           <div className="col-lg-6">
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-30">
+            <div className="portlet portlet-bordered margin-bottom-30">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Initial Diagnosis</h3>
@@ -251,7 +251,7 @@ class Assessment extends Component {
             </div>
           </div>
           <div className="col-lg-6">
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-30">
+            <div className="portlet portlet-bordered margin-bottom-30">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Final Diagnosis</h3>

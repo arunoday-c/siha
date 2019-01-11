@@ -27,26 +27,17 @@
     padding: 2px 4px;
     margin: 0; }
   :global .print-body {
-    /*Main Print Only CSS*/
     /*Header Only CSS*/
     /*Content Only CSS*/
     /* Clear floats after the columns */
     /*Footer Only CSS*/
     /*Print Only CSS*/ }
     :global .print-body body {
-      margin: 0;
+      margin: 10px;
       padding: 0;
       color: #3d3d3d;
       font-size: 0.8rem;
       background: #f2f2f2; }
-    :global .print-body .print-body {
-      width: 98%;
-      margin: 10px auto;
-      padding: 10px;
-      border: 1px solid #e4e4e4;
-      box-sizing: border-box;
-      box-shadow: 0 3px 10px #ececec;
-      background: #fff; }
     :global .print-body header {
       margin: 0 0 10px;
       padding: 0 0 10px;
@@ -336,7 +327,7 @@
   :global .portlet.portlet-gray {
     background: #f7f7f7; }
   :global .portlet.portlet-bordered {
-    border: 1px solid #eee; }
+    border: 1px solid #d6d6d6; }
   :global .portlet-title {
     padding: 0 15px;
     margin: -5px -15px 0;

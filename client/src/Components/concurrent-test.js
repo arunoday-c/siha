@@ -136,7 +136,7 @@ class ConcurrentTest extends Component {
     return (
       <div className="concurrentTest">
         <div className="col-lg-12">
-          <div className="portlet portlet-bordered box-shadow-normal margin-top-15">
+          <div className="portlet portlet-bordered margin-top-15">
             <div className="row">
               <AlagehAutoComplete
                 div={{ className: "col" }}
@@ -228,7 +228,7 @@ class ConcurrentTest extends Component {
             </div>
           </div>
 
-          <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15 margin-top-15 console-log-Cntr">
+          <div className="portlet portlet-bordered margin-bottom-15 margin-top-15 console-log-Cntr">
             <div className="row">
               <div className="col console-log-div">
                 {this.state.appendComponent.map((component, index) => (

@@ -79,7 +79,7 @@ class ItemListsReturn extends Component {
         <MyContext.Consumer>
           {context => (
             <div className="hptl-phase1-item-list-billing-form">
-              <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+              <div className="portlet portlet-bordered margin-bottom-15">
                 <div className="portlet-body">
                   <AlgaehDataGrid
                     id="RETURN_details"

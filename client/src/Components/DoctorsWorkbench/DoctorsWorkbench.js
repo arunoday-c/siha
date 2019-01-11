@@ -248,7 +248,7 @@ class DoctorsWorkbench extends Component {
         <div className="row card-deck panel-layout">
           {/* Left Pane Start */}
           <div className="col-lg-4">
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+            <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">
@@ -333,7 +333,7 @@ class DoctorsWorkbench extends Component {
           {/* Right Pane Start */}
 
           <div className="col-lg-8">
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+            <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">

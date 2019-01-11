@@ -14,7 +14,7 @@ export default class ReportUI extends Component {
       pageDisplay: "",
       openPopup: true,
       hasError: false,
-      _htmlString: {}
+      _htmlString: ""
     };
 
     if (props.options !== undefined && props.options.plotUI !== undefined) {
@@ -148,20 +148,15 @@ export default class ReportUI extends Component {
       data: inputs,
       method: "GET",
       onSuccess: response => {
-        debugger;
         if (response.data.success === true) {
           new Promise((resolve, reject) => {
-            debugger;
             resolve(response.data.records);
           }).then(data => {
-            debugger;
             options.data = data;
+            let _optionsFetch = options;
+            let _htm = accessReport(_optionsFetch);
             that.setState({
-              _htmlString: {
-                dangerouslySetInnerHTML: {
-                  __html: accessReport(options)
-                }
-              }
+              _htmlString: _htm
             });
           });
         }
@@ -481,14 +476,16 @@ export default class ReportUI extends Component {
               ) : null}
               {this.props.plotui !== undefined ? this.props.plotui : null}
             </div>
-            <div
-              className="popupInner "
-              ref={el => (this.algehPrintRef = el)}
-              {...this.state._htmlString}
-            >
+            <div className="popupInner " ref={el => (this.algehPrintRef = el)}>
+              <div
+                className="print-body popLeftDiv"
+                dangerouslySetInnerHTML={{
+                  __html: this.state._htmlString
+                }}
+              />
               <div className="col-lg-12">
                 <div className="row">
-                  <div className="col-lg-12 popRightDiv">
+                  <div className="col-lg-12">
                     {this.props.children ? this.props.children : null}
                   </div>
                 </div>
