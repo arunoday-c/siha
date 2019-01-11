@@ -1264,16 +1264,15 @@ let processYearlyLeave = (req, res, next) => {
     let employee_id = "";
 
     if (req.query.employee_id > 0) {
-      debugLog("am one");
-    } else {
-      debugLog("else am two");
+      employee_id = ` and hims_d_employee_id=${req.query.employee_id}; `;
     }
 
     db.getConnection((error, connection) => {
       connection.query(
         "select hims_d_employee_id, employee_code,full_name  as employee_name,\
           employee_status,date_of_joining ,hospital_id ,employee_type,sex\
-          from hims_d_employee where employee_status <>'I' and  record_status='A' ;",
+          from hims_d_employee where employee_status <>'I' and  record_status='A' " +
+          employee_id,
 
         (error, employees) => {
           if (error) {
@@ -1519,8 +1518,6 @@ let processYearlyLeave = (req, res, next) => {
                                         Object.keys(resultofYearInsert)
                                           .length === 0
                                       ) {
-                                        debugLog("resultofYearInsert:staus");
-
                                         req.records = {
                                           already_processed: true,
                                           message:
