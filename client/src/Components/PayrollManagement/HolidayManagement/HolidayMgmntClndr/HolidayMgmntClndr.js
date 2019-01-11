@@ -220,7 +220,7 @@ class EarningsDeductions extends Component {
       <div className="HolidayMgmntClndr">
         <div className="row">
           <div className="col-4">
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15 margin-top-15">
+            <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Define Holiday</h3>
@@ -466,7 +466,7 @@ class EarningsDeductions extends Component {
             </button>
           </div> */}
           <div className="col-8">
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15 margin-top-15">
+            <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Holiday List</h3>

@@ -120,31 +120,41 @@ export default class ReportUI extends Component {
     });
   }
   generateReport(e) {
-    let inputs = "";
-    let counter = 0;
-    Object.keys(this.state).map(name => {
-      if (
-        name !== "pageDisplay" ||
-        name !== "openPopup" ||
-        name !== "hasError" ||
-        name !== "_htmlString"
-      ) {
-        if (Array.isArray(this.state[name])) {
-          inputs += name + "=" + valueReviver(name, this.state[name]);
-          if (counter > 0) inputs += "&";
-        }
-      }
-    });
+    const _reportQuery =
+      this.props.options.report.reportQuery !== undefined
+        ? this.props.options.report.reportQuery
+        : this.props.options.report.fileName;
+
+    let inputs = {};
+
+    Enumerable.from(Object.keys(this.state))
+      .where(
+        w =>
+          w !== "pageDisplay" &&
+          w !== "openPopup" &&
+          w !== "hasError" &&
+          w !== "_htmlString"
+      )
+      .select(s => {
+        inputs[s] = this.state[s];
+      })
+      .toArray();
+    inputs["reportName"] = _reportQuery;
+
     const that = this;
     let options = { ...this.props.options, ...{ getRaw: true } };
     algaehApiCall({
-      uri: "/generateReport/getReport?" + inputs,
+      uri: "/generateReport/getReport",
+      data: inputs,
       method: "GET",
-      onSucesss: response => {
+      onSuccess: response => {
+        debugger;
         if (response.data.success === true) {
           new Promise((resolve, reject) => {
-            resolve(options.onSucesss(response.data.records));
+            debugger;
+            resolve(response.data.records);
           }).then(data => {
+            debugger;
             options.data = data;
             that.setState({
               _htmlString: {

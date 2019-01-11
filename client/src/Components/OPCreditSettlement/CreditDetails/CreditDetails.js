@@ -45,7 +45,7 @@ class CreditDetails extends Component {
         <MyContext.Consumer>
           {context => (
             <div className="hptl-phase1-display-patient-form">
-              <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+              <div className="portlet portlet-bordered margin-bottom-15">
                 {/* <div className="portlet-body" id="initialStockCntr"> */}
                 <AlgaehDataGrid
                   id="Bill_details"

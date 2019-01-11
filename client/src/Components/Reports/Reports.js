@@ -116,7 +116,7 @@ class Reports extends Component {
           </form>
         </div>
 
-        <div className="portlet portlet-bordered box-shadow-normal ">
+        <div className="portlet portlet-bordered ">
           {/* <div className="portlet-title">
             <div className="caption">
               <h3 className="caption-subject">Report List</h3>
@@ -135,7 +135,8 @@ class Reports extends Component {
                     onClick={() => {
                       AlgaehReport({
                         report: {
-                          fileName: item.template_name
+                          fileName: item.template_name,
+                          reportQuery: item.reportQuery
                         },
                         plotUI: {
                           paramters: item.reportParameters

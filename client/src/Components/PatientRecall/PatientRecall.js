@@ -158,7 +158,7 @@ class PatientRecall extends Component {
           </div>
         </div>
 
-        <div className="portlet portlet-bordered box-shadow-normal ">
+        <div className="portlet portlet-bordered ">
           <div className="portlet-title">
             <div className="caption">
               <h3 className="caption-subject">Patient List</h3>

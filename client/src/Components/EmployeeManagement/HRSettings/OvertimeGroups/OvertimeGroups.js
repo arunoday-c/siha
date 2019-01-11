@@ -231,7 +231,7 @@ class OvertimeGroups extends Component {
       <div className="overtime_groups">
         <div className="row">
           <div className="col-4">
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+            <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Define Overtime Group</h3>
@@ -406,7 +406,7 @@ class OvertimeGroups extends Component {
             </div>
           </div>
           <div className="col-8">
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+            <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Overtime Group List</h3>

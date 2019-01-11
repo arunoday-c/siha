@@ -127,7 +127,7 @@ class PatientHistory extends Component {
 
     return (
       <div
-        className="portlet portlet-bordered box-shadow-normal margin-top-15"
+        className="portlet portlet-bordered margin-top-15"
         style={{ padding: "0 15px" }}
       >
         <AlgaehModalPopUp
