@@ -207,7 +207,7 @@ class Encounters extends Component {
       <div className="encounters">
         <div className="row">
           <div className="col-lg-4">
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+            <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">OP Encounter List</h3>
@@ -272,7 +272,7 @@ class Encounters extends Component {
           </div>
 
           <div className="col-lg-8">
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+            <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">OP Encounter Details </h3>

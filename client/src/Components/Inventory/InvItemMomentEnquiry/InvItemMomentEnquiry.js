@@ -169,7 +169,7 @@ class InvItemMomentEnquiry extends Component {
                 </div>
               </div>
             </div>
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+            <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-body" id="initialStock_Cntr">
                 <AlgaehDataGrid
                   id="initial_stock"

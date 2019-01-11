@@ -109,7 +109,7 @@ class PosListItems extends Component {
                   <div className="algaeh-md-12 algaeh-lg-12 algaeh-xl-8">
                     <div className="row">
                       <div className="col-lg-12">
-                        <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+                        <div className="portlet portlet-bordered margin-bottom-15">
                           <div className="row">
                             <AlagehAutoComplete
                               div={{ className: "col-lg-3" }}
@@ -337,7 +337,7 @@ class PosListItems extends Component {
                       </div>
 
                       <div className="col-lg-12">
-                        <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+                        <div className="portlet portlet-bordered margin-bottom-15">
                           <div className="row">
                             <div className="col-lg-12" id="PointSaleGrid">
                               <AlgaehDataGrid

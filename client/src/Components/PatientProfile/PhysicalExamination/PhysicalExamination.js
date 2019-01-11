@@ -20,7 +20,7 @@ class PhysicalExamination extends Component {
         <div className="row">
           <div className="col-lg-8">
             <Examination />
-            <div className="portlet portlet-bordered box-shadow-normal margin-top-15">
+            <div className="portlet portlet-bordered margin-top-15">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Examination Notes</h3>

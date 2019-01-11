@@ -2328,7 +2328,7 @@ class AppointmentAr extends PureComponent {
 
               {/* Filter Bar End */}
 
-              <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+              <div className="portlet portlet-bordered margin-bottom-15">
                 {/* Portlet Top Bar Start */}
                 <div className="portlet-title">
                   <div className="caption">

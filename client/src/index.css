@@ -336,7 +336,7 @@
   :global .portlet.portlet-gray {
     background: #f7f7f7; }
   :global .portlet.portlet-bordered {
-    border: 1px solid #eee; }
+    border: 1px solid #d6d6d6; }
   :global .portlet-title {
     padding: 0 15px;
     margin: -5px -15px 0;

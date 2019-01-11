@@ -105,7 +105,7 @@ export default class LeaveAuthorization extends Component {
         </div>
 
         <div className="col-12">
-          <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+          <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
                 <h3 className="caption-subject">List of Leave Request</h3>
@@ -191,7 +191,7 @@ export default class LeaveAuthorization extends Component {
           </div>
         </div>
         <div className="col-12">
-          <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+          <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
                 <h3 className="caption-subject">Current Leave Application</h3>
@@ -261,7 +261,7 @@ export default class LeaveAuthorization extends Component {
           </div>
         </div>
         <div className="col-12">
-          <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+          <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
                 <h3 className="caption-subject">Previous Leave Application</h3>
