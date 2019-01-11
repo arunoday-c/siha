@@ -1,13 +1,9 @@
 import algaehMysql from "algaeh-mysql";
-import { debugLog, debugFunction } from "../../../src/utils/logging";
 import _ from "lodash";
 module.exports = {
   getEncashmentToProcess: (req, res, next) => {
     const _mysql = new algaehMysql();
     const _EncashDetails = req.query;
-
-    /* Select statemwnt  */
-    debugLog("_EncashDetails", _EncashDetails);
 
     _mysql
       .executeQueryWithTransaction({
@@ -19,7 +15,6 @@ module.exports = {
       })
       .then(monthlyLeaves => {
         if (monthlyLeaves.length > 0) {
-          debugLog("monthlyLeaves", monthlyLeaves);
           for (let i = 0; i < monthlyLeaves.length; i++) {
             let EncashDays = 0;
             _mysql
@@ -29,7 +24,6 @@ module.exports = {
                 values: [monthlyLeaves[i].leave_id]
               })
               .then(leaveDetails => {
-                debugLog("leaveDetails", leaveDetails);
                 if (leaveDetails.length > 0) {
                   if (leaveDetails[0].leave_encash == "Y") {
                     _mysql
@@ -39,7 +33,6 @@ module.exports = {
                         values: [monthlyLeaves[i].leave_id]
                       })
                       .then(leaveEancashDetails => {
-                        debugLog("leaveEancashDetails", leaveEancashDetails);
                         if (leaveEancashDetails.length > 0) {
                           for (let k = 0; k < leaveEancashDetails.length; k++) {
                             let perdayAmount = 0;
@@ -55,7 +48,6 @@ module.exports = {
                                 ]
                               })
                               .then(empEarnings => {
-                                debugLog("empEarnings", empEarnings);
                                 if (
                                   monthlyLeaves[i].close_balance <
                                   monthlyLeaves[i].encashment_leave
@@ -66,20 +58,16 @@ module.exports = {
                                     monthlyLeaves[i].encashment_leave;
                                 }
                                 perdayAmount = empEarnings[0].amount * 12;
-                                debugLog("perdayAmount", perdayAmount);
+
                                 perdayAmount = perdayAmount / 365;
-                                debugLog("perdayAmount", perdayAmount);
 
                                 perdayAmount =
                                   perdayAmount *
                                   leaveEancashDetails[K].earnings_id;
-                                debugLog("perdayAmount", perdayAmount);
-                                perdayAmount = perdayAmount / 100;
-                                debugLog("perdayAmount", perdayAmount);
-                                EncashAmount = perdayAmount * EncashDays;
 
-                                debugLog("EncashDays", EncashDays);
-                                debugLog("EncashAmount", EncashAmount);
+                                perdayAmount = perdayAmount / 100;
+
+                                EncashAmount = perdayAmount * EncashDays;
 
                                 // leaveEancashDetails[0].earnings_id
                                 // leaveEancashDetails[0].percent
