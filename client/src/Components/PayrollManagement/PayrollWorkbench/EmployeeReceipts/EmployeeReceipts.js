@@ -20,7 +20,6 @@ class EmployeeReceipts extends Component {
       current_loan: {},
       reciepts_type: "LO"
     };
-    // this.getLoans();
   }
 
   clearState() {
@@ -116,11 +115,6 @@ class EmployeeReceipts extends Component {
         this.setState({
           reciepts_type: e.target.value
         });
-
-        // e.target.value === "LO" && this.state.loans.length === 0
-        //   ? this.getLoans()
-        //   : null;
-
         break;
 
       default:
@@ -167,27 +161,6 @@ class EmployeeReceipts extends Component {
               </label>
             </div>
           </div>
-
-          {/* <AlagehAutoComplete
-            div={{ className: "col-3 form-group" }}
-            label={{ forceLabel: "Receipt Type", isImp: true }}
-            selector={{
-              name: "reciepts_type",
-              value: this.state.reciepts_type,
-              className: "select-fld",
-              dataSource: {
-                textField: "name",
-                valueField: "value",
-                data: GlobalVariables.RECEIPTS_TYPE
-              },
-              onChange: this.dropDownHandler.bind(this),
-              onClear: () => {
-                this.setState({
-                  reciepts_type: null
-                });
-              }
-            }}
-          /> */}
 
           <div className="col-lg-3" style={{ marginTop: 10 }}>
             <div
@@ -247,9 +220,6 @@ class EmployeeReceipts extends Component {
             />
           ) : null}
           <div className="col form-group">
-            {/* <button style={{ marginTop: 21 }} className="btn btn-primary">
-              Load
-            </button>{" "} */}
             <button
               onClick={this.clearState.bind(this)}
               style={{ marginTop: 21, marginLeft: 10 }}
@@ -493,7 +463,7 @@ class EmployeeReceipts extends Component {
                           )
                         }
                       ]}
-                      keyId=""
+                      keyId="hims_f_employee_reciepts_id"
                       dataSource={{ data: [] }}
                       isEditable={false}
                       paging={{ page: 0, rowsPerPage: 10 }}
