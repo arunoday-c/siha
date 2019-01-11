@@ -25,17 +25,38 @@ let getEmployeeLeaveData = (req, res, next) => {
     }
     let db = req.db;
 
-    //let where = whereCondition(extend(selectWhere, req.query));
-    const year = moment().format("YYYY");
+    let year = "";
 
+    if (
+      req.query.year != "" &&
+      req.query.year != null &&
+      req.query.year != "null" &&
+      req.query.year != undefined
+    ) {
+      year = moment(req.query.year).format("YYYY");
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "please provide year"
+      };
+
+      next();
+      return;
+    }
+
+    let employee = "";
+    if (req.query.employee_id != "null" && req.query.employee_id != undefined) {
+      employee = ` and ML.employee_id=${req.query.employee_id}`;
+    }
     db.getConnection((error, connection) => {
       connection.query(
         "select hims_f_employee_monthly_leave_id, employee_id, year, leave_id, L.leave_code,\
         L.leave_description,total_eligible, availed_till_date, close_balance\
         from hims_f_employee_monthly_leave  ML inner join hims_d_leave L on  \
         ML.leave_id=L.hims_d_leave_id and L.record_status='A'\
-        where ML.employee_id=? and ML.year=?",
-        [req.query.employee_id, year],
+        where ML.year=? " +
+          employee,
+        [year],
         (error, result) => {
           releaseDBConnection(db, connection);
           if (error) {
@@ -1240,11 +1261,18 @@ let processYearlyLeave = (req, res, next) => {
     let yearArray = [];
     let monthlyArray = [];
 
+    let employee_id = "";
+
+    if (req.query.employee_id > 0) {
+      employee_id = ` and hims_d_employee_id=${req.query.employee_id}; `;
+    }
+
     db.getConnection((error, connection) => {
       connection.query(
         "select hims_d_employee_id, employee_code,full_name  as employee_name,\
           employee_status,date_of_joining ,hospital_id ,employee_type,sex\
-          from hims_d_employee where employee_status <>'I' and  record_status='A' ;",
+          from hims_d_employee where employee_status <>'I' and  record_status='A' " +
+          employee_id,
 
         (error, employees) => {
           if (error) {
@@ -1485,8 +1513,21 @@ let processYearlyLeave = (req, res, next) => {
                                       }
 
                                       releaseDBConnection(db, connection);
-                                      req.records = resultofYearInsert;
-                                      next();
+
+                                      if (
+                                        Object.keys(resultofYearInsert)
+                                          .length === 0
+                                      ) {
+                                        req.records = {
+                                          already_processed: true,
+                                          message:
+                                            "leave is already processed for all these employees"
+                                        };
+                                        next();
+                                      } else {
+                                        req.records = resultofYearInsert;
+                                        next();
+                                      }
                                     });
                                   }
                                 } catch (e) {
