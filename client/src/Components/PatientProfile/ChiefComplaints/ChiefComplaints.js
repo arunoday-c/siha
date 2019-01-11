@@ -437,7 +437,6 @@ class ChiefComplaints extends Component {
   }
 
   addChiefComplainToPatient(list) {
-    
     const $this = this;
     let patChiefComp = [];
     patChiefComp.push({
@@ -463,7 +462,6 @@ class ChiefComplaints extends Component {
       uri: "/doctorsWorkBench/addPatientChiefComplaints",
       data: patChiefComp,
       onSuccess: response => {
-        
         if (response.data.success) {
           getPatientChiefComplaints($this);
           swalMessage({
@@ -763,7 +761,7 @@ class ChiefComplaints extends Component {
                         <AlagehAutoComplete
                           div={{ className: "col-lg-10" }}
                           label={{
-                            fieldName: "lctn"
+                            fieldName: "hpiArea"
                           }}
                           selector={{
                             name: "location",
@@ -972,7 +970,7 @@ class ChiefComplaints extends Component {
                   </div>
                 </div>
                 <div className="col-lg-9 popRightDiv">
-                  <div className="row">
+                  <div className="row margin-top-15">
                     <div className="col-lg-12" id="hpi-grid-popup-cntr">
                       <AlgaehDataGrid
                         id="hpi-grid"
@@ -986,12 +984,6 @@ class ChiefComplaints extends Component {
                             )
                           },
                           {
-                            fieldName: "element_description",
-                            label: (
-                              <AlgaehLabel label={{ fieldName: "hpi_desc" }} />
-                            )
-                          },
-                          {
                             fieldName: "element_type",
                             label: (
                               <AlgaehLabel label={{ fieldName: "hpi_type" }} />
@@ -999,7 +991,7 @@ class ChiefComplaints extends Component {
                             displayTemplate: row => (
                               <span>
                                 {row.element_type === "L"
-                                  ? "Location"
+                                  ? "Area"
                                   : row.element_type === "Q"
                                   ? "Quality"
                                   : row.element_type === "C"
@@ -1012,6 +1004,12 @@ class ChiefComplaints extends Component {
                                   ? "Associated Symptoms"
                                   : ""}
                               </span>
+                            )
+                          },
+                          {
+                            fieldName: "element_description",
+                            label: (
+                              <AlgaehLabel label={{ fieldName: "hpi_desc" }} />
                             )
                           }
                         ]}
@@ -1112,7 +1110,9 @@ class ChiefComplaints extends Component {
                 columns={[
                   {
                     fieldName: "hpi_view",
+
                     label: <AlgaehLabel label={{ forceLabel: "HPI" }} />,
+
                     displayTemplate: row => {
                       return (
                         <i
@@ -1299,18 +1299,18 @@ class ChiefComplaints extends Component {
                     }
                   },
                   {
-                    fieldName: "complaint_inactive",
+                    fieldName: "chief_complaint_status",
                     label: (
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Complaint Inactive"
+                          fieldName: "chief_complaint_status"
                           // fieldName: "inactive"
                         }}
                       />
                     ),
                     displayTemplate: row => {
                       const _inactive =
-                        row.complaint_inactive === "N" ? "No" : "Yes";
+                        row.complaint_inactive === "N" ? "Active" : "Inactive";
                       return <span>{_inactive}</span>;
                     },
                     editorTemplate: row => {
@@ -1327,11 +1327,11 @@ class ChiefComplaints extends Component {
                     }
                   },
                   {
-                    fieldName: "complaint_inactive_date",
+                    fieldName: "complaint_status_date",
                     label: (
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Inactive Date"
+                          fieldName: "complaint_status_date"
                           // fieldName: "inactive"
                         }}
                       />
@@ -1349,10 +1349,11 @@ class ChiefComplaints extends Component {
                   },
                   {
                     fieldName: "comment",
+
                     label: (
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Comment"
+                          fieldName: "comments"
                           // fieldName: "inactive"
                         }}
                       />

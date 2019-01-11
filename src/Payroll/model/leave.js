@@ -51,10 +51,11 @@ let getEmployeeLeaveData = (req, res, next) => {
     db.getConnection((error, connection) => {
       connection.query(
         "select hims_f_employee_monthly_leave_id, employee_id, year, leave_id, L.leave_code,\
-        L.leave_description,total_eligible, availed_till_date, close_balance\
-        from hims_f_employee_monthly_leave  ML inner join hims_d_leave L on  \
-        ML.leave_id=L.hims_d_leave_id and L.record_status='A'\
-        where ML.year=? " +
+        L.leave_description,total_eligible, availed_till_date, close_balance,\
+        E.employee_code ,E.full_name as employee_name\
+        from hims_f_employee_monthly_leave  ML inner join hims_d_leave L on ML.leave_id=L.hims_d_leave_id \
+        inner join hims_d_employee E on ML.employee_id=E.hims_d_employee_id and E.record_status='A'\
+        and L.record_status='A' where ML.year=? " +
           employee,
         [year],
         (error, result) => {

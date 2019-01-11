@@ -97,6 +97,7 @@
     padding: 3px 0;
     list-style: none;
     border: 1px solid #f2f2f2;
+    background: #fff;
     border-radius: 5px; }
     .doctor_workbench .opPatientList .opList li .op-sec-1 {
       width: 10px;
@@ -104,7 +105,7 @@
       vertical-align: text-top;
       display: inline-block;
       text-align: center;
-      border-right: 1px solid grey;
+      border-right: 1px dashed #e6e6e6;
       margin-right: 10px; }
       .doctor_workbench .opPatientList .opList li .op-sec-1 i {
         width: 30px;
