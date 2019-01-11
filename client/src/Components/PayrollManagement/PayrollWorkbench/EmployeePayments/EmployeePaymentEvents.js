@@ -42,7 +42,7 @@ const LoadData = ($this, e) => {
       }
 
       if ($this.state.sel_payment_type === "AD") {
-        debugger;
+        
         if ($this.state.document_num !== null) {
           inputObj.advance_number = $this.state.document_num;
         }
@@ -119,7 +119,7 @@ const RequestPaySearch = $this => {
         callBack(text);
       },
       onRowSelect: row => {
-        debugger;
+        
         $this.setState({ document_num: row.advance_number });
       }
     });
@@ -134,7 +134,7 @@ const RequestPaySearch = $this => {
         callBack(text);
       },
       onRowSelect: row => {
-        debugger;
+        
         $this.setState({ document_num: row.loan_application_number });
       }
     });
@@ -210,7 +210,7 @@ const ProessEmpPayment = ($this, e) => {
     alertTypeIcon: "warning",
     querySelector: "data-validate='processData'",
     onSuccess: () => {
-      debugger;
+      
     }
   });
 };

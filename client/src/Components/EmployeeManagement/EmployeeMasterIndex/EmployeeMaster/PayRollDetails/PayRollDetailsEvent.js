@@ -51,7 +51,7 @@ const numberSet = ($this, e) => {
 };
 
 const AddEarnComponent = ($this, e) => {
-  debugger;
+  
 
   AlgaehValidation({
     alertTypeIcon: "warning",
@@ -274,7 +274,7 @@ const deleteEarningComponent = ($this, row) => {
     cancelButtonColor: "#d33",
     cancelButtonText: "No"
   }).then(willDelete => {
-    debugger;
+    
     if (willDelete.value) {
       let deleteearnComp = $this.state.deleteearnComp;
       let insertearnComp = $this.state.insertearnComp;
@@ -369,7 +369,7 @@ const deleteDeductionComponent = ($this, row) => {
     cancelButtonColor: "#d33",
     cancelButtonText: "No"
   }).then(willDelete => {
-    debugger;
+    
     if (willDelete.value) {
       let insertDeductionComp = $this.state.insertDeductionComp;
       let deductioncomponents = $this.state.deductioncomponents;
@@ -464,7 +464,7 @@ const deleteContibuteComponent = ($this, row) => {
     cancelButtonColor: "#d33",
     cancelButtonText: "No"
   }).then(willDelete => {
-    debugger;
+    
     if (willDelete.value) {
       let contributioncomponents = $this.state.contributioncomponents;
       let insertContributeComp = $this.state.insertContributeComp;
@@ -550,7 +550,7 @@ const updateContibuteComponent = ($this, row) => {
 };
 
 const getEmpEarningComponents = $this => {
-  debugger;
+  
   algaehApiCall({
     uri: "/employee/getEmpEarningComponents",
     method: "GET",
@@ -559,7 +559,7 @@ const getEmpEarningComponents = $this => {
       if (response.data.success) {
         let data = response.data.records;
         if (data.length > 0) {
-          debugger;
+          
           $this.setState({
             earningComponents: data
           });
@@ -588,7 +588,7 @@ const getEmpEarningComponents = $this => {
 };
 
 const getEmpDeductionComponents = $this => {
-  debugger;
+  
   algaehApiCall({
     uri: "/employee/getEmpDeductionComponents",
     method: "GET",
@@ -597,7 +597,7 @@ const getEmpDeductionComponents = $this => {
       if (response.data.success) {
         let data = response.data.records;
         if (data.length > 0) {
-          debugger;
+          
           $this.setState({
             deductioncomponents: data
           });
@@ -625,7 +625,7 @@ const getEmpDeductionComponents = $this => {
   });
 };
 const getEmpContibuteComponents = $this => {
-  debugger;
+  
   algaehApiCall({
     uri: "/employee/getEmpContibuteComponents",
     method: "GET",
@@ -634,7 +634,7 @@ const getEmpContibuteComponents = $this => {
       if (response.data.success) {
         let data = response.data.records;
         if (data.length > 0) {
-          debugger;
+          
           $this.setState({
             contributioncomponents: data
           });

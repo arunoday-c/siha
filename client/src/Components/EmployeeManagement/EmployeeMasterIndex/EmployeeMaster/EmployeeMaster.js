@@ -68,7 +68,7 @@ class EmployeeMaster extends Component {
   componentDidMount() {
     // let IOputs = EmpMasterIOputs.inputParam();
     // this.setState(IOputs);
-    debugger;
+    
     let prevLang = getCookie("Language");
 
     let IOputs = EmpMasterIOputs.inputParam();
@@ -154,9 +154,9 @@ class EmployeeMaster extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    debugger;
+    
     if (newProps.editEmployee) {
-      debugger;
+      
       let IOputs = newProps.employeeDetailsPop;
       IOputs.Applicable = IOputs.isdoctor === "Y" ? true : false;
       IOputs.samechecked = IOputs.same_address === "Y" ? true : false;

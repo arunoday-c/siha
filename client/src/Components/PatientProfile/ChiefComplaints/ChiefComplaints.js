@@ -437,7 +437,7 @@ class ChiefComplaints extends Component {
   }
 
   addChiefComplainToPatient(list) {
-    debugger;
+    
     const $this = this;
     let patChiefComp = [];
     patChiefComp.push({
@@ -463,7 +463,7 @@ class ChiefComplaints extends Component {
       uri: "/doctorsWorkBench/addPatientChiefComplaints",
       data: patChiefComp,
       onSuccess: response => {
-        debugger;
+        
         if (response.data.success) {
           getPatientChiefComplaints($this);
           swalMessage({

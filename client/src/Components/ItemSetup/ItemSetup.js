@@ -143,7 +143,7 @@ class ItemSetup extends Component {
     let ItemList = Enumerable.from(this.props.itemlist)
       .groupBy("$.hims_d_item_master_id", null, (k, g) => {
         let firstRecordSet = Enumerable.from(g).firstOrDefault();
-        debugger;
+        
         return {
           item_code: firstRecordSet.item_code,
           hims_d_item_master_id: firstRecordSet.hims_d_item_master_id,

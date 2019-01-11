@@ -30,7 +30,7 @@ const selectedHandeler = ($this, context, e) => {
   SetBulkState({
     state: $this,
     callback: () => {
-      debugger;
+      
       if (
         $this.state.full_name !== "" &&
         ($this.state.title_id !== null && $this.state.title_id !== "") &&
@@ -204,7 +204,7 @@ const doctorselectedHandeler = ($this, context, e) => {
 };
 
 const generateBillDetails = ($this, context) => {
-  //debugger;
+  
   let zeroBill = false;
   let DoctorVisits = Enumerable.from($this.state.visitDetails)
     .where(w => w.doctor_id === $this.state.doctor_id)

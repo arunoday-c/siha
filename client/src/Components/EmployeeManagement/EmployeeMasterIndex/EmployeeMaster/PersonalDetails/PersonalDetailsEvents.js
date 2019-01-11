@@ -13,7 +13,7 @@ const texthandle = ($this, e) => {
 const countryStatehandle = ($this, e) => {
   let name = e.name;
   let value = e.value;
-  debugger;
+  
   if (e.name !== undefined) {
     if (e.name === "present_country_id") {
       name = e.name;

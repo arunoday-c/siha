@@ -47,7 +47,7 @@ class DeptUserDetails extends Component {
   }
 
   componentDidMount() {
-    debugger;
+    
     let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
     this.setState({ ...this.state, ...InputOutput }, () => {
       if (this.state.hims_d_employee_id !== null) {
@@ -166,7 +166,7 @@ class DeptUserDetails extends Component {
       .where(w => w.service_type_id === 1)
       .toArray();
     const _isDoctor = this.props.EmpMasterIOputs.state.personalDetails.isdoctor;
-    debugger;
+    
     const sub_dept_name =
       this.state.sub_department_id === undefined
         ? ""

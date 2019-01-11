@@ -148,13 +148,13 @@ export default class ReportUI extends Component {
       data: inputs,
       method: "GET",
       onSuccess: response => {
-        debugger;
+        
         if (response.data.success === true) {
           new Promise((resolve, reject) => {
-            debugger;
+            
             resolve(response.data.records);
           }).then(data => {
-            debugger;
+            
             options.data = data;
             that.setState({
               _htmlString: {
