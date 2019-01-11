@@ -1,32 +1,76 @@
 import React, { Component } from "react";
-
 import "./LeaveYearlyProcess.css";
-
+import moment from "moment";
 import {
   AlagehAutoComplete,
   AlgaehLabel,
   AlgaehDataGrid,
+  AlagehFormGroup,
   AlgaehDateHandler
 } from "../../../Wrapper/algaehWrapper";
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 
 export default class LeaveYearlyProcess extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      year: moment().year()
+    };
+  }
+
+  processYearlyLeave() {
+    algaehApiCall({
+      uri: "/leave/processYearlyLeave",
+      method: "GET",
+      data: {
+        year: this.state.year
+      },
+      onSuccess: res => {
+        if (res.data.success) {
+          swalMessage({
+            title: "Leaves processed successfully",
+            type: "success"
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  textHandler(e) {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  }
+
   render() {
     return (
       <div className="leave_en_auth row">
         <div className="col-12">
           <div className="row inner-top-search">
-            <AlagehAutoComplete
-              div={{ className: "col form-group mandatory" }}
+            <AlagehFormGroup
+              div={{ className: "col form-group" }}
               label={{
-                forceLabel: "Selected Year",
+                forceLabel: "Year",
                 isImp: true
               }}
-              selector={{
-                name: "",
-                className: "select-fld",
-
-                dataSource: {},
-                others: {}
+              textBox={{
+                className: "txt-fld",
+                name: "year",
+                value: this.state.year,
+                events: {
+                  onChange: this.textHandler.bind(this)
+                },
+                others: {
+                  type: "number",
+                  min: moment().year(),
+                  disabled: this.state.lockEarnings
+                }
               }}
             />
 
@@ -82,7 +126,11 @@ export default class LeaveYearlyProcess extends Component {
             />
 
             <div className="col form-group">
-              <button style={{ marginTop: 21 }} className="btn btn-primary">
+              <button
+                onClick={this.processYearlyLeave.bind(this)}
+                style={{ marginTop: 21 }}
+                className="btn btn-primary"
+              >
                 Process
               </button>
             </div>
