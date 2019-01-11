@@ -2,19 +2,19 @@
   "baseUrl": "/api/v1",
   "routersAndPorts": {
     "default": {
-      "port": 4000,
+      "port": 3000,
       "url": ""
     },
     "finance": {
-      "port": 4007,
+      "port": 3007,
       "url": ""
     },
     "documentManagement": {
-      "port": 4006,
+      "port": 3006,
       "url": ""
     },
     "hrManagement": {
-      "port": 4004,
+      "port": 3004,
       "url": ""
     }
   },
