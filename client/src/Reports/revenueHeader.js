@@ -5,7 +5,7 @@ export function revenueHeader(data) {
   return `
     <div class="hospitalLogo"><img src=${hims_app_logo} /></div>
             <div class="otherInfo">
-                <p>Date:${moment(new Date()).format("DD-MMMM-YYYY")}</p>
+                <p>Date: </br>${moment(new Date()).format("DD-MMMM-YYYY")}</p>
             </div>
             <div class="hospitalAddress">
                 <h4>Cash Invoice</h4>
