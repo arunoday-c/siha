@@ -21,7 +21,7 @@ const UpdateLabOrder = ($this, value, status) => {
           type: "success",
           title: "Done successfully . ."
         });
-        debugger;
+        
         for (let k = 0; k < value.length; k++) {
           if (value[k].run_type !== null && value[k].run_type !== undefined) {
             value.splice(k, 1);
@@ -257,7 +257,7 @@ const onReRun = $this => {
   let test_analytes = $this.state.test_analytes;
   let success = true;
   let runtype = [];
-  debugger;
+  
   for (let k = 0; k < test_analytes.length; k++) {
     if ($this.state.run_type === "N") {
       // test_analytes[k].run1 = test_analytes[k].result;

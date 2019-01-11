@@ -9,7 +9,7 @@ const getEmployeeDetails = $this => {
       if (response.data.success) {
         let data = response.data.records;
         if (data.length > 0) {
-          debugger;
+          
           $this.setState({ Employeedetails: data });
         }
       }

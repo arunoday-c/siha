@@ -453,14 +453,14 @@ class Dashboard extends Component {
                 <div className="col-8">
                   <div className="numbers">
                     <p>Operational Cost</p>
-                    SR 150,378.00
+                    &#8377; 150,378.00
                   </div>
                 </div>
               </div>
               <div className="footer">
                 <hr />
                 <div className="stats">
-                  Avg. Cost per Patient - <span>SR 500</span>
+                  Avg. Cost per Patient - <span>&#8377; 500</span>
                 </div>
               </div>
             </div>
@@ -476,14 +476,14 @@ class Dashboard extends Component {
                 <div className="col-8">
                   <div className="numbers">
                     <p>Revenue by MTD</p>
-                    SR XXXXXXXX
+                    &#8377; 124,128.75
                   </div>
                 </div>
               </div>
               <div className="footer">
                 <hr />
                 <div className="stats">
-                  Avg. Revenue per day- <span>SR XXXX</span>
+                  Avg. Revenue per day- <span>&#8377; 4,128.75</span>
                   <b onClick={this.showDetailHandler.bind(this)}>
                     {this.state.showDetails === "d-block"
                       ? "Hide"

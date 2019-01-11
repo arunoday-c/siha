@@ -53,7 +53,7 @@ const AddEmpId = ($this, e) => {
   });
 };
 const addDependentType = ($this, e) => {
-  debugger;
+  
 
   AlgaehValidation({
     alertTypeIcon: "warning",
@@ -91,7 +91,7 @@ const addDependentType = ($this, e) => {
 };
 
 const getFamilyIdentification = $this => {
-  debugger;
+  
   algaehApiCall({
     uri: "/employee/getFamilyIdentification",
     method: "GET",
@@ -100,7 +100,7 @@ const getFamilyIdentification = $this => {
       if (response.data.success) {
         let data = response.data.records;
         if (data.length > 0) {
-          debugger;
+          
           $this.setState({ idDetails: data[0], dependentDetails: data[1] });
           $this.props.EmpMasterIOputs.updateEmployeeTabs({
             idDetails: data[0],
@@ -136,7 +136,7 @@ const deleteIdentifications = ($this, row) => {
     cancelButtonColor: "#d33",
     cancelButtonText: "No"
   }).then(willDelete => {
-    debugger;
+    
     if (willDelete.value) {
       let idDetails = $this.state.idDetails;
       let insertIdDetails = $this.state.insertIdDetails;
@@ -161,7 +161,7 @@ const deleteIdentifications = ($this, row) => {
           insertIdDetails: insertIdDetails
         },
         () => {
-          debugger;
+          
         }
       );
 
@@ -234,7 +234,7 @@ const deleteDependencies = ($this, row) => {
     cancelButtonColor: "#d33",
     cancelButtonText: "No"
   }).then(willDelete => {
-    debugger;
+    
     if (willDelete.value) {
       let dependentDetails = $this.state.dependentDetails;
       let insertDependentDetails = $this.state.insertDependentDetails;

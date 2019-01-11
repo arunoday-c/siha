@@ -1261,6 +1261,14 @@ let processYearlyLeave = (req, res, next) => {
     let yearArray = [];
     let monthlyArray = [];
 
+    let employee_id = "";
+
+    if (req.query.employee_id > 0) {
+      debugLog("am one");
+    } else {
+      debugLog("else am two");
+    }
+
     db.getConnection((error, connection) => {
       connection.query(
         "select hims_d_employee_id, employee_code,full_name  as employee_name,\

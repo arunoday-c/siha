@@ -149,7 +149,7 @@ class HospitalServiceSetup extends Component {
   }
 
   EditItemMaster(row) {
-    debugger;
+    
     if (row.cpt_code !== null) {
       algaehApiCall({
         uri: "/icdcptcodes/selectCptCodes",
@@ -177,7 +177,7 @@ class HospitalServiceSetup extends Component {
           }
         },
         onFailure: error => {
-          debugger;
+          
           if (error.response.data.message === "No records found") {
             this.setState({
               isOpen: !this.state.isOpen,

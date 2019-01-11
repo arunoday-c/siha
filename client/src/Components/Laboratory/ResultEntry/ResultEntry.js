@@ -390,7 +390,7 @@ class ResultEntry extends Component {
                             />
                           ),
                           displayTemplate: row => {
-                            debugger;
+                            
                             return (
                               <span>
                                 {row.run1 !== "null" ? row.run1 : "----"}

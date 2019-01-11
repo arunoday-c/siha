@@ -214,7 +214,7 @@ class ApplyLeave extends Component {
       enddateMoment.isValid() === true
     ) {
       var days = enddateMoment.diff(startdateMoment, "days");
-      debugger;
+      
 
       if (
         moment(this.state.from_date).format("YYYYMMDD") ===

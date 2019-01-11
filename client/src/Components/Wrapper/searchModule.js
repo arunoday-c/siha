@@ -45,7 +45,7 @@ class SearchModule extends Component {
     this.getUserSelectedValue(
       { searchName: this.props.searchName },
       response => {
-        //debugger;
+        
         let _searchBy = this.props.searchGrid.columns[0]["fieldName"];
         let _name = this.props.searchGrid.columns[0]["label"];
         if (response.data.success === true) {
@@ -121,14 +121,14 @@ class SearchModule extends Component {
       },
       method: "POST",
       onSuccess: response => {
-        //debugger;
+        
         if (typeof callBack === "function") callBack(response);
       }
     });
   }
 
   handleOnchnageSearchBy(e) {
-    //debugger;
+    
 
     let _value = e.target.value;
     let _name =

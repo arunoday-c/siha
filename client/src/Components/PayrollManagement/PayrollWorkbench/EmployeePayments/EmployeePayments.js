@@ -83,7 +83,7 @@ class EmployeePayment extends Component {
   }
 
   render() {
-    debugger;
+    
     const depEmployee = Enumerable.from(this.props.all_employees)
       .where(w => w.hospital_id === this.state.hospital_id)
       .toArray();

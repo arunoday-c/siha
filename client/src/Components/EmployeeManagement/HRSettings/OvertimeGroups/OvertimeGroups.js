@@ -176,7 +176,7 @@ class OvertimeGroups extends Component {
           method: "POST",
           data: data,
           onSuccess: res => {
-            debugger;
+            
             if (res.data.success) {
               swalMessage({
                 title: "Record Added Successfully",
@@ -192,7 +192,7 @@ class OvertimeGroups extends Component {
             }
           },
           onFailure: err => {
-            debugger;
+            
             swalMessage({
               title: err.response.data.message,
               type: "error"

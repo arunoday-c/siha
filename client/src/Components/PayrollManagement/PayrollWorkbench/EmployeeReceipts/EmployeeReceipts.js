@@ -93,7 +93,7 @@ class EmployeeReceipts extends Component {
         break;
 
       case "hims_f_loan_application_id":
-        debugger;
+        
         this.setState({
           [value.name]: value.value,
           current_loan: value.selected
