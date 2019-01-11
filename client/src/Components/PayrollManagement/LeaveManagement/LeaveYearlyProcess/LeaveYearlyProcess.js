@@ -5,31 +5,65 @@ import {
   AlagehAutoComplete,
   AlgaehLabel,
   AlgaehDataGrid,
-  AlagehFormGroup,
-  AlgaehDateHandler
+  AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
+import AlgaehSearch from "../../../Wrapper/globalSearch";
+import Employee from "../../../../Search/Employee.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 
 export default class LeaveYearlyProcess extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      year: moment().year()
+      year: moment().year(),
+      leaves: [],
+      loading: false
     };
+    this.getLeaveMaster();
   }
 
   processYearlyLeave() {
+    this.setState({
+      loading: true
+    });
     algaehApiCall({
       uri: "/leave/processYearlyLeave",
       method: "GET",
       data: {
-        year: this.state.year
+        year: this.state.year,
+        employee_id: this.state.hims_d_employee_id
       },
       onSuccess: res => {
         if (res.data.success) {
           swalMessage({
             title: "Leaves processed successfully",
             type: "success"
+          });
+          this.setState({
+            loading: false
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+        this.setState({
+          loading: false
+        });
+      }
+    });
+  }
+
+  getLeaveMaster() {
+    algaehApiCall({
+      uri: "/selfService/getLeaveMaster",
+      method: "GET",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            leaves: res.data.records
           });
         }
       },
@@ -39,6 +73,31 @@ export default class LeaveYearlyProcess extends Component {
           type: "error"
         });
       }
+    });
+  }
+
+  employeeSearch() {
+    AlgaehSearch({
+      searchGrid: {
+        columns: Employee
+      },
+      searchName: "employee",
+      uri: "/gloabelSearch/get",
+      onContainsChange: (text, serchBy, callBack) => {
+        callBack(text);
+      },
+      onRowSelect: row => {
+        this.setState({
+          employee_name: row.full_name,
+          hims_d_employee_id: row.hims_d_employee_id
+        });
+      }
+    });
+  }
+
+  dropDownHandler(value) {
+    this.setState({
+      [value.name]: value.value
     });
   }
 
@@ -54,7 +113,7 @@ export default class LeaveYearlyProcess extends Component {
         <div className="col-12">
           <div className="row inner-top-search">
             <AlagehFormGroup
-              div={{ className: "col form-group" }}
+              div={{ className: "col-lg-3 form-group mandatory" }}
               label={{
                 forceLabel: "Year",
                 isImp: true
@@ -74,54 +133,56 @@ export default class LeaveYearlyProcess extends Component {
               }}
             />
 
-            <AlagehAutoComplete
-              div={{ className: "col form-group mandatory" }}
-              label={{
-                forceLabel: "Filter by Branch",
-                isImp: true
-              }}
-              selector={{
-                name: "",
-                className: "select-fld",
-
-                dataSource: {},
-                others: {}
-              }}
-            />
-
-            <AlagehAutoComplete
-              div={{ className: "col form-group mandatory" }}
-              label={{
-                forceLabel: "Select an Employee Type",
-                isImp: true
-              }}
-              selector={{
-                name: "",
-                className: "select-fld",
-
-                dataSource: {},
-                others: {}
-              }}
-            />
-
-            <div className="col form-group">
-              <button style={{ marginTop: 21 }} className="btn btn-default">
-                Load
-              </button>
+            <div className="col-lg-3" style={{ marginTop: 10 }}>
+              <div
+                className="row"
+                style={{
+                  border: " 1px solid #ced4d9",
+                  borderRadius: 5,
+                  marginLeft: 0
+                }}
+              >
+                <div className="col">
+                  <AlgaehLabel label={{ forceLabel: "Employee Name" }} />
+                  <h6>
+                    {this.state.employee_name
+                      ? this.state.employee_name
+                      : "------"}
+                  </h6>
+                </div>
+                <div
+                  className="col-lg-3"
+                  style={{ borderLeft: "1px solid #ced4d8" }}
+                >
+                  <i
+                    className="fas fa-search fa-lg"
+                    style={{
+                      paddingTop: 17,
+                      paddingLeft: 3,
+                      cursor: "pointer"
+                    }}
+                    onClick={this.employeeSearch.bind(this)}
+                  />
+                </div>
+              </div>
             </div>
 
             <AlagehAutoComplete
-              div={{ className: "col form-group mandatory" }}
+              div={{ className: "col form-group" }}
               label={{
                 forceLabel: "Select an Leave Type",
-                isImp: true
+                isImp: false
               }}
               selector={{
-                name: "",
+                name: "leave_id",
+                value: this.state.leave_id,
                 className: "select-fld",
-
-                dataSource: {},
-                others: {}
+                dataSource: {
+                  textField: "leave_description",
+                  valueField: "hims_d_leave_id",
+                  data: this.state.leaves
+                },
+                onChange: this.dropDownHandler.bind(this)
               }}
             />
 
@@ -131,7 +192,11 @@ export default class LeaveYearlyProcess extends Component {
                 style={{ marginTop: 21 }}
                 className="btn btn-primary"
               >
-                Process
+                {!this.state.loading ? (
+                  "PROCESS"
+                ) : (
+                  <i className="fas fa-spinner fa-spin" />
+                )}
               </button>
             </div>
           </div>
@@ -180,6 +245,7 @@ export default class LeaveYearlyProcess extends Component {
                     keyId=""
                     dataSource={{ data: [] }}
                     isEditable={true}
+                    loading={this.state.loading}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{}}
                     others={{}}

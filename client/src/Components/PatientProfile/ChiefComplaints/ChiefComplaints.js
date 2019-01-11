@@ -1112,7 +1112,7 @@ class ChiefComplaints extends Component {
                 columns={[
                   {
                     fieldName: "hpi_view",
-                    label: "HPI",
+                    label: <AlgaehLabel label={{ forceLabel: "HPI" }} />,
                     displayTemplate: row => {
                       return (
                         <i
@@ -1299,11 +1299,11 @@ class ChiefComplaints extends Component {
                     }
                   },
                   {
-                    fieldName: "complaint_inactive_date",
+                    fieldName: "complaint_inactive",
                     label: (
                       <AlgaehLabel
                         label={{
-                          fieldName: "complaint_inactive_date"
+                          forceLabel: "Complaint Inactive"
                           // fieldName: "inactive"
                         }}
                       />
@@ -1328,7 +1328,14 @@ class ChiefComplaints extends Component {
                   },
                   {
                     fieldName: "complaint_inactive_date",
-                    label: "Inactive Date",
+                    label: (
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Inactive Date"
+                          // fieldName: "inactive"
+                        }}
+                      />
+                    ),
                     displayTemplate: row => {
                       const _inactive_date =
                         row.complaint_inactive_date !== null
@@ -1342,7 +1349,14 @@ class ChiefComplaints extends Component {
                   },
                   {
                     fieldName: "comment",
-                    label: "Comments",
+                    label: (
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Comment"
+                          // fieldName: "inactive"
+                        }}
+                      />
+                    ),
                     displayTemplate: row => {
                       return <span>{row.comment}</span>;
                     },
