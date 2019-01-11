@@ -47,6 +47,7 @@ class Reports extends Component {
                 label={{ forceLabel: "Report Category", isImp: false }}
                 selector={{
                   name: "module",
+                  autoComplete: "off",
                   className: "select-fld",
                   value: this.state.module,
                   dataSource: {

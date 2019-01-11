@@ -21,21 +21,28 @@ export default class LeaveYearlyProcess extends Component {
       loading: false
     };
     this.getLeaveMaster();
+  }
+
+  componentDidMount() {
     this.getLeaveData();
   }
 
   getLeaveData() {
+    this.setState({
+      loading: true
+    });
     algaehApiCall({
       uri: "/leave/getEmployeeLeaveData",
       method: "GET",
       data: {
         year: this.state.year,
-        employee_id: this.state.employee_id
+        employee_id: this.state.hims_d_employee_id
       },
       onSuccess: res => {
         if (res.data.success) {
           this.setState({
-            leave_data: res.data.records
+            leave_data: res.data.records,
+            loading: false
           });
         }
       },
@@ -43,6 +50,9 @@ export default class LeaveYearlyProcess extends Component {
         swalMessage({
           title: err.message,
           type: "error"
+        });
+        this.setState({
+          loading: false
         });
       }
     });
@@ -65,6 +75,7 @@ export default class LeaveYearlyProcess extends Component {
             title: "Leaves processed successfully",
             type: "success"
           });
+          this.getLeaveData();
           this.setState({
             loading: false
           });
@@ -91,11 +102,17 @@ export default class LeaveYearlyProcess extends Component {
   }
 
   clearState() {
-    this.setState({
-      hims_d_employee_id: null,
-      employee_name: null,
-      year: moment().year()
-    });
+    this.setState(
+      {
+        hims_d_employee_id: null,
+        employee_name: null,
+        year: moment().year(),
+        leave_id: null
+      },
+      () => {
+        this.getLeaveData();
+      }
+    );
   }
 
   getLeaveMaster() {
@@ -129,10 +146,15 @@ export default class LeaveYearlyProcess extends Component {
         callBack(text);
       },
       onRowSelect: row => {
-        this.setState({
-          employee_name: row.full_name,
-          hims_d_employee_id: row.hims_d_employee_id
-        });
+        this.setState(
+          {
+            employee_name: row.full_name,
+            hims_d_employee_id: row.hims_d_employee_id
+          },
+          () => {
+            this.getLeaveData();
+          }
+        );
       }
     });
   }
@@ -144,9 +166,25 @@ export default class LeaveYearlyProcess extends Component {
   }
 
   textHandler(e) {
-    this.setState({
-      [e.target.name]: e.target.value
-    });
+    switch (e.target.name) {
+      case "year":
+        if (e.target.value.length >= 4) {
+          this.setState(
+            {
+              [e.target.name]: e.target.value
+            },
+            () => {
+              this.getLeaveData();
+            }
+          );
+        } else {
+          this.setState({
+            [e.target.name]: e.target.value
+          });
+        }
+
+        break;
+    }
   }
 
   render() {
@@ -189,7 +227,7 @@ export default class LeaveYearlyProcess extends Component {
                   <h6>
                     {this.state.employee_name
                       ? this.state.employee_name
-                      : "------"}
+                      : "--Select Employee--"}
                   </h6>
                 </div>
                 <div
@@ -317,7 +355,7 @@ export default class LeaveYearlyProcess extends Component {
                     ]}
                     keyId="hims_f_employee_monthly_leave_id"
                     dataSource={{ data: this.state.leave_data }}
-                    isEditable={true}
+                    isEditable={false}
                     filter={true}
                     loading={this.state.loading}
                     paging={{ page: 0, rowsPerPage: 10 }}

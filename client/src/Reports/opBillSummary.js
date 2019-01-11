@@ -1,9 +1,9 @@
 import Enumerable from "linq";
-import { header } from "./header";
 import { signature_footer } from "./signature_footer";
+import { revenueHeader } from "./revenueHeader";
 
 export function printReport(data) {
-  //   debugger;
+  debugger;
   const serviceGroup = [];
   //   const serviceGroup = Enumerable.from(data.services)
   //     .groupBy("$.service_type", null, (key, group) => {
@@ -14,41 +14,24 @@ export function printReport(data) {
   //     })
   //     .toArray();
 
+  let AllTotal = Enumerable.from(data).sum(s => s.total_amount);
+
   return `
-    <div class="">
-      <header> ${header(data)} </header>
-      <section>
-      <h2><span>Patient Details</span></h2>
-      <table class="tableForLabel" cell-padding="0">
-          <tr>
-              <td><label>رقم التسجيل الضريبي / TRN</label></td>
-              <td>: <span>301270966900003</span></td>
-              <td><label>النوع / Type</label></td>
-              <td>: <span>ائتمان/ Cash</span></td>
-          </tr>
-          <tr>
-              <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
-          </tr>
-          <tr>
-              <td><label>رقم الملف الطبي / Patient Code</label></td>
-              <td>: <span>${data.patient_code}</span></td>
-              <td><label>رقم الفاتورة / Invoice No</label></td>
-              <td>: <span>${data.invoice_number}</span></td>
-          </tr>
+  <div class="print-body">
+    <header> ${revenueHeader(data)} </header> 
+    <section>
+    <h2><span>Patient Details</span></h2>
+    <table class="tableForLabel" cell-padding="0">
+        <tr>
+            <td><label> Hospital Name</label></td>
+            <td>: <span>Royal Bangalore Hospital - HRBR</span></td>
+            <td><label>  Type</label></td>
+            <td>: <span> Income</span></td>
+        </tr>
+        <tr>
+            <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
+        </tr>
 
-          <tr>
-              <td><label>اسم المريض / Patient Name</label></td>
-              <td>: <span>${data.full_name}</span></td>
-              <td><label>اريخ الفاتورة / Invoice Date</label></td>
-              <td>: <span>${data.receipt_date}</span></td>
-          </tr>
-
-          <tr>
-              <td><label>اسم الطبيب / Doctor</label></td>
-              <td>: <span>${data.doctor_name}</span></td>
-              <td><label>Department / القسم</label></td>
-              <td>: <span>General Practioner(G.P)</span></td>
-          </tr>
 
       </table>
 
@@ -91,6 +74,45 @@ export function printReport(data) {
       )
       .join("")}
 
+<<<<<<< HEAD
+</section>
+<section>
+    <h2><span>Bill Details</span></h2>
+    <table class="tableForData" cell-padding="0">
+        <thead>
+            <tr>
+                <th>SERVICE TYPE CODE</th>
+                <th>SERVICE TYPE</th>
+                <th>AMOUNT</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+        
+  ${data
+    .map(
+      list =>
+        `
+    <tr>
+    <td>${list.service_type_code}</td>
+    <td>${list.service_type} </td>
+    <td>${list.total_amount} </td>
+    </tr>
+    `
+    )
+    .join("")} 
+       
+          
+        <tr>
+        <td colspan="3"></td>
+        <td> Total Amount</td>
+        <td><span>${AllTotal}</span></td>
+    </tr>
+        </tbody>
+    </table>
+</section>
+    <footer> ${signature_footer(data)}</footer>
+=======
         `
             )
             .join("")}
@@ -115,6 +137,7 @@ export function printReport(data) {
   </table>
   </section>
       <footer> ${signature_footer(data)}</footer>
+>>>>>>> 2d6ee5af893ceb14bb1376e84d2b83c7825d6f7a
 
     `;
 }
