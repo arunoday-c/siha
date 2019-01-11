@@ -6,7 +6,8 @@ import {
   getLoanApplication,
   getLoanLevels,
   authorizeLoan,
-  adjustLoanApplication
+  adjustLoanApplication,
+  addLoanReciept
 } from "../model/loan";
 
 export default ({ config, db }) => {
@@ -80,6 +81,16 @@ export default ({ config, db }) => {
         records: result
       });
     }
+    next();
+  });
+
+  // created by irfan :
+  api.post("/addLoanReciept", addLoanReciept, (req, res, next) => {
+    let result = req.records;
+    res.status(httpStatus.ok).json({
+      success: true,
+      records: result
+    });
     next();
   });
   return api;

@@ -13,5 +13,6 @@
   "all_doctors": "All Doctors",
   "office_branch": "Office / Branch",
   "appt_status": "Appointment Status",
-  "appt_type": "Appointment Type"
+  "appt_type": "Appointment Type",
+  "service_type_id": "Service Type"
 }

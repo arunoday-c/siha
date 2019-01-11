@@ -1,9 +1,7 @@
-import Enumerable from "linq";
 import { revenueHeader } from "./revenueHeader";
+import moment from "moment";
 
 export function printReport(data) {
-  let AllTotal = Enumerable.from(data).sum(s => s.total_amount);
-
   return `
   <div class="print-body">
     <header> ${revenueHeader(data)} </header> 
@@ -19,48 +17,50 @@ export function printReport(data) {
         <tr>
             <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
         </tr>
+
+
     </table>
+
 
 </section>
 <section>
-    <h2><span>${data.length > 0 ? data[0].service_type : ""} Details</span></h2>
+    <h2><span>Report Details</span></h2>
     <table class="tableForData" cell-padding="0">
         <thead>
             <tr>
-                <th>SERVICE CODE</th>
-                <th>SERVICE NAME</th>
-                <th>AMOUNT</th>
-                
+                <th>HANDOVER DATE</th>
+                <th>EXPECTED TOTAL</th>
+                <th>COLLECTED TOTAL</th>
+                <th>DIFFERENCE</th>
+                <th>STATUS</th>
             </tr>
         </thead>
         <tbody>
-        <tr>
-          <td colspan="3" class="tableSubHdg">${
-            data.length > 0 ? data[0].service_type : ""
-          }</td>
-      </tr>  
+        
   ${data
     .map(
       list =>
         `
-      
     <tr>
-    <td>${list.service_code}</td>
-    <td>${list.service_name} </td>
-    <td>${list.total_amount} </td>
-    </tr>
+    <td>${moment(list.daily_handover_date).format("DD-MMM-YYYY")}</td>
+    <td>${list.expected_total} </td>
+    <td>${list.collected_total} </td>
+    <td>${Math.abs(list.expected_total - list.collected_total)} </td>
+    <td>${
+      list.expected_total - list.collected_total < 0
+        ? `        <span class="badge badge-warning">Excess</span>`
+        : list.expected_total - list.collected_total > 0
+        ? `<span class="badge badge-danger">Shortage</span>`
+        : list.expected_total - list.collected_total === 0
+        ? `<span class="badge badge-success>Tallied</span>`
+        : "------"
+    } </td>
     `
     )
     .join("")} 
-       
-          
-        <tr>
-        <td colspan="1"></td>
-        <td> Total Amount</td>
-        <td><span>${AllTotal}</span></td>
-    </tr>
         </tbody>
     </table>
 </section>
+
   `;
 }

@@ -1,5 +1,4 @@
 import Enumerable from "linq";
-import { signature_footer } from "./signature_footer";
 import { revenueHeader } from "./revenueHeader";
 
 export function printReport(data) {
@@ -53,14 +52,13 @@ export function printReport(data) {
        
           
         <tr>
-        <td colspan="3"></td>
+        <td colspan="1"></td>
         <td> Total Amount</td>
         <td><span>${AllTotal}</span></td>
     </tr>
         </tbody>
     </table>
 </section>
-    <footer> ${signature_footer(data)}</footer>
 
   `;
 }
