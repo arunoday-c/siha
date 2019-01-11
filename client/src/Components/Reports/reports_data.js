@@ -134,10 +134,29 @@ export default [
     name: "INCOME",
     submenu: [
       {
-        subitem: "Outstanding Advances",
-        template_name: "opBillSummary",
-        reportParameters: []
-        ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
+        subitem: "Department Wise Income",
+        template_name: "departmentIncome",
+        reportQuery : "subDepartmentIncome",
+        reportParameters: [
+          {
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          } 
+        ]
       },
       {
         subitem: "OP Billing Summary",
