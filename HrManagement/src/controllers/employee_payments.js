@@ -2,7 +2,8 @@ import { Router } from "express";
 import utlities from "algaeh-utilities";
 import {
   getLoanTopayment,
-  getAdvanceTopayment
+  getAdvanceTopayment,
+  InsertEncashment
 } from "../models/employee_payments";
 export default () => {
   const api = Router();
@@ -19,5 +20,13 @@ export default () => {
       result: req.records
     });
   });
+
+  api.post("/InsertEncashment", InsertEncashment, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      result: req.records
+    });
+  });
+
   return api;
 };

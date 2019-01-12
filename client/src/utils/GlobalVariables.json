@@ -779,5 +779,6 @@
     { "name": "Leave", "value": "L" },
     { "name": "Airfare", "value": "A" },
     { "name": "Both", "value": "B" }
-  ]
+  ],
+  "SALARY_TYPE": [{ "name": "Normal", "value": "N" }]
 }
