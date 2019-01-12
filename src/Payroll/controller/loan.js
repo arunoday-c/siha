@@ -7,7 +7,8 @@ import {
   getLoanLevels,
   authorizeLoan,
   adjustLoanApplication,
-  addLoanReciept
+  addLoanReciept,
+  getEmployeeLoanReciept
 } from "../model/loan";
 
 export default ({ config, db }) => {
@@ -87,11 +88,39 @@ export default ({ config, db }) => {
   // created by irfan :
   api.post("/addLoanReciept", addLoanReciept, (req, res, next) => {
     let result = req.records;
-    res.status(httpStatus.ok).json({
-      success: true,
-      records: result
-    });
+    if (result.invalid_input == true) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: result
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
     next();
   });
+
+  // created by irfan :
+  api.get(
+    "/getEmployeeLoanReciept",
+    getEmployeeLoanReciept,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.invalid_input == true) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    }
+  );
   return api;
 };
