@@ -215,6 +215,11 @@ between date('${req.query.from_date}') and date('${req.query.to_date}') `;
       loan_issued = " and loan_authorized='IS' ";
     }
 
+    let loan_closed = "";
+    if (req.query.loan_closed == "Y" || req.query.loan_closed == "N") {
+      loan_closed = ` and loan_closed=${req.query.loan_closed} `;
+    }
+
     db.getConnection((error, connection) => {
       connection.query(
         "select hims_f_loan_application_id,loan_application_number, loan_skip_months , employee_id,loan_id,L.loan_code,L.loan_description,\
@@ -230,7 +235,9 @@ between date('${req.query.from_date}') and date('${req.query.to_date}') `;
           "" +
           auth_level +
           "" +
-          loan_issued,
+          loan_issued +
+          "" +
+          loan_closed,
 
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -544,9 +551,16 @@ let addLoanReciept = (req, res, next) => {
                     parseFloat(input.recievable_amount) -
                     parseFloat(input.write_off_amount);
 
+                  let close_loan = "";
+                  if (cur_pending_loan == parseFloat(0)) {
+                    close_loan = ",loan_closed='Y'";
+                  }
+
                   if (cur_pending_loan === parseFloat(input.balance_amount)) {
                     connection.query(
-                      "update hims_f_loan_application set pending_loan=? where hims_f_loan_application_id=?",
+                      "update hims_f_loan_application set pending_loan=?" +
+                        close_loan +
+                        " where hims_f_loan_application_id=?",
                       [cur_pending_loan, input.loan_application_id],
                       (error, updateResult) => {
                         if (error) {
