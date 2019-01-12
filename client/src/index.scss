@@ -28,28 +28,21 @@ $forntSize: 0.7rem;
 
   //Reports Styles
   .print-body {
-    // width: 98%;
-    // margin: 10px auto;
-    // padding: 10px;
-    // border: 1px solid #e4e4e4;
-    // box-sizing: border-box;
-    // box-shadow: 0 3px 10px #ececec;
-    // background: #fff;
-    body {
-      margin: 10px;
-      padding: 0;
-      color: #3d3d3d;
-      font-size: 0.8rem;
-      background: #f2f2f2;
-    }
+    border-right: 0 !important;
+    min-height: 30vh;
+    max-height: 70vh;
+    overflow: auto;
+    padding: 0 15px 0 !important;
 
     /*Header Only CSS*/
     header {
       margin: 0 0 10px;
-      padding: 0 0 10px;
-      border-bottom: 1px solid #3d3d3d;
+      padding: 10px 0;
+      /* border-bottom: 1px solid #3d3d3d; */
+      border-top: 1px solid #e5e5e5;
       display: block;
       width: 100%;
+      background: #0000;
     }
 
     .hospitalLogo {
@@ -71,6 +64,10 @@ $forntSize: 0.7rem;
       float: right;
       width: 15%;
       border-left: 1px dotted #ccc;
+      font-size: 0.7rem;
+      b {
+        font-size: 0.9rem;
+      }
     }
 
     .hospitalAddress {
@@ -91,7 +88,8 @@ $forntSize: 0.7rem;
       margin: 0;
       padding: 0;
       line-height: 15px;
-      font-size: 0.7rem;
+      font-size: 0.8rem;
+      font-weight: normal;
     }
 
     /*Content Only CSS*/
@@ -99,16 +97,17 @@ $forntSize: 0.7rem;
     section h2 {
       text-align: left;
       border-bottom: 1px solid #c5c5c5;
-      line-height: 6px;
-      margin-bottom: 20px;
-    }
-
-    section h2 span {
-      background-color: #3d3d3d;
-      padding: 5px 15px;
-      color: #f2f2f2;
-      border: 1px solid #c5c5c5;
-      font-size: 0.8rem;
+      /* line-height: 0; */
+      margin-bottom: 10px;
+      span {
+        background-color: #f2f2f2;
+        padding: 5px 15px;
+        color: #000000;
+        border: 1px solid #c5c5c5;
+        font-size: 0.8rem;
+        line-height: 29px;
+        border-radius: 5px 5px 0 0;
+      }
     }
 
     /* Clear floats after the columns */
@@ -143,6 +142,7 @@ $forntSize: 0.7rem;
       width: 100%;
       border-collapse: collapse;
       border: 1px solid #00babe;
+      font-weight: normal;
     }
 
     .tableForData thead {

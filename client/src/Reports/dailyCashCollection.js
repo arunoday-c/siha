@@ -3,19 +3,15 @@ import moment from "moment";
 
 export function printReport(data) {
   return `
-  <div class="print-body">
     <header> ${revenueHeader(data)} </header> 
     <section>
     <h2><span>Hospital Details</span></h2>
     <table class="tableForLabel" cell-padding="0">
         <tr>
             <td><label> Hospital Name</label></td>
-            <td>: <span>Royal Bangalore Hospital - HRBR</span></td>
+            <td><span>Royal Bangalore Hospital - HRBR</span></td>
             <td><label>  Type</label></td>
-            <td>: <span> Income</span></td>
-        </tr>
-        <tr>
-            <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
+            <td><span> Income</span></td>
         </tr>
 
 
@@ -24,7 +20,7 @@ export function printReport(data) {
 
 </section>
 <section>
-    <h2><span>Report Details</span></h2>
+    <h2><span>Collection Report</span></h2>
     <table class="tableForData" cell-padding="0">
         <thead>
             <tr>
@@ -42,11 +38,15 @@ export function printReport(data) {
       list =>
         `
     <tr>
-    <td>${moment(list.daily_handover_date).format("DD-MMM-YYYY")}</td>
-    <td>${list.expected_total} </td>
-    <td>${list.collected_total} </td>
-    <td>${Math.abs(list.expected_total - list.collected_total)} </td>
-    <td>${
+    <td style="text-align:center">${moment(list.daily_handover_date).format(
+      "DD-MMM-YYYY"
+    )}</td>
+    <td  style="text-align:right">${list.expected_total} </td>
+    <td  style="text-align:right">${list.collected_total} </td>
+    <td  style="text-align:right">${Math.abs(
+      list.expected_total - list.collected_total
+    )} </td>
+    <td style="text-align:center">${
       list.expected_total - list.collected_total < 0
         ? `        <span class="badge badge-warning">Excess</span>`
         : list.expected_total - list.collected_total > 0

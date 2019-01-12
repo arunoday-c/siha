@@ -492,7 +492,8 @@ export default class ReportUI extends Component {
             </div>
             <div className="popupInner " ref={el => (this.algehPrintRef = el)}>
               <div
-                className="print-body popLeftDiv"
+                className="print-body"
+                style={{ height: "68vh" }}
                 dangerouslySetInnerHTML={{
                   __html: this.state._htmlString
                 }}
