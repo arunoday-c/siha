@@ -32,9 +32,16 @@ const SalaryProcess = ($this, e) => {
         method: "GET",
         onSuccess: response => {
           debugger;
-          $this.setState({
-            requestPayment: response.data.result
-          });
+          if (response.data.result.length > 0) {
+            $this.setState({
+              requestPayment: response.data.result
+            });
+          } else {
+            swalMessage({
+              title: "Invalid. Please process attendence",
+              type: "error"
+            });
+          }
         },
         onFailure: error => {
           swalMessage({
