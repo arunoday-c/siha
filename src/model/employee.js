@@ -882,7 +882,7 @@ let deleteEmployeeGroup = (req, res, next) => {
 let getEmployee = (req, res, next) => {
   let employeeWhereCondition = {
     employee_code: "ALL",
-
+    sub_department_id:"ALL",
     sex: "ALL",
     blood_group: "ALL",
     employee_status: "ALL",

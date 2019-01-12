@@ -14,7 +14,7 @@ const texthandle = ($this, e) => {
   });
 };
 
-const SalaryProcess = ($this, e) => {
+const LoadSalaryPayment = ($this, e) => {
   AlgaehValidation({
     alertTypeIcon: "warning",
     querySelector: "data-validate='loadSalary'",
@@ -38,7 +38,7 @@ const SalaryProcess = ($this, e) => {
         },
         onFailure: error => {
           swalMessage({
-            title: error.message || error.response.data.message,
+            title: error.response.data.message,
             type: "error"
           });
         }
@@ -47,4 +47,4 @@ const SalaryProcess = ($this, e) => {
   });
 };
 
-export { texthandle, SalaryProcess };
+export { texthandle, LoadSalaryPayment };

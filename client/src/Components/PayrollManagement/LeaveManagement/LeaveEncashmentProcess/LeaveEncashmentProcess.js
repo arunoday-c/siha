@@ -4,7 +4,12 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import "./LeaveEncashmentProcess.css";
-import { texthandler, LoadEncashment } from "./EncashmentProcessEvents.js";
+import {
+  texthandler,
+  LoadEncashment,
+  ClearData,
+  ProcessEncash
+} from "./EncashmentProcessEvents.js";
 import moment from "moment";
 import {
   AlagehAutoComplete,
@@ -14,6 +19,7 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
+import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 
 class LeaveEncashmentProcess extends Component {
   constructor(props) {
@@ -21,7 +27,8 @@ class LeaveEncashmentProcess extends Component {
     this.state = {
       year: moment().year(),
       encash_type: null,
-      sel_employee_id: null
+      sel_employee_id: null,
+      encashDetail: []
     };
   }
 
@@ -37,6 +44,21 @@ class LeaveEncashmentProcess extends Component {
         redux: {
           type: "EMPLY_GET_DATA",
           mappingName: "all_employees"
+        }
+      });
+    }
+
+    if (
+      this.props.all_employees === undefined ||
+      this.props.all_employees.length === 0
+    ) {
+      this.props.getLeaveMaster({
+        uri: "/selfService/getLeaveMaster",
+        method: "GET",
+
+        redux: {
+          type: "LEAVE_MASTER_GET_DATA",
+          mappingName: "leaveMaster"
         }
       });
     }
@@ -146,32 +168,47 @@ class LeaveEncashmentProcess extends Component {
                     datavalidate="leaveEncashProcessGrid"
                     columns={[
                       {
-                        fieldName: "leaveType",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Leave Type" }} />
-                        )
-                      },
-                      {
-                        fieldName: "LeaveDesc",
+                        fieldName: "leave_id",
                         label: (
                           <AlgaehLabel
                             label={{ forceLabel: "Leave Description" }}
                           />
-                        )
+                        ),
+                        displayTemplate: row => {
+                          let display =
+                            this.props.leaveMaster === undefined
+                              ? []
+                              : this.props.leaveMaster.filter(
+                                  f => f.hims_d_leave_id === row.leave_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? display[0].leave_description
+                                : ""}
+                            </span>
+                          );
+                        }
                       },
                       {
-                        fieldName: "NoOfLeave",
+                        fieldName: "leave_days",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "No. of Leave" }} />
                         )
                       },
                       {
-                        fieldName: "EncashmentAmount",
+                        fieldName: "leave_amount",
                         label: (
                           <AlgaehLabel
                             label={{ forceLabel: "Encashment Amount" }}
                           />
-                        )
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>{getAmountFormart(row.leave_amount)}</span>
+                          );
+                        }
                       },
                       {
                         fieldName: "Airfare Amount",
@@ -191,7 +228,7 @@ class LeaveEncashmentProcess extends Component {
                       }
                     ]}
                     keyId=""
-                    dataSource={{ data: [] }}
+                    dataSource={{ data: this.state.encashDetail }}
                     isEditable={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{}}
@@ -205,13 +242,21 @@ class LeaveEncashmentProcess extends Component {
         <div className="hptl-phase1-footer">
           <div className="row">
             <div className="col-lg-12">
-              <button type="button" className="btn btn-primary">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={ProcessEncash.bind(this, this)}
+              >
                 <AlgaehLabel
                   label={{ forceLabel: "Process", returnText: true }}
                 />
               </button>
 
-              <button type="button" className="btn btn-default">
+              <button
+                type="button"
+                className="btn btn-default"
+                onClick={ClearData.bind(this, this)}
+              >
                 <AlgaehLabel
                   label={{ forceLabel: "Clear", returnText: true }}
                 />
@@ -226,14 +271,16 @@ class LeaveEncashmentProcess extends Component {
 
 function mapStateToProps(state) {
   return {
-    all_employees: state.all_employees
+    all_employees: state.all_employees,
+    leaveMaster: state.leaveMaster
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getEmployees: AlgaehActions
+      getEmployees: AlgaehActions,
+      getLeaveMaster: AlgaehActions
     },
     dispatch
   );

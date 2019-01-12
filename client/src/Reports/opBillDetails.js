@@ -7,7 +7,7 @@ export function printReport(data) {
   return `
     <header> ${revenueHeader(data)} </header> 
     <section>
-    <h2><span>Patient Details</span></h2>
+    <h2><span>Hospital Details</span></h2>
     <table class="tableForLabel" cell-padding="0">
         <tr>
             <td><label> Hospital Name</label></td>
@@ -15,46 +15,48 @@ export function printReport(data) {
             <td><label>  Type</label></td>
             <td><span> Income</span></td>
         </tr>
-
-
     </table>
-
 
 </section>
 <section>
-    <h2><span>Bill Details</span></h2>
+    <h2><span>${data.length > 0 ? data[0].service_type : ""} Details</span></h2>
     <table class="tableForData" cell-padding="0">
         <thead>
             <tr>
-                <th>SERVICE TYPE CODE</th>
-                <th>SERVICE TYPE</th>
+                <th>SERVICE CODE</th>
+                <th>SERVICE NAME</th>
                 <th>AMOUNT</th>
                 
             </tr>
         </thead>
         <tbody>
-        
+        <tr style="background: #f2f2f2;">
+          <td colspan="3" class="tableSubHdg">${
+            data.length > 0 ? data[0].service_type : ""
+          }</td>
+      </tr>  
   ${data
     .map(
       list =>
         `
+      
     <tr>
-    <td>${list.service_type_code}</td>
-    <td>${list.service_type} </td>
+    <td>${list.service_code}</td>
+    <td>${list.service_name} </td>
     <td style="text-align:right">${list.total_amount} </td>
+    </tr>
     `
     )
     .join("")} 
        
           
-        <tr style="background: #f2f2f2;">
+        <tr>
         <td colspan="1"></td>
-        <td><b> Total Amount</b></td>
+        <td> <b>Total Amount</b></td>
         <td style="text-align:right"><b>${AllTotal}</b></td>
     </tr>
         </tbody>
     </table>
 </section>
-
   `;
 }

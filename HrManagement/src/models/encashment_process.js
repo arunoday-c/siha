@@ -1,111 +1,43 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
+import utilities from "algaeh-utilities";
+
 module.exports = {
   getEncashmentToProcess: (req, res, next) => {
     const _mysql = new algaehMysql();
     const _EncashDetails = req.query;
 
+    /* Select statemwnt  */
+
     _mysql
-      .executeQueryWithTransaction({
+      .executeQuery({
         query:
-          "select hims_f_employee_monthly_leave_id,leave_id,employee_id,`year`,close_balance,encashment_leave from \
-          hims_f_employee_monthly_leave where employee_id=? and `year`=?; ",
-        values: [_EncashDetails.employee_id, _EncashDetails.year],
-        printQuery: true
+          "select hims_f_employee_monthly_leave_id,leave_id,hims_f_employee_monthly_leave.employee_id,`year`,close_balance,encashment_leave, \
+          leaEncash.earnings_id, leaEncash.percent, empEarn.amount,\
+          CASE when close_balance < encashment_leave then sum( ((empEarn.amount *12/365)*(leaEncash.percent/100))*close_balance) else \
+          sum(((empEarn.amount *12/365)*(leaEncash.percent/100))*encashment_leave)  end leave_amount , case when close_balance < encashment_leave then\
+          close_balance else encashment_leave end leave_days from \
+          hims_f_employee_monthly_leave, hims_d_leave lea, hims_d_leave_encashment leaEncash, hims_d_employee_earnings empEarn where \
+          hims_f_employee_monthly_leave.employee_id=? and `year`=? and hims_f_employee_monthly_leave.leave_id = lea.hims_d_leave_id and lea.leave_encash='Y' and\
+          hims_f_employee_monthly_leave.leave_id = leaEncash.leave_header_id and leaEncash.earnings_id = empEarn.earnings_id and \
+          empEarn.employee_id=hims_f_employee_monthly_leave.employee_id group by leave_id ;",
+        values: [_EncashDetails.employee_id, _EncashDetails.year]
+        // printQuery: true
       })
       .then(monthlyLeaves => {
-        if (monthlyLeaves.length > 0) {
-          for (let i = 0; i < monthlyLeaves.length; i++) {
-            let EncashDays = 0;
-            _mysql
-              .executeQuery({
-                query:
-                  "select hims_d_leave_id,leave_encash from hims_d_leave where hims_d_leave_id=?;",
-                values: [monthlyLeaves[i].leave_id]
-              })
-              .then(leaveDetails => {
-                if (leaveDetails.length > 0) {
-                  if (leaveDetails[0].leave_encash == "Y") {
-                    _mysql
-                      .executeQuery({
-                        query:
-                          "select hims_d_leave_encashment_id,earnings_id,percent from hims_d_leave_encashment where leave_header_id=?;",
-                        values: [monthlyLeaves[i].leave_id]
-                      })
-                      .then(leaveEancashDetails => {
-                        if (leaveEancashDetails.length > 0) {
-                          for (let k = 0; k < leaveEancashDetails.length; k++) {
-                            let perdayAmount = 0;
-                            let EncashAmount = 0;
-                            _mysql
-                              .executeQuery({
-                                query:
-                                  "select hims_d_employee_earnings_id,amount from hims_d_employee_earnings where \
-                                employee_id=? and earnings_id=?;",
-                                values: [
-                                  _EncashDetails[i].employee_id,
-                                  leaveEancashDetails[K].earnings_id
-                                ]
-                              })
-                              .then(empEarnings => {
-                                if (
-                                  monthlyLeaves[i].close_balance <
-                                  monthlyLeaves[i].encashment_leave
-                                ) {
-                                  EncashDays = monthlyLeaves[i].close_balance;
-                                } else {
-                                  EncashDays =
-                                    monthlyLeaves[i].encashment_leave;
-                                }
-                                perdayAmount = empEarnings[0].amount * 12;
+        _mysql.releaseConnection();
+        utilities
+          .AlgaehUtilities()
+          .logger()
+          .log("monthlyLeaves: ", monthlyLeaves);
 
-                                perdayAmount = perdayAmount / 365;
+        req.records = monthlyLeaves;
+        next();
 
-                                perdayAmount =
-                                  perdayAmount *
-                                  leaveEancashDetails[K].earnings_id;
-
-                                perdayAmount = perdayAmount / 100;
-
-                                EncashAmount = perdayAmount * EncashDays;
-
-                                // leaveEancashDetails[0].earnings_id
-                                // leaveEancashDetails[0].percent
-
-                                _mysql.commitTransaction(() => {
-                                  _mysql.releaseConnection();
-                                  req.records = leaveEancashDetails;
-                                  next();
-                                });
-                              })
-                              .catch(e => {
-                                next(e);
-                              });
-                          }
-                        }
-                      })
-                      .catch(e => {
-                        next(e);
-                      });
-
-                    // All Calculation
-                  } else {
-                    next();
-                    debugFunction("No EncashMent");
-                  }
-                }
-              })
-              .catch(e => {
-                next(e);
-              });
-          }
-        } else {
-          _mysql.commitTransaction(() => {
-            _mysql.releaseConnection();
-            req.records = monthlyLeaves;
-            next();
-          });
-        }
+        utilities
+          .AlgaehUtilities()
+          .logger()
+          .log("monthlyLeaves: ", monthlyLeaves);
       })
       .catch(e => {
         next(e);

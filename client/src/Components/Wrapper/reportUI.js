@@ -14,7 +14,8 @@ export default class ReportUI extends Component {
       pageDisplay: "",
       openPopup: true,
       hasError: false,
-      _htmlString: ""
+      _htmlString: "",
+      parameterCollection: {}
     };
 
     if (props.options !== undefined && props.options.plotUI !== undefined) {
@@ -125,20 +126,8 @@ export default class ReportUI extends Component {
         ? this.props.options.report.reportQuery
         : this.props.options.report.fileName;
 
-    let inputs = {};
+    let inputs = { ...this.state.parameterCollection };
 
-    Enumerable.from(Object.keys(this.state))
-      .where(
-        w =>
-          w !== "pageDisplay" &&
-          w !== "openPopup" &&
-          w !== "hasError" &&
-          w !== "_htmlString"
-      )
-      .select(s => {
-        inputs[s] = this.state[s];
-      })
-      .toArray();
     inputs["reportName"] = _reportQuery;
 
     const that = this;
@@ -152,6 +141,7 @@ export default class ReportUI extends Component {
           new Promise((resolve, reject) => {
             resolve(response.data.records);
           }).then(data => {
+            options.inputData = that.state.parameterCollection;
             options.data = data;
             let _optionsFetch = options;
             let _htm = accessReport(_optionsFetch);
@@ -171,6 +161,20 @@ export default class ReportUI extends Component {
       if (_hasEvents.onChange !== undefined) {
         _hasEvents.onChange(this, e);
       }
+    } else {
+      let _inputText = "";
+      const _inputBox = document.getElementsByName(e.name);
+      if (_inputBox.length != 0) {
+        _inputText = _inputBox[0].value;
+      }
+
+      this.setState({
+        parameterCollection: {
+          ...this.state.parameterCollection,
+          [e.name]: e.value,
+          [e.name + "_text"]: _inputText
+        }
+      });
     }
   }
   searchButton(e) {
@@ -212,8 +216,12 @@ export default class ReportUI extends Component {
       }
     } else {
       const _checked = e.currentTarget.checked;
+
       this.setState({
-        [_name + "_checked"]: _checked
+        parameterCollection: {
+          ...this.state.parameterCollection,
+          [_name + "_checked"]: _checked
+        }
       });
     }
   }
@@ -229,7 +237,10 @@ export default class ReportUI extends Component {
       }
     } else {
       this.setState({
-        [_name]: e.currentTarget.value
+        parameterCollection: {
+          ...this.state.parameterCollection,
+          [_name]: e.currentTarget.value
+        }
       });
     }
   }
@@ -243,7 +254,10 @@ export default class ReportUI extends Component {
       }
     } else {
       this.setState({
-        [selectedDate.name]: selectedDate.value
+        parameterCollection: {
+          ...this.state.parameterCollection,
+          [selectedDate.name]: selectedDate.value
+        }
       });
     }
 
@@ -282,7 +296,7 @@ export default class ReportUI extends Component {
               selector={{
                 name: _param.name,
                 className: "select-fld",
-                value: this.state[_param.name],
+                value: this.state.parameterCollection[_param.name],
                 dataSource: {
                   textField: _param.dataSource.textField,
                   valueField: _param.dataSource.valueField,
@@ -313,7 +327,7 @@ export default class ReportUI extends Component {
               events={{
                 onChange: this.datePickerHandler.bind(this)
               }}
-              value={this.state[_param.name]}
+              value={this.state.parameterCollection[_param.name]}
             />
           );
           break;
@@ -331,7 +345,7 @@ export default class ReportUI extends Component {
                   className: "txt-fld",
                   name: _param.name,
 
-                  value: this.state[_param.name],
+                  value: this.state.parameterCollection[_param.name],
                   ..._param.others
                 }}
               />
@@ -410,7 +424,7 @@ export default class ReportUI extends Component {
               textBox={{
                 className: "txt-fld",
                 name: _param.name,
-                value: this.state[_param.name],
+                value: this.state.parameterCollection[_param.name],
                 events: {
                   onChange: this.textBoxHandle.bind(this)
                 },
@@ -478,7 +492,8 @@ export default class ReportUI extends Component {
             </div>
             <div className="popupInner " ref={el => (this.algehPrintRef = el)}>
               <div
-                className="print-body popLeftDiv"
+                className="print-body"
+                style={{ height: "68vh" }}
                 dangerouslySetInnerHTML={{
                   __html: this.state._htmlString
                 }}
