@@ -214,7 +214,6 @@ class ApplyLeave extends Component {
       enddateMoment.isValid() === true
     ) {
       var days = enddateMoment.diff(startdateMoment, "days");
-      debugger;
 
       if (
         moment(this.state.from_date).format("YYYYMMDD") ===
@@ -448,7 +447,8 @@ class ApplyLeave extends Component {
       uri: "/leave/getEmployeeLeaveData",
       method: "GET",
       data: {
-        employee_id: this.state.employee_id
+        employee_id: this.state.employee_id,
+        year: moment().year()
       },
       onSuccess: res => {
         if (res.data.success) {
@@ -501,7 +501,7 @@ class ApplyLeave extends Component {
       <React.Fragment>
         <div className="row apply_leave">
           <div data-validate="apply-leave-div" className="col-3">
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+            <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Request Leave</h3>
@@ -751,7 +751,7 @@ class ApplyLeave extends Component {
           </div>
 
           <div className="col-9">
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+            <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Leave Request List</h3>
@@ -765,11 +765,17 @@ class ApplyLeave extends Component {
                       columns={[
                         {
                           fieldName: "leave_application_code",
-                          label: "Leave Code"
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Leave Code" }} />
+                          )
                         },
                         {
                           fieldName: "application_date",
-                          label: "Leave Requested On",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Leave Requested On" }}
+                            />
+                          ),
                           displayTemplate: row => {
                             return (
                               <span>
@@ -782,11 +788,17 @@ class ApplyLeave extends Component {
                         },
                         {
                           fieldName: "leave_description",
-                          label: "Leave Type"
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Leave Type" }} />
+                          )
                         },
                         {
                           fieldName: "from_date",
-                          label: "Leave From",
+
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Leave From" }} />
+                          ),
+
                           displayTemplate: row => {
                             return (
                               <span>
@@ -797,7 +809,10 @@ class ApplyLeave extends Component {
                         },
                         {
                           fieldName: "to_date",
-                          label: "Leave To",
+
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Leave To" }} />
+                          ),
                           displayTemplate: row => {
                             return (
                               <span>
@@ -808,11 +823,21 @@ class ApplyLeave extends Component {
                         },
                         {
                           fieldName: "total_applied_days",
-                          label: "Applied Days"
+
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Applied Days" }}
+                            />
+                          )
                         },
                         {
                           fieldName: "total_approved_days",
-                          label: "Approved Days",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Approved Days" }}
+                            />
+                          ),
+
                           displayTemplate: row => {
                             return (
                               <span>
@@ -825,7 +850,12 @@ class ApplyLeave extends Component {
                         },
                         {
                           fieldName: "remarks",
-                          label: "Leave Reason",
+
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Leave Reason" }}
+                            />
+                          ),
                           displayTemplate: row => {
                             return (
                               <span>
@@ -838,7 +868,10 @@ class ApplyLeave extends Component {
                         },
                         {
                           fieldName: "authorized",
-                          label: "Authorized",
+
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Authorized" }} />
+                          ),
                           displayTemplate: row => {
                             return (
                               <span>
@@ -856,7 +889,10 @@ class ApplyLeave extends Component {
                         },
                         {
                           fieldName: "status",
-                          label: "Status",
+
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Status" }} />
+                          ),
                           displayTemplate: row => {
                             return (
                               <span>
@@ -906,7 +942,7 @@ class ApplyLeave extends Component {
               </div>
             </div>
 
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+            <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-body">
                 <div className="row leaveBalanceCntr">
                   {leaveData.length > 0

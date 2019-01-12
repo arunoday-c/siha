@@ -27,7 +27,7 @@ const getPatientChiefComplaints = $this => {
       mappingName: "patient_chief_complaints"
     },
     afterSuccess: data => {
-      debugger;
+      
     }
   });
 };

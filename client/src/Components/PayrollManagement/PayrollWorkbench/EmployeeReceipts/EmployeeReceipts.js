@@ -11,6 +11,7 @@ import AlgaehSearch from "../../../Wrapper/globalSearch";
 import Employee from "../../../../Search/Employee.json";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 
 class EmployeeReceipts extends Component {
   constructor(props) {
@@ -18,18 +19,48 @@ class EmployeeReceipts extends Component {
     this.state = {
       loans: [],
       current_loan: {},
-      reciepts_type: "LO"
+      reciepts_type: "LO",
+      employee_receipts: []
     };
-    // this.getLoans();
   }
 
   clearState() {
     this.setState({
       hims_f_loan_application_id: null,
       current_loan: {},
-      reciepts_type: null,
+      reciepts_type: "LO",
       hims_d_employee_id: null,
-      employee_name: null
+      employee_name: null,
+      reciepts_mode: null,
+      recievable_amount: null,
+      write_off_amount: null
+    });
+  }
+
+  addEmployeeReceipts() {
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      onSuccess: () => {
+        algaehApiCall({
+          uri: "/employee/addEmployeeReceipts",
+          method: "POST",
+          onSuccess: res => {
+            if (res.data.success) {
+              swalMessage({
+                title: "Received Successfully",
+                type: "success"
+              });
+              this.clearState();
+            }
+          },
+          onFailure: err => {
+            swalMessage({
+              title: err.message,
+              type: "error"
+            });
+          }
+        });
+      }
     });
   }
 
@@ -51,12 +82,35 @@ class EmployeeReceipts extends Component {
           },
           () => {
             this.getLoans();
+            //this.getEmployeeReceipts();
           }
         );
       }
     });
   }
 
+  getEmployeeReceipts() {
+    algaehApiCall({
+      uri: "/payroll/getEmployeeReceipts",
+      method: "GET",
+      data: {
+        employee_id: this.state.hims_d_employee_id
+      },
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            employee_receipts: res.data.records
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
   getLoans() {
     algaehApiCall({
       uri: "/loan/getLoanApplication",
@@ -94,12 +148,26 @@ class EmployeeReceipts extends Component {
         break;
 
       case "hims_f_loan_application_id":
-        debugger;
         this.setState({
           [value.name]: value.value,
           current_loan: value.selected
         });
+        break;
 
+      case "reciepts_mode":
+        if (this.state.current_loan.pending_loan === undefined) {
+          swalMessage({
+            title: "Please Select a Loan to receive",
+            type: "warning"
+          });
+          this.setState({
+            [value.name]: null
+          });
+        } else {
+          this.setState({
+            [value.name]: value.value
+          });
+        }
         break;
 
       default:
@@ -116,17 +184,60 @@ class EmployeeReceipts extends Component {
         this.setState({
           reciepts_type: e.target.value
         });
+        break;
 
-        // e.target.value === "LO" && this.state.loans.length === 0
-        //   ? this.getLoans()
-        //   : null;
+      case "recievable_amount":
+        if (this.state.current_loan.pending_loan === undefined) {
+          swalMessage({
+            title: "Please Select a Loan to receive",
+            type: "warning"
+          });
+        } else {
+          let writeOffAmt = this.state.write_off_amount
+            ? this.state.write_off_amount
+            : 0;
+          let pendingAmt = this.state.current_loan.pending_loan
+            ? this.state.current_loan.pending_loan
+            : 0;
+
+          let finalLoanAmt = pendingAmt - writeOffAmt;
+
+          if (e.target.value <= finalLoanAmt)
+            this.setState({
+              recievable_amount: e.target.value
+            });
+          else {
+            swalMessage({
+              title: "Received amount cannot be greater than pending amount",
+              type: "warning"
+            });
+          }
+        }
 
         break;
 
+      case "write_off_amount":
+        e.target.value <= this.state.current_loan.pending_loan
+          ? this.setState({
+              [e.target.name]: e.target.value
+            })
+          : swalMessage({
+              title: "Write off amount cannot be greater than pending amount",
+              type: "warning"
+            });
+        break;
+
       default:
-        this.setState({
-          [e.target.name]: e.target.value
-        });
+        if (this.state.current_loan.pending_loan === undefined) {
+          swalMessage({
+            title: "Please Select a Loan to receive",
+            type: "warning"
+          });
+        } else {
+          this.setState({
+            [e.target.name]: e.target.value
+          });
+        }
         break;
     }
   }
@@ -167,27 +278,6 @@ class EmployeeReceipts extends Component {
               </label>
             </div>
           </div>
-
-          {/* <AlagehAutoComplete
-            div={{ className: "col-3 form-group" }}
-            label={{ forceLabel: "Receipt Type", isImp: true }}
-            selector={{
-              name: "reciepts_type",
-              value: this.state.reciepts_type,
-              className: "select-fld",
-              dataSource: {
-                textField: "name",
-                valueField: "value",
-                data: GlobalVariables.RECEIPTS_TYPE
-              },
-              onChange: this.dropDownHandler.bind(this),
-              onClear: () => {
-                this.setState({
-                  reciepts_type: null
-                });
-              }
-            }}
-          /> */}
 
           <div className="col-lg-3" style={{ marginTop: 10 }}>
             <div
@@ -247,9 +337,6 @@ class EmployeeReceipts extends Component {
             />
           ) : null}
           <div className="col form-group">
-            {/* <button style={{ marginTop: 21 }} className="btn btn-primary">
-              Load
-            </button>{" "} */}
             <button
               onClick={this.clearState.bind(this)}
               style={{ marginTop: 21, marginLeft: 10 }}
@@ -261,8 +348,9 @@ class EmployeeReceipts extends Component {
         </div>
         <div className="row">
           {" "}
+          ``
           <div className="col-12">
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15 margin-top-15">
+            <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
               <div className="portlet-body">
                 <div className="row">
                   <div className="col">
@@ -354,7 +442,7 @@ class EmployeeReceipts extends Component {
                     div={{ className: "col form-group" }}
                     label={{
                       forceLabel: "Loan Write Off Amount",
-                      isImp: true
+                      isImp: false
                     }}
                     textBox={{
                       className: "txt-fld",
@@ -373,7 +461,7 @@ class EmployeeReceipts extends Component {
                     div={{ className: "col form-group" }}
                     label={{
                       forceLabel: "Amount Received",
-                      isImp: false
+                      isImp: true
                     }}
                     textBox={{
                       className: "txt-fld",
@@ -390,6 +478,7 @@ class EmployeeReceipts extends Component {
 
                   <div className="col form-group">
                     <button
+                      onClick={this.addEmployeeReceipts.bind(this)}
                       style={{ marginTop: 21 }}
                       className="btn btn-primary"
                     >
@@ -407,7 +496,7 @@ class EmployeeReceipts extends Component {
             </div>
           </div>
           <div className="col-12">
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+            <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Employee Receipts List</h3>
@@ -421,7 +510,7 @@ class EmployeeReceipts extends Component {
                       datavalidate="EmployeeReciptsGrid"
                       columns={[
                         {
-                          fieldName: "ReciptType",
+                          fieldName: "reciepts_type",
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Recipt Type" }}
@@ -429,15 +518,7 @@ class EmployeeReceipts extends Component {
                           )
                         },
                         {
-                          fieldName: "Recipt Type Code",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Recipt Type Code" }}
-                            />
-                          )
-                        },
-                        {
-                          fieldName: "EmployeeCode",
+                          fieldName: "employee_code",
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Employee Code" }}
@@ -445,7 +526,7 @@ class EmployeeReceipts extends Component {
                           )
                         },
                         {
-                          fieldName: "EmployeeName",
+                          fieldName: "employee_name",
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Employee Name" }}
@@ -453,15 +534,7 @@ class EmployeeReceipts extends Component {
                           )
                         },
                         {
-                          fieldName: "Pending Amount",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Employee Code" }}
-                            />
-                          )
-                        },
-                        {
-                          fieldName: "LoanWriteAmount",
+                          fieldName: "write_off_amount",
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Loan Write off Amount" }}
@@ -469,7 +542,7 @@ class EmployeeReceipts extends Component {
                           )
                         },
                         {
-                          fieldName: "ModeRecipt",
+                          fieldName: "reciepts_mode",
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Mode of Recipt" }}
@@ -477,15 +550,7 @@ class EmployeeReceipts extends Component {
                           )
                         },
                         {
-                          fieldName: "ModeReciptNumber",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Mode of Recipt Number" }}
-                            />
-                          )
-                        },
-                        {
-                          fieldName: "AmountReceived",
+                          fieldName: "recievable_amount",
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Amount Received" }}
@@ -493,8 +558,8 @@ class EmployeeReceipts extends Component {
                           )
                         }
                       ]}
-                      keyId=""
-                      dataSource={{ data: [] }}
+                      keyId="hims_f_employee_reciepts_id"
+                      dataSource={{ data: this.state.employee_receipts }}
                       isEditable={false}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{}}

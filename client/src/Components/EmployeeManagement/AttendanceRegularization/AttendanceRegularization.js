@@ -135,7 +135,7 @@ export default class AttendanceRegularization extends Component {
             </button>
           </div>
         </div>
-        <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+        <div className="portlet portlet-bordered margin-bottom-15">
           <div className="portlet-title">
             <div className="caption">
               <h3 className="caption-subject">
@@ -152,7 +152,7 @@ export default class AttendanceRegularization extends Component {
                   data={this.state.regularization_list}
                   columns={[
                     {
-                      Header: "Actions",
+                      Header: <b>Actions</b>,
                       id: "hims_f_attendance_regularize_id",
                       accessor: d => (
                         <span>
@@ -166,11 +166,11 @@ export default class AttendanceRegularization extends Component {
                       accessor: "regularization_code",
                       columns: [
                         {
-                          Header: "Code",
+                          Header: <b>Code</b>,
                           accessor: "regularization_code"
                         },
                         {
-                          Header: "Reason",
+                          Header: <b>Reason</b>,
                           accessor: "regularization_reason"
                         }
                       ]
@@ -180,11 +180,11 @@ export default class AttendanceRegularization extends Component {
                       accessor: "Employee",
                       columns: [
                         {
-                          Header: "Code",
+                          Header: <b>Code</b>,
                           accessor: "employee_code"
                         },
                         {
-                          Header: "Name",
+                          Header: <b>Name</b>,
                           accessor: "employee_name"
                         }
                       ]
@@ -194,7 +194,7 @@ export default class AttendanceRegularization extends Component {
                       accessor: "Attendance",
                       columns: [
                         {
-                          Header: "Date",
+                          Header: <b>Date</b>,
                           id: "attendance_date",
                           accessor: d =>
                             moment(d.attendance_date).format("DD-MM-YYYY")
@@ -207,13 +207,13 @@ export default class AttendanceRegularization extends Component {
 
                       columns: [
                         {
-                          Header: "Old",
+                          Header: <b>Old</b>,
                           id: "punch_in_time",
                           accessor: d =>
                             d.punch_in_time ? d.punch_in_time : "------"
                         },
                         {
-                          Header: "New",
+                          Header: <b>New</b>,
                           id: "regularize_in_time",
                           accessor: d =>
                             moment(d.regularize_in_time, "HH:mm:ss").format(
@@ -227,13 +227,13 @@ export default class AttendanceRegularization extends Component {
                       accessor: "LoginOut",
                       columns: [
                         {
-                          Header: "Old",
+                          Header: <b>Old</b>,
                           id: "punch_out_time",
                           accessor: d =>
                             d.punch_out_time ? d.punch_out_time : "------"
                         },
                         {
-                          Header: "New",
+                          Header: <b>New</b>,
                           id: "regularize_out_time",
                           accessor: d =>
                             moment(d.regularize_out_time, "HH:mm:ss").format(
@@ -248,7 +248,7 @@ export default class AttendanceRegularization extends Component {
                       columns: [
                         {
                           id: "regularize_status",
-                          Header: "Status",
+                          Header: <b>Status</b>,
                           accessor: d =>
                             d.regularize_status === "PEN" ? (
                               <span className="badge badge-warning">

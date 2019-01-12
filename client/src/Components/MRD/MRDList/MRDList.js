@@ -177,7 +177,7 @@ class MRDList extends Component {
             </div>
           </form>
         </div> */}
-        <div className="portlet portlet-bordered box-shadow-normal margin-top-15">
+        <div className="portlet portlet-bordered margin-top-15">
           <div className="portlet-title">
             <div className="caption">
               <h3 className="caption-subject">Patient List</h3>

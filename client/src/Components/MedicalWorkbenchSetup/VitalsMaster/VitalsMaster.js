@@ -470,7 +470,7 @@ class VitalsMaster extends Component {
       <div className="vitals_master">
         <div className="row">
           <div className="col-lg-8">
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+            <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Create Vitals</h3>
@@ -690,7 +690,7 @@ class VitalsMaster extends Component {
             </div>
           </div>
           <div className="col-lg-4">
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+            <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Assign Dept.</h3>
@@ -748,7 +748,7 @@ class VitalsMaster extends Component {
           </div>
 
           <div className="col-lg-12">
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+            <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Define Vitals</h3>

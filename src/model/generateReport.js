@@ -2,12 +2,11 @@ import { algaehReportConfig } from "../utils/reportMaker";
 import httpStatus from "../utils/httpStatus";
 import { releaseDBConnection } from "../utils";
 import { debugFunction, debugLog } from "../utils/logging";
-
+import mysql from "mysql";
 let getReport = (req, res, next) => {
-  debugFunction("getReport");
   try {
     let inputParam = req.query;
-    debugLog("Query based Parameters", inputParam);
+
     if (inputParam.reportName == null || inputParam.reportName == "")
       next(
         httpStatus.generateError(
@@ -17,6 +16,7 @@ let getReport = (req, res, next) => {
       );
 
     let queryConfig = algaehReportConfig(inputParam.reportName);
+
     if (queryConfig == null) {
       next(
         httpStatus.generateError(
@@ -44,22 +44,25 @@ let getReport = (req, res, next) => {
     const _groupby =
       queryConfig.groupBy != null ? " " + queryConfig.groupBy + " " : "";
 
-    let whereCondition =
-      req.query.inputs == null ? "" : " and " + req.query.inputs;
+    const _orderBy =
+      queryConfig.orderBy != null ? " " + queryConfig.orderBy + " " : "";
+    let query = queryConfig.reportQuery + _groupby + _orderBy + " ;";
 
-    let query =
-      queryConfig.reportQuery +
-      whereCondition +
-      _groupby +
-      " order by " +
-      queryConfig.orderBy +
-      " ;";
-    debugLog("SQL Query : ", query);
+    const _queryHasQuestion = queryConfig.questionOrder != null ? true : false;
+    let inputData = [];
+    if (_queryHasQuestion == true) {
+      queryConfig.questionOrder.map(item => {
+        if (inputParam[item] != null) inputData.push(inputParam[item]);
+      });
+    }
+
     db.getConnection((error, connection) => {
       if (error) {
         next(error);
       }
-      connection.query(query, (error, result) => {
+      const _myQuery = mysql.format(query, inputData);
+
+      connection.query(_myQuery, (error, result) => {
         releaseDBConnection(db, connection);
         if (error) {
           next(error);

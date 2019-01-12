@@ -64,7 +64,7 @@ class Scheduler extends Component {
       <div className="scheduler">
         <div className="col-lg-12">
           <div className="row">
-            <div className="col portlet portlet-bordered box-shadow-normal">
+            <div className="col portlet portlet-bordered">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Selected Doctors</h3>

@@ -83,7 +83,7 @@ class TransferEntryItems extends Component {
           {context => (
             <div className="row">
               <div className="col-lg-12">
-                <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+                <div className="portlet portlet-bordered margin-bottom-15">
                   <div className="portlet-body" id="REQ_details_Cntr">
                     <AlgaehDataGrid
                       id="REQ_details"

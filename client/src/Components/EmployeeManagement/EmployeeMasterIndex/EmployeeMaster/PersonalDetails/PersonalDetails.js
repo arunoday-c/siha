@@ -89,12 +89,12 @@ class PersonalDetails extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
+    
     this.setState(nextProps.EmpMasterIOputs.state.personalDetails);
   }
 
   render() {
-    debugger;
+    
     return (
       <React.Fragment>
         {/* <MyContext.Consumer>

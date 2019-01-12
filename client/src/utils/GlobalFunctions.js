@@ -169,7 +169,7 @@ export function displayFileFromServer(options) {
     },
     others: { responseType: "blob" },
     onSuccess: response => {
-      debugger;
+      
       if (response.data) {
         let reader = new FileReader();
 
@@ -291,7 +291,7 @@ export function AlgaehValidation(options) {
         //     _lable = _Validateerror[i].previousSibling;
         //   }
         // } else {
-        //   debugger;
+        //   
         //   if (
         //     _Validateerror[i].parentElement.previousElementSibling.tagName ===
         //     "LABEL"
@@ -446,7 +446,7 @@ export function SetBulkState(options) {
   }
 
   if (options.state !== undefined) {
-    debugger;
+    
     const _object = { ...options.state.state, ..._objectCreation };
     options.state.setState(_object, () => {
       if (

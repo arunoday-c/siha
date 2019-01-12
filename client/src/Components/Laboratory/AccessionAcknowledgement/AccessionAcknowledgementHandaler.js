@@ -109,7 +109,7 @@ const getSampleCollectionDetails = $this => {
       mappingName: "samplecollection"
     },
     afterSuccess: data => {
-      debugger;
+      
 
       if (data.length > 0) {
         // let sample_collection = Enumerable.from(data)
@@ -123,7 +123,7 @@ const getSampleCollectionDetails = $this => {
 };
 
 const AcceptandRejectSample = ($this, row, AccRej) => {
-  debugger;
+  
   if (row.status === "O") {
     swalMessage({
       title: "Invalid Input. Please collect the sample.",
@@ -163,7 +163,7 @@ const AcceptandRejectSample = ($this, row, AccRej) => {
         }
       });
     } else {
-      debugger;
+      
       swalMessage({
         title: "Invalid Input. Already Accecpted/Rejected.",
         type: "warning"

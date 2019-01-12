@@ -13,6 +13,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
+        input: req.query,
         records: result
       });
       next();

@@ -1,6 +1,3 @@
-import React from "react";
-import Appointment from "./Components/Appointment/Appointment";
-//import FrontDesk from "../../Search/FrontDesk.json";
 import { APPT_TYPE } from "../../utils/GlobalVariables.json";
 
 export default [
@@ -137,14 +134,34 @@ export default [
     name: "INCOME",
     submenu: [
       {
-        subitem: "Outstanding Advances",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
+        subitem: "Department Wise Income",
+        template_name: "departmentIncome",
+        reportQuery : "subDepartmentIncome",
+        reportParameters: [
+          {
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          } 
+        ]
       },
       {
         subitem: "OP Billing Summary",
-        template_name: "asset_war_exp",
+        template_name: "opBillSummary",
+        reportQuery: "OPBillSummary",
         reportParameters: [
           {
             type: "date",
@@ -165,19 +182,70 @@ export default [
             }
           }
         ]
-        ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
       {
         subitem: "OP Billing Detail",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
+        template_name: "opBillDetails",
+        reportQuery: "OPBillDetails",
+        reportParameters: [
+          {
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            type: "dropdown",
+            name: "service_type_id",
+            initialLoad: true,
+            isImp: true,
+            link: {
+              uri: "/serviceType"
+            },
+            dataSource: {
+              textField: "service_type",
+              valueField: "hims_d_service_type_id",
+              data: undefined
+            }
+          }
+        ]
       },
       {
         subitem: "Daily Cash Collection",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
+        template_name: "dailyCashCollection",
+        reportQuery: "staffCashCollection",
+        reportParameters: [
+          {
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          }
+        ]
       },
       {
         subitem: "Service wise Income",

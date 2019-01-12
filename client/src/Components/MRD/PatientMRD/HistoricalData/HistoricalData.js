@@ -354,7 +354,7 @@ class HistoricalData extends Component {
       <div className="historical-data">
         <div className="row">
           <div className="col-lg-6">
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+            <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Vitals</h3>
@@ -444,7 +444,7 @@ class HistoricalData extends Component {
             </div>
           </div>
           <div className="col-lg-6">
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+            <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Vitals Charts</h3>
@@ -471,7 +471,7 @@ class HistoricalData extends Component {
         {/* First Two Sections Start*/}
         <div className="row">
           <div className="col-lg-6">
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+            <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Diagnosis</h3>
@@ -526,7 +526,7 @@ class HistoricalData extends Component {
             </div>
           </div>
           <div className="col-lg-6">
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+            <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Treatements</h3>
@@ -576,7 +576,7 @@ class HistoricalData extends Component {
         {/* Second Two Sections Start */}
         <div className="row">
           <div className="col-lg-6">
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+            <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Medical History</h3>
@@ -632,7 +632,7 @@ class HistoricalData extends Component {
             </div>
           </div>
           <div className="col-lg-6">
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+            <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Investigations</h3>
@@ -695,7 +695,7 @@ class HistoricalData extends Component {
 
         {/* <div className="row">
           <div className="col-lg-6">
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+            <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Attachments</h3>
@@ -753,7 +753,7 @@ class HistoricalData extends Component {
             </div>
           </div>
           <div className="col-lg-6">
-            <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+            <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Nurse's Notes</h3>
@@ -827,7 +827,7 @@ class HistoricalData extends Component {
  */}
         {/* Third Two Sections End */}
 
-        <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+        <div className="portlet portlet-bordered margin-bottom-15">
           <div className="portlet-title">
             <div className="caption">
               <h3 className="caption-subject">Payment History</h3>

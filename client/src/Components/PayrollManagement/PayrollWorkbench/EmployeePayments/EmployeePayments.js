@@ -66,7 +66,7 @@ class EmployeePayment extends Component {
   }
 
   render() {
-    debugger;
+    
     const depEmployee = Enumerable.from(this.props.all_employees)
       .where(w => w.hospital_id === this.state.hospital_id)
       .toArray();
@@ -201,7 +201,7 @@ class EmployeePayment extends Component {
             <div className="col-12">
               <div className="row">
                 <div className="col-7">
-                  <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+                  <div className="portlet portlet-bordered margin-bottom-15">
                     <div className="portlet-title">
                       <div className="caption">
                         <h3 className="caption-subject">
@@ -297,7 +297,7 @@ class EmployeePayment extends Component {
                   </div>
                 </div>
                 <div className="col-5" data-validate="processData">
-                  <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+                  <div className="portlet portlet-bordered margin-bottom-15">
                     <div className="portlet-title">
                       <div className="caption">
                         <h3 className="caption-subject">Payment Form</h3>
@@ -480,7 +480,7 @@ class EmployeePayment extends Component {
 
           <div className="row">
             <div className="col-12">
-              <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+              <div className="portlet portlet-bordered margin-bottom-15">
                 <div className="portlet-title">
                   <div className="caption">
                     <h3 className="caption-subject">Previous Payment List</h3>

@@ -143,7 +143,7 @@ class ItemSetup extends Component {
     let ItemList = Enumerable.from(this.props.itemlist)
       .groupBy("$.hims_d_item_master_id", null, (k, g) => {
         let firstRecordSet = Enumerable.from(g).firstOrDefault();
-        debugger;
+        
         return {
           item_code: firstRecordSet.item_code,
           hims_d_item_master_id: firstRecordSet.hims_d_item_master_id,
@@ -168,7 +168,7 @@ class ItemSetup extends Component {
       .toArray();
     return (
       <div className="hims_item_setup">
-        <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15 margin-top-15">
+        <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
           <div className="portlet-title">
             <div className="caption">
               <h3 className="caption-subject">Item List</h3>

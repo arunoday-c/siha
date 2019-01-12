@@ -480,10 +480,59 @@ let authorizeLoan = (req, res, next) => {
   }
 };
 
+//created by irfan:
+let addLoanReciept = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT INTO `hims_f_employee_reciepts` (employee_id,reciepts_type,recievable_amount,\
+          write_off_amount,loan_application_id,remarks,balance_amount,reciepts_mode,cheque_number, created_date, created_by, updated_date, updated_by)\
+          VALUE(?,?,?,?,?,?,?,?,?,  ?,?,?,?)",
+        [
+          input.employee_id,
+          input.reciepts_type,
+          input.recievable_amount,
+          input.write_off_amount,
+          input.loan_application_id,
+          input.remarks,
+          input.balance_amount,
+          input.reciepts_mode,
+          input.cheque_number,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addLoanApplication,
   getLoanApplication,
   getLoanLevels,
   authorizeLoan,
-  adjustLoanApplication
+  adjustLoanApplication,
+  addLoanReciept
 };

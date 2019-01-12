@@ -55,7 +55,7 @@ const getVisitDetails = $this => {
 };
 
 const SelectVisitToClose = ($this, row, e) => {
-  //debugger;
+  
   let visitDetails = $this.state.visitDetails;
   let name = e.target.name;
 
@@ -74,7 +74,7 @@ const ClearData = $this => {
 };
 
 const CloseVisits = $this => {
-  //debugger;
+  
   let inputObj = Enumerable.from($this.state.visitDetails)
     .where(w => w.select === "Y")
     .toArray();

@@ -49,7 +49,7 @@ class ReceiptItemList extends Component {
             <div className="hims-delivery-note-entry">
               <div className="row">
                 <div className="col-lg-12">
-                  <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+                  <div className="portlet portlet-bordered margin-bottom-15">
                     <div className="row">
                       <div className="col-lg-12" id="ReceiptGrid">
                         <AlgaehDataGrid

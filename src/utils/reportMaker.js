@@ -12,6 +12,59 @@ let algaehReportConfig = reportName => {
           cancelled, cancelled_by, cancelled_date, cancel_reason, appointment_remarks, visit_created, is_stand_by\
           from hims_f_patient_appointment where record_status='A' ",
         orderBy: "hims_f_patient_appointment_id desc"
+      },
+      {
+        reportName: "OPBillSummary",
+        reportQuery:
+          "select BH.hims_f_billing_header_id,BH.bill_date,BD.hims_f_billing_details_id,BD.service_type_id, \
+        ST.service_type_code,ST.service_type, sum(BD.net_amout)as total_amount \
+        from hims_f_billing_header BH inner join hims_f_billing_details BD on  \
+        BH.hims_f_billing_header_id=BD.hims_f_billing_header_id inner join hims_d_service_type ST on \
+        BD.service_type_id=ST.hims_d_service_type_id and ST.record_status='A' \
+        where BH.record_status='A' and BD.record_status='A' and date(BH.bill_date) \
+         between date(?) and date(?)  group by BD.service_type_id",
+        questionOrder: ["from_date", "to_date"]
+      },
+
+      {
+        reportName: "OPBillDetails",
+        reportQuery:
+          "select BH.bill_date,BH.hims_f_billing_header_id,BH.bill_number,BD.services_id,sum(BD.net_amout) as total_amount,\
+  ST.service_type_code,ST.service_type,S.service_code,S.service_name\
+   from hims_f_billing_header BH inner join hims_f_billing_details BD on\
+   BH.hims_f_billing_header_id=BD.hims_f_billing_header_id  inner join hims_d_service_type ST\
+   on BD.service_type_id=ST.hims_d_service_type_id and ST.record_status='A'\
+   inner join hims_d_services S on  BD.services_id = S.hims_d_services_id and S.record_status='A'\
+   where    date(bill_date)   between    date(?) and  date(?) and  BD.service_type_id=?\
+   and   BH.record_status='A'  and BD.record_status='A'  group by BD.services_id ",
+
+        questionOrder: ["from_date", "to_date", "service_type_id"]
+      },
+
+      {
+        reportName: "staffCashCollection",
+        reportQuery:
+          "select HH.daily_handover_date,\
+          sum(expected_cash+expected_card+expected_cheque) as expected_total ,\
+          sum(actual_cash+actual_card+actual_cheque) as collected_total\
+          from hims_f_cash_handover_header HH inner join\
+          hims_f_cash_handover_detail HD on HH.hims_f_cash_handover_header_id=HD.cash_handover_header_id\
+          where HH.record_status='A' and HD.record_status='A' and  date(daily_handover_date) between date(?)\
+          and date(?) group by HH.daily_handover_date",
+
+        questionOrder: ["from_date", "to_date"]
+      },
+      {
+        reportName: "subDepartmentIncome",
+        reportQuery:
+          " select S.sub_department_id,SD.sub_department_code,SD.sub_department_name ,sum(BD.net_amout) as total_amount\
+          from hims_f_billing_header BH inner join hims_f_billing_details BD on \
+          BH.hims_f_billing_header_id=BD.hims_f_billing_header_id inner join hims_d_services S on\
+          BD.services_id = S.hims_d_services_id and S.record_status='A'   inner join hims_d_sub_department SD on\
+          S.sub_department_id=SD.hims_d_sub_department_id where    date(bill_date)   between    date(?)\
+          and  date(?) and   BH.record_status='A'  and BD.record_status='A'  group by S.sub_department_id",
+
+        questionOrder: ["from_date", "to_date"]
       }
     ]
   };

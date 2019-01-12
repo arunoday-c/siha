@@ -278,7 +278,7 @@ class AddInsuranceForm extends Component {
                             name="image"
                           >
                             <img
-                              alt="Attach back desk"
+                              alt="Attach front side"
                               src={this.state.frontSide}
                               style={{ width: "100%", height: "101px" }}
                             />
@@ -306,7 +306,7 @@ class AddInsuranceForm extends Component {
                             name="image"
                           >
                             <img
-                              alt="Attach front side"
+                              alt="Attach back side"
                               src={this.state.backSide}
                               style={{ width: "100%", height: "101px" }}
                             />

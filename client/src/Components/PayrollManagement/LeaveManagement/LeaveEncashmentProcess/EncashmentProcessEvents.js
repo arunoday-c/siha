@@ -20,7 +20,7 @@ const LoadEncashment = ($this, e) => {
         employee_id: $this.state.sel_employee_id,
         year: $this.state.year
       };
-      debugger;
+
       algaehApiCall({
         uri: "/encashmentprocess/getEncashmentToProcess",
         module: "hrManagement",

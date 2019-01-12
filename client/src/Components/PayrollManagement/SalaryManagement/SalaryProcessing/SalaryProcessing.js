@@ -241,7 +241,7 @@ class SalaryProcessing extends Component {
             <div className="col-9">
               <div className="row">
                 <div className="col-12">
-                  <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+                  <div className="portlet portlet-bordered margin-bottom-15">
                     <div className="portlet-title">
                       <div className="caption">
                         <h3 className="caption-subject">
@@ -319,7 +319,7 @@ class SalaryProcessing extends Component {
                   </div>
                 </div>
                 <div className="col-4">
-                  <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+                  <div className="portlet portlet-bordered margin-bottom-15">
                     <div className="portlet-title">
                       <div className="caption">
                         <h3 className="caption-subject">Earnings</h3>
@@ -368,7 +368,7 @@ class SalaryProcessing extends Component {
                   </div>
                 </div>
                 <div className="col-4">
-                  <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+                  <div className="portlet portlet-bordered margin-bottom-15">
                     <div className="portlet-title">
                       <div className="caption">
                         <h3 className="caption-subject">Employee Deduction</h3>
@@ -420,7 +420,7 @@ class SalaryProcessing extends Component {
                   </div>
                 </div>
                 <div className="col-4">
-                  <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+                  <div className="portlet portlet-bordered margin-bottom-15">
                     <div className="portlet-title">
                       <div className="caption">
                         <h3 className="caption-subject">
@@ -476,7 +476,7 @@ class SalaryProcessing extends Component {
               </div>
             </div>
             <div className="col-3">
-              <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+              <div className="portlet portlet-bordered margin-bottom-15">
                 <div className="portlet-body">
                   <div className="row">
                     <div className="col-6">
@@ -563,7 +563,7 @@ class SalaryProcessing extends Component {
                   </div>
                 </div>
               </div>
-              <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15">
+              <div className="portlet portlet-bordered margin-bottom-15">
                 <div className="portlet-body">
                   <div className="row">
                     <div className="col-6">

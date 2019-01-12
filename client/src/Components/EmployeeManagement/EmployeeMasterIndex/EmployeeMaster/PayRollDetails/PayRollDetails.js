@@ -92,7 +92,7 @@ class PayRollDetails extends PureComponent {
   }
 
   render() {
-    debugger;
+    
     const earnings = Enumerable.from(this.props.payrollcomponents)
       .where(w => w.component_category === "E")
       .toArray();

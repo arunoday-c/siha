@@ -57,7 +57,7 @@ class VisitClose extends Component {
   render() {
     return (
       <div className="hims_visit_close">
-        <div className="portlet portlet-bordered box-shadow-normal margin-bottom-15 margin-top-15">
+        <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
           <div className="portlet-title">
             <div className="col-lg-3">
               <div

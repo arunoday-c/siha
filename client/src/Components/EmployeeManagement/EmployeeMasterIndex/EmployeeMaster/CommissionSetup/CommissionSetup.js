@@ -48,13 +48,13 @@ class CommissionSetup extends Component {
   }
 
   componentWillMount() {
-    debugger;
+    
     let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
     this.setState({ ...this.state, ...InputOutput });
   }
 
   componentDidMount() {
-    debugger;
+    
 
     if (this.state.hims_d_employee_id !== null) {
       if (this.state.servTypeCommission.length === 0) {
