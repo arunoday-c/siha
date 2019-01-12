@@ -250,6 +250,7 @@ class LabContainer extends Component {
                       : this.props.labcontainer
                 }}
                 isEditable={true}
+                filter={true}
                 paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
                   onDelete: deleteLabContainer.bind(this, this),

@@ -1,61 +1,152 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 
 import "./LeaveEncashmentAuth.css";
+import { texthandler } from "./LeaveEncashmentAuthEvents.js";
 
+import moment from "moment";
 import {
   AlagehAutoComplete,
   AlgaehLabel,
   AlgaehDataGrid,
-  AlgaehDateHandler
+  AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
+import { AlgaehActions } from "../../../../actions/algaehActions";
 
-export default class LeaveEncashmentAuth extends Component {
+class LeaveEncashmentAuth extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      year: moment().year()
+    };
+  }
+
+  componentDidMount() {
+    if (
+      this.props.organizations === undefined ||
+      this.props.organizations.length === 0
+    ) {
+      this.props.getOrganizations({
+        uri: "/organization/getOrganization",
+        method: "GET",
+        redux: {
+          type: "ORGS_GET_DATA",
+          mappingName: "organizations"
+        }
+      });
+    }
+
+    if (
+      this.props.all_employees === undefined ||
+      this.props.all_employees.length === 0
+    ) {
+      this.props.getEmployees({
+        uri: "/employee/get",
+        method: "GET",
+
+        redux: {
+          type: "EMPLY_GET_DATA",
+          mappingName: "all_employees"
+        }
+      });
+    }
+
+    if (
+      this.props.all_employees === undefined ||
+      this.props.all_employees.length === 0
+    ) {
+      this.props.getLeaveMaster({
+        uri: "/selfService/getLeaveMaster",
+        method: "GET",
+
+        redux: {
+          type: "LEAVE_MASTER_GET_DATA",
+          mappingName: "leaveMaster"
+        }
+      });
+    }
+
+    if (
+      this.props.encashAuth === undefined ||
+      this.props.encashAuth.length === 0
+    ) {
+      this.props.getLeaveEncashLevels({
+        uri: "/encashmentprocess/getLeaveEncashLevels",
+        method: "GET",
+
+        redux: {
+          type: "ENCASH_AUTH_GET_DATA",
+          mappingName: "encashAuth"
+        }
+      });
+    }
+  }
   render() {
     return (
       <div className="leave_en_auth row">
         <div className="col-12">
           <div className="row inner-top-search">
-            <AlagehAutoComplete
-              div={{ className: "col form-group mandatory" }}
+            <AlagehFormGroup
+              div={{ className: "col" }}
               label={{
-                forceLabel: "Selected Year",
+                forceLabel: "Year",
                 isImp: true
               }}
-              selector={{
-                name: "",
-                className: "select-fld",
-
-                dataSource: {},
-                others: {}
+              textBox={{
+                className: "txt-fld",
+                name: "year",
+                value: this.state.year,
+                events: {
+                  onChange: texthandler.bind(this, this)
+                },
+                others: {
+                  type: "number",
+                  min: moment().year()
+                }
               }}
             />
             <AlagehAutoComplete
-              div={{ className: "col form-group mandatory" }}
+              div={{ className: "col form-group" }}
               label={{
                 forceLabel: "Authorization Level",
                 isImp: true
               }}
               selector={{
-                name: "",
+                name: "auth_level",
+                value: this.state.auth_level,
                 className: "select-fld",
-
-                dataSource: {},
-                others: {}
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: this.props.encashAuth
+                },
+                onChange: texthandler.bind(this, this)
               }}
             />
 
             <AlagehAutoComplete
-              div={{ className: "col form-group" }}
+              div={{ className: "col" }}
               label={{
-                forceLabel: "Filter by Branch",
+                forceLabel: "Select a Branch.",
                 isImp: false
               }}
               selector={{
-                name: "",
+                name: "hospital_id",
                 className: "select-fld",
-
-                dataSource: {},
-                others: {}
+                value: this.state.hospital_id,
+                dataSource: {
+                  textField: "hospital_name",
+                  valueField: "hims_d_hospital_id",
+                  data: this.props.organizations
+                },
+                onChange: texthandler.bind(this, this),
+                onClear: () => {
+                  this.setState({
+                    hospital_id: null
+                  });
+                }
               }}
             />
 
@@ -73,6 +164,7 @@ export default class LeaveEncashmentAuth extends Component {
                 others: {}
               }}
             />
+
             <AlagehAutoComplete
               div={{ className: "col form-group" }}
               label={{
@@ -256,3 +348,31 @@ export default class LeaveEncashmentAuth extends Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    all_employees: state.all_employees,
+    leaveMaster: state.leaveMaster,
+    encashAuth: state.encashAuth,
+    organizations: state.organizations
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getEmployees: AlgaehActions,
+      getLeaveMaster: AlgaehActions,
+      getOrganizations: AlgaehActions,
+      getLeaveEncashLevels: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(LeaveEncashmentAuth)
+);

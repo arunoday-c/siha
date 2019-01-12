@@ -42,7 +42,6 @@ const LoadData = ($this, e) => {
       }
 
       if ($this.state.sel_payment_type === "AD") {
-        
         if ($this.state.document_num !== null) {
           inputObj.advance_number = $this.state.document_num;
         }
@@ -119,7 +118,6 @@ const RequestPaySearch = $this => {
         callBack(text);
       },
       onRowSelect: row => {
-        
         $this.setState({ document_num: row.advance_number });
       }
     });
@@ -134,7 +132,6 @@ const RequestPaySearch = $this => {
         callBack(text);
       },
       onRowSelect: row => {
-        
         $this.setState({ document_num: row.loan_application_number });
       }
     });
@@ -209,8 +206,29 @@ const ProessEmpPayment = ($this, e) => {
   AlgaehValidation({
     alertTypeIcon: "warning",
     querySelector: "data-validate='processData'",
-    onSuccess: () => {
-      
+    onSuccess: () => {}
+  });
+};
+
+const employeeSearch = $this => {
+  AlgaehSearch({
+    searchGrid: {
+      columns: spotlightSearch.Employee_details.employee
+    },
+    searchName: "employee",
+    uri: "/gloabelSearch/get",
+    inputs:
+      $this.state.hospital_id !== null
+        ? "hospital_id = " + $this.state.hospital_id
+        : null,
+    onContainsChange: (text, serchBy, callBack) => {
+      callBack(text);
+    },
+    onRowSelect: row => {
+      $this.setState({
+        employee_name: row.full_name,
+        select_employee_id: row.hims_d_employee_id
+      });
     }
   });
 };
@@ -221,5 +239,6 @@ export {
   RequestPaySearch,
   getPaymentDetails,
   Paymenttexthandle,
-  ProessEmpPayment
+  ProessEmpPayment,
+  employeeSearch
 };

@@ -8,7 +8,8 @@ import {
   texthandler,
   LoadEncashment,
   ClearData,
-  ProcessEncash
+  ProcessEncash,
+  employeeSearch
 } from "./EncashmentProcessEvents.js";
 import moment from "moment";
 import {
@@ -28,7 +29,8 @@ class LeaveEncashmentProcess extends Component {
       year: moment().year(),
       encash_type: null,
       sel_employee_id: null,
-      encashDetail: []
+      encashDetail: [],
+      employee_name: null
     };
   }
 
@@ -63,6 +65,7 @@ class LeaveEncashmentProcess extends Component {
       });
     }
   }
+
   render() {
     return (
       <div className="leave_en_auth row">
@@ -88,29 +91,42 @@ class LeaveEncashmentProcess extends Component {
                 }
               }}
             />
-            <AlagehAutoComplete
+
+            <AlagehFormGroup
               div={{ className: "col form-group" }}
               label={{
-                forceLabel: "Select an Employee",
+                forceLabel: "Select A Employee",
                 isImp: true
               }}
-              selector={{
-                name: "sel_employee_id",
-                className: "select-fld",
-                value: this.state.sel_employee_id,
-                dataSource: {
-                  textField: "full_name",
-                  valueField: "hims_d_employee_id",
-                  data: this.props.all_employees
+              textBox={{
+                className: "txt-fld",
+                name: "employee_name",
+                value: this.state.employee_name,
+                events: {},
+                option: {
+                  type: "text"
                 },
-                onChange: texthandler.bind(this, this),
-                onClear: () => {
-                  this.setState({
-                    sel_employee_id: null
-                  });
+                others: {
+                  disabled: true
                 }
               }}
             />
+            <div
+              className="col-1"
+              style={{
+                paddingLeft: 0,
+                paddingTop: 25,
+                paddingRight: 0
+              }}
+            >
+              <span
+                onClick={employeeSearch.bind(this, this)}
+                style={{ cursor: "pointer" }}
+              >
+                <i className="fas fa-search" />
+              </span>
+            </div>
+
             <AlagehAutoComplete
               div={{ className: "col form-group" }}
               label={{

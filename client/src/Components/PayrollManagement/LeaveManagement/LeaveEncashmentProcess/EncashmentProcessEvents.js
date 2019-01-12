@@ -1,6 +1,8 @@
 import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall.js";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
+import AlgaehSearch from "../../../Wrapper/globalSearch";
+import spotlightSearch from "../../../../Search/spotlightSearch.json";
 
 const texthandler = ($this, e) => {
   let name = e.name || e.target.name;
@@ -59,4 +61,29 @@ const ProcessEncash = ($this, e) => {
   });
 };
 
-export { texthandler, LoadEncashment, ClearData, ProcessEncash };
+const employeeSearch = $this => {
+  AlgaehSearch({
+    searchGrid: {
+      columns: spotlightSearch.Employee_details.employee
+    },
+    searchName: "employee",
+    uri: "/gloabelSearch/get",
+    onContainsChange: (text, serchBy, callBack) => {
+      callBack(text);
+    },
+    onRowSelect: row => {
+      $this.setState({
+        employee_name: row.full_name,
+        sel_employee_id: row.hims_d_employee_id
+      });
+    }
+  });
+};
+
+export {
+  texthandler,
+  LoadEncashment,
+  ClearData,
+  ProcessEncash,
+  employeeSearch
+};

@@ -263,6 +263,7 @@ class LabSpecimen extends Component {
                       : this.props.labspecimen
                 }}
                 isEditable={true}
+                filter={true}
                 paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
                   onDelete: deleteLabSpecimen.bind(this, this),

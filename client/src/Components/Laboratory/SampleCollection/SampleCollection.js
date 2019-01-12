@@ -188,7 +188,17 @@ class SampleCollection extends Component {
                       valueField: "value",
                       data: FORMAT_PRIORITY
                     },
-                    onChange: texthandle.bind(this, this)
+                    onChange: texthandle.bind(this, this),
+                    onClear: () => {
+                      this.setState(
+                        {
+                          proiorty: null
+                        },
+                        () => {
+                          getSampleCollectionDetails(this, this);
+                        }
+                      );
+                    }
                   }}
                 />
                 <AlagehAutoComplete
@@ -206,7 +216,17 @@ class SampleCollection extends Component {
                       valueField: "value",
                       data: FORMAT_TEST_STATUS
                     },
-                    onChange: texthandle.bind(this, this)
+                    onChange: texthandle.bind(this, this),
+                    onClear: () => {
+                      this.setState(
+                        {
+                          status: null
+                        },
+                        () => {
+                          getSampleCollectionDetails(this, this);
+                        }
+                      );
+                    }
                   }}
                 />
                 {/* <AlagehAutoComplete
@@ -358,7 +378,7 @@ class SampleCollection extends Component {
                         displayTemplate: row => {
                           return (
                             <span>
-                              {row.test_type === "S" ? "Stat" : "Rotinue"}
+                              {row.test_type === "S" ? "Stat" : "Routine"}
                             </span>
                           );
                         },
