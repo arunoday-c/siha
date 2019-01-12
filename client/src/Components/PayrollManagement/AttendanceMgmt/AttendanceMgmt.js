@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import MonthlyAttendance from "./MonthlyAttendance/MonthlyAttendance";
 import WeeklyAttendance from "./WeeklyAttendance/WeeklyAttendance";
+import AbsenceManagement from "./AbsenceManagement/AbsenceManagement";
 import "./AttendanceMgmt.css";
 
 export default class AttendanceMgmt extends Component {
@@ -56,6 +57,19 @@ export default class AttendanceMgmt extends Component {
                   />
                 }
               </li>
+              <li
+                algaehtabs={"AbsenceManagement"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Absence Management "
+                    }}
+                  />
+                }
+              </li>
             </ul>
           </div>
         </div>
@@ -64,6 +78,8 @@ export default class AttendanceMgmt extends Component {
             <MonthlyAttendance />
           ) : this.state.pageDisplay === "WeeklyAttendance" ? (
             <WeeklyAttendance />
+          ) : this.state.pageDisplay === "AbsenceManagement" ? (
+            <AbsenceManagement />
           ) : null}
         </div>
       </div>
