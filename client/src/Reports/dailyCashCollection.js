@@ -24,6 +24,7 @@ export function printReport(data) {
     <table class="tableForData" cell-padding="0">
         <thead>
             <tr>
+                <th>SL NO.</th>
                 <th>HANDOVER DATE</th>
                 <th>EXPECTED TOTAL</th>
                 <th>COLLECTED TOTAL</th>
@@ -35,12 +36,15 @@ export function printReport(data) {
         
   ${data
     .map(
-      list =>
+      (list, index) =>
         `
+        
     <tr>
+    <td  style="text-align:right">${index + 1} </td>
     <td style="text-align:center">${moment(list.daily_handover_date).format(
       "DD-MMM-YYYY"
     )}</td>
+    
     <td  style="text-align:right">${list.expected_total} </td>
     <td  style="text-align:right">${list.collected_total} </td>
     <td  style="text-align:right">${Math.abs(
@@ -52,7 +56,7 @@ export function printReport(data) {
         : list.expected_total - list.collected_total > 0
         ? `<span class="badge badge-danger">Shortage</span>`
         : list.expected_total - list.collected_total === 0
-        ? `<span class="badge badge-success>Tallied</span>`
+        ? `<span class="badge badge-success">Tallied</span>`
         : "------"
     } </td>
     `
