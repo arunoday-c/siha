@@ -2,7 +2,8 @@ import { Router } from "express";
 import utlities from "algaeh-utilities";
 import {
   getLoanTopayment,
-  getAdvanceTopayment
+  getAdvanceTopayment,
+  InsertEncashment
 } from "../models/employee_payments";
 export default () => {
   const api = Router();

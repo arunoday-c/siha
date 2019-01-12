@@ -87,7 +87,7 @@ module.exports = {
     const _mysql = new algaehMysql();
     let inputParam = { ...req.body };
     _mysql
-      .executeQuery({
+      .executeQueryWithTransaction({
         query:
           "INSERT INTO `hims_f_employee_payments` (payment_application_code,employee_id,employee_advance_id,\
             employee_loan_id,employee_leave_encash_id,employee_end_of_service_id,employee_final_settlement_id,\
@@ -119,9 +119,49 @@ module.exports = {
         ]
       })
       .then(result => {
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
+        if (inputParam.payment_type === "AD") {
+          _mysql.executeQuery({
+            query:
+              "UPDATE `hims_f_employee_advance` SET `advance_status`='PAID' and `updated_date`=? and `updated_by`=? \
+              where hims_f_employee_advance_id=?",
+            values: [
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              inputParam.employee_advance_id
+            ]
+          });
+        } else if (inputParam.payment_type === "LN") {
+          _mysql.executeQuery({
+            query:
+              "UPDATE `hims_f_loan_application` SET `loan_authorized`='IS' and `updated_date`=? and `updated_by`=? \
+              where hims_f_loan_application_id=?",
+            values: [
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              inputParam.employee_loan_id
+            ]
+          });
+        } else if (inputParam.payment_type === "EN") {
+          _mysql.executeQuery({
+            query:
+              "UPDATE `hims_f_leave_encash_header` SET `authorized`='PRO' and `updated_date`=? and `updated_by`=? \
+              where hims_f_leave_encash_header_id=?",
+            values: [
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              inputParam.employee_leave_encash_id
+            ]
+          });
+        } else if (inputParam.payment_type === "GR") {
+        } else if (inputParam.payment_type === "FS") {
+        } else if (inputParam.payment_type === "LS") {
+        }
+
+        _mysql.commitTransaction(() => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        });
       })
       .catch(e => {
         next(e);
