@@ -291,7 +291,10 @@ module.exports = {
                                         .then(attDataResult => {
                                           _mysql.commitTransaction(() => {
                                             _mysql.releaseConnection();
-                                            req.records = attDataResult;
+                                            req.records = {
+                                              attDataResult: attDataResult,
+                                              if: "if"
+                                            };
                                             next();
                                           });
                                         })
@@ -391,7 +394,10 @@ module.exports = {
                                     .then(attDataResult => {
                                       _mysql.commitTransaction(() => {
                                         _mysql.releaseConnection();
-                                        req.records = attDataResult;
+                                        req.records = {
+                                          attDataResult: attDataResult,
+                                          else: "else"
+                                        };
                                         next();
                                       });
                                     })
