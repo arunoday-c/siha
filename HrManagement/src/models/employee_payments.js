@@ -1,5 +1,4 @@
 import algaehMysql from "algaeh-mysql";
-import { debugLog, debugFunction } from "../../../src/utils/logging";
 import _ from "lodash";
 module.exports = {
   getLoanTopayment: (req, res, next) => {
@@ -17,10 +16,9 @@ module.exports = {
         : "";
 
     /* Select statemwnt  */
-    debugLog("_loanDetails", _loanDetails);
-    debugLog("_stringData", _stringData);
+
     _mysql
-      .executeQueryWithTransaction({
+      .executeQuery({
         query:
           "select loan.hims_f_loan_application_id, loan.loan_application_number as request_number, loan.employee_id, loan.approved_amount as payment_amount,\
           emp.employee_code,emp.full_name from hims_f_loan_application loan, hims_d_employee emp where loan.loan_authorized = ? and \
@@ -30,9 +28,7 @@ module.exports = {
         printQuery: true
       })
       .then(result => {
-        _mysql.commitTransaction(() => {
-          _mysql.releaseConnection();
-        });
+        _mysql.releaseConnection();
 
         req.records = result.map(data => {
           return {
@@ -60,10 +56,9 @@ module.exports = {
       _advDetails.advance_number != null ? " and adv.advance_number=? " : "";
 
     /* Select statemwnt  */
-    debugLog("_advDetails", _advDetails);
-    debugLog("_stringData", _stringData);
+
     _mysql
-      .executeQueryWithTransaction({
+      .executeQuery({
         query:
           "select adv.hims_f_employee_advance_id, adv.advance_number as request_number, adv.employee_id, adv.advance_amount as payment_amount,\
           adv.deducting_month,adv.deducting_year,emp.employee_code, emp.full_name from hims_f_employee_advance adv, \
@@ -73,9 +68,7 @@ module.exports = {
         printQuery: true
       })
       .then(result => {
-        _mysql.commitTransaction(() => {
-          _mysql.releaseConnection();
-        });
+        _mysql.releaseConnection();
 
         req.records = result.map(data => {
           return {
@@ -83,6 +76,51 @@ module.exports = {
             payment_type: "AD"
           };
         });
+        next();
+      })
+      .catch(e => {
+        next(e);
+      });
+  },
+
+  InsertEncashment: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let inputParam = { ...req.body };
+    _mysql
+      .executeQuery({
+        query:
+          "INSERT INTO `hims_f_employee_payments` (payment_application_code,employee_id,employee_advance_id,\
+            employee_loan_id,employee_leave_encash_id,employee_end_of_service_id,employee_final_settlement_id,\
+            employee_leave_settlement_id,payment_type,payment_date,remarks,earnings_id,deduction_month,payment_amount,\
+            payment_mode,cheque_number\
+            created_date,created_by,updated_date,updated_by)\
+          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        values: [
+          payment_application_code,
+          inputParam.employee_id,
+          inputParam.employee_advance_id,
+          inputParam.employee_loan_id,
+          inputParam.employee_leave_encash_id,
+          inputParam.employee_end_of_service_id,
+          inputParam.employee_final_settlement_id,
+          inputParam.employee_leave_settlement_id,
+          inputParam.payment_type,
+          inputParam.payment_date,
+          inputParam.remarks,
+          inputParam.earnings_id,
+          inputParam.deduction_month,
+          inputParam.payment_amount,
+          inputParam.payment_mode,
+          inputParam.cheque_number,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id
+        ]
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
         next();
       })
       .catch(e => {

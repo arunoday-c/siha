@@ -1,5 +1,6 @@
 import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall.js";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
+import moment from "moment";
 
 const texthandler = ($this, e) => {
   let name = e.name || e.target.name;
@@ -27,10 +28,11 @@ const LoadEncashment = ($this, e) => {
         method: "GET",
         onSuccess: response => {
           debugger;
+          $this.setState({ encashDetail: response.data.result });
         },
         onFailure: error => {
           swalMessage({
-            title: error.response.data.message,
+            title: error.message || error.response.data.message,
             type: "error"
           });
         }
@@ -39,4 +41,22 @@ const LoadEncashment = ($this, e) => {
   });
 };
 
-export { texthandler, LoadEncashment };
+const ClearData = ($this, e) => {
+  $this.setState({
+    year: moment().year(),
+    encash_type: null,
+    sel_employee_id: null,
+    encashDetail: []
+  });
+};
+
+const ProcessEncash = ($this, e) => {
+  $this.setState({
+    year: moment().year(),
+    encash_type: null,
+    sel_employee_id: null,
+    encashDetail: []
+  });
+};
+
+export { texthandler, LoadEncashment, ClearData, ProcessEncash };

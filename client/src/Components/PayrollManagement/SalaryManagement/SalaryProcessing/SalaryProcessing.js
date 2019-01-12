@@ -11,7 +11,7 @@ import {
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import { texthandle, DeptselectedHandeler } from "./SalaryProcessingEvents.js";
+import { texthandle, SalaryProcess } from "./SalaryProcessingEvents.js";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import moment from "moment";
 import Enumerable from "linq";
@@ -22,7 +22,9 @@ class SalaryProcessing extends Component {
     this.state = {
       selectedLang: this.props.SelectLanguage,
       year: moment().year(),
-      month: moment(new Date()).format("M")
+      month: moment(new Date()).format("M"),
+      sub_department_id: null,
+      salary_type: null
     };
   }
 
@@ -75,14 +77,13 @@ class SalaryProcessing extends Component {
   }
 
   render() {
-    const departments =
-      this.props.deptanddoctors === undefined
-        ? []
-        : this.props.deptanddoctors.departmets;
+    const depEmployee = Enumerable.from(this.props.all_employees)
+      .where(w => w.sub_department_id === this.state.sub_department_id)
+      .toArray();
     return (
       <React.Fragment>
         <div className="hptl-SalaryManagement-form">
-          <div className="row  inner-top-search">
+          <div className="row  inner-top-search" data-validate="loadSalary">
             <AlagehAutoComplete
               div={{ className: "col" }}
               label={{
@@ -133,7 +134,7 @@ class SalaryProcessing extends Component {
               div={{ className: "col" }}
               label={{
                 forceLabel: "Select a Branch.",
-                isImp: false
+                isImp: true
               }}
               selector={{
                 name: "hospital_id",
@@ -165,10 +166,15 @@ class SalaryProcessing extends Component {
                 value: this.state.sub_department_id,
                 dataSource: {
                   textField: "sub_department_name",
-                  valueField: "sub_department_id",
+                  valueField: "hims_d_sub_department_id",
                   data: this.props.subdepartment
                 },
-                onChange: DeptselectedHandeler.bind(this, this)
+                onChange: texthandle.bind(this, this),
+                onClear: () => {
+                  this.setState({
+                    sub_department_id: null
+                  });
+                }
               }}
             />
 
@@ -185,7 +191,10 @@ class SalaryProcessing extends Component {
                 dataSource: {
                   textField: "full_name",
                   valueField: "hims_d_employee_id",
-                  data: this.props.all_employees
+                  data:
+                    this.state.sub_department_id !== null
+                      ? depEmployee
+                      : this.props.all_employees
                 },
                 onChange: texthandle.bind(this, this),
                 onClear: () => {
@@ -199,14 +208,18 @@ class SalaryProcessing extends Component {
               div={{ className: "col" }}
               label={{
                 forceLabel: "Salary Type.",
-                isImp: true
+                isImp: false
               }}
               selector={{
-                name: "",
+                name: "salary_type",
                 className: "select-fld",
-                value: "",
-                dataSource: {},
-                onChange: null,
+                value: this.state.salary_type,
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: GlobalVariables.SALARY_TYPE
+                },
+                onChange: texthandle.bind(this, this),
                 others: {
                   tabIndex: "2"
                 }
@@ -218,6 +231,7 @@ class SalaryProcessing extends Component {
                 type="button"
                 className="btn btn-primary"
                 style={{ marginTop: 21 }}
+                onClick={SalaryProcess.bind(this, this)}
               >
                 Load
               </button>
@@ -648,8 +662,7 @@ function mapStateToProps(state) {
   return {
     subdepartment: state.subdepartment,
     organizations: state.organizations,
-    all_employees: state.all_employees,
-    deptanddoctors: state.deptanddoctors
+    all_employees: state.all_employees
   };
 }
 
@@ -658,8 +671,7 @@ function mapDispatchToProps(dispatch) {
     {
       getSubDepartment: AlgaehActions,
       getOrganizations: AlgaehActions,
-      getEmployees: AlgaehActions,
-      getDepartmentsandDoctors: AlgaehActions
+      getEmployees: AlgaehActions
     },
     dispatch
   );

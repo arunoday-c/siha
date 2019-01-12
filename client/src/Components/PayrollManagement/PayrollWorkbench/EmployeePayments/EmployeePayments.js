@@ -50,23 +50,6 @@ class EmployeePayment extends Component {
     }
 
     if (
-      this.props.subdepartment === undefined ||
-      this.props.subdepartment.length === 0
-    ) {
-      this.props.getSubDepartment({
-        uri: "/department/get/subdepartment",
-        data: {
-          sub_department_status: "A"
-        },
-        method: "GET",
-        redux: {
-          type: "SUB_DEPT_GET_DATA",
-          mappingName: "subdepartment"
-        }
-      });
-    }
-
-    if (
       this.props.all_employees === undefined ||
       this.props.all_employees.length === 0
     ) {
@@ -591,20 +574,16 @@ class EmployeePayment extends Component {
 
 function mapStateToProps(state) {
   return {
-    subdepartment: state.subdepartment,
     organizations: state.organizations,
-    all_employees: state.all_employees,
-    deptanddoctors: state.deptanddoctors
+    all_employees: state.all_employees
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getSubDepartment: AlgaehActions,
       getOrganizations: AlgaehActions,
-      getEmployees: AlgaehActions,
-      getDepartmentsandDoctors: AlgaehActions
+      getEmployees: AlgaehActions
     },
     dispatch
   );

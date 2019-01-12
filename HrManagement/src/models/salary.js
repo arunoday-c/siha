@@ -17,7 +17,7 @@ module.exports = {
           A.total_holidays, A.total_leave, A.paid_leave, A.unpaid_leave, A.total_paid_days,E.employee_code \
           from hims_f_attendance_monthly A,hims_d_employee E where `year`=? and `month`=? and A.hospital_id=? \
           and E.hims_d_employee_id = A.employee_id and A.hospital_id = E.hospital_id",
-        values: [year, month_number, input.hospital_id]
+        values: [input.year, input.month, input.hospital_id]
       })
       .then(empResult => {
         const _allEmployees = _.map(empResult, o => {
