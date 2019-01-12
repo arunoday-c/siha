@@ -8,7 +8,7 @@
     "build": "babel src -s -D -d dist ",
     "build_document_management": "babel DocumentManagement/src -s -D -d DocumentManagement/dist ",
     "client": "npm run start --prefix client",
-    "hr_server": "npm run hr_server --prefix HrManagement",
+    "hr_server": "npm run dev --prefix HrManagement",
     "doc_mgmt": "npm run document_server --prefix DocumentManagement",
     "api": "npm run internal_server",
     "dev": "concurrently --kill-others  \"npm run internal_server \" \"npm run client\" \"npm run hr_server\" \"npm run doc_mgmt\"",
