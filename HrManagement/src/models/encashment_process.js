@@ -44,29 +44,27 @@ module.exports = {
       });
   },
 
+  getLeaveEncashLevels: (req, res, next) => {
+    try {
+      let userPrivilege = req.userIdentity.loan_authorize_privilege;
 
-  
- getLeaveEncashLevels = (req, res, next) => {
-  try {
-    let userPrivilege = req.userIdentity.loan_authorize_privilege;
+      let auth_levels = [];
+      switch (userPrivilege) {
+        case "AL1":
+          auth_levels.push({ name: "Level 1", value: 1 });
+          break;
+        case "AL2":
+          auth_levels.push(
+            { name: "Level 2", value: 2 },
+            { name: "Level 1", value: 1 }
+          );
+          break;
+      }
 
-    let auth_levels = [];
-    switch (userPrivilege) {
-      case "AL1":
-        auth_levels.push({ name: "Level 1", value: 1 });
-        break;
-      case "AL2":
-        auth_levels.push(
-          { name: "Level 2", value: 2 },
-          { name: "Level 1", value: 1 }
-        );
-        break;
+      req.records = { auth_levels };
+      next();
+    } catch (e) {
+      next(e);
     }
-
-    req.records = { auth_levels };
-    next();
-  } catch (e) {
-    next(e);
   }
-}
 };
