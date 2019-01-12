@@ -15,24 +15,19 @@ export function printReport(data) {
             <td><label>  Type</label></td>
             <td><span> Income</span></td>
         </tr>
-
-
     </table>
-
-
-</section>
-<section>
+    </section>
+    <section>
     <h2><span>Bill Details</span></h2>
     <table class="tableForData" cell-padding="0">
         <thead>
             <tr>
                 <th>SERVICE TYPE CODE</th>
                 <th>SERVICE TYPE</th>
-                <th>AMOUNT</th>
-                
+                <th>AMOUNT</th>  
             </tr>
         </thead>
-        <tbody>
+     <tbody>
         
   ${data
     .map(
@@ -52,7 +47,7 @@ export function printReport(data) {
         <td><b> Total Amount</b></td>
         <td style="text-align:right"><b>${AllTotal}</b></td>
     </tr>
-        </tbody>
+     </tbody>
     </table>
 </section>
 

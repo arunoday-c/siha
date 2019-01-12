@@ -1,5 +1,4 @@
 import { revenueHeader } from "./revenueHeader";
-import moment from "moment";
 import Enumerable from "linq";
 
 export function printReport(data) {

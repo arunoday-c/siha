@@ -92,7 +92,7 @@ export default class LeaveManagement extends Component {
               {
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Leave Yearly Process"
+                    forceLabel: "Yearly Leave Process"
                   }}
                 />
               }

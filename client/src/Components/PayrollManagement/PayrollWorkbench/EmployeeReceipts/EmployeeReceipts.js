@@ -33,7 +33,19 @@ class EmployeeReceipts extends Component {
       employee_name: null,
       reciepts_mode: null,
       recievable_amount: null,
-      write_off_amount: null
+      write_off_amount: null,
+      employee_receipts: []
+    });
+  }
+
+  clearSaveState() {
+    this.setState({
+      hims_f_loan_application_id: null,
+      current_loan: {},
+      reciepts_type: "LO",
+      reciepts_mode: null,
+      recievable_amount: null,
+      write_off_amount: null,
     });
   }
 
@@ -41,16 +53,32 @@ class EmployeeReceipts extends Component {
     AlgaehValidation({
       alertTypeIcon: "warning",
       onSuccess: () => {
+
+        let write_off_amt = this.state.write_off_amount ? this.state.write_off_amount : 0;
+        let balance_amount =     ( this.state.current_loan.pending_loan - write_off_amt ) - this.state.recievable_amount ;
+        
         algaehApiCall({
-          uri: "/employee/addEmployeeReceipts",
+          uri: "/loan/addLoanReciept",
           method: "POST",
+          data : {
+           employee_id: this.state.hims_d_employee_id,
+            reciepts_type:this.state.reciepts_type,
+            recievable_amount:this.state.recievable_amount,
+            write_off_amount:this.state.write_off_amount ? this.state.write_off_amount : 0,
+            loan_application_id:this.state.hims_f_loan_application_id,
+            balance_amount:balance_amount,
+            reciepts_mode:this.state.reciepts_mode,
+            cheque_number:this.state.cheque_number
+          },
           onSuccess: res => {
             if (res.data.success) {
               swalMessage({
                 title: "Received Successfully",
                 type: "success"
               });
-              this.clearState();
+              this.clearSaveState();
+              this.getEmployeeReceipts();
+              this.getLoans()
             }
           },
           onFailure: err => {
@@ -82,7 +110,7 @@ class EmployeeReceipts extends Component {
           },
           () => {
             this.getLoans();
-            //this.getEmployeeReceipts();
+            this.getEmployeeReceipts();
           }
         );
       }
@@ -91,7 +119,7 @@ class EmployeeReceipts extends Component {
 
   getEmployeeReceipts() {
     algaehApiCall({
-      uri: "/payroll/getEmployeeReceipts",
+      uri: "/loan/getEmployeeLoanReciept",
       method: "GET",
       data: {
         employee_id: this.state.hims_d_employee_id
@@ -111,13 +139,15 @@ class EmployeeReceipts extends Component {
       }
     });
   }
+
   getLoans() {
     algaehApiCall({
       uri: "/loan/getLoanApplication",
       method: "GET",
       data: {
         employee_id: this.state.hims_d_employee_id,
-        loan_issued: "Y"
+        loan_issued: "Y",
+        loan_closed : "N"
       },
       onSuccess: res => {
         if (res.data.success) {
@@ -316,7 +346,7 @@ class EmployeeReceipts extends Component {
           {this.state.reciepts_type === "LO" ? (
             <AlagehAutoComplete
               div={{ className: "col-3 form-group" }}
-              label={{ forceLabel: "Loan Code", isImp: true }}
+              label={{ forceLabel: "Loan Application No.", isImp: true }}
               selector={{
                 name: "hims_f_loan_application_id",
                 value: this.state.hims_f_loan_application_id,
@@ -347,8 +377,6 @@ class EmployeeReceipts extends Component {
           </div>
         </div>
         <div className="row">
-          {" "}
-          ``
           <div className="col-12">
             <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
               <div className="portlet-body">
@@ -399,7 +427,7 @@ class EmployeeReceipts extends Component {
                     <h6>
                       {currentLoan.pending_loan
                         ? currentLoan.pending_loan
-                        : "------"}
+                        : "0.00"}
                     </h6>
                   </div>
                 </div>
@@ -510,12 +538,30 @@ class EmployeeReceipts extends Component {
                       datavalidate="EmployeeReciptsGrid"
                       columns={[
                         {
+                          fieldName : "loan_application_number",
+                          label : (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Loan Application No." }}
+                          /> )
+                        },
+                        {
                           fieldName: "reciepts_type",
                           label: (
                             <AlgaehLabel
-                              label={{ forceLabel: "Recipt Type" }}
+                              label={{ forceLabel: "Receipts Type" }}
                             />
-                          )
+                          ),
+                          displayTemplate : row=>{
+                            return (
+                              <span>
+                                {
+                                  row.reciepts_type === "LO" ? "Loan" : 
+                                  row.reciepts_type === "FS" ? "Final Settlement" :
+                                  "------" 
+                                }
+                              </span>
+                            )
+                          }
                         },
                         {
                           fieldName: "employee_code",
@@ -547,7 +593,18 @@ class EmployeeReceipts extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Mode of Recipt" }}
                             />
-                          )
+                          ),
+                          displayTemplate : row=>{
+                            return (
+                              <span>
+                                {
+                                  row.reciepts_mode === "CS" ? "Cash" : 
+                                  row.reciepts_mode === "CH" ? "Cheque" :
+                                  "------" 
+                                }
+                              </span>
+                            )
+                          }
                         },
                         {
                           fieldName: "recievable_amount",
