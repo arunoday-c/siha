@@ -14,7 +14,7 @@ import {
   dateFomater
 } from "../../../../utils/algaehApiCall";
 import moment from "moment";
-import GlobalVariables from '../../../../utils/GlobalVariables.json'
+import GlobalVariables from "../../../../utils/GlobalVariables.json";
 
 export default class MonthlyAttendance extends Component {
   constructor(props) {
@@ -51,6 +51,7 @@ export default class MonthlyAttendance extends Component {
       .format("MMM DD YYYY");
     return _start + " - " + _end;
   }
+
   componentDidMount() {
     this.getDepartment();
     this.getOrganization();
@@ -162,7 +163,7 @@ export default class MonthlyAttendance extends Component {
         ? { sub_department_id: that.state.department.sub_department_id }
         : {};
 
-        let yearMonth = this.state.year + "-" +this.state.month+"-01"
+    let yearMonth = this.state.year + "-" + this.state.month + "-01";
 
     that.setState({ attandance: { loader: true } });
     algaehApiCall({
@@ -170,9 +171,7 @@ export default class MonthlyAttendance extends Component {
       method: "GET",
       module: "hrManagement",
       data: {
-        // year : this.state.year,
-        // month : this.state.month,
-        yearAndMonth:yearMonth ,
+        yearAndMonth: yearMonth,
         ..._empdtl,
         ..._branch,
         ..._depatment
@@ -201,16 +200,50 @@ export default class MonthlyAttendance extends Component {
     });
   }
 
-  dropDownHandler(value) {
+  getStartandMonthEnd() {
+    let yearMonth = this.state.year + "-" + this.state.month + "-01";
+    let startDate = moment(yearMonth)
+      .startOf("month")
+      .format("MMM DD YYYY");
+    let endDate = moment(yearMonth)
+      .endOf("month")
+      .format("MMM DD YYYY");
+
     this.setState({
-      [value.name]: value.value
+      formatingString: startDate + " - " + endDate
     });
   }
 
+  dropDownHandler(value) {
+    switch (value.name) {
+      case "month":
+        this.setState(
+          {
+            [value.name]: value.value
+          },
+          () => {
+            this.getStartandMonthEnd();
+          }
+        );
+        break;
+
+      default:
+        this.setState({
+          [value.name]: value.value
+        });
+        break;
+    }
+  }
+
   textHandler(e) {
-    this.setState({
-      [e.target.name] : e.target.value
-    })
+    this.setState(
+      {
+        [e.target.name]: e.target.value
+      },
+      () => {
+        this.getStartandMonthEnd();
+      }
+    );
   }
 
   render() {
@@ -234,50 +267,49 @@ export default class MonthlyAttendance extends Component {
             value={dateFomater(this.state.yearAndMonth)}
           /> */}
 
-      <AlagehFormGroup
-              div={{ className: "col" }}
-              label={{
-                forceLabel: "Year",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "year",
-                value: this.state.year,
-                events: {
-                  onChange: this.textHandler.bind(this)
-                },
-                others: {
-                  type: "number",
-                }
-              }}
-            />
+          <AlagehFormGroup
+            div={{ className: "col" }}
+            label={{
+              forceLabel: "Year",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "year",
+              value: this.state.year,
+              events: {
+                onChange: this.textHandler.bind(this)
+              },
+              others: {
+                type: "number"
+              }
+            }}
+          />
 
-<AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{
-                forceLabel: "Select a Month.",
-                isImp: true
-              }}
-              selector={{
-                name: "month",
-                className: "select-fld",
-                value: this.state.month,
-                dataSource: {
-                  textField: "name",
-                  valueField: "value",
-                  data: GlobalVariables.MONTHS
-                },
-                onChange: this.dropDownHandler.bind(this),
-                onClear: () => {
-                  this.setState({
-                    month: null
-                  });
-                }
-              }}
-            />
+          <AlagehAutoComplete
+            div={{ className: "col" }}
+            label={{
+              forceLabel: "Select a Month.",
+              isImp: true
+            }}
+            selector={{
+              name: "month",
+              className: "select-fld",
+              value: this.state.month,
+              dataSource: {
+                textField: "name",
+                valueField: "value",
+                data: GlobalVariables.MONTHS
+              },
+              onChange: this.dropDownHandler.bind(this),
+              onClear: () => {
+                this.setState({
+                  month: null
+                });
+              }
+            }}
+          />
 
-       
           <AlagehAutoComplete
             div={{ className: "col " }}
             label={{
