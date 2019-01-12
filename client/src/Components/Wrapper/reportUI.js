@@ -141,6 +141,7 @@ export default class ReportUI extends Component {
           new Promise((resolve, reject) => {
             resolve(response.data.records);
           }).then(data => {
+            options.inputData = that.state.parameterCollection;
             options.data = data;
             let _optionsFetch = options;
             let _htm = accessReport(_optionsFetch);
@@ -161,10 +162,17 @@ export default class ReportUI extends Component {
         _hasEvents.onChange(this, e);
       }
     } else {
+      let _inputText = "";
+      const _inputBox = document.getElementsByName(e.name);
+      if (_inputBox.length != 0) {
+        _inputText = _inputBox[0].value;
+      }
+
       this.setState({
         parameterCollection: {
           ...this.state.parameterCollection,
-          [e.name]: e.value
+          [e.name]: e.value,
+          [e.name + "_text"]: _inputText
         }
       });
     }
