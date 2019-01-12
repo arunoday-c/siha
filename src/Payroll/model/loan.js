@@ -217,7 +217,7 @@ between date('${req.query.from_date}') and date('${req.query.to_date}') `;
 
     let loan_closed = "";
     if (req.query.loan_closed == "Y" || req.query.loan_closed == "N") {
-      loan_closed = ` and LA.loan_closed=${req.query.loan_closed} `;
+      loan_closed = ` and LA.loan_closed='${req.query.loan_closed}' `;
     }
 
     db.getConnection((error, connection) => {
