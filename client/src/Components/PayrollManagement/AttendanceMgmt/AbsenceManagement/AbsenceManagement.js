@@ -17,6 +17,32 @@ import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 export default class AbsenceManagement extends Component {
   constructor(props) {
     super(props);
+    this.state={}
+  }
+
+
+  employeeSearch() {
+    AlgaehSearch({
+      searchGrid: {
+        columns: Employee
+      },
+      searchName: "employee",
+      uri: "/gloabelSearch/get",
+      onContainsChange: (text, serchBy, callBack) => {
+        callBack(text);
+      },
+      onRowSelect: row => {
+        this.setState(
+          {
+            employee_name: row.full_name,
+            hims_d_employee_id: row.hims_d_employee_id
+          },
+          () => {
+           
+          }
+        );
+      }
+    });
   }
 
   render() {
@@ -34,7 +60,11 @@ export default class AbsenceManagement extends Component {
             >
               <div className="col">
                 <AlgaehLabel label={{ forceLabel: "Employee Name" }} />
-                <h6>-------------</h6>
+                <h6>
+                  {this.state.employee_name
+                    ? this.state.employee_name
+                    : "------"}
+                </h6>
               </div>
               <div
                 className="col-lg-3"
@@ -47,7 +77,7 @@ export default class AbsenceManagement extends Component {
                     paddingLeft: 3,
                     cursor: "pointer"
                   }}
-                  // onClick={this.employeeSearch.bind(this)}
+                   onClick={this.employeeSearch.bind(this)}
                 />
               </div>
             </div>
@@ -58,10 +88,17 @@ export default class AbsenceManagement extends Component {
             label={{ forceLabel: "Seletc a Date", isImp: false }}
             textBox={{
               className: "txt-fld",
-              name: ""
+              name: "absent_date"
             }}
             maxDate={new Date()}
-            events={{}}
+            events={{
+              onChange : selDate =>{
+                this.setState({
+                  absent_date : selDate
+                })
+              }
+            }}
+            value={this.state.absent_date}
           />
 
           <AlagehAutoComplete

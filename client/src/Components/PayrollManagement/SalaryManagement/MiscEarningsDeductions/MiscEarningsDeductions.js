@@ -157,11 +157,11 @@ export default class MiscEarningsDeductions extends Component {
     }
   }
 
-  monthSelectionHandler(e) {
-    this.setState({
-      yearAndMonth: moment(e).startOf("month")._d
-    });
-  }
+  // monthSelectionHandler(e) {
+  //   this.setState({
+  //     yearAndMonth: moment(e).startOf("month")._d
+  //   });
+  // }
 
   dropDownHandler(value) {
     this.setState({

@@ -5,7 +5,8 @@ import {
   AlagehAutoComplete,
   AlgaehLabel,
   AlgaehDataGrid,
-  AlgaehDateHandler
+  AlgaehDateHandler,
+  AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
 import {
   algaehApiCall,
@@ -13,12 +14,15 @@ import {
   dateFomater
 } from "../../../../utils/algaehApiCall";
 import moment from "moment";
+import GlobalVariables from '../../../../utils/GlobalVariables.json'
 
 export default class MonthlyAttendance extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      year: moment().year(),
+      month: moment(new Date()).format("M"),
       department: {
         loader: false,
         sub_department_id: null,
@@ -158,13 +162,17 @@ export default class MonthlyAttendance extends Component {
         ? { sub_department_id: that.state.department.sub_department_id }
         : {};
 
+        let yearMonth = this.state.year + "-" +this.state.month+"-01"
+
     that.setState({ attandance: { loader: true } });
     algaehApiCall({
       uri: "/attendance/processAttendance",
       method: "GET",
       module: "hrManagement",
       data: {
-        yearAndMonth: that.state.yearAndMonth,
+        // year : this.state.year,
+        // month : this.state.month,
+        yearAndMonth:yearMonth ,
         ..._empdtl,
         ..._branch,
         ..._depatment
@@ -193,11 +201,23 @@ export default class MonthlyAttendance extends Component {
     });
   }
 
+  dropDownHandler(value) {
+    this.setState({
+      [value.name]: value.value
+    });
+  }
+
+  textHandler(e) {
+    this.setState({
+      [e.target.name] : e.target.value
+    })
+  }
+
   render() {
     return (
       <div className="monthly_attendance">
         <div className="row inner-top-search">
-          <AlgaehDateHandler
+          {/* <AlgaehDateHandler
             div={{ className: "col mandatory" }}
             label={{ forceLabel: "Select Month & Year", isImp: true }}
             textBox={{
@@ -212,7 +232,52 @@ export default class MonthlyAttendance extends Component {
               type: "month"
             }}
             value={dateFomater(this.state.yearAndMonth)}
-          />
+          /> */}
+
+      <AlagehFormGroup
+              div={{ className: "col" }}
+              label={{
+                forceLabel: "Year",
+                isImp: true
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "year",
+                value: this.state.year,
+                events: {
+                  onChange: this.textHandler.bind(this)
+                },
+                others: {
+                  type: "number",
+                }
+              }}
+            />
+
+<AlagehAutoComplete
+              div={{ className: "col" }}
+              label={{
+                forceLabel: "Select a Month.",
+                isImp: true
+              }}
+              selector={{
+                name: "month",
+                className: "select-fld",
+                value: this.state.month,
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: GlobalVariables.MONTHS
+                },
+                onChange: this.dropDownHandler.bind(this),
+                onClear: () => {
+                  this.setState({
+                    month: null
+                  });
+                }
+              }}
+            />
+
+       
           <AlagehAutoComplete
             div={{ className: "col " }}
             label={{
