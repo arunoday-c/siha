@@ -92,8 +92,7 @@ module.exports = {
           "INSERT INTO `hims_f_employee_payments` (payment_application_code,employee_id,employee_advance_id,\
             employee_loan_id,employee_leave_encash_id,employee_end_of_service_id,employee_final_settlement_id,\
             employee_leave_settlement_id,payment_type,payment_date,remarks,earnings_id,deduction_month,payment_amount,\
-            payment_mode,cheque_number\
-            created_date,created_by,updated_date,updated_by)\
+            payment_mode,cheque_number,created_date,created_by,updated_date,updated_by)\
           VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         values: [
           payment_application_code,
