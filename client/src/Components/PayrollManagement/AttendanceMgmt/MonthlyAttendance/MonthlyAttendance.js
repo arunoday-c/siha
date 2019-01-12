@@ -184,6 +184,14 @@ export default class MonthlyAttendance extends Component {
               data: response.data.result
             }
           });
+        } else if (!response.data.success) {
+          swalMessage({
+            title: response.data.result.message,
+            type: "error"
+          });
+          that.setState({
+            attandance: { loader: false }
+          });
         }
       },
       onFailure: error => {
