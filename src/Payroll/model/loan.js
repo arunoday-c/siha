@@ -217,7 +217,7 @@ between date('${req.query.from_date}') and date('${req.query.to_date}') `;
 
     let loan_closed = "";
     if (req.query.loan_closed == "Y" || req.query.loan_closed == "N") {
-      loan_closed = ` and loan_closed=${req.query.loan_closed} `;
+      loan_closed = ` and LA.loan_closed=${req.query.loan_closed} `;
     }
 
     db.getConnection((error, connection) => {
@@ -624,9 +624,10 @@ let getEmployeeLoanReciept = (req, res, next) => {
           "select hims_f_employee_reciepts_id,ER.employee_id,reciepts_type,\
         recievable_amount,write_off_amount,loan_application_id,LA.loan_application_number,LA.application_reason,\
         final_settlement_id,remarks,balance_amount,reciepts_mode,cheque_number,posted,posted_by,posted_date,\
-        L.loan_code,L.loan_description from hims_f_employee_reciepts ER inner join hims_f_loan_application LA on\
+        L.loan_code,L.loan_description,E.employee_code,E.full_name as employee_name from hims_f_employee_reciepts ER inner join hims_f_loan_application LA on\
         ER.loan_application_id=LA.hims_f_loan_application_id inner join hims_d_loan L on\
-        LA.loan_id=L.hims_d_loan_id  where ER.employee_id=? order by hims_f_employee_reciepts_id desc",
+        LA.loan_id=L.hims_d_loan_id inner join hims_d_employee E on ER.employee_id=E.hims_d_employee_id\
+          where ER.employee_id=? order by hims_f_employee_reciepts_id desc",
           req.query.employee_id,
           (error, result) => {
             releaseDBConnection(db, connection);
