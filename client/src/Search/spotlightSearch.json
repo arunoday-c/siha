@@ -59,6 +59,14 @@
         "label": "Patient Code"
       },
       {
+        "fieldName": "full_name",
+        "label": "Patient Name"
+      },
+      {
+        "fieldName": "contact_number",
+        "label": "Mobile Num."
+      },
+      {
         "fieldName": "visit_code",
         "label": "Visit Code"
       },
@@ -347,6 +355,30 @@
       {
         "fieldName": "approved_amount",
         "label": "Approved Amount"
+      }
+    ]
+  },
+  "Employee_details": {
+    "employee": [
+      {
+        "fieldName": "employee_code",
+        "label": "Employee Code"
+      },
+      {
+        "fieldName": "full_name",
+        "label": "Name"
+      },
+      {
+        "fieldName": "arabic_name",
+        "label": "Arabic Name"
+      },
+      {
+        "fieldName": "sex",
+        "label": "Gender"
+      },
+      {
+        "fieldName": "primary_contact_no",
+        "label": "Contact Number"
       }
     ]
   }

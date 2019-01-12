@@ -217,7 +217,7 @@ const checkcardhandaler = ($this, context, e) => {
       Cardchecked: Cardchecked,
       card_amount: 0,
       card_check_number: null,
-      expiry_date: null
+      card_date: null
     },
     () => {
       calculateRecipt($this, context, e);
@@ -228,7 +228,7 @@ const checkcardhandaler = ($this, context, e) => {
     context.updateState({
       card_amount: 0,
       card_check_number: null,
-      expiry_date: null,
+      card_date: null,
       Cardchecked: Cardchecked
     });
   }

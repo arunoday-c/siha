@@ -225,7 +225,7 @@ let insertContainer = (req, res, next) => {
        VALUES ( ?, ?, ?, ?, ?)",
       [
         inputParam.description,
-        imputParam.container_id,
+        inputParam.container_id,
         inputParam.created_by,
         new Date(),
         inputParam.container_status

@@ -36,7 +36,6 @@ const PatientSearch = ($this, e) => {
       callBack(text);
     },
     onRowSelect: row => {
-      
       $this.setState(
         {
           patient_code: row.patient_code,
@@ -84,7 +83,7 @@ const datehandle = ($this, ctrl, e) => {
 
 const getSampleCollectionDetails = $this => {
   let inputobj = {};
-
+  debugger;
   if ($this.state.from_date !== null) {
     inputobj.from_date = moment($this.state.from_date).format(
       Options.dateFormatYear
@@ -115,7 +114,7 @@ const getSampleCollectionDetails = $this => {
       mappingName: "samplecollection"
     },
     afterSuccess: data => {
-      
+      debugger;
       let sample_collection = Enumerable.from(data)
         .groupBy("$.visit_id", null, (k, g) => {
           let firstRecordSet = Enumerable.from(g).firstOrDefault();

@@ -209,6 +209,7 @@ class LabSection extends Component {
                       : this.props.labsection
                 }}
                 isEditable={true}
+                filter={true}
                 paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
                   onDelete: deleteLabSection.bind(this, this),
