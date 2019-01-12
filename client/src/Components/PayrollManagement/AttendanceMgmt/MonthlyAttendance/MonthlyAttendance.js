@@ -53,31 +53,24 @@ export default class MonthlyAttendance extends Component {
   }
 
   componentDidMount() {
-    this.getDepartment();
+    this.getSubDepts();
     this.getOrganization();
   }
-  getDepartment() {
+
+  getSubDepts() {
     const that = this;
-    that.setState({ department: { loader: true } });
+
     algaehApiCall({
-      uri: "/department/get",
+      uri: "/department/get/subdepartment",
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
           that.setState({
-            department: {
-              loader: false,
-              data: response.data.records
-            }
+            sub_departments: response.data.records
           });
         }
       },
       onFailure: error => {
-        that.setState({
-          department: {
-            loader: false
-          }
-        });
         swalMessage({
           title: error.message,
           type: "error"
@@ -85,6 +78,36 @@ export default class MonthlyAttendance extends Component {
       }
     });
   }
+
+  // getDepartment() {
+  //   const that = this;
+  //   that.setState({ department: { loader: true } });
+  //   algaehApiCall({
+  //     uri: "/department/get",
+  //     method: "GET",
+  //     onSuccess: response => {
+  //       if (response.data.success) {
+  //         that.setState({
+  //           department: {
+  //             loader: false,
+  //             data: response.data.records
+  //           }
+  //         });
+  //       }
+  //     },
+  //     onFailure: error => {
+  //       that.setState({
+  //         department: {
+  //           loader: false
+  //         }
+  //       });
+  //       swalMessage({
+  //         title: error.message,
+  //         type: "error"
+  //       });
+  //     }
+  //   });
+  // }
 
   getOrganization() {
     const that = this;
@@ -121,6 +144,7 @@ export default class MonthlyAttendance extends Component {
       yearAndMonth: moment(e).startOf("month")._d
     });
   }
+
   onDropDownClearHandler(e) {
     const _stateOf = this["ref_" + e];
     const _getType = _stateOf.getAttribute("stateof");
@@ -133,17 +157,23 @@ export default class MonthlyAttendance extends Component {
     });
   }
 
-  dropDownHandle(e) {
-    const _stateOf = this["ref_" + e.name];
-    const _getType = _stateOf.getAttribute("stateof");
+  // dropDownHandle(e) {
+  //   const _stateOf = this["ref_" + e.name];
+  //   const _getType = _stateOf.getAttribute("stateof");
 
-    this.setState({
-      [_getType]: {
-        [e.name]: e.value,
-        ...this.state[_getType]
-      }
-    });
-  }
+  //   this.setState({
+  //     [_getType]: {
+  //       [e.name]: e.value,
+  //       ...this.state[_getType]
+  //     }
+  //   });
+  // }
+  // dropDownHandle(value) {
+
+  //   this.setState({
+  //   [ value.name] : value.value
+  //   });
+  // }
   processAttandance() {
     const that = this;
     const _empdtl =
@@ -173,8 +203,8 @@ export default class MonthlyAttendance extends Component {
       data: {
         yearAndMonth: yearMonth,
         ..._empdtl,
-        ..._branch,
-        ..._depatment
+        hospital_id: this.state.hospital_id,
+        sub_department_id: this.state.sub_department_id
       },
       onSuccess: response => {
         if (response.data.success) {
@@ -327,22 +357,20 @@ export default class MonthlyAttendance extends Component {
             selector={{
               name: "sub_department_id",
               className: "select-fld",
-              value: this.state.department.sub_department_id,
+              value: this.state.sub_department_id,
               dataSource: {
-                textField: "department_name",
-                valueField: "hims_d_department_id",
-                data: this.state.department.data
+                textField: "sub_department_name",
+                valueField: "hims_d_sub_department_id",
+                data: this.state.sub_departments
               },
-              others: {
-                ref: c => {
-                  this.ref_sub_department_id = c;
-                },
-                stateof: "department"
-              },
-              onChange: this.dropDownHandle.bind(this),
-              onClear: this.onDropDownClearHandler.bind(this)
+              onChange: this.dropDownHandler.bind(this),
+              onClear: () => {
+                this.setState({
+                  sub_department_id: null
+                });
+              }
             }}
-            showLoading={this.state.department.loader}
+            // showLoading={this.state.department.loader}
           />
 
           <AlagehAutoComplete
@@ -354,20 +382,24 @@ export default class MonthlyAttendance extends Component {
             selector={{
               name: "hospital_id",
               className: "select-fld",
-              value: this.state.branch.hospital_id,
+              value: this.state.hospital_id,
               dataSource: {
                 textField: "hospital_name",
-                valueField: "organization_id",
+                valueField: "hims_d_hospital_id",
                 data: this.state.branch.data
               },
-              others: {
-                ref: c => {
-                  this.ref_hospital_id = c;
-                },
-                stateof: "branch"
-              },
-              onChange: this.dropDownHandle.bind(this),
-              onClear: this.onDropDownClearHandler.bind(this)
+              // others: {
+              //   ref: c => {
+              //     this.ref_hospital_id = c;
+              //   },
+              //   stateof: "branch"
+              // },
+              onChange: this.dropDownHandler.bind(this),
+              onClear: () => {
+                this.setState({
+                  hospital_id: null
+                });
+              }
             }}
             showLoading={this.state.branch.loader}
           />
