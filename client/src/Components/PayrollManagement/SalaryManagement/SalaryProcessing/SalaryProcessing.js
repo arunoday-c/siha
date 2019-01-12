@@ -263,7 +263,7 @@ class SalaryProcessing extends Component {
                             id="Salary_Management_Cntr_grid"
                             columns={[
                               {
-                                fieldName: "",
+                                fieldName: "salary_number",
                                 label: "Salary No."
                                 //disabled: true
                               },
@@ -276,7 +276,7 @@ class SalaryProcessing extends Component {
                                 }
                               },
                               {
-                                fieldName: "",
+                                fieldName: "present_days",
                                 label: "Present Days"
                                 //disabled: true
                               },
