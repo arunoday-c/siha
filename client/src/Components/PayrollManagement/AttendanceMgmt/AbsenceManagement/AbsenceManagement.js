@@ -99,66 +99,68 @@ export default class AbsenceManagement extends Component {
           </div>
         </div>
 
-        <div className="col-12">
-          <div className="portlet portlet-bordered margin-bottom-15">
-            <div className="portlet-title">
-              <div className="caption">
-                <h3 className="caption-subject">Enter Grid Name Here</h3>
+        <div className="row">
+          <div className="col-12">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Employee Absence List</h3>
+                </div>
+                <div className="actions">
+                  <a className="btn btn-primary btn-circle active">
+                    <i className="fas fa-pen" />
+                  </a>
+                </div>
               </div>
-              <div className="actions">
-                <a className="btn btn-primary btn-circle active">
-                  <i className="fas fa-pen" />
-                </a>
-              </div>
-            </div>
-            <div className="portlet-body">
-              <div className="row">
-                <div className="col-12" id="AbsenceManagementGrid_Cntr">
-                  <AlgaehDataGrid
-                    id="AbsenceManagementGrid"
-                    datavalidate="AbsenceManagementGrid"
-                    columns={[
-                      {
-                        fieldName: "EmployeeCode",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Employee Code" }}
-                          />
-                        )
-                      },
+              <div className="portlet-body">
+                <div className="row">
+                  <div className="col-12" id="AbsenceManagementGrid_Cntr">
+                    <AlgaehDataGrid
+                      id="AbsenceManagementGrid"
+                      datavalidate="AbsenceManagementGrid"
+                      columns={[
+                        {
+                          fieldName: "EmployeeCode",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Employee Code" }}
+                            />
+                          )
+                        },
 
-                      {
-                        fieldName: "EmployeeName",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Employee Name" }}
-                          />
-                        )
-                      },
-                      {
-                        fieldName: "DateofAbscent",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Date of Abscent" }}
-                          />
-                        )
-                      },
-                      {
-                        fieldName: "Leave Session",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Leave Session" }}
-                          />
-                        )
-                      }
-                    ]}
-                    keyId=""
-                    dataSource={{ data: [] }}
-                    isEditable={true}
-                    paging={{ page: 0, rowsPerPage: 10 }}
-                    events={{}}
-                    others={{}}
-                  />
+                        {
+                          fieldName: "EmployeeName",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Employee Name" }}
+                            />
+                          )
+                        },
+                        {
+                          fieldName: "DateofAbscent",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Date of Abscent" }}
+                            />
+                          )
+                        },
+                        {
+                          fieldName: "Leave Session",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Leave Session" }}
+                            />
+                          )
+                        }
+                      ]}
+                      keyId=""
+                      dataSource={{ data: [] }}
+                      isEditable={true}
+                      paging={{ page: 0, rowsPerPage: 10 }}
+                      events={{}}
+                      others={{}}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
