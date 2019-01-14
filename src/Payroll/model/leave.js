@@ -1978,11 +1978,14 @@ let authorizeLeave = (req, res, next) => {
                             parseFloat(input.total_approved_days);
 
                           connection.query(
-                            `update hims_f_employee_monthly_leave set  close_balance=?, ${
+                            `update hims_f_leave_application set status='APR' where record_status='A' \
+                          and hims_f_leave_application_id=?;
+                            update hims_f_employee_monthly_leave set  close_balance=?, ${
                               input.month
                             }=? where \
                           hims_f_employee_monthly_leave_id=?`,
                             [
+                              input.hims_f_leave_application_id,
                               newCloseBal,
                               monthBal,
                               leaveData[0].hims_f_employee_monthly_leave_id
@@ -2071,6 +2074,102 @@ let authorizeLeave = (req, res, next) => {
     next(e);
   }
 };
+
+//created by irfan:
+let getLeaveApllication = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    if (
+      req.query.auth_level != "L1" &&
+      req.query.auth_level != "L2" &&
+      req.query.auth_level != "L3"
+    ) {
+      req.records = { invalid_input: true, message: "invalid auth level " };
+      next();
+      return;
+    }
+    let employee = "";
+    let range = "";
+
+    if (
+      req.query.employee_id != "" &&
+      req.query.employee_id != null &&
+      req.query.employee_id != "null"
+    ) {
+      employee = ` and employee_id=${req.query.employee_id} `;
+    }
+
+    if (
+      req.query.from_date != "null" &&
+      req.query.from_date != "" &&
+      req.query.from_date != null &&
+      req.query.to_date != "null" &&
+      req.query.to_date != "" &&
+      req.query.to_date != null
+    ) {
+      range = ` and date(application_date)
+between date('${req.query.from_date}') and date('${req.query.to_date}') `;
+    }
+
+    let auth_level = "";
+    if (req.query.auth_level == "L1") {
+      auth_level = " and authorize1='N' ";
+    } else if (req.query.auth_level == "L2") {
+      auth_level = " and authorize1='Y' and authorized2='N' ";
+    } else if (req.query.auth_level == "L3") {
+      auth_level =
+        " and authorize1='Y' and authorized2='Y' and authorized3='N' ";
+    }
+
+    let leave_status = "";
+
+    if (req.query.leave_status == "A") {
+      leave_status = " and status='APR' ";
+    } else if (req.query.leave_status == "R") {
+      leave_status = " and status='REJ' ";
+    } else {
+      leave_status = " and status='PEN' ";
+    }
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "SELECT hims_f_leave_application_id,LA.leave_application_code,LA.employee_id,\
+        LA.application_date,LA.sub_department_id,LA.leave_id,LA.from_leave_session,\
+        LA.from_date,LA.to_date,LA.to_leave_session,LA.leave_applied_from,\
+        LA.total_applied_days,LA.total_approved_days,LA.`status`\
+        ,L.leave_code,L.leave_description,L.leave_type,E.employee_code,\
+        E.full_name as employee_name,SD.sub_department_code,SD.sub_department_name \
+        from hims_f_leave_application LA inner join hims_d_leave L on LA.leave_id=L.hims_d_leave_id\
+        and L.record_status='A' inner join hims_d_employee E on LA.employee_id=E.hims_d_employee_id \
+        and E.record_status='A' inner join hims_d_sub_department SD \
+        on LA.sub_department_id=SD.hims_d_sub_department_id  " +
+          employee +
+          "" +
+          range +
+          "" +
+          auth_level +
+          "" +
+          leave_status +
+          "order by hims_f_leave_application_id desc",
+
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
 module.exports = {
   getEmployeeLeaveData,
   applyEmployeeLeave,
@@ -2084,5 +2183,6 @@ module.exports = {
   markAbsent,
   cancelAbsent,
   getAllAbsentEmployee,
-  authorizeLeave
+  authorizeLeave,
+  getLeaveApllication
 };
