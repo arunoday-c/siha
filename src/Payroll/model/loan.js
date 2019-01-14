@@ -274,8 +274,6 @@ let getLoanLevels = (req, res, next) => {
         break;
     }
 
-    debugLog("auth_levels:", auth_levels);
-    debugLog("user iden:", req.userIdentity);
     req.records = { auth_levels };
     next();
   } catch (e) {
