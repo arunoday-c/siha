@@ -1665,7 +1665,7 @@ let getAllAbsentEmployee = (req, res, next) => {
           "select  hims_f_absent_id, employee_id, absent_date, from_session, to_session,\
           absent_reason, cancel ,absent_duration,cancel_reason,E.employee_code,E.full_name as employee_name\
           from hims_f_absent A,hims_d_employee E where A.record_status='A' and employee_id=1\
-          and date(absent_date) between date(?) and date(?) order by hims_f_absent_id desc",
+          and date(absent_date) between date(?) and date(?) and A.employee_id=E.hims_d_employee_id order by hims_f_absent_id desc",
           [startOfMonth, endOfMonth],
           (error, result) => {
             releaseDBConnection(db, connection);
