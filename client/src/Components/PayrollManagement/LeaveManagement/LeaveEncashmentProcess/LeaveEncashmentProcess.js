@@ -21,17 +21,17 @@ import {
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import LeaveEncashmentProcessIOputs from "../../../../Models/LeaveEncashmentProcess";
 
 class LeaveEncashmentProcess extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      year: moment().year(),
-      encash_type: null,
-      sel_employee_id: null,
-      encashDetail: [],
-      employee_name: null
-    };
+    this.state = {};
+  }
+
+  componentWillMount() {
+    let IOputs = LeaveEncashmentProcessIOputs.inputParam();
+    this.setState(IOputs);
   }
 
   componentDidMount() {

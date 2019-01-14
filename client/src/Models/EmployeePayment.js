@@ -13,7 +13,7 @@ export default {
       employee_final_settlement_id: null,
       employee_leave_settlement_id: null,
       payment_type: null,
-      payment_date: null,
+      payment_date: new Date(),
       remarks: null,
       earnings_id: null,
       deduction_month: null,
@@ -43,7 +43,9 @@ export default {
       hospital_id: null,
 
       request_number: null,
-      full_name: null
+      full_name: null,
+      processBtn: true,
+      PreviousPayments: []
     };
     return output;
   }

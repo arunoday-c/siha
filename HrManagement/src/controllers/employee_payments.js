@@ -3,7 +3,9 @@ import utlities from "algaeh-utilities";
 import {
   getLoanTopayment,
   getAdvanceTopayment,
-  InsertEncashment
+  InsertEmployeePayment,
+  getEmployeePayments,
+  getEncashLeavesTopayment
 } from "../models/employee_payments";
 export default () => {
   const api = Router();
@@ -21,12 +23,34 @@ export default () => {
     });
   });
 
-  api.post("/InsertEncashment", InsertEncashment, (req, res, next) => {
+  api.get("/getEmployeePayments", getEmployeePayments, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
       result: req.records
     });
   });
+
+  api.get(
+    "/getEncashLeavesTopayment",
+    getEncashLeavesTopayment,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        result: req.records
+      });
+    }
+  );
+
+  api.post(
+    "/InsertEmployeePayment",
+    InsertEmployeePayment,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        result: req.records
+      });
+    }
+  );
 
   return api;
 };
