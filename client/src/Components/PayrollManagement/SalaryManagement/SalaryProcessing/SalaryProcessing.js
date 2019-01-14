@@ -237,7 +237,7 @@ class SalaryProcessing extends Component {
               </button>
             </div>
           </div>
-          <div className="row">
+          <div className="row" style={{ marginBottom: 40 }}>
             <div className="col-9">
               <div className="row">
                 <div className="col-12">

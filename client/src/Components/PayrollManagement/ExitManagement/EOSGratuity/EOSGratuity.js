@@ -13,11 +13,21 @@ function EOSGratuity(props) {
   let myParent = props.parent;
 
   return (
-    <div>
+    <div className="EOSGratuityScreen">
       <div className="row  inner-top-search">
         <AlagehAutoComplete
           div={{ className: "col-3 form-group" }}
-          label={{ forceLabel: "End of Service Type", isImp: false }}
+          label={{ forceLabel: "Search by EOS/Gratuity No.", isImp: false }}
+          selector={{
+            name: "",
+            className: "select-fld",
+            dataSource: {},
+            others: {}
+          }}
+        />
+        <AlagehAutoComplete
+          div={{ className: "col-3 form-group" }}
+          label={{ forceLabel: "End of Service Type", isImp: true }}
           selector={{
             name: "",
             className: "select-fld",
@@ -65,13 +75,8 @@ function EOSGratuity(props) {
       <div className="row">
         <div className="col-12">
           <div className="portlet portlet-bordered margin-bottom-15">
-            <div className="portlet-title">
-              <div className="caption">
-                <h3 className="caption-subject">Retairment Details</h3>
-              </div>
-            </div>
             <div className="portlet-body">
-              <div className="col-12" style={{ marginTop: 15 }}>
+              <div className="col-12" style={{ marginTop: 7 }}>
                 <div className="row">
                   <div className="col-lg-8 algaehLabelFormGroup">
                     <label className="algaehLabelGroup">
