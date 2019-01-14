@@ -11,7 +11,7 @@ import {
 class OvertimeManagement extends Component {
   render() {
     return (
-      <div classNam="ot_mgmt">
+      <div className="ot_mgmt">
         <div className="row  inner-top-search">
           <AlagehAutoComplete
             div={{ className: "col form-group" }}
