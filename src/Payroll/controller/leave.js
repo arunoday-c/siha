@@ -11,7 +11,9 @@ import {
   addAttendanceRegularization,
   getEmployeeAttendReg,
   processYearlyLeave,
-  markAbsent
+  markAbsent,
+  cancelAbsent,
+  getAllAbsentEmployee
 } from "../model/leave";
 import { debugLog } from "../../utils/logging";
 export default ({ config, db }) => {
@@ -199,6 +201,40 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+
+  // created by irfan
+  api.put("/cancelAbsent", cancelAbsent, (req, res, next) => {
+    let result = req.records;
+    if (result.invalid_input == true) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: "please provide valid input"
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
+
+  // created by irfan
+  api.get("/getAllAbsentEmployee", getAllAbsentEmployee, (req, res, next) => {
+    let result = req.records;
+    if (result.invalid_input == true) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: "please provide valid input"
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
 
   return api;
 };

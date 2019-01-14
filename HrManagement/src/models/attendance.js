@@ -92,7 +92,7 @@ module.exports = {
                     .executeQuery({
                       query:
                         "select hims_f_absent_id, employee_id, absent_date, from_session, to_session,\
-              reason, cancel ,count(employee_id) as absent_days\
+              reason, cancel ,sum(absent_duration) as absent_days\
               from hims_f_absent where record_status='A' and cancel='N' and employee_id=?\
               and date(absent_date) between date(?) and date(?) group by  employee_id",
                       values: [

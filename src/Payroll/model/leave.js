@@ -1569,18 +1569,20 @@ let markAbsent = (req, res, next) => {
       }
 
       connection.query(
-        "INSERT INTO `hims_f_absent` (employee_id,absent_date,from_session,to_session, created_date, created_by, updated_date, updated_by)\
-          VALUE(?,date(?),?,?,?,?,?,?)",
+        "INSERT INTO `hims_f_absent` (employee_id,absent_date,from_session,to_session, absent_duration,\
+          absent_reason,created_date, created_by, updated_date, updated_by)\
+          VALUE(?,date(?),?,?,?,?,?,?,?,?)",
         [
           input.employee_id,
           input.absent_date,
           input.from_session,
           input.to_session,
-
+          input.absent_duration,
+          input.absent_reason,
           new Date(),
-          input.created_by,
+          req.userIdentity.algaeh_d_app_user_id,
           new Date(),
-          input.updated_by
+          req.userIdentity.algaeh_d_app_user_id
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -1597,6 +1599,94 @@ let markAbsent = (req, res, next) => {
   }
 };
 
+//created by irfan:
+let cancelAbsent = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "UPDATE hims_f_absent SET cancel='Y',cancel_by=?,cancel_date=?,cancel_reason=?, updated_date=?, updated_by=?  WHERE hims_f_absent_id = ?",
+
+        [
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          input.cancel_reason,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          input.hims_f_absent_id
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+
+          if (result.affectedRows > 0) {
+            req.records = result;
+            next();
+          } else {
+            req.records = { invalid_input: true };
+            next();
+          }
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan:
+let getAllAbsentEmployee = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.query);
+
+    if (input.yearAndMonth != undefined && input.yearAndMonth != "null") {
+      const startOfMonth = moment(input.yearAndMonth)
+        .startOf("month")
+        .format("YYYY-MM-DD");
+
+      const endOfMonth = moment(input.yearAndMonth)
+        .endOf("month")
+        .format("YYYY-MM-DD");
+      db.getConnection((error, connection) => {
+        connection.query(
+          "select  hims_f_absent_id, employee_id, absent_date, from_session, to_session,\
+          absent_reason, cancel ,absent_duration,cancel_reason,E.employee_code,E.full_name as employee_name\
+          from hims_f_absent A,hims_d_employee E where A.record_status='A' and employee_id=1\
+          and date(absent_date) between date(?) and date(?) order by hims_f_absent_id desc",
+          [startOfMonth, endOfMonth],
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+
+            req.records = result;
+            next();
+          }
+        );
+      });
+    } else {
+      req.records = { invalid_input: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getEmployeeLeaveData,
   applyEmployeeLeave,
@@ -1607,5 +1697,7 @@ module.exports = {
   addAttendanceRegularization,
   getEmployeeAttendReg,
   processYearlyLeave,
-  markAbsent
+  markAbsent,
+  cancelAbsent,
+  getAllAbsentEmployee
 };
