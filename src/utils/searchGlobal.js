@@ -23,7 +23,7 @@ let algaehSearchConfig = searchName => {
           sheet_discount_amount, sheet_discount_percentage, net_amount, patient_res, company_res, sec_company_res, \
           patient_payable, company_payable, sec_company_payable, patient_tax, company_tax, sec_company_tax, net_tax, \
           credit_amount, receiveable_amount, BH.created_by, BH.created_date, BH.updated_by, BH.updated_date, BH.record_status, \
-          cancel_remarks,cancel_by, bill_comments, PAT.patient_code, PATV.visit_code from hims_f_billing_header BH inner join hims_f_patient as PAT on  \
+          cancel_remarks,cancel_by, bill_comments, PAT.patient_code, PAT.full_name, PAT.contact_number,PATV.visit_code from hims_f_billing_header BH inner join hims_f_patient as PAT on  \
           BH.patient_id = PAT.hims_d_patient_id inner join hims_f_patient_visit as PATV on BH.visit_id = PATV.hims_f_patient_visit_id where BH.record_status ='A'",
         orderBy: "hims_f_billing_header_id desc"
       },
@@ -195,8 +195,8 @@ let algaehSearchConfig = searchName => {
       {
         searchName: "billsforCanel",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS hims_f_billing_header_id, bill_number, bill_date, PAT.patient_code, PATV.visit_code \
-          from hims_f_billing_header BH inner join hims_f_patient as PAT on  \
+          "select SQL_CALC_FOUND_ROWS hims_f_billing_header_id, bill_number, bill_date, PAT.patient_code, PAT.full_name, PAT.contact_number,\
+          PATV.visit_code from hims_f_billing_header BH inner join hims_f_patient as PAT on  \
           BH.patient_id = PAT.hims_d_patient_id inner join hims_f_patient_visit as PATV on BH.visit_id = PATV.hims_f_patient_visit_id\
           where BH.record_status ='A' and cancelled='N'",
         orderBy: "hims_f_billing_header_id desc"

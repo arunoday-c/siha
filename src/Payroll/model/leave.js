@@ -833,9 +833,7 @@ let addLeaveMaster = (req, res, next) => {
               });
             }
 
-            debugLog("leaveHeadResult:", leaveHeadResult);
             if (leaveHeadResult.insertId > 0) {
-              debugLog("inside encahsh");
               new Promise((resolve, reject) => {
                 try {
                   //==============
@@ -878,7 +876,6 @@ let addLeaveMaster = (req, res, next) => {
                           resolve({ encashResult });
                         } else {
                           connection.rollback(() => {
-                            debugLog("BBBBBB");
                             releaseDBConnection(db, connection);
                             req.records = {
                               invalid_data: true,
@@ -898,7 +895,6 @@ let addLeaveMaster = (req, res, next) => {
                   reject(e);
                 }
               }).then(leaveEncashRes => {
-                debugLog("inside rule");
                 new Promise((resolve, reject) => {
                   try {
                     if (
@@ -952,14 +948,12 @@ let addLeaveMaster = (req, res, next) => {
                         }
                       );
                     } else {
-                      debugLog("else resole:2");
                       resolve({ leaveEncashRes });
                     }
                   } catch (e) {
                     reject(e);
                   }
                 }).then(leaveRulesRes => {
-                  debugLog("inside details");
                   new Promise((resolve, reject) => {
                     try {
                       if (
@@ -1008,7 +1002,6 @@ let addLeaveMaster = (req, res, next) => {
                               resolve({ detailResult });
                             } else {
                               connection.rollback(() => {
-                                debugLog("WWWWWWWWWWWWWWW");
                                 releaseDBConnection(db, connection);
                                 req.records = {
                                   invalid_data: true,
@@ -1042,7 +1035,6 @@ let addLeaveMaster = (req, res, next) => {
                 });
               });
             } else {
-              debugLog("AAAAAA");
               connection.rollback(() => {
                 releaseDBConnection(db, connection);
                 req.records = {
@@ -1521,8 +1513,7 @@ let processYearlyLeave = (req, res, next) => {
                                       ) {
                                         req.records = {
                                           already_processed: true,
-                                          message:
-                                            "Leave already processed"
+                                          message: "Leave already processed"
                                         };
                                         next();
                                       } else {
@@ -1563,6 +1554,49 @@ let processYearlyLeave = (req, res, next) => {
   }
 };
 
+//created by irfan:
+let markAbsent = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT INTO `hims_f_absent` (employee_id,absent_date,from_session,to_session, created_date, created_by, updated_date, updated_by)\
+          VALUE(?,date(?),?,?,?,?,?,?)",
+        [
+          input.employee_id,
+          input.absent_date,
+          input.from_session,
+          input.to_session,
+
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getEmployeeLeaveData,
   applyEmployeeLeave,
@@ -1572,5 +1606,6 @@ module.exports = {
   addLeaveMaster,
   addAttendanceRegularization,
   getEmployeeAttendReg,
-  processYearlyLeave
+  processYearlyLeave,
+  markAbsent
 };

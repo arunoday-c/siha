@@ -29,11 +29,10 @@ $forntSize: 0.7rem;
   //Reports Styles
   .print-body {
     border-right: 0 !important;
-    min-height: 30vh;
     max-height: 70vh;
     overflow: auto;
     padding: 0 15px 0 !important;
-
+    margin-bottom: 10px;
     /*Header Only CSS*/
     header {
       margin: 0 0 10px;
@@ -610,7 +609,7 @@ $forntSize: 0.7rem;
         #34b8bc,
         #25d8df
       );
-      //box-shadow: 0 4px 15px 0 rgba(23, 168, 108, 0.75);
+      // box-shadow: 0 4px 15px 0 rgba(23, 168, 108, 0.75);
       border-color: #44b8bd;
     }
   }
@@ -619,7 +618,6 @@ $forntSize: 0.7rem;
     margin: -3px 0 0;
     border-radius: 50px;
   }
-
   .pagination > li > a,
   .pagination > li > span {
     padding: 4px 10px;
@@ -627,7 +625,6 @@ $forntSize: 0.7rem;
     color: #8775a7;
     background: #f7f7f7;
   }
-
   .pagination > li:hover > a,
   .pagination > li.active > a,
   .pagination > li.active:hover > a {
@@ -635,7 +632,6 @@ $forntSize: 0.7rem;
     background: #8775a7;
     border-color: #8775a7;
   }
-
   /* Inputs */
   .inputs {
     float: right;
@@ -643,7 +639,6 @@ $forntSize: 0.7rem;
     padding: 4px 0;
     margin-top: -10px;
   }
-
   .input-inline {
     width: 240px;
     display: inline-block;
@@ -658,7 +653,6 @@ $forntSize: 0.7rem;
     display: inline-block;
     border: 0;
   }
-
   .portlet-title > .nav-tabs > li {
     background: none;
     margin: 0;
@@ -671,7 +665,6 @@ $forntSize: 0.7rem;
     padding: 2px 10px 13px;
     color: #444;
   }
-
   .portlet-title > .nav-tabs > li.active,
   .portlet-title > .nav-tabs > li.active:hover {
     border-bottom: 4px solid #f3565d;
@@ -681,14 +674,12 @@ $forntSize: 0.7rem;
   .portlet-title > .nav-tabs > li:hover {
     border-bottom: 4px solid #f29b9f;
   }
-
   .portlet-title > .nav-tabs > li.active > a,
   .portlet-title > .nav-tabs > li:hover > a {
     color: #333;
     background: #fff;
     border: 0;
   }
-
   /* Btn Circle */
   .actions .btn.btn-circle {
     width: 28px;
@@ -696,7 +687,6 @@ $forntSize: 0.7rem;
     padding: 3px 7px;
     text-align: center;
   }
-
   .actions .btn.btn-circle i {
     font-size: 12px;
     line-height: 22px;
@@ -711,7 +701,6 @@ $forntSize: 0.7rem;
     background: #00bcb0;
     border-color: #01968c;
   }
-
   .customRadio {
     border-bottom: 1px solid #eee;
     padding-bottom: 5px;
@@ -719,11 +708,9 @@ $forntSize: 0.7rem;
     .inline {
       display: inline-block;
     }
-
     .inline + .inline {
       margin-left: 10px;
     }
-
     .radio {
       color: #999;
       font-size: 15px;
@@ -734,9 +721,9 @@ $forntSize: 0.7rem;
       position: relative;
       padding-left: 20px;
       text-transform: capitalize;
+
       font-size: 0.9rem;
     }
-
     .radio span:after {
       content: "";
       width: 15px;
@@ -754,7 +741,6 @@ $forntSize: 0.7rem;
       -moz-box-sizing: border-box;
       -webkit-box-sizing: border-box;
     }
-
     .radio input[type="radio"] {
       cursor: pointer;
       position: absolute;
@@ -763,11 +749,9 @@ $forntSize: 0.7rem;
       z-index: 1;
       opacity: 0;
     }
-
     .radio input[type="radio"]:checked + span {
       color: #00bcb0;
     }
-
     .radio input[type="radio"]:checked + span:before {
       content: "";
       width: 5px;
@@ -782,20 +766,16 @@ $forntSize: 0.7rem;
       -webkit-border-radius: 100%;
     }
   }
-
   .customCheckbox {
     border-bottom: 1px solid #eee;
     padding-bottom: 5px;
-
     .inline {
       display: inline-block;
       margin-right: 10px;
     }
-
     .inline + .inline {
       margin-left: 0;
     }
-
     .checkbox {
       color: #999;
       font-size: 15px;
@@ -806,9 +786,9 @@ $forntSize: 0.7rem;
       position: relative;
       padding-left: 20px;
       text-transform: capitalize;
+
       font-size: 0.9rem;
     }
-
     .checkbox span:after {
       content: "";
       width: 15px;
@@ -826,7 +806,6 @@ $forntSize: 0.7rem;
       -moz-box-sizing: border-box;
       -webkit-box-sizing: border-box;
     }
-
     .checkbox input[type="checkbox"] {
       cursor: pointer;
       position: absolute;
@@ -835,11 +814,9 @@ $forntSize: 0.7rem;
       z-index: 1;
       opacity: 0;
     }
-
     .checkbox input[type="checkbox"]:checked + span {
       color: #00bcb0;
     }
-
     .checkbox input[type="checkbox"]:checked + span:before {
       content: "";
       width: 5px;
@@ -854,21 +831,17 @@ $forntSize: 0.7rem;
       -webkit-border-radius: 100%;
     }
   }
-
-  //Portlet Styles End
+  // Portlet Styles End
   .card {
     margin-bottom: 15px;
   }
-
   .mrgn-tp-auto {
     margin-top: auto;
   }
-
   .pain-scale-ul {
     margin: 0;
     padding: 0;
     list-style: none;
-
     li {
       background: url("./assets/images/pain_scale.webp") no-repeat center
         transparent;
@@ -878,37 +851,29 @@ $forntSize: 0.7rem;
       cursor: pointer;
       margin-right: 3.3%;
     }
-
     .pain-1 {
       background-position: 0px 0px;
     }
-
     .pain-2 {
       background-position: 0px -32px;
     }
-
     .pain-3 {
       background-position: 0px -65px;
     }
-
     .pain-4 {
       background-position: 0px -98px;
     }
-
     .pain-5 {
       background-position: 0px -130px;
     }
-
     .pain-6 {
       background-position: 0px -163px;
     }
-
     .active {
       border-radius: 100%;
       box-shadow: 0 3px 8px #00000063;
     }
   }
-
   .algaeh-modal {
     margin: 3% auto 0;
     background-color: #fff;
@@ -916,20 +881,18 @@ $forntSize: 0.7rem;
     border-radius: 5px;
     overflow: hidden;
     box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.4);
-
     .popupHeader {
       background: #dbad64;
       padding: 5px 15px 0;
-
       h4 {
         color: #fff;
         font-size: 1.1rem;
         padding: 0 0 3px;
         line-height: 30px;
+
         margin: 0;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
       }
-
       label {
         color: #fff;
         font-size: 1.1rem;
@@ -939,7 +902,6 @@ $forntSize: 0.7rem;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         font-weight: bold;
       }
-
       button {
         margin: 0;
         padding: 0;
@@ -951,12 +913,10 @@ $forntSize: 0.7rem;
         line-height: 30px;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
       }
-
       button:hover {
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0);
       }
     }
-
     .popupInner {
       overflow-y: auto;
       overflow-x: hidden;
@@ -968,7 +928,6 @@ $forntSize: 0.7rem;
         border-bottom: 1px dashed #d3d3d3;
         padding-bottom: 5px;
       }
-
       .popLeftDiv {
         border-right: 1px dashed #e0e0e0;
         min-height: 30vh;
@@ -976,7 +935,6 @@ $forntSize: 0.7rem;
         overflow: auto;
         padding: 15px;
       }
-
       .popRightDiv {
         min-height: 30vh;
         max-height: 70vh;
@@ -984,19 +942,16 @@ $forntSize: 0.7rem;
         padding: 15px;
       }
     }
-
     .popupFooter {
       border-top: 1px dashed #e0e0e0;
       padding-top: 4px;
       padding-bottom: 4px;
       height: 40px;
-
       .button-left {
         float: left;
         margin-right: 10px;
         margin-left: 0px;
       }
-
       .btn {
         float: right;
         min-width: 70px;
@@ -1014,7 +969,6 @@ $forntSize: 0.7rem;
         min-width: 31px;
         -webkit-transition: width 2s; /* Safari */
         transition: width 2s;
-
         &:hover {
           background-position: 100% 0;
           -moz-transition: all 0.2s ease-in-out;
@@ -1026,7 +980,6 @@ $forntSize: 0.7rem;
           text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
         }
       }
-
       .btn-primary {
         color: #fff;
         background-color: none;
@@ -1037,19 +990,16 @@ $forntSize: 0.7rem;
           #34b8bc,
           #25d8df
         );
-        //box-shadow: 0 4px 15px 0 rgba(23, 168, 108, 0.75);
+        // box-shadow: 0 4px 15px 0 rgba(23, 168, 108, 0.75);
         border-color: #44b8bd;
-
         &:hover {
           background-color: none;
           border-color: #44b8bd;
         }
-
         &:focus {
           background-color: #34b8bc;
           border-color: #34b8bc;
         }
-
         &.disabled,
         &:disabled {
           opacity: 0.3;
@@ -1070,7 +1020,7 @@ $forntSize: 0.7rem;
           #ffffff,
           #ececec
         );
-        //box-shadow: 0 4px 15px 0 rgba(23, 168, 108, 0.75);
+        // box-shadow: 0 4px 15px 0 rgba(23, 168, 108, 0.75);
         border-color: rgb(182, 182, 182);
         &:hover,
         &:focus {
@@ -1078,7 +1028,6 @@ $forntSize: 0.7rem;
           border-color: rgb(182, 182, 182);
         }
       }
-
       .btn-other {
         color: #212529;
         border-color: rgb(182, 182, 182);
@@ -1089,7 +1038,6 @@ $forntSize: 0.7rem;
       }
     }
   }
-
   .algaeh-modal-Ar {
     margin: 3% auto 0;
     background-color: #fff;
@@ -1099,11 +1047,9 @@ $forntSize: 0.7rem;
     box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.4);
     direction: rtl;
     text-align: right;
-
     .popupHeader {
       background: #dbad64;
       padding: 5px 15px 0;
-
       h4 {
         color: #fff;
         font-size: 1.1rem;
@@ -1112,7 +1058,6 @@ $forntSize: 0.7rem;
         margin: 0;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
       }
-
       label {
         color: #fff;
         font-size: 1.1rem;
@@ -1122,7 +1067,6 @@ $forntSize: 0.7rem;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         font-weight: bold;
       }
-
       button {
         margin: 0;
         padding: 0;
@@ -1134,16 +1078,13 @@ $forntSize: 0.7rem;
         line-height: 30px;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
       }
-
       button:hover {
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0);
       }
     }
-
     .popupInner {
       overflow-y: auto;
       overflow-x: hidden;
-
       border-bottom: 1px dashed #e5e5e5;
       .popSubHdg {
         font-size: 0.9rem;
@@ -1153,7 +1094,6 @@ $forntSize: 0.7rem;
         border-bottom: 1px dashed #d3d3d3;
         padding-bottom: 5px;
       }
-
       .popLeftDiv {
         border-right: 1px dashed #e0e0e0;
         min-height: 30vh;
@@ -1161,7 +1101,6 @@ $forntSize: 0.7rem;
         overflow: auto;
         padding: 15px 15px 0;
       }
-
       .popRightDiv {
         min-height: 30vh;
         max-height: 70vh;
@@ -1171,6 +1110,7 @@ $forntSize: 0.7rem;
       label {
         font-size: 0.8rem;
       }
+
       .toggle-section {
         .nav {
           padding: 0;
@@ -1186,19 +1126,16 @@ $forntSize: 0.7rem;
         right: auto;
       }
     }
-
     .popupFooter {
       border-top: 1px dashed #e0e0e0;
       padding-top: 4px;
       padding-bottom: 4px;
       height: 40px;
-
       .button-left {
         float: left;
         margin-right: 10px;
         margin-left: 0px;
       }
-
       button {
         float: left;
         margin-right: 10px;
@@ -1208,13 +1145,11 @@ $forntSize: 0.7rem;
         text-transform: uppercase;
         min-width: 70px;
       }
-
       .btn-primary {
         background: #34b8bc;
         color: #fff;
         border: 1px solid #34b8bc;
       }
-
       .btn-default {
         background: #efefef;
         color: #5a5a5a;
@@ -1222,7 +1157,6 @@ $forntSize: 0.7rem;
       }
     }
   }
-
   // Recipt CSS starts Down
   .cashReciptStyles {
     .receipt-header {
@@ -1232,7 +1166,6 @@ $forntSize: 0.7rem;
       text-transform: uppercase;
       color: #717171;
     }
-
     .hospitalLogo {
       width: 150px;
       height: 70px;
@@ -1242,7 +1175,6 @@ $forntSize: 0.7rem;
       color: #ccc;
       text-align: center;
     }
-
     .hospitalAddress {
       font-size: 0.7rem;
       width: 250px;
@@ -1251,16 +1183,13 @@ $forntSize: 0.7rem;
       margin: 0;
       padding: 0;
     }
-
     span {
       color: #696969;
       text-transform: none;
     }
-
     .table-report {
       border: none;
       border-bottom: 2px;
-
       .table {
         tbody {
           td {
@@ -1270,12 +1199,10 @@ $forntSize: 0.7rem;
             color: #44b8bd;
             border: none;
           }
-
           td:first-child {
             color: #696969;
             text-transform: none;
           }
-
           td:nth-child(4) {
             color: #696969;
             text-transform: none;
@@ -1283,22 +1210,20 @@ $forntSize: 0.7rem;
         }
       }
     }
-
     .text-danger strong {
       color: #9f181c;
     }
-
     .receipt-header-mid {
       margin: 15px 0 5px;
       overflow: hidden;
     }
   }
-
   .htpl-phase1-radio-btn {
     margin-right: 5px;
     -webkit-appearance: none;
     -moz-appearance: none;
     -ms-appearance: none;
+
     -o-appearance: none;
     position: relative;
     width: 16px;
@@ -1308,18 +1233,14 @@ $forntSize: 0.7rem;
     outline: none;
     vertical-align: middle;
     bottom: 1px;
-
     &:focus {
       outline: none;
     }
-
     &:checked {
       border: 1px solid #e5e5e5;
-
       &:focus {
         outline: none;
       }
-
       &::before {
         content: "";
         background: #44b6ae;
@@ -1333,7 +1254,6 @@ $forntSize: 0.7rem;
       }
     }
   }
-
   .htpl1-phase1-btn-primary {
     font-size: 0.8rem;
     text-transform: uppercase;
@@ -1344,19 +1264,16 @@ $forntSize: 0.7rem;
     padding: 2px 20px;
     margin: 0 !important;
     cursor: pointer;
-
     &:hover {
       color: #ffffff;
       border: solid 1px #44b6ae;
       background-color: #399993;
     }
-
     &:active {
       background-color: #44b6ae;
       box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.24), 0 0 8px 0 rgba(0, 0, 0, 0.12);
       border: solid 1px #44b6ae;
     }
-
     &:disabled {
       background-color: #d0d8dc;
       color: rgba(72, 90, 99, 0.26);
@@ -1364,7 +1281,6 @@ $forntSize: 0.7rem;
       cursor: not-allowed;
     }
   }
-
   .htpl1-phase1-btn-secondary {
     font-size: 0.8rem;
     text-transform: uppercase;
@@ -1375,19 +1291,16 @@ $forntSize: 0.7rem;
     padding: 2px 20px;
     margin: 0 !important;
     cursor: pointer;
-
     &:hover {
       color: #44b6ae;
       border: solid 1px #44b6ae;
       background-color: #fff;
     }
-
     &:active {
       color: #44b6ae;
       border: solid 1px #44b6ae;
       background-color: #fff;
     }
-
     &:disabled {
       background-color: #d0d8dc;
       color: rgba(72, 90, 99, 0.26);
@@ -1395,7 +1308,6 @@ $forntSize: 0.7rem;
       cursor: not-allowed;
     }
   }
-
   .htpl1-phase1-btn-others {
     font-size: 0.8rem;
     text-transform: uppercase;
@@ -1406,19 +1318,16 @@ $forntSize: 0.7rem;
     padding: 2px 10px;
     cursor: pointer;
     margin: 0 !important;
-
     &:hover {
       background-color: #fff;
       border: 1px solid #fff;
       color: #000;
     }
-
     &:active {
       background-color: #fff;
       border: 1px solid #fff;
       color: #000;
     }
-
     &:disabled {
       background-color: #d0d8dc;
       color: rgba(72, 90, 99, 0.26);
@@ -1426,20 +1335,16 @@ $forntSize: 0.7rem;
       cursor: not-allowed;
     }
   }
-
   .spacing-push {
     margin-top: 5.5em !important;
   }
-
   .box-shadow {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   }
-
   .box-shadow:hover {
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   }
-
   .box-shadow-normal {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -1454,13 +1359,11 @@ $forntSize: 0.7rem;
     background-color: #485a63;
     margin: 1px;
   }
-
   .portletHeader {
     border-bottom: 1px solid #e2e2e2;
     padding-top: 10px;
     padding-bottom: 4px;
     width: 100%;
-
     label {
       font-weight: 500;
       font-size: 0.9rem;
@@ -1471,7 +1374,6 @@ $forntSize: 0.7rem;
     text-align: right;
     direction: rtl;
   }
-
   .tabMaster {
     background: white;
     width: 100%;
@@ -1485,9 +1387,9 @@ $forntSize: 0.7rem;
         margin: 0;
         padding: 0;
         height: 32px;
-
         &:after {
           display: block;
+
           content: "";
           border-bottom: solid 3px #34b8bc;
           transform: scaleX(0);
@@ -1512,7 +1414,6 @@ $forntSize: 0.7rem;
           border: none !important;
           cursor: pointer;
         }
-
         label {
           border-bottom: 3px solid #238386;
           color: #fff;
@@ -1523,11 +1424,9 @@ $forntSize: 0.7rem;
       }
     }
   }
-
   .divInner {
     overflow-y: auto;
     overflow-x: hidden;
-
     .divInnerLeft {
       border-right: 1px dashed #e0e0e0;
       min-height: 30vh;
@@ -1535,7 +1434,6 @@ $forntSize: 0.7rem;
       overflow: auto;
       padding: 15px;
     }
-
     .divInnerRight {
       min-height: 30vh;
       max-height: 70vh;

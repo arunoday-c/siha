@@ -28,10 +28,10 @@
     margin: 0; }
   :global .print-body {
     border-right: 0 !important;
-    min-height: 30vh;
     max-height: 70vh;
     overflow: auto;
     padding: 0 15px 0 !important;
+    margin-bottom: 10px;
     /*Header Only CSS*/
     /*Content Only CSS*/
     /* Clear floats after the columns */

@@ -2,7 +2,7 @@ import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
 import moment from "moment";
 //import { LINQ } from "node-linq";
-
+import utlities from "algaeh-utilities";
 module.exports = {
   //created by irfan: to
   processAttendance: (req, res, next) => {
@@ -20,7 +20,7 @@ module.exports = {
 
     const totalMonthDays = moment(yearAndMonth, "YYYY-MM").daysInMonth();
     const month_name = moment(yearAndMonth).format("MMMM");
-    const month_number = moment(yearAndMonth).format("MM");
+    const month_number = moment(yearAndMonth).format("M");
     const year = moment(yearAndMonth).format("YYYY");
 
     let selectWhere = {
@@ -32,11 +32,12 @@ module.exports = {
       //   hims_d_employee_id: "ALL",
       ...req.query
     };
-    let _stringData = selectWhere.hospital_id != null ? " hospital_id=? " : "";
-    if (_stringData != "" && selectWhere.sub_department_id != null)
+
+    let _stringData = selectWhere.hospital_id > 0 ? " hospital_id=? " : "";
+    if (_stringData != "" && selectWhere.sub_department_id > 0)
       _stringData += " AND ";
     _stringData +=
-      selectWhere.sub_department_id != null ? " sub_department_id=?" : "";
+      selectWhere.sub_department_id > 0 ? " sub_department_id=?" : "";
     if (_stringData != "" && selectWhere.hims_d_employee_id != null)
       _stringData += " AND ";
     _stringData +=
@@ -291,10 +292,8 @@ module.exports = {
                                         .then(attDataResult => {
                                           _mysql.commitTransaction(() => {
                                             _mysql.releaseConnection();
-                                            req.records = {
-                                              attDataResult: attDataResult,
-                                              if: "if"
-                                            };
+                                            req.records = attDataResult;
+
                                             next();
                                           });
                                         })
@@ -394,10 +393,8 @@ module.exports = {
                                     .then(attDataResult => {
                                       _mysql.commitTransaction(() => {
                                         _mysql.releaseConnection();
-                                        req.records = {
-                                          attDataResult: attDataResult,
-                                          else: "else"
-                                        };
+                                        req.records = attDataResult;
+
                                         next();
                                       });
                                     })
@@ -429,7 +426,7 @@ module.exports = {
         } else {
           _mysql.commitTransaction(() => {
             _mysql.releaseConnection();
-            req.records = empResult;
+            req.records = { no_data: true, message: "No Employees found" };
             next();
           });
         }
@@ -446,7 +443,6 @@ module.exports = {
 
   //   console.log("im here");
 
-  //   // debugLog("hiiii");
   //   runningNumberGen({
   //     db: _mysql,
   //     module_desc: ["ATTENDANCE_REGULARIZE"],

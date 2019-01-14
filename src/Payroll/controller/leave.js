@@ -10,7 +10,8 @@ import {
   addLeaveMaster,
   addAttendanceRegularization,
   getEmployeeAttendReg,
-  processYearlyLeave
+  processYearlyLeave,
+  markAbsent
 } from "../model/leave";
 import { debugLog } from "../../utils/logging";
 export default ({ config, db }) => {
@@ -183,5 +184,21 @@ export default ({ config, db }) => {
     }
     next();
   });
+
+  // created by irfan :
+  api.post(
+    "/markAbsent",
+    markAbsent,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
   return api;
 };
