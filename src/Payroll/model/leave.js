@@ -1695,9 +1695,15 @@ let authorizeLeave = (req, res, next) => {
 
     let input = extend({}, req.body);
 
-    if (input.auth_level != "L1" && input.auth_level != "L2") {
-      debugLog("L1 and L2 not defind");
-      req.records = { invalid_input: true };
+    if (
+      input.auth_level != "L1" &&
+      input.auth_level != "L2" &&
+      input.auth_level != "L3"
+    ) {
+      req.records = {
+        invalid_input: true,
+        message: "please provide valid  auth level"
+      };
       next();
       return;
     } else if (input.auth_level == "L1") {
@@ -1710,22 +1716,20 @@ let authorizeLeave = (req, res, next) => {
             });
           }
           connection.query(
-            "UPDATE hims_f_loan_application SET authorized1_by=?,authorized1_date=?,\
-          authorized1=?,approved_amount=?,start_year=?,start_month=?,installment_amount=?,\
-          loan_tenure=?, updated_date=?, updated_by=?  WHERE hims_f_loan_application_id=?",
+            "UPDATE hims_f_leave_application SET total_approved_days=?,authorize1=?,\
+            authorize1_date=?,authorize1_by=?,authorize1_comment=?,\
+             updated_date=?, updated_by=?  WHERE hims_f_leave_application_id=?",
 
             [
-              input.updated_by,
+              input.total_approved_days,
+              input.authorize1,
               new Date(),
-              input.authorized,
-              input.approved_amount,
-              input.start_year,
-              input.start_month,
-              input.installment_amount,
-              input.loan_tenure,
+              req.userIdentity.algaeh_d_app_user_id,
+              input.authorize1_comment,
+
               new Date(),
-              input.updated_by,
-              input.hims_f_loan_application_id
+              req.userIdentity.algaeh_d_app_user_id,
+              input.hims_f_leave_application_id
             ],
             (error, result) => {
               if (error) {
@@ -1734,12 +1738,12 @@ let authorizeLeave = (req, res, next) => {
                   next(error);
                 });
               }
-              debugLog("L1 result:", result);
-              if (result.affectedRows > 0 && input.authorized == "R") {
+
+              if (result.affectedRows > 0 && input.status == "R") {
                 connection.query(
-                  "update hims_f_loan_application set loan_authorized='REJ'\
-                  where record_status='A' and loan_authorized='PEN' and hims_f_loan_application_id=?",
-                  [input.hims_f_loan_application_id],
+                  "update hims_f_leave_application set `status`='REJ' where record_status='A' and `status`='PEN'\
+                  and hims_f_leave_application_id=?",
+                  [input.hims_f_leave_application_id],
                   (error, rejResult) => {
                     if (error) {
                       connection.rollback(() => {
@@ -1757,7 +1761,7 @@ let authorizeLeave = (req, res, next) => {
                       }
                       releaseDBConnection(db, connection);
                       req.records = rejResult;
-                      debugLog("L1 rejResult:", rejResult);
+
                       next();
                     });
                   }
@@ -1775,10 +1779,13 @@ let authorizeLeave = (req, res, next) => {
                   next();
                 });
               } else {
-                req.records = { invalid_input: true };
+                req.records = {
+                  invalid_input: true,
+                  message: "please provide valid input"
+                };
                 connection.rollback(() => {
                   releaseDBConnection(db, connection);
-                  next(error);
+                  next();
                 });
               }
             }
@@ -1794,23 +1801,22 @@ let authorizeLeave = (req, res, next) => {
               next(error);
             });
           }
+
           connection.query(
-            "UPDATE hims_f_loan_application SET authorized2_by=?,authorized2_date=?,\
-            authorized2=?,approved_amount=?,start_year=?,start_month=?,installment_amount=?,\
-          loan_tenure=?, updated_date=?, updated_by=?  WHERE hims_f_loan_application_id=?",
+            "UPDATE hims_f_leave_application SET total_approved_days=?,authorized2=?,\
+            authorized2_date=?,authorized2_by=?,authorize2_comment=?,\
+             updated_date=?, updated_by=?  WHERE hims_f_leave_application_id=?",
 
             [
-              input.updated_by,
+              input.total_approved_days,
+              input.authorized2,
               new Date(),
-              input.authorized,
-              input.approved_amount,
-              input.start_year,
-              input.start_month,
-              input.installment_amount,
-              input.loan_tenure,
+              req.userIdentity.algaeh_d_app_user_id,
+              input.authorize2_comment,
+
               new Date(),
-              input.updated_by,
-              input.hims_f_loan_application_id
+              req.userIdentity.algaeh_d_app_user_id,
+              input.hims_f_leave_application_id
             ],
             (error, result) => {
               if (error) {
@@ -1819,44 +1825,34 @@ let authorizeLeave = (req, res, next) => {
                   next(error);
                 });
               }
-              debugLog("L2 result:", result);
-              if (
-                result.affectedRows > 0 &&
-                (input.authorized == "R" || input.authorized == "A")
-              ) {
-                let qry = "";
 
-                if (input.authorized == "R") {
-                  qry = `update hims_f_loan_application set loan_authorized='REJ'\
-                  where record_status='A' and loan_authorized='PEN' and hims_f_loan_application_id=${
-                    input.hims_f_loan_application_id
-                  }`;
-                } else if (input.authorized == "A") {
-                  qry = `update hims_f_loan_application set loan_authorized='APR'\
-                  where record_status='A' and loan_authorized='PEN' and hims_f_loan_application_id=${
-                    input.hims_f_loan_application_id
-                  }`;
-                }
-                connection.query(qry, (error, rejResult) => {
-                  if (error) {
-                    connection.rollback(() => {
-                      releaseDBConnection(db, connection);
-                      next(error);
-                    });
-                  }
-
-                  connection.commit(error => {
+              if (result.affectedRows > 0 && input.status == "R") {
+                connection.query(
+                  "update hims_f_leave_application set `status`='REJ' where record_status='A' and `status`='PEN'\
+                    and hims_f_leave_application_id=?",
+                  [input.hims_f_leave_application_id],
+                  (error, rejResult) => {
                     if (error) {
                       connection.rollback(() => {
                         releaseDBConnection(db, connection);
                         next(error);
                       });
                     }
-                    releaseDBConnection(db, connection);
-                    req.records = rejResult;
-                    next();
-                  });
-                });
+
+                    connection.commit(error => {
+                      if (error) {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                      }
+                      releaseDBConnection(db, connection);
+                      req.records = rejResult;
+
+                      next();
+                    });
+                  }
+                );
               } else if (result.affectedRows > 0) {
                 connection.commit(error => {
                   if (error) {
@@ -1870,10 +1866,197 @@ let authorizeLeave = (req, res, next) => {
                   next();
                 });
               } else {
-                req.records = { invalid_input: true };
+                req.records = {
+                  invalid_input: true,
+                  message: "please provide valid input"
+                };
+                connection.rollback(() => {
+                  releaseDBConnection(db, connection);
+                  next();
+                });
+              }
+            }
+          );
+        });
+      });
+    } else if (
+      input.auth_level == "L3" &&
+      input.status != "null" &&
+      input.status != undefined
+    ) {
+      db.getConnection((error, connection) => {
+        connection.beginTransaction(error => {
+          if (error) {
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(error);
+            });
+          }
+
+          connection.query(
+            "UPDATE hims_f_leave_application SET total_approved_days=?,authorized3=?,\
+            authorized3_date=?,authorized3_by=?,authorize3_comment=?,\
+             updated_date=?, updated_by=?  WHERE hims_f_leave_application_id=?",
+
+            [
+              input.total_approved_days,
+              input.authorized3,
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              input.authorize3_comment,
+
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              input.hims_f_leave_application_id
+            ],
+            (error, result) => {
+              if (error) {
                 connection.rollback(() => {
                   releaseDBConnection(db, connection);
                   next(error);
+                });
+              }
+
+              if (
+                result.affectedRows > 0 &&
+                (input.status == "R" || input.status == "A")
+              ) {
+                if (input.status == "R") {
+                  connection.query(
+                    "update hims_f_leave_application set status='REJ' where record_status='A' and status='PEN'\
+                  and hims_f_leave_application_id=?",
+                    input.hims_f_leave_application_id,
+                    (error, rejResult) => {
+                      if (error) {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                      }
+
+                      connection.commit(error => {
+                        if (error) {
+                          connection.rollback(() => {
+                            releaseDBConnection(db, connection);
+                            next(error);
+                          });
+                        }
+                        releaseDBConnection(db, connection);
+                        req.records = rejResult;
+                        next();
+                      });
+                    }
+                  );
+                } else if (input.status == "A") {
+                  if (input.month != "null" && input.month != undefined) {
+                    connection.query(
+                      `select hims_f_employee_monthly_leave_id, total_eligible,close_balance, ${
+                        input.month
+                      } as leave_month,availed_till_date
+                    from hims_f_employee_monthly_leave where
+                    employee_id=? and year=? and leave_id=?`,
+                      [input.employee_id, input.year, input.leave_id],
+                      (error, leaveData) => {
+                        if (error) {
+                          connection.rollback(() => {
+                            releaseDBConnection(db, connection);
+                            next(error);
+                          });
+                        }
+
+                        if (
+                          leaveData.length > 0 &&
+                          parseFloat(input.total_approved_days) <=
+                            parseFloat(leaveData[0]["close_balance"])
+                        ) {
+                          let newCloseBal =
+                            parseFloat(leaveData[0]["close_balance"]) -
+                            parseFloat(input.total_approved_days);
+
+                          let monthBal =
+                            parseFloat(leaveData[0]["leave_month"]) +
+                            parseFloat(input.total_approved_days);
+
+                          connection.query(
+                            `update hims_f_leave_application set status='APR' where record_status='A' \
+                          and hims_f_leave_application_id=?;
+                            update hims_f_employee_monthly_leave set  close_balance=?, ${
+                              input.month
+                            }=? where \
+                          hims_f_employee_monthly_leave_id=?`,
+                            [
+                              input.hims_f_leave_application_id,
+                              newCloseBal,
+                              monthBal,
+                              leaveData[0].hims_f_employee_monthly_leave_id
+                            ],
+                            (error, finalRes) => {
+                              if (error) {
+                                connection.rollback(() => {
+                                  releaseDBConnection(db, connection);
+                                  next(error);
+                                });
+                              }
+
+                              connection.commit(error => {
+                                if (error) {
+                                  connection.rollback(() => {
+                                    releaseDBConnection(db, connection);
+                                    next(error);
+                                  });
+                                }
+                                releaseDBConnection(db, connection);
+                                req.records = finalRes;
+                                next();
+                              });
+                            }
+                          );
+                        } else {
+                          //invalid data
+                          req.records = {
+                            invalid_input: true,
+                            message: "leave balance is low"
+                          };
+                          connection.rollback(() => {
+                            releaseDBConnection(db, connection);
+                            next();
+                          });
+                        }
+                      }
+                    );
+                  } else {
+                    //invalid data
+
+                    req.records = {
+                      invalid_input: true,
+                      message: "please provide valid month"
+                    };
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next();
+                    });
+                  }
+                }
+              } else if (result.affectedRows > 0) {
+                connection.commit(error => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+                  releaseDBConnection(db, connection);
+                  req.records = result;
+                  next();
+                });
+              } else {
+                req.records = {
+                  invalid_input: true,
+                  message: "please provide valid input"
+                };
+                connection.rollback(() => {
+                  releaseDBConnection(db, connection);
+                  next();
                 });
               }
             }
@@ -1881,10 +2064,108 @@ let authorizeLeave = (req, res, next) => {
         });
       });
     } else {
-      debugLog("top else");
-      req.records = { invalid_input: true };
+      req.records = {
+        invalid_input: true,
+        message: "please provide valid input"
+      };
       next();
     }
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan:
+let getLeaveApllication = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    if (
+      req.query.auth_level != "L1" &&
+      req.query.auth_level != "L2" &&
+      req.query.auth_level != "L3"
+    ) {
+      req.records = { invalid_input: true, message: "invalid auth level " };
+      next();
+      return;
+    }
+    let employee = "";
+    let range = "";
+
+    if (
+      req.query.employee_id != "" &&
+      req.query.employee_id != null &&
+      req.query.employee_id != "null"
+    ) {
+      employee = ` and employee_id=${req.query.employee_id} `;
+    }
+
+    if (
+      req.query.from_date != "null" &&
+      req.query.from_date != "" &&
+      req.query.from_date != null &&
+      req.query.to_date != "null" &&
+      req.query.to_date != "" &&
+      req.query.to_date != null
+    ) {
+      range = ` and date(application_date)
+between date('${req.query.from_date}') and date('${req.query.to_date}') `;
+    }
+
+    let auth_level = "";
+    if (req.query.auth_level == "L1") {
+      auth_level = " and authorize1='N' ";
+    } else if (req.query.auth_level == "L2") {
+      auth_level = " and authorize1='Y' and authorized2='N' ";
+    } else if (req.query.auth_level == "L3") {
+      auth_level =
+        " and authorize1='Y' and authorized2='Y' and authorized3='N' ";
+    }
+
+    let leave_status = "";
+
+    if (req.query.leave_status == "A") {
+      leave_status = " and status='APR' ";
+    } else if (req.query.leave_status == "R") {
+      leave_status = " and status='REJ' ";
+    } else {
+      leave_status = " and status='PEN' ";
+    }
+
+    db.getConnection((error, connection) => {
+      connection.query(
+        "SELECT hims_f_leave_application_id,LA.leave_application_code,LA.employee_id,\
+        LA.application_date,LA.sub_department_id,LA.leave_id,LA.from_leave_session,\
+        LA.from_date,LA.to_date,LA.to_leave_session,LA.leave_applied_from,\
+        LA.total_applied_days,LA.total_approved_days,LA.`status`\
+        ,L.leave_code,L.leave_description,L.leave_type,E.employee_code,\
+        E.full_name as employee_name,SD.sub_department_code,SD.sub_department_name \
+        from hims_f_leave_application LA inner join hims_d_leave L on LA.leave_id=L.hims_d_leave_id\
+        and L.record_status='A' inner join hims_d_employee E on LA.employee_id=E.hims_d_employee_id \
+        and E.record_status='A' inner join hims_d_sub_department SD \
+        on LA.sub_department_id=SD.hims_d_sub_department_id  " +
+          employee +
+          "" +
+          range +
+          "" +
+          auth_level +
+          "" +
+          leave_status +
+          "order by hims_f_leave_application_id desc",
+
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+
+          req.records = result;
+          next();
+        }
+      );
+    });
   } catch (e) {
     next(e);
   }
@@ -1901,5 +2182,7 @@ module.exports = {
   processYearlyLeave,
   markAbsent,
   cancelAbsent,
-  getAllAbsentEmployee
+  getAllAbsentEmployee,
+  authorizeLeave,
+  getLeaveApllication
 };

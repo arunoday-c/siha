@@ -18,11 +18,14 @@ import {
   getPaymentDetails,
   Paymenttexthandle,
   ProessEmpPayment,
-  employeeSearch
+  employeeSearch,
+  getEmployeePayments
 } from "./EmployeePaymentEvents.js";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import Enumerable from "linq";
 import EmployeePaymentIOputs from "../../../../Models/EmployeePayment";
+import Options from "../../../../Options.json";
+import moment from "moment";
 
 class EmployeePayment extends Component {
   constructor(props) {
@@ -64,6 +67,8 @@ class EmployeePayment extends Component {
         }
       });
     }
+
+    getEmployeePayments(this, this);
   }
 
   render() {
@@ -360,7 +365,11 @@ class EmployeePayment extends Component {
                               forceLabel: "Generate Document No."
                             }}
                           />
-                          <h6>*** NEW ***</h6>
+                          <h6>
+                            {this.state.payment_application_code
+                              ? this.state.payment_application_code
+                              : "*** NEW ***"}
+                          </h6>
                         </div>
                         <div className="col-6">
                           <AlgaehLabel
@@ -368,7 +377,13 @@ class EmployeePayment extends Component {
                               forceLabel: "Date"
                             }}
                           />
-                          <h6>DD/MM/YYYY</h6>
+                          <h6>
+                            {this.state.payment_date
+                              ? moment(this.state.payment_date).format(
+                                  Options.dateFormat
+                                )
+                              : Options.dateFormat}
+                          </h6>
                         </div>
                       </div>
                       <div className="row">
@@ -499,6 +514,7 @@ class EmployeePayment extends Component {
                             type="button"
                             className="btn btn-primary float-right"
                             onClick={ProessEmpPayment.bind(this, this)}
+                            disabled={this.state.processBtn}
                           >
                             Process
                           </button>
@@ -532,57 +548,94 @@ class EmployeePayment extends Component {
                         id="All_trans_Employee_Payment_Cntr"
                         columns={[
                           {
-                            fieldName: "",
-                            label: "Request Type"
+                            fieldName: "payment_type",
+                            label: "Payment Type",
+                            displayTemplate: row => {
+                              let display = GlobalVariables.EMPLOYEE_PAYMENT_TYPE.filter(
+                                f => f.value === row.payment_type
+                              );
+
+                              return (
+                                <span>
+                                  {display !== undefined && display.length !== 0
+                                    ? display[0].name
+                                    : ""}
+                                </span>
+                              );
+                            }
                           },
                           {
-                            fieldName: "",
-                            label: "Request No."
+                            fieldName: "payment_application_code",
+                            label: "Payment No."
                           },
                           {
-                            fieldName: "",
+                            fieldName: "employee_code",
                             label: "Employee Code"
                           },
                           {
-                            fieldName: "",
+                            fieldName: "full_name",
                             label: "Employee Name"
                           },
                           {
-                            fieldName: "",
-                            label: "Requested Amount"
+                            fieldName: "payment_amount",
+                            label: "Payment Amount"
                           },
+
                           {
-                            fieldName: "",
-                            label: "Document No."
-                          },
-                          {
-                            fieldName: "",
+                            fieldName: "payment_date",
                             label: "Process Date"
                           },
+
                           {
-                            fieldName: "",
-                            label: "Process Amount"
-                          },
-                          {
-                            fieldName: "",
-                            label: "Mode of Payment"
+                            fieldName: "payment_mode",
+                            label: "Mode of Payment",
+                            displayTemplate: row => {
+                              let display = GlobalVariables.EMP_PAYMENT_MODE.filter(
+                                f => f.value === row.payment_mode
+                              );
+
+                              return (
+                                <span>
+                                  {display !== undefined && display.length !== 0
+                                    ? display[0].name
+                                    : ""}
+                                </span>
+                              );
+                            }
                           },
                           {
                             fieldName: "",
                             label: "Bank Details"
                           },
                           {
-                            fieldName: "",
+                            fieldName: "cheque_number",
                             label: "Cheque/ Transaction No."
                           },
                           {
-                            fieldName: "",
-                            label: "Deduct in the Month of"
+                            fieldName: "deduction_month",
+                            label: "Deduction Month"
+                          },
+                          {
+                            fieldName: "cancel",
+                            label: "Cancel",
+                            displayTemplate: row => {
+                              let display = GlobalVariables.FORMAT_YESNO.filter(
+                                f => f.value === row.cancel
+                              );
+
+                              return (
+                                <span>
+                                  {display !== undefined && display.length !== 0
+                                    ? display[0].name
+                                    : ""}
+                                </span>
+                              );
+                            }
                           }
                         ]}
                         keyId="algaeh_d_module_id"
                         dataSource={{
-                          data: []
+                          data: this.state.PreviousPayments
                         }}
                         isEditable={true}
                         paging={{ page: 0, rowsPerPage: 10 }}
