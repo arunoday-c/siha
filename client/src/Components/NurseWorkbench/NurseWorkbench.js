@@ -52,12 +52,13 @@ class NurseWorkbench extends Component {
 
     this.loadListofData = this.loadListofData.bind(this);
 
-    if (
-      this.props.allchiefcomplaints === undefined ||
-      this.props.allchiefcomplaints.length === 0
-    ) {
-      getAllChiefComplaints(this);
-    }
+    // if (
+    //   this.props.allchiefcomplaints === undefined ||
+    //   this.props.allchiefcomplaints.length === 0
+    // ) {
+    //   getAllChiefComplaints(this);
+    // }
+    getAllChiefComplaints(this);
     getDepartmentVitals(this);
     this.getDoctorsAndDepts();
   }

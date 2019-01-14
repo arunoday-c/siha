@@ -35,6 +35,14 @@
         "label": "Patient Code"
       },
       {
+        "fieldName": "full_name",
+        "label": "Patient Name"
+      },
+      {
+        "fieldName": "contact_number",
+        "label": "Mobile Num."
+      },
+      {
         "fieldName": "visit_code",
         "label": "Visit Code"
       },
