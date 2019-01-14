@@ -33,11 +33,11 @@ module.exports = {
       ...req.query
     };
 
-    let _stringData = selectWhere.hospital_id != null ? " hospital_id=? " : "";
-    if (_stringData != "" && selectWhere.sub_department_id != null)
+    let _stringData = selectWhere.hospital_id > 0 ? " hospital_id=? " : "";
+    if (_stringData != "" && selectWhere.sub_department_id > 0)
       _stringData += " AND ";
     _stringData +=
-      selectWhere.sub_department_id != null ? " sub_department_id=?" : "";
+      selectWhere.sub_department_id > 0 ? " sub_department_id=?" : "";
     if (_stringData != "" && selectWhere.hims_d_employee_id != null)
       _stringData += " AND ";
     _stringData +=
