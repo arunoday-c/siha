@@ -13,7 +13,8 @@ import {
   processYearlyLeave,
   markAbsent,
   cancelAbsent,
-  getAllAbsentEmployee
+  getAllAbsentEmployee,
+  authorizeLeave
 } from "../model/leave";
 import { debugLog } from "../../utils/logging";
 export default ({ config, db }) => {
@@ -226,6 +227,23 @@ export default ({ config, db }) => {
       res.status(httpStatus.ok).json({
         success: false,
         records: "please provide valid input"
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
+
+  // created by irfan
+  api.put("/authorizeLeave", authorizeLeave, (req, res, next) => {
+    let result = req.records;
+    if (result.invalid_input == true) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: result
       });
     } else {
       res.status(httpStatus.ok).json({

@@ -373,7 +373,7 @@ let authorizeLoan = (req, res, next) => {
                 req.records = { invalid_input: true };
                 connection.rollback(() => {
                   releaseDBConnection(db, connection);
-                  next(error);
+                  next();
                 });
               }
             }
@@ -468,7 +468,7 @@ let authorizeLoan = (req, res, next) => {
                 req.records = { invalid_input: true };
                 connection.rollback(() => {
                   releaseDBConnection(db, connection);
-                  next(error);
+                  next();
                 });
               }
             }
