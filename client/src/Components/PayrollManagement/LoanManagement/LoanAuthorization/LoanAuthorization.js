@@ -61,10 +61,6 @@ class LoanAuthorization extends Component {
   }
 
   getLoanApplications() {
-    // AlgaehLoader({
-    //   show: true
-    // });
-
     this.setState({
       loading: true
     });
