@@ -31,9 +31,87 @@ let getEmployeeLeaveData = (req, res, next) => {
       req.query.year != "" &&
       req.query.year != null &&
       req.query.year != "null" &&
+      req.query.year != undefined &&
+      req.query.employee_id > 0
+    ) {
+      year = moment(req.query.year).format("YYYY");
+
+      // let employee = "";
+      // if (req.query.employee_id != "null" && req.query.employee_id != undefined) {
+      //   employee = ` and ML.employee_id=${req.query.employee_id}`;
+      // }
+      db.getConnection((error, connection) => {
+        connection.query(
+          "select hims_f_employee_monthly_leave_id, employee_id, year, leave_id, L.leave_code,\
+        L.leave_description,total_eligible, availed_till_date, close_balance,\
+        E.employee_code ,E.full_name as employee_name\
+        from hims_f_employee_monthly_leave  ML inner join hims_d_leave L on ML.leave_id=L.hims_d_leave_id \
+        inner join hims_d_employee E on ML.employee_id=E.hims_d_employee_id and E.record_status='A'\
+        and L.record_status='A' where ML.year=? and ML.employee_id=? \
+         order by hims_f_employee_monthly_leave_id desc;",
+          [year, req.query.employee_id],
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+            req.records = result;
+            next();
+          }
+        );
+      });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "please provide year and employee"
+      };
+
+      next();
+      return;
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan:
+let getYearlyLeaveData = (req, res, next) => {
+  // let selectWhere = {
+  //   employee_id: "ALL"
+  // };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let year = "";
+
+    if (
+      req.query.year != "" &&
+      req.query.year != null &&
+      req.query.year != "null" &&
       req.query.year != undefined
     ) {
       year = moment(req.query.year).format("YYYY");
+      db.getConnection((error, connection) => {
+        connection.query(
+          "select hims_f_employee_yearly_leave_id,employee_id,year ,\
+          E.employee_code,  E.full_name as employee_name,SD.sub_department_code,\
+          SD.sub_department_name from  hims_f_employee_yearly_leave EYL  inner join hims_d_employee E on\
+          EYL.employee_id=E.hims_d_employee_id  left join hims_d_sub_department SD\
+          on E.sub_department_id=SD.hims_d_sub_department_id  where EYL.year=? order by hims_f_employee_yearly_leave_id desc",
+          year,
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+            req.records = result;
+            next();
+          }
+        );
+      });
     } else {
       req.records = {
         invalid_input: true,
@@ -43,31 +121,6 @@ let getEmployeeLeaveData = (req, res, next) => {
       next();
       return;
     }
-
-    let employee = "";
-    if (req.query.employee_id != "null" && req.query.employee_id != undefined) {
-      employee = ` and ML.employee_id=${req.query.employee_id}`;
-    }
-    db.getConnection((error, connection) => {
-      connection.query(
-        "select hims_f_employee_monthly_leave_id, employee_id, year, leave_id, L.leave_code,\
-        L.leave_description,total_eligible, availed_till_date, close_balance,\
-        E.employee_code ,E.full_name as employee_name\
-        from hims_f_employee_monthly_leave  ML inner join hims_d_leave L on ML.leave_id=L.hims_d_leave_id \
-        inner join hims_d_employee E on ML.employee_id=E.hims_d_employee_id and E.record_status='A'\
-        and L.record_status='A' where ML.year=? " +
-          employee,
-        [year],
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          req.records = result;
-          next();
-        }
-      );
-    });
   } catch (e) {
     next(e);
   }
@@ -792,7 +845,7 @@ let addLeaveMaster = (req, res, next) => {
           });
         }
         connection.query(
-          "INSERT INTO `hims_d_leave` (leave_code,leave_description,annual_maternity_leave,\
+          "INSERT INTO `hims_d_leave` (leave_code,leave_description,leave_category,\
           include_weekoff,include_holiday,leave_mode,leave_accrual,leave_encash,leave_type,\
           encashment_percentage,leave_carry_forward,carry_forward_percentage,\
           religion_required,religion_id,holiday_reimbursement,exit_permit_required,\
@@ -801,7 +854,7 @@ let addLeaveMaster = (req, res, next) => {
           [
             input.leave_code,
             input.leave_description,
-            input.annual_maternity_leave,
+            input.leave_category,
             input.include_weekoff,
             input.include_holiday,
             input.leave_mode,
@@ -2170,8 +2223,10 @@ between date('${req.query.from_date}') and date('${req.query.to_date}') `;
     next(e);
   }
 };
+
 module.exports = {
   getEmployeeLeaveData,
+  getYearlyLeaveData,
   applyEmployeeLeave,
   getEmployeeLeaveHistory,
   getLeaveBalance,
