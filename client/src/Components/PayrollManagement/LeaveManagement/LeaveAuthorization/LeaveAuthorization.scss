@@ -1,20 +1,25 @@
 #leaveAuthGrid_Cntr {
   .ReactTable {
-    max-height: 23vh !important;
-  }
-}
-#currentLeaveAppGrid_Cntr {
-  .ReactTable {
-    min-height: 10vh !important;
-    max-height: 10vh !important;
-    .rt-table {
-      overflow: hidden;
-    }
+    max-height: 70vh !important;
   }
 }
 #previousLeaveAppGrid_Cntr {
   .ReactTable {
-    min-height: 14vh !important;
-    max-height: 14vh !important;
+    max-height: 30vh !important;
+  }
+}
+.btnFooter {
+  margin-bottom: 10px;
+  button {
+    float: right;
+    margin-left: 10px;
+  }
+  button.btn-danger {
+    background: none;
+    color: #dc3545;
+    &:hover {
+      background: #dc3545;
+      color: #fff;
+    }
   }
 }

@@ -169,7 +169,7 @@ export default class LeaveAuthorization extends Component {
             <AlagehAutoComplete
               div={{ className: "col form-group" }}
               label={{
-                forceLabel: "Authorization Level",
+                forceLabel: "Auth. Level",
                 isImp: true
               }}
               selector={{
@@ -277,7 +277,7 @@ export default class LeaveAuthorization extends Component {
                   </h6>
                 </div>
                 <div
-                  className="col-lg-3"
+                  className="col-3"
                   style={{ borderLeft: "1px solid #ced4d8" }}
                 >
                   <i
