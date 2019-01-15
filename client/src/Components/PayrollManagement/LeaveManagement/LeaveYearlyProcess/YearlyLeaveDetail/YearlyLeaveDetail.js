@@ -1,11 +1,6 @@
 import React, { Component } from "react";
 import AlgaehModalPopUp from "../../../../Wrapper/modulePopUp";
-import {
-  AlagehAutoComplete,
-  AlgaehLabel,
-  AlgaehDataGrid,
-  AlgaehDateHandler
-} from "../../../../Wrapper/algaehWrapper";
+import { AlgaehLabel, AlgaehDataGrid } from "../../../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
 
 class YearlyLeaveDetail extends Component {
@@ -16,7 +11,6 @@ class YearlyLeaveDetail extends Component {
 
   componentDidMount() {
     this.getLeaveData(this.props.year, this.props.employee_id);
-    console.log("Did Mount:");
   }
 
   componentWillReceiveProps(nextProps) {
@@ -31,8 +25,6 @@ class YearlyLeaveDetail extends Component {
       uri: "/leave/getEmployeeLeaveData",
       method: "GET",
       data: {
-        // year: 2019,
-        // employee_id: 1
         year: year,
         employee_id: id
       },

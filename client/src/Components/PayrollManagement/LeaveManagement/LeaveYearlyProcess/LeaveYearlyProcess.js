@@ -309,25 +309,6 @@ export default class LeaveYearlyProcess extends Component {
             <div className="portlet-title">
               <div className="caption">
                 <h3 className="caption-subject">Leave Process Details</h3>
-
-                {/* <AlagehFormGroup
-                  div={{ className: "col  " }}
-                  label={{
-                    forceLabel: "Year",
-                    isImp: true
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "year",
-                    value: this.state.year,
-                    events: {
-                      onChange: this.textHandler.bind(this)
-                    },
-                    others: {
-                      type: "number"
-                    }
-                  }}
-                /> */}
               </div>
             </div>
             <div className="portlet-body">
