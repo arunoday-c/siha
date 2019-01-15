@@ -23,7 +23,8 @@ export default {
       encash_type: null,
       sel_employee_id: null,
       employee_name: null,
-      encashDetail: []
+      encashDetail: [],
+      processBtn: true
     };
     return output;
   }

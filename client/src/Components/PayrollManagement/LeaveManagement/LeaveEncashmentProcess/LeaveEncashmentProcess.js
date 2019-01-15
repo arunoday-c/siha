@@ -16,13 +16,13 @@ import {
   AlagehAutoComplete,
   AlgaehLabel,
   AlgaehDataGrid,
-  AlagehFormGroup,
-  AlgaehDateHandler
+  AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 import LeaveEncashmentProcessIOputs from "../../../../Models/LeaveEncashmentProcess";
+import Options from "../../../../Options.json";
 
 class LeaveEncashmentProcess extends Component {
   constructor(props) {
@@ -169,7 +169,11 @@ class LeaveEncashmentProcess extends Component {
                   forceLabel: "Generate Document No."
                 }}
               />
-              <h6>*** NEW ***</h6>
+              <h6>
+                {this.state.encashment_number
+                  ? this.state.encashment_number
+                  : "*** NEW ***"}
+              </h6>
             </div>
             <div className="col">
               <AlgaehLabel
@@ -177,7 +181,13 @@ class LeaveEncashmentProcess extends Component {
                   forceLabel: "Date"
                 }}
               />
-              <h6>DD/MM/YYYY</h6>
+              <h6>
+                {this.state.encashment_date
+                  ? moment(this.state.encashment_date).format(
+                      Options.dateFormat
+                    )
+                  : Options.dateFormat}
+              </h6>
             </div>
           </div>
         </div>
@@ -263,10 +273,8 @@ class LeaveEncashmentProcess extends Component {
                     ]}
                     keyId=""
                     dataSource={{ data: this.state.encashDetail }}
-                    isEditable={true}
+                    // isEditable={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
-                    events={{}}
-                    others={{}}
                   />
                 </div>
               </div>
@@ -280,6 +288,7 @@ class LeaveEncashmentProcess extends Component {
                 type="button"
                 className="btn btn-primary"
                 onClick={ProcessEncash.bind(this, this)}
+                disabled={this.state.processBtn}
               >
                 <AlgaehLabel
                   label={{ forceLabel: "Process", returnText: true }}

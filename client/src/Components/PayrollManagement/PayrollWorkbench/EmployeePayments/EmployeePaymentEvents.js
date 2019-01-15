@@ -4,6 +4,7 @@ import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import EmployeePaymentIOputs from "../../../../Models/EmployeePayment";
+import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -30,6 +31,7 @@ const LoadData = ($this, e) => {
     alertTypeIcon: "warning",
     querySelector: "data-validate='loadData'",
     onSuccess: () => {
+      AlgaehLoader({ show: true });
       let inputObj = {
         loan_authorized: "APR"
       };
@@ -55,8 +57,10 @@ const LoadData = ($this, e) => {
             $this.setState({
               requestPayment: response.data.result
             });
+            AlgaehLoader({ show: false });
           },
           onFailure: error => {
+            AlgaehLoader({ show: false });
             swalMessage({
               title: error.response.data.message,
               type: "error"
@@ -74,11 +78,13 @@ const LoadData = ($this, e) => {
           data: inputObj,
           method: "GET",
           onSuccess: response => {
+            AlgaehLoader({ show: false });
             $this.setState({
               requestPayment: response.data.result
             });
           },
           onFailure: error => {
+            AlgaehLoader({ show: false });
             swalMessage({
               title: error.response.data.message,
               type: "error"
@@ -86,7 +92,6 @@ const LoadData = ($this, e) => {
           }
         });
       } else if ($this.state.sel_payment_type === "EN") {
-        debugger;
         if ($this.state.document_num !== null) {
           inputObj.encashment_number = $this.state.document_num;
         }
@@ -100,8 +105,10 @@ const LoadData = ($this, e) => {
             $this.setState({
               requestPayment: response.data.result
             });
+            AlgaehLoader({ show: false });
           },
           onFailure: error => {
+            AlgaehLoader({ show: false });
             swalMessage({
               title: error.response.data.message,
               type: "error"
@@ -109,14 +116,17 @@ const LoadData = ($this, e) => {
           }
         });
       } else if ($this.state.sel_payment_type === "GR") {
+        AlgaehLoader({ show: false });
         $this.setState({
           requestPayment: []
         });
       } else if ($this.state.sel_payment_type === "FS") {
+        AlgaehLoader({ show: false });
         $this.setState({
           requestPayment: []
         });
       } else if ($this.state.sel_payment_type === "LS") {
+        AlgaehLoader({ show: false });
         $this.setState({
           requestPayment: []
         });
@@ -234,19 +244,17 @@ const getPaymentDetails = ($this, row) => {
 };
 
 const ProessEmpPayment = ($this, e) => {
-  debugger;
   AlgaehValidation({
     alertTypeIcon: "warning",
     querySelector: "data-validate='processData'",
     onSuccess: () => {
-      debugger;
+      AlgaehLoader({ show: true });
       algaehApiCall({
         uri: "/employeepayments/InsertEmployeePayment",
         module: "hrManagement",
         data: $this.state,
         method: "POST",
         onSuccess: response => {
-          debugger;
           // if (response.data.success === "true") {
           $this.setState({
             processBtn: true,
@@ -259,9 +267,11 @@ const ProessEmpPayment = ($this, e) => {
             title: "Processed Succefully...",
             type: "success"
           });
+          AlgaehLoader({ show: false });
           // }
         },
         onFailure: error => {
+          AlgaehLoader({ show: false });
           swalMessage({
             title: error.message || error.response.data.message,
             type: "error"
@@ -282,7 +292,7 @@ const employeeSearch = $this => {
     inputs:
       $this.state.hospital_id !== null
         ? "hospital_id = " + $this.state.hospital_id
-        : null,
+        : "1=1",
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },

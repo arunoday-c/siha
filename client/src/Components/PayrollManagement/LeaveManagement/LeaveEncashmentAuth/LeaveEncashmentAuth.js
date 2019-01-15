@@ -4,7 +4,15 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import "./LeaveEncashmentAuth.css";
-import { texthandler } from "./LeaveEncashmentAuthEvents.js";
+import {
+  texthandler,
+  employeeSearch,
+  LoadEncashment,
+  getLeaveEncashDetails,
+  AuthorizeLEaveEncash,
+  getLeaveLevels,
+  dateFormater
+} from "./LeaveEncashmentAuthEvents.js";
 
 import moment from "moment";
 import {
@@ -19,7 +27,16 @@ class LeaveEncashmentAuth extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      year: moment().year()
+      year: moment().year(),
+      hospital_id: null,
+      employee_name: null,
+      employee_id: null,
+      sub_department_id: null,
+      EncashHeader: [],
+      EncashDetail: [],
+      EncashDetailPer: [],
+      leave_levels: [],
+      auth_level: null
     };
   }
 
@@ -34,6 +51,20 @@ class LeaveEncashmentAuth extends Component {
         redux: {
           type: "ORGS_GET_DATA",
           mappingName: "organizations"
+        }
+      });
+    }
+
+    if (
+      this.props.all_departments === undefined ||
+      this.props.all_departments.length === 0
+    ) {
+      this.props.getDepartments({
+        uri: "/department/get/subdepartment",
+        method: "GET",
+        redux: {
+          type: "DEPARTENTS_GET_DATA",
+          mappingName: "all_departments"
         }
       });
     }
@@ -68,26 +99,14 @@ class LeaveEncashmentAuth extends Component {
       });
     }
 
-    if (
-      this.props.encashAuth === undefined ||
-      this.props.encashAuth.length === 0
-    ) {
-      this.props.getLeaveEncashLevels({
-        uri: "/encashmentprocess/getLeaveEncashLevels",
-        method: "GET",
-
-        redux: {
-          type: "ENCASH_AUTH_GET_DATA",
-          mappingName: "encashAuth"
-        }
-      });
-    }
+    getLeaveLevels(this, this);
   }
+
   render() {
     return (
       <div className="leave_en_auth row">
         <div className="col-12">
-          <div className="row inner-top-search">
+          <div className="row inner-top-search" data-validate="loadEncashAuth">
             <AlagehFormGroup
               div={{ className: "col" }}
               label={{
@@ -120,7 +139,7 @@ class LeaveEncashmentAuth extends Component {
                 dataSource: {
                   textField: "name",
                   valueField: "value",
-                  data: this.props.encashAuth
+                  data: this.state.leave_levels
                 },
                 onChange: texthandler.bind(this, this)
               }}
@@ -157,30 +176,63 @@ class LeaveEncashmentAuth extends Component {
                 isImp: false
               }}
               selector={{
-                name: "",
+                name: "sub_department_id",
                 className: "select-fld",
-
-                dataSource: {},
-                others: {}
+                value: this.state.sub_department_id,
+                dataSource: {
+                  textField: "sub_department_name",
+                  valueField: "hims_d_sub_department_id",
+                  data: this.props.all_departments
+                },
+                onChange: texthandler.bind(this, this),
+                onClear: () => {
+                  this.setState({
+                    sub_department_id: null
+                  });
+                }
               }}
             />
 
-            <AlagehAutoComplete
-              div={{ className: "col form-group" }}
-              label={{
-                forceLabel: "Filter by Employee",
-                isImp: false
-              }}
-              selector={{
-                name: "",
-                className: "select-fld",
-                dataSource: {},
-                others: {}
-              }}
-            />
+            <div className="col" style={{ marginTop: 10 }}>
+              <div
+                className="row"
+                style={{
+                  border: " 1px solid #ced4d9",
+                  borderRadius: 5,
+                  marginLeft: 0
+                }}
+              >
+                <div className="col">
+                  <AlgaehLabel label={{ forceLabel: "Select a Employee." }} />
+                  <h6>
+                    {this.state.employee_name
+                      ? this.state.employee_name
+                      : "------"}
+                  </h6>
+                </div>
+                <div
+                  className="col-lg-3"
+                  style={{ borderLeft: "1px solid #ced4d8" }}
+                >
+                  <i
+                    className="fas fa-search fa-lg"
+                    style={{
+                      paddingTop: 17,
+                      paddingLeft: 3,
+                      cursor: "pointer"
+                    }}
+                    onClick={employeeSearch.bind(this, this)}
+                  />
+                </div>
+              </div>
+            </div>
 
             <div className="col form-group">
-              <button style={{ marginTop: 21 }} className="btn btn-primary">
+              <button
+                style={{ marginTop: 21 }}
+                className="btn btn-primary"
+                onClick={LoadEncashment.bind(this, this)}
+              >
                 Load
               </button>
             </div>
@@ -207,62 +259,120 @@ class LeaveEncashmentAuth extends Component {
                     datavalidate="leaveEncashGrid"
                     columns={[
                       {
-                        fieldName: "EncashmentRequestNo",
+                        fieldName: "action",
+                        label: <AlgaehLabel label={{ forceLabel: "Action" }} />,
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              <i
+                                className="fa fa-check"
+                                onClick={AuthorizeLEaveEncash.bind(
+                                  this,
+                                  this,
+                                  "APR",
+                                  row
+                                )}
+                              />
+                              <i
+                                className="fa fa-times"
+                                onClick={AuthorizeLEaveEncash.bind(
+                                  this,
+                                  this,
+                                  "REJ",
+                                  row
+                                )}
+                              />
+                            </span>
+                          );
+                        },
+                        others: {
+                          maxWidth: 120,
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
+                      {
+                        fieldName: "encashment_number",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Request No." }} />
-                        )
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span
+                              className="pat-code"
+                              onClick={getLeaveEncashDetails.bind(
+                                this,
+                                this,
+                                row
+                              )}
+                            >
+                              {row.encashment_number}
+                            </span>
+                          );
+                        }
                       },
                       {
-                        fieldName: "leaveType",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Leave Type" }} />
-                        )
-                      },
-                      {
-                        fieldName: "LeaveDesc",
+                        fieldName: "employee_code",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Leave Description" }}
+                            label={{ forceLabel: "Employee Code" }}
                           />
                         )
                       },
                       {
-                        fieldName: "NoOfLeave",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "No. of Leave" }} />
-                        )
-                      },
-                      {
-                        fieldName: "EncashmentAmount",
+                        fieldName: "full_name",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Encashment Amount" }}
+                            label={{ forceLabel: "Employee Name" }}
                           />
                         )
                       },
                       {
-                        fieldName: "Airfare Amount",
+                        fieldName: "encashment_date",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Airfare Amount" }}
+                            label={{ forceLabel: "Encashment Date" }}
                           />
-                        )
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>{dateFormater(row.encashment_date)}</span>
+                          );
+                        }
                       },
                       {
-                        fieldName: "AirfareTotalMonth",
+                        fieldName: "year",
+                        label: <AlgaehLabel label={{ forceLabel: "Year" }} />
+                      },
+                      {
+                        fieldName: "total_amount",
                         label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Airfare Total Month" }}
-                          />
+                          <AlgaehLabel label={{ forceLabel: "Total Amount" }} />
                         )
                       }
+                      // {
+                      //   fieldName: "Airfare Amount",
+                      //   label: (
+                      //     <AlgaehLabel
+                      //       label={{ forceLabel: "Airfare Amount" }}
+                      //     />
+                      //   )
+                      // },
+                      // {
+                      //   fieldName: "AirfareTotalMonth",
+                      //   label: (
+                      //     <AlgaehLabel
+                      //       label={{ forceLabel: "Airfare Total Month" }}
+                      //     />
+                      //   )
+                      // }
                     ]}
-                    keyId=""
-                    dataSource={{ data: [] }}
-                    isEditable={true}
+                    keyId="hims_f_leave_encash_header_id"
+                    dataSource={{ data: this.state.EncashHeader }}
                     paging={{ page: 0, rowsPerPage: 10 }}
-                    events={{}}
-                    others={{}}
+                    // onRowSelect={row => {
+                    //   getLeaveEncashDetails(this, row);
+                    // }}
                   />
                 </div>
               </div>
@@ -288,13 +398,7 @@ class LeaveEncashmentAuth extends Component {
                     datavalidate="previousLeaveAppGrid"
                     columns={[
                       {
-                        fieldName: "leaveType",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Leave Type" }} />
-                        )
-                      },
-                      {
-                        fieldName: "LeaveDesc",
+                        fieldName: "leave_description",
                         label: (
                           <AlgaehLabel
                             label={{ forceLabel: "Leave Description" }}
@@ -302,13 +406,13 @@ class LeaveEncashmentAuth extends Component {
                         )
                       },
                       {
-                        fieldName: "NoOfLeave",
+                        fieldName: "leave_days",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "No. of Leave" }} />
                         )
                       },
                       {
-                        fieldName: "EncashmentAmount",
+                        fieldName: "leave_amount",
                         label: (
                           <AlgaehLabel
                             label={{ forceLabel: "Encashment Amount" }}
@@ -316,7 +420,7 @@ class LeaveEncashmentAuth extends Component {
                         )
                       },
                       {
-                        fieldName: "Airfare Amount",
+                        fieldName: "airfare_amount",
                         label: (
                           <AlgaehLabel
                             label={{ forceLabel: "Airfare Amount" }}
@@ -324,20 +428,16 @@ class LeaveEncashmentAuth extends Component {
                         )
                       },
                       {
-                        fieldName: "BalanceLeaveInDays",
+                        fieldName: "total_amount",
                         label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Balance Leave In Days" }}
-                          />
+                          <AlgaehLabel label={{ forceLabel: "Total Amount" }} />
                         )
                       }
                     ]}
                     keyId=""
-                    dataSource={{ data: [] }}
+                    dataSource={{ data: this.state.EncashDetailPer }}
                     isEditable={false}
                     paging={{ page: 0, rowsPerPage: 10 }}
-                    events={{}}
-                    others={{}}
                   />
                 </div>
               </div>
@@ -354,7 +454,8 @@ function mapStateToProps(state) {
     all_employees: state.all_employees,
     leaveMaster: state.leaveMaster,
     encashAuth: state.encashAuth,
-    organizations: state.organizations
+    organizations: state.organizations,
+    all_departments: state.all_departments
   };
 }
 
@@ -364,7 +465,8 @@ function mapDispatchToProps(dispatch) {
       getEmployees: AlgaehActions,
       getLeaveMaster: AlgaehActions,
       getOrganizations: AlgaehActions,
-      getLeaveEncashLevels: AlgaehActions
+      getLeaveEncashLevels: AlgaehActions,
+      getDepartments: AlgaehActions
     },
     dispatch
   );

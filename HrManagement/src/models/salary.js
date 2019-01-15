@@ -466,10 +466,12 @@ module.exports = {
 
               _mysql.commitTransaction(() => {
                 _mysql.releaseConnection();
-                req.records = {
-                  salaryprocess_header: salaryprocess_header,
-                  salaryprocess_detail: result
-                };
+                req.records = [
+                  {
+                    salaryprocess_header: salaryprocess_header,
+                    salaryprocess_detail: result
+                  }
+                ];
                 next();
               });
             });
