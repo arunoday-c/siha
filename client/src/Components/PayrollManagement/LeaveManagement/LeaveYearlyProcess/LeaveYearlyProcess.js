@@ -10,6 +10,7 @@ import {
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import Employee from "../../../../Search/Employee.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+import YearlyLeaveDetail from "./YearlyLeaveDetail/YearlyLeaveDetail";
 
 export default class LeaveYearlyProcess extends Component {
   constructor(props) {
@@ -18,7 +19,8 @@ export default class LeaveYearlyProcess extends Component {
       year: moment().year(),
       leaves: [],
       leave_data: [],
-      loading: false
+      loading: false,
+      open: false
     };
     this.getLeaveMaster();
   }
@@ -32,11 +34,10 @@ export default class LeaveYearlyProcess extends Component {
       loading: true
     });
     algaehApiCall({
-      uri: "/leave/getEmployeeLeaveData",
+      uri: "/leave/getYearlyLeaveData",
       method: "GET",
       data: {
-        year: this.state.year,
-        employee_id: this.state.hims_d_employee_id
+        year: this.state.year
       },
       onSuccess: res => {
         if (res.data.success) {
@@ -82,7 +83,7 @@ export default class LeaveYearlyProcess extends Component {
         } else if (!res.data.success) {
           swalMessage({
             title: res.data.records.message,
-            type: "error"
+            type: "warning"
           });
           this.setState({
             loading: false
@@ -187,9 +188,21 @@ export default class LeaveYearlyProcess extends Component {
     }
   }
 
+  closePopup() {
+    this.setState({
+      open: false
+    });
+  }
+
   render() {
     return (
       <div className="leave_en_auth row">
+        <YearlyLeaveDetail
+          open={this.state.open}
+          onClose={this.closePopup.bind(this)}
+          year={this.state.send_year}
+          employee_id={this.state.send_Emp_id}
+        />
         <div className="col-12">
           <div className="row inner-top-search">
             <AlagehFormGroup
@@ -297,11 +310,6 @@ export default class LeaveYearlyProcess extends Component {
               <div className="caption">
                 <h3 className="caption-subject">Leave Process Details</h3>
               </div>
-              <div className="actions">
-                {/* <a className="btn btn-primary btn-circle active">
-                  <i className="fas fa-pen" />
-                </a> */}
-              </div>
             </div>
             <div className="portlet-body">
               <div className="row">
@@ -310,6 +318,31 @@ export default class LeaveYearlyProcess extends Component {
                     id="LeaveYearlyProcessGrid"
                     datavalidate="LeaveYearlyProcessGrid"
                     columns={[
+                      {
+                        fieldName: "actions",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Details" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <i
+                              className="fas fa-eye"
+                              onClick={() => {
+                                this.setState({
+                                  open: true,
+                                  send_Emp_id: row.employee_id,
+                                  send_year: row.year
+                                });
+                              }}
+                            />
+                          );
+                        },
+                        others: {
+                          maxWidth: 55,
+                          filterable: false,
+                          fixed: "left"
+                        }
+                      },
                       {
                         fieldName: "year",
                         label: <AlgaehLabel label={{ forceLabel: "Year" }} />
@@ -331,24 +364,18 @@ export default class LeaveYearlyProcess extends Component {
                         )
                       },
                       {
-                        fieldName: "leave_code",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Leave Code" }} />
-                        )
-                      },
-                      {
-                        fieldName: "leave_description",
+                        fieldName: "sub_department_code",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Leave Description" }}
+                            label={{ forceLabel: "Sub Dept. Code" }}
                           />
                         )
                       },
                       {
-                        fieldName: "total_eligible",
+                        fieldName: "sub_department_name",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Total Eligible" }}
+                            label={{ forceLabel: "Sub Dept. Name" }}
                           />
                         )
                       }
