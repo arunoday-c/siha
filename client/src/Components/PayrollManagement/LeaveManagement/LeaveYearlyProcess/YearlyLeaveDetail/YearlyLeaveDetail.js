@@ -15,10 +15,15 @@ class YearlyLeaveDetail extends Component {
   }
 
   componentDidMount() {
-    this.getLeaveData();
+    this.getLeaveData(this.props.year, this.props.employee_id);
+    console.log("Did Mount:");
   }
 
-  getLeaveData() {
+  componentWillReceiveProps(nextProps) {
+    this.getLeaveData(nextProps.year, nextProps.employee_id);
+  }
+
+  getLeaveData(year, id) {
     this.setState({
       loading: true
     });
@@ -26,10 +31,10 @@ class YearlyLeaveDetail extends Component {
       uri: "/leave/getEmployeeLeaveData",
       method: "GET",
       data: {
-        year: 2019,
-        employee_id: 1
-        // year: this.props.year,
-        // employee_id: this.props.employee_id
+        // year: 2019,
+        // employee_id: 1
+        year: year,
+        employee_id: id
       },
       onSuccess: res => {
         if (res.data.success) {
@@ -58,6 +63,7 @@ class YearlyLeaveDetail extends Component {
         events={{
           onClose: this.props.onClose
         }}
+        title="Employee Yearly Leave"
       >
         <div className="col-12" id="LeaveYearlyProcessGrid_Cntr">
           <AlgaehDataGrid

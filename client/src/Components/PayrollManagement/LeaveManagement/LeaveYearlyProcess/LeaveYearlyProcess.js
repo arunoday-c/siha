@@ -17,7 +17,6 @@ export default class LeaveYearlyProcess extends Component {
     super(props);
     this.state = {
       year: moment().year(),
-      get_year: moment().year(),
       leaves: [],
       leave_data: [],
       loading: false,
@@ -38,7 +37,7 @@ export default class LeaveYearlyProcess extends Component {
       uri: "/leave/getYearlyLeaveData",
       method: "GET",
       data: {
-        year: this.state.get_year
+        year: this.state.year
       },
       onSuccess: res => {
         if (res.data.success) {
@@ -84,7 +83,7 @@ export default class LeaveYearlyProcess extends Component {
         } else if (!res.data.success) {
           swalMessage({
             title: res.data.records.message,
-            type: "error"
+            type: "warning"
           });
           this.setState({
             loading: false
@@ -170,13 +169,6 @@ export default class LeaveYearlyProcess extends Component {
   textHandler(e) {
     switch (e.target.name) {
       case "year":
-        this.setState({
-          [e.target.name]: e.target.value
-        });
-
-        break;
-
-      case "get_year":
         if (e.target.value.length >= 4) {
           this.setState(
             {
@@ -208,6 +200,8 @@ export default class LeaveYearlyProcess extends Component {
         <YearlyLeaveDetail
           open={this.state.open}
           onClose={this.closePopup.bind(this)}
+          year={this.state.send_year}
+          employee_id={this.state.send_Emp_id}
         />
         <div className="col-12">
           <div className="row inner-top-search">
@@ -316,7 +310,7 @@ export default class LeaveYearlyProcess extends Component {
               <div className="caption">
                 <h3 className="caption-subject">Leave Process Details</h3>
 
-                <AlagehFormGroup
+                {/* <AlagehFormGroup
                   div={{ className: "col  " }}
                   label={{
                     forceLabel: "Year",
@@ -324,8 +318,8 @@ export default class LeaveYearlyProcess extends Component {
                   }}
                   textBox={{
                     className: "txt-fld",
-                    name: "get_year",
-                    value: this.state.get_year,
+                    name: "year",
+                    value: this.state.year,
                     events: {
                       onChange: this.textHandler.bind(this)
                     },
@@ -333,7 +327,7 @@ export default class LeaveYearlyProcess extends Component {
                       type: "number"
                     }
                   }}
-                />
+                /> */}
               </div>
             </div>
             <div className="portlet-body">
@@ -354,7 +348,9 @@ export default class LeaveYearlyProcess extends Component {
                               className="fas fa-eye"
                               onClick={() => {
                                 this.setState({
-                                  open: true
+                                  open: true,
+                                  send_Emp_id: row.employee_id,
+                                  send_year: row.year
                                 });
                               }}
                             />
@@ -366,7 +362,10 @@ export default class LeaveYearlyProcess extends Component {
                           fixed: "left"
                         }
                       },
-
+                      {
+                        fieldName: "year",
+                        label: <AlgaehLabel label={{ forceLabel: "Year" }} />
+                      },
                       {
                         fieldName: "employee_code",
                         label: (
@@ -384,8 +383,20 @@ export default class LeaveYearlyProcess extends Component {
                         )
                       },
                       {
-                        fieldName: "year",
-                        label: <AlgaehLabel label={{ forceLabel: "Year" }} />
+                        fieldName: "sub_department_code",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Sub Dept. Code" }}
+                          />
+                        )
+                      },
+                      {
+                        fieldName: "sub_department_name",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Sub Dept. Name" }}
+                          />
+                        )
                       }
                     ]}
                     keyId="hims_f_employee_monthly_leave_id"
