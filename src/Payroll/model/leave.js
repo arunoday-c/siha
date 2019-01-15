@@ -2224,6 +2224,78 @@ between date('${req.query.from_date}') and date('${req.query.to_date}') `;
   }
 };
 
+//created by irfan:
+let updateLeaveMaster = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.body);
+
+    if (input.hims_d_leave_id > 0) {
+      db.getConnection((error, connection) => {
+        connection.query(
+          "UPDATE hims_d_leave SET leave_description=?,leave_category=?,include_weekoff=?,include_holiday=?,leave_mode=?,leave_status=?,leave_accrual=?,\
+          leave_encash=?,leave_type=?,encashment_percentage=?,leave_carry_forward=?,carry_forward_percentage=?,religion_required=?,\
+          religion_id=?,holiday_reimbursement=?,exit_permit_required=?,proportionate_leave=?,document_mandatory=?,\
+          updated_date=?, updated_by=?  WHERE hims_d_leave_id = ?",
+
+          [
+            input.leave_description,
+            input.leave_category,
+            input.include_weekoff,
+            input.include_holiday,
+            input.leave_mode,
+            input.leave_status,
+            input.leave_accrual,
+            input.leave_encash,
+            input.leave_type,
+            input.encashment_percentage,
+            input.leave_carry_forward,
+            input.carry_forward_percentage,
+            input.religion_required,
+            input.religion_id,
+            input.holiday_reimbursement,
+            input.exit_permit_required,
+            input.proportionate_leave,
+            input.document_mandatory,
+
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            input.hims_d_leave_id
+          ],
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+
+            if (result.affectedRows > 0) {
+              req.records = result;
+              next();
+            } else {
+              req.records = {
+                invalid_input: true,
+                message: "please provide valid input"
+              };
+              next();
+            }
+          }
+        );
+      });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "please provide valid input"
+      };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
 module.exports = {
   getEmployeeLeaveData,
   getYearlyLeaveData,
@@ -2239,5 +2311,6 @@ module.exports = {
   cancelAbsent,
   getAllAbsentEmployee,
   authorizeLeave,
-  getLeaveApllication
+  getLeaveApllication,
+  updateLeaveMaster
 };
