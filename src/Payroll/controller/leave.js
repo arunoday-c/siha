@@ -17,7 +17,8 @@ import {
   getAllAbsentEmployee,
   authorizeLeave,
   getLeaveApllication,
-  updateLeaveMaster
+  updateLeaveMaster,
+  calculateLeaveDays
 } from "../model/leave";
 import { debugLog } from "../../utils/logging";
 export default ({ config, db }) => {
@@ -312,5 +313,26 @@ export default ({ config, db }) => {
     next();
   });
 
+  // created by irfan :
+  api.get(
+    "/calculateLeaveDays",
+    calculateLeaveDays,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.invalid_input == true) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    },
+    releaseConnection
+  );
   return api;
 };

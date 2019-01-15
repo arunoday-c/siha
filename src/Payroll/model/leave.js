@@ -2296,6 +2296,98 @@ let updateLeaveMaster = (req, res, next) => {
     next(e);
   }
 };
+
+//created by irfan:
+let calculateLeaveDays = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+
+    let from_date = "2019-01-15";
+    let to_date = "2019-05-05";
+    let leave_total_days = 0;
+
+    var dateStart = moment(from_date);
+    var dateEnd = moment(to_date);
+    var dateRange = [];
+
+    while (
+      dateEnd > dateStart ||
+      dateStart.format("M") === dateEnd.format("M")
+    ) {
+      dateRange.push({
+        month_name: dateStart.format("MMMM"),
+        startOfMonth: moment(dateStart)
+          .startOf("month")
+          .format("YYYY-MM-DD"),
+        endOfMonth: moment(dateStart)
+          .endOf("month")
+          .format("YYYY-MM-DD"),
+
+        numberOfDays: moment(dateStart).daysInMonth()
+      });
+      dateStart.add(1, "month");
+    }
+
+    debugLog("dateRange:", dateRange);
+    if (dateRange.length > 0) {
+      for (let i = 0; i < dateRange.length; i++) {
+        if (i == 0) {
+          var end = moment(dateRange[i]["endOfMonth"]);
+          var start = moment(from_date);
+          debugLog("hiiii:", end.diff(start, "days") + 1);
+
+          leave_total_days += end.diff(start, "days") + 1;
+        } else if (i == dateRange.length - 1) {
+          var start = moment(dateRange[i]["startOfMonth"]);
+          var end = moment(to_date);
+
+          debugLog("byeee:", end.diff(start, "days") + 1);
+
+          leave_total_days += end.diff(start, "days") + 1;
+        } else {
+          leave_total_days += dateRange[i]["numberOfDays"];
+          debugLog("num:", dateRange[i]["numberOfDays"]);
+        }
+      }
+    }
+
+    debugLog("leave_total_days:", leave_total_days);
+
+    // const startOfMonth = moment(input.yearAndMonth)
+    //   .startOf("month")
+    //   .format("YYYY-MM-DD");
+
+    // const endOfMonth = moment(input.yearAndMonth)
+    //   .endOf("month")
+    //   .format("YYYY-MM-DD");
+
+    // var a = moment([2007, 0, 29]);
+    // var b = moment([2007, 0, 28]);
+
+    var a = moment("2019-01-20");
+    var b = moment("2019-01-01");
+
+    // let db = req.db;
+    // db.getConnection((error, connection) => {
+    //   connection.query(
+    //     "select hims_d_appointment_status_id, color_code, description, default_status,steps,authorized FROM hims_d_appointment_status where record_status='A'  order by steps ",
+    //     (error, result) => {
+    //       releaseDBConnection(db, connection);
+    //       if (error) {
+    //         next(error);
+    //       }
+    //       req.records = result;
+    //       next();
+    //     }
+    //   );
+    // });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getEmployeeLeaveData,
   getYearlyLeaveData,
@@ -2312,5 +2404,6 @@ module.exports = {
   getAllAbsentEmployee,
   authorizeLeave,
   getLeaveApllication,
-  updateLeaveMaster
+  updateLeaveMaster,
+  calculateLeaveDays
 };
