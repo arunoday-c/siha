@@ -25,16 +25,6 @@ function FinalSettlement(props) {
             others: {}
           }}
         />
-        <AlagehAutoComplete
-          div={{ className: "col-3 form-group" }}
-          label={{ forceLabel: "End of Service Type", isImp: true }}
-          selector={{
-            name: "",
-            className: "select-fld",
-            dataSource: {},
-            others: {}
-          }}
-        />
 
         <div className="col-3" style={{ marginTop: 10 }}>
           <div
@@ -82,40 +72,36 @@ function FinalSettlement(props) {
       </div>
       <div className="row">
         <div className="col-12">
-          <div className="portlet portlet-bordered margin-bottom-15">
+          <div
+            className="portlet portlet-bordered margin-bottom-15"
+            style={{ padding: 0 }}
+          >
             <div className="portlet-body">
               <div className="col-12" style={{ marginTop: 7 }}>
                 <div className="row">
-                  <div className="col-12 algaehLabelFormGroup">
-                    <label className="algaehLabelGroup">
-                      Employee Information
-                    </label>
-                    <div className="row">
-                      <div className="col">
-                        <label className="style_Label ">Employee Code</label>
-                        <h6>-------</h6>
-                      </div>
+                  <div className="col">
+                    <label className="style_Label ">Employee Code</label>
+                    <h6>-------</h6>
+                  </div>
 
-                      <div className="col">
-                        <label className="style_Label ">Employee Name</label>
-                        <h6>-------</h6>
-                      </div>
+                  <div className="col">
+                    <label className="style_Label ">Employee Name</label>
+                    <h6>-------</h6>
+                  </div>
 
-                      <div className="col">
-                        <label className="style_Label ">Department</label>
-                        <h6>-------</h6>
-                      </div>
+                  <div className="col">
+                    <label className="style_Label ">Department</label>
+                    <h6>-------</h6>
+                  </div>
 
-                      <div className="col">
-                        <label className="style_Label ">Designation</label>
-                        <h6>-------</h6>
-                      </div>
+                  <div className="col">
+                    <label className="style_Label ">Designation</label>
+                    <h6>-------</h6>
+                  </div>
 
-                      <div className="col">
-                        <label className="style_Label ">Employee Status</label>
-                        <h6>-------</h6>
-                      </div>
-                    </div>
+                  <div className="col">
+                    <label className="style_Label ">Employee Status</label>
+                    <h6>-------</h6>
                   </div>
                 </div>
               </div>
@@ -143,7 +129,7 @@ function FinalSettlement(props) {
                     columns={[
                       {
                         fieldName: "",
-                        label: "Description"
+                        label: "Earning Type"
                         //disabled: true
                       },
                       {
@@ -192,7 +178,7 @@ function FinalSettlement(props) {
                     columns={[
                       {
                         fieldName: "",
-                        label: "Description"
+                        label: "Deduction Type"
                         //disabled: true
                       },
                       {
@@ -224,7 +210,7 @@ function FinalSettlement(props) {
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
-                <h3 className="caption-subject">Employer Contribution</h3>
+                <h3 className="caption-subject">Employee Loans</h3>
               </div>
               <div className="actions">
                 {/*    <a className="btn btn-primary btn-circle active">
@@ -235,13 +221,13 @@ function FinalSettlement(props) {
 
             <div className="portlet-body">
               <div className="row">
-                <div className="col-lg-12" id="Employer_Contribution_Cntr">
+                <div className="col-lg-12" id="Employee_Loan_Cntr">
                   <AlgaehDataGrid
-                    id="Employer_Contribution_Cntr_grid"
+                    id="Employee_Loan_Cntr_grid"
                     columns={[
                       {
                         fieldName: "",
-                        label: "Description"
+                        label: "Loan Type"
                         //disabled: true
                       },
                       {
@@ -269,6 +255,48 @@ function FinalSettlement(props) {
             </div>
           </div>
         </div>
+
+        <div className="col-12">
+          <div
+            className="portlet portlet-bordered margin-bottom-15"
+            style={{ padding: 0 }}
+          >
+            <div className="portlet-body">
+              <div className="col-12" style={{ marginTop: 7 }}>
+                <div className="row">
+                  <div className="col">
+                    <label className="style_Label ">Total Salary</label>
+                    <h6>-------</h6>
+                  </div>
+
+                  <div className="col">
+                    <label className="style_Label ">Gratuity Amount</label>
+                    <h6>-------</h6>
+                  </div>
+
+                  <div className="col">
+                    <label className="style_Label ">Total Loan</label>
+                    <h6>-------</h6>
+                  </div>
+
+                  <div className="col">
+                    <label className="style_Label ">Net Earnings</label>
+                    <h6>-------</h6>
+                  </div>
+
+                  <div className="col">
+                    <label className="style_Label ">Total Deduction</label>
+                    <h6>-------</h6>
+                  </div>
+                  <div className="col">
+                    <label className="style_Label ">Net Amount</label>
+                    <h6>-------</h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="hptl-phase1-footer">
@@ -291,14 +319,6 @@ function FinalSettlement(props) {
               <AlgaehLabel label={{ forceLabel: "Clear", returnText: true }} />
             </button>
 
-            <button type="button" className="btn btn-other">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Delete"
-                  //   returnText: true
-                }}
-              />
-            </button>
             <button type="button" className="btn btn-other">
               <AlgaehLabel
                 label={{
