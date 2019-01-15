@@ -16,7 +16,8 @@ import {
   AlagehAutoComplete,
   AlgaehLabel,
   AlgaehDataGrid,
-  AlagehFormGroup
+  AlagehFormGroup,
+  AlgaehDateHandler
 } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
@@ -160,6 +161,23 @@ class LeaveEncashmentProcess extends Component {
               >
                 Load
               </button>
+            </div>
+
+            <div className="col">
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Generate Document No."
+                }}
+              />
+              <h6>*** NEW ***</h6>
+            </div>
+            <div className="col">
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Date"
+                }}
+              />
+              <h6>DD/MM/YYYY</h6>
             </div>
           </div>
         </div>
