@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import AlgaehModalPopUp from "../../../../Wrapper/modulePopUp";
+
+import "./LeaveAuthDetail.css";
 import {
   AlagehAutoComplete,
   AlgaehLabel,
@@ -16,7 +18,7 @@ class LeaveAuthDetail extends Component {
           onClose: this.props.onClose
         }}
       >
-        <div className="popupInner">
+        <div className="popupInner LeaveAuthPopup">
           <div className="popRightDiv">
             <div className="row" style={{ marginTop: 15 }}>
               <div className="col-12">
@@ -91,19 +93,10 @@ class LeaveAuthDetail extends Component {
                         />
                         <h6>Mode of Leave</h6>
                       </div>
-                      <AlagehAutoComplete
-                        div={{ className: "col form-group" }}
-                        label={{
-                          forceLabel: "Replacement if Any",
-                          isImp: false
-                        }}
-                        selector={{
-                          name: "",
-                          className: "select-fld",
-                          dataSource: {},
-                          others: {}
-                        }}
-                      />
+                      <div className="col-12">
+                        <label>Remarks</label>
+                        <textarea className="textArea" />
+                      </div>
                     </div>
                   </div>
                 </div>

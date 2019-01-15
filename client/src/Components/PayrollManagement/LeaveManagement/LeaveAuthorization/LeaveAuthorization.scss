@@ -3,23 +3,3 @@
     max-height: 70vh !important;
   }
 }
-#previousLeaveAppGrid_Cntr {
-  .ReactTable {
-    max-height: 30vh !important;
-  }
-}
-.btnFooter {
-  margin-bottom: 10px;
-  button {
-    float: right;
-    margin-left: 10px;
-  }
-  button.btn-danger {
-    background: none;
-    color: #dc3545;
-    &:hover {
-      background: #dc3545;
-      color: #fff;
-    }
-  }
-}
