@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import {
-  AlgaehDateHandler,
   AlagehFormGroup,
   AlgaehLabel,
   AlagehAutoComplete,
@@ -14,7 +13,6 @@ import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import {
   texthandle,
   SalaryProcess,
-  TestData,
   getSalaryDetails
 } from "./SalaryProcessingEvents.js";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -243,17 +241,6 @@ class SalaryProcessing extends Component {
                 onClick={SalaryProcess.bind(this, this)}
               >
                 Load
-              </button>
-            </div>
-
-            <div className="col margin-bottom-15">
-              <button
-                type="button"
-                className="btn btn-primary"
-                style={{ marginTop: 21 }}
-                onClick={TestData.bind(this, this)}
-              >
-                Test
               </button>
             </div>
           </div>

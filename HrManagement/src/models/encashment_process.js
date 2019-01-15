@@ -53,7 +53,7 @@ module.exports = {
 
   getLeaveEncashLevels: (req, res, next) => {
     try {
-      let userPrivilege = req.userIdentity.loan_authorize_privilege;
+      let userPrivilege = req.userIdentity.leave_authorize_privilege;
 
       let auth_levels = [];
       switch (userPrivilege) {
@@ -66,6 +66,13 @@ module.exports = {
             { name: "Level 1", value: 1 }
           );
           break;
+        case "AL3":
+          auth_levels.push(
+            { name: "Level 3", value: 3 },
+            { name: "Level 2", value: 2 },
+            { name: "Level 1", value: 1 }
+          );
+          break;
       }
 
       req.records = { auth_levels };
@@ -74,6 +81,26 @@ module.exports = {
       next(e);
     }
   },
+
+  // getLeaveEncashLevels: (req, res, next) => {
+  //   let userPrivilege = req.userIdentity.loan_authorize_privilege;
+
+  //   let auth_levels = [];
+  //   switch (userPrivilege) {
+  //     case "AL1":
+  //       auth_levels.push({ name: "Level 1", value: 1 });
+  //       break;
+  //     case "AL2":
+  //       auth_levels.push(
+  //         { name: "Level 2", value: 2 },
+  //         { name: "Level 1", value: 1 }
+  //       );
+  //       break;
+  //   }
+
+  //   req.records = { auth_levels };
+  //   next();
+  // },
 
   InsertLeaveEncashment: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -152,26 +179,141 @@ module.exports = {
   },
 
   getLeaveEncash: (req, res, next) => {
-    try {
-      let userPrivilege = req.userIdentity.loan_authorize_privilege;
+    const _mysql = new algaehMysql();
+    const inputParam = req.query;
 
-      let auth_levels = [];
-      switch (userPrivilege) {
-        case "AL1":
-          auth_levels.push({ name: "Level 1", value: 1 });
-          break;
-        case "AL2":
-          auth_levels.push(
-            { name: "Level 2", value: 2 },
-            { name: "Level 1", value: 1 }
-          );
-          break;
-      }
+    let leaveEncash_header = [];
 
-      req.records = { auth_levels };
-      next();
-    } catch (e) {
-      next(e);
+    let _stringData =
+      inputParam.authorized1 != null ? " and authorized1=? " : "";
+    _stringData += inputParam.authorized2 != null ? " and authorized2=? " : "";
+
+    _stringData += inputParam.employee_id != null ? " and employee_id=? " : "";
+
+    _stringData +=
+      inputParam.hospital_id != null ? " and emp.hospital_id=? " : "";
+
+    _stringData +=
+      inputParam.sub_department_id != null
+        ? " and emp.sub_department_id=? "
+        : "";
+
+    /* Select statemwnt  */
+
+    utilities
+      .AlgaehUtilities()
+      .logger()
+      .log("inputParam: ", inputParam);
+
+    _mysql
+      .executeQuery({
+        query:
+          "select hims_f_leave_encash_header_id,encashment_number, employee_id, encashment_date, year, total_amount,\
+          emp.employee_code, emp.full_name from hims_f_leave_encash_header, hims_d_employee emp where \
+          hims_f_leave_encash_header.employee_id = emp.hims_d_employee_id and `year` = ? " +
+          _stringData,
+        values: _.valuesIn(inputParam),
+        printQuery: true
+      })
+      .then(leave_Encash => {
+        utilities
+          .AlgaehUtilities()
+          .logger()
+          .log("leave_Encash: ", leave_Encash);
+
+        if (leave_Encash.length > 0) {
+          const Encash_header_id = leave_Encash.map(item => {
+            return item.hims_f_leave_encash_header_id;
+          });
+          leaveEncash_header = leave_Encash;
+          utilities
+            .AlgaehUtilities()
+            .logger()
+            .log("Encash_header_id: ", Encash_header_id);
+
+          _mysql
+            .executeQuery({
+              query:
+                "select * from hims_f_leave_encash_detail, hims_d_leave leavems where leave_encash_header_id in (?) \
+                and leavems.hims_d_leave_id = hims_f_leave_encash_detail.leave_id;",
+              values: [Encash_header_id],
+              printQuery: true
+            })
+            .then(result => {
+              utilities
+                .AlgaehUtilities()
+                .logger()
+                .log("result: ", result);
+
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = [
+                  {
+                    leaveEncash_header: leaveEncash_header,
+                    leaveEncash_detail: result
+                  }
+                ];
+                next();
+              });
+            });
+        } else {
+          _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            req.records = leaveEncash_header;
+            next();
+          });
+        }
+      })
+      .catch(e => {
+        next(e);
+      });
+  },
+  UpdateLeaveEncash: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let inputParam = { ...req.body };
+
+    let strQuery = "";
+    let values = [];
+    utilities
+      .AlgaehUtilities()
+      .logger()
+      .log("inputParam: ", inputParam);
+
+    if (inputParam.auth_level == "1") {
+      strQuery =
+        "UPDATE hims_f_leave_encash_header SET authorized1 = ?,authorized1_by=?,authorized1_date=? where hims_f_leave_encash_header_id=?";
+
+      values.push(
+        inputParam.authorized,
+        req.userIdentity.algaeh_d_app_user_id,
+        new Date(),
+        inputParam.hims_f_leave_encash_header_id
+      );
+    } else if (inputParam.auth_level == "2") {
+      strQuery =
+        "UPDATE hims_f_leave_encash_header SET authorized2 = ?,authorized2_by=?,authorized2_date=?, authorized=? where hims_f_leave_encash_header_id=?";
+
+      values.push(
+        inputParam.authorized,
+        req.userIdentity.algaeh_d_app_user_id,
+        new Date(),
+        inputParam.authorized,
+        inputParam.hims_f_leave_encash_header_id
+      );
     }
+    _mysql
+      .executeQuery({
+        query: strQuery,
+        values: values,
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        next(e);
+      });
   }
 };

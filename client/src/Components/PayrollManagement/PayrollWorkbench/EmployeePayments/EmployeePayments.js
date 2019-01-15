@@ -339,18 +339,17 @@ class EmployeePayment extends Component {
                     <div className="portlet-title">
                       <div className="caption">
                         <h3 className="caption-subject">Payment Form</h3>
-
+                      </div>
+                      <div className="actions">
                         {this.state.request_number === null ? (
                           ""
                         ) : (
-                          <h3>
+                          <span>
                             {this.state.request_number +
                               "/" +
                               this.state.full_name}
-                          </h3>
+                          </span>
                         )}
-                      </div>
-                      <div className="actions">
                         {/* <a className="btn btn-primary btn-circle active">
                         <i className="fas fa-calculator" /> 
                       </a>*/}
