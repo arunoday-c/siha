@@ -2082,15 +2082,15 @@ let getLeaveApllication = (req, res, next) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    if (
-      req.query.auth_level != "L1" &&
-      req.query.auth_level != "L2" &&
-      req.query.auth_level != "L3"
-    ) {
-      req.records = { invalid_input: true, message: "invalid auth level " };
-      next();
-      return;
-    }
+    // if (
+    //   req.query.auth_level != "L1" &&
+    //   req.query.auth_level != "L2" &&
+    //   req.query.auth_level != "L3"
+    // ) {
+    //   req.records = { invalid_input: true, message: "invalid auth level " };
+    //   next();
+    //   return;
+    // }
     let employee = "";
     let range = "";
 

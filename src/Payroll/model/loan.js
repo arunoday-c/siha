@@ -177,12 +177,12 @@ let getLoanApplication = (req, res, next) => {
     }
     let db = req.db;
 
-    if (input.auth_level != "L1" && input.auth_level != "L2") {
-      debugLog("L1 and L2 not defind");
-      req.records = { invalid_input: true, message: "invalid auth level " };
-      next();
-      return;
-    }
+    // if (req.query.auth_level != "L1" && req.query.auth_level != "L2") {
+    //   debugLog("L1 and L2 not defind");
+    //   req.records = { invalid_input: true, message: "invalid auth level " };
+    //   next();
+    //   return;
+    // }
 
     let employee = "";
     let range = "";
