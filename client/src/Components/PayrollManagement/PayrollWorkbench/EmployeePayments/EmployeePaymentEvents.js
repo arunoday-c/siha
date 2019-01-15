@@ -307,7 +307,7 @@ const getEmployeePayments = $this => {
     },
     onFailure: error => {
       swalMessage({
-        title: error.response.data.message,
+        title: error.message || error.response.data.message,
         type: "error"
       });
     }

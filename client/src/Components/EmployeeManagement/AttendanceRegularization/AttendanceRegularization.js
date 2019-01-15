@@ -1,11 +1,6 @@
 import React, { Component } from "react";
 import "./AttendanceRegularization.css";
-import {
-  AlgaehDateHandler,
-  AlagehFormGroup,
-  AlgaehLabel,
-  AlagehAutoComplete
-} from "../../Wrapper/algaehWrapper";
+import { AlgaehDateHandler } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import ReactTable from "react-table";
 import "react-table/react-table.css";
