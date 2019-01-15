@@ -2298,7 +2298,7 @@ let updateLeaveMaster = (req, res, next) => {
 };
 
 //created by irfan:
-let calculateLeaveDays = (req, res, next) => {
+let calculateLeaveDaysBKP = (req, res, next) => {
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -2388,6 +2388,156 @@ let calculateLeaveDays = (req, res, next) => {
   }
 };
 
+//created by irfan:
+let calculateLeaveDays = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+
+    let from_date = "2019-01-15";
+    let to_date = "2019-05-05";
+    let leave_total_days = 0;
+    let session_diff = 0;
+
+    var dateStart = moment(from_date);
+    var dateEnd = moment(to_date);
+    var dateRange = [];
+
+    if (from_session == "SH") {
+      session_diff += parseFloat(0.5);
+    }
+    if (to_session == "FH") {
+      session_diff += parseFloat(0.5);
+    }
+
+    while (
+      dateEnd > dateStart ||
+      dateStart.format("M") === dateEnd.format("M")
+    ) {
+      dateRange.push({
+        month_name: dateStart.format("MMMM"),
+        startOfMonth: moment(dateStart)
+          .startOf("month")
+          .format("YYYY-MM-DD"),
+        endOfMonth: moment(dateStart)
+          .endOf("month")
+          .format("YYYY-MM-DD"),
+
+        numberOfDays: moment(dateStart).daysInMonth()
+      });
+      dateStart.add(1, "month");
+    }
+
+    debugLog("dateRange:", dateRange);
+    if (dateRange.length > 0) {
+      for (let i = 0; i < dateRange.length; i++) {
+        if (i == 0) {
+          var end = moment(dateRange[i]["endOfMonth"]);
+          var start = moment(from_date);
+          debugLog("hiiii:", end.diff(start, "days") + 1);
+
+          leave_total_days += end.diff(start, "days") + 1;
+        } else if (i == dateRange.length - 1) {
+          var start = moment(dateRange[i]["startOfMonth"]);
+          var end = moment(to_date);
+
+          debugLog("byeee:", end.diff(start, "days") + 1);
+
+          leave_total_days += end.diff(start, "days") + 1;
+        } else {
+          leave_total_days += dateRange[i]["numberOfDays"];
+          debugLog("num:", dateRange[i]["numberOfDays"]);
+        }
+      }
+    }
+
+    debugLog("leave_total_days:", leave_total_days);
+
+    // const startOfMonth = moment(input.yearAndMonth)
+    //   .startOf("month")
+    //   .format("YYYY-MM-DD");
+
+    // const endOfMonth = moment(input.yearAndMonth)
+    //   .endOf("month")
+    //   .format("YYYY-MM-DD");
+
+    // var a = moment([2007, 0, 29]);
+    // var b = moment([2007, 0, 28]);
+
+    var a = moment("2019-01-20");
+    var b = moment("2019-01-01");
+
+    let db = req.db;
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select L.hims_d_leave_id,L.leave_code,LD.employee_type,LD.gender,LD.eligible_days ,\
+        L.include_weekoff,L.include_holiday from hims_d_leave  L \
+        inner join hims_d_leave_detail LD on L.hims_d_leave_id=LD.leave_header_id  and L.record_status='A'\
+        where L.hims_d_leave_id=? and (LD.gender=? or LD.gender='BOTH' )",
+        ["28", "MALE"],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+
+          if (
+            result[0].include_weekoff == "N" ||
+            result[0].include_holiday == "N"
+          ) {
+            connection.query(
+              "select hims_d_holiday_id,holiday_date,holiday_description,weekoff,holiday,holiday_type,religion_id\
+    from hims_d_holiday H where date(holiday_date) between date(?) and date(?) ",
+              ["2019-01-01", "2019-01-31"],
+              (error, holidayResult) => {
+                if (error) {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                }
+
+                let total_weekOff = new LINQ(holidayResult)
+                  .Where(w => w.weekoff == "Y")
+                  .Count();
+
+                let total_holiday = new LINQ(holidayResult)
+                  .Where(
+                    w =>
+                      (w.holiday == "Y" && w.holiday_type == "RE") ||
+                      (w.holiday == "Y" &&
+                        w.holiday_type == "RS" &&
+                        w.religion_id == "1")
+                  )
+                  .Count();
+
+                debugLog("total_weekOff:", total_weekOff);
+                debugLog("total_holiday:", total_holiday);
+
+                if (result[0].include_weekoff == "N") {
+                  leave_total_days =
+                    parseFloat(leave_total_days) - parseFloat(total_weekOff);
+                }
+
+                if (result[0].include_holiday == "N") {
+                  leave_total_days =
+                    parseFloat(leave_total_days) - parseFloat(include_holiday);
+                }
+
+                leave_total_days =
+                  parseFloat(leave_total_days) - parseFloat(session_diff);
+              }
+            );
+          }
+
+          // req.records = result;
+          // next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
 module.exports = {
   getEmployeeLeaveData,
   getYearlyLeaveData,
