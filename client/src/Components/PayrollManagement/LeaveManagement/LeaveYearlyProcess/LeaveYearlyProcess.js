@@ -10,15 +10,18 @@ import {
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import Employee from "../../../../Search/Employee.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+import YearlyLeaveDetail from "./YearlyLeaveDetail/YearlyLeaveDetail";
 
 export default class LeaveYearlyProcess extends Component {
   constructor(props) {
     super(props);
     this.state = {
       year: moment().year(),
+      get_year: moment().year(),
       leaves: [],
       leave_data: [],
-      loading: false
+      loading: false,
+      open: false
     };
     this.getLeaveMaster();
   }
@@ -32,11 +35,10 @@ export default class LeaveYearlyProcess extends Component {
       loading: true
     });
     algaehApiCall({
-      uri: "/leave/getEmployeeLeaveData",
+      uri: "/leave/getYearlyLeaveData",
       method: "GET",
       data: {
-        year: this.state.year,
-        employee_id: this.state.hims_d_employee_id
+        year: this.state.get_year
       },
       onSuccess: res => {
         if (res.data.success) {
@@ -168,6 +170,13 @@ export default class LeaveYearlyProcess extends Component {
   textHandler(e) {
     switch (e.target.name) {
       case "year":
+        this.setState({
+          [e.target.name]: e.target.value
+        });
+
+        break;
+
+      case "get_year":
         if (e.target.value.length >= 4) {
           this.setState(
             {
@@ -187,9 +196,19 @@ export default class LeaveYearlyProcess extends Component {
     }
   }
 
+  closePopup() {
+    this.setState({
+      open: false
+    });
+  }
+
   render() {
     return (
       <div className="leave_en_auth row">
+        <YearlyLeaveDetail
+          open={this.state.open}
+          onClose={this.closePopup.bind(this)}
+        />
         <div className="col-12">
           <div className="row inner-top-search">
             <AlagehFormGroup
@@ -296,11 +315,25 @@ export default class LeaveYearlyProcess extends Component {
             <div className="portlet-title">
               <div className="caption">
                 <h3 className="caption-subject">Leave Process Details</h3>
-              </div>
-              <div className="actions">
-                {/* <a className="btn btn-primary btn-circle active">
-                  <i className="fas fa-pen" />
-                </a> */}
+
+                <AlagehFormGroup
+                  div={{ className: "col  " }}
+                  label={{
+                    forceLabel: "Year",
+                    isImp: true
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "get_year",
+                    value: this.state.get_year,
+                    events: {
+                      onChange: this.textHandler.bind(this)
+                    },
+                    others: {
+                      type: "number"
+                    }
+                  }}
+                />
               </div>
             </div>
             <div className="portlet-body">
@@ -311,9 +344,29 @@ export default class LeaveYearlyProcess extends Component {
                     datavalidate="LeaveYearlyProcessGrid"
                     columns={[
                       {
-                        fieldName: "year",
-                        label: <AlgaehLabel label={{ forceLabel: "Year" }} />
+                        fieldName: "actions",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Details" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <i
+                              className="fas fa-eye"
+                              onClick={() => {
+                                this.setState({
+                                  open: true
+                                });
+                              }}
+                            />
+                          );
+                        },
+                        others: {
+                          maxWidth: 55,
+                          filterable: false,
+                          fixed: "left"
+                        }
                       },
+
                       {
                         fieldName: "employee_code",
                         label: (
@@ -331,26 +384,8 @@ export default class LeaveYearlyProcess extends Component {
                         )
                       },
                       {
-                        fieldName: "leave_code",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Leave Code" }} />
-                        )
-                      },
-                      {
-                        fieldName: "leave_description",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Leave Description" }}
-                          />
-                        )
-                      },
-                      {
-                        fieldName: "total_eligible",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Total Eligible" }}
-                          />
-                        )
+                        fieldName: "year",
+                        label: <AlgaehLabel label={{ forceLabel: "Year" }} />
                       }
                     ]}
                     keyId="hims_f_employee_monthly_leave_id"
