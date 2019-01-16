@@ -2423,6 +2423,12 @@ let calculateLeaveDays = (req, res, next) => {
     let session_diff = 0;
     let my_religion = input.religion_id;
 
+    let from_month = moment(from_date).format("M");
+    let to_month = moment(to_date).format("M");
+
+    debugLog("from_month:", from_month);
+    debugLog("to_month:", to_month);
+
     debugLog("from_date:", from_date);
     debugLog("to_date:", to_date);
 
@@ -2652,29 +2658,35 @@ let calculateLeaveDays = (req, res, next) => {
                 let total_minus = 0;
                 for (let k = 0; k < dateRange.length; k++) {
                   let reduce_days = parseFloat(0);
-                  reduce_days += parseFloat(
-                    new LINQ(holiday_Data)
-                      .Where(
-                        w =>
-                          dateRange[k]["begning_of_leave"] <= w.holiday_date &&
-                          w.holiday_date <= dateRange[k]["end_of_leave"]
-                      )
-                      .Count()
-                  );
+
+                  if (result[0].include_holiday == "N") {
+                    reduce_days += parseFloat(
+                      new LINQ(holiday_Data)
+                        .Where(
+                          w =>
+                            dateRange[k]["begning_of_leave"] <=
+                              w.holiday_date &&
+                            w.holiday_date <= dateRange[k]["end_of_leave"]
+                        )
+                        .Count()
+                    );
+                  }
                   debugLog(
                     "holiday reduce:" + dateRange[k]["month_name"],
                     reduce_days
                   );
-
-                  reduce_days += parseFloat(
-                    new LINQ(week_off_Data)
-                      .Where(
-                        w =>
-                          dateRange[k]["begning_of_leave"] <= w.holiday_date &&
-                          w.holiday_date <= dateRange[k]["end_of_leave"]
-                      )
-                      .Count()
-                  );
+                  if (result[0].include_weekoff == "N") {
+                    reduce_days += parseFloat(
+                      new LINQ(week_off_Data)
+                        .Where(
+                          w =>
+                            dateRange[k]["begning_of_leave"] <=
+                              w.holiday_date &&
+                            w.holiday_date <= dateRange[k]["end_of_leave"]
+                        )
+                        .Count()
+                    );
+                  }
 
                   debugLog(
                     "holiday reduce:" + dateRange[k]["month_name"],
@@ -2682,12 +2694,46 @@ let calculateLeaveDays = (req, res, next) => {
                   );
                   debugLog("===================:");
 
-                  leaveDeductionArray.push({
-                    month_name: dateRange[k]["month_name"],
-                    finalLeave:
-                      parseFloat(dateRange[k]["leaveDays"]) -
-                      parseFloat(reduce_days)
-                  });
+                  if (req.query.from_session == "SH" && k == 0) {
+                    if (
+                      from_month === to_month &&
+                      req.query.to_session == "FH"
+                    ) {
+                      leaveDeductionArray.push({
+                        month_name: dateRange[k]["month_name"],
+                        finalLeave:
+                          parseFloat(dateRange[k]["leaveDays"]) -
+                          parseFloat(reduce_days) -
+                          parseFloat(1)
+                      });
+                    } else {
+                      leaveDeductionArray.push({
+                        month_name: dateRange[k]["month_name"],
+                        finalLeave:
+                          parseFloat(dateRange[k]["leaveDays"]) -
+                          parseFloat(reduce_days) -
+                          parseFloat(0.5)
+                      });
+                    }
+                  } else if (
+                    req.query.to_session == "FH" &&
+                    k == dateRange.length - 1
+                  ) {
+                    leaveDeductionArray.push({
+                      month_name: dateRange[k]["month_name"],
+                      finalLeave:
+                        parseFloat(dateRange[k]["leaveDays"]) -
+                        parseFloat(reduce_days) -
+                        parseFloat(0.5)
+                    });
+                  } else {
+                    leaveDeductionArray.push({
+                      month_name: dateRange[k]["month_name"],
+                      finalLeave:
+                        parseFloat(dateRange[k]["leaveDays"]) -
+                        parseFloat(reduce_days)
+                    });
+                  }
 
                   total_minus += parseFloat(reduce_days);
                 }
