@@ -2559,6 +2559,7 @@ let calculateLeaveDays = (req, res, next) => {
             next(error);
           }
           debugLog("result:", result);
+
           if (
             result.length > 0 &&
             (result[0].include_weekoff == "N" ||
@@ -2567,7 +2568,10 @@ let calculateLeaveDays = (req, res, next) => {
             connection.query(
               "select hims_d_holiday_id,holiday_date,holiday_description,weekoff,holiday,holiday_type,religion_id\
     from hims_d_holiday H where date(holiday_date) between date(?) and date(?) ",
-              [from_date, to_date],
+              [
+                moment(from_date).format("YYYY-MM-DD"),
+                moment(to_date).format("YYYY-MM-DD")
+              ],
               (error, holidayResult) => {
                 if (error) {
                   releaseDBConnection(db, connection);
