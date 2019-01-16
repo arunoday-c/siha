@@ -9,3 +9,11 @@
     border-top: 1px solid #d3d3d3;
   }
 }
+#leaveRules_grid_cntr,
+#leaveEncashment_grid_cntr,
+#leaveDetails_grid_cntr {
+  .ReactTable {
+    max-height: 40vh !important;
+    margin-bottom: 15px;
+  }
+}

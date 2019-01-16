@@ -91,6 +91,15 @@ export default class LeaveSalaryProcess extends Component {
               <button style={{ marginTop: 21 }} className="btn btn-primary">
                 Load
               </button>
+              <button
+                type="button"
+                className="btn btn-default"
+                style={{ marginTop: 21, marginLeft: 5 }}
+              >
+                <AlgaehLabel
+                  label={{ forceLabel: "Clear", returnText: true }}
+                />
+              </button>
             </div>
           </div>
         </div>
@@ -268,12 +277,6 @@ export default class LeaveSalaryProcess extends Component {
               <button type="button" className="btn btn-primary">
                 <AlgaehLabel
                   label={{ forceLabel: "Process", returnText: true }}
-                />
-              </button>
-
-              <button type="button" className="btn btn-default">
-                <AlgaehLabel
-                  label={{ forceLabel: "Clear", returnText: true }}
                 />
               </button>
             </div>

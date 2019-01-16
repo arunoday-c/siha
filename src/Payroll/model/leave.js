@@ -2780,6 +2780,117 @@ let calculateLeaveDays = (req, res, next) => {
     next(e);
   }
 };
+
+//created by Adnan:
+let getLeaveDetailsMaster = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.query);
+
+    if (input.leave_id != undefined && input.leave_id != "null") {
+      db.getConnection((error, connection) => {
+        connection.query(
+          "Select hims_d_leave_detail_id, leave_header_id, employee_type,\
+          gender, eligible_days, min_service_required, service_years,\
+          once_life_term, allow_probation, max_number_days, mandatory_utilize_days\
+          from hims_d_leave_detail where leave_header_id=?",
+          input.leave_id,
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+
+            req.records = result;
+            next();
+          }
+        );
+      });
+    } else {
+      req.records = { invalid_input: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+//created by Adnan:
+let getLeaveEncashmentMaster = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.query);
+
+    if (input.leave_id != undefined && input.leave_id != "null") {
+      db.getConnection((error, connection) => {
+        connection.query(
+          "Select hims_d_leave_encashment_id, leave_header_id,\
+           earnings_id, percent\
+          from hims_d_leave_encashment where leave_header_id=?",
+          input.leave_id,
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+
+            req.records = result;
+            next();
+          }
+        );
+      });
+    } else {
+      req.records = { invalid_input: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+//created by Adnan:
+let getLeaveRulesMaster = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.query);
+
+    if (input.leave_id != undefined && input.leave_id != "null") {
+      db.getConnection((error, connection) => {
+        connection.query(
+          "Select hims_d_leave_rule_id, leave_header_id, calculation_type,\
+           earning_id, paytype, from_value, to_value, value_type, total_days\
+          from hims_d_leave_rule where leave_header_id=?",
+          input.leave_id,
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+
+            req.records = result;
+            next();
+          }
+        );
+      });
+    } else {
+      req.records = { invalid_input: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getEmployeeLeaveData,
   getYearlyLeaveData,
@@ -2797,5 +2908,8 @@ module.exports = {
   authorizeLeave,
   getLeaveApllication,
   updateLeaveMaster,
-  calculateLeaveDays
+  calculateLeaveDays,
+  getLeaveDetailsMaster,
+  getLeaveEncashmentMaster,
+  getLeaveRulesMaster
 };

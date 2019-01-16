@@ -2,15 +2,82 @@ import React, { Component } from "react";
 import {
   AlagehFormGroup,
   AlgaehLabel,
-  AlagehAutoComplete,
-  AlgaehDataGrid
+  AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
+import AlgaehSearch from "../../../Wrapper/globalSearch";
+import Employee from "../../../../Search/Employee.json";
 import "./EOSGratuity.css";
+import GlobalVariables from "../../../../utils/GlobalVariables.json";
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 
 class EOSGratuity extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      loading: false,
+      eos: []
+    };
+  }
+
+  dropDownHandler(value) {
+    this.setState({
+      [value.name]: value.value
+    });
+  }
+
+  textHandler(e) {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  }
+
+  employeeSearch() {
+    AlgaehSearch({
+      searchGrid: {
+        columns: Employee
+      },
+      searchName: "employee",
+      uri: "/gloabelSearch/get",
+      onContainsChange: (text, serchBy, callBack) => {
+        callBack(text);
+      },
+      onRowSelect: row => {
+        this.setState(
+          {
+            employee_name: row.full_name,
+            hims_d_employee_id: row.hims_d_employee_id
+          },
+          () => {}
+        );
+      }
+    });
+  }
+
+  loadEmployeeDetails() {
+    this.setState({
+      loading: true
+    });
+
+    algaehApiCall({
+      uri: "/exit/getEmployeeDetails",
+      method: "GET",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            loading: false
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+        this.setState({
+          loading: false
+        });
+      }
+    });
   }
 
   render() {
@@ -21,24 +88,33 @@ class EOSGratuity extends Component {
             div={{ className: "col-3 form-group" }}
             label={{ forceLabel: "Search by EOS/Gratuity No.", isImp: false }}
             selector={{
-              name: "",
+              name: "hims_f_end_of_service_id",
               className: "select-fld",
-              dataSource: {},
-              others: {}
+              dataSource: {
+                textField: "end_of_service_number",
+                valueField: "hims_f_end_of_service_id",
+                data: this.state.eos
+              },
+              onChange: this.dropDownHandler.bind(this)
             }}
           />
           <AlagehAutoComplete
             div={{ className: "col-3 form-group" }}
             label={{ forceLabel: "End of Service Type", isImp: true }}
             selector={{
-              name: "",
+              name: "exit_type",
+              value: this.state.exit_type,
               className: "select-fld",
-              dataSource: {},
-              others: {}
+              dataSource: {
+                textField: "name",
+                valueField: "value",
+                data: GlobalVariables.EXIT_TYPE
+              },
+              onChange: this.dropDownHandler.bind(this)
             }}
           />
 
-          <div className="col-3" style={{ marginTop: 10 }}>
+          <div className="col-lg-3" style={{ marginTop: 10 }}>
             <div
               className="row"
               style={{
@@ -48,8 +124,12 @@ class EOSGratuity extends Component {
               }}
             >
               <div className="col">
-                <AlgaehLabel label={{ forceLabel: "Select a Employee." }} />
-                <h6>-------</h6>
+                <AlgaehLabel label={{ forceLabel: "Employee Name" }} />
+                <h6>
+                  {this.state.employee_name
+                    ? this.state.employee_name
+                    : "------"}
+                </h6>
               </div>
               <div
                 className="col-lg-3"
@@ -62,14 +142,23 @@ class EOSGratuity extends Component {
                     paddingLeft: 3,
                     cursor: "pointer"
                   }}
+                  onClick={this.employeeSearch.bind(this)}
                 />
               </div>
             </div>
           </div>
 
           <div className="col form-group">
-            <button style={{ marginTop: 21 }} className="btn btn-primary">
-              Load
+            <button
+              onClick={this.loadEmployeeDetails.bind(this)}
+              style={{ marginTop: 21 }}
+              className="btn btn-primary"
+            >
+              {!this.state.loading ? (
+                "Load"
+              ) : (
+                <i className="fas fa-spinner fa-spin" />
+              )}
             </button>
           </div>
         </div>
@@ -143,7 +232,7 @@ class EOSGratuity extends Component {
                     </div>
                     <div className="col-4 algaehLabelFormGroup">
                       <label className="algaehLabelGroup">
-                        Componenets Included
+                        Components Included
                       </label>
                       <div className="row">
                         <div className="col">COMPONENETS INCLUDED</div>
@@ -169,7 +258,9 @@ class EOSGratuity extends Component {
                       className: "txt-fld",
                       name: "",
                       value: "",
-                      events: {},
+                      events: {
+                        onChange: this.textHandler.bind(this)
+                      },
                       others: {
                         disabled: "disabled"
                       }

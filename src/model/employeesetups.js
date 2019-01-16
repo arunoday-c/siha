@@ -27,7 +27,7 @@ let getDesignations = (req, res, next) => {
       {
         db: req.db,
         query:
-          "SELECT hims_d_designation_id, designation_code, designation FROM `hims_d_designation` WHERE `record_status`='A' AND " +
+          "SELECT hims_d_designation_id, designation_code, designation , created_date FROM `hims_d_designation` WHERE `record_status`='A' AND " +
           condition.condition +
           " " +
           pagePaging,

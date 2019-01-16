@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import "./LeaveMasterIndex.css";
 import LeaveMaster from "./LeaveMaster/LeaveMaster";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import {
@@ -144,6 +145,9 @@ export default class LeaveMasterIndex extends Component {
                               }}
                             />
                           );
+                        },
+                        others: {
+                          maxWidth: 110
                         }
                       },
                       {

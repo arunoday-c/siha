@@ -14,8 +14,13 @@ class LeaveEdit extends Component {
     this.state = {
       type: "",
       leave: {},
-      religions: []
+      religions: [],
+      leaveDetails: [],
+      leaveEncash: [],
+      leaveRules: [],
+      earning_deductions: []
     };
+    this.getEarningsDeds();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -29,8 +34,96 @@ class LeaveEdit extends Component {
         this.state.religions.length === 0
           ? this.getReligionsMaster()
           : null;
+
+        this.state.type === "ED" && this.state.leaveDetails.length === 0
+          ? this.getLeaveDetails()
+          : null;
+
+        this.state.type === "EE" && this.state.leaveEncash.length === 0
+          ? this.getLeaveEncashment()
+          : null;
+
+        this.state.type === "ER" && this.state.leaveRules.length === 0
+          ? this.getLeaveRules()
+          : null;
       }
     );
+  }
+
+  getLeaveDetails() {
+    algaehApiCall({
+      uri: "/leave/getLeaveDetailsMaster",
+      method: "GET",
+      data: { leave_id: this.state.hims_d_leave_id },
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            leaveDetails: res.data.records
+          });
+        } else if (!res.data.success) {
+          swalMessage({
+            title: res.data.records,
+            type: "warning"
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+  getLeaveEncashment() {
+    algaehApiCall({
+      uri: "/leave/getLeaveEncashmentMaster",
+      method: "GET",
+      data: { leave_id: this.state.hims_d_leave_id },
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            leaveEncash: res.data.records
+          });
+        } else if (!res.data.success) {
+          swalMessage({
+            title: res.data.records,
+            type: "warning"
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+  getLeaveRules() {
+    algaehApiCall({
+      uri: "/leave/getLeaveRulesMaster",
+      method: "GET",
+      data: { leave_id: this.state.hims_d_leave_id },
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            leaveRules: res.data.records
+          });
+        } else if (!res.data.success) {
+          swalMessage({
+            title: res.data.records,
+            type: "warning"
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   changeGridEditors(row, e) {
@@ -414,9 +507,14 @@ class LeaveEdit extends Component {
         }}
         className="col-lg-12"
       >
-        <div>{this.state.leave_description}</div>
-
         <div className="popupInner" data-validate="LvEdtGrd">
+          <div className="col">
+            <h6 className=" margin-top-15">
+              <small>Selected Leave Type:</small>
+              <br /> {this.state.leave_description}
+            </h6>
+          </div>
+          <hr />
           {this.state.type === "E" ? (
             <LeaveEntitlement parent={this} />
           ) : this.state.type === "ED" ? (
