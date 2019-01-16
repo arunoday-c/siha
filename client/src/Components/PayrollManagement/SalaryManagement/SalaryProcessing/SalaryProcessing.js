@@ -287,16 +287,16 @@ class SalaryProcessing extends Component {
                                 label: "Present Days"
                               },
                               {
-                                fieldName: "net_salary",
-                                label: "Basic"
-                              },
-                              {
-                                fieldName: "",
+                                fieldName: "advance_due",
                                 label: "Advance"
                               },
                               {
-                                fieldName: "",
-                                label: "Loan Amount"
+                                fieldName: "loan_due_amount",
+                                label: "Loan Due Amount"
+                              },
+                              {
+                                fieldName: "loan_payable_amount",
+                                label: "Loan Payable Amount"
                               },
                               {
                                 fieldName: "net_salary",
