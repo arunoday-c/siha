@@ -780,5 +780,10 @@
     { "name": "Airfare", "value": "A" },
     { "name": "Both", "value": "B" }
   ],
-  "SALARY_TYPE": [{ "name": "Normal", "value": "N" }]
+  "SALARY_TYPE": [{ "name": "Normal", "value": "N" }],
+  "LEAVE_STATUS": [
+    { "name": "Approved", "value": "APR" },
+    { "name": "Pending", "value": "PEN" },
+    { "name": "Rejected", "value": "REJ" }
+  ]
 }

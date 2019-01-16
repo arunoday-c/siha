@@ -177,7 +177,12 @@ let getLoanApplication = (req, res, next) => {
     }
     let db = req.db;
 
-    // let where = whereCondition(extend(selectWhere, req.query));
+    // if (req.query.auth_level != "L1" && req.query.auth_level != "L2") {
+    //   debugLog("L1 and L2 not defind");
+    //   req.records = { invalid_input: true, message: "invalid auth level " };
+    //   next();
+    //   return;
+    // }
 
     let employee = "";
     let range = "";
@@ -274,8 +279,6 @@ let getLoanLevels = (req, res, next) => {
         break;
     }
 
-    debugLog("auth_levels:", auth_levels);
-    debugLog("user iden:", req.userIdentity);
     req.records = { auth_levels };
     next();
   } catch (e) {
@@ -375,7 +378,7 @@ let authorizeLoan = (req, res, next) => {
                 req.records = { invalid_input: true };
                 connection.rollback(() => {
                   releaseDBConnection(db, connection);
-                  next(error);
+                  next();
                 });
               }
             }
@@ -470,7 +473,7 @@ let authorizeLoan = (req, res, next) => {
                 req.records = { invalid_input: true };
                 connection.rollback(() => {
                   releaseDBConnection(db, connection);
-                  next(error);
+                  next();
                 });
               }
             }

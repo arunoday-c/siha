@@ -1,8 +1,10 @@
 import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall.js";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
-import moment from "moment";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
+import Enumerable from "linq";
+import LeaveEncashmentProcessIOputs from "../../../../Models/LeaveEncashmentProcess";
+import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 
 const texthandler = ($this, e) => {
   let name = e.name || e.target.name;
@@ -18,11 +20,13 @@ const LoadEncashment = ($this, e) => {
     alertTypeIcon: "warning",
     querySelector: "data-validate='loadEncash'",
     onSuccess: () => {
+      AlgaehLoader({ show: true });
+
       let inputObj = {
-        employee_id: $this.state.sel_employee_id,
+        employee_id: $this.state.employee_id,
         year: $this.state.year
       };
-
+      debugger;
       algaehApiCall({
         uri: "/encashmentprocess/getEncashmentToProcess",
         module: "hrManagement",
@@ -30,9 +34,30 @@ const LoadEncashment = ($this, e) => {
         method: "GET",
         onSuccess: response => {
           debugger;
-          $this.setState({ encashDetail: response.data.result });
+          if (response.data.result.length > 0) {
+            let data = response.data.result[0];
+            if (data.Exists) {
+              $this.setState({
+                ...data.Leave_Encash_Header[0],
+                encashDetail: data.Leave_Encash_Detail,
+                processBtn: true
+              });
+            } else {
+              let total_amount = Enumerable.from(response.data.result).sum(w =>
+                parseFloat(w.total_amount)
+              );
+
+              $this.setState({
+                encashDetail: response.data.result,
+                total_amount: total_amount,
+                processBtn: false
+              });
+            }
+          }
+          AlgaehLoader({ show: false });
         },
         onFailure: error => {
+          AlgaehLoader({ show: false });
           swalMessage({
             title: error.message || error.response.data.message,
             type: "error"
@@ -43,21 +68,36 @@ const LoadEncashment = ($this, e) => {
   });
 };
 
-const ClearData = ($this, e) => {
-  $this.setState({
-    year: moment().year(),
-    encash_type: null,
-    sel_employee_id: null,
-    encashDetail: []
-  });
+const ClearData = $this => {
+  let IOputs = LeaveEncashmentProcessIOputs.inputParam();
+  $this.setState(IOputs);
 };
 
 const ProcessEncash = ($this, e) => {
-  $this.setState({
-    year: moment().year(),
-    encash_type: null,
-    sel_employee_id: null,
-    encashDetail: []
+  AlgaehLoader({ show: true });
+  algaehApiCall({
+    uri: "/encashmentprocess/InsertLeaveEncashment",
+    module: "hrManagement",
+    data: $this.state,
+    method: "POST",
+    onSuccess: response => {
+      $this.setState({
+        encashment_number: response.data.result.encashment_number,
+        processBtn: true
+      });
+      AlgaehLoader({ show: true });
+      swalMessage({
+        title: "Processed Succesfully...",
+        type: "success"
+      });
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: true });
+      swalMessage({
+        title: error.message || error.response.data.message,
+        type: "error"
+      });
+    }
   });
 };
 
@@ -74,7 +114,7 @@ const employeeSearch = $this => {
     onRowSelect: row => {
       $this.setState({
         employee_name: row.full_name,
-        sel_employee_id: row.hims_d_employee_id
+        employee_id: row.hims_d_employee_id
       });
     }
   });

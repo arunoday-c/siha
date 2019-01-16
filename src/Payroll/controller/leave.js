@@ -3,6 +3,7 @@ import { releaseConnection } from "../../utils";
 import httpStatus from "../../utils/httpStatus";
 import {
   getEmployeeLeaveData,
+  getYearlyLeaveData,
   applyEmployeeLeave,
   getEmployeeLeaveHistory,
   getLeaveBalance,
@@ -11,7 +12,13 @@ import {
   addAttendanceRegularization,
   getEmployeeAttendReg,
   processYearlyLeave,
-  markAbsent
+  markAbsent,
+  cancelAbsent,
+  getAllAbsentEmployee,
+  authorizeLeave,
+  getLeaveApllication,
+  updateLeaveMaster,
+  calculateLeaveDays
 } from "../model/leave";
 import { debugLog } from "../../utils/logging";
 export default ({ config, db }) => {
@@ -22,6 +29,27 @@ export default ({ config, db }) => {
   api.get(
     "/getEmployeeLeaveData",
     getEmployeeLeaveData,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.invalid_input == true) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    },
+    releaseConnection
+  );
+  // created by irfan :
+  api.get(
+    "/getYearlyLeaveData",
+    getYearlyLeaveData,
     (req, res, next) => {
       let result = req.records;
       if (result.invalid_input == true) {
@@ -200,5 +228,111 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
+  // created by irfan
+  api.put("/cancelAbsent", cancelAbsent, (req, res, next) => {
+    let result = req.records;
+    if (result.invalid_input == true) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: "please provide valid input"
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
+
+  // created by irfan
+  api.get("/getAllAbsentEmployee", getAllAbsentEmployee, (req, res, next) => {
+    let result = req.records;
+    if (result.invalid_input == true) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: "please provide valid input"
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
+
+  // created by irfan
+  api.put("/authorizeLeave", authorizeLeave, (req, res, next) => {
+    let result = req.records;
+    if (result.invalid_input == true) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: result
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
+
+  // created by irfan
+  api.get("/getLeaveApllication", getLeaveApllication, (req, res, next) => {
+    let result = req.records;
+    if (result.invalid_input == true) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: result
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
+
+  // created by irfan
+  api.put("/updateLeaveMaster", updateLeaveMaster, (req, res, next) => {
+    let result = req.records;
+    if (result.invalid_input == true) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: result
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
+
+  // created by irfan :
+  api.get(
+    "/calculateLeaveDays",
+    calculateLeaveDays,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.invalid_input == true) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    },
+    releaseConnection
+  );
   return api;
 };

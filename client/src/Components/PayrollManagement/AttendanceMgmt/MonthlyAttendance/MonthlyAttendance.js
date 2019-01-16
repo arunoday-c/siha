@@ -306,7 +306,7 @@ export default class MonthlyAttendance extends Component {
           /> */}
 
           <AlagehFormGroup
-            div={{ className: "col" }}
+            div={{ className: "col-lg-1 mandatory" }}
             label={{
               forceLabel: "Year",
               isImp: true

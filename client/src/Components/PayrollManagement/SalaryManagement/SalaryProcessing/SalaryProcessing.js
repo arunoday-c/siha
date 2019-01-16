@@ -4,14 +4,17 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import {
-  AlgaehDateHandler,
   AlagehFormGroup,
   AlgaehLabel,
   AlagehAutoComplete,
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import { texthandle, SalaryProcess } from "./SalaryProcessingEvents.js";
+import {
+  texthandle,
+  SalaryProcess,
+  getSalaryDetails
+} from "./SalaryProcessingEvents.js";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import moment from "moment";
 import Enumerable from "linq";
@@ -24,7 +27,11 @@ class SalaryProcessing extends Component {
       year: moment().year(),
       month: moment(new Date()).format("M"),
       sub_department_id: null,
-      salary_type: null
+      salary_type: null,
+      salaryprocess_header: [],
+      salaryprocess_Earning: [],
+      salaryprocess_Deduction: [],
+      salaryprocess_Contribute: []
     };
   }
 
@@ -125,8 +132,8 @@ class SalaryProcessing extends Component {
                   onChange: texthandle.bind(this, this)
                 },
                 others: {
-                  type: "number",
-                  min: moment().year()
+                  type: "number"
+                  // min: moment().year()
                 }
               }}
             />
@@ -237,7 +244,7 @@ class SalaryProcessing extends Component {
               </button>
             </div>
           </div>
-          <div className="row">
+          <div className="row" style={{ marginBottom: 40 }}>
             <div className="col-9">
               <div className="row">
                 <div className="col-12">
@@ -268,7 +275,7 @@ class SalaryProcessing extends Component {
                                 //disabled: true
                               },
                               {
-                                fieldName: "",
+                                fieldName: "full_name",
                                 label: "Employee Name",
                                 others: {
                                   minWidth: 150,
@@ -278,32 +285,27 @@ class SalaryProcessing extends Component {
                               {
                                 fieldName: "present_days",
                                 label: "Present Days"
-                                //disabled: true
                               },
                               {
-                                fieldName: "",
+                                fieldName: "net_salary",
                                 label: "Basic"
-                                //disabled: true
                               },
                               {
                                 fieldName: "",
                                 label: "Advance"
-                                //disabled: true
                               },
                               {
                                 fieldName: "",
                                 label: "Loan Amount"
-                                //disabled: true
                               },
                               {
-                                fieldName: "",
+                                fieldName: "net_salary",
                                 label: "Total Amount"
-                                //disabled: true
                               }
                             ]}
                             keyId="algaeh_d_module_id"
                             dataSource={{
-                              data: []
+                              data: this.state.salaryprocess_header
                             }}
                             isEditable={false}
                             paging={{ page: 0, rowsPerPage: 10 }}
@@ -311,6 +313,9 @@ class SalaryProcessing extends Component {
                               onEdit: () => {},
                               onDelete: () => {},
                               onDone: () => {}
+                            }}
+                            onRowSelect={row => {
+                              getSalaryDetails(this, row);
                             }}
                           />
                         </div>
@@ -338,12 +343,12 @@ class SalaryProcessing extends Component {
                             id="Salary_Earning_Cntr_grid"
                             columns={[
                               {
-                                fieldName: "",
+                                fieldName: "earning_deduction_description",
                                 label: "Description"
                                 //disabled: true
                               },
                               {
-                                fieldName: "",
+                                fieldName: "amount",
                                 label: "Amount",
                                 others: {
                                   maxWidth: 100
@@ -352,7 +357,7 @@ class SalaryProcessing extends Component {
                             ]}
                             keyId="algaeh_d_module_id"
                             dataSource={{
-                              data: []
+                              data: this.state.salaryprocess_Earning
                             }}
                             isEditable={false}
                             paging={{ page: 0, rowsPerPage: 10 }}
@@ -390,12 +395,12 @@ class SalaryProcessing extends Component {
                             id="Employee_Deductions_Cntr_grid"
                             columns={[
                               {
-                                fieldName: "",
+                                fieldName: "earning_deduction_description",
                                 label: "Description"
                                 //disabled: true
                               },
                               {
-                                fieldName: "",
+                                fieldName: "amount",
                                 label: "Amount",
                                 others: {
                                   maxWidth: 100
@@ -404,7 +409,7 @@ class SalaryProcessing extends Component {
                             ]}
                             keyId="algaeh_d_module_id"
                             dataSource={{
-                              data: []
+                              data: this.state.salaryprocess_Deduction
                             }}
                             isEditable={false}
                             paging={{ page: 0, rowsPerPage: 10 }}
@@ -444,12 +449,12 @@ class SalaryProcessing extends Component {
                             id="Employer_Contribution_Cntr_grid"
                             columns={[
                               {
-                                fieldName: "",
+                                fieldName: "earning_deduction_description",
                                 label: "Description"
                                 //disabled: true
                               },
                               {
-                                fieldName: "",
+                                fieldName: "amount",
                                 label: "Amount",
                                 others: {
                                   maxWidth: 100
@@ -458,7 +463,7 @@ class SalaryProcessing extends Component {
                             ]}
                             keyId="algaeh_d_module_id"
                             dataSource={{
-                              data: []
+                              data: this.state.salaryprocess_Contribute
                             }}
                             isEditable={false}
                             paging={{ page: 0, rowsPerPage: 10 }}

@@ -1,5 +1,7 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
+import utilities from "algaeh-utilities";
+
 module.exports = {
   getLoanTopayment: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -83,24 +85,70 @@ module.exports = {
       });
   },
 
-  InsertEncashment: (req, res, next) => {
+  getEncashLeavesTopayment: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const _encashLeaveDetails = req.query;
+
+    let _stringData =
+      _encashLeaveDetails.employee_id != null
+        ? " and encash.employee_id=? "
+        : "";
+
+    _stringData +=
+      _encashLeaveDetails.hospital_id != null ? " and emp.hospital_id=? " : "";
+    _stringData +=
+      _encashLeaveDetails.encashment_number != null
+        ? " and loan.encashment_number=? "
+        : "";
+
+    /* Select statemwnt  */
+
+    _mysql
+      .executeQuery({
+        query:
+          "select encash.hims_f_leave_encash_header_id, encash.encashment_number as request_number, encash.employee_id, \
+          encash.total_amount as payment_amount, emp.employee_code,emp.full_name from hims_f_leave_encash_header encash, \
+          hims_d_employee emp where encash.authorized = ? and encash.employee_id = emp.hims_d_employee_id" +
+          _stringData,
+        values: _.valuesIn(_encashLeaveDetails),
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+
+        req.records = result.map(data => {
+          return {
+            ...data,
+            payment_type: "EN"
+          };
+        });
+        next();
+      })
+      .catch(e => {
+        next(e);
+      });
+  },
+
+  InsertEmployeePayment: (req, res, next) => {
     const _mysql = new algaehMysql();
     let inputParam = { ...req.body };
+    let payment_application_code = "";
     _mysql
       .generateRunningNumber({
-        modules: ["Test"]
+        modules: ["EMPLOYEE_PAYMENT"]
       })
       .then(generatedNumbers => {
+        payment_application_code = generatedNumbers[0];
         _mysql
           .executeQuery({
             query:
               "INSERT INTO `hims_f_employee_payments` (payment_application_code,employee_id,employee_advance_id,\
             employee_loan_id,employee_leave_encash_id,employee_end_of_service_id,employee_final_settlement_id,\
-            employee_leave_settlement_id,payment_type,payment_date,remarks,earnings_id,deduction_month,payment_amount,\
+            employee_leave_settlement_id,payment_type,payment_date,remarks,earnings_id,deduction_month,year,payment_amount,\
             payment_mode,cheque_number,created_date,created_by,updated_date,updated_by)\
-          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             values: [
-              payment_application_code,
+              generatedNumbers[0],
               inputParam.employee_id,
               inputParam.employee_advance_id,
               inputParam.employee_loan_id,
@@ -113,6 +161,7 @@ module.exports = {
               inputParam.remarks,
               inputParam.earnings_id,
               inputParam.deduction_month,
+              inputParam.year,
               inputParam.payment_amount,
               inputParam.payment_mode,
               inputParam.cheque_number,
@@ -123,49 +172,120 @@ module.exports = {
             ]
           })
           .then(result => {
-            if (inputParam.payment_type === "AD") {
-              _mysql.executeQuery({
-                query:
-                  "UPDATE `hims_f_employee_advance` SET `advance_status`='PAID' and `updated_date`=? and `updated_by`=? \
+            utilities
+              .AlgaehUtilities()
+              .logger()
+              .log("payment_type: ", inputParam.payment_type);
+            if (inputParam.payment_type == "AD") {
+              _mysql
+                .executeQuery({
+                  query:
+                    "UPDATE `hims_f_employee_advance` SET `advance_status`='PAI', `updated_date`=?, `updated_by`=? \
               where hims_f_employee_advance_id=?",
-                values: [
-                  new Date(),
-                  req.userIdentity.algaeh_d_app_user_id,
-                  inputParam.employee_advance_id
-                ]
-              });
-            } else if (inputParam.payment_type === "LN") {
-              _mysql.executeQuery({
-                query:
-                  "UPDATE `hims_f_loan_application` SET `loan_authorized`='IS' and `updated_date`=? and `updated_by`=? \
+                  values: [
+                    new Date(),
+                    req.userIdentity.algaeh_d_app_user_id,
+                    inputParam.employee_advance_id
+                  ]
+                })
+                .then(AdvanceResult => {
+                  let result = {
+                    payment_application_code: payment_application_code
+                  };
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = result;
+                    next();
+                  });
+                })
+                .catch(error => {
+                  next(error);
+                });
+            } else if (inputParam.payment_type == "LN") {
+              _mysql
+                .executeQuery({
+                  query:
+                    "UPDATE `hims_f_loan_application` SET `loan_authorized`='IS', `updated_date`=?, `updated_by`=? \
               where hims_f_loan_application_id=?",
-                values: [
-                  new Date(),
-                  req.userIdentity.algaeh_d_app_user_id,
-                  inputParam.employee_loan_id
-                ]
-              });
-            } else if (inputParam.payment_type === "EN") {
-              _mysql.executeQuery({
-                query:
-                  "UPDATE `hims_f_leave_encash_header` SET `authorized`='PRO' and `updated_date`=? and `updated_by`=? \
-              where hims_f_leave_encash_header_id=?",
-                values: [
-                  new Date(),
-                  req.userIdentity.algaeh_d_app_user_id,
-                  inputParam.employee_leave_encash_id
-                ]
-              });
-            } else if (inputParam.payment_type === "GR") {
-            } else if (inputParam.payment_type === "FS") {
-            } else if (inputParam.payment_type === "LS") {
+                  values: [
+                    new Date(),
+                    req.userIdentity.algaeh_d_app_user_id,
+                    inputParam.employee_loan_id
+                  ]
+                })
+                .then(LoanResult => {
+                  let result = {
+                    payment_application_code: payment_application_code
+                  };
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = result;
+                    next();
+                  });
+                })
+                .catch(error => {
+                  next(error);
+                });
+            } else if (inputParam.payment_type == "EN") {
+              _mysql
+                .executeQuery({
+                  query:
+                    "UPDATE `hims_f_leave_encash_header` SET `authorized`='PRO'\
+                          where hims_f_leave_encash_header_id=?",
+                  values: [inputParam.employee_leave_encash_id]
+                })
+                .then(EncashResult => {
+                  _mysql
+                    .executeQuery({
+                      query:
+                        "select H.employee_id, H.`year`, D.leave_id,D.leave_days,(M.close_balance-D.leave_days) as close_balance \
+                    from hims_f_leave_encash_header H,hims_f_leave_encash_detail D,hims_f_employee_monthly_leave M\
+                    where H.hims_f_leave_encash_header_id =D.leave_encash_header_id and M.employee_id=H.employee_id and M.`year`=H.`year`and \
+                    M.leave_id = D.leave_id and H.hims_f_leave_encash_header_id=?;",
+                      values: [inputParam.employee_leave_encash_id],
+                      printQuery: true
+                    })
+                    .then(leave_encash_header => {
+                      for (let i = 0; i < leave_encash_header.length; i++) {
+                        _mysql
+                          .executeQuery({
+                            query:
+                              "UPDATE `hims_f_employee_monthly_leave` SET `close_balance`=?\
+                          where employee_id=? and `year`=? and leave_id=?;",
+                            values: [
+                              leave_encash_header[i].close_balance,
+                              leave_encash_header[i].employee_id,
+                              leave_encash_header[i].year,
+                              leave_encash_header[i].leave_id
+                            ],
+                            printQuery: true
+                          })
+                          .then(monthly_leave => {
+                            let result = {
+                              payment_application_code: payment_application_code
+                            };
+                            _mysql.commitTransaction(() => {
+                              _mysql.releaseConnection();
+                              req.records = result;
+                              next();
+                            });
+                          })
+                          .catch(error => {
+                            next(error);
+                          });
+                      }
+                    })
+                    .catch(error => {
+                      next(error);
+                    });
+                })
+                .catch(error => {
+                  next(error);
+                });
+            } else if (inputParam.payment_type == "GR") {
+            } else if (inputParam.payment_type == "FS") {
+            } else if (inputParam.payment_type == "LS") {
             }
-
-            _mysql.commitTransaction(() => {
-              _mysql.releaseConnection();
-              req.records = result;
-              next();
-            });
           })
           .catch(e => {
             next(e);
@@ -173,6 +293,151 @@ module.exports = {
       })
       .catch(error => {
         next(error);
+      });
+  },
+
+  CancelEmployeePayment: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let inputParam = { ...req.body };
+
+    _mysql
+      .executeQuery({
+        query:
+          "UPDATE `hims_f_employee_payments` SET cancel='Y', cancel_by=?, cancel_date=? WHERE \
+          hims_f_employee_payments_id=?",
+        values: [
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          inputParam.hims_f_employee_payments_id
+        ],
+        printQuery: true
+      })
+      .then(result => {
+        utilities
+          .AlgaehUtilities()
+          .logger()
+          .log("payment_type: ", inputParam.payment_type);
+        if (inputParam.payment_type == "AD") {
+          _mysql
+            .executeQuery({
+              query:
+                "UPDATE `hims_f_employee_advance` SET `advance_status`='APR', `updated_date`=?, `updated_by`=? \
+              where hims_f_employee_advance_id=?",
+              values: [
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+                inputParam.employee_advance_id
+              ]
+            })
+            .then(AdvanceResult => {
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = AdvanceResult;
+                next();
+              });
+            });
+        } else if (inputParam.payment_type == "LN") {
+          _mysql
+            .executeQuery({
+              query:
+                "UPDATE `hims_f_loan_application` SET `loan_authorized`='APR', `updated_date`=?, `updated_by`=? \
+              where hims_f_loan_application_id=?",
+              values: [
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+                inputParam.employee_loan_id
+              ]
+            })
+            .then(LoanResult => {
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = LoanResult;
+                next();
+              });
+            });
+        } else if (inputParam.payment_type == "EN") {
+          _mysql
+            .executeQuery({
+              query:
+                "UPDATE `hims_f_leave_encash_header` SET `authorized`='APR'\
+                where hims_f_leave_encash_header_id=?",
+              values: [inputParam.employee_leave_encash_id]
+            })
+            .then(EncashResult => {
+              _mysql
+                .executeQuery({
+                  query:
+                    "select H.employee_id, H.`year`, D.leave_id,D.leave_days,(M.close_balance + D.leave_days) as close_balance \
+                from hims_f_leave_encash_header H,hims_f_leave_encash_detail D,hims_f_employee_monthly_leave M\
+                where H.hims_f_leave_encash_header_id =D.leave_encash_header_id and M.employee_id=H.employee_id and M.`year`=H.`year`and \
+                M.leave_id = D.leave_id and H.hims_f_leave_encash_header_id=?;",
+                  values: [inputParam.employee_leave_encash_id]
+                })
+                .then(leave_encash_header => {
+                  for (let i = 0; i < leave_encash_header.length; i++) {
+                    _mysql
+                      .executeQuery({
+                        query:
+                          "UPDATE `hims_f_employee_monthly_leave` SET `close_balance`=?\
+                      where employee_id=? and `year`=? and leave_id=?;",
+                        values: [
+                          leave_encash_header[i].close_balance,
+                          leave_encash_header[i].employee_id,
+                          leave_encash_header[i].year,
+                          leave_encash_header[i].leave_id
+                        ]
+                      })
+                      .then(monthly_leave => {
+                        _mysql.commitTransaction(() => {
+                          _mysql.releaseConnection();
+                          req.records = monthly_leave;
+                          next();
+                        });
+                      })
+                      .catch(error => {
+                        next(error);
+                      });
+                  }
+                })
+                .catch(error => {
+                  next(error);
+                });
+            })
+            .catch(error => {
+              next(error);
+            });
+        } else if (inputParam.payment_type == "GR") {
+        } else if (inputParam.payment_type == "FS") {
+        } else if (inputParam.payment_type == "LS") {
+        }
+      })
+      .catch(e => {
+        next(e);
+      });
+  },
+
+  getEmployeePayments: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    /* Select statemwnt  */
+
+    _mysql
+      .executeQuery({
+        query:
+          "select hims_f_employee_payments_id,employee_advance_id,employee_loan_id,employee_leave_encash_id,\
+          employee_end_of_service_id,employee_final_settlement_id,employee_leave_settlement_id,payment_application_code, \
+          payment_type, payment_amount, payment_date, payment_mode, cheque_number, deduction_month, cancel, \
+          emp.employee_code, emp.full_name from hims_f_employee_payments, hims_d_employee emp where \
+        hims_f_employee_payments.employee_id = emp.hims_d_employee_id;",
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        next(e);
       });
   }
 };

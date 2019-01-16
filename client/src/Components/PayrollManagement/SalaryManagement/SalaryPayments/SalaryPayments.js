@@ -4,13 +4,16 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import {
-  AlgaehDateHandler,
   AlagehFormGroup,
   AlgaehLabel,
   AlagehAutoComplete,
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
-import { texthandle, LoadSalaryPayment } from "./SalaryPaymentsEvents.js";
+import {
+  texthandle,
+  LoadSalaryPayment,
+  employeeSearch
+} from "./SalaryPaymentsEvents.js";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import moment from "moment";
@@ -25,7 +28,9 @@ class SalaryPayment extends Component {
       year: moment().year(),
       month: moment(new Date()).format("M"),
       sub_department_id: null,
-      salary_type: null
+      salary_type: null,
+      employee_id: null,
+      salary_payment: []
     };
   }
   fromMonthHandler(date, name) {
@@ -87,7 +92,7 @@ class SalaryPayment extends Component {
     return (
       <React.Fragment>
         <div className="hptl-SalaryPayment-form">
-          <div className="row  inner-top-search">
+          <div className="row  inner-top-search" data-validate="loadSalary">
             <AlagehAutoComplete
               div={{ className: "col" }}
               label={{
@@ -158,16 +163,50 @@ class SalaryPayment extends Component {
               }}
             />
 
-            <AlagehAutoComplete
+            <div className="col" style={{ marginTop: 10 }}>
+              <div
+                className="row"
+                style={{
+                  border: " 1px solid #ced4d9",
+                  borderRadius: 5,
+                  marginLeft: 0
+                }}
+              >
+                <div className="col">
+                  <AlgaehLabel label={{ forceLabel: "Select a Employee." }} />
+                  <h6>
+                    {this.state.employee_name
+                      ? this.state.employee_name
+                      : "------"}
+                  </h6>
+                </div>
+                <div
+                  className="col-lg-3"
+                  style={{ borderLeft: "1px solid #ced4d8" }}
+                >
+                  <i
+                    className="fas fa-search fa-lg"
+                    style={{
+                      paddingTop: 17,
+                      paddingLeft: 3,
+                      cursor: "pointer"
+                    }}
+                    onClick={employeeSearch.bind(this, this)}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* <AlagehAutoComplete
               div={{ className: "col" }}
               label={{
                 forceLabel: "Select a Employee.",
                 isImp: false
               }}
               selector={{
-                name: "select_employee_id",
+                name: "employee_id",
                 className: "select-fld",
-                value: this.state.select_employee_id,
+                value: this.state.employee_id,
                 dataSource: {
                   textField: "full_name",
                   valueField: "hims_d_employee_id",
@@ -179,11 +218,11 @@ class SalaryPayment extends Component {
                 onChange: texthandle.bind(this, this),
                 onClear: () => {
                   this.setState({
-                    select_employee_id: null
+                    employee_id: null
                   });
                 }
               }}
-            />
+            /> */}
             <AlagehAutoComplete
               div={{ className: "col" }}
               label={{
@@ -274,12 +313,12 @@ class SalaryPayment extends Component {
                                 }
                               },
                               {
-                                fieldName: "",
+                                fieldName: "salary_number",
                                 label: "Salary No."
                                 //disabled: true
                               },
                               {
-                                fieldName: "",
+                                fieldName: "full_name",
                                 label: "Employee Name",
                                 others: {
                                   minWidth: 150,
@@ -287,42 +326,37 @@ class SalaryPayment extends Component {
                                 }
                               },
                               {
-                                fieldName: "",
+                                fieldName: "present_days",
                                 label: "Present Days"
                                 //disabled: true
                               },
                               {
-                                fieldName: "",
+                                fieldName: "gross_salary",
                                 label: "Basic"
                                 //disabled: true
                               },
                               {
-                                fieldName: "",
+                                fieldName: "advance_due",
                                 label: "Advance"
                                 //disabled: true
                               },
                               {
-                                fieldName: "",
+                                fieldName: "loan_payable_amount",
                                 label: "Loan Amount"
                                 //disabled: true
                               },
                               {
-                                fieldName: "",
+                                fieldName: "net_salary",
                                 label: "Total Amount"
                                 //disabled: true
                               }
                             ]}
                             keyId="algaeh_d_module_id"
                             dataSource={{
-                              data: []
+                              data: this.state.salary_payment
                             }}
                             isEditable={false}
                             paging={{ page: 0, rowsPerPage: 10 }}
-                            events={{
-                              onEdit: () => {},
-                              onDelete: () => {},
-                              onDone: () => {}
-                            }}
                           />
                         </div>
                       </div>

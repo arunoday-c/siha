@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import LeaveMaster from "./LeaveMaster/LeaveMaster";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import {
-  AlgaehDateHandler,
-  AlagehFormGroup,
   AlgaehLabel,
   AlagehAutoComplete,
   AlgaehDataGrid
@@ -59,7 +57,7 @@ export default class LeaveMasterIndex extends Component {
           onClose={this.closeModal.bind(this)}
         />
 
-        <div className="col-12">
+        <div className="col-lg-12">
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
