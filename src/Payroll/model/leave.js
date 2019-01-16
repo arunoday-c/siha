@@ -3208,6 +3208,170 @@ let getLeaveRulesMaster = (req, res, next) => {
   }
 };
 
+let updateLeaveDetailMaster = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.body);
+    if (
+      input.hims_d_leave_detail_id != "null" &&
+      input.hims_d_leave_detail_id != undefined
+    ) {
+      db.getConnection((error, connection) => {
+        connection.query(
+          "UPDATE hims_d_leave_detail SET leave_header_id = ?,\
+          employee_type = ?, gender = ?, eligible_days = ?, min_service_required = ? , service_years = ?,\
+          once_life_term = ?, allow_probation = ?, max_number_days = ?, mandatory_utilize_days = ?,\
+            updated_date=?, updated_by=?  WHERE hims_d_leave_detail_id = ?",
+
+          [
+            input.leave_header_id,
+            input.employee_type,
+            input.gender,
+            input.eligible_days,
+            input.min_service_required,
+            input.service_years,
+            input.once_life_term,
+            input.allow_probation,
+            input.max_number_days,
+            input.mandatory_utilize_days,
+            new Date(),
+            input.updated_by,
+            input.hims_d_leave_detail_id
+          ],
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+
+            if (result.affectedRows > 0) {
+              req.records = result;
+              next();
+            } else {
+              req.records = { invalid_input: true };
+              next();
+            }
+          }
+        );
+      });
+    } else {
+      req.records = { invalid_input: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+let updateLeaveEncashMaster = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.body);
+
+    if (
+      input.hims_d_leave_encashment_id != "null" &&
+      input.hims_d_leave_encashment_id != undefined
+    ) {
+      //hims_d_leave_encashment_id, leave_header_id, earnings_id, percent, created_date, created_by, updated_date, updated_by
+      db.getConnection((error, connection) => {
+        connection.query(
+          "UPDATE hims_d_leave_encashment SET leave_header_id = ?,\
+          earnings_id = ?, percent = ?,\
+            updated_date=?, updated_by=?  WHERE hims_d_leave_encashment_id = ?",
+
+          [
+            input.leave_header_id,
+            input.earnings_id,
+            input.percent,
+            new Date(),
+            input.updated_by,
+            input.hims_d_leave_encashment_id
+          ],
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+
+            if (result.affectedRows > 0) {
+              req.records = result;
+              next();
+            } else {
+              req.records = { invalid_input: true };
+              next();
+            }
+          }
+        );
+      });
+    } else {
+      req.records = { invalid_input: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+let updateLeaveRuleMaster = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.body);
+
+    if (
+      input.hims_d_leave_rule_id != "null" &&
+      input.hims_d_leave_rule_id != undefined
+    ) {
+      db.getConnection((error, connection) => {
+        connection.query(
+          "UPDATE hims_d_leave_rule SET leave_header_id = ?,\
+          calculation_type = ?, earning_id = ?, paytype = ?, from_value = ? , to_value = ?,\
+          value_type = ?, total_days = ?  WHERE hims_d_leave_rule_id = ?",
+          [
+            input.leave_header_id,
+            input.calculation_type,
+            input.earning_id,
+            input.paytype,
+            input.from_value,
+            input.to_value,
+            input.value_type,
+            input.total_days,
+            input.hims_d_leave_rule_id
+          ],
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+
+            if (result.affectedRows > 0) {
+              req.records = result;
+              next();
+            } else {
+              req.records = { invalid_input: true };
+              next();
+            }
+          }
+        );
+      });
+    } else {
+      req.records = { invalid_input: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getEmployeeLeaveData,
   getYearlyLeaveData,
@@ -3234,5 +3398,8 @@ module.exports = {
   addLeaveRulesMaster,
   deleteLeaveDetail,
   deleteLeaveEncash,
-  deleteLeaveRule
+  deleteLeaveRule,
+  updateLeaveDetailMaster,
+  updateLeaveEncashMaster,
+  updateLeaveRuleMaster
 };

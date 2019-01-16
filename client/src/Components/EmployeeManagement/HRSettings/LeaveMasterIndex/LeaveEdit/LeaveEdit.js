@@ -223,6 +223,74 @@ class LeaveEdit extends Component {
     });
   }
 
+  updateLeaveDetail(data) {
+    algaehApiCall({
+      uri: "/leave/updateLeaveDetailMaster",
+      method: "PUT",
+      data: data,
+      onSuccess: res => {
+        if (res.data.success) {
+          swalMessage({
+            title: "Record Updated Successfully",
+            type: "success"
+          });
+          this.getLeaveDetails();
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+  updateLeaveEncash(data) {
+    algaehApiCall({
+      uri: "/leave/updateLeaveEncashMaster",
+      method: "PUT",
+      data: data,
+      onSuccess: res => {
+        if (res.data.success) {
+          swalMessage({
+            title: "Record Updated Successfully",
+            type: "success"
+          });
+
+          this.getLeaveEncashment();
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+  updateLeaveRule(data) {
+    algaehApiCall({
+      uri: "/leave/updateLeaveRuleMaster",
+      method: "PUT",
+      data: data,
+      onSuccess: res => {
+        if (res.data.success) {
+          swalMessage({
+            title: "Record Updated Successfully",
+            type: "success"
+          });
+          this.getLeaveRules();
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
   deleteLeaveRule(row) {
     swal({
       title: "Delete Leave Rule?",

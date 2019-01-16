@@ -27,7 +27,10 @@ import {
   addLeaveRulesMaster,
   deleteLeaveDetail,
   deleteLeaveEncash,
-  deleteLeaveRule
+  deleteLeaveRule,
+  updateLeaveDetailMaster,
+  updateLeaveEncashMaster,
+  updateLeaveRuleMaster
 } from "../model/leave";
 import { debugLog } from "../../utils/logging";
 export default ({ config, db }) => {
@@ -485,6 +488,65 @@ export default ({ config, db }) => {
       res.status(httpStatus.ok).json({
         success: false,
         records: "Please provide the Leave Detail ID to Delete"
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
+
+  //created by Adnan
+  api.put(
+    "/updateLeaveDetailMaster",
+    updateLeaveDetailMaster,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.invalid_input == true) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: "Please provide valid input"
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    }
+  );
+
+  //created by Adnan
+  api.put(
+    "/updateLeaveEncashMaster",
+    updateLeaveEncashMaster,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.invalid_input == true) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: "Please provide valid input"
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    }
+  );
+
+  //created by Adnan
+  api.put("/updateLeaveRuleMaster", updateLeaveRuleMaster, (req, res, next) => {
+    let result = req.records;
+    if (result.invalid_input == true) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: "Please provide valid input"
       });
     } else {
       res.status(httpStatus.ok).json({

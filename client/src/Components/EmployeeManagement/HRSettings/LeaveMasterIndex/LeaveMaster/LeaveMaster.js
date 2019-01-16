@@ -390,6 +390,10 @@ class LeaveMaster extends Component {
     });
   }
 
+  updateLeaveDetail(data) {}
+  updateLeaveEncash(data) {}
+  updateLeaveRule(data) {}
+
   render() {
     return (
       <div className="hims_leave_master">
