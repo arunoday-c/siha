@@ -36,7 +36,7 @@ let getEmployeeBasicDetails = (req, res, next) => {
            E.late_coming_rule, E.leave_salary_process, E.entitled_daily_ot,\
             E.suspend_salary, E.gratuity_applicable, E.contract_type, E.employee_group_id,\
            E.weekoff_from,E.overtime_group_id, E.reporting_to_id,REP.full_name as reporting_to_name,\
-            E.hospital_id , H.hospital_code,H.hospital_name ,E.sub_department_id ,\
+            E.hospital_id ,E.employee_type, H.hospital_code,H.hospital_name ,E.sub_department_id ,\
             DEP.sub_department_name  from hims_d_employee E left join hims_d_designation D\
              on E.employee_designation_id=D.hims_d_designation_id  left join hims_d_country C on\
               E.present_country_id=C.hims_d_country_id   left join hims_d_city CITY on\

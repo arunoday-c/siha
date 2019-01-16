@@ -10,7 +10,7 @@
     "client": "npm run start --prefix client",
     "hr_server": "npm run dev --prefix HrManagement",
     "doc_mgmt": "npm run document_server --prefix DocumentManagement",
-    "api": "concurrently \"npm run internal_server\"  \"npm run doc_mgmt\"",
+    "api": "concurrently \"npm run internal_server\"  \"npm run hr_server\"",
     "dev": "concurrently --kill-others  \"npm run internal_server \" \"npm run client\" \"npm run hr_server\" \"npm run doc_mgmt\"",
     "start12333": "cross-env NODE_ENV=production pm2 start  -i 4 dist/internal_server.js",
     "npminstall": "npm install && npm install --prefix client",
