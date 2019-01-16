@@ -12,42 +12,99 @@ module.exports = {
     _mysql
       .executeQuery({
         query:
-          "select hims_f_employee_monthly_leave_id,leave_id,hims_f_employee_monthly_leave.employee_id,`year`,close_balance,encashment_leave, \
-          leaEncash.earnings_id, leaEncash.percent, empEarn.amount,\
-          CASE when close_balance < encashment_leave then sum( ((empEarn.amount *12/365)*(leaEncash.percent/100))*close_balance) else \
-          sum(((empEarn.amount *12/365)*(leaEncash.percent/100))*encashment_leave)  end leave_amount , case when close_balance < encashment_leave then\
-          close_balance else encashment_leave end leave_days from \
-          hims_f_employee_monthly_leave, hims_d_leave lea, hims_d_leave_encashment leaEncash, hims_d_employee_earnings empEarn where \
-          hims_f_employee_monthly_leave.employee_id=? and `year`=? and hims_f_employee_monthly_leave.leave_id = lea.hims_d_leave_id and lea.leave_encash='Y' and\
-          hims_f_employee_monthly_leave.leave_id = leaEncash.leave_header_id and leaEncash.earnings_id = empEarn.earnings_id and \
-          empEarn.employee_id=hims_f_employee_monthly_leave.employee_id group by leave_id ;",
+          "select * from hims_f_leave_encash_header where employee_id=? and year=? ;",
         values: [_EncashDetails.employee_id, _EncashDetails.year]
         // printQuery: true
       })
-      .then(monthlyLeaves => {
-        _mysql.releaseConnection();
-        utilities
-          .AlgaehUtilities()
-          .logger()
-          .log("monthlyLeaves: ", monthlyLeaves);
+      .then(leave_Encash => {
+        if (leave_Encash.length > 0) {
+          utilities
+            .AlgaehUtilities()
+            .logger()
+            .log("Leave_Encash_Header: ", leave_Encash);
 
-        req.records = monthlyLeaves.map(data => {
-          return {
-            ...data,
-            total_amount: data.leave_amount
-          };
-        });
+          utilities
+            .AlgaehUtilities()
+            .logger()
+            .log(
+              "leave_Encash: ",
+              leave_Encash[0].hims_f_leave_encash_header_id
+            );
 
-        // req.records = monthlyLeaves;
-        next();
+          let Leave_Encash_Header = leave_Encash;
 
-        utilities
-          .AlgaehUtilities()
-          .logger()
-          .log("monthlyLeaves: ", monthlyLeaves);
-      })
-      .catch(e => {
-        next(e);
+          _mysql
+            .executeQuery({
+              query:
+                "select leave_id,leave_days, leave_amount, airfare_amount, airfare_months, total_amount, \
+                leavems.leave_description from hims_f_leave_encash_detail, hims_d_leave leavems where  \
+                leavems.hims_d_leave_id = hims_f_leave_encash_detail.leave_id and leave_encash_header_id=?;",
+              values: [leave_Encash[0].hims_f_leave_encash_header_id],
+              printQuery: true
+            })
+            .then(result => {
+              utilities
+                .AlgaehUtilities()
+                .logger()
+                .log("Exists: ", result);
+
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = [
+                  {
+                    Exists: true,
+                    Leave_Encash_Header: Leave_Encash_Header,
+                    Leave_Encash_Detail: result
+                  }
+                ];
+                next();
+              });
+            })
+            .catch(e => {
+              next(e);
+            });
+        } else {
+          _mysql
+            .executeQuery({
+              query:
+                "select hims_f_employee_monthly_leave_id,leave_id,hims_f_employee_monthly_leave.employee_id,`year`,close_balance,encashment_leave, \
+              leaEncash.earnings_id, leaEncash.percent, empEarn.amount,\
+              CASE when close_balance < encashment_leave then sum( ((empEarn.amount *12/365)*(leaEncash.percent/100))*close_balance) else \
+              sum(((empEarn.amount *12/365)*(leaEncash.percent/100))*encashment_leave)  end leave_amount , case when close_balance < encashment_leave then\
+              close_balance else encashment_leave end leave_days from \
+              hims_f_employee_monthly_leave, hims_d_leave lea, hims_d_leave_encashment leaEncash, hims_d_employee_earnings empEarn where \
+              hims_f_employee_monthly_leave.employee_id=? and `year`=? and hims_f_employee_monthly_leave.leave_id = lea.hims_d_leave_id and lea.leave_encash='Y' and\
+              hims_f_employee_monthly_leave.leave_id = leaEncash.leave_header_id and leaEncash.earnings_id = empEarn.earnings_id and \
+              empEarn.employee_id=hims_f_employee_monthly_leave.employee_id group by leave_id ;",
+              values: [_EncashDetails.employee_id, _EncashDetails.year]
+              // printQuery: true
+            })
+            .then(monthlyLeaves => {
+              _mysql.releaseConnection();
+              utilities
+                .AlgaehUtilities()
+                .logger()
+                .log("monthlyLeaves: ", monthlyLeaves);
+
+              req.records = monthlyLeaves.map(data => {
+                return {
+                  ...data,
+                  total_amount: data.leave_amount
+                };
+              });
+
+              // req.records = monthlyLeaves;
+              next();
+
+              utilities
+                .AlgaehUtilities()
+                .logger()
+                .log("monthlyLeaves: ", monthlyLeaves);
+            })
+            .catch(e => {
+              next(e);
+            });
+        }
       });
   },
 
@@ -81,26 +138,6 @@ module.exports = {
       next(e);
     }
   },
-
-  // getLeaveEncashLevels: (req, res, next) => {
-  //   let userPrivilege = req.userIdentity.loan_authorize_privilege;
-
-  //   let auth_levels = [];
-  //   switch (userPrivilege) {
-  //     case "AL1":
-  //       auth_levels.push({ name: "Level 1", value: 1 });
-  //       break;
-  //     case "AL2":
-  //       auth_levels.push(
-  //         { name: "Level 2", value: 2 },
-  //         { name: "Level 1", value: 1 }
-  //       );
-  //       break;
-  //   }
-
-  //   req.records = { auth_levels };
-  //   next();
-  // },
 
   InsertLeaveEncashment: (req, res, next) => {
     const _mysql = new algaehMysql();

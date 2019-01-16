@@ -5,6 +5,7 @@ import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import EmployeePaymentIOputs from "../../../../Models/EmployeePayment";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
+import swal from "sweetalert2";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -20,6 +21,7 @@ const Paymenttexthandle = ($this, e) => {
   let value = e.value || e.target.value;
   let IOputs = EmployeePaymentIOputs.inputParam();
 
+  IOputs.PreviousPayments = $this.state.PreviousPayments;
   $this.setState({
     ...IOputs,
     [name]: value
@@ -324,6 +326,46 @@ const getEmployeePayments = $this => {
   });
 };
 
+const CancelPayment = ($this, row) => {
+  swal({
+    title: "Are you sure you want to cancel this Payment?",
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes!",
+    confirmButtonColor: "#44b8bd",
+    cancelButtonColor: "#d33",
+    cancelButtonText: "No"
+  }).then(willDelete => {
+    if (willDelete.value) {
+      debugger;
+      algaehApiCall({
+        uri: "/employeepayments/CancelEmployeePayment",
+        data: row,
+        module: "hrManagement",
+        method: "PUT",
+        onSuccess: response => {
+          getEmployeePayments($this);
+          swalMessage({
+            title: "Cancelled Successfully...",
+            type: "success"
+          });
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message || error.response.data.message,
+            type: "error"
+          });
+        }
+      });
+    } else {
+      swalMessage({
+        title: "Cancel request cancelled",
+        type: "error"
+      });
+    }
+  });
+};
+
 export {
   texthandle,
   LoadData,
@@ -332,5 +374,6 @@ export {
   Paymenttexthandle,
   ProessEmpPayment,
   employeeSearch,
-  getEmployeePayments
+  getEmployeePayments,
+  CancelPayment
 };

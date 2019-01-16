@@ -5,7 +5,8 @@ import {
   getAdvanceTopayment,
   InsertEmployeePayment,
   getEmployeePayments,
-  getEncashLeavesTopayment
+  getEncashLeavesTopayment,
+  CancelEmployeePayment
 } from "../models/employee_payments";
 export default () => {
   const api = Router();
@@ -51,6 +52,13 @@ export default () => {
       });
     }
   );
+
+  api.put("/CancelEmployeePayment", CancelEmployeePayment, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      result: req.records
+    });
+  });
 
   return api;
 };

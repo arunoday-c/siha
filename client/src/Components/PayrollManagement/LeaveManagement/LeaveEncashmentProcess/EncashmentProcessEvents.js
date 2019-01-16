@@ -26,22 +26,34 @@ const LoadEncashment = ($this, e) => {
         employee_id: $this.state.employee_id,
         year: $this.state.year
       };
-
+      debugger;
       algaehApiCall({
         uri: "/encashmentprocess/getEncashmentToProcess",
         module: "hrManagement",
         data: inputObj,
         method: "GET",
         onSuccess: response => {
-          let total_amount = Enumerable.from(response.data.result).sum(w =>
-            parseFloat(w.total_amount)
-          );
+          debugger;
+          if (response.data.result.length > 0) {
+            let data = response.data.result[0];
+            if (data.Exists) {
+              $this.setState({
+                ...data.Leave_Encash_Header[0],
+                encashDetail: data.Leave_Encash_Detail,
+                processBtn: true
+              });
+            } else {
+              let total_amount = Enumerable.from(response.data.result).sum(w =>
+                parseFloat(w.total_amount)
+              );
 
-          $this.setState({
-            encashDetail: response.data.result,
-            total_amount: total_amount,
-            processBtn: false
-          });
+              $this.setState({
+                encashDetail: response.data.result,
+                total_amount: total_amount,
+                processBtn: false
+              });
+            }
+          }
           AlgaehLoader({ show: false });
         },
         onFailure: error => {

@@ -28,7 +28,7 @@ module.exports = {
           _mysql
             .executeQuery({
               query:
-                "select hims_f_salary_id from hims_f_salary where month=? and year=?",
+                "select hims_f_salary_id,salary_processed from hims_f_salary where month=? and year=?",
               values: [month_number, year],
               printQuery: true
             })
@@ -424,6 +424,7 @@ module.exports = {
     const inputParam = req.query;
 
     let salaryprocess_header = [];
+
     /* Select statemwnt  */
 
     _mysql
@@ -474,8 +475,54 @@ module.exports = {
                 ];
                 next();
               });
+            })
+            .catch(e => {
+              next(e);
             });
+        } else {
+          _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            req.records = salary_process;
+            next();
+          });
         }
+      })
+      .catch(e => {
+        next(e);
+      });
+  },
+  getSalaryProcessToPay: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const inputParam = req.query;
+
+    let salaryprocess_header = [];
+
+    let _stringData =
+      inputParam.employee_id != null ? " and employee_id=? " : "";
+
+    _stringData +=
+      inputParam.sub_department_id != null
+        ? " and emp.sub_department_id=? "
+        : "";
+
+    /* Select statemwnt  */
+
+    _mysql
+      .executeQuery({
+        query:
+          "select hims_f_salary_id, salary_number, present_days, hims_f_salary.gross_salary, hims_f_salary.net_salary,advance_due,\
+          loan_payable_amount, emp.employee_code, emp.full_name from hims_f_salary, hims_d_employee emp where \
+          hims_f_salary.employee_id = emp.hims_d_employee_id and `year` = ? and `month` = ? " +
+          _stringData,
+        values: _.valuesIn(inputParam),
+        printQuery: true
+      })
+      .then(salary_process => {
+        _mysql.commitTransaction(() => {
+          _mysql.releaseConnection();
+          req.records = salary_process;
+          next();
+        });
       })
       .catch(e => {
         next(e);

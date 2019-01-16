@@ -19,7 +19,8 @@ import {
   Paymenttexthandle,
   ProessEmpPayment,
   employeeSearch,
-  getEmployeePayments
+  getEmployeePayments,
+  CancelPayment
 } from "./EmployeePaymentEvents.js";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import Enumerable from "linq";
@@ -547,6 +548,36 @@ class EmployeePayment extends Component {
                         id="All_trans_Employee_Payment_Cntr"
                         columns={[
                           {
+                            fieldName: "action",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Action" }} />
+                            ),
+                            displayTemplate: row => {
+                              return (
+                                <span>
+                                  <i
+                                    style={{
+                                      pointerEvents:
+                                        row.cancel === "Y" ? "none" : "",
+                                      opacity: row.cancel === "Y" ? "0.1" : ""
+                                    }}
+                                    className="fa fa-times"
+                                    onClick={CancelPayment.bind(
+                                      this,
+                                      this,
+                                      row
+                                    )}
+                                  />
+                                </span>
+                              );
+                            },
+                            others: {
+                              maxWidth: 70,
+                              resizable: false,
+                              style: { textAlign: "center" }
+                            }
+                          },
+                          {
                             fieldName: "payment_type",
                             label: "Payment Type",
                             displayTemplate: row => {
@@ -636,7 +667,7 @@ class EmployeePayment extends Component {
                         dataSource={{
                           data: this.state.PreviousPayments
                         }}
-                        isEditable={true}
+                        // isEditable={true}
                         paging={{ page: 0, rowsPerPage: 10 }}
                         filter={true}
                         events={{

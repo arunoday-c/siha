@@ -45,7 +45,8 @@ export default {
       request_number: null,
       full_name: null,
       processBtn: true,
-      PreviousPayments: []
+      PreviousPayments: [],
+      employee_name: null
     };
     return output;
   }
