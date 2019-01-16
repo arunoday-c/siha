@@ -140,10 +140,27 @@ class LeaveEdit extends Component {
       cancelButtonText: "No"
     }).then(willDelete => {
       if (willDelete.value) {
-        this.state.leaveDetails.pop(row);
-
-        this.setState({
-          leaveDetails: this.state.leaveDetails
+        algaehApiCall({
+          uri: "/leave/deleteLeaveDetail",
+          method: "DELETE",
+          data: {
+            hims_d_leave_detail_id: row.hims_d_leave_detail_id
+          },
+          onSuccess: res => {
+            if (res.data.success) {
+              swalMessage({
+                title: "Record Deleted Successfully",
+                type: "success"
+              });
+              this.getLeaveDetails();
+            }
+          },
+          onFailure: err => {
+            swalMessage({
+              title: err.message,
+              type: "error"
+            });
+          }
         });
       } else {
         swalMessage({
@@ -217,10 +234,27 @@ class LeaveEdit extends Component {
       cancelButtonText: "No"
     }).then(willDelete => {
       if (willDelete.value) {
-        this.state.leaveRules.pop(row);
-
-        this.setState({
-          leaveRules: this.state.leaveRules
+        algaehApiCall({
+          uri: "/leave/deleteLeaveRule",
+          method: "DELETE",
+          data: {
+            hims_d_leave_rule_id: row.hims_d_leave_rule_id
+          },
+          onSuccess: res => {
+            if (res.data.success) {
+              swalMessage({
+                title: "Record Deleted Successfully",
+                type: "success"
+              });
+              this.getLeaveRules();
+            }
+          },
+          onFailure: err => {
+            swalMessage({
+              title: err.message,
+              type: "error"
+            });
+          }
         });
       } else {
         swalMessage({
@@ -242,10 +276,27 @@ class LeaveEdit extends Component {
       cancelButtonText: "No"
     }).then(willDelete => {
       if (willDelete.value) {
-        this.state.leaveEncash.pop(row);
-
-        this.setState({
-          leaveEncash: this.state.leaveEncash
+        algaehApiCall({
+          uri: "/leave/deleteLeaveEncash",
+          method: "DELETE",
+          data: {
+            hims_d_leave_encashment_id: row.hims_d_leave_encashment_id
+          },
+          onSuccess: res => {
+            if (res.data.success) {
+              swalMessage({
+                title: "Record Deleted Successfully",
+                type: "success"
+              });
+              this.getLeaveEncashment();
+            }
+          },
+          onFailure: err => {
+            swalMessage({
+              title: err.message,
+              type: "error"
+            });
+          }
         });
       } else {
         swalMessage({

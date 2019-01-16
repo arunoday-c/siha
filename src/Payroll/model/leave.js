@@ -2875,6 +2875,129 @@ let addLeaveDetailMaster = (req, res, next) => {
 };
 
 //created by Adnan
+let deleteLeaveEncash = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let input = extend({}, req.body);
+    let db = req.db;
+    if (
+      input.hims_d_leave_encashment_id != "null" &&
+      input.hims_d_leave_encashment_id != undefined
+    ) {
+      db.getConnection((error, connection) => {
+        connection.query(
+          "DELETE from  hims_d_leave_encashment WHERE hims_d_leave_encashment_id=?",
+          input.hims_d_leave_encashment_id,
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+
+            if (result.records.affectedRows > 0) {
+              req.records = result;
+              next();
+            } else {
+              req.records = { invalid_input: true };
+              next();
+            }
+          }
+        );
+      });
+    } else {
+      req.records = { invalid_input: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by Adnan
+let deleteLeaveRule = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let input = extend({}, req.body);
+    let db = req.db;
+    if (
+      input.hims_d_leave_rule_id != "null" &&
+      input.hims_d_leave_rule_id != undefined
+    ) {
+      db.getConnection((error, connection) => {
+        connection.query(
+          "DELETE from  hims_d_leave_rule WHERE hims_d_leave_rule_id=?",
+          input.hims_d_leave_rule_id,
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+
+            if (result.records.affectedRows > 0) {
+              req.records = result;
+              next();
+            } else {
+              req.records = { invalid_input: true };
+              next();
+            }
+          }
+        );
+      });
+    } else {
+      req.records = { invalid_input: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+//created by Adnan
+let deleteLeaveDetail = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let input = extend({}, req.body);
+    let db = req.db;
+
+    if (
+      input.hims_d_leave_detail_id != "null" &&
+      input.hims_d_leave_detail_id != undefined
+    ) {
+      db.getConnection((error, connection) => {
+        connection.query(
+          "DELETE from  hims_d_leave_detail WHERE hims_d_leave_detail_id=?",
+          input.hims_d_leave_detail_id,
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+
+            if (result.records.affectedRows > 0) {
+              req.records = result;
+              next();
+            } else {
+              req.records = { invalid_input: true };
+              next();
+            }
+          }
+        );
+      });
+    } else {
+      req.records = { invalid_input: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by Adnan
 let addLeaveEncashmentMaster = (req, res, next) => {
   try {
     if (req.db == null) {
@@ -3056,5 +3179,8 @@ module.exports = {
   getLeaveRulesMaster,
   addLeaveDetailMaster,
   addLeaveEncashmentMaster,
-  addLeaveRulesMaster
+  addLeaveRulesMaster,
+  deleteLeaveDetail,
+  deleteLeaveEncash,
+  deleteLeaveRule
 };
