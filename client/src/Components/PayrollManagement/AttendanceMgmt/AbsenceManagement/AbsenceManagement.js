@@ -130,10 +130,14 @@ export default class AbsenceManagement extends Component {
           });
         }
         break;
+
+      default:
+        this.setState({
+          [e.target.name]: e.target.value
+        });
+
+        break;
     }
-    this.setState({
-      [e.target.name]: e.target.value
-    });
   }
 
   dropDownHandler(value) {

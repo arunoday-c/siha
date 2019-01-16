@@ -785,5 +785,11 @@
     { "name": "Approved", "value": "APR" },
     { "name": "Pending", "value": "PEN" },
     { "name": "Rejected", "value": "REJ" }
+  ],
+  "LEAVE_EDIT": [
+    { "name": "Edit", "value": "E" },
+    { "name": "Edit Details", "value": "ED" },
+    { "name": "Edit Encashment", "value": "EE" },
+    { "name": "Edit Rules", "value": "ER" }
   ]
 }
