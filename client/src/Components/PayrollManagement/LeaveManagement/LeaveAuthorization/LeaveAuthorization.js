@@ -6,6 +6,7 @@ import {
   AlgaehDataGrid,
   AlgaehDateHandler
 } from "../../../Wrapper/algaehWrapper";
+import moment from "moment";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import Employee from "../../../../Search/Employee.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
@@ -373,7 +374,16 @@ export default class LeaveAuthorization extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Application Date" }}
                           />
-                        )
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {moment(row.application_date).format(
+                                "DD-MM-YYYY"
+                              )}
+                            </span>
+                          );
+                        }
                       },
                       {
                         fieldName: "sub_department_name",
@@ -405,7 +415,16 @@ export default class LeaveAuthorization extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Replacement If Any" }}
                           />
-                        )
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.replacement_employee_name
+                                ? row.replacement_employee_name
+                                : "Not Specified"}
+                            </span>
+                          );
+                        }
                       },
                       {
                         fieldName: "remarks",
@@ -413,13 +432,31 @@ export default class LeaveAuthorization extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Leave Remarks" }}
                           />
-                        )
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>{row.remarks ? row.remarks : "------"}</span>
+                          );
+                        }
                       },
                       {
                         fieldName: "status",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Leave Status" }} />
-                        )
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.status === "PEN"
+                                ? "Pending"
+                                : row.status === "APR"
+                                ? "Approved"
+                                : row.status === "REJ"
+                                ? "Rejected"
+                                : "------"}
+                            </span>
+                          );
+                        }
                       }
                     ]}
                     keyId="hims_f_leave_application_id"
@@ -438,140 +475,6 @@ export default class LeaveAuthorization extends Component {
             </div>
           </div>
         </div>
-
-        {/*       
-        <div className="col-12">
-          <div className="portlet portlet-bordered margin-bottom-15">
-            <div className="portlet-title">
-              <div className="caption">
-                <h3 className="caption-subject">Current Leave Application</h3>
-              </div>
-              <div className="actions" />
-            </div>
-            <div className="portlet-body">
-              <div className="row">
-                <div className="col-12" id="currentLeaveAppGrid_Cntr">
-                  <AlgaehDataGrid
-                    id="currentLeaveAppGrid"
-                    datavalidate="currentLeaveAppGrid"
-                    columns={[
-                      {
-                        fieldName: "fromDate",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "From Date" }} />
-                        )
-                      },
-                      {
-                        fieldName: "fromSession",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "From Session" }} />
-                        )
-                      },
-                      {
-                        fieldName: "toDate",
-                        label: <AlgaehLabel label={{ forceLabel: "To Date" }} />
-                      },
-                      {
-                        fieldName: "toSession",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "To Session" }} />
-                        )
-                      },
-                      {
-                        fieldName: "totalPeriod",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Total Period" }} />
-                        )
-                      },
-                      {
-                        fieldName: "LeaveDescription",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Description" }} />
-                        )
-                      },
-                      {
-                        fieldName: "ModeLeave",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Mode of Leave" }}
-                          />
-                        )
-                      }
-                    ]}
-                    keyId=""
-                    dataSource={{ data: [] }}
-                    isEditable={false}
-                    paging={{ page: 0, rowsPerPage: 10 }}
-                    events={{}}
-                    others={{}}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="col-12">
-          <div className="portlet portlet-bordered margin-bottom-15">
-            <div className="portlet-title">
-              <div className="caption">
-                <h3 className="caption-subject">Previous Leave Application</h3>
-              </div>
-              <div className="actions" />
-            </div>
-            <div className="portlet-body">
-              <div className="row">
-                <div className="col-12" id="previousLeaveAppGrid_Cntr">
-                  <AlgaehDataGrid
-                    id="previousLeaveAppGrid"
-                    datavalidate="previousLeaveAppGrid"
-                    columns={[
-                      {
-                        fieldName: "fromDate",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "From Date" }} />
-                        )
-                      },
-                      {
-                        fieldName: "toDate",
-                        label: <AlgaehLabel label={{ forceLabel: "To Date" }} />
-                      },
-                      {
-                        fieldName: "totalPeriod",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Total Period" }} />
-                        )
-                      },
-                      {
-                        fieldName: "",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Approved Period" }}
-                          />
-                        )
-                      },
-                      {
-                        fieldName: "description",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Description" }} />
-                        )
-                      },
-                      {
-                        fieldName: "status",
-                        label: <AlgaehLabel label={{ forceLabel: "Status" }} />
-                      }
-                    ]}
-                    keyId=""
-                    dataSource={{ data: [] }}
-                    isEditable={false}
-                    paging={{ page: 0, rowsPerPage: 10 }}
-                    events={{}}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      */}
       </div>
     );
   }

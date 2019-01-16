@@ -1,13 +1,7 @@
 import React, { Component } from "react";
 import AlgaehModalPopUp from "../../../../Wrapper/modulePopUp";
-
 import "./LeaveAuthDetail.css";
-import {
-  AlagehAutoComplete,
-  AlgaehLabel,
-  AlgaehDataGrid,
-  AlgaehDateHandler
-} from "../../../../Wrapper/algaehWrapper";
+import { AlgaehLabel, AlgaehDataGrid } from "../../../../Wrapper/algaehWrapper";
 
 class LeaveAuthDetail extends Component {
   render() {
@@ -186,7 +180,9 @@ class LeaveAuthDetail extends Component {
         </div>
         <div className="popupFooter">
           <div className="col-12">
-            <button className="btn btn-default">Cancel</button>
+            <button onClick={this.props.onClose} className="btn btn-default">
+              Cancel
+            </button>
           </div>
         </div>
       </AlgaehModalPopUp>

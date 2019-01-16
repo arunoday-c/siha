@@ -1,26 +1,36 @@
 import React, { Component } from "react";
-import "./leave_master.css";
+import LeaveEntitlement from "../LeaveMaster/LeaveEntitlement/LeaveEntitlement";
+import LeaveDetails from "../LeaveMaster/LeaveDetails/LeaveDetails";
+import LeaveEncashment from "../LeaveMaster/LeaveEncashment/LeaveEncashment";
+import LeaveRules from "../LeaveMaster/LeaveRules/LeaveRules";
 import AlgaehModalPopUp from "../../../../Wrapper/modulePopUp";
-import LeaveEntitlement from "./LeaveEntitlement/LeaveEntitlement";
-import LeaveDetails from "./LeaveDetails/LeaveDetails";
-import LeaveEncashment from "./LeaveEncashment/LeaveEncashment";
-import LeaveRules from "./LeaveRules/LeaveRules";
-import { AlgaehLabel } from "../../../../Wrapper/algaehWrapper";
-import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../../../utils/GlobalFunctions";
+import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 
-class LeaveMaster extends Component {
+class LeaveEdit extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageDisplay: "Leave",
-      religions: [],
-      earning_deductions: [],
-      leaveDetails: [],
-      leaveEncash: [],
-      leaveRules: []
+      type: "",
+      leave: {},
+      religions: []
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState(
+      {
+        type: nextProps.type,
+        ...nextProps.data
+      },
+      () => {
+        this.state.religion_required === "Y" &&
+        this.state.religions.length === 0
+          ? this.getReligionsMaster()
+          : null;
+      }
+    );
   }
 
   changeGridEditors(row, e) {
@@ -50,6 +60,58 @@ class LeaveMaster extends Component {
         swalMessage({
           title: "Delete request cancelled",
           type: "error"
+        });
+      }
+    });
+  }
+
+  saveMaster() {
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      querySelector: "data-validate='LvEdtGrd'",
+      onSuccess: () => {
+        let send_data = {
+          hims_d_leave_id: this.state.hims_d_leave_id,
+          leave_code: this.state.leave_code,
+          leave_description: this.state.leave_description,
+          annual_maternity_leave: this.state.annual_maternity_leave,
+          include_weekoff: this.state.include_weekoff ? "Y" : "N",
+          include_holiday: this.state.include_holiday ? "Y" : "N",
+          leave_mode: this.state.leave_mode,
+          leave_status: this.state.leave_status,
+          leave_accrual: this.state.leave_accrual,
+          leave_encash: this.state.leave_encash ? "Y" : "N",
+          leave_type: this.state.leave_type,
+          encashment_percentage: this.state.encashment_percentage,
+          leave_carry_forward: this.state.leave_carry_forward ? "Y" : "N",
+          carry_forward_percentage: this.state.carry_forward_percentage,
+          religion_required: this.state.religion_required ? "Y" : "N",
+          religion_id: this.state.religion_id,
+          holiday_reimbursement: this.state.holiday_reimbursement ? "Y" : "N",
+          exit_permit_required: this.state.exit_permit_required ? "Y" : "N",
+          proportionate_leave: this.state.proportionate_leave ? "Y" : "N",
+          document_mandatory: this.state.document_mandatory ? "Y" : "N"
+        };
+
+        algaehApiCall({
+          uri: "/leave/updateLeaveMaster",
+          method: "PUT",
+          data: send_data,
+          onSuccess: res => {
+            if (res.data.success) {
+              swalMessage({
+                title: "Leave Updated Successfully",
+                type: "success"
+              });
+              document.getElementById("lmi-btn").click();
+            }
+          },
+          onFailure: err => {
+            swalMessage({
+              title: err.message,
+              type: "error"
+            });
+          }
         });
       }
     });
@@ -156,8 +218,6 @@ class LeaveMaster extends Component {
               title: "Leave Added Successfully",
               type: "success"
             });
-
-            document.getElementById("lmi-btn").click();
           }
         },
         onFailure: err => {
@@ -266,42 +326,6 @@ class LeaveMaster extends Component {
     });
   }
 
-  openTab(e) {
-    var specified = e.currentTarget.getAttribute("leavetabs");
-    var element = document.querySelectorAll("[leavetabs]");
-
-    if (specified !== "Leave") {
-      e.preventDefault();
-      AlgaehValidation({
-        alertTypeIcon: "warning",
-        querySelector: "data-validate='levDv'",
-        onSuccess: () => {
-          for (var i = 0; i < element.length; i++) {
-            element[i].classList.remove("active");
-          }
-          e.currentTarget.classList.add("active");
-
-          specified === "LeaveEncashment" &&
-          this.state.earning_deductions.length === 0
-            ? this.getEarningsDeds()
-            : null;
-
-          this.setState({
-            pageDisplay: specified
-          });
-        }
-      });
-    } else {
-      for (var i = 0; i < element.length; i++) {
-        element[i].classList.remove("active");
-      }
-      e.currentTarget.classList.add("active");
-      this.setState({
-        pageDisplay: specified
-      });
-    }
-  }
-
   getEarningsDeds() {
     algaehApiCall({
       uri: "/employee/getEarningDeduction",
@@ -358,6 +382,10 @@ class LeaveMaster extends Component {
           () => {
             this.state.religion_required && this.state.religions.length === 0
               ? this.getReligionsMaster()
+              : !this.state.religion_required
+              ? this.setState({
+                  religion_id: null
+                })
               : null;
           }
         );
@@ -366,6 +394,7 @@ class LeaveMaster extends Component {
         this.setState({
           [e.target.name]: e.target.checked
         });
+        //console.log(e.target.name + " : " + e.target.checked);
         break;
     }
   }
@@ -378,113 +407,57 @@ class LeaveMaster extends Component {
 
   render() {
     return (
-      <div className="hims_leave_master">
-        <AlgaehModalPopUp
-          openPopup={this.props.open}
-          events={{
-            onClose: this.props.onClose
-          }}
-        >
-          <div className=" leaveMasterMainPage">
-            <div className="tab-container toggle-section">
-              <ul className="nav">
-                <li
-                  leavetabs={"Leave"}
-                  className={"nav-item tab-button active"}
-                  onClick={this.openTab.bind(this)}
-                >
-                  {
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Leave"
-                      }}
-                    />
-                  }
-                </li>
+      <AlgaehModalPopUp
+        openPopup={this.props.open}
+        events={{
+          onClose: this.props.onClose
+        }}
+        className="col-lg-12"
+      >
+        <div>{this.state.leave_description}</div>
 
-                <li
-                  leavetabs={"LeaveDetails"}
-                  className={"nav-item tab-button"}
-                  onClick={this.openTab.bind(this)}
-                >
-                  {
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Leave Details"
-                      }}
-                    />
-                  }
-                </li>
-                <li
-                  leavetabs={"LeaveEncashment"}
-                  className={"nav-item tab-button"}
-                  onClick={this.openTab.bind(this)}
-                >
-                  {
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Leave Encashment"
-                      }}
-                    />
-                  }
-                </li>
-                <li
-                  leavetabs={"LeaveRules"}
-                  className={"nav-item tab-button"}
-                  onClick={this.openTab.bind(this)}
-                >
-                  {
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Leave Rules"
-                      }}
-                    />
-                  }
-                </li>
-              </ul>
-            </div>
+        <div className="popupInner" data-validate="LvEdtGrd">
+          {this.state.type === "E" ? (
+            <LeaveEntitlement parent={this} />
+          ) : this.state.type === "ED" ? (
+            <LeaveDetails parent={this} />
+          ) : this.state.type === "EE" ? (
+            <LeaveEncashment parent={this} />
+          ) : this.state.type === "ER" ? (
+            <LeaveRules parent={this} />
+          ) : null}
+        </div>
 
-            <div className="popupInner" data-validate="leaveMasterValidateDiv">
-              {this.state.pageDisplay === "Leave" ? (
-                <LeaveEntitlement parent={this} />
-              ) : this.state.pageDisplay === "LeaveDetails" ? (
-                <LeaveDetails parent={this} />
-              ) : this.state.pageDisplay === "LeaveEncashment" ? (
-                <LeaveEncashment parent={this} />
-              ) : this.state.pageDisplay === "LeaveRules" ? (
-                <LeaveRules parent={this} />
-              ) : null}
-            </div>
+        <div className="popupFooter">
+          <div className="col-lg-12">
+            <div className="row">
+              <div className="col-lg-4"> &nbsp;</div>
 
-            <div className="popupFooter">
-              <div className="col-lg-12">
-                <div className="row">
-                  <div className="col-lg-4"> &nbsp;</div>
+              <div className="col-lg-8">
+                {this.state.type === "E" ? (
+                  <button
+                    onClick={this.saveMaster.bind(this)}
+                    type="button"
+                    className="btn btn-primary"
+                  >
+                    UPDATE
+                  </button>
+                ) : null}
 
-                  <div className="col-lg-8">
-                    <button
-                      onClick={this.saveLeaveMaster.bind(this)}
-                      type="button"
-                      className="btn btn-primary"
-                    >
-                      SAVE
-                    </button>
-                    <button
-                      onClick={this.props.onClose}
-                      type="button"
-                      className="btn btn-default"
-                    >
-                      CANCEL
-                    </button>
-                  </div>
-                </div>
+                <button
+                  onClick={this.props.onClose}
+                  type="button"
+                  className="btn btn-default"
+                >
+                  CANCEL
+                </button>
               </div>
             </div>
           </div>
-        </AlgaehModalPopUp>
-      </div>
+        </div>
+      </AlgaehModalPopUp>
     );
   }
 }
 
-export default LeaveMaster;
+export default LeaveEdit;
