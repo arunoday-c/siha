@@ -2765,6 +2765,7 @@ let calculateLeaveDays = (req, res, next) => {
                   debugLog("calculatedLeaveDays:", calculatedLeaveDays);
                   releaseDBConnection(db, connection);
                   req.records = {
+                    leave_applied_days: leave_applied_days,
                     calculatedLeaveDays: calculatedLeaveDays,
                     monthWiseCalculatedLeaveDeduction: leaveDeductionArray
                   };
@@ -2797,6 +2798,7 @@ let calculateLeaveDays = (req, res, next) => {
               debugLog("calculatedLeaveDays:", calculatedLeaveDays);
               releaseDBConnection(db, connection);
               req.records = {
+                leave_applied_days: leave_applied_days,
                 calculatedLeaveDays: calculatedLeaveDays,
                 monthWiseCalculatedLeaveDeduction: leaveDeductionArray
               };
