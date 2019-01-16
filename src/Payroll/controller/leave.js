@@ -20,8 +20,11 @@ import {
   updateLeaveMaster,
   calculateLeaveDays,
   getLeaveDetailsMaster,
+  addLeaveDetailMaster,
   getLeaveEncashmentMaster,
-  getLeaveRulesMaster
+  getLeaveRulesMaster,
+  addLeaveEncashmentMaster,
+  addLeaveRulesMaster
 } from "../model/leave";
 import { debugLog } from "../../utils/logging";
 export default ({ config, db }) => {
@@ -354,6 +357,51 @@ export default ({ config, db }) => {
     }
     next();
   });
+
+  // created by Adnan :
+  api.post(
+    "/addLeaveDetailMaster",
+    addLeaveDetailMaster,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by Adnan :
+  api.post(
+    "/addLeaveEncashmentMaster",
+    addLeaveEncashmentMaster,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by Adnan :
+  api.post(
+    "/addLeaveRulesMaster",
+    addLeaveRulesMaster,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
 
   // created by Adnan
   api.get(

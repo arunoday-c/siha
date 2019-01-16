@@ -2825,6 +2825,145 @@ let getLeaveDetailsMaster = (req, res, next) => {
     next(e);
   }
 };
+
+//created by Adnan
+let addLeaveDetailMaster = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT  INTO hims_d_leave_detail ( leave_header_id,\
+           employee_type, gender, eligible_days, min_service_required, service_years,\
+            once_life_term, allow_probation, max_number_days,\
+           mandatory_utilize_days, created_date, created_by, updated_date, updated_by) values(\
+          ?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        [
+          input.leave_id,
+          input.employee_type,
+          input.gender,
+          input.eligible_days,
+          input.min_service_required,
+          input.service_years,
+          input.once_life_term,
+          input.allow_probation,
+          input.max_number_days,
+          input.mandatory_utilize_days,
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by Adnan
+let addLeaveEncashmentMaster = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT  INTO hims_d_leave_encashment ( leave_header_id,\
+          earnings_id, percent,created_date, created_by, updated_date, updated_by) values(\
+          ?,?,?,?,?,?,?)",
+        [
+          input.leave_id,
+          input.earnings_id,
+          input.percent,
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by Adnan
+let addLeaveRulesMaster = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT  INTO hims_d_leave_rule ( leave_header_id,\
+         calculation_type, earning_id,\
+         paytype, from_value, to_value, value_type, total_days) values(\
+          ?,?,?,?,?,?,?,?)",
+        [
+          input.leave_id,
+          input.calculation_type,
+          input.earning_id,
+          input.paytype,
+          input.from_value,
+          input.to_value,
+          input.value_type,
+          input.total_days
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 //created by Adnan:
 let getLeaveEncashmentMaster = (req, res, next) => {
   try {
@@ -2918,5 +3057,8 @@ module.exports = {
   calculateLeaveDays,
   getLeaveDetailsMaster,
   getLeaveEncashmentMaster,
-  getLeaveRulesMaster
+  getLeaveRulesMaster,
+  addLeaveDetailMaster,
+  addLeaveEncashmentMaster,
+  addLeaveRulesMaster
 };
