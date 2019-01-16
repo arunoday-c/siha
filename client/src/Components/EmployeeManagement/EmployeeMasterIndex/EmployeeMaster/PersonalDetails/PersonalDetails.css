@@ -41,7 +41,7 @@
   height: 101px; }
 
 .hptl-phase1-add-employee-form .dropzone img {
-  height: 200px; }
+  max-height: 300px; }
 
 .popRightDiv {
   max-height: 68vh !important;
