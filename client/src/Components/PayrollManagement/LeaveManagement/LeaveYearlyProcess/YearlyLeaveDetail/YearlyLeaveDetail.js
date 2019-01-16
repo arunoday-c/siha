@@ -59,56 +59,60 @@ class YearlyLeaveDetail extends Component {
       >
         <div className="popupInner">
           <div className="popRightDiv">
-            <div className="col-12" id="LeaveYearlyProcessGrid_Cntr">
-              <AlgaehDataGrid
-                id="LeaveYearlyProcessGrid"
-                datavalidate="LeaveYearlyProcessGrid"
-                columns={[
-                  {
-                    fieldName: "year",
-                    label: <AlgaehLabel label={{ forceLabel: "Year" }} />,
-                    filter: false
-                  },
-                  {
-                    fieldName: "employee_code",
-                    label: (
-                      <AlgaehLabel label={{ forceLabel: "Employee Code" }} />
-                    )
-                  },
-                  {
-                    fieldName: "employee_name",
-                    label: (
-                      <AlgaehLabel label={{ forceLabel: "Employee Name" }} />
-                    )
-                  },
-                  {
-                    fieldName: "leave_code",
-                    label: <AlgaehLabel label={{ forceLabel: "Leave Code" }} />
-                  },
-                  {
-                    fieldName: "leave_description",
-                    label: (
-                      <AlgaehLabel
-                        label={{ forceLabel: "Leave Description" }}
-                      />
-                    )
-                  },
-                  {
-                    fieldName: "total_eligible",
-                    label: (
-                      <AlgaehLabel label={{ forceLabel: "Total Eligible" }} />
-                    )
-                  }
-                ]}
-                keyId="hims_f_employee_monthly_leave_id"
-                dataSource={{ data: this.state.leave_data }}
-                isEditable={false}
-                filter={true}
-                loading={this.state.loading}
-                paging={{ page: 0, rowsPerPage: 10 }}
-                events={{}}
-                others={{}}
-              />
+            <div className="row margin-top-15 margin-bottom-15">
+              <div className="col-12" id="LeaveYearlyProcessGrid_Cntr">
+                <AlgaehDataGrid
+                  id="LeaveYearlyProcessGrid"
+                  datavalidate="LeaveYearlyProcessGrid"
+                  columns={[
+                    {
+                      fieldName: "year",
+                      label: <AlgaehLabel label={{ forceLabel: "Year" }} />,
+                      filter: false
+                    },
+                    {
+                      fieldName: "employee_code",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Employee Code" }} />
+                      )
+                    },
+                    {
+                      fieldName: "employee_name",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Employee Name" }} />
+                      )
+                    },
+                    {
+                      fieldName: "leave_code",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Leave Code" }} />
+                      )
+                    },
+                    {
+                      fieldName: "leave_description",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Leave Description" }}
+                        />
+                      )
+                    },
+                    {
+                      fieldName: "total_eligible",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Total Eligible" }} />
+                      )
+                    }
+                  ]}
+                  keyId="hims_f_employee_monthly_leave_id"
+                  dataSource={{ data: this.state.leave_data }}
+                  isEditable={false}
+                  filter={true}
+                  loading={this.state.loading}
+                  paging={{ page: 0, rowsPerPage: 10 }}
+                  events={{}}
+                  others={{}}
+                />
+              </div>
             </div>
           </div>
         </div>
