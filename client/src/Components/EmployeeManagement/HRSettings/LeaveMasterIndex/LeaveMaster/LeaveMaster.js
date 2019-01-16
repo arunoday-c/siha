@@ -396,10 +396,7 @@ class LeaveMaster extends Component {
         <AlgaehModalPopUp
           openPopup={this.props.open}
           events={{
-            onClose: () => {
-              this.clearState();
-              this.props.onClose;
-            }
+            onClose: this.props.onClose
           }}
         >
           <div className=" leaveMasterMainPage">
