@@ -2418,7 +2418,7 @@ let calculateLeaveDays = (req, res, next) => {
     let leave_applied_days = 0;
     let calculatedLeaveDays = 0;
     let session_diff = 0;
-    let my_religion = 1;
+    let my_religion = input.religion_id;
 
     debugLog("from_date:", from_date);
     debugLog("to_date:", to_date);
