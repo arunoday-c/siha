@@ -376,7 +376,8 @@ class IDType extends Component {
                   },
                   {
                     fieldName: "created_date",
-                    label: "Added Date",
+
+                    label: <AlgaehLabel label={{ forceLabel: "Added Date" }} />,
                     displayTemplate: row => {
                       return <span>{this.dateFormater(row.created_date)}</span>;
                     },

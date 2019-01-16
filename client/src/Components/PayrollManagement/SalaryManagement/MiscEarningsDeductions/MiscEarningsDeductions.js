@@ -561,7 +561,15 @@ export default class MiscEarningsDeductions extends Component {
                             columns={[
                               {
                                 fieldName: "hospital_name",
-                                label: "Branch",
+
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Branch"
+                                    }}
+                                  />
+                                ),
+
                                 others: {
                                   minWidth: 150,
                                   maxWidth: 250
@@ -570,7 +578,14 @@ export default class MiscEarningsDeductions extends Component {
                               },
                               {
                                 fieldName: "sub_department_name",
-                                label: "Department",
+
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Department"
+                                    }}
+                                  />
+                                ),
                                 displayTemplate: row => {
                                   return (
                                     <span>
@@ -588,7 +603,14 @@ export default class MiscEarningsDeductions extends Component {
                               },
                               {
                                 fieldName: "employee_code",
-                                label: "Employee Code",
+
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Employee Code"
+                                    }}
+                                  />
+                                ),
                                 others: {
                                   minWidth: 150,
                                   maxWidth: 250
@@ -597,7 +619,14 @@ export default class MiscEarningsDeductions extends Component {
                               },
                               {
                                 fieldName: "employee_name",
-                                label: "Employee Name",
+
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Employee Name"
+                                    }}
+                                  />
+                                ),
                                 others: {
                                   minWidth: 150,
                                   maxWidth: 250
@@ -606,7 +635,14 @@ export default class MiscEarningsDeductions extends Component {
                               },
                               {
                                 fieldName: "amount",
-                                label: "Amount",
+
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Amount"
+                                    }}
+                                  />
+                                ),
                                 editorTemplate: row => {
                                   return (
                                     <AlagehFormGroup
