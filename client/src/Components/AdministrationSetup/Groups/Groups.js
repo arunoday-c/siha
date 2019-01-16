@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 import "./groups.css";
-import { AlagehFormGroup, AlgaehDataGrid } from "../../Wrapper/algaehWrapper";
+import {
+  AlagehFormGroup,
+  AlgaehDataGrid,
+  AlgaehLabel
+} from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 class Groups extends Component {
@@ -156,21 +160,49 @@ class Groups extends Component {
                     columns={[
                       {
                         fieldName: "app_group_code",
-                        label: "Group Code",
+
+                        label: (
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Group Code"
+                            }}
+                          />
+                        ),
                         disabled: true
                       },
                       {
                         fieldName: "app_group_name",
-                        label: "Group Name"
+
+                        label: (
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Group Name"
+                            }}
+                          />
+                        )
                       },
                       {
                         fieldName: "app_group_desc",
-                        label: "Group Description",
+
+                        label: (
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Group Description"
+                            }}
+                          />
+                        ),
                         disabled: true
                       },
                       {
                         fieldName: "app_group_type",
-                        label: "Group Type",
+
+                        label: (
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Group Type"
+                            }}
+                          />
+                        ),
                         disabled: true
                       }
                     ]}

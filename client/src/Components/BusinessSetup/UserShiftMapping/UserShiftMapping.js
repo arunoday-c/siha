@@ -4,7 +4,8 @@ import GlobalVariables from "../../../utils/GlobalVariables.json";
 import {
   AlagehAutoComplete,
   AlagehFormGroup,
-  AlgaehDataGrid
+  AlgaehDataGrid,
+  AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import moment from "moment";
@@ -314,7 +315,8 @@ class UserShiftMapping extends Component {
               columns={[
                 {
                   fieldName: "shift_description",
-                  label: "Shift Type",
+
+                  label: <AlgaehLabel label={{ forceLabel: "Shift Type" }} />,
                   editorTemplate: row => {
                     return (
                       <AlagehAutoComplete
@@ -340,7 +342,8 @@ class UserShiftMapping extends Component {
                 },
                 {
                   fieldName: "cashier_name",
-                  label: "Cashier",
+
+                  label: <AlgaehLabel label={{ forceLabel: "Cashier" }} />,
                   editorTemplate: row => {
                     return <span>{row.cashier_name}</span>;
                   }
@@ -348,6 +351,7 @@ class UserShiftMapping extends Component {
                 {
                   fieldName: "month",
                   label: "Month",
+                  label: <AlgaehLabel label={{ forceLabel: "Month" }} />,
                   displayTemplate: row => {
                     return (
                       <span>
@@ -450,7 +454,8 @@ class UserShiftMapping extends Component {
                 },
                 {
                   fieldName: "year",
-                  label: "Year",
+
+                  label: <AlgaehLabel label={{ forceLabel: "Year" }} />,
                   editorTemplate: row => {
                     return <span>{row.year}</span>;
                   }

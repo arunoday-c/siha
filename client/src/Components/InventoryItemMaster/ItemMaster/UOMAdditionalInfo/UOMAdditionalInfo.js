@@ -52,7 +52,7 @@ class UOMAdditionalInfo extends Component {
             <div className="hptl-phase1-uom-Add-form">
               <div className="row card-deck panel-layout">
                 {/* Patient code */}
-                <div className="col-lg-8 card box-shadow-normal">
+                <div className="col-lg-8 card">
                   <div className="row">
                     <AlagehAutoComplete
                       div={{ className: "col" }}
@@ -308,7 +308,7 @@ class UOMAdditionalInfo extends Component {
                     </div>
                   </div>
                 </div>
-                <div className="col-lg-4 card box-shadow-normal">
+                <div className="col-lg-4 card">
                   <div className="row">
                     <div className="container-fluid">
                       <AlagehFormGroup
