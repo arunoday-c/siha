@@ -21,7 +21,7 @@ let getEmployeeBasicDetails = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "SELECT E.hims_d_employee_id,E.employee_code,E.title_id,E.full_name,E.arabic_name,E.employee_designation_id,\
+        "SELECT E.hims_d_employee_id,E.employee_code,E.title_id,E.full_name,E.arabic_name,E.religion_id,E.employee_designation_id,\
         D.designation_code,D.designation,\
            E.license_number,E.sex,E.date_of_birth,E.date_of_joining,E.date_of_resignation,E.present_address,E.present_address2,\
            E.present_pincode,E.present_pincode,E.present_city_id,CITY.city_name as present_city_name ,\
