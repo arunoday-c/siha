@@ -286,6 +286,11 @@ class LeaveMaster extends Component {
             ? this.getEarningsDeds()
             : null;
 
+          specified === "LeaveRules" &&
+          this.state.earning_deductions.length === 0
+            ? this.getEarningsDeds()
+            : null;
+
           this.setState({
             pageDisplay: specified
           });

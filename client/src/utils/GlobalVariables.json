@@ -791,5 +791,10 @@
     { "name": "Edit Details", "value": "ED" },
     { "name": "Edit Encashment", "value": "EE" },
     { "name": "Edit Rules", "value": "ER" }
+  ],
+  "EXIT_TYPE": [
+    { "name": "Resigned", "value": "RES" },
+    { "name": "Retirement", "value": "RET" },
+    { "name": "Terminate", "value": "TER" }
   ]
 }
