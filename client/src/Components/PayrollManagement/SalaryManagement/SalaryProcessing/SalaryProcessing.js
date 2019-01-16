@@ -307,19 +307,7 @@ class SalaryProcessing extends Component {
                                 )
                               },
                               {
-                                fieldName: "net_salary",
-
-                                label: (
-                                  <AlgaehLabel
-                                    label={{
-                                      forceLabel: "Basic"
-                                    }}
-                                  />
-                                )
-                              },
-                              {
-                                fieldName: "",
-
+                                fieldName: "advance_due",
                                 label: (
                                   <AlgaehLabel
                                     label={{
@@ -329,12 +317,23 @@ class SalaryProcessing extends Component {
                                 )
                               },
                               {
-                                fieldName: "",
+                                fieldName: "loan_due_amount",
 
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Loan Amount"
+                                      forceLabel: "Loan Due Amount"
+                                    }}
+                                  />
+                                )
+                              },
+                              {
+                                fieldName: "loan_payable_amount",
+
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Loan Payable Amount"
                                     }}
                                   />
                                 )

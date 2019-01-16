@@ -21,7 +21,7 @@ let getEmployeeBasicDetails = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "SELECT E.hims_d_employee_id,E.employee_code,E.title_id,E.full_name,E.arabic_name,E.employee_designation_id,\
+        "SELECT E.hims_d_employee_id,E.employee_code,E.title_id,E.full_name,E.arabic_name,E.religion_id,E.employee_designation_id,\
         D.designation_code,D.designation,\
            E.license_number,E.sex,E.date_of_birth,E.date_of_joining,E.date_of_resignation,E.present_address,E.present_address2,\
            E.present_pincode,E.present_pincode,E.present_city_id,CITY.city_name as present_city_name ,\
@@ -36,7 +36,7 @@ let getEmployeeBasicDetails = (req, res, next) => {
            E.late_coming_rule, E.leave_salary_process, E.entitled_daily_ot,\
             E.suspend_salary, E.gratuity_applicable, E.contract_type, E.employee_group_id,\
            E.weekoff_from,E.overtime_group_id, E.reporting_to_id,REP.full_name as reporting_to_name,\
-            E.hospital_id , H.hospital_code,H.hospital_name ,E.sub_department_id ,\
+            E.hospital_id ,E.employee_type, H.hospital_code,H.hospital_name ,E.sub_department_id ,\
             DEP.sub_department_name  from hims_d_employee E left join hims_d_designation D\
              on E.employee_designation_id=D.hims_d_designation_id  left join hims_d_country C on\
               E.present_country_id=C.hims_d_country_id   left join hims_d_city CITY on\
