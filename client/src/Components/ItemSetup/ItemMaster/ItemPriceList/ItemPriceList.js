@@ -25,7 +25,7 @@ class ItemPriceList extends Component {
         <MyContext.Consumer>
           {context => (
             <div
-              className="col-lg-12 card box-shadow-normal"
+              className="col-lg-12 card"
               style={{ marginTop: "10px" }}
             >
               <div className="row" style={{ padding: "10px" }}>

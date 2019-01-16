@@ -271,12 +271,26 @@ class SalaryProcessing extends Component {
                             columns={[
                               {
                                 fieldName: "salary_number",
-                                label: "Salary No."
+
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Salary No."
+                                    }}
+                                  />
+                                )
+
                                 //disabled: true
                               },
                               {
                                 fieldName: "full_name",
-                                label: "Employee Name",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Employee Name"
+                                    }}
+                                  />
+                                ),
                                 others: {
                                   minWidth: 150,
                                   maxWidth: 250
@@ -284,23 +298,55 @@ class SalaryProcessing extends Component {
                               },
                               {
                                 fieldName: "present_days",
-                                label: "Present Days"
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Present days"
+                                    }}
+                                  />
+                                )
                               },
                               {
                                 fieldName: "advance_due",
-                                label: "Advance"
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Advance"
+                                    }}
+                                  />
+                                )
                               },
                               {
                                 fieldName: "loan_due_amount",
-                                label: "Loan Due Amount"
+
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Loan Due Amount"
+                                    }}
+                                  />
+                                )
                               },
                               {
                                 fieldName: "loan_payable_amount",
-                                label: "Loan Payable Amount"
+
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Loan Payable Amount"
+                                    }}
+                                  />
+                                )
                               },
                               {
                                 fieldName: "net_salary",
-                                label: "Total Amount"
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Total Amount"
+                                    }}
+                                  />
+                                )
                               }
                             ]}
                             keyId="algaeh_d_module_id"
@@ -344,12 +390,26 @@ class SalaryProcessing extends Component {
                             columns={[
                               {
                                 fieldName: "earning_deduction_description",
-                                label: "Description"
+
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Description"
+                                    }}
+                                  />
+                                )
                                 //disabled: true
                               },
                               {
                                 fieldName: "amount",
-                                label: "Amount",
+
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Amount"
+                                    }}
+                                  />
+                                ),
                                 others: {
                                   maxWidth: 100
                                 }
@@ -396,12 +456,26 @@ class SalaryProcessing extends Component {
                             columns={[
                               {
                                 fieldName: "earning_deduction_description",
-                                label: "Description"
+
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Description"
+                                    }}
+                                  />
+                                )
                                 //disabled: true
                               },
                               {
                                 fieldName: "amount",
-                                label: "Amount",
+
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Amount"
+                                    }}
+                                  />
+                                ),
                                 others: {
                                   maxWidth: 100
                                 }
@@ -450,12 +524,26 @@ class SalaryProcessing extends Component {
                             columns={[
                               {
                                 fieldName: "earning_deduction_description",
-                                label: "Description"
+
                                 //disabled: true
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Description"
+                                    }}
+                                  />
+                                )
                               },
                               {
                                 fieldName: "amount",
-                                label: "Amount",
+
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Amount"
+                                    }}
+                                  />
+                                ),
                                 others: {
                                   maxWidth: 100
                                 }

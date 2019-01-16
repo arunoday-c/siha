@@ -57,7 +57,7 @@ class ItemDetails extends Component {
           {context => (
             <div className="hptl-phase1-item-master-form">
               <div
-                className="col-lg-12 card box-shadow-normal"
+                className="col-lg-12 card"
                 style={{ paddingBottom: "10px" }}
               >
                 <div className="row">
