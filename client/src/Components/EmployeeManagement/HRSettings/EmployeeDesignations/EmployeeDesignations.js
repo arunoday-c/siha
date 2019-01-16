@@ -8,6 +8,7 @@ import {
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
+import moment from "moment";
 
 class EmployeeDesignations extends Component {
   constructor(props) {
@@ -265,6 +266,13 @@ class EmployeeDesignations extends Component {
                 {
                   fieldName: "created_date",
                   label: <AlgaehLabel label={{ forceLabel: "Created Date" }} />,
+                  displayTemplate: row => {
+                    return (
+                      <span>
+                        {moment(row.created_date).format("DD-MM-YYYY")}
+                      </span>
+                    );
+                  },
                   disabled: true
                 }
               ]}

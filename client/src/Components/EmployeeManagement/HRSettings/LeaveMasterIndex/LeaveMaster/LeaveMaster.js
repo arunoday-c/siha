@@ -105,9 +105,9 @@ class LeaveMaster extends Component {
   }
 
   saveLeaveMaster() {
-    if (this.state.leaveEncash.length === 0) {
+    if (this.state.leaveDetails.length === 0) {
       swalMessage({
-        title: "Please Add at least one Leave Encashment",
+        title: "Please Add at least one Leave Detail",
         type: "warning"
       });
     } else if (this.state.leaveRules.length === 0) {
@@ -115,9 +115,9 @@ class LeaveMaster extends Component {
         title: "Please Add at least one Leave Rule",
         type: "warning"
       });
-    } else if (this.state.leaveDetails.length === 0) {
+    } else if (this.state.leaveEncash.length === 0) {
       swalMessage({
-        title: "Please Add at least one Leave Detail",
+        title: "Please Add at least one Leave Encashment",
         type: "warning"
       });
     } else {
@@ -381,13 +381,25 @@ class LeaveMaster extends Component {
     });
   }
 
+  clearState() {
+    this.setState({
+      pageDisplay: "Leave",
+      leaveDetails: [],
+      leaveEncash: [],
+      leaveRules: []
+    });
+  }
+
   render() {
     return (
       <div className="hims_leave_master">
         <AlgaehModalPopUp
           openPopup={this.props.open}
           events={{
-            onClose: this.props.onClose
+            onClose: () => {
+              this.clearState();
+              this.props.onClose;
+            }
           }}
         >
           <div className=" leaveMasterMainPage">

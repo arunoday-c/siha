@@ -62,7 +62,7 @@ function LeaveEntitlement(props) {
         /> */}
         <AlagehAutoComplete
           div={{ className: "col form-group" }}
-          label={{ forceLabel: "Leave Type", isImp: false }}
+          label={{ forceLabel: "Leave Type", isImp: true }}
           selector={{
             name: "leave_type",
             value: myParent.state.leave_type,
@@ -77,7 +77,7 @@ function LeaveEntitlement(props) {
         />
         <AlagehAutoComplete
           div={{ className: "col form-group" }}
-          label={{ forceLabel: "Leave Mode", isImp: false }}
+          label={{ forceLabel: "Leave Mode", isImp: true }}
           selector={{
             name: "leave_mode",
             value: myParent.state.leave_mode,
@@ -92,7 +92,7 @@ function LeaveEntitlement(props) {
         />
         <AlagehAutoComplete
           div={{ className: "col form-group" }}
-          label={{ forceLabel: "Leave Frequency", isImp: false }}
+          label={{ forceLabel: "Leave Frequency", isImp: true }}
           selector={{
             name: "leave_accrual",
             value: myParent.state.leave_accrual,
