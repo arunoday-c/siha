@@ -507,9 +507,14 @@ class LeaveEdit extends Component {
         }}
         className="col-lg-12"
       >
-        <div>{this.state.leave_description}</div>
-
         <div className="popupInner" data-validate="LvEdtGrd">
+          <div className="col">
+            <h6 className=" margin-top-15">
+              <small>Selected Leave Type:</small>
+              <br /> {this.state.leave_description}
+            </h6>
+          </div>
+          <hr />
           {this.state.type === "E" ? (
             <LeaveEntitlement parent={this} />
           ) : this.state.type === "ED" ? (
