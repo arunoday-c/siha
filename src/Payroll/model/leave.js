@@ -2548,8 +2548,8 @@ let calculateLeaveDays = (req, res, next) => {
         "select L.hims_d_leave_id,L.leave_code,L.leave_description,LD.employee_type,hims_d_leave_detail_id,LD.gender,LD.eligible_days ,\
         L.include_weekoff,L.include_holiday from hims_d_leave  L \
         inner join hims_d_leave_detail LD on L.hims_d_leave_id=LD.leave_header_id  and L.record_status='A'\
-        where L.hims_d_leave_id=? and (LD.gender=? or LD.gender='BOTH' )",
-        ["28", "MALE"],
+        where hims_d_leave_detail_id=?",
+        input.hims_d_leave_detail_id,
         (error, result) => {
           if (error) {
             releaseDBConnection(db, connection);
