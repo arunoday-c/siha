@@ -29,9 +29,9 @@ let getEmployeeLeaveData = (req, res, next) => {
 
     let selservice = "";
     if ((req.query.selservice = "Y")) {
-      selservice = ` and  (LD.employee_type=${
+      selservice = ` and  (LD.employee_type='${
         req.query.employee_type
-      } and  (LD.gender=${req.query.gender} or LD.gender='BOTH' ))`;
+      }' and  (LD.gender='${req.query.gender}' or LD.gender='BOTH' ))`;
     }
 
     if (
