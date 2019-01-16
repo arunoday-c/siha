@@ -315,8 +315,8 @@ class SalaryPayment extends Component {
                                     </span>
                                   );
                                 },
-                                options: {
-                                  maxWidth: 30
+                                others: {
+                                  maxWidth: 50
                                 }
                               },
                               {
@@ -358,18 +358,18 @@ class SalaryPayment extends Component {
                                 )
                                 //disabled: true
                               },
-                              {
-                                fieldName: "gross_salary",
+                              // {
+                              //   fieldName: "gross_salary",
 
-                                label: (
-                                  <AlgaehLabel
-                                    label={{
-                                      forceLabel: "Basic"
-                                    }}
-                                  />
-                                )
-                                //disabled: true
-                              },
+                              //   label: (
+                              //     <AlgaehLabel
+                              //       label={{
+                              //         forceLabel: "Basic"
+                              //       }}
+                              //     />
+                              //   )
+                              //   //disabled: true
+                              // },
                               {
                                 fieldName: "advance_due",
 
