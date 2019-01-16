@@ -4,17 +4,17 @@
   margin-top: 0;
   margin-bottom: 15px; }
 
-.LeaveAuthPopup #previousLeaveAppGrid_Cntr .ReactTable {
+#previousLeaveAppGrid_Cntr .ReactTable {
   max-height: 15vh !important; }
 
-.LeaveAuthPopup .btnFooter {
+.btnFooter {
   margin-bottom: 10px; }
-  .LeaveAuthPopup .btnFooter button {
+  .btnFooter button {
     float: right;
     margin-left: 10px; }
-  .LeaveAuthPopup .btnFooter button.btn-danger {
+  .btnFooter button.btn-danger {
     background: none;
     color: #dc3545; }
-    .LeaveAuthPopup .btnFooter button.btn-danger:hover {
+    .btnFooter button.btn-danger:hover {
       background: #dc3545;
       color: #fff; }

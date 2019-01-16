@@ -306,11 +306,9 @@ export default class LeaveAuthorization extends Component {
                   <i className="fas fa-spinner fa-spin" />
                 )}
               </button>
-            </div>
-            <div className="col form-group">
               <button
                 onClick={this.clearState.bind(this)}
-                style={{ marginTop: 21 }}
+                style={{ marginTop: 21, marginLeft: 5 }}
                 className="btn btn-default"
               >
                 Clear

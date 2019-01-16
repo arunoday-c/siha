@@ -161,6 +161,17 @@ class LeaveEncashmentProcess extends Component {
               >
                 Load
               </button>
+
+              <button
+                style={{ marginTop: 21, marginLeft: 5 }}
+                type="button"
+                className="btn btn-default"
+                onClick={ClearData.bind(this, this)}
+              >
+                <AlgaehLabel
+                  label={{ forceLabel: "Clear", returnText: true }}
+                />
+              </button>
             </div>
 
             <div className="col">
@@ -292,16 +303,6 @@ class LeaveEncashmentProcess extends Component {
               >
                 <AlgaehLabel
                   label={{ forceLabel: "Process", returnText: true }}
-                />
-              </button>
-
-              <button
-                type="button"
-                className="btn btn-default"
-                onClick={ClearData.bind(this, this)}
-              >
-                <AlgaehLabel
-                  label={{ forceLabel: "Clear", returnText: true }}
                 />
               </button>
             </div>

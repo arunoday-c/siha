@@ -235,6 +235,13 @@ class LeaveEncashmentAuth extends Component {
               >
                 Load
               </button>
+              <button
+                //  onClick={this.clearState.bind(this)}
+                style={{ marginTop: 21, marginLeft: 5 }}
+                className="btn btn-default"
+              >
+                Clear
+              </button>
             </div>
           </div>
         </div>
