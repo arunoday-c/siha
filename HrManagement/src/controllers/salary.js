@@ -4,7 +4,8 @@ import {
   processSalary,
   getSalaryProcess,
   getSalaryProcessToPay,
-  finalizedSalaryProcess
+  finalizedSalaryProcess,
+  SaveSalaryPayment
 } from "../models/salary";
 export default () => {
   const api = Router();
@@ -44,6 +45,13 @@ export default () => {
       });
     }
   );
+
+  api.put("/SaveSalaryPayment", SaveSalaryPayment, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      result: req.records
+    });
+  });
 
   return api;
 };

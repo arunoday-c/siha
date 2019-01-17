@@ -3,6 +3,8 @@ import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall.js";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
+import AlgaehSearch from "../../../Wrapper/globalSearch";
+import spotlightSearch from "../../../../Search/spotlightSearch.json";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -25,8 +27,8 @@ const SalaryProcess = ($this, e) => {
         month: $this.state.month,
         hospital_id: $this.state.hospital_id
       };
-      if ($this.state.select_employee_id !== null) {
-        inputObj.employee_id = $this.state.select_employee_id;
+      if ($this.state.employee_id !== null) {
+        inputObj.employee_id = $this.state.employee_id;
       }
 
       if ($this.state.sub_department_id !== null) {
@@ -120,7 +122,10 @@ const ClearData = $this => {
     salaryprocess_Earning: [],
     salaryprocess_Deduction: [],
     salaryprocess_Contribute: [],
-    finalizeBtn: true
+    finalizeBtn: true,
+    employee_id: null,
+    employee_name: null,
+    hospital_id: null
   });
 };
 
@@ -153,10 +158,34 @@ const FinalizeSalary = $this => {
   });
 };
 
+const employeeSearch = $this => {
+  AlgaehSearch({
+    searchGrid: {
+      columns: spotlightSearch.Employee_details.employee
+    },
+    searchName: "employee",
+    uri: "/gloabelSearch/get",
+    inputs:
+      $this.state.sub_department_id !== null
+        ? "sub_department_id = " + $this.state.sub_department_id
+        : "1=1",
+    onContainsChange: (text, serchBy, callBack) => {
+      callBack(text);
+    },
+    onRowSelect: row => {
+      $this.setState({
+        employee_name: row.full_name,
+        employee_id: row.hims_d_employee_id
+      });
+    }
+  });
+};
+
 export {
   texthandle,
   SalaryProcess,
   getSalaryDetails,
   FinalizeSalary,
-  ClearData
+  ClearData,
+  employeeSearch
 };

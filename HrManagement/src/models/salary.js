@@ -29,37 +29,17 @@ module.exports = {
     _stringData +=
       input.sub_department_id != null ? " and A.sub_department_id=? " : "";
 
-    // if (input.employee_id == "null") {
-    //   delete input.employee_id;
-    // }
-
-    // if (input.sub_department_id == "null") {
-    //   delete input.sub_department_id;
-    // }
-
     utilities
       .AlgaehUtilities()
       .logger()
       .log("input:", input);
 
-    // let _stringData = "";
-
-    // let _inputData = [year, month_number, input.hospital_id];
-
-    // if (input.employee_id != "null") {
-    //   _inputData.push(input.employee_id);
-    //   _stringData = " and A.employee_id=? ";
-    // }
-    // if (input.sub_department_id != "null") {
-    //   _inputData.push(input.sub_department_id);
-    //   _stringData += " and A.sub_department_id=? ";
-    // }
     _mysql
       .executeQuery({
         query:
-          "select A.hims_f_attendance_monthly_id, A.employee_id, A.year, A.month, A.hospital_id, A.sub_department_id, A.total_days,\
-          A.present_days, A.absent_days, A.total_work_days, A.total_weekoff_days,\
-          A.total_holidays, A.total_leave, A.paid_leave, A.unpaid_leave, A.total_paid_days,E.employee_code \
+          "select A.hims_f_attendance_monthly_id, A.employee_id, A.year, A.month, A.hospital_id, A.sub_department_id, \
+          A.total_days,A.present_days, A.absent_days, A.total_work_days, A.total_weekoff_days,\
+          A.total_holidays, A.total_leave, A.paid_leave, A.unpaid_leave, A.total_paid_days,E.employee_code,E.gross_salary \
           from hims_f_attendance_monthly A,hims_d_employee E where `year`=? and `month`=? and A.hospital_id=? \
           and E.hims_d_employee_id = A.employee_id and A.hospital_id = E.hospital_id " +
           _stringData,
@@ -146,11 +126,11 @@ module.exports = {
                     on EC.contributions_id=ED.hims_d_earning_deduction_id and ED.record_status='A'\
                     where ED.component_frequency='M'  and ED.component_category='C' and EC.employee_id in (?);\
                   select hims_f_loan_application_id, loan_application_number, employee_id, loan_id, application_reason,\
-                    loan_application_date, loan_authorized ,loan_closed, start_month,start_year,installment_amount,pending_loan\
+                    loan_application_date, loan_authorized ,loan_closed, start_month,start_year,loan_skip_months,installment_amount,pending_loan\
                     from  hims_f_loan_application where loan_authorized='IS' and loan_closed='N' and pending_loan>0\
-                    and ((start_year <=? and start_month<=?)||(start_year <?)) and loan_skip_months=0 and employee_id in (?);\
+                    and ((start_year <=? and start_month<=?)||(start_year <?)) and employee_id in (?);\
                   select payment_amount, employee_id from hims_f_employee_payments where payment_type ='AD' and \
-                    `year`=? and deduction_month=? and employee_id in (?);\
+                    deducted='N'and cancel='N' and `year`=? and deduction_month=? and employee_id in (?);\
                   select employee_id,earning_deductions_id,amount,category from hims_f_miscellaneous_earning_deduction \
                     where processed = 'N' and `year`=? and month=? and employee_id in (?);\
                   select hims_f_loan_application_id, loan_application_number, employee_id, loan_id,\
@@ -294,6 +274,10 @@ module.exports = {
                                         advance_due_amount =
                                           advanceOutput.advance_due_amount;
 
+                                        final_deduction_amount =
+                                          final_deduction_amount +
+                                          advanceOutput.advance_due_amount;
+
                                         current_deduction_amt_array = current_deduction_amt_array.concat(
                                           advanceOutput.current_deduct_compoment
                                         );
@@ -317,6 +301,13 @@ module.exports = {
                                           current_deduction_amt_array = current_deduction_amt_array.concat(
                                             miscellaneousOutput.current_deduct_compoment
                                           );
+
+                                          final_earning_amount =
+                                            final_earning_amount +
+                                            miscellaneousOutput.final_earning_amount;
+                                          final_deduction_amount =
+                                            final_deduction_amount +
+                                            miscellaneousOutput.final_deduction_amount;
 
                                           //Salary Calculation Starts
 
@@ -368,18 +359,9 @@ module.exports = {
                                               advance_due_amount
                                             );
 
-                                          utilities
-                                            .AlgaehUtilities()
-                                            .logger()
-                                            .log(
-                                              "current_deduction_amt_array",
-                                              current_deduction_amt_array
-                                            );
-
                                           let per_day_sal =
-                                            final_earning_amount +
-                                            final_deduction_amount +
-                                            final_contribution_amount;
+                                            empResult[i]["gross_salary"] /
+                                            empResult[i]["total_days"];
 
                                           utilities
                                             .AlgaehUtilities()
@@ -401,8 +383,7 @@ module.exports = {
                                           let _net_salary =
                                             final_earning_amount -
                                             final_deduction_amount -
-                                            total_loan_due_amount -
-                                            advance_due_amount;
+                                            total_loan_due_amount;
 
                                           _net_salary =
                                             _net_salary +
@@ -672,14 +653,6 @@ module.exports = {
       .logger()
       .log("inputParam:", inputParam);
 
-    // if (inputParam.employee_id == "null") {
-    //   delete inputParam.employee_id;
-    // }
-
-    // if (inputParam.sub_department_id == "null") {
-    //   delete inputParam.sub_department_id;
-    // }
-
     let _stringData =
       inputParam.employee_id != null ? " and employee_id=? " : "";
 
@@ -692,7 +665,7 @@ module.exports = {
       .executeQuery({
         query:
           "select hims_f_salary_id, salary_number, present_days, hims_f_salary.gross_salary, hims_f_salary.net_salary,advance_due,\
-          loan_payable_amount, loan_due_amount,emp.employee_code, emp.full_name from hims_f_salary, hims_d_employee emp where \
+          loan_payable_amount, loan_due_amount,salary_processed,emp.employee_code, emp.full_name from hims_f_salary, hims_d_employee emp where \
           hims_f_salary.employee_id = emp.hims_d_employee_id and `year` = ? and `month` = ? and emp.hospital_id=? " +
           _stringData,
         values: _.valuesIn(inputParam),
@@ -771,8 +744,9 @@ module.exports = {
     _mysql
       .executeQuery({
         query:
-          "select hims_f_salary_id, salary_number, present_days, salary_processed, hims_f_salary.gross_salary, hims_f_salary.net_salary,advance_due,\
-          loan_payable_amount, emp.employee_code, emp.full_name from hims_f_salary, hims_d_employee emp where \
+          "select hims_f_salary_id, salary_number, employee_id,present_days, salary_processed, hims_f_salary.gross_salary, \
+          hims_f_salary.net_salary,advance_due,loan_payable_amount, loan_due_amount, emp.employee_code, emp.full_name,salary_paid \
+          from hims_f_salary, hims_d_employee emp where \
           hims_f_salary.employee_id = emp.hims_d_employee_id and salary_processed = 'Y' and `year` = ? and `month` = ? " +
           _stringData,
         values: _.valuesIn(inputParam),
@@ -781,7 +755,14 @@ module.exports = {
       .then(salary_process => {
         _mysql.commitTransaction(() => {
           _mysql.releaseConnection();
-          req.records = salary_process;
+
+          req.records = salary_process.map(data => {
+            return {
+              ...data,
+              select_to_pay: "N"
+            };
+          });
+          // req.records = salary_process;
           next();
         });
       })
@@ -816,19 +797,24 @@ module.exports = {
         next(e);
       });
   },
-
+  //Salay Payment
   SaveSalaryPayment: (req, res, next) => {
     const _mysql = new algaehMysql();
     const inputParam = { ...req.body };
 
-    const _salaryHeader_id = _.map(inputParam, o => {
+    const _salaryHeader_id = _.map(inputParam.salary_payment, o => {
       return o.hims_f_salary_id;
     });
 
+    let _allEmployees = _.map(inputParam.salary_payment, o => {
+      return o.employee_id;
+    });
+
     _mysql
-      .executeQuery({
+      .executeQueryWithTransaction({
         query:
-          "UPDATE hims_f_salary SET salary_paid = 'Y', salary_paid_date=?, salary_paid_by=? where hims_f_salary_id in (?)",
+          "UPDATE hims_f_salary SET salary_paid = 'Y', salary_paid_date=?, salary_paid_by=? \
+            where hims_f_salary_id in (?)",
         values: [
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
@@ -837,14 +823,139 @@ module.exports = {
         printQuery: true
       })
       .then(salary_process => {
-        _mysql.commitTransaction(() => {
-          _mysql.releaseConnection();
-          req.records = salary_process;
-          next();
-        });
+        //Miscellaneous Earning Deduction
+        _mysql
+          .executeQuery({
+            query:
+              "UPDATE hims_f_miscellaneous_earning_deduction SET processed = 'Y', updated_date=?, updated_by=? where \
+            processed = 'N' and year = ?  and month = ? and employee_id in (?)",
+            values: [
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              inputParam.year,
+              inputParam.month,
+              _allEmployees
+            ],
+            printQuery: true
+          })
+          .then(miscellaneous_earning_deduction => {
+            //Employee Payments Advance
+            _mysql
+              .executeQuery({
+                query:
+                  "UPDATE hims_f_employee_payments SET deducted = 'Y', updated_date=?, updated_by=? where payment_type ='AD'\
+                and deducted='N'and cancel='N' and `year`=? and deduction_month=? and employee_id in (?);",
+                values: [
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id,
+                  inputParam.year,
+                  inputParam.month,
+                  _allEmployees
+                ],
+                printQuery: true
+              })
+              .then(employee_payments_advance => {
+                //Loan Due
+                _mysql
+                  .executeQuery({
+                    query:
+                      "select loan_application_id,loan_due_amount,balance_amount from hims_f_salary_loans where \
+                    salary_header_id in (?)",
+                    values: [_salaryHeader_id],
+                    printQuery: true
+                  })
+                  .then(salary_loans => {
+                    let loan_application_ids = _.map(salary_loans, o => {
+                      return o.loan_application_id;
+                    });
+
+                    if (loan_application_ids.length > 0) {
+                      _mysql
+                        .executeQuery({
+                          query:
+                            "select loan_skip_months,installment_amount, pending_loan from hims_f_loan_application  where hims_f_loan_application_id in (?)",
+                          values: [loan_application_ids],
+                          printQuery: true
+                        })
+                        .then(loan_application => {
+                          for (let i = 0; i < loan_application.length; i++) {
+                            let loan_skip_months =
+                              loan_application[i].loan_skip_months;
+                            let pending_loan = loan_application[i].pending_loan;
+                            let loan_closed = "N";
+                            if (loan_skip_months > 0) {
+                              loan_skip_months--;
+                            } else {
+                              pending_loan =
+                                pending_loan -
+                                loan_application[i].installment_amount;
+                            }
+
+                            if (pending_loan == 0) {
+                              loan_closed = "Y";
+                            }
+                            _mysql
+                              .executeQuery({
+                                query:
+                                  "UPDATE hims_f_loan_application SET pending_loan = ?, loan_closed=?, loan_skip_months=?, \
+                                    updated_date=?, updated_by=? where hims_f_loan_application_id in (?)",
+                                values: [
+                                  pending_loan,
+                                  loan_closed,
+                                  loan_skip_months,
+                                  new Date(),
+                                  req.userIdentity.algaeh_d_app_user_id,
+                                  loan_application_ids
+                                ],
+                                printQuery: true
+                              })
+                              .then(update_loan_application => {
+                                _mysql.commitTransaction(() => {
+                                  _mysql.releaseConnection();
+                                  req.records = update_loan_application;
+                                  next();
+                                });
+                              })
+                              .catch(e => {
+                                next(e);
+                              });
+                          }
+                        })
+                        .catch(error => {
+                          _mysql.rollBackTransaction(() => {
+                            next(error);
+                          });
+                        });
+                    } else {
+                      _mysql.commitTransaction(() => {
+                        _mysql.releaseConnection();
+                        req.records = salary_loans;
+                        next();
+                      });
+                    }
+                  })
+                  .catch(error => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+                  });
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+          })
+          .catch(error => {
+            _mysql.rollBackTransaction(() => {
+              next(error);
+            });
+          });
       })
-      .catch(e => {
-        next(e);
+      .catch(error => {
+        _mysql.rollBackTransaction(() => {
+          next(error);
+        });
       });
   }
 };
@@ -881,13 +992,23 @@ function getEarningComponents(options) {
           current_earning_per_day_salary *
           parseFloat(empResult["total_paid_days"]);
       }
-      current_earning_amt_array.push({
+
+      utilities
+        .AlgaehUtilities()
+        .logger()
+        .log("current_earning_amt: ", current_earning_amt);
+
+      current_earning_amt = current_earning_amt_array.push({
         earnings_id: obj.earnings_id,
         amount: current_earning_amt,
         per_day_salary: current_earning_per_day_salary
       });
-      final_earning_amount += parseFloat(current_earning_amt);
     });
+
+    final_earning_amount = _.sumBy(current_earning_amt_array, s => {
+      return s.amount;
+    });
+
     resolve({ current_earning_amt_array, final_earning_amount });
   });
 }
@@ -926,8 +1047,10 @@ function getDeductionComponents(options) {
         amount: current_deduction_amt,
         per_day_salary: current_deduction_per_day_salary
       });
+    });
 
-      final_deduction_amount += parseFloat(current_deduction_amt);
+    final_deduction_amount = _.sumBy(current_deduction_amt_array, s => {
+      return s.amount;
     });
 
     resolve({ current_deduction_amt_array, final_deduction_amount });
@@ -970,8 +1093,10 @@ function getContrubutionsComponents(options) {
         amount: current_contribution_amt
         // per_day_salary: current_contribution_per_day_salary
       });
+    });
 
-      final_contribution_amount += parseFloat(current_contribution_amt);
+    final_contribution_amount = _.sumBy(current_contribution_amt_array, s => {
+      return s.amount;
     });
 
     resolve({ current_contribution_amt_array, final_contribution_amount });
@@ -986,6 +1111,8 @@ function getLoanDueandPayable(options) {
     let total_loan_due_amount = 0;
     let total_loan_payable_amount = 0;
     let current_loan_array = [];
+
+    // loan_skip_months > 0
 
     if (_loan.length == 0) {
       if (_loanPayable.length == 0) {
@@ -1015,7 +1142,7 @@ function getLoanDueandPayable(options) {
     current_loan_array = _.map(_loan, s => {
       return {
         loan_application_id: s.hims_f_loan_application_id,
-        loan_due_amount: s.installment_amount,
+        loan_due_amount: s.loan_skip_months > 0 ? 0 : s.installment_amount,
         balance_amount: s.pending_loan
       };
     });
@@ -1074,9 +1201,16 @@ function getMiscellaneous(options) {
 
     let current_earn_compoment = [];
     let current_deduct_compoment = [];
+    let final_earning_amount = 0;
+    let final_deduction_amount = 0;
 
     if (_miscellaneous.length == 0) {
-      resolve({ current_earn_compoment, current_deduct_compoment });
+      resolve({
+        current_earn_compoment,
+        current_deduct_compoment,
+        final_earning_amount,
+        final_deduction_amount
+      });
     }
 
     current_earn_compoment = _.chain(_miscellaneous)
@@ -1104,6 +1238,19 @@ function getMiscellaneous(options) {
       };
     });
 
-    resolve({ current_earn_compoment, current_deduct_compoment });
+    final_earning_amount = _.sumBy(current_earn_compoment, s => {
+      return s.amount;
+    });
+
+    final_deduction_amount = _.sumBy(current_deduct_compoment, s => {
+      return s.amount;
+    });
+
+    resolve({
+      current_earn_compoment,
+      current_deduct_compoment,
+      final_earning_amount,
+      final_deduction_amount
+    });
   });
 }

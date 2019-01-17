@@ -15,11 +15,11 @@ import {
   SalaryProcess,
   getSalaryDetails,
   FinalizeSalary,
-  ClearData
+  ClearData,
+  employeeSearch
 } from "./SalaryProcessingEvents.js";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import moment from "moment";
-import Enumerable from "linq";
 
 class SalaryProcessing extends Component {
   constructor(props) {
@@ -35,7 +35,9 @@ class SalaryProcessing extends Component {
       salaryprocess_Deduction: [],
       salaryprocess_Contribute: [],
       finalizeBtn: true,
-      select_employee_id: null
+      employee_id: null,
+      employee_name: null,
+      hospital_id: null
     };
   }
 
@@ -88,9 +90,6 @@ class SalaryProcessing extends Component {
   }
 
   render() {
-    const depEmployee = Enumerable.from(this.props.all_employees)
-      .where(w => w.sub_department_id === this.state.sub_department_id)
-      .toArray();
     return (
       <React.Fragment>
         <div className="hptl-SalaryManagement-form">
@@ -189,7 +188,41 @@ class SalaryProcessing extends Component {
               }}
             />
 
-            <AlagehAutoComplete
+            <div className="col" style={{ marginTop: 10 }}>
+              <div
+                className="row"
+                style={{
+                  border: " 1px solid #ced4d9",
+                  borderRadius: 5,
+                  marginLeft: 0
+                }}
+              >
+                <div className="col">
+                  <AlgaehLabel label={{ forceLabel: "Select a Employee." }} />
+                  <h6>
+                    {this.state.employee_name
+                      ? this.state.employee_name
+                      : "------"}
+                  </h6>
+                </div>
+                <div
+                  className="col-lg-3"
+                  style={{ borderLeft: "1px solid #ced4d8" }}
+                >
+                  <i
+                    className="fas fa-search fa-lg"
+                    style={{
+                      paddingTop: 17,
+                      paddingLeft: 3,
+                      cursor: "pointer"
+                    }}
+                    onClick={employeeSearch.bind(this, this)}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* <AlagehAutoComplete
               div={{ className: "col" }}
               label={{
                 forceLabel: "Select a Employee.",
@@ -214,7 +247,7 @@ class SalaryProcessing extends Component {
                   });
                 }
               }}
-            />
+            /> */}
             <AlagehAutoComplete
               div={{ className: "col" }}
               label={{
