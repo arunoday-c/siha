@@ -13,7 +13,9 @@ import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import {
   texthandle,
   SalaryProcess,
-  getSalaryDetails
+  getSalaryDetails,
+  FinalizeSalary,
+  ClearData
 } from "./SalaryProcessingEvents.js";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import moment from "moment";
@@ -31,7 +33,8 @@ class SalaryProcessing extends Component {
       salaryprocess_header: [],
       salaryprocess_Earning: [],
       salaryprocess_Deduction: [],
-      salaryprocess_Contribute: []
+      salaryprocess_Contribute: [],
+      finalizeBtn: true
     };
   }
 
@@ -271,7 +274,12 @@ class SalaryProcessing extends Component {
                             columns={[
                               {
                                 fieldName: "salary_number",
-                                label: "Salary No."
+                                label: "Salary No.",
+                                className: drow => {
+                                  return drow.salary_processed !== "Y"
+                                    ? "greenCell"
+                                    : null;
+                                }
                                 //disabled: true
                               },
                               {
@@ -303,6 +311,11 @@ class SalaryProcessing extends Component {
                                 label: "Total Amount"
                               }
                             ]}
+                            rowClassName={row => {
+                              return row.salary_processed === "Y"
+                                ? "greenCell"
+                                : null;
+                            }}
                             keyId="algaeh_d_module_id"
                             dataSource={{
                               data: this.state.salaryprocess_header
@@ -623,35 +636,21 @@ class SalaryProcessing extends Component {
                 <button
                   type="button"
                   className="btn btn-primary"
-                  //   onClick={SaveDoctorCommission.bind(this, this)}
-                  //disabled={this.state.saveEnable}
+                  onClick={FinalizeSalary.bind(this, this)}
+                  disabled={this.state.finalizeBtn}
                 >
                   <AlgaehLabel
-                    label={{ forceLabel: "Save", returnText: true }}
+                    label={{ forceLabel: "Finalize", returnText: true }}
                   />
                 </button>
 
                 <button
                   type="button"
                   className="btn btn-default"
-                  //onClick={ClearData.bind(this, this)}
+                  onClick={ClearData.bind(this, this)}
                 >
                   <AlgaehLabel
                     label={{ forceLabel: "Clear", returnText: true }}
-                  />
-                </button>
-
-                <button
-                  type="button"
-                  className="btn btn-other"
-                  //   onClick={PostDoctorCommission.bind(this, this)}
-                  // disabled={this.state.postEnable}
-                >
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Generate Payment"
-                      //   returnText: true
-                    }}
                   />
                 </button>
               </div>

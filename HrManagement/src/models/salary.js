@@ -4,11 +4,34 @@ import _ from "lodash";
 import utilities from "algaeh-utilities";
 module.exports = {
   processSalary: (req, res, next) => {
-    let input = req.query;
+    const input = req.query;
     const month_number = input.month;
     const year = input.year;
     const _mysql = new algaehMysql();
 
+    utilities
+      .AlgaehUtilities()
+      .logger()
+      .log("input:", input);
+
+    let _stringData =
+      input.employee_id != "null" ? " and A.employee_id=? " : "";
+
+    _stringData +=
+      input.sub_department_id != "null" ? " and A.sub_department_id=? " : "";
+
+    // let _stringData = "";
+
+    // let _inputData = [year, month_number, input.hospital_id];
+
+    // if (input.employee_id != "null") {
+    //   _inputData.push(input.employee_id);
+    //   _stringData = " and A.employee_id=? ";
+    // }
+    // if (input.sub_department_id != "null") {
+    //   _inputData.push(input.sub_department_id);
+    //   _stringData += " and A.sub_department_id=? ";
+    // }
     _mysql
       .executeQuery({
         query:
@@ -16,50 +39,72 @@ module.exports = {
           A.present_days, A.absent_days, A.total_work_days, A.total_weekoff_days,\
           A.total_holidays, A.total_leave, A.paid_leave, A.unpaid_leave, A.total_paid_days,E.employee_code \
           from hims_f_attendance_monthly A,hims_d_employee E where `year`=? and `month`=? and A.hospital_id=? \
-          and E.hims_d_employee_id = A.employee_id and A.hospital_id = E.hospital_id",
-        values: [year, month_number, input.hospital_id]
+          and E.hims_d_employee_id = A.employee_id and A.hospital_id = E.hospital_id " +
+          _stringData,
+        values: _.valuesIn(input),
+        printQuery: true
       })
       .then(empResult => {
         if (empResult.length > 0) {
-          const _allEmployees = _.map(empResult, o => {
+          let _allEmployees = _.map(empResult, o => {
             return o.employee_id;
           });
 
           _mysql
             .executeQuery({
               query:
-                "select hims_f_salary_id,salary_processed from hims_f_salary where month=? and year=?",
+                "select employee_id,hims_f_salary_id,salary_processed from  hims_f_salary where month=? and year=? ",
               values: [month_number, year],
               printQuery: true
             })
             .then(existing => {
-              if (existing.length > 0) {
-                const _salaryHeader_id = existing.map(item => {
-                  return item.hims_f_salary_id;
+              let _salary_processed = _.chain(existing)
+                .filter(f => {
+                  return f.salary_processed == "Y";
+                })
+                .value();
+              let _myemp = [];
+              utilities
+                .AlgaehUtilities()
+                .logger()
+                .log("_salary_processed", _salary_processed);
+              let _itWentInside = false;
+              _salary_processed.map(sItem => {
+                _itWentInside = true;
+                let _dat = _.find(_allEmployees, f => {
+                  return f.employee_id == sItem.employee_id;
                 });
+                if (_dat != null) _myemp.push(_dat);
+              });
 
-                _mysql
-                  .executeQuery({
-                    query:
-                      "delete from hims_f_salary_contributions where salary_header_id in (?);\
-                      delete from hims_f_salary_loans where salary_header_id in (?);\
-                      delete from hims_f_salary_deductions where salary_header_id in (?);\
-                      delete from hims_f_salary_earnings where salary_header_id in (?);\
-                      delete from hims_f_salary where hims_f_salary_id in (?);",
-                    values: [
-                      _salaryHeader_id,
-                      _salaryHeader_id,
-                      _salaryHeader_id,
-                      _salaryHeader_id,
-                      _salaryHeader_id
-                    ],
-                    printQuery: true
-                  })
-                  .catch(e => {
-                    next(e);
+              utilities
+                .AlgaehUtilities()
+                .logger()
+                .log("_myemp", _myemp);
+              if (_myemp.length > 0) {
+                _allEmployees = _myemp;
+              } else {
+                if (_itWentInside) {
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = {};
+                    next();
                   });
+                  return;
+                }
               }
 
+              utilities
+                .AlgaehUtilities()
+                .logger()
+                .log("_allEmployees", _allEmployees);
+
+              let _salaryHeader_id = existing.map(item => {
+                return item.hims_f_salary_id;
+              });
+
+              _salaryHeader_id =
+                _salaryHeader_id.length == 0 ? null : _salaryHeader_id;
               _mysql
                 .executeQuery({
                   query:
@@ -88,7 +133,12 @@ module.exports = {
                     where processed = 'N' and `year`=? and month=? and employee_id in (?);\
                   select hims_f_loan_application_id, loan_application_number, employee_id, loan_id,\
                     loan_application_date, approved_amount\
-                    from  hims_f_loan_application where loan_authorized='APR' and loan_dispatch_from='SAL' and employee_id in (?);",
+                    from  hims_f_loan_application where loan_authorized='APR' and loan_dispatch_from='SAL' and employee_id in (?);\
+                    delete from hims_f_salary_contributions where salary_header_id in (?);\
+                    delete from hims_f_salary_loans where salary_header_id in (?);\
+                    delete from hims_f_salary_deductions where salary_header_id in (?);\
+                    delete from hims_f_salary_earnings where salary_header_id in (?);\
+                    delete from hims_f_salary where hims_f_salary_id in (?);",
                   values: [
                     _allEmployees,
                     _allEmployees,
@@ -103,8 +153,14 @@ module.exports = {
                     year,
                     month_number,
                     _allEmployees,
-                    _allEmployees
-                  ]
+                    _allEmployees,
+                    _salaryHeader_id,
+                    _salaryHeader_id,
+                    _salaryHeader_id,
+                    _salaryHeader_id,
+                    _salaryHeader_id
+                  ],
+                  printQuery: true
                 })
                 .then(Salaryresults => {
                   let _requestCollector = [];
@@ -574,14 +630,23 @@ module.exports = {
 
     /* Select statemwnt  */
 
+    let _stringData =
+      inputParam.employee_id != "null" ? " and employee_id=? " : "";
+
+    _stringData +=
+      inputParam.sub_department_id != "null"
+        ? " and emp.sub_department_id=? "
+        : "";
+
     _mysql
       .executeQuery({
         query:
           "select hims_f_salary_id, salary_number, present_days, hims_f_salary.gross_salary, hims_f_salary.net_salary,advance_due,\
           loan_payable_amount, loan_due_amount,emp.employee_code, emp.full_name from hims_f_salary, hims_d_employee emp where \
-          hims_f_salary.employee_id = emp.hims_d_employee_id and `year` = ? and `month` = ?;",
-        values: [inputParam.year, inputParam.month]
-        // printQuery: true
+          hims_f_salary.employee_id = emp.hims_d_employee_id and `year` = ? and `month` = ? " +
+          _stringData,
+        values: _.valuesIn(inputParam),
+        printQuery: true
       })
       .then(salary_process => {
         if (salary_process.length > 0) {
@@ -656,9 +721,9 @@ module.exports = {
     _mysql
       .executeQuery({
         query:
-          "select hims_f_salary_id, salary_number, present_days, hims_f_salary.gross_salary, hims_f_salary.net_salary,advance_due,\
+          "select hims_f_salary_id, salary_number, present_days, salary_processed, hims_f_salary.gross_salary, hims_f_salary.net_salary,advance_due,\
           loan_payable_amount, emp.employee_code, emp.full_name from hims_f_salary, hims_d_employee emp where \
-          hims_f_salary.employee_id = emp.hims_d_employee_id and `year` = ? and `month` = ? " +
+          hims_f_salary.employee_id = emp.hims_d_employee_id and salary_processed = 'Y' and `year` = ? and `month` = ? " +
           _stringData,
         values: _.valuesIn(inputParam),
         printQuery: true
@@ -679,8 +744,8 @@ module.exports = {
     const _mysql = new algaehMysql();
     const inputParam = { ...req.body };
 
-    const _salaryHeader_id = inputParam.map(item => {
-      return item.hims_f_salary_id;
+    const _salaryHeader_id = _.map(inputParam, o => {
+      return o.hims_f_salary_id;
     });
 
     _mysql
