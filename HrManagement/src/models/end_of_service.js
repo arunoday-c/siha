@@ -4,7 +4,7 @@ import _ from "lodash";
 import algaehMysql from "algaeh-mysql";
 module.exports = {
   endOfService: (req, res, next) => {
-    const _input = req.body;
+    const _input = req.query;
     const _mysql = new algaehMysql();
 
     _mysql

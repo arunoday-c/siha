@@ -70,8 +70,12 @@ class EOSGratuity extends Component {
       });
 
       algaehApiCall({
-        uri: "/exit/getEmployeeDetails",
+        uri: "/endofservice",
         method: "GET",
+        module: "hrManagement",
+        data: {
+          hims_d_employee_id: this.state.hims_d_employee_id
+        },
         onSuccess: res => {
           if (res.data.success) {
             this.setState({
