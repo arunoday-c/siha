@@ -12,12 +12,14 @@ import {
 import {
   texthandle,
   LoadSalaryPayment,
-  employeeSearch
+  employeeSearch,
+  ClearData,
+  PaySalary,
+  selectToPay
 } from "./SalaryPaymentsEvents.js";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import moment from "moment";
-import Enumerable from "linq";
 
 class SalaryPayment extends Component {
   constructor(props) {
@@ -29,12 +31,11 @@ class SalaryPayment extends Component {
       month: moment(new Date()).format("M"),
       sub_department_id: null,
       salary_type: null,
+      employee_name: null,
       employee_id: null,
-      salary_payment: []
+      salary_payment: [],
+      paysalaryBtn: true
     };
-  }
-  fromMonthHandler(date, name) {
-    this.setState({ fromMonth: date });
   }
 
   componentDidMount() {
@@ -86,9 +87,6 @@ class SalaryPayment extends Component {
   }
 
   render() {
-    const depEmployee = Enumerable.from(this.props.all_employees)
-      .where(w => w.sub_department_id === this.state.sub_department_id)
-      .toArray();
     return (
       <React.Fragment>
         <div className="hptl-SalaryPayment-form">
@@ -197,32 +195,6 @@ class SalaryPayment extends Component {
               </div>
             </div>
 
-            {/* <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{
-                forceLabel: "Select a Employee.",
-                isImp: false
-              }}
-              selector={{
-                name: "employee_id",
-                className: "select-fld",
-                value: this.state.employee_id,
-                dataSource: {
-                  textField: "full_name",
-                  valueField: "hims_d_employee_id",
-                  data:
-                    this.state.sub_department_id !== null
-                      ? depEmployee
-                      : this.props.all_employees
-                },
-                onChange: texthandle.bind(this, this),
-                onClear: () => {
-                  this.setState({
-                    employee_id: null
-                  });
-                }
-              }}
-            /> */}
             <AlagehAutoComplete
               div={{ className: "col" }}
               label={{
@@ -244,23 +216,7 @@ class SalaryPayment extends Component {
                 }
               }}
             />
-            {/* <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{
-                forceLabel: "Payment Type",
-                isImp: true
-              }}
-              selector={{
-                name: "",
-                className: "select-fld",
-                value: "",
-                dataSource: {},
-                onChange: null,
-                others: {
-                  tabIndex: "2"
-                }
-              }}
-            /> */}
+
             <div className="col margin-bottom-15">
               <button
                 type="button"
@@ -311,12 +267,42 @@ class SalaryPayment extends Component {
                                 displayTemplate: row => {
                                   return (
                                     <span>
-                                      <input type="checkbox" />
+                                      <input
+                                        type="checkbox"
+                                        value="Front Desk"
+                                        onChange={selectToPay.bind(
+                                          this,
+                                          this,
+                                          row
+                                        )}
+                                        checked={
+                                          row.select_to_pay === "Y"
+                                            ? true
+                                            : false
+                                        }
+                                        disabled={
+                                          row.salary_paid === "Y" ? true : false
+                                        }
+                                      />
                                     </span>
                                   );
                                 },
                                 others: {
                                   maxWidth: 50
+                                }
+                              },
+                              {
+                                fieldName: "salary_paid",
+
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Salary Paid"
+                                    }}
+                                  />
+                                ),
+                                displayTemplate: row => {
+                                  return row.salary_paid === "N" ? "No" : "Yes";
                                 }
                               },
                               {
@@ -329,7 +315,6 @@ class SalaryPayment extends Component {
                                     }}
                                   />
                                 )
-                                //disabled: true
                               },
                               {
                                 fieldName: "full_name",
@@ -358,18 +343,7 @@ class SalaryPayment extends Component {
                                 )
                                 //disabled: true
                               },
-                              // {
-                              //   fieldName: "gross_salary",
 
-                              //   label: (
-                              //     <AlgaehLabel
-                              //       label={{
-                              //         forceLabel: "Basic"
-                              //       }}
-                              //     />
-                              //   )
-                              //   //disabled: true
-                              // },
                               {
                                 fieldName: "advance_due",
 
@@ -383,16 +357,26 @@ class SalaryPayment extends Component {
                                 //disabled: true
                               },
                               {
+                                fieldName: "loan_due_amount",
+
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Loan Due Amount"
+                                    }}
+                                  />
+                                )
+                              },
+                              {
                                 fieldName: "loan_payable_amount",
 
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Loan Amount"
+                                      forceLabel: "Loan Payable Amount"
                                     }}
                                   />
                                 )
-                                //disabled: true
                               },
                               {
                                 fieldName: "net_salary",
@@ -428,21 +412,21 @@ class SalaryPayment extends Component {
                 <button
                   type="button"
                   className="btn btn-primary"
-                  //   onClick={SaveDoctorCommission.bind(this, this)}
-                  //disabled={this.state.saveEnable}
+                  onClick={PaySalary.bind(this, this)}
+                  disabled={this.state.paysalaryBtn}
                 >
                   <AlgaehLabel
-                    label={{ forceLabel: "Process", returnText: true }}
+                    label={{ forceLabel: "Pay Salary", returnText: true }}
                   />
                 </button>
 
                 <button
                   type="button"
                   className="btn btn-default"
-                  //onClick={ClearData.bind(this, this)}
+                  onClick={ClearData.bind(this, this)}
                 >
                   <AlgaehLabel
-                    label={{ forceLabel: "Print", returnText: true }}
+                    label={{ forceLabel: "Clear", returnText: true }}
                   />
                 </button>
 

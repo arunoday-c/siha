@@ -3,7 +3,9 @@ import utlities from "algaeh-utilities";
 import {
   processSalary,
   getSalaryProcess,
-  getSalaryProcessToPay
+  getSalaryProcessToPay,
+  finalizedSalaryProcess,
+  SaveSalaryPayment
 } from "../models/salary";
 export default () => {
   const api = Router();
@@ -32,5 +34,24 @@ export default () => {
       result: req.records
     });
   });
+
+  api.put(
+    "/finalizedSalaryProcess",
+    finalizedSalaryProcess,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        result: req.records
+      });
+    }
+  );
+
+  api.put("/SaveSalaryPayment", SaveSalaryPayment, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      result: req.records
+    });
+  });
+
   return api;
 };
