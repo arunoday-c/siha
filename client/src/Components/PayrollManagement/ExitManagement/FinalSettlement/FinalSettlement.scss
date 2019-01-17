@@ -9,10 +9,15 @@
     margin-bottom: 0;
   }
   #Salary_Earning_Cntr,
-  #Employee_Deductions_Cntr,
+  #Employee_Deductions_Cntr {
+    .ReactTable {
+      max-height: 40vh !important;
+    }
+  }
+
   #Employee_Loan_Cntr {
     .ReactTable {
-      max-height: 25vh !important;
+      max-height: 33vh !important;
     }
   }
 }

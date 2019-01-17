@@ -148,227 +148,322 @@ class FinalSettlement extends Component {
               </div>
             </div>
           </div>
-          <div className="col-4">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">Earnings</h3>
-                </div>
-                <div className="actions">
-                  {/* <a className="btn btn-primary btn-circle active">
+
+          <div className="col-8">
+            <div className="row">
+              <div className="col-6">
+                <div className="portlet portlet-bordered margin-bottom-15">
+                  <div className="portlet-title">
+                    <div className="caption">
+                      <h3 className="caption-subject">Earnings</h3>
+                    </div>
+                    <div className="actions">
+                      {/* <a className="btn btn-primary btn-circle active">
                           <i className="fas fa-calculator" /> 
                         </a>*/}
-                </div>
-              </div>
+                    </div>
+                  </div>
 
-              <div className="portlet-body">
-                <div className="row">
-                  <div className="col-lg-12" id="Salary_Earning_Cntr">
-                    <AlgaehDataGrid
-                      id="Salary_Earning_Cntr_grid"
-                      columns={[
-                        {
-                          fieldName: "",
-                          label: "Earning Type"
-                          //disabled: true
-                        },
-                        {
-                          fieldName: "",
-                          label: "Amount",
+                  <div className="portlet-body">
+                    <div className="row">
+                      <AlagehAutoComplete
+                        div={{ className: "col form-group" }}
+                        label={{
+                          forceLabel: "Select Earning Type",
+                          isImp: false
+                        }}
+                        selector={{
+                          name: "",
+                          className: "select-fld",
+                          dataSource: {},
+                          others: {}
+                        }}
+                      />
+
+                      <AlagehFormGroup
+                        div={{ className: "col form-group" }}
+                        label={{
+                          forceLabel: "Amount",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "",
+                          value: "",
+                          events: {},
                           others: {
-                            maxWidth: 100
+                            type: "number"
                           }
-                        }
-                      ]}
-                      //        keyId="algaeh_d_module_id"
-                      dataSource={{
-                        data: []
-                      }}
-                      isEditable={false}
-                      paging={{ page: 0, rowsPerPage: 10 }}
-                      events={{
-                        onEdit: () => {},
-                        onDelete: () => {},
-                        onDone: () => {}
-                      }}
-                    />
+                        }}
+                      />
+
+                      <div className="col-2">
+                        <button
+                          className="btn btn-primary"
+                          style={{ marginTop: 21 }}
+                        >
+                          Add
+                        </button>
+                      </div>
+
+                      <div className="col-lg-12" id="Salary_Earning_Cntr">
+                        <AlgaehDataGrid
+                          id="Salary_Earning_Cntr_grid"
+                          columns={[
+                            {
+                              fieldName: "",
+                              label: "Earning Type"
+                              //disabled: true
+                            },
+                            {
+                              fieldName: "",
+                              label: "Amount",
+                              others: {
+                                maxWidth: 100
+                              }
+                            }
+                          ]}
+                          //        keyId="algaeh_d_module_id"
+                          dataSource={{
+                            data: []
+                          }}
+                          isEditable={false}
+                          paging={{ page: 0, rowsPerPage: 10 }}
+                          events={{
+                            onEdit: () => {},
+                            onDelete: () => {},
+                            onDone: () => {}
+                          }}
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <div className="col-4">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">Employee Deduction</h3>
-                </div>
-                <div className="actions">
-                  {/*    <a className="btn btn-primary btn-circle active">
+              <div className="col-6">
+                <div className="portlet portlet-bordered margin-bottom-15">
+                  <div className="portlet-title">
+                    <div className="caption">
+                      <h3 className="caption-subject">Employee Deduction</h3>
+                    </div>
+                    <div className="actions">
+                      {/*    <a className="btn btn-primary btn-circle active">
                        <i className="fas fa-calculator" />
                         </a> */}
-                </div>
-              </div>
+                    </div>
+                  </div>
 
-              <div className="portlet-body">
-                <div className="row">
-                  <div className="col-lg-12" id="Employee_Deductions_Cntr">
-                    <AlgaehDataGrid
-                      id="Employee_Deductions_Cntr_grid"
-                      columns={[
-                        {
-                          fieldName: "",
-                          label: "Deduction Type"
-                          //disabled: true
-                        },
-                        {
-                          fieldName: "",
-                          label: "Amount",
+                  <div className="portlet-body">
+                    <div className="row">
+                      <AlagehAutoComplete
+                        div={{ className: "col form-group" }}
+                        label={{
+                          forceLabel: "Select Deduction Type",
+                          isImp: false
+                        }}
+                        selector={{
+                          name: "",
+                          className: "select-fld",
+                          dataSource: {},
+                          others: {}
+                        }}
+                      />
+
+                      <AlagehFormGroup
+                        div={{ className: "col form-group" }}
+                        label={{
+                          forceLabel: "Amount",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "",
+                          value: "",
+                          events: {},
                           others: {
-                            maxWidth: 100
+                            type: "number"
                           }
-                        }
-                      ]}
-                      //    keyId="algaeh_d_module_id"
-                      dataSource={{
-                        data: []
-                      }}
-                      isEditable={false}
-                      paging={{ page: 0, rowsPerPage: 10 }}
-                      events={{
-                        onEdit: () => {},
-                        onDelete: () => {},
-                        onDone: () => {}
-                      }}
-                    />
+                        }}
+                      />
+
+                      <div className="col-2">
+                        <button
+                          className="btn btn-primary"
+                          style={{ marginTop: 21 }}
+                        >
+                          Add
+                        </button>
+                      </div>
+                      <div className="col-lg-12" id="Employee_Deductions_Cntr">
+                        <AlgaehDataGrid
+                          id="Employee_Deductions_Cntr_grid"
+                          columns={[
+                            {
+                              fieldName: "",
+                              label: "Deduction Type"
+                              //disabled: true
+                            },
+                            {
+                              fieldName: "",
+                              label: "Amount",
+                              others: {
+                                maxWidth: 100
+                              }
+                            }
+                          ]}
+                          //    keyId="algaeh_d_module_id"
+                          dataSource={{
+                            data: []
+                          }}
+                          isEditable={false}
+                          paging={{ page: 0, rowsPerPage: 10 }}
+                          events={{
+                            onEdit: () => {},
+                            onDelete: () => {},
+                            onDone: () => {}
+                          }}
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+
           <div className="col-4">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">Employee Loans</h3>
-                </div>
-                <div className="actions">
-                  {/*    <a className="btn btn-primary btn-circle active">
+            <div className="row">
+              <div className="col-12">
+                <div className="portlet portlet-bordered margin-bottom-15">
+                  <div className="portlet-title">
+                    <div className="caption">
+                      <h3 className="caption-subject">Employee Loans</h3>
+                    </div>
+                    <div className="actions">
+                      {/*    <a className="btn btn-primary btn-circle active">
                         <i className="fas fa-calculator" /> 
                         </a>*/}
+                    </div>
+                  </div>
+
+                  <div className="portlet-body">
+                    <div className="row">
+                      <div className="col-lg-12" id="Employee_Loan_Cntr">
+                        <AlgaehDataGrid
+                          id="Employee_Loan_Cntr_grid"
+                          columns={[
+                            {
+                              fieldName: "",
+                              label: "Loan Type"
+                              //disabled: true
+                            },
+                            {
+                              fieldName: "",
+                              label: "Amount",
+                              others: {
+                                maxWidth: 100
+                              }
+                            }
+                          ]}
+                          // keyId="algaeh_d_module_id"
+                          dataSource={{
+                            data: []
+                          }}
+                          isEditable={false}
+                          paging={{ page: 0, rowsPerPage: 10 }}
+                          events={{
+                            onEdit: () => {},
+                            onDelete: () => {},
+                            onDone: () => {}
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div className="portlet-body">
-                <div className="row">
-                  <div className="col-lg-12" id="Employee_Loan_Cntr">
-                    <AlgaehDataGrid
-                      id="Employee_Loan_Cntr_grid"
-                      columns={[
-                        {
-                          fieldName: "",
-                          label: "Loan Type"
-                          //disabled: true
-                        },
-                        {
-                          fieldName: "",
-                          label: "Amount",
-                          others: {
-                            maxWidth: 100
-                          }
-                        }
-                      ]}
-                      // keyId="algaeh_d_module_id"
-                      dataSource={{
-                        data: []
-                      }}
-                      isEditable={false}
-                      paging={{ page: 0, rowsPerPage: 10 }}
-                      events={{
-                        onEdit: () => {},
-                        onDelete: () => {},
-                        onDone: () => {}
-                      }}
-                    />
+              <div className="col-12">
+                <div
+                  className="portlet portlet-bordered margin-bottom-15"
+                  style={{ padding: 0 }}
+                >
+                  <div className="portlet-body">
+                    <div className="col-12" style={{ marginTop: 7 }}>
+                      <div className="row">
+                        <div className="col-4">
+                          <label className="style_Label ">Total Salary</label>
+                          <h6>-------</h6>
+                        </div>
+
+                        <div className="col-4">
+                          <label className="style_Label ">
+                            Gratuity Amount
+                          </label>
+                          <h6>-------</h6>
+                        </div>
+
+                        <div className="col-4">
+                          <label className="style_Label ">Total Loan</label>
+                          <h6>-------</h6>
+                        </div>
+
+                        <div className="col-4">
+                          <label className="style_Label ">Net Earnings</label>
+                          <h6>-------</h6>
+                        </div>
+
+                        <div className="col-4">
+                          <label className="style_Label ">
+                            Total Deduction
+                          </label>
+                          <h6>-------</h6>
+                        </div>
+                        <div className="col-4">
+                          <label className="style_Label ">Net Amount</label>
+                          <h6>-------</h6>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="col-12">
-            <div
-              className="portlet portlet-bordered margin-bottom-15"
-              style={{ padding: 0 }}
-            >
-              <div className="portlet-body">
-                <div className="col-12" style={{ marginTop: 7 }}>
-                  <div className="row">
-                    <div className="col">
-                      <label className="style_Label ">Total Salary</label>
-                      <h6>-------</h6>
-                    </div>
+          <div className="hptl-phase1-footer">
+            <div className="row">
+              <div className="col-lg-12">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  //   onClick={SaveDoctorCommission.bind(this, this)}
+                  //disabled={this.state.saveEnable}
+                >
+                  <AlgaehLabel
+                    label={{ forceLabel: "Save", returnText: true }}
+                  />
+                </button>
 
-                    <div className="col">
-                      <label className="style_Label ">Gratuity Amount</label>
-                      <h6>-------</h6>
-                    </div>
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  //onClick={ClearData.bind(this, this)}
+                >
+                  <AlgaehLabel
+                    label={{ forceLabel: "Clear", returnText: true }}
+                  />
+                </button>
 
-                    <div className="col">
-                      <label className="style_Label ">Total Loan</label>
-                      <h6>-------</h6>
-                    </div>
-
-                    <div className="col">
-                      <label className="style_Label ">Net Earnings</label>
-                      <h6>-------</h6>
-                    </div>
-
-                    <div className="col">
-                      <label className="style_Label ">Total Deduction</label>
-                      <h6>-------</h6>
-                    </div>
-                    <div className="col">
-                      <label className="style_Label ">Net Amount</label>
-                      <h6>-------</h6>
-                    </div>
-                  </div>
-                </div>
+                <button type="button" className="btn btn-other">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Print"
+                      //   returnText: true
+                    }}
+                  />
+                </button>
               </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="hptl-phase1-footer">
-          <div className="row">
-            <div className="col-lg-12">
-              <button
-                type="button"
-                className="btn btn-primary"
-                //   onClick={SaveDoctorCommission.bind(this, this)}
-                //disabled={this.state.saveEnable}
-              >
-                <AlgaehLabel label={{ forceLabel: "Save", returnText: true }} />
-              </button>
-
-              <button
-                type="button"
-                className="btn btn-default"
-                //onClick={ClearData.bind(this, this)}
-              >
-                <AlgaehLabel
-                  label={{ forceLabel: "Clear", returnText: true }}
-                />
-              </button>
-
-              <button type="button" className="btn btn-other">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Print"
-                    //   returnText: true
-                  }}
-                />
-              </button>
             </div>
           </div>
         </div>
