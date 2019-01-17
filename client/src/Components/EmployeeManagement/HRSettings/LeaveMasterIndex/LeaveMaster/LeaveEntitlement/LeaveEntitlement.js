@@ -13,7 +13,7 @@ function LeaveEntitlement(props) {
     <div className="popRightDiv leave_entitlement" data-validate="levDv">
       <div className="row">
         <AlagehFormGroup
-          div={{ className: "col  form-group" }}
+          div={{ className: "col-4  form-group" }}
           label={{
             forceLabel: "Leave Code",
             isImp: true
@@ -31,7 +31,7 @@ function LeaveEntitlement(props) {
           }}
         />
         <AlagehFormGroup
-          div={{ className: "col  form-group" }}
+          div={{ className: "col-8  form-group" }}
           label={{
             forceLabel: "Description",
             isImp: true
@@ -105,6 +105,18 @@ function LeaveEntitlement(props) {
             onChange: value => myParent.dropDownHandler(value)
           }}
         />
+
+        <AlagehAutoComplete
+          div={{ className: "col form-group" }}
+          label={{ forceLabel: "Leave Category", isImp: true }}
+          selector={{
+            name: "leave_Category",
+
+            className: "select-fld",
+            dataSource: {}
+          }}
+        />
+
         {/* 
         <AlagehAutoComplete
           div={{ className: "col form-group" }}
