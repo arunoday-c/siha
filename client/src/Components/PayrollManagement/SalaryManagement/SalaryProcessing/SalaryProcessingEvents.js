@@ -23,10 +23,16 @@ const SalaryProcess = ($this, e) => {
       let inputObj = {
         year: $this.state.year,
         month: $this.state.month,
-        hospital_id: $this.state.hospital_id,
-        employee_id: $this.state.select_employee_id,
-        sub_department_id: $this.state.sub_department_id
+        hospital_id: $this.state.hospital_id
       };
+      if ($this.state.select_employee_id !== null) {
+        inputObj.employee_id = $this.state.select_employee_id;
+      }
+
+      if ($this.state.sub_department_id !== null) {
+        inputObj.sub_department_id = $this.state.sub_department_id;
+      }
+
       debugger;
       algaehApiCall({
         uri: "/salary/processSalary",
