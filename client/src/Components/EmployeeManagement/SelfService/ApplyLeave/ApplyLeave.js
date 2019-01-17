@@ -23,29 +23,8 @@ class ApplyLeave extends Component {
       available_balance: 0.0,
       total_applied_days: 0.0
     };
-    this.getHolidayMaster();
     this.getLeaveTypes();
     this.getEmployees();
-  }
-
-  getHolidayMaster() {
-    algaehApiCall({
-      uri: "/holiday/getAllHolidays",
-      method: "GET",
-      data: {
-        hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
-          .hims_d_hospital_id
-      },
-      onSuccess: res => {
-        if (res.data.success) {
-          this.setState({
-            holidays: res.data.records
-          });
-          //console.table(res.data.records);
-        }
-      },
-      onFailure: err => {}
-    });
   }
 
   getDateRange(startDate, endDate) {
@@ -57,7 +36,6 @@ class ApplyLeave extends Component {
     var now = currDate.clone();
 
     while (now.isSameOrBefore(lastDate)) {
-      //console.log(now.format("YYYYMMDD"));
       dates.push(now.format("YYYYMMDD"));
       now.add(1, "days");
     }
@@ -116,7 +94,7 @@ class ApplyLeave extends Component {
               to_leave_session: "FD"
             },
             () => {
-              this.getAppliedDays();
+              // this.getAppliedDays();
             }
           );
         } else if (from_leave_session === "SH" && to_leave_session === "FD") {
@@ -130,7 +108,7 @@ class ApplyLeave extends Component {
               to_leave_session: null
             },
             () => {
-              this.getAppliedDays();
+              //  this.getAppliedDays();
             }
           );
         } else if (from_leave_session === "FD" || to_leave_session === "FD") {
@@ -140,7 +118,7 @@ class ApplyLeave extends Component {
               from_leave_session: "FD"
             },
             () => {
-              this.getAppliedDays();
+              //  this.getAppliedDays();
             }
           );
         }
@@ -154,7 +132,7 @@ class ApplyLeave extends Component {
               from_leave_session: "FD"
             },
             () => {
-              this.getAppliedDays();
+              //  this.getAppliedDays();
             }
           );
         } else if (to_leave_session === "SH") {
@@ -163,7 +141,7 @@ class ApplyLeave extends Component {
               to_leave_session: "FD"
             },
             () => {
-              this.getAppliedDays();
+              //  this.getAppliedDays();
             }
           );
         } else if (from_leave_session === "FH" && to_leave_session === "SH") {
@@ -173,7 +151,7 @@ class ApplyLeave extends Component {
               to_leave_session: "FD"
             },
             () => {
-              this.getAppliedDays();
+              //  this.getAppliedDays();
             }
           );
         } else if (from_leave_session === "FH" && to_leave_session === "FD") {
@@ -183,7 +161,7 @@ class ApplyLeave extends Component {
               to_leave_session: "FD"
             },
             () => {
-              this.getAppliedDays();
+              //  this.getAppliedDays();
             }
           );
         } else if (from_leave_session === "SH" && to_leave_session === "SH") {
@@ -192,12 +170,15 @@ class ApplyLeave extends Component {
               to_leave_session: "FD"
             },
             () => {
-              this.getAppliedDays();
+              // this.getAppliedDays();
             }
           );
-        } else if (from_leave_session === "SH" && to_leave_session === "FH") {
-          this.getAppliedDays();
         }
+        //  else if (from_leave_session === "SH" && to_leave_session === "FH") {
+        //   this.getAppliedDays();
+        // }
+
+        this.getAppliedDays();
       }
     }
   }
@@ -213,8 +194,8 @@ class ApplyLeave extends Component {
       uri: "/leave/calculateLeaveDays",
       method: "GET",
       data: {
-        from_session: this.state.from_session,
-        to_session: this.state.to_session,
+        from_session: this.state.from_leave_session,
+        to_session: this.state.to_leave_session,
         from_date: this.state.from_date,
         to_date: this.state.to_date,
         hims_d_leave_detail_id: this.state.hims_d_leave_detail_id,
@@ -222,7 +203,14 @@ class ApplyLeave extends Component {
       },
       onSuccess: res => {
         if (res.data.success) {
-          console.log("Aplied Days:", res.data);
+          this.setState({
+            total_applied_days: res.data.records.calculatedLeaveDays
+          });
+        } else if (!res.data.success) {
+          swalMessage({
+            title: res.data.records.message,
+            type: "warning"
+          });
         }
       },
       onFailure: err => {
@@ -381,6 +369,8 @@ class ApplyLeave extends Component {
               available_balance: value.selected.close_balance,
               leave_type: myObj !== undefined ? myObj.leave_type : null
             });
+
+            this.validate();
           }
         );
 
@@ -424,7 +414,6 @@ class ApplyLeave extends Component {
             to_date: this.state.to_date,
             from_leave_session: this.state.from_leave_session,
             to_leave_session: this.state.to_leave_session,
-            leave_applied_from: "D",
             total_applied_days: this.state.total_applied_days
           },
           onSuccess: res => {

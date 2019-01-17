@@ -23,7 +23,8 @@ export default class LeaveAuthorization extends Component {
       leave_applns: [],
       hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
         .hims_d_hospital_id,
-      leave_status: "PEN"
+      leave_status: "PEN",
+      currLeavAppln: {}
     };
     this.getLeaveLevels();
     this.getHospitals();
@@ -164,6 +165,10 @@ export default class LeaveAuthorization extends Component {
         <LeaveAuthDetail
           open={this.state.open}
           onClose={this.closePopup.bind(this)}
+          data={{
+            ...this.state.currLeavAppln,
+            auth_level: this.state.auth_level
+          }}
         />
         <div className="col-12">
           <div className="row inner-top-search">
@@ -351,7 +356,8 @@ export default class LeaveAuthorization extends Component {
                               className="fas fa-eye"
                               onClick={() => {
                                 this.setState({
-                                  open: true
+                                  open: true,
+                                  currLeavAppln: row
                                 });
                               }}
                             />

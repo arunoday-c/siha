@@ -1,13 +1,8 @@
 import React, { Component } from "react";
-import {
-  AlagehFormGroup,
-  AlgaehLabel,
-  AlagehAutoComplete
-} from "../../../Wrapper/algaehWrapper";
+import { AlagehFormGroup, AlgaehLabel } from "../../../Wrapper/algaehWrapper";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import Employee from "../../../../Search/Employee.json";
 import "./EOSGratuity.css";
-import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 
 class EOSGratuity extends Component {
@@ -31,12 +26,19 @@ class EOSGratuity extends Component {
     });
   }
 
+  clearState() {
+    this.setState({
+      employee_name: null,
+      hims_d_employee_id: null
+    });
+  }
+
   employeeSearch() {
     AlgaehSearch({
       searchGrid: {
         columns: Employee
       },
-      searchName: "employee",
+      searchName: "exit_employees",
       uri: "/gloabelSearch/get",
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
@@ -54,37 +56,51 @@ class EOSGratuity extends Component {
   }
 
   loadEmployeeDetails() {
-    this.setState({
-      loading: true
-    });
+    if (
+      this.state.hims_d_employee_id === null ||
+      this.state.hims_d_employee_id === undefined
+    ) {
+      swalMessage({
+        title: "Please Select an Employee",
+        type: "warning"
+      });
+    } else {
+      this.setState({
+        loading: true
+      });
 
-    algaehApiCall({
-      uri: "/exit/getEmployeeDetails",
-      method: "GET",
-      onSuccess: res => {
-        if (res.data.success) {
+      algaehApiCall({
+        uri: "/endofservice",
+        method: "GET",
+        module: "hrManagement",
+        data: {
+          hims_d_employee_id: this.state.hims_d_employee_id
+        },
+        onSuccess: res => {
+          if (res.data.success) {
+            this.setState({
+              loading: false
+            });
+          }
+        },
+        onFailure: err => {
+          swalMessage({
+            title: err.message,
+            type: "error"
+          });
           this.setState({
             loading: false
           });
         }
-      },
-      onFailure: err => {
-        swalMessage({
-          title: err.message,
-          type: "error"
-        });
-        this.setState({
-          loading: false
-        });
-      }
-    });
+      });
+    }
   }
 
   render() {
     return (
       <div className="EOSGratuityScreen">
         <div className="row  inner-top-search">
-          <AlagehAutoComplete
+          {/* <AlagehAutoComplete
             div={{ className: "col-3 form-group" }}
             label={{ forceLabel: "Search by EOS/Gratuity No.", isImp: false }}
             selector={{
@@ -112,7 +128,7 @@ class EOSGratuity extends Component {
               },
               onChange: this.dropDownHandler.bind(this)
             }}
-          />
+          /> */}
 
           <div className="col-lg-3" style={{ marginTop: 10 }}>
             <div
@@ -159,6 +175,14 @@ class EOSGratuity extends Component {
               ) : (
                 <i className="fas fa-spinner fa-spin" />
               )}
+            </button>
+
+            <button
+              onClick={this.clearState.bind(this)}
+              style={{ marginTop: 21, marginLeft: 5 }}
+              className="btn btn-default"
+            >
+              CLEAR
             </button>
           </div>
         </div>
@@ -256,13 +280,13 @@ class EOSGratuity extends Component {
                     }}
                     textBox={{
                       className: "txt-fld",
-                      name: "",
-                      value: "",
+                      name: "previous_gratuity_amount",
+                      value: this.state.previous_gratuity_amount,
                       events: {
                         onChange: this.textHandler.bind(this)
                       },
                       others: {
-                        disabled: "disabled"
+                        disabled: true
                       }
                     }}
                   />
@@ -274,11 +298,11 @@ class EOSGratuity extends Component {
                     }}
                     textBox={{
                       className: "txt-fld",
-                      name: "",
-                      value: "",
+                      name: "calculated_gratutity_amount",
+                      value: this.state.calculated_gratutity_amount,
                       events: {},
                       others: {
-                        disabled: "disabled"
+                        disabled: true
                       }
                     }}
                   />
@@ -290,10 +314,14 @@ class EOSGratuity extends Component {
                     }}
                     textBox={{
                       className: "txt-fld",
-                      name: "",
-                      value: "",
-                      events: {},
-                      others: {}
+                      name: "payable_amount",
+                      value: this.state.payable_amount,
+                      events: {
+                        onChange: this.textHandler.bind(this)
+                      },
+                      others: {
+                        type: "number"
+                      }
                     }}
                   />
                   <div className="col">
@@ -306,7 +334,12 @@ class EOSGratuity extends Component {
                   </div>
                   <div className="col-12">
                     <label>Remarks</label>
-                    <textarea className="textArea" />
+                    <textarea
+                      name="remarks"
+                      value={this.state.remarks}
+                      onChange={this.textHandler.bind(this)}
+                      className="textArea"
+                    />
                   </div>
                 </div>
               </div>

@@ -3,6 +3,7 @@ import "./payroll_settings.css";
 import EarningsDeductions from "./EarningsDeductions/EarningsDeductions";
 import LoanMaster from "./LoanMaster/LoanMaster";
 import HolidayMaster from "./HolidayMaster/HolidayMaster";
+import AttendanceSettings from "./AttendanceSettings/AttendanceSettings";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 
 class PayrollSettings extends Component {
@@ -70,6 +71,20 @@ class PayrollSettings extends Component {
                   />
                 }
               </li>
+
+              <li
+                algaehtabs={"AttendanceSettings"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Attendance Settings"
+                    }}
+                  />
+                }
+              </li>
             </ul>
           </div>
         </div>
@@ -80,6 +95,8 @@ class PayrollSettings extends Component {
             <LoanMaster />
           ) : this.state.pageDisplay === "HolidayMaster" ? (
             <HolidayMaster />
+          ) : this.state.pageDisplay === "AttendanceSettings" ? (
+            <AttendanceSettings />
           ) : // this.state.pageDisplay === "AppointmentClinics" ? (
           //     <AppointmentClinics />
           null}

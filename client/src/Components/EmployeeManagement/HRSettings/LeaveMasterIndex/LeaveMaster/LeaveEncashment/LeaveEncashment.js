@@ -142,7 +142,7 @@ function LeaveEncashment(props) {
               events={{
                 onEdit: () => {},
                 onDelete: myParent.deleteLeaveEncash.bind(myParent),
-                onDone: () => {}
+                onDone: myParent.updateLeaveEncash.bind(myParent)
               }}
             />
           </div>

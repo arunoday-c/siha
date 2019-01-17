@@ -8,6 +8,8 @@
   margin-bottom: 0; }
 
 .FinalSettlementScreen #Salary_Earning_Cntr .ReactTable,
-.FinalSettlementScreen #Employee_Deductions_Cntr .ReactTable,
+.FinalSettlementScreen #Employee_Deductions_Cntr .ReactTable {
+  max-height: 40vh !important; }
+
 .FinalSettlementScreen #Employee_Loan_Cntr .ReactTable {
-  max-height: 25vh !important; }
+  max-height: 33vh !important; }
