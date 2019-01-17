@@ -31,6 +31,8 @@ class EOSGratuity extends Component {
     });
   }
 
+  clearState() {}
+
   employeeSearch() {
     AlgaehSearch({
       searchGrid: {
@@ -159,6 +161,16 @@ class EOSGratuity extends Component {
               ) : (
                 <i className="fas fa-spinner fa-spin" />
               )}
+            </button>
+          </div>
+
+          <div className="col form-group">
+            <button
+              onClick={this.clearState.bind(this)}
+              style={{ marginTop: 21 }}
+              className="btn btn-default"
+            >
+              CLEAR
             </button>
           </div>
         </div>
