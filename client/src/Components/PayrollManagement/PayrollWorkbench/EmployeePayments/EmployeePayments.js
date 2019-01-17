@@ -69,12 +69,26 @@ class EmployeePayment extends Component {
       });
     }
 
+    if (
+      this.props.payrollcomponents === undefined ||
+      this.props.payrollcomponents.length === 0
+    ) {
+      this.props.getEarningDeduction({
+        uri: "/employee/getEarningDeduction",
+        method: "GET",
+        redux: {
+          type: "PAYROLL_COMPONENT_DATA",
+          mappingName: "payrollcomponents"
+        }
+      });
+    }
+
     getEmployeePayments(this, this);
   }
 
   render() {
-    const depEmployee = Enumerable.from(this.props.all_employees)
-      .where(w => w.hospital_id === this.state.hospital_id)
+    const earnings = Enumerable.from(this.props.payrollcomponents)
+      .where(w => w.component_category === "A")
       .toArray();
     return (
       <React.Fragment>
@@ -506,6 +520,27 @@ class EmployeePayment extends Component {
                               }
                             }}
                           />
+                          <AlagehAutoComplete
+                            div={{ className: "col-4 form-group" }}
+                            label={{
+                              forceLabel: "Earning",
+                              isImp:
+                                this.state.sel_payment_type === "AD"
+                                  ? true
+                                  : false
+                            }}
+                            selector={{
+                              name: "earnings_id",
+                              value: this.state.earnings_id,
+                              className: "select-fld",
+                              dataSource: {
+                                textField: "earning_deduction_description",
+                                valueField: "hims_d_earning_deduction_id",
+                                data: earnings
+                              },
+                              onChange: texthandle.bind(this, this)
+                            }}
+                          />
                         </div>
                       ) : null}
                       <div className="row">
@@ -747,7 +782,8 @@ class EmployeePayment extends Component {
 function mapStateToProps(state) {
   return {
     organizations: state.organizations,
-    all_employees: state.all_employees
+    all_employees: state.all_employees,
+    payrollcomponents: state.payrollcomponents
   };
 }
 
@@ -755,7 +791,8 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getOrganizations: AlgaehActions,
-      getEmployees: AlgaehActions
+      getEmployees: AlgaehActions,
+      getEarningDeduction: AlgaehActions
     },
     dispatch
   );
