@@ -24,7 +24,8 @@ import {
   getLeaveEncashmentMaster,
   getLeaveRulesMaster,
   addLeaveEncashmentMaster,
-  addLeaveRulesMaster
+  addLeaveRulesMaster,
+  getLeaveAprovalCalc
 } from "../model/leave";
 import { debugLog } from "../../utils/logging";
 export default ({ config, db }) => {
@@ -431,6 +432,23 @@ export default ({ config, db }) => {
       res.status(httpStatus.ok).json({
         success: false,
         records: "Please provide the Leave ID to get the details"
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
+
+  // created by irfan
+  api.get("/getLeaveAprovalCalc", getLeaveAprovalCalc, (req, res, next) => {
+    let result = req.records;
+    if (result.invalid_input == true) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: "Please provide valid input controller"
       });
     } else {
       res.status(httpStatus.ok).json({
