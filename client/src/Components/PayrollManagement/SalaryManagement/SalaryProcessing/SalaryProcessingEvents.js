@@ -1,7 +1,7 @@
 import Enumerable from "linq";
 import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall.js";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
-
+import moment from "moment";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 
 const texthandle = ($this, e) => {
@@ -21,9 +21,11 @@ const SalaryProcess = ($this, e) => {
       AlgaehLoader({ show: true });
 
       let inputObj = {
-        hospital_id: $this.state.hospital_id,
         year: $this.state.year,
-        month: $this.state.month
+        month: $this.state.month,
+        hospital_id: $this.state.hospital_id,
+        employee_id: $this.state.select_employee_id,
+        sub_department_id: $this.state.sub_department_id
       };
       debugger;
       algaehApiCall({
@@ -35,14 +37,24 @@ const SalaryProcess = ($this, e) => {
           debugger;
           if (response.data.result.length > 0) {
             let data = response.data.result[0];
+            let finalizeBtn = true;
+            let strMessage = "Salary Already Processed...";
+            let not_process = Enumerable.from(data.salaryprocess_header)
+              .where(w => w.salary_processed === "N")
+              .toArray();
+            if (not_process.length > 0) {
+              finalizeBtn = false;
+              strMessage = "Salary Loaded Successfully...";
+            }
             $this.setState({
               salaryprocess_header: data.salaryprocess_header,
-              salaryprocess_detail: data.salaryprocess_detail
+              salaryprocess_detail: data.salaryprocess_detail,
+              finalizeBtn: finalizeBtn
             });
             AlgaehLoader({ show: false });
 
             swalMessage({
-              title: "Processed Successfully...",
+              title: strMessage,
               type: "success"
             });
           } else {
@@ -92,4 +104,53 @@ const getSalaryDetails = ($this, row) => {
   });
 };
 
-export { texthandle, SalaryProcess, getSalaryDetails };
+const ClearData = $this => {
+  $this.setState({
+    year: moment().year(),
+    month: moment(new Date()).format("M"),
+    sub_department_id: null,
+    salary_type: null,
+    salaryprocess_header: [],
+    salaryprocess_Earning: [],
+    salaryprocess_Deduction: [],
+    salaryprocess_Contribute: [],
+    finalizeBtn: true
+  });
+};
+
+const FinalizeSalary = $this => {
+  debugger;
+  AlgaehLoader({ show: true });
+  algaehApiCall({
+    uri: "/salary/finalizedSalaryProcess",
+    module: "hrManagement",
+    data: $this.state.salaryprocess_header,
+    method: "PUT",
+    onSuccess: response => {
+      debugger;
+      $this.setState({
+        finalizeBtn: true
+      });
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: "Finalized Successfully...",
+        type: "success"
+      });
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message || error.response.data.message,
+        type: "error"
+      });
+    }
+  });
+};
+
+export {
+  texthandle,
+  SalaryProcess,
+  getSalaryDetails,
+  FinalizeSalary,
+  ClearData
+};
