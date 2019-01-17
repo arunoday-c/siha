@@ -20,7 +20,7 @@ class FinalSettlement extends Component {
       searchGrid: {
         columns: Employee
       },
-      searchName: "employee",
+      searchName: "exit_employees",
       uri: "/gloabelSearch/get",
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
@@ -43,7 +43,7 @@ class FinalSettlement extends Component {
     return (
       <div className="FinalSettlementScreen">
         <div className="row  inner-top-search">
-          <AlagehAutoComplete
+          {/* <AlagehAutoComplete
             div={{ className: "col-3 form-group" }}
             label={{ forceLabel: "Search by Settlement No.", isImp: false }}
             selector={{
@@ -52,7 +52,7 @@ class FinalSettlement extends Component {
               dataSource: {},
               others: {}
             }}
-          />
+          /> */}
 
           <div className="col-lg-3" style={{ marginTop: 10 }}>
             <div
@@ -88,7 +88,7 @@ class FinalSettlement extends Component {
             </div>
           </div>
 
-          <div className="col">
+          <div className="col-lg-1">
             <div className="customCheckbox" style={{ marginTop: 24 }}>
               <label className="checkbox inline">
                 <input type="checkbox" value="" name="Forfeiture" />
@@ -100,11 +100,10 @@ class FinalSettlement extends Component {
             <button style={{ marginTop: 21 }} className="btn btn-primary">
               Load
             </button>
-          </div>
-          <div className="col form-group">
+
             <button
               onClick={this.clearState.bind(this)}
-              style={{ marginTop: 21 }}
+              style={{ marginTop: 21, marginLeft: 5 }}
               className="btn btn-default"
             >
               CLEAR
