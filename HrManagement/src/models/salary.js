@@ -14,11 +14,33 @@ module.exports = {
       .logger()
       .log("input:", input);
 
-    let _stringData =
-      input.employee_id != "null" ? " and A.employee_id=? " : "";
+    utilities
+      .AlgaehUtilities()
+      .logger()
+      .log("employee_id:", input.employee_id);
+
+    utilities
+      .AlgaehUtilities()
+      .logger()
+      .log("sub_department_id:", input.sub_department_id);
+
+    let _stringData = input.employee_id != null ? " and A.employee_id=? " : "";
 
     _stringData +=
-      input.sub_department_id != "null" ? " and A.sub_department_id=? " : "";
+      input.sub_department_id != null ? " and A.sub_department_id=? " : "";
+
+    // if (input.employee_id == "null") {
+    //   delete input.employee_id;
+    // }
+
+    // if (input.sub_department_id == "null") {
+    //   delete input.sub_department_id;
+    // }
+
+    utilities
+      .AlgaehUtilities()
+      .logger()
+      .log("input:", input);
 
     // let _stringData = "";
 
@@ -134,11 +156,12 @@ module.exports = {
                   select hims_f_loan_application_id, loan_application_number, employee_id, loan_id,\
                     loan_application_date, approved_amount\
                     from  hims_f_loan_application where loan_authorized='APR' and loan_dispatch_from='SAL' and employee_id in (?);\
-                    delete from hims_f_salary_contributions where salary_header_id in (?);\
-                    delete from hims_f_salary_loans where salary_header_id in (?);\
-                    delete from hims_f_salary_deductions where salary_header_id in (?);\
-                    delete from hims_f_salary_earnings where salary_header_id in (?);\
-                    delete from hims_f_salary where hims_f_salary_id in (?);",
+                  select hims_d_earning_deduction_id from hims_d_earning_deduction where component_category = 'D' and component_type='AD';\
+                  delete from hims_f_salary_contributions where salary_header_id in (?);\
+                  delete from hims_f_salary_loans where salary_header_id in (?);\
+                  delete from hims_f_salary_deductions where salary_header_id in (?);\
+                  delete from hims_f_salary_earnings where salary_header_id in (?);\
+                  delete from hims_f_salary where hims_f_salary_id in (?);",
                   values: [
                     _allEmployees,
                     _allEmployees,
@@ -263,11 +286,17 @@ module.exports = {
                                       );
                                     });
 
-                                    getAdvanceDue({ advance: _advance })
+                                    getAdvanceDue({
+                                      advance: _advance,
+                                      dedcomponent: results[7]
+                                    })
                                       .then(advanceOutput => {
                                         advance_due_amount =
                                           advanceOutput.advance_due_amount;
 
+                                        current_deduction_amt_array = current_deduction_amt_array.concat(
+                                          advanceOutput.current_deduct_compoment
+                                        );
                                         //Miscellaneous Earning Deduction
                                         const _miscellaneous = _.filter(
                                           results[5],
@@ -337,6 +366,14 @@ module.exports = {
                                             .log(
                                               "advance_due_amount",
                                               advance_due_amount
+                                            );
+
+                                          utilities
+                                            .AlgaehUtilities()
+                                            .logger()
+                                            .log(
+                                              "current_deduction_amt_array",
+                                              current_deduction_amt_array
                                             );
 
                                           let per_day_sal =
@@ -630,11 +667,24 @@ module.exports = {
 
     /* Select statemwnt  */
 
+    utilities
+      .AlgaehUtilities()
+      .logger()
+      .log("inputParam:", inputParam);
+
+    // if (inputParam.employee_id == "null") {
+    //   delete inputParam.employee_id;
+    // }
+
+    // if (inputParam.sub_department_id == "null") {
+    //   delete inputParam.sub_department_id;
+    // }
+
     let _stringData =
-      inputParam.employee_id != "null" ? " and employee_id=? " : "";
+      inputParam.employee_id != null ? " and employee_id=? " : "";
 
     _stringData +=
-      inputParam.sub_department_id != "null"
+      inputParam.sub_department_id != null
         ? " and emp.sub_department_id=? "
         : "";
 
@@ -643,7 +693,7 @@ module.exports = {
         query:
           "select hims_f_salary_id, salary_number, present_days, hims_f_salary.gross_salary, hims_f_salary.net_salary,advance_due,\
           loan_payable_amount, loan_due_amount,emp.employee_code, emp.full_name from hims_f_salary, hims_d_employee emp where \
-          hims_f_salary.employee_id = emp.hims_d_employee_id and `year` = ? and `month` = ? " +
+          hims_f_salary.employee_id = emp.hims_d_employee_id and `year` = ? and `month` = ? and emp.hospital_id=? " +
           _stringData,
         values: _.valuesIn(inputParam),
         printQuery: true
@@ -753,6 +803,37 @@ module.exports = {
         query:
           "UPDATE hims_f_salary SET salary_processed = 'Y' where hims_f_salary_id in (?)",
         values: [_salaryHeader_id],
+        printQuery: true
+      })
+      .then(salary_process => {
+        _mysql.commitTransaction(() => {
+          _mysql.releaseConnection();
+          req.records = salary_process;
+          next();
+        });
+      })
+      .catch(e => {
+        next(e);
+      });
+  },
+
+  SaveSalaryPayment: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const inputParam = { ...req.body };
+
+    const _salaryHeader_id = _.map(inputParam, o => {
+      return o.hims_f_salary_id;
+    });
+
+    _mysql
+      .executeQuery({
+        query:
+          "UPDATE hims_f_salary SET salary_paid = 'Y', salary_paid_date=?, salary_paid_by=? where hims_f_salary_id in (?)",
+        values: [
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          _salaryHeader_id
+        ],
         printQuery: true
       })
       .then(salary_process => {
@@ -958,23 +1039,32 @@ function getLoanDueandPayable(options) {
 function getAdvanceDue(options) {
   return new Promise((resolve, reject) => {
     const _advance = options.advance;
+    const _dedcomponent = options.dedcomponent;
 
     let advance_due_amount = 0;
+    let current_deduct_compoment = [];
 
     utilities
       .AlgaehUtilities()
       .logger()
-      .log("_advance", _advance);
+      .log("_dedcomponent", _dedcomponent);
 
     if (_advance.length == 0) {
-      resolve({ advance_due_amount });
+      resolve({ advance_due_amount, current_deduct_compoment });
     }
 
     advance_due_amount = _.sumBy(_advance, s => {
       return s.payment_amount;
     });
 
-    resolve({ advance_due_amount });
+    current_deduct_compoment = _.map(_dedcomponent, s => {
+      return {
+        deductions_id: s.hims_d_earning_deduction_id,
+        amount: advance_due_amount
+      };
+    });
+
+    resolve({ advance_due_amount, current_deduct_compoment });
   });
 }
 

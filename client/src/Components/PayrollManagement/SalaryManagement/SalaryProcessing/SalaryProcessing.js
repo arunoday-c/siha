@@ -34,7 +34,8 @@ class SalaryProcessing extends Component {
       salaryprocess_Earning: [],
       salaryprocess_Deduction: [],
       salaryprocess_Contribute: [],
-      finalizeBtn: true
+      finalizeBtn: true,
+      select_employee_id: null
     };
   }
 
@@ -349,11 +350,11 @@ class SalaryProcessing extends Component {
                                 )
                               }
                             ]}
-                            rowClassName={row => {
-                              return row.salary_processed === "Y"
-                                ? "greenCell"
-                                : null;
-                            }}
+                            // rowClassName={row => {
+                            //   return row.salary_processed === "Y"
+                            //     ? "greenCell"
+                            //     : null;
+                            // }}
                             keyId="algaeh_d_module_id"
                             dataSource={{
                               data: this.state.salaryprocess_header

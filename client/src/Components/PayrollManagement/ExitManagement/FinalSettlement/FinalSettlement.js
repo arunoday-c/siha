@@ -1,12 +1,12 @@
 import React, { Component } from "react";
-
 import {
   AlagehFormGroup,
   AlgaehLabel,
   AlagehAutoComplete,
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
-
+import AlgaehSearch from "../../../Wrapper/globalSearch";
+import Employee from "../../../../Search/Employee.json";
 import "./FinalSettlement.css";
 
 class FinalSettlement extends Component {
@@ -15,11 +15,35 @@ class FinalSettlement extends Component {
     this.state = {};
   }
 
+  employeeSearch() {
+    AlgaehSearch({
+      searchGrid: {
+        columns: Employee
+      },
+      searchName: "exit_employees",
+      uri: "/gloabelSearch/get",
+      onContainsChange: (text, serchBy, callBack) => {
+        callBack(text);
+      },
+      onRowSelect: row => {
+        this.setState(
+          {
+            employee_name: row.full_name,
+            hims_d_employee_id: row.hims_d_employee_id
+          },
+          () => {}
+        );
+      }
+    });
+  }
+
+  clearState() {}
+
   render() {
     return (
       <div className="FinalSettlementScreen">
         <div className="row  inner-top-search">
-          <AlagehAutoComplete
+          {/* <AlagehAutoComplete
             div={{ className: "col-3 form-group" }}
             label={{ forceLabel: "Search by Settlement No.", isImp: false }}
             selector={{
@@ -28,9 +52,9 @@ class FinalSettlement extends Component {
               dataSource: {},
               others: {}
             }}
-          />
+          /> */}
 
-          <div className="col-3" style={{ marginTop: 10 }}>
+          <div className="col-lg-3" style={{ marginTop: 10 }}>
             <div
               className="row"
               style={{
@@ -40,10 +64,13 @@ class FinalSettlement extends Component {
               }}
             >
               <div className="col">
-                <AlgaehLabel label={{ forceLabel: "Select a Employee." }} />
-                <h6>-------</h6>
+                <AlgaehLabel label={{ forceLabel: "Employee Name" }} />
+                <h6>
+                  {this.state.employee_name
+                    ? this.state.employee_name
+                    : "------"}
+                </h6>
               </div>
-
               <div
                 className="col-lg-3"
                 style={{ borderLeft: "1px solid #ced4d8" }}
@@ -55,12 +82,13 @@ class FinalSettlement extends Component {
                     paddingLeft: 3,
                     cursor: "pointer"
                   }}
+                  onClick={this.employeeSearch.bind(this)}
                 />
               </div>
             </div>
           </div>
 
-          <div className="col">
+          <div className="col-lg-1">
             <div className="customCheckbox" style={{ marginTop: 24 }}>
               <label className="checkbox inline">
                 <input type="checkbox" value="" name="Forfeiture" />
@@ -71,6 +99,14 @@ class FinalSettlement extends Component {
           <div className="col form-group">
             <button style={{ marginTop: 21 }} className="btn btn-primary">
               Load
+            </button>
+
+            <button
+              onClick={this.clearState.bind(this)}
+              style={{ marginTop: 21, marginLeft: 5 }}
+              className="btn btn-default"
+            >
+              CLEAR
             </button>
           </div>
         </div>
