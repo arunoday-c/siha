@@ -35,17 +35,11 @@ class LeaveEdit extends Component {
           ? this.getReligionsMaster()
           : null;
 
-        this.state.type === "ED" && this.state.leaveDetails.length === 0
-          ? this.getLeaveDetails()
-          : null;
+        this.state.type === "ED" ? this.getLeaveDetails() : null;
 
-        this.state.type === "EE" && this.state.leaveEncash.length === 0
-          ? this.getLeaveEncashment()
-          : null;
+        this.state.type === "EE" ? this.getLeaveEncashment() : null;
 
-        this.state.type === "ER" && this.state.leaveRules.length === 0
-          ? this.getLeaveRules()
-          : null;
+        this.state.type === "ER" ? this.getLeaveRules() : null;
       }
     );
   }
@@ -75,6 +69,7 @@ class LeaveEdit extends Component {
       }
     });
   }
+
   getLeaveEncashment() {
     algaehApiCall({
       uri: "/leave/getLeaveEncashmentMaster",
@@ -100,6 +95,7 @@ class LeaveEdit extends Component {
       }
     });
   }
+
   getLeaveRules() {
     algaehApiCall({
       uri: "/leave/getLeaveRulesMaster",
@@ -144,10 +140,27 @@ class LeaveEdit extends Component {
       cancelButtonText: "No"
     }).then(willDelete => {
       if (willDelete.value) {
-        this.state.leaveDetails.pop(row);
-
-        this.setState({
-          leaveDetails: this.state.leaveDetails
+        algaehApiCall({
+          uri: "/leave/deleteLeaveDetail",
+          method: "DELETE",
+          data: {
+            hims_d_leave_detail_id: row.hims_d_leave_detail_id
+          },
+          onSuccess: res => {
+            if (res.data.success) {
+              swalMessage({
+                title: "Record Deleted Successfully",
+                type: "success"
+              });
+              this.getLeaveDetails();
+            }
+          },
+          onFailure: err => {
+            swalMessage({
+              title: err.message,
+              type: "error"
+            });
+          }
         });
       } else {
         swalMessage({
@@ -210,6 +223,74 @@ class LeaveEdit extends Component {
     });
   }
 
+  updateLeaveDetail(data) {
+    algaehApiCall({
+      uri: "/leave/updateLeaveDetailMaster",
+      method: "PUT",
+      data: data,
+      onSuccess: res => {
+        if (res.data.success) {
+          swalMessage({
+            title: "Record Updated Successfully",
+            type: "success"
+          });
+          this.getLeaveDetails();
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+  updateLeaveEncash(data) {
+    algaehApiCall({
+      uri: "/leave/updateLeaveEncashMaster",
+      method: "PUT",
+      data: data,
+      onSuccess: res => {
+        if (res.data.success) {
+          swalMessage({
+            title: "Record Updated Successfully",
+            type: "success"
+          });
+
+          this.getLeaveEncashment();
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+  updateLeaveRule(data) {
+    algaehApiCall({
+      uri: "/leave/updateLeaveRuleMaster",
+      method: "PUT",
+      data: data,
+      onSuccess: res => {
+        if (res.data.success) {
+          swalMessage({
+            title: "Record Updated Successfully",
+            type: "success"
+          });
+          this.getLeaveRules();
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
   deleteLeaveRule(row) {
     swal({
       title: "Delete Leave Rule?",
@@ -221,10 +302,27 @@ class LeaveEdit extends Component {
       cancelButtonText: "No"
     }).then(willDelete => {
       if (willDelete.value) {
-        this.state.leaveRules.pop(row);
-
-        this.setState({
-          leaveRules: this.state.leaveRules
+        algaehApiCall({
+          uri: "/leave/deleteLeaveRule",
+          method: "DELETE",
+          data: {
+            hims_d_leave_rule_id: row.hims_d_leave_rule_id
+          },
+          onSuccess: res => {
+            if (res.data.success) {
+              swalMessage({
+                title: "Record Deleted Successfully",
+                type: "success"
+              });
+              this.getLeaveRules();
+            }
+          },
+          onFailure: err => {
+            swalMessage({
+              title: err.message,
+              type: "error"
+            });
+          }
         });
       } else {
         swalMessage({
@@ -234,6 +332,7 @@ class LeaveEdit extends Component {
       }
     });
   }
+
   deleteLeaveEncash(row) {
     swal({
       title: "Delete Leave Encashment?",
@@ -245,10 +344,27 @@ class LeaveEdit extends Component {
       cancelButtonText: "No"
     }).then(willDelete => {
       if (willDelete.value) {
-        this.state.leaveEncash.pop(row);
-
-        this.setState({
-          leaveEncash: this.state.leaveEncash
+        algaehApiCall({
+          uri: "/leave/deleteLeaveEncash",
+          method: "DELETE",
+          data: {
+            hims_d_leave_encashment_id: row.hims_d_leave_encashment_id
+          },
+          onSuccess: res => {
+            if (res.data.success) {
+              swalMessage({
+                title: "Record Deleted Successfully",
+                type: "success"
+              });
+              this.getLeaveEncashment();
+            }
+          },
+          onFailure: err => {
+            swalMessage({
+              title: err.message,
+              type: "error"
+            });
+          }
         });
       } else {
         swalMessage({
@@ -259,78 +375,13 @@ class LeaveEdit extends Component {
     });
   }
 
-  saveLeaveMaster() {
-    if (this.state.leaveEncash.length === 0) {
-      swalMessage({
-        title: "Please Add at least one Leave Encashment",
-        type: "warning"
-      });
-    } else if (this.state.leaveRules.length === 0) {
-      swalMessage({
-        title: "Please Add at least one Leave Rule",
-        type: "warning"
-      });
-    } else if (this.state.leaveDetails.length === 0) {
-      swalMessage({
-        title: "Please Add at least one Leave Detail",
-        type: "warning"
-      });
-    } else {
-      let send_data = {
-        leave_code: this.state.leave_code,
-        leave_description: this.state.leave_description,
-        annual_maternity_leave: this.state.annual_maternity_leave,
-        include_weekoff: this.state.include_weekoff ? "Y" : "N",
-        include_holiday: this.state.include_holiday ? "Y" : "N",
-        leave_mode: this.state.leave_mode,
-        leave_status: this.state.leave_status,
-        leave_accrual: this.state.leave_accrual,
-        leave_encash: this.state.leave_encash ? "Y" : "N",
-        leave_type: this.state.leave_type,
-        encashment_percentage: this.state.encashment_percentage,
-        leave_carry_forward: this.state.leave_carry_forward ? "Y" : "N",
-        carry_forward_percentage: this.state.carry_forward_percentage,
-        religion_required: this.state.religion_required ? "Y" : "N",
-        religion_id: this.state.religion_id,
-        holiday_reimbursement: this.state.holiday_reimbursement ? "Y" : "N",
-        exit_permit_required: this.state.exit_permit_required ? "Y" : "N",
-        proportionate_leave: this.state.proportionate_leave ? "Y" : "N",
-        document_mandatory: this.state.document_mandatory ? "Y" : "N",
-        leaveEncash: this.state.leaveEncash,
-        leaveRules: this.state.leaveRules,
-        leaveDetails: this.state.leaveDetails
-      };
-
-      algaehApiCall({
-        uri: "/leave/addLeaveMaster",
-        method: "POST",
-        data: send_data,
-        onSuccess: res => {
-          if (res.data.success) {
-            swalMessage({
-              title: "Leave Added Successfully",
-              type: "success"
-            });
-          }
-        },
-        onFailure: err => {
-          swalMessage({
-            title: err.message,
-            type: "error"
-          });
-        }
-      });
-    }
-  }
-
   addLeaveRules() {
     AlgaehValidation({
       alertTypeIcon: "warning",
-      querySelector: "data-validate='leaveMasterValidateDiv'",
+      querySelector: "data-validate='LvEdtGrd'",
       onSuccess: () => {
-        let details = this.state.leaveRules;
-
-        details.push({
+        let send_data = {
+          leave_id: this.state.hims_d_leave_id,
           calculation_type: this.state.calculation_type,
           earning_id: this.state.rule_earning_id,
           paytype: this.state.paytype,
@@ -338,20 +389,35 @@ class LeaveEdit extends Component {
           to_value: this.state.to_value,
           value_type: this.state.value_type,
           total_days: this.state.total_days
-        });
-
-        this.setState({
-          leaveRules: details
-        });
-
-        this.setState({
-          calculation_type: null,
-          rule_earning_id: null,
-          paytype: null,
-          from_value: null,
-          to_value: null,
-          value_type: null,
-          total_days: null
+        };
+        algaehApiCall({
+          uri: "/leave/addLeaveRulesMaster",
+          method: "POST",
+          data: send_data,
+          onSuccess: res => {
+            if (res.data.success) {
+              swalMessage({
+                title: "Record Added Successfully",
+                type: "success"
+              });
+              this.getLeaveRules();
+              this.setState({
+                calculation_type: null,
+                rule_earning_id: null,
+                paytype: null,
+                from_value: null,
+                to_value: null,
+                value_type: null,
+                total_days: null
+              });
+            }
+          },
+          onFailure: err => {
+            swalMessage({
+              title: err.message,
+              type: "error"
+            });
+          }
         });
       }
     });
@@ -360,11 +426,10 @@ class LeaveEdit extends Component {
   addLeaveDetails() {
     AlgaehValidation({
       alertTypeIcon: "warning",
-      querySelector: "data-validate='leaveMasterValidateDiv'",
+      querySelector: "data-validate='LvEdtGrd'",
       onSuccess: () => {
-        let details = this.state.leaveDetails;
-
-        details.push({
+        let send_data = {
+          leave_id: this.state.hims_d_leave_id,
           employee_type: this.state.employee_type,
           gender: this.state.gender,
           eligible_days: this.state.eligible_days,
@@ -374,22 +439,40 @@ class LeaveEdit extends Component {
           allow_probation: this.state.allow_probation ? "Y" : "N",
           max_number_days: this.state.max_number_days,
           mandatory_utilize_days: this.state.mandatory_utilize_days
-        });
+        };
 
-        this.setState({
-          leaveDetails: details
-        });
+        algaehApiCall({
+          uri: "/leave/addLeaveDetailMaster",
+          method: "POST",
+          data: send_data,
+          onSuccess: res => {
+            if (res.data.success) {
+              swalMessage({
+                title: "Detail Added Successfully",
+                type: "success"
+              });
 
-        this.setState({
-          employee_type: null,
-          gender: null,
-          eligible_days: null,
-          min_service_required: null,
-          service_years: null,
-          once_life_term: null,
-          allow_probation: null,
-          max_number_days: null,
-          mandatory_utilize_days: null
+              this.getLeaveDetails();
+
+              this.setState({
+                employee_type: null,
+                gender: null,
+                eligible_days: null,
+                min_service_required: null,
+                service_years: null,
+                once_life_term: null,
+                allow_probation: null,
+                max_number_days: null,
+                mandatory_utilize_days: null
+              });
+            }
+          },
+          onFailure: err => {
+            swalMessage({
+              title: err.message,
+              type: "error"
+            });
+          }
         });
       }
     });
@@ -398,22 +481,36 @@ class LeaveEdit extends Component {
   addLeaveEncash() {
     AlgaehValidation({
       alertTypeIcon: "warning",
-      querySelector: "data-validate='leaveMasterValidateDiv'",
+      querySelector: "data-validate='LvEdtGrd'",
       onSuccess: () => {
-        let details = this.state.leaveEncash;
-
-        details.push({
+        let send_data = {
+          leave_id: this.state.hims_d_leave_id,
           earnings_id: this.state.earnings_id,
           percent: this.state.percent
-        });
-
-        this.setState({
-          leaveEncash: details
-        });
-
-        this.setState({
-          earnings_id: null,
-          percent: null
+        };
+        algaehApiCall({
+          uri: "/leave/addLeaveEncashmentMaster",
+          method: "POST",
+          data: send_data,
+          onSuccess: res => {
+            if (res.data.success) {
+              swalMessage({
+                title: "Record Added Successfully",
+                type: "success"
+              });
+              this.getLeaveEncashment();
+              this.setState({
+                earnings_id: null,
+                percent: null
+              });
+            }
+          },
+          onFailure: err => {
+            swalMessage({
+              title: err.message,
+              type: "error"
+            });
+          }
         });
       }
     });

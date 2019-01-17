@@ -390,16 +390,17 @@ class LeaveMaster extends Component {
     });
   }
 
+  updateLeaveDetail(data) {}
+  updateLeaveEncash(data) {}
+  updateLeaveRule(data) {}
+
   render() {
     return (
       <div className="hims_leave_master">
         <AlgaehModalPopUp
           openPopup={this.props.open}
           events={{
-            onClose: () => {
-              this.clearState();
-              this.props.onClose;
-            }
+            onClose: this.props.onClose
           }}
         >
           <div className=" leaveMasterMainPage">

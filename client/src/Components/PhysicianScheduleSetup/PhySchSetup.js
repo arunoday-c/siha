@@ -555,7 +555,7 @@ class PhySchSetup extends Component {
             </div>
             <div className="popupInner">
               <div className="col-lg-12 margin-top-15">
-                <div className="col-lg-12 card box-shadow-normal">
+                <div className="col-lg-12 card">
                   <div className="row">
                     <AlagehFormGroup
                       div={{ className: "col-lg-3" }}

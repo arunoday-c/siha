@@ -27,6 +27,13 @@ let getEmployeeLeaveData = (req, res, next) => {
 
     let year = "";
 
+    let selservice = "";
+    if ((req.query.selservice = "Y")) {
+      selservice = ` and  (LD.employee_type='${
+        req.query.employee_type
+      }' and  (LD.gender='${req.query.gender}' or LD.gender='BOTH' ))`;
+    }
+
     if (
       req.query.year != "" &&
       req.query.year != null &&
@@ -52,15 +59,11 @@ let getEmployeeLeaveData = (req, res, next) => {
           from hims_f_employee_monthly_leave  ML inner join hims_d_leave L on ML.leave_id=L.hims_d_leave_id       \
           inner join hims_d_leave_detail LD on L.hims_d_leave_id=LD.leave_header_id\
           inner join hims_d_employee E on ML.employee_id=E.hims_d_employee_id and E.record_status='A'\
-          and L.record_status='A' where ML.year=? and ML.employee_id=? \
-           and  (LD.employee_type=?  and  (LD.gender=? or LD.gender='BOTH' ))\
+          and L.record_status='A' where ML.year=? and ML.employee_id=?" +
+            selservice +
+            " \
             order by hims_f_employee_monthly_leave_id desc;",
-          [
-            year,
-            req.query.employee_id,
-            req.query.employee_type,
-            req.query.gender
-          ],
+          [year, req.query.employee_id],
           (error, result) => {
             releaseDBConnection(db, connection);
             if (error) {
@@ -2420,6 +2423,12 @@ let calculateLeaveDays = (req, res, next) => {
     let session_diff = 0;
     let my_religion = input.religion_id;
 
+    let from_month = moment(from_date).format("M");
+    let to_month = moment(to_date).format("M");
+
+    debugLog("from_month:", from_month);
+    debugLog("to_month:", to_month);
+
     debugLog("from_date:", from_date);
     debugLog("to_date:", to_date);
 
@@ -2556,6 +2565,7 @@ let calculateLeaveDays = (req, res, next) => {
             next(error);
           }
           debugLog("result:", result);
+
           if (
             result.length > 0 &&
             (result[0].include_weekoff == "N" ||
@@ -2564,7 +2574,10 @@ let calculateLeaveDays = (req, res, next) => {
             connection.query(
               "select hims_d_holiday_id,holiday_date,holiday_description,weekoff,holiday,holiday_type,religion_id\
     from hims_d_holiday H where date(holiday_date) between date(?) and date(?) ",
-              [from_date, to_date],
+              [
+                moment(from_date).format("YYYY-MM-DD"),
+                moment(to_date).format("YYYY-MM-DD")
+              ],
               (error, holidayResult) => {
                 if (error) {
                   releaseDBConnection(db, connection);
@@ -2645,29 +2658,35 @@ let calculateLeaveDays = (req, res, next) => {
                 let total_minus = 0;
                 for (let k = 0; k < dateRange.length; k++) {
                   let reduce_days = parseFloat(0);
-                  reduce_days += parseFloat(
-                    new LINQ(holiday_Data)
-                      .Where(
-                        w =>
-                          dateRange[k]["begning_of_leave"] <= w.holiday_date &&
-                          w.holiday_date <= dateRange[k]["end_of_leave"]
-                      )
-                      .Count()
-                  );
+
+                  if (result[0].include_holiday == "N") {
+                    reduce_days += parseFloat(
+                      new LINQ(holiday_Data)
+                        .Where(
+                          w =>
+                            dateRange[k]["begning_of_leave"] <=
+                              w.holiday_date &&
+                            w.holiday_date <= dateRange[k]["end_of_leave"]
+                        )
+                        .Count()
+                    );
+                  }
                   debugLog(
                     "holiday reduce:" + dateRange[k]["month_name"],
                     reduce_days
                   );
-
-                  reduce_days += parseFloat(
-                    new LINQ(week_off_Data)
-                      .Where(
-                        w =>
-                          dateRange[k]["begning_of_leave"] <= w.holiday_date &&
-                          w.holiday_date <= dateRange[k]["end_of_leave"]
-                      )
-                      .Count()
-                  );
+                  if (result[0].include_weekoff == "N") {
+                    reduce_days += parseFloat(
+                      new LINQ(week_off_Data)
+                        .Where(
+                          w =>
+                            dateRange[k]["begning_of_leave"] <=
+                              w.holiday_date &&
+                            w.holiday_date <= dateRange[k]["end_of_leave"]
+                        )
+                        .Count()
+                    );
+                  }
 
                   debugLog(
                     "holiday reduce:" + dateRange[k]["month_name"],
@@ -2675,12 +2694,46 @@ let calculateLeaveDays = (req, res, next) => {
                   );
                   debugLog("===================:");
 
-                  leaveDeductionArray.push({
-                    month_name: dateRange[k]["month_name"],
-                    finalLeave:
-                      parseFloat(dateRange[k]["leaveDays"]) -
-                      parseFloat(reduce_days)
-                  });
+                  if (req.query.from_session == "SH" && k == 0) {
+                    if (
+                      from_month === to_month &&
+                      req.query.to_session == "FH"
+                    ) {
+                      leaveDeductionArray.push({
+                        month_name: dateRange[k]["month_name"],
+                        finalLeave:
+                          parseFloat(dateRange[k]["leaveDays"]) -
+                          parseFloat(reduce_days) -
+                          parseFloat(1)
+                      });
+                    } else {
+                      leaveDeductionArray.push({
+                        month_name: dateRange[k]["month_name"],
+                        finalLeave:
+                          parseFloat(dateRange[k]["leaveDays"]) -
+                          parseFloat(reduce_days) -
+                          parseFloat(0.5)
+                      });
+                    }
+                  } else if (
+                    req.query.to_session == "FH" &&
+                    k == dateRange.length - 1
+                  ) {
+                    leaveDeductionArray.push({
+                      month_name: dateRange[k]["month_name"],
+                      finalLeave:
+                        parseFloat(dateRange[k]["leaveDays"]) -
+                        parseFloat(reduce_days) -
+                        parseFloat(0.5)
+                    });
+                  } else {
+                    leaveDeductionArray.push({
+                      month_name: dateRange[k]["month_name"],
+                      finalLeave:
+                        parseFloat(dateRange[k]["leaveDays"]) -
+                        parseFloat(reduce_days)
+                    });
+                  }
 
                   total_minus += parseFloat(reduce_days);
                 }
@@ -2712,6 +2765,7 @@ let calculateLeaveDays = (req, res, next) => {
                   debugLog("calculatedLeaveDays:", calculatedLeaveDays);
                   releaseDBConnection(db, connection);
                   req.records = {
+                    leave_applied_days: leave_applied_days,
                     calculatedLeaveDays: calculatedLeaveDays,
                     monthWiseCalculatedLeaveDeduction: leaveDeductionArray
                   };
@@ -2744,6 +2798,7 @@ let calculateLeaveDays = (req, res, next) => {
               debugLog("calculatedLeaveDays:", calculatedLeaveDays);
               releaseDBConnection(db, connection);
               req.records = {
+                leave_applied_days: leave_applied_days,
                 calculatedLeaveDays: calculatedLeaveDays,
                 monthWiseCalculatedLeaveDeduction: leaveDeductionArray
               };
@@ -2818,6 +2873,268 @@ let getLeaveDetailsMaster = (req, res, next) => {
     next(e);
   }
 };
+
+//created by Adnan
+let addLeaveDetailMaster = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT  INTO hims_d_leave_detail ( leave_header_id,\
+           employee_type, gender, eligible_days, min_service_required, service_years,\
+            once_life_term, allow_probation, max_number_days,\
+           mandatory_utilize_days, created_date, created_by, updated_date, updated_by) values(\
+          ?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        [
+          input.leave_id,
+          input.employee_type,
+          input.gender,
+          input.eligible_days,
+          input.min_service_required,
+          input.service_years,
+          input.once_life_term,
+          input.allow_probation,
+          input.max_number_days,
+          input.mandatory_utilize_days,
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by Adnan
+let deleteLeaveEncash = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let input = extend({}, req.body);
+    let db = req.db;
+    if (
+      input.hims_d_leave_encashment_id != "null" &&
+      input.hims_d_leave_encashment_id != undefined
+    ) {
+      db.getConnection((error, connection) => {
+        connection.query(
+          "DELETE from  hims_d_leave_encashment WHERE hims_d_leave_encashment_id=?",
+          input.hims_d_leave_encashment_id,
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+
+            if (result.records.affectedRows > 0) {
+              req.records = result;
+              next();
+            } else {
+              req.records = { invalid_input: true };
+              next();
+            }
+          }
+        );
+      });
+    } else {
+      req.records = { invalid_input: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by Adnan
+let deleteLeaveRule = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let input = extend({}, req.body);
+    let db = req.db;
+    if (
+      input.hims_d_leave_rule_id != "null" &&
+      input.hims_d_leave_rule_id != undefined
+    ) {
+      db.getConnection((error, connection) => {
+        connection.query(
+          "DELETE from  hims_d_leave_rule WHERE hims_d_leave_rule_id=?",
+          input.hims_d_leave_rule_id,
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+
+            if (result.records.affectedRows > 0) {
+              req.records = result;
+              next();
+            } else {
+              req.records = { invalid_input: true };
+              next();
+            }
+          }
+        );
+      });
+    } else {
+      req.records = { invalid_input: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+//created by Adnan
+let deleteLeaveDetail = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let input = extend({}, req.body);
+    let db = req.db;
+
+    if (
+      input.hims_d_leave_detail_id != "null" &&
+      input.hims_d_leave_detail_id != undefined
+    ) {
+      db.getConnection((error, connection) => {
+        connection.query(
+          "DELETE from  hims_d_leave_detail WHERE hims_d_leave_detail_id=?",
+          input.hims_d_leave_detail_id,
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+
+            if (result.records.affectedRows > 0) {
+              req.records = result;
+              next();
+            } else {
+              req.records = { invalid_input: true };
+              next();
+            }
+          }
+        );
+      });
+    } else {
+      req.records = { invalid_input: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by Adnan
+let addLeaveEncashmentMaster = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT  INTO hims_d_leave_encashment ( leave_header_id,\
+          earnings_id, percent,created_date, created_by, updated_date, updated_by) values(\
+          ?,?,?,?,?,?,?)",
+        [
+          input.leave_id,
+          input.earnings_id,
+          input.percent,
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by Adnan
+let addLeaveRulesMaster = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      connection.query(
+        "INSERT  INTO hims_d_leave_rule ( leave_header_id,\
+         calculation_type, earning_id,\
+         paytype, from_value, to_value, value_type, total_days) values(\
+          ?,?,?,?,?,?,?,?)",
+        [
+          input.leave_id,
+          input.calculation_type,
+          input.earning_id,
+          input.paytype,
+          input.from_value,
+          input.to_value,
+          input.value_type,
+          input.total_days
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 //created by Adnan:
 let getLeaveEncashmentMaster = (req, res, next) => {
   try {
@@ -2891,6 +3208,170 @@ let getLeaveRulesMaster = (req, res, next) => {
   }
 };
 
+let updateLeaveDetailMaster = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.body);
+    if (
+      input.hims_d_leave_detail_id != "null" &&
+      input.hims_d_leave_detail_id != undefined
+    ) {
+      db.getConnection((error, connection) => {
+        connection.query(
+          "UPDATE hims_d_leave_detail SET leave_header_id = ?,\
+          employee_type = ?, gender = ?, eligible_days = ?, min_service_required = ? , service_years = ?,\
+          once_life_term = ?, allow_probation = ?, max_number_days = ?, mandatory_utilize_days = ?,\
+            updated_date=?, updated_by=?  WHERE hims_d_leave_detail_id = ?",
+
+          [
+            input.leave_header_id,
+            input.employee_type,
+            input.gender,
+            input.eligible_days,
+            input.min_service_required,
+            input.service_years,
+            input.once_life_term,
+            input.allow_probation,
+            input.max_number_days,
+            input.mandatory_utilize_days,
+            new Date(),
+            input.updated_by,
+            input.hims_d_leave_detail_id
+          ],
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+
+            if (result.affectedRows > 0) {
+              req.records = result;
+              next();
+            } else {
+              req.records = { invalid_input: true };
+              next();
+            }
+          }
+        );
+      });
+    } else {
+      req.records = { invalid_input: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+let updateLeaveEncashMaster = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.body);
+
+    if (
+      input.hims_d_leave_encashment_id != "null" &&
+      input.hims_d_leave_encashment_id != undefined
+    ) {
+      //hims_d_leave_encashment_id, leave_header_id, earnings_id, percent, created_date, created_by, updated_date, updated_by
+      db.getConnection((error, connection) => {
+        connection.query(
+          "UPDATE hims_d_leave_encashment SET leave_header_id = ?,\
+          earnings_id = ?, percent = ?,\
+            updated_date=?, updated_by=?  WHERE hims_d_leave_encashment_id = ?",
+
+          [
+            input.leave_header_id,
+            input.earnings_id,
+            input.percent,
+            new Date(),
+            input.updated_by,
+            input.hims_d_leave_encashment_id
+          ],
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+
+            if (result.affectedRows > 0) {
+              req.records = result;
+              next();
+            } else {
+              req.records = { invalid_input: true };
+              next();
+            }
+          }
+        );
+      });
+    } else {
+      req.records = { invalid_input: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+let updateLeaveRuleMaster = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.body);
+
+    if (
+      input.hims_d_leave_rule_id != "null" &&
+      input.hims_d_leave_rule_id != undefined
+    ) {
+      db.getConnection((error, connection) => {
+        connection.query(
+          "UPDATE hims_d_leave_rule SET leave_header_id = ?,\
+          calculation_type = ?, earning_id = ?, paytype = ?, from_value = ? , to_value = ?,\
+          value_type = ?, total_days = ?  WHERE hims_d_leave_rule_id = ?",
+          [
+            input.leave_header_id,
+            input.calculation_type,
+            input.earning_id,
+            input.paytype,
+            input.from_value,
+            input.to_value,
+            input.value_type,
+            input.total_days,
+            input.hims_d_leave_rule_id
+          ],
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+
+            if (result.affectedRows > 0) {
+              req.records = result;
+              next();
+            } else {
+              req.records = { invalid_input: true };
+              next();
+            }
+          }
+        );
+      });
+    } else {
+      req.records = { invalid_input: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getEmployeeLeaveData,
   getYearlyLeaveData,
@@ -2911,5 +3392,14 @@ module.exports = {
   calculateLeaveDays,
   getLeaveDetailsMaster,
   getLeaveEncashmentMaster,
-  getLeaveRulesMaster
+  getLeaveRulesMaster,
+  addLeaveDetailMaster,
+  addLeaveEncashmentMaster,
+  addLeaveRulesMaster,
+  deleteLeaveDetail,
+  deleteLeaveEncash,
+  deleteLeaveRule,
+  updateLeaveDetailMaster,
+  updateLeaveEncashMaster,
+  updateLeaveRuleMaster
 };

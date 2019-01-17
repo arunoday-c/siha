@@ -406,13 +406,10 @@ export default class AbsenceManagement extends Component {
               className="btn btn-primary"
             >
               Add
-            </button>
-          </div>
-
-          <div className="col-lg-1 form-group">
+            </button>{" "}
             <button
               onClick={this.clearState.bind(this)}
-              style={{ marginTop: 21 }}
+              style={{ marginTop: 21, marginLeft: 5 }}
               className="btn btn-default"
             >
               CLEAR

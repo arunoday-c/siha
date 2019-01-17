@@ -68,7 +68,10 @@ class ApplyLeave extends Component {
     this.setState(
       {
         employee_id: this.props.empData.hims_d_employee_id,
-        sub_department_id: this.props.empData.sub_department_id
+        sub_department_id: this.props.empData.sub_department_id,
+        employee_type: this.props.empData.employee_type,
+        gender: this.props.empData.sex,
+        religion_id: this.props.empData.religion_id
       },
       () => {
         this.getEmployeeLeaveData();
@@ -206,78 +209,104 @@ class ApplyLeave extends Component {
   }
 
   getAppliedDays() {
-    var startdateMoment = moment(this.state.from_date);
-    var enddateMoment = moment(this.state.to_date);
-
-    if (
-      startdateMoment.isValid() === true &&
-      enddateMoment.isValid() === true
-    ) {
-      var days = enddateMoment.diff(startdateMoment, "days");
-
-      if (
-        moment(this.state.from_date).format("YYYYMMDD") ===
-        moment(this.state.to_date).format("YYYYMMDD")
-      ) {
-        if (
-          this.state.from_leave_session === "FH" ||
-          this.state.from_leave_session === "SH" ||
-          this.state.to_leave_session === "FH" ||
-          this.state.to_leave_session === "SH"
-        ) {
-          this.setState({
-            total_applied_days: 0.5
-          });
-        } else if (
-          this.state.from_leave_session === "FD" ||
-          this.state.to_leave_session === "FD"
-        ) {
-          this.setState({
-            total_applied_days: 1
-          });
+    algaehApiCall({
+      uri: "/leave/calculateLeaveDays",
+      method: "GET",
+      data: {
+        from_session: this.state.from_session,
+        to_session: this.state.to_session,
+        from_date: this.state.from_date,
+        to_date: this.state.to_date,
+        hims_d_leave_detail_id: this.state.hims_d_leave_detail_id,
+        religion_id: this.state.religion_id
+      },
+      onSuccess: res => {
+        if (res.data.success) {
+          console.log("Aplied Days:", res.data);
         }
-        //return;
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
       }
-
-      if (
-        moment(this.state.from_date).format("YYYYMMDD") <
-        moment(this.state.to_date).format("YYYYMMDD")
-      ) {
-        if (
-          this.state.from_leave_session === "SH" &&
-          this.state.to_leave_session === "FH"
-        ) {
-          this.setState({
-            total_applied_days: Math.abs(days)
-          });
-        } else if (
-          this.state.from_leave_session === "FH" ||
-          this.state.from_leave_session === "SH" ||
-          this.state.to_leave_session === "FH" ||
-          this.state.to_leave_session === "SH"
-        ) {
-          this.setState({
-            total_applied_days: Math.abs(days + 0.5)
-          });
-        } else if (
-          this.state.from_leave_session === "FD" &&
-          this.state.to_leave_session === "FD"
-        ) {
-          this.setState({
-            total_applied_days: Math.abs(days + 1)
-          });
-        } else {
-          this.setState({
-            total_applied_days: Math.abs(days + 1)
-          });
-        }
-      }
-    } else {
-      this.setState({
-        total_applied_days: 0
-      });
-    }
+    });
   }
+
+  // getAppliedDays() {
+  //   var startdateMoment = moment(this.state.from_date);
+  //   var enddateMoment = moment(this.state.to_date);
+
+  //   if (
+  //     startdateMoment.isValid() === true &&
+  //     enddateMoment.isValid() === true
+  //   ) {
+  //     var days = enddateMoment.diff(startdateMoment, "days");
+
+  //     if (
+  //       moment(this.state.from_date).format("YYYYMMDD") ===
+  //       moment(this.state.to_date).format("YYYYMMDD")
+  //     ) {
+  //       if (
+  //         this.state.from_leave_session === "FH" ||
+  //         this.state.from_leave_session === "SH" ||
+  //         this.state.to_leave_session === "FH" ||
+  //         this.state.to_leave_session === "SH"
+  //       ) {
+  //         this.setState({
+  //           total_applied_days: 0.5
+  //         });
+  //       } else if (
+  //         this.state.from_leave_session === "FD" ||
+  //         this.state.to_leave_session === "FD"
+  //       ) {
+  //         this.setState({
+  //           total_applied_days: 1
+  //         });
+  //       }
+  //       //return;
+  //     }
+
+  //     if (
+  //       moment(this.state.from_date).format("YYYYMMDD") <
+  //       moment(this.state.to_date).format("YYYYMMDD")
+  //     ) {
+  //       if (
+  //         this.state.from_leave_session === "SH" &&
+  //         this.state.to_leave_session === "FH"
+  //       ) {
+  //         this.setState({
+  //           total_applied_days: Math.abs(days)
+  //         });
+  //       } else if (
+  //         this.state.from_leave_session === "FH" ||
+  //         this.state.from_leave_session === "SH" ||
+  //         this.state.to_leave_session === "FH" ||
+  //         this.state.to_leave_session === "SH"
+  //       ) {
+  //         this.setState({
+  //           total_applied_days: Math.abs(days + 0.5)
+  //         });
+  //       } else if (
+  //         this.state.from_leave_session === "FD" &&
+  //         this.state.to_leave_session === "FD"
+  //       ) {
+  //         this.setState({
+  //           total_applied_days: Math.abs(days + 1)
+  //         });
+  //       } else {
+  //         this.setState({
+  //           total_applied_days: Math.abs(days + 1)
+  //         });
+  //       }
+  //     }
+  //   } else {
+  //     this.setState({
+  //       total_applied_days: 0
+  //     });
+  //   }
+  // }
 
   dropDownHandler(value) {
     switch (value.name) {
@@ -340,7 +369,8 @@ class ApplyLeave extends Component {
       case "leave_id":
         this.setState(
           {
-            [value.name]: value.value
+            [value.name]: value.value,
+            hims_d_leave_detail_id: value.selected.hims_d_leave_detail_id
           },
           () => {
             let myObj = Enumerable.from(this.state.leave_types)
@@ -448,7 +478,10 @@ class ApplyLeave extends Component {
       method: "GET",
       data: {
         employee_id: this.state.employee_id,
-        year: moment().year()
+        year: moment().year(),
+        gender: this.state.gender,
+        employee_type: this.state.employee_type,
+        selfservice: "Y"
       },
       onSuccess: res => {
         if (res.data.success) {

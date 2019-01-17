@@ -299,7 +299,14 @@ class SalaryPayment extends Component {
                             columns={[
                               {
                                 fieldName: "SalaryPayment_checkBox",
-                                label: "",
+
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Select"
+                                    }}
+                                  />
+                                ),
                                 //disabled: true
                                 displayTemplate: row => {
                                   return (
@@ -308,18 +315,32 @@ class SalaryPayment extends Component {
                                     </span>
                                   );
                                 },
-                                options: {
-                                  maxWidth: 30
+                                others: {
+                                  maxWidth: 50
                                 }
                               },
                               {
                                 fieldName: "salary_number",
-                                label: "Salary No."
+
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Salary No"
+                                    }}
+                                  />
+                                )
                                 //disabled: true
                               },
                               {
                                 fieldName: "full_name",
-                                label: "Employee Name",
+
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Employee Name"
+                                    }}
+                                  />
+                                ),
                                 others: {
                                   minWidth: 150,
                                   maxWidth: 250
@@ -327,27 +348,62 @@ class SalaryPayment extends Component {
                               },
                               {
                                 fieldName: "present_days",
-                                label: "Present Days"
+
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Present Days"
+                                    }}
+                                  />
+                                )
                                 //disabled: true
                               },
-                              {
-                                fieldName: "gross_salary",
-                                label: "Basic"
-                                //disabled: true
-                              },
+                              // {
+                              //   fieldName: "gross_salary",
+
+                              //   label: (
+                              //     <AlgaehLabel
+                              //       label={{
+                              //         forceLabel: "Basic"
+                              //       }}
+                              //     />
+                              //   )
+                              //   //disabled: true
+                              // },
                               {
                                 fieldName: "advance_due",
-                                label: "Advance"
+
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Advance"
+                                    }}
+                                  />
+                                )
                                 //disabled: true
                               },
                               {
                                 fieldName: "loan_payable_amount",
-                                label: "Loan Amount"
+
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Loan Amount"
+                                    }}
+                                  />
+                                )
                                 //disabled: true
                               },
                               {
                                 fieldName: "net_salary",
-                                label: "Total Amount"
+
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Total Amount"
+                                    }}
+                                  />
+                                )
                                 //disabled: true
                               }
                             ]}

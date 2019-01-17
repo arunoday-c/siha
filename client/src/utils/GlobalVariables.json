@@ -6,9 +6,9 @@
   ],
 
   "LEAVE_GENDER": [
-    { "name": "Male", "arabic_name": "الذكر", "value": "Male" },
-    { "name": "Female", "arabic_name": "إناثا", "value": "Female" },
-    { "name": "Both", "arabic_name": "الآخرين", "value": "Both" }
+    { "name": "Male", "arabic_name": "الذكر", "value": "MALE" },
+    { "name": "Female", "arabic_name": "إناثا", "value": "FEMALE" },
+    { "name": "Both", "arabic_name": "الآخرين", "value": "BOTH" }
   ],
 
   "EMP_FORMAT_GENDER": [

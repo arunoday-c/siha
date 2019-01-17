@@ -416,7 +416,7 @@ function LeaveRules(props) {
               events={{
                 onEdit: () => {},
                 onDelete: myParent.deleteLeaveRule.bind(myParent),
-                onDone: () => {}
+                onDone: myParent.updateLeaveRule.bind(myParent)
               }}
             />
           </div>

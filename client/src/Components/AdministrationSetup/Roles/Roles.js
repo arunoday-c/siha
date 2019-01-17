@@ -3,7 +3,8 @@ import "./roles.css";
 import {
   AlgaehDataGrid,
   AlagehFormGroup,
-  AlagehAutoComplete
+  AlagehAutoComplete,
+  AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
 
 class Roles extends Component {
@@ -139,25 +140,60 @@ class Roles extends Component {
                 columns={[
                   {
                     fieldName: "screen_code",
-                    label: "Group",
+
+                    label: (
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Group"
+                        }}
+                      />
+                    ),
                     disabled: true
                   },
                   {
                     fieldName: "screen_name",
-                    label: "Role Code"
+
+                    label: (
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Role Code"
+                        }}
+                      />
+                    )
                   },
                   {
                     fieldName: "screen_name",
-                    label: "Role Name"
+
+                    label: (
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Role Name"
+                        }}
+                      />
+                    )
                   },
                   {
                     fieldName: "page_to_redirect",
-                    label: "Role Description",
+
+                    label: (
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Role Description"
+                        }}
+                      />
+                    ),
                     disabled: true
                   },
                   {
                     fieldName: "module_id",
-                    label: "Role Type"
+
+                    label: (
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Role Type"
+                        }}
+                      />
+                    )
                   }
                 ]}
                 keyId="algaeh_app_screens_id"

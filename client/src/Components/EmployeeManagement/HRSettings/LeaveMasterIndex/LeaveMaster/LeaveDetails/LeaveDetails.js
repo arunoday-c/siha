@@ -466,7 +466,7 @@ function LeaveDetails(props) {
             events={{
               onEdit: () => {},
               onDelete: myParent.deleteLeaveDetail.bind(myParent),
-              onDone: () => {}
+              onDone: myParent.updateLeaveDetail.bind(myParent)
             }}
           />
         </div>

@@ -579,7 +579,13 @@ class EmployeePayment extends Component {
                           },
                           {
                             fieldName: "payment_type",
-                            label: "Payment Type",
+
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Payment Type" }}
+                              />
+                            ),
+
                             displayTemplate: row => {
                               let display = GlobalVariables.EMPLOYEE_PAYMENT_TYPE.filter(
                                 f => f.value === row.payment_type
@@ -596,29 +602,56 @@ class EmployeePayment extends Component {
                           },
                           {
                             fieldName: "payment_application_code",
-                            label: "Payment No."
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Payment No" }}
+                              />
+                            )
                           },
                           {
                             fieldName: "employee_code",
-                            label: "Employee Code"
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Employee Code" }}
+                              />
+                            )
                           },
                           {
                             fieldName: "full_name",
-                            label: "Employee Name"
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Employee Name" }}
+                              />
+                            )
                           },
                           {
                             fieldName: "payment_amount",
-                            label: "Payment Amount"
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Payment Amount" }}
+                              />
+                            )
                           },
 
                           {
                             fieldName: "payment_date",
-                            label: "Process Date"
+
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Process Date" }}
+                              />
+                            )
                           },
 
                           {
                             fieldName: "payment_mode",
-                            label: "Mode of Payment",
+
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Mode of Payment" }}
+                              />
+                            ),
+
                             displayTemplate: row => {
                               let display = GlobalVariables.EMP_PAYMENT_MODE.filter(
                                 f => f.value === row.payment_mode
@@ -635,19 +668,42 @@ class EmployeePayment extends Component {
                           },
                           {
                             fieldName: "",
-                            label: "Bank Details"
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Bank Details" }}
+                              />
+                            )
                           },
                           {
                             fieldName: "cheque_number",
-                            label: "Cheque/ Transaction No."
+                            label: (
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Cheque/ Transaction No."
+                                }}
+                              />
+                            )
                           },
                           {
                             fieldName: "deduction_month",
-                            label: "Deduction Month"
+                            label: (
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Deduction Month"
+                                }}
+                              />
+                            )
                           },
                           {
                             fieldName: "cancel",
-                            label: "Cancel",
+                            label: (
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Cancel"
+                                }}
+                              />
+                            ),
+
                             displayTemplate: row => {
                               let display = GlobalVariables.FORMAT_YESNO.filter(
                                 f => f.value === row.cancel
