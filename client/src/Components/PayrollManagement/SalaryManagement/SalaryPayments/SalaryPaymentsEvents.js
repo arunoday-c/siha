@@ -2,6 +2,9 @@ import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall.js";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
+import AlgaehLoader from "../../../Wrapper/fullPageLoader";
+import moment from "moment";
+import Enumerable from "linq";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -18,6 +21,7 @@ const LoadSalaryPayment = ($this, e) => {
     querySelector: "data-validate='loadSalary'",
     onSuccess: () => {
       debugger;
+      AlgaehLoader({ show: true });
       let inputObj = {
         year: $this.state.year,
         month: $this.state.month
@@ -41,6 +45,7 @@ const LoadSalaryPayment = ($this, e) => {
           if (response.data.result.length > 0) {
             $this.setState({
               salary_payment: response.data.result
+              // paysalaryBtn: false
             });
           } else {
             swalMessage({
@@ -48,8 +53,10 @@ const LoadSalaryPayment = ($this, e) => {
               type: "warning"
             });
           }
+          AlgaehLoader({ show: false });
         },
         onFailure: error => {
+          AlgaehLoader({ show: false });
           swalMessage({
             title: error.message || error.response.data.message,
             type: "error"
@@ -83,4 +90,92 @@ const employeeSearch = $this => {
   });
 };
 
-export { texthandle, LoadSalaryPayment, employeeSearch };
+const ClearData = $this => {
+  $this.setState({
+    year: moment().year(),
+    month: moment(new Date()).format("M"),
+    sub_department_id: null,
+    salary_type: null,
+    employee_name: null,
+    employee_id: null,
+    salary_payment: [],
+    paysalaryBtn: true
+  });
+};
+
+const PaySalary = $this => {
+  debugger;
+
+  let _salarypayment = Enumerable.from($this.state.salary_payment)
+    .where(w => w.select_to_pay === "Y")
+    .toArray();
+
+  let inputObj = {
+    year: $this.state.year,
+    month: $this.state.month,
+    salary_payment: _salarypayment
+  };
+  AlgaehLoader({ show: true });
+  algaehApiCall({
+    uri: "/salary/SaveSalaryPayment",
+    module: "hrManagement",
+    data: inputObj,
+    method: "PUT",
+    onSuccess: response => {
+      debugger;
+      $this.setState({
+        paysalaryBtn: true
+      });
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: "Salary Payment Done...",
+        type: "success"
+      });
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message || error.response.data.message,
+        type: "error"
+      });
+    }
+  });
+};
+
+const selectToPay = ($this, row, e) => {
+  debugger;
+  let _salarypayment = $this.state.salary_payment;
+  let paysalaryBtn = true;
+  if (e.target.checked === true) {
+    row["select_to_pay"] = "Y";
+  } else if (e.target.checked === false) {
+    row["select_to_pay"] = "N";
+  }
+  // row.update();
+  _salarypayment[row.rowIdx] = row;
+  // for (let k = 0; k < _criedtdetails.length; k++) {
+  //   if (_criedtdetails[k].bill_header_id === row.bill_header_id) {
+  //     _criedtdetails[k] = row;
+  //   }
+  // }
+
+  let listOfinclude = Enumerable.from(_salarypayment)
+    .where(w => w.select_to_pay === "Y")
+    .toArray();
+  if (listOfinclude.length > 0) {
+    paysalaryBtn = false;
+  }
+  $this.setState({
+    paysalaryBtn: paysalaryBtn,
+    salary_payment: _salarypayment
+  });
+};
+
+export {
+  texthandle,
+  LoadSalaryPayment,
+  employeeSearch,
+  ClearData,
+  PaySalary,
+  selectToPay
+};
