@@ -4398,13 +4398,31 @@ let calculateLeaveDays = (req, res, next) => {
     debugLog("dateEnd:", dateEnd);
 
     let leaveDeductionArray = [];
+  //--- START OF-------calculate Half-day or Full-day from session
 
+  if(input.from_date== input.to_date){
+    debugLog("same date:");
+    if (input.from_session == "FH"&&input.to_session == "FH") {
+      session_diff += parseFloat(0.5);
+    }else if  (input.from_session == "SH"&&input.to_session == "SH") {
+      session_diff += parseFloat(0.5);
+    }else{
+      session_diff += parseFloat(1);
+
+    }
+    
+
+  }else{
+    debugLog("not same date");
     if (input.from_session == "SH") {
       session_diff += parseFloat(0.5);
     }
     if (input.to_session == "FH") {
       session_diff += parseFloat(0.5);
     }
+  }
+ //--- END OF---------calculate Half-day or Full-day from session
+
 
     debugLog("session_diff:", session_diff);
 
