@@ -36,7 +36,6 @@ class OfficalDetails extends PureComponent {
   }
 
   componentDidMount() {
-    
     let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
     this.setState({ ...this.state, ...InputOutput });
     if (this.props.banks === undefined || this.props.banks.length === 0) {
@@ -52,7 +51,6 @@ class OfficalDetails extends PureComponent {
   }
 
   render() {
-    
     return (
       <React.Fragment>
         <div
@@ -60,7 +58,10 @@ class OfficalDetails extends PureComponent {
           data-validate="empOffical"
         >
           <div className="row">
-            <div className="col-lg-8 primary-details">
+            <div
+              className="col-lg-8 primary-details"
+              style={{ paddingBottom: 0, minHeight: "66.5vh" }}
+            >
               <h5>
                 <span>Joining Details</span>
               </h5>
@@ -255,7 +256,10 @@ class OfficalDetails extends PureComponent {
                 </div>
               </div>
             </div>
-            <div className="col-lg-4 secondary-details">
+            <div
+              className="col-lg-4 secondary-details"
+              style={{ paddingBottom: 0, minHeight: "66.5vh" }}
+            >
               <h5>
                 <span>Employee Bank Details</span>
               </h5>

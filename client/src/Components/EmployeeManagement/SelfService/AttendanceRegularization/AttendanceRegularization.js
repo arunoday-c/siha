@@ -290,6 +290,32 @@ class AttendanceRegularization extends Component {
                     data={this.state.regularization_list}
                     columns={[
                       {
+                        Header: "Regularization",
+                        accessor: "Regularization",
+                        columns: [
+                          {
+                            id: "regularize_status",
+                            Header: <b>Status</b>,
+                            accessor: d =>
+                              d.regularize_status === "PEN" ? (
+                                <span className="badge badge-warning">
+                                  Pending
+                                </span>
+                              ) : d.regularize_status === "APR" ? (
+                                <span className="badge badge-success">
+                                  Approved
+                                </span>
+                              ) : d.regularize_status === "REJ" ? (
+                                <span className="badge badge-danger">
+                                  Rejected
+                                </span>
+                              ) : (
+                                "------"
+                              )
+                          }
+                        ]
+                      },
+                      {
                         Header: "Applied",
                         accessor: "Applied",
                         columns: [
@@ -361,32 +387,6 @@ class AttendanceRegularization extends Component {
                             accessor: d =>
                               moment(d.regularize_out_time, "HH:mm:ss").format(
                                 "HH:mm A"
-                              )
-                          }
-                        ]
-                      },
-                      {
-                        Header: "Regularization",
-                        accessor: "Regularization",
-                        columns: [
-                          {
-                            id: "regularize_status",
-                            Header: <b>Status</b>,
-                            accessor: d =>
-                              d.regularize_status === "PEN" ? (
-                                <span className="badge badge-warning">
-                                  Pending
-                                </span>
-                              ) : d.regularize_status === "APR" ? (
-                                <span className="badge badge-success">
-                                  Approved
-                                </span>
-                              ) : d.regularize_status === "REJ" ? (
-                                <span className="badge badge-danger">
-                                  Rejected
-                                </span>
-                              ) : (
-                                "------"
                               )
                           }
                         ]

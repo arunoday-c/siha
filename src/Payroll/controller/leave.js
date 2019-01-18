@@ -25,6 +25,7 @@ import {
   getLeaveRulesMaster,
   addLeaveEncashmentMaster,
   addLeaveRulesMaster,
+  getLeaveAprovalCalc,
   deleteLeaveDetail,
   deleteLeaveEncash,
   deleteLeaveRule,
@@ -447,13 +448,15 @@ export default ({ config, db }) => {
     next();
   });
 
+  // created by irfan
+
   // created by Adnan
   api.delete("/deleteLeaveDetail", deleteLeaveDetail, (req, res, next) => {
     let result = req.records;
     if (result.invalid_input == true) {
       res.status(httpStatus.ok).json({
         success: false,
-        records: "Please provide the Leave Detail ID to Delete"
+        records: "Please provide valid input controller"
       });
     } else {
       res.status(httpStatus.ok).json({

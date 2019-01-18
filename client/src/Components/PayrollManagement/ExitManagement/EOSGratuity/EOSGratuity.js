@@ -10,7 +10,12 @@ class EOSGratuity extends Component {
     super(props);
     this.state = {
       loading: false,
-      eos: []
+      eos: [],
+      data: {
+        componentList: []
+      },
+      previous_gratuity_amount: 0,
+      saveDisabled: true
     };
   }
 
@@ -26,10 +31,30 @@ class EOSGratuity extends Component {
     });
   }
 
+  changeChecks(e) {
+    e.target.checked
+      ? this.setState({
+          [e.target.name]: e.target.value
+        })
+      : !e.target.checked
+      ? this.setState({
+          [e.target.name]: null
+        })
+      : null;
+  }
+
   clearState() {
     this.setState({
+      data: {
+        componentList: []
+      },
+      previous_gratuity_amount: 0,
       employee_name: null,
-      hims_d_employee_id: null
+      hims_d_employee_id: null,
+      calculated_gratutity_amount: null,
+      payable_amount: null,
+      remarks: "",
+      saveDisabled: true
     });
   }
 
@@ -55,6 +80,47 @@ class EOSGratuity extends Component {
     });
   }
 
+  saveEos() {
+    let _sub_data = this.state.data;
+    let send_data = {
+      employee_id: this.state.hims_d_employee_id,
+      exit_type: _sub_data.employee_status,
+      join_date: _sub_data.date_of_joining,
+      exit_date: _sub_data.date_of_resignation,
+      service_years: _sub_data.endOfServiceYears,
+      payable_days: _sub_data.eligible_day,
+      computed_amount: _sub_data.computed_amount,
+      paybale_amout: _sub_data.paybale_amout,
+      gratuity_status: this.state.gratuity_status,
+      remarks: this.state.remarks
+    };
+
+    algaehApiCall({
+      uri: "/endofservice/save",
+      method: "POST",
+      module: "hrManagement",
+      data: send_data,
+      onSuccess: res => {
+        if (res.data.success) {
+          swalMessage({
+            title: "Record Added Successfully",
+            type: "success"
+          });
+          // this.clearState();
+          this.setState({
+            saveDisabled: true
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
   loadEmployeeDetails() {
     if (
       this.state.hims_d_employee_id === null ||
@@ -70,18 +136,26 @@ class EOSGratuity extends Component {
       });
 
       algaehApiCall({
-        uri: "/exit/getEmployeeDetails",
+        uri: "/endofservice",
         method: "GET",
+        module: "hrManagement",
+        data: {
+          hims_d_employee_id: this.state.hims_d_employee_id
+        },
         onSuccess: res => {
           if (res.data.success) {
             this.setState({
-              loading: false
+              loading: false,
+              data: res.data.result,
+              calculated_gratutity_amount: res.data.result.computed_amount,
+              payable_amount: res.data.result.paybale_amout,
+              saveDisabled: false
             });
           }
         },
         onFailure: err => {
           swalMessage({
-            title: err.message,
+            title: err,
             type: "error"
           });
           this.setState({
@@ -93,6 +167,7 @@ class EOSGratuity extends Component {
   }
 
   render() {
+    let EosData = this.state.data;
     return (
       <div className="EOSGratuityScreen">
         <div className="row  inner-top-search">
@@ -196,57 +271,85 @@ class EOSGratuity extends Component {
                       <div className="row">
                         <div className="col-3">
                           <label className="style_Label ">Employee Code</label>
-                          <h6>-------</h6>
+                          <h6>
+                            {EosData.employee_code
+                              ? EosData.employee_code
+                              : "------"}
+                          </h6>
                         </div>
 
                         <div className="col-3">
                           <label className="style_Label ">Employee Name</label>
-                          <h6>-------</h6>
+                          <h6>
+                            {EosData.full_name ? EosData.full_name : "------"}
+                          </h6>
                         </div>
 
                         <div className="col-3">
                           <label className="style_Label ">Date of Birth</label>
-                          <h6>-------</h6>
+                          <h6>
+                            {EosData.date_of_birth
+                              ? EosData.date_of_birth
+                              : "------"}
+                          </h6>
                         </div>
 
                         <div className="col-3">
                           <label className="style_Label ">Gender</label>
-                          <h6>-------</h6>
-                        </div>
-
-                        <div className="col-3">
-                          <label className="style_Label ">Grade</label>
-                          <h6>-------</h6>
+                          <h6>{EosData.sex ? EosData.sex : "------"}</h6>
                         </div>
 
                         <div className="col-3">
                           <label className="style_Label ">Department</label>
-                          <h6>-------</h6>
+                          <h6>
+                            {EosData.sub_department_name
+                              ? EosData.sub_department_name
+                              : "------"}
+                          </h6>
                         </div>
 
                         <div className="col-3">
                           <label className="style_Label ">
                             Date of Joining
                           </label>
-                          <h6>DD/MM/YYYY</h6>
+                          <h6>
+                            {EosData.date_of_joining
+                              ? EosData.date_of_joining
+                              : "------"}
+                          </h6>
                         </div>
 
                         <div className="col-3">
                           <label className="style_Label ">
                             Date of Leaving
                           </label>
-                          <h6>DD/MM/YYYY</h6>
+                          <h6>
+                            {EosData.date_of_resignation
+                              ? EosData.date_of_resignation
+                              : "------"}
+                          </h6>
                         </div>
 
                         <div className="col-3">
                           <label className="style_Label ">
                             Year of Service
                           </label>
-                          <h6> 4 yrs</h6>
+                          <h6>
+                            {EosData.endOfServiceYears
+                              ? EosData.endOfServiceYears
+                              : 0}{" "}
+                            yrs
+                          </h6>
                         </div>
                         <div className="col-3">
                           <label className="style_Label ">Eligiable Days</label>
-                          <h6> 4 yrs</h6>
+                          <h6>
+                            {" "}
+                            {EosData.eligible_day
+                              ? EosData.eligible_day
+                              : 0}{" "}
+                            Day(s)
+                          </h6>
                         </div>
                       </div>
                     </div>
@@ -255,7 +358,17 @@ class EOSGratuity extends Component {
                         Components Included
                       </label>
                       <div className="row">
-                        <div className="col">COMPONENETS INCLUDED</div>
+                        <div className="col">
+                          <ul>
+                            {EosData.componentList.map((data, index) => (
+                              <li key={data.hims_d_employee_earnings_id}>
+                                <span>{data.short_desc}</span> ->
+                                <span>{data.amount}</span>
+                              </li>
+                            ))}
+                          </ul>
+                          <span>Total: {EosData.totalEarningComponents}</span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -323,7 +436,12 @@ class EOSGratuity extends Component {
                   <div className="col">
                     <div className="customCheckbox" style={{ marginTop: 24 }}>
                       <label className="checkbox inline">
-                        <input type="checkbox" value="" name="Forfeiture" />
+                        <input
+                          type="checkbox"
+                          onChange={this.changeChecks.bind(this)}
+                          value="FOR"
+                          name="gratuity_status"
+                        />
                         <span>Forfeiture</span>
                       </label>
                     </div>
@@ -349,8 +467,8 @@ class EOSGratuity extends Component {
               <button
                 type="button"
                 className="btn btn-primary"
-                //   onClick={SaveDoctorCommission.bind(this, this)}
-                //disabled={this.state.saveEnable}
+                onClick={this.saveEos.bind(this)}
+                disabled={this.state.saveDisabled}
               >
                 <AlgaehLabel label={{ forceLabel: "Save", returnText: true }} />
               </button>
@@ -358,7 +476,7 @@ class EOSGratuity extends Component {
               <button
                 type="button"
                 className="btn btn-default"
-                //onClick={ClearData.bind(this, this)}
+                onClick={this.clearState.bind(this)}
               >
                 <AlgaehLabel
                   label={{ forceLabel: "Clear", returnText: true }}

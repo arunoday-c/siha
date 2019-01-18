@@ -5,6 +5,7 @@ import LeaveEncashmentProcess from "./LeaveEncashmentProcess/LeaveEncashmentProc
 import LeaveEncashAuth from "./LeaveEncashmentAuth/LeaveEncashmentAuth";
 import LeaveSalaryProcess from "./LeaveSalaryProcess/LeaveSalaryProcess";
 import LeaveYearlyProcess from "./LeaveYearlyProcess/LeaveYearlyProcess";
+//import LeaveSalaryAccural from "./LeaveSalaryAccural/LeaveSalaryAccural";
 
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 
@@ -97,6 +98,20 @@ export default class LeaveManagement extends Component {
                 />
               }
             </li>
+
+            <li
+              algaehtabs={"LeaveSalaryAccural"}
+              className={"nav-item tab-button"}
+              onClick={this.openTab.bind(this)}
+            >
+              {
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Salary Accural"
+                  }}
+                />
+              }
+            </li>
           </ul>
         </div>
 
@@ -111,7 +126,9 @@ export default class LeaveManagement extends Component {
             <LeaveSalaryProcess />
           ) : this.state.pageDisplay === "LeaveYearlyProcess" ? (
             <LeaveYearlyProcess />
-          ) : null}
+          ) : // : this.state.pageDisplay === "LeaveSalaryAccural" ? (
+          //   <LeaveSalaryAccural />
+          null}
         </div>
       </div>
     );

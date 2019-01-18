@@ -8,11 +8,148 @@ import {
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import Employee from "../../../../Search/Employee.json";
 import "./FinalSettlement.css";
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+import Enumerable from "linq";
+import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 
 class FinalSettlement extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      earnings: [],
+      deductions: [],
+      deductingList: [],
+      earningList: []
+    };
+    this.getEarningsDeductions();
+  }
+  ///finalsettlement
+
+  loadFinalSettlement() {
+    if (
+      this.state.hims_d_employee_id === null ||
+      this.state.hims_d_employee_id === undefined
+    ) {
+      swalMessage({
+        title: "Please Select an Employee",
+        type: "warning"
+      });
+    } else {
+      this.setState({
+        loading: true
+      });
+
+      algaehApiCall({
+        uri: "/finalsettlement",
+        method: "GET",
+        module: "hrManagement",
+        data: {
+          employee_id: this.state.hims_d_employee_id
+        },
+        onSuccess: res => {
+          if (res.data.success) {
+            console.log("Result", res.data.records);
+          }
+        },
+        onFailure: err => {
+          swalMessage({
+            title: err,
+            type: "error"
+          });
+          this.setState({
+            loading: false
+          });
+        }
+      });
+    }
+  }
+
+  dropDownHandler(value) {
+    this.setState({
+      [value.name]: value.value
+    });
+  }
+
+  textHandler(e) {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  }
+
+  addEarning() {
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      querySelector: "data-validate='fsErnDiv'",
+      onSuccess: () => {
+        let earnings = this.state.earningList;
+
+        earnings.push({
+          amount: this.state.earning_amount,
+          earning_id: this.state.earning_id
+        });
+
+        this.setState({
+          earningList: earnings
+        });
+
+        this.setState({
+          earning_amount: null,
+          earning_id: null
+        });
+      }
+    });
+  }
+
+  addDeduction() {
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      querySelector: "data-validate='fsDedDiv'",
+      onSuccess: () => {
+        let deduction = this.state.deductingList;
+
+        deduction.push({
+          amount: this.state.deduction_amount,
+          deduction_id: this.state.deduction_id
+        });
+
+        this.setState({
+          deductingList: deduction
+        });
+
+        this.setState({
+          deduction_amount: null,
+          deduction_id: null
+        });
+      }
+    });
+  }
+
+  getEarningsDeductions() {
+    algaehApiCall({
+      uri: "/employee/getEarningDeduction",
+      method: "GET",
+      onSuccess: res => {
+        if (res.data.success) {
+          let earnings = Enumerable.from(res.data.records)
+            .where(w => w.component_category === "E")
+            .toArray();
+          let deductions = Enumerable.from(res.data.records)
+            .where(w => w.component_category === "D")
+            .toArray();
+
+          this.setState({
+            earnings: earnings,
+            deductions: deductions
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   employeeSearch() {
@@ -97,7 +234,11 @@ class FinalSettlement extends Component {
             </div>
           </div>
           <div className="col form-group">
-            <button style={{ marginTop: 21 }} className="btn btn-primary">
+            <button
+              onClick={this.loadFinalSettlement.bind(this)}
+              style={{ marginTop: 21 }}
+              className="btn btn-primary"
+            >
               Load
             </button>
 
@@ -165,18 +306,23 @@ class FinalSettlement extends Component {
                   </div>
 
                   <div className="portlet-body">
-                    <div className="row">
+                    <div className="row" data-validate="fsErnDiv">
                       <AlagehAutoComplete
                         div={{ className: "col form-group" }}
                         label={{
                           forceLabel: "Select Earning Type",
-                          isImp: false
+                          isImp: true
                         }}
                         selector={{
-                          name: "",
+                          name: "earning_id",
+                          value: this.state.earning_id,
                           className: "select-fld",
-                          dataSource: {},
-                          others: {}
+                          dataSource: {
+                            textField: "earning_deduction_description",
+                            valueField: "hims_d_earning_deduction_id",
+                            data: this.state.earnings
+                          },
+                          onChange: this.dropDownHandler.bind(this)
                         }}
                       />
 
@@ -184,13 +330,15 @@ class FinalSettlement extends Component {
                         div={{ className: "col form-group" }}
                         label={{
                           forceLabel: "Amount",
-                          isImp: false
+                          isImp: true
                         }}
                         textBox={{
                           className: "txt-fld",
-                          name: "",
-                          value: "",
-                          events: {},
+                          name: "earning_amount",
+                          value: this.state.earning_amount,
+                          events: {
+                            onChange: this.textHandler.bind(this)
+                          },
                           others: {
                             type: "number"
                           }
@@ -199,6 +347,7 @@ class FinalSettlement extends Component {
 
                       <div className="col-2">
                         <button
+                          onClick={this.addEarning.bind(this)}
                           className="btn btn-primary"
                           style={{ marginTop: 21 }}
                         >
@@ -211,21 +360,21 @@ class FinalSettlement extends Component {
                           id="Salary_Earning_Cntr_grid"
                           columns={[
                             {
-                              fieldName: "",
+                              fieldName: "earning_id",
                               label: "Earning Type"
                               //disabled: true
                             },
                             {
-                              fieldName: "",
+                              fieldName: "amount",
                               label: "Amount",
                               others: {
                                 maxWidth: 100
                               }
                             }
                           ]}
-                          //        keyId="algaeh_d_module_id"
+                          keyId="earning_id"
                           dataSource={{
-                            data: []
+                            data: this.state.earningList
                           }}
                           isEditable={false}
                           paging={{ page: 0, rowsPerPage: 10 }}
@@ -254,18 +403,23 @@ class FinalSettlement extends Component {
                   </div>
 
                   <div className="portlet-body">
-                    <div className="row">
+                    <div className="row" data-validate="fsDedDiv">
                       <AlagehAutoComplete
                         div={{ className: "col form-group" }}
                         label={{
                           forceLabel: "Select Deduction Type",
-                          isImp: false
+                          isImp: true
                         }}
                         selector={{
-                          name: "",
+                          name: "deduction_id",
+                          value: this.state.deduction_id,
                           className: "select-fld",
-                          dataSource: {},
-                          others: {}
+                          dataSource: {
+                            textField: "earning_deduction_description",
+                            valueField: "hims_d_earning_deduction_id",
+                            data: this.state.deductions
+                          },
+                          onChange: this.dropDownHandler.bind(this)
                         }}
                       />
 
@@ -273,13 +427,15 @@ class FinalSettlement extends Component {
                         div={{ className: "col form-group" }}
                         label={{
                           forceLabel: "Amount",
-                          isImp: false
+                          isImp: true
                         }}
                         textBox={{
                           className: "txt-fld",
-                          name: "",
-                          value: "",
-                          events: {},
+                          name: "deduction_amount",
+                          value: this.state.deduction_amount,
+                          events: {
+                            onChange: this.textHandler.bind(this)
+                          },
                           others: {
                             type: "number"
                           }
@@ -288,6 +444,7 @@ class FinalSettlement extends Component {
 
                       <div className="col-2">
                         <button
+                          onClick={this.addDeduction.bind(this)}
                           className="btn btn-primary"
                           style={{ marginTop: 21 }}
                         >
@@ -299,12 +456,12 @@ class FinalSettlement extends Component {
                           id="Employee_Deductions_Cntr_grid"
                           columns={[
                             {
-                              fieldName: "",
+                              fieldName: "deduction_id",
                               label: "Deduction Type"
                               //disabled: true
                             },
                             {
-                              fieldName: "",
+                              fieldName: "amount",
                               label: "Amount",
                               others: {
                                 maxWidth: 100
@@ -313,7 +470,7 @@ class FinalSettlement extends Component {
                           ]}
                           //    keyId="algaeh_d_module_id"
                           dataSource={{
-                            data: []
+                            data: this.state.deductingList
                           }}
                           isEditable={false}
                           paging={{ page: 0, rowsPerPage: 10 }}
@@ -365,7 +522,7 @@ class FinalSettlement extends Component {
                               }
                             }
                           ]}
-                          // keyId="algaeh_d_module_id"
+                          keyId="deduction_id"
                           dataSource={{
                             data: []
                           }}
@@ -382,55 +539,61 @@ class FinalSettlement extends Component {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
 
-              <div className="col-12">
-                <div
-                  className="portlet portlet-bordered margin-bottom-15"
-                  style={{ padding: 0 }}
-                >
-                  <div className="portlet-body">
-                    <div className="col-12" style={{ marginTop: 7 }}>
-                      <div className="row">
-                        <div className="col-4">
-                          <label className="style_Label ">Total Salary</label>
-                          <h6>-------</h6>
-                        </div>
+          <div className="col-12" style={{ marginBottom: 40 }}>
+            <div
+              className="portlet portlet-bordered margin-bottom-15"
+              style={{ padding: 0 }}
+            >
+              <div className="portlet-body">
+                <div className="col-12" style={{ marginTop: 7 }}>
+                  <div className="row">
+                    <div className="col-3">
+                      <label className="style_Label ">Total Salary</label>
+                      <h6>-------</h6>
+                    </div>
 
-                        <div className="col-4">
-                          <label className="style_Label ">
-                            Gratuity Amount
-                          </label>
-                          <h6>-------</h6>
-                        </div>
+                    <div className="col-3">
+                      <label className="style_Label ">Gratuity Amount</label>
+                      <h6>-------</h6>
+                    </div>
 
-                        <div className="col-4">
-                          <label className="style_Label ">Total Loan</label>
-                          <h6>-------</h6>
-                        </div>
+                    <div className="col-3">
+                      <label className="style_Label ">Leave Encashment</label>
+                      <h6>-------</h6>
+                    </div>
+                    <div className="col-3">
+                      <label className="style_Label ">Total Loan</label>
+                      <h6>-------</h6>
+                    </div>
+                  </div>
+                  <hr />
+                  <div className="row">
+                    <div className="col">
+                      <label className="style_Label ">Net Earnings</label>
+                      <h6>-------</h6>
+                    </div>
 
-                        <div className="col-4">
-                          <label className="style_Label ">Net Earnings</label>
-                          <h6>-------</h6>
-                        </div>
+                    <div className="col">
+                      <label className="style_Label ">Total Deduction</label>
+                      <h6>-------</h6>
+                    </div>
+                    <div className="col">
+                      <label className="style_Label ">Net Amount</label>
+                      <h6>-------</h6>
+                    </div>
 
-                        <div className="col-4">
-                          <label className="style_Label ">
-                            Total Deduction
-                          </label>
-                          <h6>-------</h6>
-                        </div>
-                        <div className="col-4">
-                          <label className="style_Label ">Net Amount</label>
-                          <h6>-------</h6>
-                        </div>
-                      </div>
+                    <div className="col-12">
+                      <label>Remarks</label>
+                      <textarea className="textArea" />
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
           <div className="hptl-phase1-footer">
             <div className="row">
               <div className="col-lg-12">

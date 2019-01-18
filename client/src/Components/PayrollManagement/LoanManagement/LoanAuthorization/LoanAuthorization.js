@@ -310,6 +310,39 @@ class LoanAuthorization extends Component {
                               <i className="fas fa-file-signature" />
                             </a>
                           );
+                        },
+                        others: {
+                          filterable: false,
+                          maxWidth: 55
+                        }
+                      },
+                      {
+                        fieldName: "loan_authorized",
+                        label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.loan_authorized === "PEN" ? (
+                                <span className="badge badge-warning">
+                                  Pending
+                                </span>
+                              ) : row.loan_authorized === "APR" ? (
+                                <span className="badge badge-success">
+                                  Approved
+                                </span>
+                              ) : row.loan_authorized === "REJ" ? (
+                                <span className="badge badge-danger">
+                                  Rejected
+                                </span>
+                              ) : row.loan_authorized === "IS" ? (
+                                <span className="badge badge-success">
+                                  Issued
+                                </span>
+                              ) : (
+                                "------"
+                              )}
+                            </span>
+                          );
                         }
                       },
                       {
@@ -347,35 +380,6 @@ class LoanAuthorization extends Component {
                             label={{ forceLabel: "Employee Name" }}
                           />
                         )
-                      },
-                      {
-                        fieldName: "loan_authorized",
-                        label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {row.loan_authorized === "PEN" ? (
-                                <span className="badge badge-warning">
-                                  Pending
-                                </span>
-                              ) : row.loan_authorized === "APR" ? (
-                                <span className="badge badge-success">
-                                  Approved
-                                </span>
-                              ) : row.loan_authorized === "REJ" ? (
-                                <span className="badge badge-danger">
-                                  Rejected
-                                </span>
-                              ) : row.loan_authorized === "IS" ? (
-                                <span className="badge badge-success">
-                                  Issued
-                                </span>
-                              ) : (
-                                "------"
-                              )}
-                            </span>
-                          );
-                        }
                       }
                     ]}
                     keyId="hims_f_loan_application_id"

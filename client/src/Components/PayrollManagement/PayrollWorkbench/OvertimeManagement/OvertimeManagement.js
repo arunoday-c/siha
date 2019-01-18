@@ -237,7 +237,7 @@ class OvertimeManagement extends Component {
                     <h6>0.00</h6>
                   </div>
                 </div>
-                <div className="row">
+                {/* <div className="row">
                   <div className="col form-group float-right">
                     <button className="btn btn-primary">Save</button>
                     <button
@@ -253,8 +253,28 @@ class OvertimeManagement extends Component {
                       Delete
                     </button>
                   </div>
-                </div>
+                </div> */}
               </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="hptl-phase1-footer">
+          <div className="row">
+            <div className="col-lg-12">
+              <button type="button" className="btn btn-primary">
+                <AlgaehLabel label={{ forceLabel: "Save", returnText: true }} />
+              </button>
+              <button type="button" className="btn btn-default">
+                <AlgaehLabel
+                  label={{ forceLabel: "Clear", returnText: true }}
+                />
+              </button>
+              <button type="button" className="btn btn-other">
+                <AlgaehLabel
+                  label={{ forceLabel: "Print", returnText: true }}
+                />
+              </button>
             </div>
           </div>
         </div>

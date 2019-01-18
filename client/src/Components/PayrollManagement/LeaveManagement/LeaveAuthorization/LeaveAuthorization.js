@@ -48,7 +48,8 @@ export default class LeaveAuthorization extends Component {
       hims_d_employee_id: null,
       employee_name: null,
       auth_level: auth_level !== null ? auth_level.value : null,
-      leave_status: "PEN"
+      leave_status: "PEN",
+      leave_applns: []
     });
   }
 
@@ -159,9 +160,21 @@ export default class LeaveAuthorization extends Component {
     });
   }
 
+  realoadLeaveAuths() {
+    this.loadLeaveApplications();
+    this.setState({
+      open: false
+    });
+  }
+
   render() {
     return (
       <div className="row">
+        <button
+          id="lvAuthLd"
+          onClick={this.realoadLeaveAuths.bind(this)}
+          className="d-none"
+        />
         <LeaveAuthDetail
           open={this.state.open}
           onClose={this.closePopup.bind(this)}
@@ -362,6 +375,10 @@ export default class LeaveAuthorization extends Component {
                               }}
                             />
                           );
+                        },
+                        others: {
+                          filterable: false,
+                          maxWidth: 55
                         }
                       },
                       {
@@ -466,6 +483,7 @@ export default class LeaveAuthorization extends Component {
                     keyId="hims_f_leave_application_id"
                     dataSource={{ data: this.state.leave_applns }}
                     isEditable={false}
+                    filter={true}
                     loading={this.state.loading}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{

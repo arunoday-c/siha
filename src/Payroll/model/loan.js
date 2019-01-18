@@ -12,6 +12,7 @@ import httpStatus from "../../utils/httpStatus";
 //import { LINQ } from "node-linq";
 
 import { debugLog } from "../../utils/logging";
+import moment from "moment";
 //import moment from "moment";
 
 //created by irfan:
@@ -432,7 +433,10 @@ let authorizeLoan = (req, res, next) => {
                     input.hims_f_loan_application_id
                   }`;
                 } else if (input.authorized == "A") {
-                  qry = `update hims_f_loan_application set loan_authorized='APR'\
+                  qry = `update hims_f_loan_application set loan_authorized='APR',authorized_date='${moment().format(
+                    "YYYY-MM-DD"
+                  )}',\
+                  authorized_by=${req.userIdentity.algaeh_d_app_user_id}\
                   where record_status='A' and loan_authorized='PEN' and hims_f_loan_application_id=${
                     input.hims_f_loan_application_id
                   }`;

@@ -199,7 +199,9 @@ class ApplyLeave extends Component {
         from_date: this.state.from_date,
         to_date: this.state.to_date,
         hims_d_leave_detail_id: this.state.hims_d_leave_detail_id,
-        religion_id: this.state.religion_id
+        religion_id: this.state.religion_id,
+        leave_id: this.state.leave_id,
+        employee_id: this.state.employee_id
       },
       onSuccess: res => {
         if (res.data.success) {
@@ -210,6 +212,15 @@ class ApplyLeave extends Component {
           swalMessage({
             title: res.data.records.message,
             type: "warning"
+          });
+          this.setState({
+            leave_id: null,
+            from_leave_session: null,
+            to_leave_session: null,
+            from_date: null,
+            to_date: null,
+            available_balance: 0,
+            total_applied_days: 0
           });
         }
       },
@@ -786,6 +797,62 @@ class ApplyLeave extends Component {
                       id="leaveRequestList_grid"
                       columns={[
                         {
+                          fieldName: "status",
+
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Status" }} />
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {row.status === "PEN" ? (
+                                  <span className="badge badge-warning">
+                                    Pending
+                                  </span>
+                                ) : row.status === "APR" ? (
+                                  <span className="badge badge-success">
+                                    Approved
+                                  </span>
+                                ) : row.status === "REJ" ? (
+                                  <span className="badge badge-danger">
+                                    Rejected
+                                  </span>
+                                ) : row.status === "PRO" ? (
+                                  <span className="badge badge-success">
+                                    Processed
+                                  </span>
+                                ) : (
+                                  "------"
+                                )}
+                              </span>
+                            );
+                          },
+                          editorTemplate: row => {
+                            return (
+                              <span>
+                                {row.status === "PEN"
+                                  ? "Pending"
+                                  : row.status === "APR"
+                                  ? "Approved"
+                                  : row.status === "REJ"
+                                  ? "Rejected"
+                                  : row.status === "PRO"
+                                  ? "Processed"
+                                  : "------"}
+                              </span>
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "total_applied_days",
+
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Applied Days" }}
+                            />
+                          )
+                        },
+                        {
                           fieldName: "leave_application_code",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Leave Code" }} />
@@ -802,7 +869,7 @@ class ApplyLeave extends Component {
                             return (
                               <span>
                                 {moment(row.application_date).format(
-                                  "MM-DD-YYYY"
+                                  "DD-MM-YYYY"
                                 )}
                               </span>
                             );
@@ -824,7 +891,7 @@ class ApplyLeave extends Component {
                           displayTemplate: row => {
                             return (
                               <span>
-                                {moment(row.from_date).format("MM-DD-YYYY")}
+                                {moment(row.from_date).format("DD-MM-YYYY")}
                               </span>
                             );
                           }
@@ -838,38 +905,29 @@ class ApplyLeave extends Component {
                           displayTemplate: row => {
                             return (
                               <span>
-                                {moment(row.to_date).format("MM-DD-YYYY")}
+                                {moment(row.to_date).format("DD-MM-YYYY")}
                               </span>
                             );
                           }
                         },
-                        {
-                          fieldName: "total_applied_days",
+                        // {
+                        //   fieldName: "total_approved_days",
+                        //   label: (
+                        //     <AlgaehLabel
+                        //       label={{ forceLabel: "Approved Days" }}
+                        //     />
+                        //   ),
 
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Applied Days" }}
-                            />
-                          )
-                        },
-                        {
-                          fieldName: "total_approved_days",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Approved Days" }}
-                            />
-                          ),
-
-                          displayTemplate: row => {
-                            return (
-                              <span>
-                                {row.total_approved_days !== null
-                                  ? row.total_approved_days
-                                  : 0}
-                              </span>
-                            );
-                          }
-                        },
+                        //   displayTemplate: row => {
+                        //     return (
+                        //       <span>
+                        //         {row.total_approved_days !== null
+                        //           ? row.total_approved_days
+                        //           : 0}
+                        //       </span>
+                        //     );
+                        //   }
+                        // },
                         {
                           fieldName: "remarks",
 
@@ -905,43 +963,6 @@ class ApplyLeave extends Component {
                             return (
                               <span>
                                 {row.authorized === "Y" ? "Yes" : "No"}
-                              </span>
-                            );
-                          }
-                        },
-                        {
-                          fieldName: "status",
-
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Status" }} />
-                          ),
-                          displayTemplate: row => {
-                            return (
-                              <span>
-                                {row.status === "PEN"
-                                  ? "Pending"
-                                  : row.status === "APR"
-                                  ? "Approved"
-                                  : row.status === "REJ"
-                                  ? "Rejected"
-                                  : row.status === "PRO"
-                                  ? "Processed"
-                                  : "------"}
-                              </span>
-                            );
-                          },
-                          editorTemplate: row => {
-                            return (
-                              <span>
-                                {row.status === "PEN"
-                                  ? "Pending"
-                                  : row.status === "APR"
-                                  ? "Approved"
-                                  : row.status === "REJ"
-                                  ? "Rejected"
-                                  : row.status === "PRO"
-                                  ? "Processed"
-                                  : "------"}
                               </span>
                             );
                           }
