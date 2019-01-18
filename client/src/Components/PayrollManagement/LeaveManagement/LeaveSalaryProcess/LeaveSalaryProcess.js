@@ -1,100 +1,171 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 
 import "./LeaveSalaryProcess.css";
+import GlobalVariables from "../../../../utils/GlobalVariables.json";
+import { AlgaehActions } from "../../../../actions/algaehActions";
+import moment from "moment";
 
 import {
   AlagehAutoComplete,
   AlgaehLabel,
   AlgaehDataGrid,
-  AlgaehDateHandler
+  AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
+import {
+  texthandle,
+  SalaryProcess,
+  getSalaryDetails,
+  FinalizeSalary,
+  ClearData,
+  employeeSearch,
+  dateFormater
+} from "./LeaveSalaryProcessEvents.js";
+import Options from "../../../../Options.json";
 
-export default class LeaveSalaryProcess extends Component {
+class LeaveSalaryProcess extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      year: moment().year(),
+      month: moment(new Date()).format("M"),
+      employee_name: null,
+      employee_id: null,
+      leave_salary_detail: [],
+      ProcessBtn: true,
+      encash_type: null,
+      PayBtn: true,
+      leave_period: null
+    };
+  }
+
+  componentDidMount() {
+    if (
+      this.props.organizations === undefined ||
+      this.props.organizations.length === 0
+    ) {
+      this.props.getOrganizations({
+        uri: "/organization/getOrganization",
+        method: "GET",
+        redux: {
+          type: "ORGS_GET_DATA",
+          mappingName: "organizations"
+        }
+      });
+    }
+
+    if (
+      this.props.subdepartment === undefined ||
+      this.props.subdepartment.length === 0
+    ) {
+      this.props.getSubDepartment({
+        uri: "/department/get/subdepartment",
+        data: {
+          sub_department_status: "A"
+        },
+        method: "GET",
+        redux: {
+          type: "SUB_DEPT_GET_DATA",
+          mappingName: "subdepartment"
+        }
+      });
+    }
+
+    if (
+      this.props.all_employees === undefined ||
+      this.props.all_employees.length === 0
+    ) {
+      this.props.getEmployees({
+        uri: "/employee/get",
+        method: "GET",
+
+        redux: {
+          type: "EMPLY_GET_DATA",
+          mappingName: "all_employees"
+        }
+      });
+    }
+  }
+
   render() {
     return (
       <div className="leave_en_auth row">
         <div className="col-12">
           <div className="row inner-top-search">
-            <AlagehAutoComplete
-              div={{ className: "col form-group mandatory" }}
-              label={{
-                forceLabel: "Selected Year",
-                isImp: true
-              }}
-              selector={{
-                name: "",
-                className: "select-fld",
+            <div className="col">
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Leave Salary No."
+                }}
+              />
+              <h6>
+                {this.state.encashment_number
+                  ? this.state.encashment_number
+                  : "*** NEW ***"}
+              </h6>
+            </div>
+            <div className="col">
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Date"
+                }}
+              />
+              <h6>
+                {this.state.salary_date
+                  ? moment(this.state.salary_date).format(Options.dateFormat)
+                  : Options.dateFormat}
+              </h6>
+            </div>
 
-                dataSource: {},
-                others: {}
-              }}
-            />
-
-            <AlagehAutoComplete
-              div={{ className: "col form-group" }}
-              label={{
-                forceLabel: "Filter by Branch",
-                isImp: false
-              }}
-              selector={{
-                name: "",
-                className: "select-fld",
-
-                dataSource: {},
-                others: {}
-              }}
-            />
-
-            <AlagehAutoComplete
-              div={{ className: "col form-group" }}
-              label={{
-                forceLabel: "Filter by Departement",
-                isImp: false
-              }}
-              selector={{
-                name: "",
-                className: "select-fld",
-
-                dataSource: {},
-                others: {}
-              }}
-            />
-            <AlagehAutoComplete
-              div={{ className: "col form-group" }}
-              label={{
-                forceLabel: "Select an Employee",
-                isImp: true
-              }}
-              selector={{
-                name: "",
-                className: "select-fld",
-
-                dataSource: {},
-                others: {}
-              }}
-            />
-            <AlagehAutoComplete
-              div={{ className: "col form-group" }}
-              label={{
-                forceLabel: "Encashment Type",
-                isImp: false
-              }}
-              selector={{
-                name: "",
-                className: "select-fld",
-                dataSource: {},
-                others: {}
-              }}
-            />
+            <div className="col" style={{ marginTop: 10 }}>
+              <div
+                className="row"
+                style={{
+                  border: " 1px solid #ced4d9",
+                  borderRadius: 5,
+                  marginLeft: 0
+                }}
+              >
+                <div className="col">
+                  <AlgaehLabel label={{ forceLabel: "Select a Employee." }} />
+                  <h6>
+                    {this.state.employee_name
+                      ? this.state.employee_name
+                      : "------"}
+                  </h6>
+                </div>
+                <div
+                  className="col-lg-3"
+                  style={{ borderLeft: "1px solid #ced4d8" }}
+                >
+                  <i
+                    className="fas fa-search fa-lg"
+                    style={{
+                      paddingTop: 17,
+                      paddingLeft: 3,
+                      cursor: "pointer"
+                    }}
+                    onClick={employeeSearch.bind(this, this)}
+                  />
+                </div>
+              </div>
+            </div>
 
             <div className="col form-group">
-              <button style={{ marginTop: 21 }} className="btn btn-primary">
-                Load
+              <button
+                style={{ marginTop: 21 }}
+                className="btn btn-primary"
+                disabled={this.state.ProcessBtn}
+              >
+                Process
               </button>
               <button
                 type="button"
                 className="btn btn-default"
                 style={{ marginTop: 21, marginLeft: 5 }}
+                onClick={ClearData.bind(this, this)}
               >
                 <AlgaehLabel
                   label={{ forceLabel: "Clear", returnText: true }}
@@ -124,20 +195,25 @@ export default class LeaveSalaryProcess extends Component {
                     datavalidate="leaveSalaryProcessGrid"
                     columns={[
                       {
-                        fieldName: "Year",
+                        fieldName: "year",
                         label: <AlgaehLabel label={{ forceLabel: "Year" }} />
                       },
                       {
-                        fieldName: "Month",
-                        label: <AlgaehLabel label={{ forceLabel: "Month" }} />
-                      },
-                      {
-                        fieldName: "EmployeeCode",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Employee Code" }}
-                          />
-                        )
+                        fieldName: "month",
+                        label: <AlgaehLabel label={{ forceLabel: "Month" }} />,
+                        displayTemplate: row => {
+                          let display = GlobalVariables.MONTHS.filter(
+                            f => f.value === row.month
+                          );
+
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? display[0].name
+                                : ""}
+                            </span>
+                          );
+                        }
                       },
                       {
                         fieldName: "SalaryNo",
@@ -150,6 +226,9 @@ export default class LeaveSalaryProcess extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Salary Date" }} />
                         )
+                        // displayTemplate: row => {
+                        //   return <span>{dateFormater(row.expiry_date)}</span>;
+                        // }
                       },
                       {
                         fieldName: "GrossSalary",
@@ -164,52 +243,79 @@ export default class LeaveSalaryProcess extends Component {
                         )
                       },
                       {
-                        fieldName: "StartDate",
+                        fieldName: "start_date",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Start Date" }} />
-                        )
+                        ),
+                        displayTemplate: row => {
+                          return <span>{dateFormater(row.start_date)}</span>;
+                        }
                       },
                       {
-                        fieldName: "EndDate",
+                        fieldName: "end_date",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "End Date" }} />
-                        )
+                        ),
+                        displayTemplate: row => {
+                          return <span>{dateFormater(row.end_date)}</span>;
+                        }
                       },
                       {
-                        fieldName: "LeaveStartDate",
+                        fieldName: "leave_start_date",
                         label: (
                           <AlgaehLabel
                             label={{ forceLabel: "Leave Start Date" }}
                           />
-                        )
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>{dateFormater(row.leave_start_date)}</span>
+                          );
+                        }
                       },
                       {
-                        fieldName: "LeaveEndDate",
+                        fieldName: "leave_end_date",
                         label: (
                           <AlgaehLabel
                             label={{ forceLabel: "Leave End Date" }}
                           />
-                        )
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>{dateFormater(row.leave_end_date)}</span>
+                          );
+                        }
                       },
                       {
-                        fieldName: "Leave Type",
+                        fieldName: "leave_type",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Leave Type" }} />
-                        )
+                        ),
+                        displayTemplate: row => {
+                          let display = GlobalVariables.LEAVE_TYPE.filter(
+                            f => f.value === row.leave_type
+                          );
+
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? display[0].name
+                                : ""}
+                            </span>
+                          );
+                        }
                       },
                       {
-                        fieldName: "LeavePeriod",
+                        fieldName: "leave_period",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Leave Period" }} />
                         )
                       }
                     ]}
-                    keyId=""
-                    dataSource={{ data: [] }}
-                    isEditable={true}
+                    keyId="hims_f_leave_salary_detail_id"
+                    dataSource={{ data: this.state.leave_salary_detail }}
+                    // isEditable={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
-                    events={{}}
-                    others={{}}
                   />
                 </div>
               </div>
@@ -225,7 +331,7 @@ export default class LeaveSalaryProcess extends Component {
                 }}
               />
               <h6>
-                <span>21</span> Days
+                <span>{this.state.leave_period}</span> Days
               </h6>
             </div>
             <div className="col">
@@ -274,10 +380,12 @@ export default class LeaveSalaryProcess extends Component {
         <div className="hptl-phase1-footer">
           <div className="row">
             <div className="col-lg-12">
-              <button type="button" className="btn btn-primary">
-                <AlgaehLabel
-                  label={{ forceLabel: "Process", returnText: true }}
-                />
+              <button
+                type="button"
+                className="btn btn-primary"
+                disabled={this.state.PayBtn}
+              >
+                <AlgaehLabel label={{ forceLabel: "Pay", returnText: true }} />
               </button>
             </div>
           </div>
@@ -286,3 +394,29 @@ export default class LeaveSalaryProcess extends Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    subdepartment: state.subdepartment,
+    organizations: state.organizations,
+    all_employees: state.all_employees
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getSubDepartment: AlgaehActions,
+      getOrganizations: AlgaehActions,
+      getEmployees: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(LeaveSalaryProcess)
+);

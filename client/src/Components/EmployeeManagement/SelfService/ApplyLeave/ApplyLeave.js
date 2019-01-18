@@ -213,6 +213,15 @@ class ApplyLeave extends Component {
             title: res.data.records.message,
             type: "warning"
           });
+          this.setState({
+            leave_id: null,
+            from_leave_session: null,
+            to_leave_session: null,
+            from_date: null,
+            to_date: null,
+            available_balance: 0,
+            total_applied_days: 0
+          });
         }
       },
       onFailure: err => {

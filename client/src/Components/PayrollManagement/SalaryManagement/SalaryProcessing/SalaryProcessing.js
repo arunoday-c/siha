@@ -37,7 +37,26 @@ class SalaryProcessing extends Component {
       finalizeBtn: true,
       employee_id: null,
       employee_name: null,
-      hospital_id: null
+      hospital_id: null,
+
+      total_days: null,
+      absent_days: null,
+      total_work_days: null,
+      total_weekoff_days: null,
+      total_holidays: null,
+      total_leave: null,
+      paid_leave: null,
+      unpaid_leave: null,
+      present_days: null,
+      pending_unpaid_leave: null,
+      total_paid_days: null,
+
+      total_earnings: null,
+      total_deductions: null,
+      loan_payable_amount: null,
+      loan_due_amount: null,
+      net_salary: null,
+      salary_dates: null
     };
   }
 
@@ -90,6 +109,17 @@ class SalaryProcessing extends Component {
   }
 
   render() {
+    let yearAndMonth = this.state.year + "-" + this.state.month;
+
+    let salary_dates =
+      moment(yearAndMonth)
+        .startOf("month")
+        .format("DD-MM-YYYY") +
+      " / " +
+      moment(yearAndMonth)
+        .endOf("month")
+        .format("DD-MM-YYYY");
+
     return (
       <React.Fragment>
         <div className="hptl-SalaryManagement-form">
@@ -222,32 +252,6 @@ class SalaryProcessing extends Component {
               </div>
             </div>
 
-            {/* <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{
-                forceLabel: "Select a Employee.",
-                isImp: false
-              }}
-              selector={{
-                name: "select_employee_id",
-                className: "select-fld",
-                value: this.state.select_employee_id,
-                dataSource: {
-                  textField: "full_name",
-                  valueField: "hims_d_employee_id",
-                  data:
-                    this.state.sub_department_id !== null
-                      ? depEmployee
-                      : this.props.all_employees
-                },
-                onChange: texthandle.bind(this, this),
-                onClear: () => {
-                  this.setState({
-                    select_employee_id: null
-                  });
-                }
-              }}
-            /> */}
             <AlagehAutoComplete
               div={{ className: "col" }}
               label={{
@@ -289,8 +293,8 @@ class SalaryProcessing extends Component {
                     <div className="portlet-title">
                       <div className="caption">
                         <h3 className="caption-subject">
-                          Salaried Employee Salary List for -{" "}
-                          <span>Dec 01 2018 - Dec 31 2018</span>
+                          Salaried Employee Salary List for -
+                          <span>{salary_dates}</span>
                         </h3>
                       </div>
                       <div className="actions">
@@ -315,12 +319,43 @@ class SalaryProcessing extends Component {
                                     }}
                                   />
                                 ),
-                                className: drow => {
-                                  return drow.salary_processed !== "Y"
-                                    ? "greenCell"
-                                    : null;
+
+                                others: {
+                                  minWidth: 150,
+                                  maxWidth: 250
                                 }
+
                                 //disabled: true
+                              },
+                              {
+                                fieldName: "employee_code",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Employee Code"
+                                    }}
+                                  />
+                                ),
+                                className: drow => {
+                                  return "greenCell";
+                                },
+                                displayTemplate: row => {
+                                  return (
+                                    <span
+                                      className="pat-code"
+                                      onClick={() => {
+                                        getSalaryDetails(this, row);
+                                      }}
+                                    >
+                                      {row.employee_code}
+                                    </span>
+                                  );
+                                },
+
+                                others: {
+                                  minWidth: 120,
+                                  maxWidth: 200
+                                }
                               },
                               {
                                 fieldName: "full_name",
@@ -405,9 +440,9 @@ class SalaryProcessing extends Component {
                               onDelete: () => {},
                               onDone: () => {}
                             }}
-                            onRowSelect={row => {
-                              getSalaryDetails(this, row);
-                            }}
+                            // onRowSelect={row => {
+                            //   getSalaryDetails(this, row);
+                            // }}
                           />
                         </div>
                       </div>
@@ -623,24 +658,36 @@ class SalaryProcessing extends Component {
                           forceLabel: "Total Days"
                         }}
                       />
-                      <h6>31</h6>
+                      <h6>
+                        {this.state.total_days === null
+                          ? 0
+                          : this.state.total_days}
+                      </h6>
                     </div>
                     <div className="col-6">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Paid Holidays"
+                          forceLabel: "Paid Leave"
                         }}
                       />
-                      <h6>31</h6>
+                      <h6>
+                        {this.state.paid_leave === null
+                          ? 0
+                          : this.state.paid_leave}
+                      </h6>
                     </div>
 
                     <div className="col-6">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Unpaid Holidays"
+                          forceLabel: "Unpaid Leave"
                         }}
                       />
-                      <h6>31</h6>
+                      <h6>
+                        {this.state.unpaid_leave === null
+                          ? 0
+                          : this.state.unpaid_leave}
+                      </h6>
                     </div>
                     <div className="col-6">
                       <AlgaehLabel
@@ -648,23 +695,35 @@ class SalaryProcessing extends Component {
                           forceLabel: "Absent"
                         }}
                       />
-                      <h6>31</h6>
+                      <h6>
+                        {this.state.absent_days === null
+                          ? 0
+                          : this.state.absent_days}
+                      </h6>
                     </div>
                     <div className="col-6">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Present"
+                          forceLabel: "Present Days"
                         }}
                       />
-                      <h6>31</h6>
+                      <h6>
+                        {this.state.present_days === null
+                          ? 0
+                          : this.state.present_days}
+                      </h6>
                     </div>
                     <div className="col-6">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Leaves"
+                          forceLabel: "Total Leaves"
                         }}
                       />
-                      <h6>31</h6>
+                      <h6>
+                        {this.state.total_leave === null
+                          ? 0
+                          : this.state.total_leave}
+                      </h6>
                     </div>
                     <div className="col-6">
                       <AlgaehLabel
@@ -672,7 +731,11 @@ class SalaryProcessing extends Component {
                           forceLabel: "Comp Off."
                         }}
                       />
-                      <h6>31</h6>
+                      <h6>
+                        {this.state.total_days === null
+                          ? 0
+                          : this.state.total_days}
+                      </h6>
                     </div>
                     <div className="col-6">
                       <AlgaehLabel
@@ -680,7 +743,16 @@ class SalaryProcessing extends Component {
                           forceLabel: "Holidays/ Week Off"
                         }}
                       />
-                      <h6>31</h6>
+                      <h6>
+                        {this.state.total_holidays === null
+                          ? 0
+                          : this.state.total_holidays +
+                              "/" +
+                              this.state.total_weekoff_days ===
+                            null
+                          ? 0
+                          : this.state.total_weekoff_days}
+                      </h6>
                     </div>
                     <div className="col-6">
                       <AlgaehLabel
@@ -688,15 +760,23 @@ class SalaryProcessing extends Component {
                           forceLabel: "Paid Days"
                         }}
                       />
-                      <h6>31</h6>
+                      <h6>
+                        {this.state.total_paid_days === null
+                          ? 0
+                          : this.state.total_paid_days}
+                      </h6>
                     </div>
                     <div className="col-6">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Previous Unpaid Holidays"
+                          forceLabel: "Previous Unpaid Leaves"
                         }}
                       />
-                      <h6>31</h6>
+                      <h6>
+                        {this.state.pending_unpaid_leave === null
+                          ? 0
+                          : this.state.pending_unpaid_leave}
+                      </h6>
                     </div>
                   </div>
                 </div>
@@ -710,7 +790,11 @@ class SalaryProcessing extends Component {
                           forceLabel: "Gross Earnings"
                         }}
                       />
-                      <h6>31</h6>
+                      <h6>
+                        {this.state.total_earnings === null
+                          ? 0
+                          : this.state.total_earnings}
+                      </h6>
                     </div>
                     <div className="col-6">
                       <AlgaehLabel
@@ -718,7 +802,11 @@ class SalaryProcessing extends Component {
                           forceLabel: "Total Deductions"
                         }}
                       />
-                      <h6>31</h6>
+                      <h6>
+                        {this.state.total_deductions === null
+                          ? 0
+                          : this.state.total_deductions}
+                      </h6>
                     </div>
 
                     <div className="col-6">
@@ -727,7 +815,11 @@ class SalaryProcessing extends Component {
                           forceLabel: "Loan Payable"
                         }}
                       />
-                      <h6>31</h6>
+                      <h6>
+                        {this.state.loan_payable_amount === null
+                          ? 0
+                          : this.state.loan_payable_amount}
+                      </h6>
                     </div>
                     <div className="col-6">
                       <AlgaehLabel
@@ -735,7 +827,11 @@ class SalaryProcessing extends Component {
                           forceLabel: "Due Loan"
                         }}
                       />
-                      <h6>31</h6>
+                      <h6>
+                        {this.state.loan_due_amount === null
+                          ? 0
+                          : this.state.loan_due_amount}
+                      </h6>
                     </div>
                     <div className="col-6">
                       <AlgaehLabel
@@ -743,7 +839,11 @@ class SalaryProcessing extends Component {
                           forceLabel: "Net Salary"
                         }}
                       />
-                      <h6>31</h6>
+                      <h6>
+                        {this.state.net_salary === null
+                          ? 0
+                          : this.state.net_salary}
+                      </h6>
                     </div>
                   </div>
                 </div>
