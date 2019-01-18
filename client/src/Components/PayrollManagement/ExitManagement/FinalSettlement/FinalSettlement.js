@@ -23,6 +23,46 @@ class FinalSettlement extends Component {
     };
     this.getEarningsDeductions();
   }
+  ///finalsettlement
+
+  loadFinalSettlement() {
+    if (
+      this.state.hims_d_employee_id === null ||
+      this.state.hims_d_employee_id === undefined
+    ) {
+      swalMessage({
+        title: "Please Select an Employee",
+        type: "warning"
+      });
+    } else {
+      this.setState({
+        loading: true
+      });
+
+      algaehApiCall({
+        uri: "/finalsettlement",
+        method: "GET",
+        module: "hrManagement",
+        data: {
+          employee_id: this.state.hims_d_employee_id
+        },
+        onSuccess: res => {
+          if (res.data.success) {
+            console.log("Result", res.data.records);
+          }
+        },
+        onFailure: err => {
+          swalMessage({
+            title: err,
+            type: "error"
+          });
+          this.setState({
+            loading: false
+          });
+        }
+      });
+    }
+  }
 
   dropDownHandler(value) {
     this.setState({
@@ -194,7 +234,11 @@ class FinalSettlement extends Component {
             </div>
           </div>
           <div className="col form-group">
-            <button style={{ marginTop: 21 }} className="btn btn-primary">
+            <button
+              onClick={this.loadFinalSettlement.bind(this)}
+              style={{ marginTop: 21 }}
+              className="btn btn-primary"
+            >
               Load
             </button>
 

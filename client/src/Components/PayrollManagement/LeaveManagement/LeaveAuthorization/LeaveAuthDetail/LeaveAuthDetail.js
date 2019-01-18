@@ -24,29 +24,90 @@ class LeaveAuthDetail extends Component {
   }
 
   authorizeLeave(type) {
+    let send_data =
+      this.state.data.auth_level === 1
+        ? {
+            total_approved_days: this.state.data.total_approved_days,
+            ["authorize" + this.state.data.auth_level]: "Y",
+            ["authorize" + this.state.data.auth_level + "_comment"]: this.state
+              .remarks,
+            hims_f_leave_application_id: this.state.data
+              .hims_f_leave_application_id,
+            auth_level: "L" + this.state.data.auth_level,
+            status: type,
+            employee_id: this.state.data.employee_id,
+            leave_id: this.state.data.leave_id,
+            year: "2019",
+            religion_id: this.state.data.religion_id,
+
+            from_session: this.state.from_leave_session,
+            to_session: this.state.to_leave_session,
+            from_date: this.state.from_date,
+            to_date: this.state.to_date
+          }
+        : this.state.data.auth_level === 2
+        ? {
+            total_approved_days: this.state.data.total_approved_days,
+            ["authorized" + this.state.data.auth_level]: "Y",
+            ["authorize" + this.state.data.auth_level + "_comment"]: this.state
+              .remarks,
+            hims_f_leave_application_id: this.state.data
+              .hims_f_leave_application_id,
+            auth_level: "L" + this.state.data.auth_level,
+            status: type,
+            employee_id: this.state.data.employee_id,
+            leave_id: this.state.data.leave_id,
+            year: "2019",
+            religion_id: this.state.data.religion_id,
+
+            from_session: this.state.from_leave_session,
+            to_session: this.state.to_leave_session,
+            from_date: this.state.from_date,
+            to_date: this.state.to_date
+          }
+        : this.state.data.auth_level === 3
+        ? {
+            total_approved_days: this.state.data.total_approved_days,
+            ["authorized" + this.state.data.auth_level]: "Y",
+            ["authorize" + this.state.data.auth_level + "_comment"]: this.state
+              .remarks,
+            hims_f_leave_application_id: this.state.data
+              .hims_f_leave_application_id,
+            auth_level: "L" + this.state.data.auth_level,
+            status: type,
+            employee_id: this.state.data.employee_id,
+            leave_id: this.state.data.leave_id,
+            year: "2019",
+            religion_id: this.state.data.religion_id,
+
+            from_session: this.state.from_leave_session,
+            to_session: this.state.to_leave_session,
+            from_date: this.state.from_date,
+            to_date: this.state.to_date
+          }
+        : {};
+
     algaehApiCall({
-      uri: "/leave/",
-      method: "POST",
-      data: {
-        total_approved_days: this.state.data.total_approved_days,
-        ["authorized" + this.state.data.auth_level]: "Y",
-        ["authorize" + this.state.data.auth_level + "_comment"]: this.state
-          .remarks,
-        hims_f_leave_application_id: this.state.data
-          .hims_f_leave_application_id,
-        auth_level: "L" + this.state.data.auth_level,
-        status: type,
-        month: "january",
-        employee_id: this.state.data.employee_id,
-        leave_id: this.state.data.leave_id,
-        year: "2019"
-      },
+      uri: "/leave/authorizeLeave",
+      method: "PUT",
+      data: send_data,
       onSuccess: res => {
         if (res.data.success) {
-          swalMessage({
-            title: "Leave Authorized Successfully",
-            type: "success"
+          type === "A"
+            ? swalMessage({
+                title: "Leave Authorized Successfully",
+                type: "success"
+              })
+            : swalMessage({
+                title: "Leave Rejected Successfully",
+                type: "success"
+              });
+
+          this.setState({
+            remarks: ""
           });
+
+          document.getElementById("lvAuthLd").click();
         }
       },
       onFailure: err => {
@@ -55,6 +116,12 @@ class LeaveAuthDetail extends Component {
           type: "error"
         });
       }
+    });
+  }
+
+  textHandler(e) {
+    this.setState({
+      [e.target.name]: e.target.value
     });
   }
 
@@ -163,7 +230,12 @@ class LeaveAuthDetail extends Component {
 
                       <div className="col-12">
                         <label>Remarks</label>
-                        <textarea className="textArea" />
+                        <textarea
+                          name="remarks"
+                          value={this.state.remarks}
+                          onChange={this.textHandler.bind(this)}
+                          className="textArea"
+                        />
                       </div>
                     </div>
                   </div>

@@ -159,9 +159,21 @@ export default class LeaveAuthorization extends Component {
     });
   }
 
+  realoadLeaveAuths() {
+    this.loadLeaveApplications();
+    this.setState({
+      open: false
+    });
+  }
+
   render() {
     return (
       <div className="row">
+        <button
+          id="lvAuthLd"
+          onClick={this.realoadLeaveAuths.bind(this)}
+          className="d-none"
+        />
         <LeaveAuthDetail
           open={this.state.open}
           onClose={this.closePopup.bind(this)}
