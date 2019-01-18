@@ -308,7 +308,13 @@ class SalaryProcessing extends Component {
                             columns={[
                               {
                                 fieldName: "salary_number",
-                                label: "Salary No.",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Salary No."
+                                    }}
+                                  />
+                                ),
                                 className: drow => {
                                   return drow.salary_processed !== "Y"
                                     ? "greenCell"

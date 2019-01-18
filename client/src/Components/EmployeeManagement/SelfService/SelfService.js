@@ -8,6 +8,10 @@ import AttendanceRegularization from "./AttendanceRegularization/AttendanceRegul
 import ApplyLeave from "./ApplyLeave/ApplyLeave";
 import LoanRequest from "./LoanRequest/LoanRequest";
 import LeaveEncashment from "./LeaveEncashmemnt/LeaveEncashment";
+
+import HolidayListSelf from "./HolidayListSelf/HolidayListSelf";
+import TimeSheetSelf from "./TimeSheetSelf/TimeSheetSelf";
+
 import employeeProfileImg from "../../../assets/images/employee_profile_img.webp";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 
@@ -154,6 +158,20 @@ export default class SelfService extends Component {
                   />
                 }
               </li>
+
+              <li
+                algaehtabs={"TimeSheetSelf"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Time Sheet"
+                    }}
+                  />
+                }
+              </li>
               <li
                 algaehtabs={"AttendanceRegularization"}
                 className={"nav-item tab-button"}
@@ -193,6 +211,20 @@ export default class SelfService extends Component {
                   />
                 }
               </li>
+
+              <li
+                algaehtabs={"HolidayListSelf"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Holiday List"
+                    }}
+                  />
+                }
+              </li>
               {/* <li
                 algaehtabs={"LeaveEncashment"}
                 className={"nav-item tab-button"}
@@ -220,6 +252,10 @@ export default class SelfService extends Component {
             <LoanRequest empData={this.state.employee_details} />
           ) : this.state.pageDisplay === "LeaveEncashment" ? (
             <LeaveEncashment />
+          ) : this.state.pageDisplay === "TimeSheetSelf" ? (
+            <TimeSheetSelf />
+          ) : this.state.pageDisplay === "HolidayListSelf" ? (
+            <HolidayListSelf />
           ) : null}
         </div>
       </div>
