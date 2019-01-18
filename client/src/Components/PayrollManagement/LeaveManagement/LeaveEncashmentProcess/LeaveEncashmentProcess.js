@@ -147,7 +147,7 @@ class LeaveEncashmentProcess extends Component {
 
                 onClear: () => {
                   this.setState({
-                    sel_payment_type: null
+                    encash_type: null
                   });
                 }
               }}
@@ -282,9 +282,8 @@ class LeaveEncashmentProcess extends Component {
                         )
                       }
                     ]}
-                    keyId=""
+                    keyId="leave_id"
                     dataSource={{ data: this.state.encashDetail }}
-                    // isEditable={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
                   />
                 </div>

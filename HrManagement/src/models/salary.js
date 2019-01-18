@@ -399,8 +399,8 @@ module.exports = {
                                                 "INSERT INTO `hims_f_salary` (salary_number,month,year,employee_id,salary_date,per_day_sal,total_days,\
                                             present_days,absent_days,total_work_days,total_weekoff_days,total_holidays,total_leave,paid_leave,\
                                             unpaid_leave,loan_payable_amount,loan_due_amount,advance_due,gross_salary,total_earnings,total_deductions,\
-                                            total_contributions,net_salary) \
-                                            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ",
+                                            total_contributions,net_salary, total_paid_days) \
+                                            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ",
                                               values: [
                                                 _salary_number,
                                                 parseInt(month_number),
@@ -426,7 +426,8 @@ module.exports = {
                                                 final_earning_amount, //Gross salary = total earnings
                                                 final_deduction_amount,
                                                 final_contribution_amount,
-                                                _net_salary
+                                                _net_salary,
+                                                empResult[i]["total_paid_days"]
                                               ],
                                               printQuery: true
                                             })
@@ -664,8 +665,10 @@ module.exports = {
     _mysql
       .executeQuery({
         query:
-          "select hims_f_salary_id, salary_number, present_days, hims_f_salary.gross_salary, hims_f_salary.net_salary,advance_due,\
-          loan_payable_amount, loan_due_amount,salary_processed,emp.employee_code, emp.full_name from hims_f_salary, hims_d_employee emp where \
+          "select hims_f_salary_id, salary_number, total_days,absent_days,total_work_days,total_weekoff_days,total_holidays,\
+          total_leave,paid_leave,unpaid_leave,present_days, pending_unpaid_leave, total_paid_days, hims_f_salary.gross_salary, \
+          hims_f_salary.net_salary,advance_due,hims_f_salary.total_earnings,hims_f_salary.total_deductions,loan_payable_amount, \
+          loan_due_amount,salary_processed,emp.employee_code, emp.full_name from hims_f_salary, hims_d_employee emp where \
           hims_f_salary.employee_id = emp.hims_d_employee_id and `year` = ? and `month` = ? and emp.hospital_id=? " +
           _stringData,
         values: _.valuesIn(inputParam),

@@ -559,6 +559,74 @@ class LoanRequest extends Component {
                     id="LoanRequestList_grid"
                     columns={[
                       {
+                        fieldName: "loan_authorized",
+                        label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.loan_authorized === "PEN" ? (
+                                <span className="badge badge-warning">
+                                  Pending
+                                </span>
+                              ) : row.loan_authorized === "APR" ? (
+                                <span className="badge badge-success">
+                                  Approved
+                                </span>
+                              ) : row.loan_authorized === "REJ" ? (
+                                <span className="badge badge-danger">
+                                  Rejected
+                                </span>
+                              ) : row.loan_authorized === "IS" ? (
+                                <span className="badge badge-success">
+                                  Issued
+                                </span>
+                              ) : (
+                                "------"
+                              )}
+                            </span>
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "loan_tenure",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "No. of EMI Pending" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.pending_loan / row.installment_amount}
+                            </span>
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "pending_loan",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Balance Due" }} />
+                        )
+                      },
+                      {
+                        fieldName: "approved_amount",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Approved Loan Amount" }}
+                          />
+                        )
+                        //disabled: true
+                      },
+                      {
+                        fieldName: "loan_amount",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Requested Loan Amount" }}
+                          />
+                        )
+                        //disabled: true
+                      },
+                      {
                         fieldName: "loan_application_number",
                         label: (
                           <AlgaehLabel
@@ -590,24 +658,6 @@ class LoanRequest extends Component {
                         )
                       },
                       {
-                        fieldName: "loan_amount",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Requested Loan Amount" }}
-                          />
-                        )
-                        //disabled: true
-                      },
-                      {
-                        fieldName: "approved_amount",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Approved Loan Amount" }}
-                          />
-                        )
-                        //disabled: true
-                      },
-                      {
                         fieldName: "loan_tenure",
                         label: (
                           <AlgaehLabel
@@ -630,56 +680,6 @@ class LoanRequest extends Component {
                             label={{ forceLabel: "Reason For Loan" }}
                           />
                         )
-                      },
-                      {
-                        fieldName: "loan_tenure",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "No. of EMI Pending" }}
-                          />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {row.pending_loan / row.installment_amount}
-                            </span>
-                          );
-                        }
-                      },
-                      {
-                        fieldName: "pending_loan",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Balance Due" }} />
-                        )
-                      },
-                      {
-                        fieldName: "loan_authorized",
-                        label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {row.loan_authorized === "PEN" ? (
-                                <span className="badge badge-warning">
-                                  Pending
-                                </span>
-                              ) : row.loan_authorized === "APR" ? (
-                                <span className="badge badge-success">
-                                  Approved
-                                </span>
-                              ) : row.loan_authorized === "REJ" ? (
-                                <span className="badge badge-danger">
-                                  Rejected
-                                </span>
-                              ) : row.loan_authorized === "IS" ? (
-                                <span className="badge badge-success">
-                                  Issued
-                                </span>
-                              ) : (
-                                "------"
-                              )}
-                            </span>
-                          );
-                        }
                       }
                     ]}
                     keyId="hims_f_loan_application_id"

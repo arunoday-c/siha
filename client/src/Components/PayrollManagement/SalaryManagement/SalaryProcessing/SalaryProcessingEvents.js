@@ -108,7 +108,24 @@ const getSalaryDetails = ($this, row) => {
   $this.setState({
     salaryprocess_Earning: salaryprocess_Earning,
     salaryprocess_Deduction: salaryprocess_Deduction,
-    salaryprocess_Contribute: salaryprocess_Contribute
+    salaryprocess_Contribute: salaryprocess_Contribute,
+
+    total_earnings: row.total_earnings,
+    total_deductions: row.total_deductions,
+    loan_payable_amount: row.loan_payable_amount,
+    loan_due_amount: row.loan_due_amount,
+    net_salary: row.net_salary,
+
+    total_days: row.total_days,
+    absent_days: row.absent_days,
+    total_work_days: row.total_work_days,
+    total_weekoff_days: row.total_weekoff_days,
+    total_holidays: row.total_holidays,
+    total_leave: row.total_leave,
+    paid_leave: row.paid_leave,
+    unpaid_leave: row.unpaid_leave,
+    present_days: row.present_days,
+    total_paid_days: row.total_paid_days
   });
 };
 
@@ -125,7 +142,26 @@ const ClearData = $this => {
     finalizeBtn: true,
     employee_id: null,
     employee_name: null,
-    hospital_id: null
+    hospital_id: null,
+
+    total_days: null,
+    absent_days: null,
+    total_work_days: null,
+    total_weekoff_days: null,
+    total_holidays: null,
+    total_leave: null,
+    paid_leave: null,
+    unpaid_leave: null,
+    present_days: null,
+    pending_unpaid_leave: null,
+    total_paid_days: null,
+
+    total_earnings: null,
+    total_deductions: null,
+    loan_payable_amount: null,
+    loan_due_amount: null,
+    net_salary: null,
+    salary_dates: null
   });
 };
 
