@@ -10,7 +10,7 @@ module.exports = {
     _mysql
       .executeQuery({
         query:
-          "select E.date_of_joining,E.hims_d_employee_id,E.date_of_resignation,E.employee_status, \
+          "select E.date_of_joining,E.hims_d_employee_id,E.date_of_resignation,E.employee_status, E.employe_exit_type, \
           datediff(date(date_of_resignation),date(date_of_joining))/365 endOfServiceYears,E.employee_code,\
           E.full_name,E.arabic_name,E.sex,E.employee_type ,E.title_id,T.title ,T.arabic_title,\
           E.sub_department_id,E.employee_designation_id,E.date_of_birth,\
@@ -218,8 +218,8 @@ module.exports = {
               "insert into hims_f_end_of_service(`end_of_service_number`,\
             `employee_id`,`transaction_date`,`exit_type`,`join_date`,\
             `exit_date`,`service_years`,`payable_days`,`previous_gratuity_amount`,\
-            `calculated_gratutity_amount`,`payable_amount`, `gratuity_status`\
-            `created_by`,`created_date`,`updated_by`,`updated_date`) values(?)",
+            `calculated_gratutity_amount`,`payable_amount`, `gratuity_status`, `remarks`,\
+            `created_by`,`created_date`,`updated_by`,`updated_date`) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             values: [
               result[0],
               _input.employee_id,
@@ -233,6 +233,7 @@ module.exports = {
               _input.computed_amount,
               _input.paybale_amout,
               _input.gratuity_status,
+              _input.remarks,
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
@@ -240,9 +241,14 @@ module.exports = {
             ]
           })
           .then(insertResult => {
-            _mysql.releaseConnection();
-            req.records = { ...insertResult, end_of_service_number: result[0] };
-            next();
+            _mysql.commitTransaction((error, resu) => {
+              _mysql.releaseConnection();
+              req.records = {
+                ...insertResult,
+                end_of_service_number: result[0]
+              };
+              next();
+            });
           })
           .catch(e => {
             _mysql.releaseConnection();
