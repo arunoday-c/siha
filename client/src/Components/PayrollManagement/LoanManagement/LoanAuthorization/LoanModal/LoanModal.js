@@ -314,6 +314,29 @@ class LoanModal extends Component {
                     )
                   },
                   {
+                    fieldName: "loan_authorized",
+                    label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
+                    displayTemplate: row => {
+                      return (
+                        <span>
+                          {row.loan_authorized === "PEN" ? (
+                            <span className="badge badge-warning">Pending</span>
+                          ) : row.loan_authorized === "APR" ? (
+                            <span className="badge badge-success">
+                              Approved
+                            </span>
+                          ) : row.loan_authorized === "REJ" ? (
+                            <span className="badge badge-danger">Rejected</span>
+                          ) : row.loan_authorized === "IS" ? (
+                            <span className="badge badge-success">Issued</span>
+                          ) : (
+                            "------"
+                          )}
+                        </span>
+                      );
+                    }
+                  },
+                  {
                     fieldName: "loan_application_date",
                     label: (
                       <AlgaehLabel
@@ -376,29 +399,6 @@ class LoanModal extends Component {
                   {
                     fieldName: "pending_loan",
                     label: <AlgaehLabel label={{ forceLabel: "Balance Due" }} />
-                  },
-                  {
-                    fieldName: "loan_authorized",
-                    label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
-                    displayTemplate: row => {
-                      return (
-                        <span>
-                          {row.loan_authorized === "PEN" ? (
-                            <span className="badge badge-warning">Pending</span>
-                          ) : row.loan_authorized === "APR" ? (
-                            <span className="badge badge-success">
-                              Approved
-                            </span>
-                          ) : row.loan_authorized === "REJ" ? (
-                            <span className="badge badge-danger">Rejected</span>
-                          ) : row.loan_authorized === "IS" ? (
-                            <span className="badge badge-success">Issued</span>
-                          ) : (
-                            "------"
-                          )}
-                        </span>
-                      );
-                    }
                   }
                 ]}
                 keyId=""

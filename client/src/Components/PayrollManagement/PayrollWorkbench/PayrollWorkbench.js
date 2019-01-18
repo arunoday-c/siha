@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./payroll_wb.css";
 import OverTimeMgmt from "./OvertimeManagement/OvertimeManagement";
-import LeaveSalaryAirfareAccrual from "./LeaveSalaryAirfareAccrual/LeaveSalaryAirfareAccrual";
+import LeaveSalaryAccural from "./LeaveSalaryAccural/LeaveSalaryAccural";
 import EmployeeReceipts from "./EmployeeReceipts/EmployeeReceipts";
 import EmployeePayments from "./EmployeePayments/EmployeePayments";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
@@ -72,7 +72,7 @@ class PayrollWorkbench extends Component {
                 }
               </li>
               <li
-                algaehtabs={"LeaveSalaryAirfareAccrual"}
+                algaehtabs={"LeaveSalaryAccural"}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
               >
@@ -90,8 +90,8 @@ class PayrollWorkbench extends Component {
         <div className="payroll-setion">
           {this.state.pageDisplay === "OverTimeMgmt" ? (
             <OverTimeMgmt />
-          ) : this.state.pageDisplay === "LeaveSalaryAirfareAccrual" ? (
-            <LeaveSalaryAirfareAccrual />
+          ) : this.state.pageDisplay === "LeaveSalaryAccural" ? (
+            <LeaveSalaryAccural />
           ) : this.state.pageDisplay === "EmployeeReceipts" ? (
             <EmployeeReceipts />
           ) : this.state.pageDisplay === "EmployeePayments" ? (

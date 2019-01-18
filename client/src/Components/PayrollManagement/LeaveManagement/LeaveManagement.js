@@ -5,7 +5,7 @@ import LeaveEncashmentProcess from "./LeaveEncashmentProcess/LeaveEncashmentProc
 import LeaveEncashAuth from "./LeaveEncashmentAuth/LeaveEncashmentAuth";
 import LeaveSalaryProcess from "./LeaveSalaryProcess/LeaveSalaryProcess";
 import LeaveYearlyProcess from "./LeaveYearlyProcess/LeaveYearlyProcess";
-import LeaveSalaryAccural from "./LeaveSalaryAccural/LeaveSalaryAccural";
+//import LeaveSalaryAccural from "./LeaveSalaryAccural/LeaveSalaryAccural";
 
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 
@@ -126,9 +126,9 @@ export default class LeaveManagement extends Component {
             <LeaveSalaryProcess />
           ) : this.state.pageDisplay === "LeaveYearlyProcess" ? (
             <LeaveYearlyProcess />
-          ) : this.state.pageDisplay === "LeaveSalaryAccural" ? (
-            <LeaveSalaryAccural />
-          ) : null}
+          ) : // : this.state.pageDisplay === "LeaveSalaryAccural" ? (
+          //   <LeaveSalaryAccural />
+          null}
         </div>
       </div>
     );

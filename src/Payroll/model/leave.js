@@ -2921,9 +2921,6 @@ let authorizeLeave = (req, res, next) => {
                     new Promise((resolve, reject) => {
                       try {
                         debugLog(" wow deduc:", deductionResult);
-                        // req.records = result;
-                        // next();
-                        //-----------------------------------------------------------------
 
                         if (deductionResult.invalid_input == true) {
                           connection.rollback(() => {
@@ -2933,7 +2930,7 @@ let authorizeLeave = (req, res, next) => {
                           next();
                           return;
                         } else {
-                          resolve({ deductionResult });
+                          resolve(deductionResult);
                         }
                       } catch (e) {
                         reject(e);
@@ -3221,7 +3218,7 @@ between date('${req.query.from_date}') and date('${req.query.to_date}') `;
         LA.from_date,LA.to_date,LA.to_leave_session,LA.leave_applied_from,\
         LA.total_applied_days,LA.total_approved_days,LA.`status`\
         ,L.leave_code,L.leave_description,L.leave_type,E.employee_code,\
-        E.full_name as employee_name,SD.sub_department_code,SD.sub_department_name \
+        E.full_name as employee_name,E.religion_id,SD.sub_department_code,SD.sub_department_name \
         from hims_f_leave_application LA inner join hims_d_leave L on LA.leave_id=L.hims_d_leave_id\
         and L.record_status='A' inner join hims_d_employee E on LA.employee_id=E.hims_d_employee_id \
         and E.record_status='A' inner join hims_d_sub_department SD \
@@ -4567,12 +4564,16 @@ let calculateLeaveDays = (req, res, next) => {
     }).then(result => {
       debugLog("my result:", result);
 
+      //   "select L.hims_d_leave_id,L.leave_code,L.leave_description,LD.employee_type,hims_d_leave_detail_id,LD.gender,LD.eligible_days ,\
+      //   L.include_weekoff,L.include_holiday from hims_d_leave  L \
+      //   inner join hims_d_leave_detail LD on L.hims_d_leave_id=LD.leave_header_id  and L.record_status='A'\
+      //   where hims_d_leave_detail_id=?",
+      // input.hims_d_leave_detail_id,
+
       db.query(
-        "select L.hims_d_leave_id,L.leave_code,L.leave_description,LD.employee_type,hims_d_leave_detail_id,LD.gender,LD.eligible_days ,\
-          L.include_weekoff,L.include_holiday from hims_d_leave  L \
-          inner join hims_d_leave_detail LD on L.hims_d_leave_id=LD.leave_header_id  and L.record_status='A'\
-          where hims_d_leave_detail_id=?",
-        input.hims_d_leave_detail_id,
+        "select hims_d_leave_id,leave_code,leave_description,include_weekoff,\
+        include_holiday from hims_d_leave where hims_d_leave_id=2  and record_status='A'",
+        input.leave_id,
         (error, result) => {
           if (error) {
             if (req.options == null) {
@@ -4763,25 +4764,28 @@ let calculateLeaveDays = (req, res, next) => {
                 debugLog("total_minus:", total_minus);
                 //===================================================
 
-                debugLog("before:", calculatedLeaveDays);
+                debugLog("total apllied days:", calculatedLeaveDays);
                 if (result[0].include_weekoff == "N") {
                   calculatedLeaveDays =
                     parseFloat(calculatedLeaveDays) - parseFloat(total_weekOff);
-                  debugLog("am one:", calculatedLeaveDays);
+                  debugLog("after reducing weekoff:", calculatedLeaveDays);
                 }
 
                 if (result[0].include_holiday == "N") {
                   calculatedLeaveDays =
                     parseFloat(calculatedLeaveDays) - parseFloat(total_holiday);
 
-                  debugLog("am two:", calculatedLeaveDays);
+                  debugLog("after reducnng holiday:", calculatedLeaveDays);
                 }
 
                 calculatedLeaveDays =
                   parseFloat(calculatedLeaveDays) - parseFloat(session_diff);
 
-                debugLog("after:", calculatedLeaveDays);
-                debugLog("adna:", currentClosingBal);
+                debugLog(
+                  "after reducing weekoff and holdy and session:",
+                  calculatedLeaveDays
+                );
+                debugLog("currentClosingBal:", currentClosingBal);
                 if (currentClosingBal >= calculatedLeaveDays) {
                   debugLog("calculatedLeaveDays:", calculatedLeaveDays);
 
@@ -4833,7 +4837,7 @@ let calculateLeaveDays = (req, res, next) => {
               // reduce_days = parseFloat(0);
             }
             debugLog("week off and holidaay included");
-            debugLog("adna:", currentClosingBal);
+            debugLog("currentClosingBal:", currentClosingBal);
             //checking if he has enough eligible days
             if (currentClosingBal >= calculatedLeaveDays) {
               debugLog("calculatedLeaveDays:", calculatedLeaveDays);
