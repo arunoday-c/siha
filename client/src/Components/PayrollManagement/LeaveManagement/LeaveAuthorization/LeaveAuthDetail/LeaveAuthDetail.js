@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import AlgaehModalPopUp from "../../../../Wrapper/modulePopUp";
 import "./LeaveAuthDetail.css";
 import { AlgaehLabel, AlgaehDataGrid } from "../../../../Wrapper/algaehWrapper";
+import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
 
 class LeaveAuthDetail extends Component {
   constructor(props) {
@@ -12,37 +13,49 @@ class LeaveAuthDetail extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({
-      data: nextProps.data
-    });
+    this.setState(
+      {
+        data: nextProps.data
+      },
+      () => {
+        console.log("DAta:", this.state.data);
+      }
+    );
   }
 
   authorizeLeave(type) {
-    // algaehApiCall({
-    // uri: "/leave/",
-    // method: "POST",
-    // data : {
-    //   total_approved_days:25,
-    //   authorized3:"Y",
-    //    authorize3_comment:"hiii",
-    //    hims_f_leave_application_id:70,
-    //    auth_level:"L3",
-    //    status:type,
-    //    month:"december",
-    //    employee_id:"1",
-    //    leave_id:"31",
-    //    year:"2019"
-    // },
-    // onSuccess: res => {
-    //  if (res.data.success) {
-    // }
-    // },
-    // onFailure: err => {
-    //  swalMessage({
-    // title : err.message,
-    // type : "error"
-    // })}
-    //});
+    algaehApiCall({
+      uri: "/leave/",
+      method: "POST",
+      data: {
+        total_approved_days: this.state.data.total_approved_days,
+        ["authorized" + this.state.data.auth_level]: "Y",
+        ["authorize" + this.state.data.auth_level + "_comment"]: this.state
+          .remarks,
+        hims_f_leave_application_id: this.state.data
+          .hims_f_leave_application_id,
+        auth_level: "L" + this.state.data.auth_level,
+        status: type,
+        month: "january",
+        employee_id: this.state.data.employee_id,
+        leave_id: this.state.data.leave_id,
+        year: "2019"
+      },
+      onSuccess: res => {
+        if (res.data.success) {
+          swalMessage({
+            title: "Leave Authorized Successfully",
+            type: "success"
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   render() {
