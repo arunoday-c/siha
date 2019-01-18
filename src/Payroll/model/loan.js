@@ -432,7 +432,8 @@ let authorizeLoan = (req, res, next) => {
                     input.hims_f_loan_application_id
                   }`;
                 } else if (input.authorized == "A") {
-                  qry = `update hims_f_loan_application set loan_authorized='APR'\
+                  qry = `update hims_f_loan_application set loan_authorized='APR',authorized_date=${new Date()},\
+                  authorized_by=${req.userIdentity.algaeh_d_app_user_id}\
                   where record_status='A' and loan_authorized='PEN' and hims_f_loan_application_id=${
                     input.hims_f_loan_application_id
                   }`;
