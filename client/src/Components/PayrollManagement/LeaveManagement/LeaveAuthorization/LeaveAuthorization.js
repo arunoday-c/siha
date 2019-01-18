@@ -374,6 +374,10 @@ export default class LeaveAuthorization extends Component {
                               }}
                             />
                           );
+                        },
+                        others: {
+                          filterable: false,
+                          maxWidth: 55
                         }
                       },
                       {
@@ -478,6 +482,7 @@ export default class LeaveAuthorization extends Component {
                     keyId="hims_f_leave_application_id"
                     dataSource={{ data: this.state.leave_applns }}
                     isEditable={false}
+                    filter={true}
                     loading={this.state.loading}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{

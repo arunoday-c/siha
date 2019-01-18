@@ -176,16 +176,6 @@ class LoanAdjustment extends Component {
 
           <div className="col-lg-2">
             <button
-              onClick={this.clearState.bind(this)}
-              style={{ marginTop: 21 }}
-              className="btn btn-default"
-            >
-              Clear
-            </button>
-          </div>
-
-          <div className="col-lg-2">
-            <button
               onClick={this.getEmployeeLoans.bind(this)}
               style={{ marginTop: 21 }}
               className="btn btn-primary"
@@ -195,6 +185,13 @@ class LoanAdjustment extends Component {
               ) : (
                 <i className="fas fa-spinner fa-spin" />
               )}
+            </button>
+            <button
+              onClick={this.clearState.bind(this)}
+              style={{ marginTop: 21, marginLeft: 5 }}
+              className="btn btn-default"
+            >
+              Clear
             </button>
           </div>
         </div>
@@ -331,7 +328,7 @@ class LoanAdjustment extends Component {
                         //     />
                         //   ),
                         //   displayTemplate: row => {
-                        //     
+                        //
                         //     return (
                         //       <span>
                         //         {row.skip_month_start === "1"
