@@ -6,6 +6,8 @@ import salary from "../controllers/salary";
 import employee from "../controllers/employee";
 import employee_payments from "../controllers/employee_payments";
 import encashment_process from "../controllers/encashment_process";
+import leave_salary_process from "../controllers/leave_salary_process";
+
 import test from "../controllers/test";
 const router = express();
 router.use("/attendance", attendance());
@@ -16,4 +18,5 @@ router.use("/salary", salary());
 router.use("/test", test());
 router.use("/employeepayments", employee_payments());
 router.use("/encashmentprocess", encashment_process());
+router.use("/leavesalaryprocess", leave_salary_process());
 export default router;
