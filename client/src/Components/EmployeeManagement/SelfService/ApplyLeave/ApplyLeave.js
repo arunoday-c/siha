@@ -199,7 +199,9 @@ class ApplyLeave extends Component {
         from_date: this.state.from_date,
         to_date: this.state.to_date,
         hims_d_leave_detail_id: this.state.hims_d_leave_detail_id,
-        religion_id: this.state.religion_id
+        religion_id: this.state.religion_id,
+        leave_id: this.state.leave_id,
+        employee_id: this.state.employee_id
       },
       onSuccess: res => {
         if (res.data.success) {
@@ -802,7 +804,7 @@ class ApplyLeave extends Component {
                             return (
                               <span>
                                 {moment(row.application_date).format(
-                                  "MM-DD-YYYY"
+                                  "DD-MM-YYYY"
                                 )}
                               </span>
                             );
@@ -824,7 +826,7 @@ class ApplyLeave extends Component {
                           displayTemplate: row => {
                             return (
                               <span>
-                                {moment(row.from_date).format("MM-DD-YYYY")}
+                                {moment(row.from_date).format("DD-MM-YYYY")}
                               </span>
                             );
                           }
@@ -838,7 +840,7 @@ class ApplyLeave extends Component {
                           displayTemplate: row => {
                             return (
                               <span>
-                                {moment(row.to_date).format("MM-DD-YYYY")}
+                                {moment(row.to_date).format("DD-MM-YYYY")}
                               </span>
                             );
                           }

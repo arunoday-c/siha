@@ -53,7 +53,7 @@ class EOSGratuity extends Component {
       hims_d_employee_id: null,
       calculated_gratutity_amount: null,
       payable_amount: null,
-      remarks: null,
+      remarks: "",
       saveDisabled: true
     });
   }
