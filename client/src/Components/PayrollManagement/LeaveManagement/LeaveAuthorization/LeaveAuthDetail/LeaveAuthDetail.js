@@ -3,12 +3,14 @@ import AlgaehModalPopUp from "../../../../Wrapper/modulePopUp";
 import "./LeaveAuthDetail.css";
 import { AlgaehLabel, AlgaehDataGrid } from "../../../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
+import moment from "moment";
 
 class LeaveAuthDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: {}
+      data: {},
+      leave_his: []
     };
   }
 
@@ -18,9 +20,27 @@ class LeaveAuthDetail extends Component {
         data: nextProps.data
       },
       () => {
-        console.log("DAta:", this.state.data);
+        nextProps.open ? this.getEmployeeLeaveHistory() : null;
       }
     );
+  }
+
+  getEmployeeLeaveHistory() {
+    algaehApiCall({
+      uri: "/leave/getEmployeeLeaveHistory",
+      method: "GET",
+      data: {
+        employee_id: this.state.data.employee_id
+      },
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            leave_his: res.data.records
+          });
+        }
+      },
+      onFailure: err => {}
+    });
   }
 
   authorizeLeave(type) {
@@ -270,61 +290,201 @@ class LeaveAuthDetail extends Component {
                     <div className="row">
                       <div className="col-12" id="previousLeaveAppGrid_Cntr">
                         <AlgaehDataGrid
-                          id="previousLeaveAppGrid"
-                          datavalidate="previousLeaveAppGrid"
+                          id="leaveRequestList_grid"
                           columns={[
                             {
-                              fieldName: "fromDate",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "From Date" }}
-                                />
-                              )
-                            },
-                            {
-                              fieldName: "toDate",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "To Date" }}
-                                />
-                              )
-                            },
-                            {
-                              fieldName: "totalPeriod",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Total Period" }}
-                                />
-                              )
-                            },
-                            {
-                              fieldName: "",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Approved Period" }}
-                                />
-                              )
-                            },
-                            {
-                              fieldName: "description",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Description" }}
-                                />
-                              )
-                            },
-                            {
                               fieldName: "status",
+
                               label: (
                                 <AlgaehLabel label={{ forceLabel: "Status" }} />
+                              ),
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    {row.status === "PEN" ? (
+                                      <span className="badge badge-warning">
+                                        Pending
+                                      </span>
+                                    ) : row.status === "APR" ? (
+                                      <span className="badge badge-success">
+                                        Approved
+                                      </span>
+                                    ) : row.status === "REJ" ? (
+                                      <span className="badge badge-danger">
+                                        Rejected
+                                      </span>
+                                    ) : row.status === "PRO" ? (
+                                      <span className="badge badge-success">
+                                        Processed
+                                      </span>
+                                    ) : (
+                                      "------"
+                                    )}
+                                  </span>
+                                );
+                              },
+                              editorTemplate: row => {
+                                return (
+                                  <span>
+                                    {row.status === "PEN"
+                                      ? "Pending"
+                                      : row.status === "APR"
+                                      ? "Approved"
+                                      : row.status === "REJ"
+                                      ? "Rejected"
+                                      : row.status === "PRO"
+                                      ? "Processed"
+                                      : "------"}
+                                  </span>
+                                );
+                              }
+                            },
+                            {
+                              fieldName: "total_applied_days",
+
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Applied Days" }}
+                                />
                               )
+                            },
+                            {
+                              fieldName: "leave_application_code",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Leave Code" }}
+                                />
+                              )
+                            },
+                            {
+                              fieldName: "application_date",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Leave Requested On" }}
+                                />
+                              ),
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    {moment(row.application_date).format(
+                                      "DD-MM-YYYY"
+                                    )}
+                                  </span>
+                                );
+                              }
+                            },
+                            {
+                              fieldName: "leave_description",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Leave Type" }}
+                                />
+                              )
+                            },
+                            {
+                              fieldName: "from_date",
+
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Leave From" }}
+                                />
+                              ),
+
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    {moment(row.from_date).format("DD-MM-YYYY")}
+                                  </span>
+                                );
+                              }
+                            },
+                            {
+                              fieldName: "to_date",
+
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Leave To" }}
+                                />
+                              ),
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    {moment(row.to_date).format("DD-MM-YYYY")}
+                                  </span>
+                                );
+                              }
+                            },
+                            // {
+                            //   fieldName: "total_approved_days",
+                            //   label: (
+                            //     <AlgaehLabel
+                            //       label={{ forceLabel: "Approved Days" }}
+                            //     />
+                            //   ),
+
+                            //   displayTemplate: row => {
+                            //     return (
+                            //       <span>
+                            //         {row.total_approved_days !== null
+                            //           ? row.total_approved_days
+                            //           : 0}
+                            //       </span>
+                            //     );
+                            //   }
+                            // },
+                            {
+                              fieldName: "remarks",
+
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Leave Reason" }}
+                                />
+                              ),
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    {row.remarks !== null
+                                      ? row.remarks
+                                      : "Not Specified"}
+                                  </span>
+                                );
+                              }
+                            },
+                            {
+                              fieldName: "authorized",
+
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Authorized" }}
+                                />
+                              ),
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    {row.authorized === "Y" ? "Yes" : "No"}
+                                  </span>
+                                );
+                              },
+                              editorTemplate: row => {
+                                return (
+                                  <span>
+                                    {row.authorized === "Y" ? "Yes" : "No"}
+                                  </span>
+                                );
+                              }
                             }
                           ]}
-                          keyId=""
-                          dataSource={{ data: [] }}
+                          keyId="algaeh_d_module_id"
+                          dataSource={{
+                            data: this.state.leave_his
+                          }}
                           isEditable={false}
                           paging={{ page: 0, rowsPerPage: 10 }}
-                          events={{}}
+                          events={{
+                            onEdit: () => {},
+                            onDelete: () => {},
+                            onDone: () => {}
+                          }}
                         />
                       </div>
                     </div>

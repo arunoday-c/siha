@@ -48,7 +48,8 @@ export default class LeaveAuthorization extends Component {
       hims_d_employee_id: null,
       employee_name: null,
       auth_level: auth_level !== null ? auth_level.value : null,
-      leave_status: "PEN"
+      leave_status: "PEN",
+      leave_applns: []
     });
   }
 
