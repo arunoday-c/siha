@@ -495,55 +495,61 @@ class FinalSettlement extends Component {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
 
-              <div className="col-12">
-                <div
-                  className="portlet portlet-bordered margin-bottom-15"
-                  style={{ padding: 0 }}
-                >
-                  <div className="portlet-body">
-                    <div className="col-12" style={{ marginTop: 7 }}>
-                      <div className="row">
-                        <div className="col-4">
-                          <label className="style_Label ">Total Salary</label>
-                          <h6>-------</h6>
-                        </div>
+          <div className="col-12" style={{ marginBottom: 40 }}>
+            <div
+              className="portlet portlet-bordered margin-bottom-15"
+              style={{ padding: 0 }}
+            >
+              <div className="portlet-body">
+                <div className="col-12" style={{ marginTop: 7 }}>
+                  <div className="row">
+                    <div className="col-3">
+                      <label className="style_Label ">Total Salary</label>
+                      <h6>-------</h6>
+                    </div>
 
-                        <div className="col-4">
-                          <label className="style_Label ">
-                            Gratuity Amount
-                          </label>
-                          <h6>-------</h6>
-                        </div>
+                    <div className="col-3">
+                      <label className="style_Label ">Gratuity Amount</label>
+                      <h6>-------</h6>
+                    </div>
 
-                        <div className="col-4">
-                          <label className="style_Label ">Total Loan</label>
-                          <h6>-------</h6>
-                        </div>
+                    <div className="col-3">
+                      <label className="style_Label ">Leave Encashment</label>
+                      <h6>-------</h6>
+                    </div>
+                    <div className="col-3">
+                      <label className="style_Label ">Total Loan</label>
+                      <h6>-------</h6>
+                    </div>
+                  </div>
+                  <hr />
+                  <div className="row">
+                    <div className="col">
+                      <label className="style_Label ">Net Earnings</label>
+                      <h6>-------</h6>
+                    </div>
 
-                        <div className="col-4">
-                          <label className="style_Label ">Net Earnings</label>
-                          <h6>-------</h6>
-                        </div>
+                    <div className="col">
+                      <label className="style_Label ">Total Deduction</label>
+                      <h6>-------</h6>
+                    </div>
+                    <div className="col">
+                      <label className="style_Label ">Net Amount</label>
+                      <h6>-------</h6>
+                    </div>
 
-                        <div className="col-4">
-                          <label className="style_Label ">
-                            Total Deduction
-                          </label>
-                          <h6>-------</h6>
-                        </div>
-                        <div className="col-4">
-                          <label className="style_Label ">Net Amount</label>
-                          <h6>-------</h6>
-                        </div>
-                      </div>
+                    <div className="col-12">
+                      <label>Remarks</label>
+                      <textarea className="textArea" />
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
           <div className="hptl-phase1-footer">
             <div className="row">
               <div className="col-lg-12">
