@@ -2921,9 +2921,6 @@ let authorizeLeave = (req, res, next) => {
                     new Promise((resolve, reject) => {
                       try {
                         debugLog(" wow deduc:", deductionResult);
-                        // req.records = result;
-                        // next();
-                        //-----------------------------------------------------------------
 
                         if (deductionResult.invalid_input == true) {
                           connection.rollback(() => {
@@ -3221,7 +3218,7 @@ between date('${req.query.from_date}') and date('${req.query.to_date}') `;
         LA.from_date,LA.to_date,LA.to_leave_session,LA.leave_applied_from,\
         LA.total_applied_days,LA.total_approved_days,LA.`status`\
         ,L.leave_code,L.leave_description,L.leave_type,E.employee_code,\
-        E.full_name as employee_name,SD.sub_department_code,SD.sub_department_name \
+        E.full_name as employee_name,E.religion_id,SD.sub_department_code,SD.sub_department_name \
         from hims_f_leave_application LA inner join hims_d_leave L on LA.leave_id=L.hims_d_leave_id\
         and L.record_status='A' inner join hims_d_employee E on LA.employee_id=E.hims_d_employee_id \
         and E.record_status='A' inner join hims_d_sub_department SD \
