@@ -180,7 +180,7 @@ E.employee_code,E.full_name,E.arabic_name,E.sex,E.employee_type ,E.title_id,T.ti
                   `earnings_id`,`amount`) values(?);",
                   [
                     header_result.insertId,
-                    _input.earnings[e].hims_f_loan_application_id,
+                    _input.earnings[e].earnings_id,
                     _input.earnings[e].amount
                   ]
                 );
