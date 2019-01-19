@@ -561,7 +561,7 @@ export default ({ config, db }) => {
   });
 
   // created by irfan
-  api.put(
+  api.delete(
     "/deleteLeaveApplication",
     deleteLeaveApplication,
     (req, res, next) => {
