@@ -199,16 +199,17 @@ module.exports = {
       })
       .then(result => {
         if (result.length == 0) {
-          next(
-            utlities
-              .AlgaehUtilities()
-              .httpStatus()
-              .generateError(
-                utlities.AlgaehUtilities().httpStatus().noContent,
-                "Please add number generation for end of service"
-              )
-          );
-          _mysql.releaseConnection();
+          _mysql.rollBackTransaction(() => {
+            next(
+              utlities
+                .AlgaehUtilities()
+                .httpStatus()
+                .generateError(
+                  utlities.AlgaehUtilities().httpStatus().noContent,
+                  "Please add number generation for end of service"
+                )
+            );
+          });
           return;
         }
 
@@ -242,17 +243,23 @@ module.exports = {
           })
           .then(insertResult => {
             _mysql.commitTransaction((error, resu) => {
-              _mysql.releaseConnection();
-              req.records = {
-                ...insertResult,
-                end_of_service_number: result[0]
-              };
-              next();
+              if (error) {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              } else {
+                req.records = {
+                  ...insertResult,
+                  end_of_service_number: result[0]
+                };
+                next();
+              }
             });
           })
           .catch(e => {
-            _mysql.releaseConnection();
-            next(e);
+            _mysql.rollBackTransaction(() => {
+              next(e);
+            });
           });
       })
       .catch(e => {
