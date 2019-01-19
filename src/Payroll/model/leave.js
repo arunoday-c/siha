@@ -5578,6 +5578,67 @@ let cancelLeave = (req, res, next) => {
   }
 };
 
+//created by irfan:
+let deleteLeaveApplication = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    db.getConnection((error, connection) => {
+      connection.query(
+        "select hims_f_leave_application_id,employee_id,authorize1,authorized2,\
+        authorized3,`status`from hims_f_leave_application where authorize1='N' \
+        and authorized2='N' and authorized3='N' and `status`='PEN' and employee_id=?\
+        and hims_f_leave_application_id=?",
+        [req.body.employee_id, req.body.hims_f_leave_application_id],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+
+          if (result.length > 0) {
+            connection.query(
+              "delete from hims_f_leave_application where hims_f_leave_application_id=?",
+              [req.body.hims_f_leave_application_id],
+              (error, delResult) => {
+                releaseDBConnection(db, connection);
+                if (error) {
+                  next(error);
+                }
+                // delete
+                debugLog("delResult:", delResult);
+
+                if (delResult.affectedRows > 0) {
+                  req.records = delResult;
+                  next();
+                } else {
+                  req.records = {
+                    invalid_input: true,
+                    message: `invalid input`
+                  };
+                  next();
+                }
+              }
+            );
+          } else {
+            releaseDBConnection(db, connection);
+            req.records = {
+              invalid_input: true,
+              message: `can't cancel ,leave already authorized`
+            };
+            next();
+            return;
+          }
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getEmployeeLeaveData,
   getYearlyLeaveData,
@@ -5608,5 +5669,6 @@ module.exports = {
   deleteLeaveRule,
   updateLeaveDetailMaster,
   updateLeaveEncashMaster,
-  updateLeaveRuleMaster
+  updateLeaveRuleMaster,
+  deleteLeaveApplication
 };
