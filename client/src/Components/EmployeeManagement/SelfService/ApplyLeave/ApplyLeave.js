@@ -947,28 +947,76 @@ class ApplyLeave extends Component {
                           }
                         },
                         {
-                          fieldName: "authorized",
+                          fieldName: "authorize1",
 
                           label: (
-                            <AlgaehLabel label={{ forceLabel: "Authorized" }} />
+                            <AlgaehLabel
+                              label={{ forceLabel: "Authorized Level 1" }}
+                            />
                           ),
                           displayTemplate: row => {
                             return (
                               <span>
-                                {row.authorized === "Y" ? "Yes" : "No"}
+                                {row.authorize1 === "Y" ? "Yes" : "No"}
                               </span>
                             );
                           },
                           editorTemplate: row => {
                             return (
                               <span>
-                                {row.authorized === "Y" ? "Yes" : "No"}
+                                {row.authorize1 === "Y" ? "Yes" : "No"}
+                              </span>
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "authorized2",
+
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Authorized Level 2" }}
+                            />
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {row.authorized2 === "Y" ? "Yes" : "No"}
+                              </span>
+                            );
+                          },
+                          editorTemplate: row => {
+                            return (
+                              <span>
+                                {row.authorized2 === "Y" ? "Yes" : "No"}
+                              </span>
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "authorized3",
+
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Authorized Level 3" }}
+                            />
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {row.authorized3 === "Y" ? "Yes" : "No"}
+                              </span>
+                            );
+                          },
+                          editorTemplate: row => {
+                            return (
+                              <span>
+                                {row.authorized3 === "Y" ? "Yes" : "No"}
                               </span>
                             );
                           }
                         }
                       ]}
-                      keyId="algaeh_d_module_id"
+                      keyId="hims_f_leave_application_id"
                       dataSource={{
                         data: this.state.leave_his
                       }}
@@ -988,24 +1036,25 @@ class ApplyLeave extends Component {
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-body">
                 <div className="row leaveBalanceCntr">
-                  {leaveData.length > 0
-                    ? leaveData.map((data, index) => (
-                        <div
-                          key={data.hims_f_employee_monthly_leave_id}
-                          className="col"
-                        >
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: data.leave_description
-                            }}
-                          />
-                          <h6>
-                            {data.availed_till_date}/{data.total_eligible} Day
-                            (s)
-                          </h6>
-                        </div>
-                      ))
-                    : "Not Eligible for any Leaves . . "}
+                  {leaveData.length > 0 ? (
+                    leaveData.map((data, index) => (
+                      <div
+                        key={data.hims_f_employee_monthly_leave_id}
+                        className="col"
+                      >
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: data.leave_description
+                          }}
+                        />
+                        <h6>
+                          {data.availed_till_date}/{data.total_eligible} Day (s)
+                        </h6>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="col">Not Eligible for any Leaves . . </div>
+                  )}
                 </div>
               </div>
             </div>
