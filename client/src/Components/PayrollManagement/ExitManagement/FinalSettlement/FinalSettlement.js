@@ -22,9 +22,16 @@ class FinalSettlement extends Component {
       earningList: [],
       data: {
         loans: []
-      }
+      },
+      disableSave: true
     };
     this.getEarningsDeductions();
+  }
+
+  changeChecks(e) {
+    this.setState({
+      [e.target.name]: e.target.checked
+    });
   }
 
   loadFinalSettlement() {
@@ -51,7 +58,8 @@ class FinalSettlement extends Component {
         onSuccess: res => {
           if (res.data.success) {
             this.setState({
-              data: res.data.result
+              data: res.data.result,
+              disableSave: false
             });
           }
         },
@@ -68,15 +76,78 @@ class FinalSettlement extends Component {
     }
   }
 
+  saveFinalSettlement() {
+    let data = this.state.data;
+
+    let send_data = {
+      employee_id: data.hims_d_employee_id,
+      total_amount: "To be Calculated",
+      total_earnings: "To be Calculated",
+      total_deductions: "To be Calculated",
+      total_loans: "To be Calculated",
+      hims_f_salary_id: data.hims_f_salary_id,
+      total_salary: data.total_salary,
+      end_of_service_id: data.hims_f_end_of_service_id,
+      gratuity_amount: data.gratuity_amount,
+      hims_f_leave_encash_header_id: data.hims_f_leave_encash_header_id,
+      total_leave_encash_amount: data.total_leave_encash_amount,
+      employee_status: data.employee_status,
+      forfiet: this.state.forfiet ? "Y" : "N",
+      remarks: this.state.remarks,
+      posted: null,
+      cancelled: null,
+      loans: data.loans,
+      earnings: this.state.earningList,
+      deductions: this.state.deductingList
+    };
+
+    algaehApiCall({
+      uri: "/finalsettlement/save",
+      method: "POST",
+      module: "hrManagement",
+      data: send_data,
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            data: res.data.result
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err,
+          type: "error"
+        });
+        this.setState({
+          loading: false
+        });
+      }
+    });
+  }
+
+  clearState() {
+    this.setState({
+      hims_d_employee_id: null,
+      employee_name: null,
+      deductingList: [],
+      earningList: [],
+      data: {
+        loans: []
+      },
+      disableSave: true,
+      forfiet: false
+    });
+  }
+
   dropDownHandler(value) {
     switch (value.name) {
-      case "earning_id":
+      case "earnings_id":
         this.setState({
           [value.name]: value.value,
           earning_name: value.selected.earning_deduction_description
         });
         break;
-      case "deduction_id":
+      case "deductions_id":
         this.setState({
           [value.name]: value.value,
           deduction_name: value.selected.earning_deduction_description
@@ -105,7 +176,7 @@ class FinalSettlement extends Component {
 
         earnings.push({
           amount: this.state.earning_amount,
-          earning_id: this.state.earning_id,
+          earnings_id: this.state.earnings_id,
           earning_name: this.state.earning_name
         });
 
@@ -115,7 +186,7 @@ class FinalSettlement extends Component {
 
         this.setState({
           earning_amount: null,
-          earning_id: null
+          earnings_id: null
         });
       }
     });
@@ -130,7 +201,7 @@ class FinalSettlement extends Component {
 
         deduction.push({
           amount: this.state.deduction_amount,
-          deduction_id: this.state.deduction_id,
+          deductions_id: this.state.deductions_id,
           deduction_name: this.state.deduction_name
         });
 
@@ -140,7 +211,7 @@ class FinalSettlement extends Component {
 
         this.setState({
           deduction_amount: null,
-          deduction_id: null
+          deductions_id: null
         });
       }
     });
@@ -196,8 +267,6 @@ class FinalSettlement extends Component {
     });
   }
 
-  clearState() {}
-
   render() {
     let FsData = this.state.data;
 
@@ -252,7 +321,11 @@ class FinalSettlement extends Component {
           <div className="col-lg-1">
             <div className="customCheckbox" style={{ marginTop: 24 }}>
               <label className="checkbox inline">
-                <input type="checkbox" value="" name="Forfeiture" />
+                <input
+                  type="checkbox"
+                  name="forfiet"
+                  onChange={this.changeChecks.bind(this)}
+                />
                 <span>Forfeiture</span>
               </label>
             </div>
@@ -336,8 +409,8 @@ class FinalSettlement extends Component {
                           isImp: true
                         }}
                         selector={{
-                          name: "earning_id",
-                          value: this.state.earning_id,
+                          name: "earnings_id",
+                          value: this.state.earnings_id,
                           className: "select-fld",
                           dataSource: {
                             textField: "earning_deduction_description",
@@ -372,6 +445,7 @@ class FinalSettlement extends Component {
                           onClick={this.addEarning.bind(this)}
                           className="btn btn-primary"
                           style={{ marginTop: 21 }}
+                          disabled={this.state.disableSave}
                         >
                           Add
                         </button>
@@ -432,8 +506,8 @@ class FinalSettlement extends Component {
                           isImp: true
                         }}
                         selector={{
-                          name: "deduction_id",
-                          value: this.state.deduction_id,
+                          name: "deductions_id",
+                          value: this.state.deductions_id,
                           className: "select-fld",
                           dataSource: {
                             textField: "earning_deduction_description",
@@ -468,6 +542,7 @@ class FinalSettlement extends Component {
                           onClick={this.addDeduction.bind(this)}
                           className="btn btn-primary"
                           style={{ marginTop: 21 }}
+                          disabled={this.state.disableSave}
                         >
                           Add
                         </button>
@@ -644,8 +719,8 @@ class FinalSettlement extends Component {
                 <button
                   type="button"
                   className="btn btn-primary"
-                  //   onClick={SaveDoctorCommission.bind(this, this)}
-                  //disabled={this.state.saveEnable}
+                  onClick={this.saveFinalSettlement.bind(this)}
+                  disabled={this.state.disableSave}
                 >
                   <AlgaehLabel
                     label={{ forceLabel: "Save", returnText: true }}
@@ -655,7 +730,7 @@ class FinalSettlement extends Component {
                 <button
                   type="button"
                   className="btn btn-default"
-                  //onClick={ClearData.bind(this, this)}
+                  onClick={this.clearState.bind(this)}
                 >
                   <AlgaehLabel
                     label={{ forceLabel: "Clear", returnText: true }}
