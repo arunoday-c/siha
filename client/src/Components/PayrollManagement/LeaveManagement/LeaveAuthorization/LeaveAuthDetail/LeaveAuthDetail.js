@@ -30,7 +30,8 @@ class LeaveAuthDetail extends Component {
       uri: "/leave/getEmployeeLeaveHistory",
       method: "GET",
       data: {
-        employee_id: this.state.data.employee_id
+        employee_id: this.state.data.employee_id,
+        status: "H"
       },
       onSuccess: res => {
         if (res.data.success) {
@@ -42,13 +43,15 @@ class LeaveAuthDetail extends Component {
       onFailure: err => {}
     });
   }
-
+  //TOO
+  //ASK ABOUT YEAR
   authorizeLeave(type) {
     let send_data =
       this.state.data.auth_level === 1
         ? {
             total_approved_days: this.state.data.total_approved_days,
-            ["authorize" + this.state.data.auth_level]: "Y",
+            ["authorize" + this.state.data.auth_level]:
+              type === "A" ? "Y" : "N",
             ["authorize" + this.state.data.auth_level + "_comment"]: this.state
               .remarks,
             hims_f_leave_application_id: this.state.data
@@ -57,18 +60,19 @@ class LeaveAuthDetail extends Component {
             status: type,
             employee_id: this.state.data.employee_id,
             leave_id: this.state.data.leave_id,
-            year: "2019",
+            year: moment(this.state.data.from_date).format("YYYY"),
             religion_id: this.state.data.religion_id,
 
-            from_session: this.state.from_leave_session,
-            to_session: this.state.to_leave_session,
-            from_date: this.state.from_date,
-            to_date: this.state.to_date
+            from_session: this.state.data.from_leave_session,
+            to_session: this.state.data.to_leave_session,
+            from_date: this.state.data.from_date,
+            to_date: this.state.data.to_date
           }
         : this.state.data.auth_level === 2
         ? {
             total_approved_days: this.state.data.total_approved_days,
-            ["authorized" + this.state.data.auth_level]: "Y",
+            ["authorized" + this.state.data.auth_level]:
+              type === "A" ? "Y" : "N",
             ["authorize" + this.state.data.auth_level + "_comment"]: this.state
               .remarks,
             hims_f_leave_application_id: this.state.data
@@ -77,18 +81,19 @@ class LeaveAuthDetail extends Component {
             status: type,
             employee_id: this.state.data.employee_id,
             leave_id: this.state.data.leave_id,
-            year: "2019",
+            year: moment(this.state.data.from_date).format("YYYY"),
             religion_id: this.state.data.religion_id,
 
-            from_session: this.state.from_leave_session,
-            to_session: this.state.to_leave_session,
-            from_date: this.state.from_date,
-            to_date: this.state.to_date
+            from_session: this.state.data.from_leave_session,
+            to_session: this.state.data.to_leave_session,
+            from_date: this.state.data.from_date,
+            to_date: this.state.data.to_date
           }
         : this.state.data.auth_level === 3
         ? {
             total_approved_days: this.state.data.total_approved_days,
-            ["authorized" + this.state.data.auth_level]: "Y",
+            ["authorized" + this.state.data.auth_level]:
+              type === "A" ? "Y" : "N",
             ["authorize" + this.state.data.auth_level + "_comment"]: this.state
               .remarks,
             hims_f_leave_application_id: this.state.data
@@ -97,13 +102,12 @@ class LeaveAuthDetail extends Component {
             status: type,
             employee_id: this.state.data.employee_id,
             leave_id: this.state.data.leave_id,
-            year: "2019",
+            year: moment(this.state.data.from_date).format("YYYY"),
             religion_id: this.state.data.religion_id,
-
-            from_session: this.state.from_leave_session,
-            to_session: this.state.to_leave_session,
-            from_date: this.state.from_date,
-            to_date: this.state.to_date
+            from_session: this.state.data.from_leave_session,
+            to_session: this.state.data.to_leave_session,
+            from_date: this.state.data.from_date,
+            to_date: this.state.data.to_date
           }
         : {};
 

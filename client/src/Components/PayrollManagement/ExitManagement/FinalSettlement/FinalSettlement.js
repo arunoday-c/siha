@@ -19,11 +19,13 @@ class FinalSettlement extends Component {
       earnings: [],
       deductions: [],
       deductingList: [],
-      earningList: []
+      earningList: [],
+      data: {
+        loans: []
+      }
     };
     this.getEarningsDeductions();
   }
-  ///finalsettlement
 
   loadFinalSettlement() {
     if (
@@ -48,7 +50,9 @@ class FinalSettlement extends Component {
         },
         onSuccess: res => {
           if (res.data.success) {
-            console.log("Result", res.data.records);
+            this.setState({
+              data: res.data.result
+            });
           }
         },
         onFailure: err => {
@@ -65,9 +69,25 @@ class FinalSettlement extends Component {
   }
 
   dropDownHandler(value) {
-    this.setState({
-      [value.name]: value.value
-    });
+    switch (value.name) {
+      case "earning_id":
+        this.setState({
+          [value.name]: value.value,
+          earning_name: value.selected.earning_deduction_description
+        });
+        break;
+      case "deduction_id":
+        this.setState({
+          [value.name]: value.value,
+          deduction_name: value.selected.earning_deduction_description
+        });
+        break;
+      default:
+        this.setState({
+          [value.name]: value.value
+        });
+        break;
+    }
   }
 
   textHandler(e) {
@@ -85,7 +105,8 @@ class FinalSettlement extends Component {
 
         earnings.push({
           amount: this.state.earning_amount,
-          earning_id: this.state.earning_id
+          earning_id: this.state.earning_id,
+          earning_name: this.state.earning_name
         });
 
         this.setState({
@@ -109,7 +130,8 @@ class FinalSettlement extends Component {
 
         deduction.push({
           amount: this.state.deduction_amount,
-          deduction_id: this.state.deduction_id
+          deduction_id: this.state.deduction_id,
+          deduction_name: this.state.deduction_name
         });
 
         this.setState({
@@ -177,6 +199,8 @@ class FinalSettlement extends Component {
   clearState() {}
 
   render() {
+    let FsData = this.state.data;
+
     return (
       <div className="FinalSettlementScreen">
         <div className="row  inner-top-search">
@@ -262,27 +286,25 @@ class FinalSettlement extends Component {
                   <div className="row">
                     <div className="col">
                       <label className="style_Label ">Employee Code</label>
-                      <h6>-------</h6>
+                      <h6>
+                        {FsData.employee_code
+                          ? FsData.employee_code
+                          : "-------"}
+                      </h6>
                     </div>
 
                     <div className="col">
                       <label className="style_Label ">Employee Name</label>
-                      <h6>-------</h6>
+                      <h6>{FsData.full_name ? FsData.full_name : "-------"}</h6>
                     </div>
 
                     <div className="col">
                       <label className="style_Label ">Department</label>
-                      <h6>-------</h6>
-                    </div>
-
-                    <div className="col">
-                      <label className="style_Label ">Designation</label>
-                      <h6>-------</h6>
-                    </div>
-
-                    <div className="col">
-                      <label className="style_Label ">Employee Status</label>
-                      <h6>-------</h6>
+                      <h6>
+                        {FsData.sub_department_name
+                          ? FsData.sub_department_name
+                          : "-------"}
+                      </h6>
                     </div>
                   </div>
                 </div>
@@ -360,9 +382,8 @@ class FinalSettlement extends Component {
                           id="Salary_Earning_Cntr_grid"
                           columns={[
                             {
-                              fieldName: "earning_id",
+                              fieldName: "earning_name",
                               label: "Earning Type"
-                              //disabled: true
                             },
                             {
                               fieldName: "amount",
@@ -456,7 +477,7 @@ class FinalSettlement extends Component {
                           id="Employee_Deductions_Cntr_grid"
                           columns={[
                             {
-                              fieldName: "deduction_id",
+                              fieldName: "deduction_name",
                               label: "Deduction Type"
                               //disabled: true
                             },
@@ -510,13 +531,13 @@ class FinalSettlement extends Component {
                           id="Employee_Loan_Cntr_grid"
                           columns={[
                             {
-                              fieldName: "",
+                              fieldName: "loan_description",
                               label: "Loan Type"
                               //disabled: true
                             },
                             {
-                              fieldName: "",
-                              label: "Amount",
+                              fieldName: "approved_amount",
+                              label: "Approved Amount",
                               others: {
                                 maxWidth: 100
                               }
@@ -524,7 +545,7 @@ class FinalSettlement extends Component {
                           ]}
                           keyId="deduction_id"
                           dataSource={{
-                            data: []
+                            data: this.state.data.loans
                           }}
                           isEditable={false}
                           paging={{ page: 0, rowsPerPage: 10 }}
@@ -552,21 +573,39 @@ class FinalSettlement extends Component {
                   <div className="row">
                     <div className="col-3">
                       <label className="style_Label ">Total Salary</label>
-                      <h6>-------</h6>
+                      <h6>
+                        {" "}
+                        {FsData.total_salary ? FsData.total_salary : "-------"}
+                      </h6>
                     </div>
 
                     <div className="col-3">
                       <label className="style_Label ">Gratuity Amount</label>
-                      <h6>-------</h6>
+                      <h6>
+                        {" "}
+                        {FsData.gratuity_amount
+                          ? FsData.gratuity_amount
+                          : "-------"}
+                      </h6>
                     </div>
 
                     <div className="col-3">
                       <label className="style_Label ">Leave Encashment</label>
-                      <h6>-------</h6>
+                      <h6>
+                        {" "}
+                        {FsData.total_leave_encash_amount
+                          ? FsData.total_leave_encash_amount
+                          : "-------"}
+                      </h6>
                     </div>
                     <div className="col-3">
                       <label className="style_Label ">Total Loan</label>
-                      <h6>-------</h6>
+                      <h6>
+                        {" "}
+                        {FsData.total_loan_amount
+                          ? FsData.total_loan_amount
+                          : "-------"}
+                      </h6>
                     </div>
                   </div>
                   <hr />
@@ -587,7 +626,12 @@ class FinalSettlement extends Component {
 
                     <div className="col-12">
                       <label>Remarks</label>
-                      <textarea className="textArea" />
+                      <textarea
+                        name="remarks"
+                        value={this.state.remarks}
+                        onChange={this.textHandler.bind(this)}
+                        className="textArea"
+                      />
                     </div>
                   </div>
                 </div>
