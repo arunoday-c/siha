@@ -4414,8 +4414,6 @@ let calculateLeaveDays = (req, res, next) => {
         session_diff += parseFloat(0.5);
       } else if (input.from_session == "SH" && input.to_session == "SH") {
         session_diff += parseFloat(0.5);
-      } else {
-        session_diff += parseFloat(1);
       }
     } else {
       debugLog("not same date");
