@@ -10,7 +10,11 @@ import Employee from "../../../../Search/Employee.json";
 import "./FinalSettlement.css";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import Enumerable from "linq";
-import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
+import {
+  AlgaehValidation,
+  getAmountFormart
+} from "../../../../utils/GlobalFunctions";
+import swal from "sweetalert2";
 
 class FinalSettlement extends Component {
   constructor(props) {
@@ -23,7 +27,12 @@ class FinalSettlement extends Component {
       data: {
         loans: []
       },
-      disableSave: true
+      disableSave: true,
+      total_earnings: 0,
+      total_deductions: 0,
+      net_earnings: 0,
+      net_deductions: 0,
+      net_amount: 0
     };
     this.getEarningsDeductions();
   }
@@ -32,6 +41,13 @@ class FinalSettlement extends Component {
     this.setState({
       [e.target.name]: e.target.checked
     });
+  }
+
+  changeGridEditors(row, e) {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    row[name] = value;
+    row.update();
   }
 
   loadFinalSettlement() {
@@ -57,10 +73,17 @@ class FinalSettlement extends Component {
         },
         onSuccess: res => {
           if (res.data.success) {
-            this.setState({
-              data: res.data.result,
-              disableSave: false
-            });
+            this.setState(
+              {
+                data: res.data.result,
+                disableSave: false,
+                loading: false
+              },
+              () => {
+                this.setNetEarnings();
+                this.setNetDeductions();
+              }
+            );
           }
         },
         onFailure: err => {
@@ -76,15 +99,83 @@ class FinalSettlement extends Component {
     }
   }
 
+  setNetAmount() {
+    let net_amount = this.state.net_earnings - this.state.net_deductions;
+    this.setState({
+      net_amount: net_amount
+    });
+  }
+
+  setNetEarnings() {
+    let net_earnings =
+      this.state.total_earnings +
+      this.state.data.total_leave_encash_amount +
+      this.state.data.gratuity_amount +
+      this.state.data.total_salary;
+
+    this.setState(
+      {
+        net_earnings: net_earnings
+      },
+      () => {
+        this.setNetAmount();
+      }
+    );
+  }
+
+  setNetDeductions() {
+    let net_deduction =
+      this.state.total_deductions + this.state.data.total_loan_amount;
+
+    this.setState(
+      {
+        net_deductions: net_deduction
+      },
+      () => {
+        this.setNetAmount();
+      }
+    );
+  }
+
+  setTotalEarnings() {
+    let total_earnings = Enumerable.from(this.state.earningList).sum(s =>
+      parseInt(s.amount, 10)
+    );
+
+    this.setState(
+      {
+        total_earnings: total_earnings ? total_earnings : 0
+      },
+      () => {
+        this.setNetEarnings();
+      }
+    );
+  }
+
+  setTotalDeductions() {
+    let total_deductions = Enumerable.from(this.state.deductingList).sum(s =>
+      parseInt(s.amount, 10)
+    );
+
+    this.setState(
+      {
+        total_deductions: total_deductions ? total_deductions : 0
+      },
+      () => {
+        this.setNetDeductions();
+      }
+    );
+  }
+
   saveFinalSettlement() {
     let data = this.state.data;
 
     let send_data = {
       employee_id: data.hims_d_employee_id,
-      total_amount: "To be Calculated",
-      total_earnings: "To be Calculated",
-      total_deductions: "To be Calculated",
-      total_loans: "To be Calculated",
+      total_amount: this.state.net_amount,
+      total_earnings: this.state.total_earnings,
+      total_deductions: this.state.total_deductions,
+      total_loans: data.total_loan_amount,
       hims_f_salary_id: data.hims_f_salary_id,
       total_salary: data.total_salary,
       end_of_service_id: data.hims_f_end_of_service_id,
@@ -101,6 +192,8 @@ class FinalSettlement extends Component {
       deductions: this.state.deductingList
     };
 
+    //  console.log("Send Data:", JSON.stringify(send_data));
+
     algaehApiCall({
       uri: "/finalsettlement/save",
       method: "POST",
@@ -108,8 +201,12 @@ class FinalSettlement extends Component {
       data: send_data,
       onSuccess: res => {
         if (res.data.success) {
+          swalMessage({
+            title: "Final Settlement Recorded",
+            type: "success"
+          });
           this.setState({
-            data: res.data.result
+            disableSave: true
           });
         }
       },
@@ -117,9 +214,6 @@ class FinalSettlement extends Component {
         swalMessage({
           title: err,
           type: "error"
-        });
-        this.setState({
-          loading: false
         });
       }
     });
@@ -135,7 +229,12 @@ class FinalSettlement extends Component {
         loans: []
       },
       disableSave: true,
-      forfiet: false
+      forfiet: false,
+      total_earnings: 0,
+      total_deductions: 0,
+      net_earnings: 0,
+      net_deductions: 0,
+      net_amount: 0
     });
   }
 
@@ -180,13 +279,108 @@ class FinalSettlement extends Component {
           earning_name: this.state.earning_name
         });
 
-        this.setState({
-          earningList: earnings
-        });
+        this.setState(
+          {
+            earningList: earnings
+          },
+          () => {
+            this.setTotalEarnings();
+          }
+        );
 
         this.setState({
           earning_amount: null,
           earnings_id: null
+        });
+      }
+    });
+  }
+
+  updateDeductions(data) {
+    let deductions = this.state.deductingList;
+
+    deductions[data.rowIdx] = data;
+
+    this.setState(
+      {
+        deductingList: deductions
+      },
+      () => {
+        this.setTotalDeductions();
+      }
+    );
+  }
+
+  updateEarnings(data) {
+    let earnings = this.state.earningList;
+
+    earnings[data.rowIdx] = data;
+
+    this.setState(
+      {
+        earningList: earnings
+      },
+      () => {
+        this.setTotalEarnings();
+      }
+    );
+  }
+
+  deleteEarnings(row) {
+    swal({
+      title: "Delete Earning " + row.earning_name + "?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        this.state.earningList.pop(row);
+
+        this.setState(
+          {
+            earningList: this.state.earningList
+          },
+          () => {
+            this.setTotalEarnings();
+          }
+        );
+      } else {
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "error"
+        });
+      }
+    });
+  }
+
+  deleteDeductions(row) {
+    swal({
+      title: "Delete Deduction " + row.deduction_name + "?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        this.state.deductingList.pop(row);
+
+        this.setState(
+          {
+            deductingList: this.state.deductingList
+          },
+          () => {
+            this.setTotalDeductions();
+          }
+        );
+      } else {
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "error"
         });
       }
     });
@@ -205,9 +399,14 @@ class FinalSettlement extends Component {
           deduction_name: this.state.deduction_name
         });
 
-        this.setState({
-          deductingList: deduction
-        });
+        this.setState(
+          {
+            deductingList: deduction
+          },
+          () => {
+            this.setTotalDeductions();
+          }
+        );
 
         this.setState({
           deduction_amount: null,
@@ -318,18 +517,6 @@ class FinalSettlement extends Component {
             </div>
           </div>
 
-          <div className="col-lg-1">
-            <div className="customCheckbox" style={{ marginTop: 24 }}>
-              <label className="checkbox inline">
-                <input
-                  type="checkbox"
-                  name="forfiet"
-                  onChange={this.changeChecks.bind(this)}
-                />
-                <span>Forfeiture</span>
-              </label>
-            </div>
-          </div>
           <div className="col form-group">
             <button
               onClick={this.loadFinalSettlement.bind(this)}
@@ -457,26 +644,74 @@ class FinalSettlement extends Component {
                           columns={[
                             {
                               fieldName: "earning_name",
-                              label: "Earning Type"
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Earning Type" }}
+                                />
+                              ),
+                              editorTemplate: row => {
+                                return (
+                                  <AlagehAutoComplete
+                                    selector={{
+                                      name: "earnings_id",
+                                      value: row.earnings_id,
+                                      className: "select-fld",
+                                      dataSource: {
+                                        textField:
+                                          "earning_deduction_description",
+                                        valueField:
+                                          "hims_d_earning_deduction_id",
+                                        data: this.state.earnings
+                                      },
+                                      onChange: this.changeGridEditors.bind(
+                                        this,
+                                        row
+                                      )
+                                    }}
+                                  />
+                                );
+                              }
                             },
                             {
                               fieldName: "amount",
-                              label: "Amount",
+                              label: (
+                                <AlgaehLabel label={{ forceLabel: "Amount" }} />
+                              ),
+                              editorTemplate: row => {
+                                return (
+                                  <AlagehFormGroup
+                                    textBox={{
+                                      className: "txt-fld",
+                                      name: "amount",
+                                      value: row.amount,
+                                      events: {
+                                        onChange: this.changeGridEditors.bind(
+                                          this,
+                                          row
+                                        )
+                                      },
+                                      others: {
+                                        type: "number"
+                                      }
+                                    }}
+                                  />
+                                );
+                              },
                               others: {
                                 maxWidth: 100
                               }
                             }
                           ]}
-                          keyId="earning_id"
+                          keyId="earnings_id"
                           dataSource={{
                             data: this.state.earningList
                           }}
-                          isEditable={false}
+                          isEditable={true}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{
                             onEdit: () => {},
-                            onDelete: () => {},
-                            onDone: () => {}
+                            onDelete: this.deleteEarnings.bind(this),
+                            onDone: this.updateEarnings.bind(this)
                           }}
                         />
                       </div>
@@ -553,27 +788,75 @@ class FinalSettlement extends Component {
                           columns={[
                             {
                               fieldName: "deduction_name",
-                              label: "Deduction Type"
-                              //disabled: true
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Deduction Type" }}
+                                />
+                              ),
+                              editorTemplate: row => {
+                                return (
+                                  <AlagehAutoComplete
+                                    selector={{
+                                      name: "deductions_id",
+                                      value: row.deductions_id,
+                                      className: "select-fld",
+                                      dataSource: {
+                                        textField:
+                                          "earning_deduction_description",
+                                        valueField:
+                                          "hims_d_earning_deduction_id",
+                                        data: this.state.deductions
+                                      },
+                                      onChange: this.changeGridEditors.bind(
+                                        this,
+                                        row
+                                      )
+                                    }}
+                                  />
+                                );
+                              }
                             },
                             {
                               fieldName: "amount",
-                              label: "Amount",
+
+                              label: (
+                                <AlgaehLabel label={{ forceLabel: "Amount" }} />
+                              ),
+                              editorTemplate: row => {
+                                return (
+                                  <AlagehFormGroup
+                                    textBox={{
+                                      className: "txt-fld",
+                                      name: "amount",
+                                      value: row.amount,
+                                      events: {
+                                        onChange: this.changeGridEditors.bind(
+                                          this,
+                                          row
+                                        )
+                                      },
+                                      others: {
+                                        type: "number"
+                                      }
+                                    }}
+                                  />
+                                );
+                              },
                               others: {
                                 maxWidth: 100
                               }
                             }
                           ]}
-                          //    keyId="algaeh_d_module_id"
+                          keyId="deductions_id"
                           dataSource={{
                             data: this.state.deductingList
                           }}
-                          isEditable={false}
+                          isEditable={true}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{
                             onEdit: () => {},
-                            onDelete: () => {},
-                            onDone: () => {}
+                            onDelete: this.deleteDeductions.bind(this),
+                            onDone: this.updateDeductions.bind(this)
                           }}
                         />
                       </div>
@@ -607,15 +890,24 @@ class FinalSettlement extends Component {
                           columns={[
                             {
                               fieldName: "loan_description",
-                              label: "Loan Type"
-                              //disabled: true
+
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Loan Type" }}
+                                />
+                              )
                             },
                             {
-                              fieldName: "approved_amount",
-                              label: "Approved Amount",
-                              others: {
-                                maxWidth: 100
-                              }
+                              fieldName: "pending_loan",
+
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Pending Amount" }}
+                                />
+                              )
+                              // others: {
+                              //   maxWidth: 100
+                              // }
                             }
                           ]}
                           keyId="deduction_id"
@@ -650,7 +942,27 @@ class FinalSettlement extends Component {
                       <label className="style_Label ">Total Salary</label>
                       <h6>
                         {" "}
-                        {FsData.total_salary ? FsData.total_salary : "-------"}
+                        {FsData.total_salary
+                          ? getAmountFormart(FsData.total_salary)
+                          : getAmountFormart(0)}
+                      </h6>
+                    </div>
+                    <div className="col-3">
+                      <label className="style_Label ">Total Earnings</label>
+                      <h6>
+                        {" "}
+                        {FsData.total_salary
+                          ? getAmountFormart(this.state.total_earnings)
+                          : getAmountFormart(0)}
+                      </h6>
+                    </div>
+                    <div className="col-3">
+                      <label className="style_Label ">Total Deductions</label>
+                      <h6>
+                        {" "}
+                        {FsData.total_salary
+                          ? getAmountFormart(this.state.total_deductions)
+                          : getAmountFormart(0)}
                       </h6>
                     </div>
 
@@ -659,8 +971,8 @@ class FinalSettlement extends Component {
                       <h6>
                         {" "}
                         {FsData.gratuity_amount
-                          ? FsData.gratuity_amount
-                          : "-------"}
+                          ? getAmountFormart(FsData.gratuity_amount)
+                          : getAmountFormart(0)}
                       </h6>
                     </div>
 
@@ -669,8 +981,8 @@ class FinalSettlement extends Component {
                       <h6>
                         {" "}
                         {FsData.total_leave_encash_amount
-                          ? FsData.total_leave_encash_amount
-                          : "-------"}
+                          ? getAmountFormart(FsData.total_leave_encash_amount)
+                          : getAmountFormart(0)}
                       </h6>
                     </div>
                     <div className="col-3">
@@ -678,8 +990,8 @@ class FinalSettlement extends Component {
                       <h6>
                         {" "}
                         {FsData.total_loan_amount
-                          ? FsData.total_loan_amount
-                          : "-------"}
+                          ? getAmountFormart(FsData.total_loan_amount)
+                          : getAmountFormart(0)}
                       </h6>
                     </div>
                   </div>
@@ -687,16 +999,43 @@ class FinalSettlement extends Component {
                   <div className="row">
                     <div className="col">
                       <label className="style_Label ">Net Earnings</label>
-                      <h6>-------</h6>
+                      <h6>
+                        {getAmountFormart(this.state.net_earnings)
+                          ? getAmountFormart(this.state.net_earnings)
+                          : getAmountFormart(0)}
+                      </h6>
                     </div>
 
                     <div className="col">
-                      <label className="style_Label ">Total Deduction</label>
-                      <h6>-------</h6>
+                      <label className="style_Label ">Net Deduction</label>
+                      <h6>
+                        {" "}
+                        {getAmountFormart(this.state.net_deductions)
+                          ? getAmountFormart(this.state.net_deductions)
+                          : getAmountFormart(0)}
+                      </h6>
                     </div>
                     <div className="col">
                       <label className="style_Label ">Net Amount</label>
-                      <h6>-------</h6>
+                      <h6>
+                        {" "}
+                        {getAmountFormart(this.state.net_amount)
+                          ? getAmountFormart(this.state.net_amount)
+                          : getAmountFormart(0)}
+                      </h6>
+                    </div>
+
+                    <div className="col">
+                      <div className="customCheckbox" style={{ marginTop: 24 }}>
+                        <label className="checkbox inline">
+                          <input
+                            type="checkbox"
+                            name="forfiet"
+                            onChange={this.changeChecks.bind(this)}
+                          />
+                          <span>Forfeit Final Settlement</span>
+                        </label>
+                      </div>
                     </div>
 
                     <div className="col-12">

@@ -121,7 +121,8 @@ E.employee_code,E.full_name,E.arabic_name,E.sex,E.employee_type ,E.title_id,T.ti
               `settled_date`,`final_settlement_status`,`total_amount`,`total_earnings`,`total_deductions`,\
               `total_loans`,`salary_id`,`total_salary`,`end_of_service_id`,`total_eos`,`leave_encashment_id`,\
               `total_leave_encash`,`employee_status`,`forfiet`,`remarks`,`created_by`,`created_date`,`updated_date`,\
-              `updated_by`,`posted`,`posted_date`,`posted_by`,`cancelled`,`cancelled_by`,`cancelled_date`)",
+              `updated_by`,`posted`,`posted_date`,`posted_by`,`cancelled`,`cancelled_by`,`cancelled_date`) values(?,?,?,?,\
+                ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 newNumber[0],
                 _input.employee_id,
@@ -160,8 +161,8 @@ E.employee_code,E.full_name,E.arabic_name,E.sex,E.employee_type ,E.title_id,T.ti
               let query = "";
               for (let i = 0; i < _input.loans.length; i++) {
                 query += _mysql.mysqlQueryFormat(
-                  "nsert into hims_f_final_settle_loan_details(`final_settlement_header_id`,\
-                `loan_application_id`,`balance_amount`) values(?);",
+                  "insert into hims_f_final_settle_loan_details(`final_settlement_header_id`,\
+                `loan_application_id`,`balance_amount`) values(?,?,?);",
                   [
                     header_result.insertId,
                     _input.loans[i].hims_f_loan_application_id,
@@ -171,13 +172,13 @@ E.employee_code,E.full_name,E.arabic_name,E.sex,E.employee_type ,E.title_id,T.ti
 
                 query += _mysql.mysqlQueryFormat(
                   "update hims_f_loan_application set loan_closed=? where hims_f_loan_application_id=?;",
-                  ["Y", hims_f_loan_application_id]
+                  ["Y", _input.loans[i].hims_f_loan_application_id]
                 );
               }
               for (let e = 0; e < _input.earnings.length; e++) {
                 query += _mysql.mysqlQueryFormat(
-                  "nsert into hims_f_final_settle_earnings_detail(`final_settlement_header`,\
-                  `earnings_id`,`amount`) values(?);",
+                  "insert into hims_f_final_settle_earnings_detail(`final_settlement_header`,\
+                  `earnings_id`,`amount`) values(?,?,?);",
                   [
                     header_result.insertId,
                     _input.earnings[e].earnings_id,
@@ -187,8 +188,8 @@ E.employee_code,E.full_name,E.arabic_name,E.sex,E.employee_type ,E.title_id,T.ti
               }
               for (let d = 0; d < _input.deductions.length; d++) {
                 query += _mysql.mysqlQueryFormat(
-                  "nsert into hims_f_final_settle_deductions_detail(`final_settlement_header_id`,\
-                  `deductions_id`,`amount`) values(?);",
+                  "insert into hims_f_final_settle_deductions_detail(`final_settlement_header_id`,\
+                  `deductions_id`,`amount`) values(?,?,?);",
                   [
                     header_result.insertId,
                     _input.deductions[d].deductions_id,
@@ -208,13 +209,14 @@ E.employee_code,E.full_name,E.arabic_name,E.sex,E.employee_type ,E.title_id,T.ti
               }
               query += _mysql.mysqlQueryFormat(
                 "update hims_d_employee set settled=? where hims_d_employee_id=?;",
-                ["Y", _input.hims_d_employee_id]
+                ["Y", _input.employee_id]
               );
               query += _mysql.mysqlQueryFormat(
                 "update hims_f_salary set salary_settled=? where hims_f_salary_id=?;",
                 ["Y", _input.hims_f_salary_id]
               );
-              if (_input.hims_f_end_of_service_id !== null) {
+
+              if (_input.hims_f_end_of_service_id != null) {
                 query += _mysql.mysqlQueryFormat(
                   "update hims_f_end_of_service set settled=? where hims_f_end_of_service_id=?",
                   ["Y", _input.hims_f_end_of_service_id]
@@ -225,19 +227,20 @@ E.employee_code,E.full_name,E.arabic_name,E.sex,E.employee_type ,E.title_id,T.ti
                 .executeQuery({
                   query: query
                 })
-                .then(res => {
+                .then(rest => {
                   _mysql.commitTransaction((error, resu) => {
                     if (error) {
                       _mysql.rollBackTransaction(() => {
                         next(error);
                       });
                     } else {
-                      req.records = res;
+                      req.records = rest;
                       next();
                     }
                   });
                 })
                 .catch(e => {
+                  console.log("REsult", e);
                   _mysql.rollBackTransaction(() => {
                     next(e);
                   });
