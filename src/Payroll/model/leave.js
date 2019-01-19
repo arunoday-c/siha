@@ -5551,13 +5551,271 @@ let cancelLeave = (req, res, next) => {
           }
 
           connection.query(
-            "update hims_d_appointment_status set default_status='N' where default_status='C' and record_status='A' and hims_d_appointment_status_id <>? ",
-            [input.hims_d_appointment_status_id],
-            (error, salResult) => {
+            "select hims_f_leave_application_id,leave_application_code ,`status`,cancelled\
+            from hims_f_leave_application where hims_f_leave_application_id=? ",
+            [input.hims_f_leave_application_id],
+            (error, leaveStaus) => {
               if (error) {
                 connection.rollback(() => {
                   releaseDBConnection(db, connection);
                   next(error);
+                });
+              }
+
+              if (
+                leaveStaus[0]["status"] == "APR" &&
+                leaveStaus[0]["cancelled"] == "N"
+              ) {
+                debugLog("Apprd", leaveStaus[0]["status"]);
+                // let month = "1";
+                // let year = "2019";
+                // let employee_id = "2";
+                connection.query(
+                  "select hims_f_salary_id ,`month`,`year`,employee_id, salary_processed,salary_paid from \
+            hims_f_salary where `month`=? and `year`=? and employee_id=? ",
+                  [input.month, input.year, input.employee_id],
+                  (error, salResult) => {
+                    if (error) {
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      });
+                    }
+                    debugLog("salResult:", salResult);
+                    if (
+                      salResult.length < 1 ||
+                      (salResult.length > 0 &&
+                        salResult[0]["salary_processed"] == "N" &&
+                        salResult[0]["salary_paid"] == "N")
+                    ) {
+                      //YOU CAN CANCEL
+
+                      new Promise((resolve, reject) => {
+                        req.options = {
+                          db: connection,
+                          onFailure: error => {
+                            reject(error);
+                          },
+                          onSuccess: result => {
+                            resolve(result);
+                          }
+                        };
+                        calculateLeaveDays(req, res, next);
+                      }).then(deductionResult => {
+                        new Promise((resolve, reject) => {
+                          try {
+                            debugLog(" meo deduc:", deductionResult);
+
+                            if (deductionResult.invalid_input == true) {
+                              connection.rollback(() => {
+                                releaseDBConnection(db, connection);
+                              });
+                              req.records = deductionResult;
+                              next();
+                              return;
+                            } else {
+                              resolve(deductionResult);
+                            }
+                          } catch (e) {
+                            reject(e);
+                          }
+                        }).then(deductionResult => {
+                          let monthArray = new LINQ(
+                            deductionResult.monthWiseCalculatedLeaveDeduction
+                          )
+                            .Select(s => s.month_name)
+                            .ToArray();
+
+                          debugLog("monthArray:", monthArray);
+
+                          if (monthArray.length > 0) {
+                            connection.query(
+                              `select hims_f_employee_monthly_leave_id, total_eligible,close_balance, ${monthArray} ,availed_till_date
+                      from hims_f_employee_monthly_leave where
+                      employee_id=? and year=? and leave_id=?`,
+                              [input.employee_id, input.year, input.leave_id],
+                              (error, monthlyLeaveData) => {
+                                if (error) {
+                                  connection.rollback(() => {
+                                    releaseDBConnection(db, connection);
+                                    next(error);
+                                  });
+                                }
+
+                                debugLog("monthlyLeaveData:", monthlyLeaveData);
+
+                                let updateMonths = {};
+                                let newCloseBal =
+                                  parseFloat(
+                                    monthlyLeaveData[0]["close_balance"]
+                                  ) +
+                                  parseFloat(
+                                    deductionResult.calculatedLeaveDays
+                                  );
+                                let newAvailTillDate =
+                                  parseFloat(
+                                    monthlyLeaveData[0]["availed_till_date"]
+                                  ) -
+                                  parseFloat(
+                                    deductionResult.calculatedLeaveDays
+                                  );
+                                for (
+                                  let i = 0;
+                                  i <
+                                  deductionResult
+                                    .monthWiseCalculatedLeaveDeduction.length;
+                                  i++
+                                ) {
+                                  Object.keys(monthlyLeaveData[0]).map(key => {
+                                    // debugLog("ke:",key);
+                                    // debugLog("m name",deductionResult.monthWiseCalculatedLeaveDeduction[i]["month_name"]);
+                                    if (
+                                      key ==
+                                      deductionResult
+                                        .monthWiseCalculatedLeaveDeduction[i][
+                                        "month_name"
+                                      ]
+                                    ) {
+                                      updateMonths = {
+                                        ...updateMonths,
+                                        [key]:
+                                          parseFloat(monthlyLeaveData[0][key]) -
+                                          parseFloat(
+                                            deductionResult
+                                              .monthWiseCalculatedLeaveDeduction[
+                                              i
+                                            ]["finalLeave"]
+                                          )
+                                      };
+                                    }
+                                  });
+                                }
+
+                                debugLog("newCloseBal:", newCloseBal);
+                                debugLog("newAvailTillDate:", newAvailTillDate);
+                                debugLog("updateMonths:", updateMonths);
+                                connection.query(
+                                  " update hims_f_leave_application set cancelled='Y',cancelled_date='" +
+                                    moment().format("YYYY-MM-DD") +
+                                    "',\
+                            cancelled_by=" +
+                                    req.userIdentity.algaeh_d_app_user_id +
+                                    ",cancelled_remarks='" +
+                                    input.cancelled_remarks +
+                                    "' where record_status='A' \
+                            and hims_f_leave_application_id=" +
+                                    input.hims_f_leave_application_id +
+                                    ";update hims_f_employee_monthly_leave set ?  where \
+                            hims_f_employee_monthly_leave_id='" +
+                                    monthlyLeaveData[0]
+                                      .hims_f_employee_monthly_leave_id +
+                                    "'",
+                                  {
+                                    ...updateMonths,
+                                    close_balance: newCloseBal,
+                                    availed_till_date: newAvailTillDate
+                                  },
+                                  (error, finalRes) => {
+                                    if (error) {
+                                      connection.rollback(() => {
+                                        releaseDBConnection(db, connection);
+                                        next(error);
+                                      });
+                                    }
+
+                                    connection.commit(error => {
+                                      if (error) {
+                                        connection.rollback(() => {
+                                          releaseDBConnection(db, connection);
+                                          next(error);
+                                        });
+                                      }
+                                      releaseDBConnection(db, connection);
+                                      req.records = finalRes;
+                                      next();
+                                    });
+                                  }
+                                );
+                              }
+                            );
+                          } else if (
+                            (salResult.length > 0 &&
+                              salResult[0]["salary_processed"] == "Y") ||
+                            (salResult.length > 0 &&
+                              salResult[0]["salary_paid"] == "Y")
+                          ) {
+                            // -- CANT CANCEL, salary already process
+
+                            connection.rollback(() => {
+                              releaseDBConnection(db, connection);
+                              req.records = {
+                                invalid_input: true,
+                                message: "salary already processed"
+                              };
+                              next();
+                            });
+                          }
+                        });
+                      });
+                    }
+                  }
+                );
+              } else if (
+                (leaveStaus[0]["status"] == "PEN" ||
+                  leaveStaus[0]["status"] == "REJ") &&
+                leaveStaus[0]["cancelled"] == "N"
+              ) {
+                debugLog("pending or rjrctd", leaveStaus[0]["status"]);
+                connection.query(
+                  " update hims_f_leave_application set cancelled='Y',cancelled_date=?,\
+    cancelled_by=?,cancelled_remarks=? where record_status='A' \
+    and hims_f_leave_application_id=? ",
+                  [
+                    req.userIdentity.algaeh_d_app_user_id,
+                    moment().format("YYYY-MM-DD"),
+                    input.cancelled_remarks,
+                    input.hims_f_leave_application_id
+                  ],
+                  (error, finalRes) => {
+                    if (error) {
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      });
+                    }
+
+                    connection.commit(error => {
+                      if (error) {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                      }
+                      releaseDBConnection(db, connection);
+                      req.records = finalRes;
+                      next();
+                    });
+                  }
+                );
+              } else if (leaveStaus[0]["cancelled"] == "Y") {
+                // already cancelled
+                connection.rollback(() => {
+                  releaseDBConnection(db, connection);
+                  req.records = {
+                    invalid_input: true,
+                    message: "leave already cancelled"
+                  };
+                  next();
+                });
+              } else {
+                // status is not in PEN, APR, REJ
+                connection.rollback(() => {
+                  releaseDBConnection(db, connection);
+                  req.records = {
+                    invalid_input: true,
+                    message: "salary is  processed"
+                  };
+                  next();
                 });
               }
             }
@@ -5567,7 +5825,7 @@ let cancelLeave = (req, res, next) => {
     } else {
       req.records = {
         invalid_input: true,
-        message: "please provide valid input"
+        message: "you dont have privilege"
       };
       next();
     }
@@ -5668,5 +5926,6 @@ module.exports = {
   updateLeaveDetailMaster,
   updateLeaveEncashMaster,
   updateLeaveRuleMaster,
-  deleteLeaveApplication
+  deleteLeaveApplication,
+  cancelLeave
 };
