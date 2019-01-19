@@ -4398,17 +4398,35 @@ let calculateLeaveDays = (req, res, next) => {
     debugLog("dateEnd:", dateEnd);
 
     let leaveDeductionArray = [];
+  //--- START OF-------calculate Half-day or Full-day from session
 
+  if(input.from_date== input.to_date){
+    debugLog("same date:");
+    if (input.from_session == "FH"&&input.to_session == "FH") {
+      session_diff += parseFloat(0.5);
+    }else if  (input.from_session == "SH"&&input.to_session == "SH") {
+      session_diff += parseFloat(0.5);
+    }else{
+      session_diff += parseFloat(1);
+
+    }
+    
+
+  }else{
+    debugLog("not same date");
     if (input.from_session == "SH") {
       session_diff += parseFloat(0.5);
     }
     if (input.to_session == "FH") {
       session_diff += parseFloat(0.5);
     }
+  }
+ //--- END OF---------calculate Half-day or Full-day from session
+
 
     debugLog("session_diff:", session_diff);
 
-    // get month names and start_of_month and end_of_month number of days in a full month
+    //--- START OF---------get month names and start_of_month and end_of_month number of days in a full month
     while (
       dateEnd > dateStart ||
       dateStart.format("M") === dateEnd.format("M")
@@ -4428,8 +4446,11 @@ let calculateLeaveDays = (req, res, next) => {
     }
 
     debugLog("dateRange:", dateRange);
+// ---END OF---------get month names and start_of_month and end_of_month number of days in a full month
 
-    //calculate begning_of_leave and end_of_leave and leaveDays in leaveDates Range
+
+
+    //---START OF-------calculate begning_of_leave and end_of_leave and leaveDays in leaveDates Range
     if (dateRange.length > 1) {
       for (let i = 0; i < dateRange.length; i++) {
         if (i == 0) {
@@ -4505,9 +4526,12 @@ let calculateLeaveDays = (req, res, next) => {
 
       calculatedLeaveDays = leave_applied_days;
     }
+
+//---END OF-------calculate begning_of_leave and end_of_leave and leaveDays in leaveDates Range
+
     debugLog("dateRange:", dateRange);
     debugLog("leave_applied_days:", leave_applied_days);
-    debugLog("calculatedLeaveDays:", calculatedLeaveDays);
+   
 
     new Promise((resolve, reject) => {
       try {
@@ -4522,17 +4546,50 @@ let calculateLeaveDays = (req, res, next) => {
 
               db.query(
                 " select hims_f_employee_monthly_leave_id, total_eligible,close_balance, availed_till_date\
-                from hims_f_employee_monthly_leave where      employee_id=? and year=? and leave_id=?",
-                [input.employee_id, year, input.leave_id],
+                from hims_f_employee_monthly_leave where      employee_id=? and year=? and leave_id=?;\
+                select hims_d_holiday_id,holiday_date,holiday_description\
+                from hims_d_holiday where (((date(holiday_date)= date(?) and weekoff='Y') or \
+                (date(holiday_date)=date(?) and holiday='Y' and holiday_type='RE') or\
+                (date(holiday_date)=date(?) and holiday='Y' and holiday_type='RS' and religion_id=?))\
+                or \
+                ((date(holiday_date)= date(?) and weekoff='Y') or \
+                (date(holiday_date)=date(?) and holiday='Y' and holiday_type='RE') or\
+                (date(holiday_date)=date(?) and holiday='Y' and holiday_type='RS' and religion_id=?)))",
+                [input.employee_id, year, input.leave_id,
+                
+                
+                  input.from_date,
+                  input.from_date,
+                  input.from_date,
+                  my_religion,
+                  input.to_date,
+                  input.to_date,
+                  input.to_date,
+                  my_religion
+                
+                ],
                 (error, closeBalanceResult) => {
                   if (error) {
                     releaseDBConnection(req.db, db);
                     next(error);
                   }
 
-                  currentClosingBal = closeBalanceResult[0].close_balance;
-                  debugLog("closeBalanceResult:", closeBalanceResult);
+                  currentClosingBal = closeBalanceResult[0][0].close_balance;
+                  debugLog("closeBalanceResult:", closeBalanceResult[0]);
+                  debugLog("res1:", closeBalanceResult[0]);
+                  debugLog("res2:", closeBalanceResult[1]);
                   debugLog("currentClosingBal:", currentClosingBal);
+                  if(closeBalanceResult[1].length>0){
+
+                    releaseDBConnection(req.db, db);
+                    req.records = {
+                      invalid_input: true,
+                      message: `you cant apply leave,${closeBalanceResult[1][0].holiday_date} is holiday   `
+                    };
+                    next();
+                    return;
+
+                  }
                   resolve({ db });
                 }
               );
@@ -4585,7 +4642,7 @@ let calculateLeaveDays = (req, res, next) => {
           }
           debugLog("result:", result);
 
-          //excluding week off or holidays
+          // subtracting  week off or holidays fom LeaveApplied Days
           if (
             result.length > 0 &&
             (result[0].include_weekoff == "N" ||
@@ -4610,10 +4667,28 @@ let calculateLeaveDays = (req, res, next) => {
                 }
                 debugLog("holidayResult:", holidayResult);
 
+ //s -------START OF--- get count of holidays and weekOffs betwen apllied leave range
                 let total_weekOff = new LINQ(holidayResult)
                   .Where(w => w.weekoff == "Y")
                   .Count();
 
+
+                  let total_holiday = new LINQ(holidayResult)
+                  .Where(
+                    w =>
+                      (w.holiday == "Y" && w.holiday_type == "RE") ||
+                      (w.holiday == "Y" &&
+                        w.holiday_type == "RS" &&
+                        w.religion_id == my_religion)
+                  )
+                  .Count();
+// -------END OF--- get count of holidays and weekOffs betwen apllied leave range
+
+
+
+
+
+//s -------START OF--- get holidays data and week of data
                 let week_off_Data = new LINQ(holidayResult)
                   .Select(s => {
                     return {
@@ -4635,19 +4710,7 @@ let calculateLeaveDays = (req, res, next) => {
                   .Where(w => w.weekoff == "Y")
                   .ToArray();
 
-                debugLog("week_off_Data:", week_off_Data);
-                //-----------------------------------------------
-
-                let total_holiday = new LINQ(holidayResult)
-                  .Where(
-                    w =>
-                      (w.holiday == "Y" && w.holiday_type == "RE") ||
-                      (w.holiday == "Y" &&
-                        w.holiday_type == "RS" &&
-                        w.religion_id == my_religion)
-                  )
-                  .Count();
-
+              
                 let holiday_Data = new LINQ(holidayResult)
                   .Select(s => {
                     return {
@@ -4674,7 +4737,13 @@ let calculateLeaveDays = (req, res, next) => {
                         w.religion_id == my_religion)
                   )
                   .ToArray();
-                debugLog("holiday_Data:", holiday_Data);
+
+//s -------END OF--- get holidays data and week of data
+
+
+
+
+
                 //-------------------------------------------------------
                 debugLog("total_weekOff:", total_weekOff);
                 debugLog("total_holiday:", total_holiday);
@@ -4684,6 +4753,10 @@ let calculateLeaveDays = (req, res, next) => {
                 for (let k = 0; k < dateRange.length; k++) {
                   let reduce_days = parseFloat(0);
 
+
+//step 1 -------START OF------ getting total week offs and holidays to be subtracted from each month 
+
+                  //calculating holidays to remove from each month 
                   if (result[0].include_holiday == "N") {
                     reduce_days += parseFloat(
                       new LINQ(holiday_Data)
@@ -4696,10 +4769,8 @@ let calculateLeaveDays = (req, res, next) => {
                         .Count()
                     );
                   }
-                  debugLog(
-                    "holiday reduce:" + dateRange[k]["month_name"],
-                    reduce_days
-                  );
+                 
+                    //calculating week off to remove from each month 
                   if (result[0].include_weekoff == "N") {
                     reduce_days += parseFloat(
                       new LINQ(week_off_Data)
@@ -4713,12 +4784,12 @@ let calculateLeaveDays = (req, res, next) => {
                     );
                   }
 
-                  debugLog(
-                    "holiday reduce:" + dateRange[k]["month_name"],
-                    reduce_days
-                  );
-                  debugLog("===================:");
+               
+//-------END OF------ getting total week offs and holidays to be subtracted from each month 
+                
 
+
+//step 2-------START OF------ session belongs to which month and  subtract session from that month----------
                   if (input.from_session == "SH" && k == 0) {
                     if (from_month === to_month && input.to_session == "FH") {
                       leaveDeductionArray.push({
@@ -4756,14 +4827,16 @@ let calculateLeaveDays = (req, res, next) => {
                         parseFloat(reduce_days)
                     });
                   }
-
+//------- END OF----session belongs to which month and  subtract session from that month----------
                   total_minus += parseFloat(reduce_days);
                 }
 
                 debugLog("leaveDeductionArray:", leaveDeductionArray);
                 debugLog("total_minus:", total_minus);
-                //===================================================
+       
 
+
+   //step3-------START OF------ finally  subtracting week off and holidays from total Applied days
                 debugLog("total apllied days:", calculatedLeaveDays);
                 if (result[0].include_weekoff == "N") {
                   calculatedLeaveDays =
@@ -4780,6 +4853,11 @@ let calculateLeaveDays = (req, res, next) => {
 
                 calculatedLeaveDays =
                   parseFloat(calculatedLeaveDays) - parseFloat(session_diff);
+
+
+  //-------END OF------ finally  subtracting week off and holidays from total Applied days
+
+
 
                 debugLog(
                   "after reducing weekoff and holdy and session:",
@@ -4827,7 +4905,9 @@ let calculateLeaveDays = (req, res, next) => {
                 }
               }
             );
-          } else if (result.length > 0) {
+          } 
+          // dont subtract  week off or holidays fom LeaveApplied Days
+          else if (result.length > 0) {
             for (let k = 0; k < dateRange.length; k++) {
               leaveDeductionArray.push({
                 month_name: dateRange[k]["month_name"],
@@ -4884,16 +4964,14 @@ let calculateLeaveDays = (req, res, next) => {
               releaseDBConnection(req.db, db);
               req.records = {
                 invalid_input: true,
-                message: `invalid data
-                  } `
+                message: `invalid data `
               };
               next();
               return;
             } else {
               req.options.onSuccess({
                 invalid_input: true,
-                message: `invalid data
-                  } `
+                message: `invalid data`
               });
             }
           }
@@ -5456,6 +5534,67 @@ let updateLeaveRuleMaster = (req, res, next) => {
       });
     } else {
       req.records = { invalid_input: true };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
+let cancelLeave = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.body);
+    if (
+      req.userIdentity.leave_authorize_privilege == "AL1" ||
+      req.userIdentity.leave_authorize_privilege == "AL2" ||
+      req.userIdentity.leave_authorize_privilege == "AL3"
+    ) {
+      //----------
+
+      db.getConnection((error, connection) => {
+        if (error) {
+          next(error);
+        }
+  
+        connection.beginTransaction(error => {
+          if (error) {
+            connection.rollback(() => {
+              releaseDBConnection(db, connection);
+              next(error);
+            });
+          }
+
+          connection.query(
+            "update hims_d_appointment_status set default_status='N' where default_status='C' and record_status='A' and hims_d_appointment_status_id <>? ",
+            [input.hims_d_appointment_status_id],
+            (error, salResult) => {
+              if (error) {
+                connection.rollback(() => {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                });
+              }
+
+
+
+
+
+
+              
+            });
+
+        });
+      });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "please provide valid input"
+      };
       next();
     }
   } catch (e) {
