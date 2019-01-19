@@ -12,6 +12,7 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import Enumerable from "linq";
+import swal from "sweetalert2";
 
 class ApplyLeave extends Component {
   constructor(props) {
@@ -56,6 +57,54 @@ class ApplyLeave extends Component {
         this.getEmployeeLeaveHistory();
       }
     );
+  }
+
+  deleteLeaveApplication(data) {
+    swal({
+      title: "Delete Leave Application for " + data.leave_description + "?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        algaehApiCall({
+          uri: "/leave/deleteLeaveApplication",
+          method: "DELETE",
+          data: {
+            employee_id: data.employee_id,
+            hims_f_leave_application_id: data.hims_f_leave_application_id
+          },
+          onSuccess: res => {
+            if (res.data.success) {
+              swalMessage({
+                title: "Leave Application Deleted Successfully",
+                type: "success"
+              });
+              this.getEmployeeLeaveHistory();
+            } else if (!res.data.success) {
+              swalMessage({
+                title: res.data.records.message,
+                type: "warning"
+              });
+            }
+          },
+          onFailure: err => {
+            swalMessage({
+              title: err.message,
+              type: "error"
+            });
+          }
+        });
+      } else {
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "error"
+        });
+      }
+    });
   }
 
   validate() {
@@ -122,6 +171,8 @@ class ApplyLeave extends Component {
             }
           );
         }
+
+        this.getAppliedDays();
       } else if (
         moment(from_date).format("YYYYMMDD") <
         moment(to_date).format("YYYYMMDD")
@@ -388,9 +439,14 @@ class ApplyLeave extends Component {
         break;
 
       default:
-        this.setState({
-          [value.name]: value.value
-        });
+        this.setState(
+          {
+            [value.name]: value.value
+          },
+          () => {
+            this.validate();
+          }
+        );
         break;
     }
   }
@@ -796,6 +852,27 @@ class ApplyLeave extends Component {
                     <AlgaehDataGrid
                       id="leaveRequestList_grid"
                       columns={[
+                        {
+                          fieldName: "actions",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Actions" }} />
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <i
+                                className="fas fa-trash-alt"
+                                onClick={this.deleteLeaveApplication.bind(
+                                  this,
+                                  row
+                                )}
+                              />
+                            );
+                          },
+                          others: {
+                            filterable: false,
+                            maxWidth: 55
+                          }
+                        },
                         {
                           fieldName: "status",
 
