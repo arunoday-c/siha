@@ -2,6 +2,7 @@ import React, { PureComponent } from "react";
 import Label from "./label";
 import "../Wrapper/autoComplete.css";
 import Enumarable from "linq";
+import Select from "react-select";
 import { checkSecurity } from "../../utils/GlobalFunctions";
 class AutoComplete extends PureComponent {
   constructor(props) {
@@ -36,161 +37,6 @@ class AutoComplete extends PureComponent {
     });
   }
 
-  onClickArrowIcon() {
-    this.setDropDirection();
-    let data = {};
-    if (
-      this.state._sortData !== this.props.selector.dataSource.data ||
-      this.state._sortData.length === 0
-    ) {
-      data = {
-        _sortData: this.dataSorting("")
-      };
-    }
-    if (this.state.listState === "d-block") {
-      this.setState({
-        listState: "d-none",
-        directonClass: "",
-        arrowIcon: "fa-angle-down",
-        ...data
-      });
-    } else {
-      this.setState({
-        listState: "d-block",
-        arrowIcon: "fa-angle-up",
-        ...data
-      });
-    }
-  }
-
-  onFocusTextbox(e) {
-    this.setDropDirection();
-    let data = {};
-    if (
-      this.state._sortData !== this.props.selector.dataSource.data ||
-      this.state._sortData.length === 0
-    ) {
-      data = {
-        _sortData: this.dataSorting("")
-      };
-    }
-
-    this.setState({
-      listState: "d-block",
-      arrowIcon: "fa-angle-up",
-      ...data
-    });
-  }
-
-  setDropDirection() {
-    const _elementPositionFromTop = this.positionFromTop();
-    const _distanceFromBottom = this.distanceFromBottom();
-    const _menuHeight = this.menuHeight();
-
-    if (_elementPositionFromTop > _distanceFromBottom) {
-      if (_menuHeight < _distanceFromBottom) {
-        this.setState({ directonClass: " dropDown" });
-        return;
-      }
-      this.setState({ directonClass: " dropUp" });
-    } else {
-      this.setState({ directonClass: " dropDown" });
-    }
-  }
-  positionFromTop() {
-    const _element = this.autoComp;
-    return _element.getBoundingClientRect().top;
-  }
-  menuHeight() {
-    const _element = this.autoComp;
-    return _element.querySelector(".myUL").childElementCount * 35;
-  }
-
-  distanceFromBottom() {
-    const _element = this.autoComp;
-    const _isGrid = this.autoComp.parentElement.parentNode.getAttribute(
-      "data_role"
-    );
-    let windowHeight = window.innerHeight - 32;
-    if (_isGrid === "grid") {
-      windowHeight = this.autoComp.offsetParent.clientHeight;
-    }
-    let elementOffset = _element.getBoundingClientRect().top,
-      distance = windowHeight - elementOffset;
-    return distance;
-  }
-
-  checkValueExistsInMultiSelect(item) {
-    const _isExists = Enumarable.from(this.state.multiselect)
-      .where(
-        w => w.displayValue === item[this.props.selector.dataSource.valueField]
-      )
-      .firstOrDefault();
-    if (_isExists !== undefined) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  getTextByValue(value, passProps) {
-    passProps = passProps || this.props.selector.dataSource.data;
-    const _data = passProps === undefined ? [] : passProps;
-    const _enableMultiselect =
-      this.props.selector.multiselect !== undefined
-        ? this.props.selector.multiselect
-        : false;
-    if (!_enableMultiselect) {
-      const _dtl = Enumarable.from(_data)
-        .where(
-          w =>
-            String(w[this.props.selector.dataSource.valueField]).trim() ===
-            String(value).trim()
-        )
-        .firstOrDefault();
-
-      if (_dtl !== undefined) {
-        return _dtl[this.props.selector.dataSource.textField];
-      } else {
-        return "";
-      }
-    } else {
-      let _values = "";
-      const _valSplit = value;
-      for (let i = 0; i < _valSplit.length; i++) {
-        const _dtl = Enumarable.from(_data)
-          .where(
-            w =>
-              String(w[this.props.selector.dataSource.valueField]).trim() ===
-              String(_valSplit[i]).trim()
-          )
-          .firstOrDefault();
-        if (_dtl !== undefined) {
-          _values += String(_dtl[this.props.selector.dataSource.textField]);
-        }
-        if (i !== _valSplit.length - 1) _values += ",";
-      }
-      return _values;
-    }
-  }
-  getSecurityCheck() {
-    let hasSecurity = false;
-    if (this.props.selector.security !== undefined) {
-      const _security = this.props.selector.security;
-
-      checkSecurity({
-        securityType: "element",
-        component_code: _security.component_code,
-        module_code: _security.module_code,
-        screen_code: _security.screen_code,
-        screen_element_code: _security.screen_element_code,
-        hasSecurity: () => {
-          hasSecurity = true;
-        }
-      });
-    }
-    return hasSecurity;
-  }
   componentDidMount() {
     const _hasSecurity = this.getSecurityCheck();
     if (_hasSecurity) {
@@ -219,16 +65,6 @@ class AutoComplete extends PureComponent {
   }
   componentWillUnmount() {
     document.removeEventListener("mousedown", this.handleClickOutside, false);
-  }
-  handleClickOutside(event) {
-    if (!this.autoComp.contains(event.target)) {
-      this.setState({
-        listState: "d-none",
-        directonClass: "",
-        arrowIcon: "fa-angle-down",
-        listSelectedLi: undefined
-      });
-    }
   }
 
   handleKeyDownNavigation(e) {
@@ -435,7 +271,7 @@ class AutoComplete extends PureComponent {
           </span>
         ) : null}
         <div className="auto-suggestCntr">
-          <input
+          {/* <input
             type="text"
             className="myInput"
             name={this.props.selector.name}
@@ -454,80 +290,11 @@ class AutoComplete extends PureComponent {
             // autoComplete="new-password"
             {..._required}
             data_role="dropdownlist"
+          /> */}
+          <Select value={options.filter(({ id }) => id === this.props.value)}
+          defaultInputValue={}
+          
           />
-          {!isDisable ? (
-            <React.Fragment>
-              {this.state.displayText !== undefined &&
-              this.state.displayText !== "" ? (
-                <span className="clearall" onClick={this.clearInput.bind(this)}>
-                  <i className="fas  fa-times-circle" />
-                </span>
-              ) : null}
-
-              <span
-                className="showall"
-                onClick={this.onClickArrowIcon.bind(this)}
-              >
-                <i className={"fas " + this.state.arrowIcon} />
-              </span>
-              <ol
-                className={
-                  "myUL " + this.state.listState + this.state.directonClass
-                }
-              >
-                {this.state._sortData.map((item, index) => (
-                  <li
-                    className={
-                      _liIndex !== undefined && index.toString() === _liIndex
-                        ? "onselectedByNav"
-                        : ""
-                    }
-                    li_key={index}
-                    onClick={this.onListSelected.bind(this, item)}
-                    key={index}
-                    onKeyDown={this.handleKeyDownListItems.bind(this)}
-                  >
-                    {!_enableMultiselect ? (
-                      <a
-                        tabIndex={index + 1}
-                        value={item[this.props.selector.dataSource.valueField]}
-                      >
-                        {this.props.selector.displayTemplate !== undefined
-                          ? this.renderTemplate.bind(this, item, index)
-                          : String(
-                              item[this.props.selector.dataSource.textField]
-                            )
-                              .toString()
-                              .trim()}
-                      </a>
-                    ) : (
-                      <a className="customCheckbox">
-                        <label
-                          tabIndex={index + 1}
-                          className="checkbox"
-                          style={{ color: "rgb(33, 37, 41)" }}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={this.checkValueExistsInMultiSelect(item)}
-                          />
-                          <span style={{ fontSize: " 0.8rem" }}>
-                            {String(
-                              item[this.props.selector.dataSource.textField]
-                            )
-                              .toString()
-                              .trim()}
-                          </span>
-                        </label>
-                      </a>
-                    )}
-                  </li>
-                ))}
-              </ol>
-            </React.Fragment>
-          ) : (
-            <React.Fragment />
-          )}
         </div>
       </div>
     );

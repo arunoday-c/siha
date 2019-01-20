@@ -3,7 +3,7 @@ import _ from "lodash";
 import utilities from "algaeh-utilities";
 import moment from "moment";
 import { processAttendance } from "./attendance";
-
+import Sync from "sync";
 module.exports = {
   getLeaveSalaryProcess: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -104,7 +104,7 @@ module.exports = {
       });
   },
 
-  processLeaveSalary: async (req, res, next) => {
+  processLeaveSalary: (req, res, next) => {
     const _mysql = new algaehMysql();
     const _leaveSalary = req.query;
 
@@ -158,19 +158,22 @@ module.exports = {
             .log("req.query:", req.query);
 
           req.mySQl = _mysql;
-          const x = await processAttendance(req, res, next)
-            .then(res => {
-              _mysql.commitTransaction(() => {
-                _mysql.releaseConnection();
-                req.records = {};
-                next();
+          Sync(() => {
+            processAttendance
+              .sync(null, req, res, next)
+              .then(res => {
+                _mysql.commitTransaction(() => {
+                  _mysql.releaseConnection();
+                  req.records = {};
+                  next();
+                });
+              })
+              .catch(e => {
+                _mysql.rollBackTransaction(() => {
+                  next(e);
+                });
               });
-            })
-            .catch(e => {
-              _mysql.rollBackTransaction(() => {
-                next(e);
-              });
-            });
+          });
 
           fromDate_lastDate = moment(start_date)
             .endOf("month")
@@ -188,10 +191,3 @@ module.exports = {
       });
   }
 };
-
-async function pocrssRequest(req, res, next, _mysql) {
-  const poss = await new Promise((resolve, reject) => {
-    req.mySQl = _mysql;
-  });
-  return poss;
-}

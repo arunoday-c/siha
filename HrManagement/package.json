@@ -37,6 +37,7 @@
     "express": "^4.16.3",
     "moment": "^2.22.1",
     "node-linq": "0.0.5",
+    "sync": "^0.2.5",
     "winston": "^2.4.2",
     "winston-daily-rotate-file": "^3.1.4"
   },
