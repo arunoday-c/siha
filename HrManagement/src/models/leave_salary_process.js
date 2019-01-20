@@ -2,6 +2,7 @@ import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
 import utilities from "algaeh-utilities";
 import moment from "moment";
+import { processAttendance } from "./attendance";
 
 module.exports = {
   getLeaveSalaryProcess: (req, res, next) => {
@@ -101,5 +102,96 @@ module.exports = {
       .catch(e => {
         next(e);
       });
+  },
+
+  processLeaveSalary: async (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const _leaveSalary = req.query;
+
+    let start_date = moment(_leaveSalary.leave_start_date).format("YYYY-MM-DD");
+    let end_date = moment(_leaveSalary.leave_end_date).format("YYYY-MM-DD");
+    let end_date_month = moment(_leaveSalary.leave_end_date).format("M");
+    delete req.query.leave_end_date;
+    utilities
+      .AlgaehUtilities()
+      .logger()
+      .log("start_date:", start_date);
+    utilities
+      .AlgaehUtilities()
+      .logger()
+      .log("end_date:", end_date);
+
+    utilities
+      .AlgaehUtilities()
+      .logger()
+      .log("end_date_month:", end_date_month);
+
+    _mysql
+      .executeQueryWithTransaction({
+        query: "select 1"
+      })
+      .then(result => {
+        while (start_date <= end_date) {
+          let fromDate_lastDate = null;
+
+          let date_year = moment(start_date).year();
+          let date_month = moment(start_date).format("M");
+
+          utilities
+            .AlgaehUtilities()
+            .logger()
+            .log("date_year:", date_year);
+          utilities
+            .AlgaehUtilities()
+            .logger()
+            .log("date_month:", date_month);
+          req.query.leave_salary = "N";
+          req.query.yearAndMonth = date_year + "-" + date_month + "-01";
+          if (end_date_month == date_month) {
+            req.query.leave_end_date = end_date;
+            req.query.leave_salary = "Y";
+          }
+
+          utilities
+            .AlgaehUtilities()
+            .logger()
+            .log("req.query:", req.query);
+
+          req.mySQl = _mysql;
+          const x = await processAttendance(req, res, next)
+            .then(res => {
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = {};
+                next();
+              });
+            })
+            .catch(e => {
+              _mysql.rollBackTransaction(() => {
+                next(e);
+              });
+            });
+
+          fromDate_lastDate = moment(start_date)
+            .endOf("month")
+            .format("YYYY-MM-DD");
+
+          start_date = moment(fromDate_lastDate)
+            .add(1, "days")
+            .format("YYYY-MM-DD");
+        }
+      })
+      .catch(e => {
+        _mysql.rollBackTransaction(() => {
+          next(e);
+        });
+      });
   }
 };
+
+async function pocrssRequest(req, res, next, _mysql) {
+  const poss = await new Promise((resolve, reject) => {
+    req.mySQl = _mysql;
+  });
+  return poss;
+}

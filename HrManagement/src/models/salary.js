@@ -7,7 +7,12 @@ module.exports = {
     const input = req.query;
     const month_number = input.month;
     const year = input.year;
-    const _mysql = new algaehMysql();
+    // const _mysql = new algaehMysql();
+    utilities
+      .AlgaehUtilities()
+      .logger()
+      .log("req.mySQl:", req.mySQl);
+    const _mysql = req.mySQl == null ? new algaehMysql() : req.mySQl;
 
     utilities
       .AlgaehUtilities()
@@ -87,11 +92,16 @@ module.exports = {
                 _allEmployees = _myemp;
               } else {
                 if (_itWentInside) {
-                  _mysql.commitTransaction(() => {
-                    _mysql.releaseConnection();
-                    req.records = {};
-                    next();
-                  });
+                  if (req.callBack != "function") {
+                    _mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      req.records = {};
+                      next();
+                    });
+                  } else {
+                    req.callBack({});
+                  }
+
                   return;
                 }
               }
@@ -191,7 +201,8 @@ module.exports = {
 
                     getEarningComponents({
                       earnings: _earnings,
-                      empResult: empResult[i]
+                      empResult: empResult[i],
+                      leave_salary: req.query.leave_salary
                     })
                       .then(earningOutput => {
                         current_earning_amt_array =
@@ -207,7 +218,8 @@ module.exports = {
 
                         getDeductionComponents({
                           deduction: _deduction,
-                          empResult: empResult[i]
+                          empResult: empResult[i],
+                          leave_salary: req.query.leave_salary
                         })
                           .then(deductionOutput => {
                             current_deduction_amt_array =
@@ -524,13 +536,22 @@ module.exports = {
                                                                           empResult.length -
                                                                             1
                                                                         ) {
-                                                                          _mysql.commitTransaction(
-                                                                            () => {
-                                                                              _mysql.releaseConnection();
-                                                                              req.records = resultLoan;
-                                                                              next();
-                                                                            }
-                                                                          );
+                                                                          if (
+                                                                            req.callBack !=
+                                                                            "function"
+                                                                          ) {
+                                                                            _mysql.commitTransaction(
+                                                                              () => {
+                                                                                _mysql.releaseConnection();
+                                                                                req.records = resultLoan;
+                                                                                next();
+                                                                              }
+                                                                            );
+                                                                          } else {
+                                                                            req.callBack(
+                                                                              resultLoan
+                                                                            );
+                                                                          }
                                                                         }
                                                                       }
                                                                     )
@@ -551,13 +572,22 @@ module.exports = {
                                                                     empResult.length -
                                                                       1
                                                                   ) {
-                                                                    _mysql.commitTransaction(
-                                                                      () => {
-                                                                        _mysql.releaseConnection();
-                                                                        req.records = resultContribute;
-                                                                        next();
-                                                                      }
-                                                                    );
+                                                                    if (
+                                                                      req.callBack !=
+                                                                      "function"
+                                                                    ) {
+                                                                      _mysql.commitTransaction(
+                                                                        () => {
+                                                                          _mysql.releaseConnection();
+                                                                          req.records = resultContribute;
+                                                                          next();
+                                                                        }
+                                                                      );
+                                                                    } else {
+                                                                      req.callBack(
+                                                                        resultContribute
+                                                                      );
+                                                                    }
                                                                   }
                                                                 }
                                                               }
@@ -580,11 +610,21 @@ module.exports = {
                                                     );
                                                   });
                                               } else {
-                                                _mysql.commitTransaction(() => {
-                                                  _mysql.releaseConnection();
-                                                  req.records = _requestCollector;
-                                                  next();
-                                                });
+                                                if (
+                                                  req.callBack != "function"
+                                                ) {
+                                                  _mysql.commitTransaction(
+                                                    () => {
+                                                      _mysql.releaseConnection();
+                                                      req.records = _requestCollector;
+                                                      next();
+                                                    }
+                                                  );
+                                                } else {
+                                                  req.callBack(
+                                                    resultContribute
+                                                  );
+                                                }
                                               }
                                             })
                                             .catch(error => {
@@ -972,10 +1012,12 @@ function getEarningComponents(options) {
 
     const _earnings = options.earnings;
     const empResult = options.empResult;
+    const leave_salary = options.leave_salary;
     let final_earning_amount = 0;
     let current_earning_amt_array = [];
     let current_earning_amt = 0;
     let current_earning_per_day_salary = 0;
+    let leave_salary_days = 0;
 
     if (_earnings.length == 0) {
       resolve({ current_earning_amt_array, final_earning_amount });
@@ -983,17 +1025,48 @@ function getEarningComponents(options) {
 
     _earnings.map(obj => {
       if (obj.calculation_type == "F") {
-        current_earning_amt = obj["amount"];
-        current_earning_per_day_salary = parseFloat(
-          obj["amount"] / parseFloat(empResult["total_days"])
-        );
+        if (leave_salary == null || leave_salary == undefined) {
+          current_earning_amt = obj["amount"];
+          current_earning_per_day_salary = parseFloat(
+            obj["amount"] / parseFloat(empResult["total_days"])
+          );
+        } else if (leave_salary == "N") {
+          leave_salary_days =
+            parseFloat(empResult["total_days"]) -
+            parseFloat(empResult["paid_leave"]);
+
+          current_earning_per_day_salary = parseFloat(
+            obj["amount"] / parseFloat(empResult["total_days"])
+          );
+
+          current_earning_amt =
+            current_earning_per_day_salary * leave_salary_days;
+        } else if (leave_salary == "Y") {
+          current_earning_amt = 0;
+          current_earning_per_day_salary = 0;
+        }
       } else if (obj["calculation_type"] == "V") {
-        current_earning_per_day_salary = parseFloat(
-          obj["amount"] / parseFloat(empResult["total_days"])
-        );
-        current_earning_amt =
-          current_earning_per_day_salary *
-          parseFloat(empResult["total_paid_days"]);
+        if (leave_salary == null || leave_salary == undefined) {
+          current_earning_per_day_salary = parseFloat(
+            obj["amount"] / parseFloat(empResult["total_days"])
+          );
+          current_earning_amt =
+            current_earning_per_day_salary *
+            parseFloat(empResult["total_paid_days"]);
+        } else if (leave_salary == "N") {
+          leave_salary_days =
+            parseFloat(empResult["total_days"]) -
+            parseFloat(empResult["paid_leave"]);
+
+          current_earning_per_day_salary = parseFloat(
+            obj["amount"] / parseFloat(empResult["total_days"])
+          );
+          current_earning_amt =
+            current_earning_per_day_salary * leave_salary_days;
+        } else if (leave_salary == "Y") {
+          current_earning_per_day_salary = 0;
+          current_earning_amt = 0;
+        }
       }
 
       utilities
@@ -1020,10 +1093,13 @@ function getDeductionComponents(options) {
   return new Promise((resolve, reject) => {
     const _deduction = options.deduction;
     const empResult = options.empResult;
+    const leave_salary = options.leave_salary;
+
     let current_deduction_amt = 0;
     let current_deduction_per_day_salary = 0;
     let current_deduction_amt_array = [];
     let final_deduction_amount = 0;
+    let leave_salary_days = 0;
 
     if (_deduction.length == 0) {
       resolve({ current_deduction_amt_array, final_deduction_amount });
@@ -1031,18 +1107,60 @@ function getDeductionComponents(options) {
 
     _deduction.map(obj => {
       if (obj["calculation_type"] == "F") {
-        current_deduction_amt = obj["amount"];
-        current_deduction_per_day_salary = parseFloat(
-          obj["amount"] / parseFloat(empResult["total_days"])
-        );
-      } else if (obj["calculation_type"] == "V") {
-        current_deduction_per_day_salary = parseFloat(
-          obj["amount"] / parseFloat(empResult["total_days"])
-        );
+        if (leave_salary == null || leave_salary == undefined) {
+          current_deduction_amt = obj["amount"];
+          current_deduction_per_day_salary = parseFloat(
+            obj["amount"] / parseFloat(empResult["total_days"])
+          );
+        } else if (leave_salary == "N") {
+          leave_salary_days =
+            parseFloat(empResult["total_days"]) -
+            parseFloat(empResult["paid_leave"]);
 
-        current_deduction_amt =
-          current_deduction_per_day_salary *
-          parseFloat(empResult["total_paid_days"]);
+          current_deduction_per_day_salary = parseFloat(
+            obj["amount"] / parseFloat(empResult["total_days"])
+          );
+
+          current_deduction_amt =
+            current_deduction_per_day_salary * leave_salary_days;
+        } else if (leave_salary == "Y") {
+          current_deduction_amt = 0;
+          current_deduction_per_day_salary = 0;
+        }
+        // current_deduction_amt = obj["amount"];
+        // current_deduction_per_day_salary = parseFloat(
+        //   obj["amount"] / parseFloat(empResult["total_days"])
+        // );
+      } else if (obj["calculation_type"] == "V") {
+        if (leave_salary == null || leave_salary == undefined) {
+          current_deduction_per_day_salary = parseFloat(
+            obj["amount"] / parseFloat(empResult["total_days"])
+          );
+          current_deduction_amt =
+            current_deduction_per_day_salary *
+            parseFloat(empResult["total_paid_days"]);
+        } else if (leave_salary == "N") {
+          leave_salary_days =
+            parseFloat(empResult["total_days"]) -
+            parseFloat(empResult["paid_leave"]);
+
+          current_deduction_per_day_salary = parseFloat(
+            obj["amount"] / parseFloat(empResult["total_days"])
+          );
+          current_deduction_amt =
+            current_deduction_per_day_salary * leave_salary_days;
+        } else if (leave_salary == "Y") {
+          current_deduction_per_day_salary = 0;
+          current_deduction_amt = 0;
+        }
+
+        // current_deduction_per_day_salary = parseFloat(
+        //   obj["amount"] / parseFloat(empResult["total_days"])
+        // );
+
+        // current_deduction_amt =
+        //   current_deduction_per_day_salary *
+        //   parseFloat(empResult["total_paid_days"]);
       }
 
       current_deduction_amt_array.push({

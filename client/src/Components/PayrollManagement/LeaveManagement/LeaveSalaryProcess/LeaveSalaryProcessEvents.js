@@ -47,33 +47,6 @@ const getLeaveSalaryProcess = ($this, e) => {
   });
 };
 
-const getSalaryDetails = ($this, row) => {
-  debugger;
-  const salaryprocess_Earning = Enumerable.from(
-    $this.state.salaryprocess_detail[0]
-  )
-    .where(w => w.salary_header_id === row.hims_f_salary_id)
-    .toArray();
-
-  const salaryprocess_Deduction = Enumerable.from(
-    $this.state.salaryprocess_detail[1]
-  )
-    .where(w => w.salary_header_id === row.hims_f_salary_id)
-    .toArray();
-
-  const salaryprocess_Contribute = Enumerable.from(
-    $this.state.salaryprocess_detail[2]
-  )
-    .where(w => w.salary_header_id === row.hims_f_salary_id)
-    .toArray();
-
-  $this.setState({
-    salaryprocess_Earning: salaryprocess_Earning,
-    salaryprocess_Deduction: salaryprocess_Deduction,
-    salaryprocess_Contribute: salaryprocess_Contribute
-  });
-};
-
 const ClearData = $this => {
   $this.setState({
     year: moment().year(),
@@ -85,35 +58,6 @@ const ClearData = $this => {
     ProcessBtn: true,
     encash_type: null,
     PayBtn: true
-  });
-};
-
-const FinalizeSalary = $this => {
-  debugger;
-  AlgaehLoader({ show: true });
-  algaehApiCall({
-    uri: "/salary/finalizedSalaryProcess",
-    module: "hrManagement",
-    data: $this.state.salaryprocess_header,
-    method: "PUT",
-    onSuccess: response => {
-      debugger;
-      $this.setState({
-        finalizeBtn: true
-      });
-      AlgaehLoader({ show: false });
-      swalMessage({
-        title: "Finalized Successfully...",
-        type: "success"
-      });
-    },
-    onFailure: error => {
-      AlgaehLoader({ show: false });
-      swalMessage({
-        title: error.message || error.response.data.message,
-        type: "error"
-      });
-    }
   });
 };
 
@@ -148,11 +92,40 @@ const dateFormater = value => {
   }
 };
 
-export {
-  texthandle,
-  getSalaryDetails,
-  FinalizeSalary,
-  ClearData,
-  employeeSearch,
-  dateFormater
+const LeaveSalProcess = $this => {
+  // let year = moment($this.state.leave_end_date).year();
+  // let month = moment($this.state.leave_end_date).format("M");
+  // let yearMonth = year + "-" + month + "-01";
+
+  let inputObj = {
+    hims_d_employee_id: $this.state.employee_id,
+    leave_start_date: $this.state.leave_start_date,
+    leave_end_date: $this.state.leave_end_date
+  };
+  debugger;
+
+  algaehApiCall({
+    uri: "/leavesalaryprocess/processLeaveSalary",
+    method: "GET",
+    module: "hrManagement",
+    data: inputObj,
+    onSuccess: response => {
+      debugger;
+      if (response.data.success) {
+      } else if (!response.data.success) {
+        swalMessage({
+          title: response.data.result.message,
+          type: "error"
+        });
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
 };
+
+export { texthandle, ClearData, employeeSearch, dateFormater, LeaveSalProcess };
