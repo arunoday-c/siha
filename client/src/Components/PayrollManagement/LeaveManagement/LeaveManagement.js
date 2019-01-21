@@ -98,20 +98,6 @@ export default class LeaveManagement extends Component {
                 />
               }
             </li>
-
-            <li
-              algaehtabs={"LeaveSalaryAccural"}
-              className={"nav-item tab-button"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Salary Accural"
-                  }}
-                />
-              }
-            </li>
           </ul>
         </div>
 
