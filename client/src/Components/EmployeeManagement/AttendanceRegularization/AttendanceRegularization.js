@@ -7,6 +7,7 @@ import "react-table/react-table.css";
 import treeTableHOC from "react-table/lib/hoc/treeTable";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import moment from "moment";
+import swal from "sweetalert2";
 const TreeTable = treeTableHOC(ReactTable);
 
 export default class AttendanceRegularization extends Component {
@@ -61,6 +62,53 @@ export default class AttendanceRegularization extends Component {
             }
           });
         }
+      }
+    });
+  }
+
+  regularizeAttendance(data, type) {
+    swal({
+      title:
+        type === "APR"
+          ? "Approve Attendance Regularization Request?"
+          : "Reject Attendance Regularization Request",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        algaehApiCall({
+          uri: "/leave/regularizeAttendance",
+          method: "PUT",
+          data: {
+            regularize_status: type,
+            hims_f_attendance_regularize_id:
+              data.hims_f_attendance_regularize_id
+          },
+          onSuccess: res => {
+            if (res.data.success) {
+              swalMessage({
+                title: "Record Updated Successfully. .",
+                type: "success"
+              });
+              this.loadRegularizationList();
+            }
+          },
+          onFailure: err => {
+            swalMessage({
+              title: err.message,
+              type: "error"
+            });
+          }
+        });
+      } else {
+        swalMessage({
+          title: "Request Cancelled",
+          type: "error"
+        });
       }
     });
   }
@@ -150,9 +198,30 @@ export default class AttendanceRegularization extends Component {
                       Header: <b>Actions</b>,
                       id: "hims_f_attendance_regularize_id",
                       accessor: d => (
-                        <span>
-                          <i className="fa fa-check" />
-                          <i className="fa fa-times" />
+                        <span
+                          style={{
+                            pointerEvents:
+                              d.regularize_status !== "PEN" ? "none" : null,
+                            opacity:
+                              d.regularize_status !== "PEN" ? "0.1" : null
+                          }}
+                        >
+                          <i
+                            onClick={this.regularizeAttendance.bind(
+                              this,
+                              d,
+                              "APR"
+                            )}
+                            className="fa fa-check"
+                          />
+                          <i
+                            onClick={this.regularizeAttendance.bind(
+                              this,
+                              d,
+                              "REJ"
+                            )}
+                            className="fa fa-times"
+                          />
                         </span>
                       )
                     },
