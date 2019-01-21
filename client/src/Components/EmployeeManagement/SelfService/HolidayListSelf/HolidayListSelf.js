@@ -16,9 +16,11 @@ export default class HolidayListSelf extends Component {
     algaehApiCall({
       uri: "/holiday/getAllHolidays",
       method: "GET",
+
       data: {
         hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
-          .hims_d_hospital_id
+          .hims_d_hospital_id,
+        type: "H"
       },
       onSuccess: res => {
         if (res.data.success) {
@@ -41,7 +43,7 @@ export default class HolidayListSelf extends Component {
               label: <AlgaehLabel label={{ forceLabel: "Holiday Date" }} />,
               displayTemplate: row => {
                 return (
-                  <span>{moment(row.holiday_date).format("DD-MM-YYYY")}</span>
+                  <span>{moment(row.holiday_date).format("DD-MMM-YYYY")}</span>
                 );
               }
             },
@@ -50,23 +52,6 @@ export default class HolidayListSelf extends Component {
               label: (
                 <AlgaehLabel label={{ forceLabel: "Holyday Description" }} />
               )
-            },
-            {
-              fieldName: "holiday",
-              label: (
-                <AlgaehLabel label={{ forceLabel: "Holiday / Week Off" }} />
-              ),
-              displayTemplate: row => {
-                return (
-                  <span>
-                    {row.holiday === "Y"
-                      ? "Holiday"
-                      : row.weekoff === "Y"
-                      ? "Week Off"
-                      : "------"}
-                  </span>
-                );
-              }
             },
             {
               fieldName: "holiday_type",
