@@ -1895,358 +1895,327 @@ class Appointment extends PureComponent {
                 }}
                 openPopup={this.state.showApt}
               >
-                <div
-                  className="col-lg-12"
-                  // style={{ width: "55vw" }}
-                  data-validate="addApptDiv"
-                >
-                  {/*                 
-                  <div className="popupHeader">
+                <div className="popupInner" data-validate="addApptDiv">
+                  <div className="col-lg-12 popRightDiv">
                     <div className="row">
-                      <div className="col-lg-8">
-                        <h4>
-                          {getLabelFromLanguage({
-                            fieldName: "bookAppo"
-                          })}
-                        </h4>
+                      <div className="col margin-top-15">
+                        <AlgaehLabel
+                          label={{
+                            fieldName: "appoDate"
+                          }}
+                        />
+                        <h6>
+                          {moment(this.state.activeDateHeader).format(
+                            "DD-MM-YYYY"
+                          )}
+                        </h6>
                       </div>
-                      <div className="col-lg-4">
-                        <button
-                          type="button"
-                          className=""
-                          onClick={this.handleClose.bind(this)}
-                        >
-                          <i className="fas fa-times-circle" />
-                        </button>
+
+                      <div className="col margin-top-15">
+                        <AlgaehLabel
+                          label={{
+                            fieldName: "appoTime"
+                          }}
+                        />
+                        <h6>{this.state.apptFromTime}</h6>
                       </div>
+                      <AlagehFormGroup
+                        div={{ className: "col  margin-top-15 " }}
+                        label={{
+                          fieldName: "patient_code",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "patient_code",
+                          others: {
+                            disabled: true
+                          },
+                          value: this.state.patient_code,
+                          events: {
+                            // onChange: this.texthandle.bind(this)
+                          }
+                        }}
+                      />
+
+                      <div className="col-lg-1" style={{ paddingTop: "40px" }}>
+                        <i
+                          //onClick={this.getPatient.bind(this)}
+                          onClick={this.patientSearch.bind(this)}
+                          className="fas fa-search"
+                          style={{
+                            marginLeft: "-40%",
+                            cursor: "pointer"
+                          }}
+                        />
+                      </div>
+                      <AlagehAutoComplete
+                        div={{
+                          className: "col margin-top-15 mandatory"
+                        }}
+                        label={{
+                          fieldName: "selectSlot",
+                          isImp: true
+                        }}
+                        selector={{
+                          name: "no_of_slots",
+                          className: "select-fld",
+                          value: this.state.no_of_slots,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: GlobalVariables.NO_OF_SLOTS
+                          },
+                          onChange: this.dropDownHandle.bind(this),
+                          others: {
+                            checkvalidation: "$value >" + this.state.maxSlots,
+                            errormessage:
+                              "Maximum " +
+                              this.state.maxSlots +
+                              " slot(s) avilable "
+                          }
+                        }}
+                      />
                     </div>
-                  </div>
-              */}
-                  {/* <div className="popupInner">
-                    <div className="col-lg-12"> */}
-                  <div className="row">
-                    <div className="col-lg-12 popRightDiv">
-                      <div className="row">
-                        <div className="col margin-top-15">
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "appoDate"
-                            }}
-                          />
-                          <h6>
-                            {moment(this.state.activeDateHeader).format(
-                              "DD-MM-YYYY"
-                            )}
-                          </h6>
-                        </div>
 
-                        <div className="col margin-top-15">
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "appoTime"
-                            }}
-                          />
-                          <h6>{this.state.apptFromTime}</h6>
-                        </div>
-                        <AlagehFormGroup
-                          div={{ className: "col  margin-top-15 " }}
-                          label={{
-                            fieldName: "patient_code",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "patient_code",
-                            others: {
-                              disabled: true
-                            },
-                            value: this.state.patient_code,
-                            events: {
-                              // onChange: this.texthandle.bind(this)
-                            }
-                          }}
-                        />
+                    <div className="row">
+                      <AlagehAutoComplete
+                        div={{
+                          className: "col margin-top-15 mandatory"
+                        }}
+                        label={{
+                          fieldName: "title_id",
+                          isImp: true
+                        }}
+                        selector={{
+                          name: "title_id",
+                          className: "select-fld",
+                          value: this.state.title_id,
+                          dataSource: {
+                            textField: "title",
+                            valueField: "his_d_title_id",
+                            data: this.state.titles
+                          }
+                          //onChange: this.dropDownHandle.bind(this)
+                        }}
+                      />
 
-                        <div
-                          className="col-lg-1"
-                          style={{ paddingTop: "40px" }}
-                        >
-                          <i
-                            //onClick={this.getPatient.bind(this)}
-                            onClick={this.patientSearch.bind(this)}
-                            className="fas fa-search"
-                            style={{
-                              marginLeft: "-90%",
-                              cursor: "pointer"
-                            }}
-                          />
-                        </div>
-                        <AlagehAutoComplete
-                          div={{
-                            className: "col margin-top-15 mandatory"
-                          }}
-                          label={{
-                            fieldName: "selectSlot",
-                            isImp: true
-                          }}
-                          selector={{
-                            name: "no_of_slots",
-                            className: "select-fld",
-                            value: this.state.no_of_slots,
-                            dataSource: {
-                              textField: "name",
-                              valueField: "value",
-                              data: GlobalVariables.NO_OF_SLOTS
-                            },
-                            onChange: this.dropDownHandle.bind(this),
-                            others: {
-                              checkvalidation: "$value >" + this.state.maxSlots,
-                              errormessage:
-                                "Maximum " +
-                                this.state.maxSlots +
-                                " slot(s) avilable "
-                            }
-                          }}
-                        />
-                      </div>
+                      <AlagehFormGroup
+                        div={{
+                          className: "col margin-top-15 mandatory"
+                        }}
+                        label={{
+                          fieldName: "full_name",
+                          isImp: true
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "patient_name",
+                          value: this.state.patient_name
+                          // events: {
+                          //   //onChange: this.texthandle.bind(this)
+                          // }
+                        }}
+                      />
+                      <AlagehFormGroup
+                        div={{
+                          className:
+                            "col margin-top-15 mandatory arabic-txt-fld"
+                        }}
+                        label={{
+                          fieldName: "arabic_name",
+                          isImp: true
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "arabic_name",
+                          value: this.state.arabic_name
+                          // events: {
+                          //   //onChange: this.texthandle.bind(this)
+                          // }
+                        }}
+                      />
+                    </div>
 
-                      <div className="row">
-                        <AlagehAutoComplete
-                          div={{
-                            className: "col margin-top-15 mandatory"
-                          }}
-                          label={{
-                            fieldName: "title_id",
-                            isImp: true
-                          }}
-                          selector={{
-                            name: "title_id",
-                            className: "select-fld",
-                            value: this.state.title_id,
-                            dataSource: {
-                              textField: "title",
-                              valueField: "his_d_title_id",
-                              data: this.state.titles
-                            }
-                            //onChange: this.dropDownHandle.bind(this)
-                          }}
-                        />
+                    <div className="row">
+                      <AlgaehDateHandler
+                        div={{
+                          className: "col margin-top-15 mandatory"
+                        }}
+                        label={{
+                          fieldName: "date_of_birth",
+                          isImp: true
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "date_of_birth"
+                        }}
+                        events={{
+                          onChange: selectedDate => {
+                            SetBulkState({
+                              state: this,
+                              callback: () => {
+                                this.setState({
+                                  age: moment().diff(
+                                    this.state.date_of_birth,
+                                    "years"
+                                  )
+                                });
+                              }
+                            });
+                          }
+                        }}
+                        value={this.state.date_of_birth}
+                      />
 
-                        <AlagehFormGroup
-                          div={{
-                            className: "col margin-top-15 mandatory"
-                          }}
-                          label={{
-                            fieldName: "full_name",
-                            isImp: true
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "patient_name",
-                            value: this.state.patient_name
-                            // events: {
-                            //   //onChange: this.texthandle.bind(this)
-                            // }
-                          }}
-                        />
-                        <AlagehFormGroup
-                          div={{
-                            className:
-                              "col margin-top-15 mandatory arabic-txt-fld"
-                          }}
-                          label={{
-                            fieldName: "arabic_name",
-                            isImp: true
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "arabic_name",
-                            value: this.state.arabic_name
-                            // events: {
-                            //   //onChange: this.texthandle.bind(this)
-                            // }
-                          }}
-                        />
-                      </div>
+                      <AlagehFormGroup
+                        div={{
+                          className: "col margin-top-15 mandatory"
+                        }}
+                        label={{
+                          fieldName: "age",
+                          isImp: true
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "age",
+                          others: {
+                            type: "number"
+                          },
+                          value: this.state.age,
+                          events: {
+                            onChange: this.ageHandler.bind(this)
+                          }
+                        }}
+                      />
 
-                      <div className="row">
-                        <AlgaehDateHandler
-                          div={{
-                            className: "col margin-top-15 mandatory"
-                          }}
-                          label={{
-                            fieldName: "date_of_birth",
-                            isImp: true
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "date_of_birth"
-                          }}
-                          events={{
-                            onChange: selectedDate => {
-                              SetBulkState({
-                                state: this,
-                                callback: () => {
-                                  this.setState({
-                                    age: moment().diff(
-                                      this.state.date_of_birth,
-                                      "years"
-                                    )
-                                  });
-                                }
-                              });
-                            }
-                          }}
-                          value={this.state.date_of_birth}
-                        />
+                      <AlagehAutoComplete
+                        div={{
+                          className: "col margin-top-15 mandatory"
+                        }}
+                        label={{
+                          fieldName: "gender",
+                          isImp: true
+                        }}
+                        selector={{
+                          name: "gender",
+                          className: "select-fld",
+                          value: this.state.gender,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: GlobalVariables.FORMAT_GENDER
+                          }
+                          // onChange: this.dropDownHandle.bind(this)
+                        }}
+                      />
 
-                        <AlagehFormGroup
-                          div={{
-                            className: "col margin-top-15 mandatory"
-                          }}
-                          label={{
-                            fieldName: "age",
-                            isImp: true
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "age",
-                            others: {
-                              type: "number"
-                            },
-                            value: this.state.age,
-                            events: {
-                              onChange: this.ageHandler.bind(this)
-                            }
-                          }}
-                        />
+                      <AlagehAutoComplete
+                        div={{
+                          className: "col margin-top-15 mandatory"
+                        }}
+                        label={{
+                          fieldName: "selectStatus",
+                          isImp: true
+                        }}
+                        selector={{
+                          name: "appointment_status_id",
+                          className: "select-fld",
+                          value: this.state.appointment_status_id,
+                          dataSource: {
+                            textField: "description",
+                            valueField: "hims_d_appointment_status_id",
+                            data: this.state.appointmentStatus
+                          }
+                          // onChange: this.dropDownHandle.bind(this)
+                        }}
+                      />
+                    </div>
 
-                        <AlagehAutoComplete
-                          div={{
-                            className: "col margin-top-15 mandatory"
-                          }}
-                          label={{
-                            fieldName: "gender",
-                            isImp: true
-                          }}
-                          selector={{
-                            name: "gender",
-                            className: "select-fld",
-                            value: this.state.gender,
-                            dataSource: {
-                              textField: "name",
-                              valueField: "value",
-                              data: GlobalVariables.FORMAT_GENDER
-                            }
-                            // onChange: this.dropDownHandle.bind(this)
-                          }}
-                        />
+                    <div className="row">
+                      <AlagehFormGroup
+                        div={{
+                          className: "col margin-top-15 mandatory"
+                        }}
+                        label={{
+                          fieldName: "contact_number",
+                          isImp: true
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "contact_number",
+                          others: {
+                            type: "number"
+                          },
+                          value: this.state.contact_number
+                          // events: {
+                          //   //onChange: this.texthandle.bind(this)
+                          // }
+                        }}
+                      />
 
-                        <AlagehAutoComplete
-                          div={{
-                            className: "col margin-top-15 mandatory"
-                          }}
-                          label={{
-                            fieldName: "selectStatus",
-                            isImp: true
-                          }}
-                          selector={{
-                            name: "appointment_status_id",
-                            className: "select-fld",
-                            value: this.state.appointment_status_id,
-                            dataSource: {
-                              textField: "description",
-                              valueField: "hims_d_appointment_status_id",
-                              data: this.state.appointmentStatus
-                            }
-                            // onChange: this.dropDownHandle.bind(this)
-                          }}
-                        />
-                      </div>
+                      <AlagehFormGroup
+                        div={{
+                          className: "col margin-top-15"
+                        }}
+                        label={{
+                          fieldName: "email",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "email",
+                          value: this.state.email
+                          // events: {
+                          //   //onChange: this.texthandle.bind(this)
+                          // }
+                        }}
+                      />
+                    </div>
 
-                      <div className="row">
-                        <AlagehFormGroup
-                          div={{
-                            className: "col margin-top-15 mandatory"
-                          }}
-                          label={{
-                            fieldName: "contact_number",
-                            isImp: true
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "contact_number",
-                            others: {
-                              type: "number"
-                            },
-                            value: this.state.contact_number
-                            // events: {
-                            //   //onChange: this.texthandle.bind(this)
-                            // }
-                          }}
-                        />
-
-                        <AlagehFormGroup
-                          div={{
-                            className: "col margin-top-15"
-                          }}
-                          label={{
-                            fieldName: "email",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "email",
-                            value: this.state.email
-                            // events: {
-                            //   //onChange: this.texthandle.bind(this)
-                            // }
-                          }}
-                        />
-                      </div>
-
-                      <div className="row">
-                        <AlagehFormGroup
-                          div={{ className: "col margin-top-15" }}
-                          label={{
-                            fieldName: "remarks",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "appointment_remarks",
-                            value: this.state.appointment_remarks
-                            // events: {
-                            //   // onChange: this.texthandle.bind(this)
-                            // }
-                          }}
-                        />
-                      </div>
+                    <div className="row">
+                      <AlagehFormGroup
+                        div={{
+                          className: "col margin-top-15 margin-bottom-15"
+                        }}
+                        label={{
+                          fieldName: "remarks",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "appointment_remarks",
+                          value: this.state.appointment_remarks
+                          // events: {
+                          //   // onChange: this.texthandle.bind(this)
+                          // }
+                        }}
+                      />
                     </div>
                   </div>
                   {/* </div>
                   </div>{" "} */}
-                  <div className="popupFooter">
-                    <div className="col-lg-12">
-                      <button
-                        onClick={this.addPatientAppointment.bind(this)}
-                        type="button"
-                        className="btn btn-primary"
-                      >
-                        {getLabelFromLanguage({
-                          fieldName: "btn_save"
-                        })}
-                      </button>
-                      <button
-                        onClick={this.handleClose.bind(this)}
-                        type="button"
-                        className="btn btn-other"
-                      >
-                        {getLabelFromLanguage({
-                          fieldName: "btn_close"
-                        })}
-                      </button>
-                    </div>
+                </div>
+                <div className="popupFooter">
+                  <div className="col-lg-12">
+                    <button
+                      onClick={this.addPatientAppointment.bind(this)}
+                      type="button"
+                      className="btn btn-primary"
+                    >
+                      {getLabelFromLanguage({
+                        fieldName: "btn_save"
+                      })}
+                    </button>
+                    <button
+                      onClick={this.handleClose.bind(this)}
+                      type="button"
+                      className="btn btn-other"
+                    >
+                      {getLabelFromLanguage({
+                        fieldName: "btn_close"
+                      })}
+                    </button>
                   </div>
                 </div>
               </AlgaehModalPopUp>
