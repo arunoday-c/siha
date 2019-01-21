@@ -3211,16 +3211,16 @@ between date('${req.query.from_date}') and date('${req.query.to_date}') `;
 
     let leave_status = "";
 
-    if (req.query.leave_status == "A") {
+    if (req.query.leave_status == "APR") {
       leave_status = " and status='APR' ";
-    } else if (req.query.leave_status == "R") {
+    } else if (req.query.leave_status == "REJ") {
       leave_status = " and status='REJ' ";
     } else {
       leave_status = " and status='PEN' ";
     }
 
     let cancelled=" LA.cancelled='N' ";
-    if (req.query.cancelled=='Y'){
+    if (req.query.leave_status=='CAN'){
 
       cancelled=" LA.cancelled='Y' "
 
