@@ -62,7 +62,7 @@ class LeaveAuthDetail extends Component {
             leave_id: this.state.data.leave_id,
             year: moment(this.state.data.from_date).format("YYYY"),
             religion_id: this.state.data.religion_id,
-
+            leave_type: this.state.data.leave_type,
             from_session: this.state.data.from_leave_session,
             to_session: this.state.data.to_leave_session,
             from_date: this.state.data.from_date,
@@ -83,7 +83,7 @@ class LeaveAuthDetail extends Component {
             leave_id: this.state.data.leave_id,
             year: moment(this.state.data.from_date).format("YYYY"),
             religion_id: this.state.data.religion_id,
-
+            leave_type: this.state.data.leave_type,
             from_session: this.state.data.from_leave_session,
             to_session: this.state.data.to_leave_session,
             from_date: this.state.data.from_date,
@@ -102,6 +102,7 @@ class LeaveAuthDetail extends Component {
             status: type,
             employee_id: this.state.data.employee_id,
             leave_id: this.state.data.leave_id,
+            leave_type: this.state.data.leave_type,
             year: moment(this.state.data.from_date).format("YYYY"),
             religion_id: this.state.data.religion_id,
             from_session: this.state.data.from_leave_session,
