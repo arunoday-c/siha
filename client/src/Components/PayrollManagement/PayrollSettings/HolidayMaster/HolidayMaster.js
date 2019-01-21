@@ -210,6 +210,11 @@ export default class HolidayMaster extends Component {
                 type: "success"
               });
               this.getHolidayMaster(this.state.hospital_id);
+            } else if (!res.data.success) {
+              swalMessage({
+                title: res.data.records.message,
+                type: "warning"
+              });
             }
           },
           onFailure: err => {}
