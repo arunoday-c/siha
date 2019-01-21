@@ -366,6 +366,11 @@ export default class LeaveAuthorization extends Component {
                         displayTemplate: row => {
                           return (
                             <i
+                              style={{
+                                pointerEvents:
+                                  row.cancelled === "Y" ? "none" : null,
+                                opacity: row.cancelled === "Y" ? "0.1" : null
+                              }}
                               className="fas fa-eye"
                               onClick={() => {
                                 this.setState({
