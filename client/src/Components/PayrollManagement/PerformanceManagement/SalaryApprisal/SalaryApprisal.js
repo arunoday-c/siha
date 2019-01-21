@@ -214,11 +214,11 @@ class SalaryApprisal extends Component {
               </div>
               <div className="portlet-body">
                 <div className="col-12">
-                  <div className="row margin-top-15">
-                    <div className="col-4" style={{ paddingLeft: 0 }}>
+                  <div className="row">
+                    <div className="col" style={{ paddingLeft: 0 }}>
                       <div className="row">
                         <AlgaehDateHandler
-                          div={{ className: "col-12" }}
+                          div={{ className: "col-3 form-group" }}
                           label={{
                             forceLabel: "Increment Effective Date",
                             isImp: false
@@ -231,7 +231,7 @@ class SalaryApprisal extends Component {
                           events={{}}
                         />
                         <AlagehFormGroup
-                          div={{ className: "col-8 form-group" }}
+                          div={{ className: "col-3 form-group" }}
                           label={{
                             forceLabel: "Increment Percentage",
                             isImp: false
@@ -246,7 +246,7 @@ class SalaryApprisal extends Component {
                             }
                           }}
                         />
-                        <div className="col">
+                        <div className="col-3">
                           <button
                             className="btn btn-primary"
                             style={{ marginTop: 21 }}
@@ -256,48 +256,49 @@ class SalaryApprisal extends Component {
                         </div>
                       </div>
                     </div>
-
-                    <div className="col-lg-4 algaehLabelFormGroup">
+                  </div>
+                  <div className="row margin-top-15">
+                    <div className="col-6 algaehLabelFormGroup">
                       <label className="algaehLabelGroup">CTC</label>
                       <div className="row">
-                        <div className="col-6">
+                        <div className="col">
                           <label className="style_Label ">
                             Monthly Present
                           </label>
                           <h6>0.00</h6>
                         </div>{" "}
-                        <div className="col-6">
+                        <div className="col">
                           <label className="style_Label ">Monthly New</label>
                           <h6>0.00</h6>
                         </div>{" "}
-                        <div className="col-6">
+                        <div className="col">
                           <label className="style_Label ">Yearly Present</label>
                           <h6>0.00</h6>
                         </div>{" "}
-                        <div className="col-6">
+                        <div className="col">
                           <label className="style_Label ">Yearly Old</label>
                           <h6>0.00</h6>
                         </div>
                       </div>
                     </div>
-                    <div className="col-lg-4 algaehLabelFormGroup">
+                    <div className="col-6 algaehLabelFormGroup">
                       <label className="algaehLabelGroup">Gross Earnings</label>
                       <div className="row">
-                        <div className="col-6">
+                        <div className="col">
                           <label className="style_Label ">
                             Monthly Present
                           </label>
                           <h6>0.00</h6>
                         </div>{" "}
-                        <div className="col-6">
+                        <div className="col">
                           <label className="style_Label ">Monthly New</label>
                           <h6>0.00</h6>
                         </div>{" "}
-                        <div className="col-6">
+                        <div className="col">
                           <label className="style_Label ">Yearly Present</label>
                           <h6>0.00</h6>
                         </div>{" "}
-                        <div className="col-6">
+                        <div className="col">
                           <label className="style_Label ">Yearly Old</label>
                           <h6>0.00</h6>
                         </div>
