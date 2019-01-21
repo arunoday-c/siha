@@ -34,9 +34,7 @@ const LoadData = ($this, e) => {
     querySelector: "data-validate='loadData'",
     onSuccess: () => {
       AlgaehLoader({ show: true });
-      let inputObj = {
-        loan_authorized: "APR"
-      };
+      let inputObj = {};
       if ($this.state.select_employee_id !== null) {
         inputObj.employee_id = $this.state.select_employee_id;
       }
@@ -118,14 +116,56 @@ const LoadData = ($this, e) => {
           }
         });
       } else if ($this.state.sel_payment_type === "GR") {
-        AlgaehLoader({ show: false });
-        $this.setState({
-          requestPayment: []
+        debugger;
+        if ($this.state.document_num !== null) {
+          inputObj.end_of_service_number = $this.state.document_num;
+        }
+
+        algaehApiCall({
+          uri: "/employeepayments/getGratuityTopayment",
+          module: "hrManagement",
+          data: inputObj,
+          method: "GET",
+          onSuccess: response => {
+            debugger;
+            $this.setState({
+              requestPayment: response.data.result
+            });
+            AlgaehLoader({ show: false });
+          },
+          onFailure: error => {
+            AlgaehLoader({ show: false });
+            swalMessage({
+              title: error.response.data.message,
+              type: "error"
+            });
+          }
         });
       } else if ($this.state.sel_payment_type === "FS") {
-        AlgaehLoader({ show: false });
-        $this.setState({
-          requestPayment: []
+        debugger;
+        if ($this.state.document_num !== null) {
+          inputObj.final_settlement_number = $this.state.document_num;
+        }
+
+        algaehApiCall({
+          uri: "/employeepayments/getFinalSettleTopayment",
+          module: "hrManagement",
+          data: inputObj,
+          method: "GET",
+          onSuccess: response => {
+            debugger;
+            $this.setState({
+              requestPayment: response.data.result
+            });
+            AlgaehLoader({ show: false });
+          },
+          onFailure: error => {
+            AlgaehLoader({ show: false });
+            swalMessage({
+              title: error.response.data.message,
+              type: "error"
+            });
+          }
         });
       } else if ($this.state.sel_payment_type === "LS") {
         AlgaehLoader({ show: false });
@@ -216,7 +256,7 @@ const getPaymentDetails = ($this, row) => {
       payment_amount: row.payment_amount,
       request_number: row.request_number,
       full_name: row.full_name,
-      employee_end_of_service_id: row.hims_f_loan_application_id,
+      employee_end_of_service_id: row.hims_f_end_of_service_id,
       payment_mode: null,
       processBtn: false
     });
@@ -227,7 +267,7 @@ const getPaymentDetails = ($this, row) => {
       payment_amount: row.payment_amount,
       request_number: row.request_number,
       full_name: row.full_name,
-      employee_final_settlement_id: row.hims_f_loan_application_id,
+      employee_final_settlement_id: row.hims_f_final_settlement_header_id,
       payment_mode: null,
       processBtn: false
     });
@@ -345,6 +385,7 @@ const CancelPayment = ($this, row) => {
         method: "PUT",
         onSuccess: response => {
           getEmployeePayments($this);
+          LoadData($this);
           swalMessage({
             title: "Cancelled Successfully...",
             type: "success"

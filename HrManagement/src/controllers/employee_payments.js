@@ -6,7 +6,9 @@ import {
   InsertEmployeePayment,
   getEmployeePayments,
   getEncashLeavesTopayment,
-  CancelEmployeePayment
+  CancelEmployeePayment,
+  getGratuityTopayment,
+  getFinalSettleTopayment
 } from "../models/employee_payments";
 export default () => {
   const api = Router();
@@ -23,6 +25,24 @@ export default () => {
       result: req.records
     });
   });
+
+  api.get("/getGratuityTopayment", getGratuityTopayment, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      result: req.records
+    });
+  });
+
+  api.get(
+    "/getFinalSettleTopayment",
+    getFinalSettleTopayment,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        result: req.records
+      });
+    }
+  );
 
   api.get("/getEmployeePayments", getEmployeePayments, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({

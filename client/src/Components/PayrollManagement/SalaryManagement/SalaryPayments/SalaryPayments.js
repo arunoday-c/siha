@@ -20,6 +20,7 @@ import {
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import moment from "moment";
+import { getYears } from "../../../../utils/GlobalFunctions";
 
 class SalaryPayment extends Component {
   constructor(props) {
@@ -87,6 +88,7 @@ class SalaryPayment extends Component {
   }
 
   render() {
+    let allYears = getYears();
     return (
       <React.Fragment>
         <div className="hptl-SalaryPayment-form">
@@ -118,7 +120,32 @@ class SalaryPayment extends Component {
               }}
             />
 
-            <AlagehFormGroup
+            <AlagehAutoComplete
+              div={{ className: "col" }}
+              label={{
+                forceLabel: "Select a Year.",
+                isImp: true
+              }}
+              selector={{
+                name: "year",
+                className: "select-fld",
+                value: this.state.year,
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: allYears
+                },
+                onChange: texthandle.bind(this, this),
+
+                onClear: () => {
+                  this.setState({
+                    year: null
+                  });
+                }
+              }}
+            />
+
+            {/* <AlagehFormGroup
               div={{ className: "col" }}
               label={{
                 forceLabel: "Year",
@@ -136,7 +163,7 @@ class SalaryPayment extends Component {
                   min: moment().year()
                 }
               }}
-            />
+            /> */}
             <AlagehAutoComplete
               div={{ className: "col" }}
               label={{
