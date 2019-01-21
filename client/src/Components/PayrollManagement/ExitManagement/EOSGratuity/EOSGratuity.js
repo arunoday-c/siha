@@ -4,6 +4,8 @@ import AlgaehSearch from "../../../Wrapper/globalSearch";
 import Employee from "../../../../Search/Employee.json";
 import "./EOSGratuity.css";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import moment from "moment";
 
 class EOSGratuity extends Component {
   constructor(props) {
@@ -289,7 +291,9 @@ class EOSGratuity extends Component {
                           <label className="style_Label ">Date of Birth</label>
                           <h6>
                             {EosData.date_of_birth
-                              ? EosData.date_of_birth
+                              ? moment(EosData.date_of_birth).format(
+                                  "DD-MMM-YYYY"
+                                )
                               : "------"}
                           </h6>
                         </div>
@@ -314,7 +318,9 @@ class EOSGratuity extends Component {
                           </label>
                           <h6>
                             {EosData.date_of_joining
-                              ? EosData.date_of_joining
+                              ? moment(EosData.date_of_joining).format(
+                                  "DD-MMM-YYYY"
+                                )
                               : "------"}
                           </h6>
                         </div>
@@ -325,7 +331,9 @@ class EOSGratuity extends Component {
                           </label>
                           <h6>
                             {EosData.date_of_resignation
-                              ? EosData.date_of_resignation
+                              ? moment(EosData.date_of_resignation).format(
+                                  "DD-MMM-YYYY"
+                                )
                               : "------"}
                           </h6>
                         </div>
@@ -336,7 +344,7 @@ class EOSGratuity extends Component {
                           </label>
                           <h6>
                             {EosData.endOfServiceYears
-                              ? EosData.endOfServiceYears
+                              ? EosData.endOfServiceYears.toFixed(3)
                               : 0}{" "}
                             yrs
                           </h6>
@@ -346,7 +354,7 @@ class EOSGratuity extends Component {
                           <h6>
                             {" "}
                             {EosData.eligible_day
-                              ? EosData.eligible_day
+                              ? EosData.eligible_day.toFixed(3)
                               : 0}{" "}
                             Day(s)
                           </h6>
@@ -363,11 +371,14 @@ class EOSGratuity extends Component {
                             {EosData.componentList.map((data, index) => (
                               <li key={data.hims_d_employee_earnings_id}>
                                 <span>{data.short_desc}</span> ->
-                                <span>{data.amount}</span>
+                                <span>{getAmountFormart(data.amount)}</span>
                               </li>
                             ))}
                           </ul>
-                          <span>Total: {EosData.totalEarningComponents}</span>
+                          <span>
+                            Total:{" "}
+                            {getAmountFormart(EosData.totalEarningComponents)}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -381,7 +392,7 @@ class EOSGratuity extends Component {
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-body">
                 <div className="row">
-                  <AlagehFormGroup
+                  {/* <AlagehFormGroup
                     div={{ className: "col form-group" }}
                     label={{
                       forceLabel: "Opening Gratuity Amount",
@@ -398,8 +409,20 @@ class EOSGratuity extends Component {
                         disabled: true
                       }
                     }}
-                  />
-                  <AlagehFormGroup
+                  /> */}
+
+                  <div className="col-3">
+                    <label className="style_Label ">
+                      Opening Gratuity Amount
+                    </label>
+                    <h6>
+                      {this.state.previous_gratuity_amount
+                        ? getAmountFormart(this.state.previous_gratuity_amount)
+                        : getAmountFormart(0)}
+                    </h6>
+                  </div>
+
+                  {/* <AlagehFormGroup
                     div={{ className: "col form-group" }}
                     label={{
                       forceLabel: "Computed Amount",
@@ -414,7 +437,18 @@ class EOSGratuity extends Component {
                         disabled: true
                       }
                     }}
-                  />
+                  /> */}
+
+                  <div className="col-3">
+                    <label className="style_Label ">Computed Amount</label>
+                    <h6>
+                      {this.state.calculated_gratutity_amount
+                        ? getAmountFormart(
+                            this.state.calculated_gratutity_amount
+                          )
+                        : getAmountFormart(0)}
+                    </h6>
+                  </div>
                   <AlagehFormGroup
                     div={{ className: "col form-group" }}
                     label={{
@@ -422,6 +456,9 @@ class EOSGratuity extends Component {
                       isImp: false
                     }}
                     textBox={{
+                      decimal: {
+                        allowNegative: false
+                      },
                       className: "txt-fld",
                       name: "payable_amount",
                       value: this.state.payable_amount,
@@ -429,7 +466,7 @@ class EOSGratuity extends Component {
                         onChange: this.textHandler.bind(this)
                       },
                       others: {
-                        type: "number"
+                        // type: "number"
                       }
                     }}
                   />

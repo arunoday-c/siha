@@ -16,9 +16,7 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import {
   texthandle,
-  SalaryProcess,
-  getSalaryDetails,
-  FinalizeSalary,
+  LeaveSalProcess,
   ClearData,
   employeeSearch,
   dateFormater
@@ -158,6 +156,7 @@ class LeaveSalaryProcess extends Component {
                 style={{ marginTop: 21 }}
                 className="btn btn-primary"
                 disabled={this.state.ProcessBtn}
+                onClick={LeaveSalProcess.bind(this, this)}
               >
                 Process
               </button>
