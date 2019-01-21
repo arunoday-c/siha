@@ -13,8 +13,8 @@ module.exports = {
       .executeQuery({
         query:
           "select * from hims_f_leave_encash_header where employee_id=? and year=? ;",
-        values: [_EncashDetails.employee_id, _EncashDetails.year]
-        // printQuery: true
+        values: [_EncashDetails.employee_id, _EncashDetails.year],
+        printQuery: true
       })
       .then(leave_Encash => {
         if (leave_Encash.length > 0) {

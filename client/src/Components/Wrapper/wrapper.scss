@@ -78,7 +78,9 @@
   .fa-prescription,
   .fa-arrow-right,
   .fa-eye,
-  .fa-plus {
+  .fa-plus,
+  .fa-thumbs-up,
+  .fa-thumbs-down {
     cursor: pointer;
     border: 1px solid #44b8bd;
     height: 28px;
@@ -110,7 +112,9 @@
   .fa-file-prescription:hover,
   .fa-prescription:hover,
   .fa-arrow-right:hover,
-  .fa-plus:hover {
+  .fa-plus:hover,
+  .fa-thumbs-up:hover,
+  .fa-thumbs-down:hover {
     background: #44b8bd;
     color: #fff;
   }
