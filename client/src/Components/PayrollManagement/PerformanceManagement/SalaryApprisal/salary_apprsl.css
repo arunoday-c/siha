@@ -1,0 +1,11 @@
+.SalaryApprisalWrapper .textArea {
+  height: 90px;
+  margin-bottom: 0;
+  margin-top: 9px;
+  background: #fff !important; }
+
+.SalaryApprisalWrapper #NewAppraisalEarnings_Cntr .ReactTable,
+.SalaryApprisalWrapper #NewAppraisalContributions_Cntr .ReactTable,
+.SalaryApprisalWrapper #NewAppraisalPerks_Cntr .ReactTable,
+.SalaryApprisalWrapper #NewAppraisalOther_Cntr .ReactTable {
+  max-height: 20vh !important; }

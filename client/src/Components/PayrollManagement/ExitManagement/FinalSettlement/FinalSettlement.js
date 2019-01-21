@@ -627,7 +627,7 @@ class FinalSettlement extends Component {
                         }}
                       />
 
-                      <div className="col-2">
+                      <div className="col-2" style={{ paddingLeft: 0 }}>
                         <button
                           onClick={this.addEarning.bind(this)}
                           className="btn btn-primary"
@@ -772,7 +772,7 @@ class FinalSettlement extends Component {
                         }}
                       />
 
-                      <div className="col-2">
+                      <div className="col-2" style={{ paddingLeft: 0 }}>
                         <button
                           onClick={this.addDeduction.bind(this)}
                           className="btn btn-primary"

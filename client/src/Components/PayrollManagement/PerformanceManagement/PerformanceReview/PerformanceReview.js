@@ -3,7 +3,11 @@ import "./perf_review.css";
 
 class PerformanceReview extends Component {
   render() {
-    return <div className="perf_review">PERF Review</div>;
+    return (
+      <div className="perf_review">
+        <h1>Page under development.</h1>
+      </div>
+    );
   }
 }
 

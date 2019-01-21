@@ -272,7 +272,7 @@ class LeaveEncashmentAuth extends Component {
                           return (
                             <span>
                               <i
-                                className="fa fa-check"
+                                className="fas fa-thumbs-up"
                                 onClick={AuthorizeLEaveEncash.bind(
                                   this,
                                   this,
@@ -281,7 +281,7 @@ class LeaveEncashmentAuth extends Component {
                                 )}
                               />
                               <i
-                                className="fa fa-times"
+                                className="fas fa-thumbs-down"
                                 onClick={AuthorizeLEaveEncash.bind(
                                   this,
                                   this,

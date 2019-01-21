@@ -75,12 +75,12 @@ class OvertimeManagement extends Component {
             }}
           />
 
-          <div className="col form-group">
+          <div className="col form-group" style={{ paddingLeft: 0 }}>
             <button style={{ marginTop: 21 }} className="btn btn-primary">
               Load
             </button>{" "}
             <button
-              style={{ marginTop: 21, marginLeft: 10 }}
+              style={{ marginTop: 21, marginLeft: 5 }}
               className="btn btn-default"
             >
               Clear
