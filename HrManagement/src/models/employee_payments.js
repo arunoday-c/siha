@@ -23,7 +23,7 @@ module.exports = {
       .executeQuery({
         query:
           "select loan.hims_f_loan_application_id, loan.loan_application_number as request_number, loan.employee_id, loan.approved_amount as payment_amount,\
-          emp.employee_code,emp.full_name from hims_f_loan_application loan, hims_d_employee emp where loan.loan_authorized = ? and \
+          emp.employee_code,emp.full_name from hims_f_loan_application loan, hims_d_employee emp where loan.loan_authorized = 'APR' and \
           loan.employee_id = emp.hims_d_employee_id " +
           _stringData,
         values: _.valuesIn(_loanDetails),
@@ -64,7 +64,7 @@ module.exports = {
         query:
           "select adv.hims_f_employee_advance_id, adv.advance_number as request_number, adv.employee_id, adv.advance_amount as payment_amount,\
           adv.deducting_month,adv.deducting_year,emp.employee_code, emp.full_name from hims_f_employee_advance adv, \
-          hims_d_employee emp where adv.advance_status = ? and adv.employee_id = emp.hims_d_employee_id " +
+          hims_d_employee emp where adv.advance_status = 'APR' and adv.employee_id = emp.hims_d_employee_id " +
           _stringData,
         values: _.valuesIn(_advDetails),
         printQuery: true
@@ -108,7 +108,7 @@ module.exports = {
         query:
           "select encash.hims_f_leave_encash_header_id, encash.encashment_number as request_number, encash.employee_id, \
           encash.total_amount as payment_amount, emp.employee_code,emp.full_name from hims_f_leave_encash_header encash, \
-          hims_d_employee emp where encash.authorized = ? and encash.employee_id = emp.hims_d_employee_id" +
+          hims_d_employee emp where encash.authorized = 'APR' and encash.employee_id = emp.hims_d_employee_id" +
           _stringData,
         values: _.valuesIn(_encashLeaveDetails),
         printQuery: true
@@ -120,6 +120,90 @@ module.exports = {
           return {
             ...data,
             payment_type: "EN"
+          };
+        });
+        next();
+      })
+      .catch(e => {
+        next(e);
+      });
+  },
+
+  getGratuityTopayment: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const _FSDetails = req.query;
+
+    let _stringData =
+      _FSDetails.employee_id != null ? " and GR.employee_id=? " : "";
+
+    _stringData +=
+      _FSDetails.hospital_id != null ? " and emp.hospital_id=? " : "";
+    _stringData +=
+      _FSDetails.end_of_service_number != null
+        ? " and GR.end_of_service_number=? "
+        : "";
+
+    /* Select statemwnt  */
+
+    _mysql
+      .executeQuery({
+        query:
+          "select GR.hims_f_end_of_service_id, GR.end_of_service_number as request_number, GR.employee_id, \
+          GR.payable_amount as payment_amount, emp.employee_code,emp.full_name from hims_f_end_of_service GR, \
+          hims_d_employee emp where GR.settled = 'N' and GR.employee_id = emp.hims_d_employee_id" +
+          _stringData,
+        values: _.valuesIn(_FSDetails),
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+
+        req.records = result.map(data => {
+          return {
+            ...data,
+            payment_type: "GR"
+          };
+        });
+        next();
+      })
+      .catch(e => {
+        next(e);
+      });
+  },
+
+  getFinalSettleTopayment: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const _FSDetails = req.query;
+
+    let _stringData =
+      _FSDetails.employee_id != null ? " and FS.employee_id=? " : "";
+
+    _stringData +=
+      _FSDetails.hospital_id != null ? " and emp.hospital_id=? " : "";
+    _stringData +=
+      _FSDetails.final_settlement_number != null
+        ? " and FS.final_settlement_number=? "
+        : "";
+
+    /* Select statemwnt  */
+
+    _mysql
+      .executeQuery({
+        query:
+          "select FS.hims_f_final_settlement_header_id, FS.final_settlement_number as request_number, FS.employee_id, \
+          FS.total_amount as payment_amount, emp.employee_code,emp.full_name from hims_f_final_settlement_header FS, \
+          hims_d_employee emp where FS.final_settlement_status = 'AUT' and FS.employee_id = emp.hims_d_employee_id" +
+          _stringData,
+        values: _.valuesIn(_FSDetails),
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+
+        req.records = result.map(data => {
+          return {
+            ...data,
+            payment_type: "FS"
           };
         });
         next();
@@ -283,7 +367,55 @@ module.exports = {
                   next(error);
                 });
             } else if (inputParam.payment_type == "GR") {
+              _mysql
+                .executeQuery({
+                  query:
+                    "UPDATE `hims_f_end_of_service` SET `settled`='Y', `updated_date`=?, `updated_by`=? \
+                    where hims_f_end_of_service_id=?",
+                  values: [
+                    new Date(),
+                    req.userIdentity.algaeh_d_app_user_id,
+                    inputParam.employee_end_of_service_id
+                  ]
+                })
+                .then(GratuityResult => {
+                  let result = {
+                    payment_application_code: payment_application_code
+                  };
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = result;
+                    next();
+                  });
+                })
+                .catch(error => {
+                  next(error);
+                });
             } else if (inputParam.payment_type == "FS") {
+              _mysql
+                .executeQuery({
+                  query:
+                    "UPDATE `hims_f_final_settlement_header` SET `final_settlement_status`='SET', `updated_date`=?, `updated_by`=? \
+                    where hims_f_final_settlement_header_id=?",
+                  values: [
+                    new Date(),
+                    req.userIdentity.algaeh_d_app_user_id,
+                    inputParam.employee_final_settlement_id
+                  ]
+                })
+                .then(FinalSettleResult => {
+                  let result = {
+                    payment_application_code: payment_application_code
+                  };
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = result;
+                    next();
+                  });
+                })
+                .catch(error => {
+                  next(error);
+                });
             } else if (inputParam.payment_type == "LS") {
             }
           })
@@ -407,7 +539,49 @@ module.exports = {
               next(error);
             });
         } else if (inputParam.payment_type == "GR") {
+          _mysql
+            .executeQuery({
+              query:
+                "UPDATE `hims_f_end_of_service` SET `settled`='N', `updated_date`=?, `updated_by`=? \
+                    where hims_f_end_of_service_id=?",
+              values: [
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+                inputParam.employee_end_of_service_id
+              ]
+            })
+            .then(GratuityResult => {
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = GratuityResult;
+                next();
+              });
+            })
+            .catch(error => {
+              next(error);
+            });
         } else if (inputParam.payment_type == "FS") {
+          _mysql
+            .executeQuery({
+              query:
+                "UPDATE `hims_f_final_settlement_header` SET `final_settlement_status`='AUT', `updated_date`=?, `updated_by`=? \
+                where hims_f_final_settlement_header_id=?",
+              values: [
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+                inputParam.employee_final_settlement_id
+              ]
+            })
+            .then(FinalSettleResult => {
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = FinalSettleResult;
+                next();
+              });
+            })
+            .catch(error => {
+              next(error);
+            });
         } else if (inputParam.payment_type == "LS") {
         }
       })

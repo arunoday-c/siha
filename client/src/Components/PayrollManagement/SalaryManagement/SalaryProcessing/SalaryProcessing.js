@@ -10,6 +10,8 @@ import {
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
+import { getYears } from "../../../../utils/GlobalFunctions";
+
 import {
   texthandle,
   SalaryProcess,
@@ -120,6 +122,8 @@ class SalaryProcessing extends Component {
         .endOf("month")
         .format("DD-MM-YYYY");
 
+    let allYears = getYears();
+    debugger;
     return (
       <React.Fragment>
         <div className="hptl-SalaryManagement-form">
@@ -144,14 +148,36 @@ class SalaryProcessing extends Component {
                   this.setState({
                     month: null
                   });
-                },
-                others: {
-                  disabled: this.state.lockEarnings
                 }
               }}
             />
 
-            <AlagehFormGroup
+            <AlagehAutoComplete
+              div={{ className: "col" }}
+              label={{
+                forceLabel: "Select a Year.",
+                isImp: true
+              }}
+              selector={{
+                name: "year",
+                className: "select-fld",
+                value: this.state.year,
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: allYears
+                },
+                onChange: texthandle.bind(this, this),
+
+                onClear: () => {
+                  this.setState({
+                    year: null
+                  });
+                }
+              }}
+            />
+
+            {/* <AlagehFormGroup
               div={{ className: "col" }}
               label={{
                 forceLabel: "Year",
@@ -169,7 +195,7 @@ class SalaryProcessing extends Component {
                   // min: moment().year()
                 }
               }}
-            />
+            /> */}
             <AlagehAutoComplete
               div={{ className: "col" }}
               label={{
