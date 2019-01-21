@@ -2557,9 +2557,9 @@ let authorizeLeave = (req, res, next) => {
                             salResult[0]["salary_processed"] == "Y"
                           ) {
                             connection.query(
-                              "insert into hims_f_pending_leave (employee_id, year, month) VALUE(?,?,?)",
+                              "insert into hims_f_pending_leave (employee_id, year, month,leave_header_id) VALUE(?,?,?,?)",
 
-                              [input.employee_id, input.year, month_number],
+                              [input.employee_id, input.year, month_number,input.hims_f_leave_application_id],
                               (error, resultPL) => {
                                 if (error) {
                                   connection.rollback(() => {
