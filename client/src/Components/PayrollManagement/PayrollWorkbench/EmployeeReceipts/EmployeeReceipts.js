@@ -44,7 +44,7 @@ class EmployeeReceipts extends Component {
       reciepts_type: "LO",
       reciepts_mode: null,
       recievable_amount: null,
-      write_off_amount: null,
+      write_off_amount: null
     });
   }
 
@@ -52,22 +52,28 @@ class EmployeeReceipts extends Component {
     AlgaehValidation({
       alertTypeIcon: "warning",
       onSuccess: () => {
+        let write_off_amt = this.state.write_off_amount
+          ? this.state.write_off_amount
+          : 0;
+        let balance_amount =
+          this.state.current_loan.pending_loan -
+          write_off_amt -
+          this.state.recievable_amount;
 
-        let write_off_amt = this.state.write_off_amount ? this.state.write_off_amount : 0;
-        let balance_amount =     ( this.state.current_loan.pending_loan - write_off_amt ) - this.state.recievable_amount ;
-        
         algaehApiCall({
           uri: "/loan/addLoanReciept",
           method: "POST",
-          data : {
-           employee_id: this.state.hims_d_employee_id,
-            reciepts_type:this.state.reciepts_type,
-            recievable_amount:this.state.recievable_amount,
-            write_off_amount:this.state.write_off_amount ? this.state.write_off_amount : 0,
-            loan_application_id:this.state.hims_f_loan_application_id,
-            balance_amount:balance_amount,
-            reciepts_mode:this.state.reciepts_mode,
-            cheque_number:this.state.cheque_number
+          data: {
+            employee_id: this.state.hims_d_employee_id,
+            reciepts_type: this.state.reciepts_type,
+            recievable_amount: this.state.recievable_amount,
+            write_off_amount: this.state.write_off_amount
+              ? this.state.write_off_amount
+              : 0,
+            loan_application_id: this.state.hims_f_loan_application_id,
+            balance_amount: balance_amount,
+            reciepts_mode: this.state.reciepts_mode,
+            cheque_number: this.state.cheque_number
           },
           onSuccess: res => {
             if (res.data.success) {
@@ -77,7 +83,7 @@ class EmployeeReceipts extends Component {
               });
               this.clearSaveState();
               this.getEmployeeReceipts();
-              this.getLoans()
+              this.getLoans();
             }
           },
           onFailure: err => {
@@ -146,7 +152,7 @@ class EmployeeReceipts extends Component {
       data: {
         employee_id: this.state.hims_d_employee_id,
         loan_issued: "Y",
-        loan_closed : "N"
+        loan_closed: "N"
       },
       onSuccess: res => {
         if (res.data.success) {
@@ -278,7 +284,7 @@ class EmployeeReceipts extends Component {
       <div className="emp_receipts">
         <div className="row  inner-top-search">
           <div
-            className="col-lg-2 form-group"
+            className="col-3 form-group"
             style={{
               marginTop: 21
             }}
@@ -537,11 +543,12 @@ class EmployeeReceipts extends Component {
                       datavalidate="EmployeeReciptsGrid"
                       columns={[
                         {
-                          fieldName : "loan_application_number",
-                          label : (
+                          fieldName: "loan_application_number",
+                          label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Loan Application No." }}
-                          /> )
+                            />
+                          )
                         },
                         {
                           fieldName: "reciepts_type",
@@ -550,16 +557,16 @@ class EmployeeReceipts extends Component {
                               label={{ forceLabel: "Receipts Type" }}
                             />
                           ),
-                          displayTemplate : row=>{
+                          displayTemplate: row => {
                             return (
                               <span>
-                                {
-                                  row.reciepts_type === "LO" ? "Loan" : 
-                                  row.reciepts_type === "FS" ? "Final Settlement" :
-                                  "------" 
-                                }
+                                {row.reciepts_type === "LO"
+                                  ? "Loan"
+                                  : row.reciepts_type === "FS"
+                                  ? "Final Settlement"
+                                  : "------"}
                               </span>
-                            )
+                            );
                           }
                         },
                         {
@@ -593,16 +600,16 @@ class EmployeeReceipts extends Component {
                               label={{ forceLabel: "Mode of Recipt" }}
                             />
                           ),
-                          displayTemplate : row=>{
+                          displayTemplate: row => {
                             return (
                               <span>
-                                {
-                                  row.reciepts_mode === "CS" ? "Cash" : 
-                                  row.reciepts_mode === "CH" ? "Cheque" :
-                                  "------" 
-                                }
+                                {row.reciepts_mode === "CS"
+                                  ? "Cash"
+                                  : row.reciepts_mode === "CH"
+                                  ? "Cheque"
+                                  : "------"}
                               </span>
-                            )
+                            );
                           }
                         },
                         {

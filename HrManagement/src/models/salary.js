@@ -235,7 +235,8 @@ module.exports = {
                               });
                               getContrubutionsComponents({
                                 contribution: _contrubutions,
-                                empResult: empResult[i]
+                                empResult: empResult[i],
+                                leave_salary: req.query.leave_salary
                               })
                                 .then(contributionOutput => {
                                   current_contribution_amt_array =
@@ -391,15 +392,25 @@ module.exports = {
                                                   empResult[i]["employee_id"],
                                                 per_day_sal
                                               });
-                                            const _salary_number =
-                                              empResult[i][
-                                                "employee_code"
-                                              ].trim() +
-                                              "-NS-" +
-                                              month_number +
-                                              "-" +
-                                              year;
-                                            //ToDo Advance need to calculate
+                                            let _salary_number = empResult[i][
+                                              "employee_code"
+                                            ].trim();
+
+                                            _salary_number +=
+                                              req.query.leave_salary == null
+                                                ? "-NS-"
+                                                : "-LS-";
+                                            _salary_number +=
+                                              month_number + "-" + year;
+
+                                            utilities
+                                              .AlgaehUtilities()
+                                              .logger()
+                                              .log(
+                                                "_salary_number",
+                                                _salary_number
+                                              );
+
                                             let _net_salary =
                                               final_earning_amount -
                                               final_deduction_amount -
@@ -635,41 +646,49 @@ module.exports = {
                                                 }
                                               })
                                               .catch(error => {
+                                                reject(e);
                                                 next(error);
                                               });
                                           });
                                         })
                                         .catch(e => {
+                                          reject(e);
                                           next(e);
                                         });
                                     })
                                     .catch(e => {
+                                      reject(e);
                                       next(e);
                                     });
                                   //Loan Due End
                                 })
                                 .catch(e => {
+                                  reject(e);
                                   next(e);
                                 });
                               //Contribution -- End
                             })
                             .catch(e => {
+                              reject(e);
                               next(e);
                             });
 
                           //Deduction -- End
                         })
                         .catch(e => {
+                          reject(e);
                           next(e);
                         });
                       //Earnigs --- End
                     }
                   })
                   .catch(e => {
+                    reject(e);
                     next(e);
                   });
               })
               .catch(e => {
+                reject(e);
                 next(e);
               });
           } else {
@@ -684,6 +703,7 @@ module.exports = {
           }
         })
         .catch(error => {
+          reject(e);
           next(error);
         });
     });
@@ -1025,15 +1045,35 @@ function getEarningComponents(options) {
 
     _earnings.map(obj => {
       if (obj.calculation_type == "F") {
+        utilities
+          .AlgaehUtilities()
+          .logger()
+          .log("leave_salary:", leave_salary);
+
         if (leave_salary == null || leave_salary == undefined) {
           current_earning_amt = obj["amount"];
           current_earning_per_day_salary = parseFloat(
             obj["amount"] / parseFloat(empResult["total_days"])
           );
         } else if (leave_salary == "N") {
+          utilities
+            .AlgaehUtilities()
+            .logger()
+            .log("total_days:", empResult["total_days"]);
+
+          utilities
+            .AlgaehUtilities()
+            .logger()
+            .log("paid_leave:", empResult["paid_leave"]);
+
           leave_salary_days =
             parseFloat(empResult["total_days"]) -
             parseFloat(empResult["paid_leave"]);
+
+          utilities
+            .AlgaehUtilities()
+            .logger()
+            .log("leave_salary_days:", leave_salary_days);
 
           current_earning_per_day_salary = parseFloat(
             obj["amount"] / parseFloat(empResult["total_days"])
@@ -1182,6 +1222,8 @@ function getContrubutionsComponents(options) {
   return new Promise((resolve, reject) => {
     const _contrubutions = options.contribution;
     const empResult = options.empResult;
+    const leave_salary = options.leave_salary;
+
     let current_contribution_amt = 0;
     let current_contribution_per_day_salary = 0;
 
@@ -1195,18 +1237,61 @@ function getContrubutionsComponents(options) {
     _contrubutions.map(obj => {
       // ContrubutionsComponents();
       if (obj["calculation_type"] == "F") {
-        current_contribution_amt = obj["amount"];
-        current_contribution_per_day_salary = parseFloat(
-          obj["amount"] / parseFloat(empResult["total_days"])
-        );
-      } else if (obj["calculation_type"] == "V") {
-        current_contribution_per_day_salary = parseFloat(
-          obj["amount"] / parseFloat(empResult["total_days"])
-        );
+        if (leave_salary == null || leave_salary == undefined) {
+          current_contribution_amt = obj["amount"];
+          current_contribution_per_day_salary = parseFloat(
+            obj["amount"] / parseFloat(empResult["total_days"])
+          );
+        } else if (leave_salary == "N") {
+          leave_salary_days =
+            parseFloat(empResult["total_days"]) -
+            parseFloat(empResult["paid_leave"]);
 
-        current_contribution_amt =
-          current_contribution_per_day_salary *
-          parseFloat(empResult["total_paid_days"]);
+          current_contribution_per_day_salary = parseFloat(
+            obj["amount"] / parseFloat(empResult["total_days"])
+          );
+
+          current_contribution_amt =
+            current_contribution_per_day_salary * leave_salary_days;
+        } else if (leave_salary == "Y") {
+          current_contribution_amt = 0;
+          current_contribution_per_day_salary = 0;
+        }
+
+        // current_contribution_amt = obj["amount"];
+        // current_contribution_per_day_salary = parseFloat(
+        //   obj["amount"] / parseFloat(empResult["total_days"])
+        // );
+      } else if (obj["calculation_type"] == "V") {
+        if (leave_salary == null || leave_salary == undefined) {
+          current_contribution_per_day_salary = parseFloat(
+            obj["amount"] / parseFloat(empResult["total_days"])
+          );
+          current_contribution_amt =
+            current_contribution_per_day_salary *
+            parseFloat(empResult["total_paid_days"]);
+        } else if (leave_salary == "N") {
+          leave_salary_days =
+            parseFloat(empResult["total_days"]) -
+            parseFloat(empResult["paid_leave"]);
+
+          current_contribution_per_day_salary = parseFloat(
+            obj["amount"] / parseFloat(empResult["total_days"])
+          );
+          current_contribution_amt =
+            current_contribution_per_day_salary * leave_salary_days;
+        } else if (leave_salary == "Y") {
+          current_contribution_per_day_salary = 0;
+          current_contribution_amt = 0;
+        }
+
+        // current_contribution_per_day_salary = parseFloat(
+        //   obj["amount"] / parseFloat(empResult["total_days"])
+        // );
+
+        // current_contribution_amt =
+        //   current_contribution_per_day_salary *
+        //   parseFloat(empResult["total_paid_days"]);
       }
 
       current_contribution_amt_array.push({
