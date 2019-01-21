@@ -715,6 +715,15 @@ class FinalSettlement extends Component {
                           }}
                         />
                       </div>
+                      <div className="col">
+                        <label className="style_Label ">Total Earnings</label>
+                        <h6>
+                          {" "}
+                          {FsData.total_salary
+                            ? getAmountFormart(this.state.total_earnings)
+                            : getAmountFormart(0)}
+                        </h6>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -860,6 +869,16 @@ class FinalSettlement extends Component {
                           }}
                         />
                       </div>
+
+                      <div className="col">
+                        <label className="style_Label ">Total Deductions</label>
+                        <h6>
+                          {" "}
+                          {FsData.total_salary
+                            ? getAmountFormart(this.state.total_deductions)
+                            : getAmountFormart(0)}
+                        </h6>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -922,6 +941,15 @@ class FinalSettlement extends Component {
                             onDone: () => {}
                           }}
                         />
+                      </div>{" "}
+                      <div className="col">
+                        <label className="style_Label ">Total Loan</label>
+                        <h6>
+                          {" "}
+                          {FsData.total_loan_amount
+                            ? getAmountFormart(FsData.total_loan_amount)
+                            : getAmountFormart(0)}
+                        </h6>
                       </div>
                     </div>
                   </div>
@@ -930,161 +958,140 @@ class FinalSettlement extends Component {
             </div>
           </div>
 
-          <div className="col-12" style={{ marginBottom: 40 }}>
-            <div
-              className="portlet portlet-bordered margin-bottom-15"
-              style={{ padding: 0 }}
-            >
+          <div className="col-3" style={{ marginBottom: 40 }}>
+            <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-body">
-                <div className="col-12" style={{ marginTop: 7 }}>
-                  <div className="row">
-                    <div className="col-3">
-                      <label className="style_Label ">Total Salary</label>
-                      <h6>
-                        {" "}
-                        {FsData.total_salary
-                          ? getAmountFormart(FsData.total_salary)
-                          : getAmountFormart(0)}
-                      </h6>
-                    </div>
-                    <div className="col-3">
-                      <label className="style_Label ">Total Earnings</label>
-                      <h6>
-                        {" "}
-                        {FsData.total_salary
-                          ? getAmountFormart(this.state.total_earnings)
-                          : getAmountFormart(0)}
-                      </h6>
-                    </div>
-                    <div className="col-3">
-                      <label className="style_Label ">Total Deductions</label>
-                      <h6>
-                        {" "}
-                        {FsData.total_salary
-                          ? getAmountFormart(this.state.total_deductions)
-                          : getAmountFormart(0)}
-                      </h6>
-                    </div>
-
-                    <div className="col-3">
-                      <label className="style_Label ">Gratuity Amount</label>
-                      <h6>
-                        {" "}
-                        {FsData.gratuity_amount
-                          ? getAmountFormart(FsData.gratuity_amount)
-                          : getAmountFormart(0)}
-                      </h6>
-                    </div>
-
-                    <div className="col-3">
-                      <label className="style_Label ">Leave Encashment</label>
-                      <h6>
-                        {" "}
-                        {FsData.total_leave_encash_amount
-                          ? getAmountFormart(FsData.total_leave_encash_amount)
-                          : getAmountFormart(0)}
-                      </h6>
-                    </div>
-                    <div className="col-3">
-                      <label className="style_Label ">Total Loan</label>
-                      <h6>
-                        {" "}
-                        {FsData.total_loan_amount
-                          ? getAmountFormart(FsData.total_loan_amount)
-                          : getAmountFormart(0)}
-                      </h6>
-                    </div>
+                <div className="row">
+                  <div className="col-12">
+                    <label className="style_Label ">Total Salary</label>
+                    <h6>
+                      {" "}
+                      {FsData.total_salary
+                        ? getAmountFormart(FsData.total_salary)
+                        : getAmountFormart(0)}
+                    </h6>
                   </div>
-                  <hr />
-                  <div className="row">
-                    <div className="col">
-                      <label className="style_Label ">Net Earnings</label>
-                      <h6>
-                        {getAmountFormart(this.state.net_earnings)
-                          ? getAmountFormart(this.state.net_earnings)
-                          : getAmountFormart(0)}
-                      </h6>
-                    </div>
 
-                    <div className="col">
-                      <label className="style_Label ">Net Deduction</label>
-                      <h6>
-                        {" "}
-                        {getAmountFormart(this.state.net_deductions)
-                          ? getAmountFormart(this.state.net_deductions)
-                          : getAmountFormart(0)}
-                      </h6>
-                    </div>
-                    <div className="col">
-                      <label className="style_Label ">Net Amount</label>
-                      <h6>
-                        {" "}
-                        {getAmountFormart(this.state.net_amount)
-                          ? getAmountFormart(this.state.net_amount)
-                          : getAmountFormart(0)}
-                      </h6>
-                    </div>
+                  <div className="col-12">
+                    <label className="style_Label ">Gratuity Amount</label>
+                    <h6>
+                      {" "}
+                      {FsData.gratuity_amount
+                        ? getAmountFormart(FsData.gratuity_amount)
+                        : getAmountFormart(0)}
+                    </h6>
+                  </div>
 
-                    <div className="col">
-                      <div className="customCheckbox" style={{ marginTop: 24 }}>
-                        <label className="checkbox inline">
-                          <input
-                            type="checkbox"
-                            name="forfiet"
-                            onChange={this.changeChecks.bind(this)}
-                          />
-                          <span>Forfeit Final Settlement</span>
-                        </label>
+                  <div className="col-12">
+                    <label className="style_Label ">Leave Encashment</label>
+                    <h6>
+                      {" "}
+                      {FsData.total_leave_encash_amount
+                        ? getAmountFormart(FsData.total_leave_encash_amount)
+                        : getAmountFormart(0)}
+                    </h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="col-9" style={{ marginBottom: 40 }}>
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-body">
+                <div className="row">
+                  <div className="col-4">
+                    <div className="row">
+                      <div className="col-12">
+                        <label className="style_Label ">Net Earnings</label>
+                        <h6>
+                          {getAmountFormart(this.state.net_earnings)
+                            ? getAmountFormart(this.state.net_earnings)
+                            : getAmountFormart(0)}
+                        </h6>
+                      </div>
+
+                      <div className="col-12">
+                        <label className="style_Label ">Net Deduction</label>
+                        <h6>
+                          {" "}
+                          {getAmountFormart(this.state.net_deductions)
+                            ? getAmountFormart(this.state.net_deductions)
+                            : getAmountFormart(0)}
+                        </h6>
+                      </div>
+                      <div className="col-12">
+                        <label className="style_Label ">Net Amount</label>
+                        <h6>
+                          {" "}
+                          {getAmountFormart(this.state.net_amount)
+                            ? getAmountFormart(this.state.net_amount)
+                            : getAmountFormart(0)}
+                        </h6>
                       </div>
                     </div>
+                  </div>
+                  <div className="col-8">
+                    <div className="row">
+                      <div className="col">
+                        <div className="customCheckbox">
+                          <label className="checkbox inline">
+                            <input
+                              type="checkbox"
+                              name="forfiet"
+                              onChange={this.changeChecks.bind(this)}
+                            />
+                            <span>Forfeit Final Settlement</span>
+                          </label>
+                        </div>
+                      </div>
 
-                    <div className="col-12">
-                      <label>Remarks</label>
-                      <textarea
-                        name="remarks"
-                        value={this.state.remarks}
-                        onChange={this.textHandler.bind(this)}
-                        className="textArea"
-                      />
+                      <div className="col-12">
+                        <label>Remarks</label>
+                        <textarea
+                          name="remarks"
+                          value={this.state.remarks}
+                          onChange={this.textHandler.bind(this)}
+                          className="textArea"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <div className="hptl-phase1-footer">
-            <div className="row">
-              <div className="col-lg-12">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={this.saveFinalSettlement.bind(this)}
-                  disabled={this.state.disableSave}
-                >
-                  <AlgaehLabel
-                    label={{ forceLabel: "Save", returnText: true }}
-                  />
-                </button>
+        </div>
+        <div className="hptl-phase1-footer">
+          <div className="row">
+            <div className="col-lg-12">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={this.saveFinalSettlement.bind(this)}
+                disabled={this.state.disableSave}
+              >
+                <AlgaehLabel label={{ forceLabel: "Save", returnText: true }} />
+              </button>
 
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  onClick={this.clearState.bind(this)}
-                >
-                  <AlgaehLabel
-                    label={{ forceLabel: "Clear", returnText: true }}
-                  />
-                </button>
+              <button
+                type="button"
+                className="btn btn-default"
+                onClick={this.clearState.bind(this)}
+              >
+                <AlgaehLabel
+                  label={{ forceLabel: "Clear", returnText: true }}
+                />
+              </button>
 
-                <button type="button" className="btn btn-other">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Print"
-                      //   returnText: true
-                    }}
-                  />
-                </button>
-              </div>
+              <button type="button" className="btn btn-other">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Print"
+                    //   returnText: true
+                  }}
+                />
+              </button>
             </div>
           </div>
         </div>
