@@ -3047,8 +3047,8 @@ let calculateLeaveDays = (req, res, next) => {
 
     debugLog("input:", input);
 
-    let from_date = new Date(input.from_date).toLocaleDateString();
-    let to_date = new Date(input.to_date).toLocaleDateString();
+    let from_date = new Date(input.from_date).toLocaleString();
+    let to_date = new Date(input.to_date).toLocaleString();
     let leave_applied_days = 0;
     let calculatedLeaveDays = 0;
     let session_diff = 0;
