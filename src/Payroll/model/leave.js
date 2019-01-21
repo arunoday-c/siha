@@ -3231,7 +3231,7 @@ between date('${req.query.from_date}') and date('${req.query.to_date}') `;
         "SELECT hims_f_leave_application_id,LA.leave_application_code,LA.employee_id,\
         LA.application_date,LA.sub_department_id,LA.leave_id,LA.from_leave_session,\
         LA.from_date,LA.to_date,LA.to_leave_session,LA.leave_applied_from,\
-        LA.total_applied_days,LA.total_approved_days,LA.`status`\
+        LA.total_applied_days,LA.total_approved_days,LA.cancelled,LA.`status`\
         ,L.leave_code,L.leave_description,L.leave_type,E.employee_code,\
         E.full_name as employee_name,E.religion_id,SD.sub_department_code,SD.sub_department_name \
         from hims_f_leave_application LA inner join hims_d_leave L on LA.leave_id=L.hims_d_leave_id\
@@ -5903,6 +5903,58 @@ let deleteLeaveApplication = (req, res, next) => {
   }
 };
 
+
+
+
+//created by irfan:
+let regularizeAttendance = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.body);
+
+    if (
+      input.regularize_status == "REJ" ||
+      input.regularize_status == "APR" 
+    ) {
+      db.getConnection((error, connection) => {
+        connection.query(
+          "UPDATE hims_f_attendance_regularize SET regularize_status = ?, updated_date=?, updated_by=?  WHERE hims_f_attendance_regularize_id = ?",
+
+          [
+            input.regularize_status,
+            new Date(),
+            input.updated_by,
+            input.hims_f_attendance_regularize_id
+          ],
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+
+            if (result.affectedRows > 0) {
+              req.records = result;
+              next();
+            } else {
+              req.records ={ invalid_input: true ,message:"please send valid input"};
+              next();
+            }
+          }
+        );
+      });
+    } else {
+      req.records = { invalid_input: true ,message:"please send valid input"};
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getEmployeeLeaveData,
   getYearlyLeaveData,
@@ -5935,5 +5987,6 @@ module.exports = {
   updateLeaveEncashMaster,
   updateLeaveRuleMaster,
   deleteLeaveApplication,
-  cancelLeave
+  cancelLeave,
+  regularizeAttendance
 };

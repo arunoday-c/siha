@@ -143,6 +143,102 @@ class LeaveAuthDetail extends Component {
     });
   }
 
+  cancelLeave(type) {
+    let send_data =
+      this.state.data.auth_level === 1
+        ? {
+            total_approved_days: this.state.data.total_approved_days,
+            ["authorize" + this.state.data.auth_level]:
+              type === "A" ? "Y" : "N",
+            ["authorize" + this.state.data.auth_level + "_comment"]: this.state
+              .remarks,
+            cancelled_remarks: this.state.remarks,
+            hims_f_leave_application_id: this.state.data
+              .hims_f_leave_application_id,
+            auth_level: "L" + this.state.data.auth_level,
+            status: type,
+            employee_id: this.state.data.employee_id,
+            leave_id: this.state.data.leave_id,
+            year: moment(this.state.data.from_date).format("YYYY"),
+            religion_id: this.state.data.religion_id,
+
+            from_session: this.state.data.from_leave_session,
+            to_session: this.state.data.to_leave_session,
+            from_date: this.state.data.from_date,
+            to_date: this.state.data.to_date
+          }
+        : this.state.data.auth_level === 2
+        ? {
+            total_approved_days: this.state.data.total_approved_days,
+            ["authorized" + this.state.data.auth_level]:
+              type === "A" ? "Y" : "N",
+            ["authorize" + this.state.data.auth_level + "_comment"]: this.state
+              .remarks,
+            cancelled_remarks: this.state.remarks,
+            hims_f_leave_application_id: this.state.data
+              .hims_f_leave_application_id,
+            auth_level: "L" + this.state.data.auth_level,
+            status: type,
+            employee_id: this.state.data.employee_id,
+            leave_id: this.state.data.leave_id,
+            year: moment(this.state.data.from_date).format("YYYY"),
+            religion_id: this.state.data.religion_id,
+
+            from_session: this.state.data.from_leave_session,
+            to_session: this.state.data.to_leave_session,
+            from_date: this.state.data.from_date,
+            to_date: this.state.data.to_date
+          }
+        : this.state.data.auth_level === 3
+        ? {
+            total_approved_days: this.state.data.total_approved_days,
+            ["authorized" + this.state.data.auth_level]:
+              type === "A" ? "Y" : "N",
+            ["authorize" + this.state.data.auth_level + "_comment"]: this.state
+              .remarks,
+            cancelled_remarks: this.state.remarks,
+            hims_f_leave_application_id: this.state.data
+              .hims_f_leave_application_id,
+            auth_level: "L" + this.state.data.auth_level,
+            status: type,
+            employee_id: this.state.data.employee_id,
+            leave_id: this.state.data.leave_id,
+            year: moment(this.state.data.from_date).format("YYYY"),
+            religion_id: this.state.data.religion_id,
+            from_session: this.state.data.from_leave_session,
+            to_session: this.state.data.to_leave_session,
+            from_date: this.state.data.from_date,
+            to_date: this.state.data.to_date
+          }
+        : {};
+
+    algaehApiCall({
+      uri: "/leave/cancelLeave",
+      method: "PUT",
+      data: send_data,
+      onSuccess: res => {
+        if (res.data.success) {
+          swalMessage({
+            title: "Leave Cancelled Successfully",
+            type: "success"
+          });
+
+          this.setState({
+            remarks: ""
+          });
+
+          document.getElementById("lvAuthLd").click();
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
   textHandler(e) {
     this.setState({
       [e.target.name]: e.target.value
@@ -194,7 +290,11 @@ class LeaveAuthDetail extends Component {
                             forceLabel: "From Date"
                           }}
                         />
-                        <h6>{this.state.data.from_date}</h6>
+                        <h6>
+                          {moment(this.state.data.from_date).format(
+                            "DD-MM-YYYY"
+                          )}
+                        </h6>
                       </div>
                       <div className="col">
                         <AlgaehLabel
@@ -221,7 +321,9 @@ class LeaveAuthDetail extends Component {
                           }}
                         />
                         {/* <h6>DD/MM/YYYY</h6> */}
-                        <h6>{this.state.data.to_date}</h6>
+                        <h6>
+                          {moment(this.state.data.to_date).format("DD-MM-YYYY")}
+                        </h6>
                       </div>
 
                       <div className="col">
@@ -278,6 +380,12 @@ class LeaveAuthDetail extends Component {
                   className="btn btn-danger"
                 >
                   Reject
+                </button>
+                <button
+                  onClick={this.cancelLeave.bind(this, "R")}
+                  className="btn btn-danger"
+                >
+                  Cancel Leave
                 </button>
               </div>
               <div className="col-12">
@@ -501,7 +609,7 @@ class LeaveAuthDetail extends Component {
         <div className="popupFooter">
           <div className="col-12">
             <button onClick={this.props.onClose} className="btn btn-default">
-              Cancel
+              Close
             </button>
           </div>
         </div>

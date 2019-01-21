@@ -244,6 +244,11 @@ const getPOSEntry = $this => {
         data.shift_id = $this.state.shift_id || null;
 
         for (let i = 0; i < data.pharmacy_stock_detail.length; i++) {
+          if (data.pharmacy_stock_detail[i].return_done === "Y") {
+            data.pharmacy_stock_detail[i].quantity =
+              data.pharmacy_stock_detail[i].quantity -
+              data.pharmacy_stock_detail[i].return_quantity;
+          }
           data.pharmacy_stock_detail[i].return_quantity =
             data.pharmacy_stock_detail[i].quantity;
         }
