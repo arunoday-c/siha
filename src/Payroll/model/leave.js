@@ -5903,6 +5903,58 @@ let deleteLeaveApplication = (req, res, next) => {
   }
 };
 
+
+
+
+//created by irfan:
+let regularizeAttendance = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let input = extend({}, req.body);
+
+    if (
+      input.regularize_status == "REJ" ||
+      input.regularize_status == "APR" 
+    ) {
+      db.getConnection((error, connection) => {
+        connection.query(
+          "UPDATE hims_f_attendance_regularize SET regularize_status = ?, updated_date=?, updated_by=?  WHERE hims_f_attendance_regularize_id = ?",
+
+          [
+            input.regularize_status,
+            new Date(),
+            input.updated_by,
+            input.hims_f_attendance_regularize_id
+          ],
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+
+            if (result.affectedRows > 0) {
+              req.records = result;
+              next();
+            } else {
+              req.records ={ invalid_input: true ,message:"please send valid input"};
+              next();
+            }
+          }
+        );
+      });
+    } else {
+      req.records = { invalid_input: true ,message:"please send valid input"};
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getEmployeeLeaveData,
   getYearlyLeaveData,
@@ -5935,5 +5987,6 @@ module.exports = {
   updateLeaveEncashMaster,
   updateLeaveRuleMaster,
   deleteLeaveApplication,
-  cancelLeave
+  cancelLeave,
+  regularizeAttendance
 };
