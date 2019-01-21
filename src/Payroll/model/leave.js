@@ -3219,6 +3219,13 @@ between date('${req.query.from_date}') and date('${req.query.to_date}') `;
       leave_status = " and status='PEN' ";
     }
 
+    let cancelled=" LA.cancelled='N' ";
+    if (req.query.cancelled=='Y'){
+
+      cancelled=" LA.cancelled='Y' "
+
+    }
+
     db.getConnection((error, connection) => {
       connection.query(
         "SELECT hims_f_leave_application_id,LA.leave_application_code,LA.employee_id,\
@@ -3230,8 +3237,8 @@ between date('${req.query.from_date}') and date('${req.query.to_date}') `;
         from hims_f_leave_application LA inner join hims_d_leave L on LA.leave_id=L.hims_d_leave_id\
         and L.record_status='A' inner join hims_d_employee E on LA.employee_id=E.hims_d_employee_id \
         and E.record_status='A' inner join hims_d_sub_department SD \
-        on LA.sub_department_id=SD.hims_d_sub_department_id  " +
-          employee +
+        on LA.sub_department_id=SD.hims_d_sub_department_id  where "+cancelled+ ""
+         +employee +
           "" +
           range +
           "" +
