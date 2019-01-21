@@ -3,7 +3,7 @@ import _ from "lodash";
 import moment from "moment";
 //import { LINQ } from "node-linq";
 import utilities from "algaeh-utilities";
-
+import Sync from "sync";
 module.exports = {
   //created by irfan: to
   processAttendance: (req, res, next) => {
@@ -83,7 +83,8 @@ module.exports = {
         .logger()
         .log("selectWhere: ", selectWhere);
 
-      _appendString;
+      // Sync(() => {
+      // .sync(null,
       _mysql
         .executeQueryWithTransaction({
           query:
@@ -210,12 +211,18 @@ module.exports = {
                               endOfMonth,
                               startOfMonth,
                               endOfMonth
-                            ]
+                            ],
+                            printQuery: true
                           })
                           .then(leaveAppResult => {
                             let leave_ids = _.map(leaveAppResult, obj => {
                               return obj.leave_id;
                             });
+
+                            utilities
+                              .AlgaehUtilities()
+                              .logger()
+                              .log("leave_ids: ", leave_ids);
 
                             if (leave_ids.length > 0) {
                               _mysql
@@ -390,7 +397,13 @@ module.exports = {
                                                 req.records = attDataResult;
                                                 next();
                                               });
-                                            } else resolve(attDataResult);
+                                            } else {
+                                              utilities
+                                                .AlgaehUtilities()
+                                                .logger()
+                                                .log("else : ", "resolve");
+                                              resolve(attDataResult);
+                                            }
                                           })
                                           .catch(e => {
                                             reject(e);
@@ -542,7 +555,10 @@ module.exports = {
             if (req.mySQl == null) {
               _mysql.commitTransaction(() => {
                 _mysql.releaseConnection();
-                req.records = { no_data: true, message: "No Employees found" };
+                req.records = {
+                  no_data: true,
+                  message: "No Employees found"
+                };
                 next();
               });
             } else resolve({ no_data: true, message: "No Employees found" });
@@ -552,6 +568,7 @@ module.exports = {
           reject(e);
           next(e);
         });
+      // });
     });
   }
 

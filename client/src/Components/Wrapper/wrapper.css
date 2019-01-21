@@ -62,7 +62,9 @@
 .ReactTable .fa-prescription,
 .ReactTable .fa-arrow-right,
 .ReactTable .fa-eye,
-.ReactTable .fa-plus {
+.ReactTable .fa-plus,
+.ReactTable .fa-thumbs-up,
+.ReactTable .fa-thumbs-down {
   cursor: pointer;
   border: 1px solid #44b8bd;
   height: 28px;
@@ -93,7 +95,9 @@
 .ReactTable .fa-file-prescription:hover,
 .ReactTable .fa-prescription:hover,
 .ReactTable .fa-arrow-right:hover,
-.ReactTable .fa-plus:hover {
+.ReactTable .fa-plus:hover,
+.ReactTable .fa-thumbs-up:hover,
+.ReactTable .fa-thumbs-down:hover {
   background: #44b8bd;
   color: #fff; }
 

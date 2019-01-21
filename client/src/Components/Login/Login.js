@@ -193,7 +193,7 @@ export default class Login extends Component {
                           },
                           others: {
                             tabIndex: "1",
-                            placeHolder: "Enter Username"
+                            placeholder: "Enter Username"
                           },
                           error: this.state.userError,
                           helperText: this.state.userErrorText
@@ -216,7 +216,7 @@ export default class Login extends Component {
                           others: {
                             type: "password",
                             tabIndex: "2",
-                            placeHolder: "Enter Password"
+                            placeholder: "Enter Password"
                           },
                           error: this.state.pwdError,
                           helperText: this.state.pwdErrorText

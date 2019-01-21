@@ -180,7 +180,7 @@ class EmployeePayment extends Component {
               }}
             />
 
-            <div className="col" style={{ marginTop: 10 }}>
+            <div className="col-3" style={{ marginTop: 10 }}>
               <div
                 className="row"
                 style={{

@@ -3,7 +3,7 @@ import _ from "lodash";
 import utilities from "algaeh-utilities";
 import moment from "moment";
 import { processAttendance } from "./attendance";
-import { processSalary } from "./salary";
+import { processSalary, getSalaryProcess } from "./salary";
 import Sync from "sync";
 module.exports = {
   getLeaveSalaryProcess: (req, res, next) => {
@@ -22,79 +22,87 @@ module.exports = {
           .executeQuery({
             query:
               "SELECT from_date, to_date, leave_type, total_approved_days FROM hims_f_leave_application \
-              where  status='APR' and leave_id=? and employee_id=?;",
+              where  status='APR' and cancelled = 'N' and leave_id=? and employee_id=?;",
             values: [leave_id, _leaveSalary.employee_id],
             printQuery: true
           })
           .then(annul_leave_app => {
-            let leave_salary_detail = [];
-            let from_date = moment(annul_leave_app[0].from_date).format(
-              "YYYY-MM-DD"
-            );
-            let to_date = moment(annul_leave_app[0].to_date).format(
-              "YYYY-MM-DD"
-            );
+            if (annul_leave_app.length > 0) {
+              let leave_salary_detail = [];
+              let from_date = moment(annul_leave_app[0].from_date).format(
+                "YYYY-MM-DD"
+              );
+              let to_date = moment(annul_leave_app[0].to_date).format(
+                "YYYY-MM-DD"
+              );
 
-            let to_date_month = moment(annul_leave_app[0].to_date).format("M");
+              let to_date_month = moment(annul_leave_app[0].to_date).format(
+                "M"
+              );
 
-            let leave_start_date = moment(annul_leave_app[0].from_date).format(
-              "YYYY-MM-DD"
-            );
+              let leave_start_date = moment(
+                annul_leave_app[0].from_date
+              ).format("YYYY-MM-DD");
 
-            while (from_date <= to_date) {
-              let fromDate_firstDate = null;
-              let fromDate_lastDate = null;
+              while (from_date <= to_date) {
+                let fromDate_firstDate = null;
+                let fromDate_lastDate = null;
 
-              let date_year = moment(from_date).year();
-              let date_month = moment(from_date).format("M");
+                let date_year = moment(from_date).year();
+                let date_month = moment(from_date).format("M");
 
-              let start_date = moment(from_date).add(-1, "days");
-              let no_of_days = 0;
-              fromDate_firstDate = moment(from_date)
-                .startOf("month")
-                .format("YYYY-MM-DD");
-              fromDate_lastDate = moment(from_date)
-                .endOf("month")
-                .format("YYYY-MM-DD");
+                let start_date = moment(from_date).add(-1, "days");
+                let no_of_days = 0;
+                fromDate_firstDate = moment(from_date)
+                  .startOf("month")
+                  .format("YYYY-MM-DD");
+                fromDate_lastDate = moment(from_date)
+                  .endOf("month")
+                  .format("YYYY-MM-DD");
 
-              if (to_date_month == date_month) {
-                start_date = moment(fromDate_firstDate).add(-1, "days");
-                no_of_days = moment(to_date).diff(moment(start_date), "days");
-              } else {
-                no_of_days = moment(fromDate_lastDate).diff(
-                  moment(start_date),
-                  "days"
-                );
+                if (to_date_month == date_month) {
+                  start_date = moment(fromDate_firstDate).add(-1, "days");
+                  no_of_days = moment(to_date).diff(moment(start_date), "days");
+                } else {
+                  no_of_days = moment(fromDate_lastDate).diff(
+                    moment(start_date),
+                    "days"
+                  );
+                }
+                from_date = moment(fromDate_lastDate)
+                  .add(1, "days")
+                  .format("YYYY-MM-DD");
+
+                leave_salary_detail.push({
+                  year: date_year,
+                  month: date_month,
+                  start_date: fromDate_firstDate,
+                  end_date: fromDate_lastDate,
+                  leave_start_date: leave_start_date,
+                  leave_end_date: to_date,
+                  leave_period: no_of_days,
+                  leave_type: annul_leave_app[0].leave_type
+                });
               }
-              from_date = moment(fromDate_lastDate)
-                .add(1, "days")
-                .format("YYYY-MM-DD");
 
-              leave_salary_detail.push({
-                year: date_year,
-                month: date_month,
-                start_date: fromDate_firstDate,
-                end_date: fromDate_lastDate,
+              let result = {
+                year: moment(annul_leave_app[0].from_date).year(),
+                month: moment(annul_leave_app[0].from_date).format("M"),
                 leave_start_date: leave_start_date,
                 leave_end_date: to_date,
-                leave_period: no_of_days,
-                leave_type: annul_leave_app[0].leave_type
-              });
+                leave_salary_detail: leave_salary_detail,
+                leave_period: _.sumBy(leave_salary_detail, s => {
+                  return s.leave_period;
+                })
+              };
+              _mysql.releaseConnection();
+              req.records = result;
+              next();
+            } else {
+              _mysql.releaseConnection();
+              req.records = [];
+              next();
             }
-
-            let result = {
-              year: moment(annul_leave_app[0].from_date).year(),
-              month: moment(annul_leave_app[0].from_date).format("M"),
-              leave_start_date: leave_start_date,
-              leave_end_date: to_date,
-              leave_salary_detail: leave_salary_detail,
-              leave_period: _.sumBy(leave_salary_detail, s => {
-                return s.leave_period;
-              })
-            };
-            _mysql.releaseConnection();
-            req.records = result;
-            next();
           })
           .catch(e => {
             next(e);
@@ -129,69 +137,119 @@ module.exports = {
 
     _mysql
       .executeQueryWithTransaction({
-        query: "select 1"
+        query:
+          "select hospital_id from hims_d_employee where hims_d_employee_id=?",
+        values: [req.query.hims_d_employee_id],
+        printQuery: true
       })
-      .then(result => {
+      .then(employee_result => {
+        let hospital_id = employee_result.hospital_id;
+
         while (start_date <= end_date) {
-          let fromDate_lastDate = null;
-
-          let date_year = moment(start_date).year();
-          let date_month = moment(start_date).format("M");
-
-          utilities
-            .AlgaehUtilities()
-            .logger()
-            .log("date_year:", date_year);
-          utilities
-            .AlgaehUtilities()
-            .logger()
-            .log("date_month:", date_month);
-          req.query.leave_salary = "N";
-          req.query.yearAndMonth = date_year + "-" + date_month + "-01";
-          if (end_date_month == date_month) {
-            req.query.leave_end_date = end_date;
-            req.query.leave_salary = "Y";
-          }
-
-          utilities
-            .AlgaehUtilities()
-            .logger()
-            .log("req.query:", req.query);
-
-          req.mySQl = _mysql;
           Sync(() => {
-            processAttendance
-              .sync(null, req, res, next)
-              .then(res => {
-                processSalary
-                  .sync(null, req, res, next)
-                  .then(res => {
-                    _mysql.commitTransaction(() => {
-                      _mysql.releaseConnection();
-                      req.records = {};
-                      next();
-                    });
-                  })
-                  .catch(e => {
-                    _mysql.rollBackTransaction(() => {
-                      next(e);
-                    });
+            try {
+              let fromDate_lastDate = null;
+
+              let date_year = moment(start_date).year();
+              let date_month = moment(start_date).format("M");
+
+              utilities
+                .AlgaehUtilities()
+                .logger()
+                .log("date_year:", date_year);
+              utilities
+                .AlgaehUtilities()
+                .logger()
+                .log("date_month:", date_month);
+              req.query.leave_salary = "N";
+              req.query.yearAndMonth = date_year + "-" + date_month + "-01";
+              if (end_date_month == date_month) {
+                req.query.leave_end_date = end_date;
+                req.query.leave_salary = "Y";
+              }
+
+              utilities
+                .AlgaehUtilities()
+                .logger()
+                .log("req.query:", req.query);
+
+              req.mySQl = _mysql;
+              // processAttendance(req, res, next);
+
+              let _attendance = processAttendance.sync(null, req, res, next);
+              let _attendance_result = _attendance.result;
+              utilities
+                .AlgaehUtilities()
+                .logger()
+                .log("_attendance_result:", _attendance_result);
+              _attendance_result
+                .then(attendance_result => {
+                  utilities
+                    .AlgaehUtilities()
+                    .logger()
+                    .log("attendance_result:", attendance_result);
+
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = attendance_result;
+                    next();
                   });
-              })
-              .catch(e => {
-                _mysql.rollBackTransaction(() => {
-                  next(e);
+                  // delete req.query;
+
+                  // req.query.year = date_year;
+                  // req.query.month = date_month;
+                  // req.query.hospital_id = hospital_id;
+                  // req.query.employee_id = req.query.employee_id;
+
+                  // req.query.leave_salary = "N";
+                  // if (end_date_month == date_month) {
+                  //   req.query.leave_salary = "Y";
+                  // }
+
+                  // utilities
+                  //   .AlgaehUtilities()
+                  //   .logger()
+                  //   .log("req.query:", req.query);
+
+                  // processSalary
+                  //   .sync(null, req, res, next)
+                  //   .then(salary_result => {
+                  //     utilities
+                  //       .AlgaehUtilities()
+                  //       .logger()
+                  //       .log("salary_result:", salary_result);
+
+                  //     getSalaryProcess.sync(null, req, res, next).then(res => {
+                  //       _mysql.commitTransaction(() => {
+                  //         _mysql.releaseConnection();
+                  //         req.records = {};
+                  //         next();
+                  //       });
+                  //     });
+                  //   })
+                  //   .catch(e => {
+                  //     _mysql.rollBackTransaction(() => {
+                  //       next(e);
+                  //     });
+                  //   });
+                })
+                .catch(e => {
+                  _mysql.rollBackTransaction(() => {
+                    next(e);
+                  });
                 });
-              });
+
+              fromDate_lastDate = moment(start_date)
+                .endOf("month")
+                .format("YYYY-MM-DD");
+
+              start_date = moment(fromDate_lastDate)
+                .add(1, "days")
+                .format("YYYY-MM-DD");
+            } catch (e) {
+              console.log("error", e);
+            }
           });
-
-          fromDate_lastDate = moment(start_date)
-            .endOf("month")
-            .format("YYYY-MM-DD");
-
-          start_date = moment(fromDate_lastDate)
-            .add(1, "days")
-            .format("YYYY-MM-DD");
         }
       })
       .catch(e => {
