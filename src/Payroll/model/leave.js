@@ -5535,7 +5535,7 @@ let cancelLeave = (req, res, next) => {
       req.userIdentity.leave_authorize_privilege == "AL2" ||
       req.userIdentity.leave_authorize_privilege == "AL3"
     ) {
-      //----------
+
 
       db.getConnection((error, connection) => {
         if (error) {
@@ -5771,8 +5771,9 @@ let cancelLeave = (req, res, next) => {
     cancelled_by=?,cancelled_remarks=? where record_status='A' \
     and hims_f_leave_application_id=? ",
                   [
+                   
+                    new Date(),
                     req.userIdentity.algaeh_d_app_user_id,
-                    moment().format("YYYY-MM-DD"),
                     input.cancelled_remarks,
                     input.hims_f_leave_application_id
                   ],
