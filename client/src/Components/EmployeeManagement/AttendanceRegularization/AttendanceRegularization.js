@@ -160,6 +160,7 @@ export default class AttendanceRegularization extends Component {
                 });
               }
             }}
+            minDate={this.state.from_date}
             maxDate={new Date()}
             value={this.state.to_date}
           />
