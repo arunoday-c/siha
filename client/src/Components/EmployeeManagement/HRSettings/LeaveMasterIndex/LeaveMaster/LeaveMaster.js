@@ -367,6 +367,37 @@ class LeaveMaster extends Component {
           }
         );
         break;
+
+      case "leave_encash":
+        this.setState(
+          {
+            [e.target.name]: e.target.checked
+          },
+          () => {
+            !this.state.leave_encash
+              ? this.setState({
+                  encashment_percentage: null
+                })
+              : null;
+          }
+        );
+        break;
+
+      case "leave_carry_forward":
+        this.setState(
+          {
+            [e.target.name]: e.target.checked
+          },
+          () => {
+            !this.state.leave_carry_forward
+              ? this.setState({
+                  carry_forward_percentage: null
+                })
+              : null;
+          }
+        );
+        break;
+
       default:
         this.setState({
           [e.target.name]: e.target.checked
