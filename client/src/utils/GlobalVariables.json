@@ -784,7 +784,8 @@
   "LEAVE_STATUS": [
     { "name": "Approved", "value": "APR" },
     { "name": "Pending", "value": "PEN" },
-    { "name": "Rejected", "value": "REJ" }
+    { "name": "Rejected", "value": "REJ" },
+    { "name": "Cancelled", "value": "CAN" }
   ],
   "LEAVE_EDIT": [
     { "name": "Edit", "value": "E" },
