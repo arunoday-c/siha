@@ -192,12 +192,19 @@ let getAllHolidays = (req, res, next) => {
       .format("YYYY-MM-DD");
     debugLog("end_of_year:", end_of_year);
 
+    let type = " ";
+    if (req.query.type == "W") {
+      type = " and  H.weekoff='Y' ";
+    } else if (req.query.type == "H") {
+      type = " and  H.holiday='Y' ";
+    }
     db.getConnection((error, connection) => {
       connection.query(
         "select hims_d_holiday_id,hospital_id,holiday_date,holiday_description,weekoff,holiday,\
         holiday_type,religion_id,R.religion_name,R.arabic_religion_name from  hims_d_holiday  H left join\
         hims_d_religion R on H.religion_id=R.hims_d_religion_id where H.record_status='A' and date(holiday_date) \
-        between date(?) and date(?) and hospital_id=? ",
+        between date(?) and date(?) and hospital_id=? " +
+          type,
         [start_of_year, end_of_year, req.query.hospital_id],
         (error, result) => {
           if (error) {
