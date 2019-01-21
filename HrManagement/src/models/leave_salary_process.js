@@ -3,6 +3,7 @@ import _ from "lodash";
 import utilities from "algaeh-utilities";
 import moment from "moment";
 import { processAttendance } from "./attendance";
+import { processSalary } from "./salary";
 import Sync from "sync";
 module.exports = {
   getLeaveSalaryProcess: (req, res, next) => {
@@ -162,11 +163,20 @@ module.exports = {
             processAttendance
               .sync(null, req, res, next)
               .then(res => {
-                _mysql.commitTransaction(() => {
-                  _mysql.releaseConnection();
-                  req.records = {};
-                  next();
-                });
+                processSalary
+                  .sync(null, req, res, next)
+                  .then(res => {
+                    _mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      req.records = {};
+                      next();
+                    });
+                  })
+                  .catch(e => {
+                    _mysql.rollBackTransaction(() => {
+                      next(e);
+                    });
+                  });
               })
               .catch(e => {
                 _mysql.rollBackTransaction(() => {

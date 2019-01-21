@@ -539,11 +539,13 @@ module.exports = {
                 next(e);
               });
           } else {
-            _mysql.commitTransaction(() => {
-              _mysql.releaseConnection();
-              req.records = { no_data: true, message: "No Employees found" };
-              next();
-            });
+            if (req.mySQl == null) {
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = { no_data: true, message: "No Employees found" };
+                next();
+              });
+            } else resolve({ no_data: true, message: "No Employees found" });
           }
         })
         .catch(e => {
