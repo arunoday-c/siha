@@ -423,10 +423,19 @@ export default class AbsenceManagement extends Component {
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Employee Absence List</h3>
+                </div>
+                {/* <div className="actions">
+                  <a className="btn btn-primary btn-circle active">
+                    <i className="fas fa-pen" />
+                  </a>
+                </div> */}
+              </div>
+              <div className="portlet-body">
+                <div className="row">
                   <AlagehFormGroup
-                    div={{ className: "" }}
+                    div={{ className: "col form-group" }}
                     label={{
-                      forceLabel: "Year",
+                      forceLabel: "Filter by Year",
                       isImp: true
                     }}
                     textBox={{
@@ -443,9 +452,9 @@ export default class AbsenceManagement extends Component {
                   />
 
                   <AlagehAutoComplete
-                    div={{ className: "" }}
+                    div={{ className: "col form-group" }}
                     label={{
-                      forceLabel: "Select a Month.",
+                      forceLabel: "Filter by Month",
                       isImp: true
                     }}
                     selector={{
@@ -466,13 +475,6 @@ export default class AbsenceManagement extends Component {
                     }}
                   />
                 </div>
-                {/* <div className="actions">
-                  <a className="btn btn-primary btn-circle active">
-                    <i className="fas fa-pen" />
-                  </a>
-                </div> */}
-              </div>
-              <div className="portlet-body">
                 <div className="row">
                   <div
                     className="col-12"
