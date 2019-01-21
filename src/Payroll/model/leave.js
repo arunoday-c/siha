@@ -2531,15 +2531,10 @@ let authorizeLeave = (req, res, next) => {
                   );
                 } else if (input.status == "A") {
                   const month_number = moment(input.from_date).format("M");
-
+                  const month_name = moment(input.from_date).format("MMMM");
+                  let updaid_leave_duration = 0;
                   new Promise((resolve, reject) => {
                     try {
-                      // if (input.leave_type) {
-
-                      // } else {
-                      //   resolve({});
-                      // }
-
                       connection.query(
                         "select hims_f_salary_id ,`month`,`year`,employee_id, salary_processed,salary_paid from \
                   hims_f_salary where `month`=? and `year`=? and employee_id=? ",
@@ -2628,6 +2623,18 @@ let authorizeLeave = (req, res, next) => {
                           reject(e);
                         }
                       }).then(deductionResult => {
+                        let updaid_leave_duration = new LINQ(
+                          deductionResult.monthWiseCalculatedLeaveDeduction
+                        )
+                          .Where(w => w.month_name == month_name)
+                          .Select(s => s.finalLeave)
+                          .FirstOrDefault();
+
+                        debugLog(
+                          "updaid_leave_duration:",
+                          updaid_leave_duration
+                        );
+
                         let monthArray = new LINQ(
                           deductionResult.monthWiseCalculatedLeaveDeduction
                         )
@@ -2715,39 +2722,9 @@ let authorizeLeave = (req, res, next) => {
                                     ] = _.sumBy(item, s => {
                                       return s.finalLeave;
                                     });
-                                    // return {
-                                    //   [_.get(
-                                    //     _.find(item, "month_name"),
-                                    //     "month_name"
-                                    //   )]: _.sumBy(item, s => {
-                                    //     return s.finalLeave;
-                                    //   })
-                                    //   //    finalLeave:_.get(_.find(item,'finalLeave'),'finalLeave') +
-                                    //   // _.get(_.find(item,'oldLeave'),'oldLeave')
-                                    // };
                                   })
                                   .value();
                                 debugLog("finalData:", finalData);
-
-                                //         connection.query('UPDATE users SET ? WHERE UserID = :UserID',
-                                //  {UserID: userId, Name: name})
-                                let ba = mysql.format(
-                                  " update hims_f_leave_application set status='APR' where record_status='A' \
-                                and hims_f_leave_application_id=" +
-                                    input.hims_f_leave_application_id +
-                                    ";update hims_f_employee_monthly_leave set ?  where \
-                                hims_f_employee_monthly_leave_id='" +
-                                    leaveData[0]
-                                      .hims_f_employee_monthly_leave_id +
-                                    "'",
-                                  {
-                                    ...finalData,
-                                    close_balance: newCloseBal,
-                                    availed_till_date: newAvailTillDate
-                                  }
-                                );
-
-                                debugLog("query:", ba);
 
                                 connection.query(
                                   " update hims_f_leave_application set status='APR' where record_status='A' \
@@ -2757,7 +2734,11 @@ let authorizeLeave = (req, res, next) => {
                                 hims_f_employee_monthly_leave_id='" +
                                     leaveData[0]
                                       .hims_f_employee_monthly_leave_id +
-                                    "'",
+                                    "';update hims_f_pending_leave set updaid_leave_duration=" +
+                                    updaid_leave_duration +
+                                    " where hims_f_pending_leave_id=" +
+                                    resultPL.insertId +
+                                    "",
                                   {
                                     ...finalData,
                                     close_balance: newCloseBal,
