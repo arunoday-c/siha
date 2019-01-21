@@ -2748,7 +2748,6 @@ let authorizeLeave = (req, res, next) => {
                                 //   }
                                 // );
 
-                                debugLog("ba:", ba);
                                 connection.query(
                                   " update hims_f_leave_application set status='APR' where record_status='A' \
                                 and hims_f_leave_application_id=" +
