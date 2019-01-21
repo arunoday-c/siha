@@ -114,7 +114,9 @@ class SalaryApprisal extends Component {
                       }
                     }}
                   />
-                  <div className="col">
+                </div>
+                <div className="row">
+                  <div className="col form-group">
                     <label className="style_Label ">Computed Percentage</label>
                     <h6>0.00</h6>
                   </div>
@@ -132,6 +134,20 @@ class SalaryApprisal extends Component {
                       others: {
                         type: "number"
                       }
+                    }}
+                  />
+                  <div className="col form-group">
+                    <label className="style_Label ">Computed Ratings</label>
+                    <h6>Out Standing</h6>
+                  </div>
+                  <AlagehAutoComplete
+                    div={{ className: "col form-group" }}
+                    label={{ forceLabel: "Final Ratings", isImp: false }}
+                    selector={{
+                      name: "",
+                      className: "select-fld",
+                      dataSource: {},
+                      others: {}
                     }}
                   />
                 </div>
