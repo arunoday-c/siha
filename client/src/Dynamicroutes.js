@@ -92,6 +92,7 @@ import LoanManagement from "./Components/PayrollManagement/LoanManagement/LoanMa
 import PayrollWorkbench from "./Components/PayrollManagement/PayrollWorkbench/PayrollWorkbench";
 import PerformanceManagement from "./Components/PayrollManagement/PerformanceManagement/PerformanceManagement";
 import EmployeeDocuments from "./Components/EmployeeManagement/EmployeeDocuments/EmployeeDocuments";
+import PayrollOptions from "./Components/PayrollManagement/PayrollOptions/PayrollOptions";
 
 const componts = (selectedLang, breadStyle) => {
   return {
@@ -206,7 +207,8 @@ const componts = (selectedLang, breadStyle) => {
     PerformanceManagement: (
       <PerformanceManagement selectedLang={selectedLang} />
     ),
-    EmployeeDocuments: <EmployeeDocuments selectedLang={selectedLang} />
+    EmployeeDocuments: <EmployeeDocuments selectedLang={selectedLang} />,
+    PayrollOptions: <PayrollOptions selectedLang={selectedLang} />
   };
 };
 
