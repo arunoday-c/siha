@@ -2533,6 +2533,7 @@ let authorizeLeave = (req, res, next) => {
                   const month_number = moment(input.from_date).format("M");
                   const month_name = moment(input.from_date).format("MMMM");
                   let updaid_leave_duration = 0;
+                  let id = "";
                   new Promise((resolve, reject) => {
                     try {
                       connection.query(
@@ -2569,6 +2570,7 @@ let authorizeLeave = (req, res, next) => {
                                 }
 
                                 if (resultPL.insertId > 0) {
+                                  id = resultPL.insertId;
                                   resolve(resultPL);
                                 } else {
                                   req.records = {
@@ -2623,7 +2625,7 @@ let authorizeLeave = (req, res, next) => {
                           reject(e);
                         }
                       }).then(deductionResult => {
-                        let updaid_leave_duration = new LINQ(
+                        updaid_leave_duration = new LINQ(
                           deductionResult.monthWiseCalculatedLeaveDeduction
                         )
                           .Where(w => w.month_name == month_name)
@@ -2726,6 +2728,27 @@ let authorizeLeave = (req, res, next) => {
                                   .value();
                                 debugLog("finalData:", finalData);
 
+                                // let ba = mysql.format(
+                                //   " update hims_f_leave_application set status='APR' where record_status='A' \
+                                //   and hims_f_leave_application_id=" +
+                                //     input.hims_f_leave_application_id +
+                                //     ";update hims_f_employee_monthly_leave set ?  where \
+                                //   hims_f_employee_monthly_leave_id='" +
+                                //     leaveData[0]
+                                //       .hims_f_employee_monthly_leave_id +
+                                //     "';update hims_f_pending_leave set updaid_leave_duration=" +
+                                //     updaid_leave_duration +
+                                //     " where hims_f_pending_leave_id=" +
+                                //     id +
+                                //     "",
+                                //   {
+                                //     ...finalData,
+                                //     close_balance: newCloseBal,
+                                //     availed_till_date: newAvailTillDate
+                                //   }
+                                // );
+
+                                debugLog("ba:", ba);
                                 connection.query(
                                   " update hims_f_leave_application set status='APR' where record_status='A' \
                                 and hims_f_leave_application_id=" +
@@ -2737,7 +2760,7 @@ let authorizeLeave = (req, res, next) => {
                                     "';update hims_f_pending_leave set updaid_leave_duration=" +
                                     updaid_leave_duration +
                                     " where hims_f_pending_leave_id=" +
-                                    resultPL.insertId +
+                                    id +
                                     "",
                                   {
                                     ...finalData,
