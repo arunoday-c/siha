@@ -797,5 +797,23 @@
     { "name": "Resigned", "value": "RES" },
     { "name": "Retirement", "value": "RET" },
     { "name": "Terminate", "value": "TER" }
+  ],
+  "AUTH_LEVEL3": [
+    { "name": "1 Level", "value": "1" },
+    { "name": "2 Level", "value": "2" },
+    { "name": "3 Level", "value": "3" }
+  ],
+
+  "AUTH_LEVEL2": [
+    { "name": "1 Level", "value": "1" },
+    { "name": "2 Level", "value": "2" }
+  ],
+  "ADV_DEDUCTION": [
+    { "name": "Current Month", "value": "CM" },
+    { "name": "Next Month", "value": "NM" }
+  ],
+  "EOS_CALC": [
+    { "name": "Annualized", "value": "AN" },
+    { "name": "Fixed", "value": "FI" }
   ]
 }
