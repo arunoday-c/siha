@@ -88,7 +88,58 @@ export default class AttendanceSettings extends Component {
                   }}
                 />
 
-                <div className="col-4">
+                <AlagehFormGroup
+                  div={{ className: "col form-group" }}
+                  label={{
+                    forceLabel: "Establishment ID",
+                    isImp: false
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "",
+                    value: "",
+                    events: {},
+                    others: {
+                      type: "text"
+                    }
+                  }}
+                />
+
+                <AlagehFormGroup
+                  div={{ className: "col form-group" }}
+                  label={{
+                    forceLabel: "Banking Route Code",
+                    isImp: false
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "",
+                    value: "",
+                    events: {},
+                    others: {
+                      type: "text"
+                    }
+                  }}
+                />
+                <div className="col">
+                  <div className="customCheckbox">
+                    <label className="checkbox inline">
+                      <input type="checkbox" />
+                      <span>Pay salary before processing </span>
+                    </label>
+                  </div>
+                </div>
+
+                <div className="col">
+                  <div className="customCheckbox">
+                    <label className="checkbox inline">
+                      <input type="checkbox" />
+                      <span>Validate Dept. wise </span>
+                    </label>
+                  </div>
+                </div>
+
+                <div className="col">
                   <label>Salary Calculation with</label>
                   <div className="customRadio">
                     <label className="radio inline">
@@ -112,26 +163,6 @@ export default class AttendanceSettings extends Component {
                         others: {}
                       }}
                     />
-                  </div>
-                </div>
-
-                <div className="col-4">
-                  <label>Salary Calculation with</label>
-                  <div className="customCheckbox">
-                    <label className="checkbox inline">
-                      <input type="checkbox" />
-                      <span>Pay salary before processing </span>
-                    </label>
-                  </div>
-                </div>
-
-                <div className="col-4">
-                  <label>Salary Calculation with</label>
-                  <div className="customCheckbox">
-                    <label className="checkbox inline">
-                      <input type="checkbox" />
-                      <span>Validate Dept. wise </span>
-                    </label>
                   </div>
                 </div>
               </div>
@@ -185,16 +216,7 @@ export default class AttendanceSettings extends Component {
                     others: {}
                   }}
                 />
-                <AlagehAutoComplete
-                  div={{ className: "col-3 form-group" }}
-                  label={{ forceLabel: "Advance deduction", isImp: false }}
-                  selector={{
-                    name: "",
-                    className: "select-fld",
-                    dataSource: {},
-                    others: {}
-                  }}
-                />
+
                 <AlagehAutoComplete
                   div={{ className: "col-3 form-group" }}
                   label={{
@@ -222,6 +244,27 @@ export default class AttendanceSettings extends Component {
                     others: {}
                   }}
                 />
+                <div className="col-3">
+                  <label>Advance deduction</label>
+                  <div className="customCheckbox">
+                    <label className="checkbox inline">
+                      <input type="checkbox" />
+                      <span>Use roundoff</span>
+                    </label>
+                  </div>
+                  <div className="row">
+                    <AlagehAutoComplete
+                      div={{ className: "col form-group" }}
+                      // label={{ forceLabel: "Select Date", isImp: false }}
+                      selector={{
+                        name: "",
+                        className: "select-fld",
+                        dataSource: {},
+                        others: {}
+                      }}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
