@@ -320,64 +320,42 @@ class SalaryApprisal extends Component {
                         </div>
                       </div>
                     </div>
-                    <div className="col-lg-4 algaehLabelFormGroup">
+                    <div className="col-lg-6 algaehLabelFormGroup">
                       <label className="algaehLabelGroup">
                         Employer Contribution
                       </label>
                       <div className="row">
-                        <div className="col-6">
+                        <div className="col">
                           <label className="style_Label ">
                             Monthly Present
                           </label>
                           <h6>0.00</h6>
                         </div>{" "}
-                        <div className="col-6">
+                        <div className="col">
                           <label className="style_Label ">Monthly New</label>
                           <h6>0.00</h6>
                         </div>{" "}
-                        <div className="col-6">
+                        <div className="col">
                           <label className="style_Label ">Yearly Present</label>
                           <h6>0.00</h6>
                         </div>{" "}
-                        <div className="col-6">
+                        <div className="col">
                           <label className="style_Label ">Yearly Old</label>
                           <h6>0.00</h6>
                         </div>
                       </div>
                     </div>
-                    <div className="col-lg-4 algaehLabelFormGroup">
-                      <label className="algaehLabelGroup">Perks</label>
-                      <div className="row">
-                        <div className="col-6">
-                          <label className="style_Label ">
-                            Monthly Present
-                          </label>
-                          <h6>0.00</h6>
-                        </div>{" "}
-                        <div className="col-6">
-                          <label className="style_Label ">Monthly New</label>
-                          <h6>0.00</h6>
-                        </div>{" "}
-                        <div className="col-6">
-                          <label className="style_Label ">Yearly Present</label>
-                          <h6>0.00</h6>
-                        </div>{" "}
-                        <div className="col-6">
-                          <label className="style_Label ">Yearly Old</label>
-                          <h6>0.00</h6>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-lg-4 algaehLabelFormGroup">
+
+                    <div className="col-lg-6 algaehLabelFormGroup">
                       <label className="algaehLabelGroup">
                         Immediate effect of Increment on
                       </label>
                       <div className="row">
-                        <div className="col-12">
+                        <div className="col">
                           <label className="style_Label ">Gratuity</label>
                           <h6>0.00</h6>
                         </div>{" "}
-                        <div className="col-12">
+                        <div className="col">
                           <label className="style_Label ">Arrears CTC</label>
                           <h6>0.00</h6>
                         </div>

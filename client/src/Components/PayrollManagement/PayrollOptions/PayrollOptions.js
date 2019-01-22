@@ -24,7 +24,7 @@ class PayrollOptions extends Component {
 
   render() {
     return (
-      <div className="payroll_settings">
+      <div className="payroll_options">
         <div className="row">
           <div className="tabMaster toggle-section">
             <ul className="nav">
@@ -44,11 +44,9 @@ class PayrollOptions extends Component {
             </ul>
           </div>
         </div>
-        <div className="payroll-setion">
-          {this.state.pageDisplay === "AttendanceSettings" ? (
-            <AttendanceSettings />
-          ) : null}
-        </div>
+        {this.state.pageDisplay === "AttendanceSettings" ? (
+          <AttendanceSettings />
+        ) : null}
       </div>
     );
   }
