@@ -1,0 +1,34 @@
+import { Router } from "express";
+import utlities from "algaeh-utilities";
+import { getHrmsOptions, updateHrmsOptions } from "../models/payrollOptions";
+export default () => {
+  const api = Router();
+  api.get("/getHrmsOptions", getHrmsOptions, (req, res, next) => {
+    if (req.records.no_data == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        result: req.records
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        result: req.records
+      });
+    }
+  });
+  api.put("/updateHrmsOptions", updateHrmsOptions, (req, res, next) => {
+    if (req.records.no_data == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        result: req.records
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        result: req.records
+      });
+    }
+  });
+
+  return api;
+};
