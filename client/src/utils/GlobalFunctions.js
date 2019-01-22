@@ -38,6 +38,18 @@ export function getYears() {
   return allYears;
 }
 
+export function getDays() {
+  let monthDays = [];
+  for (let i = 1; i <= 31; i++) {
+    monthDays.push({
+      name: i,
+      value: i
+    });
+  }
+
+  return monthDays;
+}
+
 export function resizeImage(options) {
   let settings = { maxWidth: 400, maxHeight: 400, ...options };
   let canvas = document.createElement("canvas");
