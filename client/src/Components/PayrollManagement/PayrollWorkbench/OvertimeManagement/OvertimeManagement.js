@@ -7,32 +7,141 @@ import {
   AlgaehDateHandler,
   AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
+import { getYears } from "../../../../utils/GlobalFunctions";
+import GlobalVariables from "../../../../utils/GlobalVariables.json";
+import AlgaehSearch from "../../../Wrapper/globalSearch";
+import Employee from "../../../../Search/Employee.json";
+import moment from "moment";
 
 class OvertimeManagement extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      year: moment().year(),
+      month: moment(new Date()).format("M")
+    };
+  }
+
+  dropDownHandler(value) {
+    this.setState({
+      [value.name]: value.value
+    });
+  }
+
+  employeeSearch() {
+    AlgaehSearch({
+      searchGrid: {
+        columns: Employee
+      },
+      searchName: "employee",
+      uri: "/gloabelSearch/get",
+      onContainsChange: (text, serchBy, callBack) => {
+        callBack(text);
+      },
+      onRowSelect: row => {
+        this.setState(
+          {
+            employee_name: row.full_name,
+            hims_d_employee_id: row.hims_d_employee_id
+          },
+          () => {}
+        );
+      }
+    });
+  }
+
   render() {
+    let allYears = getYears();
     return (
       <div className="ot_mgmt">
         <div className="row  inner-top-search">
           <AlagehAutoComplete
-            div={{ className: "col form-group" }}
-            label={{ forceLabel: "Select Year", isImp: false }}
+            div={{ className: "col" }}
+            label={{
+              forceLabel: "Select a Year.",
+              isImp: true
+            }}
             selector={{
-              name: "",
+              name: "year",
               className: "select-fld",
-              dataSource: {},
-              others: {}
+              value: this.state.year,
+              dataSource: {
+                textField: "name",
+                valueField: "value",
+                data: allYears
+              },
+              onChange: this.dropDownHandler.bind(this),
+              others: {
+                disabled: this.state.lockEarnings
+              },
+              onClear: () => {
+                this.setState({
+                  year: null
+                });
+              }
             }}
           />
+
           <AlagehAutoComplete
-            div={{ className: "col form-group" }}
-            label={{ forceLabel: "Select Month", isImp: false }}
+            div={{ className: "col" }}
+            label={{
+              forceLabel: "Select a Month.",
+              isImp: true
+            }}
             selector={{
-              name: "",
+              name: "month",
               className: "select-fld",
-              dataSource: {},
-              others: {}
+              value: this.state.month,
+              dataSource: {
+                textField: "name",
+                valueField: "value",
+                data: GlobalVariables.MONTHS
+              },
+              onChange: this.dropDownHandler.bind(this),
+              onClear: () => {
+                this.setState({
+                  month: null
+                });
+              },
+              others: {
+                disabled: this.state.lockEarnings
+              }
             }}
           />
+
+          <div className="col-lg-3" style={{ marginTop: 10 }}>
+            <div
+              className="row"
+              style={{
+                border: " 1px solid #ced4d9",
+                borderRadius: 5,
+                marginLeft: 0
+              }}
+            >
+              <div className="col">
+                <AlgaehLabel label={{ forceLabel: "Employee Name" }} />
+                <h6>
+                  {this.state.employee_name
+                    ? this.state.employee_name
+                    : "------"}
+                </h6>
+              </div>
+              <div
+                className="col-lg-3"
+                style={{ borderLeft: "1px solid #ced4d8" }}
+              >
+                <i
+                  className="fas fa-search fa-lg"
+                  style={{
+                    paddingTop: 17,
+                    paddingLeft: 3,
+                    cursor: "pointer"
+                  }}
+                  onClick={this.employeeSearch.bind(this)}
+                />
+              </div>
+            </div>
+          </div>
           <AlagehAutoComplete
             div={{ className: "col form-group" }}
             label={{ forceLabel: "Filter by Status", isImp: false }}
@@ -44,26 +153,6 @@ class OvertimeManagement extends Component {
             }}
           />
 
-          <AlagehAutoComplete
-            div={{ className: "col form-group" }}
-            label={{ forceLabel: "Employee Code", isImp: false }}
-            selector={{
-              name: "",
-              className: "select-fld",
-              dataSource: {},
-              others: {}
-            }}
-          />
-          <AlagehAutoComplete
-            div={{ className: "col form-group" }}
-            label={{ forceLabel: "Employee Name", isImp: false }}
-            selector={{
-              name: "",
-              className: "select-fld",
-              dataSource: {},
-              others: {}
-            }}
-          />
           <AlagehAutoComplete
             div={{ className: "col form-group" }}
             label={{ forceLabel: "OT Type", isImp: false }}
