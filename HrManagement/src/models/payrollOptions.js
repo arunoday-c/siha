@@ -69,5 +69,75 @@ module.exports = {
       .catch(e => {
         next(e);
       });
+  },
+
+  getEosOptions: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    _mysql
+      .executeQuery({
+        query:
+          "select hims_d_end_of_service_options_id,end_of_service_component1,end_of_service_component2,\
+          end_of_service_component3,end_of_service_component4,from_service_range1,from_service_range2,\
+          from_service_range3,from_service_range4,from_service_range5,eligible_days1,eligible_days2,eligible_days3,\
+          eligible_days4,eligible_days5,end_of_service_calculation,end_of_service_days,end_of_service_type \
+          from hims_d_end_of_service_options",
+
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        next(e);
+      });
+  },
+  updateEosOptions: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = { ...req.body };
+
+    _mysql
+      .executeQuery({
+        query:
+          "update hims_d_end_of_service_options  set end_of_service_component1=?,end_of_service_component2=?,\
+          end_of_service_component3=?,end_of_service_component4=?,from_service_range1=?,from_service_range2=?,\
+          from_service_range3=?,from_service_range4=?,from_service_range5=?,eligible_days1=?,eligible_days2=?,eligible_days3=?,\
+          eligible_days4=?,eligible_days5=?,end_of_service_calculation=?,end_of_service_days=?,end_of_service_type=?\
+          ,updated_date=?,updated_by=? where hims_d_end_of_service_options_id=?",
+        values: [
+          input.end_of_service_component1,
+          input.end_of_service_component2,
+          input.end_of_service_component3,
+          input.end_of_service_component4,
+          input.from_service_range1,
+          input.from_service_range2,
+          input.from_service_range3,
+          input.from_service_range4,
+          input.from_service_range5,
+          input.eligible_days1,
+          input.eligible_days2,
+          input.eligible_days3,
+          input.eligible_days4,
+          input.eligible_days5,
+          input.end_of_service_calculation,
+          input.end_of_service_days,
+          input.end_of_service_type,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          input.hims_d_end_of_service_options_id
+        ],
+
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        next(e);
+      });
   }
 };
