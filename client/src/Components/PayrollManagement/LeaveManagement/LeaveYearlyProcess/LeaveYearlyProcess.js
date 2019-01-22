@@ -10,6 +10,7 @@ import {
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import Employee from "../../../../Search/Employee.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+import { getYears } from "../../../../utils/GlobalFunctions";
 import YearlyLeaveDetail from "./YearlyLeaveDetail/YearlyLeaveDetail";
 
 export default class LeaveYearlyProcess extends Component {
@@ -195,6 +196,7 @@ export default class LeaveYearlyProcess extends Component {
   }
 
   render() {
+    let allYears = getYears();
     return (
       <div className="leave_en_auth row">
         <YearlyLeaveDetail
@@ -205,23 +207,26 @@ export default class LeaveYearlyProcess extends Component {
         />
         <div className="col-12">
           <div className="row inner-top-search">
-            <AlagehFormGroup
-              div={{ className: "col-lg-2 form-group mandatory" }}
+            <AlagehAutoComplete
+              div={{ className: "col" }}
               label={{
-                forceLabel: "Year",
+                forceLabel: "Select a Year.",
                 isImp: true
               }}
-              textBox={{
-                className: "txt-fld",
+              selector={{
                 name: "year",
+                className: "select-fld",
                 value: this.state.year,
-                events: {
-                  onChange: this.textHandler.bind(this)
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: allYears
                 },
-                others: {
-                  type: "number",
-                  min: moment().year(),
-                  disabled: this.state.lockEarnings
+                onChange: this.dropDownHandler.bind(this),
+                onClear: () => {
+                  this.setState({
+                    year: null
+                  });
                 }
               }}
             />

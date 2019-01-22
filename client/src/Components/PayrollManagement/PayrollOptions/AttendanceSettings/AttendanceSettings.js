@@ -29,9 +29,7 @@ export default class AttendanceSettings extends Component {
       module: "hrManagement",
       onSuccess: res => {
         if (res.data.success) {
-          this.setState(res.data.result[0], () => {
-            //  console.log("State:", this.state);
-          });
+          this.setState(res.data.result[0]);
         }
       },
       onFailure: err => {
