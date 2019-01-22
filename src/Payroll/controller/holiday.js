@@ -5,7 +5,8 @@ import {
   addWeekOffs,
   getAllHolidays,
   addHoliday,
-  deleteHoliday
+  deleteHoliday,
+  getMSDb
 } from "../model/holiday";
 import { debugLog } from "../../utils/logging";
 export default ({ config, db }) => {
@@ -77,6 +78,23 @@ export default ({ config, db }) => {
 
   // created by irfan
   api.delete("/deleteHoliday", deleteHoliday, (req, res, next) => {
+    let result = req.records;
+    if (result.invalid_input == true) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: "please provide valid input"
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
+
+  // created by irfan
+  api.get("/getMSDb", getMSDb, (req, res, next) => {
     let result = req.records;
     if (result.invalid_input == true) {
       res.status(httpStatus.ok).json({

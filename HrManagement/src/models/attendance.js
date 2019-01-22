@@ -167,7 +167,7 @@ module.exports = {
 
                         empResult[i]["defaults"].emp_total_holidays =
                           other_religion_holidays.length === 0
-                            ? 0
+                            ? _holidayResult.length
                             : _holidayResult.length -
                               other_religion_holidays.length;
 
