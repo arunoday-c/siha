@@ -18,7 +18,7 @@ module.exports = {
         query:
           "select hims_d_hrms_options_id,salary_process_date,salary_calendar,salary_calendar_fixed_days,\
         attendance_type,gratuity_in_final_settle,leave_level,loan_level,leave_encash_level,\
-        yearly_working_days,end_of_service_calculation from hims_d_hrms_options",
+        yearly_working_days,end_of_service_calculation ,review_auth_level,advance_deduction from hims_d_hrms_options",
 
         printQuery: true
       })
@@ -40,7 +40,7 @@ module.exports = {
         query:
           "update hims_d_hrms_options set salary_process_date=?,salary_calendar=?,salary_calendar_fixed_days=?,\
           attendance_type=?,gratuity_in_final_settle=?,leave_level=?,loan_level=?,leave_encash_level=?,\
-          review_auth_level=?,yearly_working_days=?,end_of_service_calculation =?,updated_date=?,updated_by=? where hims_d_hrms_options_id=?",
+          review_auth_level=?,yearly_working_days=?,end_of_service_calculation =?,advance_deduction=?,updated_date=?,updated_by=? where hims_d_hrms_options_id=?",
         values: [
           input.salary_process_date,
           input.salary_calendar,
@@ -53,7 +53,7 @@ module.exports = {
           input.review_auth_level,
           input.yearly_working_days,
           input.end_of_service_calculation,
-
+          input.advance_deduction,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
           input.hims_d_hrms_options_id
