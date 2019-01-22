@@ -11,6 +11,8 @@ import leave_salary_process from "../controllers/leave_salary_process";
 import test from "../controllers/test";
 import end_of_service from "../controllers/end_of_service";
 import final_settlement from "../controllers/final_settlement";
+import payrollOptions from "../controllers/payrollOptions";
+
 const router = express();
 router.use("/attendance", attendance());
 router.use("/employee", employee());
@@ -23,4 +25,5 @@ router.use("/encashmentprocess", encashment_process());
 router.use("/endofservice", end_of_service());
 router.use("/finalsettlement", final_settlement());
 router.use("/leavesalaryprocess", leave_salary_process());
+router.use("/payrollOptions", payrollOptions());
 export default router;
