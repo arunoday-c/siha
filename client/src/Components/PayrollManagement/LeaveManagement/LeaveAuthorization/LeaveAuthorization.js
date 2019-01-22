@@ -92,12 +92,6 @@ export default class LeaveAuthorization extends Component {
       },
       onSuccess: res => {
         if (res.data.success) {
-          res.data.records.length === 0
-            ? swalMessage({
-                title: "No Records Found",
-                type: "success"
-              })
-            : null;
           this.setState({
             leave_applns: res.data.records,
             loading: false

@@ -112,6 +112,8 @@ class LeaveAuthDetail extends Component {
           }
         : {};
 
+    console.log("Send Data:", JSON.stringify(send_data));
+
     algaehApiCall({
       uri: "/leave/authorizeLeave",
       method: "PUT",
