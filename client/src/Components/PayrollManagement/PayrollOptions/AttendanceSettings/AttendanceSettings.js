@@ -1,13 +1,11 @@
 import React, { Component } from "react";
 import "./AttendanceSettings.css";
 import { getDays } from "../../../../utils/GlobalFunctions";
-
 import {
   AlagehFormGroup,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDataGrid,
-  AlgaehDateHandler
+  AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
 import {
   AUTH_LEVEL2,
@@ -28,9 +26,36 @@ export default class AttendanceSettings extends Component {
     algaehApiCall({
       uri: "/payrollOptions/getHrmsOptions",
       method: "GET",
+      module: "hrManagement",
       onSuccess: res => {
         if (res.data.success) {
-          this.setState(...res.data.records[0]);
+          this.setState(res.data.result[0], () => {
+            //  console.log("State:", this.state);
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  saveOptions() {
+    algaehApiCall({
+      uri: "/payrollOptions/updateHrmsOptions",
+      method: "PUT",
+      module: "hrManagement",
+      data: this.state,
+      onSuccess: res => {
+        if (res.data.success) {
+          swalMessage({
+            title: "Updated Successfully",
+            type: "success"
+          });
+          this.getOptions();
         }
       },
       onFailure: err => {
@@ -287,26 +312,39 @@ export default class AttendanceSettings extends Component {
                     }
                   }}
                 />
-                <AlagehAutoComplete
-                  div={{ className: "col-3 form-group" }}
-                  label={{ forceLabel: "Advance deduction", isImp: false }}
-                  selector={{
-                    name: "advance_deduction",
-                    value: this.state.advance_deduction,
-                    className: "select-fld",
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: ADV_DEDUCTION
-                    },
-                    onChange: this.dropDownHandler.bind(this),
-                    onClear: () => {
-                      this.setState({
-                        advance_deduction: null
-                      });
-                    }
-                  }}
-                />
+
+                <div className="col-2">
+                  <label>Advance deduction</label>
+                  <div className="customCheckbox">
+                    <label className="checkbox inline">
+                      <input type="checkbox" />
+                      <span>Use roundoff</span>
+                    </label>
+                  </div>
+                  <div className="row">
+                    <AlagehAutoComplete
+                      div={{ className: "col form-group" }}
+                      //  label={{ forceLabel: "Advance deduction", isImp: false }}
+                      selector={{
+                        name: "advance_deduction",
+                        value: this.state.advance_deduction,
+                        className: "select-fld",
+                        dataSource: {
+                          textField: "name",
+                          valueField: "value",
+                          data: ADV_DEDUCTION
+                        },
+                        onChange: this.dropDownHandler.bind(this),
+                        onClear: () => {
+                          this.setState({
+                            advance_deduction: null
+                          });
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+
                 <AlagehAutoComplete
                   div={{ className: "col-3 form-group" }}
                   label={{
@@ -348,27 +386,6 @@ export default class AttendanceSettings extends Component {
                     }
                   }}
                 />
-                <div className="col-3">
-                  <label>Advance deduction</label>
-                  <div className="customCheckbox">
-                    <label className="checkbox inline">
-                      <input type="checkbox" />
-                      <span>Use roundoff</span>
-                    </label>
-                  </div>
-                  <div className="row">
-                    <AlagehAutoComplete
-                      div={{ className: "col form-group" }}
-                      // label={{ forceLabel: "Select Date", isImp: false }}
-                      selector={{
-                        name: "",
-                        className: "select-fld",
-                        dataSource: {},
-                        others: {}
-                      }}
-                    />
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -693,7 +710,7 @@ export default class AttendanceSettings extends Component {
                 <button
                   type="button"
                   className="btn btn-primary"
-                  //onClick={this.saveOptions.bind(this)}
+                  onClick={this.saveOptions.bind(this)}
                 >
                   <AlgaehLabel
                     label={{ forceLabel: "Save", returnText: true }}
