@@ -26,7 +26,6 @@ export function removeGlobal(name) {
 }
 
 export function getYears() {
-  debugger;
   var min = new Date().getFullYear(),
     max = min + 10;
 

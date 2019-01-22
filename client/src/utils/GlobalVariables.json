@@ -815,5 +815,34 @@
   "EOS_CALC": [
     { "name": "Annualized", "value": "AN" },
     { "name": "Fixed", "value": "FI" }
+  ],
+  "ATTENDANCE_TYPE": [
+    { "name": "Monthly", "value": "M" },
+    { "name": "Daily", "value": "D" }
+  ],
+  "OT_PAYMENTS": [
+    { "name": "None", "value": "N" },
+    { "name": "Comp Off", "value": "C" },
+    { "name": "Encash", "value": "E" },
+    { "name": "Both", "value": "B" }
+  ],
+  "OT_CALC": [
+    { "name": "None", "value": "N" },
+    { "name": "Daily", "value": "D" },
+    { "name": "Hourly", "value": "H" }
+  ],
+  "OT_HOUR_CALC": [
+    { "name": "Total Hours (INTIME- OUTTIME)", "value": "T" },
+    { "name": "Out Time Hours", "value": "O" }
+  ],
+  "BIOMETRIC_DBS": [
+    { "name": "MSACCESS", "value": "MSACCESS" },
+    { "name": "ORACLE", "value": "ORACLE" },
+    { "name": "MYSQL", "value": "MYSQL" },
+    { "name": "SQL", "value": "SQL" }
+  ],
+  "SWIPE_CARD_TYPE": [
+    { "name": "Numeric", "value": "N" },
+    { "name": "String", "value": "S" }
   ]
 }

@@ -16,9 +16,14 @@ module.exports = {
     _mysql
       .executeQuery({
         query:
-          "select hims_d_hrms_options_id,salary_process_date,salary_calendar,salary_calendar_fixed_days,\
-        attendance_type,gratuity_in_final_settle,leave_level,loan_level,leave_encash_level,\
-        yearly_working_days,end_of_service_calculation ,review_auth_level,advance_deduction from hims_d_hrms_options",
+          "select hims_d_hrms_options_id, salary_process_date, salary_pay_before_end_date,\
+           payroll_payment_date, salary_calendar, salary_calendar_fixed_days, attendance_type,\
+            fetch_punch_data_reporting, gratuity_in_final_settle, leave_level, loan_level, leave_encash_level,\
+             review_auth_level, yearly_working_days, end_of_service_calculation, advance_deduction, overtime_payment,\
+              overtime_calculation, overtime_hourly_calculation, standard_intime, standard_outime, standard_working_hours,\
+               standard_break_hours, biometric_database, biometric_server_name, biometric_database_name,\
+           biometric_database_login, biometric_database_password, biometric_swipe_id, created_date,\
+            created_by, updated_date, updated_by from hims_d_hrms_options",
 
         printQuery: true
       })
@@ -38,14 +43,19 @@ module.exports = {
     _mysql
       .executeQuery({
         query:
-          "update hims_d_hrms_options set salary_process_date=?,salary_calendar=?,salary_calendar_fixed_days=?,\
-          attendance_type=?,gratuity_in_final_settle=?,leave_level=?,loan_level=?,leave_encash_level=?,\
-          review_auth_level=?,yearly_working_days=?,end_of_service_calculation =?,advance_deduction=?,updated_date=?,updated_by=? where hims_d_hrms_options_id=?",
+          "update hims_d_hrms_options set salary_process_date=?,salary_pay_before_end_date=?, payroll_payment_date=?,salary_calendar=?,salary_calendar_fixed_days=?,\
+          attendance_type=?, fetch_punch_data_reporting=?,gratuity_in_final_settle=?,leave_level=?,loan_level=?,leave_encash_level=?,\
+          review_auth_level=?,yearly_working_days=?,end_of_service_calculation =?,advance_deduction=?, overtime_payment=? , overtime_calculation=?,\
+          overtime_hourly_calculation=?, standard_intime=? , standard_outime=?, standard_working_hours=?, standard_break_hours=?,\
+          biometric_database=?, biometric_server_name=?, biometric_database_name=?, biometric_database_login=?, biometric_database_password=?, biometric_swipe_id=?, updated_date=?,updated_by=? where hims_d_hrms_options_id=?",
         values: [
           input.salary_process_date,
+          input.salary_pay_before_end_date,
+          input.payroll_payment_date,
           input.salary_calendar,
           input.salary_calendar_fixed_days,
           input.attendance_type,
+          input.fetch_punch_data_reporting,
           input.gratuity_in_final_settle,
           input.leave_level,
           input.loan_level,
@@ -54,6 +64,19 @@ module.exports = {
           input.yearly_working_days,
           input.end_of_service_calculation,
           input.advance_deduction,
+          input.overtime_payment,
+          input.overtime_calculation,
+          input.overtime_hourly_calculation,
+          input.standard_intime,
+          input.standard_outime,
+          input.standard_working_hours,
+          input.standard_break_hours,
+          input.biometric_database,
+          input.biometric_server_name,
+          input.biometric_database_name,
+          input.biometric_database_login,
+          input.biometric_database_password,
+          input.biometric_swipe_id,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
           input.hims_d_hrms_options_id
