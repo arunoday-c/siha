@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./AttendanceSettings.css";
 import { getDays } from "../../../../utils/GlobalFunctions";
+
 import {
   AlagehFormGroup,
   AlgaehLabel,
@@ -14,6 +15,7 @@ import {
   ADV_DEDUCTION,
   EOS_CALC
 } from "../../../../utils/GlobalVariables.json";
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 
 export default class AttendanceSettings extends Component {
   constructor(props) {
@@ -346,6 +348,27 @@ export default class AttendanceSettings extends Component {
                     }
                   }}
                 />
+                <div className="col-3">
+                  <label>Advance deduction</label>
+                  <div className="customCheckbox">
+                    <label className="checkbox inline">
+                      <input type="checkbox" />
+                      <span>Use roundoff</span>
+                    </label>
+                  </div>
+                  <div className="row">
+                    <AlagehAutoComplete
+                      div={{ className: "col form-group" }}
+                      // label={{ forceLabel: "Select Date", isImp: false }}
+                      selector={{
+                        name: "",
+                        className: "select-fld",
+                        dataSource: {},
+                        others: {}
+                      }}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>

@@ -4482,7 +4482,7 @@ let cancelLeave = (req, res, next) => {
                   releaseDBConnection(db, connection);
                   req.records = {
                     invalid_input: true,
-                    message: "salary is  processed"
+                    message: "salary is already processed"
                   };
                   next();
                 });
