@@ -28,9 +28,9 @@ let getEmployeeLeaveData = (req, res, next) => {
 
     let year = "";
 
-    let selservice = "";
-    if ((req.query.selservice = "Y")) {
-      selservice = ` and  (LD.employee_type='${
+    let selfservice = "";
+    if (req.query.selfservice =="Y") {
+      selfservice = ` and  (LD.employee_type='${
         req.query.employee_type
       }' and  (LD.gender='${req.query.gender}' or LD.gender='BOTH' ))`;
     }
@@ -42,7 +42,7 @@ let getEmployeeLeaveData = (req, res, next) => {
       req.query.year != undefined &&
       req.query.employee_id > 0
     ) {
-      year = moment(req.query.year).format("YYYY");
+    
 
       // select hims_f_employee_monthly_leave_id, employee_id, year, leave_id, L.leave_code,\
       // L.leave_description,total_eligible, availed_till_date, close_balance,\
@@ -53,7 +53,7 @@ let getEmployeeLeaveData = (req, res, next) => {
       //  order by hims_f_employee_monthly_leave_id desc;
       db.getConnection((error, connection) => {
         connection.query(
-          "	select hims_f_employee_monthly_leave_id, employee_id, year, leave_id, L.leave_code,\
+          "select hims_f_employee_monthly_leave_id, employee_id, year, leave_id, L.leave_code,\
           L.leave_description,total_eligible, availed_till_date, close_balance,\
           E.employee_code ,E.full_name as employee_name,\
           LD.hims_d_leave_detail_id,LD.employee_type, LD.eligible_days\
@@ -61,10 +61,10 @@ let getEmployeeLeaveData = (req, res, next) => {
           inner join hims_d_leave_detail LD on L.hims_d_leave_id=LD.leave_header_id\
           inner join hims_d_employee E on ML.employee_id=E.hims_d_employee_id and E.record_status='A'\
           and L.record_status='A' where ML.year=? and ML.employee_id=?" +
-            selservice +
+            selfservice +
             " \
             order by hims_f_employee_monthly_leave_id desc;",
-          [year, req.query.employee_id],
+          [req.query.year, req.query.employee_id],
           (error, result) => {
             releaseDBConnection(db, connection);
             if (error) {
