@@ -16,21 +16,61 @@ export default class WeeklyAttendance extends Component {
 
   render() {
     return (
-      <div className="monthly_attendance">
+      <div className="hrTimeSheet">
         <div className="row inner-top-search">
-          <AlgaehDateHandler
-            div={{ className: "col" }}
-            label={{ forceLabel: "Seletc a Month & Year", isImp: false }}
-            textBox={{
-              className: "txt-fld",
-              name: ""
+          <div className="col">
+            <label>View by All Employee</label>
+            <div className="customCheckbox">
+              <label className="checkbox inline">
+                <input type="checkbox" value="yes" name="" />
+                <span>Yes</span>
+              </label>
+            </div>
+          </div>
+
+          <div className="col" style={{ marginTop: 10 }}>
+            <div
+              className="row"
+              style={{
+                border: " 1px solid #ced4d9",
+                borderRadius: 5,
+                marginLeft: 0
+              }}
+            >
+              <div className="col">
+                <AlgaehLabel label={{ forceLabel: "Employee Name" }} />
+                <h6>------</h6>
+              </div>
+              <div
+                className="col-lg-3"
+                style={{ borderLeft: "1px solid #ced4d8" }}
+              >
+                <i
+                  className="fas fa-search fa-lg"
+                  style={{
+                    paddingTop: 17,
+                    paddingLeft: 3,
+                    cursor: "pointer"
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+
+          <AlagehAutoComplete
+            div={{ className: "col-2 form-group" }}
+            label={{ forceLabel: "Select a year", isImp: false }}
+            selector={{
+              name: "",
+              className: "select-fld",
+              dataSource: {},
+              others: {}
             }}
-            maxDate={new Date()}
-            events={{}}
           />
+
           <AlagehAutoComplete
             div={{ className: "col form-group" }}
-            label={{ forceLabel: "Select a Employee", isImp: false }}
+            label={{ forceLabel: "Select a Month", isImp: false }}
             selector={{
               name: "",
               className: "select-fld",
@@ -61,7 +101,8 @@ export default class WeeklyAttendance extends Component {
           </div>
           <div className="portlet-body WeeklyTimeProgress">
             <div className="row dailyTimeProgress">
-              <div className="col-auto">Sun, 30</div>
+              <div className="col-1">Sun, 30</div>
+              <div className="col-1">00.00 Hrs</div>
               <div className="col">
                 <div className="progress week-off">
                   <div
@@ -76,10 +117,10 @@ export default class WeeklyAttendance extends Component {
                   </div>
                 </div>
               </div>
-              <div className="col-auto">00.00 Hrs</div>
             </div>
             <div className="row dailyTimeProgress">
-              <div className="col-auto">Mon, 31</div>
+              <div className="col-1">Mon, 31</div>
+              <div className="col-1">08.45 Hrs</div>
               <div className="col">
                 <div className="progress">
                   <div
@@ -104,10 +145,10 @@ export default class WeeklyAttendance extends Component {
                   </div>
                 </div>
               </div>
-              <div className="col-auto">08.45 Hrs</div>
             </div>
             <div className="row dailyTimeProgress">
-              <div className="col-auto">Tue, 01</div>
+              <div className="col-1">Tue, 01</div>
+              <div className="col-1">08.45 Hrs</div>
               <div className="col">
                 <div className="progress">
                   <div
@@ -132,10 +173,10 @@ export default class WeeklyAttendance extends Component {
                   </div>
                 </div>
               </div>
-              <div className="col-auto">08.45 Hrs</div>
             </div>
             <div className="row dailyTimeProgress">
-              <div className="col-auto">Wed, 02</div>
+              <div className="col-1">Wed, 02</div>
+              <div className="col-1">05.15 Hrs</div>
               <div className="col">
                 <div className="progress">
                   <div
@@ -148,10 +189,10 @@ export default class WeeklyAttendance extends Component {
                   />
                 </div>
               </div>
-              <div className="col-auto">05.15 Hrs</div>
             </div>
             <div className="row dailyTimeProgress">
-              <div className="col-auto">Thu, 03</div>
+              <div className="col-1">Thu, 03</div>
+              <div className="col-1">00.00 Hrs</div>
               <div className="col">
                 <div className="progress ">
                   <div
@@ -164,10 +205,10 @@ export default class WeeklyAttendance extends Component {
                   />
                 </div>
               </div>
-              <div className="col-auto">00.00 Hrs</div>
             </div>
             <div className="row dailyTimeProgress">
-              <div className="col-auto">Fri, 04</div>
+              <div className="col-1">Fri, 04</div>
+              <div className="col-1">00.00 Hrs</div>
               <div className="col">
                 <div className="progress ">
                   <div
@@ -180,10 +221,10 @@ export default class WeeklyAttendance extends Component {
                   />
                 </div>
               </div>
-              <div className="col-auto">00.00 Hrs</div>
             </div>
             <div className="row dailyTimeProgress">
-              <div className="col-auto">Sat, 05</div>
+              <div className="col-1">Sat, 05</div>
+              <div className="col-1">00.00 Hrs</div>
               <div className="col">
                 <div className="progress week-off">
                   <div
@@ -198,8 +239,67 @@ export default class WeeklyAttendance extends Component {
                   </div>
                 </div>
               </div>
-              <div className="col-auto">00.00 Hrs</div>
             </div>
+          </div>
+          <hr />
+          <div className="portlet-body WeeklyTimeProgress">
+            <div className="row dailyTimeProgress">
+              <div className="col-3 time_name">
+                Aboobacker Sidhiqe
+                <br />
+                <small>EMP00001</small>
+              </div>
+              <div className="col-1 totalHours">00.00 Hrs</div>
+              <div className="col">
+                <div className="col">
+                  <div className="progress ">
+                    <div
+                      className="progress-bar bg-default"
+                      role="progressbar "
+                      aria-valuenow="0"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                      style={{ width: "100%" }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* dailyTimeProgress */}
+            <div className="row dailyTimeProgress">
+              <div className="col-3 time_name">
+                Aboobacker Sidhiqe Aboobacker Sidhiqe
+                <br />
+                <small>EMP00001</small>
+              </div>
+              <div className="col-1 totalHours">00.00 Hrs</div>
+
+              <div className="col">
+                <div className="progress">
+                  <div
+                    className="progress-bar bg-success"
+                    role="progressbar"
+                    aria-valuenow="75"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                    style={{ width: "90%" }}
+                  >
+                    <div className="tooltipDetails">
+                      <span className="checkIn animated bounceIn faster">
+                        Check In <b>08:55 AM</b>
+                      </span>
+                      <span className="totalHr animated bounceIn faster">
+                        Over time by<b className="OverTime">20 min</b>
+                      </span>
+                      <span className="checkOut animated bounceIn faster">
+                        Check Out <b>07:45 PM</b>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* dailyTimeProgress */}
           </div>
         </div>
       </div>
