@@ -26,10 +26,10 @@ let getEmployeeLeaveData = (req, res, next) => {
     }
     let db = req.db;
 
-    let year = "";
+    // let year = "";
 
     let selfservice = "";
-    if (req.query.selfservice =="Y") {
+    if (req.query.selfservice == "Y") {
       selfservice = ` and  (LD.employee_type='${
         req.query.employee_type
       }' and  (LD.gender='${req.query.gender}' or LD.gender='BOTH' ))`;
@@ -42,8 +42,6 @@ let getEmployeeLeaveData = (req, res, next) => {
       req.query.year != undefined &&
       req.query.employee_id > 0
     ) {
-    
-
       // select hims_f_employee_monthly_leave_id, employee_id, year, leave_id, L.leave_code,\
       // L.leave_description,total_eligible, availed_till_date, close_balance,\
       // E.employee_code ,E.full_name as employee_name\
@@ -100,7 +98,7 @@ let getYearlyLeaveData = (req, res, next) => {
     }
     let db = req.db;
 
-    let year = "";
+    // let year = "";
 
     if (
       req.query.year != "" &&
@@ -108,7 +106,7 @@ let getYearlyLeaveData = (req, res, next) => {
       req.query.year != "null" &&
       req.query.year != undefined
     ) {
-      year = moment(req.query.year).format("YYYY");
+      //year = moment(req.query.year).format("YYYY");
       db.getConnection((error, connection) => {
         connection.query(
           "select hims_f_employee_yearly_leave_id,employee_id,year ,\
@@ -116,7 +114,7 @@ let getYearlyLeaveData = (req, res, next) => {
           SD.sub_department_name from  hims_f_employee_yearly_leave EYL  inner join hims_d_employee E on\
           EYL.employee_id=E.hims_d_employee_id  left join hims_d_sub_department SD\
           on E.sub_department_id=SD.hims_d_sub_department_id  where EYL.year=? order by hims_f_employee_yearly_leave_id desc",
-          year,
+          req.query.year,
           (error, result) => {
             releaseDBConnection(db, connection);
             if (error) {
@@ -866,12 +864,12 @@ let addLeaveMaster = (req, res, next) => {
           });
         }
         connection.query(
-          "INSERT INTO `hims_d_leave` (leave_code,leave_description,leave_category,\
+          "INSERT INTO `hims_d_leave` (leave_code,leave_description,leave_category,calculation_type,\
           include_weekoff,include_holiday,leave_mode,leave_accrual,leave_encash,leave_type,\
           encashment_percentage,leave_carry_forward,carry_forward_percentage,\
           religion_required,religion_id,holiday_reimbursement,exit_permit_required,\
           proportionate_leave,document_mandatory,created_by,created_date,updated_by,updated_date)\
-          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           [
             input.leave_code,
             input.leave_description,
@@ -879,7 +877,7 @@ let addLeaveMaster = (req, res, next) => {
             input.include_weekoff,
             input.include_holiday,
             input.leave_mode,
-
+            input.calculation_type,
             input.leave_accrual,
             input.leave_encash,
             input.leave_type,
@@ -2972,7 +2970,7 @@ let updateLeaveMaster = (req, res, next) => {
     if (input.hims_d_leave_id > 0) {
       db.getConnection((error, connection) => {
         connection.query(
-          "UPDATE hims_d_leave SET leave_description=?,leave_category=?,include_weekoff=?,include_holiday=?,leave_mode=?,leave_status=?,leave_accrual=?,\
+          "UPDATE hims_d_leave SET leave_description=?,leave_category=?, calculation_type=?,include_weekoff=?,include_holiday=?,leave_mode=?,leave_status=?,leave_accrual=?,\
           leave_encash=?,leave_type=?,encashment_percentage=?,leave_carry_forward=?,carry_forward_percentage=?,religion_required=?,\
           religion_id=?,holiday_reimbursement=?,exit_permit_required=?,proportionate_leave=?,document_mandatory=?,\
           updated_date=?, updated_by=?  WHERE hims_d_leave_id = ?",
@@ -2980,6 +2978,7 @@ let updateLeaveMaster = (req, res, next) => {
           [
             input.leave_description,
             input.leave_category,
+            input.calculation_type,
             input.include_weekoff,
             input.include_holiday,
             input.leave_mode,
