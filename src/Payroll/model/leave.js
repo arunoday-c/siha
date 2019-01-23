@@ -26,7 +26,7 @@ let getEmployeeLeaveData = (req, res, next) => {
     }
     let db = req.db;
 
-    let year = "";
+    // let year = "";
 
     let selfservice = "";
     if (req.query.selfservice =="Y") {
@@ -100,7 +100,7 @@ let getYearlyLeaveData = (req, res, next) => {
     }
     let db = req.db;
 
-    let year = "";
+    // let year = "";
 
     if (
       req.query.year != "" &&
@@ -108,7 +108,7 @@ let getYearlyLeaveData = (req, res, next) => {
       req.query.year != "null" &&
       req.query.year != undefined
     ) {
-      year = moment(req.query.year).format("YYYY");
+      //year = moment(req.query.year).format("YYYY");
       db.getConnection((error, connection) => {
         connection.query(
           "select hims_f_employee_yearly_leave_id,employee_id,year ,\
@@ -116,7 +116,7 @@ let getYearlyLeaveData = (req, res, next) => {
           SD.sub_department_name from  hims_f_employee_yearly_leave EYL  inner join hims_d_employee E on\
           EYL.employee_id=E.hims_d_employee_id  left join hims_d_sub_department SD\
           on E.sub_department_id=SD.hims_d_sub_department_id  where EYL.year=? order by hims_f_employee_yearly_leave_id desc",
-          year,
+          req.query.year,
           (error, result) => {
             releaseDBConnection(db, connection);
             if (error) {
