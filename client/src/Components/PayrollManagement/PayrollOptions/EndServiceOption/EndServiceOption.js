@@ -222,7 +222,7 @@ export default class EndServiceOption extends Component {
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">Enter Grid Name Here</h3>
+                  <h3 className="caption-subject">Resignation Information</h3>
                 </div>
                 <div className="actions">
                   <a className="btn btn-primary btn-circle active">
@@ -232,7 +232,213 @@ export default class EndServiceOption extends Component {
               </div>
               <div className="portlet-body">
                 <div className="row">
-                  <div className="col-12" />
+                  <div className="col-6">
+                    <div className="row">
+                      <div className="col-12">
+                        <label>Eligibility Required</label>
+                        <div className="customCheckbox">
+                          <label className="checkbox inline">
+                            <input
+                              type="checkbox"
+                              value="yes"
+                              name="fetchMachineData"
+                            />
+                            <span>Yes</span>
+                          </label>
+                        </div>
+                      </div>
+                      <div className="col-12" id="ResignationEligibility_Cntr">
+                        <AlgaehDataGrid
+                          id="ResignationEligibility"
+                          datavalidate="ResignationEligibility"
+                          columns={[
+                            {
+                              fieldName: "Column_1",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Column 1" }}
+                                />
+                              )
+                            },
+                            {
+                              fieldName: "Column_2",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Column 2" }}
+                                />
+                              )
+                            }
+                          ]}
+                          keyId=""
+                          dataSource={{ data: [] }}
+                          isEditable={true}
+                          paging={{ page: 0, rowsPerPage: 10 }}
+                          events={{}}
+                          others={{}}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-6">
+                    <div className="row">
+                      <div className="col-12">
+                        <label>Apply late rules</label>
+                        <div className="customCheckbox">
+                          <label className="checkbox inline">
+                            <input
+                              type="checkbox"
+                              value="yes"
+                              name="fetchMachineData"
+                            />
+                            <span>Yes</span>
+                          </label>
+                        </div>
+                      </div>
+                      <div className="col-12" id="ResignationMinYear_Cntr">
+                        <AlgaehDataGrid
+                          id="ResignationMinYear"
+                          datavalidate="ResignationMinYear"
+                          columns={[
+                            {
+                              fieldName: "Column_1",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Column 1" }}
+                                />
+                              )
+                            },
+                            {
+                              fieldName: "Column_2",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Column 2" }}
+                                />
+                              )
+                            }
+                          ]}
+                          keyId=""
+                          dataSource={{ data: [] }}
+                          isEditable={true}
+                          paging={{ page: 0, rowsPerPage: 10 }}
+                          events={{}}
+                          others={{}}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="col-12">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Termination Information</h3>
+                </div>
+                <div className="actions">
+                  <a className="btn btn-primary btn-circle active">
+                    <i className="fas fa-pen" />
+                  </a>
+                </div>
+              </div>
+              <div className="portlet-body">
+                <div className="row">
+                  <div className="col-6">
+                    <div className="row">
+                      <div className="col-12">
+                        <label>Apply late rules</label>
+                        <div className="customCheckbox">
+                          <label className="checkbox inline">
+                            <input
+                              type="checkbox"
+                              value="yes"
+                              name="fetchMachineData"
+                            />
+                            <span>Yes</span>
+                          </label>
+                        </div>
+                      </div>
+                      <div className="col-12" id="TerminationEligility_Cntr">
+                        <AlgaehDataGrid
+                          id="TerminationEligility"
+                          datavalidate="TerminationEligility"
+                          columns={[
+                            {
+                              fieldName: "Column_1",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Column 1" }}
+                                />
+                              )
+                            },
+                            {
+                              fieldName: "Column_2",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Column 2" }}
+                                />
+                              )
+                            }
+                          ]}
+                          keyId=""
+                          dataSource={{ data: [] }}
+                          isEditable={true}
+                          paging={{ page: 0, rowsPerPage: 10 }}
+                          events={{}}
+                          others={{}}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-6">
+                    <div className="row">
+                      <div className="col-12">
+                        <label>Apply late rules</label>
+                        <div className="customCheckbox">
+                          <label className="checkbox inline">
+                            <input
+                              type="checkbox"
+                              value="yes"
+                              name="fetchMachineData"
+                            />
+                            <span>Yes</span>
+                          </label>
+                        </div>
+                      </div>
+                      <div className="col-12" id="TerminationMinYear_Cntr">
+                        <AlgaehDataGrid
+                          id="TerminationMinYear"
+                          datavalidate="TerminationMinYear"
+                          columns={[
+                            {
+                              fieldName: "Column_1",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Column 1" }}
+                                />
+                              )
+                            },
+                            {
+                              fieldName: "Column_2",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Column 2" }}
+                                />
+                              )
+                            }
+                          ]}
+                          keyId=""
+                          dataSource={{ data: [] }}
+                          isEditable={true}
+                          paging={{ page: 0, rowsPerPage: 10 }}
+                          events={{}}
+                          others={{}}
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

@@ -4,4 +4,13 @@
     color: lightgrey;
     text-align: center;
   }
+
+  #ResignationEligibility_Cntr,
+  #ResignationMinYear_Cntr,
+  #TerminationEligility_Cntr,
+  #TerminationMinYear_Cntr {
+    .ReactTable {
+      max-height: 25vh !important;
+    }
+  }
 }
