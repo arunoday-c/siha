@@ -348,25 +348,41 @@ let getMSDb = (req, res, next) => {
       user: "sa",
       password: "sa123",
       // server: "192.168.0.169:DESKTOP-AKT60JU\SQLEXPRESS",
-      server: "192.168.0.169:1433",
+      server: "192.168.0.169",
       database: "datacosec"
     };
+
+
+    debugLog("am in get MS DB");
+    debugLog("sql",sql);
+    
 
     // connect to your database
     sql.connect(
       config,
       function(err) {
-        if (err) console.log(err);
+           if (err){
 
+          debugLog("connection error");
+
+        } 
         // create Request object
         var request = new sql.Request();
-
+     
         // query to the database and get the records
-        request.query("select * from Mx_DATDTrn", function(err, recordset) {
-          if (err) console.log(err);
+        request.query(" select * from Mx_DATDTrn ", function(err, result) {
+          if (err){
 
+            debugLog("query error");
+
+          } 
+          //request.close();
+          
+          debugLog("result:",result);
           // send records as a response
-          req.records = recordset;
+          req.records = result;
+          sql.close();
+          next();
         });
       }
     );
