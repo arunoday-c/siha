@@ -184,6 +184,8 @@ class LeaveEdit extends Component {
           include_weekoff: this.state.include_weekoff ? "Y" : "N",
           include_holiday: this.state.include_holiday ? "Y" : "N",
           leave_mode: this.state.leave_mode,
+          leave_category: this.state.leave_category,
+          calculation_type: this.state.calculation_type,
           leave_status: this.state.leave_status,
           leave_accrual: this.state.leave_accrual,
           leave_encash: this.state.leave_encash ? "Y" : "N",
@@ -402,7 +404,6 @@ class LeaveEdit extends Component {
               });
               this.getLeaveRules();
               this.setState({
-                calculation_type: null,
                 rule_earning_id: null,
                 paytype: null,
                 from_value: null,
@@ -635,12 +636,30 @@ class LeaveEdit extends Component {
         className="col-lg-12"
       >
         <div className="popupInner" data-validate="LvEdtGrd">
-          <div className="col">
-            <h6 className=" margin-top-15">
-              <small>Selected Leave Type:</small>
-              <br /> {this.state.leave_description}
-            </h6>
+          <div className="col-12">
+            <div className="row">
+              <div className="col-3">
+                <h6 className="margin-top-15">
+                  <small>Selected Leave Type:</small>
+                  <br /> {this.state.leave_description}
+                </h6>
+              </div>
+              <div className="col-3">
+                {this.state.type === "ER" ? (
+                  <h6 className="margin-top-15">
+                    <small>Calculation Type:</small>
+                    <br />{" "}
+                    {this.state.calculation_type === "CO"
+                      ? "Component"
+                      : this.state.calculation_type === "SL"
+                      ? "Slab"
+                      : "------"}
+                  </h6>
+                ) : null}
+              </div>
+            </div>
           </div>
+
           <hr />
           {this.state.type === "E" ? (
             <LeaveEntitlement parent={this} />
@@ -652,7 +671,6 @@ class LeaveEdit extends Component {
             <LeaveRules parent={this} />
           ) : null}
         </div>
-
         <div className="popupFooter">
           <div className="col-lg-12">
             <div className="row">
