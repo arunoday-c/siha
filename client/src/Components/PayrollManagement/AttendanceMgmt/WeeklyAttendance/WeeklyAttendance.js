@@ -16,12 +16,22 @@ export default class WeeklyAttendance extends Component {
     this.state = {
       year: moment().year(),
       month: moment(new Date()).format("M"),
+      week: 0,
       weeks: []
     };
   }
 
   componentDidMount() {
     this.getWeeks();
+    this.getFirstWeek();
+  }
+
+  getFirstWeek() {
+    let daysOfMonth = moment(
+      new Date(this.state.year + "-" + this.state.month + "-02")
+    ).weekday();
+
+    console.log("SFSADFASd", daysOfMonth);
   }
 
   getWeeks() {
@@ -382,30 +392,30 @@ export default class WeeklyAttendance extends Component {
           <hr />
           <div className="portlet-body WeeklyTimeProgress">
             {/* Start Element Daily Progress*/}
-            {/*           
-            <div className="row dailyTimeProgress">
+
+            {/* <div className="row dailyTimeProgress">
               <div className="col-3 time_name">
                 Aboobacker Sidhiqe
                 <br />
                 <small>EMP00001</small>
               </div>
-              <div className="col-1 totalHours">00.00 Hrs</div>
+              <div className="col-1">05.15 Hrs</div>
               <div className="col">
                 <div className="col">
-                  <div className="progress ">
+                  <div className="progress">
                     <div
-                      className="progress-bar bg-default"
-                      role="progressbar "
-                      aria-valuenow="0"
+                      className="progress-bar progress-bar-striped  progress-bar-animated"
+                      role="progressbar"
+                      aria-valuenow="75"
                       aria-valuemin="0"
                       aria-valuemax="100"
-                      style={{ width: "100%" }}
+                      style={{ width: "55%" }}
                     />
                   </div>
                 </div>
               </div>
-            </div>
-           */}
+            </div> */}
+
             {/* End Element Daily Progress*/}
           </div>
         </div>
